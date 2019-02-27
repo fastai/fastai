@@ -357,7 +357,7 @@ sidebar: home_sidebar
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="GPUMemTrace"><code>class</code> <code>GPUMemTrace</code><a href="https://github.com/fastai/fastai/blob/master/fastai/utils/mem.py#L111" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>GPUMemTrace</code>(<strong><code>silent</code></strong>=<strong><em><code>False</code></em></strong>, <strong><code>ctx</code></strong>=<strong><em><code>None</code></em></strong>, <strong><code>on_exit_report</code></strong>=<strong><em><code>False</code></em></strong>)</p>
+<h4 id="GPUMemTrace"><code>class</code> <code>GPUMemTrace</code><a href="https://github.com/fastai/fastai/blob/master/fastai/utils/mem.py#L111" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>GPUMemTrace</code>(<strong><code>silent</code></strong>=<strong><em><code>False</code></em></strong>, <strong><code>ctx</code></strong>=<strong><em><code>None</code></em></strong>, <strong><code>on_exit_report</code></strong>=<strong><em><code>True</code></em></strong>)</p>
 </blockquote>
 <p>Trace allocated and peaked GPU memory usage (deltas).</p>
 
@@ -375,7 +375,7 @@ sidebar: home_sidebar
 <ul>
 <li><code>silent</code>: a shortcut to make <code>report</code> and <code>report_n_reset</code> silent w/o needing to remove those calls - this can be done from the constructor, or alternatively you can call <code>silent</code> method anywhere to do the same.</li>
 <li><code>ctx</code>: default context note in reports</li>
-<li><code>on_exit_report</code>:  auto-report on ctx manager exit</li>
+<li><code>on_exit_report</code>:  auto-report on ctx manager exit (default <code>True</code>)</li>
 </ul>
 <p><strong>Definitions</strong>:</p>
 <ul>
@@ -432,7 +432,7 @@ mtrace.stop()</code></pre>
 mtrace.report()</code></pre>
 <p>prints:</p>
 
-<pre><code>△used: 0MB, △peaked: 0MB (foobar)</code></pre>
+<pre><code>△Used Peaked MB:      0      0  (foobar)</code></pre>
 <p>and then add subcontext notes as needed:</p>
 
 <pre><code>mtrace = GPUMemTrace(ctx="foobar")
@@ -440,8 +440,8 @@ mtrace.report('1st try')
 mtrace.report('2nd try')</code></pre>
 <p>prints:</p>
 
-<pre><code>△used: 0MB, △peaked: 0MB (foobar: 1st try)
-△used: 0MB, △peaked: 0MB (foobar: 2nd try)</code></pre>
+<pre><code>△Used Peaked MB:      0      0  (foobar: 1st try)
+△Used Peaked MB:      0      0  (foobar: 2nd try)</code></pre>
 <p>Both context and sub-context are optional, and are very useful if you sprinkle <a href="/utils.mem.html#GPUMemTrace"><code>GPUMemTrace</code></a> in different places around the code.</p>
 <p>You can silence report calls w/o needing to remove them via constructor or <code>silent</code>:</p>
 
@@ -453,32 +453,83 @@ mtrace.silent(silent=True)
 mtrace.report() # nothing will be printed</code></pre>
 <p><strong>Context Manager</strong>:</p>
 <p><a href="/utils.mem.html#GPUMemTrace"><code>GPUMemTrace</code></a> can also be used as a context manager:</p>
-<p>Get the numerical data (in rounded MBs):</p>
+<p>Report the used and peaked deltas automatically:</p>
 
-<pre><code>with GPUMemTrace() as mtrace:
-    some_code()
-delta_used, delta_peaked = mtrace.data()</code></pre>
-<p>Print the used and peaked deltas:</p>
+<pre><code>with GPUMemTrace(): some_code()</code></pre>
+<p>If you wish to add context:</p>
 
-<pre><code>with GPUMemTrace() as mtrace:
-    some_code()
-mem_trace.report("measured in ctx")</code></pre>
-<p>or the same w/o the context note:</p>
-
-<pre><code>with GPUMemTrace() as mtrace:
-    some_code()
-print(mtrace)</code></pre>
-<p>The reporting can be done automatically, which is especially useful in functions due to return call:</p>
+<pre><code>with GPUMemTrace(ctx='some context'): some_code()</code></pre>
+<p>The context manager uses subcontext <code>exit</code> to indicate that the report comes after the context exited.</p>
+<p>The reporting is done automatically, which is especially useful in functions due to return call:</p>
 
 <pre><code>def some_func():
-    with GPUMemTrace(ctx='some_func', on_exit_report=True):
+    with GPUMemTrace(ctx='some_func'):
         # some code
         return 1
 some_func()</code></pre>
 <p>prints:</p>
 
-<pre><code>△used: 0MB, △peaked: 0MB (some_func: exit)</code></pre>
+<pre><code>△Used Peaked MB:      0      0 (some_func: exit)</code></pre>
 <p>so you still get a perfect report despite the <code>return</code> call here. <code>ctx</code> is useful for specifying the <em>context</em> in case you have many of those calls through your code and you want to know which is which.</p>
+<p>And, of course, instead of doing the above, you can use <a href="/utils.mem.html#gpu_mem_trace"><code>gpu_mem_trace</code></a> decorator to do it automatically, including using the function or method name as the context. Therefore, the example below does the same without modifying the function.</p>
+
+<pre><code>@gpu_mem_trace
+def some_func():
+    # some code
+    return 1
+some_func()</code></pre>
+<p>If you don't wish the automatic reporting, just pass <code>on_exit_report=False</code> in the constructor:</p>
+
+<pre><code>with GPUMemTrace(ctx='some_func', on_exit_report=False) as mtrace:
+    some_code()
+mtrace.report("measured in ctx")</code></pre>
+<p>or the same w/o the context note:</p>
+
+<pre><code>with GPUMemTrace(on_exit_report=False) as mtrace: some_code()
+print(mtrace) # or mtrace.report()</code></pre>
+<p>And, of course, you can get the numerical data (in rounded MBs):</p>
+
+<pre><code>with GPUMemTrace() as mtrace: some_code()
+delta_used, delta_peaked = mtrace.data()</code></pre>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="gpu_mem_trace"><code>gpu_mem_trace</code><a href="https://github.com/fastai/fastai/blob/master/fastai/utils/mem.py#L204" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>gpu_mem_trace</code>(<strong><code>func</code></strong>)</p>
+</blockquote>
+<p>A decorator that runs <a href="/utils.mem.html#GPUMemTrace"><code>GPUMemTrace</code></a> w/ report on func</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This allows you to decorate any function or method with:</p>
+
+<pre><code>@gpu_mem_trace
+def my_function(): pass
+# run:
+my_function()</code></pre>
+<p>and it will automatically print the report including the function name as a context:</p>
+
+<pre><code>△Used Peaked MB:      0      0 (my_function: exit)</code></pre>
+<p>In the case of methods it'll print a fully qualified method, e.g.:</p>
+
+<pre><code>△Used Peaked MB:      0      0 (Class.function: exit)</code></pre>
 
 </div>
 </div>

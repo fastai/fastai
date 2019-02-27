@@ -202,7 +202,7 @@ class GPUMemTrace():
             time.sleep(0.001) # 1msec
 
 def gpu_mem_trace(func):
-    "A decorator that runs GPUMemTrace w/ report on func"
+    "A decorator that runs `GPUMemTrace` w/ report on func"
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         with GPUMemTrace(ctx=func.__qualname__, on_exit_report=True):
