@@ -124,13 +124,17 @@ class GPUMemTrace():
     def data_set(self):
         # delta_used is the difference between current used mem and used mem at the start
         self.delta_used = gpu_mem_get_used_no_cache() - self.used_start
-        # delta_peaked is the overhead if any.
-        # 1. The base measurement is the difference between the peak memory and
-        # the used mem at the start.
-        # 2. Then if delta_used is positive it gets subtracted from the base value.
-        # This indicates the size of the blip.
+
+        # delta_peaked is the overhead if any. It is calculated as follows:
+        #
+        # 1. The difference between the peak memory and the used memory at the
+        # start is measured:
+        # 2a. If it's negative, then delta_peaked is 0
+        # 2b. Otherwise, if used_delta is positive it gets subtracted from delta_peaked
+        # XXX: 2a shouldn't be needed once we have a reliable peak counter
         self.delta_peaked = self.used_peak - self.used_start
-        if self.delta_used > 0: self.delta_peaked -= self.delta_used
+        if self.delta_peaked < 0: self.delta_peaked = 0
+        elif self.delta_used > 0: self.delta_peaked -= self.delta_used
 
     def data(self):
         if self.is_running: self.data_set()
