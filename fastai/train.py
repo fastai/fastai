@@ -162,13 +162,13 @@ class ClassificationInterpretation():
                 torch.add(cm, cm_slice, out=cm)
         return to_np(cm)
 
-    def plot_confusion_matrix(self, normalize:bool=False, title:str='Confusion matrix', cmap:Any="Blues", slice_size:int=1,
-                              norm_dec:int=2, plot_txt:bool=True, **kwargs)->plt.Figure:
+    def plot_confusion_matrix(self, normalize:bool=False, title:str='Confusion matrix', cmap:Any="Blues", slice_size:int=1, 
+                              norm_dec:int=2, plot_txt:bool=True, **kwargs)->None:
         "Plot the confusion matrix, with `title` and using `cmap`."
         # This function is mainly copied from the sklearn docs
         cm = self.confusion_matrix(slice_size=slice_size)
         if normalize: cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
-        fig = plt.figure(**kwargs)
+        plt.figure(**kwargs)
         plt.imshow(cm, interpolation='nearest', cmap=cmap)
         plt.title(title)
         tick_marks = np.arange(self.data.c)
@@ -185,7 +185,6 @@ class ClassificationInterpretation():
         plt.ylabel('Actual')
         plt.xlabel('Predicted')
         plt.grid(False)
-        return fig
 
     def most_confused(self, min_val:int=1, slice_size:int=1)->Collection[Tuple[str,str,int]]:
         "Sorted descending list of largest non-diagonal entries of confusion matrix, presented as actual, predicted, number of occurrences."
