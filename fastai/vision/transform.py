@@ -63,6 +63,9 @@ jitter = TfmCoord(_jitter)
 def _flip_lr(x):
     "Flip `x` horizontally."
     #return x.flip(2)
+    if isinstance(x, ImagePoints):
+        x.flow.flow[...,0] *= -1
+        return x
     return tensor(np.ascontiguousarray(np.array(x)[...,::-1]))
 flip_lr = TfmPixel(_flip_lr)
 
@@ -160,7 +163,6 @@ def _crop(x, size, row_pct:uniform=0.5, col_pct:uniform=0.5):
     return f_crop(x, size, row_pct, col_pct)
 
 crop = TfmPixel(_crop)
-
 
 def _crop_pad_default(x, size, padding_mode='reflection', row_pct:uniform = 0.5, col_pct:uniform = 0.5):
     "Crop and pad tfm - `row_pct`,`col_pct` sets focal point."

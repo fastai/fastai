@@ -437,9 +437,11 @@ def _pre_transform(self, train_tfm:List[Callable], valid_tfm:List[Callable]):
     self.valid.x.after_open = compose(valid_tfm)
     return self
 
-def _presize(self, size:int, val_xtra_size:int=32, **kwargs):
+def _presize(self, size:int, val_xtra_size:int=32, scale:Tuple[float]=(0.08, 1.0), ratio:Tuple[float]=(0.75, 4./3.),
+             interpolation:int=2):
     "Resize images to `size` using `RandomResizedCrop`, passing along `kwargs` to train transform"
-    tfms = (tvt.RandomResizedCrop(size, **kwargs), [tvt.Resize(size+val_xtra_size), tvt.CenterCrop(size)])
+    tfms = (tvt.RandomResizedCrop(size, scale=scale, ratio=ratio, interpolation=interpolation), 
+            [tvt.Resize(size+val_xtra_size), tvt.CenterCrop(size)])
     return self.pre_transform(*tfms)
 
 LabelLists.pre_transform = _pre_transform
