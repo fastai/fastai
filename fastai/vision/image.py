@@ -187,6 +187,7 @@ class Image(ItemBase):
         "Resize the image to `size`, size can be a single int."
         assert self._flow is None
         if isinstance(size, int): size=(self.shape[0], size, size)
+        if tuple(size)==tuple(self.shape): return
         self.flow = _affine_grid(size)
         return self
 
@@ -384,18 +385,20 @@ class ImageBBox(ImagePoints):
             else: text=None
             _draw_rect(ax, bb2hw(bbox), text=text, color=color)
 
-def open_image(fn:PathOrStr, div:bool=True, convert_mode:str='RGB', cls:type=Image)->Image:
+def open_image(fn:PathOrStr, div:bool=True, convert_mode:str='RGB', cls:type=Image,
+        after_open:Callable=None)->Image:
     "Return `Image` object created from image in file `fn`."
     with warnings.catch_warnings():
         warnings.simplefilter("ignore", UserWarning) # EXIF warning from TiffPlugin
         x = PIL.Image.open(fn).convert(convert_mode)
+    if after_open: x = after_open(x)
     x = pil2tensor(x,np.float32)
     if div: x.div_(255)
     return cls(x)
 
-def open_mask(fn:PathOrStr, div=False, convert_mode='L')->ImageSegment:
+def open_mask(fn:PathOrStr, div=False, convert_mode='L', after_open:Callable=None)->ImageSegment:
     "Return `ImageSegment` object create from mask in file `fn`. If `div`, divides pixel values by 255."
-    return open_image(fn, div=div, convert_mode=convert_mode, cls=ImageSegment)
+    return open_image(fn, div=div, convert_mode=convert_mode, cls=ImageSegment, after_open=after_open)
 
 def open_mask_rle(mask_rle:str, shape:Tuple[int, int])->ImageSegment:
     "Return `ImageSegment` object create from run-length encoded string in `mask_lre` with size in `shape`."

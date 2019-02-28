@@ -14,11 +14,17 @@ of that change.
 
 ### New:
 
+- `LabelLists.pre_transform`: call transforms on PIL.Image, before converting to float tensor
+- `LabelLists.presize`: standard Imagenet image resizing/cropping using `pre_transform`
+- `compose`: compose a list of functions
+
 ### Changed:
+
+- Change `flip_lr` to use much faster method
 
 ### Fixed:
 
-
+- Do nothing if `Image.resize` called with image already at required size
 
 ## 1.0.46 (2019-02-25)
 
@@ -26,11 +32,13 @@ of that change.
 
 - In `CollabDataBunch`, `pct_val` is renamed `valid_pct` for consistency
 - `ImageItemList` becomes `ImageList` for consistency with `TextList` and `TabularList`
-- `load_learner` will fail for exported (pickled) models with error *AttributeError: Can't get attribute 'ImageItemList' on <module 'fastai.vision.data'*. You will need to re-export with version 1.0.46 or use 1.0.44
+- `load_learner` will fail for exported (pickled) models with error
+  "AttributeError: Can't get attribute 'ImageItemList' on module
+  'fastai.vision.data'". You will need to re-export with version 1.0.46 or use 1.0.44
 
 ### New:
 
-- `Learner.destroy`: completely free up `learn`, leaving an empty shell (to replace `gc.collect` eye-sore)
+- `Learner.destroy`: completely free up `learn`, leaving an empty shell
 - added NVML query support on OSX via `pynvx` in addition to `pynvml` (Windows/Linux)
 - Added `XResNet`, which is ResNet plus tricks from
   [Bag of Tricks for Image Classification](https://arxiv.org/abs/1812.01187).

@@ -329,6 +329,12 @@ def show_some(items:Collection, n_max:int=5, sep:str=','):
 
 def get_tmp_file(dir=None):
     "Create and return a tmp filename, optionally at a specific path. `os.remove` when done with it."
-    f = tempfile.NamedTemporaryFile(delete=False, dir=dir)
-    f.close()
-    return f.name
+    with tempfile.NamedTemporaryFile(delete=False, dir=dir) as f: return f.name
+
+def compose(funcs:List[Callable])->Callable:
+    "Compose `funcs`"
+    def compose_(funcs, x, *args, **kwargs):
+        for f in listify(funcs): x = f(x, *args, **kwargs)
+        return x
+    return partial(compose_, funcs)
+
