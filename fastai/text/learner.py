@@ -7,12 +7,13 @@ from ..basic_data import *
 from ..datasets import *
 from ..metrics import accuracy
 from ..train import GradientClipping
+from ..layers import *
 from .models import *
 from .transform import *
 from .data import *
 
 __all__ = ['RNNLearner', 'LanguageLearner', 'convert_weights', 'decode_spec_tokens', 'get_language_model', 'language_model_learner', 
-           'MultiBatchEncoder', 'get_text_classifier', 'text_classifier_learner']
+           'MultiBatchEncoder', 'get_text_classifier', 'text_classifier_learner', 'PoolingLinearClassifier']
 
 _model_meta = {AWD_LSTM: {'hid_name':'emb_sz', 'url':URLs.WT103_1,
                           'config_lm':awd_lstm_lm_config, 'split_lm': awd_lstm_lm_split,
@@ -213,11 +214,32 @@ def language_model_learner(data:DataBunch, arch, config:dict=None, drop_mult:flo
         learn.freeze()
     return learn
 
+class PoolingLinearClassifier(nn.Module):
+    "Create a linear classifier with pooling."
+
+    def __init__(self, layers:Collection[int], drops:Collection[float]):
+        super().__init__()
+        mod_layers = []
+        activs = [nn.ReLU(inplace=True)] * (len(layers) - 2) + [None]
+        for n_in,n_out,p,actn in zip(layers[:-1],layers[1:], drops, activs):
+            mod_layers += bn_drop_lin(n_in, n_out, p=p, actn=actn)
+        self.layers = nn.Sequential(*mod_layers)
+
+    def forward(self, input:Tuple[Tensor,Tensor, Tensor])->Tuple[Tensor,Tensor,Tensor]:
+        raw_outputs,outputs,mask = input
+        output = outputs[-1]
+        avg_pool = output.masked_fill(mask[:,:,None], 0).mean(dim=1)
+        avg_pool *= output.size(1) / (output.size(1)-mask.float().sum(dim=1))[:,None]
+        max_pool = output.masked_fill(mask[:,:,None], -float('inf')).max(dim=1)[0]
+        x = torch.cat([output[:,-1], max_pool, avg_pool], 1)
+        x = self.layers(x)
+        return x, raw_outputs, outputs
+
 class MultiBatchEncoder(nn.Module):
     "Create an encoder over `module` that can process a full sentence."
-    def __init__(self, bptt:int, max_len:int, module:nn.Module):
+    def __init__(self, bptt:int, max_len:int, module:nn.Module, pad_idx:int=1):
         super().__init__()
-        self.max_len,self.bptt,self.module = max_len,bptt,module
+        self.max_len,self.bptt,self.module,self.pad_idx = max_len,bptt,module,pad_idx
 
     def concat(self, arrs:Collection[Tensor])->Tensor:
         "Concatenate the `arrs` along the batch dimension."
@@ -229,16 +251,18 @@ class MultiBatchEncoder(nn.Module):
     def forward(self, input:LongTensor)->Tuple[Tensor,Tensor]:
         bs,sl = input.size()
         self.reset()
-        raw_outputs, outputs = [],[]
+        raw_outputs,outputs,masks = [],[],[]
         for i in range(0, sl, self.bptt):
             r, o = self.module(input[:,i: min(i+self.bptt, sl)])
             if i>(sl-self.max_len):
+                masks.append(input[:,i: min(i+self.bptt, sl)] == self.pad_idx)
                 raw_outputs.append(r)
                 outputs.append(o)
-        return self.concat(raw_outputs), self.concat(outputs)
+        return self.concat(raw_outputs),self.concat(outputs),torch.cat(masks,dim=1)
     
 def get_text_classifier(arch:Callable, vocab_sz:int, n_class:int, bptt:int=70, max_len:int=20*70, config:dict=None, 
-                        drop_mult:float=1., lin_ftrs:Collection[int]=None, ps:Collection[float]=None) -> nn.Module:
+                        drop_mult:float=1., lin_ftrs:Collection[int]=None, ps:Collection[float]=None,
+                        pad_idx:int=1) -> nn.Module:
     "Create a text classifier from `arch` and its `config`, maybe `pretrained`."
     meta = _model_meta[arch]
     config = ifnone(config, meta['config_clas'].copy())
@@ -249,7 +273,7 @@ def get_text_classifier(arch:Callable, vocab_sz:int, n_class:int, bptt:int=70, m
     layers = [config[meta['hid_name']] * 3] + lin_ftrs + [n_class]
     ps = [config.pop('output_p')] + ps
     init = config.pop('init') if 'init' in config else None
-    encoder = MultiBatchEncoder(bptt, max_len, arch(vocab_sz, **config))
+    encoder = MultiBatchEncoder(bptt, max_len, arch(vocab_sz, **config), pad_idx=pad_idx)
     model = SequentialRNN(encoder, PoolingLinearClassifier(layers, ps))
     return model if init is None else model.apply(init)
 

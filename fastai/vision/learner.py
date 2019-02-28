@@ -102,7 +102,8 @@ def _cl_int_from_learner(cls, learn:Learner, ds_type:DatasetType=DatasetType.Val
     preds = learn.TTA(ds_type=ds_type, with_loss=True) if tta else learn.get_preds(ds_type=ds_type, with_loss=True)
     return cls(learn, *preds, ds_type=ds_type)
 
-def _cl_int_plot_top_losses(self, k, largest=True, figsize=(12,12), heatmap:bool=True, heatmap_thresh:int=16):
+def _cl_int_plot_top_losses(self, k, largest=True, figsize=(12,12), heatmap:bool=True, heatmap_thresh:int=16,
+                            return_fig:bool=None)->Optional[plt.Figure]:
     "Show images in `top_losses` along with their prediction, actual, loss, and probability of predicted class."
     tl_val,tl_idx = self.top_losses(k, largest)
     classes = self.data.classes
@@ -129,6 +130,7 @@ def _cl_int_plot_top_losses(self, k, largest=True, figsize=(12,12), heatmap:bool
                 mult = F.relu(((acts*grad_chan[...,None,None])).sum(0))
                 sz = im.shape[-1]
                 axes.flat[i].imshow(mult, alpha=0.6, extent=(0,sz,sz,0), interpolation='bilinear', cmap='magma')
+    if ifnone(return_fig, defaults.return_fig): return fig
 
 def _cl_int_plot_multi_top_losses(self, samples:int=3, figsize:Tuple[int,int]=(8,8), save_misclassified:bool=False):
     "Show images in `top_losses` along with their prediction, actual, loss, and probability of predicted class in a multilabeled dataset."

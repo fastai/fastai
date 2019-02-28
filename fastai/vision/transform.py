@@ -62,7 +62,11 @@ jitter = TfmCoord(_jitter)
 
 def _flip_lr(x):
     "Flip `x` horizontally."
-    return x.flip(2)
+    #return x.flip(2)
+    if isinstance(x, ImagePoints):
+        x.flow.flow[...,0] *= -1
+        return x
+    return tensor(np.ascontiguousarray(np.array(x)[...,::-1]))
 flip_lr = TfmPixel(_flip_lr)
 
 def _flip_affine() -> TfmAffine:
@@ -159,7 +163,6 @@ def _crop(x, size, row_pct:uniform=0.5, col_pct:uniform=0.5):
     return f_crop(x, size, row_pct, col_pct)
 
 crop = TfmPixel(_crop)
-
 
 def _crop_pad_default(x, size, padding_mode='reflection', row_pct:uniform = 0.5, col_pct:uniform = 0.5):
     "Crop and pad tfm - `row_pct`,`col_pct` sets focal point."
@@ -295,7 +298,7 @@ def get_transforms(do_flip:bool=True, flip_vert:bool=False, max_rotate:float=10.
                    p_lighting:float=0.75, xtra_tfms:Optional[Collection[Transform]]=None)->Collection[Transform]:
     "Utility func to easily create a list of flip, rotate, `zoom`, warp, lighting transforms."
     res = [rand_crop()]
-    if do_flip:    res.append(dihedral_affine() if flip_vert else flip_affine(p=0.5))
+    if do_flip:    res.append(dihedral_affine() if flip_vert else flip_lr(p=0.5))
     if max_warp:   res.append(symmetric_warp(magnitude=(-max_warp,max_warp), p=p_affine))
     if max_rotate: res.append(rotate(degrees=(-max_rotate,max_rotate), p=p_affine))
     if max_zoom>1: res.append(rand_zoom(scale=(1.,max_zoom), p=p_affine))

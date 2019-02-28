@@ -58,8 +58,9 @@ fastai_types = {
 
 torch.set_num_threads(4) # OpenMP doesn't generally like too many threads
 
-bn_types = (nn.BatchNorm1d, nn.BatchNorm2d, nn.BatchNorm3d, nn.LayerNorm)
+bn_types = (nn.BatchNorm1d, nn.BatchNorm2d, nn.BatchNorm3d)
 bias_types = (nn.Linear, nn.Conv1d, nn.Conv2d, nn.Conv3d, nn.ConvTranspose1d, nn.ConvTranspose2d, nn.ConvTranspose3d)
+no_wd_types = bn_types + (nn.LayerNorm,)
 defaults.device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 AdamW = partial(optim.Adam, betas=(0.9,0.99))
 
@@ -184,12 +185,12 @@ def split_model(model:nn.Module, splits:Collection[Union[nn.Module,ModuleList]],
     return (res,idxs) if want_idxs else res
 
 def split_no_wd_params(layer_groups:Collection[nn.Module])->List[List[nn.Parameter]]:
-    "Separate the parameters in `layer_groups` between batchnorm (`bn_types`) and  bias (`bias_types`) from the rest."
+    "Separate the parameters in `layer_groups` between `no_wd_types` and  bias (`bias_types`) from the rest."
     split_params = []
     for l in layer_groups:
         l1,l2 = [],[]
         for c in l.children():
-            if isinstance(c, bn_types): l2 += list(trainable_params(c))
+            if isinstance(c, no_wd_types): l2 += list(trainable_params(c))
             elif isinstance(c, bias_types):
                 bias = c.bias if hasattr(c, 'bias') else None
                 l1 += [p for p in trainable_params(c) if not (p is bias)]
