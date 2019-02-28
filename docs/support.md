@@ -41,7 +41,9 @@ If you still can't find a resolution, please post a comment in this [thread](htt
 
 If the issue is still relevant, make sure to include in your post:
 
-1. the output of the following script (including the \`\`\`text opening and closing \`\`\` so that it's formatted properly in your post):
+1. a full stack backtrace if you get an error or exception (not just the error).
+2. a brief summary of the problem
+3. the output of the following script (including the \`\`\`text opening and closing \`\`\` so that it's formatted properly in your post):
    ```
    git clone https://github.com/fastai/fastai
    cd fastai
@@ -60,16 +62,15 @@ If the issue is still relevant, make sure to include in your post:
    * your OS: linux/osx/windows / and linux distro+version if relevant
    * output of `nvidia-smi`  (or say CPU if none)
 
-2. a brief summary of the problem
-3. the exact installation steps you followed
+4. the exact installation steps you followed, if you feel it's relevant to the problem. No need to list the installed packages, that's usually is too noisy since it may contain hundreds of dependencies in it. Just your conda/pip install commands you did.
 
-If the resulting output is very long, please paste it to https://pastebin.com/ and include a link to your paste
+If the resulting output is super long, please paste it to https://pastebin.com/ and include a link to your paste, but only if it's hundreds and hundreds of lines of output - otherwise posting all the information in your post is a goodness, so that in the future other readers can compare your notes with theirs and pastebin's posts are likely to disappear.
 
 
 
 ## Do's and Don'ts
 
-* please do not send screenshots with trace/error messages - we can't copy-n-paste from the images, instead paste them verbatim into your post and use the markdown gui menu so that it's code-formatted.
+* please do not send screenshots with stack traceback/error messages - we can't copy-n-paste from the images, instead paste them verbatim into your post and use the markdown GUI menu in the post, so that it's `code`-formatted.
 
 * If your system is configured to use a non-English locale, if possible, re-run the problematic code after running:
 
