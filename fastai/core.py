@@ -338,3 +338,6 @@ def compose(funcs:List[Callable])->Callable:
         return x
     return partial(compose_, funcs)
 
+def num_distrib():
+    "Return the number of processes in distributed training (if applicable)."
+    return os.environ.get('WORLD_SIZE', 1)
