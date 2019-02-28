@@ -21,6 +21,7 @@ of that change.
 ### Changed:
 
 - Change `flip_lr` to use much faster method
+- In `text_classifier_learner` the outputs of the encoder corresponding to pad indices are ignored in the poolings.
 
 ### Fixed:
 
