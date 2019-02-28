@@ -10,7 +10,7 @@ def main( gpu:Param("GPU to run on", str)=None ):
     Fastest speed is if you run as follows:
         python -m fastai.launch train_cifar.py"""
     gpu = setup_distrib(gpu)
-    n_gpus = int(os.environ.get("WORLD_SIZE", 1))
+    n_gpus = num_distrib()
     path = url2path(URLs.CIFAR)
     ds_tfms = ([*rand_pad(4, 32), flip_lr(p=0.5)], [])
     workers = min(16, num_cpus()//n_gpus)
