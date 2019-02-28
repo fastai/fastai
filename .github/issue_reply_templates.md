@@ -10,10 +10,6 @@ You may need to update these if the information, e.g. links, gets modified.
 
 ### fastai Entries
 
-* fastai: sign CLA
-
-Please sign this CLA agreement https://www.clahub.com/agreements/fastai/fastai as explained [here](https://github.com/fastai/fastai/blob/master/CONTRIBUTING.md) before we can proceed. Thank you.
-
 * fastai: install issues [v1]
 
 fastai 1.0.x installation issues should be reported/discussed [here](http://forums.fast.ai/t/fastai-v1-install-issues-thread/24111) instead. Thank you.
