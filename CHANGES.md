@@ -30,7 +30,7 @@ of that change.
 ### Fixed:
 
 - Do nothing if `Image.resize` called with image already at required size
-- Lighting transforms moved to later in pipeline to avoid redundent computation
+- Lighting transforms moved to later in pipeline to avoid redundant computation
 
 ## 1.0.46 (2019-02-25)
 
