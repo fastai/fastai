@@ -134,3 +134,5 @@ def test_custom_dataset():
     val_dataset = CustomDataset([4, 5, 6])
     data = DataBunch.create(tr_dataset, val_dataset)
 
+    # test property fallback
+    assert data.loss_func == F.nll_loss
