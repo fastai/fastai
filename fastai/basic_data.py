@@ -137,7 +137,7 @@ class DataBunch():
         res = [self.train_dl, self.fix_dl, self.single_dl]
         # Preserve the original ordering of Train, Valid, Fix, Single, Test Data Loaders
         # (Unknown/not verified as of 1.0.47 whether there are other methods explicitly using DLs their list index)
-        if self.valid_dl: res.insert(1, self.valid_dl) 
+        if self.valid_dl: res.insert(1, self.valid_dl)
         return res if not self.test_dl else res + [self.test_dl]
 
     def add_tfm(self,tfm:Callable)->None:
@@ -209,7 +209,8 @@ class DataBunch():
     @property
     def single_ds(self)->Dataset: return self._grab_dataset(self.single_dl)
     @property
-    def loss_func(self)->Dataset: return getattr(self.train_ds.y, 'loss_func', F.nll_loss)
+    def loss_func(self)->OptLossFunc:
+        return getattr(self.train_ds.y, 'loss_func', F.nll_loss) if hasattr(self.train_ds, 'y') else F.nll_loss
 
     @property
     def test_ds(self)->Dataset:

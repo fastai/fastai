@@ -6,6 +6,7 @@ include README.md
 include fastai/gen_doc/*tpl
 include fastai/text/models/forget_mult*cpp
 include fastai/text/models/forget_mult*cu
+include fastai/test_api_db.json
 
 recursive-include tests *
 recursive-exclude * __pycache__

@@ -17,6 +17,7 @@ of that change.
 - `LabelLists.pre_transform`: call transforms on PIL.Image, before converting to float tensor
 - `LabelLists.presize`: standard Imagenet image resizing/cropping using `pre_transform`
 - `compose`: compose a list of functions
+- Added functional `[test]` links to docs.fast.ai
 - `TrackEpochCallback`: Store completed epoch number in `learn.model_dir/name`
 
 ### Changed:
@@ -29,7 +30,7 @@ of that change.
 ### Fixed:
 
 - Do nothing if `Image.resize` called with image already at required size
-- Lighting transforms moved to later in pipeline to avoid redundent computation
+- Lighting transforms moved to later in pipeline to avoid redundant computation
 
 ## 1.0.46 (2019-02-25)
 
