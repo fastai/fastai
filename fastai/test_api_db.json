@@ -109,10 +109,17 @@
             "test": "test_export_load_learner"
         }
     ],
+    "fastai.callbacks.mem.PeakMemMetric": [
+        {
+            "file": "tests/test_callback_mem.py",
+            "line": 8,
+            "test": "test_peak_mem_metric"
+        }
+    ],
     "fastai.gen_doc.doctest.this_tests": [
         {
             "file": "tests/test_gen_doc_nbtest.py",
-            "line": 71,
+            "line": 72,
             "test": "test_this_tests"
         }
     ],
@@ -130,6 +137,18 @@
             "test": "test_lr_find"
         }
     ],
+    "fastai.utils.mem.GPUMemTrace": [
+        {
+            "file": "tests/test_utils_mem.py",
+            "line": 76,
+            "test": "test_gpu_mem_trace"
+        },
+        {
+            "file": "tests/test_utils_mem.py",
+            "line": 137,
+            "test": "test_gpu_mem_trace_ctx"
+        }
+    ],
     "fastai.utils.mem.gpu_mem_get": [
         {
             "file": "tests/test_utils_mem.py",
@@ -142,6 +161,20 @@
             "file": "tests/test_utils_mem.py",
             "line": 35,
             "test": "test_gpu_mem_all"
+        }
+    ],
+    "fastai.utils.mem.gpu_mem_get_used": [
+        {
+            "file": "tests/test_utils_mem.py",
+            "line": 56,
+            "test": "test_gpu_mem_measure_consumed_reclaimed"
+        }
+    ],
+    "fastai.utils.mem.gpu_mem_trace": [
+        {
+            "file": "tests/test_utils_mem.py",
+            "line": 178,
+            "test": "test_gpu_mem_trace_decorator"
         }
     ],
     "fastai.utils.mem.gpu_with_max_free_mem": [
