@@ -18,15 +18,19 @@ of that change.
 - `LabelLists.presize`: standard Imagenet image resizing/cropping using `pre_transform`
 - `compose`: compose a list of functions
 - Added functional `[test]` links to docs.fast.ai
+- `TrackEpochCallback`: Store completed epoch number in `learn.model_dir/name`
 
 ### Changed:
 
 - Change `flip_lr` to use much faster method
 - In `text_classifier_learner` the outputs of the encoder corresponding to pad indices are ignored in the poolings.
+- Default number of OpenMP threads to 2 (previously 4), due to observed performance benefits
+- In `text_classifier_learner` the outputs of the encoder corresponding to pad indices are ignored in the poolings.
 
 ### Fixed:
 
 - Do nothing if `Image.resize` called with image already at required size
+- Lighting transforms moved to later in pipeline to avoid redundent computation
 
 ## 1.0.46 (2019-02-25)
 
