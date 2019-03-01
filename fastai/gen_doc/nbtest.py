@@ -100,11 +100,14 @@ def find_dir_tests(elt)->Tuple[List[Dict],List[Dict]]:
 
 def get_tests_dir(elt)->Path:
     "Absolute path of `fastai/tests` directory"
-    fp = inspect.getfile(elt)
-    fp.index('fastai/fastai')
+    fp = get_file(elt)
     test_dir = Path(re.sub(r"fastai/fastai/.*", "fastai/tests", fp))
     if not test_dir.exists(): raise OSError('Could not find test directory at this location:', test_dir)
     return test_dir
+
+def get_file(elt)->str:
+    if hasattr(elt, '__wrapped__'): elt = elt.__wrapped__
+    return inspect.getfile(elt)
 
 def find_test_files(elt, exact_match:bool=False)->List[Path]:
     "Searches in `fastai/tests` directory for module tests"
@@ -115,7 +118,7 @@ def find_test_files(elt, exact_match:bool=False)->List[Path]:
     return matches
 
 def _is_file_match(elt, file_name:str, exact_match:bool=False):
-    fp = inspect.getfile(elt)
+    fp = get_file(elt)
     subdir = ifnone(_submodule_name(elt), '')
     exact_re = '' if exact_match else '\w*'
     return re.match(f'test_{subdir}\w*{Path(fp).stem}{exact_re}\.py', file_name)
@@ -145,7 +148,7 @@ def direct_test_match(fn_name:str, lines:List[Dict], rel_path:str)->List[TestFun
     fn_class = '_'.join(fn_class)
     for idx,line in enumerate(lines):
         if re.match(f'\s*def test_\w*({fn_class}_)?{fn_name}\w*\(.*', line):
-            result.append((idx,line))
+            result.append((idx+1,line)) # offset 1 for github
     return [map_test(rel_path, lno, l) for lno,l in result]
 
 def get_qualname(elt):

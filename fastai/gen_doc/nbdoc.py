@@ -100,7 +100,7 @@ def get_cls_doc(elt, full_name:str)->str:
     return name,args
 
 def show_doc(elt, doc_string:bool=True, full_name:str=None, arg_comments:dict=None, title_level=None, alt_doc_string:str='',
-             ignore_warn:bool=False, markdown=True, show_tests=False):
+             ignore_warn:bool=False, markdown=True, show_tests=True):
     "Show documentation for element `elt`. Supported types: class, Callable, and enum."
     arg_comments = ifnone(arg_comments, {})
     anchor_id = full_name or get_anchor(elt)

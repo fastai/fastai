@@ -182,6 +182,10 @@ tools-update: ## install/update build tools
 	conda install -y conda-verify conda-build anaconda-client
 	pip install -U twine
 
+docs: ## build test_api_db.json and update docs
+	${MAKE} test-full
+	tools/build-docs -f
+
 log_file := release-`date +"%Y-%m-%d-%H-%M-%S"`.log
 release: ## do it all (other than testing)
 	@echo "\n\n*** logging to $(log_file)"

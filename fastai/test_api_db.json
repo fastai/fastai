@@ -1,0 +1,154 @@
+{
+    "fastai.basic_data.DataBunch.create": [
+        {
+            "file": "tests/test_basic_data.py",
+            "line": 19,
+            "test": "test_DataBunch_Create"
+        },
+        {
+            "file": "tests/test_basic_data.py",
+            "line": 33,
+            "test": "test_DataBunch_no_valid_dl"
+        }
+    ],
+    "fastai.basic_data.DataBunch.one_batch": [
+        {
+            "file": "tests/test_basic_data.py",
+            "line": 47,
+            "test": "test_DataBunch_onebatch"
+        }
+    ],
+    "fastai.basic_data.DataBunch.one_item": [
+        {
+            "file": "tests/test_basic_data.py",
+            "line": 56,
+            "test": "test_DataBunch_oneitem"
+        }
+    ],
+    "fastai.basic_data.DataBunch.show_batch": [
+        {
+            "file": "tests/test_basic_data.py",
+            "line": 64,
+            "test": "test_DataBunch_show_batch"
+        }
+    ],
+    "fastai.basic_train.Learner.destroy": [
+        {
+            "file": "tests/test_basic_train.py",
+            "line": 126,
+            "test": "test_destroy"
+        }
+    ],
+    "fastai.basic_train.Learner.export": [
+        {
+            "file": "tests/test_basic_train.py",
+            "line": 186,
+            "test": "test_export_load_learner"
+        }
+    ],
+    "fastai.basic_train.Learner.fit": [
+        {
+            "file": "tests/test_train.py",
+            "line": 28,
+            "test": "test_fit"
+        }
+    ],
+    "fastai.basic_train.Learner.freeze": [
+        {
+            "file": "tests/test_basic_train.py",
+            "line": 49,
+            "test": "test_freeze"
+        }
+    ],
+    "fastai.basic_train.Learner.freeze_to": [
+        {
+            "file": "tests/test_basic_train.py",
+            "line": 39,
+            "test": "test_freeze_to"
+        }
+    ],
+    "fastai.basic_train.Learner.get_preds": [
+        {
+            "file": "tests/test_basic_train.py",
+            "line": 32,
+            "test": "test_get_preds"
+        }
+    ],
+    "fastai.basic_train.Learner.load": [
+        {
+            "file": "tests/test_basic_train.py",
+            "line": 72,
+            "test": "test_save_load"
+        }
+    ],
+    "fastai.basic_train.Learner.purge": [
+        {
+            "file": "tests/test_basic_train.py",
+            "line": 72,
+            "test": "test_save_load"
+        }
+    ],
+    "fastai.basic_train.Learner.save": [
+        {
+            "file": "tests/test_basic_train.py",
+            "line": 72,
+            "test": "test_save_load"
+        }
+    ],
+    "fastai.basic_train.Learner.unfreeze": [
+        {
+            "file": "tests/test_basic_train.py",
+            "line": 58,
+            "test": "test_unfreeze"
+        }
+    ],
+    "fastai.basic_train.load_learner": [
+        {
+            "file": "tests/test_basic_train.py",
+            "line": 186,
+            "test": "test_export_load_learner"
+        }
+    ],
+    "fastai.gen_doc.doctest.this_tests": [
+        {
+            "file": "tests/test_gen_doc_nbtest.py",
+            "line": 71,
+            "test": "test_this_tests"
+        }
+    ],
+    "fastai.train.fit_one_cycle": [
+        {
+            "file": "tests/test_train.py",
+            "line": 36,
+            "test": "test_fit_one_cycle"
+        }
+    ],
+    "fastai.train.lr_find": [
+        {
+            "file": "tests/test_train.py",
+            "line": 16,
+            "test": "test_lr_find"
+        }
+    ],
+    "fastai.utils.mem.gpu_mem_get": [
+        {
+            "file": "tests/test_utils_mem.py",
+            "line": 25,
+            "test": "test_gpu_mem_by_id"
+        }
+    ],
+    "fastai.utils.mem.gpu_mem_get_all": [
+        {
+            "file": "tests/test_utils_mem.py",
+            "line": 35,
+            "test": "test_gpu_mem_all"
+        }
+    ],
+    "fastai.utils.mem.gpu_with_max_free_mem": [
+        {
+            "file": "tests/test_utils_mem.py",
+            "line": 44,
+            "test": "test_gpu_with_max_free_mem"
+        }
+    ]
+}
