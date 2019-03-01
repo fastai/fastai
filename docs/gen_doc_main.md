@@ -253,7 +253,13 @@ Use this section only when you have added a new function that you want to docume
 
 Here is how to build/update the documentation notebooks to reflect changes in the library.
 
-To update all modified notebooks under `docs_src` run:
+For most cases, run the full doc sync (which also updates the [test registry](dev/test.html#test-registry)):
+
+```bash
+make docs
+```
+
+To update only the modified notebooks under `docs_src` run:
 
 ```bash
 python tools/build-docs
