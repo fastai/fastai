@@ -120,7 +120,7 @@ class LanguageLearner(RNNLearner):
             res = self.pred_batch(batch=(xb,yb))[0][-1]
             #if len(new_idx) == 0: self.model[0].select_hidden([0])
             if no_unk: res[self.data.vocab.stoi[UNK]] = 0.
-            if min_p is not None: 
+            if min_p is not None:
                 if (res >= min_p).float().sum() == 0:
                     warn(f"There is no item with probability >= {min_p}, try a lower value.")
                 else: res[res < min_p] = 0.
@@ -237,6 +237,7 @@ class PoolingLinearClassifier(nn.Module):
 
 class MultiBatchEncoder(nn.Module):
     "Create an encoder over `module` that can process a full sentence."
+    _version = 2
     def __init__(self, bptt:int, max_len:int, module:nn.Module, pad_idx:int=1):
         super().__init__()
         self.max_len,self.bptt,self.module,self.pad_idx = max_len,bptt,module,pad_idx
@@ -259,7 +260,18 @@ class MultiBatchEncoder(nn.Module):
                 raw_outputs.append(r)
                 outputs.append(o)
         return self.concat(raw_outputs),self.concat(outputs),torch.cat(masks,dim=1)
-    
+
+    def _load_from_state_dict(self, state_dict, prefix, metadata, strict, missing_keys, unexpected_keys, error_msgs):
+        keys = list(state_dict.keys())
+        if metadata.get("version", None) == 1:
+            if "0.encoder.weight" in keys and not "0.module.encoder.weight" in keys:
+                for k in keys:
+                    if k.startswith("0.") and not k.startswith("0.module"):
+                        nk = f"0.module.{k.lstrip('0.')}"
+                        state_dict[nk] = state_dict.pop(k)
+        super(MultiBatchEncoder, self)._load_from_state_dict(state_dict, prefix, metadata, strict, missing_keys,
+                                                             unexpected_keys, error_msgs)
+
 def get_text_classifier(arch:Callable, vocab_sz:int, n_class:int, bptt:int=70, max_len:int=20*70, config:dict=None, 
                         drop_mult:float=1., lin_ftrs:Collection[int]=None, ps:Collection[float]=None,
                         pad_idx:int=1) -> nn.Module:
