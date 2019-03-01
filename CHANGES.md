@@ -23,10 +23,13 @@ of that change.
 
 - Change `flip_lr` to use much faster method
 - In `text_classifier_learner` the outputs of the encoder corresponding to pad indices are ignored in the poolings.
+- Default number of OpenMP threads to 2 (previously 4), due to observed performance benefits
+- In `text_classifier_learner` the outputs of the encoder corresponding to pad indices are ignored in the poolings.
 
 ### Fixed:
 
 - Do nothing if `Image.resize` called with image already at required size
+- Lighting transforms moved to later in pipeline to avoid redundent computation
 
 ## 1.0.46 (2019-02-25)
 
