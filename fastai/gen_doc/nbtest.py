@@ -38,7 +38,7 @@ def build_tests_markdown(elt):
         direct = list(set(direct) - set(db_matches))
         related = list(set(related) - set(db_matches) - set(direct))
     except OSError as e:
-        print('Could not find fastai/tests folder. If you installed from conda, please install developer build instead.')
+        #print('Could not find fastai/tests folder. If you installed from conda, please install developer build instead.')
         direct, related = [], []
 
     md = ''.join([
