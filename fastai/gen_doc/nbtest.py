@@ -79,7 +79,7 @@ def lookup_db(elt)->List[Dict]:
     "Finds `this_test` entries from test_api_db.json"
     db_file = Path(abspath(join(dirname( __file__ ), '..')))/DB_NAME
     if not db_file.exists():
-        print(f'Could not find {db_file}. Please make sure it exists at this location or run `make test`')
+        raise Error(f'Could not find {db_file}. Please make sure it exists at this location or run `make test`')
         return []
     with open(db_file, 'r') as f:
         db = json.load(f)
@@ -100,8 +100,7 @@ def find_dir_tests(elt)->Tuple[List[Dict],List[Dict]]:
 
 def get_tests_dir(elt)->Path:
     "Absolute path of `fastai/tests` directory"
-    fp = get_file(elt)
-    test_dir = Path(re.sub(r"fastai/fastai/.*", "fastai/tests", fp))
+    test_dir = Path(__file__).parent.parent.parent.resolve()/'tests'
     if not test_dir.exists(): raise OSError('Could not find test directory at this location:', test_dir)
     return test_dir
 
@@ -113,8 +112,7 @@ def find_test_files(elt, exact_match:bool=False)->List[Path]:
     "Searches in `fastai/tests` directory for module tests"
     test_dir = get_tests_dir(elt)
     matches = [test_dir/o.name for o in os.scandir(test_dir) if _is_file_match(elt, o.name)]
-    if len(matches) != 1:
-        print('Could not find exact file match:', matches)
+    # if len(matches) != 1: raise Error('Could not find exact file match:', matches)
     return matches
 
 def _is_file_match(elt, file_name:str, exact_match:bool=False):
