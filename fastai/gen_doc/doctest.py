@@ -33,12 +33,12 @@ class TestAPIRegistry:
             try:
                 func_fq = get_func_fq_name(func)
             except:
-                raise Exception(f"'{func}' is not a function")
+                raise Exception(f"'{func}' is not a function") from None
             if re.match(r'fastai\.', func_fq):
                 if entry not in TestAPIRegistry.api_tests_map[func_fq]:
                     TestAPIRegistry.api_tests_map[func_fq].append(entry)
             else:
-                raise Exception(f"'{func}' is not in the fastai API")
+                raise Exception(f"'{func}' is not in the fastai API") from None
         TestAPIRegistry.has_this_tests = True
 
     def this_tests_flag_reset(file_name, test_name):
@@ -80,7 +80,10 @@ def str2func(name):
 def get_func_fq_name(func):
     if ismodule(func): return func.__name__
     if isinstance(func, str): func = str2func(func)
-    name = func.__qualname__ if hasattr(func, '__qualname__') else func.__name__
+    name = None
+    if   hasattr(func, '__qualname__'): name = func.__qualname__
+    elif hasattr(func, '__name__'):     name = func.__name__
+    else: raise Exception(f"'{func}' is not a func or class")
     return f'{func.__module__}.{name}'
 
 def get_parent_func(lineno, lines, ignore_missing=False):
