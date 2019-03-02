@@ -20,15 +20,16 @@ def get_data(path, size, bs, workers):
 @call_parse
 def main( gpu:Param("GPU to run on", str)=None ):
     """Distributed training of Imagenet. Fastest speed is if you run with: python -m fastai.launch"""
-    path = Path('/mnt/fe2_disk/')
-    tot_epochs = 2
+    #path = Path('/mnt/fe2_disk/')
+    path = Path('/data0/datasets/')
+    tot_epochs = 120
     epoch_fn = path/'imagenet'/'models'/'epoch'
     epoch = 0
     if epoch_fn.exists(): epoch = int(epoch_fn.open().read())
     epoch += 1
     if epoch>tot_epochs: return
 
-    bs,lr = 256,0.1
+    bs,lr = 128,0.1
     gpu = setup_distrib(gpu)
     n_gpus = int(os.environ.get("WORLD_SIZE", 1))
     workers = min(32, num_cpus()//n_gpus)
@@ -38,7 +39,7 @@ def main( gpu:Param("GPU to run on", str)=None ):
         opt_func=opt_func, bn_wd=True, true_wd=False
         , loss_func = LabelSmoothingCrossEntropy())#.mixup(alpha=0.2)
     learn.callback_fns.append(TrackEpochCallback)
-    learn.callbacks.append(SaveModelCallback(learn, every='epoch', monitor='accuracy', name='model'))
+    learn.callbacks.append(SaveModelCallback(learn, every='epoch', name='model'))
     learn.split(lambda m: (children(m)[-2],))
     if gpu is None: learn.model = nn.DataParallel(learn.model)
     else: learn.distributed(gpu)

@@ -19,6 +19,7 @@ of that change.
 - `compose`: compose a list of functions
 - Added functional `[test]` links to docs.fast.ai
 - `TrackEpochCallback`: Store completed epoch number in `learn.model_dir/name`
+- `rank_distrib`: get rank of distributed process
 
 ### Changed:
 

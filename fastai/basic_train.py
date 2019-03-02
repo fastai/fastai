@@ -210,7 +210,7 @@ class Learner():
 
     def export(self, fname:PathOrStr='export.pkl', destroy=False):
         "Export the state of the `Learner` in `self.path/fname`."
-        if os.environ.get('RANK'): return # don't save if slave proc
+        if rank_distrib(): return # don't save if slave proc
         args = ['opt_func', 'loss_func', 'metrics', 'true_wd', 'bn_wd', 'wd', 'train_bn', 'model_dir', 'callback_fns']
         state = {a:getattr(self,a) for a in args}
         state['cb_state'] = {cb.__class__:cb.get_state() for cb in self.callbacks}
@@ -227,7 +227,7 @@ class Learner():
 
     def save(self, name:PathOrStr, return_path:bool=False, with_opt:bool=True):
         "Save model and optimizer state (if `with_opt`) with `name` to `self.model_dir`."
-        if os.environ.get('RANK'): return # don't save if slave proc
+        if rank_distrib(): return # don't save if slave proc
         path = self.path/self.model_dir/f'{name}.pth'
         if not hasattr(self, 'opt'): with_opt=False
         if not with_opt: state = get_model(self.model).state_dict()

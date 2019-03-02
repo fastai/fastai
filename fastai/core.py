@@ -341,3 +341,8 @@ def compose(funcs:List[Callable])->Callable:
 def num_distrib():
     "Return the number of processes in distributed training (if applicable)."
     return os.environ.get('WORLD_SIZE', 1)
+
+def rank_distrib():
+    "Return the distributed rank of this process (if applicable)."
+    return int(os.environ.get('RANK', 0))
+

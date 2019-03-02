@@ -27,7 +27,7 @@ class DistributedTrainer(LearnerCallback):
         self.learn.data.train_dl.add_tfm(make_async)
         if hasattr(self.learn.data, 'valid_dl') and self.learn.data.valid_dl is not None:
             self.learn.data.valid_dl.add_tfm(make_async)
-        self.rank = int(os.environ['RANK'])
+        self.rank = rank_distrib()
         self.learn.recorder.silent = (self.rank != 0)
 
     def on_epoch_begin(self, epoch, **kwargs): self.train_sampler.set_epoch(epoch)
