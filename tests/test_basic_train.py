@@ -151,16 +151,15 @@ def test_destroy():
     assert "epoch" in cs.out
     assert "train_loss" in cs.out
 
-
 def subtest_destroy_mem(data):
     with GPUMemTrace() as mtrace:
         learn = learn_large_unfit(data)
-    check_mtrace(used_exp=20, peaked_exp=0, mtrace=mtrace, abs_tol=10, ctx="load")
+    load_used, load_peaked = mtrace.data()
 
     # destroy should free most of the memory that was allocated during load (training, etc.)
     with GPUMemTrace() as mtrace:
         with CaptureStdout() as cs: learn.destroy()
-    check_mtrace(used_exp=-20, peaked_exp=0, mtrace=mtrace, abs_tol=10, ctx="destroy")
+    check_mtrace(used_exp=-load_used, peaked_exp=-load_peaked, mtrace=mtrace, abs_tol=10, ctx="destroy")
 
 # memory tests behave differently when run individually and in a row, since
 # memory utilization patterns are very inconsistent - would require a full gpu
