@@ -40,7 +40,7 @@ def pytest_collection_modifyitems(config, items):
 def test_registry_machinery(request):
     # pytest setup
     individualtests = [s for s in set(sys.argv) if re.match(r'.*test_\w+\.py',s)]
-    individualtests = 0
+    #individualtests = 0
     yield
     # pytest teardown
     # XXX: run this by default once we get all the tests to include this_tests,
