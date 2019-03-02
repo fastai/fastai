@@ -1,8 +1,10 @@
 import pytest,torch
+from fastai.gen_doc.doctest import this_tests
 from fastai.text.models import qrnn
 
 @pytest.mark.cuda
 def test_forget_mult_forward_gpu():
+    this_tests(qrnn.ForgetMultGPU)
     dtype = torch.double
     x,f,h,expected = range(3,8),[0.5]*5,1,range(1,7)
     x,f,expected = [torch.tensor(t, dtype=dtype)[None,:,None].cuda() for t in (x,f,expected)]
@@ -21,6 +23,7 @@ def random_inputs(shape, batch_first, **opts):
 @pytest.mark.parametrize("batch_first", [True, False])
 @pytest.mark.parametrize("shape", [(1, 1, 1), (7, 11, 13)])
 def test_compare_forget_mult_forward_implementations(shape, batch_first):
+    this_tests(qrnn.ForgetMultGPU)
     x, f, h = random_inputs(shape, batch_first, dtype=torch.double)
     forget_cpu = qrnn.ForgetMultCPU(batch_first)
     output_cpu = forget_cpu(x, f, h)

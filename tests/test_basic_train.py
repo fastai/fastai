@@ -168,6 +168,8 @@ def subtest_destroy_mem(data):
 # all in a precise sequence
 @pytest.mark.cuda
 def test_memory(data):
+    this_tests(Learner.save, Learner.load, Learner.purge, Learner.destroy)
+
     # A big difficulty with measuring memory consumption is that it varies quite
     # wildly from one GPU model to another.
     #
@@ -175,7 +177,6 @@ def test_memory(data):
     # override check_mem above in tests.utils.mem with report_mem to acquire a new set
     #
     # So for now just testing the specific card I have until a better way is found.
-
     dev_name = torch.cuda.get_device_name(None)
     if dev_name != 'GeForce GTX 1070 Ti':
         pytest.skip(f"currently only matched for mem usage on specific GPU models, {dev_name} is not one of them")

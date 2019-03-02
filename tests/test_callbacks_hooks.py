@@ -1,4 +1,5 @@
 import pytest, torch, fastai
+from fastai.gen_doc.doctest import this_tests
 from fastai.basics import *
 from fastai.callbacks import *
 from fastai.callbacks.hooks import *
@@ -15,6 +16,7 @@ def mnist_path():
     return path
 
 def test_model_summary_vision(mnist_path):
+    this_tests(model_summary)
     path = mnist_path
     data = ImageDataBunch.from_folder(path, ds_tfms=([], []), bs=2)
     learn = create_cnn(data, models.resnet18, metrics=accuracy)
@@ -22,12 +24,14 @@ def test_model_summary_vision(mnist_path):
 
 @pytest.mark.xfail(reason = "Expected Fail, text models not supported yet.")
 def test_model_summary_text():
+    this_tests(model_summary)
     path = untar_data(URLs.IMDB_SAMPLE)
     data_lm = TextLMDataBunch.from_csv(path, 'texts.csv')
     learn = language_model_learner(data_lm, pretrained_model=None)
     _ = model_summary(learn)
 
 def test_model_summary_tabular():
+    this_tests(model_summary)
     path = untar_data(URLs.ADULT_SAMPLE)
     dep_var = 'salary'
     cat_names = ['workclass', 'education', 'marital-status', 'occupation', 'relationship', 'race']
@@ -42,6 +46,7 @@ def test_model_summary_tabular():
     _ = model_summary(learn)
 
 def test_model_summary_collab():
+    this_tests(model_summary)
     path = untar_data(URLs.ML_SAMPLE)
     ratings = pd.read_csv(path/'ratings.csv')
     series2cat(ratings, 'userId', 'movieId')
@@ -67,6 +72,7 @@ def test_model_summary_collab():
 #    _ = model_summary(BasicBlock())
 
 def test_hook_output_basics(mnist_path):
+    this_tests(hook_output)
     data = ImageDataBunch.from_folder(mnist_path, size=128, bs=2)
     learn = create_cnn(data, models.resnet18)
     # need to train to get something meaningful, but for just checking shape its fine w/o it

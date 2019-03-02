@@ -23,7 +23,7 @@ def test_DataBunch_Create():
     train_ds,valid_ds = TensorDataset(x_train, y_train),TensorDataset(x_valid, y_valid)
     data = DataBunch.create(train_ds, valid_ds, bs=bs)
     this_tests(data.create)
-    
+
     assert 4 == len(data.dls)
     assert 3 == len(data.train_dl)
     assert 18 == len(data.train_ds)
@@ -37,12 +37,12 @@ def test_DataBunch_no_valid_dl():
     data = DataBunch.create(train_ds, None, bs=bs)
     this_tests(data.create)
     data.valid_dl = None
-    
+
     assert 3 == len(data.dls)
     assert 3 == len(data.train_dl)
     assert 18 == len(data.train_ds)
-    assert None == data.valid_dl    
-    
+    assert None == data.valid_dl
+
 ## TO DO (?)ideally, call one_batch with type dataloader
 def test_DataBunch_onebatch():
     data = fake_data(n_in=4, n_out=5, batch_size=6)
@@ -75,6 +75,7 @@ def test_DataBunch_show_batch(capsys):
 ##     data.export()
 
 def test_DeviceDataLoader_getitem():
+    this_tests('skip')
     class DictDataset(Dataset):
         def __getitem__(self, idx):
             return {"a":np.ones((3,)),"b":np.zeros((2,))}

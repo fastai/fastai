@@ -1,8 +1,10 @@
 import pytest
+from fastai.gen_doc.doctest import this_tests
 from utils.fakes import *
 a3b3b3 = torch.ones([1,3,3,3])
 
 def test_model2half():
+    this_tests(model2half)
     m = simple_cnn([3,6,6],bn=True)
     m = model2half(m)
     conv1 = m[0][0]
@@ -12,6 +14,7 @@ def test_model2half():
 
 @pytest.mark.cuda
 def test_model2half_forward():
+    this_tests(model2half)
     learn = fake_learner()
     x,y = next(iter(learn.data.train_dl))
     res1 = learn.model(x)
@@ -20,12 +23,14 @@ def test_model2half_forward():
     assert (res2.float() - res1).abs().sum() < 0.01
 
 def test_to_half():
+    this_tests(to_half)
     t1,t2 = torch.ones([1]).long(),torch.ones([1])
     half = to_half([t1,t2])
     assert isinstance(half[0],torch.LongTensor)
     assert isinstance(half[1],torch.HalfTensor)
 
 def test_batch_to_half():
+    this_tests(batch_to_half)
     t1,t2 = torch.ones([1]),torch.ones([1])
     half = batch_to_half([t1,t2])
     assert isinstance(half[0],torch.HalfTensor)

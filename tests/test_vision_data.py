@@ -1,4 +1,5 @@
 import pytest
+from fastai.gen_doc.doctest import this_tests
 from fastai.vision import *
 from fastai.vision.data import verify_image
 from utils.text import *
@@ -20,20 +21,24 @@ def mnist_tiny_sanity_test(data):
     assert set(map(str, set(data.classes))) == {'3', '7'}
 
 def test_path_can_be_str_type(path):
+    this_tests(ImageDataBunch.from_csv)
     assert ImageDataBunch.from_csv(str(path))
 
 def test_from_folder(path):
+    this_tests(ImageDataBunch.from_folder)
     for valid_pct in [None, 0.9]:
         data = ImageDataBunch.from_folder(path, test='test')
         mnist_tiny_sanity_test(data)
 
 def test_from_name_re(path):
+    this_tests(ImageDataBunch.from_name_re)
     fnames = get_image_files(path/'train', recurse=True)
     pat = r'/([^/]+)\/\d+.png$'
     data = ImageDataBunch.from_name_re(path, fnames, pat, ds_tfms=(rand_pad(2, 28), []))
     mnist_tiny_sanity_test(data)
 
 def test_from_lists(path):
+    this_tests(ImageDataBunch.from_lists)
     df = pd.read_csv(path/'labels.csv')
     fnames = [path/f for f in df['name'].values]
     labels = df['label'].values
@@ -48,6 +53,7 @@ def test_from_lists(path):
     assert np.all(np.array(expected_labels) == np.array(current_labels))
 
 def test_from_csv_and_from_df(path):
+    this_tests(ImageDataBunch.from_csv, ImageDataBunch.from_df)
     for func in ['from_csv', 'from_df']:
         files = []
         if func is 'from_df': data = ImageDataBunch.from_df(path, df=pd.read_csv(path/'labels.csv'), size=28)
@@ -63,6 +69,7 @@ def check_resized(data, size, args):
     assert size_want == size_real, f"[{args}]: size mismatch after resize {size} expected {size_want}, got {size_real}"
 
 def test_image_resize(path, path_var_size):
+    this_tests(ImageDataBunch.from_name_re)
     # in this test the 2 datasets are:
     # (1) 28x28,
     # (2) var-size but larger than 28x28,
@@ -93,15 +100,18 @@ def test_image_resize(path, path_var_size):
                 check_resized(data, size, args)
 
 def test_multi_iter_broken(path):
+    this_tests('skip')
     data = ImageDataBunch.from_folder(path, ds_tfms=(rand_pad(2, 28), []))
     for i in range(2): x,y = next(iter(data.train_dl))
 
 def test_multi_iter(path):
+    this_tests('skip')
     data = ImageDataBunch.from_folder(path, ds_tfms=(rand_pad(2, 28), []))
     data.normalize()
     for i in range(2): x,y = data.one_batch()
 
 def test_clean_tear_down(path):
+    this_tests('skip')
     docstr = "test DataLoader iter doesn't get stuck"
     data = ImageDataBunch.from_folder(path, ds_tfms=(rand_pad(2, 28), []))
     data.normalize()
@@ -112,6 +122,7 @@ def test_normalize(path):
     data = ImageDataBunch.from_folder(path, ds_tfms=(rand_pad(2, 28), []))
     x,y = data.one_batch(ds_type=DatasetType.Valid, denorm=False)
     m,s = x.mean(),x.std()
+    this_tests(data.normalize)
     data.normalize()
     x,y = data.one_batch(ds_type=DatasetType.Valid, denorm=False)
     assert abs(x.mean()) < abs(m)
@@ -122,6 +133,7 @@ def test_normalize(path):
     with pytest.raises(Exception): data.normalize()
 
 def test_denormalize(path):
+    this_tests(denormalize)
     data = ImageDataBunch.from_folder(path, ds_tfms=(rand_pad(2, 28), []))
     original_x, y = data.one_batch(ds_type=DatasetType.Valid, denorm=False)
     data.normalize()
@@ -131,6 +143,7 @@ def test_denormalize(path):
     assert round(original_x.std().item(), 3) == round(denormalized.std().item(), 3)
 
 def test_download_images():
+    this_tests(download_images)
     base_url = 'http://files.fast.ai/data/tst_images/'
     fnames = ['tst0.jpg', 'tst1.png', 'tst2.tif']
 
@@ -150,6 +163,7 @@ def test_download_images():
 
 @responses.activate
 def test_trunc_download():
+    this_tests(download_images)
     from io import StringIO
     with StringIO('test_file_that_is_not_image') as cc_trunc:
         file_io = cc_trunc.read()
@@ -172,6 +186,7 @@ def test_trunc_download():
             if fname.exists(): os.remove(fname)
 
 def test_verify_images(path):
+    this_tests(verify_images)
     tmp_path = path/'tmp'
     os.makedirs(tmp_path, exist_ok=True)
     verify_images(path/'train'/'3', dest=tmp_path, max_size=27, max_workers=4)
@@ -182,6 +197,7 @@ def test_verify_images(path):
     shutil.rmtree(tmp_path)
 
 def test_verify_image(path):
+    this_tests(verify_image)
     tmp_path = path/'tmp'
     os.makedirs(tmp_path, exist_ok=True)
     verify_image(path/'train'/'3'/'867.png', 0, False, dest=tmp_path, max_size=27)
@@ -197,17 +213,20 @@ def _check_data(data, t, v):
     _ = data.train_ds[0]
 
 def test_vision_datasets():
+    this_tests(ImageList.from_folder)
     il = ImageList.from_folder(untar_data(URLs.MNIST_TINY))
     sds = il.split_by_idx([0]).label_from_folder().add_test_folder()
     assert np.array_equal(sds.train.classes, sds.valid.classes), 'train/valid classes same'
     assert len(sds.test)==20, "test_ds is correct size"
+    this_tests(sds.databunch)
     data = sds.databunch()
     _check_data(data, len(il)-1, 1)
 
 def test_multi():
+    this_tests(ImageList.from_csv)
     path = untar_data(URLs.PLANET_TINY)
     data = (ImageList.from_csv(path, 'labels.csv', folder='train', suffix='.jpg')
-        .random_split_by_pct(seed=42).label_from_df(label_delim=' ').databunch())
+            .random_split_by_pct(seed=42).label_from_df(label_delim=' ').databunch())
     x,y = data.valid_ds[0]
     assert x.shape[0]==3
     assert data.c==len(y.data)==14
@@ -215,6 +234,7 @@ def test_multi():
     _check_data(data, 160, 40)
 
 def test_camvid():
+    this_tests(SegmentationItemList)
     camvid = untar_data(URLs.CAMVID_TINY)
     path_lbl = camvid/'labels'
     path_img = camvid/'images'
@@ -230,6 +250,7 @@ def test_camvid():
 def get_ip(img,pts): return ImagePoints(FlowField(img.size, pts), scale=True)
 
 def test_points():
+    this_tests(PointsItemList)
     coco = untar_data(URLs.COCO_TINY)
     images, lbl_bbox = get_annotations(coco/'train.json')
     points = [tensor([b[0][0][0], b[0][0][1]]) for b in lbl_bbox]
@@ -242,6 +263,7 @@ def test_points():
     _check_data(data,160,40)
 
 def test_coco():
+    this_tests(ObjectItemList)
     coco = untar_data(URLs.COCO_TINY)
     images, lbl_bbox = get_annotations(coco/'train.json')
     img2bbox = dict(zip(images, lbl_bbox))
@@ -254,6 +276,7 @@ def test_coco():
     _check_data(data, 160, 40)
 
 def test_coco_same_size():
+    this_tests(ObjectItemList)
     def get_y_func(fname):
         cat = fname.parent.name
         bbox = torch.cat([torch.randint(0,5,(2,)), torch.randint(23,28,(2,))])
@@ -270,6 +293,7 @@ def test_coco_same_size():
     _check_data(data, 1143, 285)
 
 def test_coco_pickle():
+    this_tests(ObjectItemList)
     coco = untar_data(URLs.COCO_TINY)
     images, lbl_bbox = get_annotations(coco/'train.json')
     img2bbox = dict(zip(images, lbl_bbox))
@@ -285,6 +309,7 @@ def test_coco_pickle():
     _check_data(data, 160, 40)
 
 def test_image_to_image_different_y_size():
+    this_tests(get_transforms)
     get_y_func = lambda o:o
     mnist = untar_data(URLs.MNIST_TINY)
     tfms = get_transforms()
@@ -299,6 +324,7 @@ def test_image_to_image_different_y_size():
     assert x.shape[2]*4 == y.shape[3]
 
 def test_image_to_image_different_tfms():
+    this_tests(get_transforms)
     get_y_func = lambda o:o
     mnist = untar_data(URLs.COCO_TINY)
     x_tfms = get_transforms()
@@ -318,6 +344,7 @@ def test_image_to_image_different_tfms():
     assert (y1 == x1r).all()
 
 def test_vision_pil2tensor():
+    this_tests(pil2tensor)
     path  = Path(__file__).parent / "data/test/images"
     files = list(Path(path).glob("**/*.*"))
     pil_passed, pil_failed = [],[]
@@ -348,12 +375,14 @@ def test_vision_pil2tensor():
     assert(len(pil2tensor_passed) == len(pil_passed))
 
 def test_vision_pil2tensor_16bit():
+    this_tests(pil2tensor)
     f    = Path(__file__) .parent/ "data/test/images/gray_16bit.png"
     im   = PIL.Image.open(f).convert("I") # so that the 16bit values are preserved as integers
     vmax = pil2tensor(im,np.int).data.numpy().max()
     assert(vmax>255)
 
 def test_vision_pil2tensor_numpy():
+    this_tests(pil2tensor)
     "assert that the two arrays contains the same values"
     arr  = np.random.rand(16,16,3)
     diff = np.sort( pil2tensor(arr,np.float).data.numpy().flatten() ) - np.sort(arr.flatten())

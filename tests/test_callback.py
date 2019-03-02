@@ -1,5 +1,6 @@
 import pytest, fastai
 from fastai.vision import *
+from fastai.gen_doc.doctest import this_tests
 from utils.fakes import fake_data
 from utils.text import CaptureStdout
 
@@ -30,6 +31,7 @@ def check_dummy_metric(out):
         assert str(s) in out, f"{s} is in the output:\n{out}"
 
 def test_callbacks_learner(data, model):
+    this_tests(Callback)
 
     # single callback in learner constructor
     learn = Learner(data, model, metrics=accuracy, callback_fns=DummyCallback)
@@ -64,6 +66,7 @@ def test_callbacks_fit(data, model):
 
     for func in ['fit', 'fit_one_cycle']:
         fit_func = getattr(learn, func)
+        this_tests(fit_func)
 
         # single callback
         with CaptureStdout() as cs: fit_func(2, callbacks=DummyCallback(learn))
