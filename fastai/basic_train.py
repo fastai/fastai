@@ -208,7 +208,7 @@ class Learner():
         self.freeze_to(0)
         self.create_opt(defaults.lr)
 
-    def export(self, fname:PathOrStr:str='export.pkl', destroy=False):
+    def export(self, fname:PathOrStr='export.pkl', destroy=False):
         "Export the state of the `Learner` in `self.path/fname`."
         if os.environ.get('RANK'): return # don't save if slave proc
         args = ['opt_func', 'loss_func', 'metrics', 'true_wd', 'bn_wd', 'wd', 'train_bn', 'model_dir', 'callback_fns']
