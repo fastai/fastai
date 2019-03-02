@@ -35,19 +35,24 @@ def pytest_collection_modifyitems(config, items):
         skip_cuda = pytest.mark.skip(reason="CUDA is not available")
         mark_items_with_keyword(items, skip_cuda, "cuda")
 
-# test_this functionality integration
 @pytest.fixture(scope="session", autouse=True)
-def doctest_collector_start(request):
+def test_registry_machinery(request):
+    # pytest setup
     individualtests = [s for s in set(sys.argv) if re.match(r'.*test_\w+\.py',s)]
-    #individualtests = 0
-    if pytest.config.getoption("--testapireg") and not individualtests:
-        request.addfinalizer(TestAPIRegistry.registry_save)
+    individualtests = 0
+    yield
+    # pytest teardown
+    if False: # XXX: always run once we get all the tests to include this_tests
+        TestAPIRegistry.missing_this_tests_alert()
+    if (pytest.config.getoption("--testapireg") and # don't interfere with duties
+        not individualtests and                     # must include all tests
+        not request.session.testsfailed):           # failures could miss this_tests
+        TestAPIRegistry.registry_save()
 
 @pytest.hookimpl(tryfirst=True, hookwrapper=True)
 def pytest_runtest_makereport(item, call):
     outcome = yield
     res = outcome.get_result()
-    filename, lineno, testname = res.location
-    if   res.when == "setup":    TestAPIRegistry.this_tests_flag_on(filename, testname)
-    elif res.when == "call":     TestAPIRegistry.tests_failed(res.failed)
-    elif res.when == "teardown": TestAPIRegistry.this_tests_flag_check(filename, testname)
+    file_name, _, test_name = res.location
+    if   res.when == "setup":    TestAPIRegistry.this_tests_flag_reset(file_name, test_name)
+    elif res.when == "teardown": TestAPIRegistry.this_tests_flag_check(file_name, test_name)

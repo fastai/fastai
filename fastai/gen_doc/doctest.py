@@ -2,6 +2,7 @@ import sys, re, json, pprint
 from pathlib import Path
 from collections import defaultdict
 from inspect import currentframe, getframeinfo, ismodule
+from warnings import warn
 
 __all__ = ['this_tests']
 
@@ -14,9 +15,13 @@ def _json_set_default(obj):
 class TestAPIRegistry:
     "Tests register which API they validate using this class."
     api_tests_map     = defaultdict(list)
-    some_tests_failed = False
     has_this_tests = None
     missing_this_tests = set()
+
+    # logic for checking whether each test calls `this_tests`:
+    # 1. `has_this_tests` is set to False during test's 'setup' stage
+    # 2. `this_tests` sets this flag to True when it's successfully completes
+    # 3. if during the 'teardown' stage `has_this_tests` is still False then we know that tests needs `has_this_tests`
 
     @staticmethod
     def this_tests(*funcs):
@@ -34,33 +39,27 @@ class TestAPIRegistry:
                     TestAPIRegistry.api_tests_map[func_fq].append(entry)
             else:
                 raise Exception(f"'{func}' is not in the fastai API")
-        try:
-            missing_this_test = f"file: {relative_test_path(file_name)} / test:  {test_name}"
-            TestAPIRegistry.missing_this_tests.remove(missing_this_test)
-        except:
-            None
-        TestAPIRegistry.has_this_tests = None
+        TestAPIRegistry.has_this_tests = True
 
-    def this_tests_flag_on(file_name, test_name):
-        TestAPIRegistry.has_this_tests = test_name
-
-    def tests_failed(status=True):
-        TestAPIRegistry.some_tests_failed = status
+    def this_tests_flag_reset(file_name, test_name):
+        TestAPIRegistry.has_this_tests = False
 
     def this_tests_flag_check(file_name, test_name):
-        if TestAPIRegistry.has_this_tests == test_name:
-            TestAPIRegistry.has_this_tests = None
-        else:
+        if not TestAPIRegistry.has_this_tests:
             TestAPIRegistry.missing_this_tests.add(f"{file_name}::{test_name}")
 
     def registry_save():
-        if TestAPIRegistry.missing_this_tests:
-            print(f"*** Warning: Please use `this_tests` in the following:", *TestAPIRegistry.missing_this_tests, sep="\n")
-        if TestAPIRegistry.api_tests_map and not TestAPIRegistry.some_tests_failed:
+        if TestAPIRegistry.api_tests_map:
             path = Path(__file__).parent.parent.resolve()/DB_NAME
-            print(f"\n*** Saving test api registry @ {path}")
+            print(f"\n*** Saving test registry @ {path}")
             with open(path, 'w') as f:
                 json.dump(obj=TestAPIRegistry.api_tests_map, fp=f, indent=4, sort_keys=True, default=_json_set_default)
+
+    def missing_this_tests_alert():
+        if TestAPIRegistry.missing_this_tests:
+            msg = "\n\n\n*** Warning: Please include `this_tests` call in each of the following:\n{}\n\n".format('\n'.join(sorted(TestAPIRegistry.missing_this_tests)))
+            # short warn call on purpose, as pytest re-pastes the code and we want it non-noisy
+            warn(msg)
 
 def this_tests(*funcs): TestAPIRegistry.this_tests(*funcs)
 
