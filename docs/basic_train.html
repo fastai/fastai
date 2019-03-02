@@ -2032,6 +2032,17 @@ Total time: 00:06 <p><table style='width:300px; margin-bottom:10px'>
 </div>
 
 </div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>If the <code>purge</code> argument is <code>True</code> (default) <code>load</code> internally calls <code>purge</code>:</p>
+<ul>
+<li>the same presumably writable path as it's used in <code>load</code> will passed to <code>purge</code> to be used as a <code>tmppath</code></li>
+<li><code>learn.opt</code> is preserved.</li>
+</ul>
+
+</div>
+</div>
+</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -2237,8 +2248,7 @@ Total time: 00:06 <p><table style='width:300px; margin-bottom:10px'>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>If <code>learn.path</code> is read-only, you can pass a writable <code>tmppath</code> to be used instead.</p>
-<p>This method is also internally called by <code>load</code>, in which case <code>learn.opt</code> is preserved. By default it gets cleared. <code>load</code> will call <code>purge</code> with the same path as use in <code>load</code>.</p>
+<p>If <code>learn.path</code> is read-only, you can pass a writable <code>tmppath</code> argument to be used instead.</p>
 
 </div>
 </div>
