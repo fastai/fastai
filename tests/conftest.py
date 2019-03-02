@@ -3,8 +3,6 @@
 
 import pytest, sys, re
 from os.path import abspath, dirname, join
-from utils.mem import use_gpu
-from fastai.gen_doc.doctest import TestAPIRegistry
 
 # make sure we test against the checked out git version of fastai and
 # not the pre-installed version. With 'pip install -e .[dev]' it's not
@@ -12,6 +10,10 @@ from fastai.gen_doc.doctest import TestAPIRegistry
 # second in sys.path (the first path is the test dir path)
 git_repo_path = abspath(dirname(dirname(__file__)))
 sys.path.insert(1, git_repo_path)
+
+# fastai modules should be imported **only after sys.path was tweaked to include the local checkout**
+from utils.mem import use_gpu
+from fastai.gen_doc.doctest import TestAPIRegistry
 
 def pytest_addoption(parser):
     parser.addoption("--runslow", action="store_true", default=False, help="run slow tests")
