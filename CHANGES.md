@@ -23,9 +23,10 @@ of that change.
 ### Changed:
 
 - Change `flip_lr` to use much faster method
-- In `text_classifier_learner` the outputs of the encoder corresponding to pad indices are ignored in the poolings.
+- In `text_classifier_learner` the outputs of the encoder corresponding to pad indices are ignored in the poolings
 - Default number of OpenMP threads to 2 (previously 4), due to observed performance benefits
-- In `text_classifier_learner` the outputs of the encoder corresponding to pad indices are ignored in the poolings.
+- In `text_classifier_learner` the outputs of the encoder corresponding to pad indices are ignored in the poolings
+- `purge` now includes a new `tmppath` argument to support setups where `learn.path` is read-only
 
 ### Fixed:
 

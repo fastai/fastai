@@ -241,9 +241,10 @@ class Learner():
 
     def load(self, name:PathOrStr, device:torch.device=None, strict:bool=True, with_opt:bool=None, purge:bool=True):
         "Load model and optimizer state (if `with_opt`) `name` from `self.model_dir` using `device`."
-        if purge: self.purge(clear_opt=ifnone(with_opt, False))
+        path = self.path/self.model_dir/f'{name}.pth'
+        if purge: self.purge(tmppath=path.parent, clear_opt=ifnone(with_opt, False))
         if device is None: device = self.data.device
-        state = torch.load(self.path/self.model_dir/f'{name}.pth', map_location=device)
+        state = torch.load(path, map_location=device)
         if set(state.keys()) == {'model', 'opt'}:
             get_model(self.model).load_state_dict(state['model'], strict=strict)
             if ifnone(with_opt,True):
