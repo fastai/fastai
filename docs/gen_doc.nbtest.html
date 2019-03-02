@@ -104,6 +104,7 @@ summary: "Helper functions to search for api tests"
 <p>Tests found for <code>fit</code>:</p>
 <p>This tests:</p>
 <ul>
+<li><code>pytest -sv tests/test_callback.py::test_callbacks_fit</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_callback.py#L64" class="source_link" style="float:right">[source]</a></li>
 <li><code>pytest -sv tests/test_train.py::test_fit</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_train.py#L28" class="source_link" style="float:right">[source]</a></li>
 </ul>
 
@@ -142,7 +143,11 @@ summary: "Helper functions to search for api tests"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<p>No tests found for <code>DataBunch</code></p>
+<p>Tests found for <code>DataBunch</code>:</p>
+<p>This tests:</p>
+<ul>
+<li><code>pytest -sv tests/test_data_block.py::test_custom_dataset</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_data_block.py#L141" class="source_link" style="float:right">[source]</a></li>
+</ul>
 
 </div>
 
@@ -284,7 +289,7 @@ summary: "Helper functions to search for api tests"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="find_test_matches"><code>find_test_matches</code><a href="https://github.com/fastai/fastai/blob/master/fastai/gen_doc/nbtest.py#L134" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#find_test_matches-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>find_test_matches</code>(<strong><code>elt</code></strong>, <strong><code>test_file</code></strong>:<code>Path</code>) → <code>Tuple</code>[<code>List</code>[<code>Dict</code>[<code>KT</code>, <code>VT</code>]], <code>List</code>[<code>Dict</code>[<code>KT</code>, <code>VT</code>]]]</p>
+<h4 id="find_test_matches"><code>find_test_matches</code><a href="https://github.com/fastai/fastai/blob/master/fastai/gen_doc/nbtest.py#L132" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#find_test_matches-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>find_test_matches</code>(<strong><code>elt</code></strong>, <strong><code>test_file</code></strong>:<code>Path</code>) → <code>Tuple</code>[<code>List</code>[<code>Dict</code>[<code>KT</code>, <code>VT</code>]], <code>List</code>[<code>Dict</code>[<code>KT</code>, <code>VT</code>]]]</p>
 </blockquote>
 <p>Find all functions in <code>test_file</code> related to <code>elt</code></p>
 <div class="collapse" id="find_test_matches-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#find_test_matches-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>find_test_matches</code></p></div></div><div style="height:1px"></div>
@@ -305,7 +310,7 @@ summary: "Helper functions to search for api tests"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="find_test_files"><code>find_test_files</code><a href="https://github.com/fastai/fastai/blob/master/fastai/gen_doc/nbtest.py#L112" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#find_test_files-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>find_test_files</code>(<strong><code>elt</code></strong>, <strong><code>exact_match</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>) → <code>List</code>[<code>Path</code>]</p>
+<h4 id="find_test_files"><code>find_test_files</code><a href="https://github.com/fastai/fastai/blob/master/fastai/gen_doc/nbtest.py#L111" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#find_test_files-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>find_test_files</code>(<strong><code>elt</code></strong>, <strong><code>exact_match</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>) → <code>List</code>[<code>Path</code>]</p>
 </blockquote>
 <p>Searches in <code>fastai/tests</code> directory for module tests</p>
 <div class="collapse" id="find_test_files-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#find_test_files-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>find_test_files</code></p></div></div><div style="height:1px"></div>
@@ -326,10 +331,10 @@ summary: "Helper functions to search for api tests"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="direct_test_match"><code>direct_test_match</code><a href="https://github.com/fastai/fastai/blob/master/fastai/gen_doc/nbtest.py#L144" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#direct_test_match-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>direct_test_match</code>(<strong><code>fn_name</code></strong>:<code>str</code>, <strong><code>lines</code></strong>:<code>List</code>[<code>Dict</code>[<code>KT</code>, <code>VT</code>]], <strong><code>rel_path</code></strong>:<code>str</code>) → <code>List</code>[<a href="/gen_doc.nbtest.html#TestFunctionMatch"><code>TestFunctionMatch</code></a>]</p>
+<h4 id="direct_test_match"><code>direct_test_match</code><a href="https://github.com/fastai/fastai/blob/master/fastai/gen_doc/nbtest.py#L142" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#direct_test_match-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>direct_test_match</code>(<strong><code>fn_name</code></strong>:<code>str</code>, <strong><code>lines</code></strong>:<code>List</code>[<code>Dict</code>[<code>KT</code>, <code>VT</code>]], <strong><code>rel_path</code></strong>:<code>str</code>) → <code>List</code>[<a href="/gen_doc.nbtest.html#TestFunctionMatch"><code>TestFunctionMatch</code></a>]</p>
 </blockquote>
 <p>Any <code>def test_function_name():</code> where test name contains function/class name</p>
-<div class="collapse" id="direct_test_match-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#direct_test_match-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>direct_test_match</code></p></div></div><div style="height:1px"></div>
+<div class="collapse" id="direct_test_match-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#direct_test_match-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>direct_test_match</code>:</p><p>This tests:</p><ul><li><code>pytest -sv tests/test_gen_doc_nbtest.py::test_direct_test_match</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_gen_doc_nbtest.py#L26" class="source_link" style="float:right">[source]</a></li><li><code>pytest -sv tests/test_gen_doc_nbtest.py::test_direct_test_match_class_methods</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_gen_doc_nbtest.py#L34" class="source_link" style="float:right">[source]</a></li></ul></div></div><div style="height:1px"></div>
 </div>
 
 </div>
@@ -347,10 +352,10 @@ summary: "Helper functions to search for api tests"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="fuzzy_test_match"><code>fuzzy_test_match</code><a href="https://github.com/fastai/fastai/blob/master/fastai/gen_doc/nbtest.py#L168" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#fuzzy_test_match-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>fuzzy_test_match</code>(<strong><code>fn_name</code></strong>:<code>str</code>, <strong><code>lines</code></strong>:<code>List</code>[<code>Dict</code>[<code>KT</code>, <code>VT</code>]], <strong><code>rel_path</code></strong>:<code>str</code>) → <code>List</code>[<a href="/gen_doc.nbtest.html#TestFunctionMatch"><code>TestFunctionMatch</code></a>]</p>
+<h4 id="fuzzy_test_match"><code>fuzzy_test_match</code><a href="https://github.com/fastai/fastai/blob/master/fastai/gen_doc/nbtest.py#L166" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#fuzzy_test_match-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>fuzzy_test_match</code>(<strong><code>fn_name</code></strong>:<code>str</code>, <strong><code>lines</code></strong>:<code>List</code>[<code>Dict</code>[<code>KT</code>, <code>VT</code>]], <strong><code>rel_path</code></strong>:<code>str</code>) → <code>List</code>[<a href="/gen_doc.nbtest.html#TestFunctionMatch"><code>TestFunctionMatch</code></a>]</p>
 </blockquote>
 <p>Find any lines where <code>fn_name</code> is invoked and return the parent test function</p>
-<div class="collapse" id="fuzzy_test_match-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#fuzzy_test_match-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>fuzzy_test_match</code></p></div></div><div style="height:1px"></div>
+<div class="collapse" id="fuzzy_test_match-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#fuzzy_test_match-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>fuzzy_test_match</code>:</p><p>This tests:</p><ul><li><code>pytest -sv tests/test_gen_doc_nbtest.py::test_fuzzy_test_match</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_gen_doc_nbtest.py#L41" class="source_link" style="float:right">[source]</a></li></ul></div></div><div style="height:1px"></div>
 </div>
 
 </div>

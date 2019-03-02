@@ -58,7 +58,7 @@ summary: "NLP data processing; tokenizes text and creates vocab indexes"
 <h2 id="Tokenizer"><code>class</code> <code>Tokenizer</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/transform.py#L87" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#Tokenizer-pytest" style="float:right; padding-right:10px">[test]</a></h2><blockquote><p><code>Tokenizer</code>(<strong><code>tok_func</code></strong>:<code>Callable</code>=<strong><em><code>'SpacyTokenizer'</code></em></strong>, <strong><code>lang</code></strong>:<code>str</code>=<strong><em><code>'en'</code></em></strong>, <strong><code>pre_rules</code></strong>:<code>ListRules</code>=<strong><em><code>None</code></em></strong>, <strong><code>post_rules</code></strong>:<code>ListRules</code>=<strong><em><code>None</code></em></strong>, <strong><code>special_cases</code></strong>:<code>StrList</code>=<strong><em><code>None</code></em></strong>, <strong><code>n_cpus</code></strong>:<code>int</code>=<strong><em><code>None</code></em></strong>)</p>
 </blockquote>
 <p>Put together rules and a tokenizer function to tokenize text with multiprocessing.</p>
-<div class="collapse" id="Tokenizer-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#Tokenizer-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>Tokenizer</code></p></div></div><div style="height:1px"></div>
+<div class="collapse" id="Tokenizer-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#Tokenizer-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>Tokenizer</code>:</p><p>This tests:</p><ul><li><code>pytest -sv tests/test_text_transform.py::test_tokenize</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_text_transform.py#L13" class="source_link" style="float:right">[source]</a></li><li><code>pytest -sv tests/test_text_transform.py::test_tokenize_handles_empty_lines</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_text_transform.py#L22" class="source_link" style="float:right">[source]</a></li><li><code>pytest -sv tests/test_text_transform.py::test_tokenize_ignores_extraneous_space</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_text_transform.py#L30" class="source_link" style="float:right">[source]</a></li></ul></div></div><div style="height:1px"></div>
 </div>
 
 </div>
@@ -443,7 +443,7 @@ summary: "NLP data processing; tokenizes text and creates vocab indexes"
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="fix_html"><code>fix_html</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/transform.py#L58" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#fix_html-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>fix_html</code>(<strong><code>x</code></strong>:<code>str</code>) → <code>str</code></p>
 </blockquote>
-<div class="collapse" id="fix_html-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#fix_html-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>fix_html</code></p></div></div><div style="height:1px"></div>
+<div class="collapse" id="fix_html-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#fix_html-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>fix_html</code>:</p><p>This tests:</p><ul><li><code>pytest -sv tests/test_text_transform.py::test_rules</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_text_transform.py#L5" class="source_link" style="float:right">[source]</a></li></ul></div></div><div style="height:1px"></div>
 </div>
 
 </div>
@@ -520,7 +520,7 @@ summary: "NLP data processing; tokenizes text and creates vocab indexes"
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="replace_rep"><code>replace_rep</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/transform.py#L42" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#replace_rep-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>replace_rep</code>(<strong><code>t</code></strong>:<code>str</code>) → <code>str</code></p>
 </blockquote>
-<div class="collapse" id="replace_rep-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#replace_rep-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>replace_rep</code></p></div></div><div style="height:1px"></div>
+<div class="collapse" id="replace_rep-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#replace_rep-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>replace_rep</code>:</p><p>This tests:</p><ul><li><code>pytest -sv tests/test_text_transform.py::test_rules</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_text_transform.py#L5" class="source_link" style="float:right">[source]</a></li></ul></div></div><div style="height:1px"></div>
 </div>
 
 </div>
@@ -576,7 +576,7 @@ summary: "NLP data processing; tokenizes text and creates vocab indexes"
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="replace_wrep"><code>replace_wrep</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/transform.py#L50" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#replace_wrep-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>replace_wrep</code>(<strong><code>t</code></strong>:<code>str</code>) → <code>str</code></p>
 </blockquote>
-<div class="collapse" id="replace_wrep-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#replace_wrep-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>replace_wrep</code></p></div></div><div style="height:1px"></div>
+<div class="collapse" id="replace_wrep-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#replace_wrep-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>replace_wrep</code>:</p><p>This tests:</p><ul><li><code>pytest -sv tests/test_text_transform.py::test_rules</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_text_transform.py#L5" class="source_link" style="float:right">[source]</a></li></ul></div></div><div style="height:1px"></div>
 </div>
 
 </div>
@@ -633,7 +633,7 @@ summary: "NLP data processing; tokenizes text and creates vocab indexes"
 <h4 id="rm_useless_spaces"><code>rm_useless_spaces</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/transform.py#L38" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#rm_useless_spaces-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>rm_useless_spaces</code>(<strong><code>t</code></strong>:<code>str</code>) → <code>str</code></p>
 </blockquote>
 <p>Remove multiple spaces in <code>t</code>.</p>
-<div class="collapse" id="rm_useless_spaces-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#rm_useless_spaces-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>rm_useless_spaces</code></p></div></div><div style="height:1px"></div>
+<div class="collapse" id="rm_useless_spaces-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#rm_useless_spaces-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>rm_useless_spaces</code>:</p><p>This tests:</p><ul><li><code>pytest -sv tests/test_text_transform.py::test_rules</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_text_transform.py#L5" class="source_link" style="float:right">[source]</a></li></ul></div></div><div style="height:1px"></div>
 </div>
 
 </div>
@@ -683,7 +683,7 @@ summary: "NLP data processing; tokenizes text and creates vocab indexes"
 <h4 id="spec_add_spaces"><code>spec_add_spaces</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/transform.py#L34" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#spec_add_spaces-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>spec_add_spaces</code>(<strong><code>t</code></strong>:<code>str</code>) → <code>str</code></p>
 </blockquote>
 <p>Add spaces around / and # in <code>t</code>.</p>
-<div class="collapse" id="spec_add_spaces-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#spec_add_spaces-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>spec_add_spaces</code></p></div></div><div style="height:1px"></div>
+<div class="collapse" id="spec_add_spaces-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#spec_add_spaces-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>spec_add_spaces</code>:</p><p>This tests:</p><ul><li><code>pytest -sv tests/test_text_transform.py::test_rules</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_text_transform.py#L5" class="source_link" style="float:right">[source]</a></li></ul></div></div><div style="height:1px"></div>
 </div>
 
 </div>
