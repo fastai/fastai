@@ -274,10 +274,10 @@ class Learner():
         gc.collect()
         print("this Learner object self-destroyed - it still exists, but no longer usable")
 
-    def purge(self, clear_opt:bool=True):
+    def purge(self, tmppath:PathOrStr=None, clear_opt:bool=True):
         "Purge the `Learner` of all cached attributes to release some GPU memory."
 
-        tmp_file = get_tmp_file(self.path)
+        tmp_file = get_tmp_file(ifnone(tmppath, self.path))
         attrs_all = [k for k in self.__dict__.keys() if not k.startswith("__")]
         attrs_pkl = ['bn_wd', 'callback_fns', 'layer_groups', 'loss_func', 'metrics', 'model',
                      'model_dir', 'opt_func', 'path', 'train_bn', 'true_wd', 'wd']

@@ -69,6 +69,18 @@ def check_learner(learn, train_items):
     assert train_items == len(learn.data.train_ds.items)
     # XXX: could use more sanity checks
 
+def test_purge(learn):
+    this_tests(learn.purge)
+
+    # just testing we can run each of these
+    learn.purge()
+    learn.purge(clear_opt=False)
+
+    learn.purge(tmppath=".") # should succeed
+    try: learn.purge(tmppath="lkjasdjssdlj")
+    except: pass # should fail
+    else: assert False, "should have failed"
+
 def test_save_load(learn):
     this_tests(learn.save, learn.load, learn.purge)
     name = 'mnist-tiny-test-save-load'
