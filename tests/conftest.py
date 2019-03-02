@@ -17,6 +17,7 @@ def pytest_addoption(parser):
     parser.addoption("--runslow", action="store_true", default=False, help="run slow tests")
     parser.addoption("--skipint", action="store_true", default=False, help="skip integration tests")
     parser.addoption("--testapireg", action="store_true", default=False, help="test api registry")
+    parser.addoption("--thistestsalert", action="store_true", default=False, help="alert when this_tests call is missing")
 
 def mark_items_with_keyword(items, marker, keyword):
     for item in items:
@@ -42,7 +43,9 @@ def test_registry_machinery(request):
     individualtests = 0
     yield
     # pytest teardown
-    if False: # XXX: always run once we get all the tests to include this_tests
+    # XXX: run this by default once we get all the tests to include this_tests,
+    # with perhaps an option to disable this check
+    if pytest.config.getoption("--thistestsalert"):
         TestAPIRegistry.missing_this_tests_alert()
     if (pytest.config.getoption("--testapireg") and # don't interfere with duties
         not individualtests and                     # must include all tests
