@@ -19,12 +19,12 @@ TestFunctionMatch = namedtuple('TestFunctionMatch', ['line_number', 'line'])
 
 def show_test(elt)->str:
     "Show associated tests for a fastai function/class"
-    md = ''.join(build_tests_markdown(elt))
+    md = build_tests_markdown(elt)
     display(Markdown(md))
 
 def doctest(elt):
     "Inline notebook popup for `show_test`"
-    md = ''.join(build_tests_markdown(elt))
+    md = build_tests_markdown(elt)
     output = HTMLExporter().markdown2html(md)
     try:    page.page({'text/html': output})
     except: display(Markdown(md))
@@ -42,35 +42,36 @@ def build_tests_markdown(elt):
         direct, related = [], []
 
     md = ''.join([
-        tests2md(db_matches, 'This tests'),
-        tests2md(direct, 'Direct tests'),
-        tests2md(related, 'Related tests')
+        tests2md(db_matches, ''),
+        tests2md(direct, 'Direct tests:'),
+        tests2md(related, 'Related tests:')
     ])
     fn_name = nbdoc.fn_name(elt)
-    if len(md)==0: return f'No tests found for `{fn_name}`', md
-    else: return f'Tests found for `{fn_name}`:', md
+    if len(md)==0: 
+        return (f'No tests found for `{fn_name}`.'
+                ' To contribute a test please refer to [this guide](/dev/test.html)'
+                ' and [this discussion](https://forums.fast.ai/t/improving-expanding-functional-tests/32929).')
+    return (f'Tests found for `{fn_name}`: {md}'
+            '\n\nTo run tests please refer to this [guide](/dev/test.html#quick-guide).')
 
-def tests2md(tests, type_label):
+def tests2md(tests, type_label:str):
     if not tests: return ''
-    md = [f'* `{cmd}` {link}' for link,cmd in tests]
-    md = [f'\n\n{type_label}:'] + md
+    md = [f'\n\n{type_label}'] + [f'* `{cmd}` {link}' for link,cmd in tests]
     return '\n'.join(md)
 
 def get_pytest_html(elt, anchor_id:str)->Tuple[str,str]:
-    title,body = build_tests_markdown(elt)
-    htmlb = HTMLExporter().markdown2html(body).replace('\n','') # nbconverter fails to parse markdown if it has both html and '\n'
-    htmlt = HTMLExporter().markdown2html(title).replace('\n','')
+    md = build_tests_markdown(elt)
+    html = HTMLExporter().markdown2html(md).replace('\n','') # nbconverter fails to parse markdown if it has both html and '\n'
     anchor_id = anchor_id.replace('.', '-') + '-pytest'
-    link, body = get_pytest_card(htmlt, htmlb, anchor_id)
+    link, body = get_pytest_card(html, anchor_id)
     return link, body
 
-def get_pytest_card(title, body, anchor_id):
+def get_pytest_card(html, anchor_id):
     "creates a collapsible bootstrap card for `show_test`"
     link = f'<a class="source_link" data-toggle="collapse" data-target="#{anchor_id}" style="float:right; padding-right:10px">[test]</a>'
     body = (f'<div class="collapse" id="{anchor_id}"><div class="card card-body pytest_card">'
                 f'<a type="button" data-toggle="collapse" data-target="#{anchor_id}" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a>'
-                # f'<button type="button" class="close" data-toggle="collapse" data-target="#{anchor_id}" style="float:right; padding-right:10px"></button>'
-                f'{title+body}'
+                f'{html}'
             '</div></div>'
             '<div style="height:1px"></div>') # hack to fix jumping bootstrap header
     return link, body
