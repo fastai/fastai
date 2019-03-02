@@ -14,14 +14,16 @@ def _json_set_default(obj):
 
 class TestAPIRegistry:
     "Tests register which API they validate using this class."
-    api_tests_map     = defaultdict(list)
-    has_this_tests = None
+    api_tests_map = defaultdict(list)
+    this_tests_check = None
     missing_this_tests = set()
 
     # logic for checking whether each test calls `this_tests`:
-    # 1. `has_this_tests` is set to False during test's 'setup' stage
-    # 2. `this_tests` sets this flag to True when it's successfully completes
-    # 3. if during the 'teardown' stage `has_this_tests` is still False then we know that tests needs `has_this_tests`
+    # 1. `this_tests_check` is set to True during test's 'setup' stage if it wasn't skipped
+    # 2. if the test is dynamically skipped `this_tests_check` is set to False
+    # 3. `this_tests` sets this flag to False when it's successfully completes
+    # 4. if during the 'teardown' stage `this_tests_check` is still True then we
+    # know that this test needs `this_tests_check`
 
     @staticmethod
     def this_tests(*funcs):
@@ -30,6 +32,10 @@ class TestAPIRegistry:
         parent_func_lineno, _ = get_parent_func(lineno, get_lines(file_name))
         entry = {'file': relative_test_path(file_name), 'test': test_name , 'line': parent_func_lineno}
         for func in funcs:
+            if func == 'skip':
+                # special case when we can't find a function to declare, e.g.
+                # when attributes are tested
+                continue
             try:
                 func_fq = get_func_fq_name(func)
             except:
@@ -39,13 +45,16 @@ class TestAPIRegistry:
                     TestAPIRegistry.api_tests_map[func_fq].append(entry)
             else:
                 raise Exception(f"'{func}' is not in the fastai API") from None
-        TestAPIRegistry.has_this_tests = True
+        TestAPIRegistry.this_tests_check = False
 
-    def this_tests_flag_reset(file_name, test_name):
-        TestAPIRegistry.has_this_tests = False
+    def this_tests_check_on():
+        TestAPIRegistry.this_tests_check = True
 
-    def this_tests_flag_check(file_name, test_name):
-        if not TestAPIRegistry.has_this_tests:
+    def this_tests_check_off():
+        TestAPIRegistry.this_tests_check = False
+
+    def this_tests_check_run(file_name, test_name):
+        if TestAPIRegistry.this_tests_check:
             TestAPIRegistry.missing_this_tests.add(f"{file_name}::{test_name}")
 
     def registry_save():

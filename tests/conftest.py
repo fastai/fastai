@@ -58,6 +58,15 @@ def test_registry_machinery(request):
 def pytest_runtest_makereport(item, call):
     outcome = yield
     res = outcome.get_result()
-    file_name, _, test_name = res.location
-    if   res.when == "setup":    TestAPIRegistry.this_tests_flag_reset(file_name, test_name)
-    elif res.when == "teardown": TestAPIRegistry.this_tests_flag_check(file_name, test_name)
+    # some tests are skipped via fixture, others dynamically from inside the test.
+    # in both cases we want to skip this_tests check.
+    if res.when == "setup":
+        if res.skipped == True:
+            TestAPIRegistry.this_tests_check_off()
+        else:
+            TestAPIRegistry.this_tests_check_on()
+    elif res.when == "call" and res.skipped == True:
+        TestAPIRegistry.this_tests_check_off()
+    elif res.when == "teardown":
+        file_name, _, test_name = res.location
+        TestAPIRegistry.this_tests_check_run(file_name, test_name)
