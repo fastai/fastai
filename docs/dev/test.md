@@ -466,6 +466,9 @@ def test_this_tests():
     # explicit fully qualified function as a string
     this_tests('fastai.gen_doc.doctest.this_tests')
 
+    # special case for cases where a test doesn't test fastai API
+    this_tests('skip')
+
     # not a real function
     func = 'foo bar'
     try: this_tests(func)
@@ -503,6 +506,12 @@ def test_get_preds():
 ```
 
 You can make the call `this_tests` anywhere in the test, so if the object becomes available at line 10 of the test, add `this_tests` after it.
+
+And there is a special case for situations where a test doesn't test fastai API or it's a non-callable attribute, e.g. `learn.data`:
+```
+def test_non_fastai_func():
+    this_tests('skip')
+```
 
 The test registry is located at `fastai/test_api_db.json` and it gets auto-generated when `pytest` gets a `--testapireg` flag, which is currently done when `make test-full` is run.
 
