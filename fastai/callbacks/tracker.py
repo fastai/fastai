@@ -18,12 +18,7 @@ class TerminateOnNaNCallback(Callback):
         if self.stop: return True #to skip validation after stopping during training
         if torch.isnan(last_loss):
             print (f'Epoch/Batch ({epoch}/{num_batch}): Invalid loss, terminating training.')
-            self.stop = True
-            return True
-
-    def on_epoch_end(self, **kwargs:Any)->None:
-        "Stop the training if necessary."
-        return self.stop
+            return {'stop_epoch': True, 'stop_training': True}
 
 class TrackerCallback(LearnerCallback):
     "A `LearnerCallback` that keeps track of the best value in `monitor`."
@@ -130,7 +125,7 @@ class ReduceLROnPlateauCallback(TrackerCallback):
 
 class TrackEpochCallback(LearnerCallback):
     def __init__(self, learn:Learner, name:str='epoch', epoch_offset:int=0):
-        """Store completed epoch number in `learn.model_dir/name"""
+        "Store completed epoch number in `learn.model_dir/name`."
         super().__init__(learn)
         self.name,self.epoch_offset = name,epoch_offset
         self.path = learn.path/learn.model_dir/name

@@ -36,6 +36,7 @@ class OneCycleScheduler(LearnerCallback):
         self.idx_s = 0
         for _ in range(len(self.learn.data.train_dl) * (self.start_epoch-1)):
             self.on_batch_end(True)
+        return {'epoch': self.start_epoch-1}
 
     def on_batch_end(self, train, **kwargs:Any)->None:
         "Take one step forward on the annealing schedule for the optim params."
@@ -50,4 +51,4 @@ class OneCycleScheduler(LearnerCallback):
 
     def on_epoch_end(self, epoch, **kwargs:Any)->None:
         "Tell Learner to stop if the cycle is finished."
-        return epoch + self.start_epoch - 1 > self.tot_epochs
+        if epoch + self.start_epoch - 1 > self.tot_epochs: return {'stop_training': True}

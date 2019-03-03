@@ -22,9 +22,9 @@ class DummyCallback(LearnerCallback):
     def on_train_begin(self, **kwargs):
         self.learn.recorder.add_metric_names(['col_a', 'col_b'])
 
-    def on_epoch_end(self, **kwargs):
+    def on_epoch_end(self, last_metrics, **kwargs):
         # add dummy metrics
-        self.learn.recorder.add_metrics([col_a, col_b])
+        return {'last_metrics': last_metrics + [col_a, col_b]}
 
 def check_dummy_metric(out):
     for s in ['col_a', col_a, 'col_b', col_b]:

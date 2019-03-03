@@ -459,13 +459,10 @@ class Recorder(LearnerCallback):
                      last_metrics=MetricsList, **kwargs:Any)->bool:
         "Save epoch info: num_batch, smooth_loss, metrics."
         self.nb_batches.append(num_batch)
-        if last_metrics is not None:
-            self.val_losses.append(last_metrics[0])
+        if last_metrics is not None: self.val_losses.append(last_metrics[0])
         else: last_metrics = [] if self.no_val else [None]
-        if hasattr(self, '_added_mets'): last_metrics += self._added_mets
         if len(last_metrics) > 1: self.metrics.append(last_metrics[1:])
         self.format_stats([epoch, smooth_loss] + last_metrics)
-        return False
 
     def format_stats(self, stats:TensorOrNumList)->None:
         "Format stats before printing."
@@ -474,10 +471,6 @@ class Recorder(LearnerCallback):
             str_stats.append('' if stat is None else str(stat) if isinstance(stat, int) else f'{stat:.6f}')
         if self.add_time: str_stats.append(format_time(time() - self.start_epoch))
         if not self.silent: self.pbar.write(str_stats, table=True)
-
-    def add_metrics(self, metrics):
-        "Add `metrics` to the inner stats."
-        self._added_mets = metrics
 
     def add_metric_names(self, names):
         "Add `names` to the inner metric names."

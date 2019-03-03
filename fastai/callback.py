@@ -159,9 +159,9 @@ class Callback():
     def on_batch_end(self, **kwargs:Any)->None:
         "Called at the end of the batch."
         pass
-    def on_epoch_end(self, **kwargs:Any)->bool:
+    def on_epoch_end(self, **kwargs:Any)->None:
         "Called at the end of an epoch."
-        return False
+        pass
     def on_train_end(self, **kwargs:Any)->None:
         "Useful for cleaning up things and saving files/models."
         pass
@@ -209,10 +209,19 @@ class CallbackHandler():
         self.smoothener = SmoothenValue(self.beta)
         self.state_dict:Dict[str,Union[int,float,Tensor]]=_get_init_state()
 
+    def _call_and_update(self, cb, cb_name, **kwargs)->None:
+        "Call `cb_name` on `cb` and update the inner state."
+        new = ifnone(getattr(cb, f'on_{cb_name}')(**self.state_dict, **kwargs), dict())
+        for k,v in new.items():
+            if k not in self.state_dict:
+                raise Exception(f"{k} isn't a valid key in the state of the callbacks.")
+            else: self.state_dict[k] = v
+    
     def __call__(self, cb_name, call_mets=True, **kwargs)->None:
         "Call through to all of the `CallbakHandler` functions."
-        if call_mets: [getattr(met, f'on_{cb_name}')(**self.state_dict, **kwargs) for met in self.metrics]
-        return [getattr(cb, f'on_{cb_name}')(**self.state_dict, **kwargs) for cb in self.callbacks]
+        if call_mets: 
+            for met in self.metrics: self._call_and_update(met, cb_name, **kwargs)
+        for cb in self.callbacks: self._call_and_update(cb, cb_name, **kwargs)
 
     def set_dl(self, dl:DataLoader):
         "Set the current `dl` used."
@@ -230,62 +239,55 @@ class CallbackHandler():
 
     def on_epoch_begin(self)->None:
         "Handle new epoch."
-        self.state_dict['num_batch'] = 0
+        self.state_dict['num_batch'],self.state_dict['stop_training'] = 0,False
         self('epoch_begin')
 
     def on_batch_begin(self, xb:Tensor, yb:Tensor, train:bool=True)->None:
         "Handle new batch `xb`,`yb` in `train` or validation."
         self.state_dict['last_input'], self.state_dict['last_target'] = xb, yb
-        self.state_dict['train'] = train
-        cbs = self.callbacks if train else self.metrics + self.callbacks
-        for cb in cbs:
-            a = cb.on_batch_begin(**self.state_dict)
-            if a is not None: self.state_dict['last_input'], self.state_dict['last_target'] = a
+        self.state_dict['train'],self.state_dict['stop_epoch'] = train,False
+        self.state_dict['skip_step'],self.state_dict['skip_zero'] = False,False
+        self('batch_begin', mets = not self.state_dict['train'])
         return self.state_dict['last_input'], self.state_dict['last_target']
 
     def on_loss_begin(self, out:Tensor)->None:
         "Handle start of loss calculation with model output `out`."
         self.state_dict['last_output'] = out
-        for cb in self.callbacks:
-            a = cb.on_loss_begin(**self.state_dict)
-            if a is not None: self.state_dict['last_output'] = a
+        self('loss_begin', call_mets=False)
         return self.state_dict['last_output']
 
     def on_backward_begin(self, loss:Tensor)->None:
         "Handle gradient calculation on `loss`."
         self.smoothener.add_value(loss.detach().cpu())
         self.state_dict['last_loss'], self.state_dict['smooth_loss'] = loss, self.smoothener.smooth
-        for cb in self.callbacks:
-            a = cb.on_backward_begin(**self.state_dict)
-            if a is not None: self.state_dict['last_loss'] = a
+        self('backward_begin', call_mets=False)
         return self.state_dict['last_loss']
 
     def on_backward_end(self)->None:
         "Handle end of gradient calculation."
-        return np.any(self('backward_end', False))
+        self('backward_end', call_mets=False)
+        return self.state_dict['skip_step']
         
     def on_step_end(self)->None:
         "Handle end of optimization step."
-        return np.any(self('step_end', False))
+        self('step_end', call_mets=False)
+        return self.state_dict['skip_zero']
 
     def on_batch_end(self, loss:Tensor)->None:
         "Handle end of processing one batch with `loss`."
         self.state_dict['last_loss'] = loss
-        stop = np.any(self('batch_end', not self.state_dict['train']))
+        self('batch_end', call_mets = not self.state_dict['train'])
         if self.state_dict['train']:
             self.state_dict['iteration'] += 1
             self.state_dict['num_batch'] += 1
-        return stop
+        return self.state_dict['stop_epoch']
 
     def on_epoch_end(self, val_loss:Tensor)->bool:
         "Epoch is done, process `val_loss`."
         self.state_dict['last_metrics'] = [val_loss] if val_loss is not None else None
         self.state_dict['epoch'] += 1
-        if not self.state_dict['train']:
-            for met in self.metrics:
-                met.on_epoch_end(**self.state_dict)
-                self.state_dict['last_metrics'].append(met.metric)
-        return np.any(self('epoch_end', False))
+        self('epoch_end', call_mets = val_loss is not None)
+        return self.state_dict['stop_training']
 
     def on_train_end(self, exception:Union[bool,Exception])->None:
         "Handle end of training, `exception` is an `Exception` or False if no exceptions during training."
@@ -314,9 +316,9 @@ class AverageMetric(Callback):
             val /= self.world
         self.val += last_target[0].size(0) * val.detach().cpu()
 
-    def on_epoch_end(self, **kwargs):
-        "Sets the final result in `self.metric`."
-        self.metric = self.val/self.count
+    def on_epoch_end(self, last_metrics, **kwargs):
+        "Set the final result in `last_metrics`."
+        return {'last_metrics': last_metrics + [self.val/self.count]}
 
 def annealing_no(start:Number, end:Number, pct:float)->Number:
     "No annealing, always return `start`."
