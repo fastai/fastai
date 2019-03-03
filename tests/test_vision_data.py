@@ -100,18 +100,18 @@ def test_image_resize(path, path_var_size):
                 check_resized(data, size, args)
 
 def test_multi_iter_broken(path):
-    this_tests('skip')
+    this_tests('na')
     data = ImageDataBunch.from_folder(path, ds_tfms=(rand_pad(2, 28), []))
     for i in range(2): x,y = next(iter(data.train_dl))
 
 def test_multi_iter(path):
-    this_tests('skip')
+    this_tests('na')
     data = ImageDataBunch.from_folder(path, ds_tfms=(rand_pad(2, 28), []))
     data.normalize()
     for i in range(2): x,y = data.one_batch()
 
 def test_clean_tear_down(path):
-    this_tests('skip')
+    this_tests('na')
     docstr = "test DataLoader iter doesn't get stuck"
     data = ImageDataBunch.from_folder(path, ds_tfms=(rand_pad(2, 28), []))
     data.normalize()

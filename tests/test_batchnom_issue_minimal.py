@@ -14,10 +14,10 @@ def _run_batch_size_test(bs):
 # This test will fail as the last batch will have a size of 1
 @pytest.mark.skip
 def test_batch_size_4():
-    this_tests('skip')
+    this_tests('na')
     _run_batch_size_test(4)
 
 # This test succeeds
 def test_batch_size_3():
-    this_tests('skip')
+    this_tests('na')
     _run_batch_size_test(3)

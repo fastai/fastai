@@ -52,7 +52,7 @@ def verify_datadirection( bs,seq_len,sentence_len, iterations,minTokens, backwar
         assert np.all(batches[ix-1,-1]+diff == batches[ix,0]), f"last token i row-1 {batches[ix-1,-1]}+{diff} must be equal to first element in row:{batches[ix,0]}"
 
 def test_forward_minibatch():
-    this_tests('skip')
+    this_tests('na')
     bs           = 4
     seq_len      = 3
     sentence_len = 20*seq_len
@@ -61,7 +61,7 @@ def test_forward_minibatch():
     verify_datadirection( bs, seq_len, sentence_len, iterations, minTokens, backwards=False, nbTests=1000)
 
 def test_backwards_minibatch():
-    this_tests('skip')
+    this_tests('na')
     bs           = 4
     seq_len      = 3
     sentence_len = 20*seq_len

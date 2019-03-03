@@ -132,7 +132,7 @@ class DummyMetric(Callback):
         self.metric = torch.tensor(dummy_base_val**self.epoch)
 
 def test_custom_metric_class():
-    this_tests('skip')
+    this_tests('na')
     learn = fake_learner(3,2)
     learn.metrics.append(DummyMetric())
     with CaptureStdout() as cs: learn.fit_one_cycle(2)

@@ -75,7 +75,7 @@ def test_DataBunch_show_batch(capsys):
 ##     data.export()
 
 def test_DeviceDataLoader_getitem():
-    this_tests('skip')
+    this_tests('na')
     class DictDataset(Dataset):
         def __getitem__(self, idx):
             return {"a":np.ones((3,)),"b":np.zeros((2,))}

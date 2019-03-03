@@ -107,7 +107,7 @@ def test_calc_loss():
     assert isclose(loss.sum(),6.23,abs_tol=1e-2), "final loss without reduction does not seem to be correct"
 
 def test_tensor_array_monkey_patch():
-    this_tests('skip')
+    this_tests('na')
     t = torch.ones(a)
     t = np.array(t)
     assert np.all(t == t), "Tensors did not properly convert to numpy arrays"

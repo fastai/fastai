@@ -32,7 +32,7 @@ class TestAPIRegistry:
         parent_func_lineno, _ = get_parent_func(lineno, get_lines(file_name))
         entry = {'file': relative_test_path(file_name), 'test': test_name , 'line': parent_func_lineno}
         for func in funcs:
-            if func == 'skip':
+            if func == 'na':
                 # special case when we can't find a function to declare, e.g.
                 # when attributes are tested
                 continue
