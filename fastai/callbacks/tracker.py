@@ -129,12 +129,12 @@ class ReduceLROnPlateauCallback(TrackerCallback):
 
 
 class TrackEpochCallback(LearnerCallback):
-    def __init__(self, learn:Learner, name:str='epoch'):
+    def __init__(self, learn:Learner, name:str='epoch', epoch_offset:int=0):
         """Store completed epoch number in `learn.model_dir/name"""
         super().__init__(learn)
-        self.name = name
+        self.name,self.epoch_offset = name,epoch_offset
         self.path = learn.path/learn.model_dir/name
 
     def on_epoch_end(self, epoch, **kwargs:Any)->None:
-        with self.path.open('w') as f: f.write(f'{epoch}')
+        with self.path.open('w') as f: f.write(f'{epoch+self.epoch_offset}')
 
