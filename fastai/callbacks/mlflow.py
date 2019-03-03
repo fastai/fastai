@@ -4,27 +4,20 @@ from ..callback import *
 from ..basic_train import Learner, LearnerCallback
 #This is an optional dependency in fastai.  Must install separately.
 try: import mlflow
-except: pass
+except: print("To use this tracker, please run 'pip install mlflow'")
 
 class MLFlowTracker(LearnerCallback):
     "A `TrackerCallback` that tracks the loss and metrics into MLFlow"
     def __init__(self, learn:Learner, exp_name: str, params: dict, nb_path: str, uri: str = "http://localhost:5000"):
         super().__init__(learn)
-        self.learn = learn
-        self.exp_name = exp_name
-        self.params = params
-        self.nb_path = nb_path
-        self.uri = uri
+        self.learn,self.exp_name,self.params,self.nb_path,self.uri = learn,exp_name,params,nb_path,uri
         self.metrics_names = ['train_loss', 'valid_loss'] + [o.__name__ for o in learn.metrics]
 
     def on_train_begin(self, **kwargs: Any) -> None:
         "Prepare MLflow experiment and log params"
         self.client = mlflow.tracking.MlflowClient(self.uri)
         exp = self.client.get_experiment_by_name(self.exp_name)
-        if exp is None:
-            self.exp_id = self.client.create_experiment(self.exp_name)
-        else:
-            self.exp_id = exp.experiment_id
+        self.exp_id = self.client.create_experiment(self.exp_name) if exp is None else exp.experiment_id
         run = self.client.create_run(experiment_id=self.exp_id)
         self.run = run.info.run_uuid
         for k,v in self.params.items():
@@ -32,8 +25,7 @@ class MLFlowTracker(LearnerCallback):
 
     def on_epoch_end(self, epoch, **kwargs:Any)->None:
         "Send loss and metrics values to MLFlow after each epoch"
-        if kwargs['smooth_loss'] is None or kwargs["last_metrics"] is None:
-            return
+        if kwargs['smooth_loss'] is None or kwargs["last_metrics"] is None: return
         metrics = [kwargs['smooth_loss']] + kwargs["last_metrics"]
         for name, val in zip(self.metrics_names, metrics):
             self.client.log_metric(self.run, name, np.float(val))
