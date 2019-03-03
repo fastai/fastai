@@ -1,6 +1,7 @@
 "Utility functions to help deal with tensors"
 from .imports.torch import *
 from .core import *
+from collections import OrderedDict
 
 AffineMatrix = Tensor
 BoolOrTensor = Union[bool,Tensor]
@@ -343,7 +344,7 @@ def try_int(o:Any)->Any:
 
 def get_model(model:nn.Module):
     "Return the model maybe wrapped inside `model`."
-    return model.module if isinstance(model, nn.DataParallel) else model
+    return model.module if isinstance(model, (nn.DistributedDataParallel, nn.DataParallel)) else model
 
 def flatten_check(out:Tensor, targ:Tensor) -> Tensor:
     "Check that `out` and `targ` have the same number of elements and flatten them."
@@ -355,3 +356,10 @@ def flatten_check(out:Tensor, targ:Tensor) -> Tensor:
 def _data_parallel_reset(self): 
     if hasattr(self.module, 'reset'): self.module.reset()
 nn.DataParallel.reset = _data_parallel_reset
+
+def remove_module_load(state_dict):
+    """create new OrderedDict that does not contain `module.`"""
+    new_state_dict = OrderedDict()
+    for k, v in state_dict.items(): new_state_dict[k[7:]] = v
+    return new_state_dict
+

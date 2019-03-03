@@ -239,13 +239,16 @@ class Learner():
         "Return DataLoader for DatasetType `ds_type`."
         return self.data.dl(ds_type)
 
-    def load(self, name:PathOrStr, device:torch.device=None, strict:bool=True, with_opt:bool=None, purge:bool=True):
+    def load(self, name:PathOrStr, device:torch.device=None, strict:bool=True, with_opt:bool=None, purge:bool=True
+            remove_module:bool=False):
         "Load model and optimizer state (if `with_opt`) `name` from `self.model_dir` using `device`."
         path = self.path/self.model_dir/f'{name}.pth'
         if purge: self.purge(tmppath=path.parent, clear_opt=ifnone(with_opt, False))
         if device is None: device = self.data.device
         state = torch.load(path, map_location=device)
         if set(state.keys()) == {'model', 'opt'}:
+            model_state = state['model']
+            if remove_module: model_state = remove_module_load(model_state)
             get_model(self.model).load_state_dict(state['model'], strict=strict)
             if ifnone(with_opt,True):
                 if not hasattr(self, 'opt'): self.create_opt(defaults.lr, self.wd)
@@ -253,6 +256,7 @@ class Learner():
                 except: pass
         else:
             if with_opt: warn("Saved filed doesn't contain an optimizer state.")
+            if remove_module: state = remove_module_load(state)
             get_model(self.model).load_state_dict(state, strict=strict)
         del state
         gc.collect()
