@@ -98,7 +98,7 @@ class ImageCleaner():
     "Displays images for relabeling or deletion and saves changes in `path` as 'cleaned.csv'."
     def __init__(self, dataset, fns_idxs, path, batch_size:int=5, duplicates=False):
         self._all_images,self._batch = [],[]
-        self._path = path
+        self._path = Path(path)
         self._batch_size = batch_size
         if duplicates: self._batch_size = 2
         self._duplicates = duplicates
