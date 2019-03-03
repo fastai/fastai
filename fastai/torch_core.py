@@ -2,6 +2,7 @@
 from .imports.torch import *
 from .core import *
 from collections import OrderedDict
+from torch.nn.parallel import DistributedDataParallel
 
 AffineMatrix = Tensor
 BoolOrTensor = Union[bool,Tensor]
@@ -344,7 +345,7 @@ def try_int(o:Any)->Any:
 
 def get_model(model:nn.Module):
     "Return the model maybe wrapped inside `model`."
-    return model.module if isinstance(model, (nn.DistributedDataParallel, nn.DataParallel)) else model
+    return model.module if isinstance(model, (DistributedDataParallel, nn.DataParallel)) else model
 
 def flatten_check(out:Tensor, targ:Tensor) -> Tensor:
     "Check that `out` and `targ` have the same number of elements and flatten them."
