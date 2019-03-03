@@ -248,7 +248,7 @@ class Learner():
         if set(state.keys()) == {'model', 'opt'}:
             model_state = state['model']
             if remove_module: model_state = remove_module_load(model_state)
-            get_model(self.model).load_state_dict(state['model'], strict=strict)
+            get_model(self.model).load_state_dict(model_state, strict=strict)
             if ifnone(with_opt,True):
                 if not hasattr(self, 'opt'): self.create_opt(defaults.lr, self.wd)
                 try:    self.opt.load_state_dict(state['opt'])
