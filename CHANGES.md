@@ -27,6 +27,7 @@ of that change.
 - In `text_classifier_learner` the outputs of the encoder corresponding to pad indices are ignored in the poolings
 - Default number of OpenMP threads to 2 (previously 4), due to observed performance benefits
 - In `text_classifier_learner` the outputs of the encoder corresponding to pad indices are ignored in the poolings
+- `purge` now relies on a writable `learn.model_dir`, which can be set to a full writable path in case `learn.path` is not writable (kaggle, et al)
 
 ### Fixed:
 
