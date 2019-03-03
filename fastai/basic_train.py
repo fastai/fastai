@@ -3,7 +3,7 @@ from .torch_core import *
 from .basic_data import *
 from .callback import *
 from .data_block import *
-from .utils.mem import gpu_mem_restore
+from .utils.ipython import gpu_mem_restore
 import inspect
 from fastprogress.fastprogress import format_time
 from time import time

@@ -3,10 +3,9 @@
 import platform
 from ..script import *
 
-
 def load_pynvml_env():
     import pynvml # nvidia-ml-py3
-    
+
     if platform.system() == "Darwin":
         try:
             from pynvx import pynvml

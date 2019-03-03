@@ -584,7 +584,7 @@ with the same results. Except this one (fit functions) is already protected, thi
 
 Note, that the trick is in running: `traceback.clear_frames(tb)` to free all `locals()` tied to the exception object.
 
-Note that these help functions don't make any special cases and will do the clearing for any exception. Which means that you will not be able to use a debugger if you use those, since an `locals()` will be gone. You can, of course, use the more complicated versions of these functions from [fastai.utils.mem](https://github.com/fastai/fastai/blob/master/fastai/utils/mem.py) which have more flexibility as explained in the previous section.
+Note that these help functions don't make any special cases and will do the clearing for any exception. Which means that you will not be able to use a debugger if you use those, since an `locals()` will be gone. You can, of course, use the more complicated versions of these functions from [fastai.utils.ipython](https://github.com/fastai/fastai/blob/master/fastai/utils/ipython.py) which have more flexibility as explained in the previous section.
 
 If you need the same solution outside of the fastai environment, you can either copy-n-paste it from this section, or alternatively similar helper functions (a function decorator and a context manager) are available via the [ipyexperiments](https://github.com/stas00/ipyexperiments) project, inside the [ipyexperiments.utils.ipython](https://github.com/stas00/ipyexperiments/blob/master/docs/utils_ipython.md) module.
 
