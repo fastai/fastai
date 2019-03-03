@@ -121,7 +121,7 @@ def test_backwards_cls_databunch():
             assert any([orig in as_text for orig in orig_texts])  # batch samples contain BOS and optionally PAD tokens
 
 def df_test_collate(data):
-    this_tests('skip')
+    this_tests('na')
     x,y = next(iter(data.train_dl))
     assert x.size(0) == 8
     assert x[0,-1] == 1
@@ -172,7 +172,7 @@ def test_from_ids_works_for_variable_length_sentences():
                                       valid_ids=ids, valid_lbls=lbl, classes={0:0}, bs=8)
 
 def test_regression():
-    this_tests('skip')
+    this_tests('na')
     path = untar_data(URLs.IMDB_SAMPLE)
     df = text_df([0., 1.])
     data = (TextList.from_df(df, path, cols='text')

@@ -39,7 +39,7 @@ def learn():
 def n_params(learn): return sum([len(pg['params']) for pg in learn.opt.opt.param_groups])
 
 def test_opt_params(learn):
-    this_tests('skip')
+    this_tests('na')
     learn.freeze()
     assert n_params(learn) == 2
     learn.unfreeze()
@@ -81,7 +81,7 @@ def test_qrnn_works_if_split_fn_provided():
     assert learn.validate()[1] > 0.3
 
 def test_vocabs(learn):
-    this_tests('skip')
+    this_tests('na')
     for ds in [learn.data.valid_ds, learn.data.test_ds]:
         assert len(learn.data.train_ds.vocab.itos) == len(ds.vocab.itos)
         assert np.all(learn.data.train_ds.vocab.itos == ds.vocab.itos)
@@ -125,7 +125,7 @@ def clean_destroy_block():
 
 @pytest.mark.skip(reason="fix me")
 def test_mem_leak():
-    this_tests('skip')
+    this_tests('na')
     gc.collect()
     garbage_before = len(gc.garbage)  # should be 0 already, or something leaked earlier
     assert garbage_before == 0

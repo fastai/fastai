@@ -5,7 +5,7 @@ from fastai.basics import *
 def chk(a,b): assert np.array_equal(a,b)
 
 def test_category():
-    this_tests('skip')
+    this_tests('na')
     c1 = [1,3,2,3,1]
     c2 = list('cabbc')
     df = pd.DataFrame(dict(c1=c1,c2=c2))
@@ -47,7 +47,7 @@ def test_category():
     chk([o.data for o in y], exp)
 
 def test_multi_category():
-    this_tests('skip')
+    this_tests('na')
     c1 = [1,3,2,3,1]
     c2     = ['c a', 'a b', 'b c', '', 'a']
     c2_exp = ['c;a', 'a;b', 'b;c', '', 'a']
@@ -121,14 +121,14 @@ def test_split_subsets():
         ItemList(range(10)).split_subsets(train_size=0.5, valid_size=0.0).label_const(0)
 
 def test_regression():
-    this_tests('skip')
+    this_tests('na')
     df = pd.DataFrame({'x':range(100), 'y':np.random.rand(100)})
     data = ItemList.from_df(df, path='.', cols=0).random_split_by_pct().label_from_df(cols=1).databunch()
     assert data.c==1
     assert isinstance(data.valid_ds, LabelList)
 
 def test_wrong_order():
-    this_tests('skip')
+    this_tests('na')
     path = untar_data(URLs.MNIST_TINY)
     with pytest.raises(Exception):
         src = ImageList.from_folder(path).label_from_folder().split_by_folder()

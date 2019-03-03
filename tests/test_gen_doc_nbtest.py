@@ -92,7 +92,7 @@ def test_this_tests():
     this_tests('fastai.gen_doc.doctest.this_tests')
 
     # special case for situations where a test doesn't test fastai API or non-callable attribute
-    this_tests('skip')
+    this_tests('na')
 
     # not a real function
     func = 'foo bar'

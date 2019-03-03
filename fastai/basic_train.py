@@ -143,7 +143,7 @@ class Learner():
     wd:Floats=defaults.wd
     train_bn:bool=True
     path:str = None
-    model_dir:str = 'models'
+    model_dir:PathOrStr = 'models'
     callback_fns:Collection[Callable]=None
     callbacks:Collection[Callback]=field(default_factory=list)
     layer_groups:Collection[nn.Module]=None
@@ -242,10 +242,9 @@ class Learner():
     def load(self, name:PathOrStr, device:torch.device=None, strict:bool=True, with_opt:bool=None, purge:bool=True
             remove_module:bool=False):
         "Load model and optimizer state (if `with_opt`) `name` from `self.model_dir` using `device`."
-        path = self.path/self.model_dir/f'{name}.pth'
-        if purge: self.purge(tmppath=path.parent, clear_opt=ifnone(with_opt, False))
+        if purge: self.purge(clear_opt=ifnone(with_opt, False))
         if device is None: device = self.data.device
-        state = torch.load(path, map_location=device)
+        state = torch.load(self.path/self.model_dir/f'{name}.pth', map_location=device)
         if set(state.keys()) == {'model', 'opt'}:
             model_state = state['model']
             if remove_module: model_state = remove_module_load(model_state)
@@ -279,10 +278,16 @@ class Learner():
         gc.collect()
         print("this Learner object self-destroyed - it still exists, but no longer usable")
 
-    def purge(self, tmppath:PathOrStr=None, clear_opt:bool=True):
-        "Purge the `Learner` of all cached attributes to release some GPU memory."
+    def _get_writable_model_path(self):
+        path = self.path/self.model_dir
+        try: tmp_file = get_tmp_file(path)
+        except OSError as e:
+            raise Exception(f"{e}\nCan't write to '{path}', set `model_dir` attribute in Learner to a full libpath path that is writable") from None
+        os.remove(tmp_file)
+        return path
 
-        tmp_file = get_tmp_file(ifnone(tmppath, self.path))
+    def purge(self, clear_opt:bool=True):
+        "Purge the `Learner` of all cached attributes to release some GPU memory."
         attrs_all = [k for k in self.__dict__.keys() if not k.startswith("__")]
         attrs_pkl = ['bn_wd', 'callback_fns', 'layer_groups', 'loss_func', 'metrics', 'model',
                      'model_dir', 'opt_func', 'path', 'train_bn', 'true_wd', 'wd']
@@ -292,11 +297,14 @@ class Learner():
         state = {a:getattr(self, a) for a in attrs_pkl}
         state['cb_state'] = {cb.__class__:cb.get_state() for cb in self.callbacks}
         if hasattr(self, 'opt'): state['opt'] = self.opt.get_state()
+
+        tmp_file = get_tmp_file(self._get_writable_model_path())
         torch.save(state, open(tmp_file, 'wb'))
         for a in attrs_del: delattr(self, a)
         gc.collect()
         state = torch.load(tmp_file)
         os.remove(tmp_file)
+
         for a in attrs_pkl: setattr(self, a, state[a])
         cb_state = state.pop('cb_state')
         self.callbacks = [load_callback(c,s, self) for c,s in cb_state.items()]

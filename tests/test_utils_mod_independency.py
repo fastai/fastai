@@ -76,7 +76,7 @@ data = load_setup_py_data_basic("setup.py", work_dir)
 
 # just test first that the parsing worked
 def test_setup_parser():
-    this_tests('skip')
+    this_tests('na')
     assert data['name'] == 'fastai'
 
     # print(data['extras_require'])
@@ -101,7 +101,7 @@ class CheckDependencyImporter(object):
 import pytest
 @pytest.mark.skip("Currently broken test")
 def test_unwanted_mod_dependencies():
-    this_tests('skip')
+    this_tests('na')
     # save the original state
     mod_saved = sys.modules['fastai'] if 'fastai' in sys.modules else None
     meta_path_saved = sys.meta_path.copy

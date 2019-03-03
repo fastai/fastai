@@ -69,17 +69,29 @@ def check_learner(learn, train_items):
     assert train_items == len(learn.data.train_ds.items)
     # XXX: could use more sanity checks
 
-def test_purge(learn):
+def test_purge():
+    learn = fake_learner() # don't use fixture - we mess with the object
     this_tests(learn.purge)
 
     # just testing we can run each of these
     learn.purge()
     learn.purge(clear_opt=False)
 
-    learn.purge(tmppath=".") # should succeed
-    try: learn.purge(tmppath="lkjasdjssdlj")
-    except: pass # should fail
-    else: assert False, "should have failed"
+    # writable dir
+    model_dir_orig = learn.model_dir
+    learn.model_dir = "." # should succeed
+    learn.purge()
+    learn.model_dir = model_dir_orig
+
+    # should fail to purge with a non-existent path
+    learn.model_dir = "lkjasdjssdlj"
+    try: learn.purge()
+    except Exception as e:
+        assert "Can't write to" in str(e) # should fail
+    else: assert False, "should have failed with non-writable path"
+
+    finally: # restore the learner fixture
+        learn.model_dir = model_dir_orig
 
 def test_save_load(learn):
     this_tests(learn.save, learn.load, learn.purge)
