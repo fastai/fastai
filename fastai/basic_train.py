@@ -245,6 +245,7 @@ class Learner():
         "Load model and optimizer state (if `with_opt`) `name` from `self.model_dir` using `device`."
         if purge: self.purge(clear_opt=ifnone(with_opt, False))
         if device is None: device = self.data.device
+        elif isinstance(device, int): device = torch.device('cuda', device)
         state = torch.load(self.path/self.model_dir/f'{name}.pth', map_location=device)
         if set(state.keys()) == {'model', 'opt'}:
             model_state = state['model']
