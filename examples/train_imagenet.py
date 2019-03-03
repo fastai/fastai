@@ -4,6 +4,7 @@ from fastai.callbacks import *
 from fastai.distributed import *
 from fastai.callbacks.tracker import *
 torch.backends.cudnn.benchmark = True
+import time
 
 def get_data(path, size, bs, workers):
     tfms = ([
@@ -21,22 +22,22 @@ def get_data(path, size, bs, workers):
 def main( gpu:Param("GPU to run on", str)=None ):
     """Distributed training of Imagenet. Fastest speed is if you run with: python -m fastai.launch"""
     path = Path('/mnt/fe2_disk/')
-    tot_epochs = 90
+    tot_epochs = 60
     epoch_fn = path/'imagenet'/'models'/'epoch'
     epoch = 0
     if epoch_fn.exists(): epoch = int(epoch_fn.open().read())
     epoch += 1
     if epoch>tot_epochs: return
 
-    bs,lr = 256,0.1
+    bs,lr = 256,0.3
     gpu = setup_distrib(gpu)
     n_gpus = int(os.environ.get("WORLD_SIZE", 1))
     workers = min(32, num_cpus()//n_gpus)
     data = get_data(path/'imagenet', 224, bs, workers)
     opt_func = partial(optim.SGD, momentum=0.9)
     learn = Learner(data, models.xresnet50(), metrics=[accuracy,top_k_accuracy], wd=1e-5,
-        opt_func=opt_func, bn_wd=True, true_wd=False
-        , loss_func = LabelSmoothingCrossEntropy()).mixup(alpha=0.2)
+        opt_func=opt_func, bn_wd=True, true_wd=False,
+        loss_func = LabelSmoothingCrossEntropy()).mixup(alpha=0.2)
     learn.callback_fns += [
         partial(TrackEpochCallback, epoch_offset=epoch-1),
         partial(SaveModelCallback, every='epoch', name='model')
@@ -51,17 +52,6 @@ def main( gpu:Param("GPU to run on", str)=None ):
     tot_bs = bs*n_gpus
     bs_rat = tot_bs/256
     lr *= bs_rat
-    learn.fit_one_cycle(tot_epochs-epoch+1, lr, div_factor=5, pct_start=0.05, moms=(0.9,0.9), start_epoch=epoch)
+    learn.fit_one_cycle(tot_epochs-epoch+1, lr, div_factor=5, pct_start=0.15, moms=(0.9,0.9), start_epoch=epoch)
     learn.save('done')
-    return
-
-    learn.freeze()
-    learn.fit_one_cycle(1, lr/100, div_factor=1, final_div=1, moms=(0.9,0.9))
-    learn.unfreeze()
-    gc.collect()
-    time.sleep(1)
-    learn.save('done3')
-
-    learn.fit_one_cycle(20, lr/200, div_factor=5, pct_start=0.05, moms=(0.9,0.9))
-    learn.save('done2')
 
