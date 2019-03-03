@@ -297,7 +297,7 @@ class AverageMetric(Callback):
         # If it's a partial, use func.func
         name = getattr(func,'func',func).__name__
         self.func, self.name = func, name
-        #self.world = num_distrib()
+        self.world = num_distrib()
 
     def on_epoch_begin(self, **kwargs):
         "Set the inner value to 0."
@@ -308,12 +308,10 @@ class AverageMetric(Callback):
         if not is_listy(last_target): last_target=[last_target]
         self.count += last_target[0].size(0)
         val = self.func(last_output, *last_target)
-        """
         if self.world:
             val = val.clone()
             dist.all_reduce(val, op=dist.ReduceOp.SUM)
             val /= self.world
-        """
         self.val += last_target[0].size(0) * val.detach().cpu()
 
     def on_epoch_end(self, **kwargs):
