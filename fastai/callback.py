@@ -1,6 +1,7 @@
 "Callbacks provides extensibility to the `basic_train` loop. See `train` for examples of custom callbacks."
 from .basic_data import *
 from .torch_core import *
+import torch.distributed as dist
 
 __all__ = ['AverageMetric', 'Callback', 'CallbackHandler', 'OptimWrapper', 'SmoothenValue', 'Stepper', 'annealing_cos', 'CallbackList',
            'annealing_exp', 'annealing_linear', 'annealing_no', 'annealing_poly']
@@ -296,6 +297,7 @@ class AverageMetric(Callback):
         # If it's a partial, use func.func
         name = getattr(func,'func',func).__name__
         self.func, self.name = func, name
+        #self.world = num_distrib()
 
     def on_epoch_begin(self, **kwargs):
         "Set the inner value to 0."
@@ -305,7 +307,14 @@ class AverageMetric(Callback):
         "Update metric computation with `last_output` and `last_target`."
         if not is_listy(last_target): last_target=[last_target]
         self.count += last_target[0].size(0)
-        self.val += last_target[0].size(0) * self.func(last_output, *last_target).detach().cpu()
+        val = self.func(last_output, *last_target)
+        """
+        if self.world:
+            val = val.clone()
+            dist.all_reduce(val, op=dist.ReduceOp.SUM)
+            val /= self.world
+        """
+        self.val += last_target[0].size(0) * val.detach().cpu()
 
     def on_epoch_end(self, **kwargs):
         "Sets the final result in `self.metric`."

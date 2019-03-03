@@ -364,3 +364,11 @@ def remove_module_load(state_dict):
     for k, v in state_dict.items(): new_state_dict[k[7:]] = v
     return new_state_dict
 
+def num_distrib():
+    "Return the number of processes in distributed training (if applicable)."
+    return int(os.environ.get('WORLD_SIZE', 0))
+
+def rank_distrib():
+    "Return the distributed rank of this process (if applicable)."
+    return int(os.environ.get('RANK', 0))
+

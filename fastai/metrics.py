@@ -4,8 +4,8 @@ from .callback import *
 
 
 __all__ = ['error_rate', 'accuracy', 'accuracy_thresh', 'dice', 'exp_rmspe', 'fbeta','FBeta', 'mse', 'mean_squared_error',
-            'mae', 'mean_absolute_error', 'rmse', 'root_mean_squared_error', 'msle', 'mean_squared_logarithmic_error', 
-            'explained_variance', 'r2_score', 'top_k_accuracy', 'KappaScore', 'ConfusionMatrix', 'MatthewsCorreff', 
+            'mae', 'mean_absolute_error', 'rmse', 'root_mean_squared_error', 'msle', 'mean_squared_logarithmic_error',
+            'explained_variance', 'r2_score', 'top_k_accuracy', 'KappaScore', 'ConfusionMatrix', 'MatthewsCorreff',
             'Precision', 'Recall', 'R2Score', 'ExplainedVariance', 'ExpRMSPE', 'RMSE', 'Perplexity']
 
 def fbeta(y_pred:Tensor, y_true:Tensor, thresh:float=0.2, beta:float=2, eps:float=1e-9, sigmoid:bool=True)->Rank0Tensor:
@@ -63,7 +63,7 @@ def mean_absolute_error(pred:Tensor, targ:Tensor)->Rank0Tensor:
     "Mean absolute error between `pred` and `targ`."
     pred,targ = flatten_check(pred,targ)
     return torch.abs(targ - pred).mean()
- 
+
 def mean_squared_error(pred:Tensor, targ:Tensor)->Rank0Tensor:
     "Mean squared error between `pred` and `targ`."
     pred,targ = flatten_check(pred,targ)
@@ -136,7 +136,7 @@ class ConfusionMatrix(Callback):
 
     def on_epoch_begin(self, **kwargs):
         self.cm = None
-        
+
     def on_batch_end(self, last_output:Tensor, last_target:Tensor, **kwargs):
         preds = last_output.argmax(-1).view(-1).cpu()
         targs = last_target.cpu()
@@ -146,11 +146,11 @@ class ConfusionMatrix(Callback):
         cm = ((preds==self.x[:, None]) & (targs==self.x[:, None, None])).sum(dim=2, dtype=torch.float32)
         if self.cm is None: self.cm =  cm
         else:               self.cm += cm
-        
+
     def on_epoch_end(self, **kwargs):
         self.metric = self.cm
-        
-        
+
+
 @dataclass
 class CMScores(ConfusionMatrix):
     "Base class for metrics which rely on the calculation of the precision and/or recall score."
@@ -160,24 +160,18 @@ class CMScores(ConfusionMatrix):
 
     def _recall(self):
         rec = torch.diag(self.cm) / self.cm.sum(dim=1)
-        if self.average is None:
-            return rec 
+        if self.average is None: return rec
         else:
-            if self.average == "micro":
-                weights = self._weights(avg="weighted")
-            else:
-                weights = self._weights(avg=self.average)
+            if self.average == "micro": weights = self._weights(avg="weighted")
+            else: weights = self._weights(avg=self.average)
             return (rec * weights).sum()
- 
 
     def _precision(self):
         prec = torch.diag(self.cm) / self.cm.sum(dim=0)
-        if self.average is None:
-            return prec 
+        if self.average is None: return prec
         else:
             weights = self._weights(avg=self.average)
             return (prec * weights).sum()
-        
 
     def _weights(self, avg:str):
         if self.n_classes != 2 and avg == "binary":
@@ -187,53 +181,44 @@ class CMScores(ConfusionMatrix):
             if self.pos_label not in (0, 1):
                 self.pos_label = 1
                 warn("Invalid value for pos_label. It has now been set to 1.")
-            if self.pos_label == 1:
-                return Tensor([0,1])
-            else: 
-                return Tensor([1,0])
-        elif avg == "micro":
-            return self.cm.sum(dim=0) / self.cm.sum()
-        elif avg == "macro":
-            return torch.ones((self.n_classes,)) / self.n_classes
-        elif avg == "weighted":
-            return self.cm.sum(dim=1) / self.cm.sum()
+            if self.pos_label == 1: return Tensor([0,1])
+            else: return Tensor([1,0])
+        elif avg == "micro": return self.cm.sum(dim=0) / self.cm.sum()
+        elif avg == "macro": return torch.ones((self.n_classes,)) / self.n_classes
+        elif avg == "weighted": return self.cm.sum(dim=1) / self.cm.sum()
 
 
 class Recall(CMScores):
     "Compute the Recall."
-    def on_epoch_end(self, **kwargs):
-        self.metric = self._recall()           
+    def on_epoch_end(self, **kwargs): self.metric = self._recall()
 
 class Precision(CMScores):
     "Compute the Precision."
-    def on_epoch_end(self, **kwargs):
-        self.metric = self._precision()         
-            
+    def on_epoch_end(self, **kwargs): self.metric = self._precision()
+
 @dataclass
 class FBeta(CMScores):
     "Compute the F`beta` score."
     beta:float=2
-        
+
     def on_train_begin(self, **kwargs):
         self.n_classes = 0
         self.beta2 = self.beta ** 2
         self.avg = self.average
-        if self.average != "micro":
-            self.average = None
+        if self.average != "micro": self.average = None
 
     def on_epoch_end(self, **kwargs):
         prec = self._precision()
         rec = self._recall()
         self.metric = (1 + self.beta2) * prec * rec / (prec * self.beta2 + rec + self.eps)
-        if self.avg:
-            self.metric = (self._weights(avg=self.avg) * self.metric).sum()
-            
+        if self.avg: self.metric = (self._weights(avg=self.avg) * self.metric).sum()
+
     def on_train_end(self, **kwargs): self.average = self.avg
 
 class KappaScore(ConfusionMatrix):
     "Compute the rate of agreement (Cohens Kappa)."
     weights:Optional[str]=None      # None, `linear`, or `quadratic`
-    
+
     def on_epoch_end(self, **kwargs):
         sum0 = self.cm.sum(dim=0)
         sum1 = self.cm.sum(dim=1)
@@ -245,8 +230,7 @@ class KappaScore(ConfusionMatrix):
             w = torch.zeros((self.n_classes, self.n_classes))
             w += torch.arange(self.n_classes, dtype=torch.float)
             w = torch.abs(w - torch.t(w)) if self.weights == "linear" else (w - torch.t(w)) ** 2
-        else:
-            raise ValueError('Unknown weights attribute given. Expected None, "linear", or "quadratic".')
+        else: raise ValueError('Unknown weights. Expected None, "linear", or "quadratic".')
         k = torch.sum(w * self.cm) / torch.sum(w * expected)
         self.metric = 1 - k
 
@@ -261,15 +245,14 @@ class MatthewsCorreff(ConfusionMatrix):
         cov_ypyp = n_samples ** 2 - torch.dot(p_sum, p_sum)
         cov_ytyt = n_samples ** 2 - torch.dot(t_sum, t_sum)
         self.metric = cov_ytyp / torch.sqrt(cov_ytyt * cov_ypyp)
-        
+
 class Perplexity(Callback):
     "Perplexity metric for language models."
-    def on_epoch_begin(self, **kwargs):
-        self.loss,self.len = 0.,0
-    
+    def on_epoch_begin(self, **kwargs): self.loss,self.len = 0.,0
+
     def on_batch_end(self, last_output, last_target, **kwargs):
         self.loss += last_target.size(1) * CrossEntropyFlat()(last_output, last_target)
         self.len += last_target.size(1)
-    
-    def on_epoch_end(self, **kwargs):
-        self.metric = torch.exp(self.loss / self.len)
+
+    def on_epoch_end(self, **kwargs): self.metric = torch.exp(self.loss / self.len)
+

@@ -27,7 +27,7 @@ class LanguageModelPreLoader(Callback):
     def __init__(self, dataset:LabelList, lengths:Collection[int]=None, bs:int=32, bptt:int=70, backwards:bool=False,
                  shuffle:bool=False):
         self.dataset,self.bs,self.bptt,self.shuffle,self.backwards,self.lengths = dataset,bs,bptt,shuffle,backwards,lengths
-        self.bs *= num_distrib()
+        self.bs *= num_distrib() or 1
         self.totalToks,self.ite_len,self.idx = int(0),None,None
 
     def __len__(self):

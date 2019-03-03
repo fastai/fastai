@@ -53,7 +53,8 @@ def validate(model:nn.Module, dl:DataLoader, loss_func:OptLossFunc=None, cb_hand
         if cb_handler: cb_handler.set_dl(dl)
         for xb,yb in progress_bar(dl, parent=pbar, leave=(pbar is not None)):
             if cb_handler: xb, yb = cb_handler.on_batch_begin(xb, yb, train=False)
-            val_losses.append(loss_batch(model, xb, yb, loss_func, cb_handler=cb_handler))
+            val_loss = loss_batch(model, xb, yb, loss_func, cb_handler=cb_handler)
+            val_losses.append(val_loss)
             if not is_listy(yb): yb = [yb]
             nums.append(yb[0].shape[0])
             if cb_handler and cb_handler.on_batch_end(val_losses[-1]): break
