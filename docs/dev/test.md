@@ -442,6 +442,8 @@ When writing tests:
 - Avoid pretrained models, since they have to be downloaded from the internet to run the test
 - Create some minimal data for your test, or use data already in repo's data/ directory
 
+Important: currently, in the test suite we can only use modules that are already in the required dependencies of fastai (i.e. conda dependencies). No other modules are allowed, unless the test is skipped if some new dependency is used.
+
 ### Test Registry
 
 `fastai` has a neat feature where users while reading the API documentation can also discover which tests exercise the function they are interested to use. This provides extra insights at how the API can be used, and also provides an incentive to users to write tests which are missing or improving the existing ones. Therefore, every new test should include a single call of `this_tests`.
