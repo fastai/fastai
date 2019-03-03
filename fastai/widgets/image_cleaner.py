@@ -208,7 +208,9 @@ class ImageCleaner():
 
     def write_csv(self):
         # Get first element's file path so we write CSV to same directory as our data
-        csv_path = self._path/'cleaned.csv'
+        import os
+        csv_path = os.path.join(self._path,'cleaned.csv')
+        # csv_path = self._path/'cleaned.csv'
         with open(csv_path, 'w') as f:
             csv_writer = csv.writer(f)
             csv_writer.writerow(['name','label'])
