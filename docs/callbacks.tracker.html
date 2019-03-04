@@ -51,7 +51,7 @@ summary: "Callbacks that take decisions depending on the evolution of metrics du
 <h2 id="TerminateOnNaNCallback"><code>class</code> <code>TerminateOnNaNCallback</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/tracker.py#L10" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#TerminateOnNaNCallback-pytest" style="float:right; padding-right:10px">[test]</a></h2><blockquote><p><code>TerminateOnNaNCallback</code>() :: <a href="/callback.html#Callback"><code>Callback</code></a></p>
 </blockquote>
 <p>A <a href="/callback.html#Callback"><code>Callback</code></a> that terminates training if loss is NaN.</p>
-<div class="collapse" id="TerminateOnNaNCallback-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#TerminateOnNaNCallback-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>TerminateOnNaNCallback</code></p></div></div><div style="height:1px"></div>
+<div class="collapse" id="TerminateOnNaNCallback-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#TerminateOnNaNCallback-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>TerminateOnNaNCallback</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><div style="height:1px"></div>
 </div>
 
 </div>
@@ -201,6 +201,7 @@ summary: "Callbacks that take decisions depending on the evolution of metrics du
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>Epoch/Batch (0/5): Invalid loss, terminating training.
+Epoch/Batch (0/6): Invalid loss, terminating training.
 </pre>
 </div>
 </div>
@@ -234,7 +235,7 @@ summary: "Callbacks that take decisions depending on the evolution of metrics du
 <h4 id="TerminateOnNaNCallback.on_batch_end"><code>on_batch_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/tracker.py#L16" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#TerminateOnNaNCallback-on_batch_end-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>on_batch_end</code>(<strong><code>last_loss</code></strong>, <strong><code>epoch</code></strong>, <strong><code>num_batch</code></strong>, <strong>**<code>kwargs</code></strong>:<code>Any</code>)</p>
 </blockquote>
 <p>Test if <code>last_loss</code> is NaN and interrupts training.</p>
-<div class="collapse" id="TerminateOnNaNCallback-on_batch_end-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#TerminateOnNaNCallback-on_batch_end-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>on_batch_end</code></p></div></div><div style="height:1px"></div>
+<div class="collapse" id="TerminateOnNaNCallback-on_batch_end-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#TerminateOnNaNCallback-on_batch_end-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>on_batch_end</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><div style="height:1px"></div>
 </div>
 
 </div>
@@ -252,10 +253,10 @@ summary: "Callbacks that take decisions depending on the evolution of metrics du
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="TerminateOnNaNCallback.on_epoch_end"><code>on_epoch_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/tracker.py#L24" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#TerminateOnNaNCallback-on_epoch_end-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>on_epoch_end</code>(<strong>**<code>kwargs</code></strong>:<code>Any</code>)</p>
+<h4 id="Callback.on_epoch_end"><code>on_epoch_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callback.py#L161" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#Callback-on_epoch_end-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>on_epoch_end</code>(<strong>**<code>kwargs</code></strong>:<code>Any</code>)</p>
 </blockquote>
-<p>Stop the training if necessary.</p>
-<div class="collapse" id="TerminateOnNaNCallback-on_epoch_end-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#TerminateOnNaNCallback-on_epoch_end-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>on_epoch_end</code></p></div></div><div style="height:1px"></div>
+<p>Called at the end of an epoch.</p>
+<div class="collapse" id="Callback-on_epoch_end-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#Callback-on_epoch_end-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>on_epoch_end</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><div style="height:1px"></div>
 </div>
 
 </div>
@@ -273,10 +274,10 @@ summary: "Callbacks that take decisions depending on the evolution of metrics du
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="EarlyStoppingCallback"><code>class</code> <code>EarlyStoppingCallback</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/tracker.py#L57" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#EarlyStoppingCallback-pytest" style="float:right; padding-right:10px">[test]</a></h2><blockquote><p><code>EarlyStoppingCallback</code>(<strong><code>learn</code></strong>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <strong><code>monitor</code></strong>:<code>str</code>=<strong><em><code>'val_loss'</code></em></strong>, <strong><code>mode</code></strong>:<code>str</code>=<strong><em><code>'auto'</code></em></strong>, <strong><code>min_delta</code></strong>:<code>int</code>=<strong><em><code>0</code></em></strong>, <strong><code>patience</code></strong>:<code>int</code>=<strong><em><code>0</code></em></strong>) :: <a href="/callbacks.tracker.html#TrackerCallback"><code>TrackerCallback</code></a></p>
+<h2 id="EarlyStoppingCallback"><code>class</code> <code>EarlyStoppingCallback</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/tracker.py#L52" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#EarlyStoppingCallback-pytest" style="float:right; padding-right:10px">[test]</a></h2><blockquote><p><code>EarlyStoppingCallback</code>(<strong><code>learn</code></strong>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <strong><code>monitor</code></strong>:<code>str</code>=<strong><em><code>'val_loss'</code></em></strong>, <strong><code>mode</code></strong>:<code>str</code>=<strong><em><code>'auto'</code></em></strong>, <strong><code>min_delta</code></strong>:<code>int</code>=<strong><em><code>0</code></em></strong>, <strong><code>patience</code></strong>:<code>int</code>=<strong><em><code>0</code></em></strong>) :: <a href="/callbacks.tracker.html#TrackerCallback"><code>TrackerCallback</code></a></p>
 </blockquote>
 <p>A <a href="/callbacks.tracker.html#TrackerCallback"><code>TrackerCallback</code></a> that terminates training when monitored quantity stops improving.</p>
-<div class="collapse" id="EarlyStoppingCallback-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#EarlyStoppingCallback-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>EarlyStoppingCallback</code></p></div></div><div style="height:1px"></div>
+<div class="collapse" id="EarlyStoppingCallback-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#EarlyStoppingCallback-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>EarlyStoppingCallback</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><div style="height:1px"></div>
 </div>
 
 </div>
@@ -329,7 +330,7 @@ summary: "Callbacks that take decisions depending on the evolution of metrics du
             }
         </style>
       <progress value='4' class='' max='50', style='width:300px; height:20px; vertical-align: middle;'></progress>
-      8.00% [4/50 00:09<01:52]
+      8.00% [4/50 00:09<01:51]
     </div>
     
 <table border="1" class="dataframe">
@@ -345,30 +346,30 @@ summary: "Callbacks that take decisions depending on the evolution of metrics du
   <tbody>
     <tr>
       <td>1</td>
-      <td>0.696629</td>
-      <td>0.696266</td>
-      <td>0.362610</td>
+      <td>0.677729</td>
+      <td>0.677514</td>
+      <td>0.560353</td>
       <td>00:02</td>
     </tr>
     <tr>
       <td>2</td>
-      <td>0.696333</td>
-      <td>0.696266</td>
-      <td>0.362610</td>
+      <td>0.679820</td>
+      <td>0.677514</td>
+      <td>0.560353</td>
       <td>00:02</td>
     </tr>
     <tr>
       <td>3</td>
-      <td>0.696307</td>
-      <td>0.696266</td>
-      <td>0.362610</td>
+      <td>0.679434</td>
+      <td>0.677514</td>
+      <td>0.560353</td>
       <td>00:02</td>
     </tr>
     <tr>
       <td>4</td>
-      <td>0.696467</td>
-      <td>0.696266</td>
-      <td>0.362610</td>
+      <td>0.679893</td>
+      <td>0.677514</td>
+      <td>0.560353</td>
       <td>00:02</td>
     </tr>
   </tbody>
@@ -403,6 +404,56 @@ summary: "Callbacks that take decisions depending on the evolution of metrics du
 </div>
 </div>
 
+<div class="output_area">
+
+<div class="output_subarea output_text output_error">
+<pre>
+<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">AttributeError</span>                            Traceback (most recent call last)
+<span class="ansi-green-fg">&lt;ipython-input-9-4384b4e1abc4&gt;</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span>
+<span class="ansi-green-intense-fg ansi-bold">      2</span> learn = Learner(data, model, metrics=[accuracy], 
+<span class="ansi-green-intense-fg ansi-bold">      3</span>                 callback_fns=[partial(EarlyStoppingCallback, monitor=&#39;accuracy&#39;, min_delta=0.01, patience=3)])
+<span class="ansi-green-fg">----&gt; 4</span><span class="ansi-red-fg"> </span>learn<span class="ansi-blue-fg">.</span>fit<span class="ansi-blue-fg">(</span><span class="ansi-cyan-fg">50</span><span class="ansi-blue-fg">,</span><span class="ansi-cyan-fg">1e-42</span><span class="ansi-blue-fg">)</span>
+
+<span class="ansi-green-fg">~/fastai/fastai/basic_train.py</span> in <span class="ansi-cyan-fg">fit</span><span class="ansi-blue-fg">(self, epochs, lr, wd, callbacks)</span>
+<span class="ansi-green-intense-fg ansi-bold">    180</span>         <span class="ansi-green-fg">if</span> defaults<span class="ansi-blue-fg">.</span>extra_callbacks <span class="ansi-green-fg">is</span> <span class="ansi-green-fg">not</span> <span class="ansi-green-fg">None</span><span class="ansi-blue-fg">:</span> callbacks <span class="ansi-blue-fg">+=</span> defaults<span class="ansi-blue-fg">.</span>extra_callbacks
+<span class="ansi-green-intense-fg ansi-bold">    181</span>         fit(epochs, self.model, self.loss_func, opt=self.opt, data=self.data, metrics=self.metrics,
+<span class="ansi-green-fg">--&gt; 182</span><span class="ansi-red-fg">             callbacks=self.callbacks+callbacks)
+</span><span class="ansi-green-intense-fg ansi-bold">    183</span> 
+<span class="ansi-green-intense-fg ansi-bold">    184</span>     <span class="ansi-green-fg">def</span> create_opt<span class="ansi-blue-fg">(</span>self<span class="ansi-blue-fg">,</span> lr<span class="ansi-blue-fg">:</span>Floats<span class="ansi-blue-fg">,</span> wd<span class="ansi-blue-fg">:</span>Floats<span class="ansi-blue-fg">=</span><span class="ansi-cyan-fg">0.</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">-&gt;</span><span class="ansi-green-fg">None</span><span class="ansi-blue-fg">:</span>
+
+<span class="ansi-green-fg">~/fastai/fastai/basic_train.py</span> in <span class="ansi-cyan-fg">fit</span><span class="ansi-blue-fg">(epochs, model, loss_func, opt, data, callbacks, metrics)</span>
+<span class="ansi-green-intense-fg ansi-bold">     97</span>                                        cb_handler=cb_handler, pbar=pbar)
+<span class="ansi-green-intense-fg ansi-bold">     98</span>             <span class="ansi-green-fg">else</span><span class="ansi-blue-fg">:</span> val_loss<span class="ansi-blue-fg">=</span><span class="ansi-green-fg">None</span>
+<span class="ansi-green-fg">---&gt; 99</span><span class="ansi-red-fg">             </span><span class="ansi-green-fg">if</span> cb_handler<span class="ansi-blue-fg">.</span>on_epoch_end<span class="ansi-blue-fg">(</span>val_loss<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span> <span class="ansi-green-fg">break</span>
+<span class="ansi-green-intense-fg ansi-bold">    100</span>     <span class="ansi-green-fg">except</span> Exception <span class="ansi-green-fg">as</span> e<span class="ansi-blue-fg">:</span>
+<span class="ansi-green-intense-fg ansi-bold">    101</span>         exception <span class="ansi-blue-fg">=</span> e
+
+<span class="ansi-green-fg">~/fastai/fastai/callback.py</span> in <span class="ansi-cyan-fg">on_epoch_end</span><span class="ansi-blue-fg">(self, val_loss)</span>
+<span class="ansi-green-intense-fg ansi-bold">    287</span>         self<span class="ansi-blue-fg">.</span>state_dict<span class="ansi-blue-fg">[</span><span class="ansi-blue-fg">&#39;last_metrics&#39;</span><span class="ansi-blue-fg">]</span> <span class="ansi-blue-fg">=</span> <span class="ansi-blue-fg">[</span>val_loss<span class="ansi-blue-fg">]</span> <span class="ansi-green-fg">if</span> val_loss <span class="ansi-green-fg">is</span> <span class="ansi-green-fg">not</span> <span class="ansi-green-fg">None</span> <span class="ansi-green-fg">else</span> <span class="ansi-green-fg">None</span>
+<span class="ansi-green-intense-fg ansi-bold">    288</span>         self<span class="ansi-blue-fg">.</span>state_dict<span class="ansi-blue-fg">[</span><span class="ansi-blue-fg">&#39;epoch&#39;</span><span class="ansi-blue-fg">]</span> <span class="ansi-blue-fg">+=</span> <span class="ansi-cyan-fg">1</span>
+<span class="ansi-green-fg">--&gt; 289</span><span class="ansi-red-fg">         </span>self<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">&#39;epoch_end&#39;</span><span class="ansi-blue-fg">,</span> call_mets <span class="ansi-blue-fg">=</span> val_loss <span class="ansi-green-fg">is</span> <span class="ansi-green-fg">not</span> <span class="ansi-green-fg">None</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    290</span>         <span class="ansi-green-fg">return</span> self<span class="ansi-blue-fg">.</span>state_dict<span class="ansi-blue-fg">[</span><span class="ansi-blue-fg">&#39;stop_training&#39;</span><span class="ansi-blue-fg">]</span>
+<span class="ansi-green-intense-fg ansi-bold">    291</span> 
+
+<span class="ansi-green-fg">~/fastai/fastai/callback.py</span> in <span class="ansi-cyan-fg">__call__</span><span class="ansi-blue-fg">(self, cb_name, call_mets, **kwargs)</span>
+<span class="ansi-green-intense-fg ansi-bold">    222</span>         <span class="ansi-green-fg">if</span> call_mets<span class="ansi-blue-fg">:</span>
+<span class="ansi-green-intense-fg ansi-bold">    223</span>             <span class="ansi-green-fg">for</span> met <span class="ansi-green-fg">in</span> self<span class="ansi-blue-fg">.</span>metrics<span class="ansi-blue-fg">:</span> self<span class="ansi-blue-fg">.</span>_call_and_update<span class="ansi-blue-fg">(</span>met<span class="ansi-blue-fg">,</span> cb_name<span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">**</span>kwargs<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-fg">--&gt; 224</span><span class="ansi-red-fg">         </span><span class="ansi-green-fg">for</span> cb <span class="ansi-green-fg">in</span> self<span class="ansi-blue-fg">.</span>callbacks<span class="ansi-blue-fg">:</span> self<span class="ansi-blue-fg">.</span>_call_and_update<span class="ansi-blue-fg">(</span>cb<span class="ansi-blue-fg">,</span> cb_name<span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">**</span>kwargs<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    225</span> 
+<span class="ansi-green-intense-fg ansi-bold">    226</span>     <span class="ansi-green-fg">def</span> set_dl<span class="ansi-blue-fg">(</span>self<span class="ansi-blue-fg">,</span> dl<span class="ansi-blue-fg">:</span>DataLoader<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
+
+<span class="ansi-green-fg">~/fastai/fastai/callback.py</span> in <span class="ansi-cyan-fg">_call_and_update</span><span class="ansi-blue-fg">(self, cb, cb_name, **kwargs)</span>
+<span class="ansi-green-intense-fg ansi-bold">    213</span>         <span class="ansi-blue-fg">&#34;Call `cb_name` on `cb` and update the inner state.&#34;</span>
+<span class="ansi-green-intense-fg ansi-bold">    214</span>         new <span class="ansi-blue-fg">=</span> ifnone<span class="ansi-blue-fg">(</span>getattr<span class="ansi-blue-fg">(</span>cb<span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">f&#39;on_{cb_name}&#39;</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">**</span>self<span class="ansi-blue-fg">.</span>state_dict<span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">**</span>kwargs<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">,</span> dict<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-fg">--&gt; 215</span><span class="ansi-red-fg">         </span><span class="ansi-green-fg">for</span> k<span class="ansi-blue-fg">,</span>v <span class="ansi-green-fg">in</span> new<span class="ansi-blue-fg">.</span>items<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-intense-fg ansi-bold">    216</span>             <span class="ansi-green-fg">if</span> k <span class="ansi-green-fg">not</span> <span class="ansi-green-fg">in</span> self<span class="ansi-blue-fg">.</span>state_dict<span class="ansi-blue-fg">:</span>
+<span class="ansi-green-intense-fg ansi-bold">    217</span>                 <span class="ansi-green-fg">raise</span> Exception<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">f&#34;{k} isn&#39;t a valid key in the state of the callbacks.&#34;</span><span class="ansi-blue-fg">)</span>
+
+<span class="ansi-red-fg">AttributeError</span>: &#39;bool&#39; object has no attribute &#39;items&#39;</pre>
+</div>
+</div>
+
 </div>
 </div>
 
@@ -429,10 +480,10 @@ summary: "Callbacks that take decisions depending on the evolution of metrics du
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="EarlyStoppingCallback.on_train_begin"><code>on_train_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/tracker.py#L64" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#EarlyStoppingCallback-on_train_begin-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>on_train_begin</code>(<strong>**<code>kwargs</code></strong>:<code>Any</code>)</p>
+<h4 id="EarlyStoppingCallback.on_train_begin"><code>on_train_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/tracker.py#L59" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#EarlyStoppingCallback-on_train_begin-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>on_train_begin</code>(<strong>**<code>kwargs</code></strong>:<code>Any</code>)</p>
 </blockquote>
 <p>Initialize inner arguments.</p>
-<div class="collapse" id="EarlyStoppingCallback-on_train_begin-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#EarlyStoppingCallback-on_train_begin-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>on_train_begin</code></p></div></div><div style="height:1px"></div>
+<div class="collapse" id="EarlyStoppingCallback-on_train_begin-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#EarlyStoppingCallback-on_train_begin-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>on_train_begin</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><div style="height:1px"></div>
 </div>
 
 </div>
@@ -450,10 +501,10 @@ summary: "Callbacks that take decisions depending on the evolution of metrics du
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="EarlyStoppingCallback.on_epoch_end"><code>on_epoch_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/tracker.py#L69" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#EarlyStoppingCallback-on_epoch_end-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>on_epoch_end</code>(<strong><code>epoch</code></strong>, <strong>**<code>kwargs</code></strong>:<code>Any</code>)</p>
+<h4 id="EarlyStoppingCallback.on_epoch_end"><code>on_epoch_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/tracker.py#L64" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#EarlyStoppingCallback-on_epoch_end-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>on_epoch_end</code>(<strong><code>epoch</code></strong>, <strong>**<code>kwargs</code></strong>:<code>Any</code>)</p>
 </blockquote>
 <p>Compare the value monitored to its best score and maybe stop training.</p>
-<div class="collapse" id="EarlyStoppingCallback-on_epoch_end-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#EarlyStoppingCallback-on_epoch_end-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>on_epoch_end</code></p></div></div><div style="height:1px"></div>
+<div class="collapse" id="EarlyStoppingCallback-on_epoch_end-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#EarlyStoppingCallback-on_epoch_end-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>on_epoch_end</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><div style="height:1px"></div>
 </div>
 
 </div>
@@ -471,10 +522,10 @@ summary: "Callbacks that take decisions depending on the evolution of metrics du
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="SaveModelCallback"><code>class</code> <code>SaveModelCallback</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/tracker.py#L81" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#SaveModelCallback-pytest" style="float:right; padding-right:10px">[test]</a></h2><blockquote><p><code>SaveModelCallback</code>(<strong><code>learn</code></strong>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <strong><code>monitor</code></strong>:<code>str</code>=<strong><em><code>'val_loss'</code></em></strong>, <strong><code>mode</code></strong>:<code>str</code>=<strong><em><code>'auto'</code></em></strong>, <strong><code>every</code></strong>:<code>str</code>=<strong><em><code>'improvement'</code></em></strong>, <strong><code>name</code></strong>:<code>str</code>=<strong><em><code>'bestmodel'</code></em></strong>) :: <a href="/callbacks.tracker.html#TrackerCallback"><code>TrackerCallback</code></a></p>
+<h2 id="SaveModelCallback"><code>class</code> <code>SaveModelCallback</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/tracker.py#L76" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#SaveModelCallback-pytest" style="float:right; padding-right:10px">[test]</a></h2><blockquote><p><code>SaveModelCallback</code>(<strong><code>learn</code></strong>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <strong><code>monitor</code></strong>:<code>str</code>=<strong><em><code>'val_loss'</code></em></strong>, <strong><code>mode</code></strong>:<code>str</code>=<strong><em><code>'auto'</code></em></strong>, <strong><code>every</code></strong>:<code>str</code>=<strong><em><code>'improvement'</code></em></strong>, <strong><code>name</code></strong>:<code>str</code>=<strong><em><code>'bestmodel'</code></em></strong>) :: <a href="/callbacks.tracker.html#TrackerCallback"><code>TrackerCallback</code></a></p>
 </blockquote>
 <p>A <a href="/callbacks.tracker.html#TrackerCallback"><code>TrackerCallback</code></a> that saves the model when monitored quantity is best.</p>
-<div class="collapse" id="SaveModelCallback-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#SaveModelCallback-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>SaveModelCallback</code></p></div></div><div style="height:1px"></div>
+<div class="collapse" id="SaveModelCallback-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#SaveModelCallback-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>SaveModelCallback</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><div style="height:1px"></div>
 </div>
 
 </div>
@@ -504,68 +555,6 @@ summary: "Callbacks that take decisions depending on the evolution of metrics du
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_html rendered_html output_subarea ">
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: left;">
-      <th>epoch</th>
-      <th>train_loss</th>
-      <th>valid_loss</th>
-      <th>accuracy</th>
-      <th>time</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>1</td>
-      <td>0.678338</td>
-      <td>0.666926</td>
-      <td>0.659470</td>
-      <td>00:02</td>
-    </tr>
-    <tr>
-      <td>2</td>
-      <td>0.563476</td>
-      <td>0.515598</td>
-      <td>0.907753</td>
-      <td>00:02</td>
-    </tr>
-    <tr>
-      <td>3</td>
-      <td>0.370079</td>
-      <td>0.337353</td>
-      <td>0.933268</td>
-      <td>00:02</td>
-    </tr>
-    <tr>
-      <td>4</td>
-      <td>0.281564</td>
-      <td>0.272560</td>
-      <td>0.936212</td>
-      <td>00:02</td>
-    </tr>
-    <tr>
-      <td>5</td>
-      <td>0.260385</td>
-      <td>0.263720</td>
-      <td>0.936703</td>
-      <td>00:02</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-</div>
-
-</div>
-</div>
-
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -586,22 +575,6 @@ summary: "Callbacks that take decisions depending on the evolution of metrics du
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>bestmodel_1.pth  model_1.pth  model_4.pth    stage-1.pth
-bestmodel_2.pth  model_2.pth  model_5.pth    tmp.pth
-bestmodel_3.pth  model_3.pth  one_epoch.pth  trained_model.pth
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
@@ -612,79 +585,6 @@ bestmodel_3.pth  model_3.pth  one_epoch.pth  trained_model.pth
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_html rendered_html output_subarea ">
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: left;">
-      <th>epoch</th>
-      <th>train_loss</th>
-      <th>valid_loss</th>
-      <th>accuracy</th>
-      <th>time</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>1</td>
-      <td>0.238711</td>
-      <td>0.226684</td>
-      <td>0.939156</td>
-      <td>00:02</td>
-    </tr>
-    <tr>
-      <td>2</td>
-      <td>0.181980</td>
-      <td>0.176078</td>
-      <td>0.940628</td>
-      <td>00:02</td>
-    </tr>
-    <tr>
-      <td>3</td>
-      <td>0.159314</td>
-      <td>0.163088</td>
-      <td>0.942100</td>
-      <td>00:02</td>
-    </tr>
-    <tr>
-      <td>4</td>
-      <td>0.160453</td>
-      <td>0.159423</td>
-      <td>0.943081</td>
-      <td>00:02</td>
-    </tr>
-    <tr>
-      <td>5</td>
-      <td>0.159717</td>
-      <td>0.159017</td>
-      <td>0.943081</td>
-      <td>00:02</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-</div>
-
-<div class="output_area">
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>Better model found at epoch 1 with accuracy value: 0.9391560554504395.
-Better model found at epoch 2 with accuracy value: 0.9406280517578125.
-Better model found at epoch 3 with accuracy value: 0.9421001076698303.
-Better model found at epoch 4 with accuracy value: 0.9430814385414124.
-</pre>
-</div>
-</div>
-
 </div>
 </div>
 
@@ -705,22 +605,6 @@ Better model found at epoch 4 with accuracy value: 0.9430814385414124.
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>best.pth	 bestmodel_3.pth  model_3.pth  one_epoch.pth  trained_model.pth
-bestmodel_1.pth  model_1.pth	  model_4.pth  stage-1.pth
-bestmodel_2.pth  model_2.pth	  model_5.pth  tmp.pth
-</pre>
-</div>
-</div>
-
 </div>
 </div>
 
@@ -747,10 +631,10 @@ bestmodel_2.pth  model_2.pth	  model_5.pth  tmp.pth
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="SaveModelCallback.on_epoch_end"><code>on_epoch_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/tracker.py#L90" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#SaveModelCallback-on_epoch_end-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>on_epoch_end</code>(<strong><code>epoch</code></strong>, <strong>**<code>kwargs</code></strong>:<code>Any</code>)</p>
+<h4 id="SaveModelCallback.on_epoch_end"><code>on_epoch_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/tracker.py#L85" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#SaveModelCallback-on_epoch_end-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>on_epoch_end</code>(<strong><code>epoch</code></strong>, <strong>**<code>kwargs</code></strong>:<code>Any</code>)</p>
 </blockquote>
 <p>Compare the value monitored to its best score and maybe save the model.</p>
-<div class="collapse" id="SaveModelCallback-on_epoch_end-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#SaveModelCallback-on_epoch_end-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>on_epoch_end</code></p></div></div><div style="height:1px"></div>
+<div class="collapse" id="SaveModelCallback-on_epoch_end-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#SaveModelCallback-on_epoch_end-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>on_epoch_end</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><div style="height:1px"></div>
 </div>
 
 </div>
@@ -768,10 +652,10 @@ bestmodel_2.pth  model_2.pth	  model_5.pth  tmp.pth
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="SaveModelCallback.on_train_end"><code>on_train_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/tracker.py#L100" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#SaveModelCallback-on_train_end-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>on_train_end</code>(<strong>**<code>kwargs</code></strong>)</p>
+<h4 id="SaveModelCallback.on_train_end"><code>on_train_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/tracker.py#L95" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#SaveModelCallback-on_train_end-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>on_train_end</code>(<strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Load the best model.</p>
-<div class="collapse" id="SaveModelCallback-on_train_end-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#SaveModelCallback-on_train_end-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>on_train_end</code></p></div></div><div style="height:1px"></div>
+<div class="collapse" id="SaveModelCallback-on_train_end-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#SaveModelCallback-on_train_end-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>on_train_end</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><div style="height:1px"></div>
 </div>
 
 </div>
@@ -789,10 +673,10 @@ bestmodel_2.pth  model_2.pth	  model_5.pth  tmp.pth
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ReduceLROnPlateauCallback"><code>class</code> <code>ReduceLROnPlateauCallback</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/tracker.py#L105" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#ReduceLROnPlateauCallback-pytest" style="float:right; padding-right:10px">[test]</a></h2><blockquote><p><code>ReduceLROnPlateauCallback</code>(<strong><code>learn</code></strong>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <strong><code>monitor</code></strong>:<code>str</code>=<strong><em><code>'val_loss'</code></em></strong>, <strong><code>mode</code></strong>:<code>str</code>=<strong><em><code>'auto'</code></em></strong>, <strong><code>patience</code></strong>:<code>int</code>=<strong><em><code>0</code></em></strong>, <strong><code>factor</code></strong>:<code>float</code>=<strong><em><code>0.2</code></em></strong>, <strong><code>min_delta</code></strong>:<code>int</code>=<strong><em><code>0</code></em></strong>) :: <a href="/callbacks.tracker.html#TrackerCallback"><code>TrackerCallback</code></a></p>
+<h2 id="ReduceLROnPlateauCallback"><code>class</code> <code>ReduceLROnPlateauCallback</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/tracker.py#L100" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#ReduceLROnPlateauCallback-pytest" style="float:right; padding-right:10px">[test]</a></h2><blockquote><p><code>ReduceLROnPlateauCallback</code>(<strong><code>learn</code></strong>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <strong><code>monitor</code></strong>:<code>str</code>=<strong><em><code>'val_loss'</code></em></strong>, <strong><code>mode</code></strong>:<code>str</code>=<strong><em><code>'auto'</code></em></strong>, <strong><code>patience</code></strong>:<code>int</code>=<strong><em><code>0</code></em></strong>, <strong><code>factor</code></strong>:<code>float</code>=<strong><em><code>0.2</code></em></strong>, <strong><code>min_delta</code></strong>:<code>int</code>=<strong><em><code>0</code></em></strong>) :: <a href="/callbacks.tracker.html#TrackerCallback"><code>TrackerCallback</code></a></p>
 </blockquote>
 <p>A <a href="/callbacks.tracker.html#TrackerCallback"><code>TrackerCallback</code></a> that reduces learning rate when a metric has stopped improving.</p>
-<div class="collapse" id="ReduceLROnPlateauCallback-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#ReduceLROnPlateauCallback-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>ReduceLROnPlateauCallback</code></p></div></div><div style="height:1px"></div>
+<div class="collapse" id="ReduceLROnPlateauCallback-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#ReduceLROnPlateauCallback-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>ReduceLROnPlateauCallback</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><div style="height:1px"></div>
 </div>
 
 </div>
@@ -830,10 +714,10 @@ bestmodel_2.pth  model_2.pth	  model_5.pth  tmp.pth
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ReduceLROnPlateauCallback.on_train_begin"><code>on_train_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/tracker.py#L113" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#ReduceLROnPlateauCallback-on_train_begin-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>on_train_begin</code>(<strong>**<code>kwargs</code></strong>:<code>Any</code>)</p>
+<h4 id="ReduceLROnPlateauCallback.on_train_begin"><code>on_train_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/tracker.py#L108" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#ReduceLROnPlateauCallback-on_train_begin-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>on_train_begin</code>(<strong>**<code>kwargs</code></strong>:<code>Any</code>)</p>
 </blockquote>
 <p>Initialize inner arguments.</p>
-<div class="collapse" id="ReduceLROnPlateauCallback-on_train_begin-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#ReduceLROnPlateauCallback-on_train_begin-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>on_train_begin</code></p></div></div><div style="height:1px"></div>
+<div class="collapse" id="ReduceLROnPlateauCallback-on_train_begin-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#ReduceLROnPlateauCallback-on_train_begin-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>on_train_begin</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><div style="height:1px"></div>
 </div>
 
 </div>
@@ -851,10 +735,10 @@ bestmodel_2.pth  model_2.pth	  model_5.pth  tmp.pth
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ReduceLROnPlateauCallback.on_epoch_end"><code>on_epoch_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/tracker.py#L118" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#ReduceLROnPlateauCallback-on_epoch_end-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>on_epoch_end</code>(<strong><code>epoch</code></strong>, <strong>**<code>kwargs</code></strong>:<code>Any</code>)</p>
+<h4 id="ReduceLROnPlateauCallback.on_epoch_end"><code>on_epoch_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/tracker.py#L113" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#ReduceLROnPlateauCallback-on_epoch_end-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>on_epoch_end</code>(<strong><code>epoch</code></strong>, <strong>**<code>kwargs</code></strong>:<code>Any</code>)</p>
 </blockquote>
 <p>Compare the value monitored to its best and maybe reduce lr.</p>
-<div class="collapse" id="ReduceLROnPlateauCallback-on_epoch_end-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#ReduceLROnPlateauCallback-on_epoch_end-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>on_epoch_end</code></p></div></div><div style="height:1px"></div>
+<div class="collapse" id="ReduceLROnPlateauCallback-on_epoch_end-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#ReduceLROnPlateauCallback-on_epoch_end-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>on_epoch_end</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><div style="height:1px"></div>
 </div>
 
 </div>
@@ -872,10 +756,10 @@ bestmodel_2.pth  model_2.pth	  model_5.pth  tmp.pth
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TrackerCallback"><code>class</code> <code>TrackerCallback</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/tracker.py#L28" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#TrackerCallback-pytest" style="float:right; padding-right:10px">[test]</a></h2><blockquote><p><code>TrackerCallback</code>(<strong><code>learn</code></strong>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <strong><code>monitor</code></strong>:<code>str</code>=<strong><em><code>'val_loss'</code></em></strong>, <strong><code>mode</code></strong>:<code>str</code>=<strong><em><code>'auto'</code></em></strong>) :: <a href="/basic_train.html#LearnerCallback"><code>LearnerCallback</code></a></p>
+<h2 id="TrackerCallback"><code>class</code> <code>TrackerCallback</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/tracker.py#L23" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#TrackerCallback-pytest" style="float:right; padding-right:10px">[test]</a></h2><blockquote><p><code>TrackerCallback</code>(<strong><code>learn</code></strong>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <strong><code>monitor</code></strong>:<code>str</code>=<strong><em><code>'val_loss'</code></em></strong>, <strong><code>mode</code></strong>:<code>str</code>=<strong><em><code>'auto'</code></em></strong>) :: <a href="/basic_train.html#LearnerCallback"><code>LearnerCallback</code></a></p>
 </blockquote>
 <p>A <a href="/basic_train.html#LearnerCallback"><code>LearnerCallback</code></a> that keeps track of the best value in <code>monitor</code>.</p>
-<div class="collapse" id="TrackerCallback-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#TrackerCallback-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>TrackerCallback</code></p></div></div><div style="height:1px"></div>
+<div class="collapse" id="TrackerCallback-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#TrackerCallback-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>TrackerCallback</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><div style="height:1px"></div>
 </div>
 
 </div>
@@ -893,10 +777,10 @@ bestmodel_2.pth  model_2.pth	  model_5.pth  tmp.pth
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="TrackerCallback.get_monitor_value"><code>get_monitor_value</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/tracker.py#L44" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#TrackerCallback-get_monitor_value-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>get_monitor_value</code>()</p>
+<h4 id="TrackerCallback.get_monitor_value"><code>get_monitor_value</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/tracker.py#L39" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#TrackerCallback-get_monitor_value-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>get_monitor_value</code>()</p>
 </blockquote>
 <p>Pick the monitored value.</p>
-<div class="collapse" id="TrackerCallback-get_monitor_value-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#TrackerCallback-get_monitor_value-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>get_monitor_value</code></p></div></div><div style="height:1px"></div>
+<div class="collapse" id="TrackerCallback-get_monitor_value-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#TrackerCallback-get_monitor_value-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>get_monitor_value</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><div style="height:1px"></div>
 </div>
 
 </div>
@@ -927,10 +811,10 @@ bestmodel_2.pth  model_2.pth	  model_5.pth  tmp.pth
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="TrackerCallback.on_train_begin"><code>on_train_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/tracker.py#L40" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#TrackerCallback-on_train_begin-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>on_train_begin</code>(<strong>**<code>kwargs</code></strong>:<code>Any</code>)</p>
+<h4 id="TrackerCallback.on_train_begin"><code>on_train_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/tracker.py#L35" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#TrackerCallback-on_train_begin-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>on_train_begin</code>(<strong>**<code>kwargs</code></strong>:<code>Any</code>)</p>
 </blockquote>
 <p>Initializes the best value.</p>
-<div class="collapse" id="TrackerCallback-on_train_begin-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#TrackerCallback-on_train_begin-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>on_train_begin</code></p></div></div><div style="height:1px"></div>
+<div class="collapse" id="TrackerCallback-on_train_begin-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#TrackerCallback-on_train_begin-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>on_train_begin</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><div style="height:1px"></div>
 </div>
 
 </div>
