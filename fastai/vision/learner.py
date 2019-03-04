@@ -45,12 +45,14 @@ def cnn_config(arch):
     torch.backends.cudnn.benchmark = True
     return model_meta.get(arch, _default_meta)
 
-def create_body(arch:Callable, pretrained:bool=True, cut:Optional[int]=None, body_fn:Callable[[nn.Module], nn.Module]=None):
-    "Cut off the body of a typically pretrained `model` at `cut` or as specified by `body_fn`."
+def create_body(arch:Callable, pretrained:bool=True, cut:Optional[Union[int, Callable]]=None):
+    "Cut off the body of a typically pretrained `model` at `cut` (int) or cut the model as specified by `cut(model)` (function)."
     model = arch(pretrained)
-    if not cut and not body_fn: cut = cnn_config(arch)['cut']
-    return (nn.Sequential(*list(model.children())[:cut]) if cut
-            else body_fn(model) if body_fn else model)
+    cut = ifnone(cut, cnn_config(arch)['cut'])
+    if   isinstance(cut, int):      return nn.Sequential(*list(model.children())[:cut])
+    elif isinstance(cut, Callable): return cut(model)
+    else:                           raise NamedError("cut must be either integer or a function")
+
 
 def create_head(nf:int, nc:int, lin_ftrs:Optional[Collection[int]]=None, ps:Floats=0.5, bn_final:bool=False):
     "Model head that takes `nf` features, runs through `lin_ftrs`, and about `nc` classes."
@@ -71,8 +73,10 @@ def create_cnn(data:DataBunch, arch:Callable, cut:Union[int,Callable]=None, pret
     "Build convnet style learner."
     meta = cnn_config(arch)
     body = create_body(arch, pretrained, cut)
-    nf = num_features_model(body) * 2
-    head = custom_head or create_head(nf, data.c, lin_ftrs, ps=ps, bn_final=bn_final)
+    if custom_head is None:
+        nf = num_features_model(nn.Sequential(*body.children())) * 2
+        head = create_head(nf, data.c, lin_ftrs, ps=ps, bn_final=bn_final)
+    else: head = custom_head
     model = nn.Sequential(body, head)
     learn = Learner(data, model, **learn_kwargs)
     learn.split(ifnone(split_on, meta['split']))
