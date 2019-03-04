@@ -12,7 +12,6 @@ def test_rules():
     assert replace_all_caps(['Mark','CAPITALIZED','Only']) == ['Mark', 'xxup', 'capitalized', 'Only']
     assert deal_caps(['Mark','Capitalized','lower', 'All']) == ['xxmaj', 'mark', 'xxmaj', 'capitalized', 'lower', 'xxmaj', 'all']
 
-
 def test_tokenize():
     this_tests(Tokenizer)
     texts = ['one two three four', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', "I'm suddenly SHOUTING FOR NO REASON"]
