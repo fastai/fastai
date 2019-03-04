@@ -46,7 +46,7 @@ def cnn_config(arch):
     return model_meta.get(arch, _default_meta)
 
 def create_body(arch:Callable, pretrained:bool=True, cut:Optional[Union[int, Callable]]=None):
-    "Cut off the body of a typically pretrained `model` at `cut` or as specified by `body_fn`."
+    "Cut off the body of a typically pretrained `model` at `cut` (int) or cut the model as specified by `cut(model)` (function)."
     model = arch(pretrained)
     cut = ifnone(cut, cnn_config(arch)['cut'])
     if   isinstance(cut, int):      return nn.Sequential(*list(model.children())[:cut])
