@@ -4,7 +4,6 @@ from fastai.vision import *
 from fastai.vision.data import verify_image
 from utils.text import *
 import PIL
-import responses
 
 @pytest.fixture(scope="module")
 def path():
@@ -161,29 +160,35 @@ def test_download_images():
     finally:
         shutil.rmtree(tmp_path)
 
-@responses.activate
+has_responses = 0
+try: import responses; has_responses = 1
+except: pass
+
+@pytest.mark.skipif(not has_responses, reason="requires the `responses` module")
 def test_trunc_download():
     this_tests(download_images)
-    from io import StringIO
-    with StringIO('test_file_that_is_not_image') as cc_trunc:
-        file_io = cc_trunc.read()
-        mock_headers = {'Content-Type':'text/plain', 'Content-Length':'168168549'}
-        responses.add(responses.GET, 'http://files.fast.ai/data/examples/coco_tiny.tgz',
-                      body=file_io, status=200, headers=mock_headers)
+    url = URLs.COCO_TINY
+    fname = datapath4file(f'{url2name(url)}.tgz')
+    # backup user's current state
+    fname_bak = fname.parent/f"{fname.name}-bak"
+    if fname.exists(): os.rename(fname, fname_bak)
 
-        url = URLs.COCO_TINY
-        fname = datapath4file(f'{url2name(url)}.tgz')
-        try:
-            coco = untar_data(url,force_download=True)
+    with responses.RequestsMock() as rsps:
+        mock_headers = {'Content-Type':'text/plain', 'Content-Length':'168168549'}
+        rsps.add(responses.GET, f"{url}.tgz",
+                 body="some truncated text", status=200, headers=mock_headers)
+        try: coco = untar_data(url, force_download=True)
         except AssertionError as e:
-            # from fastai.datasets import Config, url2name
-            data_dir = Config().data_path()
-            expected_error =  f"Downloaded file {fname} does not match checksum expected! Remove that file from {data_dir} and try your code again."
+            expected_error = f"Downloaded file {fname} does not match checksum expected! Remove that file from {Config().data_path()} and try your code again."
             assert e.args[0] == expected_error
         except:
-            print(f"untar_data({URLs.COCO_TINY}) had Unexpected error:", sys.exc_info()[0])
+            assert False, f"untar_data({URLs.COCO_TINY}) had Unexpected error: {sys.exc_info()[0]}"
+        else:
+            assert False, f"untar_data({URLs.COCO_TINY})  should have gracefully failed on a truncated download"
         finally:
-            if fname.exists(): os.remove(fname)
+            # restore user's original state
+            if fname.exists():     os.remove(fname)
+            if fname_bak.exists(): os.rename(fname_bak, fname)
 
 def test_verify_images(path):
     this_tests(verify_images)
