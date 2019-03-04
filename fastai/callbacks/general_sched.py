@@ -20,22 +20,29 @@ class TrainingPhase():
 @dataclass
 class GeneralScheduler(LearnerCallback):
     "Schedule multiple `TrainingPhase` for a `Learner`."
-    def __init__(self, learn:Learner, phases):
+    def __init__(self, learn:Learner, phases:Collection[TrainingPhase], start_epoch:int=None):
         super().__init__(learn)
-        self.phases = phases
+        self.phases,self.start_epoch = phases,start_epoch
 
-    def on_train_begin(self, n_epochs:int, **kwargs:Any)->None:
+    def on_train_begin(self, epoch:int, **kwargs:Any)->None:
         "Initialize the lr and mom schedules for training."
+        res = {'epoch':self.start_epoch} if self.start_epoch is not None else None
+        self.start_epoch = ifnone(self.start_epoch, epoch)
         self.lr_scheds = [p.lr_step for p in self.phases]
         self.mom_scheds = [p.mom_step for p in self.phases]
         self.opt = self.learn.opt
         self.opt.lr,self.opt.mom = self.lr_scheds[0].start,self.mom_scheds[0].start
         self.idx_s = 0
+        return res
+    
+    def jump_to_epoch(self, epoch:int)->None:
+        for _ in range(len(self.learn.data.train_dl) * epoch):
+            self.on_batch_end(True)
 
     def on_batch_end(self, train, **kwargs:Any)->None:
         "Take a step in lr,mom sched, start next stepper when the current one is complete."
         if train:
-            if self.idx_s >= len(self.lr_scheds): return True
+            if self.idx_s >= len(self.lr_scheds): return {'stop_training': True, 'stop_epoch': True}
             self.opt.lr = self.lr_scheds[self.idx_s].step()
             self.opt.mom = self.mom_scheds[self.idx_s].step()
             if self.lr_scheds[self.idx_s].is_done:

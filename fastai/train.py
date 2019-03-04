@@ -13,7 +13,7 @@ def one_cycle_scheduler(lr_max:float, **kwargs:Any)->OneCycleScheduler:
 
 def fit_one_cycle(learn:Learner, cyc_len:int, max_lr:Union[Floats,slice]=defaults.lr,
                   moms:Tuple[float,float]=(0.95,0.85), div_factor:float=25., pct_start:float=0.3, final_div:float=None,
-                  wd:float=None, callbacks:Optional[CallbackList]=None, tot_epochs:int=None, start_epoch:int=1)->None:
+                  wd:float=None, callbacks:Optional[CallbackList]=None, tot_epochs:int=None, start_epoch:int=None)->None:
     "Fit a model following the 1cycle policy."
     max_lr = learn.lr_range(max_lr)
     callbacks = listify(callbacks)

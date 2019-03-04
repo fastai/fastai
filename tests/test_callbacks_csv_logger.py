@@ -11,7 +11,7 @@ def create_metrics_dataframe(learn):
         in enumerate(zip(
             get_train_losses(learn),
             learn.recorder.val_losses,
-            learn.recorder.metrics), 1)]
+            learn.recorder.metrics))]
     return pd.DataFrame(records, columns=learn.recorder.names[:-1])
 
 def convert_into_dataframe(buffer):

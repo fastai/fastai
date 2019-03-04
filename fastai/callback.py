@@ -164,6 +164,9 @@ class Callback():
     def on_train_end(self, **kwargs:Any)->None:
         "Useful for cleaning up things and saving files/models."
         pass
+    def jump_to_epoch(self, epoch)->None:
+        "To resume training at `epoch` directly."
+        pass
 
     def get_state(self, minimal:bool=True):
         "Return the inner state of the `Callback`, `minimal` or not."
@@ -235,6 +238,9 @@ class CallbackHandler():
         self.state_dict['n_epochs'],self.state_dict['pbar'],self.state_dict['metrics'] = epochs,pbar,metrics
         names = [(met.name if hasattr(met, 'name') else camel2snake(met.__class__.__name__)) for met in self.metrics]
         self('train_begin', metrics_names=names)
+        if self.state_dict['epoch'] != 0:
+            self.state_dict['pbar'].first_bar.total -= self.state_dict['epoch']
+            for cb in self.callbacks: cb.jump_to_epoch(self.state_dict['epoch'])
 
     def on_epoch_begin(self)->None:
         "Handle new epoch."
@@ -284,8 +290,8 @@ class CallbackHandler():
     def on_epoch_end(self, val_loss:Tensor)->bool:
         "Epoch is done, process `val_loss`."
         self.state_dict['last_metrics'] = [val_loss] if val_loss is not None else None
-        self.state_dict['epoch'] += 1
         self('epoch_end', call_mets = val_loss is not None)
+        self.state_dict['epoch'] += 1
         return self.state_dict['stop_training']
 
     def on_train_end(self, exception:Union[bool,Exception])->None:
