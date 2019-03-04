@@ -124,12 +124,22 @@ class ReduceLROnPlateauCallback(TrackerCallback):
 
 
 class TrackEpochCallback(LearnerCallback):
-    def __init__(self, learn:Learner, name:str='epoch', epoch_offset:int=0):
+    _order = -20 #Need to run before fit_one_cycle
+    def __init__(self, learn:Learner, name:str='epoch', epoch_offset:int=None):
         "Store completed epoch number in `learn.model_dir/name`."
         super().__init__(learn)
-        self.name,self.epoch_offset = name,epoch_offset
         self.path = learn.path/learn.model_dir/name
+        if epoch_offset is None:
+            if os.path.isfile(self.path):
+                 with self.path.open('r') as f:
+                     try:    epoch_offset = int(f.read())
+                     except: epoch_offset = 0
+            else: epoch_offset = 0
+        self.name,self.epoch_offset = name,epoch_offset
+                 
+    def on_train_begin(self, **kwargs:Any):
+        return {'epoch': self.epoch_offset}
 
     def on_epoch_end(self, epoch, **kwargs:Any)->None:
-        with self.path.open('w') as f: f.write(f'{epoch+self.epoch_offset}')
+        with self.path.open('w') as f: f.write(f'{epoch}')
 
