@@ -43,7 +43,7 @@ summary: "Useful metrics for training"
 <h4 id="accuracy"><code>accuracy</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L23" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#accuracy-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>accuracy</code>(<strong><code>input</code></strong>:<code>Tensor</code>, <strong><code>targs</code></strong>:<code>Tensor</code>) → <code>Rank0Tensor</code></p>
 </blockquote>
 <p>Compute accuracy with <code>targs</code> when <code>input</code> is bs * n_classes.</p>
-<div class="collapse" id="accuracy-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#accuracy-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>accuracy</code>:</p><ul><li><code>pytest -sv tests/test_metrics.py::test_accuracy</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_metrics.py#L42" class="source_link" style="float:right">[source]</a></li><li><code>pytest -sv tests/test_vision_train.py::test_accuracy</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_vision_train.py#L47" class="source_link" style="float:right">[source]</a></li></ul><p>Direct tests:</p><ul><li><code>pytest -sv tests/test_metrics.py::test_top_k_accuracy</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_metrics.py#L67" class="source_link" style="float:right">[source]</a></li><li><code>pytest -sv tests/test_metrics.py::test_accuracy_thresh</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_metrics.py#L88" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><div style="height:1px"></div>
+<div class="collapse" id="accuracy-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#accuracy-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>accuracy</code>:</p><ul><li><code>pytest -sv tests/test_metrics.py::test_accuracy</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_metrics.py#L42" class="source_link" style="float:right">[source]</a></li><li><code>pytest -sv tests/test_vision_train.py::test_accuracy</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_vision_train.py#L47" class="source_link" style="float:right">[source]</a></li></ul><p>Direct tests:</p><ul><li><code>pytest -sv tests/test_metrics.py::test_accuracy_thresh</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_metrics.py#L88" class="source_link" style="float:right">[source]</a></li><li><code>pytest -sv tests/test_metrics.py::test_top_k_accuracy</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_metrics.py#L67" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><div style="height:1px"></div>
 </div>
 
 </div>
@@ -637,24 +637,41 @@ learn = create_cnn(data, model, metrics=[error_rate, kappa])</code></pre>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">AverageMetric</span><span class="p">(</span><span class="n">Callback</span><span class="p">):</span>
+    <span class="s2">&quot;Wrap a `func` in a callback for metrics computation.&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">func</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">func</span><span class="p">,</span> <span class="n">func</span><span class="o">.</span><span class="vm">__name__</span>
+        <span class="c1"># If it&#39;s a partial, use func.func</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">func</span><span class="p">,</span><span class="s1">&#39;func&#39;</span><span class="p">,</span><span class="n">func</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">func</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">func</span><span class="p">,</span> <span class="n">name</span>
 
     <span class="k">def</span> <span class="nf">on_epoch_begin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="s2">&quot;Set the inner value to 0.&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">val</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">=</span> <span class="mf">0.</span><span class="p">,</span><span class="mi">0</span>
 
-    <span class="k">def</span> <span class="nf">on_batch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">last_output</span><span class="p">,</span> <span class="n">last_target</span><span class="p">,</span> <span class="n">train</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">+=</span> <span class="n">last_target</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">val</span> <span class="o">+=</span> <span class="n">last_target</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">func</span><span class="p">(</span><span class="n">last_output</span><span class="p">,</span> <span class="n">last_target</span><span class="p">)</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">on_batch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">last_output</span><span class="p">,</span> <span class="n">last_target</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="s2">&quot;Update metric computation with `last_output` and `last_target`.&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">is_listy</span><span class="p">(</span><span class="n">last_target</span><span class="p">):</span> <span class="n">last_target</span><span class="o">=</span><span class="p">[</span><span class="n">last_target</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">+=</span> <span class="n">last_target</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">func</span><span class="p">(</span><span class="n">last_output</span><span class="p">,</span> <span class="o">*</span><span class="n">last_target</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">val</span> <span class="o">+=</span> <span class="n">last_target</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="n">val</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">on_epoch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">last_metrics</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;last_metrics&#39;</span><span class="p">:</span> <span class="n">last_metrics</span> <span class="o">+</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">val</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">count</span><span class="p">]}</span>
+        <span class="s2">&quot;Set the final result in `last_metrics`.&quot;</span>
+        <span class="k">return</span> <span class="n">add_metrics</span><span class="p">(</span><span class="n">last_metrics</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">val</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">count</span><span class="p">)</span>
 </pre></div>
 
     </div>
 </div>
 </div>
 
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Here <a href="/torch_core.html#add_metrics"><code>add_metrics</code></a> is a convenience function that will return the proper dictionary for us:</p>
+<div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;last_metrics&#39;</span><span class="p">:</span> <span class="n">last_metrics</span> <span class="o">+</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">val</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">count</span><span class="p">]}</span>
+</pre></div>
+
+</div>
+</div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -679,7 +696,7 @@ learn = create_cnn(data, model, metrics=[error_rate, kappa])</code></pre>
         <span class="bp">self</span><span class="o">.</span><span class="n">total</span> <span class="o">+=</span> <span class="p">(</span><span class="n">preds</span><span class="o">==</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
     
     <span class="k">def</span> <span class="nf">on_epoch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">last_metrics</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;last_metrics&#39;</span><span class="p">:</span> <span class="n">last_metrics</span> <span class="o">+</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">correct</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">total</span><span class="p">]}</span>
+        <span class="k">return</span> <span class="n">add_metrics</span><span class="p">(</span><span class="n">last_metrics</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">correct</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">total</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -711,7 +728,7 @@ learn = create_cnn(data, model, metrics=[error_rate, kappa])</code></pre>
     <span class="k">def</span> <span class="nf">on_epoch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">last_metrics</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">current</span><span class="p">,</span> <span class="n">peak</span> <span class="o">=</span>  <span class="n">tracemalloc</span><span class="o">.</span><span class="n">get_traced_memory</span><span class="p">()</span>
         <span class="n">tracemalloc</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
-        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;last_metrics&#39;</span><span class="p">:</span> <span class="n">last_metrics</span> <span class="o">+</span> <span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">peak</span><span class="p">)]}</span>
+        <span class="k">return</span> <span class="n">add_metrics</span><span class="p">(</span><span class="n">last_metrics</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">peak</span><span class="p">))</span>
 </pre></div>
 
     </div>
@@ -777,7 +794,7 @@ epoch   train_loss  valid_loss  accuracy    peak RAM
     <span class="k">def</span> <span class="nf">on_epoch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">last_metrics</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">current</span><span class="p">,</span> <span class="n">peak</span> <span class="o">=</span>  <span class="n">tracemalloc</span><span class="o">.</span><span class="n">get_traced_memory</span><span class="p">()</span>
         <span class="n">tracemalloc</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
-        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;last_metrics&#39;</span><span class="p">:</span> <span class="n">last_metrics</span> <span class="o">+</span> <span class="p">[</span><span class="n">current</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_max</span><span class="p">,</span> <span class="n">peak</span><span class="p">]}</span>
+        <span class="k">return</span> <span class="n">add_metrics</span><span class="p">(</span><span class="n">last_metrics</span><span class="p">,</span> <span class="p">[</span><span class="n">current</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_max</span><span class="p">,</span> <span class="n">peak</span><span class="p">])</span>
 </pre></div>
 
     </div>
