@@ -28,6 +28,8 @@ of that change.
 - Default number of OpenMP threads to 2 (previously 4), due to observed performance benefits
 - In `text_classifier_learner` the outputs of the encoder corresponding to pad indices are ignored in the poolings
 - `purge` now relies on a writable `learn.model_dir`, which can be set to a full writable path in case `learn.path` is not writable (kaggle, et al)
+- In any event of a `Callback` returning a dictionary will update the state of the `CallbackHandler`
+- When creating a custom metric in a `Callback`, instead of storing the result in `self.metric`, you should know add it to `last_metrics` using the method above (see docs).
 
 ### Fixed:
 
