@@ -123,14 +123,7 @@ class AccumulateStepper(LearnerCallback):
             for p in (self.learn.model.parameters()):
                 if p.requires_grad: p.grad.div_(self.acc_samples)
             self.acc_samples = 0
-            return {'skip_step':False}
-        else: return {'skip_step':True}
-    
-    def on_step_end(self, **kwargs):
-        "zero gradients after stepping, True will result in no zeroing"
-        if (self.acc_batches % self.n_step) == 0:
-            return {'skip_zero':False}
-        else: return {'skip_zero':True}
+        else: return {'skip_step':True, 'skip_zero':True}
     
     def on_epoch_end(self, **kwargs):
         "step the rest of the accumulated grads if not perfectly divisible"
