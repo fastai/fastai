@@ -82,6 +82,7 @@ sidebar_d = {
     'Utils': {
         'Helpers': '/utils.collect_env',
         'Memory Management': '/utils.mem',
+        'ipython helpers': '/utils.ipython',
     },
     'Tutorials': {
         'Overview': '/tutorials',
