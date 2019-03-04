@@ -33,3 +33,8 @@ from numbers import Number
 from typing import Any, AnyStr, Callable, Collection, Dict, Hashable, Iterator, List, Mapping, NewType, Optional
 from typing import Sequence, Tuple, TypeVar, Union
 from types import SimpleNamespace
+
+def try_import(module):
+    "Try to import `module`. Returns module's object on success, None on failure"
+    try: return importlib.import_module(module)
+    except: return None

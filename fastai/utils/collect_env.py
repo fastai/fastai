@@ -13,11 +13,6 @@ def get_env(name):
     res = os.environ.get(name,'')
     return res if len(res) else "Unknown"
 
-def try_import(module):
-    "Try to import `module`. Returns module's object on success, None on failure"
-    try: return importlib.import_module(module)
-    except: return None
-
 def show_install(show_nvidia_smi:bool=False):
     "Print user's setup information"
 

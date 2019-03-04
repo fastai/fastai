@@ -2,7 +2,6 @@ import pytest
 from fastai.gen_doc.doctest import this_tests
 from fastai.vision import *
 from fastai.vision.data import verify_image
-from fastai.utils.collect_env import try_import
 from utils.text import *
 import PIL
 
