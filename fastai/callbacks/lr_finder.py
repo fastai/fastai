@@ -31,12 +31,7 @@ class LRFinder(LearnerCallback):
         self.opt.lr = self.sched.step()
         if self.sched.is_done or (self.stop_div and (smooth_loss > 4*self.best_loss or torch.isnan(smooth_loss))):
             #We use the smoothed loss to decide on the stopping since it's less shaky.
-            self.stop=True
-            return True
-
-    def on_epoch_end(self, **kwargs:Any)->None:
-        "Tell Learner if we need to stop."
-        return self.stop
+            return {'stop_epoch': True, 'stop_training': True}
 
     def on_train_end(self, **kwargs:Any)->None:
         "Cleanup learn model weights disturbed during LRFind exploration."

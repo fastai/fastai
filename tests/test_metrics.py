@@ -128,8 +128,8 @@ class DummyMetric(Callback):
     def on_epoch_begin(self, **kwargs):
         self.epoch += 1
 
-    def on_epoch_end(self, **kwargs):
-        self.metric = torch.tensor(dummy_base_val**self.epoch)
+    def on_epoch_end(self, last_metrics, **kwargs):
+        return {'last_metrics': last_metrics + [torch.tensor(dummy_base_val**self.epoch)]}
 
 def test_custom_metric_class():
     this_tests('na')

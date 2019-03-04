@@ -65,15 +65,15 @@ def fix_html(x:str) -> str:
     return re1.sub(' ', html.unescape(x))
 
 def replace_all_caps(x:Collection[str]) -> Collection[str]:
-    "Add `TK_UP` for words in all caps in `x`."
+    "Replace tokens in ALL CAPS in `x` by their lower version and add `TK_UP` before."
     res = []
     for t in x:
-        if t.isupper() and len(t) > 1: res.append(TK_UP)
-        res.append(t)
+        if t.isupper() and len(t) > 1: res.append(TK_UP); res.append(t.lower())
+        else: res.append(t)
     return res
 
 def deal_caps(x:Collection[str]) -> Collection[str]:
-    "Replace all words in `x` by their lower version and add `TK_MAJ`."
+    "Replace all Capitalized tokens in `x` by their lower version and add `TK_MAJ` before."
     res = []
     for t in x:
         if t == '': continue

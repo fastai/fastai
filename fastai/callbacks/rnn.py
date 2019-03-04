@@ -19,7 +19,7 @@ class RNNTrainer(LearnerCallback):
     def on_loss_begin(self, last_output:Tuple[Tensor,Tensor,Tensor], **kwargs):
         "Save the extra outputs for later and only returns the true output."
         self.raw_out,self.out = last_output[1],last_output[2]
-        return last_output[0]
+        return {'last_output': last_output[0]}
 
     def on_backward_begin(self, last_loss:Rank0Tensor, last_input:Tensor, **kwargs):
         "Apply AR and TAR to `last_loss`."
@@ -28,4 +28,4 @@ class RNNTrainer(LearnerCallback):
         if self.beta != 0.:
             h = self.raw_out[-1]
             if len(h)>1: last_loss += self.beta * (h[:,1:] - h[:,:-1]).float().pow(2).mean()
-        return last_loss
+        return {'last_loss': last_loss}

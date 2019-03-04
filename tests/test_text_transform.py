@@ -9,6 +9,8 @@ def test_rules():
     assert replace_wrep("I've never ever ever ever ever ever ever ever done this.") == "I've never  xxwrep 7 ever  done this."
     assert rm_useless_spaces("Inconsistent   use  of     spaces.") == "Inconsistent use of spaces."
     assert spec_add_spaces('I #like to #put #hashtags #everywhere!') == "I  # like to  # put  # hashtags  # everywhere!"
+    assert replace_all_caps(['Mark','CAPITALIZED','Only']) == ['Mark', 'xxup', 'capitalized', 'Only']
+    assert deal_caps(['Mark','Capitalized','lower', 'All']) == ['xxmaj', 'mark', 'xxmaj', 'capitalized', 'lower', 'xxmaj', 'all']
 
 def test_tokenize():
     this_tests(Tokenizer)

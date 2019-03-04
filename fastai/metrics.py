@@ -104,23 +104,23 @@ class RegMetrics(Callback):
 
 class R2Score(RegMetrics):
     "Compute the R2 score (coefficient of determination)."
-    def on_epoch_end(self, **kwargs):
-        self.metric = r2_score(self.preds, self.targs)
+    def on_epoch_end(self, last_metrics, **kwargs):
+        return {'last_metrics': last_metrics + [r2_score(self.preds, self.targs)]}
 
 class ExplainedVariance(RegMetrics):
     "Compute the explained variance."
-    def on_epoch_end(self, **kwargs):
-        self.metric = explained_variance(self.preds, self.targs)
+    def on_epoch_end(self, last_metrics, **kwargs):
+        return {'last_metrics': last_metrics + [explained_variance(self.preds, self.targs)]}
 
 class RMSE(RegMetrics):
     "Compute the root mean squared error."
-    def on_epoch_end(self, **kwargs):
-        self.metric = root_mean_squared_error(self.preds, self.targs)
+    def on_epoch_end(self, last_metrics, **kwargs):
+        return {'last_metrics': last_metrics + [root_mean_squared_error(self.preds, self.targs)]}
 
 class ExpRMSPE(RegMetrics):
     "Compute the exponential of the root mean square error."
-    def on_epoch_end(self, **kwargs):
-        self.metric = exp_rmspe(self.preds, self.targs)
+    def on_epoch_end(self, last_metrics, **kwargs):
+        return {'last_metrics': last_metrics + [exp_rmspe(self.preds, self.targs)]}
 
 # Aliases
 mse = mean_squared_error
@@ -149,7 +149,6 @@ class ConfusionMatrix(Callback):
 
     def on_epoch_end(self, **kwargs):
         self.metric = self.cm
-
 
 @dataclass
 class CMScores(ConfusionMatrix):
@@ -190,11 +189,13 @@ class CMScores(ConfusionMatrix):
 
 class Recall(CMScores):
     "Compute the Recall."
-    def on_epoch_end(self, **kwargs): self.metric = self._recall()
+    def on_epoch_end(self, last_metrics, **kwargs): 
+        return {'last_metrics': last_metrics + [self._recall()]}
 
 class Precision(CMScores):
     "Compute the Precision."
-    def on_epoch_end(self, **kwargs): self.metric = self._precision()
+    def on_epoch_end(self, last_metrics, **kwargs): 
+        return {'last_metrics': last_metrics + [self._precision()]}
 
 @dataclass
 class FBeta(CMScores):
@@ -207,11 +208,12 @@ class FBeta(CMScores):
         self.avg = self.average
         if self.average != "micro": self.average = None
 
-    def on_epoch_end(self, **kwargs):
+    def on_epoch_end(self, last_metrics, **kwargs):
         prec = self._precision()
         rec = self._recall()
-        self.metric = (1 + self.beta2) * prec * rec / (prec * self.beta2 + rec + self.eps)
-        if self.avg: self.metric = (self._weights(avg=self.avg) * self.metric).sum()
+        metric = (1 + self.beta2) * prec * rec / (prec * self.beta2 + rec + self.eps)
+        if self.avg: metric = (self._weights(avg=self.avg) * self.metric).sum()
+        return {'last_metrics': last_metrics + [metric]}
 
     def on_train_end(self, **kwargs): self.average = self.avg
 
@@ -219,7 +221,7 @@ class KappaScore(ConfusionMatrix):
     "Compute the rate of agreement (Cohens Kappa)."
     weights:Optional[str]=None      # None, `linear`, or `quadratic`
 
-    def on_epoch_end(self, **kwargs):
+    def on_epoch_end(self, last_metrics, **kwargs):
         sum0 = self.cm.sum(dim=0)
         sum1 = self.cm.sum(dim=1)
         expected = torch.einsum('i,j->ij', (sum0, sum1)) / sum0.sum()
@@ -232,11 +234,11 @@ class KappaScore(ConfusionMatrix):
             w = torch.abs(w - torch.t(w)) if self.weights == "linear" else (w - torch.t(w)) ** 2
         else: raise ValueError('Unknown weights. Expected None, "linear", or "quadratic".')
         k = torch.sum(w * self.cm) / torch.sum(w * expected)
-        self.metric = 1 - k
+        return {'last_metrics': last_metrics + [1-k]}
 
 class MatthewsCorreff(ConfusionMatrix):
     "Compute the Matthews correlation coefficient."
-    def on_epoch_end(self, **kwargs):
+    def on_epoch_end(self, last_metrics, **kwargs):
         t_sum = self.cm.sum(dim=1)
         p_sum = self.cm.sum(dim=0)
         n_correct = torch.trace(self.cm)
@@ -244,7 +246,7 @@ class MatthewsCorreff(ConfusionMatrix):
         cov_ytyp = n_correct * n_samples - torch.dot(t_sum, p_sum)
         cov_ypyp = n_samples ** 2 - torch.dot(p_sum, p_sum)
         cov_ytyt = n_samples ** 2 - torch.dot(t_sum, t_sum)
-        self.metric = cov_ytyp / torch.sqrt(cov_ytyt * cov_ypyp)
+        return {'last_metrics': last_metrics + [cov_ytyp / torch.sqrt(cov_ytyt * cov_ypyp)]}
 
 class Perplexity(Callback):
     "Perplexity metric for language models."
@@ -254,5 +256,5 @@ class Perplexity(Callback):
         self.loss += last_target.size(1) * CrossEntropyFlat()(last_output, last_target)
         self.len += last_target.size(1)
 
-    def on_epoch_end(self, **kwargs): self.metric = torch.exp(self.loss / self.len)
-
+    def on_epoch_end(self, last_metrics, **kwargs): 
+        return {'last_metrics': last_metrics + [torch.exp(self.loss / self.len)]}
