@@ -4,9 +4,10 @@ import platform
 from ..script import *
 
 #
-# BEGIN: Workaround for nvml.dll load issue in Win10
+# BEGIN: Temporary workaround for nvml.dll load issue in Win10
 #
-# Remove once nicolargo/nvidia-ml-py3#2 OR fbcotter/py3nvml#10 is approved.
+# Remove once nicolargo/nvidia-ml-py3#2 and a new version of the module is released 
+# (OR fbcotter/py3nvml#10 but will require extra work to rename things)
 # Refer https://forums.fast.ai/t/nvml-dll-loading-issue-in-nvidia-ml-py3-7-352-0-py-0/39684/8
 import threading
 from ctypes import *
@@ -44,21 +45,18 @@ def _LoadNvmlLibrary():
         finally:
             libLoadLock.release()
 #
-# END: Workaround for nvml.dll load issue in Win10
+# END: Temporary workaround for nvml.dll load issue in Win10
 #
 
 def load_pynvml_env():
     import pynvml # nvidia-ml-py3
 
     #
-    # BEGIN: Workaround for nvml.dll load issue in Win10
-    #
-    # Remove once nicolargo/nvidia-ml-py3#2 OR fbcotter/py3nvml#10 is approved.
-    # Refer https://forums.fast.ai/t/nvml-dll-loading-issue-in-nvidia-ml-py3-7-352-0-py-0/39684/8
+    # BEGIN: Temporary workaround for nvml.dll load issue in Win10 (continued)
     _LoadNvmlLibrary()
     pynvml.nvmlLib = nvmlLib
     #
-    # END: Workaround for nvml.dll load issue in Win10
+    # END: Temporary workaround for nvml.dll load issue in Win10
     #
 
     if platform.system() == "Darwin":
