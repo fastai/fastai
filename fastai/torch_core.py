@@ -372,3 +372,7 @@ def rank_distrib():
     "Return the distributed rank of this process (if applicable)."
     return int(os.environ.get('RANK', 0))
 
+def add_metrics(last_metrics:Collection[Rank0Tensor], mets:Union[Rank0Tensor, Collection[Rank0Tensor]]):
+    "Return a dictionary for updating `last_metrics` with `mets`."
+    mets = listify(mets)
+    return {'last_metrics': last_metrics + mets}

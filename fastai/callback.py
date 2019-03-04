@@ -296,7 +296,7 @@ class AverageMetric(Callback):
     "Wrap a `func` in a callback for metrics computation."
     def __init__(self, func):
         # If it's a partial, use func.func
-        name = getattr(func,'func',func).__name__
+        name = getattr(func,'func', func).__name__
         self.func, self.name = func, name
         self.world = num_distrib()
 
@@ -317,7 +317,7 @@ class AverageMetric(Callback):
 
     def on_epoch_end(self, last_metrics, **kwargs):
         "Set the final result in `last_metrics`."
-        return {'last_metrics': last_metrics + [self.val/self.count]}
+        return add_metrics(last_metrics, self.val/self.count)
 
 def annealing_no(start:Number, end:Number, pct:float)->Number:
     "No annealing, always return `start`."

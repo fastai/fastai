@@ -3,6 +3,7 @@
 import tracemalloc, threading, torch, time
 from ..utils.mem import *
 from ..basic_train import *
+from ..torch_core import *
 from ..utils.pynvml_gate import *
 
 if use_gpu: pynvml = load_pynvml_env()
@@ -61,4 +62,4 @@ class PeakMemMetric(LearnerCallback):
         # since we want the overhead only, subtract delta used if it's positive
         elif gpu_used > 0: gpu_peak -= gpu_used
         # The numbers are deltas in MBs (beginning of the epoch and the end)
-        return {'last_metrics': last_metrics + [cpu_used, cpu_peak, gpu_used, gpu_peak]}
+        return add_metrics(last_metrics, [cpu_used, cpu_peak, gpu_used, gpu_peak])
