@@ -15,28 +15,28 @@ def get_data(path, size, bs, workers):
     train = ImageList.from_csv(path, 'train.csv')#.use_partial_data(0.001)
     valid = ImageList.from_csv(path, 'valid.csv')#.use_partial_data()
     lls = ItemLists(path, train, valid).label_from_df().transform(
-            tfms, size=size).presize(size, scale=(0.25, 1.0))
+            tfms, size=size).presize(size, scale=(0.35, 1.0))
     return lls.databunch(bs=bs, num_workers=workers).normalize(imagenet_stats)
 
 @call_parse
 def main( gpu:Param("GPU to run on", str)=None ):
     """Distributed training of Imagenet. Fastest speed is if you run with: python -m fastai.launch"""
     path = Path('/mnt/fe2_disk/')
-    tot_epochs = 60
+    tot_epochs = 90
     epoch_fn = path/'imagenet'/'models'/'epoch'
     epoch = 0
     if epoch_fn.exists(): epoch = int(epoch_fn.open().read())
     epoch += 1
     if epoch>tot_epochs: return
 
-    bs,lr = 256,0.3
+    bs,lr = 256,0.6
     gpu = setup_distrib(gpu)
     n_gpus = int(os.environ.get("WORLD_SIZE", 1))
     workers = min(32, num_cpus()//n_gpus)
     data = get_data(path/'imagenet', 224, bs, workers)
     opt_func = partial(optim.SGD, momentum=0.9)
     learn = Learner(data, models.xresnet50(), metrics=[accuracy,top_k_accuracy], wd=1e-5,
-        opt_func=opt_func, bn_wd=True, true_wd=False,
+        opt_func=opt_func, bn_wd=False, true_wd=False,
         loss_func = LabelSmoothingCrossEntropy()).mixup(alpha=0.2)
     learn.callback_fns += [
         partial(TrackEpochCallback, epoch_offset=epoch-1),
@@ -52,6 +52,6 @@ def main( gpu:Param("GPU to run on", str)=None ):
     tot_bs = bs*n_gpus
     bs_rat = tot_bs/256
     lr *= bs_rat
-    learn.fit_one_cycle(tot_epochs-epoch+1, lr, div_factor=5, pct_start=0.15, moms=(0.9,0.9), start_epoch=epoch)
+    learn.fit_one_cycle(tot_epochs-epoch+1, lr, div_factor=5, moms=(0.9,0.9), start_epoch=epoch)
     learn.save('done')
 
