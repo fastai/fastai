@@ -147,3 +147,4 @@ class TrackEpochCallback(LearnerCallback):
     def on_epoch_end(self, epoch, **kwargs:Any)->None:
         with self.path.open('w') as f: f.write(f'{epoch}')
 
+    def restart(self): os.remove(self.path)
