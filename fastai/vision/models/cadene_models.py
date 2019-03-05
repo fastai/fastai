@@ -45,12 +45,11 @@ def senet154(pretrained:bool=False):           return get_model(pmodels.senet154
 model_meta[inceptionresnetv2] = {'cut': -2, 'split': lambda m: (m[0][9],     m[1])}
 model_meta[dpn92]             = {'cut': -1, 'split': lambda m: (m[0][0][16], m[1])}
 model_meta[xception_cadene]   = {'cut': -1, 'split': lambda m: (m[0][11],    m[1])}
-
-_se_resnet_meta = {'cut': -2, 'split': lambda m: (m[0][3], m[1])}
+model_meta[senet154]          = {'cut': -3, 'split': lambda m: (m[0][3],     m[1])}
+_se_resnet_meta               = {'cut': -2, 'split': lambda m: (m[0][3],     m[1])}
 model_meta[se_resnet50]        = _se_resnet_meta
 model_meta[se_resnet101]       = _se_resnet_meta
 model_meta[se_resnext50_32x4d] = _se_resnet_meta
-model_meta[senet154] = {'cut': -3, 'split': lambda m: (m[0][3], m[1])}
 
 # TODO: add "resnext101_32x4d" "resnext101_64x4d" after serialization issue is fixed:
 # https://github.com/Cadene/pretrained-models.pytorch/pull/128
