@@ -253,6 +253,7 @@ def in_channels(m:nn.Module) -> List[int]:
     raise Exception('No weight layer')
 
 class ModelOnCPU():
+    "A context manager to evaluate `model` on the CPU inside."
     def __init__(self, model:nn.Module): self.model = model       
     def __enter__(self):
         self.device = one_param(self.model).device
@@ -261,6 +262,7 @@ class ModelOnCPU():
         self.model = self.model.to(self.device)
     
 class NoneReduceOnCPU():
+    "A context manager to evaluate `loss_func` with none reduce and weights on the CPU inside."
     def __init__(self, loss_func:LossFunction): 
         self.loss_func,self.device,self.old_red = loss_func,None,None
         

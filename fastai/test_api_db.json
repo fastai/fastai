@@ -478,7 +478,7 @@
     "fastai.data_block.LabelLists.databunch": [
         {
             "file": "tests/test_vision_data.py",
-            "line": 220,
+            "line": 217,
             "test": "test_vision_datasets"
         }
     ],
@@ -759,6 +759,13 @@
             "test": "test_rules"
         }
     ],
+    "fastai.torch_core.NoneReduceOnCPU": [
+        {
+            "file": "tests/test_torch_core.py",
+            "line": 98,
+            "test": "test_none_reduce_on_cpu"
+        }
+    ],
     "fastai.torch_core.apply_init": [
         {
             "file": "tests/test_torch_core.py",
@@ -778,13 +785,6 @@
             "file": "tests/test_callback_fp16.py",
             "line": 32,
             "test": "test_batch_to_half"
-        }
-    ],
-    "fastai.torch_core.calc_loss": [
-        {
-            "file": "tests/test_torch_core.py",
-            "line": 98,
-            "test": "test_calc_loss"
         }
     ],
     "fastai.torch_core.in_channels": [
@@ -1036,45 +1036,45 @@
     "fastai.vision.data.ImageList.from_csv": [
         {
             "file": "tests/test_vision_data.py",
-            "line": 230,
+            "line": 227,
             "test": "test_multi"
         }
     ],
     "fastai.vision.data.ImageList.from_folder": [
         {
             "file": "tests/test_vision_data.py",
-            "line": 220,
+            "line": 217,
             "test": "test_vision_datasets"
         }
     ],
     "fastai.vision.data.ObjectItemList": [
         {
             "file": "tests/test_vision_data.py",
-            "line": 270,
+            "line": 267,
             "test": "test_coco"
         },
         {
             "file": "tests/test_vision_data.py",
-            "line": 283,
+            "line": 280,
             "test": "test_coco_same_size"
         },
         {
             "file": "tests/test_vision_data.py",
-            "line": 300,
+            "line": 297,
             "test": "test_coco_pickle"
         }
     ],
     "fastai.vision.data.PointsItemList": [
         {
             "file": "tests/test_vision_data.py",
-            "line": 257,
+            "line": 254,
             "test": "test_points"
         }
     ],
     "fastai.vision.data.SegmentationItemList": [
         {
             "file": "tests/test_vision_data.py",
-            "line": 241,
+            "line": 238,
             "test": "test_camvid"
         }
     ],
@@ -1093,21 +1093,21 @@
         },
         {
             "file": "tests/test_vision_data.py",
-            "line": 168,
+            "line": 165,
             "test": "test_trunc_download"
         }
     ],
     "fastai.vision.data.verify_image": [
         {
             "file": "tests/test_vision_data.py",
-            "line": 204,
+            "line": 201,
             "test": "test_verify_image"
         }
     ],
     "fastai.vision.data.verify_images": [
         {
             "file": "tests/test_vision_data.py",
-            "line": 193,
+            "line": 190,
             "test": "test_verify_images"
         }
     ],
@@ -1142,17 +1142,17 @@
     "fastai.vision.image.pil2tensor": [
         {
             "file": "tests/test_vision_data.py",
-            "line": 351,
+            "line": 348,
             "test": "test_vision_pil2tensor"
         },
         {
             "file": "tests/test_vision_data.py",
-            "line": 382,
+            "line": 379,
             "test": "test_vision_pil2tensor_16bit"
         },
         {
             "file": "tests/test_vision_data.py",
-            "line": 389,
+            "line": 386,
             "test": "test_vision_pil2tensor_numpy"
         }
     ],
@@ -1306,12 +1306,12 @@
     "fastai.vision.transform.get_transforms": [
         {
             "file": "tests/test_vision_data.py",
-            "line": 316,
+            "line": 313,
             "test": "test_image_to_image_different_y_size"
         },
         {
             "file": "tests/test_vision_data.py",
-            "line": 331,
+            "line": 328,
             "test": "test_image_to_image_different_tfms"
         }
     ],
