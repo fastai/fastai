@@ -26,8 +26,8 @@ def main( gpu:Param("GPU to run on", str)=None ):
 
     bs,lr = 256,0.3
     gpu = setup_distrib(gpu)
-    n_gpus = int(os.environ.get("WORLD_SIZE", 1))
-    workers = min(32, num_cpus()//n_gpus)
+    n_gpus = rank_distrib() or 1
+    workers = min(12, num_cpus()//n_gpus)
     data = get_data(path, size, bs, workers)
     opt_func = partial(optim.SGD, momentum=0.9)
     learn = Learner(data, models.xresnet50(), metrics=[accuracy,top_k_accuracy], wd=1e-5,
@@ -46,5 +46,5 @@ def main( gpu:Param("GPU to run on", str)=None ):
     tot_bs = bs*n_gpus
     bs_rat = tot_bs/256
     lr *= bs_rat
-    learn.fit_one_cycle(tot_epochs, lr, div_factor=5, moms=(0.9,0.9))
+    learn.fit_one_cycle(tot_epochs, slice(lr,lr*5), div_factor=5, moms=(0.9,0.9))
 
