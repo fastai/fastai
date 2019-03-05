@@ -42,7 +42,7 @@ def learn(mnist_tiny):
 def learn_large_unfit():
     path = untar_data(URLs.MNIST_TINY)
     data = ImageDataBunch.from_folder(path, ds_tfms=([], []), bs=2)
-    return create_cnn(data, models.resnet18, metrics=accuracy)
+    return cnn_learner(data, models.resnet18, metrics=accuracy)
 
 def test_accuracy(learn):
     this_tests(accuracy)
@@ -132,7 +132,7 @@ def test_model_load_mem_leak(learn_large_unfit):
 
 @pytest.mark.parametrize('arch', [models.resnet18, models.squeezenet1_1])
 def test_models_meta(mnist_tiny, arch, zero_image):
-    learn = create_cnn(mnist_tiny, arch, metrics=[accuracy, error_rate])
+    learn = cnn_learner(mnist_tiny, arch, metrics=[accuracy, error_rate])
     this_tests(learn.predict)
     pred = learn.predict(zero_image)
     assert pred is not None
