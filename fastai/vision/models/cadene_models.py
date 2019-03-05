@@ -6,7 +6,7 @@ from ...core import *
 
 pretrainedmodels = try_import('pretrainedmodels')
 if not pretrainedmodels:
-    raise Exception("Error: `pretrainedmodels` is needed. `pip install pretrainedmodels`')
+    raise Exception('Error: `pretrainedmodels` is needed. `pip install pretrainedmodels`')
 
 __all__ = ['inceptionv4', 'inceptionresnetv2', 'nasnetamobile', 'dpn92', 'xception_cadene', 'se_resnet50',
            'se_resnet101', 'se_resnext50_32x4d', 'senet154', 'pnasnet5large']
