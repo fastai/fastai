@@ -154,7 +154,7 @@ class Learner():
         self.path = Path(ifnone(self.path, self.data.path))
         (self.path/self.model_dir).mkdir(parents=True, exist_ok=True)
         self.model = self.model.to(self.data.device)
-        self.loss_func = ifnone(self.loss_func, self.data.loss_func)
+        self.loss_func = self.loss_func or self.data.loss_func
         self.metrics=listify(self.metrics)
         if not self.layer_groups: self.layer_groups = [nn.Sequential(*flatten_model(self.model))]
         self.callbacks = listify(self.callbacks)
