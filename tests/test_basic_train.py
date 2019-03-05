@@ -23,7 +23,7 @@ def data():
 # this is not a fixture on purpose - the memory measurement tests are very sensitive, so
 # they need to be able to get a fresh learn object and not one modified by other tests.
 def learn_large_unfit(data):
-    learn = create_cnn(data, models.resnet18, metrics=accuracy)
+    learn = cnn_learner(data, models.resnet18, metrics=accuracy)
     return learn
 
 @pytest.fixture(scope="module")
