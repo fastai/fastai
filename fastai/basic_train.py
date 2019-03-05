@@ -524,6 +524,9 @@ class Recorder(LearnerCallback):
 
     def plot_losses(self, skip_start:int=None, skip_end:int=None, return_fig:bool=None)->Optional[plt.Figure]:
         "Plot training and validation losses."
+        if skip_end > 0:
+            skip_end = -skip_end
+
         fig, ax = plt.subplots(1,1)
         l_b = np.sum(self.nb_batches[skip_start:skip_end])
         iterations = range_of(self.losses)[skip_start:skip_end]
