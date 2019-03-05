@@ -20,11 +20,11 @@ def get_data(path, size, bs, workers):
 def main( gpu:Param("GPU to run on", str)=None ):
     """Distributed training of Imagenette. Fastest speed is if you run with: python -m fastai.launch"""
     path = Path('/mnt/fe2_disk/')
-    tot_epochs = 90
+    tot_epochs = 40
     dirname = 'imagenette-160'
     size = 128
 
-    bs,lr = 256,0.6
+    bs,lr = 256,0.3
     gpu = setup_distrib(gpu)
     n_gpus = int(os.environ.get("WORLD_SIZE", 1))
     workers = min(32, num_cpus()//n_gpus)
