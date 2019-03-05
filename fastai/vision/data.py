@@ -106,7 +106,7 @@ class ImageDataBunch(DataBunch):
         path=Path(path)
         il = ImageList.from_folder(path)
         if valid_pct is None: src = il.split_by_folder(train=train, valid=valid)
-        else: src = il.random_split_by_pct(valid_pct)
+        else: src = il.split_by_rand_pct(valid_pct)
         src = src.label_from_folder(classes=classes)
         return cls.create_from_ll(src, **kwargs)
 
@@ -115,7 +115,7 @@ class ImageDataBunch(DataBunch):
                 fn_col:IntsOrStrs=0, label_col:IntsOrStrs=1, suffix:str='', **kwargs:Any)->'ImageDataBunch':
         "Create from a `DataFrame` `df`."
         src = (ImageList.from_df(df, path=path, folder=folder, suffix=suffix, cols=fn_col)
-                .random_split_by_pct(valid_pct)
+                .split_by_rand_pct(valid_pct)
                 .label_from_df(label_delim=label_delim, cols=label_col))
         return cls.create_from_ll(src, **kwargs)
 
@@ -135,14 +135,14 @@ class ImageDataBunch(DataBunch):
         "Create from list of `fnames` in `path`."
         item_cls = ifnone(item_cls, ImageList)
         fname2label = {f:l for (f,l) in zip(fnames, labels)}
-        src = (item_cls(fnames, path=path).random_split_by_pct(valid_pct)
+        src = (item_cls(fnames, path=path).split_by_rand_pct(valid_pct)
                                 .label_from_func(lambda x:fname2label[x]))
         return cls.create_from_ll(src, **kwargs)
 
     @classmethod
     def from_name_func(cls, path:PathOrStr, fnames:FilePathList, label_func:Callable, valid_pct:float=0.2, **kwargs):
         "Create from list of `fnames` in `path` with `label_func`."
-        src = ImageList(fnames, path=path).random_split_by_pct(valid_pct)
+        src = ImageList(fnames, path=path).split_by_rand_pct(valid_pct)
         return cls.create_from_ll(src.label_from_func(label_func), **kwargs)
 
     @classmethod
@@ -161,7 +161,7 @@ class ImageDataBunch(DataBunch):
         "Create an empty `ImageDataBunch` in `path` with `classes`. Typically used for inference."
         warn("""This method is deprecated and will be removed in a future version, use `load_learner` after
              `Learner.export()`""", DeprecationWarning)
-        sd = ImageList([], path=path, ignore_empty=True).no_split()
+        sd = ImageList([], path=path, ignore_empty=True).split_none()
         return sd.label_const(0, label_cls=CategoryList, classes=classes).transform(ds_tfms, **kwargs).databunch()
 
     def batch_stats(self, funcs:Collection[Callable]=None)->Tensor:

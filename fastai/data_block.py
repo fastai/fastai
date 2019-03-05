@@ -162,7 +162,7 @@ class ItemList():
         if seed is not None: np.random.seed(seed)
         return self.filter_by_func(lambda o: rand_bool(p))
 
-    def no_split(self):
+    def split_none(self):
         "Don't split the data and create an empty validation set."
         val = self[[]]
         val.ignore_empty = True
@@ -189,9 +189,9 @@ class ItemList():
         "Split the data depending on the folder (`train` or `valid`) in which the filenames are."
         return self.split_by_idxs(self._get_by_folder(train), self._get_by_folder(valid))
 
-    def random_split_by_pct(self, valid_pct:float=0.2, seed:int=None)->'ItemLists':
+    def split_by_rand_pct(self, valid_pct:float=0.2, seed:int=None)->'ItemLists':
         "Split the items randomly by putting `valid_pct` in the validation set, optional `seed` can be passed."
-        if valid_pct==0.: return self.no_split()
+        if valid_pct==0.: return self.split_none()
         if seed is not None: np.random.seed(seed)
         rand_idx = np.random.permutation(range_of(self))
         cut = int(valid_pct * len(self))
@@ -243,7 +243,7 @@ class ItemList():
     def _label_from_list(self, labels:Iterator, label_cls:Callable=None, from_item_lists:bool=False, **kwargs)->'LabelList':
         "Label `self.items` with `labels`."
         if not from_item_lists: 
-            raise Exception("Your data isn't split, if you don't want a validation set, please use `no_split`.")
+            raise Exception("Your data isn't split, if you don't want a validation set, please use `split_none`.")
         labels = array(labels, dtype=object)
         label_cls = self.get_label_cls(labels, label_cls=label_cls, **kwargs)
         y = label_cls(labels, path=self.path, **kwargs)
@@ -425,7 +425,7 @@ class ItemLists():
         if not self.train.ignore_empty and len(self.train.items) == 0:
             warn("Your training set is empty. If this is by design, pass `ignore_empty=True` to remove this warning.")
         if not self.valid.ignore_empty and len(self.valid.items) == 0:
-            warn("""Your validation set is empty. If this is by design, use `no_split()`
+            warn("""Your validation set is empty. If this is by design, use `split_none()`
                  or pass `ignore_empty=True` when labelling to remove this warning.""")
         if isinstance(self.train, LabelList): self.__class__ = LabelLists
 
@@ -697,7 +697,7 @@ class LabelList(Dataset):
 
     def databunch(self, **kwargs):
         "To throw a clear error message when the data wasn't split."
-        raise Exception("Your data isn't split, if you don't want a validation set, please use `no_split`")
+        raise Exception("Your data isn't split, if you don't want a validation set, please use `split_none`")
 
 @classmethod
 def _databunch_load_empty(cls, path, fname:str='export.pkl'):

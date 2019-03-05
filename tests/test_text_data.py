@@ -32,7 +32,7 @@ def test_from_folder():
     path = untar_data(URLs.IMDB_SAMPLE)
     text_files(path, ['pos', 'neg'])
     data = (TextList.from_folder(path/'temp')
-               .random_split_by_pct(0.1)
+               .split_by_rand_pct(0.1)
                .label_from_folder()
                .databunch())
     assert (len(data.train_ds) + len(data.valid_ds)) == 80
@@ -45,7 +45,7 @@ def test_filter_classes():
     text_files(path, ['pos', 'neg', 'unsup'])
     with pytest.warns(UserWarning):
         data = (TextList.from_folder(path/'temp')
-                 .random_split_by_pct(0.1)
+                 .split_by_rand_pct(0.1)
                  .label_from_folder(classes=['pos', 'neg'])
                  .databunch())
     assert (len(data.train_ds) + len(data.valid_ds)) == 80
@@ -176,7 +176,7 @@ def test_regression():
     path = untar_data(URLs.IMDB_SAMPLE)
     df = text_df([0., 1.])
     data = (TextList.from_df(df, path, cols='text')
-             .random_split_by_pct(0.2)
+             .split_by_rand_pct(0.2)
              .label_from_df(cols='label',label_cls=FloatList)
              .databunch(bs=4))
     assert data.c == 1
