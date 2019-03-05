@@ -12,26 +12,19 @@ def get_data(path, size, bs, workers):
         brightness(change=(0.4,0.6)),
         contrast(scale=(0.7,1.3))
     ], [])
-    train = ImageList.from_csv(path, 'train.csv')#.use_partial_data(0.001)
-    valid = ImageList.from_csv(path, 'valid.csv')#.use_partial_data()
-    lls = ItemLists(path, train, valid).label_from_df().transform(
-            tfms, size=size).presize(size, scale=(0.35, 1.0))
-    return lls.databunch(bs=bs, num_workers=workers).normalize(imagenet_stats)
+    return (ImageList.from_folder(path).split_by_folder(valid='val')
+            .label_from_folder().transform(tfms, size=size).presize(size)
+            .databunch(bs=bs, num_workers=workers).normalize(imagenet_stats))
 
 @call_parse
 def main( gpu:Param("GPU to run on", str)=None ):
-    """Distributed training of Imagenet. Fastest speed is if you run with: python -m fastai.launch"""
+    """Distributed training of Imagenette. Fastest speed is if you run with: python -m fastai.launch"""
     path = Path('/mnt/fe2_disk/')
-    tot_epochs = 90
-    dirname = 'imagenet'
-    size = 224
-    epoch_fn = path/dirname/'models'/'epoch'
-    epoch = 0
-    if epoch_fn.exists(): epoch = int(epoch_fn.open().read())
-    epoch += 1
-    if epoch>tot_epochs: return
+    tot_epochs = 40
+    dirname = 'imagenette-160'
+    size = 128
 
-    bs,lr = 256,0.6
+    bs,lr = 256,0.3
     gpu = setup_distrib(gpu)
     n_gpus = int(os.environ.get("WORLD_SIZE", 1))
     workers = min(32, num_cpus()//n_gpus)
@@ -41,11 +34,10 @@ def main( gpu:Param("GPU to run on", str)=None ):
         opt_func=opt_func, bn_wd=False, true_wd=False,
         loss_func = LabelSmoothingCrossEntropy()).mixup(alpha=0.2)
     learn.callback_fns += [
-        partial(TrackEpochCallback, epoch_offset=epoch-1),
+        partial(TrackEpochCallback),
         partial(SaveModelCallback, every='epoch', name='model')
     ]
     learn.split(lambda m: (children(m)[-2],))
-    if epoch>1: learn.load(f'model_{epoch-1}', purge=False, device=gpu)
     if gpu is None: learn.model = nn.DataParallel(learn.model)
     else:           learn.distributed(gpu)
     learn.to_fp16(dynamic=True)
@@ -54,6 +46,5 @@ def main( gpu:Param("GPU to run on", str)=None ):
     tot_bs = bs*n_gpus
     bs_rat = tot_bs/256
     lr *= bs_rat
-    learn.fit_one_cycle(tot_epochs-epoch+1, lr, div_factor=5, moms=(0.9,0.9), start_epoch=epoch)
-    learn.save('done')
+    learn.fit_one_cycle(tot_epochs, lr, div_factor=5, moms=(0.9,0.9))
 
