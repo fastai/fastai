@@ -549,7 +549,7 @@ class LabelLists(ItemLists):
     @classmethod
     def load_empty(cls, path:PathOrStr, fn:PathOrStr='export.pkl'):
         "Create a `LabelLists` with empty sets from the serialized file in `path/fn`."
-        state = pickle.load(open(path/fn, 'rb'))
+        state = torch.load(open(path/fn, 'rb'))
         return LabelLists.load_state(path, state)
 
 def _check_kwargs(ds:ItemList, tfms:TfmList, **kwargs):
