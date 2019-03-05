@@ -31,6 +31,9 @@ class URLs():
     MNIST_VAR_SIZE_TINY = f'{S3_IMAGE}mnist_var_size_tiny'
     PLANET_SAMPLE       = f'{URL}planet_sample'
     PLANET_TINY         = f'{URL}planet_tiny'
+    IMAGENETTE          = f'{S3_IMAGE}imagenette'
+    IMAGENETTE_160      = f'{S3_IMAGE}imagenette-160'
+    IMAGENETTE_320      = f'{S3_IMAGE}imagenette-320'
 
     # kaggle competitions download dogs-vs-cats -p {DOGS.absolute()}
     DOGS = f'{URL}dogscats'
