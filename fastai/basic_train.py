@@ -523,17 +523,17 @@ class Recorder(LearnerCallback):
             self.min_grad_lr = lrs[mg]
         if ifnone(return_fig, defaults.return_fig): return fig
 
-    def plot_losses(self, last:int=None, return_fig:bool=None)->Optional[plt.Figure]:
+    def plot_losses(self, skip_start:int=0, skip_end:int=1, return_fig:bool=None)->Optional[plt.Figure]:
         "Plot training and validation losses."
-        last = ifnone(last,len(self.nb_batches))
-        assert last<=len(self.nb_batches), f"We can only plot up to the last {len(self.nb_batches)} epochs. Please adapt 'last' parameter accordingly."
+        if skip_end > 0:
+            skip_end = -skip_end
+
         fig, ax = plt.subplots(1,1)
-        l_b = np.sum(self.nb_batches[-last:])
-        iterations = range_of(self.losses)[-l_b:]
-        ax.plot(iterations, self.losses[-l_b:], label='Train')
-        val_iter = self.nb_batches[-last:]
-        val_iter = np.cumsum(val_iter)+np.sum(self.nb_batches[:-last])
-        ax.plot(val_iter, self.val_losses[-last:], label='Validation')
+        losses = self.losses[skip_start:skip_end]
+        iterations = range_of(self.losses)[skip_start:skip_end]
+        ax.plot(iterations, losses, label='Train')
+        val_iter = np.cumsum(self.nb_batches)
+        ax.plot(val_iter, self.val_losses, label='Validation')
         ax.set_ylabel('Loss')
         ax.set_xlabel('Batches processed')
         ax.legend()
