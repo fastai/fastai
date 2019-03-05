@@ -12,6 +12,12 @@ of that change.
 
 ## 1.0.47.dev0 (Work In Progress)
 
+### Breaking changes:
+
+- `create_cnn` becomes `cnn_learner`
+- `random_split_by_pct` becomes `split_by_rand_pct`
+- `no_split` becomes `split_none`
+
 ### New:
 
 - `LabelLists.pre_transform`: call transforms on PIL.Image, before converting to float tensor
