@@ -531,7 +531,6 @@ class Recorder(LearnerCallback):
         losses = self.losses[skip_start:skip_end]
         iterations = range_of(self.losses)[skip_start:skip_end]
         ax.plot(iterations, losses, label='Train')
-
         val_iter = np.cumsum(self.nb_batches)
         ax.plot(val_iter, self.val_losses, label='Validation')
         ax.set_ylabel('Loss')
