@@ -376,3 +376,9 @@ def add_metrics(last_metrics:Collection[Rank0Tensor], mets:Union[Rank0Tensor, Co
     "Return a dictionary for updating `last_metrics` with `mets`."
     mets = listify(mets)
     return {'last_metrics': last_metrics + mets}
+
+def try_save(state:Dict, path:Path, fname:PathOrStr):
+    try: torch.save(state, open(path/fname, 'wb'))
+    except OSError as e:
+        raise Exception(f"{e}\n Can't write in {path/fname}. Pass a full libpath path that is writable as `fname`.") 
+    

@@ -168,14 +168,6 @@ class Learner():
         except OSError as e:
             raise Exception(f"{e}\nCan't write to '{path}', set `learn.model_dir` attribute in Learner to a full libpath path that is writable") from None
         os.remove(tmp_file)
-            
-    def _test_writeable_fname(self, fname):
-        try: 
-            with open(self.path/fname, 'w') as f:
-                f.write('a')
-            os.remove(self.path/fname)
-        except OSError as e:
-            raise Exception(f"{e}\n Can't write in {self.path/fname}. Pass `fname`  to a full libpath path that is writable") 
 
     def lr_range(self, lr:Union[float,slice])->np.ndarray:
         "Build differential learning rates from `lr`."
@@ -226,7 +218,6 @@ class Learner():
 
     def export(self, fname:PathOrStr='export.pkl', destroy=False):
         "Export the state of the `Learner` in `self.path/fname`."
-        self._test_writeable_fname(fname)
         if rank_distrib(): return # don't save if slave proc
         args = ['opt_func', 'loss_func', 'metrics', 'true_wd', 'bn_wd', 'wd', 'train_bn', 'model_dir', 'callback_fns']
         state = {a:getattr(self,a) for a in args}
@@ -238,7 +229,7 @@ class Learner():
         xtra = dict(normalize=self.data.norm.keywords) if getattr(self.data, 'norm', False) else {}
         state['data'] = self.data.valid_ds.get_state(**xtra)
         state['cls'] = self.__class__
-        torch.save(state, open(self.path/fname, 'wb'))
+        try_save(state, self.path, fname)
         self.model.to(device)
         if destroy: self.destroy()
 
