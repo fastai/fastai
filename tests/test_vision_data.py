@@ -90,7 +90,7 @@ def test_image_resize(path, path_var_size):
                 # resize the data block way
                 with CaptureStderr() as cs:
                     data = (ImageList.from_folder(p)
-                            .no_split()
+                            .split_none()
                             .label_from_folder()
                             .transform(size=size, resize_method=rm)
                             .databunch(bs=2)
@@ -228,7 +228,7 @@ def test_multi():
     this_tests(ImageList.from_csv)
     path = untar_data(URLs.PLANET_TINY)
     data = (ImageList.from_csv(path, 'labels.csv', folder='train', suffix='.jpg')
-            .random_split_by_pct(seed=42).label_from_df(label_delim=' ').databunch())
+            .split_by_rand_pct(seed=42).label_from_df(label_delim=' ').databunch())
     x,y = data.valid_ds[0]
     assert x.shape[0]==3
     assert data.c==len(y.data)==14
@@ -243,7 +243,7 @@ def test_camvid():
     codes = np.loadtxt(camvid/'codes.txt', dtype=str)
     get_y_fn = lambda x: path_lbl/f'{x.stem}_P{x.suffix}'
     data = (SegmentationItemList.from_folder(path_img)
-            .random_split_by_pct()
+            .split_by_rand_pct()
             .label_from_func(get_y_fn, classes=codes)
             .transform(get_transforms(), tfm_y=True)
             .databunch())
@@ -259,7 +259,7 @@ def test_points():
     img2pnts = dict(zip(images, points))
     get_y_func = lambda o:img2pnts[o.name]
     data = (PointsItemList.from_folder(coco)
-            .random_split_by_pct()
+            .split_by_rand_pct()
             .label_from_func(get_y_func)
             .databunch())
     _check_data(data,160,40)
@@ -271,7 +271,7 @@ def test_coco():
     img2bbox = dict(zip(images, lbl_bbox))
     get_y_func = lambda o:img2bbox[o.name]
     data = (ObjectItemList.from_folder(coco)
-            .random_split_by_pct()
+            .split_by_rand_pct()
             .label_from_func(get_y_func)
             .transform(get_transforms(), tfm_y=True)
             .databunch(bs=16, collate_fn=bb_pad_collate))
@@ -288,7 +288,7 @@ def test_coco_same_size():
     coco = untar_data(URLs.MNIST_TINY)
     bs = 16
     data = (ObjectItemList.from_folder(coco)
-            .random_split_by_pct()
+            .split_by_rand_pct()
             .label_from_func(get_y_func)
             .transform(get_transforms(), tfm_y=True)
             .databunch(bs=16, collate_fn=bb_pad_collate))
@@ -304,7 +304,7 @@ def test_coco_pickle():
     pickle_tfms = pickle.dumps(tfms)
     unpickle_tfms = pickle.loads(pickle_tfms)
     data = (ObjectItemList.from_folder(coco)
-            .random_split_by_pct()
+            .split_by_rand_pct()
             .label_from_func(get_y_func)
             .transform(unpickle_tfms, tfm_y=True)
             .databunch(bs=16, collate_fn=bb_pad_collate))
@@ -316,7 +316,7 @@ def test_image_to_image_different_y_size():
     mnist = untar_data(URLs.MNIST_TINY)
     tfms = get_transforms()
     data = (ImageImageList.from_folder(mnist)
-            .random_split_by_pct()
+            .split_by_rand_pct()
             .label_from_func(get_y_func)
             .transform(tfms, size=20)
             .transform_y(size=80)
@@ -333,7 +333,7 @@ def test_image_to_image_different_tfms():
     y_tfms = [[t for t in x_tfms[0]], [t for t in x_tfms[1]]]
     y_tfms[0].append(flip_lr())
     data = (ImageImageList.from_folder(mnist)
-            .random_split_by_pct()
+            .split_by_rand_pct()
             .label_from_func(get_y_func)
             .transform(x_tfms)
             .transform_y(y_tfms)

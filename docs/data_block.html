@@ -263,7 +263,7 @@ summary: "The data block API"
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="p">(</span><span class="n">ImageList</span><span class="o">.</span><span class="n">from_csv</span><span class="p">(</span><span class="n">planet</span><span class="p">,</span> <span class="s1">&#39;labels.csv&#39;</span><span class="p">,</span> <span class="n">folder</span><span class="o">=</span><span class="s1">&#39;train&#39;</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;.jpg&#39;</span><span class="p">)</span>
         <span class="c1">#Where to find the data? -&gt; in planet &#39;train&#39; folder</span>
-        <span class="o">.</span><span class="n">random_split_by_pct</span><span class="p">()</span>
+        <span class="o">.</span><span class="n">split_by_rand_pct</span><span class="p">()</span>
         <span class="c1">#How to split in train/valid? -&gt; randomly with the default 20% in valid</span>
         <span class="o">.</span><span class="n">label_from_df</span><span class="p">(</span><span class="n">label_delim</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
         <span class="c1">#How to label? -&gt; use the csv file</span>
@@ -403,7 +403,7 @@ summary: "The data block API"
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="p">(</span><span class="n">SegmentationItemList</span><span class="o">.</span><span class="n">from_folder</span><span class="p">(</span><span class="n">path_img</span><span class="p">)</span>
-        <span class="o">.</span><span class="n">random_split_by_pct</span><span class="p">()</span>
+        <span class="o">.</span><span class="n">split_by_rand_pct</span><span class="p">()</span>
         <span class="o">.</span><span class="n">label_from_func</span><span class="p">(</span><span class="n">get_y_fn</span><span class="p">,</span> <span class="n">classes</span><span class="o">=</span><span class="n">codes</span><span class="p">)</span>
         <span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">get_transforms</span><span class="p">(),</span> <span class="n">tfm_y</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">128</span><span class="p">)</span>
         <span class="o">.</span><span class="n">databunch</span><span class="p">())</span>
@@ -482,7 +482,7 @@ summary: "The data block API"
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="p">(</span><span class="n">ObjectItemList</span><span class="o">.</span><span class="n">from_folder</span><span class="p">(</span><span class="n">coco</span><span class="p">)</span>
         <span class="c1">#Where are the images? -&gt; in coco</span>
-        <span class="o">.</span><span class="n">random_split_by_pct</span><span class="p">()</span>                          
+        <span class="o">.</span><span class="n">split_by_rand_pct</span><span class="p">()</span>                          
         <span class="c1">#How to split in train/valid? -&gt; randomly with the default 20% in valid</span>
         <span class="o">.</span><span class="n">label_from_func</span><span class="p">(</span><span class="n">get_y_func</span><span class="p">)</span>
         <span class="c1">#How to find the labels? -&gt; use get_y_func</span>
@@ -568,7 +568,7 @@ summary: "The data block API"
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">data_lm</span> <span class="o">=</span> <span class="p">(</span><span class="n">TextList</span><span class="o">.</span><span class="n">from_csv</span><span class="p">(</span><span class="n">imdb</span><span class="p">,</span> <span class="s1">&#39;texts.csv&#39;</span><span class="p">,</span> <span class="n">cols</span><span class="o">=</span><span class="s1">&#39;text&#39;</span><span class="p">)</span>
            <span class="c1">#Where are the inputs? Column &#39;text&#39; of this csv</span>
-                   <span class="o">.</span><span class="n">random_split_by_pct</span><span class="p">()</span>
+                   <span class="o">.</span><span class="n">split_by_rand_pct</span><span class="p">()</span>
            <span class="c1">#How to split it? Randomly with the default 20%</span>
                    <span class="o">.</span><span class="n">label_for_lm</span><span class="p">()</span>
            <span class="c1">#Label it for a language model</span>
@@ -1285,10 +1285,10 @@ summary: "The data block API"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ItemList.no_split"><code>no_split</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L165" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#ItemList-no_split-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>no_split</code>()</p>
+<h4 id="ItemList.split_none"><code>split_none</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L165" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#ItemList-split_none-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>split_none</code>()</p>
 </blockquote>
 <p>Don't split the data and create an empty validation set.</p>
-<div class="collapse" id="ItemList-no_split-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#ItemList-no_split-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>no_split</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><div style="height:1px"></div>
+<div class="collapse" id="ItemList-split_none-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#ItemList-split_none-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>split_none</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><div style="height:1px"></div>
 </div>
 
 </div>
@@ -1306,10 +1306,10 @@ summary: "The data block API"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ItemList.random_split_by_pct"><code>random_split_by_pct</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L192" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#ItemList-random_split_by_pct-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>random_split_by_pct</code>(<strong><code>valid_pct</code></strong>:<code>float</code>=<strong><em><code>0.2</code></em></strong>, <strong><code>seed</code></strong>:<code>int</code>=<strong><em><code>None</code></em></strong>) → <code>ItemLists</code></p>
+<h4 id="ItemList.split_by_rand_pct"><code>split_by_rand_pct</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L192" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#ItemList-split_by_rand_pct-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>split_by_rand_pct</code>(<strong><code>valid_pct</code></strong>:<code>float</code>=<strong><em><code>0.2</code></em></strong>, <strong><code>seed</code></strong>:<code>int</code>=<strong><em><code>None</code></em></strong>) → <code>ItemLists</code></p>
 </blockquote>
 <p>Split the items randomly by putting <code>valid_pct</code> in the validation set, optional <code>seed</code> can be passed.</p>
-<div class="collapse" id="ItemList-random_split_by_pct-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#ItemList-random_split_by_pct-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>random_split_by_pct</code>:</p><ul><li><code>pytest -sv tests/test_data_block.py::test_splitdata_datasets</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_data_block.py#L101" class="source_link" style="float:right">[source]</a></li></ul><p>Related tests:</p><ul><li><code>pytest -sv tests/test_data_block.py::test_regression</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_data_block.py#L123" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><div style="height:1px"></div>
+<div class="collapse" id="ItemList-split_by_rand_pct-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#ItemList-split_by_rand_pct-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>split_by_rand_pct</code>:</p><ul><li><code>pytest -sv tests/test_data_block.py::test_splitdata_datasets</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_data_block.py#L101" class="source_link" style="float:right">[source]</a></li></ul><p>Related tests:</p><ul><li><code>pytest -sv tests/test_data_block.py::test_regression</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_data_block.py#L123" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><div style="height:1px"></div>
 </div>
 
 </div>

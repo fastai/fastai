@@ -461,7 +461,7 @@
             "test": "test_filter_classes"
         }
     ],
-    "fastai.data_block.ItemList.random_split_by_pct": [
+    "fastai.data_block.ItemList.split_by_rand_pct": [
         {
             "file": "tests/test_data_block.py",
             "line": 101,
