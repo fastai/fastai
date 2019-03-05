@@ -252,6 +252,14 @@ def in_channels(m:nn.Module) -> List[int]:
         if hasattr(l, 'weight'): return l.weight.shape[1]
     raise Exception('No weight layer')
 
+class ModelOnCPU():
+    def __init__(self, model:nn.Module): self.model = model       
+    def __enter__(self):
+        self.device = one_param(self.model).device
+        return self.model.cpu()
+    def __exit__(self, type, value, traceback):
+        self.model = self.model.to(self.device)
+    
 class NoneReduceOnCPU():
     def __init__(self, loss_func:LossFunction): 
         self.loss_func,self.device,self.old_red = loss_func,None,None

@@ -225,13 +225,12 @@ class Learner():
         state['cb_state'] = {cb.__class__:cb.get_state() for cb in self.callbacks}
         #layer_groups -> need to find a way
         #TO SEE: do we save model structure and weights separately?
-        device = one_param(self.model).device
-        state['model'] = self.model.cpu() # This is done inplace so we need to put the model back where it was after the save.
-        xtra = dict(normalize=self.data.norm.keywords) if getattr(self.data, 'norm', False) else {}
-        state['data'] = self.data.valid_ds.get_state(**xtra)
-        state['cls'] = self.__class__
-        try_save(state, self.path, fname)
-        self.model.to(device)
+        with ModelOnCPU(self.model) as m:
+            state['model'] = m
+            xtra = dict(normalize=self.data.norm.keywords) if getattr(self.data, 'norm', False) else {}
+            state['data'] = self.data.valid_ds.get_state(**xtra)
+            state['cls'] = self.__class__
+            try_save(state, self.path, fname)
         if destroy: self.destroy()
 
     def save(self, name:PathOrStr, return_path:bool=False, with_opt:bool=True):
