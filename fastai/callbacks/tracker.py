@@ -71,7 +71,7 @@ class EarlyStoppingCallback(TrackerCallback):
             self.wait += 1
             if self.wait > self.patience:
                 print(f'Epoch {epoch}: early stopping')
-                return True
+                return {"stop_training":True}
 
 class SaveModelCallback(TrackerCallback):
     "A `TrackerCallback` that saves the model when monitored quantity is best."
