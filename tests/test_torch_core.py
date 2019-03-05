@@ -95,16 +95,16 @@ def test_np2model_tensor():
     t = np2model_tensor(a)
     assert isinstance(t,torch.FloatTensor)
 
-def test_calc_loss():
-    this_tests(calc_loss)
+def test_none_reduce_on_cpu():
+    this_tests(NoneReduceOnCPU)
     y_pred = torch.ones([3,8], requires_grad=True)
     y_true = torch.zeros([3],dtype=torch.long)
-    loss = nn.CrossEntropyLoss()
-    loss = calc_loss(y_pred,y_true,loss)
-    assert isclose(loss.sum(),6.23,abs_tol=1e-2), "final loss does not seem to be correct"
-    loss = F.cross_entropy
-    loss = calc_loss(y_pred,y_true,loss)
-    assert isclose(loss.sum(),6.23,abs_tol=1e-2), "final loss without reduction does not seem to be correct"
+    with NoneReduceOnCPU(nn.CrossEntropyLoss()) as lf:
+        loss = lf(y_pred,y_true)
+        assert isclose(loss.sum(),6.23,abs_tol=1e-2), "final loss does not seem to be correct"
+    with NoneReduceOnCPU(F.cross_entropy) as lf:
+        loss = lf(y_pred,y_true)
+        assert isclose(loss.sum(),6.23,abs_tol=1e-2), "final loss without reduction does not seem to be correct"
 
 def test_tensor_array_monkey_patch():
     this_tests('na')

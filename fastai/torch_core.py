@@ -252,16 +252,24 @@ def in_channels(m:nn.Module) -> List[int]:
         if hasattr(l, 'weight'): return l.weight.shape[1]
     raise Exception('No weight layer')
 
-def calc_loss(y_pred:Tensor, y_true:Tensor, loss_func:LossFunction):
-    "Calculate loss between `y_pred` and `y_true` using `loss_func`."
-    if hasattr(loss_func, 'reduction'):
-        old_red = getattr(loss_func, 'reduction')
-        setattr(loss_func, 'reduction', 'none')
-        l = loss_func(y_pred, y_true)
-        setattr(loss_func, 'reduction', old_red)
-        return l
-    else: return loss_func(y_pred, y_true, reduction='none')
-
+class NoneReduceOnCPU():
+    def __init__(self, loss_func:LossFunction): 
+        self.loss_func,self.device,self.old_red = loss_func,None,None
+        
+    def __enter__(self):
+        if hasattr(self.loss_func, 'weight') and self.loss_func.weight is not None:
+            self.device = self.loss_func.weight.device
+            self.loss_func.weight = self.loss_func.weight.cpu()
+        if hasattr(self.loss_func, 'reduction'):
+            self.old_red = getattr(self.loss_func, 'reduction')
+            setattr(self.loss_func, 'reduction', 'none')
+            return self.loss_func
+        else: return partial(self.loss_func, reduction='none')
+        
+    def __exit__(self, type, value, traceback):
+        if self.device is not None:  self.loss_func.weight = self.loss_func.weight.to(self.device)
+        if self.old_red is not None: setattr(self.loss_func, 'reduction', self.old_red)    
+    
 def model_type(dtype):
     "Return the torch type corresponding to `dtype`."
     return (torch.float32 if np.issubdtype(dtype, np.floating) else
