@@ -477,20 +477,23 @@ class Recorder(LearnerCallback):
         "Add `names` to the inner metric names."
         self._added_met_names = names
 
-    def plot_lr(self, show_moms=False, return_fig:bool=None)->Optional[plt.Figure]:
+    def plot_lr(self, show_moms=False, skip_start:int=0, skip_end:int=0, return_fig:bool=None)->Optional[plt.Figure]:
         "Plot learning rate, `show_moms` to include momentum."
         iterations = range_of(self.lrs)
+        lrs = self.lrs[skip_start:-skip_end] if skip_end > 0 else self.lrs[skip_start:]
+        iterations = iterations[skip_start:-skip_end] if skip_end > 0 else iterations[skip_start:]
         if show_moms:
+            moms = self.moms[skip_start:-skip_end] if skip_end > 0 else self.moms[skip_start:]
             fig, axs = plt.subplots(1,2, figsize=(12,4))
-            axs[0].plot(iterations, self.lrs)
+            axs[0].plot(iterations, lrs)
             axs[0].set_xlabel('Iterations')
             axs[0].set_ylabel('Learning Rate')
-            axs[1].plot(iterations, self.moms)
+            axs[1].plot(iterations, moms)
             axs[1].set_xlabel('Iterations')
             axs[1].set_ylabel('Momentum')
         else:
             fig, ax = plt.subplots()
-            ax.plot(iterations, self.lrs)
+            ax.plot(iterations, lrs)
         if ifnone(return_fig, defaults.return_fig): return fig
 
     @staticmethod
@@ -523,17 +526,19 @@ class Recorder(LearnerCallback):
             self.min_grad_lr = lrs[mg]
         if ifnone(return_fig, defaults.return_fig): return fig
 
-    def plot_losses(self, skip_start:int=0, skip_end:int=1, return_fig:bool=None)->Optional[plt.Figure]:
+    def plot_losses(self, skip_start:int=0, skip_end:int=0, return_fig:bool=None)->Optional[plt.Figure]:
         "Plot training and validation losses."
-        if skip_end > 0:
-            skip_end = -skip_end
-
         fig, ax = plt.subplots(1,1)
-        losses = self.losses[skip_start:skip_end]
-        iterations = range_of(self.losses)[skip_start:skip_end]
+        iterations = range_of(self.losses)
+        losses = self.losses[skip_start:-skip_end] if skip_end > 0 else self.losses[skip_start:]
+        iterations = iterations[skip_start:-skip_end] if skip_end > 0 else iterations[skip_start:]
         ax.plot(iterations, losses, label='Train')
         val_iter = np.cumsum(self.nb_batches)
-        ax.plot(val_iter, self.val_losses, label='Validation')
+        start_val = (val_iter - skip_start >= 0).nonzero()[0].min()
+        end_val = (val_iter[-1] - val_iter - skip_end >= 0).nonzero()[0].max()+1
+        val_iter = val_iter[start_val:end_val] if skip_end > 0 else val_iter[start_val:]
+        val_losses = self.val_losses[start_val:end_val] if skip_end > 0 else self.val_losses[start_val:]
+        ax.plot(val_iter, val_losses, label='Validation')
         ax.set_ylabel('Loss')
         ax.set_xlabel('Batches processed')
         ax.legend()
