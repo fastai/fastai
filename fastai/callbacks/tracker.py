@@ -132,6 +132,7 @@ class TrackEpochCallback(LearnerCallback):
     def __init__(self, learn:Learner, name:str='epoch', epoch_offset:int=None):
         "Store completed epoch number in `learn.model_dir/name`."
         super().__init__(learn)
+        learn._test_writeable_path()
         self.path = learn.path/learn.model_dir/name
         if epoch_offset is None:
             if os.path.isfile(self.path):

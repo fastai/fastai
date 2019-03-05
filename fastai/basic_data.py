@@ -192,8 +192,17 @@ class DataBunch():
         else : ys = [self.train_ds.y.reconstruct(grab_idx(y, i)) for i in range(n_items)]
         self.train_ds.x.show_xys(xs, ys, **kwargs)
 
+    def _test_writeable_fname(self, fname):
+        try: 
+            with open(self.path/fname, 'w') as f:
+                f.write('a')
+            os.remove(self.path/fname)
+        except OSError as e:
+            raise Exception(f"{e}\n Can't write in {self.path/fname}. Pass `fname`  to a full libpath path that is writable") 
+        
     def export(self, fname:str='export.pkl'):
         "Export the minimal state of `self` for inference in `self.path/fname`."
+        self._test_writeable_fname(fname)
         xtra = dict(normalize=self.norm.keywords) if getattr(self, 'norm', False) else {}
         self.valid_ds.export(self.path/fname, **xtra)
 

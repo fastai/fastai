@@ -161,6 +161,21 @@ class Learner():
         self.callback_fns = [partial(Recorder, add_time=self.add_time)] + listify(self.callback_fns)
 
     def init(self, init): apply_init(self.model, init)
+        
+    def _test_writeable_path(self):
+        path = self.path/self.model_dir
+        try: tmp_file = get_tmp_file(path)
+        except OSError as e:
+            raise Exception(f"{e}\nCan't write to '{path}', set `learn.model_dir` attribute in Learner to a full libpath path that is writable") from None
+        os.remove(tmp_file)
+            
+    def _test_writeable_fname(self, fname):
+        try: 
+            with open(self.path/fname, 'w') as f:
+                f.write('a')
+            os.remove(self.path/fname)
+        except OSError as e:
+            raise Exception(f"{e}\n Can't write in {self.path/fname}. Pass `fname`  to a full libpath path that is writable") 
 
     def lr_range(self, lr:Union[float,slice])->np.ndarray:
         "Build differential learning rates from `lr`."
@@ -211,6 +226,7 @@ class Learner():
 
     def export(self, fname:PathOrStr='export.pkl', destroy=False):
         "Export the state of the `Learner` in `self.path/fname`."
+        self._test_writeable_fname(fname)
         if rank_distrib(): return # don't save if slave proc
         args = ['opt_func', 'loss_func', 'metrics', 'true_wd', 'bn_wd', 'wd', 'train_bn', 'model_dir', 'callback_fns']
         state = {a:getattr(self,a) for a in args}
@@ -228,6 +244,7 @@ class Learner():
 
     def save(self, name:PathOrStr, return_path:bool=False, with_opt:bool=True):
         "Save model and optimizer state (if `with_opt`) with `name` to `self.model_dir`."
+        self._test_writeable_path()
         if rank_distrib(): return # don't save if slave proc
         path = self.path/self.model_dir/f'{name}.pth'
         if not hasattr(self, 'opt'): with_opt=False
@@ -280,16 +297,9 @@ class Learner():
         gc.collect()
         print("this Learner object self-destroyed - it still exists, but no longer usable")
 
-    def _get_writable_model_path(self):
-        path = self.path/self.model_dir
-        try: tmp_file = get_tmp_file(path)
-        except OSError as e:
-            raise Exception(f"{e}\nCan't write to '{path}', set `model_dir` attribute in Learner to a full libpath path that is writable") from None
-        os.remove(tmp_file)
-        return path
-
     def purge(self, clear_opt:bool=True):
         "Purge the `Learner` of all cached attributes to release some GPU memory."
+        self._test_writeable_path()
         attrs_all = [k for k in self.__dict__.keys() if not k.startswith("__")]
         attrs_pkl = ['bn_wd', 'callback_fns', 'layer_groups', 'loss_func', 'metrics', 'model',
                      'model_dir', 'opt_func', 'path', 'train_bn', 'true_wd', 'wd']
@@ -300,7 +310,7 @@ class Learner():
         state['cb_state'] = {cb.__class__:cb.get_state() for cb in self.callbacks}
         if hasattr(self, 'opt'): state['opt'] = self.opt.get_state()
 
-        tmp_file = get_tmp_file(self._get_writable_model_path())
+        tmp_file = get_tmp_file(self.path/self.model_dir)
         torch.save(state, open(tmp_file, 'wb'))
         for a in attrs_del: delattr(self, a)
         gc.collect()
