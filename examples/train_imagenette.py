@@ -18,17 +18,17 @@ def get_data(path, size, bs, workers):
 
 @call_parse
 def main( gpu:Param("GPU to run on", str)=None ):
-    """Distributed training of Imagenette. Fastest speed is if you run with: python -m fastai.launch"""
-    path = Path('/mnt/fe2_disk/')
+    """Distributed training of Imagenette.
+    Fastest multi-gpu speed is if you run with: python -m fastai.launch"""
+    path = untar_data(URLs.IMAGENETTE_160)
     tot_epochs = 40
-    dirname = 'imagenette-160'
     size = 128
 
     bs,lr = 256,0.3
     gpu = setup_distrib(gpu)
     n_gpus = int(os.environ.get("WORLD_SIZE", 1))
     workers = min(32, num_cpus()//n_gpus)
-    data = get_data(path/dirname, size, bs, workers)
+    data = get_data(path, size, bs, workers)
     opt_func = partial(optim.SGD, momentum=0.9)
     learn = Learner(data, models.xresnet50(), metrics=[accuracy,top_k_accuracy], wd=1e-5,
         opt_func=opt_func, bn_wd=False, true_wd=False,
