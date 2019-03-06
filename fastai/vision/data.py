@@ -271,7 +271,7 @@ class ImageList(ItemList):
         res = self.open(fn)
         self.sizes[i] = res.size
         return res
-
+    
     @classmethod
     def from_folder(cls, path:PathOrStr='.', extensions:Collection[str]=None, **kwargs)->ItemList:
         "Get the list of files in `path` that have an image suffix. `recurse` determines if we search subfolders."
@@ -343,7 +343,7 @@ def _get_size(xs,i):
     if size is None:
         # Image hasn't been accessed yet, so we don't know its size
         _ = xs[i]
-        size =xs.sizes[i]
+        size = xs.sizes[i]
     return size
 
 class ObjectCategoryList(MultiCategoryList):

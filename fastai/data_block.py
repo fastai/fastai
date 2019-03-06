@@ -663,7 +663,7 @@ class LabelList(Dataset):
         "Launch the processing on `self.x` and `self.y` with `xp` and `yp`."
         self.y.process(yp)
         if getattr(self.y, 'filter_missing_y', False):
-            filt = array([o is None for o in self.y])
+            filt = array([o is None for o in self.y.items])
             if filt.sum()>0:
                 #Warnings are given later since progress_bar might make them disappear.
                 self.warn = f"You are labelling your items with {self.y.__class__.__name__}.\n"
