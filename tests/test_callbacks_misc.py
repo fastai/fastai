@@ -16,7 +16,6 @@ def stop_after_n_batches_run_n_check(learn):
     # test that only n batches were run
     assert len(learn.recorder.losses) == 2
 
-@pytest.mark.cuda
 def test_stop_after_n_batches():
     this_tests(StopAfterNBatches)
 
