@@ -176,6 +176,6 @@ def model_summary(m:Learner, n:int=70):
     res += f"\nTotal params: {total_params:,}\n"
     res += f"Total trainable params: {total_trainable_params:,}\n"
     res += f"Total non-trainable params: {total_params - total_trainable_params:,}\n"
-    return res
+    return PrettyString(res)
 
 Learner.summary = model_summary

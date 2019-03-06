@@ -342,3 +342,7 @@ def compose(funcs:List[Callable])->Callable:
         for f in listify(funcs): x = f(x, *args, **kwargs)
         return x
     return partial(compose_, funcs)
+
+class PrettyString(str):
+    "Little hack to get strings to show properly in Jupyter."
+    def __repr__(self): return self
