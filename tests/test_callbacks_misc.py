@@ -13,9 +13,9 @@ def stop_after_n_batches_run_n_check(learn):
     assert "\n0" in cs.out, "expecting epoch0"
     assert "\n1" not in cs.out, "epoch 1 shouldn't run"
 
-    # XXX: how to validate that only n batches were run?
+    # test that only n batches were run
+    assert len(learn.recorder.losses) == 2
 
-@pytest.mark.cuda
 def test_stop_after_n_batches():
     this_tests(StopAfterNBatches)
 
