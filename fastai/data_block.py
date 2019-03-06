@@ -161,6 +161,10 @@ class ItemList():
         "Keep random sample of `items` with probability `p` and an optional `seed`."
         if seed is not None: np.random.seed(seed)
         return self.filter_by_func(lambda o: rand_bool(p))
+                
+    def no_split(self):
+        warn("`no_split` is deprecated, please use `split_none`.")
+        return self.split_none()
 
     def split_none(self):
         "Don't split the data and create an empty validation set."
@@ -188,7 +192,11 @@ class ItemList():
     def split_by_folder(self, train:str='train', valid:str='valid')->'ItemLists':
         "Split the data depending on the folder (`train` or `valid`) in which the filenames are."
         return self.split_by_idxs(self._get_by_folder(train), self._get_by_folder(valid))
-
+     
+    def random_split_by_pct(self, valid_pct:float=0.2, seed:int=None):
+        warn("`random_split_by_pct` is deprecated, please use `split_by_rand_pct`.")
+        return self.split_by_rand_pct(valid_pct=valid_pct, seed=seed)         
+    
     def split_by_rand_pct(self, valid_pct:float=0.2, seed:int=None)->'ItemLists':
         "Split the items randomly by putting `valid_pct` in the validation set, optional `seed` can be passed."
         if valid_pct==0.: return self.split_none()

@@ -66,7 +66,7 @@ def create_head(nf:int, nc:int, lin_ftrs:Optional[Collection[int]]=None, ps:Floa
     if bn_final: layers.append(nn.BatchNorm1d(lin_ftrs[-1], momentum=0.01))
     return nn.Sequential(*layers)
 
-def create_cnn(base_arch:Callable, nc:int, cut:Union[int,Callable]=None, pretrained:bool=True,
+def create_cnn_model(base_arch:Callable, nc:int, cut:Union[int,Callable]=None, pretrained:bool=True,
         lin_ftrs:Optional[Collection[int]]=None, ps:Floats=0.5, custom_head:Optional[nn.Module]=None,
         split_on:Optional[SplitFuncOrIdxList]=None, bn_final:bool=False):
     "Create custom convnet architecture"
@@ -82,12 +82,16 @@ def cnn_learner(data:DataBunch, base_arch:Callable, cut:Union[int,Callable]=None
                split_on:Optional[SplitFuncOrIdxList]=None, bn_final:bool=False, **kwargs:Any)->Learner:
     "Build convnet style learner."
     meta = cnn_config(base_arch)
-    model = create_cnn(base_arch, data.c, cut, pretrained, lin_ftrs, ps, custom_head, split_on, bn_final)
+    model = create_cnn_model(base_arch, data.c, cut, pretrained, lin_ftrs, ps, custom_head, split_on, bn_final)
     learn = Learner(data, model, **kwargs)
     learn.split(split_on or meta['split'])
     if pretrained: learn.freeze()
     apply_init(model[1], nn.init.kaiming_normal_)
     return learn
+
+def create_cnn(data, base_arch, **kwargs):
+    warn("`create_cnn` is deprecated and is now named `cnn_learner`.")
+    return cnn_learner(data, base_arch, **kwargs)
 
 def unet_learner(data:DataBunch, arch:Callable, pretrained:bool=True, blur_final:bool=True,
                  norm_type:Optional[NormType]=NormType, split_on:Optional[SplitFuncOrIdxList]=None, blur:bool=False,
