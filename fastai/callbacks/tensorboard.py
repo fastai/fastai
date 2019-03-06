@@ -409,8 +409,7 @@ class GraphTBRequest(TBWriteRequest):
     "Request object for model histogram writes to Tensorboard."
     def __init__(self, model:nn.Module, tbwriter:SummaryWriter, input_to_model:torch.Tensor):
         super().__init__(tbwriter=tbwriter, iteration=0)
-        self.model = model
-        self.input_to_model = input_to_model
+        self.model,self.input_to_model = model,input_to_model
 
     def write(self)->None:
         "Writes single model graph to Tensorboard."
