@@ -78,6 +78,9 @@ entries:
         - output: web,pdf
           title: Memory Profiling
           url: /callbacks.mem.html
+        - output: web,pdf
+          title: Miscellaneous
+          url: /callbacks.misc.html
         title: callbacks
     output: web
     title: Training
