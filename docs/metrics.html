@@ -40,10 +40,10 @@ summary: "Useful metrics for training"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="accuracy"><code>accuracy</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L23" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#accuracy-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>accuracy</code>(<strong><code>input</code></strong>:<code>Tensor</code>, <strong><code>targs</code></strong>:<code>Tensor</code>) → <code>Rank0Tensor</code></p>
+<h4 id="accuracy" class="doc_header"><code>accuracy</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L23" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#accuracy-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>accuracy</code>(<strong><code>input</code></strong>:<code>Tensor</code>, <strong><code>targs</code></strong>:<code>Tensor</code>) → <code>Rank0Tensor</code></p>
 </blockquote>
-<p>Compute accuracy with <code>targs</code> when <code>input</code> is bs * n_classes.</p>
-<div class="collapse" id="accuracy-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#accuracy-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>accuracy</code>:</p><ul><li><code>pytest -sv tests/test_metrics.py::test_accuracy</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_metrics.py#L42" class="source_link" style="float:right">[source]</a></li><li><code>pytest -sv tests/test_vision_train.py::test_accuracy</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_vision_train.py#L47" class="source_link" style="float:right">[source]</a></li></ul><p>Direct tests:</p><ul><li><code>pytest -sv tests/test_metrics.py::test_accuracy_thresh</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_metrics.py#L88" class="source_link" style="float:right">[source]</a></li><li><code>pytest -sv tests/test_metrics.py::test_top_k_accuracy</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_metrics.py#L67" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><div style="height:1px"></div>
+<div class="collapse" id="accuracy-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#accuracy-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>accuracy</code>:</p><ul><li><code>pytest -sv tests/test_metrics.py::test_accuracy</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_metrics.py#L42" class="source_link" style="float:right">[source]</a></li><li><code>pytest -sv tests/test_vision_train.py::test_accuracy</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_vision_train.py#L47" class="source_link" style="float:right">[source]</a></li></ul><p>Direct tests:</p><ul><li><code>pytest -sv tests/test_metrics.py::test_top_k_accuracy</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_metrics.py#L67" class="source_link" style="float:right">[source]</a></li><li><code>pytest -sv tests/test_metrics.py::test_accuracy_thresh</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_metrics.py#L88" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><p>Compute accuracy with <code>targs</code> when <code>input</code> is bs * n_classes.</p>
+
 </div>
 
 </div>
@@ -79,10 +79,10 @@ summary: "Useful metrics for training"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="accuracy_thresh"><code>accuracy_thresh</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L30" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#accuracy_thresh-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>accuracy_thresh</code>(<strong><code>y_pred</code></strong>:<code>Tensor</code>, <strong><code>y_true</code></strong>:<code>Tensor</code>, <strong><code>thresh</code></strong>:<code>float</code>=<strong><em><code>0.5</code></em></strong>, <strong><code>sigmoid</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>) → <code>Rank0Tensor</code></p>
+<h4 id="accuracy_thresh" class="doc_header"><code>accuracy_thresh</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L30" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#accuracy_thresh-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>accuracy_thresh</code>(<strong><code>y_pred</code></strong>:<code>Tensor</code>, <strong><code>y_true</code></strong>:<code>Tensor</code>, <strong><code>thresh</code></strong>:<code>float</code>=<strong><em><code>0.5</code></em></strong>, <strong><code>sigmoid</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>) → <code>Rank0Tensor</code></p>
 </blockquote>
-<p>Compute accuracy when <code>y_pred</code> and <code>y_true</code> are the same size.</p>
-<div class="collapse" id="accuracy_thresh-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#accuracy_thresh-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>accuracy_thresh</code>:</p><ul><li><code>pytest -sv tests/test_metrics.py::test_accuracy_thresh</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_metrics.py#L88" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><div style="height:1px"></div>
+<div class="collapse" id="accuracy_thresh-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#accuracy_thresh-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>accuracy_thresh</code>:</p><ul><li><code>pytest -sv tests/test_metrics.py::test_accuracy_thresh</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_metrics.py#L88" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><p>Compute accuracy when <code>y_pred</code> and <code>y_true</code> are the same size.</p>
+
 </div>
 
 </div>
@@ -125,10 +125,10 @@ summary: "Useful metrics for training"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="top_k_accuracy"><code>top_k_accuracy</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L35" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#top_k_accuracy-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>top_k_accuracy</code>(<strong><code>input</code></strong>:<code>Tensor</code>, <strong><code>targs</code></strong>:<code>Tensor</code>, <strong><code>k</code></strong>:<code>int</code>=<strong><em><code>5</code></em></strong>) → <code>Rank0Tensor</code></p>
+<h4 id="top_k_accuracy" class="doc_header"><code>top_k_accuracy</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L35" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#top_k_accuracy-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>top_k_accuracy</code>(<strong><code>input</code></strong>:<code>Tensor</code>, <strong><code>targs</code></strong>:<code>Tensor</code>, <strong><code>k</code></strong>:<code>int</code>=<strong><em><code>5</code></em></strong>) → <code>Rank0Tensor</code></p>
 </blockquote>
-<p>Computes the Top-k accuracy (target is in the top k predictions).</p>
-<div class="collapse" id="top_k_accuracy-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#top_k_accuracy-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>top_k_accuracy</code>:</p><ul><li><code>pytest -sv tests/test_metrics.py::test_top_k_accuracy</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_metrics.py#L67" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><div style="height:1px"></div>
+<div class="collapse" id="top_k_accuracy-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#top_k_accuracy-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>top_k_accuracy</code>:</p><ul><li><code>pytest -sv tests/test_metrics.py::test_top_k_accuracy</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_metrics.py#L67" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><p>Computes the Top-k accuracy (target is in the top k predictions).</p>
+
 </div>
 
 </div>
@@ -146,10 +146,10 @@ summary: "Useful metrics for training"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="dice"><code>dice</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L45" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#dice-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>dice</code>(<strong><code>input</code></strong>:<code>Tensor</code>, <strong><code>targs</code></strong>:<code>Tensor</code>, <strong><code>iou</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>) → <code>Rank0Tensor</code></p>
+<h4 id="dice" class="doc_header"><code>dice</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L45" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#dice-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>dice</code>(<strong><code>input</code></strong>:<code>Tensor</code>, <strong><code>targs</code></strong>:<code>Tensor</code>, <strong><code>iou</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>) → <code>Rank0Tensor</code></p>
 </blockquote>
-<p>Dice coefficient metric for binary target. If iou=True, returns iou metric, classic for segmentation problems.</p>
-<div class="collapse" id="dice-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#dice-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>dice</code>:</p><ul><li><code>pytest -sv tests/test_metrics.py::test_dice</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_metrics.py#L97" class="source_link" style="float:right">[source]</a></li><li><code>pytest -sv tests/test_metrics.py::test_dice_iou</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_metrics.py#L106" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><div style="height:1px"></div>
+<div class="collapse" id="dice-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#dice-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>dice</code>:</p><ul><li><code>pytest -sv tests/test_metrics.py::test_dice</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_metrics.py#L97" class="source_link" style="float:right">[source]</a></li><li><code>pytest -sv tests/test_metrics.py::test_dice_iou</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_metrics.py#L106" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><p>Dice coefficient metric for binary target. If iou=True, returns iou metric, classic for segmentation problems.</p>
+
 </div>
 
 </div>
@@ -167,10 +167,10 @@ summary: "Useful metrics for training"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="error_rate"><code>error_rate</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L41" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#error_rate-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>error_rate</code>(<strong><code>input</code></strong>:<code>Tensor</code>, <strong><code>targs</code></strong>:<code>Tensor</code>) → <code>Rank0Tensor</code></p>
+<h4 id="error_rate" class="doc_header"><code>error_rate</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L41" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#error_rate-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>error_rate</code>(<strong><code>input</code></strong>:<code>Tensor</code>, <strong><code>targs</code></strong>:<code>Tensor</code>) → <code>Rank0Tensor</code></p>
 </blockquote>
-<p>1 - <a href="/metrics.html#accuracy"><code>accuracy</code></a></p>
-<div class="collapse" id="error_rate-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#error_rate-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>error_rate</code>:</p><ul><li><code>pytest -sv tests/test_metrics.py::test_error_rate</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_metrics.py#L75" class="source_link" style="float:right">[source]</a></li><li><code>pytest -sv tests/test_vision_train.py::test_error_rate</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_vision_train.py#L51" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><div style="height:1px"></div>
+<div class="collapse" id="error_rate-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#error_rate-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>error_rate</code>:</p><ul><li><code>pytest -sv tests/test_metrics.py::test_error_rate</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_metrics.py#L75" class="source_link" style="float:right">[source]</a></li><li><code>pytest -sv tests/test_vision_train.py::test_error_rate</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_vision_train.py#L51" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><p>1 - <a href="/metrics.html#accuracy"><code>accuracy</code></a></p>
+
 </div>
 
 </div>
@@ -188,10 +188,10 @@ summary: "Useful metrics for training"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="mean_squared_error"><code>mean_squared_error</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L67" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#mean_squared_error-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>mean_squared_error</code>(<strong><code>pred</code></strong>:<code>Tensor</code>, <strong><code>targ</code></strong>:<code>Tensor</code>) → <code>Rank0Tensor</code></p>
+<h4 id="mean_squared_error" class="doc_header"><code>mean_squared_error</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L67" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#mean_squared_error-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>mean_squared_error</code>(<strong><code>pred</code></strong>:<code>Tensor</code>, <strong><code>targ</code></strong>:<code>Tensor</code>) → <code>Rank0Tensor</code></p>
 </blockquote>
-<p>Mean squared error between <code>pred</code> and <code>targ</code>.</p>
-<div class="collapse" id="mean_squared_error-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#mean_squared_error-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>mean_squared_error</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><div style="height:1px"></div>
+<div class="collapse" id="mean_squared_error-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#mean_squared_error-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>mean_squared_error</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Mean squared error between <code>pred</code> and <code>targ</code>.</p>
+
 </div>
 
 </div>
@@ -209,10 +209,10 @@ summary: "Useful metrics for training"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="mean_absolute_error"><code>mean_absolute_error</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L62" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#mean_absolute_error-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>mean_absolute_error</code>(<strong><code>pred</code></strong>:<code>Tensor</code>, <strong><code>targ</code></strong>:<code>Tensor</code>) → <code>Rank0Tensor</code></p>
+<h4 id="mean_absolute_error" class="doc_header"><code>mean_absolute_error</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L62" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#mean_absolute_error-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>mean_absolute_error</code>(<strong><code>pred</code></strong>:<code>Tensor</code>, <strong><code>targ</code></strong>:<code>Tensor</code>) → <code>Rank0Tensor</code></p>
 </blockquote>
-<p>Mean absolute error between <code>pred</code> and <code>targ</code>.</p>
-<div class="collapse" id="mean_absolute_error-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#mean_absolute_error-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>mean_absolute_error</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><div style="height:1px"></div>
+<div class="collapse" id="mean_absolute_error-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#mean_absolute_error-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>mean_absolute_error</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Mean absolute error between <code>pred</code> and <code>targ</code>.</p>
+
 </div>
 
 </div>
@@ -230,10 +230,10 @@ summary: "Useful metrics for training"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="mean_squared_logarithmic_error"><code>mean_squared_logarithmic_error</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L77" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#mean_squared_logarithmic_error-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>mean_squared_logarithmic_error</code>(<strong><code>pred</code></strong>:<code>Tensor</code>, <strong><code>targ</code></strong>:<code>Tensor</code>) → <code>Rank0Tensor</code></p>
+<h4 id="mean_squared_logarithmic_error" class="doc_header"><code>mean_squared_logarithmic_error</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L77" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#mean_squared_logarithmic_error-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>mean_squared_logarithmic_error</code>(<strong><code>pred</code></strong>:<code>Tensor</code>, <strong><code>targ</code></strong>:<code>Tensor</code>) → <code>Rank0Tensor</code></p>
 </blockquote>
-<p>Mean squared logarithmic error between <code>pred</code> and <code>targ</code>.</p>
-<div class="collapse" id="mean_squared_logarithmic_error-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#mean_squared_logarithmic_error-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>mean_squared_logarithmic_error</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><div style="height:1px"></div>
+<div class="collapse" id="mean_squared_logarithmic_error-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#mean_squared_logarithmic_error-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>mean_squared_logarithmic_error</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Mean squared logarithmic error between <code>pred</code> and <code>targ</code>.</p>
+
 </div>
 
 </div>
@@ -251,10 +251,10 @@ summary: "Useful metrics for training"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="exp_rmspe"><code>exp_rmspe</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L55" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#exp_rmspe-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>exp_rmspe</code>(<strong><code>pred</code></strong>:<code>Tensor</code>, <strong><code>targ</code></strong>:<code>Tensor</code>) → <code>Rank0Tensor</code></p>
+<h4 id="exp_rmspe" class="doc_header"><code>exp_rmspe</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L55" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#exp_rmspe-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>exp_rmspe</code>(<strong><code>pred</code></strong>:<code>Tensor</code>, <strong><code>targ</code></strong>:<code>Tensor</code>) → <code>Rank0Tensor</code></p>
 </blockquote>
-<p>Exp RMSE between <code>pred</code> and <code>targ</code>.</p>
-<div class="collapse" id="exp_rmspe-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#exp_rmspe-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>exp_rmspe</code>:</p><ul><li><code>pytest -sv tests/test_metrics.py::test_exp_rmspe</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_metrics.py#L79" class="source_link" style="float:right">[source]</a></li><li><code>pytest -sv tests/test_metrics.py::test_exp_rmspe_num_of_ele</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_metrics.py#L83" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><div style="height:1px"></div>
+<div class="collapse" id="exp_rmspe-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#exp_rmspe-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>exp_rmspe</code>:</p><ul><li><code>pytest -sv tests/test_metrics.py::test_exp_rmspe</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_metrics.py#L79" class="source_link" style="float:right">[source]</a></li><li><code>pytest -sv tests/test_metrics.py::test_exp_rmspe_num_of_ele</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_metrics.py#L83" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><p>Exp RMSE between <code>pred</code> and <code>targ</code>.</p>
+
 </div>
 
 </div>
@@ -272,10 +272,10 @@ summary: "Useful metrics for training"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="root_mean_squared_error"><code>root_mean_squared_error</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L72" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#root_mean_squared_error-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>root_mean_squared_error</code>(<strong><code>pred</code></strong>:<code>Tensor</code>, <strong><code>targ</code></strong>:<code>Tensor</code>) → <code>Rank0Tensor</code></p>
+<h4 id="root_mean_squared_error" class="doc_header"><code>root_mean_squared_error</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L72" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#root_mean_squared_error-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>root_mean_squared_error</code>(<strong><code>pred</code></strong>:<code>Tensor</code>, <strong><code>targ</code></strong>:<code>Tensor</code>) → <code>Rank0Tensor</code></p>
 </blockquote>
-<p>Root mean squared error between <code>pred</code> and <code>targ</code>.</p>
-<div class="collapse" id="root_mean_squared_error-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#root_mean_squared_error-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>root_mean_squared_error</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><div style="height:1px"></div>
+<div class="collapse" id="root_mean_squared_error-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#root_mean_squared_error-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>root_mean_squared_error</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Root mean squared error between <code>pred</code> and <code>targ</code>.</p>
+
 </div>
 
 </div>
@@ -293,10 +293,10 @@ summary: "Useful metrics for training"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="fbeta"><code>fbeta</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L11" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#fbeta-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>fbeta</code>(<strong><code>y_pred</code></strong>:<code>Tensor</code>, <strong><code>y_true</code></strong>:<code>Tensor</code>, <strong><code>thresh</code></strong>:<code>float</code>=<strong><em><code>0.2</code></em></strong>, <strong><code>beta</code></strong>:<code>float</code>=<strong><em><code>2</code></em></strong>, <strong><code>eps</code></strong>:<code>float</code>=<strong><em><code>1e-09</code></em></strong>, <strong><code>sigmoid</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>) → <code>Rank0Tensor</code></p>
+<h4 id="fbeta" class="doc_header"><code>fbeta</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L11" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#fbeta-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>fbeta</code>(<strong><code>y_pred</code></strong>:<code>Tensor</code>, <strong><code>y_true</code></strong>:<code>Tensor</code>, <strong><code>thresh</code></strong>:<code>float</code>=<strong><em><code>0.2</code></em></strong>, <strong><code>beta</code></strong>:<code>float</code>=<strong><em><code>2</code></em></strong>, <strong><code>eps</code></strong>:<code>float</code>=<strong><em><code>1e-09</code></em></strong>, <strong><code>sigmoid</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>) → <code>Rank0Tensor</code></p>
 </blockquote>
-<p>Computes the f_beta between <code>preds</code> and <code>targets</code></p>
-<div class="collapse" id="fbeta-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#fbeta-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>fbeta</code>:</p><ul><li><code>pytest -sv tests/test_metrics.py::test_fbeta</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_metrics.py#L114" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><div style="height:1px"></div>
+<div class="collapse" id="fbeta-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#fbeta-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>fbeta</code>:</p><ul><li><code>pytest -sv tests/test_metrics.py::test_fbeta</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_metrics.py#L114" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><p>Computes the f_beta between <code>preds</code> and <code>targets</code></p>
+
 </div>
 
 </div>
@@ -339,10 +339,10 @@ summary: "Useful metrics for training"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="explained_variance"><code>explained_variance</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L82" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#explained_variance-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>explained_variance</code>(<strong><code>pred</code></strong>:<code>Tensor</code>, <strong><code>targ</code></strong>:<code>Tensor</code>) → <code>Rank0Tensor</code></p>
+<h4 id="explained_variance" class="doc_header"><code>explained_variance</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L82" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#explained_variance-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>explained_variance</code>(<strong><code>pred</code></strong>:<code>Tensor</code>, <strong><code>targ</code></strong>:<code>Tensor</code>) → <code>Rank0Tensor</code></p>
 </blockquote>
-<p>Explained variance between <code>pred</code> and <code>targ</code>.</p>
-<div class="collapse" id="explained_variance-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#explained_variance-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>explained_variance</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><div style="height:1px"></div>
+<div class="collapse" id="explained_variance-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#explained_variance-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>explained_variance</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Explained variance between <code>pred</code> and <code>targ</code>.</p>
+
 </div>
 
 </div>
@@ -360,10 +360,10 @@ summary: "Useful metrics for training"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="r2_score"><code>r2_score</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L88" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#r2_score-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>r2_score</code>(<strong><code>pred</code></strong>:<code>Tensor</code>, <strong><code>targ</code></strong>:<code>Tensor</code>) → <code>Rank0Tensor</code></p>
+<h4 id="r2_score" class="doc_header"><code>r2_score</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L88" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#r2_score-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>r2_score</code>(<strong><code>pred</code></strong>:<code>Tensor</code>, <strong><code>targ</code></strong>:<code>Tensor</code>) → <code>Rank0Tensor</code></p>
 </blockquote>
-<p>R2 score (coefficient of determination) between <code>pred</code> and <code>targ</code>.</p>
-<div class="collapse" id="r2_score-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#r2_score-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>r2_score</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><div style="height:1px"></div>
+<div class="collapse" id="r2_score-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#r2_score-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>r2_score</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>R2 score (coefficient of determination) between <code>pred</code> and <code>targ</code>.</p>
+
 </div>
 
 </div>
@@ -388,10 +388,10 @@ summary: "Useful metrics for training"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="RMSE"><code>class</code> <code>RMSE</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L115" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#RMSE-pytest" style="float:right; padding-right:10px">[test]</a></h3><blockquote><p><code>RMSE</code>() :: <a href="/metrics.html#RegMetrics"><code>RegMetrics</code></a></p>
+<h3 id="RMSE" class="doc_header"><code>class</code> <code>RMSE</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L115" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#RMSE-pytest" style="float:right; padding-right:10px">[test]</a></h3><blockquote><p><code>RMSE</code>() :: <a href="/metrics.html#RegMetrics"><code>RegMetrics</code></a></p>
 </blockquote>
-<p>Compute the root mean squared error.</p>
-<div class="collapse" id="RMSE-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#RMSE-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>RMSE</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><div style="height:1px"></div>
+<div class="collapse" id="RMSE-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#RMSE-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>RMSE</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Compute the root mean squared error.</p>
+
 </div>
 
 </div>
@@ -409,10 +409,10 @@ summary: "Useful metrics for training"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="ExpRMSPE"><code>class</code> <code>ExpRMSPE</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L120" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#ExpRMSPE-pytest" style="float:right; padding-right:10px">[test]</a></h3><blockquote><p><code>ExpRMSPE</code>() :: <a href="/metrics.html#RegMetrics"><code>RegMetrics</code></a></p>
+<h3 id="ExpRMSPE" class="doc_header"><code>class</code> <code>ExpRMSPE</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L120" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#ExpRMSPE-pytest" style="float:right; padding-right:10px">[test]</a></h3><blockquote><p><code>ExpRMSPE</code>() :: <a href="/metrics.html#RegMetrics"><code>RegMetrics</code></a></p>
 </blockquote>
-<p>Compute the exponential of the root mean square error.</p>
-<div class="collapse" id="ExpRMSPE-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#ExpRMSPE-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>ExpRMSPE</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><div style="height:1px"></div>
+<div class="collapse" id="ExpRMSPE-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#ExpRMSPE-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>ExpRMSPE</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Compute the exponential of the root mean square error.</p>
+
 </div>
 
 </div>
@@ -430,10 +430,10 @@ summary: "Useful metrics for training"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="Precision"><code>class</code> <code>Precision</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L195" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#Precision-pytest" style="float:right; padding-right:10px">[test]</a></h3><blockquote><p><code>Precision</code>(<strong><code>average</code></strong>:<code>Optional</code>[<code>str</code>]=<strong><em><code>'binary'</code></em></strong>, <strong><code>pos_label</code></strong>:<code>int</code>=<strong><em><code>1</code></em></strong>, <strong><code>eps</code></strong>:<code>float</code>=<strong><em><code>1e-09</code></em></strong>) :: <a href="/metrics.html#CMScores"><code>CMScores</code></a></p>
+<h3 id="Precision" class="doc_header"><code>class</code> <code>Precision</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L195" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#Precision-pytest" style="float:right; padding-right:10px">[test]</a></h3><blockquote><p><code>Precision</code>(<strong><code>average</code></strong>:<code>Optional</code>[<code>str</code>]=<strong><em><code>'binary'</code></em></strong>, <strong><code>pos_label</code></strong>:<code>int</code>=<strong><em><code>1</code></em></strong>, <strong><code>eps</code></strong>:<code>float</code>=<strong><em><code>1e-09</code></em></strong>) :: <a href="/metrics.html#CMScores"><code>CMScores</code></a></p>
 </blockquote>
-<p>Compute the Precision.</p>
-<div class="collapse" id="Precision-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#Precision-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>Precision</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><div style="height:1px"></div>
+<div class="collapse" id="Precision-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#Precision-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>Precision</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Compute the Precision.</p>
+
 </div>
 
 </div>
@@ -451,10 +451,10 @@ summary: "Useful metrics for training"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="Recall"><code>class</code> <code>Recall</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L190" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#Recall-pytest" style="float:right; padding-right:10px">[test]</a></h3><blockquote><p><code>Recall</code>(<strong><code>average</code></strong>:<code>Optional</code>[<code>str</code>]=<strong><em><code>'binary'</code></em></strong>, <strong><code>pos_label</code></strong>:<code>int</code>=<strong><em><code>1</code></em></strong>, <strong><code>eps</code></strong>:<code>float</code>=<strong><em><code>1e-09</code></em></strong>) :: <a href="/metrics.html#CMScores"><code>CMScores</code></a></p>
+<h3 id="Recall" class="doc_header"><code>class</code> <code>Recall</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L190" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#Recall-pytest" style="float:right; padding-right:10px">[test]</a></h3><blockquote><p><code>Recall</code>(<strong><code>average</code></strong>:<code>Optional</code>[<code>str</code>]=<strong><em><code>'binary'</code></em></strong>, <strong><code>pos_label</code></strong>:<code>int</code>=<strong><em><code>1</code></em></strong>, <strong><code>eps</code></strong>:<code>float</code>=<strong><em><code>1e-09</code></em></strong>) :: <a href="/metrics.html#CMScores"><code>CMScores</code></a></p>
 </blockquote>
-<p>Compute the Recall.</p>
-<div class="collapse" id="Recall-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#Recall-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>Recall</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><div style="height:1px"></div>
+<div class="collapse" id="Recall-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#Recall-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>Recall</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Compute the Recall.</p>
+
 </div>
 
 </div>
@@ -472,10 +472,10 @@ summary: "Useful metrics for training"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="FBeta"><code>class</code> <code>FBeta</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L201" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#FBeta-pytest" style="float:right; padding-right:10px">[test]</a></h3><blockquote><p><code>FBeta</code>(<strong><code>average</code></strong>:<code>Optional</code>[<code>str</code>]=<strong><em><code>'binary'</code></em></strong>, <strong><code>pos_label</code></strong>:<code>int</code>=<strong><em><code>1</code></em></strong>, <strong><code>eps</code></strong>:<code>float</code>=<strong><em><code>1e-09</code></em></strong>, <strong><code>beta</code></strong>:<code>float</code>=<strong><em><code>2</code></em></strong>) :: <a href="/metrics.html#CMScores"><code>CMScores</code></a></p>
+<h3 id="FBeta" class="doc_header"><code>class</code> <code>FBeta</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L201" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#FBeta-pytest" style="float:right; padding-right:10px">[test]</a></h3><blockquote><p><code>FBeta</code>(<strong><code>average</code></strong>:<code>Optional</code>[<code>str</code>]=<strong><em><code>'binary'</code></em></strong>, <strong><code>pos_label</code></strong>:<code>int</code>=<strong><em><code>1</code></em></strong>, <strong><code>eps</code></strong>:<code>float</code>=<strong><em><code>1e-09</code></em></strong>, <strong><code>beta</code></strong>:<code>float</code>=<strong><em><code>2</code></em></strong>) :: <a href="/metrics.html#CMScores"><code>CMScores</code></a></p>
 </blockquote>
-<p>Compute the F<code>beta</code> score.</p>
-<div class="collapse" id="FBeta-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#FBeta-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>FBeta</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><div style="height:1px"></div>
+<div class="collapse" id="FBeta-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#FBeta-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>FBeta</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Compute the F<code>beta</code> score.</p>
+
 </div>
 
 </div>
@@ -493,10 +493,10 @@ summary: "Useful metrics for training"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="R2Score"><code>class</code> <code>R2Score</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L105" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#R2Score-pytest" style="float:right; padding-right:10px">[test]</a></h3><blockquote><p><code>R2Score</code>() :: <a href="/metrics.html#RegMetrics"><code>RegMetrics</code></a></p>
+<h3 id="R2Score" class="doc_header"><code>class</code> <code>R2Score</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L105" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#R2Score-pytest" style="float:right; padding-right:10px">[test]</a></h3><blockquote><p><code>R2Score</code>() :: <a href="/metrics.html#RegMetrics"><code>RegMetrics</code></a></p>
 </blockquote>
-<p>Compute the R2 score (coefficient of determination).</p>
-<div class="collapse" id="R2Score-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#R2Score-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>R2Score</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><div style="height:1px"></div>
+<div class="collapse" id="R2Score-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#R2Score-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>R2Score</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Compute the R2 score (coefficient of determination).</p>
+
 </div>
 
 </div>
@@ -514,10 +514,10 @@ summary: "Useful metrics for training"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="ExplainedVariance"><code>class</code> <code>ExplainedVariance</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L110" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#ExplainedVariance-pytest" style="float:right; padding-right:10px">[test]</a></h3><blockquote><p><code>ExplainedVariance</code>() :: <a href="/metrics.html#RegMetrics"><code>RegMetrics</code></a></p>
+<h3 id="ExplainedVariance" class="doc_header"><code>class</code> <code>ExplainedVariance</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L110" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#ExplainedVariance-pytest" style="float:right; padding-right:10px">[test]</a></h3><blockquote><p><code>ExplainedVariance</code>() :: <a href="/metrics.html#RegMetrics"><code>RegMetrics</code></a></p>
 </blockquote>
-<p>Compute the explained variance.</p>
-<div class="collapse" id="ExplainedVariance-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#ExplainedVariance-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>ExplainedVariance</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><div style="height:1px"></div>
+<div class="collapse" id="ExplainedVariance-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#ExplainedVariance-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>ExplainedVariance</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Compute the explained variance.</p>
+
 </div>
 
 </div>
@@ -535,10 +535,10 @@ summary: "Useful metrics for training"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="MatthewsCorreff"><code>class</code> <code>MatthewsCorreff</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L239" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#MatthewsCorreff-pytest" style="float:right; padding-right:10px">[test]</a></h3><blockquote><p><code>MatthewsCorreff</code>() :: <a href="/metrics.html#ConfusionMatrix"><code>ConfusionMatrix</code></a></p>
+<h3 id="MatthewsCorreff" class="doc_header"><code>class</code> <code>MatthewsCorreff</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L239" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#MatthewsCorreff-pytest" style="float:right; padding-right:10px">[test]</a></h3><blockquote><p><code>MatthewsCorreff</code>() :: <a href="/metrics.html#ConfusionMatrix"><code>ConfusionMatrix</code></a></p>
 </blockquote>
-<p>Compute the Matthews correlation coefficient.</p>
-<div class="collapse" id="MatthewsCorreff-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#MatthewsCorreff-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>MatthewsCorreff</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><div style="height:1px"></div>
+<div class="collapse" id="MatthewsCorreff-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#MatthewsCorreff-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>MatthewsCorreff</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Compute the Matthews correlation coefficient.</p>
+
 </div>
 
 </div>
@@ -563,10 +563,10 @@ summary: "Useful metrics for training"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="KappaScore"><code>class</code> <code>KappaScore</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L220" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#KappaScore-pytest" style="float:right; padding-right:10px">[test]</a></h3><blockquote><p><code>KappaScore</code>() :: <a href="/metrics.html#ConfusionMatrix"><code>ConfusionMatrix</code></a></p>
+<h3 id="KappaScore" class="doc_header"><code>class</code> <code>KappaScore</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L220" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#KappaScore-pytest" style="float:right; padding-right:10px">[test]</a></h3><blockquote><p><code>KappaScore</code>() :: <a href="/metrics.html#ConfusionMatrix"><code>ConfusionMatrix</code></a></p>
 </blockquote>
-<p>Compute the rate of agreement (Cohens Kappa).</p>
-<div class="collapse" id="KappaScore-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#KappaScore-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>KappaScore</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><div style="height:1px"></div>
+<div class="collapse" id="KappaScore-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#KappaScore-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>KappaScore</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Compute the rate of agreement (Cohens Kappa).</p>
+
 </div>
 
 </div>
@@ -583,7 +583,7 @@ Specify linear or quadratic weights, if using, by first creating an instance of 
 
 <pre><code>kappa = KappaScore()
 kappa.weights = "quadratic"
-learn = create_cnn(data, model, metrics=[error_rate, kappa])</code></pre>
+learn = cnn_learner(data, model, metrics=[error_rate, kappa])</code></pre>
 
 </div>
 </div>
@@ -597,10 +597,10 @@ learn = create_cnn(data, model, metrics=[error_rate, kappa])</code></pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="ConfusionMatrix"><code>class</code> <code>ConfusionMatrix</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L131" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#ConfusionMatrix-pytest" style="float:right; padding-right:10px">[test]</a></h3><blockquote><p><code>ConfusionMatrix</code>() :: <a href="/callback.html#Callback"><code>Callback</code></a></p>
+<h3 id="ConfusionMatrix" class="doc_header"><code>class</code> <code>ConfusionMatrix</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L131" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#ConfusionMatrix-pytest" style="float:right; padding-right:10px">[test]</a></h3><blockquote><p><code>ConfusionMatrix</code>() :: <a href="/callback.html#Callback"><code>Callback</code></a></p>
 </blockquote>
-<p>Computes the confusion matrix.</p>
-<div class="collapse" id="ConfusionMatrix-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#ConfusionMatrix-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>ConfusionMatrix</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><div style="height:1px"></div>
+<div class="collapse" id="ConfusionMatrix-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#ConfusionMatrix-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>ConfusionMatrix</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Computes the confusion matrix.</p>
+
 </div>
 
 </div>
@@ -740,7 +740,7 @@ learn = create_cnn(data, model, metrics=[error_rate, kappa])</code></pre>
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>To deploy it, you need to pass an instance of this custom metric in the <a href="/metrics.html#metrics"><code>metrics</code></a> argument:</p>
 
-<pre><code>learn = create_cnn(data, model, metrics=[accuracy, TraceMallocMetric()])
+<pre><code>learn = cnn_learner(data, model, metrics=[accuracy, TraceMallocMetric()])
 learn.fit_one_cycle(3, max_lr=1e-2)</code></pre>
 <p>And then the output changes to:</p>
 
@@ -808,7 +808,7 @@ epoch   train_loss  valid_loss  accuracy    peak RAM
 <p>Also <code>_order=-20</code> is crucial - without it the custom columns will not be added - it tells the callback system to run this callback before the recorder system.</p>
 <p>To deploy it, you need to pass the name of the class (not an instance!) of the class in the <code>callback_fns</code> argument. This is because the <code>learn</code> object doesn't exist yet, and it's required to instantiate <code>TraceMallocMultiColMetric</code>. The system will do it for us automatically as soon as the learn object has been created.</p>
 
-<pre><code>learn = create_cnn(data, model, metrics=[accuracy], callback_fns=TraceMallocMultiColMetric)
+<pre><code>learn = cnn_learner(data, model, metrics=[accuracy], callback_fns=TraceMallocMultiColMetric)
 learn.fit_one_cycle(3, max_lr=1e-2)</code></pre>
 <p>And then the output changes to:</p>
 
@@ -819,12 +819,12 @@ epoch   train_loss valid_loss   accuracy     used   max_used   peak
     3   0.047178    0.025307    0.992100     79568  2408404   2342754</code></pre>
 <p>Another way to do the same is by using <code>learn.callbacks.append</code>, and this time we need to instantiate <code>TraceMallocMultiColMetric</code> with <code>learn</code> object which we now have, as it is called after the latter was created:</p>
 
-<pre><code>learn = create_cnn(data, model, metrics=[accuracy])
+<pre><code>learn = cnn_learner(data, model, metrics=[accuracy])
 learn.callbacks.append(TraceMallocMultiColMetric(learn))
 learn.fit_one_cycle(3, max_lr=1e-2)</code></pre>
 <p>Configuring the custom metrics in the <code>learn</code> object sets them to run in all future <a href="/basic_train.html#fit"><code>fit</code></a>-family calls. However, if you'd like to configure it for just one call, you can configure it directly inside <a href="/basic_train.html#fit"><code>fit</code></a> or <a href="/train.html#fit_one_cycle"><code>fit_one_cycle</code></a>:</p>
 
-<pre><code>learn = create_cnn(data, model, metrics=[accuracy])
+<pre><code>learn = cnn_learner(data, model, metrics=[accuracy])
 learn.fit_one_cycle(3, max_lr=1e-2, callbacks=TraceMallocMultiColMetric(learn))</code></pre>
 <p>And to stress the differences:</p>
 <ul>
