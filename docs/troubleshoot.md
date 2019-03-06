@@ -416,6 +416,15 @@ python -m fastai.utils.show_install
 ```
 Incidentally, we want you to include its output in any bug reports you may submit in the future.
 
+One more situation this may happen is where you accidentally try to run fastai-1.0-based code from under `courses/*/` in the git repo, which includes a symlink to fastai-0.7 code base and then all the hell breaks loose. Just move your notebook away from those folders and all will be good.
+
+If `import fastai` works, but not `import fastai.vision`, do:
+```
+import sys
+import fastai
+print(sys.modules['fastai'])
+```
+and see which fastai got loaded - that will help you to untangle the conflict.
 
 
 ## Conda environments not showing up in Jupyter Notebook
