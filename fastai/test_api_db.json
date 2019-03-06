@@ -126,7 +126,7 @@
         },
         {
             "file": "tests/test_vision_train.py",
-            "line": 94,
+            "line": 95,
             "test": "test_model_save_load"
         }
     ],
@@ -138,7 +138,7 @@
         },
         {
             "file": "tests/test_vision_train.py",
-            "line": 134,
+            "line": 136,
             "test": "test_models_meta"
         }
     ],
@@ -172,7 +172,7 @@
         },
         {
             "file": "tests/test_vision_train.py",
-            "line": 94,
+            "line": 95,
             "test": "test_model_save_load"
         }
     ],
@@ -269,6 +269,13 @@
             "file": "tests/test_callback_mem.py",
             "line": 8,
             "test": "test_peak_mem_metric"
+        }
+    ],
+    "fastai.callbacks.misc.StopAfterNBatches": [
+        {
+            "file": "tests/test_callbacks_misc.py",
+            "line": 20,
+            "test": "test_stop_after_n_batches"
         }
     ],
     "fastai.core.arrays_split": [
@@ -492,14 +499,14 @@
     "fastai.gen_doc.doctest.this_tests": [
         {
             "file": "tests/test_gen_doc_nbtest.py",
-            "line": 79,
+            "line": 90,
             "test": "test_this_tests"
         }
     ],
     "fastai.gen_doc.nbtest._fuzzy_line_match": [
         {
             "file": "tests/test_gen_doc_nbtest.py",
-            "line": 64,
+            "line": 75,
             "test": "test_fuzzy_line_match"
         }
     ],
@@ -520,19 +527,19 @@
     "fastai.gen_doc.nbtest.direct_test_match": [
         {
             "file": "tests/test_gen_doc_nbtest.py",
-            "line": 26,
+            "line": 37,
             "test": "test_direct_test_match"
         },
         {
             "file": "tests/test_gen_doc_nbtest.py",
-            "line": 34,
+            "line": 45,
             "test": "test_direct_test_match_class_methods"
         }
     ],
     "fastai.gen_doc.nbtest.fuzzy_test_match": [
         {
             "file": "tests/test_gen_doc_nbtest.py",
-            "line": 41,
+            "line": 52,
             "test": "test_fuzzy_test_match"
         }
     ],
@@ -885,7 +892,7 @@
     "fastai.train.ClassificationInterpretation": [
         {
             "file": "tests/test_vision_train.py",
-            "line": 140,
+            "line": 142,
             "test": "test_ClassificationInterpretation"
         }
     ],
