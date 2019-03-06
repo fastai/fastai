@@ -83,7 +83,9 @@ class SaveModelCallback(TrackerCallback):
             self.every = 'improvement'
                  
     def jump_to_epoch(self, epoch:int)->None:
-        try: self.learn.load(f'{self.name}_{epoch-1}')
+        try: 
+            self.learn.load(f'{self.name}_{epoch-1}', purge=False)
+            print(f"Loaded {self.name}_{epoch-1}")
         except: print(f'Model {self.name}_{epoch-1} not found.')
 
     def on_epoch_end(self, epoch:int, **kwargs:Any)->None:
@@ -99,7 +101,7 @@ class SaveModelCallback(TrackerCallback):
     def on_train_end(self, **kwargs):
         "Load the best model."
         if self.every=="improvement" and (self.learn.path/f'{self.learn.model_dir}/{self.name}.pth').is_file():
-            self.learn.load(f'{self.name}')
+            self.learn.load(f'{self.name}', purge=False)
 
 class ReduceLROnPlateauCallback(TrackerCallback):
     "A `TrackerCallback` that reduces learning rate when a metric has stopped improving."
