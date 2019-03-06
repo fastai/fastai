@@ -92,6 +92,8 @@ def get_func_fq_name(func):
     name = None
     if   hasattr(func, '__qualname__'): name = func.__qualname__
     elif hasattr(func, '__name__'):     name = func.__name__
+    elif hasattr(func, '__wrapped__'):  return get_func_fq_name(func.__wrapped__)
+    elif hasattr(func, '__class__'):    name = func.__class__.__name__
     else: raise Exception(f"'{func}' is not a func or class")
     return f'{func.__module__}.{name}'
 

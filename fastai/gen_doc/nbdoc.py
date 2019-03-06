@@ -114,12 +114,11 @@ def show_doc(elt, doc_string:bool=True, full_name:str=None, arg_comments:dict=No
     source_link = get_function_source(elt) if is_fastai_class(elt) else ""
     test_link, test_modal = get_pytest_html(elt, anchor_id=anchor_id) if show_tests else ('', '')
     title_level = ifnone(title_level, 2 if inspect.isclass(elt) else 4)
-    doc =  f'<h{title_level} id="{anchor_id}">{name}{source_link}{test_link}</h{title_level}>'
-    doc += f'\n\n> {args}'
+    doc =  f'<h{title_level} id="{anchor_id}" class="doc_header">{name}{source_link}{test_link}</h{title_level}>'
+    doc += f'\n\n> {args}\n\n'
+    doc += f'{test_modal}'
     if doc_string and (inspect.getdoc(elt) or arg_comments):
         doc += format_docstring(elt, arg_comments, alt_doc_string, ignore_warn) + ' '
-    doc += '\n\n'
-    doc += f'{test_modal}' # hidden popup for tests doc. appending separately so it doesn't inherit css from <h{title_level}>
     if markdown: display(Markdown(doc))
     else: return doc
 

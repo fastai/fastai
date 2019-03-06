@@ -72,8 +72,7 @@ def get_pytest_card(html, anchor_id):
     body = (f'<div class="collapse" id="{anchor_id}"><div class="card card-body pytest_card">'
                 f'<a type="button" data-toggle="collapse" data-target="#{anchor_id}" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a>'
                 f'{html}'
-            '</div></div>'
-            '<div style="height:1px"></div>') # hack to fix jumping bootstrap header
+            '</div></div>')
     return link, body
 
 def lookup_db(elt)->List[Dict]:
