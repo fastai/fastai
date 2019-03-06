@@ -43,6 +43,7 @@ class LearnerTensorboardWriter(LearnerCallback):
 
     def _update_batches_if_needed(self)->None:
         "one_batch function is extremely slow with large datasets.  This is caching the result as an optimization."
+        if self.learn.data.valid_dl is None: return # Running learning rate finder, so return
         update_batches = self.data is not self.learn.data
         if not update_batches: return
         self.data = self.learn.data
@@ -73,7 +74,7 @@ class LearnerTensorboardWriter(LearnerCallback):
         "Writes training metrics to Tensorboard."
         recorder = self.learn.recorder
         for i, name in enumerate(recorder.names[start_idx:]):
-            if len(last_metrics) < i+1: return
+            if last_metrics is None or len(last_metrics) < i+1: return
             scalar_value = last_metrics[i]
             self._write_scalar(name=name, scalar_value=scalar_value, iteration=iteration)
 
