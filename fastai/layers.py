@@ -228,6 +228,7 @@ class FlattenedLoss():
     "Same as `func`, but flattens input and target."
     def __init__(self, func, *args, axis:int=-1, floatify:bool=False, is_2d:bool=True, **kwargs):
         self.func,self.axis,self.floatify,self.is_2d = func(*args,**kwargs),axis,floatify,is_2d
+        functools.update_wrapper(self, self.func)
 
     def __repr__(self): return f"FlattenedLoss of {self.func}"
     @property

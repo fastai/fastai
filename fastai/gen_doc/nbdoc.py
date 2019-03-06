@@ -78,7 +78,7 @@ def format_param(p):
 def format_ft_def(func, full_name:str=None)->str:
     "Format and link `func` definition to show in documentation"
     sig = inspect.signature(func)
-    name = f'<code>{ifnone(full_name, func.__name__)}</code>'
+    name = f'<code>{full_name or func.__name__}</code>'
     fmt_params = [format_param(param) for name,param
                   in sig.parameters.items() if name not in ('self','cls')]
     arg_str = f"({', '.join(fmt_params)})"
@@ -269,7 +269,7 @@ def get_anchor(fn)->str:
     return fn_name(fn)
 
 def fn_name(ft)->str:
-    if ft in _typing_names: return _typing_names[ft]
+    if ft.__hash__ and ft in _typing_names: return _typing_names[ft]
     if hasattr(ft, '__name__'):   return ft.__name__
     elif hasattr(ft,'_name') and ft._name: return ft._name
     elif hasattr(ft,'__origin__'): return str(ft.__origin__).split('.')[-1]

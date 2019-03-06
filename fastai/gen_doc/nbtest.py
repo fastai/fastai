@@ -107,6 +107,7 @@ def get_tests_dir(elt)->Path:
 
 def get_file(elt)->str:
     if hasattr(elt, '__wrapped__'): elt = elt.__wrapped__
+    if not nbdoc.is_fastai_class(elt): return None
     return inspect.getfile(elt)
 
 def find_test_files(elt, exact_match:bool=False)->List[Path]:
@@ -116,8 +117,9 @@ def find_test_files(elt, exact_match:bool=False)->List[Path]:
     # if len(matches) != 1: raise Error('Could not find exact file match:', matches)
     return matches
 
-def _is_file_match(elt, file_name:str, exact_match:bool=False):
+def _is_file_match(elt, file_name:str, exact_match:bool=False)->bool:
     fp = get_file(elt)
+    if fp is None: return False
     subdir = ifnone(_submodule_name(elt), '')
     exact_re = '' if exact_match else '\w*'
     return re.match(f'test_{subdir}\w*{Path(fp).stem}{exact_re}\.py', file_name)
