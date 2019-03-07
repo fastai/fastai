@@ -72,7 +72,7 @@ class ShowGraph(LearnerCallback):
             x_bounds = (0, (n_epochs - len(rec.nb_batches)) * rec.nb_batches[-1] + len(rec.losses))
             y_bounds = (0, max((max(Tensor(rec.losses)), max(Tensor(rec.val_losses)))))
             rec.pbar.update_graph([(iters, rec.losses), (val_iter, rec.val_losses)], x_bounds, y_bounds)
-            return False
+        return {}
 
 class BnFreeze(LearnerCallback):
     "Freeze moving average statistics in all non-trainable batchnorm layers."
