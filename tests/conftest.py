@@ -61,7 +61,7 @@ def pytest_runtest_makereport(item, call):
             TestAPIRegistry.this_tests_check_off()
         else:
             TestAPIRegistry.this_tests_check_on()
-    elif res.when == "call" and res.skipped == True:
+    elif res.when == "call" and (res.skipped or res.failed):
         TestAPIRegistry.this_tests_check_off()
     elif res.when == "teardown":
         file_name, _, test_name = res.location
