@@ -24,6 +24,7 @@ def test_is_file_match():
     assert result is not None, f"matches module subsets"
 
 def test_wrapped():
+    this_tests(nbtest.build_tests_markdown)
     from fastai.data_block import CrossEntropyFlat
     loss_func = CrossEntropyFlat()
     try: nbtest.build_tests_markdown(loss_func)
