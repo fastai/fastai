@@ -66,16 +66,16 @@ Normally, while testing the code, we only run `make test`, which completes withi
 
 1. Run the test suite, including the slower tests (not much longer than the `make test`:
 
-```
-make test-full
-```
+   ```
+   make test-full
+   ```
 
 2. Run the notebook tests (0.5-1h):
 
-```
-cd docs_src
-./run_tests.sh
-```
+   ```
+   cd docs_src
+   ./run_tests.sh
+   ```
 
 
 
@@ -989,7 +989,9 @@ Once, things were fixed, `git push`, etc...
 
 ## Hotfix Release Process
 
-If something found to be wrong in the last release, yet the HEAD is unstable to make a new release, instead apply the fix to the branch of the desired release and make a new hotfix release of that branch. Follow these step-by-step instructions to accomplish that:
+If something found to be wrong in the last release, yet the HEAD is unstable to make a new release, instead, apply the fixes to the branch of the desired release and make a new hotfix release of that branch. Follow these step-by-step instructions to accomplish that, which involved two parts - backporting (manual) and releasing (automated).
+
+Part 1: Backporting fixes and preparing for hotfix-release
 
 1. Start with the desired branch.
 
@@ -1017,38 +1019,48 @@ If something found to be wrong in the last release, yet the HEAD is unstable to 
    git push
    ```
 
-3. Check that everything is committed and good to go.
+Part 2. Making the hotfix release
+
+All of the following steps can be done in one command:
+
+```
+make release-hotfix
+```
+
+If it fails, then pick up where it failed and continue with the step-by-step process as explained below.
+
+1. Check that everything is committed and good to go.
 
    ```
-   make sanity-check
+   make sanity-check-hotfix
    ```
 
-4. Test.
+2. Test.
 
    ```
    make test
    ```
 
-5. Adjust version.
+3. Adjust version.
 
    According to [PEP-0440](https://www.python.org/dev/peps/pep-0440/#post-releases) add `.post1` to the version, or if it already was a `.postX`, increment its version:
    ```
    make bump-post-release
    ```
 
-6. Commit and push all the changes to the branch.
+4. Commit and push all the changes to the branch.
 
    ```
    make commit-hotfix-push
    ```
 
-7. Make a new tag with the new version.
+5. Make a new tag with the new version.
 
    ```
    make tag-version-push
    ```
 
-8. Make updated release.
+6. Make updated release.
 
    ```
    make dist
@@ -1068,7 +1080,7 @@ If something found to be wrong in the last release, yet the HEAD is unstable to 
    make upload-pypi
    ```
 
-9. Test release.
+7. Test release.
 
    If you made a release on both platforms:
    ```
@@ -1083,7 +1095,7 @@ If something found to be wrong in the last release, yet the HEAD is unstable to 
    make test-install-conda
    ```
 
-10. Don't forget to switch back to the master branch for continued development.
+8. Don't forget to switch back to the master branch for continued development.
 
    ```
    make master-branch-switch
