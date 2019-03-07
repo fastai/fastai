@@ -37,6 +37,13 @@ def pytest_collection_modifyitems(config, items):
         skip_cuda = pytest.mark.skip(reason="CUDA is not available")
         mark_items_with_keyword(items, skip_cuda, "cuda")
 
+
+### TestAPIRegistry hooks and fixtures ###
+@pytest.hookimpl(hookwrapper=True)
+def pytest_terminal_summary(terminalreporter):
+    yield
+    TestAPIRegistry.missing_this_tests_alert()
+
 @pytest.fixture(scope="session", autouse=True)
 def test_registry_machinery(request):
     # pytest setup
@@ -44,7 +51,6 @@ def test_registry_machinery(request):
     #individualtests = 0
     yield
     # pytest teardown
-    TestAPIRegistry.missing_this_tests_alert()
     if (pytest.config.getoption("--testapireg") and # don't interfere with duties
         not individualtests and                     # must include all tests
         not request.session.testsfailed):           # failures could miss this_tests
