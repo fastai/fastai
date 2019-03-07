@@ -190,42 +190,43 @@ log_file := release-`date +"%Y-%m-%d-%H-%M-%S"`.log
 release: ## do it all (other than testing)
 	@echo "\n\n*** logging to $(log_file)"
 	( \
-	${MAKE} tools-update; \
-	${MAKE} master-branch-switch; \
-	${MAKE} sanity-check; \
-	${MAKE} test; \
-	${MAKE} bump; \
-	${MAKE} changes-finalize; \
-	${MAKE} release-branch-create; \
-	${MAKE} commit-version; \
-	${MAKE} master-branch-switch; \
-	${MAKE} bump-dev; \
-	${MAKE} changes-dev-cycle; \
-	${MAKE} commit-dev-cycle-push; \
-	${MAKE} prev-branch-switch; \
-	${MAKE} commit-release-push; \
-	${MAKE} tag-version-push; \
-	${MAKE} dist; \
-	${MAKE} upload; \
-	${MAKE} test-install; \
-	${MAKE} backport-check; \
-	${MAKE} master-branch-switch; \
+	${MAKE} tools-update && \
+	${MAKE} master-branch-switch && \
+	${MAKE} sanity-check && \
+	${MAKE} test && \
+	${MAKE} bump && \
+	${MAKE} changes-finalize && \
+	${MAKE} release-branch-create && \
+	${MAKE} commit-version && \
+	${MAKE} master-branch-switch && \
+	${MAKE} bump-dev && \
+	${MAKE} changes-dev-cycle && \
+	${MAKE} commit-dev-cycle-push && \
+	${MAKE} prev-branch-switch && \
+	${MAKE} commit-release-push && \
+	${MAKE} tag-version-push && \
+	${MAKE} dist && \
+	${MAKE} upload && \
+	${MAKE} test-install && \
+	${MAKE} backport-check && \
+	${MAKE} master-branch-switch && \
+	echo "Done" \
 	) 2>&1 | tee $(log_file)
 
 log_file_hotfix := release-hotfix-`date +"%Y-%m-%d-%H-%M-%S"`.log
 release-hotfix: ## do most of the hotfix release process
 	@echo "\n\n*** logging to $(log_file)"
 	( \
-	${MAKE} sanity-check-hotfix; \
-	${MAKE} test; \
-	${MAKE} bump-post-release; \
-	${MAKE} commit-hotfix-push; \
-	${MAKE} tag-version-push; \
-	${MAKE} dist; \
-	${MAKE} upload; \
-	${MAKE} test-install; \
-	${MAKE} backport-check; \
-	${MAKE} master-branch-switch; \
+	${MAKE} sanity-check-hotfix && \
+	${MAKE} test && \
+	${MAKE} bump-post-release && \
+	${MAKE} commit-hotfix-push && \
+	${MAKE} tag-version-push && \
+	${MAKE} dist && \
+	${MAKE} upload && \
+	${MAKE} test-install && \
+	${MAKE} master-branch-switch && \
+	echo "Done" \
 	) 2>&1 | tee $(log_file_hotfix)
 
 ##@ git helpers
