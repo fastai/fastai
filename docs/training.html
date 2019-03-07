@@ -31,13 +31,14 @@ summary: "Overview of fastai training modules, including Learner, metrics, and c
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Walk-through-of-key-functionalities">Walk-through of key functionalities<a class="anchor-link" href="#Walk-through-of-key-functionalities">&#182;</a></h2>
+<h2 id="Walk-through-of-key-functionalities">Walk-through of key functionalities<a class="anchor-link" href="#Walk-through-of-key-functionalities">&#182;</a></h2><p>We'll do a quick overview of the key pieces of fastai's training modules. See the separate module docs for details on each.</p>
+
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>We'll do a quick overview of the key pieces of fastai's training modules. See the separate module docs for details on each. We'll use a small subset of the classic MNIST dataset containing the images of just 3's and 7's for the purpose of demo and documentation here. To minimize the boilerplate code in our docs, we've defined a function to grab the data from <code>URLs.MNIST_SAMPLE</code>. The function will download and unzip the dataset if necessary, which we will then use to create an <a href="/vision.data.html#ImageDataBunch"><code>ImageDataBunch</code></a> object</p>
+<h3 id="Setup">Setup<a class="anchor-link" href="#Setup">&#182;</a></h3><p>Import required <a href="/index.html#imports">modules</a> and prepare <a href="/basic_data.html#Get-your-data-ready-for-training">data</a>:</p>
 
 </div>
 </div>
@@ -47,7 +48,9 @@ summary: "Overview of fastai training modules, including Learner, metrics, and c
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">path</span> <span class="o">=</span> <span class="n">untar_data</span><span class="p">(</span><span class="n">URLs</span><span class="o">.</span><span class="n">MNIST_SAMPLE</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">fastai.vision</span> <span class="k">import</span> <span class="o">*</span>
+
+<span class="n">path</span> <span class="o">=</span> <span class="n">untar_data</span><span class="p">(</span><span class="n">URLs</span><span class="o">.</span><span class="n">MNIST_SAMPLE</span><span class="p">)</span>
 <span class="n">data</span> <span class="o">=</span> <span class="n">ImageDataBunch</span><span class="o">.</span><span class="n">from_folder</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
 </pre></div>
 
@@ -55,6 +58,13 @@ summary: "Overview of fastai training modules, including Learner, metrics, and c
 </div>
 </div>
 
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><em><a href="/datasets.html#URLs"><code>URLs.MNIST_SAMPLE</code></a> is a small subset of the classic MNIST dataset containing the images of just 3's and 7's for the purpose of demo and documentation here. Common <a href="/datasets.html"><code>datasets</code></a> can be downloaded with <a href="datasets.html#untar_data"><code>untar_data</code></a> - which we will use to create an <a href="/vision.data.html#ImageDataBunch"><code>ImageDataBunch</code></a> object</em></p>
+
+</div>
+</div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
