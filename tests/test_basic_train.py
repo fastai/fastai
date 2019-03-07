@@ -62,11 +62,14 @@ def test_unfreeze():
     learn.unfreeze()
     for param in learn.model.parameters(): assert param.requires_grad == True
 
-def check_learner(learn, train_items):
+def check_learner(learn, model_summary_before, train_items_before):
     # basic checks
     #assert learn.recorder
     assert learn.model
-    assert train_items == len(learn.data.train_ds.items)
+    assert train_items_before == len(learn.data.train_ds.items)
+
+    assert model_summary_before == learn.summary(), f"model summary before and after"
+
     # XXX: could use more sanity checks
 
 def test_purge():
@@ -96,19 +99,23 @@ def test_purge():
 def test_save_load(learn):
     this_tests(learn.save, learn.load, learn.purge)
     name = 'mnist-tiny-test-save-load'
-    train_items = len(learn.data.train_ds)
+    train_items_before = len(learn.data.train_ds.items)
+    model_summary_before = learn.summary()
+
     # testing that all these various sequences don't break each other
     model_path = learn.save(name, return_path=True)
-    learn.load(name, purge=True)
+    _ = learn.load(name, purge=True)
     learn.data.sanity_check()
-    check_learner(learn, train_items)
+    check_learner(learn, model_summary_before, train_items_before)
 
     learn.purge()
-    learn.load(name)
-    learn.load(name)
+    _ = learn.load(name)
+    _ = learn.load(name)
     model_path = learn.save(name, return_path=True)
-    learn.load(name, purge=True)
-    check_learner(learn, train_items)
+    _ = learn.load(name, purge=True)
+    check_learner(learn, model_summary_before, train_items_before)
+
+    # cleanup
     if os.path.exists(model_path): os.remove(model_path)
 
 def subtest_save_load_mem(data):
@@ -117,33 +124,33 @@ def subtest_save_load_mem(data):
     #learn.fit_one_cycle(1)
 
     # save should consume no extra used or peaked memory
-    with GPUMemTrace() as mtrace:
+    with GPUMemTrace(on_exit_report=False) as mtrace:
         model_path = learn.save(name, return_path=True)
     check_mtrace(used_exp=0, peaked_exp=0, mtrace=mtrace, abs_tol=10, ctx="save")
 
     # load w/ purge still leaks some the first time it's run
-    with GPUMemTrace() as mtrace:
+    with GPUMemTrace(on_exit_report=False) as mtrace:
         learn.load(name, purge=True)
     # XXX: very different numbers if done w/o fit first 42 8, w/ fit 24 16
-    check_mtrace(used_exp=42, peaked_exp=8, mtrace=mtrace, abs_tol=10, ctx="load")
+    check_mtrace(used_exp=18, peaked_exp=8, mtrace=mtrace, abs_tol=10, ctx="load")
 
     # subsequent multiple load w/o purge should consume no extra used memory
-    with GPUMemTrace() as mtrace:
+    with GPUMemTrace(on_exit_report=False) as mtrace:
         learn.load(name, purge=False)
         learn.load(name, purge=False)
     check_mtrace(used_exp=0, peaked_exp=20, mtrace=mtrace, abs_tol=10, ctx="load x 2")
 
     # subsequent multiple load w/ purge should consume no extra used memory
-    with GPUMemTrace() as mtrace:
+    with GPUMemTrace(on_exit_report=False) as mtrace:
         learn.load(name, purge=True)
         learn.load(name, purge=True)
     check_mtrace(used_exp=0, peaked_exp=20, mtrace=mtrace, abs_tol=10, ctx="load x 2 2nd time")
 
     # purge + load w/ default purge should consume no extra used memory
-    with GPUMemTrace() as mtrace:
+    with GPUMemTrace(on_exit_report=False) as mtrace:
         learn.purge()
         learn.load(name)
-    check_mtrace(used_exp=0, peaked_exp=20, mtrace=mtrace, abs_tol=10, ctx="purge+load")
+    check_mtrace(used_exp=0, peaked_exp=0, mtrace=mtrace, abs_tol=10, ctx="purge+load")
 
     if os.path.exists(model_path): os.remove(model_path)
 
@@ -176,12 +183,12 @@ def test_destroy():
     assert "train_loss" in cs.out
 
 def subtest_destroy_mem(data):
-    with GPUMemTrace() as mtrace:
+    with GPUMemTrace(on_exit_report=False) as mtrace:
         learn = learn_large_unfit(data)
     load_used, load_peaked = mtrace.data()
 
     # destroy should free most of the memory that was allocated during load (training, etc.)
-    with GPUMemTrace() as mtrace:
+    with GPUMemTrace(on_exit_report=False) as mtrace:
         with CaptureStdout() as cs: learn.destroy()
     check_mtrace(used_exp=-load_used, peaked_exp=-load_peaked, mtrace=mtrace, abs_tol=10, ctx="destroy")
 
@@ -207,15 +214,51 @@ def test_memory(data):
     subtest_save_load_mem(data)
     subtest_destroy_mem(data)
 
+@pytest.mark.skip(reason="fix me: broken learn.summary")
 def test_export_load_learner():
     export_file = 'export.pkl'
     for should_destroy in [False, True]:
         learn = fake_learner()
-        this_tests(learn.export, load_learner)
+        this_tests(learn.export, load_learner, learn.summary)
         path = learn.path
+        model_summary_before = learn.summary()
+
+        print(f"\n*** Testing w/ learn.export(destroy={should_destroy})")
         with CaptureStdout() as cs: learn.export(destroy=should_destroy)
         learn = load_learner(path)
-        # export removes data
-        train_items = 0
-        check_learner(learn, train_items)
+        # XXX: remove the next line when bug is fixed
+        print(learn.summary())
+        # export removes data, so train_items_before=0
+        # also testing learn.summary here on learn created from `load_learner`
+        check_learner(learn, model_summary_before, train_items_before=0)
         if os.path.exists(export_file): os.remove(export_file)
+
+# XXX: dupe with test_memory - integrate (moved from test_vision_train.py)
+def test_model_load_mem_leak():
+    "testing memory leak on load"
+    pytest.xfail("memory leak in learn.load()")
+
+    path = untar_data(URLs.MNIST_TINY)
+    data = ImageDataBunch.from_folder(path, ds_tfms=([], []), bs=2)
+    learn = cnn_learner(data, models.resnet18, metrics=accuracy)
+    this_tests(learn.load)
+    gpu_mem_reclaim() # baseline
+    used_before = gpu_mem_get_used()
+
+    name = 'mnist-tiny-test-load-mem-leak'
+    model_path = learn.save(name=name, return_path=True)
+    _ = learn.load(name)
+    if os.path.exists(model_path): os.remove(model_path)
+    used_after = gpu_mem_get_used()
+
+    # models.resnet18 loaded in GPU RAM is about 50MB
+    # calling learn.load() of a saved and then instantly re-loaded model shouldn't require more GPU RAM
+    # XXX: currently w/o running gc.collect() this temporarily leaks memory and causes fragmentation - the fragmentation can't be tested from here, but it'll get automatically fixed once load is fixed. load() must unload first the previous model, gc.collect() and only then load the new one onto cuda.
+    assert isclose(used_before, used_after, abs_tol=6), f"load() and used GPU RAM: before load(): {used_before}, after: {used_after}"
+
+    # this shows how it should have been
+    gc.collect()
+    gpu_cache_clear()
+    used_after_reclaimed = gpu_mem_get_used()
+    # XXX: not sure where 6MB get lost still but for now it's a small leak - need to test with a bigger model
+    assert isclose(used_before, used_after_reclaimed, abs_tol=6),f"load() and used GPU RAM: before load(): {used_before}, after: {used_after}, after gc.collect() {used_after_reclaimed} used"
