@@ -23,11 +23,11 @@ def test_is_file_match():
     result = nbtest._is_file_match(fastai.core.ifnone, 'test_core_subset_category.py')
     assert result is not None, f"matches module subsets"
 
-def test_wrapped():
-    this_tests(nbtest.build_tests_markdown)
+def test_wrapped_functions():
+    this_tests(nbtest.get_file)
     from fastai.data_block import CrossEntropyFlat
     loss_func = CrossEntropyFlat()
-    try: nbtest.build_tests_markdown(loss_func)
+    try: nbtest.get_file(loss_func)
     except: raise AssertionError("show_test should handle __wrapped__ loss functions")
 
     # from fastai.vision.transform import dihedral_affine
