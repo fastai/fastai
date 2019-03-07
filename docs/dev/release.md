@@ -1447,7 +1447,7 @@ This copies all architectures, not just your current architecture.
 
 Here is how to specify conditional dependencies, e.g. depending on python version:
 
-* Conda
+* Conda (do not use this!, see below)
 
    In `meta.yaml`:
    ```
@@ -1458,6 +1458,8 @@ Here is how to specify conditional dependencies, e.g. depending on python versio
    ```
    Here `# [py36]` tells `conda-build` that this requirement is only for python3.6, it's not a comment.
 
+   **Except** this doesn't work unless we start making py36 and py37 conda builds, which we don't. And if the above is used it'll break the dependency if it's built on py37. The problem is that conda can only handle conditional dependencies at build time, unlike pip that does it at install time!
+
 * Pypi
 
    In `setup.py`:
@@ -1466,6 +1468,8 @@ Here is how to specify conditional dependencies, e.g. depending on python versio
    requirements = ["dataclasses ; python_version<'3.7'", "fastprogress>=0.1.18", ...]
    ```
    Here `; python_version<'3.7'` instructs the wheel to use a dependency on `dataclasses` only for python versions lesser than `3.7`.
+
+   Unlike conda, pip checks conditional dependencies during install time, so the above actually works and doesn't require multiple wheel builds.
 
    This recent syntax requires `setuptools>=36.2` on the build system. For more info [see](https://hynek.me/articles/conditional-python-dependencies/).
 
