@@ -37,8 +37,8 @@ def itemize(metrics):
 def test_logger():
     learn = fake_learner()
     learn.metrics = [accuracy, error_rate]
-    learn.callback_fns.append(callbacks.CSVLogger)
-    this_tests(callbacks.CSVLogger)
+    learn.callback_fns.append(CSVLogger)
+    this_tests(CSVLogger)
     with CaptureStdout() as cs: learn.fit_one_cycle(3)
     csv_df = learn.csv_logger.read_logged_file()
     stdout_df = convert_into_dataframe(cs.out)
