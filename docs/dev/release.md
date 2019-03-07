@@ -1023,9 +1023,9 @@ Part 2. Making the hotfix release
 
 All of the following steps can be done in one command:
 
-```
-make release-hotfix
-```
+   ```
+   make release-hotfix
+   ```
 
 If it fails, then pick up where it failed and continue with the step-by-step process as explained below.
 
