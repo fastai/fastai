@@ -20,11 +20,16 @@ def get_data(path, size, bs, workers):
 def main( gpu:Param("GPU to run on", str)=None ):
     """Distributed training of Imagenette.
     Fastest multi-gpu speed is if you run with: python -m fastai.launch"""
-    gpu = setup_distrib(gpu)
-    n_gpus = rank_distrib() or 1
+    tot_epochs,lr = 40,0.3
 
-    path = untar_data(URLs.IMAGENETTE_160)
-    tot_epochs,size,lr = 40,128,0.6
+    # Pick one of these
+    #path,size = untar_data(URLs.IMAGENETTE_160),128
+    #path,size = untar_data(URLs.IMAGENETTE_320),224
+    path,size = untar_data(URLs.IMAGENETTE),224
+
+    gpu = setup_distrib(gpu)
+    n_gpus = num_distrib() or 1
+
     bs = 256//n_gpus
 
     workers = min(12, num_cpus()//n_gpus)
