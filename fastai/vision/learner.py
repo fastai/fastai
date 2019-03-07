@@ -9,7 +9,7 @@ from ..layers import *
 from ..callbacks.hooks import *
 from ..train import ClassificationInterpretation
 
-__all__ = ['cnn_learner', 'create_cnn', 'create_body', 'create_head', 'unet_learner']
+__all__ = ['cnn_learner', 'create_cnn_model', 'create_body', 'create_head', 'unet_learner']
 # By default split models between first and second layer
 def _default_split(m:nn.Module): return (m[1],)
 # Split a resnet style model
