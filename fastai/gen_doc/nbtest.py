@@ -33,20 +33,17 @@ def build_tests_markdown(elt):
     db_matches = [get_links(t) for t in lookup_db(elt)]
     try:
         direct, related = find_dir_tests(elt)
-        direct = [get_links(t) for t in direct]
-        related = [get_links(t) for t in related]
-        direct = list(set(direct) - set(db_matches))
-        related = list(set(related) - set(db_matches) - set(direct))
+        other_tests = [get_links(t) for t in (direct+related)]
+        other_tests = list(set(other_tests) - set(db_matches))
     except OSError as e:
         #print('Could not find fastai/tests folder. If you installed from conda, please install developer build instead.')
-        direct, related = [], []
+        other_tests = []
 
+    fn_name = nbdoc.fn_name(elt)
     md = ''.join([
         tests2md(db_matches, ''),
-        tests2md(direct, 'Direct tests:'),
-        tests2md(related, 'Related tests:')
+        tests2md(other_tests, f'Some other tests where `{fn_name}` is used:')
     ])
-    fn_name = nbdoc.fn_name(elt)
     if len(md)==0: 
         return (f'No tests found for `{fn_name}`.'
                 ' To contribute a test please refer to [this guide](/dev/test.html)'
