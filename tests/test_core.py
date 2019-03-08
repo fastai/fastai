@@ -223,6 +223,7 @@ def test_subplots_single():
     assert (len(axs[0]) == 1)
 
 def test_itembase_eq():
+    this_tests(ItemBase.__eq__, Category, FloatItem, MultiCategory)
     c1 = Category(0, 'cat')
     c2 = Category(1, 'dog')
     c3 = Category(0, 'cat')
@@ -268,6 +269,8 @@ def test_itembase_eq():
     assert t1 == t3
 
 def test_itembase_hash():
+    this_tests(ItemBase.__eq__, Category.__hash__, FloatItem.__hash__, MultiCategory.__hash__)
+
     c1 = Category(0, 'cat')
     c2 = Category(1, 'dog')
     c3 = Category(0, 'cat')
