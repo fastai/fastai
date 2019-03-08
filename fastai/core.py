@@ -160,12 +160,12 @@ class ItemBase():
         "Subclass this method if you want to apply data augmentation with `tfms` to this `ItemBase`."
         if tfms: raise Exception(f"Not implemented: you can't apply transforms to this type of item ({self.__class__.__name__})")
         return self
-    def __eq__(self, other):
-        if is_listy(self.data):
-            return np.all([np.atleast_1d(x == y) for x, y in zip(self.data, other.data)])
-        else:
-            return np.all(np.atleast_1d(self.data == other.data))
+    def __eq__(self, other): return recurse_eq(self.data, other.data)
 
+def recurse_eq(arr1, arr2):
+    if is_listy(arr1): return np.all([recurse_eq(x,y) for x,y in zip(arr1,arr2)])
+    else:              return np.all(np.atleast_1d(arr1 == arr2))
+        
 def download_url(url:str, dest:str, overwrite:bool=False, pbar:ProgressBar=None,
                  show_progress=True, chunk_size=1024*1024, timeout=4, retries=5)->None:
     "Download `url` to `dest` unless it exists and not `overwrite`."
