@@ -163,7 +163,7 @@ def test_download_images():
 responses = try_import('responses')
 @pytest.mark.skipif(not responses, reason="requires the `responses` module")
 def test_trunc_download():
-    this_tests(download_images)
+    this_tests(untar_data)
     url = URLs.COCO_TINY
     fname = datapath4file(f'{url2name(url)}.tgz')
     # backup user's current state
