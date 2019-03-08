@@ -33,8 +33,8 @@ def build_tests_markdown(elt):
     db_matches = [get_links(t) for t in lookup_db(elt)]
     try:
         direct, related = find_dir_tests(elt)
-        other_tests = [get_links(t) for t in (direct+related)]
-        other_tests = list(set(other_tests) - set(db_matches))
+        other_tests = [get_links(t) for t in (related+direct)]
+        other_tests = [k for k in OrderedDict.fromkeys(other_tests) if k not in db_matches]
     except OSError as e:
         #print('Could not find fastai/tests folder. If you installed from conda, please install developer build instead.')
         other_tests = []
