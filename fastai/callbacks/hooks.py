@@ -135,7 +135,10 @@ def hook_params(modules:Collection[nn.Module])->Hooks:
 def params_size(m: Union[nn.Module,Learner], size: tuple = (3, 64, 64))->Tuple[Sizes, Tensor, Hooks]:
     "Pass a dummy input through the model to get the various sizes. Returns (res,x,hooks) if `full`"
     if isinstance(m, Learner):
-        x = m.data.one_batch(detach=False, denorm=False)[0]
+        if not (m.data.train_dl or m.data.valid_dl or m.data.test_dl):
+            raise Exception("This is an empty `Learner` and `Learner.summary` requires some data to pass through the model.")
+        ds_type = DatasetType.Train if m.data.train_dl else (DatasetType.Valid if m.data.valid_dl else DatasetType.Test)
+        x = m.data.one_batch(ds_type=ds_type, detach=False, denorm=False)[0]
         x = [o[:1] for o in x]  if is_listy(x) else x[:1]
         m = m.model
     elif isinstance(m, nn.Module): x = next(m.parameters()).new(1, *size)
