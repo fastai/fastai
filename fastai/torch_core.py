@@ -62,6 +62,7 @@ torch.set_num_threads(4) # OpenMP doesn't generally like too many threads
 
 bn_types = (nn.BatchNorm1d, nn.BatchNorm2d, nn.BatchNorm3d)
 bias_types = (nn.Linear, nn.Conv1d, nn.Conv2d, nn.Conv3d, nn.ConvTranspose1d, nn.ConvTranspose2d, nn.ConvTranspose3d)
+def is_pool_type(l:Callable): return re.search(r'Pool[123]d$', l.__class__.__name__)
 no_wd_types = bn_types + (nn.LayerNorm,)
 defaults.device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 AdamW = partial(optim.Adam, betas=(0.9,0.99))
@@ -176,15 +177,14 @@ def split_model_idx(model:nn.Module, idxs:Collection[int])->ModuleList:
     if idxs[-1] != len(layers): idxs.append(len(layers))
     return [nn.Sequential(*layers[i:j]) for i,j in zip(idxs[:-1],idxs[1:])]
 
-def split_model(model:nn.Module, splits:Collection[Union[nn.Module,ModuleList]], want_idxs:bool=False):
+def split_model(model:nn.Module=None, splits:Collection[Union[nn.Module,ModuleList]]=None):
     "Split `model` according to the layers in `splits`."
-    layers = flatten_model(model)
     splits = listify(splits)
     if isinstance(splits[0], nn.Module):
+        layers = flatten_model(model)
         idxs = [layers.index(first_layer(s)) for s in splits]
-        res = split_model_idx(model, idxs)
-    else: res = [nn.Sequential(*s) for s in splits]
-    return (res,idxs) if want_idxs else res
+        return split_model_idx(model, idxs)
+    return [nn.Sequential(*s) for s in splits]
 
 def split_no_wd_params(layer_groups:Collection[nn.Module])->List[List[nn.Parameter]]:
     "Separate the parameters in `layer_groups` between `no_wd_types` and  bias (`bias_types`) from the rest."

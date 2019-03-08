@@ -28,8 +28,8 @@ def loss_batch(model:nn.Module, xb:Tensor, yb:Tensor, loss_func:OptLossFunc=None
     loss = loss_func(out, *yb)
 
     if opt is not None:
-        loss = cb_handler.on_backward_begin(loss)
-        loss.backward()
+        loss,skip_bwd = cb_handler.on_backward_begin(loss)
+        if not skip_bwd:                     loss.backward()
         if not cb_handler.on_backward_end(): opt.step()
         if not cb_handler.on_step_end():     opt.zero_grad()
 
@@ -197,6 +197,7 @@ class Learner():
         "Split the model at `split_on`."
         if isinstance(split_on,Callable): split_on = split_on(self.model)
         self.layer_groups = split_model(self.model, split_on)
+        return self
 
     def freeze_to(self, n:int)->None:
         "Freeze layers up to layer group `n`."

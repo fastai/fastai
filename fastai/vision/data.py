@@ -431,19 +431,27 @@ class ImageImageList(ImageList):
             z.show(ax=axs[i,1], **kwargs)
 
 
-def _pre_transform(self, train_tfm:List[Callable], valid_tfm:List[Callable]):
+def _ll_pre_transform(self, train_tfm:List[Callable], valid_tfm:List[Callable]):
     "Call `train_tfm` and `valid_tfm` after opening image, before converting from `PIL.Image`"
     self.train.x.after_open = compose(train_tfm)
     self.valid.x.after_open = compose(valid_tfm)
     return self
 
+def _db_pre_transform(self, train_tfm:List[Callable], valid_tfm:List[Callable]):
+    "Call `train_tfm` and `valid_tfm` after opening image, before converting from `PIL.Image`"
+    self.train_ds.x.after_open = compose(train_tfm)
+    self.valid_ds.x.after_open = compose(valid_tfm)
+    return self
+
 def _presize(self, size:int, val_xtra_size:int=32, scale:Tuple[float]=(0.08, 1.0), ratio:Tuple[float]=(0.75, 4./3.),
              interpolation:int=2):
     "Resize images to `size` using `RandomResizedCrop`, passing along `kwargs` to train transform"
-    tfms = (tvt.RandomResizedCrop(size, scale=scale, ratio=ratio, interpolation=interpolation), 
-            [tvt.Resize(size+val_xtra_size), tvt.CenterCrop(size)])
-    return self.pre_transform(*tfms)
+    return self.pre_transform(
+        tvt.RandomResizedCrop(size, scale=scale, ratio=ratio, interpolation=interpolation), 
+        [tvt.Resize(size+val_xtra_size), tvt.CenterCrop(size)])
 
-LabelLists.pre_transform = _pre_transform
+LabelLists.pre_transform = _ll_pre_transform
+DataBunch.pre_transform = _db_pre_transform
 LabelLists.presize = _presize
+DataBunch.presize = _presize
 

@@ -235,7 +235,7 @@ class CallbackHandler():
     def on_train_begin(self, epochs:int, pbar:PBar, metrics:MetricFuncList)->None:
         "About to start learning."
         self.state_dict = _get_init_state()
-        self.state_dict['n_epochs'],self.state_dict['pbar'],self.state_dict['metrics'] = epochs,pbar,metrics
+        self.state_dict.update(dict(n_epochs=epochs, pbar=pbar, metrics=metrics))
         names = [(met.name if hasattr(met, 'name') else camel2snake(met.__class__.__name__)) for met in self.metrics]
         self('train_begin', metrics_names=names)
         if self.state_dict['epoch'] != 0:
@@ -249,9 +249,8 @@ class CallbackHandler():
 
     def on_batch_begin(self, xb:Tensor, yb:Tensor, train:bool=True)->None:
         "Handle new batch `xb`,`yb` in `train` or validation."
-        self.state_dict['last_input'], self.state_dict['last_target'] = xb, yb
-        self.state_dict['train'],self.state_dict['stop_epoch'] = train,False
-        self.state_dict['skip_step'],self.state_dict['skip_zero'] = False,False
+        self.state_dict.update(dict(last_input=xb, last_target=yb, train=train, 
+            stop_epoch=False, skip_step=False, skip_zero=False, skip_bwd=False))
         self('batch_begin', mets = not self.state_dict['train'])
         return self.state_dict['last_input'], self.state_dict['last_target']
 
@@ -266,7 +265,7 @@ class CallbackHandler():
         self.smoothener.add_value(loss.detach().cpu())
         self.state_dict['last_loss'], self.state_dict['smooth_loss'] = loss, self.smoothener.smooth
         self('backward_begin', call_mets=False)
-        return self.state_dict['last_loss']
+        return self.state_dict['last_loss'], self.state_dict['skip_bwd']
 
     def on_backward_end(self)->None:
         "Handle end of gradient calculation."
