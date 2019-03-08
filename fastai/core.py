@@ -160,6 +160,11 @@ class ItemBase():
         "Subclass this method if you want to apply data augmentation with `tfms` to this `ItemBase`."
         if tfms: raise Exception(f"Not implemented: you can't apply transforms to this type of item ({self.__class__.__name__})")
         return self
+    def __eq__(self, other):
+        if is_listy(self.data):
+            return np.all([np.atleast_1d(x == y) for x, y in zip(self.data, other.data)])
+        else:
+            return np.all(np.atleast_1d(self.data == other.data))
 
 def download_url(url:str, dest:str, overwrite:bool=False, pbar:ProgressBar=None,
                  show_progress=True, chunk_size=1024*1024, timeout=4, retries=5)->None:
@@ -270,22 +275,26 @@ class EmptyLabel(ItemBase):
     "Should be used for a dummy label."
     def __init__(self): self.obj,self.data = 0,0
     def __str__(self):  return ''
+    def __hash__(self): return hash(str(self))
 
 class Category(ItemBase):
     "Basic class for single classification labels."
     def __init__(self,data,obj): self.data,self.obj = data,obj
-    def __int__(self): return int(self.data)
-    def __str__(self): return str(self.obj)
+    def __int__(self):  return int(self.data)
+    def __str__(self):  return str(self.obj)
+    def __hash__(self): return hash(str(self))
 
 class MultiCategory(ItemBase):
     "Basic class for multi-classification labels."
     def __init__(self,data,obj,raw): self.data,self.obj,self.raw = data,obj,raw
-    def __str__(self): return ';'.join([str(o) for o in self.obj])
+    def __str__(self):  return ';'.join([str(o) for o in self.obj])
+    def __hash__(self): return hash(str(self))
 
 class FloatItem(ItemBase):
     "Basic class for float items."
     def __init__(self,obj): self.data,self.obj = np.array(obj).astype(np.float32),obj
-    def __str__(self): return str(self.obj)
+    def __str__(self):  return str(self.obj)
+    def __hash__(self): return hash(str(self))
 
 def _treat_html(o:str)->str:
     o = str(o)
