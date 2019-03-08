@@ -1,11 +1,10 @@
 "Utility functions to help deal with user environment"
+
 from ..imports.torch import *
 from ..core import *
 from ..script import *
 from .pynvml_gate import *
-import fastprogress
-import subprocess
-import platform
+import fastprogress, subprocess, platform
 
 __all__ = ['show_install', 'check_perf']
 
@@ -93,15 +92,14 @@ def show_install(show_nvidia_smi:bool=False):
     rep.append(["platform", platform.platform()])
 
     if platform.system() == 'Linux':
-        try:
-            import distro
-        except ImportError:
+        distro = try_import('distro')
+        if distro:
+            # full distro info
+            rep.append(["distro", ' '.join(distro.linux_distribution())])
+        else:
             opt_mods.append('distro');
             # partial distro info
             rep.append(["distro", platform.uname().version])
-        else:
-            # full distro info
-            rep.append(["distro", ' '.join(distro.linux_distribution())])
 
     rep.append(["conda env", get_env('CONDA_DEFAULT_ENV')])
     rep.append(["python", sys.executable])

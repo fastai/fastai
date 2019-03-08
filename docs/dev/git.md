@@ -97,14 +97,14 @@ If it's your first time, you just need to make a fork of the original repository
    for any of the `fastai` project repositories, except `fastprogress` where it doesn't exist.
 
    Finally, let's setup this fork to track the upstream:
-   
+
    * Using SSH:
 
    ```
    git remote add upstream git@github.com:fastai/fastai.git
    ```
    * Using HTTPS:
-   
+
    ```
    git remote add upstream https://github.com/fastai/fastai.git
    ```
@@ -115,9 +115,9 @@ If it's your first time, you just need to make a fork of the original repository
    ```
 
    It should show:
-   
+
    * If you used SSH:
-   
+
    ```
    origin  git@github.com:USERNAME/fastai.git (fetch)
    origin  git@github.com:USERNAME/fastai.git (push)
@@ -125,7 +125,7 @@ If it's your first time, you just need to make a fork of the original repository
    upstream  git@github.com:fastai/fastai.git (push)
    ```
    * If you used HTTPS:
-   
+
    ```
    origin  https://github.com/USERNAME/fastai.git (fetch)
    origin  https://github.com/USERNAME/fastai.git (push)
@@ -402,7 +402,9 @@ hub == hub helps you win at git
 
 [`hub`](https://github.com/github/hub) is the command line GitHub. It provides integration between git and github in command line. One of the most useful commands is creating pull request by just typing `hub pull-request` in your terminal.
 
-Installation:
+We have a script that will do the installing for you: [hub-install.py](https://github.com/fastai/git-tools/blob/master/hub-install.py).
+
+If for any reason you can't use the script, here are the manual installation instructions:
 
 There is a variety of [ways to install](https://github.com/github/hub#installation) this application (written in go), but the easiest is to download the latest binary for your platform at [https://github.com/github/hub/releases/latest](https://github.com/github/hub/releases/latest), un-archiving the package and running `./install`, for example for the `linux-64` build:
 
@@ -431,13 +433,6 @@ which conda | sed 's/\/bin\/conda//'
 conda info | grep 'location' | awk '{print $5}'
 ```
 but the first one is more reliable, `conda info`'s output may change down the road.
-
-HELP-WANTED: If you'd like to contribute a little tool, this process could be automated, by getting the json output of all platform-specific urls for the latest binary release:
-
-```
-curl https://api.github.com/repos/github/hub/releases/latest
-```
-identifying user's platform, retrieving the corresponding to that platform package, unarchiving it, identifying the conda base as shown above, and running `install` with that prefix. If you work on it, please write it in python, so that windows users w/o bash could use it too. It'd go into `tools/hub-install` in the `fastai` repo.
 
 
 ## Github Shortcuts

@@ -19,12 +19,12 @@ TestFunctionMatch = namedtuple('TestFunctionMatch', ['line_number', 'line'])
 
 def show_test(elt)->str:
     "Show associated tests for a fastai function/class"
-    md = ''.join(build_tests_markdown(elt))
+    md = build_tests_markdown(elt)
     display(Markdown(md))
 
 def doctest(elt):
     "Inline notebook popup for `show_test`"
-    md = ''.join(build_tests_markdown(elt))
+    md = build_tests_markdown(elt)
     output = HTMLExporter().markdown2html(md)
     try:    page.page({'text/html': output})
     except: display(Markdown(md))
@@ -33,58 +33,50 @@ def build_tests_markdown(elt):
     db_matches = [get_links(t) for t in lookup_db(elt)]
     try:
         direct, related = find_dir_tests(elt)
-        direct = [get_links(t) for t in direct]
-        related = [get_links(t) for t in related]
-        direct = list(set(direct) - set(db_matches))
-        related = list(set(related) - set(db_matches) - set(direct))
+        other_tests = [get_links(t) for t in (direct+related)]
+        other_tests = list(set(other_tests) - set(db_matches))
     except OSError as e:
-        print('Could not find fastai/tests folder. If you installed from conda, please install developer build instead.')
-        direct, related = [], []
+        #print('Could not find fastai/tests folder. If you installed from conda, please install developer build instead.')
+        other_tests = []
 
-    md = ''.join([
-        tests2md(db_matches, 'This tests'),
-        tests2md(direct, 'Direct tests'),
-        tests2md(related, 'Related tests')
-    ])
     fn_name = nbdoc.fn_name(elt)
-    if len(md)==0: return f'No tests found for `{fn_name}`', md
-    else: return f'Tests found for `{fn_name}`:', md
+    md = ''.join([
+        tests2md(db_matches, ''),
+        tests2md(other_tests, f'Some other tests where `{fn_name}` is used:')
+    ])
+    if len(md)==0: 
+        return (f'No tests found for `{fn_name}`.'
+                ' To contribute a test please refer to [this guide](/dev/test.html)'
+                ' and [this discussion](https://forums.fast.ai/t/improving-expanding-functional-tests/32929).')
+    return (f'Tests found for `{fn_name}`: {md}'
+            '\n\nTo run tests please refer to this [guide](/dev/test.html#quick-guide).')
 
-def tests2md(tests, type_label):
+def tests2md(tests, type_label:str):
     if not tests: return ''
-    md = [f'* `{cmd}` {link}' for link,cmd in tests]
-    md = [f'\n\n{type_label}:'] + md
+    md = [f'\n\n{type_label}'] + [f'* `{cmd}` {link}' for link,cmd in tests]
     return '\n'.join(md)
 
-def get_pytest_html(elt, anchor_id:str, inline:bool=True)->Tuple[str,str]:
-    title,body = build_tests_markdown(elt)
-    htmlb = HTMLExporter().markdown2html(body).replace('\n','') # nbconverter fails to parse markdown if it has both html and '\n'
-    htmlt = HTMLExporter().markdown2html(title).replace('\n','')
+def get_pytest_html(elt, anchor_id:str)->Tuple[str,str]:
+    md = build_tests_markdown(elt)
+    html = HTMLExporter().markdown2html(md).replace('\n','') # nbconverter fails to parse markdown if it has both html and '\n'
     anchor_id = anchor_id.replace('.', '-') + '-pytest'
-    toggle_type = 'collapse' if inline else 'modal'
-    link = f'<a class="source_link" data-toggle="{toggle_type}" data-target="#{anchor_id}" style="float:right; padding-right:10px">[test]</a>'
-    body = get_pytest_card(htmlt, htmlb, anchor_id) if inline else get_pytest_modal(htmlt, htmlb, anchor_id)
+    link, body = get_pytest_card(html, anchor_id)
     return link, body
-    
-def get_pytest_modal(title, body, anchor_id):
-    "creates a modal html popup for `show_test`"
-    return (f'<div class="modal" id="{anchor_id}" tabindex="-1" role="dialog"><div class="modal-dialog"><div class="modal-content">'
-                f'<div class="modal-header">{title}<button type="button" class="close" data-dismiss="modal"></button></div>'
-                f'<div class="modal-body">{body}</div>'
-            '</div></div></div>')
 
-def get_pytest_card(title, body, anchor_id):
+def get_pytest_card(html, anchor_id):
     "creates a collapsible bootstrap card for `show_test`"
-    return (f'<div class="collapse" id="{anchor_id}"><div class="card card-body"><div class="pytest_card">'
-                f'{title+body}'
-            '</div></div></div>'
-            '<div style="height:1px"></div>') # hack to fix jumping bootstrap header
+    link = f'<a class="source_link" data-toggle="collapse" data-target="#{anchor_id}" style="float:right; padding-right:10px">[test]</a>'
+    body = (f'<div class="collapse" id="{anchor_id}"><div class="card card-body pytest_card">'
+                f'<a type="button" data-toggle="collapse" data-target="#{anchor_id}" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a>'
+                f'{html}'
+            '</div></div>')
+    return link, body
 
 def lookup_db(elt)->List[Dict]:
     "Finds `this_test` entries from test_api_db.json"
     db_file = Path(abspath(join(dirname( __file__ ), '..')))/DB_NAME
     if not db_file.exists():
-        print(f'Could not find {db_file}. Please make sure it exists at this location or run `make test`')
+        raise Exception(f'Could not find {db_file}. Please make sure it exists at this location or run `make test`')
         return []
     with open(db_file, 'r') as f:
         db = json.load(f)
@@ -105,22 +97,25 @@ def find_dir_tests(elt)->Tuple[List[Dict],List[Dict]]:
 
 def get_tests_dir(elt)->Path:
     "Absolute path of `fastai/tests` directory"
-    fp = inspect.getfile(elt)
-    fp.index('fastai/fastai')
-    test_dir = Path(re.sub(r"fastai/fastai/.*", "fastai/tests", fp))
+    test_dir = Path(__file__).parent.parent.parent.resolve()/'tests'
     if not test_dir.exists(): raise OSError('Could not find test directory at this location:', test_dir)
     return test_dir
+
+def get_file(elt)->str:
+    if hasattr(elt, '__wrapped__'): elt = elt.__wrapped__
+    if not nbdoc.is_fastai_class(elt): return None
+    return inspect.getfile(elt)
 
 def find_test_files(elt, exact_match:bool=False)->List[Path]:
     "Searches in `fastai/tests` directory for module tests"
     test_dir = get_tests_dir(elt)
     matches = [test_dir/o.name for o in os.scandir(test_dir) if _is_file_match(elt, o.name)]
-    if len(matches) != 1:
-        print('Could not find exact file match:', matches)
+    # if len(matches) != 1: raise Error('Could not find exact file match:', matches)
     return matches
 
-def _is_file_match(elt, file_name:str, exact_match:bool=False):
-    fp = inspect.getfile(elt)
+def _is_file_match(elt, file_name:str, exact_match:bool=False)->bool:
+    fp = get_file(elt)
+    if fp is None: return False
     subdir = ifnone(_submodule_name(elt), '')
     exact_re = '' if exact_match else '\w*'
     return re.match(f'test_{subdir}\w*{Path(fp).stem}{exact_re}\.py', file_name)
@@ -150,7 +145,7 @@ def direct_test_match(fn_name:str, lines:List[Dict], rel_path:str)->List[TestFun
     fn_class = '_'.join(fn_class)
     for idx,line in enumerate(lines):
         if re.match(f'\s*def test_\w*({fn_class}_)?{fn_name}\w*\(.*', line):
-            result.append((idx,line))
+            result.append((idx+1,line)) # offset 1 for github
     return [map_test(rel_path, lno, l) for lno,l in result]
 
 def get_qualname(elt):

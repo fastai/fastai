@@ -31,17 +31,12 @@ class LRFinder(LearnerCallback):
         self.opt.lr = self.sched.step()
         if self.sched.is_done or (self.stop_div and (smooth_loss > 4*self.best_loss or torch.isnan(smooth_loss))):
             #We use the smoothed loss to decide on the stopping since it's less shaky.
-            self.stop=True
-            return True
-
-    def on_epoch_end(self, **kwargs:Any)->None:
-        "Tell Learner if we need to stop."
-        return self.stop
+            return {'stop_epoch': True, 'stop_training': True}
 
     def on_train_end(self, **kwargs:Any)->None:
         "Cleanup learn model weights disturbed during LRFind exploration."
         # restore the valid_dl we turned off on `__init__`
         self.data.valid_dl = self.valid_dl
-        self.learn.load('tmp')
+        self.learn.load('tmp', purge=False)
         if hasattr(self.learn.model, 'reset'): self.learn.model.reset()
         print('LR Finder is complete, type {learner_name}.recorder.plot() to see the graph.')

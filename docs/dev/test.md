@@ -55,6 +55,15 @@ Most of this document is various notes explaining how to do all kinds of things 
    Note that this guide helps you to write tests with a plain git checkout, without needing to fork and branch, so that you can get results faster and easier. But once you're ready, then switch to your own fork and branch as explained in the guide above. You can just copy the files over to the new branch. Of course, feel free, to start with making a PR branch first - whatever is the easiest for you.
 
 
+## Handy things
+
+Here is a bunch of useful pytest extensions to install (most are discussed somewhere in this document):
+```
+pip install pytest-xdist pytest-sugar pytest-repeat pytest-picked pytest-forked pytest-flakefinder pytest-cov nbsmoke
+```
+
+Only `pytest-sugar` will automatically change `pytest`'s behavior (in a nice way), so remove it from the list if you don't like it. All the other extensions need to be explicitly enabled via `pytest` flag to have an impact, so are safe to install.
+
 ## Automated tests
 
 At the moment there are only a few automated tests, so we need to start expanding it! It's not easy to properly automatically test ML code, but there's lots of opportunities for unit tests.
@@ -442,6 +451,8 @@ When writing tests:
 - Avoid pretrained models, since they have to be downloaded from the internet to run the test
 - Create some minimal data for your test, or use data already in repo's data/ directory
 
+Important: currently, in the test suite we can only use modules that are already in the required dependencies of fastai (i.e. conda dependencies). No other modules are allowed, unless the test is skipped if some new dependency is used.
+
 ### Test Registry
 
 `fastai` has a neat feature where users while reading the API documentation can also discover which tests exercise the function they are interested to use. This provides extra insights at how the API can be used, and also provides an incentive to users to write tests which are missing or improving the existing ones. Therefore, every new test should include a single call of `this_tests`.
@@ -465,6 +476,9 @@ def test_this_tests():
 
     # explicit fully qualified function as a string
     this_tests('fastai.gen_doc.doctest.this_tests')
+
+    # special case for cases where a test doesn't test fastai API
+    this_tests('na')
 
     # not a real function
     func = 'foo bar'
@@ -503,6 +517,13 @@ def test_get_preds():
 ```
 
 You can make the call `this_tests` anywhere in the test, so if the object becomes available at line 10 of the test, add `this_tests` after it.
+
+And there is a special case for situations where a test doesn't test fastai API or it's a non-callable attribute, e.g. `learn.loss_func`, in which case use `na` (not applicable):
+```
+def test_non_fastai_func():
+    this_tests('na')
+```
+But we still want the call to be there, since we run a check to make sure we don't miss out on any tests, hence each test needs to have this call.
 
 The test registry is located at `fastai/test_api_db.json` and it gets auto-generated when `pytest` gets a `--testapireg` flag, which is currently done when `make test-full` is run.
 

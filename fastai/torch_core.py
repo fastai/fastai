@@ -1,6 +1,8 @@
 "Utility functions to help deal with tensors"
 from .imports.torch import *
 from .core import *
+from collections import OrderedDict
+from torch.nn.parallel import DistributedDataParallel
 
 AffineMatrix = Tensor
 BoolOrTensor = Union[bool,Tensor]
@@ -58,8 +60,9 @@ fastai_types = {
 
 torch.set_num_threads(4) # OpenMP doesn't generally like too many threads
 
-bn_types = (nn.BatchNorm1d, nn.BatchNorm2d, nn.BatchNorm3d, nn.LayerNorm)
+bn_types = (nn.BatchNorm1d, nn.BatchNorm2d, nn.BatchNorm3d)
 bias_types = (nn.Linear, nn.Conv1d, nn.Conv2d, nn.Conv3d, nn.ConvTranspose1d, nn.ConvTranspose2d, nn.ConvTranspose3d)
+no_wd_types = bn_types + (nn.LayerNorm,)
 defaults.device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 AdamW = partial(optim.Adam, betas=(0.9,0.99))
 
@@ -184,12 +187,12 @@ def split_model(model:nn.Module, splits:Collection[Union[nn.Module,ModuleList]],
     return (res,idxs) if want_idxs else res
 
 def split_no_wd_params(layer_groups:Collection[nn.Module])->List[List[nn.Parameter]]:
-    "Separate the parameters in `layer_groups` between batchnorm (`bn_types`) and  bias (`bias_types`) from the rest."
+    "Separate the parameters in `layer_groups` between `no_wd_types` and  bias (`bias_types`) from the rest."
     split_params = []
     for l in layer_groups:
         l1,l2 = [],[]
         for c in l.children():
-            if isinstance(c, bn_types): l2 += list(trainable_params(c))
+            if isinstance(c, no_wd_types): l2 += list(trainable_params(c))
             elif isinstance(c, bias_types):
                 bias = c.bias if hasattr(c, 'bias') else None
                 l1 += [p for p in trainable_params(c) if not (p is bias)]
@@ -249,16 +252,34 @@ def in_channels(m:nn.Module) -> List[int]:
         if hasattr(l, 'weight'): return l.weight.shape[1]
     raise Exception('No weight layer')
 
-def calc_loss(y_pred:Tensor, y_true:Tensor, loss_func:LossFunction):
-    "Calculate loss between `y_pred` and `y_true` using `loss_func`."
-    if hasattr(loss_func, 'reduction'):
-        old_red = getattr(loss_func, 'reduction')
-        setattr(loss_func, 'reduction', 'none')
-        l = loss_func(y_pred, y_true)
-        setattr(loss_func, 'reduction', old_red)
-        return l
-    else: return loss_func(y_pred, y_true, reduction='none')
-
+class ModelOnCPU():
+    "A context manager to evaluate `model` on the CPU inside."
+    def __init__(self, model:nn.Module): self.model = model       
+    def __enter__(self):
+        self.device = one_param(self.model).device
+        return self.model.cpu()
+    def __exit__(self, type, value, traceback):
+        self.model = self.model.to(self.device)
+    
+class NoneReduceOnCPU():
+    "A context manager to evaluate `loss_func` with none reduce and weights on the CPU inside."
+    def __init__(self, loss_func:LossFunction): 
+        self.loss_func,self.device,self.old_red = loss_func,None,None
+        
+    def __enter__(self):
+        if hasattr(self.loss_func, 'weight') and self.loss_func.weight is not None:
+            self.device = self.loss_func.weight.device
+            self.loss_func.weight = self.loss_func.weight.cpu()
+        if hasattr(self.loss_func, 'reduction'):
+            self.old_red = getattr(self.loss_func, 'reduction')
+            setattr(self.loss_func, 'reduction', 'none')
+            return self.loss_func
+        else: return partial(self.loss_func, reduction='none')
+        
+    def __exit__(self, type, value, traceback):
+        if self.device is not None:  self.loss_func.weight = self.loss_func.weight.to(self.device)
+        if self.old_red is not None: setattr(self.loss_func, 'reduction', self.old_red)    
+    
 def model_type(dtype):
     "Return the torch type corresponding to `dtype`."
     return (torch.float32 if np.issubdtype(dtype, np.floating) else
@@ -342,7 +363,7 @@ def try_int(o:Any)->Any:
 
 def get_model(model:nn.Module):
     "Return the model maybe wrapped inside `model`."
-    return model.module if isinstance(model, nn.DataParallel) else model
+    return model.module if isinstance(model, (DistributedDataParallel, nn.DataParallel)) else model
 
 def flatten_check(out:Tensor, targ:Tensor) -> Tensor:
     "Check that `out` and `targ` have the same number of elements and flatten them."
@@ -354,3 +375,28 @@ def flatten_check(out:Tensor, targ:Tensor) -> Tensor:
 def _data_parallel_reset(self): 
     if hasattr(self.module, 'reset'): self.module.reset()
 nn.DataParallel.reset = _data_parallel_reset
+
+def remove_module_load(state_dict):
+    """create new OrderedDict that does not contain `module.`"""
+    new_state_dict = OrderedDict()
+    for k, v in state_dict.items(): new_state_dict[k[7:]] = v
+    return new_state_dict
+
+def num_distrib():
+    "Return the number of processes in distributed training (if applicable)."
+    return int(os.environ.get('WORLD_SIZE', 0))
+
+def rank_distrib():
+    "Return the distributed rank of this process (if applicable)."
+    return int(os.environ.get('RANK', 0))
+
+def add_metrics(last_metrics:Collection[Rank0Tensor], mets:Union[Rank0Tensor, Collection[Rank0Tensor]]):
+    "Return a dictionary for updating `last_metrics` with `mets`."
+    mets = listify(mets)
+    return {'last_metrics': last_metrics + mets}
+
+def try_save(state:Dict, path:Path, fname:PathOrStr):
+    try: torch.save(state, open(path/fname, 'wb'))
+    except OSError as e:
+        raise Exception(f"{e}\n Can't write in {path/fname}. Pass a full libpath path that is writable as `fname`.") 
+    

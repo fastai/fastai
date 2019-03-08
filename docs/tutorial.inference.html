@@ -136,7 +136,7 @@ have this notebook run quickly.</div>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span> <span class="o">=</span> <span class="n">create_cnn</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">models</span><span class="o">.</span><span class="n">resnet18</span><span class="p">)</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;mini_train&#39;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span> <span class="o">=</span> <span class="n">cnn_learner</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">models</span><span class="o">.</span><span class="n">resnet18</span><span class="p">)</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;mini_train&#39;</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -315,7 +315,7 @@ have this notebook run quickly.</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="p">(</span><span class="n">ImageList</span><span class="o">.</span><span class="n">from_csv</span><span class="p">(</span><span class="n">planet</span><span class="p">,</span> <span class="s1">&#39;labels.csv&#39;</span><span class="p">,</span> <span class="n">folder</span><span class="o">=</span><span class="s1">&#39;train&#39;</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;.jpg&#39;</span><span class="p">)</span>
-        <span class="o">.</span><span class="n">random_split_by_pct</span><span class="p">()</span>
+        <span class="o">.</span><span class="n">split_by_rand_pct</span><span class="p">()</span>
         <span class="o">.</span><span class="n">label_from_df</span><span class="p">(</span><span class="n">label_delim</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
         <span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">planet_tfms</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">128</span><span class="p">)</span>
         <span class="o">.</span><span class="n">databunch</span><span class="p">()</span>
@@ -339,7 +339,7 @@ have this notebook run quickly.</div>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span> <span class="o">=</span> <span class="n">create_cnn</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">models</span><span class="o">.</span><span class="n">resnet18</span><span class="p">)</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;mini_train&#39;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span> <span class="o">=</span> <span class="n">cnn_learner</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">models</span><span class="o">.</span><span class="n">resnet18</span><span class="p">)</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;mini_train&#39;</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -501,7 +501,7 @@ have this notebook run quickly.</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="p">(</span><span class="n">PointsItemList</span><span class="o">.</span><span class="n">from_folder</span><span class="p">(</span><span class="n">biwi</span><span class="p">)</span>
-        <span class="o">.</span><span class="n">random_split_by_pct</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">split_by_rand_pct</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
         <span class="o">.</span><span class="n">label_from_func</span><span class="p">(</span><span class="k">lambda</span> <span class="n">o</span><span class="p">:</span><span class="n">fn2ctr</span><span class="p">[</span><span class="n">o</span><span class="o">.</span><span class="n">name</span><span class="p">])</span>
         <span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">get_transforms</span><span class="p">(),</span> <span class="n">tfm_y</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">120</span><span class="p">,</span><span class="mi">160</span><span class="p">))</span>
         <span class="o">.</span><span class="n">databunch</span><span class="p">()</span>
@@ -525,7 +525,7 @@ have this notebook run quickly.</div>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span> <span class="o">=</span> <span class="n">create_cnn</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">models</span><span class="o">.</span><span class="n">resnet18</span><span class="p">,</span> <span class="n">lin_ftrs</span><span class="o">=</span><span class="p">[</span><span class="mi">100</span><span class="p">],</span> <span class="n">ps</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;mini_train&#39;</span><span class="p">);</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span> <span class="o">=</span> <span class="n">cnn_learner</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">models</span><span class="o">.</span><span class="n">resnet18</span><span class="p">,</span> <span class="n">lin_ftrs</span><span class="o">=</span><span class="p">[</span><span class="mi">100</span><span class="p">],</span> <span class="n">ps</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;mini_train&#39;</span><span class="p">);</span>
 </pre></div>
 
     </div>
@@ -698,7 +698,7 @@ have this notebook run quickly.</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="p">(</span><span class="n">SegmentationItemList</span><span class="o">.</span><span class="n">from_folder</span><span class="p">(</span><span class="n">path_img</span><span class="p">)</span>
-        <span class="o">.</span><span class="n">random_split_by_pct</span><span class="p">()</span>
+        <span class="o">.</span><span class="n">split_by_rand_pct</span><span class="p">()</span>
         <span class="o">.</span><span class="n">label_from_func</span><span class="p">(</span><span class="n">get_y_fn</span><span class="p">,</span> <span class="n">classes</span><span class="o">=</span><span class="n">codes</span><span class="p">)</span>
         <span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">get_transforms</span><span class="p">(),</span> <span class="n">tfm_y</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">128</span><span class="p">)</span>
         <span class="o">.</span><span class="n">databunch</span><span class="p">(</span><span class="n">bs</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">camvid</span><span class="p">)</span>

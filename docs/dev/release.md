@@ -66,16 +66,16 @@ Normally, while testing the code, we only run `make test`, which completes withi
 
 1. Run the test suite, including the slower tests (not much longer than the `make test`:
 
-```
-make test-full
-```
+   ```
+   make test-full
+   ```
 
 2. Run the notebook tests (0.5-1h):
 
-```
-cd docs_src
-./run_tests.sh
-```
+   ```
+   cd docs_src
+   ./run_tests.sh
+   ```
 
 
 
@@ -102,9 +102,12 @@ If you need to make a hotfix to an already released version, follow the [Hotfix 
 Here is the "I'm feeling lucky" version, do not attempt unless you understand the build process.
 
 ```
-make release 2>&1 | tee release-`date +"%Y-%m-%d-%H:%M:%S"`.log
+make release
 ```
-Ideally, don't remove the part that saves the full log - you might need it later.
+
+This target will automatically log its stdout and stderr into a log file of date format `release-%Y-%m-%d-%H-%M-%S.log`.
+
+Ideally, please keep this file around for a few days in case we need to diagnose any problems with the release process at a later time.
 
 `make test`'s non-deterministic tests may decide to fail right during the release rites. It has now been moved to the head of the process, so if it fails not due to a bug but due to its unreliability, it won't affect the release process. Just rerun `make release` again.
 
@@ -915,7 +918,7 @@ Tagging targets:
 
     ```
     git checkout 9fceb02a
-    GIT_COMMITTER_DATE="$(git show --format=%aD | head -1)" git tag -a v1.0.5 -m "1.0.5"
+    GIT_COMMITTER_DATE="$(git show --format=%aD | head -1)" git tag -a 1.0.5 -m "1.0.5"
     git push --tags origin master
     git checkout master
     ```
@@ -986,7 +989,9 @@ Once, things were fixed, `git push`, etc...
 
 ## Hotfix Release Process
 
-If something found to be wrong in the last release, yet the HEAD is unstable to make a new release, instead apply the fix to the branch of the desired release and make a new hotfix release of that branch. Follow these step-by-step instructions to accomplish that:
+If something found to be wrong in the last release, yet the HEAD is unstable to make a new release, instead, apply the fixes to the branch of the desired release and make a new hotfix release of that branch. Follow these step-by-step instructions to accomplish that, which involved two parts - backporting (manual) and releasing (automated).
+
+Part 1: Backporting fixes and preparing for hotfix-release
 
 1. Start with the desired branch.
 
@@ -1014,38 +1019,48 @@ If something found to be wrong in the last release, yet the HEAD is unstable to 
    git push
    ```
 
-3. Check that everything is committed and good to go.
+Part 2. Making the hotfix release
+
+All of the following steps can be done in one command:
 
    ```
-   make sanity-check
+   make release-hotfix
    ```
 
-4. Test.
+If it fails, then pick up where it failed and continue with the step-by-step process as explained below.
+
+1. Check that everything is committed and good to go.
+
+   ```
+   make sanity-check-hotfix
+   ```
+
+2. Test.
 
    ```
    make test
    ```
 
-5. Adjust version.
+3. Adjust version.
 
    According to [PEP-0440](https://www.python.org/dev/peps/pep-0440/#post-releases) add `.post1` to the version, or if it already was a `.postX`, increment its version:
    ```
    make bump-post-release
    ```
 
-6. Commit and push all the changes to the branch.
+4. Commit and push all the changes to the branch.
 
    ```
    make commit-hotfix-push
    ```
 
-7. Make a new tag with the new version.
+5. Make a new tag with the new version.
 
    ```
    make tag-version-push
    ```
 
-8. Make updated release.
+6. Make updated release.
 
    ```
    make dist
@@ -1065,7 +1080,7 @@ If something found to be wrong in the last release, yet the HEAD is unstable to 
    make upload-pypi
    ```
 
-9. Test release.
+7. Test release.
 
    If you made a release on both platforms:
    ```
@@ -1080,7 +1095,7 @@ If something found to be wrong in the last release, yet the HEAD is unstable to 
    make test-install-conda
    ```
 
-10. Don't forget to switch back to the master branch for continued development.
+8. Don't forget to switch back to the master branch for continued development.
 
    ```
    make master-branch-switch
@@ -1432,7 +1447,7 @@ This copies all architectures, not just your current architecture.
 
 Here is how to specify conditional dependencies, e.g. depending on python version:
 
-* Conda
+* Conda (do not use this!, see below)
 
    In `meta.yaml`:
    ```
@@ -1443,6 +1458,8 @@ Here is how to specify conditional dependencies, e.g. depending on python versio
    ```
    Here `# [py36]` tells `conda-build` that this requirement is only for python3.6, it's not a comment.
 
+   **Except** this doesn't work unless we start making py36 and py37 conda builds, which we don't. And if the above is used it'll break the dependency if it's built on py37. The problem is that conda can only handle conditional dependencies at build time, unlike pip that does it at install time!
+
 * Pypi
 
    In `setup.py`:
@@ -1451,6 +1468,8 @@ Here is how to specify conditional dependencies, e.g. depending on python versio
    requirements = ["dataclasses ; python_version<'3.7'", "fastprogress>=0.1.18", ...]
    ```
    Here `; python_version<'3.7'` instructs the wheel to use a dependency on `dataclasses` only for python versions lesser than `3.7`.
+
+   Unlike conda, pip checks conditional dependencies during install time, so the above actually works and doesn't require multiple wheel builds.
 
    This recent syntax requires `setuptools>=36.2` on the build system. For more info [see](https://hynek.me/articles/conditional-python-dependencies/).
 

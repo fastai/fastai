@@ -9,7 +9,7 @@ from ..layers import *
 from ..callbacks.hooks import *
 from ..train import ClassificationInterpretation
 
-__all__ = ['create_cnn', 'create_body', 'create_head', 'unet_learner']
+__all__ = ['cnn_learner', 'create_cnn_model', 'create_body', 'create_head', 'unet_learner']
 # By default split models between first and second layer
 def _default_split(m:nn.Module): return (m[1],)
 # Split a resnet style model
@@ -45,12 +45,14 @@ def cnn_config(arch):
     torch.backends.cudnn.benchmark = True
     return model_meta.get(arch, _default_meta)
 
-def create_body(arch:Callable, pretrained:bool=True, cut:Optional[int]=None, body_fn:Callable[[nn.Module], nn.Module]=None):
-    "Cut off the body of a typically pretrained `model` at `cut` or as specified by `body_fn`."
+def create_body(arch:Callable, pretrained:bool=True, cut:Optional[Union[int, Callable]]=None):
+    "Cut off the body of a typically pretrained `model` at `cut` (int) or cut the model as specified by `cut(model)` (function)."
     model = arch(pretrained)
-    if not cut and not body_fn: cut = cnn_config(arch)['cut']
-    return (nn.Sequential(*list(model.children())[:cut]) if cut
-            else body_fn(model) if body_fn else model)
+    cut = ifnone(cut, cnn_config(arch)['cut'])
+    if   isinstance(cut, int):      return nn.Sequential(*list(model.children())[:cut])
+    elif isinstance(cut, Callable): return cut(model)
+    else:                           raise NamedError("cut must be either integer or a function")
+
 
 def create_head(nf:int, nc:int, lin_ftrs:Optional[Collection[int]]=None, ps:Floats=0.5, bn_final:bool=False):
     "Model head that takes `nf` features, runs through `lin_ftrs`, and about `nc` classes."
@@ -64,21 +66,32 @@ def create_head(nf:int, nc:int, lin_ftrs:Optional[Collection[int]]=None, ps:Floa
     if bn_final: layers.append(nn.BatchNorm1d(lin_ftrs[-1], momentum=0.01))
     return nn.Sequential(*layers)
 
-def create_cnn(data:DataBunch, arch:Callable, cut:Union[int,Callable]=None, pretrained:bool=True,
-               lin_ftrs:Optional[Collection[int]]=None, ps:Floats=0.5,
-               custom_head:Optional[nn.Module]=None, split_on:Optional[SplitFuncOrIdxList]=None,
-               bn_final:bool=False, **learn_kwargs:Any)->Learner:
+def create_cnn_model(base_arch:Callable, nc:int, cut:Union[int,Callable]=None, pretrained:bool=True,
+        lin_ftrs:Optional[Collection[int]]=None, ps:Floats=0.5, custom_head:Optional[nn.Module]=None,
+        split_on:Optional[SplitFuncOrIdxList]=None, bn_final:bool=False):
+    "Create custom convnet architecture"
+    body = create_body(base_arch, pretrained, cut)
+    if custom_head is None:
+        nf = num_features_model(nn.Sequential(*body.children())) * 2
+        head = create_head(nf, nc, lin_ftrs, ps=ps, bn_final=bn_final)
+    else: head = custom_head
+    return nn.Sequential(body, head)
+
+def cnn_learner(data:DataBunch, base_arch:Callable, cut:Union[int,Callable]=None, pretrained:bool=True,
+               lin_ftrs:Optional[Collection[int]]=None, ps:Floats=0.5, custom_head:Optional[nn.Module]=None,
+               split_on:Optional[SplitFuncOrIdxList]=None, bn_final:bool=False, **kwargs:Any)->Learner:
     "Build convnet style learner."
-    meta = cnn_config(arch)
-    body = create_body(arch, pretrained, cut)
-    nf = num_features_model(body) * 2
-    head = custom_head or create_head(nf, data.c, lin_ftrs, ps=ps, bn_final=bn_final)
-    model = nn.Sequential(body, head)
-    learn = Learner(data, model, **learn_kwargs)
-    learn.split(ifnone(split_on, meta['split']))
+    meta = cnn_config(base_arch)
+    model = create_cnn_model(base_arch, data.c, cut, pretrained, lin_ftrs, ps, custom_head, split_on, bn_final)
+    learn = Learner(data, model, **kwargs)
+    learn.split(split_on or meta['split'])
     if pretrained: learn.freeze()
     apply_init(model[1], nn.init.kaiming_normal_)
     return learn
+
+def create_cnn(data, base_arch, **kwargs):
+    warn("`create_cnn` is deprecated and is now named `cnn_learner`.")
+    return cnn_learner(data, base_arch, **kwargs)
 
 def unet_learner(data:DataBunch, arch:Callable, pretrained:bool=True, blur_final:bool=True,
                  norm_type:Optional[NormType]=NormType, split_on:Optional[SplitFuncOrIdxList]=None, blur:bool=False,
@@ -102,7 +115,8 @@ def _cl_int_from_learner(cls, learn:Learner, ds_type:DatasetType=DatasetType.Val
     preds = learn.TTA(ds_type=ds_type, with_loss=True) if tta else learn.get_preds(ds_type=ds_type, with_loss=True)
     return cls(learn, *preds, ds_type=ds_type)
 
-def _cl_int_plot_top_losses(self, k, largest=True, figsize=(12,12), heatmap:bool=True, heatmap_thresh:int=16):
+def _cl_int_plot_top_losses(self, k, largest=True, figsize=(12,12), heatmap:bool=True, heatmap_thresh:int=16,
+                            return_fig:bool=None)->Optional[plt.Figure]:
     "Show images in `top_losses` along with their prediction, actual, loss, and probability of predicted class."
     tl_val,tl_idx = self.top_losses(k, largest)
     classes = self.data.classes
@@ -129,6 +143,7 @@ def _cl_int_plot_top_losses(self, k, largest=True, figsize=(12,12), heatmap:bool
                 mult = F.relu(((acts*grad_chan[...,None,None])).sum(0))
                 sz = im.shape[-1]
                 axes.flat[i].imshow(mult, alpha=0.6, extent=(0,sz,sz,0), interpolation='bilinear', cmap='magma')
+    if ifnone(return_fig, defaults.return_fig): return fig
 
 def _cl_int_plot_multi_top_losses(self, samples:int=3, figsize:Tuple[int,int]=(8,8), save_misclassified:bool=False):
     "Show images in `top_losses` along with their prediction, actual, loss, and probability of predicted class in a multilabeled dataset."

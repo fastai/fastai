@@ -190,7 +190,7 @@ class TransformerXL(nn.Module):
         self.u = nn.Parameter(torch.Tensor(n_heads, 1, d_head)) #Remove 1 for einsum implementation of attention
         self.v = nn.Parameter(torch.Tensor(n_heads, 1, d_head)) #Remove 1 for einsum implementation of attention
         self.mem_len,self.n_layers,self.d_model,self.mask = mem_len,n_layers,d_model,mask
-        if self.mem_len > 0: self.reset()
+        self.init = False
         self.layers = nn.ModuleList([DecoderLayer(n_heads, d_model, d_head, d_inner, resid_p=resid_p, attn_p=attn_p,
                       ff_p=ff_p, bias=bias, scale=scale, act=act, double_drop=double_drop, 
                       attn_cls=attn_cls) for k in range(n_layers)])
@@ -210,6 +210,10 @@ class TransformerXL(nn.Module):
     def select_hidden(self, idxs): self.hidden = [h[idxs] for h in self.hidden]
     
     def forward(self, x):
+        #The hidden state has to be initiliazed in the forward pass for nn.DataParallel
+        if self.mem_len > 0 and not self.init: 
+            self.reset()
+            self.init = True
         bs,x_len = x.size()
         inp = self.drop_emb(self.encoder(x)) #.mul_(self.d_model ** 0.5)
         m_len = self.hidden[0].size(1) if hasattr(self, 'hidden') and len(self.hidden[0].size()) > 1 else 0

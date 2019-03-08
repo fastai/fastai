@@ -1,4 +1,5 @@
 import pytest
+from fastai.gen_doc.doctest import this_tests
 from fastai.basics import *
 from fastai.metrics import *
 from utils.fakes import fake_learner
@@ -39,6 +40,7 @@ seq_preds = torch.Tensor([
     (seq_preds, seq_targs, 0.25),
 ])
 def test_accuracy(p, t, expect):
+    this_tests(accuracy)
     assert np.isclose(accuracy(p, t).item(), expect)
 
 @pytest.mark.parametrize("p, t, k, expect", [
@@ -63,6 +65,7 @@ def test_accuracy(p, t, expect):
     (seq_preds, seq_targs, 3, 0.75),
 ])
 def test_top_k_accuracy(p, t, k, expect):
+    this_tests(top_k_accuracy)
     assert np.isclose(top_k_accuracy(p, t, k).item(), expect)
 
 @pytest.mark.parametrize("p, t, expect", [
@@ -70,16 +73,20 @@ def test_top_k_accuracy(p, t, k, expect):
     (torch.eye(5), t1, 0),
 ])
 def test_error_rate(p, t, expect):
+    this_tests(error_rate)
     assert np.isclose(error_rate(p, t).item(), expect)
 
 def test_exp_rmspe():
+    this_tests(exp_rmspe)
     assert np.isclose(exp_rmspe(torch.ones(1,5), torch.ones(5)).item(), 0)
 
 def test_exp_rmspe_num_of_ele():
+    this_tests(exp_rmspe)
     with pytest.raises(AssertionError):
         exp_rmspe(p1, t1.float())
 
 def test_accuracy_thresh():
+    this_tests(accuracy_thresh)
     assert np.isclose(accuracy_thresh(torch.linspace(0,1,5), torch.ones(5)), 0.8)
 
 @pytest.mark.parametrize("p, t, expect", [
@@ -88,6 +95,7 @@ def test_accuracy_thresh():
     (torch.zeros(5,2,5), torch.zeros(5,5), 0),
 ])
 def test_dice(p, t, expect):
+    this_tests(dice)
     assert np.isclose(dice(p, t.long()).item(), expect)
 
 @pytest.mark.parametrize("p, t, expect", [
@@ -96,6 +104,7 @@ def test_dice(p, t, expect):
     (p2, torch.zeros(5,5), 0),
 ])
 def test_dice_iou(p, t, expect):
+    this_tests(dice)
     assert np.isclose(dice(p, t.long(), iou=True).item(), expect)
 
 @pytest.mark.parametrize("p, t, expect", [
@@ -103,6 +112,7 @@ def test_dice_iou(p, t, expect):
     (torch.zeros(1,10), torch.zeros(1,10), 0),
 ])
 def test_fbeta(p, t, expect):
+    this_tests(fbeta)
     assert np.isclose(fbeta(p, t).item(), expect)
 
 
@@ -118,10 +128,11 @@ class DummyMetric(Callback):
     def on_epoch_begin(self, **kwargs):
         self.epoch += 1
 
-    def on_epoch_end(self, **kwargs):
-        self.metric = torch.tensor(dummy_base_val**self.epoch)
+    def on_epoch_end(self, last_metrics, **kwargs):
+        return {'last_metrics': last_metrics + [torch.tensor(dummy_base_val**self.epoch)]}
 
 def test_custom_metric_class():
+    this_tests('na')
     learn = fake_learner(3,2)
     learn.metrics.append(DummyMetric())
     with CaptureStdout() as cs: learn.fit_one_cycle(2)

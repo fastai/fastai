@@ -13,7 +13,7 @@ def one_cycle_scheduler(lr_max:float, **kwargs:Any)->OneCycleScheduler:
 
 def fit_one_cycle(learn:Learner, cyc_len:int, max_lr:Union[Floats,slice]=defaults.lr,
                   moms:Tuple[float,float]=(0.95,0.85), div_factor:float=25., pct_start:float=0.3, final_div:float=None,
-                  wd:float=None, callbacks:Optional[CallbackList]=None, tot_epochs:int=None, start_epoch:int=1)->None:
+                  wd:float=None, callbacks:Optional[CallbackList]=None, tot_epochs:int=None, start_epoch:int=None)->None:
     "Fit a model following the 1cycle policy."
     max_lr = learn.lr_range(max_lr)
     callbacks = listify(callbacks)
@@ -72,7 +72,7 @@ class ShowGraph(LearnerCallback):
             x_bounds = (0, (n_epochs - len(rec.nb_batches)) * rec.nb_batches[-1] + len(rec.losses))
             y_bounds = (0, max((max(Tensor(rec.losses)), max(Tensor(rec.val_losses)))))
             rec.pbar.update_graph([(iters, rec.losses), (val_iter, rec.val_losses)], x_bounds, y_bounds)
-            return False
+        return {}
 
 class BnFreeze(LearnerCallback):
     "Freeze moving average statistics in all non-trainable batchnorm layers."
@@ -98,7 +98,7 @@ Learner.clip_grad = clip_grad
      
 class AccumulateStepper(LearnerCallback):
     "Does accumlated step every nth step by accumulating gradients"
-
+    
     def __init__(self, learn:Learner, n_step:int = 1, drop_last:bool = False):
         super().__init__(learn)
         self.n_step,self.drop_last = n_step,drop_last
@@ -123,11 +123,7 @@ class AccumulateStepper(LearnerCallback):
             for p in (self.learn.model.parameters()):
                 if p.requires_grad: p.grad.div_(self.acc_samples)
             self.acc_samples = 0
-        else: return True
-    
-    def on_step_end(self, **kwargs):
-        "zero gradients after stepping, True will result in no zeroing"
-        return (self.acc_batches % self.n_step) != 0
+        else: return {'skip_step':True, 'skip_zero':True}
     
     def on_epoch_end(self, **kwargs):
         "step the rest of the accumulated grads if not perfectly divisible"
@@ -162,13 +158,13 @@ class ClassificationInterpretation():
                 torch.add(cm, cm_slice, out=cm)
         return to_np(cm)
 
-    def plot_confusion_matrix(self, normalize:bool=False, title:str='Confusion matrix', cmap:Any="Blues", slice_size:int=1, 
-                              norm_dec:int=2, plot_txt:bool=True, **kwargs)->None:
+    def plot_confusion_matrix(self, normalize:bool=False, title:str='Confusion matrix', cmap:Any="Blues", slice_size:int=1,
+                              norm_dec:int=2, plot_txt:bool=True, return_fig:bool=None, **kwargs)->Optional[plt.Figure]:
         "Plot the confusion matrix, with `title` and using `cmap`."
         # This function is mainly copied from the sklearn docs
         cm = self.confusion_matrix(slice_size=slice_size)
         if normalize: cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
-        plt.figure(**kwargs)
+        fig = plt.figure(**kwargs)
         plt.imshow(cm, interpolation='nearest', cmap=cmap)
         plt.title(title)
         tick_marks = np.arange(self.data.c)
@@ -185,6 +181,7 @@ class ClassificationInterpretation():
         plt.ylabel('Actual')
         plt.xlabel('Predicted')
         plt.grid(False)
+        if ifnone(return_fig, defaults.return_fig): return fig
 
     def most_confused(self, min_val:int=1, slice_size:int=1)->Collection[Tuple[str,str,int]]:
         "Sorted descending list of largest non-diagonal entries of confusion matrix, presented as actual, predicted, number of occurrences."

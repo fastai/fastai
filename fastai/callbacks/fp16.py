@@ -87,7 +87,7 @@ class MixedPrecision(LearnerCallback):
 
     def on_loss_begin(self, last_output:Tensor, **kwargs:Any) -> Tensor:
         "Convert half precision output to FP32 to avoid reduction overflow."
-        return to_float(last_output)
+        return {'last_output': to_float(last_output)}
 
     def on_backward_begin(self, last_loss:Rank0Tensor, **kwargs:Any) -> Rank0Tensor:
         "Scale gradients up by `self.loss_scale` to prevent underflow."
@@ -95,7 +95,7 @@ class MixedPrecision(LearnerCallback):
         ret_loss = last_loss * self.loss_scale
         if torch.isnan(ret_loss) and not self.dynamic: 
             warn(f"You have a `loss_scale` factor that is too high, try to divide it by 2 (current value: {self.loss_scale}).")
-        return ret_loss
+        return {'last_loss': ret_loss}
 
     def on_backward_end(self, **kwargs:Any)->None:
         "Convert the gradients back to FP32 and divide them by the scale."

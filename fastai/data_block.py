@@ -131,7 +131,7 @@ class ItemList():
     def _relative_item_path(self, i): return self.items[i].relative_to(self.path)
     def _relative_item_paths(self):   return [self._relative_item_path(i) for i in range_of(self.items)]
 
-    def use_partial_data(self, sample_pct:float=1.0, seed:int=None)->'ItemList':
+    def use_partial_data(self, sample_pct:float=0.01, seed:int=None)->'ItemList':
         "Use only a sample of `sample_pct`of the full dataset and an optional `seed`."
         if seed is not None: np.random.seed(seed)
         rand_idx = np.random.permutation(range_of(self))
@@ -161,8 +161,12 @@ class ItemList():
         "Keep random sample of `items` with probability `p` and an optional `seed`."
         if seed is not None: np.random.seed(seed)
         return self.filter_by_func(lambda o: rand_bool(p))
-
+                
     def no_split(self):
+        warn("`no_split` is deprecated, please use `split_none`.")
+        return self.split_none()
+
+    def split_none(self):
         "Don't split the data and create an empty validation set."
         val = self[[]]
         val.ignore_empty = True
@@ -188,14 +192,29 @@ class ItemList():
     def split_by_folder(self, train:str='train', valid:str='valid')->'ItemLists':
         "Split the data depending on the folder (`train` or `valid`) in which the filenames are."
         return self.split_by_idxs(self._get_by_folder(train), self._get_by_folder(valid))
-
-    def random_split_by_pct(self, valid_pct:float=0.2, seed:int=None)->'ItemLists':
+     
+    def random_split_by_pct(self, valid_pct:float=0.2, seed:int=None):
+        warn("`random_split_by_pct` is deprecated, please use `split_by_rand_pct`.")
+        return self.split_by_rand_pct(valid_pct=valid_pct, seed=seed)         
+    
+    def split_by_rand_pct(self, valid_pct:float=0.2, seed:int=None)->'ItemLists':
         "Split the items randomly by putting `valid_pct` in the validation set, optional `seed` can be passed."
-        if valid_pct==0.: return self.no_split()
+        if valid_pct==0.: return self.split_none()
         if seed is not None: np.random.seed(seed)
         rand_idx = np.random.permutation(range_of(self))
         cut = int(valid_pct * len(self))
         return self.split_by_idx(rand_idx[:cut])
+
+    def split_subsets(self, train_size:float, valid_size:float, seed=None) -> 'ItemLists':
+        "Split the items into train set with size `train_size * n` and valid set with size `valid_size * n`."
+        assert 0 < train_size < 1
+        assert 0 < valid_size < 1
+        assert train_size + valid_size <= 1.
+        if seed is not None: np.random.seed(seed)
+        n = len(self.items)
+        rand_idx = np.random.permutation(range(n))
+        train_cut, valid_cut = int(train_size * n), int(valid_size * n)
+        return self.split_by_idxs(rand_idx[:train_cut], rand_idx[-valid_cut:])
 
     def split_by_valid_func(self, func:Callable)->'ItemLists':
         "Split the data by result of `func` (which returns `True` for validation set)."
@@ -232,7 +251,7 @@ class ItemList():
     def _label_from_list(self, labels:Iterator, label_cls:Callable=None, from_item_lists:bool=False, **kwargs)->'LabelList':
         "Label `self.items` with `labels`."
         if not from_item_lists: 
-            raise Exception("Your data isn't split, if you don't want a validation set, please use `no_split`.")
+            raise Exception("Your data isn't split, if you don't want a validation set, please use `split_none`.")
         labels = array(labels, dtype=object)
         label_cls = self.get_label_cls(labels, label_cls=label_cls, **kwargs)
         y = label_cls(labels, path=self.path, **kwargs)
@@ -414,7 +433,7 @@ class ItemLists():
         if not self.train.ignore_empty and len(self.train.items) == 0:
             warn("Your training set is empty. If this is by design, pass `ignore_empty=True` to remove this warning.")
         if not self.valid.ignore_empty and len(self.valid.items) == 0:
-            warn("""Your validation set is empty. If this is by design, use `no_split()`
+            warn("""Your validation set is empty. If this is by design, use `split_none()`
                  or pass `ignore_empty=True` when labelling to remove this warning.""")
         if isinstance(self.train, LabelList): self.__class__ = LabelLists
 
@@ -538,7 +557,8 @@ class LabelLists(ItemLists):
     @classmethod
     def load_empty(cls, path:PathOrStr, fn:PathOrStr='export.pkl'):
         "Create a `LabelLists` with empty sets from the serialized file in `path/fn`."
-        state = pickle.load(open(path/fn, 'rb'))
+        path = Path(path)
+        state = torch.load(open(path/fn, 'rb'))
         return LabelLists.load_state(path, state)
 
 def _check_kwargs(ds:ItemList, tfms:TfmList, **kwargs):
@@ -652,7 +672,7 @@ class LabelList(Dataset):
         "Launch the processing on `self.x` and `self.y` with `xp` and `yp`."
         self.y.process(yp)
         if getattr(self.y, 'filter_missing_y', False):
-            filt = array([o is None for o in self.y])
+            filt = array([o is None for o in self.y.items])
             if filt.sum()>0:
                 #Warnings are given later since progress_bar might make them disappear.
                 self.warn = f"You are labelling your items with {self.y.__class__.__name__}.\n"
@@ -686,7 +706,7 @@ class LabelList(Dataset):
 
     def databunch(self, **kwargs):
         "To throw a clear error message when the data wasn't split."
-        raise Exception("Your data isn't split, if you don't want a validation set, please use `no_split`")
+        raise Exception("Your data isn't split, if you don't want a validation set, please use `split_none`")
 
 @classmethod
 def _databunch_load_empty(cls, path, fname:str='export.pkl'):

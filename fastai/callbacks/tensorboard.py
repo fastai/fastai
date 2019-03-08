@@ -14,7 +14,7 @@ import torchvision.utils as vutils
 from abc import ABC
 #This is an optional dependency in fastai.  Must install separately.
 try: from tensorboardX import SummaryWriter
-except: pass
+except: print("To use this tracker, please run 'pip install tensorboardx'. Also you must have Tensorboard running to see results")
 
 __all__=['LearnerTensorboardWriter', 'GANTensorboardWriter', 'ImageGenTensorboardWriter']
 
@@ -32,6 +32,7 @@ class LearnerTensorboardWriter(LearnerCallback):
         self.tbwriter = SummaryWriter(log_dir=str(log_dir))
         self.hist_writer = HistogramTBWriter()
         self.stats_writer = ModelStatsTBWriter()
+        self.graph_writer = GraphTBWriter()
         self.data = None
         self.metrics_root = '/metrics/'
         self._update_batches_if_needed()
@@ -42,6 +43,7 @@ class LearnerTensorboardWriter(LearnerCallback):
 
     def _update_batches_if_needed(self)->None:
         "one_batch function is extremely slow with large datasets.  This is caching the result as an optimization."
+        if self.learn.data.valid_dl is None: return # Running learning rate finder, so return
         update_batches = self.data is not self.learn.data
         if not update_batches: return
         self.data = self.learn.data
@@ -72,9 +74,13 @@ class LearnerTensorboardWriter(LearnerCallback):
         "Writes training metrics to Tensorboard."
         recorder = self.learn.recorder
         for i, name in enumerate(recorder.names[start_idx:]):
-            if len(last_metrics) < i+1: return
+            if last_metrics is None or len(last_metrics) < i+1: return
             scalar_value = last_metrics[i]
             self._write_scalar(name=name, scalar_value=scalar_value, iteration=iteration)
+
+    def on_train_begin(self, **kwargs: Any) -> None:
+        self.graph_writer.write(model=self.learn.model, tbwriter=self.tbwriter,
+                                input_to_model=next(iter(self.learn.data.dl(DatasetType.Single)))[0])
 
     def on_batch_end(self, last_loss:Tensor, iteration:int, **kwargs)->None:
         "Callback function that writes batch end appropriate data to Tensorboard."
@@ -398,4 +404,21 @@ class ImageTBWriter():
     def _write_for_dstype(self, learn:Learner, batch:Tuple, iteration:int, tbwriter:SummaryWriter, ds_type:DatasetType)->None:
         "Writes batch images of specified DatasetType to Tensorboard."
         request = ImageTBRequest(learn=learn, batch=batch, iteration=iteration, tbwriter=tbwriter, ds_type=ds_type)
+        asyncTBWriter.request_write(request)
+
+class GraphTBRequest(TBWriteRequest):
+    "Request object for model histogram writes to Tensorboard."
+    def __init__(self, model:nn.Module, tbwriter:SummaryWriter, input_to_model:torch.Tensor):
+        super().__init__(tbwriter=tbwriter, iteration=0)
+        self.model,self.input_to_model = model,input_to_model
+
+    def write(self)->None:
+        "Writes single model graph to Tensorboard."
+        self.tbwriter.add_graph(model=self.model, input_to_model=self.input_to_model)
+
+class GraphTBWriter():
+    "Writes model network graph to Tensorboard."
+    def write(self, model:nn.Module, tbwriter:SummaryWriter, input_to_model:torch.Tensor)->None:
+        "Writes model graph to Tensorboard."
+        request = GraphTBRequest(model=model, tbwriter=tbwriter, input_to_model=input_to_model)
         asyncTBWriter.request_write(request)

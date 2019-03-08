@@ -31,6 +31,9 @@ class URLs():
     MNIST_VAR_SIZE_TINY = f'{S3_IMAGE}mnist_var_size_tiny'
     PLANET_SAMPLE       = f'{URL}planet_sample'
     PLANET_TINY         = f'{URL}planet_tiny'
+    IMAGENETTE          = f'{S3_IMAGE}imagenette'
+    IMAGENETTE_160      = f'{S3_IMAGE}imagenette-160'
+    IMAGENETTE_320      = f'{S3_IMAGE}imagenette-320'
 
     # kaggle competitions download dogs-vs-cats -p {DOGS.absolute()}
     DOGS = f'{URL}dogscats'
@@ -63,7 +66,7 @@ class URLs():
     CAMVID             = f'{S3_IMAGELOC}camvid'
     CAMVID_TINY        = f'{URL}camvid_tiny'
     LSUN_BEDROOMS      = f'{S3_IMAGE}bedroom'
-    
+
     #Pretrained models
     OPENAI_TRANSFORMER = f'{S3_MODEL}transformer'
     WT103               = f'{S3_MODEL}wt103'
@@ -204,8 +207,8 @@ def untar_data(url:str, fname:PathOrStr=None, dest:PathOrStr=None, data=True, fo
     fname = Path(ifnone(fname, _url2tgz(url, data)))
     if force_download or (fname.exists() and url in _checks and _check_file(fname) != _checks[url]):
         print(f"A new version of the {'dataset' if data else 'model'} is available.")
-        os.remove(fname)
-        shutil.rmtree(dest)
+        if fname.exists(): os.remove(fname)
+        if dest.exists(): shutil.rmtree(dest)
     if not dest.exists():
         fname = download_data(url, fname=fname, data=data)
         data_dir = Config().data_path()

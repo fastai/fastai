@@ -3,7 +3,7 @@ from ...layers import *
 from ..data import TextClasDataBunch
 import matplotlib.cm as cm
 
-__all__ = ['EmbeddingDropout', 'LinearDecoder', 'PoolingLinearClassifier', 'AWD_LSTM', 'RNNDropout',
+__all__ = ['EmbeddingDropout', 'LinearDecoder', 'AWD_LSTM', 'RNNDropout',
            'SequentialRNN', 'WeightDropout', 'dropout_mask', 'awd_lstm_lm_split', 'awd_lstm_clas_split',
            'awd_lstm_lm_config', 'awd_lstm_clas_config', 'TextClassificationInterpretation']
 
@@ -157,32 +157,6 @@ class SequentialRNN(nn.Sequential):
     def reset(self):
         for c in self.children():
             if hasattr(c, 'reset'): c.reset()
-
-class PoolingLinearClassifier(nn.Module):
-    "Create a linear classifier with pooling."
-
-    def __init__(self, layers:Collection[int], drops:Collection[float]):
-        super().__init__()
-        mod_layers = []
-        activs = [nn.ReLU(inplace=True)] * (len(layers) - 2) + [None]
-        for n_in,n_out,p,actn in zip(layers[:-1],layers[1:], drops, activs):
-            mod_layers += bn_drop_lin(n_in, n_out, p=p, actn=actn)
-        self.layers = nn.Sequential(*mod_layers)
-
-    def pool(self, x:Tensor, bs:int, is_max:bool):
-        "Pool the tensor along the seq_len dimension."
-        f = F.adaptive_max_pool1d if is_max else F.adaptive_avg_pool1d
-        return f(x.transpose(1,2), (1,)).view(bs,-1)
-
-    def forward(self, input:Tuple[Tensor,Tensor])->Tuple[Tensor,Tensor,Tensor]:
-        raw_outputs, outputs = input
-        output = outputs[-1]
-        bs,sl,_ = output.size()
-        avgpool = self.pool(output, bs, False)
-        mxpool = self.pool(output, bs, True)
-        x = torch.cat([output[:,-1], mxpool, avgpool], 1)
-        x = self.layers(x)
-        return x, raw_outputs, outputs
 
 def awd_lstm_lm_split(model:nn.Module) -> List[nn.Module]:
     "Split a RNN `model` in groups for differential learning rates."

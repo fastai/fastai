@@ -132,8 +132,12 @@ class DataBunch():
                 self.fix_dl)
 
     @property
-    def dls(self):
-        res = [self.train_dl, self.valid_dl, self.fix_dl, self.single_dl]
+    def dls(self)->List[DeviceDataLoader]:
+        "Returns a list of all DeviceDataLoaders. If you need a specific DeviceDataLoader, access via the relevant property (`train_dl`, `valid_dl`, etc) as the index of DLs in this list is not guaranteed to remain constant."
+        res = [self.train_dl, self.fix_dl, self.single_dl]
+        # Preserve the original ordering of Train, Valid, Fix, Single, Test Data Loaders
+        # (Unknown/not verified as of 1.0.47 whether there are other methods explicitly using DLs their list index)
+        if self.valid_dl: res.insert(1, self.valid_dl)
         return res if not self.test_dl else res + [self.test_dl]
 
     def add_tfm(self,tfm:Callable)->None:
@@ -147,7 +151,7 @@ class DataBunch():
         if not getattr(self, 'label_list', False):
             warn("Serializing the `DataBunch` only works when you created it using the data block API.")
             return
-        torch.save(self.label_list, self.path/fname)
+        try_save(self.label_list, self.path, fname)
 
     def add_test(self, items:Iterator, label:Any=None)->None:
         "Add the `items` as a test set. Pass along `label` otherwise label them with `EmptyLabel`."
@@ -187,11 +191,11 @@ class DataBunch():
             ys = [self.train_ds.y.reconstruct(grab_idx(y, i), x=x) for i,x in enumerate(xs)]
         else : ys = [self.train_ds.y.reconstruct(grab_idx(y, i)) for i in range(n_items)]
         self.train_ds.x.show_xys(xs, ys, **kwargs)
-
+ 
     def export(self, fname:str='export.pkl'):
         "Export the minimal state of `self` for inference in `self.path/fname`."
         xtra = dict(normalize=self.norm.keywords) if getattr(self, 'norm', False) else {}
-        self.valid_ds.export(self.path/fname, **xtra)
+        try_save(self.valid_ds.get_state(**xtra), self.path, fname)
 
     def _grab_dataset(self, dl:DataLoader):
         ds = dl.dl.dataset
@@ -205,7 +209,8 @@ class DataBunch():
     @property
     def single_ds(self)->Dataset: return self._grab_dataset(self.single_dl)
     @property
-    def loss_func(self)->Dataset: return getattr(self.train_ds.y, 'loss_func', F.nll_loss)
+    def loss_func(self)->OptLossFunc:
+        return getattr(self.train_ds.y, 'loss_func', F.nll_loss) if hasattr(self.train_ds, 'y') else F.nll_loss
 
     @property
     def test_ds(self)->Dataset:
