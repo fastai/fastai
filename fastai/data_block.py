@@ -14,6 +14,7 @@ def _maybe_squeeze(arr): return (arr if is1d(arr) else np.squeeze(arr))
 
 def _get_files(parent, p, f, extensions):
     p = Path(p)#.relative_to(parent)
+    if isinstance(extensions,str): extensions = [extensions]
     low_extensions = [e.lower() for e in extensions] if extensions is not None else None
     res = [p/o for o in f if not o.startswith('.')
            and (extensions is None or f'.{o.split(".")[-1].lower()}' in low_extensions)]
