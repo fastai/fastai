@@ -14,8 +14,8 @@ class TrainingPhase():
     mom_anneal:AnnealFunc=None
 
     def __post_init__(self)->None:
-        self.lr_step = Stepper(self.lrs, self.length, self.lr_anneal)
-        self.mom_step = Stepper(self.moms, self.length, self.mom_anneal)
+        self.lr_step = Scheduler(self.lrs, self.length, self.lr_anneal)
+        self.mom_step = Scheduler(self.moms, self.length, self.mom_anneal)
 
 @dataclass
 class GeneralScheduler(LearnerCallback):

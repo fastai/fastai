@@ -3,7 +3,7 @@ from .basic_data import *
 from .torch_core import *
 import torch.distributed as dist
 
-__all__ = ['AverageMetric', 'Callback', 'CallbackHandler', 'OptimWrapper', 'SmoothenValue', 'Stepper', 'annealing_cos', 'CallbackList',
+__all__ = ['AverageMetric', 'Callback', 'CallbackHandler', 'OptimWrapper', 'SmoothenValue', 'Scheduler', 'annealing_cos', 'CallbackList',
            'annealing_exp', 'annealing_linear', 'annealing_no', 'annealing_poly']
 
 class OptimWrapper():
@@ -345,7 +345,7 @@ def annealing_poly(degree:Number)->Number:
     "Anneal polynomically from `start` to `end` as pct goes from 0.0 to 1.0."
     return functools.partial(do_annealing_poly, degree=degree)
 
-class Stepper():
+class Scheduler():
     "Used to \"step\" from start,end (`vals`) over `n_iter` iterations on a schedule defined by `func`"
     def __init__(self, vals:StartOptEnd, n_iter:int, func:Optional[AnnealFunc]=None):
         self.start,self.end = (vals[0],vals[1]) if is_tuple(vals) else (vals,0)

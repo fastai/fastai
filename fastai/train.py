@@ -5,7 +5,7 @@ from .basic_data import *
 from .basic_train import *
 
 __all__ = ['BnFreeze', 'GradientClipping', 'ShowGraph', 'ClassificationInterpretation', 'fit_one_cycle', 'lr_find', 
-           'one_cycle_scheduler', 'to_fp16', 'to_fp32', 'mixup', 'AccumulateStepper']
+           'one_cycle_scheduler', 'to_fp16', 'to_fp32', 'mixup', 'AccumulateScheduler']
 
 def one_cycle_scheduler(lr_max:float, **kwargs:Any)->OneCycleScheduler:
     "Instantiate a `OneCycleScheduler` with `lr_max`."
@@ -96,7 +96,7 @@ def clip_grad(learn:Learner, clip:float=0.1)->Learner:
     return learn
 Learner.clip_grad = clip_grad
      
-class AccumulateStepper(LearnerCallback):
+class AccumulateScheduler(LearnerCallback):
     "Does accumlated step every nth step by accumulating gradients"
     
     def __init__(self, learn:Learner, n_step:int = 1, drop_last:bool = False):

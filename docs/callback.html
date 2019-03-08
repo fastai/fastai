@@ -1103,9 +1103,9 @@ Examples: save log_files, load best model found during training</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Stepper" class="doc_header"><code>class</code> <code>Stepper</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callback.py#L348" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#Stepper-pytest" style="float:right; padding-right:10px">[test]</a></h2><blockquote><p><code>Stepper</code>(<strong><code>vals</code></strong>:<code>StartOptEnd</code>, <strong><code>n_iter</code></strong>:<code>int</code>, <strong><code>func</code></strong>:<code>Optional</code>[<code>AnnealFunc</code>]=<strong><em><code>None</code></em></strong>)</p>
+<h2 id="Scheduler" class="doc_header"><code>class</code> <code>Scheduler</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callback.py#L348" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#Scheduler-pytest" style="float:right; padding-right:10px">[test]</a></h2><blockquote><p><code>Scheduler</code>(<strong><code>vals</code></strong>:<code>StartOptEnd</code>, <strong><code>n_iter</code></strong>:<code>int</code>, <strong><code>func</code></strong>:<code>Optional</code>[<code>AnnealFunc</code>]=<strong><em><code>None</code></em></strong>)</p>
 </blockquote>
-<div class="collapse" id="Stepper-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#Stepper-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>Stepper</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Used to "step" from start,end (<code>vals</code>) over <code>n_iter</code> iterations on a schedule defined by <code>func</code></p>
+<div class="collapse" id="Scheduler-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#Scheduler-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>Scheduler</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Used to "step" from start,end (<code>vals</code>) over <code>n_iter</code> iterations on a schedule defined by <code>func</code></p>
 
 </div>
 
@@ -1131,9 +1131,9 @@ Examples: save log_files, load best model found during training</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Stepper.step" class="doc_header"><code>step</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callback.py#L357" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#Stepper-step-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>step</code>() → <code>Number</code></p>
+<h4 id="Scheduler.step" class="doc_header"><code>step</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callback.py#L357" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#Scheduler-step-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>step</code>() → <code>Number</code></p>
 </blockquote>
-<div class="collapse" id="Stepper-step-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#Stepper-step-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>step</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Return next value along annealed schedule.</p>
+<div class="collapse" id="Scheduler-step-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#Scheduler-step-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>step</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Return next value along annealed schedule.</p>
 
 </div>
 
