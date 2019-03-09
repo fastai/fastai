@@ -90,7 +90,7 @@ class GeneralOptimizer(Optimizer):
         return ([stat for stat in listify(stats) if stat.scope==scope] for scope in StatScope)
 
     def _init_stats(self, stats, data=None):
-        return {stat.buf: stat.init if data is None
+        return {stat.buf: tensor(stat.init) if data is None
                 else torch.zeros_like(data) + stat.init for stat in stats}
 
     def init_stats(self):
