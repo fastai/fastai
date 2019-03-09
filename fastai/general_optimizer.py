@@ -2,9 +2,8 @@ from .torch_core import *
 from torch.optim import Optimizer
 import types
 
-__all__ = ['StatScope', 'Statistic', 'ConstantStatistic', 'AvgStatistic', 'AvgSquare', 'GeneralOptimizer']
+__all__ = ['StatScope', 'Statistic', 'ConstStatistic', 'AvgStatistic', 'AvgSquare', 'GeneralOptimizer']
 
-#TODO: Channel
 StatScope = Enum('StatScope', 'Global Group Layer Channel Weight')
 
 @dataclass
@@ -29,7 +28,7 @@ class Statistic():
         "Update state with accumlated, or `val` (if `Weight` or `Layer` scope)"
         raise NotImplementedError
 
-class ConstantStatistic(Statistic):
+class ConstStatistic(Statistic):
     @property
     def buf(self): return None
     def new_step(self):   pass
