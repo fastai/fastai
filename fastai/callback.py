@@ -271,7 +271,7 @@ class CallbackHandler():
         "Handle end of gradient calculation."
         self('backward_end', call_mets=False)
         return self.state_dict['skip_step']
-        
+
     def on_step_end(self)->None:
         "Handle end of optimization step."
         self('step_end', call_mets=False)
@@ -363,3 +363,4 @@ class Scheduler():
     def is_done(self)->bool:
         "Return `True` if schedule completed."
         return self.n >= self.n_iter
+

@@ -1,4 +1,4 @@
-import csv, gc, gzip, os, pickle, shutil, sys, warnings, yaml, io
+import csv, gc, gzip, os, pickle, shutil, sys, warnings, yaml, io, subprocess
 import math, matplotlib.pyplot as plt, numpy as np, pandas as pd, random
 import scipy.stats, scipy.special
 import abc, collections, hashlib, itertools, json, operator, pathlib

@@ -12,12 +12,17 @@ of that change.
 
 ## 1.0.48.dev0 (Work In Progress)
 
+### Breaking changes:
+
+- `Learner.distributed` is now called `Learner.to_distributed`
+
 ### New:
+
+- `Learner.to_parallel`: callback wraps in nn.DataParallel during train and unwraps at end
 
 ### Changed:
 
 ### Fixed:
-
 
 
 ## 1.0.47 (2019-03-06)

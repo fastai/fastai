@@ -55,12 +55,12 @@ def master2model(model_params:Sequence[Tensor], master_params:Sequence[Tensor], 
 
 def grad_overflow(param_group):
     for group in param_group:
-        for p in group: 
+        for p in group:
             if p.grad is not None:
                 s = float(p.grad.data.float().sum())
                 if s == float('inf') or s == float('-inf') or s != s: return True
     return False
-                
+
 class MixedPrecision(LearnerCallback):
     _order = 999 #Need to run after things that could call on_backward_begin and change the loss
     "Callback that handles mixed-precision training."
@@ -93,7 +93,7 @@ class MixedPrecision(LearnerCallback):
         "Scale gradients up by `self.loss_scale` to prevent underflow."
         #To avoid gradient underflow, we scale the gradients
         ret_loss = last_loss * self.loss_scale
-        if torch.isnan(ret_loss) and not self.dynamic: 
+        if torch.isnan(ret_loss) and not self.dynamic:
             warn(f"You have a `loss_scale` factor that is too high, try to divide it by 2 (current value: {self.loss_scale}).")
         return {'last_loss': ret_loss}
 
@@ -106,9 +106,9 @@ class MixedPrecision(LearnerCallback):
         else:
             model_g2master_g(self.model_params, self.master_params, self.flat_master)
             for group in self.master_params:
-                for param in group: 
+                for param in group:
                     if param.grad is not None: param.grad.div_(self.loss_scale)
-            if self.clip is not None: 
+            if self.clip is not None:
                 for group in self.master_params: nn.utils.clip_grad_norm_(group, self.clip)
             if not self.dynamic: return
             self.noskip += 1
