@@ -25,9 +25,18 @@ class Statistic():
         "Add `val` to statistic"
         raise NotImplementedError
 
-    def update(self, state, param, val=None):
+    def update(self, state, param, val=None, step=None):
         "Update state with accumlated, or `val` (if `Weight` or `Layer` scope)"
         raise NotImplementedError
+
+@dataclass
+class CounterStat(Statistic):
+    def __post_init__(self): self.init,self._buf,self.name = 0,self.name,None
+    @property
+    def buf(self): return self._buf
+    def new_step(self): pass
+    def accumulate(self, val): pass
+    def update(self, state, param, val=None, step=None): return state + 1
 
 @dataclass
 class AvgStatistic(Statistic):
@@ -45,7 +54,7 @@ class AvgStatistic(Statistic):
         v = val.view(val.size(0), -1).mean(1)
         return state.add_(1-param, v) if self.decay else state.add(v)
 
-    def update(self, state, param, val=None):
+    def update(self, state, param, val=None, step=None):
         if self.scope == StatScope.Weight:
             # `state` is a tensor
             return self._get_val2(state.mul_(param), val, param)
@@ -87,7 +96,10 @@ class GeneralOptimizer(Optimizer):
     def on_step(self, p, group, group_idx): p.data.add_(-group['lr'], p.grad.data)
 
     def _split_stats(self, stats):
-        return ([stat for stat in listify(stats) if stat.scope==scope] for scope in StatScope)
+        splits = [[stat for stat in listify(stats) if stat.scope==scope] for scope in StatScope]
+        for split,s in zip([splits[0], splits[1], splits[2]+splits[3]+splits[4]], StatScope):
+            if np.any([getattr(s, 'debias', False) for s in split]): split.append(CounterStat, scope=s)
+        return splits
 
     def _init_stats(self, stats, data=None):
         return {stat.buf: tensor(stat.init) if data is None
@@ -104,7 +116,7 @@ class GeneralOptimizer(Optimizer):
 
     def _set_bufs(self, p, stats, pg, val=None):
         d = self.state[p]
-        for stat in stats: d[stat.buf] = stat.update(d[stat.buf], pg[stat.name], val=val)
+        for stat in stats: d[stat.buf] = stat.update(d[stat.buf], pg[stat.name], val=val, step=d.get('step', None))
 
     def update_stats(self):
         for stat in self.global_stats: stat.new_step()
