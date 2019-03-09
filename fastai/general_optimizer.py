@@ -1,5 +1,6 @@
 from .torch_core import *
 from torch.optim import Optimizer
+import types
 
 __all__ = ['StatScope', 'Statistic', 'AvgStatistic', 'AvgSquare', 'GeneralOptimizer']
 
@@ -31,6 +32,7 @@ class Statistic():
 @dataclass
 class AvgStatistic(Statistic):
     decay:bool=False
+    debias:bool=False
     def new_step(self): self.val,self.count = 0.,0
 
     def accumulate(self, val):
@@ -59,8 +61,8 @@ class AvgStatistic(Statistic):
 
 class AvgSquare(AvgStatistic):
 
-    def __init__(self, name:str, param:float=0.9, scope=StatScope.Weight, init:float=0., decay:bool=True):
-        super().__init__(name, param=param, scope=scope, init=init, decay=decay)
+    def __init__(self, name:str, param:float=0.9, scope=StatScope.Weight, init:float=0., decay:bool=True, debias:bool=False):
+        super().__init__(name, param=param, scope=scope, init=init, decay=decay, debias=debias)
 
     def _get_val1(self, val): return torch.norm(val).pow(2)/val.numel()
     def _get_val2(self, state, val, param): return state.addcmul_(1-param, val, val) if self.decay else state.addcmul_(val, val)
@@ -69,19 +71,20 @@ class AvgSquare(AvgStatistic):
         return state.addcmul_(1-param, v, v) if self.decay else state.addcmul_(v, v)
 
 class GeneralOptimizer(Optimizer):
-    def __init__(self, params, stats=None):
-        defaults = {s.name:s.param for s in listify(stats)}
+    def __init__(self, params, stats=None, on_step:Callable=None):
+        defaults = {s.name:s.param for s in listify(stats) if s.name is not None}
         super().__init__(params, defaults)
         self.global_stats,self.group_stats,self.layer_stats,self.channel_stats,self.weight_stats = self._split_stats(stats)
         self.init_stats()
+        if on_step is not None: self.on_step = types.MethodType(on_step, self)
 
     def step(self, closure=None):
         self.update_stats()
         for i,pg in enumerate(self.param_groups):
             for p in pg['params']:
-                if p.grad is not None: self.make_step(p, pg, i)
+                if p.grad is not None: self.on_step(p, pg, i)
 
-    def make_step(self, p, group, group_idx): p.data.add_(-group['lr'], p.grad.data)
+    def on_step(self, p, group, group_idx): p.data.add_(-group['lr'], p.grad.data)
 
     def _split_stats(self, stats):
         return ([stat for stat in listify(stats) if stat.scope==scope] for scope in StatScope)
@@ -96,7 +99,7 @@ class GeneralOptimizer(Optimizer):
             self.state[f'group{i}'] = self._init_stats(self.group_stats)
             for p in pg['params']:
                 self.state[p] = self._init_stats(self.layer_stats)
-                self.state[p] = self._init_stats(self.channel_stats, p.data.view(p.data.size(0), -1).mean(1))
+                self.state[p].update(self._init_stats(self.channel_stats, p.data.view(p.data.size(0), -1).mean(1)))
                 self.state[p].update(self._init_stats(self.weight_stats, p.data))
 
     def _set_bufs(self, p, stats, pg, val=None):
