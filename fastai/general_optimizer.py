@@ -8,10 +8,10 @@ StatScope = Enum('StatScope', 'Global Group Layer Channel Weight')
 
 @dataclass
 class Statistic():
-    name: str
-    param: float = 0.9  # e.g. for exp moving average
-    scope: StatScope = StatScope.Weight
-    init: float = 0.0  # starting value
+    name:str
+    param:float=0.9  # e.g. for exp moving average
+    scope:StatScope=StatScope.Weight
+    init:float=0.  # starting value
 
     @property
     def buf(self): return f'{self.name}_buffer'
@@ -28,7 +28,9 @@ class Statistic():
         "Update state with accumlated, or `val` (if `Weight` or `Layer` scope)"
         raise NotImplementedError
 
+@dataclass
 class AvgStatistic(Statistic):
+    decay:bool=False
     def new_step(self): self.val,self.count = 0.,0
 
     def accumulate(self, val):
@@ -36,8 +38,10 @@ class AvgStatistic(Statistic):
         self.val += self._get_val(val)
 
     def _get_val1(self, val): return val.mean()
-    def _get_val2(self, state, val, param): return state.add_(val)
-    def _get_val3(self, state, val, param): return state.add_(val.view(val.size(0),-1).mean(1))
+    def _get_val2(self, state, val, param): return state.add_(1-param, val) if self.decay else state.add_(val)
+    def _get_val3(self, state, val, param):
+        v = val.view(val.size(0), -1).mean(1)
+        return state.add_(1-param, v) if self.decay else state.add(v)
 
     def update(self, state, param, val=None):
         if self.scope == StatScope.Weight:
@@ -54,11 +58,15 @@ class AvgStatistic(Statistic):
         return state
 
 class AvgSquare(AvgStatistic):
+
+    def __init__(self, name:str, param:float=0.9, scope=StatScope.Weight, init:float=0., decay:bool=True):
+        super().__init__(name, param=param, scope=scope, init=init, decay=decay)
+
     def _get_val1(self, val): return torch.norm(val).pow(2)/val.numel()
-    def _get_val2(self, state, val, param): return state.addcmul_(1-param, val, val)
+    def _get_val2(self, state, val, param): return state.addcmul_(1-param, val, val) if self.decay else state.addcmul_(val, val)
     def _get_val3(self, state, val, param):
         v = val.view(val.size(0), -1).mean(1)
-        return state.addcmul_(1-param, v, v)
+        return state.addcmul_(1-param, v, v) if self.decay else state.addcmul_(v, v)
 
 class GeneralOptimizer(Optimizer):
     def __init__(self, params, stats=None):
