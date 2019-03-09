@@ -67,6 +67,13 @@ no_wd_types = bn_types + (nn.LayerNorm,)
 defaults.device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 AdamW = partial(optim.Adam, betas=(0.9,0.99))
 
+#Monkey-patch `torch.cuda.set_device` so that it updates `defaults.device`
+_old_torch_cuda_set_device = torch.cuda.set_device
+def _new_torch_cuda_set_device(device):
+    _old_torch_cuda_set_device(device)
+    defaults.device = torch.device('cuda', device) if isinstance(device, int) else device
+torch.cuda.set_device = _new_torch_cuda_set_device
+
 def tensor(x:Any, *rest)->Tensor:
     "Like `torch.as_tensor`, but handle lists too, and can pass multiple vector elements directly."
     if len(rest): x = (x,)+rest
