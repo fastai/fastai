@@ -56,14 +56,16 @@ class AvgStatistic(Statistic):
         if self.decay: val *= 1-param
         if self.scope == StatScope.Weight:
             # `state` is a tensor
-            return self._get_val2(state.mul_(param), val, param)
-        if self.scope == StatScope.Channel:
+            res = self._get_val2(state.mul_(param), val, param)
+        elif self.scope == StatScope.Channel:
             # `state` is a tensor of size n_channels
-            return self._get_val3(state.mul_(param), val, param)
+            res = self._get_val3(state.mul_(param), val, param)
         # For everything else, `state` is a scalar
-        if self.scope == StatScope.Layer:  return state*param + self._get_val1(val)
-        if self.count != 0:                return state*param + self.val/self.count
-        return state
+        elif self.scope == StatScope.Layer:  res = state*param + self._get_val1(val)
+        elif self.count != 0:                res = state*param + self.val/self.count
+        else: return state
+        if self.debias and step is not None: res /= (1 - param ** step)
+        return res
 
 class AvgSquare(AvgStatistic):
 
@@ -95,7 +97,7 @@ class GeneralOptimizer(Optimizer):
     def _split_stats(self, stats):
         splits = [[stat for stat in listify(stats) if stat.scope==scope] for scope in StatScope]
         for split,s in zip([splits[0], splits[1], splits[2]+splits[3]+splits[4]], StatScope):
-            if np.any([getattr(s, 'debias', False) for s in split]): split.append(CounterStat, scope=s)
+            if np.any([getattr(s, 'debias', False) for s in split]): split.insert(0, CounterStat('step', scope=s))
         return splits
 
     def _init_stats(self, stats, data=None):
