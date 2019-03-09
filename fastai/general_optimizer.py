@@ -29,6 +29,13 @@ class Statistic():
         "Update state with accumlated, or `val` (if `Weight` or `Layer` scope)"
         raise NotImplementedError
 
+class ConstantStatistic(Statistic):
+    @property
+    def buf(self): return None
+    def new_step(self):   pass
+    def accumulate(self): pass
+    def update(self, state, param, val=None, step=None): return param
+
 @dataclass
 class CounterStat(Statistic):
     def __post_init__(self): self.init,self._buf,self.name = 0,self.name,None
@@ -102,7 +109,7 @@ class GeneralOptimizer(Optimizer):
 
     def _init_stats(self, stats, data=None):
         return {stat.buf: stat.init if data is None
-                else torch.zeros_like(data) + stat.init for stat in stats}
+                else torch.zeros_like(data) + stat.init for stat in stats if stat.buf is not None}
 
     def init_stats(self):
         self.state['global'] = self._init_stats(self.global_stats)
@@ -115,7 +122,8 @@ class GeneralOptimizer(Optimizer):
 
     def _set_bufs(self, p, stats, pg, val=None):
         d = self.state[p]
-        for stat in stats: d[stat.buf] = stat.update(d[stat.buf], pg[stat.name], val=val, step=d.get('step', None))
+        for stat in stats:
+            if stat.buf is not None: d[stat.buf] = stat.update(d[stat.buf], pg[stat.name], val=val, step=d.get('step', None))
 
     def update_stats(self):
         for stat in self.global_stats: stat.new_step()
