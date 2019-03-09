@@ -140,6 +140,7 @@ class GANTrainer(LearnerCallback):
         self.imgs.append(img)
         self.titles.append(f'Epoch {epoch}')
         pbar.show_imgs(self.imgs, self.titles)
+        return add_metrics(last_metrics, [getattr(self.smoothenerG,'smooth',None),getattr(self.smoothenerC,'smooth',None)])
 
     def switch(self, gen_mode:bool=None):
         "Switch the model, if `gen_mode` is provided, in the desired mode."
