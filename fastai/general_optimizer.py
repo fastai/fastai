@@ -2,7 +2,7 @@ from .torch_core import *
 from torch.optim import Optimizer
 import types
 
-__all__ = ['StatScope', 'Statistic', 'AvgStatistic', 'AvgSquare', 'GeneralOptimizer']
+__all__ = ['StatScope', 'Statistic', 'ConstantStatistic', 'AvgStatistic', 'AvgSquare', 'GeneralOptimizer']
 
 #TODO: Channel
 StatScope = Enum('StatScope', 'Global Group Layer Channel Weight')

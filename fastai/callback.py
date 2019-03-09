@@ -107,11 +107,15 @@ class OptimWrapper():
         stat_names = [n for n in self.opt_keys if n not in reserved_names]
         self._stats = {n:self.read_val(n) for n in stat_names}
 
-    def get_stat(self, name:str)->float: return self._stats[name][-1]
+    def get_stat(self, name:str)->float: 
+        if name in ['lr', 'mom', 'beta', 'wd']: return getattr(self, name)
+        else: return self._stats[name][-1]
     def set_stat(self, name:str, value:Union[float, Collection[float]])->None:
-        val = listify(value, self._stats[name])
-        self.set_val(name, val)
-        self._stats[name] = val
+        if name in ['lr', 'mom', 'beta', 'wd']: setattr(self, name, value)
+        else:
+            val = listify(value, self._stats[name])
+            self.set_val(name, val)
+            self._stats[name] = val
 
     def set_val(self, key:str, val:Any, bn_groups:bool=True)->Any:
         "Set `val` inside the optimizer dictionary at `key`."
@@ -362,6 +366,8 @@ class Scheduler():
         if func is None: self.func = annealing_linear if is_tuple(vals) else annealing_no
         else:          self.func = func
         self.n = 0
+        
+    def restart(self): self.n = 0
 
     def step(self)->Number:
         "Return next value along annealed schedule."
