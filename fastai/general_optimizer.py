@@ -53,14 +53,15 @@ class AvgStatistic(Statistic):
 
     def accumulate(self, val):
         self.count += 1
-        self.val += self._get_val(val)
+        self.val += self._get_val1(val)
 
     def _get_val1(self, val): return val.mean()
-    def _get_val2(self, state, val, param): return state.add_(val)
-    def _get_val3(self, state, val, param): return state.add(val.view(val.size(0), -1).mean(1))
+    def _get_val2(self, state, val, param): return state.add_(1-param, val) if self.decay else state.add_(val)
+    def _get_val3(self, state, val, param): 
+        v = val.view(val.size(0), -1).mean(1)
+        return state.add_(1-param, v) if self.decay else state.add_(v)
 
     def update(self, state, param, val=None, step=None):
-        if self.decay: val *= 1-param
         if self.scope == StatScope.Weight:
             # `state` is a tensor
             res = self._get_val2(state.mul_(param), val, param)
@@ -68,8 +69,8 @@ class AvgStatistic(Statistic):
             # `state` is a tensor of size n_channels
             res = self._get_val3(state.mul_(param), val, param)
         # For everything else, `state` is a scalar
-        elif self.scope == StatScope.Layer:  res = state*param + self._get_val1(val)
-        elif self.count != 0:                res = state*param + self.val/self.count
+        elif self.scope == StatScope.Layer:  res = state*param + self._get_val1(val) * (1-param if self.decay else 1.)
+        elif self.count != 0:                res = state*param + self.val/self.count * (1-param if self.decay else 1.)
         else: return state
         if self.debias and step is not None: res /= (1 - param ** step)
         return res
@@ -80,10 +81,11 @@ class AvgSquare(AvgStatistic):
         super().__init__(name, param=param, scope=scope, init=init, decay=decay, debias=debias)
 
     def _get_val1(self, val): return torch.norm(val).pow(2)/val.numel()
-    def _get_val2(self, state, val, param): return state.addcmul_(val, val)
+    def _get_val2(self, state, val, param): 
+        return state.addcmul_(1-param, val, val) if self.decay else state.addcmul_(val, val)
     def _get_val3(self, state, val, param):
         v = val.view(val.size(0), -1).mean(1)
-        return state.addcmul_(v, v)
+        return state.addcmul_(1-param, v, v) if self.decay else state.addcmul_(v, v)
 
 class GeneralOptimizer(Optimizer):
     def __init__(self, params, stats=None, on_step:Callable=None):
