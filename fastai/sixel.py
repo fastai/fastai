@@ -1,8 +1,6 @@
 from .core import *
 
 libsixel = try_import('libsixel')
-if not libsixel:
-    raise Exception('Error: `libsixel` is needed. See https://github.com/saitoha/libsixel')
 
 def _sixel_encode(data, width, height):
     s = io.BytesIO()
@@ -14,6 +12,8 @@ def _sixel_encode(data, width, height):
     return s.getvalue().decode('ascii')
 
 def plot_sixel(fig=None):
+    if not libsixel:
+        raise Exception('Error: `libsixel` is needed. See https://github.com/saitoha/libsixel')
     if fig is None: fig = plt.gcf()
     fig.canvas.draw()
     dpi = fig.get_dpi()
