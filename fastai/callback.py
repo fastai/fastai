@@ -52,7 +52,7 @@ class OptimWrapper():
         self.opt.zero_grad()
 
     #Passthrough to the inner opt.
-    def __getattr__(self,k:str)->Any: return getattr(self.opt, k, None)
+    def __getattr__(self, k:str)->Any: return getattr(self.opt, k, None)
     def __setstate__(self,data:Any): self.__dict__.update(data)
 
     def clear(self):
@@ -93,6 +93,13 @@ class OptimWrapper():
         "Set weight decay."
         if not self.true_wd: self.set_val('weight_decay', listify(val, self._wd), bn_groups=self.bn_wd)
         self._wd = listify(val, self._wd)
+        
+    def _stat_getter(self, n): return self._stats[n][-1]
+    def _stat_setter(self, n, val): self._stats[n] = self.set_val(n, listify(val, self._stats[n]))
+    def _stat_deller(self, n): del self._stats[n]
+    def _add_property(self, n): setattr(self, n, property(partial(self._stat_getter, n=n),
+                                                         partial(self._stat_setter, n=n),
+                                                         partial(self._stat_deller, n=n), n))
 
     #Helper functions
     def read_defaults(self)->None:
@@ -103,6 +110,10 @@ class OptimWrapper():
         if 'alpha' in self.opt_keys: self._beta = self.read_val('alpha')
         if 'betas' in self.opt_keys: self._mom,self._beta = self.read_val('betas')
         if 'weight_decay' in self.opt_keys: self._wd = self.read_val('weight_decay')
+        reserved_names = ['params', 'lr', 'momentum', 'alpha', 'betas', 'weight_decay']
+        stat_names = [n for n in self.opt_keys if n not in reserved_names]
+        self._stats = {n:self.read_val(n) for n in stat_names}
+        for n in stat_names: self._add_property(n)
 
     def set_val(self, key:str, val:Any, bn_groups:bool=True)->Any:
         "Set `val` inside the optimizer dictionary at `key`."
