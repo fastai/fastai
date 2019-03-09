@@ -16,7 +16,7 @@ class TrainingPhase():
 
 class GeneralScheduler(LearnerCallback):
     "Schedule multiple `TrainingPhase` for a `Learner`."
-    def __init__(self, learn:Learner, phases:Collection[TrainingPhase1], start_epoch:int=None):
+    def __init__(self, learn:Learner, phases:Collection[TrainingPhase], start_epoch:int=None):
         super().__init__(learn)
         self.phases,self.start_epoch = phases,start_epoch
 
