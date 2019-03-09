@@ -29,13 +29,12 @@ def bn_and_final(m):
     l2 = [ll[i] for i in idx]
     return split_model(splits=[l1,l2])
 
-class RMSpropX(GeneralOptimizer):
-    def make_step(self, p, group, group_idx):
-        st = self.state[p]
-        mom = st['momentum_buffer']
-        alpha = (st['alpha_buffer'].sqrt()+1e-7
-                ) if 'alpha_buffer' in st else mom.new_tensor(1.)
-        p.data.addcdiv_(-group['lr'], mom, alpha)
+def on_step(self, p, group, group_idx):
+    st = self.state[p]
+    mom = st['momentum_buffer']
+    alpha = (st['alpha_buffer'].sqrt()+1e-7
+            ) if 'alpha_buffer' in st else mom.new_tensor(1.)
+    p.data.addcdiv_(-group['lr'], mom, alpha)
 
 @call_parse
 def main(
@@ -43,6 +42,8 @@ def main(
         gpu:Param("GPU to run on", str)=None,
         lr: Param("Learning rate", float)=1e-3,
         size: Param("Size (px: 128,192,224)", int)=128,
+        debias: Param("Debias statistics", bool)=False,
+        decay: Param("Decay AvgStatistic (momentum)", bool)=False,
         ):
     """Distributed training of Imagenette.
     Fastest multi-gpu speed is if you run with: python -m fastai.launch"""
@@ -56,15 +57,12 @@ def main(
     gpu = setup_distrib(gpu)
 
     data = get_data(path, size, bs)
-    #opt_func = partial(optim.Adam, betas=(0.9,0.99), eps=1e-7)
+    #opt_func = partial(optim.Adam, betas=(0.9,0.9), eps=1e-7)
     #opt_func = partial(optim.RMSprop, alpha=0.9)
     #opt_func = optim.SGD
-    #"""
-    opt_func = partial(RMSpropX, stats=[
-        AvgStatistic('momentum', 0.9, scope=StatScope.Weight),
-        AvgSquare('alpha', 0.99, scope=StatScope.Layer),
-    ])
-    #"""
+    stats = [AvgStatistic('momentum', 0.9, scope=StatScope.Weight, decay=decay, debias=debias),
+             AvgSquare   ('alpha',    0.9, scope=StatScope.Weight, debias=debias)]
+    opt_func = partial(GeneralOptimizer, on_step=on_step, stats=stats)
     #learn = (cnn_learner(data, models.xresnet50, pretrained=False, concat_pool=False, lin_ftrs=[], split_on=bn_and_final,
     learn = (Learner(data, models.xresnet50(),
              metrics=[accuracy,top_k_accuracy], wd=1e-3, opt_func=opt_func,
