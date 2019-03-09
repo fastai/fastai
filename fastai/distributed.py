@@ -89,6 +89,7 @@ def setup_distrib(gpu:Any=None):
     if gpu is None: return gpu
     gpu = int(gpu)
     torch.cuda.set_device(int(gpu))
-    torch.distributed.init_process_group(backend='nccl', init_method='env://')
+    if num_distrib() > 1:
+        torch.distributed.init_process_group(backend='nccl', init_method='env://')
     return gpu
 

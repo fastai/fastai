@@ -398,5 +398,5 @@ def add_metrics(last_metrics:Collection[Rank0Tensor], mets:Union[Rank0Tensor, Co
 def try_save(state:Dict, path:Path, fname:PathOrStr):
     try: torch.save(state, open(path/fname, 'wb'))
     except OSError as e:
-        raise Exception(f"{e}\n Can't write in {path/fname}. Pass a full libpath path that is writable as `fname`.") 
-    
+        raise Exception(f"{e}\n Can't write {path/fname}. Pass an absolute writable pathlib obj `fname`.")
+
