@@ -130,7 +130,6 @@ class GANTrainer(LearnerCallback):
 
     def on_epoch_end(self, pbar, epoch, last_metrics, **kwargs):
         "Put the various losses in the recorder and show a sample image."
-        if last_metrics is not None: last_metrics += [getattr(self.smoothenerG,'smooth',None),getattr(self.smoothenerC,'smooth',None)]
         if not hasattr(self, 'last_gen') or not self.show_img: return
         data = self.learn.data
         img = self.last_gen[0]
