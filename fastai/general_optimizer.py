@@ -37,11 +37,15 @@ class AvgStatistic(Statistic):
 
     def _get_val1(self, val): return val.mean()
     def _get_val2(self, state, val, param): return state.add_(val)
+    def _get_val3(self, state, val, param): return state.add_(val.view(val.size(0),-1).mean(1))
 
     def update(self, state, param, val=None):
         if self.scope == StatScope.Weight:
             # `state` is a tensor
             return self._get_val2(state.mul_(param), val, param)
+        if self.scope == StatScope.Channel:
+            # `state` is a tensor of size n_channels
+            return self._get_val3(state.mul_(param), val, param)
         # For everything else, `state` is a scalar
         if self.scope == StatScope.Layer:
             return state.lerp_(self._get_val1(val), 1-param)
@@ -52,7 +56,9 @@ class AvgStatistic(Statistic):
 class AvgSquare(AvgStatistic):
     def _get_val1(self, val): return torch.norm(val).pow(2)/val.numel()
     def _get_val2(self, state, val, param): return state.addcmul_(1-param, val, val)
-
+    def _get_val3(self, state, val, param):
+        v = val.view(val.size(0), -1).mean(1)
+        return state.addcmul_(1-param, v, v)
 
 class GeneralOptimizer(Optimizer):
     def __init__(self, params, stats=None):
@@ -82,6 +88,7 @@ class GeneralOptimizer(Optimizer):
             self.state[f'group{i}'] = self._init_stats(self.group_stats)
             for p in pg['params']:
                 self.state[p] = self._init_stats(self.layer_stats)
+                self.state[p] = self._init_stats(self.channel_stats, p.data.view(p.data.size(0), -1).mean(1))
                 self.state[p].update(self._init_stats(self.weight_stats, p.data))
 
     def _set_bufs(self, p, stats, pg, val=None):
@@ -95,7 +102,7 @@ class GeneralOptimizer(Optimizer):
             for p in pg['params']:
                 if p.grad is not None:
                     for stat in self.global_stats + self.group_stats: stat.accumulate(p.grad.data)
-                    self._set_bufs(p, self.layer_stats+self.weight_stats, pg, p.grad.data)
+                    self._set_bufs(p, self.layer_stats+self.channel_stats+self.weight_stats, pg, p.grad.data)
             self._set_bufs(f'group{i}', self.group_stats, pg)
         self._set_bufs('global', self.global_stats, self.param_groups[0])
 
