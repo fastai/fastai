@@ -10,10 +10,45 @@ Note that the top-most release is changes in the unreleased master branch on
 Github. Parentheses after an item show the name or github id of the contributor
 of that change.
 
-## 1.0.47.dev0 (Work In Progress)
+## 1.0.49.dev0 (Work In Progress)
 
 ### New:
 
+### Changed:
+
+### Fixed:
+
+
+
+## 1.0.48 (2019-03-09)
+
+### Breaking changes:
+
+- `Learner.distributed` is now called `Learner.to_distributed`
+
+### New:
+
+- `Learner.to_parallel`: callback wraps in nn.DataParallel during train and unwraps at end
+- Initial work to provide a `GeneralOptimizer` that keeps track and update given `Statistic` then perform the step you want.
+
+### Changed:
+
+### Fixed:
+
+- A few `Callback` that didn't have proper return
+
+
+## 1.0.47 (2019-03-06)
+
+### Breaking changes:
+
+- `create_cnn` becomes `cnn_learner`
+- `random_split_by_pct` becomes `split_by_rand_pct`
+- `no_split` becomes `split_none`
+
+### New:
+
+- `tensorboard` callback to use Tensorboard (requires installing tensorboardx)
 - `LabelLists.pre_transform`: call transforms on PIL.Image, before converting to float tensor
 - `LabelLists.presize`: standard Imagenet image resizing/cropping using `pre_transform`
 - `compose`: compose a list of functions
@@ -26,7 +61,6 @@ of that change.
 - Change `flip_lr` to use much faster method
 - In `text_classifier_learner` the outputs of the encoder corresponding to pad indices are ignored in the poolings
 - Default number of OpenMP threads to 2 (previously 4), due to observed performance benefits
-- In `text_classifier_learner` the outputs of the encoder corresponding to pad indices are ignored in the poolings
 - `purge` now relies on a writable `learn.model_dir`, which can be set to a full writable path in case `learn.path` is not writable (kaggle, et al)
 - In any event of a `Callback` returning a dictionary will update the state of the `CallbackHandler`
 - When creating a custom metric in a `Callback`, instead of storing the result in `self.metric`, you should add it to `last_metrics` using the method above (see https://docs.fast.ai/metrics.html#Creating-your-own-metric).

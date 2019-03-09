@@ -217,6 +217,7 @@ class FBeta(CMScores):
 
     def on_train_end(self, **kwargs): self.average = self.avg
 
+@dataclass
 class KappaScore(ConfusionMatrix):
     "Compute the rate of agreement (Cohens Kappa)."
     weights:Optional[str]=None      # None, `linear`, or `quadratic`
@@ -235,7 +236,8 @@ class KappaScore(ConfusionMatrix):
         else: raise ValueError('Unknown weights. Expected None, "linear", or "quadratic".')
         k = torch.sum(w * self.cm) / torch.sum(w * expected)
         return add_metrics(last_metrics, 1-k)
-    
+
+@dataclass
 class MatthewsCorreff(ConfusionMatrix):
     "Compute the Matthews correlation coefficient."
     def on_epoch_end(self, last_metrics, **kwargs):

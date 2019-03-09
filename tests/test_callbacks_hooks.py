@@ -19,7 +19,7 @@ def test_model_summary_vision(mnist_path):
     this_tests(model_summary)
     path = mnist_path
     data = ImageDataBunch.from_folder(path, ds_tfms=([], []), bs=2)
-    learn = create_cnn(data, models.resnet18, metrics=accuracy)
+    learn = cnn_learner(data, models.resnet18, metrics=accuracy)
     _ = model_summary(learn)
 
 @pytest.mark.xfail(reason = "Expected Fail, text models not supported yet.")
@@ -74,7 +74,7 @@ def test_model_summary_collab():
 def test_hook_output_basics(mnist_path):
     this_tests(hook_output)
     data = ImageDataBunch.from_folder(mnist_path, size=128, bs=2)
-    learn = create_cnn(data, models.resnet18)
+    learn = cnn_learner(data, models.resnet18)
     # need to train to get something meaningful, but for just checking shape its fine w/o it
     m = learn.model.eval()
     x,y = data.train_ds[0]

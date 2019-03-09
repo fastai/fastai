@@ -63,10 +63,10 @@ def test_callbacks_learner(data, model):
 
 def test_callbacks_fit(data, model):
     learn = Learner(data, model, metrics=accuracy)
+    this_tests(Callback)
 
     for func in ['fit', 'fit_one_cycle']:
         fit_func = getattr(learn, func)
-        this_tests(fit_func)
 
         # single callback
         with CaptureStdout() as cs: fit_func(2, callbacks=DummyCallback(learn))

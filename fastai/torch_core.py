@@ -62,9 +62,17 @@ torch.set_num_threads(4) # OpenMP doesn't generally like too many threads
 
 bn_types = (nn.BatchNorm1d, nn.BatchNorm2d, nn.BatchNorm3d)
 bias_types = (nn.Linear, nn.Conv1d, nn.Conv2d, nn.Conv3d, nn.ConvTranspose1d, nn.ConvTranspose2d, nn.ConvTranspose3d)
+def is_pool_type(l:Callable): return re.search(r'Pool[123]d$', l.__class__.__name__)
 no_wd_types = bn_types + (nn.LayerNorm,)
 defaults.device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 AdamW = partial(optim.Adam, betas=(0.9,0.99))
+
+#Monkey-patch `torch.cuda.set_device` so that it updates `defaults.device`
+_old_torch_cuda_set_device = torch.cuda.set_device
+def _new_torch_cuda_set_device(device):
+    _old_torch_cuda_set_device(device)
+    defaults.device = torch.device('cuda', device) if isinstance(device, int) else device
+torch.cuda.set_device = _new_torch_cuda_set_device
 
 def tensor(x:Any, *rest)->Tensor:
     "Like `torch.as_tensor`, but handle lists too, and can pass multiple vector elements directly."
@@ -113,7 +121,7 @@ def to_device(b:Tensors, device:torch.device):
     device = ifnone(device, defaults.device)
     if is_listy(b): return [to_device(o, device) for o in b]
     if is_dict(b): return {k: to_device(v, device) for k, v in b.items()}
-    return b.to(device)
+    return b.to(device, non_blocking=True)
 
 def data_collate(batch:ItemsList)->Tensor:
     "Convert `batch` items to tensor data."
@@ -176,15 +184,14 @@ def split_model_idx(model:nn.Module, idxs:Collection[int])->ModuleList:
     if idxs[-1] != len(layers): idxs.append(len(layers))
     return [nn.Sequential(*layers[i:j]) for i,j in zip(idxs[:-1],idxs[1:])]
 
-def split_model(model:nn.Module, splits:Collection[Union[nn.Module,ModuleList]], want_idxs:bool=False):
+def split_model(model:nn.Module=None, splits:Collection[Union[nn.Module,ModuleList]]=None):
     "Split `model` according to the layers in `splits`."
-    layers = flatten_model(model)
     splits = listify(splits)
     if isinstance(splits[0], nn.Module):
+        layers = flatten_model(model)
         idxs = [layers.index(first_layer(s)) for s in splits]
-        res = split_model_idx(model, idxs)
-    else: res = [nn.Sequential(*s) for s in splits]
-    return (res,idxs) if want_idxs else res
+        return split_model_idx(model, idxs)
+    return [nn.Sequential(*s) for s in splits]
 
 def split_no_wd_params(layer_groups:Collection[nn.Module])->List[List[nn.Parameter]]:
     "Separate the parameters in `layer_groups` between `no_wd_types` and  bias (`bias_types`) from the rest."
@@ -252,16 +259,34 @@ def in_channels(m:nn.Module) -> List[int]:
         if hasattr(l, 'weight'): return l.weight.shape[1]
     raise Exception('No weight layer')
 
-def calc_loss(y_pred:Tensor, y_true:Tensor, loss_func:LossFunction):
-    "Calculate loss between `y_pred` and `y_true` using `loss_func`."
-    if hasattr(loss_func, 'reduction'):
-        old_red = getattr(loss_func, 'reduction')
-        setattr(loss_func, 'reduction', 'none')
-        l = loss_func(y_pred, y_true)
-        setattr(loss_func, 'reduction', old_red)
-        return l
-    else: return loss_func(y_pred, y_true, reduction='none')
-
+class ModelOnCPU():
+    "A context manager to evaluate `model` on the CPU inside."
+    def __init__(self, model:nn.Module): self.model = model       
+    def __enter__(self):
+        self.device = one_param(self.model).device
+        return self.model.cpu()
+    def __exit__(self, type, value, traceback):
+        self.model = self.model.to(self.device)
+    
+class NoneReduceOnCPU():
+    "A context manager to evaluate `loss_func` with none reduce and weights on the CPU inside."
+    def __init__(self, loss_func:LossFunction): 
+        self.loss_func,self.device,self.old_red = loss_func,None,None
+        
+    def __enter__(self):
+        if hasattr(self.loss_func, 'weight') and self.loss_func.weight is not None:
+            self.device = self.loss_func.weight.device
+            self.loss_func.weight = self.loss_func.weight.cpu()
+        if hasattr(self.loss_func, 'reduction'):
+            self.old_red = getattr(self.loss_func, 'reduction')
+            setattr(self.loss_func, 'reduction', 'none')
+            return self.loss_func
+        else: return partial(self.loss_func, reduction='none')
+        
+    def __exit__(self, type, value, traceback):
+        if self.device is not None:  self.loss_func.weight = self.loss_func.weight.to(self.device)
+        if self.old_red is not None: setattr(self.loss_func, 'reduction', self.old_red)    
+    
 def model_type(dtype):
     "Return the torch type corresponding to `dtype`."
     return (torch.float32 if np.issubdtype(dtype, np.floating) else
@@ -376,3 +401,9 @@ def add_metrics(last_metrics:Collection[Rank0Tensor], mets:Union[Rank0Tensor, Co
     "Return a dictionary for updating `last_metrics` with `mets`."
     mets = listify(mets)
     return {'last_metrics': last_metrics + mets}
+
+def try_save(state:Dict, path:Path, fname:PathOrStr):
+    try: torch.save(state, open(path/fname, 'wb'))
+    except OSError as e:
+        raise Exception(f"{e}\n Can't write {path/fname}. Pass an absolute writable pathlib obj `fname`.")
+

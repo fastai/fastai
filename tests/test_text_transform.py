@@ -3,7 +3,7 @@ from fastai.gen_doc.doctest import this_tests
 from fastai.text import *
 
 def test_rules():
-    this_tests(fix_html, replace_rep, replace_wrep, rm_useless_spaces, spec_add_spaces)
+    this_tests(fix_html, replace_rep, replace_wrep, rm_useless_spaces, spec_add_spaces, replace_all_caps, deal_caps)
     assert fix_html("Some HTML&nbsp;text<br />") == "Some HTML& text\n"
     assert replace_rep("I'm so excited!!!!!!!!") == "I'm so excited xxrep 8 ! "
     assert replace_wrep("I've never ever ever ever ever ever ever ever done this.") == "I've never  xxwrep 7 ever  done this."

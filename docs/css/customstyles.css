@@ -1,4 +1,4 @@
-.anchor-link{
+.anchor-link {
     display: none;
 }
 
@@ -1276,8 +1276,7 @@ h4.panel-title {
     padding: 10px 1em 4px 1em;
     background-color: #eef2ff;
     border-radius: 5px;
-    /* border-left: 5px solid #eef2ff;
-    border-right: 5px solid #eef2ff; */
+    margin-bottom: 20px;
 }
 .pytest_card .close {
     color: #000

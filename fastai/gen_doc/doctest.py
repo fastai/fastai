@@ -2,7 +2,6 @@ import sys, re, json, pprint
 from pathlib import Path
 from collections import defaultdict
 from inspect import currentframe, getframeinfo, ismodule
-from warnings import warn
 
 __all__ = ['this_tests']
 
@@ -66,9 +65,12 @@ class TestAPIRegistry:
 
     def missing_this_tests_alert():
         if TestAPIRegistry.missing_this_tests:
-            msg = "\n\n\n*** Warning: Please include `this_tests` call in each of the following:\n{}\n\n".format('\n'.join(sorted(TestAPIRegistry.missing_this_tests)))
-            # short warn call on purpose, as pytest re-pastes the code and we want it non-noisy
-            warn(msg)
+            tests = '\n  '.join(sorted(TestAPIRegistry.missing_this_tests))
+            print(f"""
+*** Attention ***
+Please include `this_tests` call in each of the following tests:
+  {tests}
+For details see: https://docs.fast.ai/dev/test.html#test-registry""")
 
 def this_tests(*funcs): TestAPIRegistry.this_tests(*funcs)
 
@@ -92,6 +94,8 @@ def get_func_fq_name(func):
     name = None
     if   hasattr(func, '__qualname__'): name = func.__qualname__
     elif hasattr(func, '__name__'):     name = func.__name__
+    elif hasattr(func, '__wrapped__'):  return get_func_fq_name(func.__wrapped__)
+    elif hasattr(func, '__class__'):    name = func.__class__.__name__
     else: raise Exception(f"'{func}' is not a func or class")
     return f'{func.__module__}.{name}'
 

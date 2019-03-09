@@ -8,7 +8,7 @@ __all__ = ['DataBunch', 'DeviceDataLoader', 'DatasetType', 'load_data']
 old_dl_init = torch.utils.data.DataLoader.__init__
 
 def intercept_args(self, dataset, batch_size=1, shuffle=False, sampler=None, batch_sampler=None,
-                 num_workers=0, collate_fn=default_collate, pin_memory=False, drop_last=False,
+                 num_workers=0, collate_fn=default_collate, pin_memory=True, drop_last=False,
                  timeout=0, worker_init_fn=None):
     self.init_kwargs = {'batch_size':batch_size, 'shuffle':shuffle, 'sampler':sampler, 'batch_sampler':batch_sampler,
                         'num_workers':num_workers, 'collate_fn':collate_fn, 'pin_memory':pin_memory,
@@ -151,7 +151,7 @@ class DataBunch():
         if not getattr(self, 'label_list', False):
             warn("Serializing the `DataBunch` only works when you created it using the data block API.")
             return
-        torch.save(self.label_list, self.path/fname)
+        try_save(self.label_list, self.path, fname)
 
     def add_test(self, items:Iterator, label:Any=None)->None:
         "Add the `items` as a test set. Pass along `label` otherwise label them with `EmptyLabel`."
@@ -191,20 +191,11 @@ class DataBunch():
             ys = [self.train_ds.y.reconstruct(grab_idx(y, i), x=x) for i,x in enumerate(xs)]
         else : ys = [self.train_ds.y.reconstruct(grab_idx(y, i)) for i in range(n_items)]
         self.train_ds.x.show_xys(xs, ys, **kwargs)
-
-    def _test_writeable_fname(self, fname):
-        try: 
-            with open(self.path/fname, 'w') as f:
-                f.write('a')
-            os.remove(self.path/fname)
-        except OSError as e:
-            raise Exception(f"{e}\n Can't write in {self.path/fname}. Pass `fname`  to a full libpath path that is writable") 
-        
+ 
     def export(self, fname:str='export.pkl'):
         "Export the minimal state of `self` for inference in `self.path/fname`."
-        self._test_writeable_fname(fname)
         xtra = dict(normalize=self.norm.keywords) if getattr(self, 'norm', False) else {}
-        self.valid_ds.export(self.path/fname, **xtra)
+        try_save(self.valid_ds.get_state(**xtra), self.path, fname)
 
     def _grab_dataset(self, dl:DataLoader):
         ds = dl.dl.dataset

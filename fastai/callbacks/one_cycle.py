@@ -18,7 +18,7 @@ class OneCycleScheduler(LearnerCallback):
 
     def steps(self, *steps_cfg:StartOptEnd):
         "Build anneal schedule for all of the parameters."
-        return [Stepper(step, n_iter, func=func)
+        return [Scheduler(step, n_iter, func=func)
                 for (step,(n_iter,func)) in zip(steps_cfg, self.phases)]
 
     def on_train_begin(self, n_epochs:int, epoch:int, **kwargs:Any)->None:

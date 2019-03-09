@@ -3,7 +3,7 @@ from .basic_data import *
 from .torch_core import *
 import torch.distributed as dist
 
-__all__ = ['AverageMetric', 'Callback', 'CallbackHandler', 'OptimWrapper', 'SmoothenValue', 'Stepper', 'annealing_cos', 'CallbackList',
+__all__ = ['AverageMetric', 'Callback', 'CallbackHandler', 'OptimWrapper', 'SmoothenValue', 'Scheduler', 'annealing_cos', 'CallbackList',
            'annealing_exp', 'annealing_linear', 'annealing_no', 'annealing_poly']
 
 class OptimWrapper():
@@ -52,7 +52,7 @@ class OptimWrapper():
         self.opt.zero_grad()
 
     #Passthrough to the inner opt.
-    def __getattr__(self,k:str)->Any: return getattr(self.opt, k, None)
+    def __getattr__(self, k:str)->Any: return getattr(self.opt, k, None)
     def __setstate__(self,data:Any): self.__dict__.update(data)
 
     def clear(self):
@@ -103,6 +103,19 @@ class OptimWrapper():
         if 'alpha' in self.opt_keys: self._beta = self.read_val('alpha')
         if 'betas' in self.opt_keys: self._mom,self._beta = self.read_val('betas')
         if 'weight_decay' in self.opt_keys: self._wd = self.read_val('weight_decay')
+        reserved_names = ['params', 'lr', 'momentum', 'alpha', 'betas', 'weight_decay']
+        stat_names = [n for n in self.opt_keys if n not in reserved_names]
+        self._stats = {n:self.read_val(n) for n in stat_names}
+
+    def get_stat(self, name:str)->float: 
+        if name in ['lr', 'mom', 'beta', 'wd']: return getattr(self, name)
+        else: return self._stats[name][-1]
+    def set_stat(self, name:str, value:Union[float, Collection[float]])->None:
+        if name in ['lr', 'mom', 'beta', 'wd']: setattr(self, name, value)
+        else:
+            val = listify(value, self._stats[name])
+            self.set_val(name, val)
+            self._stats[name] = val
 
     def set_val(self, key:str, val:Any, bn_groups:bool=True)->Any:
         "Set `val` inside the optimizer dictionary at `key`."
@@ -235,7 +248,7 @@ class CallbackHandler():
     def on_train_begin(self, epochs:int, pbar:PBar, metrics:MetricFuncList)->None:
         "About to start learning."
         self.state_dict = _get_init_state()
-        self.state_dict['n_epochs'],self.state_dict['pbar'],self.state_dict['metrics'] = epochs,pbar,metrics
+        self.state_dict.update(dict(n_epochs=epochs, pbar=pbar, metrics=metrics))
         names = [(met.name if hasattr(met, 'name') else camel2snake(met.__class__.__name__)) for met in self.metrics]
         self('train_begin', metrics_names=names)
         if self.state_dict['epoch'] != 0:
@@ -249,9 +262,8 @@ class CallbackHandler():
 
     def on_batch_begin(self, xb:Tensor, yb:Tensor, train:bool=True)->None:
         "Handle new batch `xb`,`yb` in `train` or validation."
-        self.state_dict['last_input'], self.state_dict['last_target'] = xb, yb
-        self.state_dict['train'],self.state_dict['stop_epoch'] = train,False
-        self.state_dict['skip_step'],self.state_dict['skip_zero'] = False,False
+        self.state_dict.update(dict(last_input=xb, last_target=yb, train=train, 
+            stop_epoch=False, skip_step=False, skip_zero=False, skip_bwd=False))
         self('batch_begin', mets = not self.state_dict['train'])
         return self.state_dict['last_input'], self.state_dict['last_target']
 
@@ -266,13 +278,13 @@ class CallbackHandler():
         self.smoothener.add_value(loss.detach().cpu())
         self.state_dict['last_loss'], self.state_dict['smooth_loss'] = loss, self.smoothener.smooth
         self('backward_begin', call_mets=False)
-        return self.state_dict['last_loss']
+        return self.state_dict['last_loss'], self.state_dict['skip_bwd']
 
     def on_backward_end(self)->None:
         "Handle end of gradient calculation."
         self('backward_end', call_mets=False)
         return self.state_dict['skip_step']
-        
+
     def on_step_end(self)->None:
         "Handle end of optimization step."
         self('step_end', call_mets=False)
@@ -346,7 +358,7 @@ def annealing_poly(degree:Number)->Number:
     "Anneal polynomically from `start` to `end` as pct goes from 0.0 to 1.0."
     return functools.partial(do_annealing_poly, degree=degree)
 
-class Stepper():
+class Scheduler():
     "Used to \"step\" from start,end (`vals`) over `n_iter` iterations on a schedule defined by `func`"
     def __init__(self, vals:StartOptEnd, n_iter:int, func:Optional[AnnealFunc]=None):
         self.start,self.end = (vals[0],vals[1]) if is_tuple(vals) else (vals,0)
@@ -354,6 +366,8 @@ class Stepper():
         if func is None: self.func = annealing_linear if is_tuple(vals) else annealing_no
         else:          self.func = func
         self.n = 0
+        
+    def restart(self): self.n = 0
 
     def step(self)->Number:
         "Return next value along annealed schedule."
@@ -364,3 +378,4 @@ class Stepper():
     def is_done(self)->bool:
         "Return `True` if schedule completed."
         return self.n >= self.n_iter
+

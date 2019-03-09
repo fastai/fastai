@@ -11,7 +11,7 @@ class LRFinder(LearnerCallback):
     def __init__(self, learn:Learner, start_lr:float=1e-7, end_lr:float=10, num_it:int=100, stop_div:bool=True):
         super().__init__(learn)
         self.data,self.stop_div = learn.data,stop_div
-        self.sched = Stepper((start_lr, end_lr), num_it, annealing_exp)
+        self.sched = Scheduler((start_lr, end_lr), num_it, annealing_exp)
         #To avoid validating if the train_dl has less than num_it batches, we put aside the valid_dl and remove it
         #during the call to fit.
         self.valid_dl = learn.data.valid_dl
@@ -37,6 +37,6 @@ class LRFinder(LearnerCallback):
         "Cleanup learn model weights disturbed during LRFind exploration."
         # restore the valid_dl we turned off on `__init__`
         self.data.valid_dl = self.valid_dl
-        self.learn.load('tmp')
+        self.learn.load('tmp', purge=False)
         if hasattr(self.learn.model, 'reset'): self.learn.model.reset()
         print('LR Finder is complete, type {learner_name}.recorder.plot() to see the graph.')

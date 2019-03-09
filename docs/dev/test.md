@@ -55,6 +55,15 @@ Most of this document is various notes explaining how to do all kinds of things 
    Note that this guide helps you to write tests with a plain git checkout, without needing to fork and branch, so that you can get results faster and easier. But once you're ready, then switch to your own fork and branch as explained in the guide above. You can just copy the files over to the new branch. Of course, feel free, to start with making a PR branch first - whatever is the easiest for you.
 
 
+## Handy things
+
+Here is a bunch of useful pytest extensions to install (most are discussed somewhere in this document):
+```
+pip install pytest-xdist pytest-sugar pytest-repeat pytest-picked pytest-forked pytest-flakefinder pytest-cov nbsmoke
+```
+
+Only `pytest-sugar` will automatically change `pytest`'s behavior (in a nice way), so remove it from the list if you don't like it. All the other extensions need to be explicitly enabled via `pytest` flag to have an impact, so are safe to install.
+
 ## Automated tests
 
 At the moment there are only a few automated tests, so we need to start expanding it! It's not easy to properly automatically test ML code, but there's lots of opportunities for unit tests.

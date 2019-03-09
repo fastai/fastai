@@ -33,20 +33,17 @@ def build_tests_markdown(elt):
     db_matches = [get_links(t) for t in lookup_db(elt)]
     try:
         direct, related = find_dir_tests(elt)
-        direct = [get_links(t) for t in direct]
-        related = [get_links(t) for t in related]
-        direct = list(set(direct) - set(db_matches))
-        related = list(set(related) - set(db_matches) - set(direct))
+        other_tests = [get_links(t) for t in (related+direct)]
+        other_tests = [k for k in OrderedDict.fromkeys(other_tests) if k not in db_matches]
     except OSError as e:
         #print('Could not find fastai/tests folder. If you installed from conda, please install developer build instead.')
-        direct, related = [], []
+        other_tests = []
 
+    fn_name = nbdoc.fn_name(elt)
     md = ''.join([
         tests2md(db_matches, ''),
-        tests2md(direct, 'Direct tests:'),
-        tests2md(related, 'Related tests:')
+        tests2md(other_tests, f'Some other tests where `{fn_name}` is used:')
     ])
-    fn_name = nbdoc.fn_name(elt)
     if len(md)==0: 
         return (f'No tests found for `{fn_name}`.'
                 ' To contribute a test please refer to [this guide](/dev/test.html)'
@@ -72,15 +69,14 @@ def get_pytest_card(html, anchor_id):
     body = (f'<div class="collapse" id="{anchor_id}"><div class="card card-body pytest_card">'
                 f'<a type="button" data-toggle="collapse" data-target="#{anchor_id}" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a>'
                 f'{html}'
-            '</div></div>'
-            '<div style="height:1px"></div>') # hack to fix jumping bootstrap header
+            '</div></div>')
     return link, body
 
 def lookup_db(elt)->List[Dict]:
     "Finds `this_test` entries from test_api_db.json"
     db_file = Path(abspath(join(dirname( __file__ ), '..')))/DB_NAME
     if not db_file.exists():
-        raise Error(f'Could not find {db_file}. Please make sure it exists at this location or run `make test`')
+        raise Exception(f'Could not find {db_file}. Please make sure it exists at this location or run `make test`')
         return []
     with open(db_file, 'r') as f:
         db = json.load(f)
@@ -107,6 +103,7 @@ def get_tests_dir(elt)->Path:
 
 def get_file(elt)->str:
     if hasattr(elt, '__wrapped__'): elt = elt.__wrapped__
+    if not nbdoc.is_fastai_class(elt): return None
     return inspect.getfile(elt)
 
 def find_test_files(elt, exact_match:bool=False)->List[Path]:
@@ -116,8 +113,9 @@ def find_test_files(elt, exact_match:bool=False)->List[Path]:
     # if len(matches) != 1: raise Error('Could not find exact file match:', matches)
     return matches
 
-def _is_file_match(elt, file_name:str, exact_match:bool=False):
+def _is_file_match(elt, file_name:str, exact_match:bool=False)->bool:
     fp = get_file(elt)
+    if fp is None: return False
     subdir = ifnone(_submodule_name(elt), '')
     exact_re = '' if exact_match else '\w*'
     return re.match(f'test_{subdir}\w*{Path(fp).stem}{exact_re}\.py', file_name)

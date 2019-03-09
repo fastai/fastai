@@ -106,7 +106,7 @@ class ImageDataBunch(DataBunch):
         path=Path(path)
         il = ImageList.from_folder(path)
         if valid_pct is None: src = il.split_by_folder(train=train, valid=valid)
-        else: src = il.random_split_by_pct(valid_pct)
+        else: src = il.split_by_rand_pct(valid_pct)
         src = src.label_from_folder(classes=classes)
         return cls.create_from_ll(src, **kwargs)
 
@@ -115,7 +115,7 @@ class ImageDataBunch(DataBunch):
                 fn_col:IntsOrStrs=0, label_col:IntsOrStrs=1, suffix:str='', **kwargs:Any)->'ImageDataBunch':
         "Create from a `DataFrame` `df`."
         src = (ImageList.from_df(df, path=path, folder=folder, suffix=suffix, cols=fn_col)
-                .random_split_by_pct(valid_pct)
+                .split_by_rand_pct(valid_pct)
                 .label_from_df(label_delim=label_delim, cols=label_col))
         return cls.create_from_ll(src, **kwargs)
 
@@ -135,14 +135,14 @@ class ImageDataBunch(DataBunch):
         "Create from list of `fnames` in `path`."
         item_cls = ifnone(item_cls, ImageList)
         fname2label = {f:l for (f,l) in zip(fnames, labels)}
-        src = (item_cls(fnames, path=path).random_split_by_pct(valid_pct)
+        src = (item_cls(fnames, path=path).split_by_rand_pct(valid_pct)
                                 .label_from_func(lambda x:fname2label[x]))
         return cls.create_from_ll(src, **kwargs)
 
     @classmethod
     def from_name_func(cls, path:PathOrStr, fnames:FilePathList, label_func:Callable, valid_pct:float=0.2, **kwargs):
         "Create from list of `fnames` in `path` with `label_func`."
-        src = ImageList(fnames, path=path).random_split_by_pct(valid_pct)
+        src = ImageList(fnames, path=path).split_by_rand_pct(valid_pct)
         return cls.create_from_ll(src.label_from_func(label_func), **kwargs)
 
     @classmethod
@@ -161,7 +161,7 @@ class ImageDataBunch(DataBunch):
         "Create an empty `ImageDataBunch` in `path` with `classes`. Typically used for inference."
         warn("""This method is deprecated and will be removed in a future version, use `load_learner` after
              `Learner.export()`""", DeprecationWarning)
-        sd = ImageList([], path=path, ignore_empty=True).no_split()
+        sd = ImageList([], path=path, ignore_empty=True).split_none()
         return sd.label_const(0, label_cls=CategoryList, classes=classes).transform(ds_tfms, **kwargs).databunch()
 
     def batch_stats(self, funcs:Collection[Callable]=None)->Tensor:
@@ -271,7 +271,7 @@ class ImageList(ItemList):
         res = self.open(fn)
         self.sizes[i] = res.size
         return res
-
+    
     @classmethod
     def from_folder(cls, path:PathOrStr='.', extensions:Collection[str]=None, **kwargs)->ItemList:
         "Get the list of files in `path` that have an image suffix. `recurse` determines if we search subfolders."
@@ -343,7 +343,7 @@ def _get_size(xs,i):
     if size is None:
         # Image hasn't been accessed yet, so we don't know its size
         _ = xs[i]
-        size =xs.sizes[i]
+        size = xs.sizes[i]
     return size
 
 class ObjectCategoryList(MultiCategoryList):
@@ -431,19 +431,27 @@ class ImageImageList(ImageList):
             z.show(ax=axs[i,1], **kwargs)
 
 
-def _pre_transform(self, train_tfm:List[Callable], valid_tfm:List[Callable]):
+def _ll_pre_transform(self, train_tfm:List[Callable], valid_tfm:List[Callable]):
     "Call `train_tfm` and `valid_tfm` after opening image, before converting from `PIL.Image`"
     self.train.x.after_open = compose(train_tfm)
     self.valid.x.after_open = compose(valid_tfm)
     return self
 
+def _db_pre_transform(self, train_tfm:List[Callable], valid_tfm:List[Callable]):
+    "Call `train_tfm` and `valid_tfm` after opening image, before converting from `PIL.Image`"
+    self.train_ds.x.after_open = compose(train_tfm)
+    self.valid_ds.x.after_open = compose(valid_tfm)
+    return self
+
 def _presize(self, size:int, val_xtra_size:int=32, scale:Tuple[float]=(0.08, 1.0), ratio:Tuple[float]=(0.75, 4./3.),
              interpolation:int=2):
     "Resize images to `size` using `RandomResizedCrop`, passing along `kwargs` to train transform"
-    tfms = (tvt.RandomResizedCrop(size, scale=scale, ratio=ratio, interpolation=interpolation), 
-            [tvt.Resize(size+val_xtra_size), tvt.CenterCrop(size)])
-    return self.pre_transform(*tfms)
+    return self.pre_transform(
+        tvt.RandomResizedCrop(size, scale=scale, ratio=ratio, interpolation=interpolation), 
+        [tvt.Resize(size+val_xtra_size), tvt.CenterCrop(size)])
 
-LabelLists.pre_transform = _pre_transform
+LabelLists.pre_transform = _ll_pre_transform
+DataBunch.pre_transform = _db_pre_transform
 LabelLists.presize = _presize
+DataBunch.presize = _presize
 

@@ -33,6 +33,7 @@ sidebar_d = {
                 'CSV Logger': '/callbacks.csv_logger',
                 'Tracking': '/callbacks.tracker',
                 'Memory Profiling': '/callbacks.mem',
+                'Miscellaneous': '/callbacks.misc',
             }
         },
     },

@@ -101,8 +101,8 @@ def test_category_processor_non_existing_class():
 def test_splitdata_datasets():
     c1,ratio,n = list('abc'),0.2,10
 
-    this_tests(ItemList.random_split_by_pct)
-    sd = ItemList(range(n)).random_split_by_pct(ratio).label_const(0)
+    this_tests(ItemList.split_by_rand_pct)
+    sd = ItemList(range(n)).split_by_rand_pct(ratio).label_const(0)
     assert len(sd.train)==(1-ratio)*n, 'Training set is right size'
     assert len(sd.valid)==ratio*n, 'Validation set is right size'
     assert set(list(sd.train.items)+list(sd.valid.items))==set(range(n)), 'All items covered'
@@ -123,7 +123,7 @@ def test_split_subsets():
 def test_regression():
     this_tests('na')
     df = pd.DataFrame({'x':range(100), 'y':np.random.rand(100)})
-    data = ItemList.from_df(df, path='.', cols=0).random_split_by_pct().label_from_df(cols=1).databunch()
+    data = ItemList.from_df(df, path='.', cols=0).split_by_rand_pct().label_from_df(cols=1).databunch()
     assert data.c==1
     assert isinstance(data.valid_ds, LabelList)
 
