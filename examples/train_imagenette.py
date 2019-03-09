@@ -34,13 +34,17 @@ class SGDX(GeneralOptimizer):
 
 class RMSpropX(GeneralOptimizer):
     def make_step(self, p, group, group_idx):
-        p.data.addcdiv_(-group['lr'], self.state[p]['mom_buffer'], self.state[p]['alpha_buffer'].sqrt() + 1e-7)
+        st = self.state[p]
+        mom = st['momentum_buffer']
+        alpha = (st['alpha_buffer'].sqrt()+1e-7
+                ) if 'alpha_buffer' in st else mom.new_tensor(1.)
+        p.data.addcdiv_(-group['lr'], st['momentum_buffer'], alpha)
 
 @call_parse
 def main( gpu:Param("GPU to run on", str)=None ):
     """Distributed training of Imagenette.
     Fastest multi-gpu speed is if you run with: python -m fastai.launch"""
-    bs,tot_epochs,lr = 256,5,0.0003
+    bs,tot_epochs,lr = 256,5,1e-3
 
     # Pick one of these
     path,size = untar_data(URLs.IMAGENETTE_160),128
@@ -58,7 +62,7 @@ def main( gpu:Param("GPU to run on", str)=None ):
     #opt_func = partial(SGDX, stats=[AvgStatistic('avgstat', init=0, beta=0.9),])
     #"""
     opt_func = partial(RMSpropX, stats=[
-        AvgStatistic('mom', 0.9),
+        AvgStatistic('momentum', 0.9),
         AvgSquare('alpha', 0.9),
     ])
     #"""
@@ -77,5 +81,6 @@ def main( gpu:Param("GPU to run on", str)=None ):
     bs_rat = bs/256
     lr *= bs_rat
     learn.fit_one_cycle(tot_epochs, lr, div_factor=20, pct_start=0.5, moms=(0.9,0.9))
-    learn.save('nette')
+    #learn.recorder.plot_lr(show_moms=True)
+    #learn.save('nette')
 

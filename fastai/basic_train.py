@@ -5,8 +5,9 @@ from .callback import *
 from .data_block import *
 from .utils.ipython import gpu_mem_restore
 import inspect
-from fastprogress.fastprogress import format_time
+from fastprogress.fastprogress import format_time, IN_NOTEBOOK
 from time import time
+from fastai.sixel import plot_sixel
 
 __all__ = ['Learner', 'LearnerCallback', 'Recorder', 'RecordOnCPU', 'fit', 'loss_batch', 'train_epoch', 'validate',
            'get_preds', 'load_learner']
@@ -496,6 +497,7 @@ class Recorder(LearnerCallback):
             fig, ax = plt.subplots()
             ax.plot(iterations, lrs)
         if ifnone(return_fig, defaults.return_fig): return fig
+        if not IN_NOTEBOOK: plot_sixel(fig)
 
     @staticmethod
     def smoothen_by_spline(xs, ys, **kwargs):

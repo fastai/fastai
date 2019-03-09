@@ -24,7 +24,7 @@ class Statistic():
         "Add `val` to statistic"
         raise NotImplementedError
 
-    def update(self, state, val=None):
+    def update(self, state, param, val=None):
         "Update state with accumlated, or `val` (if `Weight` or `Layer` scope)"
         raise NotImplementedError
 
@@ -36,22 +36,22 @@ class AvgStatistic(Statistic):
         self.val += self._get_val(val)
 
     def _get_val1(self, val): return val.mean()
-    def _get_val2(self, state, val): return state.add_(val)
+    def _get_val2(self, state, val, param): return state.add_(val)
 
-    def update(self, state, val=None):
+    def update(self, state, param, val=None):
         if self.scope == StatScope.Weight:
             # `state` is a tensor
-            return self._get_val2(state.mul_(self.param), val)
+            return self._get_val2(state.mul_(param), val, param)
         # For everything else, `state` is a scalar
         if self.scope == StatScope.Layer:
-            return state.lerp_(self._get_val1(val), 1-self.param)
+            return state.lerp_(self._get_val1(val), 1-param)
         if self.count != 0:
-            return state.lerp_(self.val/self.count, 1-self.param)
+            return state.lerp_(self.val/self.count, 1-param)
         return state
 
 class AvgSquare(AvgStatistic):
     def _get_val1(self, val): return torch.norm(val).pow(2)/val.numel()
-    def _get_val2(self, state, val): return state.addcmul_(1-self.param, val, val)
+    def _get_val2(self, state, val, param): return state.addcmul_(1-param, val, val)
 
 
 class GeneralOptimizer(Optimizer):
@@ -84,9 +84,9 @@ class GeneralOptimizer(Optimizer):
                 self.state[p] = self._init_stats(self.layer_stats)
                 self.state[p].update(self._init_stats(self.weight_stats, p.data))
 
-    def _set_bufs(self, p, stats, val=None):
+    def _set_bufs(self, p, stats, pg, val=None):
         d = self.state[p]
-        for stat in stats: d[stat.buf] = stat.update(d[stat.buf], val=val)
+        for stat in stats: d[stat.buf] = stat.update(d[stat.buf], pg[stat.name], val=val)
 
     def update_stats(self):
         for stat in self.global_stats: stat.new_step()
@@ -95,7 +95,7 @@ class GeneralOptimizer(Optimizer):
             for p in pg['params']:
                 if p.grad is not None:
                     for stat in self.global_stats + self.group_stats: stat.accumulate(p.grad.data)
-                    self._set_bufs(p, self.layer_stats+self.weight_stats, p.grad.data)
-            self._set_bufs(f'group{i}', self.group_stats)
-        self._set_bufs('global', self.global_stats)
+                    self._set_bufs(p, self.layer_stats+self.weight_stats, pg, p.grad.data)
+            self._set_bufs(f'group{i}', self.group_stats, pg)
+        self._set_bufs('global', self.global_stats, self.param_groups[0])
 
