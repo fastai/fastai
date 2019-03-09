@@ -73,7 +73,7 @@ learn.fit_one_cycle(3, max_lr=1e-2)</code></pre>
 tune = True
 #tune = False
 if tune:
-    defaults.extra_callbacks = [StopAfterNBatches(n_batches=2))]
+    defaults.extra_callbacks = [StopAfterNBatches(n_batches=2)]
 else:
     defaults.extra_callbacks = None</code></pre>
 <p>When you're done tuning your hyper-parameters, just set <code>tune</code> to <code>False</code> and re-run the notebook to do true fitting.</p>

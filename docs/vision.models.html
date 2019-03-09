@@ -81,7 +81,22 @@ summary: "Overview of the models used for CV in fastai"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Each group contains blocks of size <code>N</code>. <code>start_nf</code> the initial number of features. Dropout of <code>drop_p</code> is applied at the end of each block.</p>
+<p>Each group contains <code>N</code> blocks. <code>start_nf</code> the initial number of features. Dropout of <code>drop_p</code> is applied in between the two convolutions in each block. The expected input channel size is fixed at 3.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Structure: initial convolution  -&gt;  <code>num_groups</code> x <code>N</code> blocks -&gt; final layers of regularization and pooling</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The first block of each group joins a path containing 2 convolutions with filter size 3x3 (and various regularizations) with another path containing a single convolution with a filter size of 1x1. All other blocks in each group follow the more traditional res_block style, i.e., the input of the path with two convs is added to the output of that path.</p>
+<p>In the first group the stride is 1 for all convolutions. In all subsequent groups the stride in the first convolution of the first block is 2 and then all following convolutions have a stride of 1. Padding is always 1.</p>
 
 </div>
 </div>

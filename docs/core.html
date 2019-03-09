@@ -730,7 +730,7 @@ False
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="array" class="doc_header"><code>array</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L266" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#array-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>array</code>(<strong><code>a</code></strong>, <strong><code>dtype</code></strong>:<code>type</code>=<strong><em><code>None</code></em></strong>, <strong>**<code>kwargs</code></strong>) → <code>ndarray</code></p>
 </blockquote>
-<div class="collapse" id="array-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#array-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>array</code>:</p><p>Some other tests where <code>array</code> is used:</p><ul><li><code>pytest -sv tests/test_core.py::test_even_mults</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_core.py#L168" class="source_link" style="float:right">[source]</a></li><li><code>pytest -sv tests/test_torch_core.py::test_tensor_with_ndarray</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_torch_core.py#L16" class="source_link" style="float:right">[source]</a></li><li><code>pytest -sv tests/test_core.py::test_idx_dict</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_core.py#L115" class="source_link" style="float:right">[source]</a></li><li><code>pytest -sv tests/test_core.py::test_one_hot</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_core.py#L208" class="source_link" style="float:right">[source]</a></li><li><code>pytest -sv tests/test_core.py::test_itembase_hash</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_core.py#L271" class="source_link" style="float:right">[source]</a></li><li><code>pytest -sv tests/test_torch_core.py::test_tensor_array_monkey_patch</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_torch_core.py#L109" class="source_link" style="float:right">[source]</a></li><li><code>pytest -sv tests/test_core.py::test_itembase_eq</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_core.py#L225" class="source_link" style="float:right">[source]</a></li><li><code>pytest -sv tests/test_core.py::test_arrays_split</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_core.py#L131" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><p>Same as <code>np.array</code> but also handles generators. <code>kwargs</code> are passed to <code>np.array</code> with <code>dtype</code>.</p>
+<div class="collapse" id="array-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#array-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>array</code>:</p><p>Some other tests where <code>array</code> is used:</p><ul><li><code>pytest -sv tests/test_torch_core.py::test_tensor_with_ndarray</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_torch_core.py#L16" class="source_link" style="float:right">[source]</a></li><li><code>pytest -sv tests/test_torch_core.py::test_tensor_array_monkey_patch</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_torch_core.py#L109" class="source_link" style="float:right">[source]</a></li><li><code>pytest -sv tests/test_core.py::test_idx_dict</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_core.py#L115" class="source_link" style="float:right">[source]</a></li><li><code>pytest -sv tests/test_core.py::test_arrays_split</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_core.py#L131" class="source_link" style="float:right">[source]</a></li><li><code>pytest -sv tests/test_core.py::test_even_mults</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_core.py#L168" class="source_link" style="float:right">[source]</a></li><li><code>pytest -sv tests/test_core.py::test_one_hot</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_core.py#L208" class="source_link" style="float:right">[source]</a></li><li><code>pytest -sv tests/test_core.py::test_itembase_eq</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_core.py#L225" class="source_link" style="float:right">[source]</a></li><li><code>pytest -sv tests/test_core.py::test_itembase_hash</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_core.py#L271" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><p>Same as <code>np.array</code> but also handles generators. <code>kwargs</code> are passed to <code>np.array</code> with <code>dtype</code>.</p>
 
 </div>
 
@@ -2513,6 +2513,74 @@ Categories (2, int64): [1 &lt; 2]</pre>
 </div>
 
 </div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><code>func</code> must accept both the value and index of each <code>arr</code> element.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">my_func</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Index: </span><span class="si">{}</span><span class="s2">, Value: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span>
+ 
+<span class="n">my_array</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="o">*</span><span class="mi">2</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)]</span>
+<span class="n">parallel</span><span class="p">(</span><span class="n">my_func</span><span class="p">,</span> <span class="n">my_array</span><span class="p">,</span> <span class="n">max_workers</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea ">
+
+    <div>
+        <style>
+            /* Turns off some styling */
+            progress {
+                /* gets rid of default border in Firefox and Opera. */
+                border: none;
+                /* Needs to be in here for Safari polyfill so background images work as expected. */
+                background-size: auto;
+            }
+            .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+                background: #F44336;
+            }
+        </style>
+      <progress value='5' class='' max='5', style='width:300px; height:20px; vertical-align: middle;'></progress>
+      100.00% [5/5 00:00<00:00]
+    </div>
+    
+</div>
+
+</div>
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Index: 0, Value: 0
+Index: 1, Value: 2
+Index: 2, Value: 4
+Index: 4, Value: 8
+Index: 3, Value: 6
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -2524,7 +2592,7 @@ Categories (2, int64): [1 &lt; 2]</pre>
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="partition" class="doc_header"><code>partition</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L138" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#partition-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>partition</code>(<strong><code>a</code></strong>:<code>Collection</code>[<code>T_co</code>], <strong><code>sz</code></strong>:<code>int</code>) → <code>List</code>[<code>Collection</code>[<code>T_co</code>]]</p>
 </blockquote>
-<div class="collapse" id="partition-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#partition-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>partition</code>:</p><ul><li><code>pytest -sv tests/test_core.py::test_partition_functionality</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_core.py#L83" class="source_link" style="float:right">[source]</a></li></ul><p>Some other tests where <code>partition</code> is used:</p><ul><li><code>pytest -sv tests/test_core.py::test_partition_functionality</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_core.py#L84" class="source_link" style="float:right">[source]</a></li><li><code>pytest -sv tests/test_core.py::test_partition</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_core.py#L87" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><p>Split iterables <code>a</code> in equal parts of size <code>sz</code></p>
+<div class="collapse" id="partition-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#partition-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>partition</code>:</p><ul><li><code>pytest -sv tests/test_core.py::test_partition_functionality</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_core.py#L83" class="source_link" style="float:right">[source]</a></li></ul><p>Some other tests where <code>partition</code> is used:</p><ul><li><code>pytest -sv tests/test_core.py::test_partition</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_core.py#L87" class="source_link" style="float:right">[source]</a></li><li><code>pytest -sv tests/test_core.py::test_partition_functionality</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_core.py#L84" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><p>Split iterables <code>a</code> in equal parts of size <code>sz</code></p>
 
 </div>
 

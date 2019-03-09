@@ -19,10 +19,13 @@ of that change.
 ### New:
 
 - `Learner.to_parallel`: callback wraps in nn.DataParallel during train and unwraps at end
+- Initial work to provide a `GeneralOptimizer` that keeps track and update given `Statistic` then perform the step you want.
 
 ### Changed:
 
 ### Fixed:
+
+- A few `Callback` that didn't have proper return
 
 
 ## 1.0.47 (2019-03-06)
