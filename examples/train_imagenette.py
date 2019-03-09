@@ -41,13 +41,16 @@ class RMSpropX(GeneralOptimizer):
         p.data.addcdiv_(-group['lr'], st['momentum_buffer'], alpha)
 
 @call_parse
-def main( gpu:Param("GPU to run on", str)=None ):
+def main(
+        woof:Param("Use woof", bool)=False,
+        gpu:Param("GPU to run on", str)=None
+        ):
     """Distributed training of Imagenette.
     Fastest multi-gpu speed is if you run with: python -m fastai.launch"""
     bs,tot_epochs,lr = 256,5,1e-3
 
     # Pick one of these
-    path,size = untar_data(URLs.IMAGENETTE_160),128
+    path,size = untar_data(URLs.IMAGEWOOF_160 if woof else URLs.IMAGENETTE_160),128
     #path,size = untar_data(URLs.IMAGENETTE_320),224
     #path,size = untar_data(URLs.IMAGENETTE),224
 

@@ -114,7 +114,7 @@ def to_device(b:Tensors, device:torch.device):
     device = ifnone(device, defaults.device)
     if is_listy(b): return [to_device(o, device) for o in b]
     if is_dict(b): return {k: to_device(v, device) for k, v in b.items()}
-    return b.to(device)
+    return b.to(device, non_blocking=True)
 
 def data_collate(batch:ItemsList)->Tensor:
     "Convert `batch` items to tensor data."
