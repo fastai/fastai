@@ -35,6 +35,7 @@ of that change.
 
 ### New:
 
+- `tensorboard` callback to use Tensorboard (requires installing tensorboardx)
 - `LabelLists.pre_transform`: call transforms on PIL.Image, before converting to float tensor
 - `LabelLists.presize`: standard Imagenet image resizing/cropping using `pre_transform`
 - `compose`: compose a list of functions

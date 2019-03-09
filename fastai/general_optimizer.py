@@ -54,7 +54,7 @@ class AvgStatistic(Statistic):
             return self._get_val3(state.mul_(param), val, param)
         # For everything else, `state` is a scalar
         if self.scope == StatScope.Layer:
-            return state.lerp_(self._get_val1(val), 1-param)
+            return state*param + self._get_val1(val)*(1-param)
         if self.count != 0:
             return state.lerp_(self.val/self.count, 1-param)
         return state
@@ -90,7 +90,7 @@ class GeneralOptimizer(Optimizer):
         return ([stat for stat in listify(stats) if stat.scope==scope] for scope in StatScope)
 
     def _init_stats(self, stats, data=None):
-        return {stat.buf: tensor(stat.init) if data is None
+        return {stat.buf: stat.init if data is None
                 else torch.zeros_like(data) + stat.init for stat in stats}
 
     def init_stats(self):

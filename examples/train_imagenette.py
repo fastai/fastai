@@ -7,14 +7,15 @@ torch.backends.cudnn.benchmark = True
 import time
 from fastai.general_optimizer import *
 
-def get_data(path, size, bs, workers):
-    tfms = ([
-        flip_lr(p=0.5),
-        #brightness(change=(0.4,0.6)),
-        #contrast(scale=(0.7,1.3))
-    ], [])
+def get_data(path, size, bs, workers=None, use_lighting=False):
+    n_gpus = num_distrib() or 1
+    if workers is None: workers = min(8, num_cpus()//n_gpus)
+
+    tfms = [flip_lr(p=0.5)]
+    if use_lighting:
+        tfms += [brightness(change=(0.4,0.6)), contrast(scale=(0.7,1.3))]
     return (ImageList.from_folder(path).split_by_folder(valid='val')
-            .label_from_folder().transform(tfms, size=size)
+            .label_from_folder().transform((tfms, []), size=size)
             .databunch(bs=bs, num_workers=workers)
             .presize(size, scale=(0.35,1))
             .normalize(imagenet_stats))
@@ -28,45 +29,40 @@ def bn_and_final(m):
     l2 = [ll[i] for i in idx]
     return split_model(splits=[l1,l2])
 
-class SGDX(GeneralOptimizer):
-    def make_step(self, p, group, group_idx):
-        p.data.add_(-group['lr'], self.state[p]['mom'])
-
 class RMSpropX(GeneralOptimizer):
     def make_step(self, p, group, group_idx):
         st = self.state[p]
         mom = st['momentum_buffer']
         alpha = (st['alpha_buffer'].sqrt()+1e-7
                 ) if 'alpha_buffer' in st else mom.new_tensor(1.)
-        p.data.addcdiv_(-group['lr'], st['momentum_buffer'], alpha)
+        p.data.addcdiv_(-group['lr'], mom, alpha)
 
 @call_parse
 def main(
         woof:Param("Use woof", bool)=False,
-        gpu:Param("GPU to run on", str)=None
+        gpu:Param("GPU to run on", str)=None,
+        lr: Param("Learning rate", float)=1e-3,
+        size: Param("Size (px: 128,192,224)", int)=128,
         ):
     """Distributed training of Imagenette.
     Fastest multi-gpu speed is if you run with: python -m fastai.launch"""
-    bs,tot_epochs,lr = 256,5,1e-3
+    bs,tot_epochs = 256,5
 
     # Pick one of these
-    path,size = untar_data(URLs.IMAGEWOOF_160 if woof else URLs.IMAGENETTE_160),128
-    #path,size = untar_data(URLs.IMAGENETTE_320),224
-    #path,size = untar_data(URLs.IMAGENETTE),224
+    if   size<=128: path = untar_data(URLs.IMAGEWOOF_160 if woof else URLs.IMAGENETTE_160)
+    elif size<=192: path = untar_data(URLs.IMAGEWOOF_320 if woof else URLs.IMAGENETTE_320)
+    else          : path = untar_data(URLs.IMAGEWOOF     if woof else URLs.IMAGENETTE    )
 
     gpu = setup_distrib(gpu)
-    n_gpus = num_distrib() or 1
 
-    workers = min(8, num_cpus()//n_gpus)
-    data = get_data(path, size, bs, workers)
+    data = get_data(path, size, bs)
     #opt_func = partial(optim.Adam, betas=(0.9,0.99), eps=1e-7)
     #opt_func = partial(optim.RMSprop, alpha=0.9)
     #opt_func = optim.SGD
-    #opt_func = partial(SGDX, stats=[AvgStatistic('avgstat', init=0, beta=0.9),])
     #"""
     opt_func = partial(RMSpropX, stats=[
-        AvgStatistic('momentum', 0.9),
-        AvgSquare('alpha', 0.9),
+        AvgStatistic('momentum', 0.9, scope=StatScope.Weight),
+        AvgSquare('alpha', 0.99, scope=StatScope.Layer),
     ])
     #"""
     #learn = (cnn_learner(data, models.xresnet50, pretrained=False, concat_pool=False, lin_ftrs=[], split_on=bn_and_final,
