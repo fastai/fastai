@@ -153,8 +153,8 @@ def _cl_int_plot_top_losses(self, k, largest=True, figsize=(12,12), heatmap:bool
                 grad = hook_g.stored[0][0].cpu()
                 grad_chan = grad.mean(1).mean(1)
                 mult = F.relu(((acts*grad_chan[...,None,None])).sum(0))
-                sz = im.shape[-1]
-                axes.flat[i].imshow(mult, alpha=0.6, extent=(0,sz,sz,0), interpolation='bilinear', cmap='magma')
+                sz = list(im.shape[-2:])
+                axes.flat[i].imshow(mult, alpha=0.6, extent=(0,*sz[::-1],0), interpolation='bilinear', cmap='magma')                
     if ifnone(return_fig, defaults.return_fig): return fig
 
 def _cl_int_plot_multi_top_losses(self, samples:int=3, figsize:Tuple[int,int]=(8,8), save_misclassified:bool=False):
