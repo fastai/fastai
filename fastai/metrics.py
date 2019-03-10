@@ -1,7 +1,7 @@
 "Implements various metrics to measure training accuracy"
 from .torch_core import *
 from .callback import *
-
+from .layers import *
 
 __all__ = ['error_rate', 'accuracy', 'accuracy_thresh', 'dice', 'exp_rmspe', 'fbeta','FBeta', 'mse', 'mean_squared_error',
             'mae', 'mean_absolute_error', 'rmse', 'root_mean_squared_error', 'msle', 'mean_squared_logarithmic_error',
@@ -259,4 +259,4 @@ class Perplexity(Callback):
         self.len += last_target.size(1)
 
     def on_epoch_end(self, last_metrics, **kwargs): 
-        add_metrics(last_metrics, torch.exp(self.loss / self.len))
+        return add_metrics(last_metrics, torch.exp(self.loss / self.len))
