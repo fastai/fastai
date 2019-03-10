@@ -70,7 +70,7 @@ class TestAPIRegistry:
         if path.exists() == False: return 
         with open(path, 'r') as f: old_api_tests_map = json.load(f)   
         if old_api_tests_map == False: return
-        print(f"\n*** Saving test registry @ {path}")
+        print(f"\n*** Merging test registry @ {path}")
         for func_fq_key, new_entries in TestAPIRegistry.api_tests_map.items():
             if func_fq_key in old_api_tests_map: 
                 for new_entry in new_entries:
