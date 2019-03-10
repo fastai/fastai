@@ -65,24 +65,23 @@ class MixedPrecision(LearnerCallback):
     _order = 999 #Need to run after things that could call on_backward_begin and change the loss
     "Callback that handles mixed-precision training."
     def __init__(self, learn:Learner, loss_scale:float=None, max_noskip:int=1000, dynamic:bool=True, clip:float=None,
-                 flat_master:bool=False):
+                 flat_master:bool=False, max_scale:float=2**24):
         super().__init__(learn)
-        self.flat_master,self.dynamic,self.max_noskip,self.clip = flat_master,dynamic,max_noskip,clip
-        self.loss_scale = ifnone(loss_scale, 2**32 if dynamic else 512)
+        self.flat_master,self.dynamic,self.max_noskip,self.clip,self.max_scale = flat_master,dynamic,max_noskip,clip,max_scale
+        self.loss_scale = ifnone(loss_scale, 2**16 if dynamic else 512)
         self.not_min += ['model_params', 'master_params']
         assert torch.backends.cudnn.enabled, "Mixed precision training requires cudnn."
+        self.opt = None
 
     def on_train_begin(self, **kwargs:Any)->None:
         "Prepare the master model."
         #Get a copy of the model params in FP32
         self.model_params, self.master_params = get_master(self.learn.layer_groups, self.flat_master)
         #Changes the optimizer so that the optimization step is done in FP32.
-        opt = self.learn.opt
-        mom,wd,beta = opt.mom,opt.wd,opt.beta
-        lrs = [lr for lr in self.learn.opt._lr for _ in range(2)]
-        opt_params = [{'params': mp, 'lr': lr} for mp,lr in zip(self.master_params, lrs)]
-        self.learn.opt.opt = self.learn.opt_func(opt_params)
-        opt.mom,opt.wd,opt.beta = mom,wd,beta
+        if self.opt is None or self.opt.n_params != self.learn.opt.n_params:
+            self.opt = self.learn.opt.new_with_params(self.master_params)
+        else: self.opt.lr,self.opt.wd = self.learn.opt.lr,self.learn.opt.wd
+        self.learn.opt.opt = self.opt.opt
         self.noskip = 0
 
     def on_loss_begin(self, last_output:Tensor, **kwargs:Any) -> Tensor:
@@ -97,7 +96,7 @@ class MixedPrecision(LearnerCallback):
 
     def on_backward_end(self, **kwargs:Any)->None:
         "Convert the gradients back to FP32 and divide them by the scale."
-        if self.dynamic and grad_overflow(self.model_params):
+        if self.dynamic and grad_overflow(self.model_params) and self.loss_scale > 1:
             self.loss_scale /= 2
             self.noskip = 0
             #The step will be skipped since we don't update the master grads so they are all None or zero
@@ -110,7 +109,7 @@ class MixedPrecision(LearnerCallback):
                 for group in self.master_params: nn.utils.clip_grad_norm_(group, self.clip)
             if not self.dynamic: return
             self.noskip += 1
-            if self.noskip >= self.max_noskip:
+            if self.noskip >= self.max_noskip and self.loss_scale < self.max_scale:
                 self.loss_scale *= 2
                 self.noskip = 0
 
