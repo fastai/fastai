@@ -1,6 +1,7 @@
 import sys, re, json, pprint
 from pathlib import Path
 from collections import defaultdict
+from itertools import chain
 from inspect import currentframe, getframeinfo, ismodule
 
 __all__ = ['this_tests']
@@ -59,9 +60,25 @@ class TestAPIRegistry:
     def registry_save():
         if TestAPIRegistry.api_tests_map:
             path = Path(__file__).parent.parent.resolve()/DB_NAME
+            TestAPIRegistry.merge_with_old_registry(path)    
             print(f"\n*** Saving test registry @ {path}")
             with open(path, 'w') as f:
                 json.dump(obj=TestAPIRegistry.api_tests_map, fp=f, indent=4, sort_keys=True, default=_json_set_default)
+
+    def merge_with_old_registry(path):
+        if TestAPIRegistry.api_tests_map == False: raise Exception(f"No new Test Registry generated, can't merge")
+        if path.exists() == False: return 
+        with open(path, 'r') as f: old_api_tests_map = json.load(f)   
+        if old_api_tests_map == False: return
+        print(f"\n*** Saving test registry @ {path}")
+        for func_fq_key, new_entries in TestAPIRegistry.api_tests_map.items():
+            if func_fq_key in old_api_tests_map: 
+                for new_entry in new_entries:
+                    if new_entry not in old_api_tests_map[func_fq_key]:
+                        old_api_tests_map[func_fq_key].append(new_entry)
+            else:
+                old_api_tests_map[func_fq_key] =  new_entries            
+        TestAPIRegistry.api_tests_map = old_api_tests_map
 
     def missing_this_tests_alert():
         if TestAPIRegistry.missing_this_tests:
