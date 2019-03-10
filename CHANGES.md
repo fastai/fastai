@@ -17,6 +17,7 @@ of that change.
 ### Changed:
 
 - `MixedPrecisionCallback`: `dynamic` now defaults to True
+- `fit` now takes a `BasicLearner`
 
 ### Fixed:
 
