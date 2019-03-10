@@ -528,6 +528,7 @@ class Recorder(LearnerCallback):
             ax.plot(lrs[mg],losses[mg],markersize=10,marker='o',color='red')
             self.min_grad_lr = lrs[mg]
         if ifnone(return_fig, defaults.return_fig): return fig
+        if not IN_NOTEBOOK: plot_sixel(fig)
 
     def plot_losses(self, skip_start:int=0, skip_end:int=0, return_fig:bool=None)->Optional[plt.Figure]:
         "Plot training and validation losses."
@@ -546,6 +547,7 @@ class Recorder(LearnerCallback):
         ax.set_xlabel('Batches processed')
         ax.legend()
         if ifnone(return_fig, defaults.return_fig): return fig
+        if not IN_NOTEBOOK: plot_sixel(fig)
 
     def plot_metrics(self, return_fig:bool=None)->Optional[plt.Figure]:
         "Plot metrics collected during training."
@@ -558,6 +560,7 @@ class Recorder(LearnerCallback):
             values = [met[i] for met in self.metrics]
             ax.plot(val_iter, values)
         if ifnone(return_fig, defaults.return_fig): return fig
+        if not IN_NOTEBOOK: plot_sixel(fig)
 
 class FakeOptimizer():
     def step(self): pass
