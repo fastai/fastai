@@ -64,7 +64,7 @@ def grad_overflow(param_group):
 class MixedPrecision(LearnerCallback):
     _order = 999 #Need to run after things that could call on_backward_begin and change the loss
     "Callback that handles mixed-precision training."
-    def __init__(self, learn:Learner, loss_scale:float=None, max_noskip:int=1000, dynamic:bool=False, clip:float=None,
+    def __init__(self, learn:Learner, loss_scale:float=None, max_noskip:int=1000, dynamic:bool=True, clip:float=None,
                  flat_master:bool=False):
         super().__init__(learn)
         self.flat_master,self.dynamic,self.max_noskip,self.clip = flat_master,dynamic,max_noskip,clip
@@ -93,8 +93,6 @@ class MixedPrecision(LearnerCallback):
         "Scale gradients up by `self.loss_scale` to prevent underflow."
         #To avoid gradient underflow, we scale the gradients
         ret_loss = last_loss * self.loss_scale
-        if torch.isnan(ret_loss) and not self.dynamic:
-            warn(f"You have a `loss_scale` factor that is too high, try to divide it by 2 (current value: {self.loss_scale}).")
         return {'last_loss': ret_loss}
 
     def on_backward_end(self, **kwargs:Any)->None:

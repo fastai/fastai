@@ -16,8 +16,9 @@ of that change.
 
 ### Changed:
 
-### Fixed:
+- `MixedPrecisionCallback`: `dynamic` now defaults to True
 
+### Fixed:
 
 
 ## 1.0.48 (2019-03-09)
@@ -31,11 +32,9 @@ of that change.
 - `Learner.to_parallel`: callback wraps in nn.DataParallel during train and unwraps at end
 - Initial work to provide a `GeneralOptimizer` that keeps track and update given `Statistic` then perform the step you want.
 
-### Changed:
-
 ### Fixed:
 
-- A few `Callback` that didn't have proper return
+- A few `Callback`s didn't have proper return
 
 
 ## 1.0.47 (2019-03-06)
