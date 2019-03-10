@@ -193,6 +193,9 @@ def split_model(model:nn.Module=None, splits:Collection[Union[nn.Module,ModuleLi
         return split_model_idx(model, idxs)
     return [nn.Sequential(*s) for s in splits]
 
+def get_param_groups(layer_groups:Collection[nn.Module])->List[List[nn.Parameter]]:
+    return [sum([list(trainable_params(c)) for c in l.children()], []) for l in layer_groups]
+
 def split_no_wd_params(layer_groups:Collection[nn.Module])->List[List[nn.Parameter]]:
     "Separate the parameters in `layer_groups` between `no_wd_types` and  bias (`bias_types`) from the rest."
     split_params = []
@@ -208,7 +211,7 @@ def split_no_wd_params(layer_groups:Collection[nn.Module])->List[List[nn.Paramet
         #Since we scan the children separately, we might get duplicates (tied weights). We need to preserve the order
         #for the optimizer load of state_dict
         l1,l2 = uniqueify(l1),uniqueify(l2)
-        split_params += [l1, l2]      
+        split_params += [l1, l2]
     return split_params
 
 def set_bn_eval(m:nn.Module)->None:
