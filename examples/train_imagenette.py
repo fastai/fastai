@@ -71,6 +71,10 @@ def main(
         .to_fp16(dynamic=True)
         #.split(bn_and_final)
     )
+    learn.callback_fns += [
+        partial(TrackEpochCallback),
+        partial(SaveModelCallback, every='epoch', name='model')
+    ]
     if gpu is None: learn.to_parallel()
     else:           learn.to_distributed(gpu)
 

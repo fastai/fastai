@@ -80,6 +80,7 @@ class MixedPrecision(LearnerCallback):
         #Changes the optimizer so that the optimization step is done in FP32.
         if self.opt is None or self.opt.n_params != self.learn.opt.n_params:
             self.opt = self.learn.opt.new_with_params(self.master_params)
+            self.opt.load_state_dict(self.learn.opt.state_dict())
         else: self.opt.lr,self.opt.wd = self.learn.opt.lr,self.learn.opt.wd
         self.learn.opt.opt = self.opt.opt
         self.noskip = 0
