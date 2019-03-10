@@ -151,8 +151,11 @@ class ItemList():
     def filter_by_folder(self, include=None, exclude=None):
         "Only keep filenames in `include` folder or reject the ones in `exclude`."
         include,exclude = listify(include),listify(exclude)
+        include = [Path(o) for o in include]
+        exclude = [Path(o) for o in exclude]
+        
         def _inner(o):
-            n = o.relative_to(self.path).parts[0]
+            n = Path(o).relative_to(self.path).parent
             if include and not n in include: return False
             if exclude and     n in exclude: return False
             return True
