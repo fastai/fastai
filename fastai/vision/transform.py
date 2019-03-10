@@ -62,7 +62,11 @@ jitter = TfmCoord(_jitter)
 
 def _flip_lr(x):
     "Flip `x` horizontally."
-    return x.flip(2)
+    #return x.flip(2)
+    if isinstance(x, ImagePoints):
+        x.flow.flow[...,0] *= -1
+        return x
+    return tensor(np.ascontiguousarray(np.array(x)[...,::-1]))
 flip_lr = TfmPixel(_flip_lr)
 
 def _flip_affine() -> TfmAffine:
@@ -72,7 +76,7 @@ def _flip_affine() -> TfmAffine:
             [0,  0, 1.]]
 flip_affine = TfmAffine(_flip_affine)
 
-def _dihedral(x, k:partial(uniform_int,0,8)):
+def _dihedral(x, k:partial(uniform_int,0,7)):
     "Randomly flip `x` image based on `k`."
     flips=[]
     if k&1: flips.append(1)
@@ -82,7 +86,7 @@ def _dihedral(x, k:partial(uniform_int,0,8)):
     return x.contiguous()
 dihedral = TfmPixel(_dihedral)
 
-def _dihedral_affine(k:partial(uniform_int,0,8)):
+def _dihedral_affine(k:partial(uniform_int,0,7)):
     "Randomly flip `x` image based on `k`."
     x = -1 if k&1 else 1
     y = -1 if k&2 else 1
@@ -160,7 +164,6 @@ def _crop(x, size, row_pct:uniform=0.5, col_pct:uniform=0.5):
 
 crop = TfmPixel(_crop)
 
-
 def _crop_pad_default(x, size, padding_mode='reflection', row_pct:uniform = 0.5, col_pct:uniform = 0.5):
     "Crop and pad tfm - `row_pct`,`col_pct` sets focal point."
     padding_mode = _pad_mode_convert[padding_mode]
@@ -192,6 +195,11 @@ def _crop_pad(x, size, padding_mode='reflection', row_pct:uniform = 0.5, col_pct
 
 crop_pad = TfmCrop(_crop_pad)
 
+def _image_maybe_add_crop_pad(img, tfms):
+    tfm_names = [tfm.__name__ for tfm in tfms]
+    return [crop_pad()] + tfms if 'crop_pad' not in tfm_names else tfms
+Image._maybe_add_crop_pad = _image_maybe_add_crop_pad
+
 rand_pos = {'row_pct':(0,1), 'col_pct':(0,1)}
 
 def rand_pad(padding:int, size:int, mode:str='reflection'):
@@ -199,13 +207,13 @@ def rand_pad(padding:int, size:int, mode:str='reflection'):
     return [pad(padding=padding,mode=mode),
             crop(size=size, **rand_pos)]
 
-def rand_zoom(*args, **kwargs):
+def rand_zoom(scale:uniform=1.0, p:float=1.):
     "Randomized version of `zoom`."
-    return zoom(*args, **rand_pos, **kwargs)
+    return zoom(scale=scale, **rand_pos, p=p)
 
-def rand_crop(*args, **kwargs):
+def rand_crop(*args, padding_mode='reflection', p:float=1.):
     "Randomized version of `crop_pad`."
-    return crop_pad(*args, **rand_pos, **kwargs)
+    return crop_pad(*args, **rand_pos, padding_mode=padding_mode, p=p)
 
 def zoom_crop(scale:float, do_rand:bool=False, p:float=1.0):
     "Randomly zoom and/or crop."
@@ -290,7 +298,7 @@ def get_transforms(do_flip:bool=True, flip_vert:bool=False, max_rotate:float=10.
                    p_lighting:float=0.75, xtra_tfms:Optional[Collection[Transform]]=None)->Collection[Transform]:
     "Utility func to easily create a list of flip, rotate, `zoom`, warp, lighting transforms."
     res = [rand_crop()]
-    if do_flip:    res.append(dihedral_affine() if flip_vert else flip_affine(p=0.5))
+    if do_flip:    res.append(dihedral_affine() if flip_vert else flip_lr(p=0.5))
     if max_warp:   res.append(symmetric_warp(magnitude=(-max_warp,max_warp), p=p_affine))
     if max_rotate: res.append(rotate(degrees=(-max_rotate,max_rotate), p=p_affine))
     if max_zoom>1: res.append(rand_zoom(scale=(1.,max_zoom), p=p_affine))

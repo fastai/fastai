@@ -11,7 +11,7 @@ summary: "Implementation of the 1cycle policy"
     
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="The-1cycle-policy">The 1cycle policy<a class="anchor-link" href="#The-1cycle-policy">&#182;</a></h1>
+<h2 id="The-1cycle-policy">The 1cycle policy<a class="anchor-link" href="#The-1cycle-policy">&#182;</a></h2>
 </div>
 </div>
 </div>
@@ -361,9 +361,9 @@ Total time: 00:05 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="OneCycleScheduler"><code>class</code> <code>OneCycleScheduler</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/one_cycle.py#L8" class="source_link">[source]</a></h2><blockquote><p><code>OneCycleScheduler</code>(<strong><code>learn</code></strong>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <strong><code>lr_max</code></strong>:<code>float</code>, <strong><code>moms</code></strong>:<code>Floats</code>=<strong><em><code>(0.95, 0.85)</code></em></strong>, <strong><code>div_factor</code></strong>:<code>float</code>=<strong><em><code>25.0</code></em></strong>, <strong><code>pct_start</code></strong>:<code>float</code>=<strong><em><code>0.3</code></em></strong>) :: <a href="/basic_train.html#LearnerCallback"><code>LearnerCallback</code></a></p>
+<h2 id="OneCycleScheduler" class="doc_header"><code>class</code> <code>OneCycleScheduler</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/one_cycle.py#L8" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#OneCycleScheduler-pytest" style="float:right; padding-right:10px">[test]</a></h2><blockquote><p><code>OneCycleScheduler</code>(<strong><code>learn</code></strong>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <strong><code>lr_max</code></strong>:<code>float</code>, <strong><code>moms</code></strong>:<code>Floats</code>=<strong><em><code>(0.95, 0.85)</code></em></strong>, <strong><code>div_factor</code></strong>:<code>float</code>=<strong><em><code>25.0</code></em></strong>, <strong><code>pct_start</code></strong>:<code>float</code>=<strong><em><code>0.3</code></em></strong>, <strong><code>final_div</code></strong>:<code>float</code>=<strong><em><code>None</code></em></strong>, <strong><code>tot_epochs</code></strong>:<code>int</code>=<strong><em><code>None</code></em></strong>, <strong><code>start_epoch</code></strong>:<code>int</code>=<strong><em><code>None</code></em></strong>) :: <a href="/basic_train.html#LearnerCallback"><code>LearnerCallback</code></a></p>
 </blockquote>
-<p>Manage 1-Cycle style training as outlined in Leslie Smith's <a href="https://arxiv.org/pdf/1803.09820.pdf">paper</a>.</p>
+<div class="collapse" id="OneCycleScheduler-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#OneCycleScheduler-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>OneCycleScheduler</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Manage 1-Cycle style training as outlined in Leslie Smith's <a href="https://arxiv.org/pdf/1803.09820.pdf">paper</a>.</p>
 
 </div>
 
@@ -389,9 +389,9 @@ Total time: 00:05 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="OneCycleScheduler.steps"><code>steps</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/one_cycle.py#L16" class="source_link">[source]</a></h4><blockquote><p><code>steps</code>(<strong>*<code>steps_cfg</code></strong>:<code>StartOptEnd</code>)</p>
+<h4 id="OneCycleScheduler.steps" class="doc_header"><code>steps</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/one_cycle.py#L19" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#OneCycleScheduler-steps-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>steps</code>(<strong>*<code>steps_cfg</code></strong>:<code>StartOptEnd</code>)</p>
 </blockquote>
-
+<div class="collapse" id="OneCycleScheduler-steps-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#OneCycleScheduler-steps-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>steps</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div>
 </div>
 
 </div>
@@ -402,7 +402,7 @@ Total time: 00:05 <p><table style='width:300px; margin-bottom:10px'>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Build the <a href="/callback.html#Stepper"><code>Stepper</code></a> for the <a href="/callback.html#Callback"><code>Callback</code></a> according to <code>steps_cfg</code>.</p>
+<p>Build the <a href="/callback.html#Scheduler"><code>Scheduler</code></a> for the <a href="/callback.html#Callback"><code>Callback</code></a> according to <code>steps_cfg</code>.</p>
 
 </div>
 </div>
@@ -429,9 +429,9 @@ Total time: 00:05 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="OneCycleScheduler.on_train_begin"><code>on_train_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/one_cycle.py#L21" class="source_link">[source]</a></h4><blockquote><p><code>on_train_begin</code>(<strong><code>n_epochs</code></strong>:<code>int</code>, <strong>**<code>kwargs</code></strong>:<code>Any</code>)</p>
+<h4 id="OneCycleScheduler.on_train_begin" class="doc_header"><code>on_train_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/one_cycle.py#L24" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#OneCycleScheduler-on_train_begin-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>on_train_begin</code>(<strong><code>n_epochs</code></strong>:<code>int</code>, <strong><code>epoch</code></strong>:<code>int</code>, <strong>**<code>kwargs</code></strong>:<code>Any</code>)</p>
 </blockquote>
-
+<div class="collapse" id="OneCycleScheduler-on_train_begin-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#OneCycleScheduler-on_train_begin-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>on_train_begin</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div>
 </div>
 
 </div>
@@ -456,9 +456,9 @@ Total time: 00:05 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="OneCycleScheduler.on_batch_end"><code>on_batch_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/one_cycle.py#L34" class="source_link">[source]</a></h4><blockquote><p><code>on_batch_end</code>(<strong><code>train</code></strong>, <strong>**<code>kwargs</code></strong>:<code>Any</code>)</p>
+<h4 id="OneCycleScheduler.on_batch_end" class="doc_header"><code>on_batch_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/one_cycle.py#L45" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#OneCycleScheduler-on_batch_end-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>on_batch_end</code>(<strong><code>train</code></strong>, <strong>**<code>kwargs</code></strong>:<code>Any</code>)</p>
 </blockquote>
-
+<div class="collapse" id="OneCycleScheduler-on_batch_end-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#OneCycleScheduler-on_batch_end-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>on_batch_end</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div>
 </div>
 
 </div>

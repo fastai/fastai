@@ -3,12 +3,12 @@ from .torch_core import *
 from torch.utils.data.dataloader import default_collate
 
 DatasetType = Enum('DatasetType', 'Train Valid Test Single Fix')
-__all__ = ['DataBunch', 'DeviceDataLoader', 'DatasetType']
+__all__ = ['DataBunch', 'DeviceDataLoader', 'DatasetType', 'load_data']
 
 old_dl_init = torch.utils.data.DataLoader.__init__
 
 def intercept_args(self, dataset, batch_size=1, shuffle=False, sampler=None, batch_sampler=None,
-                 num_workers=0, collate_fn=default_collate, pin_memory=False, drop_last=False,
+                 num_workers=0, collate_fn=default_collate, pin_memory=True, drop_last=False,
                  timeout=0, worker_init_fn=None):
     self.init_kwargs = {'batch_size':batch_size, 'shuffle':shuffle, 'sampler':sampler, 'batch_sampler':batch_sampler,
                         'num_workers':num_workers, 'collate_fn':collate_fn, 'pin_memory':pin_memory,
@@ -19,6 +19,9 @@ torch.utils.data.DataLoader.__init__ = intercept_args
 
 def DataLoader___getattr__(dl, k:str)->Any: return getattr(dl.dataset, k)
 DataLoader.__getattr__ = DataLoader___getattr__
+
+def DataLoader___setstate__(dl, data:Any): dl.__dict__.update(data)
+DataLoader.__setstate__ = DataLoader___setstate__
 
 @dataclass
 class DeviceDataLoader():
@@ -33,6 +36,7 @@ class DeviceDataLoader():
 
     def __len__(self)->int: return len(self.dl)
     def __getattr__(self,k:str)->Any: return getattr(self.dl, k)
+    def __setstate__(self,data:Any): self.__dict__.update(data)
 
     @property
     def batch_size(self):   return self.dl.batch_size
@@ -61,7 +65,7 @@ class DeviceDataLoader():
                                 self.collate_fn)
 
     def proc_batch(self,b:Tensor)->Tensor:
-        "Proces batch `b` of `TensorImage`."
+        "Process batch `b` of `TensorImage`."
         b = to_device(b, self.device)
         for f in listify(self.tfms): b = f(b)
         return b
@@ -78,8 +82,8 @@ class DeviceDataLoader():
                    device=device, tfms=tfms, collate_fn=collate_fn)
 
 class DataBunch():
-    "Bind `train_dl`,`valid_dl` and `test_dl` in a a data object."
-    
+    "Bind `train_dl`,`valid_dl` and `test_dl` in a data object."
+
     def __init__(self, train_dl:DataLoader, valid_dl:DataLoader, fix_dl:DataLoader=None, test_dl:Optional[DataLoader]=None,
                  device:torch.device=None, dl_tfms:Optional[Collection[Callable]]=None, path:PathOrStr='.',
                  collate_fn:Callable=data_collate, no_check:bool=False):
@@ -106,16 +110,17 @@ class DataBunch():
 
     @classmethod
     def create(cls, train_ds:Dataset, valid_ds:Dataset, test_ds:Optional[Dataset]=None, path:PathOrStr='.', bs:int=64,
-               num_workers:int=defaults.cpus, dl_tfms:Optional[Collection[Callable]]=None, device:torch.device=None,
-               collate_fn:Callable=data_collate, no_check:bool=False)->'DataBunch':
-        "Create a `DataBunch` from `train_ds`, `valid_ds` and maybe `test_ds` with a batch size of `bs`."
+               val_bs:int=None, num_workers:int=defaults.cpus, dl_tfms:Optional[Collection[Callable]]=None,
+               device:torch.device=None, collate_fn:Callable=data_collate, no_check:bool=False, **dl_kwargs)->'DataBunch':
+        "Create a `DataBunch` from `train_ds`, `valid_ds` and maybe `test_ds` with a batch size of `bs`. Passes `**dl_kwargs` to `DataLoader()`"
         datasets = cls._init_ds(train_ds, valid_ds, test_ds)
-        val_bs = bs
-        dls = [DataLoader(d, b, shuffle=s, drop_last=s, num_workers=num_workers) for d,b,s in
+        val_bs = ifnone(val_bs, bs)
+        dls = [DataLoader(d, b, shuffle=s, drop_last=s, num_workers=num_workers, **dl_kwargs) for d,b,s in
                zip(datasets, (bs,val_bs,val_bs,val_bs), (True,False,False,False)) if d is not None]
         return cls(*dls, path=path, device=device, dl_tfms=dl_tfms, collate_fn=collate_fn, no_check=no_check)
 
     def __getattr__(self,k:int)->Any: return getattr(self.train_dl, k)
+    def __setstate__(self,data:Any): self.__dict__.update(data)
 
     def dl(self, ds_type:DatasetType=DatasetType.Valid)->DeviceDataLoader:
         "Returns appropriate `Dataset` for validation, training, or test (`ds_type`)."
@@ -127,12 +132,33 @@ class DataBunch():
                 self.fix_dl)
 
     @property
-    def dls(self):
-        res = [self.train_dl, self.valid_dl, self.fix_dl, self.single_dl]
+    def dls(self)->List[DeviceDataLoader]:
+        "Returns a list of all DeviceDataLoaders. If you need a specific DeviceDataLoader, access via the relevant property (`train_dl`, `valid_dl`, etc) as the index of DLs in this list is not guaranteed to remain constant."
+        res = [self.train_dl, self.fix_dl, self.single_dl]
+        # Preserve the original ordering of Train, Valid, Fix, Single, Test Data Loaders
+        # (Unknown/not verified as of 1.0.47 whether there are other methods explicitly using DLs their list index)
+        if self.valid_dl: res.insert(1, self.valid_dl)
         return res if not self.test_dl else res + [self.test_dl]
 
     def add_tfm(self,tfm:Callable)->None:
         for dl in self.dls: dl.add_tfm(tfm)
+
+    def remove_tfm(self,tfm:Callable)->None:
+        for dl in self.dls: dl.remove_tfm(tfm)
+
+    def save(self, fname:PathOrStr='data_save.pkl')->None:
+        "Save the `DataBunch` in `self.path/fname`."
+        if not getattr(self, 'label_list', False):
+            warn("Serializing the `DataBunch` only works when you created it using the data block API.")
+            return
+        try_save(self.label_list, self.path, fname)
+
+    def add_test(self, items:Iterator, label:Any=None)->None:
+        "Add the `items` as a test set. Pass along `label` otherwise label them with `EmptyLabel`."
+        self.label_list.add_test(items, label=label)
+        vdl = self.valid_dl
+        dl = DataLoader(self.label_list.test, vdl.batch_size, shuffle=False, drop_last=False, num_workers=vdl.num_workers)
+        self.test_dl = DeviceDataLoader(dl, vdl.device, vdl.tfms, vdl.collate_fn)
 
     def one_batch(self, ds_type:DatasetType=DatasetType.Train, detach:bool=True, denorm:bool=True, cpu:bool=True)->Collection[Tensor]:
         "Get one batch from the data loader of `ds_type`. Optionally `detach` and `denorm`."
@@ -165,12 +191,12 @@ class DataBunch():
             ys = [self.train_ds.y.reconstruct(grab_idx(y, i), x=x) for i,x in enumerate(xs)]
         else : ys = [self.train_ds.y.reconstruct(grab_idx(y, i)) for i in range(n_items)]
         self.train_ds.x.show_xys(xs, ys, **kwargs)
-
+ 
     def export(self, fname:str='export.pkl'):
         "Export the minimal state of `self` for inference in `self.path/fname`."
         xtra = dict(normalize=self.norm.keywords) if getattr(self, 'norm', False) else {}
-        self.valid_ds.export(self.path/fname, **xtra)
-    
+        try_save(self.valid_ds.get_state(**xtra), self.path, fname)
+
     def _grab_dataset(self, dl:DataLoader):
         ds = dl.dl.dataset
         while hasattr(ds, 'dataset'): ds = ds.dataset
@@ -183,7 +209,8 @@ class DataBunch():
     @property
     def single_ds(self)->Dataset: return self._grab_dataset(self.single_dl)
     @property
-    def loss_func(self)->Dataset: return getattr(self.train_ds, 'loss_func', F.nll_loss)
+    def loss_func(self)->OptLossFunc:
+        return getattr(self.train_ds.y, 'loss_func', F.nll_loss) if hasattr(self.train_ds, 'y') else F.nll_loss
 
     @property
     def test_ds(self)->Dataset:
@@ -206,7 +233,7 @@ class DataBunch():
         "Check the underlying data in the training set can be properly loaded."
         final_message = "You can deactivate this warning by passing `no_check=True`."
         if not hasattr(self.train_ds, 'items') or len(self.train_ds.items) == 0 or not hasattr(self.train_dl, 'batch_sampler'): return
-        if len(self.train_dl) == 0: 
+        if len(self.train_dl) == 0:
             warn(f"""Your training dataloader is empty, you have only {len(self.train_dl.dataset)} items in your training set.
                  Your batch size is {self.train_dl.batch_size}, you should lower it.""")
             print(final_message)
@@ -217,12 +244,11 @@ class DataBunch():
             try:    samples.append(self.train_dl.dataset[i])
             except: fails.append(i)
         if len(fails) > 0:
+            warn_msg = "There seems to be something wrong with your dataset, for example, in the first batch can't access"
             if len(fails) == len(idx):
-                warn_msg = "There seems to be something wrong with your dataset, can't access any element of self.train_ds.\n"
-                warn_msg += f"Tried: {show_some(idx)}"
+                warn_msg += f" any element of self.train_ds.\nTried: {show_some(idx)}"
             else:
-                warn_msg = "There seems to be something wrong with your dataset, can't access these elements "
-                warn_msg += f"in self.train_ds: {show_some(fails)}"
+                warn_msg += f" these elements in self.train_ds: {show_some(fails)}"
             warn(warn_msg)
             print(final_message)
             return
@@ -235,3 +261,11 @@ class DataBunch():
             except: pass
             warn(message)
             print(final_message)
+
+def load_data(path:PathOrStr, fname:str='data_save.pkl', bs:int=64, val_bs:int=None, num_workers:int=defaults.cpus,
+                  dl_tfms:Optional[Collection[Callable]]=None, device:torch.device=None, collate_fn:Callable=data_collate,
+                  no_check:bool=False, **kwargs)->DataBunch:
+    "Load from `path/fname` a saved `DataBunch`."
+    ll = torch.load(Path(path)/fname, map_location='cpu') if defaults.device == torch.device('cpu') else torch.load(Path(path)/fname)
+    return ll.databunch(path=path, bs=bs, val_bs=val_bs, num_workers=num_workers, dl_tfms=dl_tfms, device=device,
+                        collate_fn=collate_fn, no_check=no_check, **kwargs)

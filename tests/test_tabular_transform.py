@@ -1,8 +1,10 @@
+from fastai.gen_doc.doctest import this_tests
 from pandas.core.dtypes.dtypes import CategoricalDtype
 import pytest
 from fastai.tabular import *
 
 def test_categorify():
+    this_tests(Categorify)
     cat_names = ['A']
     cont_names = ['X']
     train_df = pd.DataFrame({'A': ['a', 'b'],
@@ -11,7 +13,7 @@ def test_categorify():
                              'X': [1., 0.]})
     original_cont_train_df = train_df[cont_names].copy()
     original_cont_valid_df = valid_df[cont_names].copy()
-    
+
     categorify_transform = Categorify(cat_names, cont_names)
     categorify_transform.apply_train(train_df)
     categorify_transform.apply_test(valid_df)
@@ -29,15 +31,17 @@ def test_default_fill_strategy_is_median():
     fill_missing_transform = FillMissing([], [])
 
     assert fill_missing_transform.fill_strategy is FillStrategy.MEDIAN
+    this_tests(FillMissing)
 
 def test_fill_missing_leaves_no_na_values():
     cont_names = ['A']
     train_df = pd.DataFrame({'A': [0., np.nan, np.nan]})
     valid_df = pd.DataFrame({'A': [np.nan, 0., np.nan]})
-    
+
     fill_missing_transform = FillMissing([], cont_names)
     fill_missing_transform.apply_train(train_df)
     fill_missing_transform.apply_test(valid_df)
+    this_tests(fill_missing_transform.apply_train, fill_missing_transform.apply_test)
 
     assert train_df.isna().values.sum() == 0
     assert valid_df.isna().values.sum() == 0
@@ -51,6 +55,7 @@ def test_fill_missing_returns_correct_medians():
     fill_missing_transform = FillMissing([], ['A'], add_col=False)
     fill_missing_transform.apply_train(train_df)
     fill_missing_transform.apply_test(valid_df)
+    this_tests(fill_missing_transform.apply_train, fill_missing_transform.apply_test)
 
     # Make sure the train median is used in both cases
     assert train_df.equals(expected_filled_train_df)

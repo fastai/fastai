@@ -9,6 +9,7 @@
 # inside `try` context. So it's possible that we might need to ditch
 # it. It might be useful as an advisory rather than a real test.
 
+from fastai.gen_doc.doctest import this_tests
 import os, sys, re
 from pathlib import Path
 
@@ -75,6 +76,7 @@ data = load_setup_py_data_basic("setup.py", work_dir)
 
 # just test first that the parsing worked
 def test_setup_parser():
+    this_tests('na')
     assert data['name'] == 'fastai'
 
     # print(data['extras_require'])
@@ -99,6 +101,7 @@ class CheckDependencyImporter(object):
 import pytest
 @pytest.mark.skip("Currently broken test")
 def test_unwanted_mod_dependencies():
+    this_tests('na')
     # save the original state
     mod_saved = sys.modules['fastai'] if 'fastai' in sys.modules else None
     meta_path_saved = sys.meta_path.copy

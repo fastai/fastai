@@ -11,7 +11,7 @@ class LossMetrics(LearnerCallback):
     def on_train_begin(self, **kwargs):
         "Add the metrics names to the `Recorder`."
         self.names = ifnone(self.learn.loss_func.metric_names, [])
-        if not self.names: warn('LossMetrics requested by no loss_func.metric_names provided')
+        if not self.names: warn('LossMetrics requested but no loss_func.metric_names provided')
         self.learn.recorder.add_metric_names(self.names)
 
     def on_epoch_begin(self, **kwargs):
@@ -27,9 +27,8 @@ class LossMetrics(LearnerCallback):
             self.metrics[name] += bs * self.learn.loss_func.metrics[name].detach().cpu()
         self.nums += bs
 
-    def on_epoch_end(self, **kwargs):
+    def on_epoch_end(self, last_metrics, **kwargs):
         "Finish the computation and sends the result to the Recorder."
         if not self.nums: return
         metrics = [self.metrics[name]/self.nums for name in self.names]
-        self.learn.recorder.add_metrics(metrics)
-
+        return {'last_metrics': last_metrics+metrics}

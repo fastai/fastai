@@ -3,7 +3,7 @@
 # notes:
 # 'target: | target1 target2' syntax enforces the exact order
 
-.PHONY: bump bump-dev bump-major bump-major-dev bump-minor bump-minor-dev bump-post-release clean clean-build clean-build-conda clean-build-pypi clean-conda clean-pyc clean-pyc-conda clean-pyc-pypi clean-pypi clean-test clean-test-conda clean-test-pypi commit-release-push commit-hotfix-push commit-tag dist-conda dist-pypi dist-pypi-bdist dist-pypi-sdist docs sanity-check git-pull help release tag-version-push test test-cpu test-install-conda test-install test-install-pyp upload upload-conda upload-pypi install-conda-local
+.PHONY: bump bump-dev bump-major bump-major-dev bump-minor bump-minor-dev bump-post-release clean clean-build clean-build-conda clean-build-pypi clean-conda clean-pyc clean-pyc-conda clean-pyc-pypi clean-pypi clean-test clean-test-conda clean-test-pypi commit-release-push commit-hotfix-push commit-tag dist-conda dist-pypi dist-pypi-bdist dist-pypi-sdist docs sanity-check git-pull help release tag-version-push test test-cpu test-install-conda test-install test-install-pyp upload upload-conda upload-pypi install-conda-local git-clean-check sanity-check-hotfix
 
 define get_cur_branch
 $(shell git branch | sed -n '/\* /s///p')
@@ -171,6 +171,9 @@ test: ## run tests with the default python
 test-fast: ## run tests in parallel (requires pip install pytest-xdist)
 	pytest -n 3
 
+test-full: ## run all tests, including slow ones, print summary, update test-registry
+	pytest --runslow -ra --testapireg
+
 test-cpu: ## run tests with the default python and CUDA_VISIBLE_DEVICES=""
 	CUDA_VISIBLE_DEVICES="" python setup.py --quiet test
 
@@ -179,27 +182,52 @@ tools-update: ## install/update build tools
 	conda install -y conda-verify conda-build anaconda-client
 	pip install -U twine
 
+docs: ## build test_api_db.json and update docs
+	${MAKE} test-full
+	tools/build-docs -f
+
+log_file := release-`date +"%Y-%m-%d-%H-%M-%S"`.log
 release: ## do it all (other than testing)
-	${MAKE} tools-update
-	${MAKE} master-branch-switch
-	${MAKE} sanity-check
-	${MAKE} test
-	${MAKE} bump
-	${MAKE} changes-finalize
-	${MAKE} release-branch-create
-	${MAKE} commit-version
-	${MAKE} master-branch-switch
-	${MAKE} bump-dev
-	${MAKE} changes-dev-cycle
-	${MAKE} commit-dev-cycle-push
-	${MAKE} prev-branch-switch
-	${MAKE} commit-release-push
-	${MAKE} tag-version-push
-	${MAKE} dist
-	${MAKE} upload
-	${MAKE} test-install
-	${MAKE} backport-check
-	${MAKE} master-branch-switch
+	@echo "\n\n*** logging to $(log_file)"
+	( \
+	${MAKE} tools-update && \
+	${MAKE} master-branch-switch && \
+	${MAKE} sanity-check && \
+	${MAKE} test && \
+	${MAKE} bump && \
+	${MAKE} changes-finalize && \
+	${MAKE} release-branch-create && \
+	${MAKE} commit-version && \
+	${MAKE} master-branch-switch && \
+	${MAKE} bump-dev && \
+	${MAKE} changes-dev-cycle && \
+	${MAKE} commit-dev-cycle-push && \
+	${MAKE} prev-branch-switch && \
+	${MAKE} commit-release-push && \
+	${MAKE} tag-version-push && \
+	${MAKE} dist && \
+	${MAKE} upload && \
+	${MAKE} test-install && \
+	${MAKE} backport-check && \
+	${MAKE} master-branch-switch && \
+	echo "Done" \
+	) 2>&1 | tee $(log_file)
+
+log_file_hotfix := release-hotfix-`date +"%Y-%m-%d-%H-%M-%S"`.log
+release-hotfix: ## do most of the hotfix release process
+	@echo "\n\n*** logging to $(log_file)"
+	( \
+	${MAKE} sanity-check-hotfix && \
+	${MAKE} test && \
+	${MAKE} bump-post-release && \
+	${MAKE} commit-hotfix-push && \
+	${MAKE} tag-version-push && \
+	${MAKE} dist && \
+	${MAKE} upload && \
+	${MAKE} test-install && \
+	${MAKE} master-branch-switch && \
+	echo "Done" \
+	) 2>&1 | tee $(log_file_hotfix)
 
 ##@ git helpers
 
@@ -209,7 +237,7 @@ git-pull: ## git pull
 	git pull
 	git status
 
-sanity-check:
+git-clean-check:
 	@echo "\n\n*** Checking that everything is committed"
 	@if [ -n "$(shell git status -s)" ]; then\
 		echo "git status is not clean. You have uncommitted git files";\
@@ -218,8 +246,13 @@ sanity-check:
 		echo "git status is clean";\
     fi
 
+sanity-check: git-clean-check
 	@echo "\n\n*** Checking master branch version: should always be: X.Y.Z.dev0"
-	@perl -le '$$_=shift; $$v="initial version: $$_"; /\.dev0$$/ ? print "Good $$v" : die "Bad $vv, expecting \.dev0"' $(version)
+	@perl -le '$$_=shift; $$v="initial version: $$_"; /\.dev0$$/ ? print "Good $$v" : die "Bad $$v, expecting .dev0"' $(version)
+
+sanity-check-hotfix: git-clean-check
+	@echo "\n\n*** Checking branch name: expecting release-X.Y.Z"
+	@perl -le '$$_=shift; $$br="current branch: $$_"; /^release-\d+\.\d+\.\d+/ ? print "Good $$br" : die "Bad $$br, expecting release-X.Y.Z"' $(cur_branch)
 
 prev-branch-switch:
 	@echo "\n\n*** [$(cur_branch)] Switching to prev branch"
@@ -246,7 +279,14 @@ commit-version: ## commit and tag the release
 	git commit -m "starting release branch: $(version)" $(version_file)
 	$(call echo_cur_branch)
 
+# in case someone managed to push something into master since this process
+# started, it's now safe to git pull (which would avoid the merge error and
+# break 'make release'), as we are no longer on the release branch and new
+# pulled changes won't affect the release branch
 commit-dev-cycle-push: ## commit version and CHANGES and push
+	@echo "\n\n*** [$(cur_branch)] pull before commit to avoid interactive merges"
+	git pull
+
 	@echo "\n\n*** [$(cur_branch)] Start new dev cycle: $(version)"
 	git commit -m "new dev cycle: $(version)" $(version_file) CHANGES.md
 
@@ -336,7 +376,7 @@ changes-finalize: ## fix the version and stamp the date
 
 changes-dev-cycle: ## insert new template + version
 	@echo "\n\n*** [$(cur_branch)] Install new template + version in CHANGES.md"
-	perl -0777 -pi -e 's|^(##)|\n\n## $(version) (Work In Progress)\n\n### New:\n\n### Changed:\n\n### Fixed:\n\n\n\n$$1|ms' CHANGES.md
+	perl -0777 -pi -e 's|^(##)|## $(version) (Work In Progress)\n\n### New:\n\n### Changed:\n\n### Fixed:\n\n\n\n$$1|ms' CHANGES.md
 
 
 ##@ Version bumping

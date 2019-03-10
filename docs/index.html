@@ -32,7 +32,7 @@ sidebar: home_sidebar
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">path</span> <span class="o">=</span> <span class="n">untar_data</span><span class="p">(</span><span class="n">URLs</span><span class="o">.</span><span class="n">MNIST_SAMPLE</span><span class="p">)</span>
 <span class="n">data</span> <span class="o">=</span> <span class="n">ImageDataBunch</span><span class="o">.</span><span class="n">from_folder</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-<span class="n">learn</span> <span class="o">=</span> <span class="n">create_cnn</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">models</span><span class="o">.</span><span class="n">resnet18</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="n">accuracy</span><span class="p">)</span>
+<span class="n">learn</span> <span class="o">=</span> <span class="n">cnn_learner</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">models</span><span class="o">.</span><span class="n">resnet18</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="n">accuracy</span><span class="p">)</span>
 <span class="n">learn</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 
@@ -132,9 +132,9 @@ is the notebook source of what you're reading now.</div>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="rotate"><code>rotate</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/transform.py#L25" class="source_link">[source]</a></h4><blockquote><p><code>rotate</code>(<strong><code>degrees</code></strong>:<a href="/torch_core.html#uniform"><code>uniform</code></a>) → <a href="/vision.image.html#Image"><code>Image</code></a> :: <a href="/vision.image.html#TfmAffine"><code>TfmAffine</code></a></p>
+<h4 id="rotate" class="doc_header"><code>rotate</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/transform.py#L25" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#rotate-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>rotate</code>(<strong><code>degrees</code></strong>:<a href="/torch_core.html#uniform"><code>uniform</code></a>) → <a href="/vision.image.html#Image"><code>Image</code></a> :: <a href="/vision.image.html#TfmAffine"><code>TfmAffine</code></a></p>
 </blockquote>
-<p>Rotate image by <code>degrees</code>.</p>
+<div class="collapse" id="rotate-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#rotate-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>rotate</code>:</p><ul><li><code>pytest -sv tests/test_vision_transform.py::test_deterministic_transforms</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_vision_transform.py#L111" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><p>Rotate image by <code>degrees</code>.</p>
 
 </div>
 
@@ -188,7 +188,7 @@ is the notebook source of what you're reading now.</div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>That will give you all the standard external modules you'll need, in their customary namespaces (e.g. <code>pandas as pd</code>, <code>numpy as np</code>, <code>matplotlib.pyplot as plt</code>), plus the core fastai libraries. In addition, the main classes and functions for your application (<a href="/vision.html#vision"><code>fastai.vision</code></a>, in this case), e.g. creating a <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a> from an image folder and training a convolutional neural network (with <a href="/vision.learner.html#create_cnn"><code>create_cnn</code></a>), are also imported. If you don't wish to import any application, but want all the main functionality from fastai, use <code>from fastai.basics import *</code>. Of course, you can also just import the specific symbols that you require, without using <code>import *</code>.</p>
+<p>That will give you all the standard external modules you'll need, in their customary namespaces (e.g. <code>pandas as pd</code>, <code>numpy as np</code>, <code>matplotlib.pyplot as plt</code>), plus the core fastai libraries. In addition, the main classes and functions for your application (<a href="/vision.html#vision"><code>fastai.vision</code></a>, in this case), e.g. creating a <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a> from an image folder and training a convolutional neural network (with <a href="/vision.learner.html#cnn_learner"><code>cnn_learner</code></a>), are also imported. If you don't wish to import any application, but want all the main functionality from fastai, use <code>from fastai.basics import *</code>. Of course, you can also just import the specific symbols that you require, without using <code>import *</code>.</p>
 <p>If you wish to see where a symbol is imported from, either just type the symbol name (in a REPL such as Jupyter Notebook or IPython), or (in most editors) wave your mouse over the symbol to see the definition. For instance:</p>
 
 </div>

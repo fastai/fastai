@@ -34,7 +34,7 @@ If you have `nvidia-smi` working and `pytorch` still can't recognize your NVIDIA
 
    Note, not remove, but purge! purge in addition to removing the package, also removes package-specific configuration and any other files that were created by it.
 
-2. Once you uninstalled the old drivers, make sure you don't have any orphaned NVIDIA drivers on your system remaining from manual installs. Usually it's enough to run:
+2. Once you uninstalled the old drivers, make sure you don't have any orphaned NVIDIA drivers on your system remaining from manual installs. Usually, it's enough to run:
 
    ```
    find /usr/ | grep libcuda.so
@@ -416,6 +416,15 @@ python -m fastai.utils.show_install
 ```
 Incidentally, we want you to include its output in any bug reports you may submit in the future.
 
+One more situation this may happen is where you accidentally try to run fastai-1.0-based code from under `courses/*/` in the git repo, which includes a symlink to fastai-0.7 code base and then all the hell breaks loose. Just move your notebook away from those folders and all will be good.
+
+If `import fastai` works, but not `import fastai.vision`, do:
+```
+import sys
+import fastai
+print(sys.modules['fastai'])
+```
+and see which fastai got loaded - that will help you to untangle the conflict.
 
 
 ## Conda environments not showing up in Jupyter Notebook
@@ -443,11 +452,13 @@ There is a particular issue with this error is that under ipython/jupyter notebo
 #memory-leakage-on-exception).
 
 
-### cuda runtime error (59) : device-side assert triggered
+### device-side assert triggered
 
 CUDA's default environment allows sending commands to GPU in asynchronous mode - i.e. without waiting to check whether they were successful, thus tremendously speeding up the execution. The side effect is that if anything goes wrong, the context is gone and it's impossible to tell what the error was. That's when you get this generic error, which means that something went wrong on the GPU, but the program can't tell what.
 
-To debug this issue, the non-blocking CUDA mode needs to be turned off, which will slow everything down, but you will get the proper error message. You can accomplish that using several approaches:
+Moreover, the only way to recover from it is to restart the kernel. Other programs and kernels will still be able to use the card, so it only affects the kernel/program the error happened in.
+
+To debug this issue, the non-blocking CUDA mode needs to be turned off, which will slow everything down, but you will get the proper error message, albeit, it will still be unrecoverable. You can accomplish that using several approaches:
 
 * create a cell at the very top of the notebook.
    ```
@@ -473,6 +484,19 @@ Of course, if you're not using `jupyter notebook` then you can just set the env 
    ```
    CUDA_LAUNCH_BLOCKING=1 my_pytorch_script.py
    ```
+
+### cuda runtime error (11) : invalid argument
+
+If you get an error:
+```
+RuntimeError: cuda runtime error (11) : invalid argument at .../src/THC/THCGeneral.cpp
+```
+it's possible that your pytorch build doesn't support the NVIDIA Driver you have installed.
+
+For example, you may have a newer NVIDIA driver with an older pytorch CUDA build, which most of the time should work, as it should be backward compatible, but that is not always the case. So make sure that if you run a recent NVIDIA driver you install pytorch that is built against the latest CUDA version. Follow the instructions [here](https://pytorch.org/get-started/locally/).
+
+You will find the table of different CUDA versions and their NVDIA driver counterparts [here](https://github.com/fastai/fastai/blob/master/README.md#is-my-system-supported).
+
 
 
 ## Memory Leakage On Exception
@@ -505,8 +529,11 @@ The rest of this section covers a variety of solutions for this problem.
 
 `fastai > 1.0.41` has been instrumented with the following features that will provide you a solution to this problem:
 
-1.  under non-ipython environment it doesn't do anything special
-2. under ipython it strips tb by default only for the "CUDA out of memory" exception, i.e. `%debug` magic will work under all circumstances but this one, and it'll leak memory in all of those until tb is reset
+1. under non-ipython environment it doesn't do anything special
+2. under ipython it strips tb by default only for the following exceptions:
+   * "CUDA out of memory"
+   * "device-side assert triggered"
+   that is the `%debug` magic will work under all other exceptions, and it'll leak memory until tb is reset.
 3.  The env var ` FASTAI_TB_CLEAR_FRAMES` changes this behavior when run under ipython,
 depending on its value:
 
@@ -566,7 +593,7 @@ with the same results. Except this one (fit functions) is already protected, thi
 
 Note, that the trick is in running: `traceback.clear_frames(tb)` to free all `locals()` tied to the exception object.
 
-Note that these help functions don't make any special cases and will do the clearing for any exception. Which means that you will not be able to use a debugger if you use those, since an `locals()` will be gone. You can, of course, use the more complicated versions of these functions from [fastai.utils.mem](https://github.com/fastai/fastai/blob/master/fastai/utils/mem.py) which have more flexibility as explained in the previous section.
+Note that these help functions don't make any special cases and will do the clearing for any exception. Which means that you will not be able to use a debugger if you use those, since an `locals()` will be gone. You can, of course, use the more complicated versions of these functions from [fastai.utils.ipython](https://github.com/fastai/fastai/blob/master/fastai/utils/ipython.py) which have more flexibility as explained in the previous section.
 
 If you need the same solution outside of the fastai environment, you can either copy-n-paste it from this section, or alternatively similar helper functions (a function decorator and a context manager) are available via the [ipyexperiments](https://github.com/stas00/ipyexperiments) project, inside the [ipyexperiments.utils.ipython](https://github.com/stas00/ipyexperiments/blob/master/docs/utils_ipython.md) module.
 

@@ -95,16 +95,17 @@ dep_groups = {
     'core':   to_list("""
         bottleneck           # performance-improvement for numpy
         dataclasses ; python_version<'3.7'
-        fastprogress>=0.1.18
+        fastprogress>=0.1.19
         beautifulsoup4
         matplotlib
         numexpr              # performance-improvement for numpy
-        numpy>=1.12
+        numpy>=1.15
         nvidia-ml-py3
         pandas
         packaging
         Pillow
         pyyaml
+        pynvx>=1.0.0 ; platform_system=="Darwin"  # only pypi at the moment
         requests
         scipy
         torch>=1.0.0
@@ -139,7 +140,7 @@ requirements = [y for x in dep_groups.values() for y in x]
 # some of the listed modules appear in test_requirements as well, as explained below.
 #
 dev_requirements = { 'dev' : to_list("""
-    coverage
+    coverage                     # make coverage
     distro
     ipython
     jupyter
@@ -151,6 +152,7 @@ dev_requirements = { 'dev' : to_list("""
     pip>=9.0.1
     pipreqs>=0.4.9
     pytest
+    pytest-xdist                 # make test-fast (faster parallel testing)
     responses                    # for requests testing
     traitlets
     wheel>=0.30.0

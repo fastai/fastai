@@ -4,7 +4,8 @@ from fastai.torch_core import *
 from fastai.callback import *
 from fastai.basic_train import *
 
-__all__ = ['TerminateOnNaNCallback', 'EarlyStoppingCallback', 'SaveModelCallback', 'TrackerCallback', 'ReduceLROnPlateauCallback' ]
+__all__ = ['TerminateOnNaNCallback', 'EarlyStoppingCallback', 'SaveModelCallback', 'TrackerCallback',
+        'ReduceLROnPlateauCallback', 'TrackEpochCallback' ]
 
 class TerminateOnNaNCallback(Callback):
     "A `Callback` that terminates training if loss is NaN."
@@ -17,12 +18,7 @@ class TerminateOnNaNCallback(Callback):
         if self.stop: return True #to skip validation after stopping during training
         if torch.isnan(last_loss):
             print (f'Epoch/Batch ({epoch}/{num_batch}): Invalid loss, terminating training.')
-            self.stop = True
-            return True
-
-    def on_epoch_end(self, **kwargs:Any)->None:
-        "Stop the training if necessary."
-        return self.stop
+            return {'stop_epoch': True, 'stop_training': True}
 
 class TrackerCallback(LearnerCallback):
     "A `LearnerCallback` that keeps track of the best value in `monitor`."
@@ -46,7 +42,7 @@ class TrackerCallback(LearnerCallback):
         elif len(self.learn.recorder.val_losses) == 0: return None
         values = {'trn_loss':self.learn.recorder.losses[-1:][0].cpu().numpy(),
                   'val_loss':self.learn.recorder.val_losses[-1:][0]}
-        for i, name in enumerate(self.learn.recorder.names[3:]):
+        for i, name in enumerate(self.learn.recorder.names[3:-1]):
             values[name]=self.learn.recorder.metrics[-1:][0][i]
         if values.get(self.monitor) is None:
             warn(f'{self.__class__} conditioned on metric `{self.monitor}` which is not available. Available metrics are: {", ".join(map(str, self.learn.recorder.names[1:]))}')
@@ -75,7 +71,7 @@ class EarlyStoppingCallback(TrackerCallback):
             self.wait += 1
             if self.wait > self.patience:
                 print(f'Epoch {epoch}: early stopping')
-                return True
+                return {"stop_training":True}
 
 class SaveModelCallback(TrackerCallback):
     "A `TrackerCallback` that saves the model when monitored quantity is best."
@@ -85,8 +81,14 @@ class SaveModelCallback(TrackerCallback):
         if self.every not in ['improvement', 'epoch']:
             warn(f'SaveModel every {self.every} is invalid, falling back to "improvement".')
             self.every = 'improvement'
+                 
+    def jump_to_epoch(self, epoch:int)->None:
+        try: 
+            self.learn.load(f'{self.name}_{epoch-1}', purge=False)
+            print(f"Loaded {self.name}_{epoch-1}")
+        except: print(f'Model {self.name}_{epoch-1} not found.')
 
-    def on_epoch_end(self, epoch, **kwargs:Any)->None:
+    def on_epoch_end(self, epoch:int, **kwargs:Any)->None:
         "Compare the value monitored to its best score and maybe save the model."
         if self.every=="epoch": self.learn.save(f'{self.name}_{epoch}')
         else: #every="improvement"
@@ -99,11 +101,11 @@ class SaveModelCallback(TrackerCallback):
     def on_train_end(self, **kwargs):
         "Load the best model."
         if self.every=="improvement" and (self.learn.path/f'{self.learn.model_dir}/{self.name}.pth').is_file():
-            self.learn.load(f'{self.name}')
+            self.learn.load(f'{self.name}', purge=False)
 
 class ReduceLROnPlateauCallback(TrackerCallback):
     "A `TrackerCallback` that reduces learning rate when a metric has stopped improving."
-    def __init__(self, learn:Learner, monitor:str='val_loss', mode:str='auto', patience:int=0, factor:float=0.2, 
+    def __init__(self, learn:Learner, monitor:str='val_loss', mode:str='auto', patience:int=0, factor:float=0.2,
                  min_delta:int=0):
         super().__init__(learn, monitor=monitor, mode=mode)
         self.patience,self.factor,self.min_delta = patience,factor,min_delta
@@ -125,3 +127,26 @@ class ReduceLROnPlateauCallback(TrackerCallback):
                 self.opt.lr *= self.factor
                 self.wait = 0
                 print(f'Epoch {epoch}: reducing lr to {self.opt.lr}')
+
+
+class TrackEpochCallback(LearnerCallback):
+    _order = -20 #Need to run before fit_one_cycle
+    def __init__(self, learn:Learner, name:str='epoch', epoch_offset:int=None):
+        "Store completed epoch number in `learn.model_dir/name`."
+        super().__init__(learn)
+        learn._test_writeable_path()
+        self.path = learn.path/learn.model_dir/name
+        if epoch_offset is None:
+            if os.path.isfile(self.path):
+                 with self.path.open('r') as f:
+                     try:    self.start_epoch = int(f.read())+1
+                     except: self.start_epoch = 0
+            else: self.start_epoch = 0
+                
+    def on_train_begin(self, **kwargs:Any):
+        return {'epoch': self.start_epoch}
+
+    def on_epoch_end(self, epoch, **kwargs:Any)->None:
+        with self.path.open('w') as f: f.write(f'{epoch}')
+
+    def restart(self): os.remove(self.path)

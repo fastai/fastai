@@ -27,7 +27,7 @@ class MixUpCallback(LearnerCallback):
             if len(last_target.shape) == 2:
                 lambd = lambd.unsqueeze(1).float()
             new_target = last_target.float() * lambd + y1.float() * (1-lambd)
-        return (new_input, new_target)  
+        return {'last_input': new_input, 'last_target': new_target}  
 
 class MixUpLoss(nn.Module):
     "Adapt the loss function `crit` to go with mixup."

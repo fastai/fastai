@@ -11,7 +11,7 @@ summary: "Implementation of mixup"
     
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Mixup-data-augmentation">Mixup data augmentation<a class="anchor-link" href="#Mixup-data-augmentation">&#182;</a></h1>
+<h2 id="Mixup-data-augmentation">Mixup data augmentation<a class="anchor-link" href="#Mixup-data-augmentation">&#182;</a></h2>
 </div>
 </div>
 </div>
@@ -87,63 +87,75 @@ summary: "Implementation of mixup"
 
 
 <div class="output_html rendered_html output_subarea ">
-Total time: 00:22 <p><table style='width:300px; margin-bottom:10px'>
-  <tr>
-    <th>epoch</th>
-    <th>train_loss</th>
-    <th>valid_loss</th>
-    <th>accuracy</th>
-  </tr>
-  <tr>
-    <th>1</th>
-    <th>0.121607</th>
-    <th>0.099845</th>
-    <th>0.963199</th>
-  </tr>
-  <tr>
-    <th>2</th>
-    <th>0.083354</th>
-    <th>0.060547</th>
-    <th>0.978410</th>
-  </tr>
-  <tr>
-    <th>3</th>
-    <th>0.059484</th>
-    <th>0.039261</th>
-    <th>0.988224</th>
-  </tr>
-  <tr>
-    <th>4</th>
-    <th>0.045186</th>
-    <th>0.032424</th>
-    <th>0.987242</th>
-  </tr>
-  <tr>
-    <th>5</th>
-    <th>0.040918</th>
-    <th>0.030167</th>
-    <th>0.988714</th>
-  </tr>
-  <tr>
-    <th>6</th>
-    <th>0.029098</th>
-    <th>0.027439</th>
-    <th>0.990186</th>
-  </tr>
-  <tr>
-    <th>7</th>
-    <th>0.024917</th>
-    <th>0.020623</th>
-    <th>0.992640</th>
-  </tr>
-  <tr>
-    <th>8</th>
-    <th>0.025756</th>
-    <th>0.016451</th>
-    <th>0.993621</th>
-  </tr>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: left;">
+      <th>epoch</th>
+      <th>train_loss</th>
+      <th>valid_loss</th>
+      <th>accuracy</th>
+      <th>time</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>0.111498</td>
+      <td>0.094612</td>
+      <td>0.965653</td>
+      <td>00:02</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>0.079887</td>
+      <td>0.064684</td>
+      <td>0.975466</td>
+      <td>00:02</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>0.053950</td>
+      <td>0.042022</td>
+      <td>0.985280</td>
+      <td>00:02</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>0.043062</td>
+      <td>0.035917</td>
+      <td>0.986752</td>
+      <td>00:02</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>0.030692</td>
+      <td>0.025291</td>
+      <td>0.989205</td>
+      <td>00:02</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>0.027065</td>
+      <td>0.024845</td>
+      <td>0.987733</td>
+      <td>00:02</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>0.031135</td>
+      <td>0.020047</td>
+      <td>0.990186</td>
+      <td>00:02</td>
+    </tr>
+    <tr>
+      <td>8</td>
+      <td>0.025115</td>
+      <td>0.025447</td>
+      <td>0.988714</td>
+      <td>00:02</td>
+    </tr>
+  </tbody>
 </table>
-
 </div>
 
 </div>
@@ -225,63 +237,75 @@ The last trick we have to apply with this is that there can be some duplicates w
 
 
 <div class="output_html rendered_html output_subarea ">
-Total time: 00:23 <p><table style='width:300px; margin-bottom:10px'>
-  <tr>
-    <th>epoch</th>
-    <th>train_loss</th>
-    <th>valid_loss</th>
-    <th>accuracy</th>
-  </tr>
-  <tr>
-    <th>1</th>
-    <th>0.367149</th>
-    <th>0.153966</th>
-    <th>0.966634</th>
-  </tr>
-  <tr>
-    <th>2</th>
-    <th>0.336026</th>
-    <th>0.124332</th>
-    <th>0.975466</th>
-  </tr>
-  <tr>
-    <th>3</th>
-    <th>0.329856</th>
-    <th>0.112380</th>
-    <th>0.980864</th>
-  </tr>
-  <tr>
-    <th>4</th>
-    <th>0.318305</th>
-    <th>0.100375</th>
-    <th>0.982826</th>
-  </tr>
-  <tr>
-    <th>5</th>
-    <th>0.321548</th>
-    <th>0.114303</th>
-    <th>0.986261</th>
-  </tr>
-  <tr>
-    <th>6</th>
-    <th>0.310852</th>
-    <th>0.097427</th>
-    <th>0.990186</th>
-  </tr>
-  <tr>
-    <th>7</th>
-    <th>0.305583</th>
-    <th>0.079496</th>
-    <th>0.989205</th>
-  </tr>
-  <tr>
-    <th>8</th>
-    <th>0.301467</th>
-    <th>0.089194</th>
-    <th>0.990677</th>
-  </tr>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: left;">
+      <th>epoch</th>
+      <th>train_loss</th>
+      <th>valid_loss</th>
+      <th>accuracy</th>
+      <th>time</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>0.358743</td>
+      <td>0.156058</td>
+      <td>0.961236</td>
+      <td>00:02</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>0.334059</td>
+      <td>0.124648</td>
+      <td>0.982336</td>
+      <td>00:02</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>0.321510</td>
+      <td>0.105825</td>
+      <td>0.987242</td>
+      <td>00:02</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>0.314596</td>
+      <td>0.099804</td>
+      <td>0.988714</td>
+      <td>00:02</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>0.314716</td>
+      <td>0.094472</td>
+      <td>0.989205</td>
+      <td>00:02</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>0.309679</td>
+      <td>0.095133</td>
+      <td>0.989696</td>
+      <td>00:02</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>0.314474</td>
+      <td>0.086767</td>
+      <td>0.990186</td>
+      <td>00:02</td>
+    </tr>
+    <tr>
+      <td>8</td>
+      <td>0.309931</td>
+      <td>0.095609</td>
+      <td>0.990186</td>
+      <td>00:02</td>
+    </tr>
+  </tbody>
 </table>
-
 </div>
 
 </div>
@@ -306,9 +330,9 @@ Total time: 00:23 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="MixUpCallback"><code>class</code> <code>MixUpCallback</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/mixup.py#L6" class="source_link">[source]</a></h2><blockquote><p><code>MixUpCallback</code>(<strong><code>learn</code></strong>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <strong><code>alpha</code></strong>:<code>float</code>=<strong><em><code>0.4</code></em></strong>, <strong><code>stack_x</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>, <strong><code>stack_y</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>) :: <a href="/basic_train.html#LearnerCallback"><code>LearnerCallback</code></a></p>
+<h2 id="MixUpCallback" class="doc_header"><code>class</code> <code>MixUpCallback</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/mixup.py#L6" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#MixUpCallback-pytest" style="float:right; padding-right:10px">[test]</a></h2><blockquote><p><code>MixUpCallback</code>(<strong><code>learn</code></strong>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <strong><code>alpha</code></strong>:<code>float</code>=<strong><em><code>0.4</code></em></strong>, <strong><code>stack_x</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>, <strong><code>stack_y</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>) :: <a href="/basic_train.html#LearnerCallback"><code>LearnerCallback</code></a></p>
 </blockquote>
-<p>Callback that creates the mixed-up input and target.</p>
+<div class="collapse" id="MixUpCallback-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#MixUpCallback-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>MixUpCallback</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Callback that creates the mixed-up input and target.</p>
 
 </div>
 
@@ -347,9 +371,9 @@ Total time: 00:23 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="MixUpCallback.on_batch_begin"><code>on_batch_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/mixup.py#L12" class="source_link">[source]</a></h4><blockquote><p><code>on_batch_begin</code>(<strong><code>last_input</code></strong>, <strong><code>last_target</code></strong>, <strong><code>train</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="MixUpCallback.on_batch_begin" class="doc_header"><code>on_batch_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/mixup.py#L12" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#MixUpCallback-on_batch_begin-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>on_batch_begin</code>(<strong><code>last_input</code></strong>, <strong><code>last_target</code></strong>, <strong><code>train</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
-<p>Applies mixup to <code>last_input</code> and <code>last_target</code> if <code>train</code>.</p>
+<div class="collapse" id="MixUpCallback-on_batch_begin-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#MixUpCallback-on_batch_begin-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>on_batch_begin</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Applies mixup to <code>last_input</code> and <code>last_target</code> if <code>train</code>.</p>
 
 </div>
 
@@ -391,9 +415,9 @@ Total time: 00:23 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="MixUpLoss"><code>class</code> <code>MixUpLoss</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/mixup.py#L32" class="source_link">[source]</a></h3><blockquote><p><code>MixUpLoss</code>(<strong><code>crit</code></strong>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
+<h3 id="MixUpLoss" class="doc_header"><code>class</code> <code>MixUpLoss</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/mixup.py#L32" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#MixUpLoss-pytest" style="float:right; padding-right:10px">[test]</a></h3><blockquote><p><code>MixUpLoss</code>(<strong><code>crit</code></strong>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
 </blockquote>
-<p>Adapt the loss function <code>crit</code> to go with mixup.</p>
+<div class="collapse" id="MixUpLoss-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#MixUpLoss-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>MixUpLoss</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Adapt the loss function <code>crit</code> to go with mixup.</p>
 
 </div>
 
