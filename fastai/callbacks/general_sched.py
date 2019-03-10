@@ -6,11 +6,12 @@ __all__ = ['GeneralScheduler', 'TrainingPhase']
 
 @dataclass
 class TrainingPhase():
-    "Schedule `lrs` and `moms` according to `lr_anneal` and `mom_anneal` across a `length` schedule."
+    "Schedule hyper-parameters for a phase of `length` iterations."
     length:int
     
     def __post_init__(self): self.scheds = dict()
     def schedule_hp(self, name, vals, anneal=None):
+        "Adds a schedule for `name` between `vals` using `anneal`."
         self.scheds[name] = Scheduler(vals, self.length, anneal)
         return self
 
