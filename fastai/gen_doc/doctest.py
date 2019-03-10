@@ -1,7 +1,6 @@
 import sys, re, json, pprint
 from pathlib import Path
 from collections import defaultdict
-from itertools import chain
 from inspect import currentframe, getframeinfo, ismodule
 
 __all__ = ['this_tests']
