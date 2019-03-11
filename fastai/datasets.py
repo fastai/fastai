@@ -69,6 +69,8 @@ class URLs():
     CAMVID             = f'{S3_IMAGELOC}camvid'
     CAMVID_TINY        = f'{URL}camvid_tiny'
     LSUN_BEDROOMS      = f'{S3_IMAGE}bedroom'
+    PASCAL_2007        = f'{S3_IMAGELOC}pascal_2007'
+    PASCAL_2012        = f'{S3_IMAGELOC}pascal_2012'
 
     #Pretrained models
     OPENAI_TRANSFORMER = f'{S3_MODEL}transformer'
@@ -108,6 +110,8 @@ _checks = {
     URLs.MNIST_VAR_SIZE_TINY:(565372, 'b71a930f4eb744a4a143a6c7ff7ed67f'),
     URLs.MT_ENG_FRA:(2598183296, '69573f58e2c850b90f2f954077041d8c'),
     URLs.OPENAI_TRANSFORMER:(432848315, '024b0d2203ebb0cd1fc64b27cf8af18e'),
+    URLs.PASCAL_2007:(1636130334, 'a70574e9bc592bd3b253f5bf46ce12e3'),
+    URLs.PASCAL_2012:(2611715776, '2ae7897038383836f86ce58f66b09e31'),
     URLs.PETS:(811706944, 'e4db5c768afd933bb91f5f594d7417a4'),
     URLs.PLANET_SAMPLE:(15523994, '8bfb174b3162f07fbde09b54555bdb00'),
     URLs.PLANET_TINY:(997569, '490873c5683454d4b2611fb1f00a68a9'),
