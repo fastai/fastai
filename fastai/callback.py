@@ -312,7 +312,7 @@ class CallbackHandler():
 
     def on_epoch_end(self, val_loss:Tensor)->bool:
         "Epoch is done, process `val_loss`."
-        self.state_dict['last_metrics'] = [val_loss] if val_loss is not None else None
+        self.state_dict['last_metrics'] = [val_loss] if val_loss is not None else [None]
         self('epoch_end', call_mets = val_loss is not None)
         self.state_dict['epoch'] += 1
         return self.state_dict['stop_training']
