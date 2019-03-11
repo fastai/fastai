@@ -402,7 +402,7 @@ def rank_distrib():
 
 def add_metrics(last_metrics:Collection[Rank0Tensor], mets:Union[Rank0Tensor, Collection[Rank0Tensor]]):
     "Return a dictionary for updating `last_metrics` with `mets`."
-    mets = listify(mets)
+    last_metrics,mets = listify(last_metrics),listify(mets)
     return {'last_metrics': last_metrics + mets}
 
 def try_save(state:Dict, path:Path, fname:PathOrStr):
