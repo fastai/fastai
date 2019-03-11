@@ -26,6 +26,8 @@ def main( gpu:Param("GPU to run on", str)=None ):
     dirname = 'imagenet'
 
     gpu = setup_distrib(gpu)
+    if gpu is None: bs *= torch.cuda.device_count()
+
     n_gpus = num_distrib() or 1
     workers = min(12, num_cpus()//n_gpus)
     data = get_data(path/dirname, size, bs, workers)

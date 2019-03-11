@@ -91,6 +91,7 @@ def main(
 
     # Pick one of these
     gpu = setup_distrib(gpu)
+    if gpu is None: bs *= torch.cuda.device_count()
 
     moms = (mom,mom)
     stats = [
