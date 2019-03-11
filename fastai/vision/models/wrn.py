@@ -37,17 +37,17 @@ def _make_group(N, ni, nf, block, stride, drop_p):
 
 class WideResNet(nn.Module):
     "Wide ResNet with `num_groups` and a width of `k`."
-    def __init__(self, num_groups:int, N:int, num_classes:int, k:int=1, drop_p:float=0.0, start_nf:int=16):
+    def __init__(self, num_groups:int, N:int, num_classes:int, k:int=1, drop_p:float=0.0, start_nf:int=16, n_in_channels:int=3):
         super().__init__()
         n_channels = [start_nf]
         for i in range(num_groups): n_channels.append(start_nf*(2**i)*k)
 
-        layers = [conv2d(3, n_channels[0], 3, 1)]  # conv1
+        layers = [conv2d(n_in_channels, n_channels[0], 3, 1)]  # conv1
         for i in range(num_groups):
             layers += _make_group(N, n_channels[i], n_channels[i+1], BasicBlock, (1 if i==0 else 2), drop_p)
 
-        layers += [nn.BatchNorm2d(n_channels[3]), nn.ReLU(inplace=True), nn.AdaptiveAvgPool2d(1),
-                   Flatten(), nn.Linear(n_channels[3], num_classes)]
+        layers += [nn.BatchNorm2d(n_channels[num_groups]), nn.ReLU(inplace=True), nn.AdaptiveAvgPool2d(1),
+                   Flatten(), nn.Linear(n_channels[num_groups], num_classes)]
         self.features = nn.Sequential(*layers)
 
     def forward(self, x): return self.features(x)
