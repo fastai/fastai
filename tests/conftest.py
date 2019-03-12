@@ -18,7 +18,7 @@ from fastai.gen_doc.doctest import TestRegistry
 def pytest_addoption(parser):
     parser.addoption("--runslow", action="store_true", default=False, help="run slow tests")
     parser.addoption("--skipint", action="store_true", default=False, help="skip integration tests")
-    parser.addoption("--testreg", action="store_true", default=False, help="test api registry")
+    #parser.addoption("--testreg", action="store_true", default=False, help="test api registry")
 
 def mark_items_with_keyword(items, marker, keyword):
     for item in items:
@@ -49,9 +49,10 @@ def test_registry_machinery(request):
     # pytest setup
     yield
     # pytest teardown
-    if (pytest.config.getoption("--testreg") and # don't interfere with duties
-        not request.session.testsfailed):           # failures could miss this_tests
-        TestRegistry.registry_save()
+    # XXX: let's try to do it unconditionally
+    #if (pytest.config.getoption("--testreg") and # don't interfere with duties
+    #    not request.session.testsfailed):        # failures could miss this_tests
+    TestRegistry.registry_save()
 
 @pytest.hookimpl(tryfirst=True, hookwrapper=True)
 def pytest_runtest_makereport(item, call):

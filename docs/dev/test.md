@@ -525,7 +525,7 @@ def test_non_fastai_func():
 ```
 But we still want the call to be there, since we run a check to make sure we don't miss out on any tests, hence each test needs to have this call.
 
-The test registry is located at `fastai/test_registry.json` and it gets auto-generated when `pytest` gets a `--testreg` flag, which is currently done when `make test-full` is run.
+The test registry is located at `fastai/test_registry.json` and it gets auto-generated or updated when `pytest` is run.
 
 
 ### Expensive object reuse
