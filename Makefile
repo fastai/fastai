@@ -172,7 +172,7 @@ test-fast: ## run tests in parallel (requires pip install pytest-xdist)
 	pytest -n 3
 
 test-full: ## run all tests, including slow ones, print summary, update test-registry
-	pytest --runslow -ra --testapireg
+	pytest --runslow -ra --testreg
 
 test-cpu: ## run tests with the default python and CUDA_VISIBLE_DEVICES=""
 	CUDA_VISIBLE_DEVICES="" python setup.py --quiet test
@@ -182,7 +182,7 @@ tools-update: ## install/update build tools
 	conda install -y conda-verify conda-build anaconda-client
 	pip install -U twine
 
-docs: ## build test_api_db.json and update docs
+docs: ## build test_registry.json and update docs
 	${MAKE} test-full
 	tools/build-docs -f
 

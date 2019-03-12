@@ -69,7 +69,7 @@ def get_pytest_card(html, anchor_id):
     return link, body
 
 def lookup_db(elt)->List[Dict]:
-    "Finds `this_test` entries from test_api_db.json"
+    "Finds `this_test` entries from test_registry.json"
     db_file = Path(abspath(join(dirname( __file__ ), '..')))/DB_NAME
     if not db_file.exists():
         raise Exception(f'Could not find {db_file}. Please make sure it exists at "{db_file}" or run `make test`')
