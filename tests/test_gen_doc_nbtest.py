@@ -1,7 +1,7 @@
 import pytest
 from fastai.gen_doc.nbtest import *
 from fastai.gen_doc import nbtest
-from fastai.gen_doc.doctest import this_tests
+from fastai.gen_doc.doctest import this_tests, merge_registries
 import inspect
 
 def test_submodule_name():
@@ -108,3 +108,95 @@ def test_this_tests():
     try: this_tests(func)
     except Exception as e: assert f"'{func}' is not in the fastai API" in str(e)
     else: assert False, f'this_tests({func}) should have failed'
+
+@pytest.mark.parametrize("old, new, expected", [
+    # 1.
+    ({ # old
+        "a": [
+            {"file": "mod1", "line": 19, "test": "test1"},
+        ],
+        "b": [
+            {"file": "mod2", "line": 11, "test": "test7"},
+            {"file": "mod2", "line": 56, "test": "test8"},
+        ],
+    },
+     { # new
+     },
+     { # expected
+         "a": [
+             {"file": "mod1", "line": 19, "test": "test1"},
+         ],
+         "b": [
+             {"file": "mod2", "line": 11, "test": "test7"},
+             {"file": "mod2", "line": 56, "test": "test8"},
+         ],
+     },
+    ),
+
+    # 2.
+    ({ # old
+        "a": [
+            {"file": "mod1", "line": 19, "test": "test1"},
+        ],
+        "b": [
+            {"file": "mod2", "line": 11, "test": "test7"},
+            {"file": "mod2", "line": 56, "test": "test8"},
+        ],
+    },
+     { # new
+         "a": [
+             {"file": "mod1", "line": 35, "test": "test1"},
+         ],
+         "b": [
+             {"file": "mod3", "line": 26, "test": "test3"},
+         ],
+     },
+     { # expected
+         "a": [
+             {"file": "mod1", "line": 35, "test": "test1"},
+         ],
+         "b": [
+             {"file": "mod2", "line": 11, "test": "test7"},
+             {"file": "mod2", "line": 56, "test": "test8"},
+             {"file": "mod3", "line": 26, "test": "test3"},
+         ],
+     },
+    ),
+
+     # 3.
+    ({ # old
+        "a": [
+            {"file": "mod1", "line": 19, "test": "test1"},
+        ],
+        "b": [
+            {"file": "mod2", "line": 11, "test": "test7"},
+            {"file": "mod2", "line": 56, "test": "test8"},
+        ],
+    },
+     { # new
+         "a": [
+             {"file": "mod1", "line": 35, "test": "test2"},
+         ],
+         "c": [
+             {"file": "mod3", "line": 16, "test": "test3"},
+         ],
+     },
+     { # expected
+         "a": [
+             {"file": "mod1", "line": 19, "test": "test1"},
+             {"file": "mod1", "line": 35, "test": "test2"},
+         ],
+         "b": [
+             {"file": "mod2", "line": 11, "test": "test7"},
+             {"file": "mod2", "line": 56, "test": "test8"},
+         ],
+         "c": [
+             {"file": "mod3", "line": 16, "test": "test3"},
+         ],
+     },
+    ),
+])
+def test_merge_registries(old, new, expected):
+    this_tests(merge_registries)
+    merged = merge_registries(old, new)
+    assert expected == merged

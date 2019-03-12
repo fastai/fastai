@@ -68,7 +68,8 @@ def check_learner(learn, model_summary_before, train_items_before):
     assert learn.model
     assert train_items_before == len(learn.data.train_ds.items)
 
-    assert model_summary_before == learn.summary(), f"model summary before and after"
+    if model_summary_before is not None:
+        assert model_summary_before == learn.summary(), f"model summary before and after"
 
     # XXX: could use more sanity checks
 
@@ -230,7 +231,7 @@ def test_export_load_learner():
         print(learn.summary())
         # export removes data, so train_items_before=0
         # also testing learn.summary here on learn created from `load_learner`
-        check_learner(learn, model_summary_before, train_items_before=0)
+        check_learner(learn, model_summary_before=None, train_items_before=0)
         if os.path.exists(export_file): os.remove(export_file)
 
 # XXX: dupe with test_memory - integrate (moved from test_vision_train.py)

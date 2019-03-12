@@ -5,15 +5,15 @@ from inspect import currentframe, getframeinfo, ismodule
 
 __all__ = ['this_tests']
 
-DB_NAME = 'test_api_db.json'
+DB_NAME = 'test_registry.json'
 
 def _json_set_default(obj):
     if isinstance(obj, set): return list(obj)
     raise TypeError
 
-class TestAPIRegistry:
+class TestRegistry:
     "Tests register which API they validate using this class."
-    api_tests_map = defaultdict(list)
+    registry = defaultdict(list)
     this_tests_check = None
     missing_this_tests = set()
 
@@ -40,39 +40,55 @@ class TestAPIRegistry:
             except:
                 raise Exception(f"'{func}' is not a function") from None
             if re.match(r'fastai\.', func_fq):
-                if entry not in TestAPIRegistry.api_tests_map[func_fq]:
-                    TestAPIRegistry.api_tests_map[func_fq].append(entry)
+                if entry not in TestRegistry.registry[func_fq]:
+                    TestRegistry.registry[func_fq].append(entry)
             else:
                 raise Exception(f"'{func}' is not in the fastai API") from None
-        TestAPIRegistry.this_tests_check = False
+        TestRegistry.this_tests_check = False
 
     def this_tests_check_on():
-        TestAPIRegistry.this_tests_check = True
+        TestRegistry.this_tests_check = True
 
     def this_tests_check_off():
-        TestAPIRegistry.this_tests_check = False
+        TestRegistry.this_tests_check = False
 
     def this_tests_check_run(file_name, test_name):
-        if TestAPIRegistry.this_tests_check:
-            TestAPIRegistry.missing_this_tests.add(f"{file_name}::{test_name}")
+        if TestRegistry.this_tests_check:
+            TestRegistry.missing_this_tests.add(f"{file_name}::{test_name}")
 
     def registry_save():
-        if TestAPIRegistry.api_tests_map:
+        if TestRegistry.registry:
             path = Path(__file__).parent.parent.resolve()/DB_NAME
-            print(f"\n*** Saving test registry @ {path}")
+            if path.exists():
+                #print("\n*** Merging with the existing test registry")
+                with open(path, 'r') as f: old_registry = json.load(f)
+                TestRegistry.registry = merge_registries(old_registry, TestRegistry.registry)
+            #print(f"\n*** Saving test registry @ {path}")
             with open(path, 'w') as f:
-                json.dump(obj=TestAPIRegistry.api_tests_map, fp=f, indent=4, sort_keys=True, default=_json_set_default)
+                json.dump(obj=TestRegistry.registry, fp=f, indent=4, sort_keys=True, default=_json_set_default)
 
     def missing_this_tests_alert():
-        if TestAPIRegistry.missing_this_tests:
-            tests = '\n  '.join(sorted(TestAPIRegistry.missing_this_tests))
+        if TestRegistry.missing_this_tests:
+            tests = '\n  '.join(sorted(TestRegistry.missing_this_tests))
             print(f"""
 *** Attention ***
 Please include `this_tests` call in each of the following tests:
   {tests}
 For details see: https://docs.fast.ai/dev/test.html#test-registry""")
 
-def this_tests(*funcs): TestAPIRegistry.this_tests(*funcs)
+# merge_registries helpers
+# merge dict of lists of dict
+def a2k(a): return '::'.join([a['file'], a['test']]), a['line']
+def k2a(k, v): f,t = k.split('::'); return {"file": f, "line": v, "test": t}
+# merge by key that is a combination of 2 values: test, file
+def merge_lists(a, b):
+    x = dict(map(a2k, [*a, *b]))            # pack + merge
+    return [k2a(k, v) for k,v in x.items()] # unpack
+def merge_registries(a, b):
+    for i in b: a[i] = merge_lists(a[i], b[i]) if i in a else b[i]
+    return a
+
+def this_tests(*funcs): TestRegistry.this_tests(*funcs)
 
 def str2func(name):
     "Converts 'fastai.foo.bar' into an function 'object' if such exists"
