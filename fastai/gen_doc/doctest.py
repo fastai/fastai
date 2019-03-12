@@ -59,6 +59,10 @@ class TestAPIRegistry:
     def registry_save():
         if TestAPIRegistry.api_tests_map:
             path = Path(__file__).parent.parent.resolve()/DB_NAME
+            if path.exists():
+                print(f"\n*** Merging with the existing test registry")
+                with open(path, 'r') as f: old_registry = json.load(f)
+                TestAPIRegistry.api_tests_map = merge_registries(old_registry, TestAPIRegistry.api_tests_map)
             print(f"\n*** Saving test registry @ {path}")
             with open(path, 'w') as f:
                 json.dump(obj=TestAPIRegistry.api_tests_map, fp=f, indent=4, sort_keys=True, default=_json_set_default)
@@ -71,6 +75,18 @@ class TestAPIRegistry:
 Please include `this_tests` call in each of the following tests:
   {tests}
 For details see: https://docs.fast.ai/dev/test.html#test-registry""")
+
+# merge_registries helpers
+# merge dict of lists of dict
+def a2k(a): return '::'.join([a['file'], a['test']]), a['line']
+def k2a(k, v): f,t = k.split('::'); return {"file": f, "line": v, "test": t}
+# merge by key that is a combination of 2 values: test, file
+def merge_lists(a, b):
+    x = dict(map(a2k, [*a, *b]))            # pack + merge
+    return [k2a(k, v) for k,v in x.items()] # unpack
+def merge_registries(a, b):
+    for i in b: a[i] = merge_lists(a[i], b[i]) if i in a else b[i]
+    return a
 
 def this_tests(*funcs): TestAPIRegistry.this_tests(*funcs)
 

@@ -47,12 +47,9 @@ def pytest_terminal_summary(terminalreporter):
 @pytest.fixture(scope="session", autouse=True)
 def test_registry_machinery(request):
     # pytest setup
-    individualtests = [s for s in set(sys.argv) if re.match(r'.*test_\w+\.py',s)]
-    #individualtests = 0
     yield
     # pytest teardown
     if (pytest.config.getoption("--testapireg") and # don't interfere with duties
-        not individualtests and                     # must include all tests
         not request.session.testsfailed):           # failures could miss this_tests
         TestAPIRegistry.registry_save()
 
