@@ -533,17 +533,24 @@
             "test": "test_trunc_download"
         }
     ],
+    "fastai.gen_doc.doctest.merge_registries": [
+        {
+            "file": "tests/test_gen_doc_nbtest.py",
+            "line": 199,
+            "test": "test_merge_registries"
+        }
+    ],
     "fastai.gen_doc.doctest.this_tests": [
         {
             "file": "tests/test_gen_doc_nbtest.py",
-            "line": 91,
+            "line": 75,
             "test": "test_this_tests"
         }
     ],
     "fastai.gen_doc.nbtest._fuzzy_line_match": [
         {
             "file": "tests/test_gen_doc_nbtest.py",
-            "line": 76,
+            "line": 61,
             "test": "test_fuzzy_line_match"
         }
     ],
@@ -576,7 +583,7 @@
     "fastai.gen_doc.nbtest.fuzzy_test_match": [
         {
             "file": "tests/test_gen_doc_nbtest.py",
-            "line": 53,
+            "line": 38,
             "test": "test_fuzzy_test_match"
         }
     ],
@@ -585,6 +592,13 @@
             "file": "tests/test_gen_doc_nbtest.py",
             "line": 26,
             "test": "test_wrapped_functions"
+        }
+    ],
+    "fastai.gen_doc.nbtest.get_tests_dir": [
+        {
+            "file": "tests/test_gen_doc_nbtest.py",
+            "line": 70,
+            "test": "test_get_tests_dir"
         }
     ],
     "fastai.layers.SelfAttention": [
@@ -699,6 +713,13 @@
             "file": "tests/test_tabular_transform.py",
             "line": 49,
             "test": "test_fill_missing_returns_correct_medians"
+        }
+    ],
+    "fastai.tabular.transform.cont_cat_split": [
+        {
+            "file": "tests/test_tabular_transform.py",
+            "line": 64,
+            "test": "test_cont_cat_split"
         }
     ],
     "fastai.text.data.SortishSampler": [
