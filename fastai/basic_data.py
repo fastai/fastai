@@ -180,9 +180,10 @@ class DataBunch():
         with ds.set_item(item):
             return self.one_batch(ds_type=DatasetType.Single, detach=detach, denorm=denorm, cpu=cpu)
 
-    def show_batch(self, rows:int=5, ds_type:DatasetType=DatasetType.Train, **kwargs)->None:
+    def show_batch(self, rows:int=5, ds_type:DatasetType=DatasetType.Train, reverse:bool=False, **kwargs)->None:
         "Show a batch of data in `ds_type` on a few `rows`."
         x,y = self.one_batch(ds_type, True, True)
+        if reverse: x,y = x.flip(0),y.flip(0)
         n_items = rows **2 if self.train_ds.x._square_show else rows
         if self.dl(ds_type).batch_size < n_items: n_items = self.dl(ds_type).batch_size
         xs = [self.train_ds.x.reconstruct(grab_idx(x, i)) for i in range(n_items)]
@@ -222,6 +223,12 @@ class DataBunch():
         if hasattr(self.valid_ds, 'items') and len(self.valid_ds.items) == 0: return True
         return (len(self.valid_ds) == 0)
 
+    @property
+    def is_empty(self)->bool:
+        return not ((self.train_dl and len(self.train_ds.items != 0)) or 
+                    (self.valid_dl and len(self.valid_ds.items != 0)) or 
+                    (self.test_dl  and len(self.test_ds.items  != 0)))
+    
     @property
     def batch_size(self):   return self.train_dl.batch_size
     @batch_size.setter

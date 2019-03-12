@@ -135,8 +135,7 @@ def pad_collate(samples:BatchSamples, pad_idx:int=1, pad_first:bool=True, backwa
     for i,s in enumerate(samples):
         if pad_first: res[i,-len(s[0]):] = LongTensor(s[0])
         else:         res[i,:len(s[0]):] = LongTensor(s[0])
-    if backwards:
-        res = res.flip(1)
+    if backwards: res = res.flip(1)
     return res, tensor(np.array([s[1] for s in samples]))
 
 def _get_processor(tokenizer:Tokenizer=None, vocab:Vocab=None, chunksize:int=10000, max_vocab:int=60000,
