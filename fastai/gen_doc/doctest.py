@@ -60,10 +60,10 @@ class TestRegistry:
         if TestRegistry.registry:
             path = Path(__file__).parent.parent.resolve()/DB_NAME
             if path.exists():
-                print(f"\n*** Merging with the existing test registry")
+                #print("\n*** Merging with the existing test registry")
                 with open(path, 'r') as f: old_registry = json.load(f)
                 TestRegistry.registry = merge_registries(old_registry, TestRegistry.registry)
-            print(f"\n*** Saving test registry @ {path}")
+            #print(f"\n*** Saving test registry @ {path}")
             with open(path, 'w') as f:
                 json.dump(obj=TestRegistry.registry, fp=f, indent=4, sort_keys=True, default=_json_set_default)
 
