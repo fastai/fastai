@@ -40,7 +40,7 @@ def build_tests_markdown(elt):
         md += tests2md(other_tests, f'Some other tests where `{fn_name}` is used:')
     except OSError as e: pass
 
-    if len(md.strip())==0: 
+    if len(md.strip())==0:
         return (f'No tests found for `{fn_name}`.'
                 ' To contribute a test please refer to [this guide](/dev/test.html)'
                 ' and [this discussion](https://forums.fast.ai/t/improving-expanding-functional-tests/32929).')
@@ -49,7 +49,7 @@ def build_tests_markdown(elt):
 
 def tests2md(tests, type_label:str):
     if not tests: return ''
-    md = [f'\n\n{type_label}'] + [f'* `{cmd}` {link}' for link,cmd in tests]
+    md = [f'\n\n{type_label}'] + [f'* `{cmd}` {link}' for link,cmd in sorted(tests, key=lambda k: k[1])]
     return '\n'.join(md)
 
 def get_pytest_html(elt, anchor_id:str)->Tuple[str,str]:
