@@ -73,6 +73,13 @@
             "test": "test_memory"
         }
     ],
+    "fastai.basic_train.Learner.export": [
+        {
+            "file": "tests/test_basic_train.py",
+            "line": 218,
+            "test": "test_export_load_learner"
+        }
+    ],
     "fastai.basic_train.Learner.fit": [
         {
             "file": "tests/test_train.py",
@@ -185,6 +192,13 @@
             "test": "test_1cycle_moms"
         }
     ],
+    "fastai.basic_train.load_learner": [
+        {
+            "file": "tests/test_basic_train.py",
+            "line": 218,
+            "test": "test_export_load_learner"
+        }
+    ],
     "fastai.basic_train.validate": [
         {
             "file": "tests/test_tabular_train.py",
@@ -238,6 +252,11 @@
             "file": "tests/test_callbacks_hooks.py",
             "line": 48,
             "test": "test_model_summary_collab"
+        },
+        {
+            "file": "tests/test_basic_train.py",
+            "line": 218,
+            "test": "test_export_load_learner"
         }
     ],
     "fastai.callbacks.mem.PeakMemMetric": [
