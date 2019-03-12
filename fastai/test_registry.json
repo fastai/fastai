@@ -64,12 +64,12 @@
     "fastai.basic_train.Learner.destroy": [
         {
             "file": "tests/test_basic_train.py",
-            "line": 157,
+            "line": 158,
             "test": "test_destroy"
         },
         {
             "file": "tests/test_basic_train.py",
-            "line": 200,
+            "line": 201,
             "test": "test_memory"
         }
     ],
@@ -104,12 +104,12 @@
     "fastai.basic_train.Learner.load": [
         {
             "file": "tests/test_basic_train.py",
-            "line": 99,
+            "line": 100,
             "test": "test_save_load"
         },
         {
             "file": "tests/test_basic_train.py",
-            "line": 200,
+            "line": 201,
             "test": "test_memory"
         }
     ],
@@ -128,29 +128,29 @@
     "fastai.basic_train.Learner.purge": [
         {
             "file": "tests/test_basic_train.py",
-            "line": 75,
+            "line": 76,
             "test": "test_purge"
         },
         {
             "file": "tests/test_basic_train.py",
-            "line": 99,
+            "line": 100,
             "test": "test_save_load"
         },
         {
             "file": "tests/test_basic_train.py",
-            "line": 200,
+            "line": 201,
             "test": "test_memory"
         }
     ],
     "fastai.basic_train.Learner.save": [
         {
             "file": "tests/test_basic_train.py",
-            "line": 99,
+            "line": 100,
             "test": "test_save_load"
         },
         {
             "file": "tests/test_basic_train.py",
-            "line": 200,
+            "line": 201,
             "test": "test_memory"
         }
     ],
