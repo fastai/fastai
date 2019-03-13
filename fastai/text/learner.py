@@ -80,8 +80,10 @@ class RNNLearner(Learner):
                   ordered:bool=False) -> List[Tensor]:
         "Return predictions and targets on the valid, train, or test set, depending on `ds_type`."
         self.model.reset()
+        if ordered: np.random.seed(42)
         preds = super().get_preds(ds_type=ds_type, with_loss=with_loss, n_batch=n_batch, pbar=pbar)
         if ordered and hasattr(self.dl(ds_type), 'sampler'):
+            np.random.seed(42)
             sampler = [i for i in self.dl(ds_type).sampler]
             reverse_sampler = np.argsort(sampler)
             preds = [p[reverse_sampler] for p in preds] 
