@@ -310,7 +310,7 @@ class CategoryProcessor(PreProcessor):
     "`PreProcessor` that create `classes` from `ds.items` and handle the mapping."
     def __init__(self, ds:ItemList):
         self.create_classes(ds.classes)
-        self.warns = []
+        self.state_attrs,self.warns = ['classes'],[]
 
     def create_classes(self, classes):
         self.classes = classes
@@ -332,8 +332,12 @@ class CategoryProcessor(PreProcessor):
         ds.c2i = self.c2i
         super().process(ds)
 
-    def __getstate__(self): return {'classes':self.classes}
-    def __setstate__(self, state:dict): self.create_classes(state['classes'])
+    def __getstate__(self): return {n:getattr(self,n) for n in self.state_attrs}
+    def __setstate__(self, state:dict): 
+        self.create_classes(state['classes'])
+        self.state_attrs = state.keys()
+        for n in state.keys(): 
+            if n!='classes': setattr(self, n, state[n])
 
 class CategoryListBase(ItemList):
     "Basic `ItemList` for classification."
@@ -368,11 +372,7 @@ class MultiCategoryProcessor(CategoryProcessor):
     def __init__(self, ds:ItemList, one_hot:bool=False):
         super().__init__(ds)
         self.one_hot = one_hot
-
-    def __getstate__(self): return {'classes':self.classes, 'one_hot':self.one_hot}
-    def __setstate__(self, state:dict):
-        self.create_classes(state['classes'])
-        self.one_hot = state['one_hot']
+        self.state_attrs.append('one_hot')
 
     def process_one(self,item):
         if self.one_hot or isinstance(item, EmptyLabel): return item

@@ -327,8 +327,9 @@ class TextList(ItemList):
         return self.label_const(0, **kwargs)
 
     def reconstruct(self, t:Tensor):
-        idx = (t != self.pad_idx).nonzero().min()
-        return Text(t[idx:], self.vocab.textify(t[idx:]))
+        idx_min = (t != self.pad_idx).nonzero().min()
+        idx_max = (t != self.pad_idx).nonzero().max()
+        return Text(t[idx_min:idx_max], self.vocab.textify(t[idx_min:idx_max]))
 
     @classmethod
     def from_folder(cls, path:PathOrStr='.', extensions:Collection[str]=text_extensions, vocab:Vocab=None,
