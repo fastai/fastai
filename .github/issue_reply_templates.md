@@ -25,3 +25,7 @@ If your PR involves jupyter notebooks (`.ipynb`) you must instrument your git to
 * fastai: how to add new functionality
 
 If you are adding new functionality, please first create a thread on [fastai-dev](https://forums.fast.ai/c/fastai-users/fastai-dev) describing the functionality. Generally, it's best to discuss changes to functionality there first, so we can all agree on an approach. Please include a test in your PR that fails without your code, and passes with it, as well as a test of a case that already worked without your code (and still works with it). Currently, fastai has poor test coverage, so don't take the current tests as a role model - we're all working to fix it together! When creating your PR, please remove all the text in this template, and add details about your PR.
+
+* fastai: this new functionality deserves its own repo
+
+Thanks for your PR but we feel it better belongs in its own repo and not inside fastai. You can create a thread on [fastai-dev](https://forums.fast.ai/c/fastai-users/fastai-dev) to advertise for it once it's done and we will link to it in the right place of our docs.
