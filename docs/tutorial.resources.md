@@ -25,7 +25,7 @@ import ...
 # init main objects
 model = ... # custom or pretrained
 data = ...  # create databunch
-learn = create_cnn(data, model, metrics)
+learn = cnn_learner(data, model, metrics)
 
 # train
 learn.fit_one_cycle(epochs)
