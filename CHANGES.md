@@ -21,6 +21,8 @@ of that change.
 
 ### Fixed:
 
+- bug in `DataBunch.epoxrt()` or `Learner.export()` in object detection
+- `TextClassificationInterpretation` now works again (thanks to code from miko)
 
 ## 1.0.48 (2019-03-09)
 
