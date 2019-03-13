@@ -1,6 +1,6 @@
 <!-- BEFORE POSTING AN ISSUE PLEASE MAKE SURE TO READ: https://docs.fast.ai/support.html -->
 
-<!-- We try our best to fix your bugs but we are not magicians. If you don't follow the steps below, we won't be able to do anything and will likely close your issue. -->
+<!-- **Important:** We try our best to fix all reported issue. The main difficulty we have is not being able to read your mind. If you don't follow the steps below, we have to follow up asking you to supply the required information, but we have already asked you to do so, so please don't waste our time and yours and supply it in first place. If you don't, your issue will be closed. You are free to resubmit this time with the required information. Thank you for helping us help you. -->
 
 <!-- **Please note**:
 - Installation issues should be reported here:
@@ -25,7 +25,9 @@ or via your shell:
 ```
 python -m fastai.utils.show_install
 ```
-Double-check you have the last version (compare your fastai version with the laste number you can see in https://github.com/fastai/fastai/blob/master/CHANGES.md (without dev0 which is the current master). If you know how to perform a developer install, also check your bug pesists on master.
+Double-check you use the latest version which you can find here: https://github.com/fastai/fastai/releases.
+
+It's also possible that the issue has already been fixed in git master, but hasn't been released yet, so if possible please try to see whether git master has it resolved. To install the git master do: `pip install git+https://github.com/fastai/fastai/`
 -->
 
 **To Reproduce**
