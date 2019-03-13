@@ -518,6 +518,10 @@ class LabelLists(ItemLists):
         for ds in self.lists:
             if getattr(ds, 'warn', False): warn(ds.warn)
         return self
+                
+    def filter_by_func(self, func:Callable):
+        for ds in self.lists: ds.filter_by_func(func)
+        return self
 
     def databunch(self, path:PathOrStr=None, bs:int=64, val_bs:int=None, num_workers:int=defaults.cpus,
                   dl_tfms:Optional[Collection[Callable]]=None, device:torch.device=None, collate_fn:Callable=data_collate,
@@ -687,6 +691,11 @@ class LabelList(Dataset):
                     p.warns = []
                 self.x,self.y = self.x[~filt],self.y[~filt]
         self.x.process(xp)
+        return self
+                
+    def filter_by_func(self, func:Callable):
+        filt = array([func(x,y) for x,y in zip(self.x.items, self.y.items)])
+        self.x,self.y = self.x[~filt],self.y[~filt]
         return self
 
     def transform(self, tfms:TfmList, tfm_y:bool=None, **kwargs):
