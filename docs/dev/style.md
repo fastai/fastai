@@ -63,34 +63,34 @@ Although it's hard to design a really compelling experiment for this kind of thi
 - If a 1-line function body comfortably fits on the same line as the `def` section, feel free to put them together with `:`
 - If you've got a bunch of 1-line functions doing similar things, they don't need a blank line between them
 
-```python
-def det_lighting(b, c): return lambda x: lighting(x, b, c)
-def det_rotate(deg): return lambda x: rotate_cv(x, deg)
-def det_zoom(zoom): return lambda x: zoom_cv(x, zoom)
-```
+   ```python
+   def det_lighting(b, c): return lambda x: lighting(x, b, c)
+   def det_rotate(deg): return lambda x: rotate_cv(x, deg)
+   def det_zoom(zoom): return lambda x: zoom_cv(x, zoom)
+   ```
 
 - Aim to align statement parts that are conceptually similar. It allows the reader to quickly see how they're
   different. E.g. in this code it's immediately clear that the two parts call the same code with different parameter
   orders.
 
-```python
-if self.store.stretch_dir==0: x = stretch_cv(x, self.store.stretch, 0)
-else:                         x = stretch_cv(x, 0, self.store.stretch)
-```
+   ```python
+   if self.store.stretch_dir==0: x = stretch_cv(x, self.store.stretch, 0)
+   else:                         x = stretch_cv(x, 0, self.store.stretch)
+   ```
 
 - Put all your class member initializers together using destructuring assignment. When doing so, use no spaces after
   the commas, but spaces around the equals sign, so that it's obvious where the LHS and RHS are.
 
-```python
-self.sz,self.denorm,self.norm,self.sz_y = sz,denorm,normalizer,sz_y
-```
+   ```python
+   self.sz,self.denorm,self.norm,self.sz_y = sz,denorm,normalizer,sz_y
+   ```
 
 - Avoid using vertical space when possible, since vertical space means you can't see everything at a glance. For
   instance, prefer importing multiple modules on one line.
 
-```python
-import PIL, os, numpy as np, math, collections, threading
-```
+   ```python
+   import PIL, os, numpy as np, math, collections, threading
+   ```
 
 - Indent with 4 spaces. (In hindsight I wish I'd picked 2 spaces, like Google's style guide, but I don't feel like
   going back and changing everything...)

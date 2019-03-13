@@ -46,10 +46,11 @@ def num_cpus()->int:
     except AttributeError: return os.cpu_count()
 
 _default_cpus = min(16, num_cpus())
-defaults = SimpleNamespace(cpus=_default_cpus, cmap='viridis')
+defaults = SimpleNamespace(cpus=_default_cpus, cmap='viridis', return_fig=False)
 
 def is_listy(x:Any)->bool: return isinstance(x, (tuple,list))
 def is_tuple(x:Any)->bool: return isinstance(x, tuple)
+def is_dict(x:Any)->bool: return isinstance(x, dict)
 def noop(x): return x
 
 def chunks(l:Collection, n:int)->Iterable:
@@ -69,13 +70,13 @@ def is1d(a:Collection)->bool:
     "Return `True` if `a` is one-dimensional"
     return len(a.shape) == 1 if hasattr(a, 'shape') else True
 
-def uniqueify(x:Series)->List:
+def uniqueify(x:Series, sort:bool=False)->List:
     "Return sorted unique values of `x`."
     res = list(OrderedDict.fromkeys(x).keys())
-    res.sort()
+    if sort: res.sort()
     return res
 
-def idx_dict(a): 
+def idx_dict(a):
     "Create a dictionary value to index from `a`."
     return {v:k for k,v in enumerate(a)}
 
@@ -101,8 +102,12 @@ def random_split(valid_pct:float, *arrs:NPArrayableList)->SplitArrayList:
 def listify(p:OptListOrItem=None, q:OptListOrItem=None):
     "Make `p` listy and the same length as `q`."
     if p is None: p=[]
-    elif isinstance(p, str):          p=[p]
-    elif not isinstance(p, Iterable): p=[p]
+    elif isinstance(p, str):          p = [p]
+    elif not isinstance(p, Iterable): p = [p]
+    #Rank 0 tensors in PyTorch are Iterable but don't have a length.
+    else:
+        try: a = len(p)
+        except: p = [p]
     n = q if type(q)==int else len(p) if q is None else len(q)
     if len(p)==1: p = p * n
     assert len(p)==n, f'List len mismatch ({len(p)} vs {n})'
@@ -147,15 +152,20 @@ TfmList = Union[Callable, Collection[Callable]]
 class ItemBase():
     "Base item type in the fastai library."
     def __init__(self, data:Any): self.data=self.obj=data
-    def __repr__(self): return f'{self.__class__.__name__} {self}'
-    def show(self, ax:plt.Axes, **kwargs): 
+    def __repr__(self)->str: return f'{self.__class__.__name__} {str(self)}'
+    def show(self, ax:plt.Axes, **kwargs):
         "Subclass this method if you want to customize the way this `ItemBase` is shown on `ax`."
         ax.set_title(str(self))
     def apply_tfms(self, tfms:Collection, **kwargs):
         "Subclass this method if you want to apply data augmentation with `tfms` to this `ItemBase`."
-        if tfms: raise Exception(f"Not implemented: you can't apply transforms to this type of items ({self.__class__.__name__})")
+        if tfms: raise Exception(f"Not implemented: you can't apply transforms to this type of item ({self.__class__.__name__})")
         return self
+    def __eq__(self, other): return recurse_eq(self.data, other.data)
 
+def recurse_eq(arr1, arr2):
+    if is_listy(arr1): return np.all([recurse_eq(x,y) for x,y in zip(arr1,arr2)])
+    else:              return np.all(np.atleast_1d(arr1 == arr2))
+        
 def download_url(url:str, dest:str, overwrite:bool=False, pbar:ProgressBar=None,
                  show_progress=True, chunk_size=1024*1024, timeout=4, retries=5)->None:
     "Download `url` to `dest` unless it exists and not `overwrite`."
@@ -189,10 +199,10 @@ def download_url(url:str, dest:str, overwrite:bool=False, pbar:ProgressBar=None,
             print(timeout_txt)
             import sys;sys.exit(1)
 
-def range_of(x):  
+def range_of(x):
     "Create a range from 0 to `len(x)`."
     return list(range(len(x)))
-def arange_of(x): 
+def arange_of(x):
     "Same as `range_of` but returns an array."
     return np.arange(len(x))
 
@@ -243,7 +253,7 @@ def func_args(func)->bool:
     code = func.__code__
     return code.co_varnames[:code.co_argcount]
 
-def has_arg(func, arg)->bool: 
+def has_arg(func, arg)->bool:
     "Check if `func` accepts `arg`."
     return arg in func_args(func)
 
@@ -265,35 +275,46 @@ class EmptyLabel(ItemBase):
     "Should be used for a dummy label."
     def __init__(self): self.obj,self.data = 0,0
     def __str__(self):  return ''
+    def __hash__(self): return hash(str(self))
 
 class Category(ItemBase):
     "Basic class for single classification labels."
     def __init__(self,data,obj): self.data,self.obj = data,obj
-    def __int__(self): return int(self.data)
-    def __str__(self): return str(self.obj)
+    def __int__(self):  return int(self.data)
+    def __str__(self):  return str(self.obj)
+    def __hash__(self): return hash(str(self))
 
 class MultiCategory(ItemBase):
     "Basic class for multi-classification labels."
     def __init__(self,data,obj,raw): self.data,self.obj,self.raw = data,obj,raw
-    def __str__(self): return ';'.join([str(o) for o in self.obj])
+    def __str__(self):  return ';'.join([str(o) for o in self.obj])
+    def __hash__(self): return hash(str(self))
 
 class FloatItem(ItemBase):
     "Basic class for float items."
     def __init__(self,obj): self.data,self.obj = np.array(obj).astype(np.float32),obj
-    def __str__(self): return str(self.obj)
+    def __str__(self):  return str(self.obj)
+    def __hash__(self): return hash(str(self))
 
 def _treat_html(o:str)->str:
-    return o.replace('\n','\\n')
+    o = str(o)
+    to_replace = {'\n':'\\n', '<':'&lt;', '>':'&gt;', '&':'&amp;'}
+    for k,v in to_replace.items(): o = o.replace(k, v)
+    return o
 
-def text2html_table(items:Collection[Collection[str]], widths:Collection[int])->str:
+def text2html_table(items:Collection[Collection[str]])->str:
     "Put the texts in `items` in an HTML table, `widths` are the widths of the columns in %."
-    html_code = f"<table>"
-    for w in widths: html_code += f"  <col width='{w}%'>"
-    for line in items:
-        html_code += "  <tr>\n"
-        html_code += "\n".join([f"    <th>{_treat_html(o)}</th>" for o in line if len(o) >= 1])
-        html_code += "\n  </tr>\n"
-    return html_code + "</table>\n"
+    html_code = f"""<table border="1" class="dataframe">"""
+    html_code += f"""  <thead>\n    <tr style="text-align: right;">\n"""
+    for i in items[0]: html_code += f"      <th>{_treat_html(i)}</th>"
+    html_code += f"    </tr>\n  </thead>\n  <tbody>"
+    html_code += "  <tbody>"
+    for line in items[1:]:
+        html_code += "    <tr>"
+        for i in line: html_code += f"      <td>{_treat_html(i)}</td>"
+        html_code += "    </tr>"
+    html_code += "  </tbody>\n</table>"
+    return html_code
 
 def parallel(func, arr:Collection, max_workers:int=None):
     "Call `func` on every element of `arr` in parallel using `max_workers`."
@@ -319,3 +340,18 @@ def show_some(items:Collection, n_max:int=5, sep:str=','):
     res = sep.join([f'{o}' for o in items[:n_max]])
     if len(items) > n_max: res += '...'
     return res
+
+def get_tmp_file(dir=None):
+    "Create and return a tmp filename, optionally at a specific path. `os.remove` when done with it."
+    with tempfile.NamedTemporaryFile(delete=False, dir=dir) as f: return f.name
+
+def compose(funcs:List[Callable])->Callable:
+    "Compose `funcs`"
+    def compose_(funcs, x, *args, **kwargs):
+        for f in listify(funcs): x = f(x, *args, **kwargs)
+        return x
+    return partial(compose_, funcs)
+
+class PrettyString(str):
+    "Little hack to get strings to show properly in Jupyter."
+    def __repr__(self): return self

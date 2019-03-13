@@ -1,8 +1,9 @@
 "Callbacks provides extensibility to the `basic_train` loop. See `train` for examples of custom callbacks."
 from .basic_data import *
 from .torch_core import *
+import torch.distributed as dist
 
-__all__ = ['AverageMetric', 'Callback', 'CallbackHandler', 'OptimWrapper', 'SmoothenValue', 'Stepper', 'annealing_cos', 'CallbackList',
+__all__ = ['AverageMetric', 'Callback', 'CallbackHandler', 'OptimWrapper', 'SmoothenValue', 'Scheduler', 'annealing_cos', 'CallbackList',
            'annealing_exp', 'annealing_linear', 'annealing_no', 'annealing_poly']
 
 class OptimWrapper():
@@ -15,21 +16,29 @@ class OptimWrapper():
         self.wd = wd
 
     @classmethod
-    def create(cls, opt_func:Union[type,Callable], lr:Union[float,Tuple,List],
-               layer_groups:ModuleList, wd:Floats=0., true_wd:bool=False, bn_wd:bool=True)->optim.Optimizer:
+    def create(cls, opt_func:Union[type,Callable], lr:Union[float,Tuple,List], layer_groups:ModuleList, wd:Floats=0., 
+               true_wd:bool=False, bn_wd:bool=True)->optim.Optimizer:
         "Create an `optim.Optimizer` from `opt_func` with `lr`. Set lr on `layer_groups`."
-        split_groups = split_bn_bias(layer_groups)
-        opt = opt_func([{'params': trainable_params(l), 'lr':0} for l in split_groups])
+        split_params = split_no_wd_params(layer_groups)
+        opt = opt_func([{'params': p, 'lr':0} for p in split_params])
         opt = cls(opt, wd=wd, true_wd=true_wd, bn_wd=bn_wd)
         opt.lr,opt.opt_func = listify(lr, layer_groups),opt_func
         return opt
-    
-    def new(self, layer_groups:ModuleList):
+
+    def new(self, layer_groups:Collection[nn.Module], split_no_wd:bool=True):
         "Create a new `OptimWrapper` from `self` with another `layer_groups` but the same hyper-parameters."
         opt_func = getattr(self, 'opt_func', self.opt.__class__)
-        split_groups = split_bn_bias(layer_groups)
-        opt = opt_func([{'params': trainable_params(l), 'lr':0} for l in split_groups])
-        return self.create(opt_func, self.lr, layer_groups, wd=self.wd, true_wd=self.true_wd, bn_wd=self.bn_wd)
+        res = self.create(opt_func, self.lr, layer_groups, wd=self.wd, true_wd=self.true_wd, bn_wd=self.bn_wd)
+        res.mom,res.beta = self.mom,self.beta
+        return res
+
+    def new_with_params(self, param_groups:Collection[Collection[nn.Parameter]]):
+        "Create a new `OptimWrapper` from `self` with another `layer_groups` but the same hyper-parameters."
+        opt_func = getattr(self, 'opt_func', self.opt.__class__)
+        opt = opt_func([{'params': p, 'lr':0} for p in param_groups])
+        opt = self.__class__(opt, wd=self.wd, true_wd=self.true_wd, bn_wd=self.bn_wd)
+        opt.lr,opt.opt_func,opt.mom,opt.beta = self.lr,opt_func,self.mom,self.beta
+        return opt
 
     def __repr__(self)->str:
         return f'OptimWrapper over {repr(self.opt)}.\nTrue weight decay: {self.true_wd}'
@@ -49,15 +58,19 @@ class OptimWrapper():
     def zero_grad(self)->None:
         "Clear optimizer gradients."
         self.opt.zero_grad()
-        
+
     #Passthrough to the inner opt.
-    def __getattr__(self,k:str)->Any: return getattr(self.opt, k, None)
-    
+    def __getattr__(self, k:str)->Any: return getattr(self.opt, k, None)
+    def __setstate__(self,data:Any): self.__dict__.update(data)
+
     def clear(self):
         "Reset the state of the inner optimizer."
         sd = self.state_dict()
         sd['state'] = {}
         self.load_state_dict(sd)
+
+    @property
+    def n_params(self): return sum([len(pg['params']) for pg in self.opt.param_groups])
 
     #Hyperparameters as properties
     @property
@@ -101,6 +114,19 @@ class OptimWrapper():
         if 'alpha' in self.opt_keys: self._beta = self.read_val('alpha')
         if 'betas' in self.opt_keys: self._mom,self._beta = self.read_val('betas')
         if 'weight_decay' in self.opt_keys: self._wd = self.read_val('weight_decay')
+        reserved_names = ['params', 'lr', 'momentum', 'alpha', 'betas', 'weight_decay']
+        stat_names = [n for n in self.opt_keys if n not in reserved_names]
+        self._stats = {n:self.read_val(n) for n in stat_names}
+
+    def get_stat(self, name:str)->float: 
+        if name in ['lr', 'mom', 'beta', 'wd']: return getattr(self, name)
+        else: return self._stats[name][-1]
+    def set_stat(self, name:str, value:Union[float, Collection[float]])->None:
+        if name in ['lr', 'mom', 'beta', 'wd']: setattr(self, name, value)
+        else:
+            val = listify(value, self._stats[name])
+            self.set_val(name, val)
+            self._stats[name] = val
 
     def set_val(self, key:str, val:Any, bn_groups:bool=True)->Any:
         "Set `val` inside the optimizer dictionary at `key`."
@@ -115,10 +141,23 @@ class OptimWrapper():
         val = [pg[key] for pg in self.opt.param_groups[::2]]
         if is_tuple(val[0]): val = [o[0] for o in val], [o[1] for o in val]
         return val
+    
+    def get_state(self):
+        "Return the inner state minus the layer groups."
+        return {'opt_state':self.opt.state_dict(), 'lr':self._lr, 'wd':self._wd, 'beta':self._beta, 'mom':self._mom,
+                'opt_func':self.opt_func, 'true_wd':self.true_wd, 'bn_wd':self.bn_wd}
+
+    @classmethod
+    def load_with_state_and_layer_group(cls, state:dict, layer_groups:Collection[nn.Module]):
+        res = cls.create(state['opt_func'], state['lr'], layer_groups, wd=state['wd'], true_wd=state['true_wd'], 
+                     bn_wd=state['bn_wd'])
+        res._mom,res._beta = state['mom'],state['beta']
+        res.load_state_dict(state['opt_state'])
+        return res
 
 class Callback():
     "Base class for callbacks that want to record values, dynamically change learner params, etc."
-    _order=0 
+    _order=0
     def on_train_begin(self, **kwargs:Any)->None:
         "To initialize constants in the callback."
         pass
@@ -126,14 +165,13 @@ class Callback():
         "At the beginning of each epoch."
         pass
     def on_batch_begin(self, **kwargs:Any)->None:
-        "Set HP before the step is done. Returns xb, yb (which can allow us to modify the input at that step if needed)."
+        "Set HP before the output and loss are computed."
         pass
     def on_loss_begin(self, **kwargs:Any)->None:
-        "Called after forward pass but before loss has been computed. Returns the output (which can allow us to modify it)."
+        "Called after forward pass but before loss has been computed."
         pass
     def on_backward_begin(self, **kwargs:Any)->None:
-        """Called after the forward pass and the loss has been computed, but before backprop.
-           Returns the loss (which can allow us to modify it, for instance for reg functions)"""
+        "Called after the forward pass and the loss has been computed, but before backprop."
         pass
     def on_backward_end(self, **kwargs:Any)->None:
         "Called after backprop but before optimizer step. Useful for true weight decay in AdamW."
@@ -144,24 +182,27 @@ class Callback():
     def on_batch_end(self, **kwargs:Any)->None:
         "Called at the end of the batch."
         pass
-    def on_epoch_end(self, **kwargs:Any)->bool:
+    def on_epoch_end(self, **kwargs:Any)->None:
         "Called at the end of an epoch."
-        return False
+        pass
     def on_train_end(self, **kwargs:Any)->None:
         "Useful for cleaning up things and saving files/models."
         pass
-    
+    def jump_to_epoch(self, epoch)->None:
+        "To resume training at `epoch` directly."
+        pass
+
     def get_state(self, minimal:bool=True):
         "Return the inner state of the `Callback`, `minimal` or not."
         to_remove = ['exclude', 'not_min'] + getattr(self, 'exclude', []).copy()
         if minimal: to_remove += getattr(self, 'not_min', []).copy()
         return {k:v for k,v in self.__dict__.items() if k not in to_remove}
-    
-    def  __repr__(self): 
+
+    def  __repr__(self):
         attrs = func_args(self.__init__)
         to_remove = getattr(self, 'exclude', [])
         list_repr = [self.__class__.__name__] + [f'{k}: {getattr(self, k)}' for k in attrs if k != 'self' and k not in to_remove]
-        return '\n'.join(list_repr) 
+        return '\n'.join(list_repr)
 
 class SmoothenValue():
     "Create a smooth moving average for a value (loss, etc) using `beta`."
@@ -194,10 +235,19 @@ class CallbackHandler():
         self.smoothener = SmoothenValue(self.beta)
         self.state_dict:Dict[str,Union[int,float,Tensor]]=_get_init_state()
 
+    def _call_and_update(self, cb, cb_name, **kwargs)->None:
+        "Call `cb_name` on `cb` and update the inner state."
+        new = ifnone(getattr(cb, f'on_{cb_name}')(**self.state_dict, **kwargs), dict())
+        for k,v in new.items():
+            if k not in self.state_dict:
+                raise Exception(f"{k} isn't a valid key in the state of the callbacks.")
+            else: self.state_dict[k] = v
+    
     def __call__(self, cb_name, call_mets=True, **kwargs)->None:
         "Call through to all of the `CallbakHandler` functions."
-        if call_mets: [getattr(met, f'on_{cb_name}')(**self.state_dict, **kwargs) for met in self.metrics]
-        return [getattr(cb, f'on_{cb_name}')(**self.state_dict, **kwargs) for cb in self.callbacks]
+        if call_mets: 
+            for met in self.metrics: self._call_and_update(met, cb_name, **kwargs)
+        for cb in self.callbacks: self._call_and_update(cb, cb_name, **kwargs)
 
     def set_dl(self, dl:DataLoader):
         "Set the current `dl` used."
@@ -209,67 +259,63 @@ class CallbackHandler():
     def on_train_begin(self, epochs:int, pbar:PBar, metrics:MetricFuncList)->None:
         "About to start learning."
         self.state_dict = _get_init_state()
-        self.state_dict['n_epochs'],self.state_dict['pbar'],self.state_dict['metrics'] = epochs,pbar,metrics
+        self.state_dict.update(dict(n_epochs=epochs, pbar=pbar, metrics=metrics))
         names = [(met.name if hasattr(met, 'name') else camel2snake(met.__class__.__name__)) for met in self.metrics]
         self('train_begin', metrics_names=names)
+        if self.state_dict['epoch'] != 0:
+            self.state_dict['pbar'].first_bar.total -= self.state_dict['epoch']
+            for cb in self.callbacks: cb.jump_to_epoch(self.state_dict['epoch'])
 
     def on_epoch_begin(self)->None:
         "Handle new epoch."
-        self.state_dict['num_batch'] = 0
+        self.state_dict['num_batch'],self.state_dict['stop_training'] = 0,False
         self('epoch_begin')
 
     def on_batch_begin(self, xb:Tensor, yb:Tensor, train:bool=True)->None:
         "Handle new batch `xb`,`yb` in `train` or validation."
-        self.state_dict['last_input'], self.state_dict['last_target'] = xb, yb
-        self.state_dict['train'] = train
-        cbs = self.callbacks if train else self.metrics + self.callbacks
-        for cb in cbs:
-            a = cb.on_batch_begin(**self.state_dict)
-            if a is not None: self.state_dict['last_input'], self.state_dict['last_target'] = a
+        self.state_dict.update(dict(last_input=xb, last_target=yb, train=train, 
+            stop_epoch=False, skip_step=False, skip_zero=False, skip_bwd=False))
+        self('batch_begin', mets = not self.state_dict['train'])
         return self.state_dict['last_input'], self.state_dict['last_target']
 
     def on_loss_begin(self, out:Tensor)->None:
         "Handle start of loss calculation with model output `out`."
         self.state_dict['last_output'] = out
-        for cb in self.callbacks:
-            a = cb.on_loss_begin(**self.state_dict)
-            if a is not None: self.state_dict['last_output'] = a
+        self('loss_begin', call_mets=False)
         return self.state_dict['last_output']
 
     def on_backward_begin(self, loss:Tensor)->None:
         "Handle gradient calculation on `loss`."
         self.smoothener.add_value(loss.detach().cpu())
         self.state_dict['last_loss'], self.state_dict['smooth_loss'] = loss, self.smoothener.smooth
-        for cb in self.callbacks:
-            a = cb.on_backward_begin(**self.state_dict)
-            if a is not None: self.state_dict['last_loss'] = a
-        return self.state_dict['last_loss']
+        self('backward_begin', call_mets=False)
+        return self.state_dict['last_loss'], self.state_dict['skip_bwd']
 
     def on_backward_end(self)->None:
         "Handle end of gradient calculation."
-        self('backward_end', False)
+        self('backward_end', call_mets=False)
+        return self.state_dict['skip_step']
+
     def on_step_end(self)->None:
         "Handle end of optimization step."
-        self('step_end', False)
+        self('step_end', call_mets=False)
+        return self.state_dict['skip_zero']
 
     def on_batch_end(self, loss:Tensor)->None:
         "Handle end of processing one batch with `loss`."
         self.state_dict['last_loss'] = loss
-        stop = np.any(self('batch_end', not self.state_dict['train']))
+        self('batch_end', call_mets = not self.state_dict['train'])
         if self.state_dict['train']:
             self.state_dict['iteration'] += 1
             self.state_dict['num_batch'] += 1
-        return stop
+        return self.state_dict['stop_epoch']
 
     def on_epoch_end(self, val_loss:Tensor)->bool:
         "Epoch is done, process `val_loss`."
-        self.state_dict['last_metrics'] = [val_loss] if val_loss is not None else None
+        self.state_dict['last_metrics'] = [val_loss] if val_loss is not None else [None]
+        self('epoch_end', call_mets = val_loss is not None)
         self.state_dict['epoch'] += 1
-        if not self.state_dict['train']:
-            for met in self.metrics:
-                met.on_epoch_end(**self.state_dict)
-                self.state_dict['last_metrics'].append(met.metric)
-        return np.any(self('epoch_end', False))
+        return self.state_dict['stop_training']
 
     def on_train_end(self, exception:Union[bool,Exception])->None:
         "Handle end of training, `exception` is an `Exception` or False if no exceptions during training."
@@ -279,8 +325,9 @@ class AverageMetric(Callback):
     "Wrap a `func` in a callback for metrics computation."
     def __init__(self, func):
         # If it's a partial, use func.func
-        name = getattr(func,'func',func).__name__
+        name = getattr(func,'func', func).__name__
         self.func, self.name = func, name
+        self.world = num_distrib()
 
     def on_epoch_begin(self, **kwargs):
         "Set the inner value to 0."
@@ -290,11 +337,16 @@ class AverageMetric(Callback):
         "Update metric computation with `last_output` and `last_target`."
         if not is_listy(last_target): last_target=[last_target]
         self.count += last_target[0].size(0)
-        self.val += last_target[0].size(0) * self.func(last_output, *last_target).detach().cpu()
+        val = self.func(last_output, *last_target)
+        if self.world:
+            val = val.clone()
+            dist.all_reduce(val, op=dist.ReduceOp.SUM)
+            val /= self.world
+        self.val += last_target[0].size(0) * val.detach().cpu()
 
-    def on_epoch_end(self, **kwargs):
-        "Sets the final result in `self.metric`."
-        self.metric = self.val/self.count
+    def on_epoch_end(self, last_metrics, **kwargs):
+        "Set the final result in `last_metrics`."
+        return add_metrics(last_metrics, self.val/self.count)
 
 def annealing_no(start:Number, end:Number, pct:float)->Number:
     "No annealing, always return `start`."
@@ -317,7 +369,7 @@ def annealing_poly(degree:Number)->Number:
     "Anneal polynomically from `start` to `end` as pct goes from 0.0 to 1.0."
     return functools.partial(do_annealing_poly, degree=degree)
 
-class Stepper():
+class Scheduler():
     "Used to \"step\" from start,end (`vals`) over `n_iter` iterations on a schedule defined by `func`"
     def __init__(self, vals:StartOptEnd, n_iter:int, func:Optional[AnnealFunc]=None):
         self.start,self.end = (vals[0],vals[1]) if is_tuple(vals) else (vals,0)
@@ -325,6 +377,8 @@ class Stepper():
         if func is None: self.func = annealing_linear if is_tuple(vals) else annealing_no
         else:          self.func = func
         self.n = 0
+        
+    def restart(self): self.n = 0
 
     def step(self)->Number:
         "Return next value along annealed schedule."
@@ -335,3 +389,4 @@ class Stepper():
     def is_done(self)->bool:
         "Return `True` if schedule completed."
         return self.n >= self.n_iter
+

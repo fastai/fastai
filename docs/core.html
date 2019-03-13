@@ -11,7 +11,7 @@ summary: "Basic helper functions for the fastai library"
     
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Basic-core">Basic core<a class="anchor-link" href="#Basic-core">&#182;</a></h1>
+<h2 id="Basic-core">Basic core<a class="anchor-link" href="#Basic-core">&#182;</a></h2>
 </div>
 </div>
 </div>
@@ -53,9 +53,9 @@ summary: "Basic helper functions for the fastai library"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="has_arg"><code>has_arg</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L246" class="source_link">[source]</a></h4><blockquote><p><code>has_arg</code>(<strong><code>func</code></strong>, <strong><code>arg</code></strong>) → <code>bool</code></p>
+<h4 id="has_arg" class="doc_header"><code>has_arg</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L256" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#has_arg-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>has_arg</code>(<strong><code>func</code></strong>, <strong><code>arg</code></strong>) → <code>bool</code></p>
 </blockquote>
-<p>Check if <code>func</code> accepts <code>arg</code>.</p>
+<div class="collapse" id="has_arg-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#has_arg-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>has_arg</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Check if <code>func</code> accepts <code>arg</code>.</p>
 
 </div>
 
@@ -168,9 +168,9 @@ summary: "Basic helper functions for the fastai library"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ifnone"><code>ifnone</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L64" class="source_link">[source]</a></h4><blockquote><p><code>ifnone</code>(<strong><code>a</code></strong>:<code>Any</code>, <strong><code>b</code></strong>:<code>Any</code>) → <code>Any</code></p>
+<h4 id="ifnone" class="doc_header"><code>ifnone</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L65" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#ifnone-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>ifnone</code>(<strong><code>a</code></strong>:<code>Any</code>, <strong><code>b</code></strong>:<code>Any</code>) → <code>Any</code></p>
 </blockquote>
-<p><code>a</code> if <code>a</code> is not None, otherwise <code>b</code>.</p>
+<div class="collapse" id="ifnone-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#ifnone-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>ifnone</code>:</p><ul><li><code>pytest -sv tests/test_core.py::test_ifnone</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_core.py#L29" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><p><code>a</code> if <code>a</code> is not None, otherwise <code>b</code>.</p>
 
 </div>
 
@@ -249,9 +249,9 @@ summary: "Basic helper functions for the fastai library"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="is1d"><code>is1d</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L68" class="source_link">[source]</a></h4><blockquote><p><code>is1d</code>(<strong><code>a</code></strong>:<code>Collection</code>[<code>T_co</code>]) → <code>bool</code></p>
+<h4 id="is1d" class="doc_header"><code>is1d</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L69" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#is1d-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>is1d</code>(<strong><code>a</code></strong>:<code>Collection</code>[<code>T_co</code>]) → <code>bool</code></p>
 </blockquote>
-<p>Return <code>True</code> if <code>a</code> is one-dimensional</p>
+<div class="collapse" id="is1d-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#is1d-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>is1d</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Return <code>True</code> if <code>a</code> is one-dimensional</p>
 
 </div>
 
@@ -334,9 +334,9 @@ False
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="is_listy"><code>is_listy</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L51" class="source_link">[source]</a></h4><blockquote><p><code>is_listy</code>(<strong><code>x</code></strong>:<code>Any</code>) → <code>bool</code></p>
+<h4 id="is_listy" class="doc_header"><code>is_listy</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L51" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#is_listy-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>is_listy</code>(<strong><code>x</code></strong>:<code>Any</code>) → <code>bool</code></p>
 </blockquote>
-
+<div class="collapse" id="is_listy-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#is_listy-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>is_listy</code>:</p><ul><li><code>pytest -sv tests/test_core.py::test_listy</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_core.py#L49" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div>
 </div>
 
 </div>
@@ -562,9 +562,9 @@ False
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="is_tuple"><code>is_tuple</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L52" class="source_link">[source]</a></h4><blockquote><p><code>is_tuple</code>(<strong><code>x</code></strong>:<code>Any</code>) → <code>bool</code></p>
+<h4 id="is_tuple" class="doc_header"><code>is_tuple</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L52" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#is_tuple-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>is_tuple</code>(<strong><code>x</code></strong>:<code>Any</code>) → <code>bool</code></p>
 </blockquote>
-
+<div class="collapse" id="is_tuple-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#is_tuple-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>is_tuple</code>:</p><ul><li><code>pytest -sv tests/test_core.py::test_tuple</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_core.py#L60" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div>
 </div>
 
 </div>
@@ -649,9 +649,9 @@ False
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="arange_of"><code>arange_of</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L195" class="source_link">[source]</a></h4><blockquote><p><code>arange_of</code>(<strong><code>x</code></strong>)</p>
+<h4 id="arange_of" class="doc_header"><code>arange_of</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L205" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#arange_of-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>arange_of</code>(<strong><code>x</code></strong>)</p>
 </blockquote>
-<p>Same as <a href="/core.html#range_of"><code>range_of</code></a> but returns an array.</p>
+<div class="collapse" id="arange_of-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#arange_of-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>arange_of</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Same as <a href="/core.html#range_of"><code>range_of</code></a> but returns an array.</p>
 
 </div>
 
@@ -728,9 +728,9 @@ False
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="array"><code>array</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L256" class="source_link">[source]</a></h4><blockquote><p><code>array</code>(<strong><code>a</code></strong>, <strong><code>dtype</code></strong>:<code>type</code>=<strong><em><code>None</code></em></strong>, <strong>**<code>kwargs</code></strong>) → <code>ndarray</code></p>
+<h4 id="array" class="doc_header"><code>array</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L266" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#array-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>array</code>(<strong><code>a</code></strong>, <strong><code>dtype</code></strong>:<code>type</code>=<strong><em><code>None</code></em></strong>, <strong>**<code>kwargs</code></strong>) → <code>ndarray</code></p>
 </blockquote>
-<p>Same as <code>np.array</code> but also handles generators. <code>kwargs</code> are passed to <code>np.array</code> with <code>dtype</code>.</p>
+<div class="collapse" id="array-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#array-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>array</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Same as <code>np.array</code> but also handles generators. <code>kwargs</code> are passed to <code>np.array</code> with <code>dtype</code>.</p>
 
 </div>
 
@@ -884,9 +884,9 @@ False
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="arrays_split"><code>arrays_split</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L89" class="source_link">[source]</a></h4><blockquote><p><code>arrays_split</code>(<strong><code>mask</code></strong>:<code>ndarray</code>, <strong>*<code>arrs</code></strong>:<code>NPArrayableList</code>) → <code>SplitArrayList</code></p>
+<h4 id="arrays_split" class="doc_header"><code>arrays_split</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L90" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#arrays_split-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>arrays_split</code>(<strong><code>mask</code></strong>:<code>ndarray</code>, <strong>*<code>arrs</code></strong>:<code>NPArrayableList</code>) → <code>SplitArrayList</code></p>
 </blockquote>
-<p>Given <code>arrs</code> is [a,b,...] and <code>mask</code>index - return[(a[mask],a[~mask]),(b[mask],b[~mask]),...].</p>
+<div class="collapse" id="arrays_split-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#arrays_split-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>arrays_split</code>:</p><ul><li><code>pytest -sv tests/test_core.py::test_arrays_split</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_core.py#L131" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><p>Given <code>arrs</code> is [a,b,...] and <code>mask</code>index - return[(a[mask],a[~mask]),(b[mask],b[~mask]),...].</p>
 
 </div>
 
@@ -1041,9 +1041,9 @@ False
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="chunks"><code>chunks</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L55" class="source_link">[source]</a></h4><blockquote><p><code>chunks</code>(<strong><code>l</code></strong>:<code>Collection</code>[<code>T_co</code>], <strong><code>n</code></strong>:<code>int</code>) → <code>Iterable</code></p>
+<h4 id="chunks" class="doc_header"><code>chunks</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L56" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#chunks-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>chunks</code>(<strong><code>l</code></strong>:<code>Collection</code>[<code>T_co</code>], <strong><code>n</code></strong>:<code>int</code>) → <code>Iterable</code></p>
 </blockquote>
-<p>Yield successive <code>n</code>-sized chunks from <code>l</code>.</p>
+<div class="collapse" id="chunks-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#chunks-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>chunks</code>:</p><ul><li><code>pytest -sv tests/test_core.py::test_chunks</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_core.py#L36" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><p>Yield successive <code>n</code>-sized chunks from <code>l</code>.</p>
 
 </div>
 
@@ -1133,9 +1133,9 @@ False
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="df_names_to_idx"><code>df_names_to_idx</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L220" class="source_link">[source]</a></h4><blockquote><p><code>df_names_to_idx</code>(<strong><code>names</code></strong>:<code>IntsOrStrs</code>, <strong><code>df</code></strong>:<code>DataFrame</code>)</p>
+<h4 id="df_names_to_idx" class="doc_header"><code>df_names_to_idx</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L230" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#df_names_to_idx-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>df_names_to_idx</code>(<strong><code>names</code></strong>:<code>IntsOrStrs</code>, <strong><code>df</code></strong>:<code>DataFrame</code>)</p>
 </blockquote>
-<p>Return the column indexes of <code>names</code> in <code>df</code>.</p>
+<div class="collapse" id="df_names_to_idx-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#df_names_to_idx-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>df_names_to_idx</code>:</p><ul><li><code>pytest -sv tests/test_core.py::test_df_names_to_idx</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_core.py#L203" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><p>Return the column indexes of <code>names</code> in <code>df</code>.</p>
 
 </div>
 
@@ -1214,9 +1214,9 @@ False
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="extract_kwargs"><code>extract_kwargs</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L124" class="source_link">[source]</a></h4><blockquote><p><code>extract_kwargs</code>(<strong><code>names</code></strong>:<code>StrList</code>, <strong><code>kwargs</code></strong>:<code>KWArgs</code>)</p>
+<h4 id="extract_kwargs" class="doc_header"><code>extract_kwargs</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L129" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#extract_kwargs-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>extract_kwargs</code>(<strong><code>names</code></strong>:<code>StrList</code>, <strong><code>kwargs</code></strong>:<code>KWArgs</code>)</p>
 </blockquote>
-<p>Extract the keys in <code>names</code> from the <code>kwargs</code>.</p>
+<div class="collapse" id="extract_kwargs-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#extract_kwargs-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>extract_kwargs</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Extract the keys in <code>names</code> from the <code>kwargs</code>.</p>
 
 </div>
 
@@ -1293,9 +1293,9 @@ False
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="idx_dict"><code>idx_dict</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L78" class="source_link">[source]</a></h4><blockquote><p><code>idx_dict</code>(<strong><code>a</code></strong>)</p>
+<h4 id="idx_dict" class="doc_header"><code>idx_dict</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L79" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#idx_dict-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>idx_dict</code>(<strong><code>a</code></strong>)</p>
 </blockquote>
-<p>Create a dictionary value to index from <code>a</code>.</p>
+<div class="collapse" id="idx_dict-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#idx_dict-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>idx_dict</code>:</p><ul><li><code>pytest -sv tests/test_core.py::test_idx_dict</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_core.py#L115" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><p>Create a dictionary value to index from <code>a</code>.</p>
 
 </div>
 
@@ -1343,9 +1343,9 @@ False
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="index_row"><code>index_row</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L232" class="source_link">[source]</a></h4><blockquote><p><code>index_row</code>(<strong><code>a</code></strong>:<code>Union</code>[<code>Collection</code>[<code>T_co</code>], <code>DataFrame</code>, <code>Series</code>], <strong><code>idxs</code></strong>:<code>Collection</code>[<code>int</code>]) → <code>Any</code></p>
+<h4 id="index_row" class="doc_header"><code>index_row</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L242" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#index_row-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>index_row</code>(<strong><code>a</code></strong>:<code>Union</code>[<code>Collection</code>[<code>T_co</code>], <code>DataFrame</code>, <code>Series</code>], <strong><code>idxs</code></strong>:<code>Collection</code>[<code>int</code>]) → <code>Any</code></p>
 </blockquote>
-<p>Return the slice of <code>a</code> corresponding to <code>idxs</code>.</p>
+<div class="collapse" id="index_row-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#index_row-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>index_row</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Return the slice of <code>a</code> corresponding to <code>idxs</code>.</p>
 
 </div>
 
@@ -1558,9 +1558,9 @@ Name: 7, dtype: int64</pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="listify"><code>listify</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L101" class="source_link">[source]</a></h4><blockquote><p><code>listify</code>(<strong><code>p</code></strong>:<code>OptListOrItem</code>=<strong><em><code>None</code></em></strong>, <strong><code>q</code></strong>:<code>OptListOrItem</code>=<strong><em><code>None</code></em></strong>)</p>
+<h4 id="listify" class="doc_header"><code>listify</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L102" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#listify-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>listify</code>(<strong><code>p</code></strong>:<code>OptListOrItem</code>=<strong><em><code>None</code></em></strong>, <strong><code>q</code></strong>:<code>OptListOrItem</code>=<strong><em><code>None</code></em></strong>)</p>
 </blockquote>
-<p>Make <code>p</code> listy and the same length as <code>q</code>.</p>
+<div class="collapse" id="listify-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#listify-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>listify</code>:</p><ul><li><code>pytest -sv tests/test_core.py::test_listify</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_core.py#L25" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><p>Make <code>p</code> listy and the same length as <code>q</code>.</p>
 
 </div>
 
@@ -1725,9 +1725,9 @@ Name: 7, dtype: int64</pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="random_split"><code>random_split</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L95" class="source_link">[source]</a></h4><blockquote><p><code>random_split</code>(<strong><code>valid_pct</code></strong>:<code>float</code>, <strong>*<code>arrs</code></strong>:<code>NPArrayableList</code>) → <code>SplitArrayList</code></p>
+<h4 id="random_split" class="doc_header"><code>random_split</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L96" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#random_split-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>random_split</code>(<strong><code>valid_pct</code></strong>:<code>float</code>, <strong>*<code>arrs</code></strong>:<code>NPArrayableList</code>) → <code>SplitArrayList</code></p>
 </blockquote>
-<p>Randomly split <code>arrs</code> with <code>valid_pct</code> ratio. good for creating validation set.</p>
+<div class="collapse" id="random_split-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#random_split-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>random_split</code>:</p><ul><li><code>pytest -sv tests/test_core.py::test_random_split</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_core.py#L144" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><p>Randomly split <code>arrs</code> with <code>valid_pct</code> ratio. good for creating validation set.</p>
 
 </div>
 
@@ -1867,9 +1867,9 @@ Name: 7, dtype: int64</pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="range_of"><code>range_of</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L192" class="source_link">[source]</a></h4><blockquote><p><code>range_of</code>(<strong><code>x</code></strong>)</p>
+<h4 id="range_of" class="doc_header"><code>range_of</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L202" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#range_of-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>range_of</code>(<strong><code>x</code></strong>)</p>
 </blockquote>
-<p>Create a range from 0 to <code>len(x)</code>.</p>
+<div class="collapse" id="range_of-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#range_of-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>range_of</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Create a range from 0 to <code>len(x)</code>.</p>
 
 </div>
 
@@ -1946,9 +1946,9 @@ Name: 7, dtype: int64</pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="series2cat"><code>series2cat</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L141" class="source_link">[source]</a></h4><blockquote><p><code>series2cat</code>(<strong><code>df</code></strong>:<code>DataFrame</code>, <strong>*<code>col_names</code></strong>)</p>
+<h4 id="series2cat" class="doc_header"><code>series2cat</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L146" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#series2cat-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>series2cat</code>(<strong><code>df</code></strong>:<code>DataFrame</code>, <strong>*<code>col_names</code></strong>)</p>
 </blockquote>
-<p>Categorifies the columns <code>col_names</code> in <code>df</code>.</p>
+<div class="collapse" id="series2cat-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#series2cat-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>series2cat</code>:</p><ul><li><code>pytest -sv tests/test_core.py::test_series2cat</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_core.py#L174" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><p>Categorifies the columns <code>col_names</code> in <code>df</code>.</p>
 
 </div>
 
@@ -2160,9 +2160,9 @@ Categories (2, int64): [1 &lt; 2]</pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="split_kwargs_by_func"><code>split_kwargs_by_func</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L250" class="source_link">[source]</a></h4><blockquote><p><code>split_kwargs_by_func</code>(<strong><code>kwargs</code></strong>, <strong><code>func</code></strong>)</p>
+<h4 id="split_kwargs_by_func" class="doc_header"><code>split_kwargs_by_func</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L260" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#split_kwargs_by_func-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>split_kwargs_by_func</code>(<strong><code>kwargs</code></strong>, <strong><code>func</code></strong>)</p>
 </blockquote>
-<p>Split <code>kwargs</code> between those expected by <code>func</code> and the others.</p>
+<div class="collapse" id="split_kwargs_by_func-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#split_kwargs_by_func-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>split_kwargs_by_func</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Split <code>kwargs</code> between those expected by <code>func</code> and the others.</p>
 
 </div>
 
@@ -2212,9 +2212,9 @@ Categories (2, int64): [1 &lt; 2]</pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="to_int"><code>to_int</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L59" class="source_link">[source]</a></h4><blockquote><p><code>to_int</code>(<strong><code>b</code></strong>:<code>Any</code>) → <code>Union</code>[<code>int</code>, <code>List</code>[<code>int</code>]]</p>
+<h4 id="to_int" class="doc_header"><code>to_int</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L60" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#to_int-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>to_int</code>(<strong><code>b</code></strong>:<code>Any</code>) → <code>Union</code>[<code>int</code>, <code>List</code>[<code>int</code>]]</p>
 </blockquote>
-<p>Convert <code>b</code> to an int or list of ints (if <a href="/core.html#is_listy"><code>is_listy</code></a>); raises exception if not convertible</p>
+<div class="collapse" id="to_int-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#to_int-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>to_int</code>:</p><ul><li><code>pytest -sv tests/test_core.py::test_to_int</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_core.py#L76" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><p>Convert <code>b</code> to an int or list of ints (if <a href="/core.html#is_listy"><code>is_listy</code></a>); raises exception if not convertible</p>
 
 </div>
 
@@ -2292,9 +2292,9 @@ Categories (2, int64): [1 &lt; 2]</pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="uniqueify"><code>uniqueify</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L72" class="source_link">[source]</a></h4><blockquote><p><code>uniqueify</code>(<strong><code>x</code></strong>:<code>Series</code>) → <code>List</code>[<code>T</code>]</p>
+<h4 id="uniqueify" class="doc_header"><code>uniqueify</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L73" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#uniqueify-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>uniqueify</code>(<strong><code>x</code></strong>:<code>Series</code>, <strong><code>sort</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>) → <code>List</code>[<code>T</code>]</p>
 </blockquote>
-<p>Return sorted unique values of <code>x</code>.</p>
+<div class="collapse" id="uniqueify-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#uniqueify-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>uniqueify</code>:</p><ul><li><code>pytest -sv tests/test_core.py::test_uniqueify</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_core.py#L43" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><p>Return sorted unique values of <code>x</code>.</p>
 
 </div>
 
@@ -2348,9 +2348,9 @@ Categories (2, int64): [1 &lt; 2]</pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="download_url"><code>download_url</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L159" class="source_link">[source]</a></h4><blockquote><p><code>download_url</code>(<strong><code>url</code></strong>:<code>str</code>, <strong><code>dest</code></strong>:<code>str</code>, <strong><code>overwrite</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>, <strong><code>pbar</code></strong>:<code>ProgressBar</code>=<strong><em><code>None</code></em></strong>, <strong><code>show_progress</code></strong>=<strong><em><code>True</code></em></strong>, <strong><code>chunk_size</code></strong>=<strong><em><code>1048576</code></em></strong>, <strong><code>timeout</code></strong>=<strong><em><code>4</code></em></strong>, <strong><code>retries</code></strong>=<strong><em><code>5</code></em></strong>)</p>
+<h4 id="download_url" class="doc_header"><code>download_url</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L169" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#download_url-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>download_url</code>(<strong><code>url</code></strong>:<code>str</code>, <strong><code>dest</code></strong>:<code>str</code>, <strong><code>overwrite</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>, <strong><code>pbar</code></strong>:<code>ProgressBar</code>=<strong><em><code>None</code></em></strong>, <strong><code>show_progress</code></strong>=<strong><em><code>True</code></em></strong>, <strong><code>chunk_size</code></strong>=<strong><em><code>1048576</code></em></strong>, <strong><code>timeout</code></strong>=<strong><em><code>4</code></em></strong>, <strong><code>retries</code></strong>=<strong><em><code>5</code></em></strong>)</p>
 </blockquote>
-<p>Download <code>url</code> to <code>dest</code> unless it exists and not <code>overwrite</code>.</p>
+<div class="collapse" id="download_url-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#download_url-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>download_url</code>:</p><ul><li><code>pytest -sv tests/test_core.py::test_download_url</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_core.py#L183" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><p>Download <code>url</code> to <code>dest</code> unless it exists and not <code>overwrite</code>.</p>
 
 </div>
 
@@ -2369,9 +2369,9 @@ Categories (2, int64): [1 &lt; 2]</pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="find_classes"><code>find_classes</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L82" class="source_link">[source]</a></h4><blockquote><p><code>find_classes</code>(<strong><code>folder</code></strong>:<code>Path</code>) → <code>FilePathList</code></p>
+<h4 id="find_classes" class="doc_header"><code>find_classes</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L83" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#find_classes-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>find_classes</code>(<strong><code>folder</code></strong>:<code>Path</code>) → <code>FilePathList</code></p>
 </blockquote>
-<p>List of label subdirectories in imagenet-style <code>folder</code>.</p>
+<div class="collapse" id="find_classes-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#find_classes-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>find_classes</code>:</p><ul><li><code>pytest -sv tests/test_core.py::test_find_classes</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_core.py#L121" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><p>List of label subdirectories in imagenet-style <code>folder</code>.</p>
 
 </div>
 
@@ -2390,9 +2390,9 @@ Categories (2, int64): [1 &lt; 2]</pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="join_path"><code>join_path</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L201" class="source_link">[source]</a></h4><blockquote><p><code>join_path</code>(<strong><code>fname</code></strong>:<code>PathOrStr</code>, <strong><code>path</code></strong>:<code>PathOrStr</code>=<strong><em><code>'.'</code></em></strong>) → <code>Path</code></p>
+<h4 id="join_path" class="doc_header"><code>join_path</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L211" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#join_path-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>join_path</code>(<strong><code>fname</code></strong>:<code>PathOrStr</code>, <strong><code>path</code></strong>:<code>PathOrStr</code>=<strong><em><code>'.'</code></em></strong>) → <code>Path</code></p>
 </blockquote>
-<p>Return <code>Path(path)/Path(fname)</code>, <code>path</code> defaults to current dir.</p>
+<div class="collapse" id="join_path-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#join_path-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>join_path</code>:</p><ul><li><code>pytest -sv tests/test_core.py::test_join_paths</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_core.py#L196" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><p>Return <code>Path(path)/Path(fname)</code>, <code>path</code> defaults to current dir.</p>
 
 </div>
 
@@ -2411,9 +2411,9 @@ Categories (2, int64): [1 &lt; 2]</pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="join_paths"><code>join_paths</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L205" class="source_link">[source]</a></h4><blockquote><p><code>join_paths</code>(<strong><code>fnames</code></strong>:<code>FilePathList</code>, <strong><code>path</code></strong>:<code>PathOrStr</code>=<strong><em><code>'.'</code></em></strong>) → <code>FilePathList</code></p>
+<h4 id="join_paths" class="doc_header"><code>join_paths</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L215" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#join_paths-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>join_paths</code>(<strong><code>fnames</code></strong>:<code>FilePathList</code>, <strong><code>path</code></strong>:<code>PathOrStr</code>=<strong><em><code>'.'</code></em></strong>) → <code>FilePathList</code></p>
 </blockquote>
-<p>Join <code>path</code> to every file name in <code>fnames</code>.</p>
+<div class="collapse" id="join_paths-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#join_paths-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>join_paths</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Join <code>path</code> to every file name in <code>fnames</code>.</p>
 
 </div>
 
@@ -2432,9 +2432,9 @@ Categories (2, int64): [1 &lt; 2]</pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="loadtxt_str"><code>loadtxt_str</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L210" class="source_link">[source]</a></h4><blockquote><p><code>loadtxt_str</code>(<strong><code>path</code></strong>:<code>PathOrStr</code>) → <code>ndarray</code></p>
+<h4 id="loadtxt_str" class="doc_header"><code>loadtxt_str</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L220" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#loadtxt_str-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>loadtxt_str</code>(<strong><code>path</code></strong>:<code>PathOrStr</code>) → <code>ndarray</code></p>
 </blockquote>
-<p>Return <code>ndarray</code> of <code>str</code> of lines of text from <code>path</code>.</p>
+<div class="collapse" id="loadtxt_str-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#loadtxt_str-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>loadtxt_str</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Return <code>ndarray</code> of <code>str</code> of lines of text from <code>path</code>.</p>
 
 </div>
 
@@ -2453,9 +2453,9 @@ Categories (2, int64): [1 &lt; 2]</pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="save_texts"><code>save_texts</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L215" class="source_link">[source]</a></h4><blockquote><p><code>save_texts</code>(<strong><code>fname</code></strong>:<code>PathOrStr</code>, <strong><code>texts</code></strong>:<code>StrList</code>)</p>
+<h4 id="save_texts" class="doc_header"><code>save_texts</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L225" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#save_texts-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>save_texts</code>(<strong><code>fname</code></strong>:<code>PathOrStr</code>, <strong><code>texts</code></strong>:<code>StrList</code>)</p>
 </blockquote>
-<p>Save in <code>fname</code> the content of <code>texts</code>.</p>
+<div class="collapse" id="save_texts-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#save_texts-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>save_texts</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Save in <code>fname</code> the content of <code>texts</code>.</p>
 
 </div>
 
@@ -2480,9 +2480,9 @@ Categories (2, int64): [1 &lt; 2]</pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="num_cpus"><code>num_cpus</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L43" class="source_link">[source]</a></h4><blockquote><p><code>num_cpus</code>() → <code>int</code></p>
+<h4 id="num_cpus" class="doc_header"><code>num_cpus</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L43" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#num_cpus-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>num_cpus</code>() → <code>int</code></p>
 </blockquote>
-<p>Get number of cpus</p>
+<div class="collapse" id="num_cpus-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#num_cpus-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>num_cpus</code>:</p><ul><li><code>pytest -sv tests/test_core.py::test_cpus</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_core.py#L8" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><p>Get number of cpus</p>
 
 </div>
 
@@ -2501,9 +2501,98 @@ Categories (2, int64): [1 &lt; 2]</pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="parallel"><code>parallel</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L298" class="source_link">[source]</a></h4><blockquote><p><code>parallel</code>(<strong><code>func</code></strong>, <strong><code>arr</code></strong>:<code>Collection</code>[<code>T_co</code>], <strong><code>max_workers</code></strong>:<code>int</code>=<strong><em><code>None</code></em></strong>)</p>
+<h4 id="parallel" class="doc_header"><code>parallel</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L319" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#parallel-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>parallel</code>(<strong><code>func</code></strong>, <strong><code>arr</code></strong>:<code>Collection</code>[<code>T_co</code>], <strong><code>max_workers</code></strong>:<code>int</code>=<strong><em><code>None</code></em></strong>)</p>
 </blockquote>
-<p>Call <code>func</code> on every element of <code>arr</code> in parallel using <code>max_workers</code>.</p>
+<div class="collapse" id="parallel-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#parallel-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>parallel</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Call <code>func</code> on every element of <code>arr</code> in parallel using <code>max_workers</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><code>func</code> must accept both the value and index of each <code>arr</code> element.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">my_func</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Index: </span><span class="si">{}</span><span class="s2">, Value: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span>
+ 
+<span class="n">my_array</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="o">*</span><span class="mi">2</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)]</span>
+<span class="n">parallel</span><span class="p">(</span><span class="n">my_func</span><span class="p">,</span> <span class="n">my_array</span><span class="p">,</span> <span class="n">max_workers</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea ">
+
+    <div>
+        <style>
+            /* Turns off some styling */
+            progress {
+                /* gets rid of default border in Firefox and Opera. */
+                border: none;
+                /* Needs to be in here for Safari polyfill so background images work as expected. */
+                background-size: auto;
+            }
+            .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+                background: #F44336;
+            }
+        </style>
+      <progress value='5' class='' max='5', style='width:300px; height:20px; vertical-align: middle;'></progress>
+      100.00% [5/5 00:00<00:00]
+    </div>
+    
+</div>
+
+</div>
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Index: 0, Value: 0
+Index: 1, Value: 2
+Index: 2, Value: 4
+Index: 4, Value: 8
+Index: 3, Value: 6
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="partition" class="doc_header"><code>partition</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L138" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#partition-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>partition</code>(<strong><code>a</code></strong>:<code>Collection</code>[<code>T_co</code>], <strong><code>sz</code></strong>:<code>int</code>) → <code>List</code>[<code>Collection</code>[<code>T_co</code>]]</p>
+</blockquote>
+<div class="collapse" id="partition-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#partition-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>partition</code>:</p><ul><li><code>pytest -sv tests/test_core.py::test_partition_functionality</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_core.py#L84" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><p>Split iterables <code>a</code> in equal parts of size <code>sz</code></p>
 
 </div>
 
@@ -2522,30 +2611,9 @@ Categories (2, int64): [1 &lt; 2]</pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="partition"><code>partition</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L133" class="source_link">[source]</a></h4><blockquote><p><code>partition</code>(<strong><code>a</code></strong>:<code>Collection</code>[<code>T_co</code>], <strong><code>sz</code></strong>:<code>int</code>) → <code>List</code>[<code>Collection</code>[<code>T_co</code>]]</p>
+<h4 id="partition_by_cores" class="doc_header"><code>partition_by_cores</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L142" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#partition_by_cores-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>partition_by_cores</code>(<strong><code>a</code></strong>:<code>Collection</code>[<code>T_co</code>], <strong><code>n_cpus</code></strong>:<code>int</code>) → <code>List</code>[<code>Collection</code>[<code>T_co</code>]]</p>
 </blockquote>
-<p>Split iterables <code>a</code> in equal parts of size <code>sz</code></p>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h4 id="partition_by_cores"><code>partition_by_cores</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L137" class="source_link">[source]</a></h4><blockquote><p><code>partition_by_cores</code>(<strong><code>a</code></strong>:<code>Collection</code>[<code>T_co</code>], <strong><code>n_cpus</code></strong>:<code>int</code>) → <code>List</code>[<code>Collection</code>[<code>T_co</code>]]</p>
-</blockquote>
-<p>Split data in <code>a</code> equally among <code>n_cpus</code> cores</p>
+<div class="collapse" id="partition_by_cores-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#partition_by_cores-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>partition_by_cores</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Split data in <code>a</code> equally among <code>n_cpus</code> cores</p>
 
 </div>
 
@@ -2570,9 +2638,9 @@ Categories (2, int64): [1 &lt; 2]</pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="ItemBase"><code>class</code> <code>ItemBase</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L147" class="source_link">[source]</a></h3><blockquote><p><code>ItemBase</code>(<strong><code>data</code></strong>:<code>Any</code>)</p>
+<h3 id="ItemBase" class="doc_header"><code>class</code> <code>ItemBase</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L152" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#ItemBase-pytest" style="float:right; padding-right:10px">[test]</a></h3><blockquote><p><code>ItemBase</code>(<strong><code>data</code></strong>:<code>Any</code>)</p>
 </blockquote>
-<p>Base item type in the fastai library.</p>
+<div class="collapse" id="ItemBase-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#ItemBase-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>ItemBase</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Base item type in the fastai library.</p>
 
 </div>
 
@@ -2598,9 +2666,9 @@ Categories (2, int64): [1 &lt; 2]</pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ItemBase.apply_tfms"><code>apply_tfms</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L154" class="source_link">[source]</a></h4><blockquote><p><code>apply_tfms</code>(<strong><code>tfms</code></strong>:<code>Collection</code>[<code>T_co</code>], <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="ItemBase.apply_tfms" class="doc_header"><code>apply_tfms</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L159" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#ItemBase-apply_tfms-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>apply_tfms</code>(<strong><code>tfms</code></strong>:<code>Collection</code>[<code>T_co</code>], <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
-<p>Subclass this method if you want to apply data augmentation with <code>tfms</code> to this <a href="/core.html#ItemBase"><code>ItemBase</code></a>.</p>
+<div class="collapse" id="ItemBase-apply_tfms-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#ItemBase-apply_tfms-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>apply_tfms</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Subclass this method if you want to apply data augmentation with <code>tfms</code> to this <a href="/core.html#ItemBase"><code>ItemBase</code></a>.</p>
 
 </div>
 
@@ -2619,9 +2687,9 @@ Categories (2, int64): [1 &lt; 2]</pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ItemBase.show"><code>show</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L151" class="source_link">[source]</a></h4><blockquote><p><code>show</code>(<strong><code>ax</code></strong>:<code>Axes</code>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="ItemBase.show" class="doc_header"><code>show</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L156" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#ItemBase-show-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>show</code>(<strong><code>ax</code></strong>:<code>Axes</code>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
-<p>Subclass this method if you want to customize the way this <a href="/core.html#ItemBase"><code>ItemBase</code></a> is shown on <code>ax</code>.</p>
+<div class="collapse" id="ItemBase-show-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#ItemBase-show-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>show</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Subclass this method if you want to customize the way this <a href="/core.html#ItemBase"><code>ItemBase</code></a> is shown on <code>ax</code>.</p>
 
 </div>
 
@@ -2647,9 +2715,9 @@ Categories (2, int64): [1 &lt; 2]</pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="Category"><code>class</code> <code>Category</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L269" class="source_link">[source]</a></h3><blockquote><p><code>Category</code>(<strong><code>data</code></strong>, <strong><code>obj</code></strong>) :: <a href="/core.html#ItemBase"><code>ItemBase</code></a></p>
+<h3 id="Category" class="doc_header"><code>class</code> <code>Category</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L280" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#Category-pytest" style="float:right; padding-right:10px">[test]</a></h3><blockquote><p><code>Category</code>(<strong><code>data</code></strong>, <strong><code>obj</code></strong>) :: <a href="/core.html#ItemBase"><code>ItemBase</code></a></p>
 </blockquote>
-<p>Basic class for single classification labels.</p>
+<div class="collapse" id="Category-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#Category-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>Category</code>:</p><ul><li><code>pytest -sv tests/test_core.py::test_itembase_eq</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_core.py#L225" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><p>Basic class for single classification labels.</p>
 
 </div>
 
@@ -2675,9 +2743,9 @@ Categories (2, int64): [1 &lt; 2]</pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="EmptyLabel"><code>class</code> <code>EmptyLabel</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L264" class="source_link">[source]</a></h3><blockquote><p><code>EmptyLabel</code>() :: <a href="/core.html#ItemBase"><code>ItemBase</code></a></p>
+<h3 id="EmptyLabel" class="doc_header"><code>class</code> <code>EmptyLabel</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L274" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#EmptyLabel-pytest" style="float:right; padding-right:10px">[test]</a></h3><blockquote><p><code>EmptyLabel</code>() :: <a href="/core.html#ItemBase"><code>ItemBase</code></a></p>
 </blockquote>
-<p>Should be used for a dummy label.</p>
+<div class="collapse" id="EmptyLabel-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#EmptyLabel-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>EmptyLabel</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Should be used for a dummy label.</p>
 
 </div>
 
@@ -2696,9 +2764,9 @@ Categories (2, int64): [1 &lt; 2]</pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="MultiCategory"><code>class</code> <code>MultiCategory</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L275" class="source_link">[source]</a></h3><blockquote><p><code>MultiCategory</code>(<strong><code>data</code></strong>, <strong><code>obj</code></strong>, <strong><code>raw</code></strong>) :: <a href="/core.html#ItemBase"><code>ItemBase</code></a></p>
+<h3 id="MultiCategory" class="doc_header"><code>class</code> <code>MultiCategory</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L287" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#MultiCategory-pytest" style="float:right; padding-right:10px">[test]</a></h3><blockquote><p><code>MultiCategory</code>(<strong><code>data</code></strong>, <strong><code>obj</code></strong>, <strong><code>raw</code></strong>) :: <a href="/core.html#ItemBase"><code>ItemBase</code></a></p>
 </blockquote>
-<p>Basic class for multi-classification labels.</p>
+<div class="collapse" id="MultiCategory-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#MultiCategory-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>MultiCategory</code>:</p><ul><li><code>pytest -sv tests/test_core.py::test_itembase_eq</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_core.py#L225" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><p>Basic class for multi-classification labels.</p>
 
 </div>
 
@@ -2724,9 +2792,9 @@ Categories (2, int64): [1 &lt; 2]</pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="FloatItem"><code>class</code> <code>FloatItem</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L280" class="source_link">[source]</a></h2><blockquote><p><code>FloatItem</code>(<strong><code>obj</code></strong>) :: <a href="/core.html#ItemBase"><code>ItemBase</code></a></p>
+<h2 id="FloatItem" class="doc_header"><code>class</code> <code>FloatItem</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L293" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#FloatItem-pytest" style="float:right; padding-right:10px">[test]</a></h2><blockquote><p><code>FloatItem</code>(<strong><code>obj</code></strong>) :: <a href="/core.html#ItemBase"><code>ItemBase</code></a></p>
 </blockquote>
-<p>Basic class for float items.</p>
+<div class="collapse" id="FloatItem-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#FloatItem-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>FloatItem</code>:</p><ul><li><code>pytest -sv tests/test_core.py::test_itembase_eq</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_core.py#L225" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><p>Basic class for float items.</p>
 
 </div>
 
@@ -2751,9 +2819,9 @@ Categories (2, int64): [1 &lt; 2]</pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="camel2snake"><code>camel2snake</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L113" class="source_link">[source]</a></h4><blockquote><p><code>camel2snake</code>(<strong><code>name</code></strong>:<code>str</code>) → <code>str</code></p>
+<h4 id="camel2snake" class="doc_header"><code>camel2snake</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L118" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#camel2snake-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>camel2snake</code>(<strong><code>name</code></strong>:<code>str</code>) → <code>str</code></p>
 </blockquote>
-<p>Change <code>name</code> from camel to snake style.</p>
+<div class="collapse" id="camel2snake-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#camel2snake-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>camel2snake</code>:</p><ul><li><code>pytest -sv tests/test_core.py::test_camel2snake</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_core.py#L154" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><p>Change <code>name</code> from camel to snake style.</p>
 
 </div>
 
@@ -2801,10 +2869,241 @@ Categories (2, int64): [1 &lt; 2]</pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="even_mults"><code>even_mults</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L118" class="source_link">[source]</a></h4><blockquote><p><code>even_mults</code>(<strong><code>start</code></strong>:<code>float</code>, <strong><code>stop</code></strong>:<code>float</code>, <strong><code>n</code></strong>:<code>int</code>) → <code>ndarray</code></p>
+<h4 id="even_mults" class="doc_header"><code>even_mults</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L123" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#even_mults-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>even_mults</code>(<strong><code>start</code></strong>:<code>float</code>, <strong><code>stop</code></strong>:<code>float</code>, <strong><code>n</code></strong>:<code>int</code>) → <code>ndarray</code></p>
 </blockquote>
-<p>Build log-stepped array from <code>start</code> to <code>stop</code> in <code>n</code> steps.</p>
+<div class="collapse" id="even_mults-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#even_mults-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>even_mults</code>:</p><ul><li><code>pytest -sv tests/test_core.py::test_even_mults</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_core.py#L168" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><p>Build log-stepped array from <code>start</code> to <code>stop</code> in <code>n</code> steps.</p>
 
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In linear scales each element is equidistant from its neighbors:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># from 1 to 10 in 5 steps</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="n">t</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>array([ 1.  ,  3.25,  5.5 ,  7.75, 10.  ])</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">t</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>2.25
+2.25
+2.25
+2.25
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In logarithmic scales, each element is a multiple of the previous entry:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">t</span> <span class="o">=</span> <span class="n">even_mults</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="n">t</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>array([ 1.      ,  1.778279,  3.162278,  5.623413, 10.      ])</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># notice how each number is a multiple of its predecessor</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">t</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>1.7782794100389228
+1.7782794100389228
+1.7782794100389228
+1.7782794100389228
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="func_args" class="doc_header"><code>func_args</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L251" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#func_args-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>func_args</code>(<strong><code>func</code></strong>) → <code>bool</code></p>
+</blockquote>
+<div class="collapse" id="func_args-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#func_args-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>func_args</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Return the arguments of <code>func</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">func_args</span><span class="p">(</span><span class="n">download_url</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>(&#39;url&#39;,
+ &#39;dest&#39;,
+ &#39;overwrite&#39;,
+ &#39;pbar&#39;,
+ &#39;show_progress&#39;,
+ &#39;chunk_size&#39;,
+ &#39;timeout&#39;,
+ &#39;retries&#39;)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Additionally, <a href="/core.html#func_args"><code>func_args</code></a> can be used with functions that do not belong to the fastai library</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">func_args</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>(&#39;start&#39;, &#39;stop&#39;, &#39;num&#39;, &#39;endpoint&#39;, &#39;retstep&#39;, &#39;dtype&#39;)</pre>
 </div>
 
 </div>
@@ -2822,30 +3121,9 @@ Categories (2, int64): [1 &lt; 2]</pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="func_args"><code>func_args</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L241" class="source_link">[source]</a></h4><blockquote><p><code>func_args</code>(<strong><code>func</code></strong>) → <code>bool</code></p>
+<h4 id="noop" class="doc_header"><code>noop</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L54" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#noop-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>noop</code>(<strong><code>x</code></strong>)</p>
 </blockquote>
-<p>Return the arguments of <code>func</code>.</p>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h4 id="noop"><code>noop</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L53" class="source_link">[source]</a></h4><blockquote><p><code>noop</code>(<strong><code>x</code></strong>)</p>
-</blockquote>
-
+<div class="collapse" id="noop-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#noop-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>noop</code>:</p><ul><li><code>pytest -sv tests/test_core.py::test_noop</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_core.py#L72" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div>
 </div>
 
 </div>
@@ -2862,6 +3140,36 @@ Categories (2, int64): [1 &lt; 2]</pre>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># object is returned as-is</span>
+<span class="n">noop</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[1, 2, 3]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
 <div class="output">
@@ -2870,9 +3178,336 @@ Categories (2, int64): [1 &lt; 2]</pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="one_hot"><code>one_hot</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L226" class="source_link">[source]</a></h4><blockquote><p><code>one_hot</code>(<strong><code>x</code></strong>:<code>Collection</code>[<code>int</code>], <strong><code>c</code></strong>:<code>int</code>)</p>
+<h4 id="one_hot" class="doc_header"><code>one_hot</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L236" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#one_hot-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>one_hot</code>(<strong><code>x</code></strong>:<code>Collection</code>[<code>int</code>], <strong><code>c</code></strong>:<code>int</code>)</p>
 </blockquote>
-<p>One-hot encode <code>x</code> with <code>c</code> classes.</p>
+<div class="collapse" id="one_hot-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#one_hot-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>one_hot</code>:</p><ul><li><code>pytest -sv tests/test_core.py::test_one_hot</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_core.py#L208" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><p>One-hot encode <code>x</code> with <code>c</code> classes.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>One-hot encoding is a standard machine learning technique. Assume we are dealing with a 10-class classification problem and we are supplied a list of labels:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">jekyll_note</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;y is zero-indexed, therefore its first element (1) belongs to class 2, its second element (4) to class 5 and so on.&quot;&quot;&quot;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<div markdown="span" class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i> <b>Note: </b>y is zero-indexed, therefore its first element (1) belongs to class 2, its second element (4) to class 5 and so on.</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>9</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>y can equivalently be expressed as a matrix of 9 rows and 10 columns, where each row represents one element of the original y.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">y</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">one_hot</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>[0. 1. 0. 0. 0. 0. 0. 0. 0. 0.]
+[0. 0. 0. 0. 1. 0. 0. 0. 0. 0.]
+[0. 0. 0. 0. 1. 0. 0. 0. 0. 0.]
+[0. 0. 0. 0. 0. 1. 0. 0. 0. 0.]
+[0. 0. 0. 0. 0. 0. 0. 1. 0. 0.]
+[0. 0. 0. 0. 0. 0. 0. 0. 0. 1.]
+[0. 0. 1. 0. 0. 0. 0. 0. 0. 0.]
+[0. 0. 0. 0. 1. 0. 0. 0. 0. 0.]
+[1. 0. 0. 0. 0. 0. 0. 0. 0. 0.]
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="show_some" class="doc_header"><code>show_some</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L337" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#show_some-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>show_some</code>(<strong><code>items</code></strong>:<code>Collection</code>[<code>T_co</code>], <strong><code>n_max</code></strong>:<code>int</code>=<strong><em><code>5</code></em></strong>, <strong><code>sep</code></strong>:<code>str</code>=<strong><em><code>','</code></em></strong>)</p>
+</blockquote>
+<div class="collapse" id="show_some-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#show_some-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>show_some</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Return the representation of the first  <code>n_max</code> elements in <code>items</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># select 3 elements from a list</span>
+<span class="n">some_data</span> <span class="o">=</span> <span class="n">show_some</span><span class="p">([</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">50</span><span class="p">],</span> <span class="mi">3</span><span class="p">)</span> 
+<span class="n">some_data</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&#39;10,20,30...&#39;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">type</span><span class="p">(</span><span class="n">some_data</span><span class="p">)</span> 
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>str</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># the separator can be changed</span>
+<span class="n">some_data</span> <span class="o">=</span> <span class="n">show_some</span><span class="p">([</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">50</span><span class="p">],</span> <span class="mi">3</span><span class="p">,</span> <span class="n">sep</span> <span class="o">=</span> <span class="s1">&#39;---&#39;</span><span class="p">)</span> 
+<span class="n">some_data</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&#39;10---20---30...&#39;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">some_data</span><span class="p">[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&#39;10---20---30&#39;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><a href="/core.html#show_some"><code>show_some</code></a> can take as input any class with __len__ and __getitem__</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">Any</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span>
+    <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">i</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+ 
+<span class="n">some_other_data</span> <span class="o">=</span> <span class="n">Any</span><span class="p">(</span><span class="s1">&#39;nice&#39;</span><span class="p">)</span>
+<span class="n">show_some</span><span class="p">(</span><span class="n">some_other_data</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&#39;n,i...&#39;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="subplots" class="doc_header"><code>subplots</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L328" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#subplots-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>subplots</code>(<strong><code>rows</code></strong>:<code>int</code>, <strong><code>cols</code></strong>:<code>int</code>, <strong><code>imgsize</code></strong>:<code>int</code>=<strong><em><code>4</code></em></strong>, <strong><code>figsize</code></strong>:<code>Optional</code>[<code>Tuple</code>[<code>int</code>, <code>int</code>]]=<strong><em><code>None</code></em></strong>, <strong><code>title</code></strong>=<strong><em><code>None</code></em></strong>, <strong>**<code>kwargs</code></strong>)</p>
+</blockquote>
+<div class="collapse" id="subplots-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#subplots-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>subplots</code>:</p><ul><li><code>pytest -sv tests/test_core.py::test_subplots_multi_row_cols</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_core.py#L212" class="source_link" style="float:right">[source]</a></li><li><code>pytest -sv tests/test_core.py::test_subplots_single</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_core.py#L219" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><p>Like <code>plt.subplots</code> but with consistent axs shape, <code>kwargs</code> passed to <code>fig.suptitle</code> with <code>title</code></p>
 
 </div>
 
@@ -2891,51 +3526,9 @@ Categories (2, int64): [1 &lt; 2]</pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="show_some"><code>show_some</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L316" class="source_link">[source]</a></h4><blockquote><p><code>show_some</code>(<strong><code>items</code></strong>:<code>Collection</code>[<code>T_co</code>], <strong><code>n_max</code></strong>:<code>int</code>=<strong><em><code>5</code></em></strong>, <strong><code>sep</code></strong>:<code>str</code>=<strong><em><code>','</code></em></strong>)</p>
+<h4 id="text2html_table" class="doc_header"><code>text2html_table</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L305" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#text2html_table-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>text2html_table</code>(<strong><code>items</code></strong>:<code>Tokens</code>) → <code>str</code></p>
 </blockquote>
-<p>Return the representation of the first  <code>n_max</code> elements in <code>items</code>.</p>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h4 id="subplots"><code>subplots</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L307" class="source_link">[source]</a></h4><blockquote><p><code>subplots</code>(<strong><code>rows</code></strong>:<code>int</code>, <strong><code>cols</code></strong>:<code>int</code>, <strong><code>imgsize</code></strong>:<code>int</code>=<strong><em><code>4</code></em></strong>, <strong><code>figsize</code></strong>:<code>Optional</code>[<code>Tuple</code>[<code>int</code>, <code>int</code>]]=<strong><em><code>None</code></em></strong>, <strong><code>title</code></strong>=<strong><em><code>None</code></em></strong>, <strong>**<code>kwargs</code></strong>)</p>
-</blockquote>
-<p>Like <code>plt.subplots</code> but with consistent axs shape, <code>kwargs</code> passed to <code>fig.suptitle</code> with <code>title</code></p>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h4 id="text2html_table"><code>text2html_table</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L288" class="source_link">[source]</a></h4><blockquote><p><code>text2html_table</code>(<strong><code>items</code></strong>:<code>Tokens</code>, <strong><code>widths</code></strong>:<code>Collection</code>[<code>int</code>]) → <code>str</code></p>
-</blockquote>
-<p>Put the texts in <code>items</code> in an HTML table, <code>widths</code> are the widths of the columns in %.</p>
+<div class="collapse" id="text2html_table-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#text2html_table-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>text2html_table</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Put the texts in <code>items</code> in an HTML table, <code>widths</code> are the widths of the columns in %.</p>
 
 </div>
 

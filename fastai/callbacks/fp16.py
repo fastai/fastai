@@ -9,8 +9,8 @@ __all__ = ['MixedPrecision']
 
 def get_master(layer_groups:ModuleList, flat_master:bool=False) -> Tuple[List[List[Tensor]], List[List[Tensor]]]:
     "Return two lists, one for the model parameters in FP16 and one for the master parameters in FP32."
-    split_groups = split_bn_bias(layer_groups)
-    model_params = [[param for param in lg.parameters() if param.requires_grad] for lg in split_groups]
+    split_params = split_no_wd_params(layer_groups)
+    model_params = [[param for param in pg if param.requires_grad] for pg in split_params]
     if flat_master:
         master_params = []
         for lg in model_params:
@@ -53,49 +53,66 @@ def master2model(model_params:Sequence[Tensor], master_params:Sequence[Tensor], 
         for model_group,master_group in zip(model_params,master_params):
             for model, master in zip(model_group, master_group): model.data.copy_(master.data)
 
+def grad_overflow(param_group):
+    for group in param_group:
+        for p in group:
+            if p.grad is not None:
+                s = float(p.grad.data.float().sum())
+                if s == float('inf') or s == float('-inf') or s != s: return True
+    return False
+
 class MixedPrecision(LearnerCallback):
+    _order = 999 #Need to run after things that could call on_backward_begin and change the loss
     "Callback that handles mixed-precision training."
-    def __init__(self, learn:Learner, loss_scale:float=512., flat_master:bool=False):
+    def __init__(self, learn:Learner, loss_scale:float=None, max_noskip:int=1000, dynamic:bool=True, clip:float=None,
+                 flat_master:bool=False, max_scale:float=2**24):
         super().__init__(learn)
-        self.loss_scale,self.flat_master = loss_scale,flat_master
+        self.flat_master,self.dynamic,self.max_noskip,self.clip,self.max_scale = flat_master,dynamic,max_noskip,clip,max_scale
+        self.loss_scale = ifnone(loss_scale, 2**16 if dynamic else 512)
         self.not_min += ['model_params', 'master_params']
         assert torch.backends.cudnn.enabled, "Mixed precision training requires cudnn."
+        self.opt = None
 
     def on_train_begin(self, **kwargs:Any)->None:
-        "Ensure everything is in half precision mode."
-        self.learn.data.train_dl.add_tfm(batch_to_half)
-        if hasattr(self.learn.data, 'valid_dl') and self.learn.data.valid_dl is not None:
-            self.learn.data.valid_dl.add_tfm(batch_to_half)
-        if hasattr(self.learn.data, 'test_dl') and self.learn.data.test_dl is not None:
-            self.learn.data.test_dl.add_tfm(batch_to_half)
+        "Prepare the master model."
         #Get a copy of the model params in FP32
         self.model_params, self.master_params = get_master(self.learn.layer_groups, self.flat_master)
         #Changes the optimizer so that the optimization step is done in FP32.
-        opt = self.learn.opt
-        mom,wd,beta = opt.mom,opt.wd,opt.beta
-        lrs = [lr for lr in self.learn.opt._lr for _ in range(2)]
-        opt_params = [{'params': mp, 'lr': lr} for mp,lr in zip(self.master_params, lrs)]
-        self.learn.opt.opt = self.learn.opt_func(opt_params)
-        opt.mom,opt.wd,opt.beta = mom,wd,beta
+        if self.opt is None or self.opt.n_params != self.learn.opt.n_params:
+            self.opt = self.learn.opt.new_with_params(self.master_params)
+            self.opt.load_state_dict(self.learn.opt.state_dict())
+        else: self.opt.lr,self.opt.wd = self.learn.opt.lr,self.learn.opt.wd
+        self.learn.opt.opt = self.opt.opt
+        self.noskip = 0
 
     def on_loss_begin(self, last_output:Tensor, **kwargs:Any) -> Tensor:
         "Convert half precision output to FP32 to avoid reduction overflow."
-        return to_float(last_output)
+        return {'last_output': to_float(last_output)}
 
     def on_backward_begin(self, last_loss:Rank0Tensor, **kwargs:Any) -> Rank0Tensor:
         "Scale gradients up by `self.loss_scale` to prevent underflow."
         #To avoid gradient underflow, we scale the gradients
         ret_loss = last_loss * self.loss_scale
-        if torch.isnan(ret_loss): 
-            warn(f"You have a `loss_scale` factor that is too high, try to divide it by 2 (current value: {self.loss_scale}).")
-        return ret_loss
+        return {'last_loss': ret_loss}
 
-    def on_backward_end(self, **kwargs:Any ):
+    def on_backward_end(self, **kwargs:Any)->None:
         "Convert the gradients back to FP32 and divide them by the scale."
-        model_g2master_g(self.model_params, self.master_params, self.flat_master)
-        for group in self.master_params:
-            for param in group: 
-                if param.grad is not None: param.grad.div_(self.loss_scale)
+        if self.dynamic and grad_overflow(self.model_params) and self.loss_scale > 1:
+            self.loss_scale /= 2
+            self.noskip = 0
+            #The step will be skipped since we don't update the master grads so they are all None or zero
+        else:
+            model_g2master_g(self.model_params, self.master_params, self.flat_master)
+            for group in self.master_params:
+                for param in group:
+                    if param.grad is not None: param.grad.div_(self.loss_scale)
+            if self.clip is not None:
+                for group in self.master_params: nn.utils.clip_grad_norm_(group, self.clip)
+            if not self.dynamic: return
+            self.noskip += 1
+            if self.noskip >= self.max_noskip and self.loss_scale < self.max_scale:
+                self.loss_scale *= 2
+                self.noskip = 0
 
     def on_step_end(self, **kwargs:Any)->None:
         "Update the params from master to model and zero grad."

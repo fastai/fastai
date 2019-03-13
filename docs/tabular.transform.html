@@ -11,7 +11,7 @@ summary: "Transforms to clean and preprocess tabular data"
     
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Tabular-data-preprocessing">Tabular data preprocessing<a class="anchor-link" href="#Tabular-data-preprocessing">&#182;</a></h1>
+<h2 id="Tabular-data-preprocessing">Tabular data preprocessing<a class="anchor-link" href="#Tabular-data-preprocessing">&#182;</a></h2>
 </div>
 </div>
 </div>
@@ -26,13 +26,13 @@ summary: "Transforms to clean and preprocess tabular data"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>This package contains the basic class to define a transformation for preprocessing dataframes of tabular data, as well as basic <a href="/tabular.transform.html#TabularTransform"><code>TabularTransform</code></a>. Preprocessing includes things like</p>
+<p>This package contains the basic class to define a transformation for preprocessing dataframes of tabular data, as well as basic <a href="/tabular.transform.html#TabularProc"><code>TabularProc</code></a>. Preprocessing includes things like</p>
 <ul>
 <li>replacing non-numerical variables by categories, then their ids,</li>
 <li>filling missing values,</li>
 <li>normalizing continuous variables.</li>
 </ul>
-<p>In all those steps we have to be careful to use the correspondence we decide on our training set (which id we give to each category, what is the value we put for missing data, or how the mean/std we use to normalize) on our validation or test set. To deal with this, we use a special class called <a href="/tabular.transform.html#TabularTransform"><code>TabularTransform</code></a>.</p>
+<p>In all those steps we have to be careful to use the correspondence we decide on our training set (which id we give to each category, what is the value we put for missing data, or how the mean/std we use to normalize) on our validation or test set. To deal with this, we use a special class called <a href="/tabular.transform.html#TabularProc"><code>TabularProc</code></a>.</p>
 <p>The data used in this document page is a subset of the <a href="https://archive.ics.uci.edu/ml/datasets/adult">adult dataset</a>. It gives a certain amount of data on individuals to train a model to predict wether their salary is greater than \$50k or not.</p>
 
 </div>
@@ -233,9 +233,9 @@ summary: "Transforms to clean and preprocess tabular data"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TabularProc"><code>class</code> <code>TabularProc</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/transform.py#L34" class="source_link">[source]</a></h2><blockquote><p><code>TabularProc</code>(<strong><code>cat_names</code></strong>:<code>StrList</code>, <strong><code>cont_names</code></strong>:<code>StrList</code>)</p>
+<h2 id="TabularProc" class="doc_header"><code>class</code> <code>TabularProc</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/transform.py#L116" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#TabularProc-pytest" style="float:right; padding-right:10px">[test]</a></h2><blockquote><p><code>TabularProc</code>(<strong><code>cat_names</code></strong>:<code>StrList</code>, <strong><code>cont_names</code></strong>:<code>StrList</code>)</p>
 </blockquote>
-<p>A processor for tabular dataframes.</p>
+<div class="collapse" id="TabularProc-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#TabularProc-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>TabularProc</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>A processor for tabular dataframes.</p>
 
 </div>
 
@@ -261,9 +261,9 @@ summary: "Transforms to clean and preprocess tabular data"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="TabularProc.__call__"><code>__call__</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/transform.py#L39" class="source_link">[source]</a></h4><blockquote><p><code>__call__</code>(<strong><code>df</code></strong>:<code>DataFrame</code>, <strong><code>test</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>)</p>
+<h4 id="TabularProc.__call__" class="doc_header"><code>__call__</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/transform.py#L121" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#TabularProc-__call__-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>__call__</code>(<strong><code>df</code></strong>:<code>DataFrame</code>, <strong><code>test</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>)</p>
 </blockquote>
-<p>Apply the correct function to <code>df</code> depending on <code>test</code>.</p>
+<div class="collapse" id="TabularProc-__call__-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#TabularProc-__call__-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>__call__</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Apply the correct function to <code>df</code> depending on <code>test</code>.</p>
 
 </div>
 
@@ -282,9 +282,9 @@ summary: "Transforms to clean and preprocess tabular data"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="TabularProc.apply_train"><code>apply_train</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/transform.py#L44" class="source_link">[source]</a></h4><blockquote><p><code>apply_train</code>(<strong><code>df</code></strong>:<code>DataFrame</code>)</p>
+<h4 id="TabularProc.apply_train" class="doc_header"><code>apply_train</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/transform.py#L126" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#TabularProc-apply_train-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>apply_train</code>(<strong><code>df</code></strong>:<code>DataFrame</code>)</p>
 </blockquote>
-<p>Function applied to <code>df</code> if it's the train set.</p>
+<div class="collapse" id="TabularProc-apply_train-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#TabularProc-apply_train-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>apply_train</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Function applied to <code>df</code> if it's the train set.</p>
 
 </div>
 
@@ -303,9 +303,9 @@ summary: "Transforms to clean and preprocess tabular data"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="TabularProc.apply_test"><code>apply_test</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/transform.py#L47" class="source_link">[source]</a></h4><blockquote><p><code>apply_test</code>(<strong><code>df</code></strong>:<code>DataFrame</code>)</p>
+<h4 id="TabularProc.apply_test" class="doc_header"><code>apply_test</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/transform.py#L129" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#TabularProc-apply_test-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>apply_test</code>(<strong><code>df</code></strong>:<code>DataFrame</code>)</p>
 </blockquote>
-<p>Function applied to <code>df</code> if it's the test set.</p>
+<div class="collapse" id="TabularProc-apply_test-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#TabularProc-apply_test-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>apply_test</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Function applied to <code>df</code> if it's the test set.</p>
 
 </div>
 
@@ -335,7 +335,7 @@ summary: "Transforms to clean and preprocess tabular data"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The following <a href="/tabular.transform.html#TabularTransform"><code>TabularTransform</code></a> are implemented in the fastai library. Note that the replacement from categories to codes as well as the normalization of continuous variables are automatically done in a <a href="/tabular.data.html#TabularDataset"><code>TabularDataset</code></a>.</p>
+<p>The following <a href="/tabular.transform.html#TabularProc"><code>TabularProc</code></a> are implemented in the fastai library. Note that the replacement from categories to codes as well as the normalization of continuous variables are automatically done in a <a href="/tabular.data.html#TabularDataBunch"><code>TabularDataBunch</code></a>.</p>
 
 </div>
 </div>
@@ -349,9 +349,9 @@ summary: "Transforms to clean and preprocess tabular data"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Categorify"><code>class</code> <code>Categorify</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/transform.py#L51" class="source_link">[source]</a></h2><blockquote><p><code>Categorify</code>(<strong><code>cat_names</code></strong>:<code>StrList</code>, <strong><code>cont_names</code></strong>:<code>StrList</code>) :: <a href="/tabular.transform.html#TabularProc"><code>TabularProc</code></a></p>
+<h2 id="Categorify" class="doc_header"><code>class</code> <code>Categorify</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/transform.py#L133" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#Categorify-pytest" style="float:right; padding-right:10px">[test]</a></h2><blockquote><p><code>Categorify</code>(<strong><code>cat_names</code></strong>:<code>StrList</code>, <strong><code>cont_names</code></strong>:<code>StrList</code>) :: <a href="/tabular.transform.html#TabularProc"><code>TabularProc</code></a></p>
 </blockquote>
-<p>Transform the categorical variables to that type.</p>
+<div class="collapse" id="Categorify-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#Categorify-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>Categorify</code>:</p><ul><li><code>pytest -sv tests/test_tabular_transform.py::test_categorify</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_tabular_transform.py#L6" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><p>Transform the categorical variables to that type.</p>
 
 </div>
 
@@ -377,9 +377,9 @@ summary: "Transforms to clean and preprocess tabular data"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Categorify.apply_train"><code>apply_train</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/transform.py#L53" class="source_link">[source]</a></h4><blockquote><p><code>apply_train</code>(<strong><code>df</code></strong>:<code>DataFrame</code>)</p>
+<h4 id="Categorify.apply_train" class="doc_header"><code>apply_train</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/transform.py#L135" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#Categorify-apply_train-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>apply_train</code>(<strong><code>df</code></strong>:<code>DataFrame</code>)</p>
 </blockquote>
-<p>Transform <code>self.cat_names</code> columns in categorical.</p>
+<div class="collapse" id="Categorify-apply_train-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#Categorify-apply_train-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>apply_train</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Transform <code>self.cat_names</code> columns in categorical.</p>
 
 </div>
 
@@ -398,9 +398,9 @@ summary: "Transforms to clean and preprocess tabular data"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Categorify.apply_test"><code>apply_test</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/transform.py#L60" class="source_link">[source]</a></h4><blockquote><p><code>apply_test</code>(<strong><code>df</code></strong>:<code>DataFrame</code>)</p>
+<h4 id="Categorify.apply_test" class="doc_header"><code>apply_test</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/transform.py#L142" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#Categorify-apply_test-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>apply_test</code>(<strong><code>df</code></strong>:<code>DataFrame</code>)</p>
 </blockquote>
-<p>Transform <code>self.cat_names</code> columns in categorical using the codes decided in <code>apply_train</code>.</p>
+<div class="collapse" id="Categorify-apply_test-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#Categorify-apply_test-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>apply_test</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Transform <code>self.cat_names</code> columns in categorical using the codes decided in <code>apply_train</code>.</p>
 
 </div>
 
@@ -510,9 +510,9 @@ summary: "Transforms to clean and preprocess tabular data"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="FillMissing"><code>class</code> <code>FillMissing</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/transform.py#L68" class="source_link">[source]</a></h2><blockquote><p><code>FillMissing</code>(<strong><code>cat_names</code></strong>:<code>StrList</code>, <strong><code>cont_names</code></strong>:<code>StrList</code>, <strong><code>fill_strategy</code></strong>:<a href="/tabular.transform.html#FillStrategy"><code>FillStrategy</code></a>=<strong><em><code>&lt;FillStrategy.MEDIAN: 1&gt;</code></em></strong>, <strong><code>add_col</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>, <strong><code>fill_val</code></strong>:<code>float</code>=<strong><em><code>0.0</code></em></strong>) :: <a href="/tabular.transform.html#TabularProc"><code>TabularProc</code></a></p>
+<h2 id="FillMissing" class="doc_header"><code>class</code> <code>FillMissing</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/transform.py#L150" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#FillMissing-pytest" style="float:right; padding-right:10px">[test]</a></h2><blockquote><p><code>FillMissing</code>(<strong><code>cat_names</code></strong>:<code>StrList</code>, <strong><code>cont_names</code></strong>:<code>StrList</code>, <strong><code>fill_strategy</code></strong>:<a href="/tabular.transform.html#FillStrategy"><code>FillStrategy</code></a>=<strong><em><code>&lt;FillStrategy.MEDIAN: 1&gt;</code></em></strong>, <strong><code>add_col</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>, <strong><code>fill_val</code></strong>:<code>float</code>=<strong><em><code>0.0</code></em></strong>) :: <a href="/tabular.transform.html#TabularProc"><code>TabularProc</code></a></p>
 </blockquote>
-<p>Fill the missing values in continuous columns.</p>
+<div class="collapse" id="FillMissing-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#FillMissing-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>FillMissing</code>:</p><ul><li><code>pytest -sv tests/test_tabular_transform.py::test_default_fill_strategy_is_median</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_tabular_transform.py#L30" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><p>Fill the missing values in continuous columns.</p>
 
 </div>
 
@@ -524,7 +524,7 @@ summary: "Transforms to clean and preprocess tabular data"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><code>cat_names</code> variables are left untouched (their missing value will be replaced by code 0 in the <a href="/tabular.data.html#TabularDataset"><code>TabularDataset</code></a>). <a href="#FillStrategy"><code>fill_strategy</code></a> is adopted to replace those nans and if <code>add_col</code> is True, whenever a column <code>c</code> has missing values, a column named <code>c_nan</code> is added and flags the line where the value was missing.</p>
+<p><code>cat_names</code> variables are left untouched (their missing value will be replaced by code 0 in the <a href="/tabular.data.html#TabularDataBunch"><code>TabularDataBunch</code></a>). <a href="#FillStrategy"><code>fill_strategy</code></a> is adopted to replace those nans and if <code>add_col</code> is True, whenever a column <code>c</code> has missing values, a column named <code>c_nan</code> is added and flags the line where the value was missing.</p>
 
 </div>
 </div>
@@ -538,9 +538,9 @@ summary: "Transforms to clean and preprocess tabular data"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="FillMissing.apply_train"><code>apply_train</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/transform.py#L73" class="source_link">[source]</a></h4><blockquote><p><code>apply_train</code>(<strong><code>df</code></strong>:<code>DataFrame</code>)</p>
+<h4 id="FillMissing.apply_train" class="doc_header"><code>apply_train</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/transform.py#L155" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#FillMissing-apply_train-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>apply_train</code>(<strong><code>df</code></strong>:<code>DataFrame</code>)</p>
 </blockquote>
-<p>Fill missing values in <code>self.cont_names</code> according to <code>self.fill_strategy</code>.</p>
+<div class="collapse" id="FillMissing-apply_train-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#FillMissing-apply_train-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>apply_train</code>:</p><ul><li><code>pytest -sv tests/test_tabular_transform.py::test_fill_missing_leaves_no_na_values</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_tabular_transform.py#L36" class="source_link" style="float:right">[source]</a></li><li><code>pytest -sv tests/test_tabular_transform.py::test_fill_missing_returns_correct_medians</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_tabular_transform.py#L49" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><p>Fill missing values in <code>self.cont_names</code> according to <code>self.fill_strategy</code>.</p>
 
 </div>
 
@@ -559,9 +559,9 @@ summary: "Transforms to clean and preprocess tabular data"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="FillMissing.apply_test"><code>apply_test</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/transform.py#L87" class="source_link">[source]</a></h4><blockquote><p><code>apply_test</code>(<strong><code>df</code></strong>:<code>DataFrame</code>)</p>
+<h4 id="FillMissing.apply_test" class="doc_header"><code>apply_test</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/transform.py#L169" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#FillMissing-apply_test-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>apply_test</code>(<strong><code>df</code></strong>:<code>DataFrame</code>)</p>
 </blockquote>
-<p>Fill missing values in <code>self.cont_names</code> like in <code>apply_train</code>.</p>
+<div class="collapse" id="FillMissing-apply_test-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#FillMissing-apply_test-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>apply_test</code>:</p><ul><li><code>pytest -sv tests/test_tabular_transform.py::test_fill_missing_leaves_no_na_values</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_tabular_transform.py#L36" class="source_link" style="float:right">[source]</a></li><li><code>pytest -sv tests/test_tabular_transform.py::test_fill_missing_returns_correct_medians</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_tabular_transform.py#L49" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><p>Fill missing values in <code>self.cont_names</code> like in <code>apply_train</code>.</p>
 
 </div>
 
@@ -903,9 +903,9 @@ summary: "Transforms to clean and preprocess tabular data"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="FillStrategy">`FillStrategy`</h2><blockquote><p><code>Enum</code> = [MEDIAN, COMMON, CONSTANT]</p>
+<h2 id="FillStrategy" class="doc_header">`FillStrategy`<a class="source_link" data-toggle="collapse" data-target="#FillStrategy-pytest" style="float:right; padding-right:10px">[test]</a></h2><blockquote><p><code>Enum</code> = [MEDIAN, COMMON, CONSTANT]</p>
 </blockquote>
-<p>Enum flag represents determines how <a href="/tabular.transform.html#FillMissing"><code>FillMissing</code></a> should handle missing/nan values</p>
+<div class="collapse" id="FillStrategy-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#FillStrategy-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>FillStrategy</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Enum flag represents determines how <a href="/tabular.transform.html#FillMissing"><code>FillMissing</code></a> should handle missing/nan values</p>
 <ul>
 <li><em>MEDIAN</em>: nans are replaced by the median value of the column</li>
 <li><em>COMMON</em>: nans are replaced by the most common value of the column</li>
@@ -929,9 +929,9 @@ summary: "Transforms to clean and preprocess tabular data"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Normalize"><code>class</code> <code>Normalize</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/transform.py#L99" class="source_link">[source]</a></h2><blockquote><p><code>Normalize</code>(<strong><code>cat_names</code></strong>:<code>StrList</code>, <strong><code>cont_names</code></strong>:<code>StrList</code>) :: <a href="/tabular.transform.html#TabularProc"><code>TabularProc</code></a></p>
+<h2 id="Normalize" class="doc_header"><code>class</code> <code>Normalize</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/transform.py#L181" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#Normalize-pytest" style="float:right; padding-right:10px">[test]</a></h2><blockquote><p><code>Normalize</code>(<strong><code>cat_names</code></strong>:<code>StrList</code>, <strong><code>cont_names</code></strong>:<code>StrList</code>) :: <a href="/tabular.transform.html#TabularProc"><code>TabularProc</code></a></p>
 </blockquote>
-<p>Normalize the continuous variables.</p>
+<div class="collapse" id="Normalize-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#Normalize-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>Normalize</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Normalize the continuous variables.</p>
 
 </div>
 
@@ -950,9 +950,9 @@ summary: "Transforms to clean and preprocess tabular data"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Normalize.apply_train"><code>apply_train</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/transform.py#L101" class="source_link">[source]</a></h4><blockquote><p><code>apply_train</code>(<strong><code>df</code></strong>:<code>DataFrame</code>)</p>
+<h4 id="Normalize.apply_train" class="doc_header"><code>apply_train</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/transform.py#L183" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#Normalize-apply_train-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>apply_train</code>(<strong><code>df</code></strong>:<code>DataFrame</code>)</p>
 </blockquote>
-<p>Comput the means and stds of <code>self.cont_names</code> columns to normalize them.</p>
+<div class="collapse" id="Normalize-apply_train-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#Normalize-apply_train-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>apply_train</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Compute the means and stds of <code>self.cont_names</code> columns to normalize them.</p>
 
 </div>
 
@@ -971,9 +971,9 @@ summary: "Transforms to clean and preprocess tabular data"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Normalize.apply_test"><code>apply_test</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/transform.py#L110" class="source_link">[source]</a></h4><blockquote><p><code>apply_test</code>(<strong><code>df</code></strong>:<code>DataFrame</code>)</p>
+<h4 id="Normalize.apply_test" class="doc_header"><code>apply_test</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/transform.py#L192" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#Normalize-apply_test-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>apply_test</code>(<strong><code>df</code></strong>:<code>DataFrame</code>)</p>
 </blockquote>
-<p>Normalize <code>self.cont_names</code> with the same statistics as in <code>apply_train</code>.</p>
+<div class="collapse" id="Normalize-apply_test-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#Normalize-apply_test-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>apply_test</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Normalize <code>self.cont_names</code> with the same statistics as in <code>apply_train</code>.</p>
 
 </div>
 
@@ -998,9 +998,9 @@ summary: "Transforms to clean and preprocess tabular data"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="add_datepart"><code>add_datepart</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/transform.py#L7" class="source_link">[source]</a></h4><blockquote><p><code>add_datepart</code>(<strong><code>df</code></strong>, <strong><code>fldname</code></strong>, <strong><code>drop</code></strong>=<strong><em><code>True</code></em></strong>, <strong><code>time</code></strong>=<strong><em><code>False</code></em></strong>)</p>
+<h4 id="add_datepart" class="doc_header"><code>add_datepart</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/transform.py#L55" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#add_datepart-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>add_datepart</code>(<strong><code>df</code></strong>:<code>DataFrame</code>, <strong><code>field_name</code></strong>:<code>str</code>, <strong><code>prefix</code></strong>:<code>str</code>=<strong><em><code>None</code></em></strong>, <strong><code>drop</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>, <strong><code>time</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>)</p>
 </blockquote>
-<p>Helper function that adds columns relevant to a date in the column <code>fldname</code> of <code>df</code>.</p>
+<div class="collapse" id="add_datepart-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#add_datepart-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>add_datepart</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Helper function that adds columns relevant to a date in the column <code>field_name</code> of <code>df</code>.</p>
 
 </div>
 
@@ -1032,9 +1032,9 @@ summary: "Transforms to clean and preprocess tabular data"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="cont_cat_split"><code>cont_cat_split</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/transform.py#L24" class="source_link">[source]</a></h4><blockquote><p><code>cont_cat_split</code>(<strong><code>df</code></strong>, <strong><code>max_card</code></strong>=<strong><em><code>20</code></em></strong>, <strong><code>dep_var</code></strong>=<strong><em><code>None</code></em></strong>)</p>
+<h4 id="cont_cat_split" class="doc_header"><code>cont_cat_split</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/transform.py#L106" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#cont_cat_split-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>cont_cat_split</code>(<strong><code>df</code></strong>, <strong><code>max_card</code></strong>=<strong><em><code>20</code></em></strong>, <strong><code>dep_var</code></strong>=<strong><em><code>None</code></em></strong>) → <code>Tuple</code>[<code>List</code>[<code>T</code>], <code>List</code>[<code>T</code>]]</p>
 </blockquote>
-<p>Helper function that returns column names of cont and cat variables from given df.</p>
+<div class="collapse" id="cont_cat_split-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#cont_cat_split-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>cont_cat_split</code>:</p><ul><li><code>pytest -sv tests/test_tabular_transform.py::test_cont_cat_split</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_tabular_transform.py#L64" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><p>Helper function that returns column names of cont and cat variables from given df.</p>
 
 </div>
 

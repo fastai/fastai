@@ -11,7 +11,7 @@ summary: "Beginner's tutorial, explains how to quickly look at your data or mode
     
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Viewing-inputs-and-outputs">Viewing inputs and outputs<a class="anchor-link" href="#Viewing-inputs-and-outputs">&#182;</a></h1>
+<h2 id="Viewing-inputs-and-outputs">Viewing inputs and outputs<a class="anchor-link" href="#Viewing-inputs-and-outputs">&#182;</a></h2>
 </div>
 </div>
 </div>
@@ -35,7 +35,7 @@ summary: "Beginner's tutorial, explains how to quickly look at your data or mode
 
 <div class="output_markdown rendered_html output_subarea ">
 <div markdown="span" class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i> <b>Note: </b>As usual, this page is generated from a notebook that you can find in the docs_src folder of the
-[fastai repo](https://github.com/fastai/fastai). The examples are all designed to run fast, which is why we use
+<a href="https://github.com/fastai/fastai">fastai repo</a>. The examples are all designed to run fast, which is why we use
 samples of the dataset, a resnet18 as a backbone and don't train for very long. You can change all of those parameters
 to run your own experiments!
 </div>
@@ -112,7 +112,7 @@ to run your own experiments!
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="p">(</span><span class="n">ImageItemList</span><span class="o">.</span><span class="n">from_folder</span><span class="p">(</span><span class="n">mnist</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="p">(</span><span class="n">ImageList</span><span class="o">.</span><span class="n">from_folder</span><span class="p">(</span><span class="n">mnist</span><span class="p">)</span>
         <span class="o">.</span><span class="n">split_by_folder</span><span class="p">()</span>          
         <span class="o">.</span><span class="n">label_from_folder</span><span class="p">()</span>
         <span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">tfms</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">32</span><span class="p">)</span>
@@ -213,7 +213,7 @@ to run your own experiments!
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span> <span class="o">=</span> <span class="n">create_cnn</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">models</span><span class="o">.</span><span class="n">resnet18</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="n">accuracy</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span> <span class="o">=</span> <span class="n">cnn_learner</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">models</span><span class="o">.</span><span class="n">resnet18</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="n">accuracy</span><span class="p">)</span>
 <span class="n">learn</span><span class="o">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mf">1e-2</span><span class="p">)</span>
 <span class="n">learn</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">&#39;mini_train&#39;</span><span class="p">)</span>
 </pre></div>
@@ -367,8 +367,8 @@ Total time: 00:03 <p><table style='width:300px; margin-bottom:10px'>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="p">(</span><span class="n">ImageItemList</span><span class="o">.</span><span class="n">from_csv</span><span class="p">(</span><span class="n">planet</span><span class="p">,</span> <span class="s1">&#39;labels.csv&#39;</span><span class="p">,</span> <span class="n">folder</span><span class="o">=</span><span class="s1">&#39;train&#39;</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;.jpg&#39;</span><span class="p">)</span>
-        <span class="o">.</span><span class="n">random_split_by_pct</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="p">(</span><span class="n">ImageList</span><span class="o">.</span><span class="n">from_csv</span><span class="p">(</span><span class="n">planet</span><span class="p">,</span> <span class="s1">&#39;labels.csv&#39;</span><span class="p">,</span> <span class="n">folder</span><span class="o">=</span><span class="s1">&#39;train&#39;</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;.jpg&#39;</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">split_by_rand_pct</span><span class="p">()</span>
         <span class="o">.</span><span class="n">label_from_df</span><span class="p">(</span><span class="n">label_delim</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
         <span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">planet_tfms</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">128</span><span class="p">)</span>
         <span class="o">.</span><span class="n">databunch</span><span class="p">()</span>
@@ -430,7 +430,7 @@ Total time: 00:03 <p><table style='width:300px; margin-bottom:10px'>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span> <span class="o">=</span> <span class="n">create_cnn</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">models</span><span class="o">.</span><span class="n">resnet18</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span> <span class="o">=</span> <span class="n">cnn_learner</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">models</span><span class="o">.</span><span class="n">resnet18</span><span class="p">)</span>
 <span class="n">learn</span><span class="o">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mf">1e-2</span><span class="p">)</span>
 <span class="n">learn</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">&#39;mini_train&#39;</span><span class="p">)</span>
 </pre></div>
@@ -533,7 +533,7 @@ Total time: 00:06 <p><table style='width:300px; margin-bottom:10px'>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>For the next example, we are going to use the <a href="https://data.vision.ee.ethz.ch/cvl/gfanelli/head_pose/head_forest.html#db">BIWI head pose</a> dataset. On pictures of persons, we have to find the center of their face. For the fastai docs, we have built a small subsample of the dataset (200 images) and prepared a dictionary for the correspondance fielname to center.</p>
+<p>For the next example, we are going to use the <a href="https://data.vision.ee.ethz.ch/cvl/gfanelli/head_pose/head_forest.html#db">BIWI head pose</a> dataset. On pictures of persons, we have to find the center of their face. For the fastai docs, we have built a small subsample of the dataset (200 images) and prepared a dictionary for the correspondance filename to center.</p>
 
 </div>
 </div>
@@ -565,7 +565,7 @@ Total time: 00:06 <p><table style='width:300px; margin-bottom:10px'>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="p">(</span><span class="n">PointsItemList</span><span class="o">.</span><span class="n">from_folder</span><span class="p">(</span><span class="n">biwi</span><span class="p">)</span>
-        <span class="o">.</span><span class="n">random_split_by_pct</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">split_by_rand_pct</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
         <span class="o">.</span><span class="n">label_from_func</span><span class="p">(</span><span class="k">lambda</span> <span class="n">o</span><span class="p">:</span><span class="n">fn2ctr</span><span class="p">[</span><span class="n">o</span><span class="o">.</span><span class="n">name</span><span class="p">])</span>
         <span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">get_transforms</span><span class="p">(),</span> <span class="n">tfm_y</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">120</span><span class="p">,</span><span class="mi">160</span><span class="p">))</span>
         <span class="o">.</span><span class="n">databunch</span><span class="p">()</span>
@@ -627,7 +627,7 @@ Total time: 00:06 <p><table style='width:300px; margin-bottom:10px'>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span> <span class="o">=</span> <span class="n">create_cnn</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">models</span><span class="o">.</span><span class="n">resnet18</span><span class="p">,</span> <span class="n">lin_ftrs</span><span class="o">=</span><span class="p">[</span><span class="mi">100</span><span class="p">],</span> <span class="n">ps</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span> <span class="o">=</span> <span class="n">cnn_learner</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">models</span><span class="o">.</span><span class="n">resnet18</span><span class="p">,</span> <span class="n">lin_ftrs</span><span class="o">=</span><span class="p">[</span><span class="mi">100</span><span class="p">],</span> <span class="n">ps</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span>
 <span class="n">learn</span><span class="o">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mf">5e-2</span><span class="p">)</span>
 <span class="n">learn</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">&#39;mini_train&#39;</span><span class="p">)</span>
 </pre></div>
@@ -777,7 +777,7 @@ Total time: 00:07 <p><table style='width:300px; margin-bottom:10px'>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="p">(</span><span class="n">SegmentationItemList</span><span class="o">.</span><span class="n">from_folder</span><span class="p">(</span><span class="n">path_img</span><span class="p">)</span>
-        <span class="o">.</span><span class="n">random_split_by_pct</span><span class="p">()</span>
+        <span class="o">.</span><span class="n">split_by_rand_pct</span><span class="p">()</span>
         <span class="o">.</span><span class="n">label_from_func</span><span class="p">(</span><span class="n">get_y_fn</span><span class="p">,</span> <span class="n">classes</span><span class="o">=</span><span class="n">codes</span><span class="p">)</span>
         <span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">get_transforms</span><span class="p">(),</span> <span class="n">tfm_y</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">128</span><span class="p">)</span>
         <span class="o">.</span><span class="n">databunch</span><span class="p">(</span><span class="n">bs</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">camvid</span><span class="p">)</span>
@@ -986,7 +986,7 @@ Total time: 00:23 <p><table style='width:300px; margin-bottom:10px'>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">data_lm</span> <span class="o">=</span> <span class="p">(</span><span class="n">TextList</span><span class="o">.</span><span class="n">from_csv</span><span class="p">(</span><span class="n">imdb</span><span class="p">,</span> <span class="s1">&#39;texts.csv&#39;</span><span class="p">,</span> <span class="n">cols</span><span class="o">=</span><span class="s1">&#39;text&#39;</span><span class="p">)</span>
-                   <span class="o">.</span><span class="n">random_split_by_pct</span><span class="p">()</span>
+                   <span class="o">.</span><span class="n">split_by_rand_pct</span><span class="p">()</span>
                    <span class="o">.</span><span class="n">label_for_lm</span><span class="p">()</span>
                    <span class="o">.</span><span class="n">databunch</span><span class="p">())</span>
 <span class="n">data_lm</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
@@ -1023,32 +1023,36 @@ Total time: 00:23 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_html rendered_html output_subarea ">
-<table>  <col width='5%'>  <col width='95%'>  <tr>
-    <th>idx</th>
-    <th>text</th>
-  </tr>
-  <tr>
-    <th>0</th>
-    <th>! ! ! xxmaj finally this was directed by the guy who did xxmaj big xxmaj xxunk ? xxmaj must be a xxunk of xxmaj jonestown - hollywood style . xxmaj xxunk ! xxbos xxmaj every once in a long while a movie will come along that will be so awful that i feel compelled to warn people . xxmaj if i labor all my days and i can save</th>
-  </tr>
-  <tr>
-    <th>1</th>
-    <th>a grand voyage for the audience as well as the two principals . xxmaj the imagery throughout is impressive , especially the final scenes in xxmaj xxunk . xxmaj it xxunk for me once again how much different the world can be , but also at the same time , how similar . xxmaj the same was true for the father and son in this film . \n\n xxmaj see</th>
-  </tr>
-  <tr>
-    <th>2</th>
-    <th>xxunk between the xxunk -- resulting in a xxup we vs. xxup they mentality . xxmaj later , an explosion causes a huge xxunk in the xxmaj french and the xxmaj xxunk refuse to sit back and do nothing . xxmaj xxunk their own lives , they prove that there is true xxunk between miners and men in general . \n\n xxmaj the film is a strong criticism of xxunk</th>
-  </tr>
-  <tr>
-    <th>3</th>
-    <th>camera man on roller xxunk and pushed him along . xxmaj the story ( if it can be called that ) is so full of holes it 's almost funny , xxmaj it never really explains why the hell he survived in the first place , or needs human flesh in order to survive . xxmaj the script is poorly written and the dialogue xxunk on just plane stupid .</th>
-  </tr>
-  <tr>
-    <th>4</th>
-    <th>them because they play woods and blah blah blah xxmaj the phantom helps these xxunk kids out and trains them and all this crap , he gets them to play airball and basically xxunk all the xxunk including the " xxunk " . \n\n xxmaj so what exactly is wrong with the movie ? xxmaj well the budget is a huge thing , a paintball movie xxup xxunk be bad</th>
-  </tr>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>idx</th>
+      <th>text</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>! ! ! xxmaj finally this was directed by the guy who did xxmaj big xxmaj xxunk ? xxmaj must be a replay of xxmaj jonestown - hollywood style . xxmaj xxunk ! xxbos xxmaj this is a extremely well - made film . xxmaj the acting , script and camera - work are all first - rate . xxmaj the music is good , too , though it is</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>that happened to me with " xxmaj the xxmaj young xxmaj xxunk " . xxmaj the cover of the video box , if you can find the video , is extremely xxunk . i 'd xxunk that the two women on the cover are n't even in the film . \n \n  xxmaj anyway , i was either born a decade too late to appreciate the xxunk points of</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>about " xxmaj xxunk " . xxmaj on the plus side , the visuals are xxunk and the movie looks great for it 's type . xxmaj for those who like their horror movies gory there are a few nicely executed ( no pun intended ) murder scenes . xxmaj we also get a few good suspense sequences / set - pieces . \n \n  xxmaj however , there</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>and xxmaj she xxmaj kills in xxmaj xxunk , but unfortunately his good films are just xxunk amongst xxunk of crap and xxmaj devil xxmaj hunter is very much a part of the crap . i saw this film purely because i want to be able to say i 've seen everything on the xxup dpp 's list ( just two more to go ! ) , and i 'm</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>the movie was more important than the planning . xxmaj because you have a camera does not mean you should make a movie right away ... come . xxmaj everyone can make a movie , but not all will be just as good . xxmaj so a word of advice to xxmaj xxunk xxmaj west are : stop and xxunk what you want . xxmaj use your time to start</td>
+    </tr>
+  </tbody>
 </table>
-
 </div>
 
 </div>
@@ -1069,7 +1073,7 @@ Total time: 00:23 <p><table style='width:300px; margin-bottom:10px'>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span> <span class="o">=</span> <span class="n">language_model_learner</span><span class="p">(</span><span class="n">data_lm</span><span class="p">,</span> <span class="n">pretrained_model</span><span class="o">=</span><span class="n">URLs</span><span class="o">.</span><span class="n">WT103_1</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span> <span class="o">=</span> <span class="n">language_model_learner</span><span class="p">(</span><span class="n">data_lm</span><span class="p">,</span> <span class="n">AWD_LSTM</span><span class="p">)</span>
 <span class="n">learn</span><span class="o">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mf">1e-2</span><span class="p">)</span>
 <span class="n">learn</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">&#39;mini_train_lm&#39;</span><span class="p">)</span>
 <span class="n">learn</span><span class="o">.</span><span class="n">save_encoder</span><span class="p">(</span><span class="s1">&#39;mini_train_encoder&#39;</span><span class="p">)</span>
@@ -1086,7 +1090,7 @@ Total time: 00:23 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_html rendered_html output_subarea ">
-Total time: 00:42 <p><table style='width:300px; margin-bottom:10px'>
+Total time: 00:25 <p><table style='width:300px; margin-bottom:10px'>
   <tr>
     <th>epoch</th>
     <th>train_loss</th>
@@ -1095,15 +1099,15 @@ Total time: 00:42 <p><table style='width:300px; margin-bottom:10px'>
   </tr>
   <tr>
     <th>1</th>
-    <th>4.687408</th>
-    <th>3.892848</th>
-    <th>0.290000</th>
+    <th>4.643319</th>
+    <th>3.866198</th>
+    <th>0.289663</th>
   </tr>
   <tr>
     <th>2</th>
-    <th>4.410043</th>
-    <th>3.829194</th>
-    <th>0.292098</th>
+    <th>4.367103</th>
+    <th>3.814913</th>
+    <th>0.292600</th>
   </tr>
 </table>
 
@@ -1141,38 +1145,42 @@ Total time: 00:42 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_html rendered_html output_subarea ">
-<table>  <col width='34%'>  <col width='33%'>  <col width='33%'>  <tr>
-    <th>text</th>
-    <th>target</th>
-    <th>pred</th>
-  </tr>
-  <tr>
-    <th>xxbos xxmaj this is one of those movies that 's difficult to review without giving away the plot . xxmaj</th>
-    <th>to say there are weird things and unexpected twists going on , beyond the initial xxunk " xxmaj tom xxmaj</th>
-    <th>xxmaj the that 's some things that xxunk xxunk and on in but the xxunk xxunk of . xxunk xxmaj</th>
-  </tr>
-  <tr>
-    <th>we are going to green light ! ! " xxmaj and whoever that person is , should have his or</th>
-    <th>head examined for actual brain xxunk . xxmaj because whoever is responsible for actually xxunk out money to have this</th>
-    <th>own xxunk ? the xxunk xxunk ? xxmaj the of is in for the xxunk the the , the the</th>
-  </tr>
-  <tr>
-    <th>a society which is supposedly gone and yet somehow is still with us . xxbos xxmaj for those who like</th>
-    <th>murder xxunk busy , this is definitely the one to see , as it is xxunk full of interesting and</th>
-    <th>performances , , , the is a a best that xxunk the and the 's , , of xxunk moments</th>
-  </tr>
-  <tr>
-    <th>awhile but not all of them get the treatment they deserve . xxmaj the nice supporting cast includes xxmaj xxunk</th>
-    <th>xxunk , at his best in a xxunk comic performance as a xxunk xxunk , xxmaj xxunk xxmaj xxunk and</th>
-    <th>xxunk , xxmaj least best , the xxunk , book , xxmaj xxunk , , and xxunk xxmaj xxunk ,</th>
-  </tr>
-  <tr>
-    <th>\n\n xxmaj as such , when i first heard about the xxunk of a prequel series some months ago i</th>
-    <th>a sick feeling in my xxunk . i was afraid that the formula that made xxmaj xxunk so successful would</th>
-    <th>a lot xxunk . the eyes . xxmaj was disappointed of i movie was i me xxunk was bad was</th>
-  </tr>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>text</th>
+      <th>target</th>
+      <th>pred</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>xxbos xxmaj start of with the good bit : several times xxmaj xxunk talks xxmaj xxunk to his friends or</td>
+      <td>language is heard among the xxunk . xxmaj that 's a great plus , as normally xxup usa &amp; xxup</td>
+      <td>of . a . the xxunk . xxmaj the 's why xxunk film . but the , xxunk xxmaj xxup</td>
+    </tr>
+    <tr>
+      <td>fact , the characters are never really developed at all . xxmaj the xxunk are xxunk , xxunk xxunk ,</td>
+      <td>the women merely xxunk beautiful . xxmaj if you go by this movie , you would think that " air</td>
+      <td>xxunk xxunk are xxunk the xxunk xxmaj the you 're to the , , you 'll n't that the xxmaj</td>
+    </tr>
+    <tr>
+      <td>as well ) . xxmaj peter xxunk plays the dying killer daddy and watch for funny man xxmaj xxunk xxmaj</td>
+      <td>who made me laugh more than anything in the entire film in his brief five xxunk feet ) . xxmaj</td>
+      <td>. is a laugh . than anyone else the movie film . the xxunk xxunk - . . . xxmaj</td>
+    </tr>
+    <tr>
+      <td>a chance . xxmaj she xxunk deserved her xxmaj oscar . \n \n  xxmaj this movie is in an</td>
+      <td>in the most xxunk xxunk . xxmaj all parts xxunk , necessary and perfect . xxmaj xxunk may walk away</td>
+      <td>xxunk xxunk of of xxmaj it the of . the , interesting . xxmaj the xxmaj be away from you</td>
+    </tr>
+    <tr>
+      <td>xxunk ? ) , terrible cinematography , forgettable dialog , nothing funny or humorous , save the fact you just</td>
+      <td>your life for two hours , soundtrack ? , amateurish performances , uneven , disjointed , and often flat out</td>
+      <td>a time . the hours . and , xxmaj and xxunk , and acting xxunk acting and xxunk boring ,</td>
+    </tr>
+  </tbody>
 </table>
-
 </div>
 
 </div>
@@ -1236,32 +1244,36 @@ Total time: 00:42 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_html rendered_html output_subarea ">
-<table>  <col width='90%'>  <col width='10%'>  <tr>
-    <th>text</th>
-    <th>target</th>
-  </tr>
-  <tr>
-    <th>xxbos xxmaj xxunk xxmaj victor xxmaj xxunk : a xxmaj review \n\n xxmaj you know , xxmaj xxunk xxmaj victor xxmaj xxunk is like sticking your hands into a big , xxunk xxunk of xxunk . xxmaj it 's warm and xxunk , but you 're not sure if it feels right . xxmaj try as i might , no matter how warm and xxunk xxmaj xxunk xxmaj victor xxmaj</th>
-    <th>negative</th>
-  </tr>
-  <tr>
-    <th>xxbos xxup the xxup shop xxup around xxup the xxup xxunk is one of the xxunk and most feel - good romantic comedies ever made . xxmaj there 's just no getting around that , and it 's hard to actually put one 's feeling for this film into words . xxmaj it 's not one of those films that tries too hard , nor does it come up with</th>
-    <th>positive</th>
-  </tr>
-  <tr>
-    <th>xxbos xxmaj now that xxmaj che(2008 ) has finished its relatively short xxmaj australian cinema run ( extremely limited xxunk screen in xxmaj xxunk , after xxunk ) , i can xxunk join both xxunk of " xxmaj at xxmaj the xxmaj movies " in taking xxmaj steven xxmaj soderbergh to task . \n\n xxmaj it 's usually satisfying to watch a film director change his style / subject ,</th>
-    <th>negative</th>
-  </tr>
-  <tr>
-    <th>xxbos xxmaj this film sat on my xxmaj xxunk for weeks before i watched it . i xxunk a self - indulgent xxunk flick about relationships gone bad . i was wrong ; this was an xxunk xxunk into the xxunk - up xxunk of xxmaj new xxmaj xxunk . \n\n xxmaj the format is the same as xxmaj max xxmaj xxunk ' " xxmaj la xxmaj xxunk , "</th>
-    <th>positive</th>
-  </tr>
-  <tr>
-    <th>xxbos xxmaj many xxunk that this is n't just a classic due to the fact that it 's the first xxup 3d game , or even the first xxunk - up . xxmaj it 's also one of the first xxunk games , one of the xxunk definitely the first ) truly claustrophobic games , and just a pretty well - xxunk gaming experience in general . xxmaj with graphics</th>
-    <th>positive</th>
-  </tr>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>text</th>
+      <th>target</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>xxbos xxmaj raising xxmaj victor xxmaj vargas : a xxmaj review \n \n  xxmaj you know , xxmaj raising xxmaj victor xxmaj vargas is like sticking your hands into a big , xxunk bowl of xxunk . xxmaj it 's warm and xxunk , but you 're not sure if it feels right . xxmaj try as i might , no matter how warm and xxunk xxmaj raising xxmaj</td>
+      <td>negative</td>
+    </tr>
+    <tr>
+      <td>xxbos xxup the xxup shop xxup around xxup the xxup corner is one of the xxunk and most feel - good romantic comedies ever made . xxmaj there 's just no getting around that , and it 's hard to actually put one 's feeling for this film into words . xxmaj it 's not one of those films that tries too hard , nor does it come up with</td>
+      <td>positive</td>
+    </tr>
+    <tr>
+      <td>xxbos xxmaj now that xxmaj xxunk ) has finished its relatively short xxmaj australian cinema run ( extremely limited xxunk screen in xxmaj xxunk , after xxunk ) , i can xxunk join both xxunk of " xxmaj at xxmaj the xxmaj movies " in taking xxmaj steven xxmaj xxunk to task . \n \n  xxmaj it 's usually satisfying to watch a film director change his style /</td>
+      <td>negative</td>
+    </tr>
+    <tr>
+      <td>xxbos xxmaj this film sat on my xxmaj xxunk for weeks before i watched it . i xxunk a self - indulgent xxunk flick about relationships gone bad . i was wrong ; this was an xxunk xxunk into the xxunk - up xxunk of xxmaj new xxmaj xxunk . \n \n  xxmaj the format is the same as xxmaj max xxmaj xxunk ' " xxmaj la xxmaj xxunk</td>
+      <td>positive</td>
+    </tr>
+    <tr>
+      <td>xxbos xxmaj many xxunk that this is n't just a classic due to the fact that it 's the first xxup 3d game , or even the first xxunk - up . xxmaj it 's also one of the first xxunk games , one of the xxunk definitely the first ) truly claustrophobic games , and just a pretty well - xxunk gaming experience in general . xxmaj with graphics</td>
+      <td>positive</td>
+    </tr>
+  </tbody>
 </table>
-
 </div>
 
 </div>
@@ -1282,7 +1294,7 @@ Total time: 00:42 <p><table style='width:300px; margin-bottom:10px'>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span> <span class="o">=</span> <span class="n">text_classifier_learner</span><span class="p">(</span><span class="n">data_clas</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span> <span class="o">=</span> <span class="n">text_classifier_learner</span><span class="p">(</span><span class="n">data_clas</span><span class="p">,</span> <span class="n">AWD_LSTM</span><span class="p">)</span>
 <span class="n">learn</span><span class="o">.</span><span class="n">load_encoder</span><span class="p">(</span><span class="s1">&#39;mini_train_encoder&#39;</span><span class="p">)</span>
 <span class="n">learn</span><span class="o">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="nb">slice</span><span class="p">(</span><span class="mf">1e-3</span><span class="p">,</span><span class="mf">1e-2</span><span class="p">))</span>
 <span class="n">learn</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">&#39;mini_train_clas&#39;</span><span class="p">)</span>
@@ -1299,7 +1311,7 @@ Total time: 00:42 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_html rendered_html output_subarea ">
-Total time: 00:48 <p><table style='width:300px; margin-bottom:10px'>
+Total time: 00:25 <p><table style='width:300px; margin-bottom:10px'>
   <tr>
     <th>epoch</th>
     <th>train_loss</th>
@@ -1308,15 +1320,15 @@ Total time: 00:48 <p><table style='width:300px; margin-bottom:10px'>
   </tr>
   <tr>
     <th>1</th>
-    <th>0.678970</th>
-    <th>0.644015</th>
-    <th>0.665000</th>
+    <th>0.713844</th>
+    <th>0.674750</th>
+    <th>0.620000</th>
   </tr>
   <tr>
     <th>2</th>
-    <th>0.651996</th>
-    <th>0.621696</th>
-    <th>0.660000</th>
+    <th>0.695729</th>
+    <th>0.655419</th>
+    <th>0.645000</th>
   </tr>
 </table>
 
@@ -1347,38 +1359,42 @@ Total time: 00:48 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_html rendered_html output_subarea ">
-<table>  <col width='85%'>  <col width='7.5%'>  <col width='7.5%'>  <tr>
-    <th>text</th>
-    <th>target</th>
-    <th>prediction</th>
-  </tr>
-  <tr>
-    <th>xxbos \n\n i 'm sure things did n't exactly go the same way in the real life of xxmaj homer xxmaj hickam as they did in the film adaptation of his book , xxmaj rocket xxmaj boys , but the movie " xxmaj october xxmaj sky " ( an xxunk of the book 's title ) is good enough to stand alone . i have not read xxmaj hickam 's</th>
-    <th>positive</th>
-    <th>positive</th>
-  </tr>
-  <tr>
-    <th>xxbos xxmaj to review this movie , i without any doubt would have to quote that memorable scene in xxmaj tarantino 's " xxmaj pulp xxmaj fiction " ( xxunk ) when xxmaj jules and xxmaj vincent are talking about xxmaj mia xxmaj wallace and what she does for a living . xxmaj jules tells xxmaj vincent that the " xxmaj only thing she did worthwhile was pilot " .</th>
-    <th>negative</th>
-    <th>positive</th>
-  </tr>
-  <tr>
-    <th>xxbos xxmaj how viewers react to this new " adaption " of xxmaj shirley xxmaj jackson 's book , which was xxunk as xxup not being a remake of the original 1963 movie ( true enough ) , will be based , i suspect , on the following : those who were big fans of either the book or original movie are not going to think much of this one</th>
-    <th>negative</th>
-    <th>negative</th>
-  </tr>
-  <tr>
-    <th>xxbos xxmaj the trouble with the book , " xxmaj memoirs of a xxmaj geisha " is that it had xxmaj japanese xxunk but underneath the xxunk it was all an xxmaj american man 's way of thinking . xxmaj reading the book is like watching a magnificent ballet with great music , sets , and costumes yet performed by xxunk animals dressed in those xxunk far from xxmaj japanese</th>
-    <th>negative</th>
-    <th>negative</th>
-  </tr>
-  <tr>
-    <th>xxbos xxmaj bonanza had a great cast of wonderful actors . xxmaj xxunk xxmaj xxunk , xxmaj pernell xxmaj whitaker , xxmaj michael xxmaj xxunk , xxmaj dan xxmaj blocker , and even xxmaj guy xxmaj williams ( as the cousin who was brought in for several episodes during 1964 to replace xxmaj adam when he was leaving the series ) . xxmaj the cast had chemistry , and they</th>
-    <th>positive</th>
-    <th>positive</th>
-  </tr>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>text</th>
+      <th>target</th>
+      <th>prediction</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>xxbos \n \n  i 'm sure things did n't exactly go the same way in the real life of xxmaj xxunk xxmaj xxunk as they did in the film adaptation of his book , xxmaj rocket xxmaj boys , but the movie " xxmaj xxunk xxmaj sky " ( an xxunk of the book 's title ) is good enough to stand alone . i have not read xxmaj</td>
+      <td>positive</td>
+      <td>positive</td>
+    </tr>
+    <tr>
+      <td>xxbos xxmaj to review this movie , i without any doubt would have to quote that memorable scene in xxmaj tarantino 's " xxmaj pulp xxmaj fiction " ( xxunk ) when xxmaj jules and xxmaj vincent are talking about xxmaj mia xxmaj wallace and what she does for a living . xxmaj jules tells xxmaj vincent that the " xxmaj only thing she did worthwhile was pilot " .</td>
+      <td>negative</td>
+      <td>negative</td>
+    </tr>
+    <tr>
+      <td>xxbos xxmaj how viewers react to this new " adaption " of xxmaj shirley xxmaj jackson 's book , which was promoted as xxup not being a remake of the original 1963 movie ( true enough ) , will be based , i suspect , on the following : those who were big fans of either the book or original movie are not going to think much of this one</td>
+      <td>negative</td>
+      <td>negative</td>
+    </tr>
+    <tr>
+      <td>xxbos xxmaj the trouble with the book , " xxmaj memoirs of a xxmaj xxunk " is that it had xxmaj japanese xxunk but underneath the xxunk it was all an xxmaj american man 's way of thinking . xxmaj reading the book is like watching a magnificent ballet with great music , sets , and costumes yet performed by xxunk animals dressed in those xxunk far from xxmaj japanese</td>
+      <td>negative</td>
+      <td>negative</td>
+    </tr>
+    <tr>
+      <td>xxbos xxmaj bonanza had a great cast of wonderful actors . xxmaj xxunk xxmaj xxunk , xxmaj pernell xxmaj whitaker , xxmaj michael xxmaj xxunk , xxmaj dan xxmaj blocker , and even xxmaj guy xxmaj williams ( as the cousin who was brought in for several episodes during 1964 to replace xxmaj adam when he was leaving the series ) . xxmaj the cast had chemistry , and they</td>
+      <td>positive</td>
+      <td>negative</td>
+    </tr>
+  </tbody>
 </table>
-
 </div>
 
 </div>
@@ -1480,116 +1496,120 @@ Total time: 00:48 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_html rendered_html output_subarea ">
-<table>  <col width='10%'>  <col width='10%'>  <col width='10%'>  <col width='10%'>  <col width='10%'>  <col width='10%'>  <col width='10%'>  <col width='10%'>  <col width='10%'>  <col width='10%'>  <col width='10%'>  <col width='10%'>  <col width='10%'>  <col width='10%'>  <col width='10%'>  <col width='10%'>  <tr>
-    <th>workclass</th>
-    <th>education</th>
-    <th>marital-status</th>
-    <th>occupation</th>
-    <th>relationship</th>
-    <th>race</th>
-    <th>sex</th>
-    <th>native-country</th>
-    <th>education-num_na</th>
-    <th>education-num</th>
-    <th>hours-per-week</th>
-    <th>age</th>
-    <th>capital-loss</th>
-    <th>fnlwgt</th>
-    <th>capital-gain</th>
-    <th>target</th>
-  </tr>
-  <tr>
-    <th> Private</th>
-    <th> HS-grad</th>
-    <th> Married-civ-spouse</th>
-    <th> Craft-repair</th>
-    <th> Husband</th>
-    <th> White</th>
-    <th> Male</th>
-    <th> ?</th>
-    <th>False</th>
-    <th>-0.4224</th>
-    <th>-0.0356</th>
-    <th>1.4962</th>
-    <th>-0.2164</th>
-    <th>2.2256</th>
-    <th>-0.1459</th>
-    <th><50k</th>
-  </tr>
-  <tr>
-    <th> Private</th>
-    <th> HS-grad</th>
-    <th> Never-married</th>
-    <th> Transport-moving</th>
-    <th> Own-child</th>
-    <th> White</th>
-    <th> Male</th>
-    <th> United-States</th>
-    <th>False</th>
-    <th>-0.4224</th>
-    <th>-0.0356</th>
-    <th>-1.1425</th>
-    <th>-0.2164</th>
-    <th>-0.7041</th>
-    <th>-0.1459</th>
-    <th><50k</th>
-  </tr>
-  <tr>
-    <th> Private</th>
-    <th> HS-grad</th>
-    <th> Married-civ-spouse</th>
-    <th> Transport-moving</th>
-    <th> Husband</th>
-    <th> White</th>
-    <th> Male</th>
-    <th> United-States</th>
-    <th>False</th>
-    <th>-0.4224</th>
-    <th>-0.0356</th>
-    <th>0.1036</th>
-    <th>-0.2164</th>
-    <th>-0.1849</th>
-    <th>-0.1459</th>
-    <th>>=50k</th>
-  </tr>
-  <tr>
-    <th> Private</th>
-    <th> Bachelors</th>
-    <th> Married-civ-spouse</th>
-    <th> Exec-managerial</th>
-    <th> Husband</th>
-    <th> White</th>
-    <th> Male</th>
-    <th> United-States</th>
-    <th>False</th>
-    <th>1.1422</th>
-    <th>-0.0356</th>
-    <th>0.2502</th>
-    <th>-0.2164</th>
-    <th>0.2982</th>
-    <th>-0.1459</th>
-    <th>>=50k</th>
-  </tr>
-  <tr>
-    <th> Private</th>
-    <th> HS-grad</th>
-    <th> Married-civ-spouse</th>
-    <th> Tech-support</th>
-    <th> Husband</th>
-    <th> White</th>
-    <th> Male</th>
-    <th> United-States</th>
-    <th>False</th>
-    <th>-0.4224</th>
-    <th>-0.0356</th>
-    <th>0.8365</th>
-    <th>4.3735</th>
-    <th>0.0309</th>
-    <th>-0.1459</th>
-    <th>>=50k</th>
-  </tr>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>workclass</th>
+      <th>education</th>
+      <th>marital-status</th>
+      <th>occupation</th>
+      <th>relationship</th>
+      <th>race</th>
+      <th>sex</th>
+      <th>native-country</th>
+      <th>education-num_na</th>
+      <th>education-num</th>
+      <th>hours-per-week</th>
+      <th>age</th>
+      <th>capital-loss</th>
+      <th>fnlwgt</th>
+      <th>capital-gain</th>
+      <th>target</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Private</td>
+      <td>Some-college</td>
+      <td>Never-married</td>
+      <td>Other-service</td>
+      <td>Own-child</td>
+      <td>White</td>
+      <td>Female</td>
+      <td>United-States</td>
+      <td>False</td>
+      <td>-0.0312</td>
+      <td>-2.9515</td>
+      <td>-1.4357</td>
+      <td>-0.2164</td>
+      <td>-1.5321</td>
+      <td>-0.1459</td>
+      <td>&lt;50k</td>
+    </tr>
+    <tr>
+      <td>Private</td>
+      <td>Some-college</td>
+      <td>Married-civ-spouse</td>
+      <td>Transport-moving</td>
+      <td>Husband</td>
+      <td>White</td>
+      <td>Male</td>
+      <td>United-States</td>
+      <td>False</td>
+      <td>-0.0312</td>
+      <td>-0.0356</td>
+      <td>0.5434</td>
+      <td>-0.2164</td>
+      <td>-1.4779</td>
+      <td>0.2731</td>
+      <td>&gt;=50k</td>
+    </tr>
+    <tr>
+      <td>Self-emp-not-inc</td>
+      <td>Bachelors</td>
+      <td>Married-civ-spouse</td>
+      <td>Exec-managerial</td>
+      <td>Husband</td>
+      <td>White</td>
+      <td>Male</td>
+      <td>United-States</td>
+      <td>False</td>
+      <td>1.1422</td>
+      <td>1.5843</td>
+      <td>0.2502</td>
+      <td>-0.2164</td>
+      <td>-0.8355</td>
+      <td>-0.1459</td>
+      <td>&gt;=50k</td>
+    </tr>
+    <tr>
+      <td>Private</td>
+      <td>HS-grad</td>
+      <td>Married-civ-spouse</td>
+      <td>Craft-repair</td>
+      <td>Husband</td>
+      <td>White</td>
+      <td>Male</td>
+      <td>United-States</td>
+      <td>False</td>
+      <td>-0.4224</td>
+      <td>-0.0356</td>
+      <td>0.8365</td>
+      <td>-0.2164</td>
+      <td>-1.4989</td>
+      <td>-0.1459</td>
+      <td>&gt;=50k</td>
+    </tr>
+    <tr>
+      <td>Private</td>
+      <td>HS-grad</td>
+      <td>Divorced</td>
+      <td>Machine-op-inspct</td>
+      <td>Not-in-family</td>
+      <td>White</td>
+      <td>Male</td>
+      <td>United-States</td>
+      <td>False</td>
+      <td>-0.4224</td>
+      <td>-0.0356</td>
+      <td>-0.4095</td>
+      <td>-0.2164</td>
+      <td>-0.5707</td>
+      <td>-0.1459</td>
+      <td>&lt;50k</td>
+    </tr>
+  </tbody>
 </table>
-
 </div>
 
 </div>
@@ -1611,7 +1631,7 @@ Total time: 00:48 <p><table style='width:300px; margin-bottom:10px'>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span> <span class="o">=</span> <span class="n">tabular_learner</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">layers</span><span class="o">=</span><span class="p">[</span><span class="mi">200</span><span class="p">,</span><span class="mi">100</span><span class="p">],</span> <span class="n">metrics</span><span class="o">=</span><span class="n">accuracy</span><span class="p">)</span>
-<span class="n">learn</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mf">1e-2</span><span class="p">)</span>
+<span class="n">learn</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mf">1e-2</span><span class="p">)</span>
 <span class="n">learn</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">&#39;mini_train&#39;</span><span class="p">)</span>
 </pre></div>
 
@@ -1626,21 +1646,12 @@ Total time: 00:48 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_html rendered_html output_subarea ">
-Total time: 00:04 <p><table style='width:300px; margin-bottom:10px'>
-  <tr>
-    <th>epoch</th>
-    <th>train_loss</th>
-    <th>valid_loss</th>
-    <th>accuracy</th>
-  </tr>
-  <tr>
-    <th>1</th>
-    <th>0.333357</th>
-    <th>0.347950</th>
-    <th>0.850000</th>
-  </tr>
-</table>
-
+Total time: 00:19 <p><table border="1" class="dataframe">  <thead>
+    <tr style="text-align: left;">
+      <th>epoch</th>      <th>train_loss</th>      <th>valid_loss</th>      <th>accuracy</th>    </tr>
+  </thead>
+  <tbody>  <tbody>    <tr>      <td>1</td>      <td>0.336497</td>      <td>0.354954</td>      <td>0.840000</td>    </tr>    <tr>      <td>2</td>      <td>0.322417</td>      <td>0.356564</td>      <td>0.815000</td>    </tr>    <tr>      <td>3</td>      <td>0.316230</td>      <td>0.340134</td>      <td>0.850000</td>    </tr>    <tr>      <td>4</td>      <td>0.313944</td>      <td>0.354506</td>      <td>0.835000</td>    </tr>    <tr>      <td>5</td>      <td>0.330136</td>      <td>0.341288</td>      <td>0.850000</td>    </tr>  </tbody>
+</table><p>
 </div>
 
 </div>
@@ -1675,139 +1686,130 @@ Total time: 00:04 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_html rendered_html output_subarea ">
-<table>  <col width='10%'>  <col width='10%'>  <col width='10%'>  <col width='10%'>  <col width='10%'>  <col width='10%'>  <col width='10%'>  <col width='10%'>  <col width='10%'>  <col width='10%'>  <col width='10%'>  <col width='10%'>  <col width='10%'>  <col width='10%'>  <col width='10%'>  <col width='10%'>  <col width='10%'>  <tr>
-    <th>workclass</th>
-    <th>education</th>
-    <th>marital-status</th>
-    <th>occupation</th>
-    <th>relationship</th>
-    <th>race</th>
-    <th>sex</th>
-    <th>native-country</th>
-    <th>education-num_na</th>
-    <th>education-num</th>
-    <th>hours-per-week</th>
-    <th>age</th>
-    <th>capital-loss</th>
-    <th>fnlwgt</th>
-    <th>capital-gain</th>
-    <th>target</th>
-    <th>prediction</th>
-  </tr>
-  <tr>
-    <th> Private</th>
-    <th> Some-college</th>
-    <th> Divorced</th>
-    <th> Handlers-cleaners</th>
-    <th> Unmarried</th>
-    <th> White</th>
-    <th> Female</th>
-    <th> United-States</th>
-    <th>True</th>
-    <th>-0.0312</th>
-    <th>-0.0356</th>
-    <th>0.4701</th>
-    <th>-0.2164</th>
-    <th>-0.8793</th>
-    <th>-0.1459</th>
-    <th><50k</th>
-    <th><50k</th>
-  </tr>
-  <tr>
-    <th> Self-emp-inc</th>
-    <th> Prof-school</th>
-    <th> Married-civ-spouse</th>
-    <th> Prof-specialty</th>
-    <th> Husband</th>
-    <th> White</th>
-    <th> Male</th>
-    <th> United-States</th>
-    <th>True</th>
-    <th>-0.0312</th>
-    <th>1.5843</th>
-    <th>0.5434</th>
-    <th>-0.2164</th>
-    <th>0.0290</th>
-    <th>1.8829</th>
-    <th>>=50k</th>
-    <th>>=50k</th>
-  </tr>
-  <tr>
-    <th> Private</th>
-    <th> Assoc-voc</th>
-    <th> Divorced</th>
-    <th>#na#</th>
-    <th> Not-in-family</th>
-    <th> White</th>
-    <th> Male</th>
-    <th> United-States</th>
-    <th>True</th>
-    <th>-0.0312</th>
-    <th>-0.1976</th>
-    <th>-0.1896</th>
-    <th>-0.2164</th>
-    <th>1.7704</th>
-    <th>-0.1459</th>
-    <th><50k</th>
-    <th><50k</th>
-  </tr>
-  <tr>
-    <th> Federal-gov</th>
-    <th> Bachelors</th>
-    <th> Never-married</th>
-    <th> Tech-support</th>
-    <th> Not-in-family</th>
-    <th> White</th>
-    <th> Male</th>
-    <th> United-States</th>
-    <th>True</th>
-    <th>-0.0312</th>
-    <th>0.3694</th>
-    <th>-0.9959</th>
-    <th>-0.2164</th>
-    <th>-1.3242</th>
-    <th>-0.1459</th>
-    <th><50k</th>
-    <th><50k</th>
-  </tr>
-  <tr>
-    <th> Private</th>
-    <th> Bachelors</th>
-    <th> Married-civ-spouse</th>
-    <th>#na#</th>
-    <th> Husband</th>
-    <th> White</th>
-    <th> Male</th>
-    <th> United-States</th>
-    <th>True</th>
-    <th>-0.0312</th>
-    <th>-0.0356</th>
-    <th>-0.1163</th>
-    <th>-0.2164</th>
-    <th>-0.2389</th>
-    <th>-0.1459</th>
-    <th><50k</th>
-    <th><50k</th>
-  </tr>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>workclass</th>
+      <th>education</th>
+      <th>marital-status</th>
+      <th>occupation</th>
+      <th>relationship</th>
+      <th>race</th>
+      <th>sex</th>
+      <th>native-country</th>
+      <th>education-num_na</th>
+      <th>education-num</th>
+      <th>hours-per-week</th>
+      <th>age</th>
+      <th>capital-loss</th>
+      <th>fnlwgt</th>
+      <th>capital-gain</th>
+      <th>target</th>
+      <th>prediction</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Private</td>
+      <td>Some-college</td>
+      <td>Divorced</td>
+      <td>Handlers-cleaners</td>
+      <td>Unmarried</td>
+      <td>White</td>
+      <td>Female</td>
+      <td>United-States</td>
+      <td>True</td>
+      <td>-0.0312</td>
+      <td>-0.0356</td>
+      <td>0.4701</td>
+      <td>-0.2164</td>
+      <td>-0.8793</td>
+      <td>-0.1459</td>
+      <td>&lt;50k</td>
+      <td>&lt;50k</td>
+    </tr>
+    <tr>
+      <td>Self-emp-inc</td>
+      <td>Prof-school</td>
+      <td>Married-civ-spouse</td>
+      <td>Prof-specialty</td>
+      <td>Husband</td>
+      <td>White</td>
+      <td>Male</td>
+      <td>United-States</td>
+      <td>True</td>
+      <td>-0.0312</td>
+      <td>1.5843</td>
+      <td>0.5434</td>
+      <td>-0.2164</td>
+      <td>0.0290</td>
+      <td>1.8829</td>
+      <td>&gt;=50k</td>
+      <td>&gt;=50k</td>
+    </tr>
+    <tr>
+      <td>Private</td>
+      <td>Assoc-voc</td>
+      <td>Divorced</td>
+      <td>#na#</td>
+      <td>Not-in-family</td>
+      <td>White</td>
+      <td>Male</td>
+      <td>United-States</td>
+      <td>True</td>
+      <td>-0.0312</td>
+      <td>-0.1976</td>
+      <td>-0.1896</td>
+      <td>-0.2164</td>
+      <td>1.7704</td>
+      <td>-0.1459</td>
+      <td>&lt;50k</td>
+      <td>&lt;50k</td>
+    </tr>
+    <tr>
+      <td>Federal-gov</td>
+      <td>Bachelors</td>
+      <td>Never-married</td>
+      <td>Tech-support</td>
+      <td>Not-in-family</td>
+      <td>White</td>
+      <td>Male</td>
+      <td>United-States</td>
+      <td>True</td>
+      <td>-0.0312</td>
+      <td>0.3694</td>
+      <td>-0.9959</td>
+      <td>-0.2164</td>
+      <td>-1.3242</td>
+      <td>-0.1459</td>
+      <td>&lt;50k</td>
+      <td>&lt;50k</td>
+    </tr>
+    <tr>
+      <td>Private</td>
+      <td>Bachelors</td>
+      <td>Married-civ-spouse</td>
+      <td>#na#</td>
+      <td>Husband</td>
+      <td>White</td>
+      <td>Male</td>
+      <td>United-States</td>
+      <td>True</td>
+      <td>-0.0312</td>
+      <td>-0.0356</td>
+      <td>-0.1163</td>
+      <td>-0.2164</td>
+      <td>-0.2389</td>
+      <td>-0.1459</td>
+      <td>&lt;50k</td>
+      <td>&lt;50k</td>
+    </tr>
+  </tbody>
 </table>
-
 </div>
 
 </div>
 
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span> 
-</pre></div>
-
-    </div>
 </div>
 </div>
 

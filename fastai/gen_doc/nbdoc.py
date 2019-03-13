@@ -4,10 +4,14 @@ import inspect,importlib,enum,os,re
 from IPython.core.display import display, Markdown, HTML
 from nbconvert import HTMLExporter
 from IPython.core import page
+from IPython import get_ipython
 from typing import Dict, Any, AnyStr, List, Sequence, TypeVar, Tuple, Optional, Union
 from .docstrings import *
 from .core import *
 from ..torch_core import *
+from .nbtest import get_pytest_html
+from ..utils.ipython import IS_IN_COLAB
+
 __all__ = ['get_fn_link', 'link_docstring', 'show_doc', 'get_ft_names',
            'get_exports', 'show_video', 'show_video_from_youtube', 'import_mod', 'get_source_link',
            'is_enum', 'jekyll_note', 'jekyll_warn', 'jekyll_important', 'doc']
@@ -75,7 +79,7 @@ def format_param(p):
 def format_ft_def(func, full_name:str=None)->str:
     "Format and link `func` definition to show in documentation"
     sig = inspect.signature(func)
-    name = f'<code>{ifnone(full_name, func.__name__)}</code>'
+    name = f'<code>{full_name or func.__name__}</code>'
     fmt_params = [format_param(param) for name,param
                   in sig.parameters.items() if name not in ('self','cls')]
     arg_str = f"({', '.join(fmt_params)})"
@@ -97,7 +101,7 @@ def get_cls_doc(elt, full_name:str)->str:
     return name,args
 
 def show_doc(elt, doc_string:bool=True, full_name:str=None, arg_comments:dict=None, title_level=None, alt_doc_string:str='',
-             ignore_warn:bool=False, markdown=True):
+             ignore_warn:bool=False, markdown=True, show_tests=True):
     "Show documentation for element `elt`. Supported types: class, Callable, and enum."
     arg_comments = ifnone(arg_comments, {})
     anchor_id = full_name or get_anchor(elt)
@@ -109,9 +113,11 @@ def show_doc(elt, doc_string:bool=True, full_name:str=None, arg_comments:dict=No
     elif isinstance(elt, Callable):  name,args = format_ft_def(elt, full_name)
     else: raise Exception(f'doc definition not supported for {full_name}')
     source_link = get_function_source(elt) if is_fastai_class(elt) else ""
+    test_link, test_modal = get_pytest_html(elt, anchor_id=anchor_id) if show_tests else ('', '')
     title_level = ifnone(title_level, 2 if inspect.isclass(elt) else 4)
-    doc =  f'<h{title_level} id="{anchor_id}">{name}{source_link}</h{title_level}>'
-    doc += f'\n\n> {args}'
+    doc =  f'<h{title_level} id="{anchor_id}" class="doc_header">{name}{source_link}{test_link}</h{title_level}>'
+    doc += f'\n\n> {args}\n\n'
+    doc += f'{test_modal}'
     if doc_string and (inspect.getdoc(elt) or arg_comments):
         doc += format_docstring(elt, arg_comments, alt_doc_string, ignore_warn) + ' '
     if markdown: display(Markdown(doc))
@@ -127,9 +133,10 @@ def doc(elt):
         md += f'\n\n<a href="{get_fn_link(elt)}" target="_blank" rel="noreferrer noopener">Show in docs</a>'
     output = HTMLExporter().markdown2html(md)
     use_relative_links = True
-    page.page({'text/html': output})
-    #display(Markdown(md))
-
+    if IS_IN_COLAB: get_ipython().run_cell_magic(u'html', u'', output)
+    else:
+        try: page.page({'text/html': output})
+        except: display(Markdown(md))
 
 def format_docstring(elt, arg_comments:dict={}, alt_doc_string:str='', ignore_warn:bool=False)->str:
     "Merge and format the docstring definition with `arg_comments` and `alt_doc_string`."
@@ -165,23 +172,13 @@ def link_docstring(modules, docstring:str, overwrite:bool=False)->str:
     for mod in mods: _modvars.update(mod.__dict__) # concat all module definitions
     return re.sub(BT_REGEX, replace_link, docstring)
 
-def find_mod(keyword):
-    mod = import_mod(keyword, ignore_errors=True)
-    if mod: return mod
-    if not keyword.startswith('fastai'):
-        return import_mod(f'fastai.{keyword}', ignore_errors=True)
-    return None
-
 def find_elt(modvars, keyword, match_last=False):
     "Attempt to resolve keywords such as Learner.lr_find. `match_last` starts matching from last component."
-    #mod = find_mod(keyword)
-    #if mod: return mod
     keyword = strip_fastai(keyword)
     if keyword in modvars: return modvars[keyword]
     comps = keyword.split('.')
     comp_elt = modvars.get(comps[0])
     if hasattr(comp_elt, '__dict__'): return find_elt(comp_elt.__dict__, '.'.join(comps[1:]), match_last=match_last)
-    # else: return modvars.get(comps[-1])
 
 def import_mod(mod_name:str, ignore_errors=False):
     "Return module from `mod_name`."
@@ -256,22 +253,6 @@ def get_module_toc(mod_name):
                 tabmat += f'  - [{name}](#{name})\n'
     display(Markdown(tabmat))
 
-def get_class_toc(mod_name:str, cls_name:str):
-    "Display table of contents for `cls_name`."
-    mod = import_mod(mod_name)
-    if mod is None: return
-    splits = str.split(cls_name, '.')
-    assert hasattr(mod, splits[0]), print(f"Module {mod_name} doesn't have a function named {splits[0]}.")
-    elt = getattr(mod, splits[0])
-    for i,split in enumerate(splits[1:]):
-        assert hasattr(elt, split), print(f"Class {'.'.join(splits[:i+1])} doesn't have a subclass named {split}.")
-        elt = getattr(elt, split)
-    assert inspect.isclass(elt) and not is_enum(elt.__class__), "This is not a valid class."
-    in_ft_names = get_inner_fts(elt)
-    tabmat = ''
-    for name in in_ft_names: tabmat += f'- [{name}](#{name})\n'
-    display(Markdown(tabmat))
-
 def show_video(url):
     "Display video in `url`."
     data = f'<iframe width="560" height="315" src="{url}" frameborder="0" allowfullscreen></iframe>'
@@ -288,7 +269,7 @@ def get_anchor(fn)->str:
     return fn_name(fn)
 
 def fn_name(ft)->str:
-    if ft in _typing_names: return _typing_names[ft]
+    if ft.__hash__ and ft in _typing_names: return _typing_names[ft]
     if hasattr(ft, '__name__'):   return ft.__name__
     elif hasattr(ft,'_name') and ft._name: return ft._name
     elif hasattr(ft,'__origin__'): return str(ft.__origin__).split('.')[-1]
@@ -328,18 +309,18 @@ def get_pytorch_link(ft)->str:
     fnlink = '.'.join(paths[:(2+offset)]+[name])
     return f'{PYTORCH_DOCS}{doc_path}{ext}#{fnlink}'
 
-def get_source_link(mod, lineno, display_text="[source]")->str:
-    "Returns link to `lineno` in source code of `mod`."
-    github_path = mod.__name__.replace('.', '/')
-    link = f"{SOURCE_URL}{github_path}.py#L{lineno}"
+def get_source_link(file, line, display_text="[source]", **kwargs)->str:
+    "Returns github link for given file"
+    link = f"{SOURCE_URL}{file}#L{line}"
     if display_text is None: return link
-    return f'<a href="{link}" class="source_link">{display_text}</a>'
+    return f'<a href="{link}" class="source_link" style="float:right">{display_text}</a>'
 
 def get_function_source(ft, **kwargs)->str:
     "Returns link to `ft` in source code."
-    try: lineno = inspect.getsourcelines(ft)[1]
+    try: line = inspect.getsourcelines(ft)[1]
     except Exception: return ''
-    return get_source_link(inspect.getmodule(ft), lineno, **kwargs)
+    mod_path = get_module_name(ft).replace('.', '/') + '.py'
+    return get_source_link(mod_path, line, **kwargs)
 
 def title_md(s:str, title_level:int, markdown=True):
     res = '#' * title_level

@@ -1,9 +1,9 @@
-import csv, gc, gzip, os, pickle, shutil, sys, warnings, yaml
+import csv, gc, gzip, os, pickle, shutil, sys, warnings, yaml, io, subprocess
 import math, matplotlib.pyplot as plt, numpy as np, pandas as pd, random
 import scipy.stats, scipy.special
 import abc, collections, hashlib, itertools, json, operator, pathlib
 import mimetypes, inspect, typing, functools, importlib, weakref
-import html, re, requests, tarfile, numbers
+import html, re, requests, tarfile, numbers, tempfile
 
 from abc import abstractmethod, abstractproperty
 from collections import abc,  Counter, defaultdict, Iterable, namedtuple, OrderedDict
@@ -25,7 +25,7 @@ from matplotlib.patches import Patch
 from pandas import Series, DataFrame
 
 import pkg_resources
-pkg_resources.require("fastprogress>=0.1.18")
+pkg_resources.require("fastprogress>=0.1.19")
 from fastprogress.fastprogress import master_bar, progress_bar
 
 #for type annotations
@@ -33,3 +33,9 @@ from numbers import Number
 from typing import Any, AnyStr, Callable, Collection, Dict, Hashable, Iterator, List, Mapping, NewType, Optional
 from typing import Sequence, Tuple, TypeVar, Union
 from types import SimpleNamespace
+
+def try_import(module):
+    "Try to import `module`. Returns module's object on success, None on failure"
+    try: return importlib.import_module(module)
+    except: return None
+

@@ -11,7 +11,7 @@ summary: "Implementation of a callback for RNN training"
     
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Training-tweaks-for-an-RNN">Training tweaks for an RNN<a class="anchor-link" href="#Training-tweaks-for-an-RNN">&#182;</a></h1>
+<h2 id="Training-tweaks-for-an-RNN">Training tweaks for an RNN<a class="anchor-link" href="#Training-tweaks-for-an-RNN">&#182;</a></h2>
 </div>
 </div>
 </div>
@@ -39,9 +39,9 @@ summary: "Implementation of a callback for RNN training"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="RNNTrainer"><code>class</code> <code>RNNTrainer</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/rnn.py#L8" class="source_link">[source]</a></h2><blockquote><p><code>RNNTrainer</code>(<strong><code>learn</code></strong>, <strong><code>alpha</code></strong>:<code>float</code>=<strong><em><code>0.0</code></em></strong>, <strong><code>beta</code></strong>:<code>float</code>=<strong><em><code>0.0</code></em></strong>) :: <a href="/basic_train.html#LearnerCallback"><code>LearnerCallback</code></a></p>
+<h2 id="RNNTrainer" class="doc_header"><code>class</code> <code>RNNTrainer</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/rnn.py#L8" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#RNNTrainer-pytest" style="float:right; padding-right:10px">[test]</a></h2><blockquote><p><code>RNNTrainer</code>(<strong><code>learn</code></strong>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <strong><code>alpha</code></strong>:<code>float</code>=<strong><em><code>0.0</code></em></strong>, <strong><code>beta</code></strong>:<code>float</code>=<strong><em><code>0.0</code></em></strong>) :: <a href="/basic_train.html#LearnerCallback"><code>LearnerCallback</code></a></p>
 </blockquote>
-<p><a href="/callback.html#Callback"><code>Callback</code></a> that regroups lr adjustment to seq_len, AR and TAR.</p>
+<div class="collapse" id="RNNTrainer-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#RNNTrainer-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>RNNTrainer</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p><a href="/callback.html#Callback"><code>Callback</code></a> that regroups lr adjustment to seq_len, AR and TAR.</p>
 
 </div>
 
@@ -80,9 +80,9 @@ summary: "Implementation of a callback for RNN training"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="RNNTrainer.on_epoch_begin"><code>on_epoch_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/rnn.py#L15" class="source_link">[source]</a></h4><blockquote><p><code>on_epoch_begin</code>(<strong>**<code>kwargs</code></strong>)</p>
+<h4 id="RNNTrainer.on_epoch_begin" class="doc_header"><code>on_epoch_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/rnn.py#L15" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#RNNTrainer-on_epoch_begin-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>on_epoch_begin</code>(<strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
-<p>Reset the hidden state of the model.</p>
+<div class="collapse" id="RNNTrainer-on_epoch_begin-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#RNNTrainer-on_epoch_begin-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>on_epoch_begin</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Reset the hidden state of the model.</p>
 
 </div>
 
@@ -101,9 +101,9 @@ summary: "Implementation of a callback for RNN training"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="RNNTrainer.on_loss_begin"><code>on_loss_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/rnn.py#L19" class="source_link">[source]</a></h4><blockquote><p><code>on_loss_begin</code>(<strong><code>last_output</code></strong>:<code>Tuple</code>[<code>Tensor</code>, <code>Tensor</code>, <code>Tensor</code>], <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="RNNTrainer.on_loss_begin" class="doc_header"><code>on_loss_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/rnn.py#L19" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#RNNTrainer-on_loss_begin-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>on_loss_begin</code>(<strong><code>last_output</code></strong>:<code>Tuple</code>[<code>Tensor</code>, <code>Tensor</code>, <code>Tensor</code>], <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
-<p>Save the extra outputs for later and only returns the true output.</p>
+<div class="collapse" id="RNNTrainer-on_loss_begin-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#RNNTrainer-on_loss_begin-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>on_loss_begin</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Save the extra outputs for later and only returns the true output.</p>
 
 </div>
 
@@ -129,9 +129,9 @@ summary: "Implementation of a callback for RNN training"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="RNNTrainer.on_backward_begin"><code>on_backward_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/rnn.py#L24" class="source_link">[source]</a></h4><blockquote><p><code>on_backward_begin</code>(<strong><code>last_loss</code></strong>:<code>Rank0Tensor</code>, <strong><code>last_input</code></strong>:<code>Tensor</code>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="RNNTrainer.on_backward_begin" class="doc_header"><code>on_backward_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/rnn.py#L24" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#RNNTrainer-on_backward_begin-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>on_backward_begin</code>(<strong><code>last_loss</code></strong>:<code>Rank0Tensor</code>, <strong><code>last_input</code></strong>:<code>Tensor</code>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
-<p>Apply AR and TAR to <code>last_loss</code>.</p>
+<div class="collapse" id="RNNTrainer-on_backward_begin-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#RNNTrainer-on_backward_begin-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>on_backward_begin</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Apply AR and TAR to <code>last_loss</code>.</p>
 
 </div>
 

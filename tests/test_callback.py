@@ -1,5 +1,6 @@
 import pytest, fastai
 from fastai.vision import *
+from fastai.gen_doc.doctest import this_tests
 from utils.fakes import fake_data
 from utils.text import CaptureStdout
 
@@ -21,15 +22,16 @@ class DummyCallback(LearnerCallback):
     def on_train_begin(self, **kwargs):
         self.learn.recorder.add_metric_names(['col_a', 'col_b'])
 
-    def on_epoch_end(self, **kwargs):
+    def on_epoch_end(self, last_metrics, **kwargs):
         # add dummy metrics
-        self.learn.recorder.add_metrics([col_a, col_b])
+        return {'last_metrics': last_metrics + [col_a, col_b]}
 
 def check_dummy_metric(out):
     for s in ['col_a', col_a, 'col_b', col_b]:
         assert str(s) in out, f"{s} is in the output:\n{out}"
 
 def test_callbacks_learner(data, model):
+    this_tests(Callback)
 
     # single callback in learner constructor
     learn = Learner(data, model, metrics=accuracy, callback_fns=DummyCallback)
@@ -61,6 +63,7 @@ def test_callbacks_learner(data, model):
 
 def test_callbacks_fit(data, model):
     learn = Learner(data, model, metrics=accuracy)
+    this_tests(Callback)
 
     for func in ['fit', 'fit_one_cycle']:
         fit_func = getattr(learn, func)

@@ -11,7 +11,7 @@ summary: "Image class, variants and internal data augmentation pipeline"
     
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="The-fastai-Image-classes">The fastai Image classes<a class="anchor-link" href="#The-fastai-Image-classes">&#182;</a></h1>
+<h2 id="The-fastai-Image-classes">The fastai Image classes<a class="anchor-link" href="#The-fastai-Image-classes">&#182;</a></h2>
 </div>
 </div>
 </div>
@@ -202,9 +202,9 @@ summary: "Image class, variants and internal data augmentation pipeline"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="Image"><code>class</code> <code>Image</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L61" class="source_link">[source]</a></h3><blockquote><p><code>Image</code>(<strong><code>px</code></strong>:<code>Tensor</code>) :: <a href="/core.html#ItemBase"><code>ItemBase</code></a></p>
+<h3 id="Image" class="doc_header"><code>class</code> <code>Image</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L62" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#Image-pytest" style="float:right; padding-right:10px">[test]</a></h3><blockquote><p><code>Image</code>(<strong><code>px</code></strong>:<code>Tensor</code>) :: <a href="/core.html#ItemBase"><code>ItemBase</code></a></p>
 </blockquote>
-<p>Support applying transforms to image data in <code>px</code>.</p>
+<div class="collapse" id="Image-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#Image-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>Image</code>:</p><ul><li><code>pytest -sv tests/test_vision_transform.py::test_mask_data_aug</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_vision_transform.py#L58" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><p>Support applying transforms to image data in <code>px</code>.</p>
 
 </div>
 
@@ -230,9 +230,9 @@ summary: "Image class, variants and internal data augmentation pipeline"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="open_image"><code>open_image</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L383" class="source_link">[source]</a></h4><blockquote><p><code>open_image</code>(<strong><code>fn</code></strong>:<code>PathOrStr</code>, <strong><code>div</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>, <strong><code>convert_mode</code></strong>:<code>str</code>=<strong><em><code>'RGB'</code></em></strong>) → <a href="/vision.image.html#Image"><code>Image</code></a></p>
+<h4 id="open_image" class="doc_header"><code>open_image</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L388" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#open_image-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>open_image</code>(<strong><code>fn</code></strong>:<code>PathOrStr</code>, <strong><code>div</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>, <strong><code>convert_mode</code></strong>:<code>str</code>=<strong><em><code>'RGB'</code></em></strong>, <strong><code>after_open</code></strong>:<code>Callable</code>=<strong><em><code>None</code></em></strong>) → <a href="/vision.image.html#Image"><code>Image</code></a></p>
 </blockquote>
-<p>Return <a href="/vision.image.html#Image"><code>Image</code></a> object created from image in file <code>fn</code>.</p>
+<div class="collapse" id="open_image-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#open_image-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>open_image</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Return <a href="/vision.image.html#Image"><code>Image</code></a> object created from image in file <code>fn</code>.</p>
 
 </div>
 
@@ -265,9 +265,9 @@ summary: "Image class, variants and internal data augmentation pipeline"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Image.show"><code>Image.show</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L210" class="source_link">[source]</a></h4><blockquote><p><code>Image.show</code>(<strong><code>ax</code></strong>:<code>Axes</code>=<strong><em><code>None</code></em></strong>, <strong><code>figsize</code></strong>:<code>tuple</code>=<strong><em><code>(3, 3)</code></em></strong>, <strong><code>title</code></strong>:<code>Optional</code>[<code>str</code>]=<strong><em><code>None</code></em></strong>, <strong><code>hide_axis</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>, <strong><code>cmap</code></strong>:<code>str</code>=<strong><em><code>None</code></em></strong>, <strong><code>y</code></strong>:<code>Any</code>=<strong><em><code>None</code></em></strong>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="Image.show" class="doc_header"><code>Image.show</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L216" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#Image-show-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>Image.show</code>(<strong><code>ax</code></strong>:<code>Axes</code>=<strong><em><code>None</code></em></strong>, <strong><code>figsize</code></strong>:<code>tuple</code>=<strong><em><code>(3, 3)</code></em></strong>, <strong><code>title</code></strong>:<code>Optional</code>[<code>str</code>]=<strong><em><code>None</code></em></strong>, <strong><code>hide_axis</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>, <strong><code>cmap</code></strong>:<code>str</code>=<strong><em><code>None</code></em></strong>, <strong><code>y</code></strong>:<code>Any</code>=<strong><em><code>None</code></em></strong>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
-<p>Show image on <code>ax</code> with <code>title</code>, using <code>cmap</code> if single-channel, overlaid with optional <code>y</code></p>
+<div class="collapse" id="Image-show-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#Image-show-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>show</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Show image on <code>ax</code> with <code>title</code>, using <code>cmap</code> if single-channel, overlaid with optional <code>y</code></p>
 <ul>
 <li><em>ax</em>: matplotlib.pyplot axes on which show the image</li>
 <li><em>figsize</em>: Size of the figure</li>
@@ -435,9 +435,9 @@ summary: "Image class, variants and internal data augmentation pipeline"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="ImageSegment"><code>class</code> <code>ImageSegment</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L218" class="source_link">[source]</a></h3><blockquote><p><code>ImageSegment</code>(<strong><code>px</code></strong>:<code>Tensor</code>) :: <a href="/vision.image.html#Image"><code>Image</code></a></p>
+<h3 id="ImageSegment" class="doc_header"><code>class</code> <code>ImageSegment</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L224" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#ImageSegment-pytest" style="float:right; padding-right:10px">[test]</a></h3><blockquote><p><code>ImageSegment</code>(<strong><code>px</code></strong>:<code>Tensor</code>) :: <a href="/vision.image.html#Image"><code>Image</code></a></p>
 </blockquote>
-<p>Support applying transforms to segmentation masks data in <code>px</code>.</p>
+<div class="collapse" id="ImageSegment-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#ImageSegment-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>ImageSegment</code>:</p><ul><li><code>pytest -sv tests/test_vision_transform.py::test_mask_data_aug</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_vision_transform.py#L58" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><p>Support applying transforms to segmentation masks data in <code>px</code>.</p>
 
 </div>
 
@@ -463,9 +463,9 @@ summary: "Image class, variants and internal data augmentation pipeline"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="open_mask"><code>open_mask</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L392" class="source_link">[source]</a></h4><blockquote><p><code>open_mask</code>(<strong><code>fn</code></strong>:<code>PathOrStr</code>, <strong><code>div</code></strong>=<strong><em><code>False</code></em></strong>, <strong><code>convert_mode</code></strong>=<strong><em><code>'L'</code></em></strong>) → <a href="/vision.image.html#ImageSegment"><code>ImageSegment</code></a></p>
+<h4 id="open_mask" class="doc_header"><code>open_mask</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L399" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#open_mask-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>open_mask</code>(<strong><code>fn</code></strong>:<code>PathOrStr</code>, <strong><code>div</code></strong>=<strong><em><code>False</code></em></strong>, <strong><code>convert_mode</code></strong>=<strong><em><code>'L'</code></em></strong>, <strong><code>after_open</code></strong>:<code>Callable</code>=<strong><em><code>None</code></em></strong>) → <a href="/vision.image.html#ImageSegment"><code>ImageSegment</code></a></p>
 </blockquote>
-<p>Return <a href="/vision.image.html#ImageSegment"><code>ImageSegment</code></a> object create from mask in file <code>fn</code>. If <code>div</code>, divides pixel values by 255.</p>
+<div class="collapse" id="open_mask-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#open_mask-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>open_mask</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Return <a href="/vision.image.html#ImageSegment"><code>ImageSegment</code></a> object create from mask in file <code>fn</code>. If <code>div</code>, divides pixel values by 255.</p>
 
 </div>
 
@@ -632,9 +632,9 @@ summary: "Image class, variants and internal data augmentation pipeline"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="open_mask_rle"><code>open_mask_rle</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L396" class="source_link">[source]</a></h4><blockquote><p><code>open_mask_rle</code>(<strong><code>mask_rle</code></strong>:<code>str</code>, <strong><code>shape</code></strong>:<code>Tuple</code>[<code>int</code>, <code>int</code>]) → <a href="/vision.image.html#ImageSegment"><code>ImageSegment</code></a></p>
+<h4 id="open_mask_rle" class="doc_header"><code>open_mask_rle</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L403" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#open_mask_rle-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>open_mask_rle</code>(<strong><code>mask_rle</code></strong>:<code>str</code>, <strong><code>shape</code></strong>:<code>Tuple</code>[<code>int</code>, <code>int</code>]) → <a href="/vision.image.html#ImageSegment"><code>ImageSegment</code></a></p>
 </blockquote>
-<p>Return <a href="/vision.image.html#ImageSegment"><code>ImageSegment</code></a> object create from run-length encoded string in <code>mask_lre</code> with size in <code>shape</code>.</p>
+<div class="collapse" id="open_mask_rle-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#open_mask_rle-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>open_mask_rle</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Return <a href="/vision.image.html#ImageSegment"><code>ImageSegment</code></a> object create from run-length encoded string in <code>mask_lre</code> with size in <code>shape</code>.</p>
 
 </div>
 
@@ -689,9 +689,9 @@ summary: "Image class, variants and internal data augmentation pipeline"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="rle_decode"><code>rle_decode</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L409" class="source_link">[source]</a></h4><blockquote><p><code>rle_decode</code>(<strong><code>mask_rle</code></strong>:<code>str</code>, <strong><code>shape</code></strong>:<code>Tuple</code>[<code>int</code>, <code>int</code>]) → <code>ndarray</code></p>
+<h4 id="rle_decode" class="doc_header"><code>rle_decode</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L416" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#rle_decode-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>rle_decode</code>(<strong><code>mask_rle</code></strong>:<code>str</code>, <strong><code>shape</code></strong>:<code>Tuple</code>[<code>int</code>, <code>int</code>]) → <code>ndarray</code></p>
 </blockquote>
-<p>Return an image array from run-length encoded string <code>mask_rle</code> with <code>shape</code>.</p>
+<div class="collapse" id="rle_decode-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#rle_decode-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>rle_decode</code>:</p><ul><li><code>pytest -sv tests/test_vision_image.py::test_rle_decode_empty_str</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_vision_image.py#L23" class="source_link" style="float:right">[source]</a></li><li><code>pytest -sv tests/test_vision_image.py::test_rle_decode_with_str</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_vision_image.py#L17" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><p>Return an image array from run-length encoded string <code>mask_rle</code> with <code>shape</code>.</p>
 
 </div>
 
@@ -775,9 +775,9 @@ summary: "Image class, variants and internal data augmentation pipeline"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="rle_encode"><code>rle_encode</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L402" class="source_link">[source]</a></h4><blockquote><p><code>rle_encode</code>(<strong><code>img</code></strong>:<code>ndarray</code>) → <code>str</code></p>
+<h4 id="rle_encode" class="doc_header"><code>rle_encode</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L409" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#rle_encode-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>rle_encode</code>(<strong><code>img</code></strong>:<code>ndarray</code>) → <code>str</code></p>
 </blockquote>
-<p>Return run-length encoding string from <code>img</code>.</p>
+<div class="collapse" id="rle_encode-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#rle_encode-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>rle_encode</code>:</p><ul><li><code>pytest -sv tests/test_vision_image.py::test_rle_encode_all_zero_array</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_vision_image.py#L11" class="source_link" style="float:right">[source]</a></li><li><code>pytest -sv tests/test_vision_image.py::test_rle_encode_with_array</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_vision_image.py#L5" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><p>Return run-length encoding string from <code>img</code>.</p>
 
 </div>
 
@@ -846,9 +846,9 @@ summary: "Image class, variants and internal data augmentation pipeline"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="ImagePoints"><code>class</code> <code>ImagePoints</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L240" class="source_link">[source]</a></h3><blockquote><p><code>ImagePoints</code>(<strong><code>flow</code></strong>:<a href="/vision.image.html#FlowField"><code>FlowField</code></a>, <strong><code>scale</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>, <strong><code>y_first</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>) :: <a href="/vision.image.html#Image"><code>Image</code></a></p>
+<h3 id="ImagePoints" class="doc_header"><code>class</code> <code>ImagePoints</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L246" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#ImagePoints-pytest" style="float:right; padding-right:10px">[test]</a></h3><blockquote><p><code>ImagePoints</code>(<strong><code>flow</code></strong>:<a href="/vision.image.html#FlowField"><code>FlowField</code></a>, <strong><code>scale</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>, <strong><code>y_first</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>) :: <a href="/vision.image.html#Image"><code>Image</code></a></p>
 </blockquote>
-<p>Support applying transforms to a <code>flow</code> of points.</p>
+<div class="collapse" id="ImagePoints-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#ImagePoints-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>ImagePoints</code>:</p><ul><li><code>pytest -sv tests/test_vision_transform.py::test_points_data_aug</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_vision_transform.py#L22" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><p>Support applying transforms to a <code>flow</code> of points.</p>
 
 </div>
 
@@ -960,9 +960,9 @@ summary: "Image class, variants and internal data augmentation pipeline"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="ImageBBox"><code>class</code> <code>ImageBBox</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L328" class="source_link">[source]</a></h3><blockquote><p><code>ImageBBox</code>(<strong><code>flow</code></strong>:<a href="/vision.image.html#FlowField"><code>FlowField</code></a>, <strong><code>scale</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>, <strong><code>y_first</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>, <strong><code>labels</code></strong>:<code>Collection</code>[<code>T_co</code>]=<strong><em><code>None</code></em></strong>, <strong><code>classes</code></strong>:<code>dict</code>=<strong><em><code>None</code></em></strong>, <strong><code>pad_idx</code></strong>:<code>int</code>=<strong><em><code>0</code></em></strong>) :: <a href="/vision.image.html#ImagePoints"><code>ImagePoints</code></a></p>
+<h3 id="ImageBBox" class="doc_header"><code>class</code> <code>ImageBBox</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L333" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#ImageBBox-pytest" style="float:right; padding-right:10px">[test]</a></h3><blockquote><p><code>ImageBBox</code>(<strong><code>flow</code></strong>:<a href="/vision.image.html#FlowField"><code>FlowField</code></a>, <strong><code>scale</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>, <strong><code>y_first</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>, <strong><code>labels</code></strong>:<code>Collection</code>[<code>T_co</code>]=<strong><em><code>None</code></em></strong>, <strong><code>classes</code></strong>:<code>dict</code>=<strong><em><code>None</code></em></strong>, <strong><code>pad_idx</code></strong>:<code>int</code>=<strong><em><code>0</code></em></strong>) :: <a href="/vision.image.html#ImagePoints"><code>ImagePoints</code></a></p>
 </blockquote>
-<p>Support applying transforms to a <code>flow</code> of bounding boxes.</p>
+<div class="collapse" id="ImageBBox-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#ImageBBox-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>ImageBBox</code>:</p><ul><li><code>pytest -sv tests/test_vision_transform.py::test_bbox_data_aug</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_vision_transform.py#L37" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><p>Support applying transforms to a <code>flow</code> of bounding boxes.</p>
 
 </div>
 
@@ -995,9 +995,9 @@ summary: "Image class, variants and internal data augmentation pipeline"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ImageBBox.create"><code>create</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L343" class="source_link">[source]</a></h4><blockquote><p><code>create</code>(<strong><code>h</code></strong>:<code>int</code>, <strong><code>w</code></strong>:<code>int</code>, <strong><code>bboxes</code></strong>:<code>Collection</code>[<code>Collection</code>[<code>int</code>]], <strong><code>labels</code></strong>:<code>Collection</code>[<code>T_co</code>]=<strong><em><code>None</code></em></strong>, <strong><code>classes</code></strong>:<code>dict</code>=<strong><em><code>None</code></em></strong>, <strong><code>pad_idx</code></strong>:<code>int</code>=<strong><em><code>0</code></em></strong>, <strong><code>scale</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>) → <code>ImageBBox</code></p>
+<h4 id="ImageBBox.create" class="doc_header"><code>create</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L348" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#ImageBBox-create-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>create</code>(<strong><code>h</code></strong>:<code>int</code>, <strong><code>w</code></strong>:<code>int</code>, <strong><code>bboxes</code></strong>:<code>Collection</code>[<code>Collection</code>[<code>int</code>]], <strong><code>labels</code></strong>:<code>Collection</code>[<code>T_co</code>]=<strong><em><code>None</code></em></strong>, <strong><code>classes</code></strong>:<code>dict</code>=<strong><em><code>None</code></em></strong>, <strong><code>pad_idx</code></strong>:<code>int</code>=<strong><em><code>0</code></em></strong>, <strong><code>scale</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>) → <code>ImageBBox</code></p>
 </blockquote>
-<p>Create an ImageBBox object from <code>bboxes</code>.</p>
+<div class="collapse" id="ImageBBox-create-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#ImageBBox-create-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>create</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Create an ImageBBox object from <code>bboxes</code>.</p>
 <ul>
 <li><em>h</em>: height of the input image</li>
 <li><em>w</em>: width of the input image</li>
@@ -1018,7 +1018,7 @@ summary: "Image class, variants and internal data augmentation pipeline"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>We need to pass the dimensions of the input image so that <a href="/vision.image.html#ImageBBox"><code>ImageBBox</code></a> can internally create the <a href="/vision.image.html#FlowField"><code>FlowField</code></a>. Again, the <a href="/vision.image.html#Image.show"><code>Image.show</code></a> method will display the bouding box on the same image if it's passed as a <code>y</code> argument.</p>
+<p>We need to pass the dimensions of the input image so that <a href="/vision.image.html#ImageBBox"><code>ImageBBox</code></a> can internally create the <a href="/vision.image.html#FlowField"><code>FlowField</code></a>. Again, the <a href="/vision.image.html#Image.show"><code>Image.show</code></a> method will display the bounding box on the same image if it's passed as a <code>y</code> argument.</p>
 
 </div>
 </div>
@@ -1072,9 +1072,9 @@ summary: "Image class, variants and internal data augmentation pipeline"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="show_image"><code>show_image</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L419" class="source_link">[source]</a></h4><blockquote><p><code>show_image</code>(<strong><code>img</code></strong>:<a href="/vision.image.html#Image"><code>Image</code></a>, <strong><code>ax</code></strong>:<code>Axes</code>=<strong><em><code>None</code></em></strong>, <strong><code>figsize</code></strong>:<code>tuple</code>=<strong><em><code>(3, 3)</code></em></strong>, <strong><code>hide_axis</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>, <strong><code>cmap</code></strong>:<code>str</code>=<strong><em><code>'binary'</code></em></strong>, <strong><code>alpha</code></strong>:<code>float</code>=<strong><em><code>None</code></em></strong>, <strong>**<code>kwargs</code></strong>) → <code>Axes</code></p>
+<h4 id="show_image" class="doc_header"><code>show_image</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L426" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#show_image-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>show_image</code>(<strong><code>img</code></strong>:<a href="/vision.image.html#Image"><code>Image</code></a>, <strong><code>ax</code></strong>:<code>Axes</code>=<strong><em><code>None</code></em></strong>, <strong><code>figsize</code></strong>:<code>tuple</code>=<strong><em><code>(3, 3)</code></em></strong>, <strong><code>hide_axis</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>, <strong><code>cmap</code></strong>:<code>str</code>=<strong><em><code>'binary'</code></em></strong>, <strong><code>alpha</code></strong>:<code>float</code>=<strong><em><code>None</code></em></strong>, <strong>**<code>kwargs</code></strong>) → <code>Axes</code></p>
 </blockquote>
-<p>Display <a href="/vision.image.html#Image"><code>Image</code></a> in notebook.</p>
+<div class="collapse" id="show_image-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#show_image-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>show_image</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Display <a href="/vision.image.html#Image"><code>Image</code></a> in notebook.</p>
 
 </div>
 
@@ -1093,9 +1093,9 @@ summary: "Image class, variants and internal data augmentation pipeline"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="pil2tensor"><code>pil2tensor</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L13" class="source_link">[source]</a></h4><blockquote><p><code>pil2tensor</code>(<strong><code>image</code></strong>:<code>ndarray</code>, <strong><code>dtype</code></strong>:<code>dtype</code>) → <code>Tensor</code></p>
+<h4 id="pil2tensor" class="doc_header"><code>pil2tensor</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L14" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#pil2tensor-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>pil2tensor</code>(<strong><code>image</code></strong>:<code>ndarray</code>, <strong><code>dtype</code></strong>:<code>dtype</code>) → <code>Tensor</code></p>
 </blockquote>
-<p>Convert PIL style <code>image</code> array to torch style image tensor.</p>
+<div class="collapse" id="pil2tensor-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#pil2tensor-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>pil2tensor</code>:</p><ul><li><code>pytest -sv tests/test_vision_data.py::test_vision_pil2tensor</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_vision_data.py#L348" class="source_link" style="float:right">[source]</a></li><li><code>pytest -sv tests/test_vision_data.py::test_vision_pil2tensor_16bit</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_vision_data.py#L379" class="source_link" style="float:right">[source]</a></li><li><code>pytest -sv tests/test_vision_data.py::test_vision_pil2tensor_numpy</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_vision_data.py#L386" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><p>Convert PIL style <code>image</code> array to torch style image tensor.</p>
 
 </div>
 
@@ -1288,9 +1288,9 @@ summary: "Image class, variants and internal data augmentation pipeline"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="image2np"><code>image2np</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L21" class="source_link">[source]</a></h4><blockquote><p><code>image2np</code>(<strong><code>image</code></strong>:<code>Tensor</code>) → <code>ndarray</code></p>
+<h4 id="image2np" class="doc_header"><code>image2np</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L22" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#image2np-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>image2np</code>(<strong><code>image</code></strong>:<code>Tensor</code>) → <code>ndarray</code></p>
 </blockquote>
-<p>Convert from torch style <code>image</code> to numpy/matplotlib style.</p>
+<div class="collapse" id="image2np-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#image2np-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>image2np</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Convert from torch style <code>image</code> to numpy/matplotlib style.</p>
 
 </div>
 
@@ -1309,9 +1309,9 @@ summary: "Image class, variants and internal data augmentation pipeline"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="scale_flow"><code>scale_flow</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L427" class="source_link">[source]</a></h4><blockquote><p><code>scale_flow</code>(<strong><code>flow</code></strong>, <strong><code>to_unit</code></strong>=<strong><em><code>True</code></em></strong>)</p>
+<h4 id="scale_flow" class="doc_header"><code>scale_flow</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L434" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#scale_flow-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>scale_flow</code>(<strong><code>flow</code></strong>, <strong><code>to_unit</code></strong>=<strong><em><code>True</code></em></strong>)</p>
 </blockquote>
-<p>Scale the coords in <code>flow</code> to -1/1 or the image size depending on <code>to_unit</code>.</p>
+<div class="collapse" id="scale_flow-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#scale_flow-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>scale_flow</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Scale the coords in <code>flow</code> to -1/1 or the image size depending on <code>to_unit</code>.</p>
 
 </div>
 
@@ -1330,9 +1330,9 @@ summary: "Image class, variants and internal data augmentation pipeline"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="bb2hw"><code>bb2hw</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L26" class="source_link">[source]</a></h4><blockquote><p><code>bb2hw</code>(<strong><code>a</code></strong>:<code>Collection</code>[<code>int</code>]) → <code>ndarray</code></p>
+<h4 id="bb2hw" class="doc_header"><code>bb2hw</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L27" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#bb2hw-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>bb2hw</code>(<strong><code>a</code></strong>:<code>Collection</code>[<code>int</code>]) → <code>ndarray</code></p>
 </blockquote>
-<p>Convert bounding box points from (width,height,center) to (height,width,top,left).</p>
+<div class="collapse" id="bb2hw-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#bb2hw-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>bb2hw</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Convert bounding box points from (width,height,center) to (height,width,top,left).</p>
 
 </div>
 
@@ -1361,9 +1361,9 @@ summary: "Image class, variants and internal data augmentation pipeline"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="tis2hw"><code>tis2hw</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L30" class="source_link">[source]</a></h4><blockquote><p><code>tis2hw</code>(<strong><code>size</code></strong>:<code>Union</code>[<code>int</code>, <code>TensorImageSize</code>]) → <code>Tuple</code>[<code>int</code>, <code>int</code>]</p>
+<h4 id="tis2hw" class="doc_header"><code>tis2hw</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L31" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#tis2hw-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>tis2hw</code>(<strong><code>size</code></strong>:<code>Union</code>[<code>int</code>, <code>TensorImageSize</code>]) → <code>Tuple</code>[<code>int</code>, <code>int</code>]</p>
 </blockquote>
-<p>Convert <code>int</code> or <code>TensorImageSize</code> to (height,width) of an image.</p>
+<div class="collapse" id="tis2hw-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#tis2hw-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>tis2hw</code>:</p><ul><li><code>pytest -sv tests/test_vision_image.py::test_tis2hw_2dims</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_vision_image.py#L39" class="source_link" style="float:right">[source]</a></li><li><code>pytest -sv tests/test_vision_image.py::test_tis2hw_3dims</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_vision_image.py#L34" class="source_link" style="float:right">[source]</a></li><li><code>pytest -sv tests/test_vision_image.py::test_tis2hw_int</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_vision_image.py#L29" class="source_link" style="float:right">[source]</a></li><li><code>pytest -sv tests/test_vision_image.py::test_tis2hw_str_raises_an_error</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_vision_image.py#L44" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><p>Convert <code>int</code> or <code>TensorImageSize</code> to (height,width) of an image.</p>
 
 </div>
 
@@ -1395,9 +1395,9 @@ summary: "Image class, variants and internal data augmentation pipeline"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="show_all"><code>show_all</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L608" class="source_link">[source]</a></h4><blockquote><p><code>show_all</code>(<strong><code>imgs</code></strong>:<code>Collection</code>[<a href="/vision.image.html#Image"><code>Image</code></a>], <strong><code>r</code></strong>:<code>int</code>=<strong><em><code>1</code></em></strong>, <strong><code>c</code></strong>:<code>Optional</code>[<code>int</code>]=<strong><em><code>None</code></em></strong>, <strong><code>figsize</code></strong>=<strong><em><code>(12, 6)</code></em></strong>)</p>
+<h4 id="show_all" class="doc_header"><code>show_all</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L615" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#show_all-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>show_all</code>(<strong><code>imgs</code></strong>:<code>Collection</code>[<a href="/vision.image.html#Image"><code>Image</code></a>], <strong><code>r</code></strong>:<code>int</code>=<strong><em><code>1</code></em></strong>, <strong><code>c</code></strong>:<code>Optional</code>[<code>int</code>]=<strong><em><code>None</code></em></strong>, <strong><code>figsize</code></strong>=<strong><em><code>(12, 6)</code></em></strong>)</p>
 </blockquote>
-<p>Show all <code>imgs</code> using <code>r</code> rows</p>
+<div class="collapse" id="show_all-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#show_all-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>show_all</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Show all <code>imgs</code> using <code>r</code> rows</p>
 
 </div>
 
@@ -1416,9 +1416,9 @@ summary: "Image class, variants and internal data augmentation pipeline"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="plot_flat"><code>plot_flat</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L594" class="source_link">[source]</a></h4><blockquote><p><code>plot_flat</code>(<strong><code>r</code></strong>, <strong><code>c</code></strong>, <strong><code>figsize</code></strong>)</p>
+<h4 id="plot_flat" class="doc_header"><code>plot_flat</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L601" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#plot_flat-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>plot_flat</code>(<strong><code>r</code></strong>, <strong><code>c</code></strong>, <strong><code>figsize</code></strong>)</p>
 </blockquote>
-<p>Shortcut for <code>enumerate(subplots.flatten())</code></p>
+<div class="collapse" id="plot_flat-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#plot_flat-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>plot_flat</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Shortcut for <code>enumerate(subplots.flatten())</code></p>
 
 </div>
 
@@ -1437,9 +1437,9 @@ summary: "Image class, variants and internal data augmentation pipeline"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="plot_multi"><code>plot_multi</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L598" class="source_link">[source]</a></h4><blockquote><p><code>plot_multi</code>(<strong><code>func</code></strong>:<code>Callable</code>[<code>int</code>, <code>int</code>, <code>Axes</code>, <code>NoneType</code>], <strong><code>r</code></strong>:<code>int</code>=<strong><em><code>1</code></em></strong>, <strong><code>c</code></strong>:<code>int</code>=<strong><em><code>1</code></em></strong>, <strong><code>figsize</code></strong>:<code>Tuple</code>=<strong><em><code>(12, 6)</code></em></strong>)</p>
+<h4 id="plot_multi" class="doc_header"><code>plot_multi</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L605" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#plot_multi-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>plot_multi</code>(<strong><code>func</code></strong>:<code>Callable</code>[<code>int</code>, <code>int</code>, <code>Axes</code>, <code>NoneType</code>], <strong><code>r</code></strong>:<code>int</code>=<strong><em><code>1</code></em></strong>, <strong><code>c</code></strong>:<code>int</code>=<strong><em><code>1</code></em></strong>, <strong><code>figsize</code></strong>:<code>Tuple</code>=<strong><em><code>(12, 6)</code></em></strong>)</p>
 </blockquote>
-<p>Call <code>func</code> for every combination of <code>r,c</code> on a subplot</p>
+<div class="collapse" id="plot_multi-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#plot_multi-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>plot_multi</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Call <code>func</code> for every combination of <code>r,c</code> on a subplot</p>
 
 </div>
 
@@ -1458,9 +1458,9 @@ summary: "Image class, variants and internal data augmentation pipeline"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="show_multi"><code>show_multi</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L604" class="source_link">[source]</a></h4><blockquote><p><code>show_multi</code>(<strong><code>func</code></strong>:<code>Callable</code>[<code>int</code>, <code>int</code>, <a href="/vision.image.html#Image"><code>Image</code></a>], <strong><code>r</code></strong>:<code>int</code>=<strong><em><code>1</code></em></strong>, <strong><code>c</code></strong>:<code>int</code>=<strong><em><code>1</code></em></strong>, <strong><code>figsize</code></strong>:<code>Tuple</code>=<strong><em><code>(9, 9)</code></em></strong>)</p>
+<h4 id="show_multi" class="doc_header"><code>show_multi</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L611" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#show_multi-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>show_multi</code>(<strong><code>func</code></strong>:<code>Callable</code>[<code>int</code>, <code>int</code>, <a href="/vision.image.html#Image"><code>Image</code></a>], <strong><code>r</code></strong>:<code>int</code>=<strong><em><code>1</code></em></strong>, <strong><code>c</code></strong>:<code>int</code>=<strong><em><code>1</code></em></strong>, <strong><code>figsize</code></strong>:<code>Tuple</code>=<strong><em><code>(9, 9)</code></em></strong>)</p>
 </blockquote>
-<p>Call <code>func(i,j).show(ax)</code> for every combination of <code>r,c</code></p>
+<div class="collapse" id="show_multi-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#show_multi-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>show_multi</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Call <code>func(i,j).show(ax)</code> for every combination of <code>r,c</code></p>
 
 </div>
 
@@ -1492,9 +1492,9 @@ summary: "Image class, variants and internal data augmentation pipeline"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Image.apply_tfms"><code>apply_tfms</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L95" class="source_link">[source]</a></h4><blockquote><p><code>apply_tfms</code>(<strong><code>tfms</code></strong>:<code>Union</code>[<code>Callable</code>, <code>Collection</code>[<code>Callable</code>]], <strong><code>do_resolve</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>, <strong><code>xtra</code></strong>:<code>Optional</code>[<code>Dict</code>[<code>Callable</code>, <code>dict</code>]]=<strong><em><code>None</code></em></strong>, <strong><code>size</code></strong>:<code>Union</code>[<code>int</code>, <code>TensorImageSize</code>, <code>NoneType</code>]=<strong><em><code>None</code></em></strong>, <strong><code>resize_method</code></strong>:<a href="/vision.image.html#ResizeMethod"><code>ResizeMethod</code></a>=<strong><em><code>&lt;ResizeMethod.CROP: 1&gt;</code></em></strong>, <strong><code>mult</code></strong>:<code>int</code>=<strong><em><code>None</code></em></strong>, <strong><code>padding_mode</code></strong>:<code>str</code>=<strong><em><code>'reflection'</code></em></strong>, <strong><code>mode</code></strong>:<code>str</code>=<strong><em><code>'bilinear'</code></em></strong>, <strong><code>remove_out</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>) → <code>Tensor</code></p>
+<h4 id="Image.apply_tfms" class="doc_header"><code>apply_tfms</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L96" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#Image-apply_tfms-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>apply_tfms</code>(<strong><code>tfms</code></strong>:<code>Union</code>[<code>Callable</code>, <code>Collection</code>[<code>Callable</code>]], <strong><code>do_resolve</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>, <strong><code>xtra</code></strong>:<code>Optional</code>[<code>Dict</code>[<code>Callable</code>, <code>dict</code>]]=<strong><em><code>None</code></em></strong>, <strong><code>size</code></strong>:<code>Union</code>[<code>int</code>, <code>TensorImageSize</code>, <code>NoneType</code>]=<strong><em><code>None</code></em></strong>, <strong><code>resize_method</code></strong>:<a href="/vision.image.html#ResizeMethod"><code>ResizeMethod</code></a>=<strong><em><code>None</code></em></strong>, <strong><code>mult</code></strong>:<code>int</code>=<strong><em><code>None</code></em></strong>, <strong><code>padding_mode</code></strong>:<code>str</code>=<strong><em><code>'reflection'</code></em></strong>, <strong><code>mode</code></strong>:<code>str</code>=<strong><em><code>'bilinear'</code></em></strong>, <strong><code>remove_out</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>) → <code>Tensor</code></p>
 </blockquote>
-<p>Apply all <code>tfms</code> to the <a href="/vision.image.html#Image"><code>Image</code></a>, if <code>do_resolve</code> picks value for random args.</p>
+<div class="collapse" id="Image-apply_tfms-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#Image-apply_tfms-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>apply_tfms</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Apply all <code>tfms</code> to the <a href="/vision.image.html#Image"><code>Image</code></a>, if <code>do_resolve</code> picks value for random args.</p>
 <ul>
 <li><em>tfms</em>: <code>Transform</code> or list of <code>Transform</code></li>
 <li><em>do_resolve</em>: if False, the values of random parameters are kept from the last draw</li>
@@ -1596,7 +1596,7 @@ summary: "Image class, variants and internal data augmentation pipeline"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Now let's check what it gives for a segmentation task. Note that, as instructed by the documentation of <a href="/vision.image.html#apply_tfms"><code>apply_tfms</code></a>, we first apply the transforms to the input, and then apply them to the target while adding <code>do_resolve</code>=False.</p>
+<p>Now let's check what it gives for a segmentation task. Note that, as instructed by the documentation of <a href="/vision.image.html#Image.apply_tfms"><code>apply_tfms</code></a>, we first apply the transforms to the input, and then apply them to the target while adding <code>do_resolve</code>=False.</p>
 
 </div>
 </div>
@@ -1817,9 +1817,9 @@ summary: "Image class, variants and internal data augmentation pipeline"
 </ul>
 <p>This is why all transforms have an attribute (such as <a href="/vision.image.html#TfmAffine"><code>TfmAffine</code></a>, <a href="/vision.image.html#TfmCoord"><code>TfmCoord</code></a>, <a href="/vision.image.html#TfmCrop"><code>TfmCrop</code></a> or <a href="/vision.image.html#TfmPixel"><code>TfmPixel</code></a>) so that the fastai library can regroup them and apply them all together at the right step. In terms of implementation:</p>
 <ul>
-<li><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L525"><code>_affine_grid</code></a> is reponsible for creating the grid of coordinates</li>
-<li><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L535"><code>_affine_mult</code></a> is in charge of doing the affine multiplication on that grid</li>
-<li><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L512"><code>_grid_sample</code></a>is the function that is responsible for the interpolation step</li>
+<li><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L532"><code>_affine_grid</code></a> is reponsible for creating the grid of coordinates</li>
+<li><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L542"><code>_affine_mult</code></a> is in charge of doing the affine multiplication on that grid</li>
+<li><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L519"><code>_grid_sample</code></a>is the function that is responsible for the interpolation step</li>
 </ul>
 
 </div>
@@ -1853,9 +1853,9 @@ summary: "Image class, variants and internal data augmentation pipeline"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="ResizeMethod">`ResizeMethod`</h3><blockquote><p><code>Enum</code> = [CROP, PAD, SQUISH, NO]</p>
+<h3 id="ResizeMethod" class="doc_header">`ResizeMethod`<a class="source_link" data-toggle="collapse" data-target="#ResizeMethod-pytest" style="float:right; padding-right:10px">[test]</a></h3><blockquote><p><code>Enum</code> = [CROP, PAD, SQUISH, NO]</p>
 </blockquote>
-
+<div class="collapse" id="ResizeMethod-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#ResizeMethod-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>ResizeMethod</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div>
 </div>
 
 </div>
@@ -1899,9 +1899,9 @@ summary: "Image class, variants and internal data augmentation pipeline"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="Transform"><code>class</code> <code>Transform</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L439" class="source_link">[source]</a></h3><blockquote><p><code>Transform</code>(<strong><code>func</code></strong>:<code>Callable</code>, <strong><code>order</code></strong>:<code>Optional</code>[<code>int</code>]=<strong><em><code>None</code></em></strong>)</p>
+<h3 id="Transform" class="doc_header"><code>class</code> <code>Transform</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L446" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#Transform-pytest" style="float:right; padding-right:10px">[test]</a></h3><blockquote><p><code>Transform</code>(<strong><code>func</code></strong>:<code>Callable</code>, <strong><code>order</code></strong>:<code>Optional</code>[<code>int</code>]=<strong><em><code>None</code></em></strong>)</p>
 </blockquote>
-<p>Create a <a href="/vision.image.html#Transform"><code>Transform</code></a> for <code>func</code> and assign it a priority <code>order</code>.</p>
+<div class="collapse" id="Transform-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#Transform-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>Transform</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Create a <a href="/vision.image.html#Transform"><code>Transform</code></a> for <code>func</code> and assign it a priority <code>order</code>.</p>
 
 </div>
 
@@ -1920,9 +1920,9 @@ summary: "Image class, variants and internal data augmentation pipeline"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="RandTransform"><code>class</code> <code>RandTransform</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L471" class="source_link">[source]</a></h3><blockquote><p><code>RandTransform</code>(<strong><code>tfm</code></strong>:<a href="/vision.image.html#Transform"><code>Transform</code></a>, <strong><code>kwargs</code></strong>:<code>dict</code>, <strong><code>p</code></strong>:<code>float</code>=<strong><em><code>1.0</code></em></strong>, <strong><code>resolved</code></strong>:<code>dict</code>=<strong><em><code>&lt;factory&gt;</code></em></strong>, <strong><code>do_run</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>, <strong><code>is_random</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>)</p>
+<h3 id="RandTransform" class="doc_header"><code>class</code> <code>RandTransform</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L478" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#RandTransform-pytest" style="float:right; padding-right:10px">[test]</a></h3><blockquote><p><code>RandTransform</code>(<strong><code>tfm</code></strong>:<a href="/vision.image.html#Transform"><code>Transform</code></a>, <strong><code>kwargs</code></strong>:<code>dict</code>, <strong><code>p</code></strong>:<code>float</code>=<strong><em><code>1.0</code></em></strong>, <strong><code>resolved</code></strong>:<code>dict</code>=<strong><em><code>&lt;factory&gt;</code></em></strong>, <strong><code>do_run</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>, <strong><code>is_random</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>)</p>
 </blockquote>
-<p>Wrap <a href="/vision.image.html#Transform"><code>Transform</code></a> to add randomized execution.</p>
+<div class="collapse" id="RandTransform-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#RandTransform-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>RandTransform</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Wrap <a href="/vision.image.html#Transform"><code>Transform</code></a> to add randomized execution.</p>
 
 </div>
 
@@ -1948,9 +1948,9 @@ summary: "Image class, variants and internal data augmentation pipeline"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="RandTransform.resolve"><code>resolve</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L481" class="source_link">[source]</a></h4><blockquote><p><code>resolve</code>()</p>
+<h4 id="RandTransform.resolve" class="doc_header"><code>resolve</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L488" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#RandTransform-resolve-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>resolve</code>()</p>
 </blockquote>
-<p>Bind any random variables in the transform.</p>
+<div class="collapse" id="RandTransform-resolve-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#RandTransform-resolve-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>resolve</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Bind any random variables in the transform.</p>
 
 </div>
 
@@ -1976,9 +1976,9 @@ summary: "Image class, variants and internal data augmentation pipeline"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="TfmAffine"><code>class</code> <code>TfmAffine</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L561" class="source_link">[source]</a></h3><blockquote><p><code>TfmAffine</code>(<strong><code>func</code></strong>:<code>Callable</code>, <strong><code>order</code></strong>:<code>Optional</code>[<code>int</code>]=<strong><em><code>None</code></em></strong>) :: <a href="/vision.image.html#Transform"><code>Transform</code></a></p>
+<h3 id="TfmAffine" class="doc_header"><code>class</code> <code>TfmAffine</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L568" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#TfmAffine-pytest" style="float:right; padding-right:10px">[test]</a></h3><blockquote><p><code>TfmAffine</code>(<strong><code>func</code></strong>:<code>Callable</code>, <strong><code>order</code></strong>:<code>Optional</code>[<code>int</code>]=<strong><em><code>None</code></em></strong>) :: <a href="/vision.image.html#Transform"><code>Transform</code></a></p>
 </blockquote>
-<p>Decorator for affine tfm funcs.</p>
+<div class="collapse" id="TfmAffine-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#TfmAffine-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>TfmAffine</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Decorator for affine tfm funcs.</p>
 
 </div>
 
@@ -2004,9 +2004,9 @@ summary: "Image class, variants and internal data augmentation pipeline"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="TfmCoord"><code>class</code> <code>TfmCoord</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L567" class="source_link">[source]</a></h3><blockquote><p><code>TfmCoord</code>(<strong><code>func</code></strong>:<code>Callable</code>, <strong><code>order</code></strong>:<code>Optional</code>[<code>int</code>]=<strong><em><code>None</code></em></strong>) :: <a href="/vision.image.html#Transform"><code>Transform</code></a></p>
+<h3 id="TfmCoord" class="doc_header"><code>class</code> <code>TfmCoord</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L574" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#TfmCoord-pytest" style="float:right; padding-right:10px">[test]</a></h3><blockquote><p><code>TfmCoord</code>(<strong><code>func</code></strong>:<code>Callable</code>, <strong><code>order</code></strong>:<code>Optional</code>[<code>int</code>]=<strong><em><code>None</code></em></strong>) :: <a href="/vision.image.html#Transform"><code>Transform</code></a></p>
 </blockquote>
-<p>Decorator for coord tfm funcs.</p>
+<div class="collapse" id="TfmCoord-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#TfmCoord-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>TfmCoord</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Decorator for coord tfm funcs.</p>
 
 </div>
 
@@ -2032,9 +2032,9 @@ summary: "Image class, variants and internal data augmentation pipeline"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="TfmLighting"><code>class</code> <code>TfmLighting</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L573" class="source_link">[source]</a></h3><blockquote><p><code>TfmLighting</code>(<strong><code>func</code></strong>:<code>Callable</code>, <strong><code>order</code></strong>:<code>Optional</code>[<code>int</code>]=<strong><em><code>None</code></em></strong>) :: <a href="/vision.image.html#Transform"><code>Transform</code></a></p>
+<h3 id="TfmLighting" class="doc_header"><code>class</code> <code>TfmLighting</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L580" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#TfmLighting-pytest" style="float:right; padding-right:10px">[test]</a></h3><blockquote><p><code>TfmLighting</code>(<strong><code>func</code></strong>:<code>Callable</code>, <strong><code>order</code></strong>:<code>Optional</code>[<code>int</code>]=<strong><em><code>None</code></em></strong>) :: <a href="/vision.image.html#Transform"><code>Transform</code></a></p>
 </blockquote>
-<p>Decorator for lighting tfm funcs.</p>
+<div class="collapse" id="TfmLighting-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#TfmLighting-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>TfmLighting</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Decorator for lighting tfm funcs.</p>
 
 </div>
 
@@ -2060,9 +2060,9 @@ summary: "Image class, variants and internal data augmentation pipeline"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="TfmPixel"><code>class</code> <code>TfmPixel</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L564" class="source_link">[source]</a></h3><blockquote><p><code>TfmPixel</code>(<strong><code>func</code></strong>:<code>Callable</code>, <strong><code>order</code></strong>:<code>Optional</code>[<code>int</code>]=<strong><em><code>None</code></em></strong>) :: <a href="/vision.image.html#Transform"><code>Transform</code></a></p>
+<h3 id="TfmPixel" class="doc_header"><code>class</code> <code>TfmPixel</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L571" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#TfmPixel-pytest" style="float:right; padding-right:10px">[test]</a></h3><blockquote><p><code>TfmPixel</code>(<strong><code>func</code></strong>:<code>Callable</code>, <strong><code>order</code></strong>:<code>Optional</code>[<code>int</code>]=<strong><em><code>None</code></em></strong>) :: <a href="/vision.image.html#Transform"><code>Transform</code></a></p>
 </blockquote>
-<p>Decorator for pixel tfm funcs.</p>
+<div class="collapse" id="TfmPixel-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#TfmPixel-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>TfmPixel</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Decorator for pixel tfm funcs.</p>
 
 </div>
 
@@ -2088,9 +2088,9 @@ summary: "Image class, variants and internal data augmentation pipeline"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="TfmCrop"><code>class</code> <code>TfmCrop</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L570" class="source_link">[source]</a></h3><blockquote><p><code>TfmCrop</code>(<strong><code>func</code></strong>:<code>Callable</code>, <strong><code>order</code></strong>:<code>Optional</code>[<code>int</code>]=<strong><em><code>None</code></em></strong>) :: <a href="/vision.image.html#TfmPixel"><code>TfmPixel</code></a></p>
+<h3 id="TfmCrop" class="doc_header"><code>class</code> <code>TfmCrop</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L577" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#TfmCrop-pytest" style="float:right; padding-right:10px">[test]</a></h3><blockquote><p><code>TfmCrop</code>(<strong><code>func</code></strong>:<code>Callable</code>, <strong><code>order</code></strong>:<code>Optional</code>[<code>int</code>]=<strong><em><code>None</code></em></strong>) :: <a href="/vision.image.html#TfmPixel"><code>TfmPixel</code></a></p>
 </blockquote>
-<p>Decorator for crop tfm funcs.</p>
+<div class="collapse" id="TfmCrop-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#TfmCrop-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>TfmCrop</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Decorator for crop tfm funcs.</p>
 
 </div>
 
@@ -2129,9 +2129,9 @@ summary: "Image class, variants and internal data augmentation pipeline"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Image.affine"><code>affine</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L175" class="source_link">[source]</a></h4><blockquote><p><code>affine</code>(<strong><code>func</code></strong>:<code>AffineFunc</code>, <strong>*<code>args</code></strong>, <strong>**<code>kwargs</code></strong>) → <code>Image</code></p>
+<h4 id="Image.affine" class="doc_header"><code>affine</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L180" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#Image-affine-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>affine</code>(<strong><code>func</code></strong>:<code>AffineFunc</code>, <strong>*<code>args</code></strong>, <strong>**<code>kwargs</code></strong>) → <code>Image</code></p>
 </blockquote>
-<p>Equivalent to <code>image.affine_mat = image.affine_mat @ func()</code>.</p>
+<div class="collapse" id="Image-affine-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#Image-affine-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>affine</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Equivalent to <code>image.affine_mat = image.affine_mat @ func()</code>.</p>
 
 </div>
 
@@ -2150,9 +2150,9 @@ summary: "Image class, variants and internal data augmentation pipeline"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Image.clone"><code>clone</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L75" class="source_link">[source]</a></h4><blockquote><p><code>clone</code>()</p>
+<h4 id="Image.clone" class="doc_header"><code>clone</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L76" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#Image-clone-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>clone</code>()</p>
 </blockquote>
-<p>Mimic the behavior of torch.clone for <a href="/vision.image.html#Image"><code>Image</code></a> objects.</p>
+<div class="collapse" id="Image-clone-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#Image-clone-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>clone</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Mimic the behavior of torch.clone for <a href="/vision.image.html#Image"><code>Image</code></a> objects.</p>
 
 </div>
 
@@ -2171,9 +2171,9 @@ summary: "Image class, variants and internal data augmentation pipeline"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Image.coord"><code>coord</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L170" class="source_link">[source]</a></h4><blockquote><p><code>coord</code>(<strong><code>func</code></strong>:<code>Callable</code>[<a href="/vision.image.html#FlowField"><code>FlowField</code></a>, <code>ArgStar</code>, <code>KWArgs</code>, <code>Tensor</code>], <strong>*<code>args</code></strong>, <strong>**<code>kwargs</code></strong>) → <code>Image</code></p>
+<h4 id="Image.coord" class="doc_header"><code>coord</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L175" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#Image-coord-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>coord</code>(<strong><code>func</code></strong>:<code>Callable</code>[<a href="/vision.image.html#FlowField"><code>FlowField</code></a>, <code>ArgStar</code>, <code>KWArgs</code>, <code>Tensor</code>], <strong>*<code>args</code></strong>, <strong>**<code>kwargs</code></strong>) → <code>Image</code></p>
 </blockquote>
-<p>Equivalent to <code>image.flow = func(image.flow, image.size)</code>.</p>
+<div class="collapse" id="Image-coord-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#Image-coord-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>coord</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Equivalent to <code>image.flow = func(image.flow, image.size)</code>.</p>
 
 </div>
 
@@ -2192,9 +2192,9 @@ summary: "Image class, variants and internal data augmentation pipeline"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Image.lighting"><code>lighting</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L160" class="source_link">[source]</a></h4><blockquote><p><code>lighting</code>(<strong><code>func</code></strong>:<code>LightingFunc</code>, <strong>*<code>args</code></strong>:<code>Any</code>, <strong>**<code>kwargs</code></strong>:<code>Any</code>)</p>
+<h4 id="Image.lighting" class="doc_header"><code>lighting</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L165" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#Image-lighting-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>lighting</code>(<strong><code>func</code></strong>:<code>LightingFunc</code>, <strong>*<code>args</code></strong>:<code>Any</code>, <strong>**<code>kwargs</code></strong>:<code>Any</code>)</p>
 </blockquote>
-<p>Equivalent to <code>image = sigmoid(func(logit(image)))</code>.</p>
+<div class="collapse" id="Image-lighting-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#Image-lighting-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>lighting</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Equivalent to <code>image = sigmoid(func(logit(image)))</code>.</p>
 
 </div>
 
@@ -2213,9 +2213,9 @@ summary: "Image class, variants and internal data augmentation pipeline"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Image.pixel"><code>pixel</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L165" class="source_link">[source]</a></h4><blockquote><p><code>pixel</code>(<strong><code>func</code></strong>:<code>LightingFunc</code>, <strong>*<code>args</code></strong>, <strong>**<code>kwargs</code></strong>) → <code>Image</code></p>
+<h4 id="Image.pixel" class="doc_header"><code>pixel</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L170" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#Image-pixel-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>pixel</code>(<strong><code>func</code></strong>:<code>LightingFunc</code>, <strong>*<code>args</code></strong>, <strong>**<code>kwargs</code></strong>) → <code>Image</code></p>
 </blockquote>
-<p>Equivalent to <code>image.px = func(image.px)</code>.</p>
+<div class="collapse" id="Image-pixel-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#Image-pixel-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>pixel</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Equivalent to <code>image.px = func(image.px)</code>.</p>
 
 </div>
 
@@ -2234,9 +2234,9 @@ summary: "Image class, variants and internal data augmentation pipeline"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Image.refresh"><code>refresh</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L121" class="source_link">[source]</a></h4><blockquote><p><code>refresh</code>()</p>
+<h4 id="Image.refresh" class="doc_header"><code>refresh</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L126" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#Image-refresh-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>refresh</code>()</p>
 </blockquote>
-<p>Apply any logit, flow, or affine transfers that have been sent to the <a href="/vision.image.html#Image"><code>Image</code></a>.</p>
+<div class="collapse" id="Image-refresh-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#Image-refresh-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>refresh</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Apply any logit, flow, or affine transfers that have been sent to the <a href="/vision.image.html#Image"><code>Image</code></a>.</p>
 
 </div>
 
@@ -2255,9 +2255,9 @@ summary: "Image class, variants and internal data augmentation pipeline"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Image.resize"><code>resize</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L181" class="source_link">[source]</a></h4><blockquote><p><code>resize</code>(<strong><code>size</code></strong>:<code>Union</code>[<code>int</code>, <code>TensorImageSize</code>]) → <code>Image</code></p>
+<h4 id="Image.resize" class="doc_header"><code>resize</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L186" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#Image-resize-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>resize</code>(<strong><code>size</code></strong>:<code>Union</code>[<code>int</code>, <code>TensorImageSize</code>]) → <code>Image</code></p>
 </blockquote>
-<p>Resize the image to <code>size</code>, size can be a single int.</p>
+<div class="collapse" id="Image-resize-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#Image-resize-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>resize</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Resize the image to <code>size</code>, size can be a single int.</p>
 
 </div>
 
@@ -2276,9 +2276,9 @@ summary: "Image class, variants and internal data augmentation pipeline"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Image.save"><code>save</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L132" class="source_link">[source]</a></h4><blockquote><p><code>save</code>(<strong><code>fn</code></strong>:<code>PathOrStr</code>)</p>
+<h4 id="Image.save" class="doc_header"><code>save</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L137" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#Image-save-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>save</code>(<strong><code>fn</code></strong>:<code>PathOrStr</code>)</p>
 </blockquote>
-<p>Save the image to <code>fn</code>.</p>
+<div class="collapse" id="Image-save-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#Image-save-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>save</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Save the image to <code>fn</code>.</p>
 
 </div>
 
@@ -2297,9 +2297,9 @@ summary: "Image class, variants and internal data augmentation pipeline"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="FlowField"><code>class</code> <code>FlowField</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L54" class="source_link">[source]</a></h3><blockquote><p><code>FlowField</code>(<strong><code>size</code></strong>:<code>Tuple</code>[<code>int</code>, <code>int</code>], <strong><code>flow</code></strong>:<code>Tensor</code>)</p>
+<h3 id="FlowField" class="doc_header"><code>class</code> <code>FlowField</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L55" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#FlowField-pytest" style="float:right; padding-right:10px">[test]</a></h3><blockquote><p><code>FlowField</code>(<strong><code>size</code></strong>:<code>Tuple</code>[<code>int</code>, <code>int</code>], <strong><code>flow</code></strong>:<code>Tensor</code>)</p>
 </blockquote>
-<p>Wrap together some coords <code>flow</code> with a <code>size</code>.</p>
+<div class="collapse" id="FlowField-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#FlowField-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>FlowField</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Wrap together some coords <code>flow</code> with a <code>size</code>.</p>
 
 </div>
 

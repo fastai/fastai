@@ -11,7 +11,7 @@ summary: "All the modules and callbacks necessary to train a GAN"
     
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="GANs">GANs<a class="anchor-link" href="#GANs">&#182;</a></h1>
+<h2 id="GANs">GANs<a class="anchor-link" href="#GANs">&#182;</a></h2>
 </div>
 </div>
 </div>
@@ -60,9 +60,9 @@ summary: "All the modules and callbacks necessary to train a GAN"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="GANLearner"><code>class</code> <code>GANLearner</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L205" class="source_link">[source]</a></h2><blockquote><p><code>GANLearner</code>(<strong><code>data</code></strong>:<a href="/basic_data.html#DataBunch"><code>DataBunch</code></a>, <strong><code>generator</code></strong>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>, <strong><code>critic</code></strong>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>, <strong><code>gen_loss_func</code></strong>:<code>LossFunction</code>, <strong><code>crit_loss_func</code></strong>:<code>LossFunction</code>, <strong><code>switcher</code></strong>:<a href="/callback.html#Callback"><code>Callback</code></a>=<strong><em><code>None</code></em></strong>, <strong><code>gen_first</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>, <strong><code>switch_eval</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>, <strong><code>show_img</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>, <strong><code>clip</code></strong>:<code>float</code>=<strong><em><code>None</code></em></strong>, <strong>**<code>learn_kwargs</code></strong>) :: <a href="/basic_train.html#Learner"><code>Learner</code></a></p>
+<h2 id="GANLearner" class="doc_header"><code>class</code> <code>GANLearner</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L205" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#GANLearner-pytest" style="float:right; padding-right:10px">[test]</a></h2><blockquote><p><code>GANLearner</code>(<strong><code>data</code></strong>:<a href="/basic_data.html#DataBunch"><code>DataBunch</code></a>, <strong><code>generator</code></strong>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>, <strong><code>critic</code></strong>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>, <strong><code>gen_loss_func</code></strong>:<code>LossFunction</code>, <strong><code>crit_loss_func</code></strong>:<code>LossFunction</code>, <strong><code>switcher</code></strong>:<a href="/callback.html#Callback"><code>Callback</code></a>=<strong><em><code>None</code></em></strong>, <strong><code>gen_first</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>, <strong><code>switch_eval</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>, <strong><code>show_img</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>, <strong><code>clip</code></strong>:<code>float</code>=<strong><em><code>None</code></em></strong>, <strong>**<code>learn_kwargs</code></strong>) :: <a href="/basic_train.html#Learner"><code>Learner</code></a></p>
 </blockquote>
-<p>A <a href="/basic_train.html#Learner"><code>Learner</code></a> suitable for GANs.</p>
+<div class="collapse" id="GANLearner-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#GANLearner-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>GANLearner</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>A <a href="/basic_train.html#Learner"><code>Learner</code></a> suitable for GANs.</p>
 
 </div>
 
@@ -99,9 +99,9 @@ summary: "All the modules and callbacks necessary to train a GAN"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="GANLearner.from_learners"><code>from_learners</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L218" class="source_link">[source]</a></h4><blockquote><p><code>from_learners</code>(<strong><code>learn_gen</code></strong>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <strong><code>learn_crit</code></strong>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <strong><code>switcher</code></strong>:<a href="/callback.html#Callback"><code>Callback</code></a>=<strong><em><code>None</code></em></strong>, <strong><code>weights_gen</code></strong>:<code>Point</code>=<strong><em><code>None</code></em></strong>, <strong>**<code>learn_kwargs</code></strong>)</p>
+<h4 id="GANLearner.from_learners" class="doc_header"><code>from_learners</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L218" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#GANLearner-from_learners-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>from_learners</code>(<strong><code>learn_gen</code></strong>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <strong><code>learn_crit</code></strong>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <strong><code>switcher</code></strong>:<a href="/callback.html#Callback"><code>Callback</code></a>=<strong><em><code>None</code></em></strong>, <strong><code>weights_gen</code></strong>:<code>Point</code>=<strong><em><code>None</code></em></strong>, <strong>**<code>learn_kwargs</code></strong>)</p>
 </blockquote>
-<p>Create a GAN from <code>learn_gen</code> and <code>learn_crit</code>.</p>
+<div class="collapse" id="GANLearner-from_learners-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#GANLearner-from_learners-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>from_learners</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Create a GAN from <code>learn_gen</code> and <code>learn_crit</code>.</p>
 
 </div>
 
@@ -131,9 +131,9 @@ summary: "All the modules and callbacks necessary to train a GAN"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="GANLearner.wgan"><code>wgan</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L225" class="source_link">[source]</a></h4><blockquote><p><code>wgan</code>(<strong><code>data</code></strong>:<a href="/basic_data.html#DataBunch"><code>DataBunch</code></a>, <strong><code>generator</code></strong>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>, <strong><code>critic</code></strong>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>, <strong><code>switcher</code></strong>:<a href="/callback.html#Callback"><code>Callback</code></a>=<strong><em><code>None</code></em></strong>, <strong><code>clip</code></strong>:<code>float</code>=<strong><em><code>0.01</code></em></strong>, <strong>**<code>learn_kwargs</code></strong>)</p>
+<h4 id="GANLearner.wgan" class="doc_header"><code>wgan</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L225" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#GANLearner-wgan-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>wgan</code>(<strong><code>data</code></strong>:<a href="/basic_data.html#DataBunch"><code>DataBunch</code></a>, <strong><code>generator</code></strong>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>, <strong><code>critic</code></strong>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>, <strong><code>switcher</code></strong>:<a href="/callback.html#Callback"><code>Callback</code></a>=<strong><em><code>None</code></em></strong>, <strong><code>clip</code></strong>:<code>float</code>=<strong><em><code>0.01</code></em></strong>, <strong>**<code>learn_kwargs</code></strong>)</p>
 </blockquote>
-<p>Create a WGAN from <code>data</code>, <code>generator</code> and <code>critic</code>.</p>
+<div class="collapse" id="GANLearner-wgan-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#GANLearner-wgan-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>wgan</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Create a WGAN from <code>data</code>, <code>generator</code> and <code>critic</code>.</p>
 
 </div>
 
@@ -173,9 +173,9 @@ summary: "All the modules and callbacks necessary to train a GAN"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="FixedGANSwitcher"><code>class</code> <code>FixedGANSwitcher</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L152" class="source_link">[source]</a></h3><blockquote><p><code>FixedGANSwitcher</code>(<strong><code>learn</code></strong>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <strong><code>n_crit</code></strong>:<code>Union</code>[<code>int</code>, <code>Callable</code>]=<strong><em><code>1</code></em></strong>, <strong><code>n_gen</code></strong>:<code>Union</code>[<code>int</code>, <code>Callable</code>]=<strong><em><code>1</code></em></strong>) :: <a href="/basic_train.html#LearnerCallback"><code>LearnerCallback</code></a></p>
+<h3 id="FixedGANSwitcher" class="doc_header"><code>class</code> <code>FixedGANSwitcher</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L152" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#FixedGANSwitcher-pytest" style="float:right; padding-right:10px">[test]</a></h3><blockquote><p><code>FixedGANSwitcher</code>(<strong><code>learn</code></strong>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <strong><code>n_crit</code></strong>:<code>Union</code>[<code>int</code>, <code>Callable</code>]=<strong><em><code>1</code></em></strong>, <strong><code>n_gen</code></strong>:<code>Union</code>[<code>int</code>, <code>Callable</code>]=<strong><em><code>1</code></em></strong>) :: <a href="/basic_train.html#LearnerCallback"><code>LearnerCallback</code></a></p>
 </blockquote>
-<p>Switcher to do <code>n_crit</code> iterations of the critic then <code>n_gen</code> iterations of the generator.</p>
+<div class="collapse" id="FixedGANSwitcher-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#FixedGANSwitcher-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>FixedGANSwitcher</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Switcher to do <code>n_crit</code> iterations of the critic then <code>n_gen</code> iterations of the generator.</p>
 
 </div>
 
@@ -194,9 +194,9 @@ summary: "All the modules and callbacks necessary to train a GAN"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="FixedGANSwitcher.on_train_begin"><code>on_train_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L158" class="source_link">[source]</a></h4><blockquote><p><code>on_train_begin</code>(<strong>**<code>kwargs</code></strong>)</p>
+<h4 id="FixedGANSwitcher.on_train_begin" class="doc_header"><code>on_train_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L158" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#FixedGANSwitcher-on_train_begin-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>on_train_begin</code>(<strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
-<p>Initiate the iteration counts.</p>
+<div class="collapse" id="FixedGANSwitcher-on_train_begin-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#FixedGANSwitcher-on_train_begin-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>on_train_begin</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Initiate the iteration counts.</p>
 
 </div>
 
@@ -215,9 +215,9 @@ summary: "All the modules and callbacks necessary to train a GAN"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="FixedGANSwitcher.on_batch_end"><code>on_batch_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L162" class="source_link">[source]</a></h4><blockquote><p><code>on_batch_end</code>(<strong><code>iteration</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="FixedGANSwitcher.on_batch_end" class="doc_header"><code>on_batch_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L162" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#FixedGANSwitcher-on_batch_end-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>on_batch_end</code>(<strong><code>iteration</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
-<p>Switch the model if necessary.</p>
+<div class="collapse" id="FixedGANSwitcher-on_batch_end-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#FixedGANSwitcher-on_batch_end-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>on_batch_end</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Switch the model if necessary.</p>
 
 </div>
 
@@ -236,9 +236,9 @@ summary: "All the modules and callbacks necessary to train a GAN"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="AdaptiveGANSwitcher"><code>class</code> <code>AdaptiveGANSwitcher</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L176" class="source_link">[source]</a></h3><blockquote><p><code>AdaptiveGANSwitcher</code>(<strong><code>learn</code></strong>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <strong><code>gen_thresh</code></strong>:<code>float</code>=<strong><em><code>None</code></em></strong>, <strong><code>critic_thresh</code></strong>:<code>float</code>=<strong><em><code>None</code></em></strong>) :: <a href="/basic_train.html#LearnerCallback"><code>LearnerCallback</code></a></p>
+<h3 id="AdaptiveGANSwitcher" class="doc_header"><code>class</code> <code>AdaptiveGANSwitcher</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L176" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#AdaptiveGANSwitcher-pytest" style="float:right; padding-right:10px">[test]</a></h3><blockquote><p><code>AdaptiveGANSwitcher</code>(<strong><code>learn</code></strong>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <strong><code>gen_thresh</code></strong>:<code>float</code>=<strong><em><code>None</code></em></strong>, <strong><code>critic_thresh</code></strong>:<code>float</code>=<strong><em><code>None</code></em></strong>) :: <a href="/basic_train.html#LearnerCallback"><code>LearnerCallback</code></a></p>
 </blockquote>
-<p>Switcher that goes back to generator/critic when the loss goes below <code>gen_thresh</code>/<code>crit_thresh</code>.</p>
+<div class="collapse" id="AdaptiveGANSwitcher-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#AdaptiveGANSwitcher-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>AdaptiveGANSwitcher</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Switcher that goes back to generator/critic when the loss goes below <code>gen_thresh</code>/<code>crit_thresh</code>.</p>
 
 </div>
 
@@ -257,9 +257,9 @@ summary: "All the modules and callbacks necessary to train a GAN"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="AdaptiveGANSwitcher.on_batch_end"><code>on_batch_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L182" class="source_link">[source]</a></h4><blockquote><p><code>on_batch_end</code>(<strong><code>last_loss</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="AdaptiveGANSwitcher.on_batch_end" class="doc_header"><code>on_batch_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L182" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#AdaptiveGANSwitcher-on_batch_end-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>on_batch_end</code>(<strong><code>last_loss</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
-<p>Switch the model if necessary.</p>
+<div class="collapse" id="AdaptiveGANSwitcher-on_batch_end-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#AdaptiveGANSwitcher-on_batch_end-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>on_batch_end</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Switch the model if necessary.</p>
 
 </div>
 
@@ -291,9 +291,9 @@ summary: "All the modules and callbacks necessary to train a GAN"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="GANDiscriminativeLR"><code>class</code> <code>GANDiscriminativeLR</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L278" class="source_link">[source]</a></h3><blockquote><p><code>GANDiscriminativeLR</code>(<strong><code>learn</code></strong>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <strong><code>mult_lr</code></strong>:<code>float</code>=<strong><em><code>5.0</code></em></strong>) :: <a href="/basic_train.html#LearnerCallback"><code>LearnerCallback</code></a></p>
+<h3 id="GANDiscriminativeLR" class="doc_header"><code>class</code> <code>GANDiscriminativeLR</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L278" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#GANDiscriminativeLR-pytest" style="float:right; padding-right:10px">[test]</a></h3><blockquote><p><code>GANDiscriminativeLR</code>(<strong><code>learn</code></strong>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <strong><code>mult_lr</code></strong>:<code>float</code>=<strong><em><code>5.0</code></em></strong>) :: <a href="/basic_train.html#LearnerCallback"><code>LearnerCallback</code></a></p>
 </blockquote>
-<p><a href="/callback.html#Callback"><code>Callback</code></a> that handles multiplying the learning rate by <code>mult_lr</code> for the critic.</p>
+<div class="collapse" id="GANDiscriminativeLR-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#GANDiscriminativeLR-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>GANDiscriminativeLR</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p><a href="/callback.html#Callback"><code>Callback</code></a> that handles multiplying the learning rate by <code>mult_lr</code> for the critic.</p>
 
 </div>
 
@@ -312,9 +312,9 @@ summary: "All the modules and callbacks necessary to train a GAN"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="GANDiscriminativeLR.on_batch_begin"><code>on_batch_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L284" class="source_link">[source]</a></h4><blockquote><p><code>on_batch_begin</code>(<strong><code>train</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="GANDiscriminativeLR.on_batch_begin" class="doc_header"><code>on_batch_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L284" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#GANDiscriminativeLR-on_batch_begin-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>on_batch_begin</code>(<strong><code>train</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
-<p>Multiply the current lr if necessary.</p>
+<div class="collapse" id="GANDiscriminativeLR-on_batch_begin-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#GANDiscriminativeLR-on_batch_begin-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>on_batch_begin</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Multiply the current lr if necessary.</p>
 
 </div>
 
@@ -333,9 +333,9 @@ summary: "All the modules and callbacks necessary to train a GAN"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="GANDiscriminativeLR.on_step_end"><code>on_step_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L288" class="source_link">[source]</a></h4><blockquote><p><code>on_step_end</code>(<strong>**<code>kwargs</code></strong>)</p>
+<h4 id="GANDiscriminativeLR.on_step_end" class="doc_header"><code>on_step_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L288" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#GANDiscriminativeLR-on_step_end-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>on_step_end</code>(<strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
-<p>Put the LR back to its value if necessary.</p>
+<div class="collapse" id="GANDiscriminativeLR-on_step_end-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#GANDiscriminativeLR-on_step_end-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>on_step_end</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Put the LR back to its value if necessary.</p>
 
 </div>
 
@@ -360,9 +360,9 @@ summary: "All the modules and callbacks necessary to train a GAN"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="basic_critic"><code>basic_critic</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L17" class="source_link">[source]</a></h4><blockquote><p><code>basic_critic</code>(<strong><code>in_size</code></strong>:<code>int</code>, <strong><code>n_channels</code></strong>:<code>int</code>, <strong><code>n_features</code></strong>:<code>int</code>=<strong><em><code>64</code></em></strong>, <strong><code>n_extra_layers</code></strong>:<code>int</code>=<strong><em><code>0</code></em></strong>, <strong>**<code>conv_kwargs</code></strong>)</p>
+<h4 id="basic_critic" class="doc_header"><code>basic_critic</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L17" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#basic_critic-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>basic_critic</code>(<strong><code>in_size</code></strong>:<code>int</code>, <strong><code>n_channels</code></strong>:<code>int</code>, <strong><code>n_features</code></strong>:<code>int</code>=<strong><em><code>64</code></em></strong>, <strong><code>n_extra_layers</code></strong>:<code>int</code>=<strong><em><code>0</code></em></strong>, <strong>**<code>conv_kwargs</code></strong>)</p>
 </blockquote>
-<p>A basic critic for images <code>n_channels</code> x <code>in_size</code> x <code>in_size</code>.</p>
+<div class="collapse" id="basic_critic-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#basic_critic-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>basic_critic</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>A basic critic for images <code>n_channels</code> x <code>in_size</code> x <code>in_size</code>.</p>
 
 </div>
 
@@ -388,9 +388,9 @@ summary: "All the modules and callbacks necessary to train a GAN"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="basic_generator"><code>basic_generator</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L28" class="source_link">[source]</a></h4><blockquote><p><code>basic_generator</code>(<strong><code>in_size</code></strong>:<code>int</code>, <strong><code>n_channels</code></strong>:<code>int</code>, <strong><code>noise_sz</code></strong>:<code>int</code>=<strong><em><code>100</code></em></strong>, <strong><code>n_features</code></strong>:<code>int</code>=<strong><em><code>64</code></em></strong>, <strong><code>n_extra_layers</code></strong>=<strong><em><code>0</code></em></strong>, <strong>**<code>conv_kwargs</code></strong>)</p>
+<h4 id="basic_generator" class="doc_header"><code>basic_generator</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L28" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#basic_generator-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>basic_generator</code>(<strong><code>in_size</code></strong>:<code>int</code>, <strong><code>n_channels</code></strong>:<code>int</code>, <strong><code>noise_sz</code></strong>:<code>int</code>=<strong><em><code>100</code></em></strong>, <strong><code>n_features</code></strong>:<code>int</code>=<strong><em><code>64</code></em></strong>, <strong><code>n_extra_layers</code></strong>=<strong><em><code>0</code></em></strong>, <strong>**<code>conv_kwargs</code></strong>)</p>
 </blockquote>
-<p>A basic generator from <code>noise_sz</code> to images <code>n_channels</code> x <code>in_size</code> x <code>in_size</code>.</p>
+<div class="collapse" id="basic_generator-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#basic_generator-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>basic_generator</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>A basic generator from <code>noise_sz</code> to images <code>n_channels</code> x <code>in_size</code> x <code>in_size</code>.</p>
 
 </div>
 
@@ -416,9 +416,9 @@ summary: "All the modules and callbacks necessary to train a GAN"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="gan_critic"><code>gan_critic</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L261" class="source_link">[source]</a></h4><blockquote><p><code>gan_critic</code>(<strong><code>n_channels</code></strong>:<code>int</code>=<strong><em><code>3</code></em></strong>, <strong><code>nf</code></strong>:<code>int</code>=<strong><em><code>128</code></em></strong>, <strong><code>n_blocks</code></strong>:<code>int</code>=<strong><em><code>3</code></em></strong>, <strong><code>p</code></strong>:<code>int</code>=<strong><em><code>0.15</code></em></strong>)</p>
+<h4 id="gan_critic" class="doc_header"><code>gan_critic</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L261" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#gan_critic-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>gan_critic</code>(<strong><code>n_channels</code></strong>:<code>int</code>=<strong><em><code>3</code></em></strong>, <strong><code>nf</code></strong>:<code>int</code>=<strong><em><code>128</code></em></strong>, <strong><code>n_blocks</code></strong>:<code>int</code>=<strong><em><code>3</code></em></strong>, <strong><code>p</code></strong>:<code>int</code>=<strong><em><code>0.15</code></em></strong>)</p>
 </blockquote>
-<p>Critic to train a <code>GAN</code>.</p>
+<div class="collapse" id="gan_critic-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#gan_critic-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>gan_critic</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Critic to train a <code>GAN</code>.</p>
 
 </div>
 
@@ -437,9 +437,9 @@ summary: "All the modules and callbacks necessary to train a GAN"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="GANTrainer"><code>class</code> <code>GANTrainer</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L72" class="source_link">[source]</a></h2><blockquote><p><code>GANTrainer</code>(<strong><code>learn</code></strong>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <strong><code>switch_eval</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>, <strong><code>clip</code></strong>:<code>float</code>=<strong><em><code>None</code></em></strong>, <strong><code>beta</code></strong>:<code>float</code>=<strong><em><code>0.98</code></em></strong>, <strong><code>gen_first</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>, <strong><code>show_img</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>) :: <a href="/basic_train.html#LearnerCallback"><code>LearnerCallback</code></a></p>
+<h2 id="GANTrainer" class="doc_header"><code>class</code> <code>GANTrainer</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L72" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#GANTrainer-pytest" style="float:right; padding-right:10px">[test]</a></h2><blockquote><p><code>GANTrainer</code>(<strong><code>learn</code></strong>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <strong><code>switch_eval</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>, <strong><code>clip</code></strong>:<code>float</code>=<strong><em><code>None</code></em></strong>, <strong><code>beta</code></strong>:<code>float</code>=<strong><em><code>0.98</code></em></strong>, <strong><code>gen_first</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>, <strong><code>show_img</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>) :: <a href="/basic_train.html#LearnerCallback"><code>LearnerCallback</code></a></p>
 </blockquote>
-<p>Handles GAN Training.</p>
+<div class="collapse" id="GANTrainer-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#GANTrainer-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>GANTrainer</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Handles GAN Training.</p>
 
 </div>
 
@@ -466,9 +466,9 @@ summary: "All the modules and callbacks necessary to train a GAN"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="GANTrainer.switch"><code>switch</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L144" class="source_link">[source]</a></h4><blockquote><p><code>switch</code>(<strong><code>gen_mode</code></strong>:<code>bool</code>=<strong><em><code>None</code></em></strong>)</p>
+<h4 id="GANTrainer.switch" class="doc_header"><code>switch</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L144" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#GANTrainer-switch-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>switch</code>(<strong><code>gen_mode</code></strong>:<code>bool</code>=<strong><em><code>None</code></em></strong>)</p>
 </blockquote>
-<p>Switch the model, if <code>gen_mode</code> is provided, in the desired mode.</p>
+<div class="collapse" id="GANTrainer-switch-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#GANTrainer-switch-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>switch</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Switch the model, if <code>gen_mode</code> is provided, in the desired mode.</p>
 
 </div>
 
@@ -494,9 +494,9 @@ summary: "All the modules and callbacks necessary to train a GAN"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="GANTrainer.on_train_begin"><code>on_train_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L90" class="source_link">[source]</a></h4><blockquote><p><code>on_train_begin</code>(<strong>**<code>kwargs</code></strong>)</p>
+<h4 id="GANTrainer.on_train_begin" class="doc_header"><code>on_train_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L90" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#GANTrainer-on_train_begin-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>on_train_begin</code>(<strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
-<p>Create the optimizers for the generator and critic if necessary, initialize smootheners.</p>
+<div class="collapse" id="GANTrainer-on_train_begin-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#GANTrainer-on_train_begin-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>on_train_begin</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Create the optimizers for the generator and critic if necessary, initialize smootheners.</p>
 
 </div>
 
@@ -515,9 +515,9 @@ summary: "All the modules and callbacks necessary to train a GAN"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="GANTrainer.on_epoch_begin"><code>on_epoch_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L127" class="source_link">[source]</a></h4><blockquote><p><code>on_epoch_begin</code>(<strong><code>epoch</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="GANTrainer.on_epoch_begin" class="doc_header"><code>on_epoch_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L127" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#GANTrainer-on_epoch_begin-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>on_epoch_begin</code>(<strong><code>epoch</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
-<p>Put the critic or the generator back to eval if necessary.</p>
+<div class="collapse" id="GANTrainer-on_epoch_begin-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#GANTrainer-on_epoch_begin-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>on_epoch_begin</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Put the critic or the generator back to eval if necessary.</p>
 
 </div>
 
@@ -536,9 +536,9 @@ summary: "All the modules and callbacks necessary to train a GAN"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="GANTrainer.on_batch_begin"><code>on_batch_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L110" class="source_link">[source]</a></h4><blockquote><p><code>on_batch_begin</code>(<strong><code>last_input</code></strong>, <strong><code>last_target</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="GANTrainer.on_batch_begin" class="doc_header"><code>on_batch_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L110" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#GANTrainer-on_batch_begin-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>on_batch_begin</code>(<strong><code>last_input</code></strong>, <strong><code>last_target</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
-<p>Clamp the weights with <code>self.clip</code> if it's not None, return the correct input.</p>
+<div class="collapse" id="GANTrainer-on_batch_begin-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#GANTrainer-on_batch_begin-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>on_batch_begin</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Clamp the weights with <code>self.clip</code> if it's not None, return the correct input.</p>
 
 </div>
 
@@ -557,9 +557,9 @@ summary: "All the modules and callbacks necessary to train a GAN"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="GANTrainer.on_backward_begin"><code>on_backward_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L116" class="source_link">[source]</a></h4><blockquote><p><code>on_backward_begin</code>(<strong><code>last_loss</code></strong>, <strong><code>last_output</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="GANTrainer.on_backward_begin" class="doc_header"><code>on_backward_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L116" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#GANTrainer-on_backward_begin-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>on_backward_begin</code>(<strong><code>last_loss</code></strong>, <strong><code>last_output</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
-<p>Record <code>last_loss</code> in the proper list.</p>
+<div class="collapse" id="GANTrainer-on_backward_begin-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#GANTrainer-on_backward_begin-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>on_backward_begin</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Record <code>last_loss</code> in the proper list.</p>
 
 </div>
 
@@ -578,9 +578,9 @@ summary: "All the modules and callbacks necessary to train a GAN"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="GANTrainer.on_epoch_end"><code>on_epoch_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L131" class="source_link">[source]</a></h4><blockquote><p><code>on_epoch_end</code>(<strong><code>pbar</code></strong>, <strong><code>epoch</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="GANTrainer.on_epoch_end" class="doc_header"><code>on_epoch_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L131" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#GANTrainer-on_epoch_end-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>on_epoch_end</code>(<strong><code>pbar</code></strong>, <strong><code>epoch</code></strong>, <strong><code>last_metrics</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
-<p>Put the various losses in the recorder and show a sample image.</p>
+<div class="collapse" id="GANTrainer-on_epoch_end-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#GANTrainer-on_epoch_end-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>on_epoch_end</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Put the various losses in the recorder and show a sample image.</p>
 
 </div>
 
@@ -599,9 +599,9 @@ summary: "All the modules and callbacks necessary to train a GAN"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="GANTrainer.on_train_end"><code>on_train_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L106" class="source_link">[source]</a></h4><blockquote><p><code>on_train_end</code>(<strong>**<code>kwargs</code></strong>)</p>
+<h4 id="GANTrainer.on_train_end" class="doc_header"><code>on_train_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L106" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#GANTrainer-on_train_end-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>on_train_end</code>(<strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
-<p>Switch in generator mode for showing results.</p>
+<div class="collapse" id="GANTrainer-on_train_end-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#GANTrainer-on_train_end-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>on_train_end</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Switch in generator mode for showing results.</p>
 
 </div>
 
@@ -626,9 +626,9 @@ summary: "All the modules and callbacks necessary to train a GAN"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="GANModule"><code>class</code> <code>GANModule</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L41" class="source_link">[source]</a></h3><blockquote><p><code>GANModule</code>(<strong><code>generator</code></strong>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>=<strong><em><code>None</code></em></strong>, <strong><code>critic</code></strong>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>=<strong><em><code>None</code></em></strong>, <strong><code>gen_mode</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
+<h3 id="GANModule" class="doc_header"><code>class</code> <code>GANModule</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L41" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#GANModule-pytest" style="float:right; padding-right:10px">[test]</a></h3><blockquote><p><code>GANModule</code>(<strong><code>generator</code></strong>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>=<strong><em><code>None</code></em></strong>, <strong><code>critic</code></strong>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>=<strong><em><code>None</code></em></strong>, <strong><code>gen_mode</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
 </blockquote>
-<p>Wrapper around a <code>generator</code> and a <code>critic</code> to create a GAN.</p>
+<div class="collapse" id="GANModule-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#GANModule-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>GANModule</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Wrapper around a <code>generator</code> and a <code>critic</code> to create a GAN.</p>
 
 </div>
 
@@ -654,9 +654,9 @@ summary: "All the modules and callbacks necessary to train a GAN"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="GANModule.switch"><code>switch</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L51" class="source_link">[source]</a></h4><blockquote><p><code>switch</code>(<strong><code>gen_mode</code></strong>:<code>bool</code>=<strong><em><code>None</code></em></strong>)</p>
+<h4 id="GANModule.switch" class="doc_header"><code>switch</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L51" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#GANModule-switch-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>switch</code>(<strong><code>gen_mode</code></strong>:<code>bool</code>=<strong><em><code>None</code></em></strong>)</p>
 </blockquote>
-<p>Put the model in generator mode if <code>gen_mode</code>, in critic mode otherwise.</p>
+<div class="collapse" id="GANModule-switch-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#GANModule-switch-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>switch</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Put the model in generator mode if <code>gen_mode</code>, in critic mode otherwise.</p>
 
 </div>
 
@@ -675,9 +675,9 @@ summary: "All the modules and callbacks necessary to train a GAN"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="GANLoss"><code>class</code> <code>GANLoss</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L55" class="source_link">[source]</a></h3><blockquote><p><code>GANLoss</code>(<strong><code>loss_funcG</code></strong>:<code>Callable</code>, <strong><code>loss_funcC</code></strong>:<code>Callable</code>, <strong><code>gan_model</code></strong>:<a href="/vision.gan.html#GANModule"><code>GANModule</code></a>) :: <a href="/vision.gan.html#GANModule"><code>GANModule</code></a></p>
+<h3 id="GANLoss" class="doc_header"><code>class</code> <code>GANLoss</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L55" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#GANLoss-pytest" style="float:right; padding-right:10px">[test]</a></h3><blockquote><p><code>GANLoss</code>(<strong><code>loss_funcG</code></strong>:<code>Callable</code>, <strong><code>loss_funcC</code></strong>:<code>Callable</code>, <strong><code>gan_model</code></strong>:<a href="/vision.gan.html#GANModule"><code>GANModule</code></a>) :: <a href="/vision.gan.html#GANModule"><code>GANModule</code></a></p>
 </blockquote>
-<p>Wrapper around <code>loss_funcC</code> (for the critic) and <code>loss_funcG</code> (for the generator).</p>
+<div class="collapse" id="GANLoss-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#GANLoss-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>GANLoss</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Wrapper around <code>loss_funcC</code> (for the critic) and <code>loss_funcG</code> (for the generator).</p>
 
 </div>
 
@@ -696,9 +696,9 @@ summary: "All the modules and callbacks necessary to train a GAN"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="AdaptiveLoss"><code>class</code> <code>AdaptiveLoss</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L292" class="source_link">[source]</a></h3><blockquote><p><code>AdaptiveLoss</code>(<strong><code>crit</code></strong>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
+<h3 id="AdaptiveLoss" class="doc_header"><code>class</code> <code>AdaptiveLoss</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L292" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#AdaptiveLoss-pytest" style="float:right; padding-right:10px">[test]</a></h3><blockquote><p><code>AdaptiveLoss</code>(<strong><code>crit</code></strong>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
 </blockquote>
-<p>Expand the <code>target</code> to match the <code>output</code> size before applying <code>crit</code>.</p>
+<div class="collapse" id="AdaptiveLoss-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#AdaptiveLoss-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>AdaptiveLoss</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Expand the <code>target</code> to match the <code>output</code> size before applying <code>crit</code>.</p>
 
 </div>
 
@@ -717,9 +717,9 @@ summary: "All the modules and callbacks necessary to train a GAN"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="accuracy_thresh_expand"><code>accuracy_thresh_expand</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L301" class="source_link">[source]</a></h4><blockquote><p><code>accuracy_thresh_expand</code>(<strong><code>y_pred</code></strong>:<code>Tensor</code>, <strong><code>y_true</code></strong>:<code>Tensor</code>, <strong><code>thresh</code></strong>:<code>float</code>=<strong><em><code>0.5</code></em></strong>, <strong><code>sigmoid</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>) → <code>Rank0Tensor</code></p>
+<h4 id="accuracy_thresh_expand" class="doc_header"><code>accuracy_thresh_expand</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L301" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#accuracy_thresh_expand-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>accuracy_thresh_expand</code>(<strong><code>y_pred</code></strong>:<code>Tensor</code>, <strong><code>y_true</code></strong>:<code>Tensor</code>, <strong><code>thresh</code></strong>:<code>float</code>=<strong><em><code>0.5</code></em></strong>, <strong><code>sigmoid</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>) → <code>Rank0Tensor</code></p>
 </blockquote>
-<p>Compute accuracy after expanding <code>y_true</code> to the size of <code>y_pred</code>.</p>
+<div class="collapse" id="accuracy_thresh_expand-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#accuracy_thresh_expand-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>accuracy_thresh_expand</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Compute accuracy after expanding <code>y_true</code> to the size of <code>y_pred</code>.</p>
 
 </div>
 
@@ -744,9 +744,9 @@ summary: "All the modules and callbacks necessary to train a GAN"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="NoisyItem"><code>class</code> <code>NoisyItem</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L230" class="source_link">[source]</a></h3><blockquote><p><code>NoisyItem</code>(<strong><code>noise_sz</code></strong>) :: <a href="/core.html#ItemBase"><code>ItemBase</code></a></p>
+<h3 id="NoisyItem" class="doc_header"><code>class</code> <code>NoisyItem</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L230" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#NoisyItem-pytest" style="float:right; padding-right:10px">[test]</a></h3><blockquote><p><code>NoisyItem</code>(<strong><code>noise_sz</code></strong>) :: <a href="/core.html#ItemBase"><code>ItemBase</code></a></p>
 </blockquote>
-<p>An random <a href="/core.html#ItemBase"><code>ItemBase</code></a> of size <code>noise_sz</code>.</p>
+<div class="collapse" id="NoisyItem-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#NoisyItem-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>NoisyItem</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>An random <a href="/core.html#ItemBase"><code>ItemBase</code></a> of size <code>noise_sz</code>.</p>
 
 </div>
 
@@ -765,9 +765,9 @@ summary: "All the modules and callbacks necessary to train a GAN"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="GANItemList"><code>class</code> <code>GANItemList</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L236" class="source_link">[source]</a></h3><blockquote><p><code>GANItemList</code>(<strong><code>items</code></strong>, <strong><code>noise_sz</code></strong>:<code>int</code>=<strong><em><code>100</code></em></strong>, <strong>**<code>kwargs</code></strong>) :: <a href="/vision.data.html#ImageItemList"><code>ImageItemList</code></a></p>
+<h3 id="GANItemList" class="doc_header"><code>class</code> <code>GANItemList</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L236" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#GANItemList-pytest" style="float:right; padding-right:10px">[test]</a></h3><blockquote><p><code>GANItemList</code>(<strong><code>items</code></strong>, <strong><code>noise_sz</code></strong>:<code>int</code>=<strong><em><code>100</code></em></strong>, <strong>**<code>kwargs</code></strong>) :: <a href="/vision.data.html#ImageList"><code>ImageList</code></a></p>
 </blockquote>
-<p><code>ItemList</code> suitable for GANs.</p>
+<div class="collapse" id="GANItemList-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#GANItemList-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>GANItemList</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p><code>ItemList</code> suitable for GANs.</p>
 
 </div>
 
@@ -779,7 +779,7 @@ summary: "All the modules and callbacks necessary to train a GAN"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Inputs will be <a href="/vision.gan.html#NoisyItem"><code>NoisyItem</code></a> of <code>noise_sz</code> while the default class for target is <a href="/vision.data.html#ImageItemList"><code>ImageItemList</code></a>.</p>
+<p>Inputs will be <a href="/vision.gan.html#NoisyItem"><code>NoisyItem</code></a> of <code>noise_sz</code> while the default class for target is <a href="/vision.data.html#ImageList"><code>ImageList</code></a>.</p>
 
 </div>
 </div>
@@ -793,9 +793,9 @@ summary: "All the modules and callbacks necessary to train a GAN"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="GANItemList.show_xys"><code>show_xys</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L248" class="source_link">[source]</a></h4><blockquote><p><code>show_xys</code>(<strong><code>xs</code></strong>, <strong><code>ys</code></strong>, <strong><code>imgsize</code></strong>:<code>int</code>=<strong><em><code>4</code></em></strong>, <strong><code>figsize</code></strong>:<code>Optional</code>[<code>Tuple</code>[<code>int</code>, <code>int</code>]]=<strong><em><code>None</code></em></strong>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="GANItemList.show_xys" class="doc_header"><code>show_xys</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L248" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#GANItemList-show_xys-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>show_xys</code>(<strong><code>xs</code></strong>, <strong><code>ys</code></strong>, <strong><code>imgsize</code></strong>:<code>int</code>=<strong><em><code>4</code></em></strong>, <strong><code>figsize</code></strong>:<code>Optional</code>[<code>Tuple</code>[<code>int</code>, <code>int</code>]]=<strong><em><code>None</code></em></strong>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
-<p>Shows <code>ys</code> (target images) on a figure of <code>figsize</code>.</p>
+<div class="collapse" id="GANItemList-show_xys-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#GANItemList-show_xys-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>show_xys</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Shows <code>ys</code> (target images) on a figure of <code>figsize</code>.</p>
 
 </div>
 
@@ -814,9 +814,9 @@ summary: "All the modules and callbacks necessary to train a GAN"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="GANItemList.show_xyzs"><code>show_xyzs</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L252" class="source_link">[source]</a></h4><blockquote><p><code>show_xyzs</code>(<strong><code>xs</code></strong>, <strong><code>ys</code></strong>, <strong><code>zs</code></strong>, <strong><code>imgsize</code></strong>:<code>int</code>=<strong><em><code>4</code></em></strong>, <strong><code>figsize</code></strong>:<code>Optional</code>[<code>Tuple</code>[<code>int</code>, <code>int</code>]]=<strong><em><code>None</code></em></strong>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="GANItemList.show_xyzs" class="doc_header"><code>show_xyzs</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L252" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#GANItemList-show_xyzs-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>show_xyzs</code>(<strong><code>xs</code></strong>, <strong><code>ys</code></strong>, <strong><code>zs</code></strong>, <strong><code>imgsize</code></strong>:<code>int</code>=<strong><em><code>4</code></em></strong>, <strong><code>figsize</code></strong>:<code>Optional</code>[<code>Tuple</code>[<code>int</code>, <code>int</code>]]=<strong><em><code>None</code></em></strong>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
-<p>Shows <code>zs</code> (generated images) on a figure of <code>figsize</code>.</p>
+<div class="collapse" id="GANItemList-show_xyzs-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#GANItemList-show_xyzs-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>show_xyzs</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Shows <code>zs</code> (generated images) on a figure of <code>figsize</code>.</p>
 
 </div>
 
