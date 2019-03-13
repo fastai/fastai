@@ -561,7 +561,7 @@ def path():
 @pytest.fixture(scope="module")
 def learn(path):
     data = ImageDataBunch.from_folder(path, ds_tfms=([], []), bs=2)
-    learn = create_cnn(data, models.resnet18, metrics=accuracy)
+    learn = cnn_learner(data, models.resnet18, metrics=accuracy)
     return learn
 
 def test_val_loss(learn):

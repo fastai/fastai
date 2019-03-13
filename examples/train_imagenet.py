@@ -42,7 +42,7 @@ def main( gpu:Param("GPU to run on", str)=None ):
     ]
     learn.split(lambda m: (children(m)[-2],))
     if gpu is None: learn.model = nn.DataParallel(learn.model)
-    else:           learn.distributed(gpu)
+    else:           learn.to_distributed(gpu)
     learn.to_fp16(dynamic=True)
 
     # Using bs 256 on single GPU as baseline, scale the LR linearly
