@@ -166,7 +166,7 @@ learn.freeze()
 learn.export(destroy=True) # or learn.export() + learn.destroy()
 
 # beginning of inference
-learn = load_learner(path, test=ImageItemList.from_folder(path/'test'))
+learn = load_learner(path, test=ImageList.from_folder(path/'test'))
 preds = learn.get_preds(ds_type=DatasetType.Test)
 ```
 
