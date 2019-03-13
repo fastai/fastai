@@ -753,6 +753,7 @@ and may have their own command line option to be used instead, which are defined
 ```
 custom options:
   --runslow             run slow tests
+  --runcpp              run cuda cpp extension tests
   --skipint             skip integration tests
 ```
 

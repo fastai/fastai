@@ -17,6 +17,7 @@ from fastai.gen_doc.doctest import TestRegistry
 
 def pytest_addoption(parser):
     parser.addoption("--runslow", action="store_true", default=False, help="run slow tests")
+    parser.addoption("--runcpp", action="store_true",  default=False, help="run tests cpp extension tests")
     parser.addoption("--skipint", action="store_true", default=False, help="skip integration tests")
     #parser.addoption("--testreg", action="store_true", default=False, help="test api registry")
 
@@ -25,13 +26,17 @@ def mark_items_with_keyword(items, marker, keyword):
         if keyword in item.keywords: item.add_marker(marker)
 
 def pytest_collection_modifyitems(config, items):
-    if config.getoption("--skipint"):
-        skip_int = pytest.mark.skip(reason="--skipint used to skip integration test")
-        mark_items_with_keyword(items, skip_int, "integration")
-
     if not config.getoption("--runslow"):
         skip_slow = pytest.mark.skip(reason="need --runslow option to run")
         mark_items_with_keyword(items, skip_slow, "slow")
+
+    if not config.getoption("--runcpp"):
+        skip_cpp = pytest.mark.skip(reason="need --runcpp option to run")
+        mark_items_with_keyword(items, skip_cpp, "cpp")
+
+    if config.getoption("--skipint"):
+        skip_int = pytest.mark.skip(reason="--skipint used to skip integration test")
+        mark_items_with_keyword(items, skip_int, "integration")
 
     if not use_gpu:
         skip_cuda = pytest.mark.skip(reason="CUDA is not available")

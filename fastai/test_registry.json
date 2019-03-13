@@ -789,12 +789,12 @@
     "fastai.text.models.qrnn.ForgetMultGPU": [
         {
             "file": "tests/test_text_qrnn.py",
-            "line": 6,
+            "line": 7,
             "test": "test_forget_mult_forward_gpu"
         },
         {
             "file": "tests/test_text_qrnn.py",
-            "line": 25,
+            "line": 27,
             "test": "test_compare_forget_mult_forward_implementations"
         }
     ],
