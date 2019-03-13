@@ -42,6 +42,7 @@ ENV_VAR = 'GITHUB_TOKEN'
 
 
 def main():
+    check_token()
     args = parse_args()
     was_already_forked = fork_if_needed(args)
     need_clone = clone_is_needed(args.url)
@@ -60,7 +61,7 @@ def parse_args():
     parser = SysExitArgumentParser(usage=__doc__.format(me=ME))
     parser.add_argument(
         'auth',
-        metavar='AUTH', choices={'ssh', 'https'},
+        metavar='AUTH', choices={'https'},  # no ssh support for now
         help='ssh or https (use ssh if your github account is setup to use ssh)'
     )
     parser.add_argument(
@@ -85,13 +86,14 @@ def parse_args():
     )
 
     args = parser.parse_args()
+    args.token = os.environ[ENV_VAR]
+    args.prefix = f'https://{args.token}@github.com'
 
-    if args.auth == 'ssh':
-        args.prefix = 'git@github.com:'
-    else:
-        check_token()
-        args.token = os.environ[ENV_VAR]
-        args.prefix = f'https://{args.token}@github.com/'
+    # support token access only
+    # if args.auth == 'ssh':
+    #     args.prefix = f'git@github.com:'
+    # else:
+    #     args.prefix = f'https://{args.token}@github.com/'
 
     args.path = f'{args.repo_name}-{args.new_branch_name}'
     args.url = f'{args.prefix}{args.user_name}/{args.repo_name}.git'
@@ -240,8 +242,6 @@ def print_instructions(args, need_clone):
         1. Switch to the branch dir, unless you're already there:
 
         {switch_command}
-
-        To make an and make an editable install with the developer prerequisites run: pip install -e \".[dev]\"
 
         2. Validate you're on the right repo/branch by pasting the following into your bash:
 
