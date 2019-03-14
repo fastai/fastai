@@ -46,13 +46,13 @@ class RNNLearner(Learner):
     "Basic class for a `Learner` in NLP."
     def __init__(self, data:DataBunch, model:nn.Module, split_func:OptSplitFunc=None, clip:float=None,
                  alpha:float=2., beta:float=1., metrics=None, **learn_kwargs):
-        super().__init__(data, model, **learn_kwargs)
+        is_class = (hasattr(data.train_ds, 'y') and (isinstance(data.train_ds.y, CategoryList) or 
+                                                     isinstance(data.train_ds.y, LMLabelList)))
+        metrics = ifnone(metrics, ([accuracy] if is_class else []))
+        super().__init__(data, model, metrics=metrics, **learn_kwargs)
         self.callbacks.append(RNNTrainer(self, alpha=alpha, beta=beta))
         if clip: self.callback_fns.append(partial(GradientClipping, clip=clip))
         if split_func: self.split(split_func)
-        is_class = (hasattr(self.data.train_ds, 'y') and (isinstance(self.data.train_ds.y, CategoryList) or 
-                                                          isinstance(self.data.train_ds.y, LMLabelList)))
-        self.metrics = ifnone(metrics, ([accuracy] if is_class else []))
 
     def save_encoder(self, name:str):
         "Save the encoder to `name` inside the model directory."
@@ -80,8 +80,10 @@ class RNNLearner(Learner):
                   ordered:bool=False) -> List[Tensor]:
         "Return predictions and targets on the valid, train, or test set, depending on `ds_type`."
         self.model.reset()
+        if ordered: np.random.seed(42)
         preds = super().get_preds(ds_type=ds_type, with_loss=with_loss, n_batch=n_batch, pbar=pbar)
         if ordered and hasattr(self.dl(ds_type), 'sampler'):
+            np.random.seed(42)
             sampler = [i for i in self.dl(ds_type).sampler]
             reverse_sampler = np.argsort(sampler)
             preds = [p[reverse_sampler] for p in preds] 

@@ -1,7 +1,7 @@
 import pytest
 from fastai.gen_doc.nbtest import *
 from fastai.gen_doc import nbtest
-from fastai.gen_doc.doctest import this_tests
+from fastai.gen_doc.doctest import this_tests, merge_registries
 import inspect
 
 def test_submodule_name():
@@ -35,21 +35,6 @@ def test_wrapped_functions():
     # try: build_tests_markdown(tfm)
     # except: raise AssertionError("show_test should handle __wrapped__ transform function")
 
-def test_direct_test_match():
-    this_tests(direct_test_match)
-    fn_name = '_is_file_match'
-    lines = inspect.getsourcelines(test_is_file_match)[0]
-    result = direct_test_match(fn_name, lines, '')
-    assert result[0]['line'] == 1, 'line numbers should be 1 based indexed'
-    assert result[0]['test'] == 'test_is_file_match', "should match private functions"
-
-def test_direct_test_match_class_methods():
-    this_tests(direct_test_match)
-    fn_name = 'DataBunch.get'
-    lines = ['def test_Databunch_get():', '\tpass', 'def test_Databunch_get_specific_function():']
-    result = direct_test_match(fn_name, lines, '')
-    assert len(result) == 2
-
 def test_fuzzy_test_match():
     this_tests(fuzzy_test_match)
     lines = ['def test_mock_function():',
@@ -82,7 +67,6 @@ def test_fuzzy_line_match():
     result = nbtest._fuzzy_line_match('TextList', ['tl = (TextList.from_df()', '', 'LMTextList()'])
     assert len(result) == 1, 'matches classes'
 
-@pytest.mark.skip(reason="local dev only")
 def test_get_tests_dir():
     this_tests(nbtest.get_tests_dir)
     result:Path = nbtest.get_tests_dir(nbtest)
@@ -124,3 +108,95 @@ def test_this_tests():
     try: this_tests(func)
     except Exception as e: assert f"'{func}' is not in the fastai API" in str(e)
     else: assert False, f'this_tests({func}) should have failed'
+
+@pytest.mark.parametrize("old, new, expected", [
+    # 1.
+    ({ # old
+        "a": [
+            {"file": "mod1", "line": 19, "test": "test1"},
+        ],
+        "b": [
+            {"file": "mod2", "line": 11, "test": "test7"},
+            {"file": "mod2", "line": 56, "test": "test8"},
+        ],
+    },
+     { # new
+     },
+     { # expected
+         "a": [
+             {"file": "mod1", "line": 19, "test": "test1"},
+         ],
+         "b": [
+             {"file": "mod2", "line": 11, "test": "test7"},
+             {"file": "mod2", "line": 56, "test": "test8"},
+         ],
+     },
+    ),
+
+    # 2.
+    ({ # old
+        "a": [
+            {"file": "mod1", "line": 19, "test": "test1"},
+        ],
+        "b": [
+            {"file": "mod2", "line": 11, "test": "test7"},
+            {"file": "mod2", "line": 56, "test": "test8"},
+        ],
+    },
+     { # new
+         "a": [
+             {"file": "mod1", "line": 35, "test": "test1"},
+         ],
+         "b": [
+             {"file": "mod3", "line": 26, "test": "test3"},
+         ],
+     },
+     { # expected
+         "a": [
+             {"file": "mod1", "line": 35, "test": "test1"},
+         ],
+         "b": [
+             {"file": "mod2", "line": 11, "test": "test7"},
+             {"file": "mod2", "line": 56, "test": "test8"},
+             {"file": "mod3", "line": 26, "test": "test3"},
+         ],
+     },
+    ),
+
+     # 3.
+    ({ # old
+        "a": [
+            {"file": "mod1", "line": 19, "test": "test1"},
+        ],
+        "b": [
+            {"file": "mod2", "line": 11, "test": "test7"},
+            {"file": "mod2", "line": 56, "test": "test8"},
+        ],
+    },
+     { # new
+         "a": [
+             {"file": "mod1", "line": 35, "test": "test2"},
+         ],
+         "c": [
+             {"file": "mod3", "line": 16, "test": "test3"},
+         ],
+     },
+     { # expected
+         "a": [
+             {"file": "mod1", "line": 19, "test": "test1"},
+             {"file": "mod1", "line": 35, "test": "test2"},
+         ],
+         "b": [
+             {"file": "mod2", "line": 11, "test": "test7"},
+             {"file": "mod2", "line": 56, "test": "test8"},
+         ],
+         "c": [
+             {"file": "mod3", "line": 16, "test": "test3"},
+         ],
+     },
+    ),
+])
+def test_merge_registries(old, new, expected):
+    this_tests(merge_registries)
+    merged = merge_registries(old, new)
+    assert expected == merged

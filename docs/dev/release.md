@@ -1430,17 +1430,24 @@ rm req1.txt req2.txt req.txt
 The same can be repeated for getting test requirements, just repeat the same process inside `tests` directory.
 
 
-### Copying packages for other channels
+### Copying packages from other channels
 
-Currently we want to use the version of spacy and some of its deps from the conda-forge channel, instead of the main anaconda channel. To do this, we copy the relevant packages in to our channel, as so:
+Currently we want to use the version of `spacy` and some of its deps from the `conda-forge` channel, instead of the main `anaconda` channel. To do this, we copy the desired packages and their dependencies in to our channel with:
 
 ```
-anaconda copy conda-forge/spacy/2.0.18 --to-owner fastai --from-label gcc7
-anaconda copy conda-forge/regex/2018.01.10 --to-owner fastai --from-label gcc7
-anaconda copy conda-forge/thinc/6.12.1 --to-owner fastai --from-label gcc7
+anaconda copy conda-forge/spacy/2.0.18 --to-owner fastai
+anaconda copy conda-forge/regex/2018.01.10 --to-owner fastai
+anaconda copy conda-forge/thinc/6.12.1 --to-owner fastai
 ```
 
-This copies all architectures, not just your current architecture.
+This copies all available architectures, and not just your current architecture.
+
+To copy from a specific label, e.g. `gcc7`, add `--from-label gcc7` to the commands above.
+
+Note that you can't re-copy. If for example the source has changed, or added an architecture. Currently, you have to delete the copy from the `fastai` channel and re-copy. Try to do that as fast as possible not to impact users.
+
+
+
 
 
 ### Conditional Dependencies

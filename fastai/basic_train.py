@@ -476,7 +476,7 @@ class Recorder(LearnerCallback):
         "Format stats before printing."
         str_stats = []
         for name,stat in zip(self.names,stats):
-            str_stats.append('' if stat is None else str(stat) if isinstance(stat, int) else f'{stat:.6f}')
+            str_stats.append('#na#' if stat is None else str(stat) if isinstance(stat, int) else f'{stat:.6f}')
         if self.add_time: str_stats.append(format_time(time() - self.start_epoch))
         if not self.silent: self.pbar.write(str_stats, table=True)
 
@@ -501,6 +501,8 @@ class Recorder(LearnerCallback):
         else:
             fig, ax = plt.subplots()
             ax.plot(iterations, lrs)
+            ax.set_xlabel('Iterations')
+            ax.set_ylabel('Learning Rate')
         if ifnone(return_fig, defaults.return_fig): return fig
         if not IN_NOTEBOOK: plot_sixel(fig)
 

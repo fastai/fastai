@@ -51,7 +51,8 @@ sidebar: home_sidebar
 <p><a href="/callbacks.mem.html#PeakMemMetric"><code>PeakMemMetric</code></a> is a memory profiling callback.</p>
 <p>Here is how you can use it:</p>
 
-<pre><code>learn = cnn_learner(data, model, metrics=[accuracy], callback_fns=PeakMemMetric)
+<pre><code>from fastai.callbacks.mem import PeakMemMetric
+learn = cnn_learner(data, model, metrics=[accuracy], callback_fns=PeakMemMetric)
 learn.fit_one_cycle(3, max_lr=1e-2)</code></pre>
 <p>and a sample output:</p>
 

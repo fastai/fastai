@@ -101,7 +101,7 @@ class AWD_LSTM(nn.Module):
         self.input_dp = RNNDropout(input_p)
         self.hidden_dps = nn.ModuleList([RNNDropout(hidden_p) for l in range(n_layers)])
 
-    def forward(self, input:Tensor, from_embeddings:bool=False)->Tuple[Tensor,Tensor]:
+    def forward(self, input:Tensor, from_embeddings:bool=False, detach:bool=True)->Tuple[Tensor,Tensor]:
         if from_embeddings: bs,sl,es = input.size()
         else: bs,sl = input.size()
         if bs!=self.bs:
@@ -115,7 +115,7 @@ class AWD_LSTM(nn.Module):
             raw_outputs.append(raw_output)
             if l != self.n_layers - 1: raw_output = hid_dp(raw_output)
             outputs.append(raw_output)
-        self.hidden = to_detach(new_hidden, cpu=False)
+        if detach: self.hidden = to_detach(new_hidden, cpu=False)
         return raw_outputs, outputs
 
     def _one_hidden(self, l:int)->Tensor:
@@ -169,11 +169,11 @@ def awd_lstm_clas_split(model:nn.Module) -> List[nn.Module]:
     groups += [[rnn, dp] for rnn, dp in zip(model[0].module.rnns, model[0].module.hidden_dps)]
     return groups + [[model[1]]]
 
-awd_lstm_lm_config = dict(emb_sz=400, n_hid=1150, n_layers=3, pad_token=1, qrnn=False, bidir=False, output_p=0.25,
-                          hidden_p=0.1, input_p=0.2, embed_p=0.02, weight_p=0.15, tie_weights=True, out_bias=True)
+awd_lstm_lm_config = dict(emb_sz=400, n_hid=1150, n_layers=3, pad_token=1, qrnn=False, bidir=False, output_p=0.1,
+                          hidden_p=0.15, input_p=0.25, embed_p=0.02, weight_p=0.2, tie_weights=True, out_bias=True)
 
 awd_lstm_clas_config = dict(emb_sz=400, n_hid=1150, n_layers=3, pad_token=1, qrnn=False, bidir=False, output_p=0.4,
-                       hidden_p=0.2, input_p=0.6, embed_p=0.1, weight_p=0.5)
+                       hidden_p=0.3, input_p=0.4, embed_p=0.05, weight_p=0.5)
 
 def value2rgba(x:float, cmap:Callable=cm.RdYlGn, alpha_mult:float=1.0)->Tuple:
     "Convert a value `x` from 0 to 1 (inclusive) to an RGBA tuple according to `cmap` times transparency `alpha_mult`."
@@ -196,6 +196,11 @@ def show_piece_attn(*args, **kwargs):
     from IPython.display import display, HTML
     display(HTML(piece_attn_html(*args, **kwargs)))
 
+def _eval_dropouts(mod):
+        module_name =  mod.__class__.__name__
+        if 'Dropout' in module_name or 'BatchNorm' in module_name: mod.training = False
+        for module in mod.children(): _eval_dropouts(module)
+    
 @dataclass
 class TextClassificationInterpretation():
     """Provides an interpretation of classification based on input sensitivity.
@@ -210,17 +215,20 @@ class TextClassificationInterpretation():
     def intrinsic_attention(self, text:str, class_id:int=None):
         """Calculate the intrinsic attention of the input w.r.t to an output `class_id`, or the classification given by the model if `None`.
         For reference, see the Sequential Jacobian session at https://www.cs.toronto.edu/~graves/preprint.pdf
-        """
-        ids = self.data.one_item(text)[0]
-        emb = self.model[0].module.encoder(ids).detach().requires_grad_(True)
-        self.model.eval()
+        """ 
+        self.model.train()
+        _eval_dropouts(self.model)
         self.model.zero_grad()
         self.model.reset()
-        cl = self.model[1](self.model[0].module(emb, from_embeddings=True))[0].softmax(dim=-1)
+        ids = self.data.one_item(text)[0]
+        emb = self.model[0].module.encoder(ids).detach().requires_grad_(True)                
+        lstm_output = self.model[0].module(emb, from_embeddings=True)
+        self.model.eval()
+        cl = self.model[1](lstm_output + (torch.zeros_like(ids).byte(),))[0].softmax(dim=-1)
         if class_id is None: class_id = cl.argmax()
         cl[0][class_id].backward()
         attn = emb.grad.squeeze().abs().sum(dim=-1)
-        attn /= attn.max()
+        attn /= attn.max() 
         tokens = self.data.single_ds.reconstruct(ids[0])
         return tokens, attn
 
