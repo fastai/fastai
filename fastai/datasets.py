@@ -174,32 +174,34 @@ class Config():
 
 def _expand_path(fpath): return Path(fpath).expanduser()
 def url2name(url): return url.split('/')[-1]
-def url2path(url, data=True):
+
+#TODO: simplify this mess
+def url2path(url, data=True, ext:str='.tgz'):
     "Change `url` to a path."
     name = url2name(url)
-    return datapath4file(name) if data else modelpath4file(name)
-def _url2tgz(url, data=True):
-    return datapath4file(f'{url2name(url)}.tgz') if data else modelpath4file(f'{url2name(url)}.tgz')
+    return datapath4file(name, ext=ext) if data else modelpath4file(name, ext=ext)
+def _url2tgz(url, data=True, ext:str='.tgz'):
+    return datapath4file(f'{url2name(url)}{ext}', ext=ext) if data else modelpath4file(f'{url2name(url)}{ext}', ext=ext)
 
-def modelpath4file(filename):
+def modelpath4file(filename, ext:str='.tgz'):
     "Return model path to `filename`, checking locally first then in the config file."
     local_path = URLs.LOCAL_PATH/'models'/filename
-    if local_path.exists() or local_path.with_suffix('.tgz').exists(): return local_path
+    if local_path.exists() or local_path.with_suffix(ext).exists(): return local_path
     else: return Config.model_path()/filename
 
-def datapath4file(filename):
+def datapath4file(filename, ext:str='.tgz'):
     "Return data path to `filename`, checking locally first then in the config file."
     local_path = URLs.LOCAL_PATH/'data'/filename
-    if local_path.exists() or local_path.with_suffix('.tgz').exists(): return local_path
+    if local_path.exists() or local_path.with_suffix(ext).exists(): return local_path
     else: return Config.data_path()/filename
 
-def download_data(url:str, fname:PathOrStr=None, data:bool=True) -> Path:
+def download_data(url:str, fname:PathOrStr=None, data:bool=True, ext:str='.tgz') -> Path:
     "Download `url` to destination `fname`."
-    fname = Path(ifnone(fname, _url2tgz(url, data)))
+    fname = Path(ifnone(fname, _url2tgz(url, data, ext=ext)))
     os.makedirs(fname.parent, exist_ok=True)
     if not fname.exists():
         print(f'Downloading {url}')
-        download_url(f'{url}.tgz', fname)
+        download_url(f'{url}{ext}', fname)
     return fname
 
 def _check_file(fname):
