@@ -36,7 +36,7 @@ def run_with_capture(m, image):
     remove_hooks(hooks)
     return activation_shapes
 
-def test_unet_output_shape(model, image):
+def test_dynamic_unet_shape(model, image):
     this_tests(DynamicUnet)
     pred = model(image)
     assert list(pred.shape[-2:]) == [32,32] # image HxW should remain the same
