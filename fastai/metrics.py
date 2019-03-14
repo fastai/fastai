@@ -213,7 +213,7 @@ class FBeta(CMScores):
         rec = self._recall()
         metric = (1 + self.beta2) * prec * rec / (prec * self.beta2 + rec + self.eps)
         if self.avg: metric = (self._weights(avg=self.avg) * self.metric).sum()
-        return {'last_metrics': last_metrics + metric}
+        return add_metrics(last_metrics, metric)
 
     def on_train_end(self, **kwargs): self.average = self.avg
 
