@@ -501,6 +501,8 @@ class Recorder(LearnerCallback):
         else:
             fig, ax = plt.subplots()
             ax.plot(iterations, lrs)
+            ax.set_xlabel('Iterations')
+            ax.set_ylabel('Learning Rate')
         if ifnone(return_fig, defaults.return_fig): return fig
         if not IN_NOTEBOOK: plot_sixel(fig)
 
