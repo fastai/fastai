@@ -23,6 +23,7 @@ of that change.
 
 - bug in `DataBunch.export` or `Learner.export` in object detection
 - `TextClassificationInterpretation` now works again (thanks to code from mikonapoli)
+- `create_cnn` hangs on Windows with PyTorch 1.0.1
 
 ## 1.0.48 (2019-03-09)
 
