@@ -147,8 +147,8 @@ def params_size(m: Union[nn.Module,Learner], size: tuple = (3, 64, 64))->Tuple[S
     with hook_outputs(flatten_model(m)) as hook_o:
         with hook_params(flatten_model(m))as hook_p:
             x = m.eval()(*x) if is_listy(x) else m.eval()(x)
-            output_size = [(bs,) + (o.stored.shape[1:]) for o in hook_o]
-            params = [o.stored for o in hook_p]
+            output_size = [((bs,) + (o.stored.shape[1:]) if o.stored is not None else None) for o in hook_o]
+            params = [(o.stored if o.stored is not None else (None,None)) for o in hook_p]
     params, trainables = map(list,zip(*params))
     return output_size, params, trainables
 
@@ -172,6 +172,7 @@ def model_summary(m:Learner, n:int=70):
     total_params = 0
     total_trainable_params = 0
     for layer, size, params, trainable in info:
+        if size is None: continue
         total_params += int(params)
         total_trainable_params += int(params) * trainable
         size, trainable = str(list(size)), str(trainable)
