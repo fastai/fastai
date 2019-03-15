@@ -58,8 +58,6 @@ fastai_types = {
     OptSplitFunc:'OptSplitFunc', PixelFunc:'PixelFunc', LightingFunc:'LightingFunc', IntsOrStrs:'IntsOrStrs'
 }
 
-torch.set_num_threads(4) # OpenMP doesn't generally like too many threads
-
 bn_types = (nn.BatchNorm1d, nn.BatchNorm2d, nn.BatchNorm3d)
 bias_types = (nn.Linear, nn.Conv1d, nn.Conv2d, nn.Conv3d, nn.ConvTranspose1d, nn.ConvTranspose2d, nn.ConvTranspose3d)
 def is_pool_type(l:Callable): return re.search(r'Pool[123]d$', l.__class__.__name__)
