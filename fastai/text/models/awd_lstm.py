@@ -115,7 +115,7 @@ class AWD_LSTM(nn.Module):
             raw_outputs.append(raw_output)
             if l != self.n_layers - 1: raw_output = hid_dp(raw_output)
             outputs.append(raw_output)
-        if detach: self.hidden = to_detach(new_hidden, cpu=False)
+        self.hidden = to_detach(new_hidden, cpu=False) if detach else new_hidden
         return raw_outputs, outputs
 
     def _one_hidden(self, l:int)->Tensor:
