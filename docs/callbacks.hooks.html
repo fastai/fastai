@@ -544,12 +544,10 @@ Conv2d               [64, 88, 88]         36,864     False
 ...</code></pre>
 <p>Column definition:</p>
 <ol>
-<li><strong>Layer (type)</strong> is the name of the corresponding <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>nn.Module</code></a></li>
-</ol>
-<ol>
-<li><strong>Output Shape</strong> is the shape of the output of the corresponding layer (minus the batch dimension, which is always the same and has no impact on the model params).</li>
-</ol>
-<ol>
+<li><p><strong>Layer (type)</strong> is the name of the corresponding <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>nn.Module</code></a></p>
+</li>
+<li><p><strong>Output Shape</strong> is the shape of the output of the corresponding layer (minus the batch dimension, which is always the same and has no impact on the model params).</p>
+</li>
 <li><p><strong>Param #</strong> is the number of weights (and optionally bias), and it will vary for each layer.</p>
 <p>The number of params is calculated differently for each layer type. Here is how it's calculated for some of the most common layer types:</p>
 <ul>
@@ -559,8 +557,6 @@ Conv2d               [64, 88, 88]         36,864     False
 <li>Embeddings: <code>n_embed * emb_sz</code></li>
 </ul>
 </li>
-</ol>
-<ol>
 <li><p><strong>Trainable</strong> indicates whether a layer is trainable or not.</p>
 <ul>
 <li>Layers with <code>0</code> parameters are always Untrainable (e.g., <code>ReLU</code> and <code>MaxPool2d</code>).</li>
