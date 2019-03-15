@@ -38,7 +38,8 @@ def _TTA(learn:Learner, beta:float=0.4, scale:float=1.35, ds_type:DatasetType=Da
     else:            
         final_preds = preds*beta + avg_preds*(1-beta)
         if with_loss: 
-            return final_preds, y, calc_loss(final_preds, y, learn.loss_func)
+            with NoneReduceOnCPU(learn.loss_func) as lf: loss = lf(final_preds, y)
+            return final_preds, y, loss
         return final_preds, y
 
 Learner.TTA = _TTA
