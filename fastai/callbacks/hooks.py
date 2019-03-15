@@ -139,6 +139,7 @@ def params_size(m: Union[nn.Module,Learner], size: tuple = (3, 64, 64))->Tuple[S
             raise Exception("This is an empty `Learner` and `Learner.summary` requires some data to pass through the model.")
         ds_type = DatasetType.Train if m.data.train_dl else (DatasetType.Valid if m.data.valid_dl else DatasetType.Test)
         x = m.data.one_batch(ds_type=ds_type, detach=False, denorm=False)[0]
+        bs = x[0].size(0) if is_listy(x) else x.size(0)
         x = [o[:1] for o in x]  if is_listy(x) else x[:1]
         m = m.model
     elif isinstance(m, nn.Module): x = next(m.parameters()).new(1, *size)
@@ -146,7 +147,7 @@ def params_size(m: Union[nn.Module,Learner], size: tuple = (3, 64, 64))->Tuple[S
     with hook_outputs(flatten_model(m)) as hook_o:
         with hook_params(flatten_model(m))as hook_p:
             x = m.eval()(*x) if is_listy(x) else m.eval()(x)
-            output_size = [(o.stored.shape) for o in hook_o]
+            output_size = [(bs,) + (o.stored.shape[1:]) for o in hook_o]
             params = [o.stored for o in hook_p]
     params, trainables = map(list,zip(*params))
     return output_size, params, trainables
