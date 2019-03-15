@@ -225,9 +225,9 @@ class DataBunch():
 
     @property
     def is_empty(self)->bool:
-        return not ((self.train_dl and len(self.train_ds.items != 0)) or 
-                    (self.valid_dl and len(self.valid_ds.items != 0)) or 
-                    (self.test_dl  and len(self.test_ds.items  != 0)))
+        return not ((self.train_dl and len(self.train_ds.items) != 0) or 
+                    (self.valid_dl and len(self.valid_ds.items) != 0) or 
+                    (self.test_dl  and len(self.test_ds.items)  != 0))
     
     @property
     def batch_size(self):   return self.train_dl.batch_size
