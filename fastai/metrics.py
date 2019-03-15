@@ -212,6 +212,7 @@ class FBeta(CMScores):
         prec = self._precision()
         rec = self._recall()
         metric = (1 + self.beta2) * prec * rec / (prec * self.beta2 + rec + self.eps)
+        metric[metric != metric] = 0  # removing potential "nan"s
         if self.avg: metric = (self._weights(avg=self.avg) * metric).sum()
         return add_metrics(last_metrics, metric)
 
