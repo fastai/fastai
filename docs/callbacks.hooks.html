@@ -544,7 +544,7 @@ Conv2d               [64, 88, 88]         36,864     False
 ...</code></pre>
 <p>Column definition:</p>
 <ol>
-<li><p><strong>Layer (type)</strong> is the name of the corresponding <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>nn.Module</code></a></p>
+<li><p><strong>Layer (type)</strong> is the name of the corresponding <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>nn.Module</code></a>.</p>
 </li>
 <li><p><strong>Output Shape</strong> is the shape of the output of the corresponding layer (minus the batch dimension, which is always the same and has no impact on the model params).</p>
 </li>
@@ -553,14 +553,14 @@ Conv2d               [64, 88, 88]         36,864     False
 <ul>
 <li>Conv: <code>kernel_size*kernel_size*ch_in*ch_out</code></li>
 <li>Linear: <code>(n_in+bias) * n_out</code></li>
-<li>Batchnorm: <code>2*n_out</code></li>
+<li>Batchnorm: <code>2 * n_out</code></li>
 <li>Embeddings: <code>n_embed * emb_sz</code></li>
 </ul>
 </li>
 <li><p><strong>Trainable</strong> indicates whether a layer is trainable or not.</p>
 <ul>
 <li>Layers with <code>0</code> parameters are always Untrainable (e.g., <code>ReLU</code> and <code>MaxPool2d</code>).</li>
-<li>Other layers are either Trainable or not, depending on whether they are frozen or not. See (<code>freeze</code>/<code>unfreeze</code>). </li>
+<li>Other layers are either Trainable or not, usually depending on whether they are frozen or not. See <a href="https://docs.fast.ai/basic_train.html#Discriminative-layer-training">Discriminative layer training</a>.</li>
 </ul>
 </li>
 </ol>
@@ -582,7 +582,7 @@ print(learn.summary())</code></pre>
     [...]
     (3): MaxPool2d(kernel_size=3, stride=2, padding=1, dilation=1, ceil_mode=False)
     [...]
-        (conv1): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+    (conv1): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
     (8): Linear(in_features=512, out_features=37, bias=True)
 
 
