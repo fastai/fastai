@@ -154,6 +154,8 @@ Here are the quick copy-n-paste recipes (that assume you don't have anything els
    git push
    tools/trust-origin-git-config -e
    ```
+   or just:
+   `make strip`
 
    The `course-v3` repo:
    ```
