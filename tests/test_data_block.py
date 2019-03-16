@@ -148,3 +148,14 @@ def test_custom_dataset():
 
     # test property fallback
     assert data.loss_func == F.nll_loss
+
+def test_filter_by_folder():
+    items = ["in", "out", "unspecified_means_out"]
+
+    res = ItemList.filter_by_folder(ItemList(items = [Path(p) for p in items]),
+                                    include=["in", "and_in"], exclude=["out", "also_out"])
+    assert res.items == [Path("in")]
+
+    res = ItemList.filter_by_folder(ItemList(items = items),
+                                    include=["in", "and_in"], exclude=["out", "also_out"])
+    assert res.items == ["in"]
