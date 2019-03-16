@@ -31,6 +31,8 @@ This document is written for `fastai v1`, which we use for the current, third ve
 
 It's highly recommended you install `fastai` and its dependencies in a virtual environment ([`conda`](https://conda.io/docs/user-guide/tasks/manage-environments.html) or others), so that you don't interfere with system-wide python packages. It's not that you must, but if you experience problems with any dependency packages, please consider using a fresh virtual environment just for `fastai`.
 
+Starting with pytorch-1.x you no longer need to install a special pytorch-cpu version. Instead use the normal pytorch and it works with and without GPU. But [you can install the cpu build too](https://docs.fast.ai/install.html#cpu-build).
+
 If you experience installation problems, please read about [installation issues](https://github.com/fastai/fastai/blob/master/README.md#installation-issues).
 
 If you are planning on using `fastai` in the jupyter notebook environment, make sure to also install the corresponding [packages](https://docs.fast.ai/install.html#jupyter-notebook-dependencies).

@@ -10,6 +10,7 @@ from .docstrings import *
 from .core import *
 from ..torch_core import *
 from .nbtest import get_pytest_html
+from ..utils.ipython import IS_IN_COLAB
 
 __all__ = ['get_fn_link', 'link_docstring', 'show_doc', 'get_ft_names',
            'get_exports', 'show_video', 'show_video_from_youtube', 'import_mod', 'get_source_link',
@@ -132,9 +133,9 @@ def doc(elt):
         md += f'\n\n<a href="{get_fn_link(elt)}" target="_blank" rel="noreferrer noopener">Show in docs</a>'
     output = HTMLExporter().markdown2html(md)
     use_relative_links = True
-    try:    page.page({'text/html': output})
-    except: 
-        try:    get_ipython().run_cell_magic(u'HTML', u'', output)
+    if IS_IN_COLAB: get_ipython().run_cell_magic(u'html', u'', output)
+    else:
+        try: page.page({'text/html': output})
         except: display(Markdown(md))
 
 def format_docstring(elt, arg_comments:dict={}, alt_doc_string:str='', ignore_warn:bool=False)->str:

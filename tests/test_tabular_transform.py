@@ -60,3 +60,22 @@ def test_fill_missing_returns_correct_medians():
     # Make sure the train median is used in both cases
     assert train_df.equals(expected_filled_train_df)
     assert valid_df.equals(expected_filled_valid_df)
+
+def test_cont_cat_split():
+    this_tests(cont_cat_split)
+    cat_names = ['A']
+    cont_names = ['F','I']
+    df = pd.DataFrame({'A': ['a', 'b'], 'F': [0., 1.], 'I': [0, 1]})
+
+    # Make sure the list and number of columns is correct
+    res_cont, res_cat = cont_cat_split(df, max_card=0)
+    assert res_cont == cont_names
+    assert res_cat  == cat_names
+    assert len(res_cont) == len(cont_names)
+    assert len(res_cat)  == len(cat_names)
+    # Make sure `max_card` is correctly used to differentiate int as categorical
+    res_cont, res_cat = cont_cat_split(df)
+    assert res_cont == ['F']
+    assert res_cat  == ['A','I']
+
+

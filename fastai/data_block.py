@@ -152,7 +152,8 @@ class ItemList():
         "Only keep filenames in `include` folder or reject the ones in `exclude`."
         include,exclude = listify(include),listify(exclude)
         def _inner(o):
-            n = o.relative_to(self.path).parts[0]
+            if isintance(o, Path): n = o.relative_to(self.path).parts[0]
+            else: o.split(os.path.sep)[len(str(self.path).split(os.path.sep))]
             if include and not n in include: return False
             if exclude and     n in exclude: return False
             return True
@@ -309,7 +310,7 @@ class CategoryProcessor(PreProcessor):
     "`PreProcessor` that create `classes` from `ds.items` and handle the mapping."
     def __init__(self, ds:ItemList):
         self.create_classes(ds.classes)
-        self.warns = []
+        self.state_attrs,self.warns = ['classes'],[]
 
     def create_classes(self, classes):
         self.classes = classes
@@ -331,8 +332,12 @@ class CategoryProcessor(PreProcessor):
         ds.c2i = self.c2i
         super().process(ds)
 
-    def __getstate__(self): return {'classes':self.classes}
-    def __setstate__(self, state:dict): self.create_classes(state['classes'])
+    def __getstate__(self): return {n:getattr(self,n) for n in self.state_attrs}
+    def __setstate__(self, state:dict): 
+        self.create_classes(state['classes'])
+        self.state_attrs = state.keys()
+        for n in state.keys(): 
+            if n!='classes': setattr(self, n, state[n])
 
 class CategoryListBase(ItemList):
     "Basic `ItemList` for classification."
@@ -367,11 +372,7 @@ class MultiCategoryProcessor(CategoryProcessor):
     def __init__(self, ds:ItemList, one_hot:bool=False):
         super().__init__(ds)
         self.one_hot = one_hot
-
-    def __getstate__(self): return {'classes':self.classes, 'one_hot':self.one_hot}
-    def __setstate__(self, state:dict):
-        self.create_classes(state['classes'])
-        self.one_hot = state['one_hot']
+        self.state_attrs.append('one_hot')
 
     def process_one(self,item):
         if self.one_hot or isinstance(item, EmptyLabel): return item
@@ -516,6 +517,10 @@ class LabelLists(ItemLists):
         #progress_bar clear the outputs so in some case warnings issued during processing disappear.
         for ds in self.lists:
             if getattr(ds, 'warn', False): warn(ds.warn)
+        return self
+                
+    def filter_by_func(self, func:Callable):
+        for ds in self.lists: ds.filter_by_func(func)
         return self
 
     def databunch(self, path:PathOrStr=None, bs:int=64, val_bs:int=None, num_workers:int=defaults.cpus,
@@ -686,6 +691,11 @@ class LabelList(Dataset):
                     p.warns = []
                 self.x,self.y = self.x[~filt],self.y[~filt]
         self.x.process(xp)
+        return self
+                
+    def filter_by_func(self, func:Callable):
+        filt = array([func(x,y) for x,y in zip(self.x.items, self.y.items)])
+        self.x,self.y = self.x[~filt],self.y[~filt]
         return self
 
     def transform(self, tfms:TfmList, tfm_y:bool=None, **kwargs):

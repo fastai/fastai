@@ -323,8 +323,9 @@ class ImageList(ItemList):
 class ObjectCategoryProcessor(MultiCategoryProcessor):
     "`PreProcessor` for labelled bounding boxes."
     def __init__(self, ds:ItemList, pad_idx:int=0):
-        self.pad_idx = pad_idx
         super().__init__(ds)
+        self.pad_idx = pad_idx
+        self.state_attrs.append('pad_idx')
 
     def process(self, ds:ItemList):
         ds.pad_idx = self.pad_idx

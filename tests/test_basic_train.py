@@ -68,7 +68,8 @@ def check_learner(learn, model_summary_before, train_items_before):
     assert learn.model
     assert train_items_before == len(learn.data.train_ds.items)
 
-    assert model_summary_before == learn.summary(), f"model summary before and after"
+    if model_summary_before is not None:
+        assert model_summary_before == learn.summary(), f"model summary before and after"
 
     # XXX: could use more sanity checks
 
@@ -214,7 +215,6 @@ def test_memory(data):
     subtest_save_load_mem(data)
     subtest_destroy_mem(data)
 
-@pytest.mark.skip(reason="fix me: broken learn.summary")
 def test_export_load_learner():
     export_file = 'export.pkl'
     for should_destroy in [False, True]:
@@ -226,11 +226,14 @@ def test_export_load_learner():
         print(f"\n*** Testing w/ learn.export(destroy={should_destroy})")
         with CaptureStdout() as cs: learn.export(destroy=should_destroy)
         learn = load_learner(path)
-        # XXX: remove the next line when bug is fixed
-        print(learn.summary())
         # export removes data, so train_items_before=0
         # also testing learn.summary here on learn created from `load_learner`
-        check_learner(learn, model_summary_before, train_items_before=0)
+        check_learner(learn, model_summary_before=None, train_items_before=0)
+
+        try:    learn.summary()
+        except: assert "This is an empty `Learner`" in str(sys.exc_info()[1])
+        else:   assert False, "should have failed"
+
         if os.path.exists(export_file): os.remove(export_file)
 
 # XXX: dupe with test_memory - integrate (moved from test_vision_train.py)

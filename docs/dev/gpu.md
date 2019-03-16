@@ -293,3 +293,31 @@ After you add this code to the training iteration, once you want to stop it, jus
 ```
 touch kill.me
 ```
+
+## Multi-GPU
+
+### Order of GPUs
+
+When having multiple GPUs you may discover that `pytorch` and `nvidia-smi` don't order them in the same way, so what `nvidia-smi` reports as `gpu0`, could be assigned to `gpu1` by `pytorch`. `pytorch` uses CUDA GPU ordering, which is done by [computing power](https://developer.nvidia.com/cuda-gpus) (higher computer power GPUs first).
+
+If you want `pytorch` to use the PCI bus device order, to match `nvidia-smi`, set:
+
+```
+export CUDA_DEVICE_ORDER=PCI_BUS_ID
+```
+
+before starting your program (or put in your `~/.bashrc`).
+
+If you just want to run on a specific gpu ID, you can use the `CUDA_VISIBLE_DEVICES` environment variable. It can be set to a single GPU ID or a list:
+
+```
+export CUDA_VISIBLE_DEVICES=1
+export CUDA_VISIBLE_DEVICES=2,3
+```
+
+If you don't set the environment variables in shell, you can set those in your code at the beginning of your program, with help of: `import os; os.environ['CUDA_VISIBLE_DEVICES']='2'`.
+
+A less flexible way is to hardcode the device ID in your code, e.g. to set it to `gpu1`:
+```
+torch.cuda.set_device(1)
+```

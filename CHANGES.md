@@ -10,7 +10,7 @@ Note that the top-most release is changes in the unreleased master branch on
 Github. Parentheses after an item show the name or github id of the contributor
 of that change.
 
-## 1.0.49.dev0 (Work In Progress)
+## 1.0.50.dev0 (Work In Progress)
 
 ### New:
 
@@ -19,6 +19,21 @@ of that change.
 ### Fixed:
 
 
+
+## 1.0.49 (2019-03-15)
+
+### New:
+
+### Changed:
+
+- `MixedPrecisionCallback`: `dynamic` now defaults to True
+- `fit` now takes a `BasicLearner`
+
+### Fixed:
+
+- bug in `DataBunch.export` or `Learner.export` in object detection
+- `TextClassificationInterpretation` now works again (thanks to code from mikonapoli)
+- `create_cnn` hangs on Windows with PyTorch 1.0.1
 
 ## 1.0.48 (2019-03-09)
 
@@ -31,11 +46,9 @@ of that change.
 - `Learner.to_parallel`: callback wraps in nn.DataParallel during train and unwraps at end
 - Initial work to provide a `GeneralOptimizer` that keeps track and update given `Statistic` then perform the step you want.
 
-### Changed:
-
 ### Fixed:
 
-- A few `Callback` that didn't have proper return
+- A few `Callback`s didn't have proper return
 
 
 ## 1.0.47 (2019-03-06)

@@ -18,7 +18,7 @@ def main( gpu:Param("GPU to run on", str)=None ):
                                       num_workers=workers).normalize(cifar_stats)
     learn = Learner(data, wrn_22(), metrics=accuracy)
     if gpu is None: learn.model = nn.DataParallel(learn.model)
-    else: learn.distributed(gpu)
+    else: learn.to_distributed(gpu)
     learn.to_fp16()
     learn.fit_one_cycle(35, 3e-3, wd=0.4)
 

@@ -74,10 +74,16 @@ def train_epoch(model:nn.Module, dl:DataLoader, opt:optim.Optimizer, loss_func:L
         opt.step()
         opt.zero_grad()
 
-def fit(epochs:int, model:nn.Module, loss_func:LossFunction, opt:optim.Optimizer,
-        data:DataBunch, callbacks:Optional[CallbackList]=None, metrics:OptMetrics=None)->None:
+@dataclass
+class BasicLearner():
+    model:nn.Module
+    loss_func:LossFunction
+    opt:optim.Optimizer
+    data:DataBunch
+
+def fit(epochs:int, learn:BasicLearner, callbacks:Optional[CallbackList]=None, metrics:OptMetrics=None)->None:
     "Fit the `model` on `data` and learn using `loss_func` and `opt`."
-    assert len(data.train_dl) != 0, f"""Your training dataloader is empty, can't train a model.
+    assert len(learn.data.train_dl) != 0, f"""Your training dataloader is empty, can't train a model.
         Use a smaller batch size (batch size={data.train_dl.batch_size} for {len(data.train_dl.dataset)} elements)."""
     cb_handler = CallbackHandler(callbacks, metrics)
     pbar = master_bar(range(epochs))
@@ -86,16 +92,16 @@ def fit(epochs:int, model:nn.Module, loss_func:LossFunction, opt:optim.Optimizer
     exception=False
     try:
         for epoch in pbar:
-            model.train()
-            cb_handler.set_dl(data.train_dl)
+            learn.model.train()
+            cb_handler.set_dl(learn.data.train_dl)
             cb_handler.on_epoch_begin()
-            for xb,yb in progress_bar(data.train_dl, parent=pbar):
+            for xb,yb in progress_bar(learn.data.train_dl, parent=pbar):
                 xb, yb = cb_handler.on_batch_begin(xb, yb)
-                loss = loss_batch(model, xb, yb, loss_func, opt, cb_handler)
+                loss = loss_batch(learn.model, xb, yb, learn.loss_func, learn.opt, cb_handler)
                 if cb_handler.on_batch_end(loss): break
 
-            if not data.empty_val:
-                val_loss = validate(model, data.valid_dl, loss_func=loss_func,
+            if not learn.data.empty_val:
+                val_loss = validate(learn.model, learn.data.valid_dl, loss_func=learn.loss_func,
                                        cb_handler=cb_handler, pbar=pbar)
             else: val_loss=None
             if cb_handler.on_epoch_end(val_loss): break
@@ -187,8 +193,7 @@ class Learner():
         else: self.opt.lr,self.opt.wd = lr,wd
         callbacks = [cb(self) for cb in self.callback_fns] + listify(callbacks)
         if defaults.extra_callbacks is not None: callbacks += defaults.extra_callbacks
-        fit(epochs, self.model, self.loss_func, opt=self.opt, data=self.data, metrics=self.metrics,
-            callbacks=self.callbacks+callbacks)
+        fit(epochs, self, metrics=self.metrics, callbacks=self.callbacks+callbacks)
 
     def create_opt(self, lr:Floats, wd:Floats=0.)->None:
         "Create optimizer with `lr` learning rate and `wd` weight decay."
@@ -471,7 +476,7 @@ class Recorder(LearnerCallback):
         "Format stats before printing."
         str_stats = []
         for name,stat in zip(self.names,stats):
-            str_stats.append('' if stat is None else str(stat) if isinstance(stat, int) else f'{stat:.6f}')
+            str_stats.append('#na#' if stat is None else str(stat) if isinstance(stat, int) else f'{stat:.6f}')
         if self.add_time: str_stats.append(format_time(time() - self.start_epoch))
         if not self.silent: self.pbar.write(str_stats, table=True)
 
@@ -496,6 +501,8 @@ class Recorder(LearnerCallback):
         else:
             fig, ax = plt.subplots()
             ax.plot(iterations, lrs)
+            ax.set_xlabel('Iterations')
+            ax.set_ylabel('Learning Rate')
         if ifnone(return_fig, defaults.return_fig): return fig
         if not IN_NOTEBOOK: plot_sixel(fig)
 
@@ -528,6 +535,7 @@ class Recorder(LearnerCallback):
             ax.plot(lrs[mg],losses[mg],markersize=10,marker='o',color='red')
             self.min_grad_lr = lrs[mg]
         if ifnone(return_fig, defaults.return_fig): return fig
+        if not IN_NOTEBOOK: plot_sixel(fig)
 
     def plot_losses(self, skip_start:int=0, skip_end:int=0, return_fig:bool=None)->Optional[plt.Figure]:
         "Plot training and validation losses."
@@ -546,6 +554,7 @@ class Recorder(LearnerCallback):
         ax.set_xlabel('Batches processed')
         ax.legend()
         if ifnone(return_fig, defaults.return_fig): return fig
+        if not IN_NOTEBOOK: plot_sixel(fig)
 
     def plot_metrics(self, return_fig:bool=None)->Optional[plt.Figure]:
         "Plot metrics collected during training."
@@ -558,6 +567,7 @@ class Recorder(LearnerCallback):
             values = [met[i] for met in self.metrics]
             ax.plot(val_iter, values)
         if ifnone(return_fig, defaults.return_fig): return fig
+        if not IN_NOTEBOOK: plot_sixel(fig)
 
 class FakeOptimizer():
     def step(self): pass
