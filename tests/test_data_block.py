@@ -1,6 +1,8 @@
 import pytest
 from fastai.gen_doc.doctest import this_tests
 from fastai.basics import *
+from fastai.vision import ImageList
+
 
 def chk(a,b): assert np.array_equal(a,b)
 
@@ -130,8 +132,8 @@ def test_regression():
 def test_wrong_order():
     this_tests('na')
     path = untar_data(URLs.MNIST_TINY)
-    with pytest.raises(Exception):
-        src = ImageList.from_folder(path).label_from_folder().split_by_folder()
+    with pytest.raises(Exception, match="Your data isn't split*"):
+        ImageList.from_folder(path).label_from_folder().split_by_folder()
 
 class CustomDataset(Dataset):
     def __init__(self, data_list): self.data = copy(data_list)
