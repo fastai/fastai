@@ -153,7 +153,7 @@ class ItemList():
         include,exclude = listify(include),listify(exclude)
         def _inner(o):
             if isinstance(o, Path): n = o.relative_to(self.path).parts[0]
-            else: o.split(os.path.sep)[len(str(self.path).split(os.path.sep))]
+            else: n = o.split(os.path.sep)[len(str(self.path).split(os.path.sep))]
             if include and not n in include: return False
             if exclude and     n in exclude: return False
             return True
