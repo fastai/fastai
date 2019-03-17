@@ -155,8 +155,8 @@ class ItemList():
         "Only keep filenames in `include` folder or reject the ones in `exclude`."
         include,exclude = listify(include),listify(exclude)
         def _inner(o):
-            if isintance(o, Path): n = o.relative_to(self.path).parts[0]
-            else: o.split(os.path.sep)[len(str(self.path).split(os.path.sep))]
+            if isinstance(o, Path): n = o.relative_to(self.path).parts[0]
+            else: n = o.split(os.path.sep)[len(str(self.path).split(os.path.sep))]
             if include and not n in include: return False
             if exclude and     n in exclude: return False
             return True
