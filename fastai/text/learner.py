@@ -66,7 +66,7 @@ class RNNLearner(Learner):
         if device is None: device = self.data.device
         if hasattr(encoder, 'module'): encoder = encoder.module
         encoder.load_state_dict(torch.load(self.path/self.model_dir/f'{name}.pth'))
-        encoder.load_state_dict(torch.load(self.path/self.model_dir/f'{name}.pth', map=device))
+        encoder.load_state_dict(torch.load(self.path/self.model_dir/f'{name}.pth', map_location=device))
         self.freeze()
 
     def load_pretrained(self, wgts_fname:str, itos_fname:str, strict:bool=True):
