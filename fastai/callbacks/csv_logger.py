@@ -9,9 +9,9 @@ __all__ = ['CSVLogger']
 
 class CSVLogger(LearnerCallback):
     "A `LearnerCallback` that saves history of metrics while training `learn` into CSV `filename`."
-    def __init__(self, learn:Learner, filename: str = 'history'): 
+    def __init__(self, learn:Learner, filename: str = 'history', append: bool = False): 
         super().__init__(learn)
-        self.filename,self.path = filename,self.learn.path/f'{filename}.csv'
+        self.filename,self.path,self.append = filename,self.learn.path/f'{filename}.csv',append
 
     def read_logged_file(self):  
         "Read the content of saved file"
@@ -19,10 +19,10 @@ class CSVLogger(LearnerCallback):
 
     def on_train_begin(self, **kwargs: Any) -> None:
         "Prepare file with metric names."
-        self.path.parent.mkdir(parents=True, exist_ok=True)
-        self.file = self.path.open('w')
+        self.path.parent.mkdir(parents=True, exist_ok=True)      
+        self.file = self.path.open('w') if self.append else self.path.open('a')
         self.file.write(','.join(self.learn.recorder.names) + '\n')
-
+        
     def on_epoch_end(self, epoch: int, smooth_loss: Tensor, last_metrics: MetricsList, **kwargs: Any) -> bool:
         "Add a line with `epoch` number, `smooth_loss` and `last_metrics`."
         last_metrics = ifnone(last_metrics, [])
