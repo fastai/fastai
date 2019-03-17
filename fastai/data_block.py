@@ -99,6 +99,9 @@ class ItemList():
 
     def add(self, items:'ItemList'):
         self.items = np.concatenate([self.items, items.items], 0)
+        if self.inner_df is not None and items.inner_df is not None:
+            self.inner_df = pd.concat([self.inner_df, items.inner_df])
+        else: self.inner_df = self.inner_df or items.inner_df
         return self
 
     def __getitem__(self,idxs:int)->Any:
