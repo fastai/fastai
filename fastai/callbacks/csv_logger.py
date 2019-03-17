@@ -20,7 +20,7 @@ class CSVLogger(LearnerCallback):
     def on_train_begin(self, **kwargs: Any) -> None:
         "Prepare file with metric names."
         self.path.parent.mkdir(parents=True, exist_ok=True)      
-        self.file = self.path.open('w') if self.append else self.path.open('a')
+        self.file = self.path.open('a') if self.append else self.path.open('w')
         self.file.write(','.join(self.learn.recorder.names) + '\n')
         
     def on_epoch_end(self, epoch: int, smooth_loss: Tensor, last_metrics: MetricsList, **kwargs: Any) -> bool:
