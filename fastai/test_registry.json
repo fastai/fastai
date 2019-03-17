@@ -2,7 +2,7 @@
     "fastai.basic_data.DataBunch": [
         {
             "file": "tests/test_data_block.py",
-            "line": 141,
+            "line": 143,
             "test": "test_custom_dataset"
         }
     ],
@@ -496,12 +496,12 @@
     "fastai.data_block.CategoryProcessor.process_one": [
         {
             "file": "tests/test_data_block.py",
-            "line": 78,
+            "line": 80,
             "test": "test_category_processor_existing_class"
         },
         {
             "file": "tests/test_data_block.py",
-            "line": 89,
+            "line": 91,
             "test": "test_category_processor_non_existing_class"
         }
     ],
@@ -520,14 +520,14 @@
     "fastai.data_block.ItemList.split_by_rand_pct": [
         {
             "file": "tests/test_data_block.py",
-            "line": 101,
+            "line": 103,
             "test": "test_splitdata_datasets"
         }
     ],
     "fastai.data_block.ItemList.split_subsets": [
         {
             "file": "tests/test_data_block.py",
-            "line": 110,
+            "line": 112,
             "test": "test_split_subsets"
         }
     ],
@@ -774,6 +774,18 @@
             "test": "test_from_ids_works_for_variable_length_sentences"
         }
     ],
+    "fastai.text.learner.language_model_learner": [
+        {
+            "file": "tests/test_text_train.py",
+            "line": 61,
+            "test": "test_qrnn_works_with_no_split"
+        },
+        {
+            "file": "tests/test_text_train.py",
+            "line": 73,
+            "test": "test_qrnn_works_if_split_fn_provided"
+        }
+    ],
     "fastai.text.learner.text_classifier_learner": [
         {
             "file": "tests/test_text_train.py",
@@ -786,6 +798,13 @@
             "test": "test_order_preds"
         }
     ],
+    "fastai.text.models.qrnn.BwdForgetMultGPU": [
+        {
+            "file": "tests/test_text_qrnn.py",
+            "line": 28,
+            "test": "test_forget_mult_cuda"
+        }
+    ],
     "fastai.text.models.qrnn.ForgetMultGPU": [
         {
             "file": "tests/test_text_qrnn.py",
@@ -796,6 +815,32 @@
             "file": "tests/test_text_qrnn.py",
             "line": 27,
             "test": "test_compare_forget_mult_forward_implementations"
+        },
+        {
+            "file": "tests/test_text_qrnn.py",
+            "line": 28,
+            "test": "test_forget_mult_cuda"
+        }
+    ],
+    "fastai.text.models.qrnn.QRNN": [
+        {
+            "file": "tests/test_text_qrnn.py",
+            "line": 102,
+            "test": "test_qrnn_bidir"
+        }
+    ],
+    "fastai.text.models.qrnn.QRNNLayer": [
+        {
+            "file": "tests/test_text_qrnn.py",
+            "line": 86,
+            "test": "test_qrnn_layer"
+        }
+    ],
+    "fastai.text.models.qrnn.forget_mult_CPU": [
+        {
+            "file": "tests/test_text_qrnn.py",
+            "line": 74,
+            "test": "test_forget_mult"
         }
     ],
     "fastai.text.transform.Tokenizer": [
@@ -1309,6 +1354,18 @@
             "file": "tests/test_vision_train.py",
             "line": 78,
             "test": "test_interp_shortcut"
+        }
+    ],
+    "fastai.vision.models.unet.DynamicUnet": [
+        {
+            "file": "tests/test_vision_models_unet.py",
+            "line": 39,
+            "test": "test_dynamic_unet_shape"
+        },
+        {
+            "file": "tests/test_vision_models_unet.py",
+            "line": 45,
+            "test": "test_unet_block_shapes"
         }
     ],
     "fastai.vision.transform._crop": [
