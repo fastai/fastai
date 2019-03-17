@@ -1,7 +1,7 @@
 "Implements various metrics to measure training accuracy"
 from .torch_core import *
 from .callback import *
-
+from .layers import *
 
 __all__ = ['error_rate', 'accuracy', 'accuracy_thresh', 'dice', 'exp_rmspe', 'fbeta','FBeta', 'mse', 'mean_squared_error',
             'mae', 'mean_absolute_error', 'rmse', 'root_mean_squared_error', 'msle', 'mean_squared_logarithmic_error',
@@ -212,8 +212,9 @@ class FBeta(CMScores):
         prec = self._precision()
         rec = self._recall()
         metric = (1 + self.beta2) * prec * rec / (prec * self.beta2 + rec + self.eps)
-        if self.avg: metric = (self._weights(avg=self.avg) * self.metric).sum()
-        return {'last_metrics': last_metrics + metric}
+        metric[metric != metric] = 0  # removing potential "nan"s
+        if self.avg: metric = (self._weights(avg=self.avg) * metric).sum()
+        return add_metrics(last_metrics, metric)
 
     def on_train_end(self, **kwargs): self.average = self.avg
 
@@ -259,4 +260,4 @@ class Perplexity(Callback):
         self.len += last_target.size(1)
 
     def on_epoch_end(self, last_metrics, **kwargs): 
-        add_metrics(last_metrics, torch.exp(self.loss / self.len))
+        return add_metrics(last_metrics, torch.exp(self.loss / self.len))

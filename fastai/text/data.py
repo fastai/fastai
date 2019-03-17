@@ -135,13 +135,13 @@ def pad_collate(samples:BatchSamples, pad_idx:int=1, pad_first:bool=True, backwa
     for i,s in enumerate(samples):
         if pad_first: res[i,-len(s[0]):] = LongTensor(s[0])
         else:         res[i,:len(s[0]):] = LongTensor(s[0])
-    if backwards:
-        res = res.flip(1)
+    if backwards: res = res.flip(1)
     return res, tensor(np.array([s[1] for s in samples]))
 
 def _get_processor(tokenizer:Tokenizer=None, vocab:Vocab=None, chunksize:int=10000, max_vocab:int=60000,
-                   min_freq:int=2, mark_fields:bool=False):
-    return [TokenizeProcessor(tokenizer=tokenizer, chunksize=chunksize, mark_fields=mark_fields),
+                   min_freq:int=2, mark_fields:bool=False, include_bos:bool=True, include_eos:bool=False):
+    return [TokenizeProcessor(tokenizer=tokenizer, chunksize=chunksize, 
+                              mark_fields=mark_fields, include_bos=include_bos, include_eos=include_eos),
             NumericalizeProcessor(vocab=vocab, max_vocab=max_vocab, min_freq=min_freq)]
 
 class TextDataBunch(DataBunch):
@@ -191,10 +191,11 @@ class TextDataBunch(DataBunch):
     def from_df(cls, path:PathOrStr, train_df:DataFrame, valid_df:DataFrame, test_df:Optional[DataFrame]=None,
                 tokenizer:Tokenizer=None, vocab:Vocab=None, classes:Collection[str]=None, text_cols:IntsOrStrs=1,
                 label_cols:IntsOrStrs=0, label_delim:str=None, chunksize:int=10000, max_vocab:int=60000,
-                min_freq:int=2, mark_fields:bool=False, **kwargs) -> DataBunch:
+                min_freq:int=2, mark_fields:bool=False, include_bos:bool=True, include_eos:bool=False, **kwargs) -> DataBunch:
         "Create a `TextDataBunch` from DataFrames. `kwargs` are passed to the dataloader creation."
         processor = _get_processor(tokenizer=tokenizer, vocab=vocab, chunksize=chunksize, max_vocab=max_vocab,
-                                   min_freq=min_freq, mark_fields=mark_fields)
+                                   min_freq=min_freq, mark_fields=mark_fields, 
+                                   include_bos=include_bos, include_eos=include_eos)
         if classes is None and is_listy(label_cols) and len(label_cols) > 1: classes = label_cols
         src = ItemLists(path, TextList.from_df(train_df, path, cols=text_cols, processor=processor),
                         TextList.from_df(valid_df, path, cols=text_cols, processor=processor))
@@ -207,7 +208,8 @@ class TextDataBunch(DataBunch):
     def from_csv(cls, path:PathOrStr, csv_name, valid_pct:float=0.2, test:Optional[str]=None,
                  tokenizer:Tokenizer=None, vocab:Vocab=None, classes:Collection[str]=None, delimiter:str=None, header='infer',
                  text_cols:IntsOrStrs=1, label_cols:IntsOrStrs=0, label_delim:str=None,
-                 chunksize:int=10000, max_vocab:int=60000, min_freq:int=2, mark_fields:bool=False, **kwargs) -> DataBunch:
+                 chunksize:int=10000, max_vocab:int=60000, min_freq:int=2, 
+                 mark_fields:bool=False, include_bos:bool=True, include_eos:bool=False, **kwargs) -> DataBunch:
         "Create a `TextDataBunch` from texts in csv files. `kwargs` are passed to the dataloader creation."
         df = pd.read_csv(Path(path)/csv_name, header=header, delimiter=delimiter)
         df = df.iloc[np.random.permutation(len(df))]
@@ -216,16 +218,17 @@ class TextDataBunch(DataBunch):
         test_df = None if test is None else pd.read_csv(Path(path)/test, header=header, delimiter=delimiter)
         return cls.from_df(path, train_df, valid_df, test_df, tokenizer=tokenizer, vocab=vocab, classes=classes, text_cols=text_cols,
                            label_cols=label_cols, label_delim=label_delim, chunksize=chunksize, max_vocab=max_vocab,
-                           min_freq=min_freq, mark_fields=mark_fields, **kwargs)
+                           min_freq=min_freq, mark_fields=mark_fields, 
+                           include_bos=include_bos, include_eos=include_eos, **kwargs)
 
     @classmethod
     def from_folder(cls, path:PathOrStr, train:str='train', valid:str='valid', test:Optional[str]=None,
                     classes:Collection[Any]=None, tokenizer:Tokenizer=None, vocab:Vocab=None, chunksize:int=10000, max_vocab:int=60000,
-                    min_freq:int=2, mark_fields:bool=False, **kwargs):
+                    min_freq:int=2, mark_fields:bool=False, include_bos:bool=True, include_eos:bool=False, **kwargs):
         "Create a `TextDataBunch` from text files in folders."
         path = Path(path).absolute()
         processor = [OpenFileProcessor()] + _get_processor(tokenizer=tokenizer, vocab=vocab, chunksize=chunksize, max_vocab=max_vocab,
-                                   min_freq=min_freq, mark_fields=mark_fields)
+                                   min_freq=min_freq, mark_fields=mark_fields, include_bos=include_bos, include_eos=include_eos)
         src = (TextList.from_folder(path, processor=processor)
                        .split_by_folder(train=train, valid=valid))
         src = src.label_for_lm() if cls==TextLMDataBunch else src.label_from_folder(classes=classes)
@@ -276,14 +279,16 @@ class Text(ItemBase):
 
 class TokenizeProcessor(PreProcessor):
     "`PreProcessor` that tokenizes the texts in `ds`."
-    def __init__(self, ds:ItemList=None, tokenizer:Tokenizer=None, chunksize:int=10000, mark_fields:bool=False):
+    def __init__(self, ds:ItemList=None, tokenizer:Tokenizer=None, chunksize:int=10000, 
+                 mark_fields:bool=False, include_bos:bool=True, include_eos:bool=False):
         self.tokenizer,self.chunksize,self.mark_fields = ifnone(tokenizer, Tokenizer()),chunksize,mark_fields
+        self.include_bos, self.include_eos = include_bos, include_eos
 
     def process_one(self, item):
-        return self.tokenizer._process_all_1(_join_texts([item], self.mark_fields))[0]
+        return self.tokenizer._process_all_1(_join_texts([item], self.mark_fields, self.include_bos, self.include_eos))[0]
 
     def process(self, ds):
-        ds.items = _join_texts(ds.items, self.mark_fields)
+        ds.items = _join_texts(ds.items, self.mark_fields, self.include_bos, self.include_eos)
         tokens = []
         for i in progress_bar(range(0,len(ds),self.chunksize), leave=False):
             tokens += self.tokenizer.process_all(ds.items[i:i+self.chunksize])
@@ -328,8 +333,9 @@ class TextList(ItemList):
         return self.label_const(0, **kwargs)
 
     def reconstruct(self, t:Tensor):
-        idx = (t != self.pad_idx).nonzero().min()
-        return Text(t[idx:], self.vocab.textify(t[idx:]))
+        idx_min = (t != self.pad_idx).nonzero().min()
+        idx_max = (t != self.pad_idx).nonzero().max()
+        return Text(t[idx_min:idx_max], self.vocab.textify(t[idx_min:idx_max]))
 
     @classmethod
     def from_folder(cls, path:PathOrStr='.', extensions:Collection[str]=text_extensions, vocab:Vocab=None,
@@ -374,11 +380,13 @@ class LMTextList(TextList):
     _bunch = TextLMDataBunch
     _is_lm = True
 
-def _join_texts(texts:Collection[str], mark_fields:bool=False):
+def _join_texts(texts:Collection[str], mark_fields:bool=False, include_bos:bool=True, include_eos:bool=False):
     if not isinstance(texts, np.ndarray): texts = np.array(texts)
     if is1d(texts): texts = texts[:,None]
     df = pd.DataFrame({i:texts[:,i] for i in range(texts.shape[1])})
-    text_col = f'{BOS} {FLD} {1} ' + df[0].astype(str) if mark_fields else  f'{BOS} ' + df[0].astype(str)
+    bos_tok = f'{BOS} ' if include_bos else ''
+    text_col = f'{bos_tok}{FLD} {1} ' + df[0].astype(str) if mark_fields else f'{bos_tok}' + df[0].astype(str)
     for i in range(1,len(df.columns)):
         text_col += (f' {FLD} {i+1} ' if mark_fields else ' ') + df[i].astype(str)
+    if include_eos: text_col = text_col + f' {EOS}'
     return text_col.values

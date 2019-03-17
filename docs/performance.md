@@ -213,7 +213,7 @@ conda uninstall -y --force pillow libjpeg-turbo
 conda install -c fastai/label/test pillow-simd
 ```
 
-It probably won't work on your setup unless its CPU has the same capability as the one it was built on (Intel). So if it doesn't work, install `pillow-simd` from [source](https://pillow.readthedocs.io/en/latest/installation.html#building-from-source) instead.
+It probably won't work on your setup unless its CPU has the same capability as the one it was built on (Intel). So if it doesn't work, install `pillow-simd` from [source](https://github.com/uploadcare/pillow-simd#installation) instead.
 
 Note that `pillow-simd` will get overwritten by `pillow` through update/install of any other package depending on `pillow`. You can fool `pillow-simd` into believing it is `pillow` and then it'll not get wiped out. You will have to [make a local build for that](https://github.com/fastai/fastai/blob/master/builds/custom-conda-builds/pillow-simd/conda-build.txt).
 

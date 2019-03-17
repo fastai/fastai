@@ -307,6 +307,6 @@ class LabelSmoothingCrossEntropy(nn.Module):
     def forward(self, output, target):
         c = output.size()[-1]
         log_preds = F.log_softmax(output, dim=-1)
-        losses =  -log_preds.sum(dim=-1) * self.eps / (c-1) 
-        losses += (1-self.eps*c/(c-1)) * F.nll_loss(log_preds, target)
+        losses = -log_preds.sum(dim=-1) * self.eps/c # deviation of predicted label distribution p from the prior uniform
+        losses += (1 - self.eps) * F.nll_loss(log_preds, target)
         return losses.mean()

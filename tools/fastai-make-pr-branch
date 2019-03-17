@@ -154,7 +154,6 @@ if [[ "$clone_is_needed" -eq 1 ]]; then
 else
     echo -e "cd .\n"
 fi
-echo -e "To make an and make an editable install with the developer prerequisites run: pip install -e \".[dev]\""
 echo -e "2. Validate you're on the right repo/branch:\n"
 echo -e "echo on repo: \$(git config --get remote.origin.url | sed 's|^.*//||; s/.*@//; s/[^:/]\+[:/]//; s/.git$//') branch: \$(git branch | sed -n '/\* /s///p')\n\n"
 echo -e "3. And do your work.\n"

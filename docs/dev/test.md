@@ -525,7 +525,7 @@ def test_non_fastai_func():
 ```
 But we still want the call to be there, since we run a check to make sure we don't miss out on any tests, hence each test needs to have this call.
 
-The test registry is located at `fastai/test_api_db.json` and it gets auto-generated when `pytest` gets a `--testapireg` flag, which is currently done when `make test-full` is run.
+The test registry is located at `fastai/test_registry.json` and it gets auto-generated or updated when `pytest` is run.
 
 
 ### Expensive object reuse
@@ -561,7 +561,7 @@ def path():
 @pytest.fixture(scope="module")
 def learn(path):
     data = ImageDataBunch.from_folder(path, ds_tfms=([], []), bs=2)
-    learn = create_cnn(data, models.resnet18, metrics=accuracy)
+    learn = cnn_learner(data, models.resnet18, metrics=accuracy)
     return learn
 
 def test_val_loss(learn):
@@ -753,6 +753,7 @@ and may have their own command line option to be used instead, which are defined
 ```
 custom options:
   --runslow             run slow tests
+  --runcpp              run cuda cpp extension tests
   --skipint             skip integration tests
 ```
 

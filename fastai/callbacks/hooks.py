@@ -135,7 +135,7 @@ def hook_params(modules:Collection[nn.Module])->Hooks:
 def params_size(m: Union[nn.Module,Learner], size: tuple = (3, 64, 64))->Tuple[Sizes, Tensor, Hooks]:
     "Pass a dummy input through the model to get the various sizes. Returns (res,x,hooks) if `full`"
     if isinstance(m, Learner):
-        if not (m.data.train_dl or m.data.valid_dl or m.data.test_dl):
+        if m.data.is_empty:
             raise Exception("This is an empty `Learner` and `Learner.summary` requires some data to pass through the model.")
         ds_type = DatasetType.Train if m.data.train_dl else (DatasetType.Valid if m.data.valid_dl else DatasetType.Test)
         x = m.data.one_batch(ds_type=ds_type, detach=False, denorm=False)[0]
@@ -146,8 +146,8 @@ def params_size(m: Union[nn.Module,Learner], size: tuple = (3, 64, 64))->Tuple[S
     with hook_outputs(flatten_model(m)) as hook_o:
         with hook_params(flatten_model(m))as hook_p:
             x = m.eval()(*x) if is_listy(x) else m.eval()(x)
-            output_size = [(o.stored.shape) for o in hook_o]
-            params = [o.stored for o in hook_p]
+            output_size = [((o.stored.shape[1:]) if o.stored is not None else None) for o in hook_o]
+            params = [(o.stored if o.stored is not None else (None,None)) for o in hook_p]
     params, trainables = map(list,zip(*params))
     return output_size, params, trainables
 
@@ -171,6 +171,7 @@ def model_summary(m:Learner, n:int=70):
     total_params = 0
     total_trainable_params = 0
     for layer, size, params, trainable in info:
+        if size is None: continue
         total_params += int(params)
         total_trainable_params += int(params) * trainable
         size, trainable = str(list(size)), str(trainable)

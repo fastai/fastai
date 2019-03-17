@@ -146,8 +146,18 @@ Here are the quick copy-n-paste recipes (that assume you don't have anything els
    tools/trust-origin-git-config -e
    ```
 
-   The `course-v3` repo:
+   The `fastai_docs` repo:
+   ```
+   tools/trust-origin-git-config -d
+   tools/fastai-nbstripout -d dev_nb/*ipynb dev_nb/experiments/*ipynb dev_course/*/*ipynb
+   git commit dev_nb dev_course
+   git push
+   tools/trust-origin-git-config -e
+   ```
+   or just:
+   `make strip`
 
+   The `course-v3` repo:
    ```
    tools/trust-origin-git-config -d
    tools/fastai-nbstripout -d nbs/*/*ipynb
