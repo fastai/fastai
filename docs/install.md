@@ -161,6 +161,21 @@ If for any reason you don't want to install all of `fastai`'s dependencies, sinc
    ```
 
 
+## Development dependencies
+
+As explained in [Development Editable Install](/dev/develop.html#development-editable-install), if you want to work on contributing to fastai you will also need to install the optional development dependencies. In addition to the ways explained in the aforementioned document, you can also install `fastai` with developer dependencies without needing to check out the `fastai` repo.
+
+* To install the latest released version of `fastai` with developer dependencies, do:
+
+   `pip install "fastai[dev]"`
+
+* To accomplish the same for the cutting edge master git version:
+
+   `pip install "git+https://github.com/fastai/fastai#egg=fastai[dev]"`
+
+
+
+
 ## Virtual environment
 
 It's highly recommended to use a virtual python environment for the `fastai` project, first because you could experiment with different versions of it (e.g. stable-release vs. bleeding edge git version), but also because it's usually a bad idea to install various python package into the system-wide python, because it's so easy to break the system, if it relies on python and its 3rd party packages for its functionality.

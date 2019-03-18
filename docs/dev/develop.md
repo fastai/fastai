@@ -212,7 +212,7 @@ It's almost the same as:
 
 but adding `[dev]` tells pip to install optional packages in the `dev` group of the `dev_requirements` dictionary variable in `fastai/setup.py`. These extra dependencies are needed only by developers and contributors.
 
-Best not to use `python setup.py develop` method [doc](https://setuptools.readthedocs.io/en/latest/setuptools.html#develop-deploy-the-project-source-in-development-mode).
+It's best not to use `python setup.py develop` method [doc](https://setuptools.readthedocs.io/en/latest/setuptools.html#develop-deploy-the-project-source-in-development-mode).
 
 When you'd like to sync your codebase with the `master`, simply go back into the cloned `fastai` directory and update it:
 
