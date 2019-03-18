@@ -102,7 +102,7 @@ class AWD_LSTM(nn.Module):
         self.input_dp = RNNDropout(input_p)
         self.hidden_dps = nn.ModuleList([RNNDropout(hidden_p) for l in range(n_layers)])
 
-    def forward(self, input:Tensor, from_embeddings:bool=False, detach:bool=True)->Tuple[Tensor,Tensor]:
+    def forward(self, input:Tensor, from_embeddings:bool=False)->Tuple[Tensor,Tensor]:
         if from_embeddings: bs,sl,es = input.size()
         else: bs,sl = input.size()
         if bs!=self.bs:
@@ -116,7 +116,7 @@ class AWD_LSTM(nn.Module):
             raw_outputs.append(raw_output)
             if l != self.n_layers - 1: raw_output = hid_dp(raw_output)
             outputs.append(raw_output)
-        self.hidden = to_detach(new_hidden, cpu=False) if detach else new_hidden
+        self.hidden = to_detach(new_hidden, cpu=False)
         return raw_outputs, outputs
 
     def _one_hidden(self, l:int)->Tensor:
