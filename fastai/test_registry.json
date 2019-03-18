@@ -505,6 +505,13 @@
             "test": "test_category_processor_non_existing_class"
         }
     ],
+    "fastai.data_block.ItemList.filter_by_folder": [
+        {
+            "file": "tests/test_data_block.py",
+            "line": 152,
+            "test": "test_filter_by_folder"
+        }
+    ],
     "fastai.data_block.ItemList.label_from_folder": [
         {
             "file": "tests/test_text_data.py",
@@ -694,6 +701,13 @@
             "file": "tests/test_metrics.py",
             "line": 67,
             "test": "test_top_k_accuracy"
+        }
+    ],
+    "fastai.tabular.data.TabularList.from_df": [
+        {
+            "file": "tests/test_tabular_data.py",
+            "line": 5,
+            "test": "test_from_df"
         }
     ],
     "fastai.tabular.transform.Categorify": [

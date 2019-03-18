@@ -150,12 +150,15 @@ def test_custom_dataset():
     assert data.loss_func == F.nll_loss
 
 def test_filter_by_folder():
+    this_tests(ItemList.filter_by_folder)
     items = ["parent/in", "parent/out", "parent/unspecified_means_out"]
 
-    res = ItemList.filter_by_folder(ItemList(items = [Path(p) for p in items], path="parent"),
-                                    include=["in", "and_in"], exclude=["out", "also_out"])
+    res = ItemList.filter_by_folder(
+        ItemList(items=[Path(p) for p in items], path="parent"),
+        include=["in", "and_in"], exclude=["out", "also_out"])
     assert res.items == [Path("parent/in")]
 
-    res = ItemList.filter_by_folder(ItemList(items = items),
-                                    include=["in", "and_in"], exclude=["out", "also_out"])
+    res = ItemList.filter_by_folder(
+        ItemList(items=items),
+        include=["in", "and_in"], exclude=["out", "also_out"])
     assert res.items == ["parent/in"]
