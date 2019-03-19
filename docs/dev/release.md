@@ -1152,16 +1152,15 @@ When experimenting with different builds (in particular custom conda builds) the
 While CI builds now do exactly this, it might be still useful to be able to do it manually, since CI builds are very slow to tweak and experiment with. So here is a quick copy-n-paste recipe to build one and clean it up.
 
 ```
-conda create -y  python=3.6 --name fastai-py3.6
-conda activate fastai-py3.6
+conda create -y python=3.7 --name fastai-py3.7
+conda activate fastai-py3.7
 conda install -y conda
 conda install -y pip setuptools
-conda install -y -c pytorch pytorch cuda92 torchvision
-conda install -c fastai fastai
+conda install -y -c fastai -c pytorch fastai
 conda uninstall -y fastai
-pip install -e .
+pip install -e ".[dev]"
 conda deactivate
-conda env remove -y --name fastai-py3.6
+conda env remove -y --name fastai-py3.7
 ```
 
 ### Installed Packages
