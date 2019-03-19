@@ -56,9 +56,9 @@ summary: "Easy access of language models and ULMFiT"
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>The model used is given by <code>arch</code> and <code>config</code>. It can be:</p>
 <ul>
-<li>an <a href="/text.models.awd_lstm.html#AWD_LSTM"><code>AWD_LSTM</code></a>(<a href="https://arxiv.org/abs/1708.02182">Merity et al.</a>)</li>
-<li>a <a href="/text.models.transformer.html#Transformer"><code>Transformer</code></a> decoder (<a href="https://arxiv.org/abs/1706.03762">Vaswani et al.</a>)</li>
-<li>a <a href="/text.models.transformer.html#TransformerXL"><code>TransformerXL</code></a> (<a href="https://arxiv.org/abs/1901.02860">Dai et al.</a>)</li>
+<li>an <a href="/text.models.html#AWD_LSTM"><code>AWD_LSTM</code></a>(<a href="https://arxiv.org/abs/1708.02182">Merity et al.</a>)</li>
+<li>a <a href="/text.models.html#Transformer"><code>Transformer</code></a> decoder (<a href="https://arxiv.org/abs/1706.03762">Vaswani et al.</a>)</li>
+<li>a <a href="/text.models.html#TransformerXL"><code>TransformerXL</code></a> (<a href="https://arxiv.org/abs/1901.02860">Dai et al.</a>)</li>
 </ul>
 <p>They each have a default config for language modelling that is in <code>{lower_case_class_name}_lm_config</code> if you want to change the default parameter. At this stage, only the AWD LSTM support <code>pretrained=True</code> but we hope to add more pretrained models soon. <code>drop_mult</code> is applied to all the dropouts weights of the <code>config</code>, <code>learn_kwargs</code> are passed to the <a href="/basic_train.html#Learner"><code>Learner</code></a> initialization.</p>
 
