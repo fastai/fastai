@@ -1915,6 +1915,73 @@ summary: "Learner class and training loop"
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Sets every layer group except the last to <em>untrainable</em> (i.e. <code>requires_grad=False</code>).</p>
+<p>What does '<strong>the last layer group</strong>' mean?</p>
+<p>In the case of transfer learning, such as <code>learn = cnn_learner(data, models.resnet18, metrics=error_rate)</code>, <code>learn.model</code>will print out two large groups of layers: (0) Sequential and (1) Sequental in the following structure. We can consider the last conv layer as the break line between the two groups.</p>
+
+<pre><code>Sequential(
+  (0): Sequential(
+    (0): Conv2d(3, 64, kernel_size=(7, 7), stride=(2, 2), padding=(3, 3), bias=False)
+    (1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (2): ReLU(inplace)
+    ...
+
+            (conv2): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+             (bn2): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      )
+    )
+  )
+  (1): Sequential(
+    (0): AdaptiveConcatPool2d(
+      (ap): AdaptiveAvgPool2d(output_size=1)
+      (mp): AdaptiveMaxPool2d(output_size=1)
+    )
+    (1): Flatten()
+    (2): BatchNorm1d(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (3): Dropout(p=0.25)
+    (4): Linear(in_features=1024, out_features=512, bias=True)
+    (5): ReLU(inplace)
+    (6): BatchNorm1d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (7): Dropout(p=0.5)
+    (8): Linear(in_features=512, out_features=12, bias=True)
+  )
+)</code></pre>
+<p><code>learn.freeze</code> freezes the first group and keeps the second or last group free to train, including multiple layers inside (this is why calling it 'group'), as you can see in <code>learn.summary()</code> output. How to read the table below, please see <a href="/callbacks.hooks.html#model_summary">model summary docs</a>.</p>
+
+<pre><code>======================================================================
+Layer (type)         Output Shape         Param #    Trainable 
+======================================================================
+...
+...
+...
+______________________________________________________________________
+Conv2d               [1, 512, 4, 4]       2,359,296  False     
+______________________________________________________________________
+BatchNorm2d          [1, 512, 4, 4]       1,024      True      
+______________________________________________________________________
+AdaptiveAvgPool2d    [1, 512, 1, 1]       0          False     
+______________________________________________________________________
+AdaptiveMaxPool2d    [1, 512, 1, 1]       0          False     
+______________________________________________________________________
+Flatten              [1, 1024]            0          False     
+______________________________________________________________________
+BatchNorm1d          [1, 1024]            2,048      True      
+______________________________________________________________________
+Dropout              [1, 1024]            0          False     
+______________________________________________________________________
+Linear               [1, 512]             524,800    True      
+______________________________________________________________________
+ReLU                 [1, 512]             0          False     
+______________________________________________________________________
+BatchNorm1d          [1, 512]             1,024      True      
+______________________________________________________________________
+Dropout              [1, 512]             0          False     
+______________________________________________________________________
+Linear               [1, 12]              6,156      True      
+______________________________________________________________________
+
+Total params: 11,710,540
+Total trainable params: 543,628
+Total non-trainable params: 11,166,912</code></pre>
 
 </div>
 </div>
