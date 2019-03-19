@@ -82,7 +82,7 @@ def create_cnn_model(base_arch:Callable, nc:int, cut:Union[int,Callable]=None, p
     "Create custom convnet architecture"
     body = create_body(base_arch, pretrained, cut)
     if custom_head is None:
-        nf = num_features_model(nn.Sequential(*body.children())) * 2
+        nf = num_features_model(nn.Sequential(*body.children())) * (2 if concat_pool else 1)
         head = create_head(nf, nc, lin_ftrs, ps=ps, concat_pool=concat_pool, bn_final=bn_final)
     else: head = custom_head
     return nn.Sequential(body, head)
