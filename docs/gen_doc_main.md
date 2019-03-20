@@ -61,6 +61,8 @@ See [Submit Your PR](https://docs.fast.ai/dev/git.html#step-7-submit-your-pr).
 
 **You're done**. You don't need to do anything more at this point, other than checking on the status of your PR and if everything is good it'll be merged, if there are some issues with it, you may be requested to make some changes, which you just commit and push like your initial commit. The PR will get automatically updated with your new changes.
 
+There is also a [visual step-by-step demo](https://github.com/EmbraceLife/fastai_treasures/blob/master/How-To-Docsrc-PR.md) of how Daniel did his first PR that improved fastai documentation.
+
 Down the road, once you get comfortable with submitting documentation PRs you can explore the rest of the document. But leave it for later, so you don't get confused.
 
 
