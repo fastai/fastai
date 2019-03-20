@@ -1,6 +1,6 @@
 import pytest,torch
 from fastai.gen_doc.doctest import this_tests
-from fastai.text.models.qrnn import ForgetMultGPU, BwdForgetMultGPU, forget_mult_CPU, QRNN, QRNNLayer
+from fastai.text.models.qrnn import forget_mult, QRNN, QRNNLayer
 
 def manual_forget_mult(x, f, h=None, batch_first=True, backward=False):
     if batch_first: x,f = x.transpose(0,1),f.transpose(0,1)
