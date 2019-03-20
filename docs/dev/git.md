@@ -316,13 +316,38 @@ You can go to Azure CI following the failing link and check what has failed. Unl
 
 ### How to Keep Your Feature Branch Up-to-date
 
-If you synced the `master` branch with the original repository and you have feature branches that you're still working on, now you want to update those. For example to update your previously existing branch `my-cool-feature`:
+Normally you don't need to worry about updating your feature branch to synchronize with the fastai code base (upstream master). The only time you must perform the update is when the same code you have been working on has undergone changes in the master. So when you submit a PR, github will tell you that there is a merge conflict.
+
+You could update your feature branch directly, but it's best to update the master branch of your fork, first.
+
+* Step 1: sync your forked `master` branch:
 
    ```
+   cd my-cool-feature # your fastai fork clone directory
+   git fetch upstream
    git checkout master
-   git pull
-   git checkout my-cool-feature
+   git merge --no-edit upstream/master
+   git push --set-upstream origin master
    ```
+
+* Step 2: update your feature branch `my-cool-feature`:
+
+   ```
+   git checkout my-cool-feature
+   git merge origin/master
+   ```
+
+* Step 3:  resolve any conflicts resulting from the merge (using your editor or a special merge tool), followed by `git add` to the files which had conflict.
+
+* Step 4: push to github the updates to your branch:
+
+   ```
+   git push
+   ```
+
+   If your PR is already open, github will automatically update its status showing the new commits and the conflict shouldn't be there any more if you followed the steps above.
+
+
 
 ### How To Reset Your Forked Master Branch
 
