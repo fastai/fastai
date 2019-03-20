@@ -60,6 +60,21 @@ summary: "Callbacks that saves the tracked metrics during training"
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>/mnt/nvme1/fast.ai-1/br/fastai/master/docs_src/fastai/datasets.py:164: YAMLLoadWarning: calling yaml.load() without Loader=... is deprecated, as the default Loader is unsafe. Please read https://msg.pyyaml.org/load for full details.
+  with open(fpath, &#39;r&#39;) as yaml_file: return yaml.load(yaml_file)
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
@@ -80,7 +95,7 @@ summary: "Callbacks that saves the tracked metrics during training"
 
 
 <div class="output_html rendered_html output_subarea ">
-Total time: 00:07 <p><table border="1" class="dataframe">
+Total time: 00:01 <p><table border="1" class="dataframe">
   <thead>
     <tr style="text-align: left;">
       <th>epoch</th>
@@ -94,27 +109,27 @@ Total time: 00:07 <p><table border="1" class="dataframe">
   <tbody>
     <tr>
       <td>0</td>
-      <td>0.615621</td>
-      <td>0.495174</td>
-      <td>0.811159</td>
-      <td>0.188841</td>
-      <td>00:02</td>
+      <td>0.645723</td>
+      <td>0.537095</td>
+      <td>0.801144</td>
+      <td>0.198856</td>
+      <td>00:00</td>
     </tr>
     <tr>
       <td>1</td>
-      <td>0.483951</td>
-      <td>0.199900</td>
-      <td>0.944206</td>
-      <td>0.055794</td>
-      <td>00:02</td>
+      <td>0.528522</td>
+      <td>0.266591</td>
+      <td>0.958512</td>
+      <td>0.041488</td>
+      <td>00:00</td>
     </tr>
     <tr>
       <td>2</td>
-      <td>0.365380</td>
-      <td>0.125706</td>
-      <td>0.957082</td>
-      <td>0.042918</td>
-      <td>00:02</td>
+      <td>0.409425</td>
+      <td>0.140804</td>
+      <td>0.954220</td>
+      <td>0.045780</td>
+      <td>00:00</td>
     </tr>
   </tbody>
 </table>
@@ -129,6 +144,13 @@ Total time: 00:07 <p><table border="1" class="dataframe">
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Training details have been saved in 'history.csv'.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Note that it only saves float/int metrics, so time currently is not saved. This could be saved but requires changing the recording - you can submit a PR <a href="https://forums.fast.ai/t/expand-recorder-to-deal-with-non-int-float-data/41534">fixing that</a>.</p>
 
 </div>
 </div>
@@ -153,12 +175,14 @@ Total time: 00:07 <p><table border="1" class="dataframe">
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>[PosixPath(&#39;/home/turgutluk/.fastai/data/mnist_tiny/test&#39;),
- PosixPath(&#39;/home/turgutluk/.fastai/data/mnist_tiny/labels.csv&#39;),
- PosixPath(&#39;/home/turgutluk/.fastai/data/mnist_tiny/train&#39;),
- PosixPath(&#39;/home/turgutluk/.fastai/data/mnist_tiny/valid&#39;),
- PosixPath(&#39;/home/turgutluk/.fastai/data/mnist_tiny/models&#39;),
- PosixPath(&#39;/home/turgutluk/.fastai/data/mnist_tiny/history.csv&#39;)]</pre>
+<pre>[PosixPath(&#39;/home/stas/.fastai/data/mnist_tiny/models&#39;),
+ PosixPath(&#39;/home/stas/.fastai/data/mnist_tiny/labels.csv&#39;),
+ PosixPath(&#39;/home/stas/.fastai/data/mnist_tiny/cleaned.csv&#39;),
+ PosixPath(&#39;/home/stas/.fastai/data/mnist_tiny/train&#39;),
+ PosixPath(&#39;/home/stas/.fastai/data/mnist_tiny/test&#39;),
+ PosixPath(&#39;/home/stas/.fastai/data/mnist_tiny/valid&#39;),
+ PosixPath(&#39;/home/stas/.fastai/data/mnist_tiny/export.pkl&#39;),
+ PosixPath(&#39;/home/stas/.fastai/data/mnist_tiny/history.csv&#39;)]</pre>
 </div>
 
 </div>
@@ -185,7 +209,7 @@ Total time: 00:07 <p><table border="1" class="dataframe">
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="CSVLogger.read_logged_file" class="doc_header"><code>read_logged_file</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/csv_logger.py#L16" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#CSVLogger-read_logged_file-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>read_logged_file</code>()</p>
 </blockquote>
-<div class="collapse" id="CSVLogger-read_logged_file-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#CSVLogger-read_logged_file-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>read_logged_file</code>:</p><p>Some other tests where <code>read_logged_file</code> is used:</p><ul><li><code>pytest -sv tests/test_callbacks_csv_logger.py::test_logger</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_callbacks_csv_logger.py#L37" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><p>Read the content of saved file</p>
+<div class="collapse" id="CSVLogger-read_logged_file-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#CSVLogger-read_logged_file-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>read_logged_file</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Read the content of saved file</p>
 
 </div>
 
@@ -237,36 +261,32 @@ Total time: 00:07 <p><table border="1" class="dataframe">
       <th>valid_loss</th>
       <th>accuracy</th>
       <th>error_rate</th>
-      <th>time</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <th>0</th>
       <td>0</td>
-      <td>0.615621</td>
-      <td>0.495174</td>
-      <td>0.811159</td>
-      <td>0.188841</td>
-      <td>NaN</td>
+      <td>0.645723</td>
+      <td>0.537095</td>
+      <td>0.801144</td>
+      <td>0.198856</td>
     </tr>
     <tr>
       <th>1</th>
       <td>1</td>
-      <td>0.483951</td>
-      <td>0.199900</td>
-      <td>0.944206</td>
-      <td>0.055794</td>
-      <td>NaN</td>
+      <td>0.528522</td>
+      <td>0.266591</td>
+      <td>0.958512</td>
+      <td>0.041488</td>
     </tr>
     <tr>
       <th>2</th>
       <td>2</td>
-      <td>0.365380</td>
-      <td>0.125706</td>
-      <td>0.957082</td>
-      <td>0.042918</td>
-      <td>NaN</td>
+      <td>0.409425</td>
+      <td>0.140804</td>
+      <td>0.954220</td>
+      <td>0.045780</td>
     </tr>
   </tbody>
 </table>
@@ -334,7 +354,7 @@ Total time: 00:07 <p><table border="1" class="dataframe">
 
 
 <div class="output_html rendered_html output_subarea ">
-Total time: 00:07 <p><table border="1" class="dataframe">
+Total time: 00:01 <p><table border="1" class="dataframe">
   <thead>
     <tr style="text-align: left;">
       <th>epoch</th>
@@ -348,27 +368,27 @@ Total time: 00:07 <p><table border="1" class="dataframe">
   <tbody>
     <tr>
       <td>0</td>
-      <td>0.677157</td>
-      <td>0.625889</td>
-      <td>0.872675</td>
-      <td>0.127325</td>
-      <td>00:02</td>
+      <td>0.608057</td>
+      <td>0.494046</td>
+      <td>0.826896</td>
+      <td>0.173104</td>
+      <td>00:00</td>
     </tr>
     <tr>
       <td>1</td>
-      <td>0.596646</td>
-      <td>0.330701</td>
-      <td>0.955651</td>
-      <td>0.044349</td>
-      <td>00:02</td>
+      <td>0.488925</td>
+      <td>0.235610</td>
+      <td>0.938484</td>
+      <td>0.061516</td>
+      <td>00:00</td>
     </tr>
     <tr>
       <td>2</td>
-      <td>0.456579</td>
-      <td>0.136293</td>
-      <td>0.957082</td>
-      <td>0.042918</td>
-      <td>00:02</td>
+      <td>0.373909</td>
+      <td>0.143650</td>
+      <td>0.949928</td>
+      <td>0.050072</td>
+      <td>00:00</td>
     </tr>
   </tbody>
 </table>
@@ -400,7 +420,7 @@ Total time: 00:07 <p><table border="1" class="dataframe">
 
 
 <div class="output_html rendered_html output_subarea ">
-Total time: 00:07 <p><table border="1" class="dataframe">
+Total time: 00:01 <p><table border="1" class="dataframe">
   <thead>
     <tr style="text-align: left;">
       <th>epoch</th>
@@ -414,27 +434,27 @@ Total time: 00:07 <p><table border="1" class="dataframe">
   <tbody>
     <tr>
       <td>0</td>
-      <td>0.199119</td>
-      <td>0.129035</td>
-      <td>0.948498</td>
-      <td>0.051502</td>
-      <td>00:02</td>
+      <td>0.183963</td>
+      <td>0.122757</td>
+      <td>0.959943</td>
+      <td>0.040057</td>
+      <td>00:00</td>
     </tr>
     <tr>
       <td>1</td>
-      <td>0.196880</td>
-      <td>0.114480</td>
+      <td>0.178876</td>
+      <td>0.115903</td>
       <td>0.962804</td>
       <td>0.037196</td>
-      <td>00:02</td>
+      <td>00:00</td>
     </tr>
     <tr>
       <td>2</td>
-      <td>0.184217</td>
-      <td>0.115439</td>
-      <td>0.958512</td>
-      <td>0.041488</td>
-      <td>00:02</td>
+      <td>0.168711</td>
+      <td>0.111773</td>
+      <td>0.965665</td>
+      <td>0.034335</td>
+      <td>00:00</td>
     </tr>
   </tbody>
 </table>
@@ -488,36 +508,32 @@ Total time: 00:07 <p><table border="1" class="dataframe">
       <th>valid_loss</th>
       <th>accuracy</th>
       <th>error_rate</th>
-      <th>time</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <th>0</th>
       <td>0</td>
-      <td>0.677157</td>
-      <td>0.625889</td>
-      <td>0.872675</td>
-      <td>0.127325</td>
-      <td>NaN</td>
+      <td>0.608057</td>
+      <td>0.494046</td>
+      <td>0.826896</td>
+      <td>0.173104</td>
     </tr>
     <tr>
       <th>1</th>
       <td>1</td>
-      <td>0.596646</td>
-      <td>0.330701</td>
-      <td>0.955651</td>
-      <td>0.044349</td>
-      <td>NaN</td>
+      <td>0.488925</td>
+      <td>0.235610</td>
+      <td>0.938484</td>
+      <td>0.061516</td>
     </tr>
     <tr>
       <th>2</th>
       <td>2</td>
-      <td>0.456579</td>
-      <td>0.136293</td>
-      <td>0.957082</td>
-      <td>0.042918</td>
-      <td>NaN</td>
+      <td>0.373909</td>
+      <td>0.143650</td>
+      <td>0.949928</td>
+      <td>0.050072</td>
     </tr>
     <tr>
       <th>3</th>
@@ -526,34 +542,30 @@ Total time: 00:07 <p><table border="1" class="dataframe">
       <td>valid_loss</td>
       <td>accuracy</td>
       <td>error_rate</td>
-      <td>time</td>
     </tr>
     <tr>
       <th>4</th>
       <td>0</td>
-      <td>0.199119</td>
-      <td>0.129035</td>
-      <td>0.948498</td>
-      <td>0.051502</td>
-      <td>NaN</td>
+      <td>0.183963</td>
+      <td>0.122757</td>
+      <td>0.959943</td>
+      <td>0.040057</td>
     </tr>
     <tr>
       <th>5</th>
       <td>1</td>
-      <td>0.196880</td>
-      <td>0.114480</td>
+      <td>0.178876</td>
+      <td>0.115903</td>
       <td>0.962804</td>
       <td>0.037196</td>
-      <td>NaN</td>
     </tr>
     <tr>
       <th>6</th>
       <td>2</td>
-      <td>0.184217</td>
-      <td>0.115439</td>
-      <td>0.958512</td>
-      <td>0.041488</td>
-      <td>NaN</td>
+      <td>0.168711</td>
+      <td>0.111773</td>
+      <td>0.965665</td>
+      <td>0.034335</td>
     </tr>
   </tbody>
 </table>
