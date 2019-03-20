@@ -21,7 +21,7 @@ class CSVLogger(LearnerCallback):
         "Prepare file with metric names."
         self.path.parent.mkdir(parents=True, exist_ok=True)      
         self.file = self.path.open('a') if self.append else self.path.open('w')
-        self.file.write(','.join(self.learn.recorder.names) + '\n')
+        self.file.write(','.join(self.learn.recorder.names[:-1]) + '\n')
         
     def on_epoch_end(self, epoch: int, smooth_loss: Tensor, last_metrics: MetricsList, **kwargs: Any) -> bool:
         "Add a line with `epoch` number, `smooth_loss` and `last_metrics`."
