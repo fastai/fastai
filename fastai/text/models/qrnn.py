@@ -151,7 +151,8 @@ class QRNN(nn.Module):
     def reset(self):
         "If your convolutional window is greater than 1 and you save previous xs, you must reset at the beginning of each new sequence."
         for layer in self.layers:     layer.reset()
-        for layer in self.layers_bwd: layer.reset()    
+        if self.bidirectional:
+            for layer in self.layers_bwd: layer.reset()    
 
     def forward(self, inp, hid=None):
         new_hid = []
