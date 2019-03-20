@@ -161,7 +161,7 @@ class Config():
         fpath = _expand_path(fpath or cls.DEFAULT_CONFIG_PATH)
         if not fpath.exists() and create_missing: cls.create(fpath)
         assert fpath.exists(), f'Could not find config at: {fpath}. Please create'
-        with open(fpath, 'r') as yaml_file: return yaml.load(yaml_file)
+        with open(fpath, 'r') as yaml_file: return yaml.safe_load(yaml_file)
 
     @classmethod
     def create(cls, fpath):

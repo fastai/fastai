@@ -129,24 +129,21 @@ class QRNNLayer(nn.Module):
 class QRNN(nn.Module):
     "Apply a multiple layer Quasi-Recurrent Neural Network (QRNN) to an input sequence."
 
-    def __init__(self, input_size:int, hidden_size:int, num_layers:int=1, bias:bool=True, batch_first:bool=True,
-                 dropout:float=0, bidirectional:bool=False, save_prev_x:bool=False, zoneout:float=0, window:int=1, 
+    def __init__(self, input_size:int, hidden_size:int, n_layers:int=1, bias:bool=True, batch_first:bool=True,
+                 dropout:float=0, bidirectional:bool=False, save_prev_x:bool=False, zoneout:float=0, window:int=None, 
                  output_gate:bool=True):
         assert not (save_prev_x and bidirectional), "Can't save the previous X with bidirectional."
         assert bias == True, 'Removing underlying bias is not yet supported'
         super().__init__()
-        kwargs = dict(batch_first=batch_first, zoneout=zoneout, window=window, output_gate=output_gate)
-        if bidirectional:
-            qrnns = [QRNNLayer(input_size if l//2 == 0 else hidden_size, hidden_size, backward=(l%2==1), **kwargs) 
-                              for l in range(2*num_layers)]
-        else:
-            qrnns = [QRNNLayer(input_size if l == 0 else hidden_size, hidden_size, **kwargs) for l in range(num_layers)]
-        self.layers = nn.ModuleList([QRNNLayer(input_size if l == 0 else hidden_size, hidden_size, **kwargs) 
-                                     for l in range(num_layers)])
+        kwargs = dict(batch_first=batch_first, zoneout=zoneout, output_gate=output_gate)
+        self.layers = nn.ModuleList([QRNNLayer(input_size if l == 0 else hidden_size, hidden_size, 
+                                               window=((2 if l ==0 else 1) if window is None else window), **kwargs) 
+                                     for l in range(n_layers)])
         if bidirectional:
             self.layers_bwd = nn.ModuleList([QRNNLayer(input_size if l == 0 else hidden_size, hidden_size, 
-                                                       backward=True, **kwargs) for l in range(num_layers)])
-        self.num_layers,self.batch_first,self.dropout,self.bidirectional = num_layers,batch_first,dropout,bidirectional
+                                                       backward=True, window=((2 if l ==0 else 1) if window is None else window), 
+                                                       **kwargs) for l in range(n_layers)])
+        self.n_layers,self.batch_first,self.dropout,self.bidirectional = n_layers,batch_first,dropout,bidirectional
         
     def reset(self):
         "If your convolutional window is greater than 1 and you save previous xs, you must reset at the beginning of each new sequence."
