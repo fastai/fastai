@@ -482,7 +482,8 @@ class Recorder(LearnerCallback):
 
     def add_metric_names(self, names):
         "Add `names` to the inner metric names."
-        self._added_met_names = names
+        if hasattr(self, '_added_met_names'): self._added_met_names += names
+        else:                                 self._added_met_names  = names
 
     def plot_lr(self, show_moms=False, skip_start:int=0, skip_end:int=0, return_fig:bool=None)->Optional[plt.Figure]:
         "Plot learning rate, `show_moms` to include momentum."
