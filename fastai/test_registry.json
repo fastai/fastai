@@ -839,15 +839,22 @@
     "fastai.text.models.qrnn.QRNN": [
         {
             "file": "tests/test_text_qrnn.py",
-            "line": 102,
+            "line": 107,
             "test": "test_qrnn_bidir"
         }
     ],
     "fastai.text.models.qrnn.QRNNLayer": [
         {
             "file": "tests/test_text_qrnn.py",
-            "line": 86,
+            "line": 90,
             "test": "test_qrnn_layer"
+        }
+    ],
+    "fastai.text.models.qrnn.forget_mult": [
+        {
+            "file": "tests/test_text_qrnn.py",
+            "line": 78,
+            "test": "test_forget_mult"
         }
     ],
     "fastai.text.models.qrnn.forget_mult_CPU": [

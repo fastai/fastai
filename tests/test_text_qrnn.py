@@ -1,10 +1,14 @@
 import pytest,torch
-from fastai.gen_doc.doctest import this_tests
-from fastai.text.models.qrnn import ForgetMultGPU, BwdForgetMultGPU, forget_mult_CPU, QRNN, QRNNLayer
+try:
+  from fastai.gen_doc.doctest import this_tests
+except:
+    def this_tests(x):
+        print (x)
+from fastai.text.models.qrnn import forget_mult, QRNN, QRNNLayer
 
-@pytest.mark.cuda
-@pytest.mark.cpp
-def test_forget_mult_forward_gpu():
+#@pytest.mark.cuda
+#@pytest.mark.cpp
+def x_test_forget_mult_forward_gpu():
     this_tests(ForgetMultGPU)
     dtype = torch.double
     x,f,h,expected = range(3,8),[0.5]*5,1,range(1,7)
@@ -23,9 +27,9 @@ def random_inputs(shape, batch_first, **opts):
 def detach_and_clone(t):
     return t.detach().clone().requires_grad_(True)
 
-@pytest.mark.cuda
-@pytest.mark.cpp
-def test_forget_mult_cuda():
+#@pytest.mark.cuda
+#@pytest.mark.cpp
+def x_test_forget_mult_cuda():
     this_tests(ForgetMultGPU, BwdForgetMultGPU)
     x,f = torch.randn(5,3,20).cuda().chunk(2, dim=2)
     x,f = x.contiguous().requires_grad_(True),f.contiguous().requires_grad_(True)
@@ -72,15 +76,15 @@ def manual_forget_mult(x, f, h=None, batch_first=True, backward=False):
     return out
 
 def test_forget_mult():
-    this_tests(forget_mult_CPU)
+    this_tests(forget_mult)
     x,f = torch.randn(5,3,20).chunk(2, dim=2)
     for (bf, bw) in [(True,True), (False,True), (True,False), (False,False)]:
         th_out = manual_forget_mult(x, f, batch_first=bf, backward=bw)
-        out = forget_mult_CPU(x, f, batch_first=bf, backward=bw)
+        out = forget_mult(x, f, batch_first=bf, backward=bw)
         assert torch.allclose(th_out,out)
         h = torch.randn((5 if bf else 3), 10)
         th_out = manual_forget_mult(x, f, h=h, batch_first=bf, backward=bw)
-        out = forget_mult_CPU(x, f, hidden_init=h, batch_first=bf, backward=bw)
+        out = forget_mult(x, f, hidden_init=h, batch_first=bf, backward=bw)
         assert torch.allclose(th_out,out)
         
 def test_qrnn_layer():
@@ -92,6 +96,7 @@ def test_qrnn_layer():
     x_bwd = x_fwd.clone().flip(1)
     y_fwd,h_fwd = qrnn_fwd(x_fwd)
     y_bwd,h_bwd = qrnn_bwd(x_bwd)
+    print ((y_fwd - y_bwd.flip(1))/y_fwd.abs(), y_fwd.shape)
     assert torch.allclose(y_fwd, y_bwd.flip(1), rtol=1e-4, atol=1e-5)
     assert torch.allclose(h_fwd, h_bwd, rtol=1e-4, atol=1e-5)
     y_fwd,h_fwd = qrnn_fwd(x_fwd, h_fwd)
