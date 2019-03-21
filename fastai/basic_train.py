@@ -319,7 +319,8 @@ class Learner():
         cb_state = state.pop('cb_state')
         self.callbacks = [load_callback(c,s, self) for c,s in cb_state.items()]
         if not clear_opt and 'opt' in state:
-            self.opt = OptimWrapper.load_with_state_and_layer_group(state['opt'], self.layer_groups)
+            try: self.opt = OptimWrapper.load_with_state_and_layer_group(state['opt'], self.layer_groups)
+            except: warn("Wasn't able to properly load the optimizer state again.")
         del state
         gc.collect()
         return self
