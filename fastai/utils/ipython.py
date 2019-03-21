@@ -18,9 +18,11 @@ IS_IN_IPYTHON = is_in_ipython()
 
 def is_in_colab():
     "Is the code running in Google Colaboratory?"
-    return (IS_IN_IPYTHON and
-            __name__ == '__main__' and
-            get_ipython().__class__.__module__ == 'google.colab._shell')
+    if not IS_IN_IPYTHON: return False
+    try:
+        from google import colab
+        return True
+    except: return False
 
 IS_IN_COLAB = is_in_colab()
 
