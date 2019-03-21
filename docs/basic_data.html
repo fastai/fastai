@@ -48,7 +48,7 @@ summary: "Basic classes to contain the data for model training."
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>It also ensure all the dataloaders are on <code>device</code> and apply to them <code>tfms</code> as batch are drawn (like normalization). <code>path</code> is used internally to store temporary files, <code>collate_fn</code> is passed to the pytorch <code>Dataloader</code> (replacing the one there) to explain how to collate the samples picked for a batch. By default, it applies data to the object sent (see in <a href="/vision.image.html#vision.image"><code>vision.image</code></a> or the <a href="/data_block.html">data block API</a> why this can be important).</p>
+<p>It also ensure all the dataloaders are on <code>device</code> and apply to them <code>dl_tfms</code> as batch are drawn (like normalization). <code>path</code> is used internally to store temporary files, <code>collate_fn</code> is passed to the pytorch <code>Dataloader</code> (replacing the one there) to explain how to collate the samples picked for a batch. By default, it applies data to the object sent (see in <a href="/vision.image.html#vision.image"><code>vision.image</code></a> or the <a href="/data_block.html">data block API</a> why this can be important).</p>
 <p><code>train_dl</code>, <code>valid_dl</code> and optionally <code>test_dl</code> will be wrapped in <a href="/basic_data.html#DeviceDataLoader"><code>DeviceDataLoader</code></a>.</p>
 
 </div>
