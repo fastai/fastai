@@ -1,6 +1,7 @@
 "ipython utils"
 
 import os, functools, traceback, gc
+from IPython import get_ipython
 
 def is_in_ipython():
     "Is the code running in the ipython environment (jupyter including)"
