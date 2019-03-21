@@ -278,7 +278,8 @@ class ItemList():
 
     def label_empty(self, **kwargs):
         "Label every item with an `EmptyLabel`."
-        return self.label_from_func(func=lambda o: 0., label_cls=EmptyLabelList)
+        kwargs['label_cls'] = EmptyLabelList
+        return self.label_from_func(func=lambda o: 0., **kwargs)
 
     def label_from_func(self, func:Callable, label_cls:Callable=None, **kwargs)->'LabelList':
         "Apply `func` to every input to get its label."
