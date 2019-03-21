@@ -79,7 +79,7 @@ docs/*.md ------------------------------> docs.fast.ai/*html
 
 At the end of stages 1 and 2 `git commit` and `git push` are needed, the 3rd stage happens automatically. `*md` files require no stage 2.
 
-So once your PR is merged, we rebuild the docs (using `tools/build-docs`) and then when we commit the rebuilt docs, githubpages usually updates the website automatically within a few minutes. Therefore, if you see that your changes aren't visible on the website, despite your PR being merged, it's because the seconds stage hasn't been done. It happens once a day or so, so please be patient.
+Some time later after your PR is merged, we rebuild the docs (using `tools/build-docs`) and then we commit/push the rebuilt docs, githubpages usually updates the website automatically within a few minutes. Therefore, if you see that your changes aren't visible on the website, despite your PR being merged, it's because the seconds stage hasn't been done. It happens once a day or so, so please be patient.
 
 If you find this section's instructions unclear or difficult to follow, please, kindly let us know in this [thread](https://forums.fast.ai/t/documentation-improvements/32550), so that we could improve them.
 
