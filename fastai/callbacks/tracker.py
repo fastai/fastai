@@ -40,10 +40,11 @@ class TrackerCallback(LearnerCallback):
         "Pick the monitored value."
         if self.monitor=='trn_loss' and len(self.learn.recorder.losses) == 0: return None
         elif len(self.learn.recorder.val_losses) == 0: return None
-        values = {'trn_loss':self.learn.recorder.losses[-1:][0].cpu().numpy(),
-                  'val_loss':self.learn.recorder.val_losses[-1:][0]}
-        for i, name in enumerate(self.learn.recorder.names[3:-1]):
-            values[name]=self.learn.recorder.metrics[-1:][0][i]
+        values = {'trn_loss':self.learn.recorder.losses[-1].cpu().numpy(),
+                  'val_loss':self.learn.recorder.val_losses[-1]}
+        if values['val_loss'] is None: return
+        for m, n in zip(self.learn.recorder.metrics[-1],self.learn.recorder.names[3:-1]):
+            values[n] = m
         if values.get(self.monitor) is None:
             warn(f'{self.__class__} conditioned on metric `{self.monitor}` which is not available. Available metrics are: {", ".join(map(str, self.learn.recorder.names[1:]))}')
         return values.get(self.monitor)
