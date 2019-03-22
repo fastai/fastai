@@ -4,7 +4,7 @@ from .image import *
 from .image import _affine_mult
 
 __all__ = ['brightness', 'contrast', 'crop', 'crop_pad', 'cutout', 'dihedral', 'dihedral_affine', 'flip_affine', 'flip_lr',
-           'get_transforms', 'jitter', 'pad', 'perspective_warp', 'rand_pad', 'rand_crop', 'rand_zoom', 'rotate', 'skew', 'squish',
+           'get_transforms', 'jitter', 'pad', 'perspective_warp', 'rand_pad', 'rand_crop', 'rand_zoom', 'rgb_randomise', 'rotate', 'skew', 'squish',
            'rand_resize_crop', 'symmetric_warp', 'tilt', 'zoom', 'zoom_crop']
 
 _pad_mode_convert = {'reflection':'reflect', 'zeros':'constant', 'border':'replicate'}
@@ -133,6 +133,14 @@ def _cutout(x, n_holes:uniform_int=1, length:uniform_int=40):
     return x
 
 cutout = TfmPixel(_cutout, order=20)
+
+def _rgb_randomise(x, channel:int=None, thresh:float=0.3):
+    "Randomise one of the channels of the input image"
+    if channel is None: channel = np.random.randint(0, x.shape[0] - 1)
+    x[channel] = torch.rand(x.shape[1:]) * np.random.uniform(0, thresh)
+    return x
+
+rgb_randomise = TfmPixel(_rgb_randomise)
 
 def _minus_epsilon(row_pct:float, col_pct:float, eps:float=1e-7):
     if row_pct==1.: row_pct -= 1e-7
@@ -334,6 +342,5 @@ zoom_squish = TfmCoord(_zoom_squish)
 
 def rand_resize_crop(size:int, max_scale:float=2., ratios:Tuple[float,float]=(0.75,1.33)):
     "Randomly resize and crop the image to a ratio in `ratios` after a zoom of `max_scale`."
-    return [zoom_squish(scale=(1.,max_scale,8), squish=(*ratios,8), invert=(0.5,8), row_pct=(0.,1.), col_pct=(0.,1.)), 
+    return [zoom_squish(scale=(1.,max_scale,8), squish=(*ratios,8), invert=(0.5,8), row_pct=(0.,1.), col_pct=(0.,1.)),
             crop(size=size)]
-
