@@ -209,6 +209,9 @@ entries:
     - output: web,pdf
       title: DL on a Shoestring
       url: /tutorial.resources.html
+    - output: web,pdf
+      title: Distributed training
+      url: /distributed.html
     output: web
     title: Tutorials
   - folderitems:
