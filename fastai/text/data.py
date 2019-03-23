@@ -71,9 +71,8 @@ class LanguageModelPreLoader(Callback):
 
     def __getitem__(self, k:int):
         j = k % self.bs
-        if j==0:
-            if self.item is not None: return self.dataset[0]
-            if self.idx is None: self.on_epoch_begin()
+        if self.item is not None: return self.dataset[0]
+        if self.idx is None: self.on_epoch_begin()
         self.ro[j],self.ri[j] = self.fill_row(not self.backwards, self.dataset.x.items, self.idx, self.batch[j],
                                               self.ro[j], self.ri[j], overlap=1, lengths=self.lengths)
         return self.batch_x[j], self.batch_y[j]
