@@ -287,7 +287,8 @@ class ItemList():
 
     def label_from_folder(self, label_cls:Callable=None, **kwargs)->'LabelList':
         "Give a label to each filename depending on its folder."
-        return self.label_from_func(func=lambda o: o.parts[-2], label_cls=label_cls, **kwargs)
+        labels_func = lambda o: int(o.parts[-2]) if o.parts[-2].isdigit() else o.parts[-2]
+        return self.label_from_func(func=labels_func, label_cls=label_cls, **kwargs)
 
     def label_from_re(self, pat:str, full_path:bool=False, label_cls:Callable=None, **kwargs)->'LabelList':
         "Apply the re in `pat` to determine the label of every filename.  If `full_path`, search in the full name."
