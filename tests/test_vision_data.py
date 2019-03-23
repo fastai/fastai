@@ -137,7 +137,7 @@ def test_denormalize(path):
     original_x, y = data.one_batch(ds_type=DatasetType.Valid, denorm=False)
     data.normalize()
     normalized_x, y = data.one_batch(ds_type=DatasetType.Valid, denorm=False)
-    denormalized = denormalize(normalized_x, original_x.mean(), original_x.std())
+    denormalized = denormalize(normalized_x, *data.stats)
     assert round(original_x.mean().item(), 3) == round(denormalized.mean().item(), 3)
     assert round(original_x.std().item(), 3) == round(denormalized.std().item(), 3)
 
