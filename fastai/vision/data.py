@@ -164,10 +164,9 @@ class ImageDataBunch(DataBunch):
         sd = ImageList([], path=path, ignore_empty=True).split_none()
         return sd.label_const(0, label_cls=CategoryList, classes=classes).transform(ds_tfms, **kwargs).databunch()
 
-    def batch_stats(self, funcs:Collection[Callable]=None)->Tensor:
+    def batch_stats(self, funcs:Collection[Callable]=None, ds_type:DatasetType=DatasetType.Train)->Tensor:
         "Grab a batch of data and call reduction function `func` per channel"
         funcs = ifnone(funcs, [torch.mean,torch.std])
-        ds_type = DatasetType.Valid if self.valid_dl else DatasetType.Train
         x = self.one_batch(ds_type=ds_type, denorm=False)[0].cpu()
         return [func(channel_view(x), 1) for func in funcs]
 
