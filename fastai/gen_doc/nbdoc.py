@@ -277,7 +277,6 @@ def fn_name(ft)->str:
 
 def get_fn_link(ft)->str:
     "Return function link to notebook documentation of `ft`. Private functions link to source code"
-    is_method = inspect.ismethod(ft)
     ft = getattr(ft, '__func__', ft)
     anchor = strip_fastai(get_anchor(ft))
     module_name = strip_fastai(get_module_name(ft))
