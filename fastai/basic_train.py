@@ -558,15 +558,18 @@ class Recorder(LearnerCallback):
         if ifnone(return_fig, defaults.return_fig): return fig
         if not IN_NOTEBOOK: plot_sixel(fig)
 
-    def plot_metrics(self, return_fig:bool=None)->Optional[plt.Figure]:
+    def plot_metrics(self, skip_start:int=0, skip_end:int=0, return_fig:bool=None)->Optional[plt.Figure]:
         "Plot metrics collected during training."
         assert len(self.metrics) != 0, "There are no metrics to plot."
         fig, axes = plt.subplots(len(self.metrics[0]),1,figsize=(6, 4*len(self.metrics[0])))
-        val_iter = self.nb_batches
-        val_iter = np.cumsum(val_iter)
+        val_iter = np.cumsum(self.nb_batches)
+        start_val = (val_iter - skip_start >= 0).nonzero()[0].min()
+        end_val = (val_iter[-1] - val_iter - skip_end >= 0).nonzero()[0].max()+1
+        val_iter = val_iter[start_val:end_val] if skip_end > 0 else val_iter[start_val:]
         axes = axes.flatten() if len(self.metrics[0]) != 1 else [axes]
         for i, ax in enumerate(axes):
             values = [met[i] for met in self.metrics]
+            values = values[start_val:end_val] if skip_end > 0 else values[start_val:]
             ax.plot(val_iter, values)
         if ifnone(return_fig, defaults.return_fig): return fig
         if not IN_NOTEBOOK: plot_sixel(fig)
