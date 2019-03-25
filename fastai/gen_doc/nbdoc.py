@@ -104,7 +104,7 @@ def show_doc(elt, doc_string:bool=True, full_name:str=None, arg_comments:dict=No
              ignore_warn:bool=False, markdown=True, show_tests=True):
     "Show documentation for element `elt`. Supported types: class, Callable, and enum."
     arg_comments = ifnone(arg_comments, {})
-    anchor_id = full_name or get_anchor(elt)
+    anchor_id = get_anchor(elt)
     elt = getattr(elt, '__func__', elt)
     full_name = full_name or fn_name(elt)
     if inspect.isclass(elt):
@@ -277,11 +277,12 @@ def fn_name(ft)->str:
 
 def get_fn_link(ft)->str:
     "Return function link to notebook documentation of `ft`. Private functions link to source code"
+    is_method = inspect.ismethod(ft)
     ft = getattr(ft, '__func__', ft)
     anchor = strip_fastai(get_anchor(ft))
     module_name = strip_fastai(get_module_name(ft))
     func_name = strip_fastai(fn_name(ft))
-    if func_name.startswith('_'): return get_function_source(ft, display_text=None)
+    if func_name.startswith('_') and not is_method: return get_function_source(ft, display_text=None)
     base = '' if use_relative_links else FASTAI_DOCS
     return f'{base}/{module_name}.html#{anchor}'
 
