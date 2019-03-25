@@ -281,8 +281,6 @@ def get_fn_link(ft)->str:
     ft = getattr(ft, '__func__', ft)
     anchor = strip_fastai(get_anchor(ft))
     module_name = strip_fastai(get_module_name(ft))
-    func_name = strip_fastai(fn_name(ft))
-    if func_name.startswith('_') and not is_method: return get_function_source(ft, display_text=None)
     base = '' if use_relative_links else FASTAI_DOCS
     return f'{base}/{module_name}.html#{anchor}'
 
