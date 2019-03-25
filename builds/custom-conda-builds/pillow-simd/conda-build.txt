@@ -21,6 +21,7 @@ https://github.com/conda-forge/python-feedstock/issues/220
 
 ## Prep
 
+sudo apt-get install libjpeg-dev zlib1g-dev
 conda install -y conda-build conda-verify
 cd builds/custom-conda-builds/pillow-simd # this dir
 git clone https://github.com/uploadcare/pillow-simd/ Pillow-SIMD

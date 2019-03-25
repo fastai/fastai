@@ -199,22 +199,21 @@ else:
 
 ### Conda packages
 
-The `fastai` conda (test) channel has a `pillow` package built against a custom build of `libjpeg-turbo`. There are 3.6 and 3.7 linux builds:
+The `fastai` conda (test) channel has an experimental `pillow` package built against a custom build of `libjpeg-turbo`. There are python 3.6 and 3.7 linux builds:
 
 To install:
 ```
-conda uninstall -y pillow libjpeg-turbo
+conda uninstall -y --force pillow libjpeg-turbo
 conda install -c fastai/label/test pillow
 ```
 
-Note that this is pillow-5.4.0.dev0 build - i.e. don't use in production w/o testing.
-
-There is also `pillow-simd-5.3.0.post0` built against `libjpeg-turbo` and with avx2 - only linux/py36.
-
+There is also an experimental `pillow-simd-5.3.0.post0` conda package built against `libjpeg-turbo` and compiled with `avx2`. Try it only for python 3.6 on linux.
 ```
-conda uninstall -y pillow libjpeg-turbo
+conda uninstall -y --force pillow libjpeg-turbo
 conda install -c fastai/label/test pillow-simd
 ```
+
+It probably won't work on your setup unless its CPU has the same capability as the one it was built on (Intel). So if it doesn't work, install `pillow-simd` from [source](https://github.com/uploadcare/pillow-simd#installation) instead.
 
 Note that `pillow-simd` will get overwritten by `pillow` through update/install of any other package depending on `pillow`. You can fool `pillow-simd` into believing it is `pillow` and then it'll not get wiped out. You will have to [make a local build for that](https://github.com/fastai/fastai/blob/master/builds/custom-conda-builds/pillow-simd/conda-build.txt).
 

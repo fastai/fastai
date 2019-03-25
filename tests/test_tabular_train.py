@@ -1,5 +1,7 @@
 import pytest
+from fastai.gen_doc.doctest import this_tests
 from fastai.tabular import *
+from fastai.train import ClassificationInterpretation
 
 pytestmark = pytest.mark.integration
 path = untar_data(URLs.ADULT_SAMPLE)
@@ -8,7 +10,7 @@ path = untar_data(URLs.ADULT_SAMPLE)
 def learn():
     df = pd.read_csv(path/'adult.csv')
     procs = [FillMissing, Categorify, Normalize]
-    dep_var = '>=50k'
+    dep_var = 'salary'
     cat_names = ['workclass', 'education', 'marital-status', 'occupation', 'relationship', 'race', 'sex', 'native-country']
     cont_names = ['age', 'fnlwgt', 'education-num']
     test = TabularList.from_df(df.iloc[800:1000].copy(), path=path, cat_names=cat_names, cont_names=cont_names)
@@ -21,9 +23,12 @@ def learn():
     learn.fit_one_cycle(2, 1e-2)
     return learn
 
-def test_accuracy(learn): assert learn.validate()[1] > 0.7
+def test_accuracy(learn):
+    this_tests(validate)
+    assert learn.validate()[1] > 0.7
 
 def test_same_categories(learn):
+    this_tests('na')
     x_train,y_train = learn.data.train_ds[0]
     x_valid,y_valid = learn.data.valid_ds[0]
     x_test,y_test = learn.data.test_ds[0]
@@ -34,6 +39,7 @@ def test_same_categories(learn):
         assert np.all(x_train.classes[key] == x_test.classes[key])
 
 def test_same_fill_nan(learn):
+    this_tests('na')
     df = pd.read_csv(path/'adult.csv')
     nan_idx = np.where(df['education-num'].isnull())
     val = None
@@ -50,6 +56,7 @@ def test_normalize(learn):
     df = pd.read_csv(path/'adult.csv')
     train_df = df.iloc[0:800].append(df.iloc[1000:])
     c = 'age'
+    this_tests('na')
     mean, std = train_df[c].mean(), train_df[c].std()
     for i in np.random.randint(0,799, (20,)):
         x,y = learn.data.train_ds[i]
@@ -62,9 +69,10 @@ def test_normalize(learn):
         assert np.abs(x.conts[0] - (df.loc[i, c] - mean) / (1e-7 + std)) < 1e-6
 
 def test_empty_cont():
+    this_tests('na')
     df = pd.read_csv(path/'adult.csv')
     procs = [FillMissing, Categorify, Normalize]
-    dep_var = '>=50k'
+    dep_var = 'salary'
     cat_names = ['workclass', 'education', 'marital-status', 'occupation', 'relationship', 'race', 'sex', 'native-country']
     data = (TabularList.from_df(df, path=path, cat_names=cat_names, procs=procs)
             .split_by_idx(list(range(990,1000)))
@@ -73,3 +81,8 @@ def test_empty_cont():
     learn.fit_one_cycle(1, 1e-1)
     assert learn.validate()[1] > 0.5
 
+def test_confusion_tabular(learn):
+    interp = ClassificationInterpretation.from_learner(learn)
+    assert isinstance(interp.confusion_matrix(), (np.ndarray))
+    assert interp.confusion_matrix().sum() == len(learn.data.valid_ds)
+    this_tests(interp.confusion_matrix)

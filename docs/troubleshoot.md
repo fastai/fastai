@@ -34,7 +34,7 @@ If you have `nvidia-smi` working and `pytorch` still can't recognize your NVIDIA
 
    Note, not remove, but purge! purge in addition to removing the package, also removes package-specific configuration and any other files that were created by it.
 
-2. Once you uninstalled the old drivers, make sure you don't have any orphaned NVIDIA drivers on your system remaining from manual installs. Usually it's enough to run:
+2. Once you uninstalled the old drivers, make sure you don't have any orphaned NVIDIA drivers on your system remaining from manual installs. Usually, it's enough to run:
 
    ```
    find /usr/ | grep libcuda.so
@@ -389,29 +389,76 @@ and it should just work. Now, go and sort out the rest of the installation, so t
 
 
 
+## ModuleNotFoundError: No module named ‘fastai.vision’
+
+If you have multiple environments, it's very possible that you installed `fastai` into one environment, but then are trying to use it from another, where it's not installed. Even more confusing, the situation where different environments have different versions of `fastai` installed, so its modules are found, but they don't work as you'd expect them to.
+
+If you use jupyter notebook, always make sure you activated the environment you installed `fastai` into before starting the `notebook`.
+
+There is an easy way to check whether you're in the right environment by either running from jupyter cell or in your code:
+
+```
+import sys
+print(sys.path)
+```
+and checking whether it shows the correct paths. That is compare these paths with the paths you installed `fastai` into.
+
+Alternatively, you can use the `fastai` helper that will show you that and other important details about your environment:
+
+```
+from fastai.utils.show_install import *
+show_install()
+```
+
+or the same from the command line:
+```
+python -m fastai.utils.show_install
+```
+Incidentally, we want you to include its output in any bug reports you may submit in the future.
+
+One more situation this may happen is where you accidentally try to run fastai-1.0-based code from under `courses/*/` in the git repo, which includes a symlink to fastai-0.7 code base and then all the hell breaks loose. Just move your notebook away from those folders and all will be good.
+
+If `import fastai` works, but not `import fastai.vision`, do:
+```
+import sys
+import fastai
+print(sys.modules['fastai'])
+```
+and see which fastai got loaded - that will help you to untangle the conflict.
+
+
 ## Conda environments not showing up in Jupyter Notebook
 
 While normally you shouldn't have this problem, and all the required things should get installed automatically, some users report that their jupyter notebook
-does not recognize newly created environments at times. They reported the following to work:
+does not recognize newly created environments at times. To fix that, perform:
 
 ```
-conda activate fastai-3.6
-conda install jupyter
-conda install nb_conda
-conda install nb_conda_kernels
-conda install ipykernel
-python -m ipykernel install --user --name fastai-3.6 --display-name "Python (fastai-3.6)"
+conda activate fastai
+conda install jupyter nb_conda nb_conda_kernels ipykernel
+python -m ipykernel install --user --name fastai --display-name "Python (fastai)"
 ```
+Replace `fastai` with the name of your conda environment if it's different.
+
 See also [Kernels for different environments](https://ipython.readthedocs.io/en/stable/install/kernel_install.html#kernels-for-different-environments).
 
 
 ## CUDA Errors
 
-### cuda runtime error (59) : device-side assert triggered
+### CUDA out of memory exception
+
+When this error is encountered, that means the software cannot allocate the memory it needs to continue. Therefore you need to change your code to consume less memory. Most of the time in the training loops it requires either reducing the batch size and other hyper-parameters, using a smaller model or smaller items (images, etc.).
+
+There is a particular issue with this error is that under ipython/jupyter notebook this error may lead to an unrecoverable state, where the only way out is to restart the jupyter kernel. This problem is easily solved. Please see [Memory Leakage On Exception](
+#memory-leakage-on-exception).
+
+
+### device-side assert triggered
 
 CUDA's default environment allows sending commands to GPU in asynchronous mode - i.e. without waiting to check whether they were successful, thus tremendously speeding up the execution. The side effect is that if anything goes wrong, the context is gone and it's impossible to tell what the error was. That's when you get this generic error, which means that something went wrong on the GPU, but the program can't tell what.
 
-To debug this issue, the non-blocking CUDA mode needs to be turned off, which will slow everything down, but you will get the proper error message. You can accomplish that using several approaches:
+Moreover, the only way to recover from it is to restart the kernel. Other programs and kernels will still be able to use the card, so it only affects the kernel/program the error happened in.
+
+To debug this issue, the non-blocking CUDA mode needs to be turned off, which will slow everything down, but you will get the proper error message, albeit, it will still be unrecoverable. You can accomplish that using several approaches:
 
 * create a cell at the very top of the notebook.
    ```
@@ -437,6 +484,121 @@ Of course, if you're not using `jupyter notebook` then you can just set the env 
    ```
    CUDA_LAUNCH_BLOCKING=1 my_pytorch_script.py
    ```
+
+### cuda runtime error (11) : invalid argument
+
+If you get an error:
+```
+RuntimeError: cuda runtime error (11) : invalid argument at .../src/THC/THCGeneral.cpp
+```
+it's possible that your pytorch build doesn't support the NVIDIA Driver you have installed.
+
+For example, you may have a newer NVIDIA driver with an older pytorch CUDA build, which most of the time should work, as it should be backward compatible, but that is not always the case. So make sure that if you run a recent NVIDIA driver you install pytorch that is built against the latest CUDA version. Follow the instructions [here](https://pytorch.org/get-started/locally/).
+
+You will find the table of different CUDA versions and their NVDIA driver counterparts [here](https://github.com/fastai/fastai/blob/master/README.md#is-my-system-supported).
+
+
+
+## Memory Leakage On Exception
+
+This section applies to both general and GPU RAM.
+
+If an exception occurs in a jupyter notebook (or ipython shell) it stores the traceback of the exception so that it can be accessed by `%debug` and `%pdb` magic. The trouble is that this feature prevents variables involved in the exception (`locals()` in each frame involved) from being released and memory reclaimed by `gc.collect()`, when the exception is reported. And so all those variables get stuck and memory is leaked. In particular when [CUDA out of memory exception](#cuda-out-of-memory-exception) is encountered you might not be able to continue using the card, until the kernel is reset, since the leaked memory will leave no free RAM to proceed with.
+
+So now that you understand this, the quick fix solution is to just run a cell with this content:
+
+```
+1/0
+```
+
+and you should be back in the game w/o needing to restart the kernel. This fixed the problem since any new exception will free up the resources tied up by the previous exception. If you want something more instructive, use:
+
+```
+assert False, "please liberate my GPU!"
+```
+
+The leakage happens with any exception, except it's most problematic with CUDA OOM exception. For example if you tend to hit Kernel Interrupt and then re-run your training loop, you will have less RAM to run on when you re-run it.
+
+Currently, ipython is working on a configurable solution. This section will get updated once ipython has it sorted out. You can also follow the discussion [here](https://github.com/ipython/ipython/pull/11572).
+
+If you want to understand more about the nuances of the problem of saving a traceback or an exception object, please refer to [this explanation](https://stackoverflow.com/a/54295910/9201239).
+
+The rest of this section covers a variety of solutions for this problem.
+
+### fastai Solutions
+
+`fastai > 1.0.41` has been instrumented with the following features that will provide you a solution to this problem:
+
+1. under non-ipython environment it doesn't do anything special
+2. under ipython it strips tb by default only for the following exceptions:
+   * "CUDA out of memory"
+   * "device-side assert triggered"
+   that is the `%debug` magic will work under all other exceptions, and it'll leak memory until tb is reset.
+3.  The env var ` FASTAI_TB_CLEAR_FRAMES` changes this behavior when run under ipython,
+depending on its value:
+
+* "0": never  strip tb (makes it possible to always use %debug magic, but with leaks)
+* "1": always strip tb (never need to worry about leaks, but %debug won't work)
+
+where ipython == ipython/ipython-notebook/jupyter-notebook.
+
+At the moment we are only doing this for the fit() family of functions. If you find other fastai API needing this please let us know.
+
+You can set `os.environ['FASTAI_TB_CLEAR_FRAMES']="0"` (or `"1"`) in your code or from the shell when you start jupyter.
+
+### Custom Solutions
+
+If you need a solution for your own code that perhaps doesn't involve `fastai` functions, here is a decorator you can use to workaround this issue:
+
+```python
+import functools, traceback
+def gpu_mem_restore(func):
+    "Reclaim GPU RAM if CUDA out of memory happened, or execution was interrupted"
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except:
+            type, val, tb = sys.exc_info()
+            traceback.clear_frames(tb)
+            raise type(val).with_traceback(tb) from None
+    return wrapper
+```
+
+Now add it before any of your functions:
+
+```
+@gpu_mem_restore
+def fit(...)
+```
+and OOM is now automagically recoverable! And `KeyboardInterrupt` leaks no memory!
+
+And if you want to protect just a few lines of code, here is a context manager that does the same:
+```
+class gpu_mem_restore_ctx():
+    " context manager to reclaim GPU RAM if CUDA out of memory happened, or execution was interrupted"
+    def __enter__(self): return self
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if not exc_val: return True
+        traceback.clear_frames(exc_tb)
+        raise exc_type(exc_val).with_traceback(exc_tb) from None
+```
+So now you can do:
+
+```
+with gpu_mem_restore_ctx():
+    learn.fit_one_cycle(1, 1e-2)
+```
+with the same results. Except this one (fit functions) is already protected, this would be more useful for your custom code.
+
+Note, that the trick is in running: `traceback.clear_frames(tb)` to free all `locals()` tied to the exception object.
+
+Note that these help functions don't make any special cases and will do the clearing for any exception. Which means that you will not be able to use a debugger if you use those, since an `locals()` will be gone. You can, of course, use the more complicated versions of these functions from [fastai.utils.ipython](https://github.com/fastai/fastai/blob/master/fastai/utils/ipython.py) which have more flexibility as explained in the previous section.
+
+If you need the same solution outside of the fastai environment, you can either copy-n-paste it from this section, or alternatively similar helper functions (a function decorator and a context manager) are available via the [ipyexperiments](https://github.com/stas00/ipyexperiments) project, inside the [ipyexperiments.utils.ipython](https://github.com/stas00/ipyexperiments/blob/master/docs/utils_ipython.md) module.
+
+If after reading this section, you still have questions, please ask in this [thread](https://forums.fast.ai/t/a-guide-to-recovering-from-cuda-out-of-memory-and-other-exceptions/35849).
+
 
 ## Support
 

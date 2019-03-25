@@ -180,7 +180,7 @@ class CycleGANTrainer(LearnerCallback):
         metrics = self.learn.loss_func.metrics + [loss_D_A, loss_D_B]
         for n,m in zip(self.names,metrics): self.smootheners[n].add_value(m)
 
-    def on_epoch_end(self, **kwargs):
+    def on_epoch_end(self, last_metrics, **kwargs):
         "Put the various losses in the recorder."
-        self.learn.recorder.add_metrics([s.smooth for k,s in self.smootheners.items()])
-            
+        return add_metrics(last_metrics, [s.smooth for k,s in self.smootheners.items()])
+

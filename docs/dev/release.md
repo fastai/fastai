@@ -50,7 +50,7 @@ You can skip this step if you have done it once already on the system you're mak
 
 3. You can also setup your client to have transparent access to anaconda tools, see https://anaconda.org/YOURUSERNAME/settings/access (adjust the url to insert your username).
 
-    You don't really need it, as the anaconda client cashes your credentials so you need to login only infrequently.
+    You don't really need it, as the anaconda client caches your credentials so you need to login only infrequently.
 
 4. Install upload clients
 
@@ -59,7 +59,28 @@ You can skip this step if you have done it once already on the system you're mak
    ```
 
 
+
+## Pre-Release Process
+
+Normally, while testing the code, we only run `make test`, which completes within a few minutes. But we also have several sets of much heavier and slower, but more complete tests. These should be run and verified to be successful before starting a new release.
+
+1. Run the test suite, including the slower tests (not much longer than the `make test`:
+
+   ```
+   make test-full
+   ```
+
+2. Run the notebook tests (0.5-1h):
+
+   ```
+   cd docs_src
+   ./run_tests.sh
+   ```
+
+
+
 ## Quick Release Process
+
 
 No matter which release process you follow, always remember to start with:
 
@@ -81,9 +102,12 @@ If you need to make a hotfix to an already released version, follow the [Hotfix 
 Here is the "I'm feeling lucky" version, do not attempt unless you understand the build process.
 
 ```
-make release 2>&1 | tee release-`date +"%Y-%m-%d-%H:%M:%S"`.log
+make release
 ```
-Ideally, don't remove the part that saves the full log - you might need it later.
+
+This target will automatically log its stdout and stderr into a log file of date format `release-%Y-%m-%d-%H-%M-%S.log`.
+
+Ideally, please keep this file around for a few days in case we need to diagnose any problems with the release process at a later time.
 
 `make test`'s non-deterministic tests may decide to fail right during the release rites. It has now been moved to the head of the process, so if it fails not due to a bug but due to its unreliability, it won't affect the release process. Just rerun `make release` again.
 
@@ -165,6 +189,12 @@ The starting point of the workflow is a dev version of the master branch. For th
     make test                     # py.test tests
     ```
 
+    Another optional target is `test-cpu`, which emulates no gpus environment, by running the tests with environment variable `CUDA_VISIBLE_DEVICES=""`:
+    ```
+    make test-cpu
+    ```
+
+
 7. start release-$(version) branch
 
 
@@ -241,7 +271,7 @@ We are ready to make the new release branch:
                                   # conda install -y -c fastai fastai==1.0.6
     ```
 
-8. if some problems were detected during the release process, or something was committed by mistake into the release branch, and as a result changes were made to the release branch, merge those back into the master branch. Except for the version change in `fastaai/version.py`.
+8. if some problems were detected during the release process, or something was committed by mistake into the release branch, and as a result changes were made to the release branch, merge those back into the master branch. Except for the version change in `fastai/version.py`.
 
     1. check whether anything needs to be backported
 
@@ -449,12 +479,23 @@ To build a PyPI package and release it on [pypi.org/](https://pypi.org/project/f
     python setup.py sdist
     ```
 
-    `MANIFEST.in` is in charge of what source files are included in the package. If you want to include the whole directory `tests`, but not `tests/data` for example, adjust `MANIFEST.in` to have:
+    `MANIFEST.in` is in charge of what source files are included in the package. Here are some practical usage examples:
+
+    To include a sub-directory recursively, e.g. `docs` (one directory per instruction):
+    ```
+    graft docs
+    ```
+
+    If you want to include the whole directory `tests`, but not `tests/data` for example, adjust `MANIFEST.in` to have:
 
     ```
-    recursive-include tests *
+    graft tests
     prune tests/data
+    ```
 
+    To exclude some extensions from everywhere, e.g. all `*pyc` and `*.pyo`:
+    ```
+    global-exclude *.py[co]
     ```
 
     For more details, see [Creating a Source Distribution](https://docs.python.org/3/distutils/sourcedist.html)
@@ -877,7 +918,7 @@ Tagging targets:
 
     ```
     git checkout 9fceb02a
-    GIT_COMMITTER_DATE="$(git show --format=%aD | head -1)" git tag -a v1.0.5 -m "1.0.5"
+    GIT_COMMITTER_DATE="$(git show --format=%aD | head -1)" git tag -a 1.0.5 -m "1.0.5"
     git push --tags origin master
     git checkout master
     ```
@@ -948,7 +989,9 @@ Once, things were fixed, `git push`, etc...
 
 ## Hotfix Release Process
 
-If something found to be wrong in the last release, yet the HEAD is unstable to make a new release, instead apply the fix to the branch of the desired release and make a new hotfix release of that branch. Follow these step-by-step instructions to accomplish that:
+If something found to be wrong in the last release, yet the HEAD is unstable to make a new release, instead, apply the fixes to the branch of the desired release and make a new hotfix release of that branch. Follow these step-by-step instructions to accomplish that, which involved two parts - backporting (manual) and releasing (automated).
+
+Part 1: Backporting fixes and preparing for hotfix-release
 
 1. Start with the desired branch.
 
@@ -958,34 +1001,66 @@ If something found to be wrong in the last release, yet the HEAD is unstable to 
    git checkout release-1.0.36
    ```
 
-2. Apply desired fixes, document them in `CHANGES.md` and commit/push all changes to the branch.
+2. Apply the fix.
 
-3. Test.
+   a. Apply the desired fixes, e.g. applying some specific fix commit:
+
+   ```
+   git cherry-pick 34499e1b8
+   git push
+   ```
+
+   b. Document the fixes in `CHANGES.md` (the reason for this hotfix)
+
+   c. commit/push all changes to the branch.
+
+   ```
+   git commit CHANGES.md whatever-files-were-fixed
+   git push
+   ```
+
+Part 2. Making the hotfix release
+
+All of the following steps can be done in one command:
+
+   ```
+   make release-hotfix
+   ```
+
+If it fails, then pick up where it failed and continue with the step-by-step process as explained below.
+
+1. Check that everything is committed and good to go.
+
+   ```
+   make sanity-check-hotfix
+   ```
+
+2. Test.
 
    ```
    make test
    ```
 
-4. Adjust version.
+3. Adjust version.
 
    According to [PEP-0440](https://www.python.org/dev/peps/pep-0440/#post-releases) add `.post1` to the version, or if it already was a `.postX`, increment its version:
    ```
    make bump-post-release
    ```
 
-5. Commit and push all the changes to the branch.
+4. Commit and push all the changes to the branch.
 
    ```
    make commit-hotfix-push
    ```
 
-6. Make a new tag with the new version.
+5. Make a new tag with the new version.
 
    ```
    make tag-version-push
    ```
 
-7. Make updated release.
+6. Make updated release.
 
    ```
    make dist
@@ -1005,7 +1080,7 @@ If something found to be wrong in the last release, yet the HEAD is unstable to 
    make upload-pypi
    ```
 
-8. Test release.
+7. Test release.
 
    If you made a release on both platforms:
    ```
@@ -1020,12 +1095,14 @@ If something found to be wrong in the last release, yet the HEAD is unstable to 
    make test-install-conda
    ```
 
-
-9. Don't forget to switch back to the master branch for continued development.
+8. Don't forget to switch back to the master branch for continued development.
 
    ```
    make master-branch-switch
    ```
+
+When finished, make sure that the fix is in the `master` branch too, in case it was fixed in the release branch first.
+
 
 
 
@@ -1075,16 +1152,15 @@ When experimenting with different builds (in particular custom conda builds) the
 While CI builds now do exactly this, it might be still useful to be able to do it manually, since CI builds are very slow to tweak and experiment with. So here is a quick copy-n-paste recipe to build one and clean it up.
 
 ```
-conda create -y  python=3.6 --name fastai-py3.6
-conda activate fastai-py3.6
+conda create -y python=3.7 --name fastai-py3.7
+conda activate fastai-py3.7
 conda install -y conda
 conda install -y pip setuptools
-conda install -y -c pytorch pytorch cuda92 torchvision
-conda install -c fastai fastai
+conda install -y -c fastai -c pytorch fastai
 conda uninstall -y fastai
-pip install -e .
+pip install -e ".[dev]"
 conda deactivate
-conda env remove -y --name fastai-py3.6
+conda env remove -y --name fastai-py3.7
 ```
 
 ### Installed Packages
@@ -1109,6 +1185,8 @@ When debugging issues it helps to know what packages have been installed. The fo
    ```
 
 The comparison is useful for identifying differences in these two package environment (for example when CI build fails with pypi but not with conda).
+
+If you want an easier to read output use `conda-env-compare.pl` from [conda-tools](https://github.com/stas00/conda-tools).
 
 
 ### Package Dependencies
@@ -1351,24 +1429,31 @@ rm req1.txt req2.txt req.txt
 The same can be repeated for getting test requirements, just repeat the same process inside `tests` directory.
 
 
-## Copying packages for other channels
+### Copying packages from other channels
 
-Currently we want to use the version of spacy and some of its deps from the conda-forge channel, instead of the main anaconda channel. To do this, we copy the relevent packages in to our channel, as so:
+Currently we want to use the version of `spacy` and some of its deps from the `conda-forge` channel, instead of the main `anaconda` channel. To do this, we copy the desired packages and their dependencies in to our channel with:
 
 ```
-anaconda copy conda-forge/spacy/2.0.18 --to-owner fastai --from-label gcc7
-anaconda copy conda-forge/regex/2018.01.10 --to-owner fastai --from-label gcc7
-anaconda copy conda-forge/thinc/6.12.1 --to-owner fastai --from-label gcc7
+anaconda copy conda-forge/spacy/2.0.18 --to-owner fastai
+anaconda copy conda-forge/regex/2018.01.10 --to-owner fastai
+anaconda copy conda-forge/thinc/6.12.1 --to-owner fastai
 ```
 
-This copies all architectures, not just your current architecture.
+This copies all available architectures, and not just your current architecture.
+
+To copy from a specific label, e.g. `gcc7`, add `--from-label gcc7` to the commands above.
+
+Note that you can't re-copy. If for example the source has changed, or added an architecture. Currently, you have to delete the copy from the `fastai` channel and re-copy. Try to do that as fast as possible not to impact users.
+
+
+
 
 
 ### Conditional Dependencies
 
 Here is how to specify conditional dependencies, e.g. depending on python version:
 
-* Conda
+* Conda (do not use this!, see below)
 
    In `meta.yaml`:
    ```
@@ -1379,6 +1464,8 @@ Here is how to specify conditional dependencies, e.g. depending on python versio
    ```
    Here `# [py36]` tells `conda-build` that this requirement is only for python3.6, it's not a comment.
 
+   **Except** this doesn't work unless we start making py36 and py37 conda builds, which we don't. And if the above is used it'll break the dependency if it's built on py37. The problem is that conda can only handle conditional dependencies at build time, unlike pip that does it at install time!
+
 * Pypi
 
    In `setup.py`:
@@ -1387,6 +1474,8 @@ Here is how to specify conditional dependencies, e.g. depending on python versio
    requirements = ["dataclasses ; python_version<'3.7'", "fastprogress>=0.1.18", ...]
    ```
    Here `; python_version<'3.7'` instructs the wheel to use a dependency on `dataclasses` only for python versions lesser than `3.7`.
+
+   Unlike conda, pip checks conditional dependencies during install time, so the above actually works and doesn't require multiple wheel builds.
 
    This recent syntax requires `setuptools>=36.2` on the build system. For more info [see](https://hynek.me/articles/conditional-python-dependencies/).
 
@@ -1447,6 +1536,18 @@ Exclude | /docs
 Now repeat the same for "Pull request validation".
 
 Choose 'Save', under "Save & Queue".
+
+
+#### Skipping Jobs
+
+To skip a specific job from running, edit the spec to include:
+
+```
+- job: Foo
+  condition: False
+```
+
+Other conditions are documented [here](https://docs.microsoft.com/en-us/azure/devops/pipelines/process/conditions?view=azure-devops&tabs=yaml).
 
 
 #### Manual Jobs
@@ -1538,16 +1639,16 @@ Here is how to get segfault backtrace directly or via the core dump in a non-int
 
 #### Support
 
-- General Azure DevOps issues: https://developercommunity.visualstudio.com/spaces/21/index.html
-- Task-specific issues: https://github.com/Microsoft/azure-pipelines-tasks/issues/
-- Agent-specific issues: https://github.com/Microsoft/azure-pipelines-agent
+- [General Azure DevOps issues](https://developercommunity.visualstudio.com/spaces/21/index.html)
+- [Task-specific issues](https://github.com/Microsoft/azure-pipelines-tasks/issues/)
+- [Agent-specific issues](https://github.com/Microsoft/azure-pipelines-agent)
 
 
 ## Package Download Statistics
 
 How many times `fastai` was downloaded?
 
-  * from PyPI https://pepy.tech/project/fastai
-  * from Conda https://anaconda.org/fastai/fastai/files
+  * from [PyPI](https://pepy.tech/project/fastai)
+  * from [Conda](https://anaconda.org/fastai/fastai/files)
 
 The numbers are probably higher due to caches, CDNs, etc.

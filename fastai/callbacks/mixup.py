@@ -1,15 +1,13 @@
 "Implements [mixup](https://arxiv.org/abs/1710.09412) training method"
 from ..torch_core import *
 from ..callback import *
-from ..basic_train import Learner
+from ..basic_train import Learner, LearnerCallback
 
-@dataclass
-class MixUpCallback(Callback):
+class MixUpCallback(LearnerCallback):
     "Callback that creates the mixed-up input and target."
-    learner:Learner
-    alpha:float=0.4
-    stack_x:bool=False
-    stack_y:bool=True
+    def __init__(self, learn:Learner, alpha:float=0.4, stack_x:bool=False, stack_y:bool=True):
+        super().__init__(learn)
+        self.alpha,self.stack_x,self.stack_y = alpha,stack_x,stack_y
         
     def on_batch_begin(self, last_input, last_target, train, **kwargs):
         "Applies mixup to `last_input` and `last_target` if `train`."
@@ -29,7 +27,7 @@ class MixUpCallback(Callback):
             if len(last_target.shape) == 2:
                 lambd = lambd.unsqueeze(1).float()
             new_target = last_target.float() * lambd + y1.float() * (1-lambd)
-        return (new_input, new_target)  
+        return {'last_input': new_input, 'last_target': new_target}  
 
 class MixUpLoss(nn.Module):
     "Adapt the loss function `crit` to go with mixup."
