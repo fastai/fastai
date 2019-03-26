@@ -233,7 +233,7 @@ class PoolingLinearClassifier(nn.Module):
         raw_outputs,outputs,mask = input
         output = outputs[-1]
         avg_pool = output.masked_fill(mask[:,:,None], 0).mean(dim=1)
-        avg_pool *= output.size(1) / (output.size(1)-mask.float().sum(dim=1))[:,None]
+        avg_pool *= output.size(1) / (output.size(1)-mask.type(avg_pool.dtype).sum(dim=1))[:,None]
         max_pool = output.masked_fill(mask[:,:,None], -float('inf')).max(dim=1)[0]
         x = torch.cat([output[:,-1], max_pool, avg_pool], 1)
         x = self.layers(x)
