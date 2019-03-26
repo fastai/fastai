@@ -1,5 +1,5 @@
 import pytest
-from fastai import *
+from fastai.gen_doc.doctest import this_tests
 from fastai.vision import *
 
 def bbox2pic(corners, size):
@@ -13,14 +13,20 @@ def points2pic(points, size):
     for p in points: pic[0, max(0,int(p[0])-1):min(size, int(p[0])+1),max(0,int(p[1])-1):min(size, int(p[1])+1)] = 1.
     return Image(pic)
 
+def create_data(img, target, size, **kwargs):
+    ll = LabelList(ItemList([img]), ItemList([target]))
+    lls = LabelLists(Path('.'), ll, ll)
+    lls = lls.transform(get_transforms(), size=size, **kwargs)
+    return lls
+
 def test_points_data_aug():
     "Check that ImagePoints get changed with their input Image."
+    this_tests(ImagePoints)
     points = torch.randint(0,64, ((5,2)))
     img = points2pic(points, 64)
     pnts = ImagePoints(FlowField((64,64), points.float()))
-    tfms = get_transforms()
-    tfm_x = img.apply_tfms(tfms[0], size=64, mode='nearest')
-    tfm_y = pnts.apply_tfms(tfms[0], do_resolve=False, size=64)
+    lls = create_data(img, pnts, 64, mode='nearest')
+    tfm_x,tfm_y = lls.train[0]
     new_pnts = scale_flow(FlowField(tfm_y.size, tfm_y.data), to_unit=False).flow.round()
     fail = False
     for p in new_pnts.round():
@@ -29,6 +35,7 @@ def test_points_data_aug():
     assert not fail
 
 def test_bbox_data_aug():
+    this_tests(ImageBBox)
     "Check that ImagePoints get changed with their input Image."
     pick_box = True
     while pick_box:
@@ -38,9 +45,8 @@ def test_bbox_data_aug():
         pick_box = (corners[2:] - corners[:2]).min() < 2
     img = bbox2pic(corners, 64)
     bbox = ImageBBox.create(64, 64, [list(corners)])
-    tfms = get_transforms()
-    tfm_x = img.apply_tfms(tfms[0], size=64, mode='nearest', padding_mode='zeros')
-    tfm_y = bbox.apply_tfms(tfms[0], do_resolve=False, size=64, padding_mode='zeros')
+    lls = create_data(img, bbox, 64, mode='nearest', padding_mode='zeros')
+    tfm_x,tfm_y = lls.train[0]
     new_bb = ((tfm_y.data + 1) * 32)
     mask = (tfm_x.data[0] > 0.5).nonzero()
     if len(mask) == 0:
@@ -50,11 +56,11 @@ def test_bbox_data_aug():
         assert (new_bb - img_bb.float()).abs().max() < 2
 
 def test_mask_data_aug():
+    this_tests(Image, ImageSegment)
     points = torch.randint(0,2, ((1,64,64))).float()
     img, mask = Image(points), ImageSegment(points)
-    tfms = get_transforms()
-    tfm_x = img.apply_tfms(tfms[0], size=64, mode='nearest')
-    tfm_y = mask.apply_tfms(tfms[0], do_resolve=False, size=64)
+    lls = create_data(img, mask, 64, mode='nearest')
+    tfm_x,tfm_y = lls.train[0]
     new_mask = (tfm_x.data[0] > 0.5)
     assert (new_mask.float() - tfm_y.data[0].float()).sum() < 1.
 
@@ -75,6 +81,7 @@ def check_tfms(img, tfms, targets, **kwargs):
         check_image(img.apply_tfms(tfm, **kwargs), t)
 
 def test_all_warps():
+    this_tests(perspective_warp, skew, tilt)
     signs = [1,1,1,-1,-1,1,-1,-1]
     inputs = [[0,0], [0,0], [4,0], [4,0], [0,4], [0,4], [4,4], [4,4]]
     targets = [[0,1], [1,0], [4,1], [3,0], [0,3], [1,4], [4,3], [3,4]]
@@ -93,6 +100,7 @@ def test_all_warps():
         check_image(img_test(i).apply_tfms(tfm, do_resolve=False), t)
 
 def test_all_dihedral():
+    this_tests(dihedral)
     tfm = dihedral()
     img = img_test([0,1])
     targets = [[0,1], [4,1], [0,3], [4,3], [1,0], [1,4], [3,0], [3,4]]
@@ -101,6 +109,7 @@ def test_all_dihedral():
         check_image(img.apply_tfms(tfm, do_resolve=False), t)
 
 def test_deterministic_transforms():
+    this_tests(squish, zoom, rotate, flip_lr, flip_affine, pad, crop)
     img = img_test([3,3])
     check_tfms(img, [rotate(degrees=90), rotate(degrees=-90), flip_lr(), flip_affine()],
                [[1,3], [3,1], [3,1], [3,1]])
@@ -112,8 +121,15 @@ def test_deterministic_transforms():
     check_tfms(img_test([3,4]), pads, [[4,5], [[4,5],[4,6]], [[4,5],[6,5]]])
 
 def test_crop_without_size():
-    path = untar_data(URLs.MNIST_TINY)
-    files = get_image_files(path/'train'/'3')
-    img = open_image(files[0])
+    this_tests(crop)
+    path = untar_data(URLs.MNIST_TINY)/'train'/'3'
+    files = get_image_files(path)
+    img = open_image(path/files[0])
     tfms = get_transforms()
     img = img.apply_tfms(tfms[0])
+
+def test_crops_with_tensor_image_sizes():
+    this_tests(crop)
+    img = img_test([3,3])
+    crops = [crop(size=(1,4,4), row_pct=r, col_pct=c) for r,c in zip([0.,0.,0.5,0.99,0.99], [0.,0.99,0.5,0.,0.99])]
+    check_tfms(img, crops, [[3,3], [3,2],[2,2],[2,3],[2,2]])

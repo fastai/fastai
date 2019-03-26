@@ -1,0 +1,15 @@
+diff --git a/setup.py b/setup.py
+index 6c2e78e7..84611207 100755
+--- a/setup.py
++++ b/setup.py
+@@ -134,7 +134,7 @@ except (ImportError, OSError):
+     # pypy emits an oserror
+     _tkinter = None
+
+-NAME = 'Pillow-SIMD'
++NAME = 'Pillow' if 'REPLACEPILLOW' in os.environ else 'Pillow-SIMD'
+ PILLOW_VERSION = get_version()
+ JPEG_ROOT = None
+ JPEG2K_ROOT = None
+
+

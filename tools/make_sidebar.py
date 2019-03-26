@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 # create docs/_data/sidebars/home_sidebar.yml
 # from   docs_src/sidebar/sidebar_data.py

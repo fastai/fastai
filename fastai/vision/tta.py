@@ -30,6 +30,7 @@ def _tta_only(learn:Learner, ds_type:DatasetType=DatasetType.Valid, scale:float=
 Learner.tta_only = _tta_only
 
 def _TTA(learn:Learner, beta:float=0.4, scale:float=1.35, ds_type:DatasetType=DatasetType.Valid, with_loss:bool=False) -> Tensors:
+    "Applies TTA to predict on `ds_type` dataset."
     preds,y = learn.get_preds(ds_type)
     all_preds = list(learn.tta_only(scale=scale, ds_type=ds_type))
     avg_preds = torch.stack(all_preds).mean(0)
@@ -37,7 +38,8 @@ def _TTA(learn:Learner, beta:float=0.4, scale:float=1.35, ds_type:DatasetType=Da
     else:            
         final_preds = preds*beta + avg_preds*(1-beta)
         if with_loss: 
-            return final_preds, y, calc_loss(final_preds, y, learn.loss_func)
+            with NoneReduceOnCPU(learn.loss_func) as lf: loss = lf(final_preds, y)
+            return final_preds, y, loss
         return final_preds, y
 
 Learner.TTA = _TTA

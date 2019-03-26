@@ -44,7 +44,7 @@ dependencies:
 - libsodium
 - libxml2
 - markupsafe
-- matplotlib
+- matplotlib=2.2.3
 - mistune
 - mkl
 - nbformat
@@ -97,7 +97,7 @@ dependencies:
 #- pytest
 - cython
 - pip:
-  - torchvision>=0.1.9
+  - torchvision==0.1.9
   - opencv-python
   - isoweek
   - pandas_summary==0.0.5
@@ -105,8 +105,10 @@ dependencies:
   - graphviz
   - sklearn_pandas
   - feather-format
-#  - plotnine
+  - plotnine
   - kaggle-cli
   - ipywidgets
   - nbconvert
   - PyHamcrest
+  - pdpbox==0.1.0
+  - scikit-misc

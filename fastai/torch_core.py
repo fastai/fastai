@@ -1,6 +1,8 @@
 "Utility functions to help deal with tensors"
 from .imports.torch import *
 from .core import *
+from collections import OrderedDict
+from torch.nn.parallel import DistributedDataParallel
 
 AffineMatrix = Tensor
 BoolOrTensor = Union[bool,Tensor]
@@ -53,46 +55,78 @@ fastai_types = {
     TensorImageSize:'TensorImageSize', Tensors:'Tensors', Weights:'Weights', AffineFunc:'AffineFunc',
     HookFunc:'HookFunc', LogitTensorImage:'LogitTensorImage', LossFunction:'LossFunction', MetricFunc:'MetricFunc',
     MetricFuncList:'MetricFuncList', MetricsList:'MetricsList', OptLossFunc:'OptLossFunc', OptMetrics:'OptMetrics',
-    OptSplitFunc:'OptSplitFunc', PixelFunc:'PixelFunc', LightingFunc:'LightingFunc',
+    OptSplitFunc:'OptSplitFunc', PixelFunc:'PixelFunc', LightingFunc:'LightingFunc', IntsOrStrs:'IntsOrStrs'
 }
 
 bn_types = (nn.BatchNorm1d, nn.BatchNorm2d, nn.BatchNorm3d)
-_default_cpus = min(16, num_cpus())
-_default_device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
-defaults = SimpleNamespace(device=_default_device, cpus=_default_cpus)
+bias_types = (nn.Linear, nn.Conv1d, nn.Conv2d, nn.Conv3d, nn.ConvTranspose1d, nn.ConvTranspose2d, nn.ConvTranspose3d)
+def is_pool_type(l:Callable): return re.search(r'Pool[123]d$', l.__class__.__name__)
+no_wd_types = bn_types + (nn.LayerNorm,)
+defaults.device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 AdamW = partial(optim.Adam, betas=(0.9,0.99))
 
+#Monkey-patch `torch.cuda.set_device` so that it updates `defaults.device`
+_old_torch_cuda_set_device = torch.cuda.set_device
+def _new_torch_cuda_set_device(device):
+    _old_torch_cuda_set_device(device)
+    defaults.device = torch.device('cuda', device) if isinstance(device, int) else device
+torch.cuda.set_device = _new_torch_cuda_set_device
+
 def tensor(x:Any, *rest)->Tensor:
-    "Like `torch.as_tensor`, but handle lists too, and can pass multiple vector elements directly"
+    "Like `torch.as_tensor`, but handle lists too, and can pass multiple vector elements directly."
     if len(rest): x = (x,)+rest
-    return torch.tensor(x) if is_listy(x) else as_tensor(x)
+    # XXX: Pytorch bug in dataloader using num_workers>0; TODO: create repro and report
+    if is_listy(x) and len(x)==0: return tensor(0)
+    res = torch.tensor(x) if is_listy(x) else as_tensor(x)
+    if res.dtype is torch.int32:
+        warn('Tensor is int32: upgrading to int64; for better performance use int64 input')
+        return res.long()
+    return res
 
 def np_address(x:np.ndarray)->int:
-    "Address of `x` in memory"
+    "Address of `x` in memory."
     return x.__array_interface__['data'][0]
 
-def to_detach(b:Tensors):
-    "Recursively detach lists of tensors in `b `"
-    if is_listy(b): return [to_detach(o) for o in b]
-    return b.detach() if isinstance(b,Tensor) else b
+def to_detach(b:Tensors, cpu:bool=True):
+    "Recursively detach lists of tensors in `b `; put them on the CPU if `cpu=True`."
+    if is_listy(b): return [to_detach(o, cpu) for o in b]
+    if not isinstance(b,Tensor): return b
+    b = b.detach()
+    return b.cpu() if cpu else b
 
 def to_data(b:ItemsList):
-    "Recursively map lists of items in `b ` to their wrapped data"
+    "Recursively map lists of items in `b ` to their wrapped data."
     if is_listy(b): return [to_data(o) for o in b]
     return b.data if isinstance(b,ItemBase) else b
 
+def to_cpu(b:ItemsList):
+    "Recursively map lists of tensors in `b ` to the cpu."
+    if is_listy(b): return [to_cpu(o) for o in b]
+    return b.cpu() if isinstance(b,Tensor) else b
+
+def to_half(b:Collection[Tensor])->Collection[Tensor]:
+    "Recursively map lists of tensors in `b ` to FP16."
+    if is_listy(b): return [to_half(o) for o in b]
+    return b.half() if b.dtype not in [torch.int64, torch.int32, torch.int16] else b
+
+def to_float(b:Collection[Tensor])->Collection[Tensor]:
+    "Recursively map lists of tensors in `b ` to FP16."
+    if is_listy(b): return [to_float(o) for o in b]
+    return b.float() if b.dtype not in [torch.int64, torch.int32, torch.int16] else b
+
 def to_device(b:Tensors, device:torch.device):
-    "Ensure `b` is on `device`."
+    "Recursively put `b` on `device`."
     device = ifnone(device, defaults.device)
     if is_listy(b): return [to_device(o, device) for o in b]
-    return b.to(device)
+    if is_dict(b): return {k: to_device(v, device) for k, v in b.items()}
+    return b.to(device, non_blocking=True)
 
 def data_collate(batch:ItemsList)->Tensor:
     "Convert `batch` items to tensor data."
     return torch.utils.data.dataloader.default_collate(to_data(batch))
 
 def requires_grad(m:nn.Module, b:Optional[bool]=None)->Optional[bool]:
-    "If `b` is not set `requires_grad` on all params in `m`, else return `requires_grad` of first param."
+    "If `b` is not set return `requires_grad` of first param, else set `requires_grad` on all params as `b`"
     ps = list(m.parameters())
     if not ps: return None
     if b is None: return ps[0].requires_grad
@@ -104,18 +138,35 @@ def trainable_params(m:nn.Module)->ParamList:
     return res
 
 def children(m:nn.Module)->ModuleList:
-    "Get children of module `m`."
+    "Get children of `m`."
     return list(m.children())
 
 def num_children(m:nn.Module)->int:
-    "Get number of children modules in module `m`."
+    "Get number of children modules in `m`."
     return len(children(m))
 
 def range_children(m:nn.Module)->Iterator[int]:
     "Return iterator of len of children of `m`."
     return range(num_children(m))
 
-flatten_model = lambda m: sum(map(flatten_model,m.children()),[]) if num_children(m) else [m]
+class ParameterModule(nn.Module):
+    "Register a lone parameter `p` in a module."
+    def __init__(self, p:nn.Parameter):
+        super().__init__()
+        self.val = p
+    
+    def forward(self, x): return x
+    
+def children_and_parameters(m:nn.Module):
+    "Return the children of `m` and its direct parameters not registered in modules."
+    children = list(m.children())
+    children_p = sum([[id(p) for p in c.parameters()] for c in m.children()],[])
+    for p in m.parameters():
+        if id(p) not in children_p: children.append(ParameterModule(p))
+    return children
+
+flatten_model = lambda m: sum(map(flatten_model,children_and_parameters(m)),[]) if num_children(m) else [m]
+
 def first_layer(m:nn.Module)->nn.Module:
     "Retrieve first layer in a module `m`."
     return flatten_model(m)[0]
@@ -125,33 +176,41 @@ def last_layer(m:nn.Module)->nn.Module:
     return flatten_model(m)[-1]
 
 def split_model_idx(model:nn.Module, idxs:Collection[int])->ModuleList:
-    "Split `model` according to the indices in `idxs`."
+    "Split `model` according to the indexes in `idxs`."
     layers = flatten_model(model)
     if idxs[0] != 0: idxs = [0] + idxs
     if idxs[-1] != len(layers): idxs.append(len(layers))
     return [nn.Sequential(*layers[i:j]) for i,j in zip(idxs[:-1],idxs[1:])]
 
-def split_model(model:nn.Module, splits:Collection[Union[nn.Module,ModuleList]], want_idxs:bool=False):
+def split_model(model:nn.Module=None, splits:Collection[Union[nn.Module,ModuleList]]=None):
     "Split `model` according to the layers in `splits`."
-    layers = flatten_model(model)
     splits = listify(splits)
     if isinstance(splits[0], nn.Module):
+        layers = flatten_model(model)
         idxs = [layers.index(first_layer(s)) for s in splits]
-        res = split_model_idx(model, idxs)
-    else: res = [nn.Sequential(*s) for s in splits]
-    return (res,idxs) if want_idxs else res
+        return split_model_idx(model, idxs)
+    return [nn.Sequential(*s) for s in splits]
 
-#TODO: add the test to put bias with bn layers
-def split_bn_bias(layer_groups:ModuleList)->ModuleList:
-    "Sort each layer in  `layer_groups` into batchnorm (`bn_types`) and non-batchnorm groups."
-    split_groups = []
+def get_param_groups(layer_groups:Collection[nn.Module])->List[List[nn.Parameter]]:
+    return [sum([list(trainable_params(c)) for c in l.children()], []) for l in layer_groups]
+
+def split_no_wd_params(layer_groups:Collection[nn.Module])->List[List[nn.Parameter]]:
+    "Separate the parameters in `layer_groups` between `no_wd_types` and  bias (`bias_types`) from the rest."
+    split_params = []
     for l in layer_groups:
         l1,l2 = [],[]
         for c in l.children():
-            if isinstance(c, bn_types): l2.append(c)
-            else:                       l1.append(c)
-        split_groups += [nn.Sequential(*l1), nn.Sequential(*l2)]
-    return split_groups
+            if isinstance(c, no_wd_types): l2 += list(trainable_params(c))
+            elif isinstance(c, bias_types):
+                bias = c.bias if hasattr(c, 'bias') else None
+                l1 += [p for p in trainable_params(c) if not (p is bias)]
+                if bias is not None: l2.append(bias)
+            else: l1 += list(trainable_params(c))
+        #Since we scan the children separately, we might get duplicates (tied weights). We need to preserve the order
+        #for the optimizer load of state_dict
+        l1,l2 = uniqueify(l1),uniqueify(l2)
+        split_params += [l1, l2]
+    return split_params
 
 def set_bn_eval(m:nn.Module)->None:
     "Set bn layers in eval mode for all recursive children of `m`."
@@ -160,9 +219,9 @@ def set_bn_eval(m:nn.Module)->None:
             l.eval()
         set_bn_eval(l)
 
-def to_half(b:Collection[Tensor])->Collection[Tensor]:
-    "`b` = [x,y] -> [x.half(),y] (half precision)"
-    return [b[0].half(), b[1]]
+def batch_to_half(b:Collection[Tensor])->Collection[Tensor]:
+    "Set the input of batch `b` to half precision."
+    return [to_half(b[0]), b[1]]
 
 def bn2float(module:nn.Module)->nn.Module:
     "If `module` is batchnorm don't use half precision."
@@ -174,11 +233,16 @@ def model2half(model:nn.Module)->nn.Module:
     "Convert `model` to half precision except the batchnorm layers."
     return bn2float(model.half())
 
-def cond_init(m:nn.Module, init_func:LayerFunc):
-    "Initialize the non-batchnorm layers of `m` with `init_func`"
-    if (not isinstance(m, bn_types)) and requires_grad(m):
-        if hasattr(m, 'weight'): init_func(m.weight)
+def init_default(m:nn.Module, func:LayerFunc=nn.init.kaiming_normal_)->None:
+    "Initialize `m` weights with `func` and set `bias` to 0."
+    if func:
+        if hasattr(m, 'weight'): func(m.weight)
         if hasattr(m, 'bias') and hasattr(m.bias, 'data'): m.bias.data.fill_(0.)
+    return m
+
+def cond_init(m:nn.Module, init_func:LayerFunc):
+    "Initialize the non-batchnorm layers of `m` with `init_func`."
+    if (not isinstance(m, bn_types)) and requires_grad(m): init_default(m, init_func)
 
 def apply_leaf(m:nn.Module, f:LayerFunc):
     "Apply `f` to children of `m`."
@@ -196,30 +260,61 @@ def in_channels(m:nn.Module) -> List[int]:
         if hasattr(l, 'weight'): return l.weight.shape[1]
     raise Exception('No weight layer')
 
-def calc_loss(y_pred:Tensor, y_true:Tensor, loss_func:LossFunction):
-    "Calculate loss between `y_pred` and `y_true` using `loss_class` and `bs`."
-    if hasattr(loss_func, 'reduction'):
-        old_red = getattr(loss_func, 'reduction')
-        setattr(loss_func, 'reduction', 'none')
-        l = loss_func(y_pred, y_true)
-        setattr(loss_func, 'reduction', old_red)
-        return l
-    else: return loss_func(y_pred, y_true, reduction='none')
-
+class ModelOnCPU():
+    "A context manager to evaluate `model` on the CPU inside."
+    def __init__(self, model:nn.Module): self.model = model       
+    def __enter__(self):
+        self.device = one_param(self.model).device
+        return self.model.cpu()
+    def __exit__(self, type, value, traceback):
+        self.model = self.model.to(self.device)
+    
+class NoneReduceOnCPU():
+    "A context manager to evaluate `loss_func` with none reduce and weights on the CPU inside."
+    def __init__(self, loss_func:LossFunction): 
+        self.loss_func,self.device,self.old_red = loss_func,None,None
+        
+    def __enter__(self):
+        if hasattr(self.loss_func, 'weight') and self.loss_func.weight is not None:
+            self.device = self.loss_func.weight.device
+            self.loss_func.weight = self.loss_func.weight.cpu()
+        if hasattr(self.loss_func, 'reduction'):
+            self.old_red = getattr(self.loss_func, 'reduction')
+            setattr(self.loss_func, 'reduction', 'none')
+            return self.loss_func
+        else: return partial(self.loss_func, reduction='none')
+        
+    def __exit__(self, type, value, traceback):
+        if self.device is not None:  self.loss_func.weight = self.loss_func.weight.to(self.device)
+        if self.old_red is not None: setattr(self.loss_func, 'reduction', self.old_red)    
+    
 def model_type(dtype):
+    "Return the torch type corresponding to `dtype`."
     return (torch.float32 if np.issubdtype(dtype, np.floating) else
             torch.int64 if np.issubdtype(dtype, np.integer)
             else None)
 
 def np2model_tensor(a):
+    "Tranform numpy array `a` to a tensor of the same type."
     dtype = model_type(a.dtype)
     res = as_tensor(a)
     if not dtype: return res
     return res.type(dtype)
 
-def trange_of(x): return torch.arange(len(x))
+def _pca(x, k=2):
+    "Compute PCA of `x` with `k` dimensions."
+    x = x-torch.mean(x,0)
+    U,S,V = torch.svd(x.t())
+    return torch.mm(x,U[:,:k])
+torch.Tensor.pca = _pca
 
-def to_np(x): return x.data.cpu().numpy()
+def trange_of(x): 
+    "Create a tensor from `range_of(x)`."
+    return torch.arange(len(x))
+
+def to_np(x): 
+    "Convert a tensor to a numpy array."
+    return x.data.cpu().numpy()
 
 # monkey patching to allow matplotlib to plot tensors
 def tensor__array__(self, dtype=None):
@@ -228,4 +323,88 @@ def tensor__array__(self, dtype=None):
     else: return res.astype(dtype, copy=False)
 Tensor.__array__ = tensor__array__
 Tensor.ndim = property(lambda x: len(x.shape))
+
+def grab_idx(x,i,batch_first:bool=True):
+    "Grab the `i`-th batch in `x`, `batch_first` stating the batch dimension."
+    if batch_first: return ([o[i].cpu() for o in x]   if is_listy(x) else x[i].cpu())
+    else:           return ([o[:,i].cpu() for o in x] if is_listy(x) else x[:,i].cpu())
+
+def logit(x:Tensor)->Tensor:
+    "Logit of `x`, clamped to avoid inf."
+    x = x.clamp(1e-7, 1-1e-7)
+    return -(1/x-1).log()
+
+def logit_(x:Tensor)->Tensor:
+    "Inplace logit of `x`, clamped to avoid inf"
+    x.clamp_(1e-7, 1-1e-7)
+    return (x.reciprocal_().sub_(1)).log_().neg_()
+
+def uniform(low:Number, high:Number=None, size:Optional[List[int]]=None)->FloatOrTensor:
+    "Draw 1 or shape=`size` random floats from uniform dist: min=`low`, max=`high`."
+    if high is None: high=low
+    return random.uniform(low,high) if size is None else torch.FloatTensor(*listify(size)).uniform_(low,high)
+
+def log_uniform(low, high, size:Optional[List[int]]=None)->FloatOrTensor:
+    "Draw 1 or shape=`size` random floats from uniform dist: min=log(`low`), max=log(`high`)."
+    res = uniform(log(low), log(high), size)
+    return exp(res) if size is None else res.exp_()
+
+def rand_bool(p:float, size:Optional[List[int]]=None)->BoolOrTensor:
+    "Draw 1 or shape=`size` random booleans (`True` occuring with probability `p`)."
+    return uniform(0,1,size)<p
+
+def uniform_int(low:int, high:int, size:Optional[List[int]]=None)->IntOrTensor:
+    "Generate int or tensor `size` of ints between `low` and `high` (included)."
+    return random.randint(low,high) if size is None else torch.randint(low,high+1,size)
+
+def one_param(m: nn.Module)->Tensor: 
+    "Return the first parameter of `m`."
+    return next(m.parameters())
+
+def try_int(o:Any)->Any:
+    "Try to convert `o` to int, default to `o` if not possible."
+    # NB: single-item rank-1 array/tensor can be converted to int, but we don't want to do this
+    if isinstance(o, (np.ndarray,Tensor)): return o if o.ndim else int(o)
+    if isinstance(o, collections.Sized) or getattr(o,'__array_interface__',False): return o
+    try: return int(o)
+    except: return o
+
+def get_model(model:nn.Module):
+    "Return the model maybe wrapped inside `model`."
+    return model.module if isinstance(model, (DistributedDataParallel, nn.DataParallel)) else model
+
+def flatten_check(out:Tensor, targ:Tensor) -> Tensor:
+    "Check that `out` and `targ` have the same number of elements and flatten them."
+    out,targ = out.contiguous().view(-1),targ.contiguous().view(-1)
+    assert len(out) == len(targ), f"Expected output and target to have the same number of elements but got {len(out)} and {len(targ)}."
+    return out,targ
+
+#Monkey-patch nn.DataParallel.reset
+def _data_parallel_reset(self): 
+    if hasattr(self.module, 'reset'): self.module.reset()
+nn.DataParallel.reset = _data_parallel_reset
+
+def remove_module_load(state_dict):
+    """create new OrderedDict that does not contain `module.`"""
+    new_state_dict = OrderedDict()
+    for k, v in state_dict.items(): new_state_dict[k[7:]] = v
+    return new_state_dict
+
+def num_distrib():
+    "Return the number of processes in distributed training (if applicable)."
+    return int(os.environ.get('WORLD_SIZE', 0))
+
+def rank_distrib():
+    "Return the distributed rank of this process (if applicable)."
+    return int(os.environ.get('RANK', 0))
+
+def add_metrics(last_metrics:Collection[Rank0Tensor], mets:Union[Rank0Tensor, Collection[Rank0Tensor]]):
+    "Return a dictionary for updating `last_metrics` with `mets`."
+    last_metrics,mets = listify(last_metrics),listify(mets)
+    return {'last_metrics': last_metrics + mets}
+
+def try_save(state:Dict, path:Path, fname:PathOrStr):
+    try: torch.save(state, open(path/fname, 'wb'))
+    except OSError as e:
+        raise Exception(f"{e}\n Can't write {path/fname}. Pass an absolute writable pathlib obj `fname`.")
 

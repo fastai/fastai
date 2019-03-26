@@ -1,5 +1,5 @@
 package:
-  name: torchvision-nightly
+  name: torchvision
   version: 0.2.1
 
 source:
@@ -13,14 +13,14 @@ build:
 
 requirements:
   build:
-    - python<=3.7
+    - python <=3.7
     - setuptools
   run:
-    - python<=3.7
+    - python <=3.7
     - numpy >=1.11
     - pillow >=4.1.1
     - six
-    - pytorch-nightly
+    - pytorch
 
 test:
   imports:
@@ -39,3 +39,4 @@ about:
 
 extra:
   recipe-maintainers: ''
+

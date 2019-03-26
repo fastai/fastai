@@ -13,8 +13,17 @@ entries:
       output: web,pdf
       title: Installation
     - output: web,pdf
+      title: Installation Extras
+      url: /install.html
+    - output: web,pdf
       title: Troubleshooting
       url: /troubleshoot.html
+    - output: web,pdf
+      title: Performance
+      url: /performance.html
+    - output: web,pdf
+      title: Support
+      url: /support.html
     output: web
     title: Getting started
   - folderitems:
@@ -64,8 +73,14 @@ entries:
           title: CSV Logger
           url: /callbacks.csv_logger.html
         - output: web,pdf
-          title: Tracking callbacks
+          title: Tracking
           url: /callbacks.tracker.html
+        - output: web,pdf
+          title: Memory Profiling
+          url: /callbacks.mem.html
+        - output: web,pdf
+          title: Miscellaneous
+          url: /callbacks.misc.html
         title: callbacks
     output: web
     title: Training
@@ -92,14 +107,17 @@ entries:
           title: vision.data
           url: /vision.data.html
         - output: web,pdf
+          title: vision.gan
+          url: /vision.gan.html
+        - output: web,pdf
           title: vision.model overview
           url: /vision.models.html
         - output: web,pdf
           title: vision.models.unet
           url: /vision.models.unet.html
         - output: web,pdf
-          title: vision.widgets
-          url: /widgets.html
+          title: widgets.image_cleaner
+          url: /widgets.image_cleaner.html
         title: vision
       - output: web
         subfolderitems:
@@ -165,7 +183,43 @@ entries:
     title: Core
   - folderitems:
     - output: web,pdf
+      title: Helpers
+      url: /utils.collect_env.html
+    - output: web,pdf
+      title: Memory Management
+      url: /utils.mem.html
+    - output: web,pdf
+      title: ipython helpers
+      url: /utils.ipython.html
+    output: web
+    title: Utils
+  - folderitems:
+    - output: web,pdf
       title: Overview
+      url: /tutorials.html
+    - output: web,pdf
+      title: Look at data
+      url: /tutorial.data.html
+    - output: web,pdf
+      title: Inference Learner
+      url: /tutorial.inference.html
+    - output: web,pdf
+      title: Custom ItemList
+      url: /tutorial.itemlist.html
+    - output: web,pdf
+      title: DL on a Shoestring
+      url: /tutorial.resources.html
+    - output: web,pdf
+      title: Distributed training
+      url: /distributed.html
+    output: web
+    title: Tutorials
+  - folderitems:
+    - output: web,pdf
+      title: Instructions
+      url: /gen_doc_main.html
+    - output: web,pdf
+      title: gen_doc
       url: /gen_doc.html
     - output: web,pdf
       title: gen_doc.gen_notebooks
@@ -174,11 +228,17 @@ entries:
       title: gen_doc.nbdoc
       url: /gen_doc.nbdoc.html
     - output: web,pdf
+      title: gen_doc.nbtest
+      url: /gen_doc.nbtest.html
+    - output: web,pdf
       title: gen_doc.convert2html
       url: /gen_doc.convert2html.html
     output: web
     title: Doc authoring
   - folderitems:
+    - external_url: https://github.com/fastai/fastai/blob/master/CONTRIBUTING.md
+      output: web,pdf
+      title: Contributing
     - output: web,pdf
       title: Dev Notes
       url: /dev/develop.html
