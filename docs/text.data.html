@@ -625,7 +625,8 @@ summary: "Basic dataset for NLP tasks and helper functions to create a DataBunch
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">processor</span> <span class="o">=</span> <span class="p">[</span><span class="n">TokenizeProcessor</span><span class="p">(</span><span class="n">tokenizer</span><span class="o">=</span><span class="n">SpacyTokenizer</span><span class="p">(</span><span class="s1">&#39;en&#39;</span><span class="p">)),</span> <span class="n">NumericalizeProcessor</span><span class="p">(</span><span class="n">max_vocab</span><span class="o">=</span><span class="mi">30000</span><span class="p">)]</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">tokenizer</span> <span class="o">=</span> <span class="n">Tokenizer</span><span class="p">(</span><span class="n">SpacyTokenizer</span><span class="p">,</span> <span class="s1">&#39;en&#39;</span><span class="p">)</span>
+<span class="n">processor</span> <span class="o">=</span> <span class="p">[</span><span class="n">TokenizeProcessor</span><span class="p">(</span><span class="n">tokenizer</span><span class="o">=</span><span class="n">tokenizer</span><span class="p">,</span> <span class="n">NumericalizeProcessor</span><span class="p">(</span><span class="n">max_vocab</span><span class="o">=</span><span class="mi">30000</span><span class="p">)]</span>
 </pre></div>
 
     </div>
