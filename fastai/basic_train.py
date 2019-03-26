@@ -488,11 +488,10 @@ class Recorder(LearnerCallback):
 
     def plot_lr(self, show_moms=False, skip_start:int=0, skip_end:int=0, return_fig:bool=None)->Optional[plt.Figure]:
         "Plot learning rate, `show_moms` to include momentum."
-        iterations = range_of(self.lrs)
-        lrs = self.lrs[skip_start:-skip_end] if skip_end > 0 else self.lrs[skip_start:]
-        iterations = iterations[skip_start:-skip_end] if skip_end > 0 else iterations[skip_start:]
+        lrs = self._split_list(self.lrs, skip_start, skip_end)
+        iterations = self._split_list(range_of(self.lrs), skip_start, skip_end)
         if show_moms:
-            moms = self.moms[skip_start:-skip_end] if skip_end > 0 else self.moms[skip_start:]
+            moms = self._split_list(self.moms, skip_start, skip_end)
             fig, axs = plt.subplots(1,2, figsize=(12,4))
             axs[0].plot(iterations, lrs)
             axs[0].set_xlabel('Iterations')
@@ -518,8 +517,8 @@ class Recorder(LearnerCallback):
     def plot(self, skip_start:int=10, skip_end:int=5, suggestion:bool=False, return_fig:bool=None,
              **kwargs)->Optional[plt.Figure]:
         "Plot learning rate and losses, trimmed between `skip_start` and `skip_end`. Optionally plot and return min gradient"
-        lrs = self.lrs[skip_start:-skip_end] if skip_end > 0 else self.lrs[skip_start:]
-        losses = self.losses[skip_start:-skip_end] if skip_end > 0 else self.losses[skip_start:]
+        lrs = self._split_list(self.lrs, skip_start, skip_end)
+        losses = self._split_list(self.losses, skip_start, skip_end)
         losses = [x.item() for x in losses]
         if 'k' in kwargs: losses = self.smoothen_by_spline(lrs, losses, **kwargs)
         fig, ax = plt.subplots(1,1)
@@ -542,15 +541,11 @@ class Recorder(LearnerCallback):
     def plot_losses(self, skip_start:int=0, skip_end:int=0, return_fig:bool=None)->Optional[plt.Figure]:
         "Plot training and validation losses."
         fig, ax = plt.subplots(1,1)
-        iterations = range_of(self.losses)
-        losses = self.losses[skip_start:-skip_end] if skip_end > 0 else self.losses[skip_start:]
-        iterations = iterations[skip_start:-skip_end] if skip_end > 0 else iterations[skip_start:]
+        losses = self._split_list(self.losses, skip_start, skip_end)
+        iterations = self._split_list(range_of(self.losses), skip_start, skip_end)
         ax.plot(iterations, losses, label='Train')
-        val_iter = np.cumsum(self.nb_batches)
-        start_val = (val_iter - skip_start >= 0).nonzero()[0].min()
-        end_val = (val_iter[-1] - val_iter - skip_end >= 0).nonzero()[0].max()+1
-        val_iter = val_iter[start_val:end_val] if skip_end > 0 else val_iter[start_val:]
-        val_losses = self.val_losses[start_val:end_val] if skip_end > 0 else self.val_losses[start_val:]
+        val_iter = self._split_list_val(np.cumsum(self.nb_batches), skip_start, skip_end)
+        val_losses = self._split_list_val(self.val_losses, skip_start, skip_end)
         ax.plot(val_iter, val_losses, label='Validation')
         ax.set_ylabel('Loss')
         ax.set_xlabel('Batches processed')
@@ -562,17 +557,23 @@ class Recorder(LearnerCallback):
         "Plot metrics collected during training."
         assert len(self.metrics) != 0, "There are no metrics to plot."
         fig, axes = plt.subplots(len(self.metrics[0]),1,figsize=(6, 4*len(self.metrics[0])))
-        val_iter = np.cumsum(self.nb_batches)
-        start_val = (val_iter - skip_start >= 0).nonzero()[0].min()
-        end_val = (val_iter[-1] - val_iter - skip_end >= 0).nonzero()[0].max()+1
-        val_iter = val_iter[start_val:end_val] if skip_end > 0 else val_iter[start_val:]
+        val_iter = self._split_list_val(np.cumsum(self.nb_batches), skip_start, skip_end)
         axes = axes.flatten() if len(self.metrics[0]) != 1 else [axes]
         for i, ax in enumerate(axes):
             values = [met[i] for met in self.metrics]
-            values = values[start_val:end_val] if skip_end > 0 else values[start_val:]
+            values = self._split_list_val(values, skip_start, skip_end)
             ax.plot(val_iter, values)
         if ifnone(return_fig, defaults.return_fig): return fig
         if not IN_NOTEBOOK: plot_sixel(fig)
+     
+    def _split_list(self, vals:Collection[float], skip_start:int, skip_end:int):
+        return vals[skip_start:-skip_end] if skip_end > 0 else vals[skip_start:]
+    
+    def _split_list_val(self, vals:Collection[float], skip_start:int, skip_end:int):
+        val_iter = np.cumsum(self.nb_batches)
+        start_val = (val_iter - skip_start >= 0).nonzero()[0].min()
+        end_val = (val_iter[-1] - val_iter - skip_end >= 0).nonzero()[0].max()+1
+        return vals[start_val:end_val] if skip_end > 0 else vals[start_val:]
 
 class FakeOptimizer():
     def step(self): pass
