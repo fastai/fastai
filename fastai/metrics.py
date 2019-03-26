@@ -290,10 +290,7 @@ def roc_curve(input:Tensor, targ:Tensor):
 
 @dataclass
 class AUROC(Callback):
-    """
-    Calculates the auc score based on the roc curve.
-    Restricted to the binary classification task.
-    """
+    "Calculate the auc score based on the roc curve. Restricted to the binary classification task."
     def on_epoch_begin(self, **kwargs):
         self.targs, self.preds = LongTensor([]), Tensor([])
         
