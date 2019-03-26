@@ -6,7 +6,8 @@ from .layers import *
 __all__ = ['error_rate', 'accuracy', 'accuracy_thresh', 'dice', 'exp_rmspe', 'fbeta','FBeta', 'mse', 'mean_squared_error',
             'mae', 'mean_absolute_error', 'rmse', 'root_mean_squared_error', 'msle', 'mean_squared_logarithmic_error',
             'explained_variance', 'r2_score', 'top_k_accuracy', 'KappaScore', 'ConfusionMatrix', 'MatthewsCorreff',
-            'Precision', 'Recall', 'R2Score', 'ExplainedVariance', 'ExpRMSPE', 'RMSE', 'Perplexity']
+            'Precision', 'Recall', 'R2Score', 'ExplainedVariance', 'ExpRMSPE', 'RMSE', 'Perplexity', 'AUROC', 'auc_roc_score', 
+            'roc_curve']
 
 def fbeta(y_pred:Tensor, y_true:Tensor, thresh:float=0.2, beta:float=2, eps:float=1e-9, sigmoid:bool=True)->Rank0Tensor:
     "Computes the f_beta between `preds` and `targets`"
@@ -261,3 +262,42 @@ class Perplexity(Callback):
 
     def on_epoch_end(self, last_metrics, **kwargs): 
         return add_metrics(last_metrics, torch.exp(self.loss / self.len))
+
+def auc_roc_score(input:Tensor, targ:Tensor):
+    "Using trapezoid method to calculate the area under roc curve"
+    fpr, tpr = roc_curve(input, targ)
+    d = fpr[1:] - fpr[:-1]
+    sl1, sl2 = [slice(None)], [slice(None)]
+    sl1[-1], sl2[-1] = slice(1, None), slice(None, -1)
+    return (d * (tpr[tuple(sl1)] + tpr[tuple(sl2)]) / 2.).sum(-1)
+
+def roc_curve(input:Tensor, targ:Tensor):
+    "Returns the false positive and true positive rates"
+    targ = (targ == 1)
+    desc_score_indices = torch.flip(input.argsort(-1), [-1])
+    input = input[desc_score_indices]
+    targ = targ[desc_score_indices]
+    d = input[1:] - input[:-1]
+    distinct_value_indices = torch.nonzero(d).transpose(0,1)[0]
+    threshold_idxs = torch.cat((distinct_value_indices, LongTensor([len(targ) - 1])))
+    tps = torch.cumsum(targ * 1, dim=-1)[threshold_idxs]
+    fps = (1 + threshold_idxs - tps)
+    if tps[0] != 0 or fps[0] != 0:
+        fps = torch.cat((LongTensor([0]), fps))
+        tps = torch.cat((LongTensor([0]), tps))
+    fpr, tpr = fps.float() / fps[-1], tps.float() / tps[-1]
+    return fpr, tpr
+
+@dataclass
+class AUROC(Callback):
+    "Calculate the auc score based on the roc curve. Restricted to the binary classification task."
+    def on_epoch_begin(self, **kwargs):
+        self.targs, self.preds = LongTensor([]), Tensor([])
+        
+    def on_batch_end(self, last_output:Tensor, last_target:Tensor, **kwargs):
+        last_output = F.softmax(last_output, dim=1)[:,-1]
+        self.preds = torch.cat((self.preds, last_output.cpu()))
+        self.targs = torch.cat((self.targs, last_target.cpu().long()))
+    
+    def on_epoch_end(self, last_metrics, **kwargs):
+        return add_metrics(last_metrics, auc_roc_score(self.preds, self.targs))
