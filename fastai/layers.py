@@ -5,7 +5,7 @@ __all__ = ['AdaptiveConcatPool2d', 'BCEWithLogitsFlat', 'BCEFlat', 'MSELossFlat'
            'Flatten', 'Lambda', 'PoolFlatten', 'View', 'ResizeBatch', 'bn_drop_lin', 'conv2d', 'conv2d_trans', 'conv_layer',
            'embedding', 'simple_cnn', 'NormType', 'relu', 'batchnorm_2d', 'trunc_normal_', 'PixelShuffle_ICNR', 'icnr',
            'NoopLoss', 'WassersteinLoss', 'SelfAttention', 'SequentialEx', 'MergeLayer', 'res_block', 'sigmoid_range',
-           'SigmoidRange', 'PartialLayer', 'FlattenedLoss', 'BatchNorm1dFlat', 'LabelSmoothingCrossEntropy']
+           'SigmoidRange', 'PartialLayer', 'FlattenedLoss', 'BatchNorm1dFlat', 'LabelSmoothingCrossEntropy', 'PooledSelfAttention2d']
 
 class Lambda(nn.Module):
     "An easy way to create a pytorch layer for a simple `func`."
@@ -66,14 +66,36 @@ def bn_drop_lin(n_in:int, n_out:int, bn:bool=True, p:float=0., actn:Optional[nn.
     return layers
 
 def conv1d(ni:int, no:int, ks:int=1, stride:int=1, padding:int=0, bias:bool=False):
-    "Create and iniialize `nn.Conv1d` layer."
+    "Create and initialize a `nn.Conv1d` layer with spectral normalization."
     conv = nn.Conv1d(ni, no, ks, stride=stride, padding=padding, bias=bias)
     nn.init.kaiming_normal_(conv.weight)
     if bias: conv.bias.data.zero_()
     return spectral_norm(conv)
 
+class PooledSelfAttention2d(nn.Module):
+    "Pooled self attention layer for 2d."
+    def __init__(self, n_channels:int):
+        super().__init__()
+        self.theta = spectral_norm(conv2d(n_channels, n_channels//8, 1))
+        self.phi   = spectral_norm(conv2d(n_channels, n_channels//8, 1))
+        self.g     = spectral_norm(conv2d(n_channels, n_channels//2, 1))
+        self.o     = spectral_norm(conv2d(n_channels//2, n_channels, 1))
+        self.gamma = nn.Parameter(tensor([0.]))
+
+    def forward(self, x):
+        # code borrowed from https://github.com/ajbrock/BigGAN-PyTorch/blob/7b65e82d058bfe035fc4e299f322a1f83993e04c/layers.py#L156
+        theta = self.theta(x)
+        phi = F.max_pool2d(self.phi(x), [2,2])
+        g = F.max_pool2d(self.g(x), [2,2])    
+        theta = theta.view(-1, self. ch // 8, x.shape[2] * x.shape[3])
+        phi = phi.view(-1, self. ch // 8, x.shape[2] * x.shape[3] // 4)
+        g = g.view(-1, self. ch // 2, x.shape[2] * x.shape[3] // 4)
+        beta = F.softmax(torch.bmm(theta.transpose(1, 2), phi), -1)
+        o = self.o(torch.bmm(g, beta.transpose(1,2)).view(-1, self.ch // 2, x.shape[2], x.shape[3]))
+        return self.gamma * o + x
+
 class SelfAttention(nn.Module):
-    "Self attention layer for 2d."
+    "Self attention layer for nd."
     def __init__(self, n_channels:int):
         super().__init__()
         self.query = conv1d(n_channels, n_channels//8)
