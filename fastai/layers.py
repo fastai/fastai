@@ -76,19 +76,28 @@ class SelfAttention(nn.Module):
     "Self attention layer for 2d."
     def __init__(self, n_channels:int):
         super().__init__()
-        self.query = conv1d(n_channels, n_channels//8)
-        self.key   = conv1d(n_channels, n_channels//8)
-        self.value = conv1d(n_channels, n_channels)
+        self.theta = spectral_norm(conv2d(n_channels, n_channels//8, 1))
+        self.phi   = spectral_norm(conv2d(n_channels, n_channels//8, 1))
+        self.g     = spectral_norm(conv2d(n_channels, n_channels//2, 1))
+        self.o     = spectral_norm(conv2d(n_channels//2, n_channels, 1))
         self.gamma = nn.Parameter(tensor([0.]))
+        # backward compatibility
+        self.query = self.theta
+        self.key   = self.phi
+        self.value = self.g
 
     def forward(self, x):
         #Notation from https://arxiv.org/pdf/1805.08318.pdf
-        size = x.size()
-        x = x.view(*size[:2],-1)
-        f,g,h = self.query(x),self.key(x),self.value(x)
-        beta = F.softmax(torch.bmm(f.permute(0,2,1).contiguous(), g), dim=1)
-        o = self.gamma * torch.bmm(h, beta) + x
-        return o.view(*size).contiguous()
+        # code borrowed from https://github.com/ajbrock/BigGAN-PyTorch/blob/7b65e82d058bfe035fc4e299f322a1f83993e04c/layers.py#L156
+        theta = self.theta(x)
+        phi = F.max_pool2d(self.phi(x), [2,2])
+        g = F.max_pool2d(self.g(x), [2,2])    
+        theta = theta.view(-1, self. ch // 8, x.shape[2] * x.shape[3])
+        phi = phi.view(-1, self. ch // 8, x.shape[2] * x.shape[3] // 4)
+        g = g.view(-1, self. ch // 2, x.shape[2] * x.shape[3] // 4)
+        beta = F.softmax(torch.bmm(theta.transpose(1, 2), phi), -1)
+        o = self.o(torch.bmm(g, beta.transpose(1,2)).view(-1, self.ch // 2, x.shape[2], x.shape[3]))
+        return self.gamma * o + x
 
 def conv2d(ni:int, nf:int, ks:int=3, stride:int=1, padding:int=None, bias=False, init:LayerFunc=nn.init.kaiming_normal_) -> nn.Conv2d:
     "Create and initialize `nn.Conv2d` layer. `padding` defaults to `ks//2`."
