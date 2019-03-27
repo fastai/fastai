@@ -116,6 +116,14 @@ def test_save_load(learn):
     _ = learn.load(name, purge=True)
     check_learner(learn, model_summary_before, train_items_before)
 
+    # Test save/load using bytes streams
+    output_buffer = io.BytesIO()
+    learn.save(buffer=output_buffer)
+    learn.purge()
+    input_buffer = io.BytesIO(output_buffer.getvalue())
+    _ = learn.load(buffer=input_buffer)
+    check_learner(learn, model_summary_before, train_items_before)
+
     # cleanup
     if os.path.exists(model_path): os.remove(model_path)
 

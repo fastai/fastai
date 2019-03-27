@@ -146,12 +146,12 @@ class DataBunch():
     def remove_tfm(self,tfm:Callable)->None:
         for dl in self.dls: dl.remove_tfm(tfm)
 
-    def save(self, fname:PathOrStr='data_save.pkl')->None:
-        "Save the `DataBunch` in `self.path/fname`."
+    def save(self, fname:PathOrStr='data_save.pkl', buffer:io.BytesIO=None)->None:
+        "Save the `DataBunch` in `self.path/fname`. If buffer is specified, save to buffer"
         if not getattr(self, 'label_list', False):
             warn("Serializing the `DataBunch` only works when you created it using the data block API.")
             return
-        try_save(self.label_list, self.path, fname)
+        try_save(self.label_list, self.path, fname, buffer)
 
     def add_test(self, items:Iterator, label:Any=None)->None:
         "Add the `items` as a test set. Pass along `label` otherwise label them with `EmptyLabel`."
@@ -271,8 +271,10 @@ class DataBunch():
 
 def load_data(path:PathOrStr, fname:str='data_save.pkl', bs:int=64, val_bs:int=None, num_workers:int=defaults.cpus,
                   dl_tfms:Optional[Collection[Callable]]=None, device:torch.device=None, collate_fn:Callable=data_collate,
-                  no_check:bool=False, **kwargs)->DataBunch:
-    "Load from `path/fname` a saved `DataBunch`."
-    ll = torch.load(Path(path)/fname, map_location='cpu') if defaults.device == torch.device('cpu') else torch.load(Path(path)/fname)
+                  no_check:bool=False, buffer:io.BytesIO=None, **kwargs)->DataBunch:
+    """Load from `path/fname` a saved `DataBunch`.
+    If `buffer` is specified, load from it (`path` is still required to set the working directory)"""
+    target = buffer if buffer else Path(path)/fname
+    ll = torch.load(target, map_location='cpu') if defaults.device == torch.device('cpu') else torch.load(target)
     return ll.databunch(path=path, bs=bs, val_bs=val_bs, num_workers=num_workers, dl_tfms=dl_tfms, device=device,
                         collate_fn=collate_fn, no_check=no_check, **kwargs)

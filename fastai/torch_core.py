@@ -403,8 +403,11 @@ def add_metrics(last_metrics:Collection[Rank0Tensor], mets:Union[Rank0Tensor, Co
     last_metrics,mets = listify(last_metrics),listify(mets)
     return {'last_metrics': last_metrics + mets}
 
-def try_save(state:Dict, path:Path, fname:PathOrStr):
-    try: torch.save(state, open(path/fname, 'wb'))
+def try_save(state:Dict, path:Path=None, fname:PathOrStr=None, buffer:io.BytesIO=None):
+    if (path is None or fname is None) or buffer is None:
+        raise ValueError("Please specify either path/fname or buffer")
+    target = buffer if buffer else open(path/fname, 'wb')
+    try: torch.save(state, target)
     except OSError as e:
         raise Exception(f"{e}\n Can't write {path/fname}. Pass an absolute writable pathlib obj `fname`.")
 

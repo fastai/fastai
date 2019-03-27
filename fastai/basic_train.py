@@ -224,7 +224,7 @@ class Learner():
         self.freeze_to(0)
         self.create_opt(defaults.lr)
 
-    def export(self, fname:PathOrStr='export.pkl', destroy=False):
+    def export(self, fname:PathOrStr='export.pkl', destroy=False, buffer=None):
         "Export the state of the `Learner` in `self.path/fname`."
         if rank_distrib(): return # don't save if slave proc
         args = ['opt_func', 'loss_func', 'metrics', 'true_wd', 'bn_wd', 'wd', 'train_bn', 'model_dir', 'callback_fns']
@@ -237,31 +237,36 @@ class Learner():
             xtra = dict(normalize=self.data.norm.keywords) if getattr(self.data, 'norm', False) else {}
             state['data'] = self.data.valid_ds.get_state(**xtra)
             state['cls'] = self.__class__
-            try_save(state, self.path, fname)
+            try_save(state, self.path, fname, buffer)
         if destroy: self.destroy()
 
-    def save(self, name:PathOrStr, return_path:bool=False, with_opt:bool=True):
+    def save(self, name:PathOrStr=None, return_path:bool=False, with_opt:bool=True, buffer:io.BytesIO=None):
         "Save model and optimizer state (if `with_opt`) with `name` to `self.model_dir`."
-        self._test_writeable_path()
+        if name is None and buffer is None:
+            raise ValueError("To save you must provide either file name or buffer to write to")
+        if name is not None: self._test_writeable_path()
         if rank_distrib(): return # don't save if slave proc
-        path = self.path/self.model_dir/f'{name}.pth'
+        target = buffer if buffer else self.path/self.model_dir/f'{name}.pth'
         if not hasattr(self, 'opt'): with_opt=False
         if not with_opt: state = get_model(self.model).state_dict()
         else: state = {'model': get_model(self.model).state_dict(), 'opt':self.opt.state_dict()}
-        torch.save(state, path)
-        if return_path: return path
+        torch.save(state, target)
+        if return_path: return target
 
     def dl(self, ds_type:DatasetType=DatasetType.Valid):
         "Return DataLoader for DatasetType `ds_type`."
         return self.data.dl(ds_type)
 
-    def load(self, name:PathOrStr, device:torch.device=None, strict:bool=True, with_opt:bool=None, purge:bool=True,
-            remove_module:bool=False):
+    def load(self, name:PathOrStr=None, device:torch.device=None, strict:bool=True, with_opt:bool=None, purge:bool=True,
+            remove_module:bool=False, buffer:io.BytesIO=None):
         "Load model and optimizer state (if `with_opt`) `name` from `self.model_dir` using `device`."
+        if name is None and buffer is None:
+            raise ValueError("To load you must provide either file name or buffer to read from")
         if purge: self.purge(clear_opt=ifnone(with_opt, False))
         if device is None: device = self.data.device
         elif isinstance(device, int): device = torch.device('cuda', device)
-        state = torch.load(self.path/self.model_dir/f'{name}.pth', map_location=device)
+        source = buffer if buffer else self.path/self.model_dir/f'{name}.pth'
+        state = torch.load(source, map_location=device)
         if set(state.keys()) == {'model', 'opt'}:
             model_state = state['model']
             if remove_module: model_state = remove_module_load(model_state)
@@ -585,9 +590,10 @@ def load_callback(class_func, state, learn:Learner):
     for k,v in others.items(): setattr(res, k, v)
     return res
 
-def load_learner(path:PathOrStr, fname:PathOrStr='export.pkl', test:ItemList=None, **db_kwargs):
-    "Load a `Learner` object saved with `export_state` in `path/fn` with empty data, optionally add `test` and load on `cpu`."
-    state = torch.load(Path(path)/fname, map_location='cpu') if defaults.device == torch.device('cpu') else torch.load(Path(path)/fname)
+def load_learner(path:PathOrStr, fname:PathOrStr='export.pkl', test:ItemList=None, buffer:io.BytesIO=None, **db_kwargs):
+    "Load a `Learner` object saved with `export_state` in `path/fn` or `buffer` with empty data, optionally add `test` and load on `cpu`."
+    source = buffer if buffer else Path(path)/fname
+    state = torch.load(source, map_location='cpu') if defaults.device == torch.device('cpu') else torch.load(source)
     model = state.pop('model')
     src = LabelLists.load_state(path, state.pop('data'))
     if test is not None: src.add_test(test)
