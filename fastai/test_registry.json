@@ -696,6 +696,34 @@
             "test": "test_fbeta"
         }
     ],
+    "fastai.metrics.mean_absolute_error": [
+        {
+            "file": "tests/test_metrics.py",
+            "line": 123,
+            "test": "test_mae"
+        }
+    ],
+    "fastai.metrics.mean_squared_error": [
+        {
+            "file": "tests/test_metrics.py",
+            "line": 132,
+            "test": "test_mse"
+        }
+    ],
+    "fastai.metrics.mean_squared_logarithmic_error": [
+        {
+            "file": "tests/test_metrics.py",
+            "line": 151,
+            "test": "test_msle"
+        }
+    ],
+    "fastai.metrics.root_mean_squared_error": [
+        {
+            "file": "tests/test_metrics.py",
+            "line": 141,
+            "test": "test_rmse"
+        }
+    ],
     "fastai.metrics.top_k_accuracy": [
         {
             "file": "tests/test_metrics.py",
