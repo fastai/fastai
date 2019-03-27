@@ -404,7 +404,7 @@ def add_metrics(last_metrics:Collection[Rank0Tensor], mets:Union[Rank0Tensor, Co
     return {'last_metrics': last_metrics + mets}
 
 def try_save(state:Dict, path:Path=None, fname:PathOrStr=None, buffer:io.BytesIO=None):
-    if (path is None or fname is None) or buffer is None:
+    if (path is None or fname is None) and buffer is None:
         raise ValueError("Please specify either path/fname or buffer")
     target = buffer if buffer else open(path/fname, 'wb')
     try: torch.save(state, target)
