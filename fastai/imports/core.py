@@ -39,3 +39,10 @@ def try_import(module):
     try: return importlib.import_module(module)
     except: return None
 
+def have_min_pkg_version(package, version):
+    "Check whether we have at least `version` of `package`. Returns True on success, False otherwise."
+    try:
+        pkg_resources.require(f"{package}>={version}")
+        return True
+    except:
+        return False
