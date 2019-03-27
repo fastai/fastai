@@ -129,7 +129,7 @@ def _cl_int_from_learner(cls, learn:Learner, ds_type:DatasetType=DatasetType.Val
 
 def _cl_int_plot_top_losses(self, k, largest=True, figsize=(12,12), heatmap:bool=True, heatmap_thresh:int=16,
                             return_fig:bool=None)->Optional[plt.Figure]:
-    "Show images in `top_losses` along with their prediction, actual, loss, and probability of predicted class."
+    "Show images in `top_losses` along with their prediction, actual, loss, and probability of actual class."
     tl_val,tl_idx = self.top_losses(k, largest)
     classes = self.data.classes
     cols = math.ceil(math.sqrt(k))
