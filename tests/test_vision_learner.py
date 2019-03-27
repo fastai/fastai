@@ -1,7 +1,9 @@
 import pytest
 import torch
+import torch.nn as nn
 from fastai.gen_doc.doctest import this_tests
 from fastai.vision.learner import *
+from fastai.callbacks.hooks import *
 from torchvision.models import resnet18
 from torchvision.models.resnet import BasicBlock
 
@@ -10,35 +12,28 @@ def image():
     return torch.randn([4, 3, 32, 32])
 
 
-def add_hooks(m, fn):
-    hooks = []
-    def add_hook(m):
-        if isinstance(m, BasicBlock):
-            hooks.append(m.register_forward_hook(fn))
-    m.apply(add_hook)
-    return hooks
-
-def remove_hooks(hooks):
-    for h in hooks: h.remove()
-
-def run_with_capture(m, image):
-    activations = []
-    def capture_hook(self, input, output):
-        activations.append(output)
-    hooks = add_hooks(m, capture_hook)
-    m(image)
-    remove_hooks(hooks)
-    return activations
-
 def test_create_body(image):
     this_tests(create_body)
-    body = create_body(resnet18, pretrained=True, cut=-2).eval()
-    model = resnet18(pretrained=True).eval()
-    body_actns = run_with_capture(body, image)
-    model_actns = run_with_capture(model, image)
-    n = len(body_actns) 
-    for i in range(n):
-        assert torch.allclose(body_actns[i], model_actns[i])
+    def get_hook_fn(actns): 
+        return lambda self,input,output: actns.append(output)
+    def run_with_capture(m):
+        actns = []
+        hooks = Hooks(m, get_hook_fn(actns))
+        m(image)
+        hooks.remove()
+        return actns 
+    body = create_body(resnet18, pretrained=True, cut=-2)
+    resnet = nn.Sequential(*list(resnet18(pretrained=True).children())[:-2])
+    body_actns = run_with_capture(body)
+    resnet_actns = run_with_capture(resnet)
+    for i in range(len(body_actns)):
+        assert torch.allclose(body_actns[i], resnet_actns[i]) # check activation values at each block
+
+    body = create_body(resnet18, cut=lambda x:x)
+    assert isinstance(body, type(resnet18()))
+
+    with pytest.raises(NameError):
+        create_body(resnet18, cut=1.)
 
 def test_create_head(image):
     this_tests(create_head)
