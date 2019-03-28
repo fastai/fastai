@@ -224,8 +224,9 @@ class Learner():
         self.freeze_to(0)
         self.create_opt(defaults.lr)
 
-    def export(self, fname:PathOrStr='export.pkl', destroy=False, buffer=None):
-        "Export the state of the `Learner` in `self.path/fname`."
+    def export(self, file:PathLikeOrBinaryStream='export.pkl', destroy=False):
+        """Export the state of the `Learner` in `self.path/file`.
+        If `file` is a binary stream (buffer or file), write to it."""
         if rank_distrib(): return # don't save if slave proc
         args = ['opt_func', 'loss_func', 'metrics', 'true_wd', 'bn_wd', 'wd', 'train_bn', 'model_dir', 'callback_fns']
         state = {a:getattr(self,a) for a in args}
@@ -237,16 +238,15 @@ class Learner():
             xtra = dict(normalize=self.data.norm.keywords) if getattr(self.data, 'norm', False) else {}
             state['data'] = self.data.valid_ds.get_state(**xtra)
             state['cls'] = self.__class__
-            try_save(state, self.path, fname, buffer)
+            try_save(state, self.path, file)
         if destroy: self.destroy()
 
-    def save(self, name:PathOrStr=None, return_path:bool=False, with_opt:bool=True, buffer:io.BytesIO=None):
-        "Save model and optimizer state (if `with_opt`) with `name` to `self.model_dir`."
-        if name is None and buffer is None:
-            raise ValueError("To save you must provide either file name or buffer to write to")
-        if name is not None: self._test_writeable_path()
+    def save(self, file:PathLikeOrBinaryStream=None, return_path:bool=False, with_opt:bool=True):
+        """Save model and optimizer state (if `with_opt`) with `file` to `self.model_dir`.
+        If `file` is a binary stream (buffer or file), write to it."""
+        if is_pathlike(file): self._test_writeable_path()
         if rank_distrib(): return # don't save if slave proc
-        target = buffer if buffer else self.path/self.model_dir/f'{name}.pth'
+        target = self.path/self.model_dir/f'{file}.pth' if is_pathlike(file) else file
         if not hasattr(self, 'opt'): with_opt=False
         if not with_opt: state = get_model(self.model).state_dict()
         else: state = {'model': get_model(self.model).state_dict(), 'opt':self.opt.state_dict()}
@@ -257,15 +257,14 @@ class Learner():
         "Return DataLoader for DatasetType `ds_type`."
         return self.data.dl(ds_type)
 
-    def load(self, name:PathOrStr=None, device:torch.device=None, strict:bool=True, with_opt:bool=None, purge:bool=True,
-            remove_module:bool=False, buffer:io.BytesIO=None):
-        "Load model and optimizer state (if `with_opt`) `name` from `self.model_dir` using `device`."
-        if name is None and buffer is None:
-            raise ValueError("To load you must provide either file name or buffer to read from")
+    def load(self, file:PathLikeOrBinaryStream=None, device:torch.device=None, strict:bool=True,
+             with_opt:bool=None, purge:bool=True, remove_module:bool=False):
+        """Load model and optimizer state (if `with_opt`) `file` from `self.model_dir` using `device`.
+        If `file` is a binary stream (buffer or file), read from it."""
         if purge: self.purge(clear_opt=ifnone(with_opt, False))
         if device is None: device = self.data.device
         elif isinstance(device, int): device = torch.device('cuda', device)
-        source = buffer if buffer else self.path/self.model_dir/f'{name}.pth'
+        source = self.path/self.model_dir/f'{file}.pth' if is_pathlike(file) else file
         state = torch.load(source, map_location=device)
         if set(state.keys()) == {'model', 'opt'}:
             model_state = state['model']
@@ -590,9 +589,10 @@ def load_callback(class_func, state, learn:Learner):
     for k,v in others.items(): setattr(res, k, v)
     return res
 
-def load_learner(path:PathOrStr, fname:PathOrStr='export.pkl', test:ItemList=None, buffer:io.BytesIO=None, **db_kwargs):
-    "Load a `Learner` object saved with `export_state` in `path/fn` or `buffer` with empty data, optionally add `test` and load on `cpu`."
-    source = buffer if buffer else Path(path)/fname
+def load_learner(path:PathOrStr, file:PathLikeOrBinaryStream='export.pkl', test:ItemList=None, **db_kwargs):
+    """Load a `Learner` object saved with `export_state` in `path/file` with empty data, optionally add `test` and load on `cpu`.
+    If `file` is a binary stream (buffer or file), read from it."""
+    source = Path(path)/file if is_pathlike(file) else file
     state = torch.load(source, map_location='cpu') if defaults.device == torch.device('cpu') else torch.load(source)
     model = state.pop('model')
     src = LabelLists.load_state(path, state.pop('data'))

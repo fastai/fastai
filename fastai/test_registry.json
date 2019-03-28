@@ -93,7 +93,7 @@
     "fastai.basic_train.Learner.export": [
         {
             "file": "tests/test_basic_train.py",
-            "line": 218,
+            "line": 226,
             "test": "test_export_load_learner"
         }
     ],
@@ -212,7 +212,7 @@
     "fastai.basic_train.load_learner": [
         {
             "file": "tests/test_basic_train.py",
-            "line": 218,
+            "line": 226,
             "test": "test_export_load_learner"
         }
     ],
@@ -272,7 +272,7 @@
         },
         {
             "file": "tests/test_basic_train.py",
-            "line": 218,
+            "line": 226,
             "test": "test_export_load_learner"
         }
     ],

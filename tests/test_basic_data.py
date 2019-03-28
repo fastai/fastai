@@ -74,8 +74,8 @@ def test_DataBunch_save_load():
     this_tests(DataBunch.save, load_data)
 
     data = fake_data(n_in=4, n_out=5, batch_size=6)
-    data.save(fname=save_name)
-    loaded_data = load_data(data.path, fname=save_name, bs=6)
+    data.save(save_name)
+    loaded_data = load_data(data.path, save_name, bs=6)
     this_tests(loaded_data.one_batch)
     x,y = loaded_data.one_batch()
     assert 4 == x[0].shape[0]
@@ -84,9 +84,9 @@ def test_DataBunch_save_load():
 
     # save/load using buffer
     output_buffer = io.BytesIO()
-    data.save(buffer=output_buffer)
+    data.save(output_buffer)
     input_buffer = io.BytesIO(output_buffer.getvalue())
-    loaded_data = load_data(data.path, buffer=input_buffer, bs=6)
+    loaded_data = load_data(data.path, input_buffer, bs=6)
     this_tests(loaded_data.one_batch)
     x,y = loaded_data.one_batch()
     assert 4 == x[0].shape[0]
