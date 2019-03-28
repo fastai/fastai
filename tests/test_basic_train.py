@@ -275,7 +275,7 @@ def test_model_load_mem_leak():
     used_before = gpu_mem_get_used()
 
     name = 'mnist-tiny-test-load-mem-leak'
-    model_path = learn.save(name=name, return_path=True)
+    model_path = learn.save(name, return_path=True)
     _ = learn.load(name)
     if os.path.exists(model_path): os.remove(model_path)
     used_after = gpu_mem_get_used()

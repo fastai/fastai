@@ -15,6 +15,8 @@ of that change.
 ### New:
 
 ### Changed:
+- Loading and saving. Added option to save/load from streams (buffers or file pointers). 
+**Note** In all save/load related functions (`Learn.save`, `Learn.export`, `load_learner`, `DataBunch.save`, `load_data`), the parameter name `fname` has changes to `file`.
 
 ### Fixed:
 
