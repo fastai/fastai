@@ -225,8 +225,7 @@ class Learner():
         self.create_opt(defaults.lr)
 
     def export(self, file:PathLikeOrBinaryStream='export.pkl', destroy=False):
-        """Export the state of the `Learner` in `self.path/file`.
-        If `file` is a binary stream (buffer or file), write to it."""
+        "Export the state of the `Learner` in `self.path/file`. `file` can be file-like (file or buffer)"
         if rank_distrib(): return # don't save if slave proc
         args = ['opt_func', 'loss_func', 'metrics', 'true_wd', 'bn_wd', 'wd', 'train_bn', 'model_dir', 'callback_fns']
         state = {a:getattr(self,a) for a in args}
@@ -242,8 +241,7 @@ class Learner():
         if destroy: self.destroy()
 
     def save(self, file:PathLikeOrBinaryStream=None, return_path:bool=False, with_opt:bool=True):
-        """Save model and optimizer state (if `with_opt`) with `file` to `self.model_dir`.
-        If `file` is a binary stream (buffer or file), write to it."""
+        "Save model and optimizer state (if `with_opt`) with `file` to `self.model_dir`. `file` can be file-like (file or buffer)"
         if is_pathlike(file): self._test_writeable_path()
         if rank_distrib(): return # don't save if slave proc
         target = self.path/self.model_dir/f'{file}.pth' if is_pathlike(file) else file
@@ -259,8 +257,7 @@ class Learner():
 
     def load(self, file:PathLikeOrBinaryStream=None, device:torch.device=None, strict:bool=True,
              with_opt:bool=None, purge:bool=True, remove_module:bool=False):
-        """Load model and optimizer state (if `with_opt`) `file` from `self.model_dir` using `device`.
-        If `file` is a binary stream (buffer or file), read from it."""
+        "Load model and optimizer state (if `with_opt`) `file` from `self.model_dir` using `device`. `file` can be file-like (file or buffer)"
         if purge: self.purge(clear_opt=ifnone(with_opt, False))
         if device is None: device = self.data.device
         elif isinstance(device, int): device = torch.device('cuda', device)
@@ -590,8 +587,7 @@ def load_callback(class_func, state, learn:Learner):
     return res
 
 def load_learner(path:PathOrStr, file:PathLikeOrBinaryStream='export.pkl', test:ItemList=None, **db_kwargs):
-    """Load a `Learner` object saved with `export_state` in `path/file` with empty data, optionally add `test` and load on `cpu`.
-    If `file` is a binary stream (buffer or file), read from it."""
+    "Load a `Learner` object saved with `export_state` in `path/file` with empty data, optionally add `test` and load on `cpu`. `file` can be file-like (file or buffer)"
     source = Path(path)/file if is_pathlike(file) else file
     state = torch.load(source, map_location='cpu') if defaults.device == torch.device('cpu') else torch.load(source)
     model = state.pop('model')

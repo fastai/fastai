@@ -147,7 +147,7 @@ class DataBunch():
         for dl in self.dls: dl.remove_tfm(tfm)
 
     def save(self, file:PathLikeOrBinaryStream= 'data_save.pkl')->None:
-        "Save the `DataBunch` in `self.path/file`. If `file` is a binary stream, save to it."
+        "Save the `DataBunch` in `self.path/file`. `file` can be file-like (file or buffer)"
         if not getattr(self, 'label_list', False):
             warn("Serializing the `DataBunch` only works when you created it using the data block API.")
             return
@@ -193,10 +193,10 @@ class DataBunch():
         else : ys = [self.train_ds.y.reconstruct(grab_idx(y, i)) for i in range(n_items)]
         self.train_ds.x.show_xys(xs, ys, **kwargs)
  
-    def export(self, fname:str='export.pkl'):
-        "Export the minimal state of `self` for inference in `self.path/fname`."
+    def export(self, file:PathLikeOrBinaryStream='export.pkl'):
+        "Export the minimal state of `self` for inference in `self.path/file`. `file` can be file-like (file or buffer)"
         xtra = dict(normalize=self.norm.keywords) if getattr(self, 'norm', False) else {}
-        try_save(self.valid_ds.get_state(**xtra), self.path, fname)
+        try_save(self.valid_ds.get_state(**xtra), self.path, file)
 
     def _grab_dataset(self, dl:DataLoader):
         ds = dl.dl.dataset
@@ -269,11 +269,10 @@ class DataBunch():
             warn(message)
             print(final_message)
 
-def load_data(path:PathOrStr, file:PathLikeOrBinaryStream= 'data_save.pkl', bs:int=64, val_bs:int=None, num_workers:int=defaults.cpus,
+def load_data(path:PathOrStr, file:PathLikeOrBinaryStream='data_save.pkl', bs:int=64, val_bs:int=None, num_workers:int=defaults.cpus,
               dl_tfms:Optional[Collection[Callable]]=None, device:torch.device=None, collate_fn:Callable=data_collate,
               no_check:bool=False, **kwargs)->DataBunch:
-    """Load from `path/file` a saved `DataBunch`.
-    If `file` is a binary stream (file or buffer), read from it (`path` is still required to set the working directory)."""
+    "Load a saved `DataBunch` from `path/file`. `file` can be file-like (file or buffer)"
     source = Path(path)/file if is_pathlike(file) else file
     ll = torch.load(source, map_location='cpu') if defaults.device == torch.device('cpu') else torch.load(source)
     return ll.databunch(path=path, bs=bs, val_bs=val_bs, num_workers=num_workers, dl_tfms=dl_tfms, device=device,
