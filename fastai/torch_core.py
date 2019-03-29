@@ -403,8 +403,9 @@ def add_metrics(last_metrics:Collection[Rank0Tensor], mets:Union[Rank0Tensor, Co
     last_metrics,mets = listify(last_metrics),listify(mets)
     return {'last_metrics': last_metrics + mets}
 
-def try_save(state:Dict, path:Path, fname:PathOrStr):
-    try: torch.save(state, open(path/fname, 'wb'))
+def try_save(state:Dict, path:Path=None, file:PathLikeOrBinaryStream=None):
+    target = open(path/file, 'wb') if is_pathlike(file) else file
+    try: torch.save(state, target)
     except OSError as e:
-        raise Exception(f"{e}\n Can't write {path/fname}. Pass an absolute writable pathlib obj `fname`.")
+        raise Exception(f"{e}\n Can't write {path/file}. Pass an absolute writable pathlib obj `fname`.")
 

@@ -38,6 +38,11 @@
             "file": "tests/test_text_data.py",
             "line": 110,
             "test": "test_backwards_cls_databunch"
+        },
+        {
+            "file": "tests/test_basic_data.py",
+            "line": 72,
+            "test": "test_DataBunch_save_load"
         }
     ],
     "fastai.basic_data.DataBunch.one_item": [
@@ -45,6 +50,13 @@
             "file": "tests/test_basic_data.py",
             "line": 56,
             "test": "test_DataBunch_oneitem"
+        }
+    ],
+    "fastai.basic_data.DataBunch.save": [
+        {
+            "file": "tests/test_basic_data.py",
+            "line": 72,
+            "test": "test_DataBunch_save_load"
         }
     ],
     "fastai.basic_data.DataBunch.show_batch": [
@@ -59,6 +71,11 @@
             "file": "tests/test_text_data.py",
             "line": 129,
             "test": "test_load_and_save_test"
+        },
+        {
+            "file": "tests/test_basic_data.py",
+            "line": 72,
+            "test": "test_DataBunch_save_load"
         }
     ],
     "fastai.basic_train.Learner.destroy": [
@@ -76,7 +93,7 @@
     "fastai.basic_train.Learner.export": [
         {
             "file": "tests/test_basic_train.py",
-            "line": 218,
+            "line": 226,
             "test": "test_export_load_learner"
         }
     ],
@@ -195,7 +212,7 @@
     "fastai.basic_train.load_learner": [
         {
             "file": "tests/test_basic_train.py",
-            "line": 218,
+            "line": 226,
             "test": "test_export_load_learner"
         }
     ],
@@ -255,7 +272,7 @@
         },
         {
             "file": "tests/test_basic_train.py",
-            "line": 218,
+            "line": 226,
             "test": "test_export_load_learner"
         }
     ],

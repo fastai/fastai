@@ -17,8 +17,8 @@ from fastai.gen_doc.doctest import this_tests
 ## Class DataBunch
 
 def test_DataBunch_Create():
-    x_train,y_train =  fake_basedata(n_in=3, batch_size=6),fake_basedata(n_in=3, batch_size=6)
-    x_valid,y_valid =  fake_basedata(n_in=3, batch_size=3),fake_basedata(n_in=3, batch_size=3)
+    x_train,y_train = fake_basedata(n_in=3, batch_size=6),fake_basedata(n_in=3, batch_size=6)
+    x_valid,y_valid = fake_basedata(n_in=3, batch_size=3),fake_basedata(n_in=3, batch_size=3)
     bs=5
     train_ds,valid_ds = TensorDataset(x_train, y_train),TensorDataset(x_valid, y_valid)
     data = DataBunch.create(train_ds, valid_ds, bs=bs)
@@ -31,7 +31,7 @@ def test_DataBunch_Create():
     assert 9 == len(data.valid_ds)
 
 def test_DataBunch_no_valid_dl():
-    x_train,y_train =  fake_basedata(n_in=3, batch_size=6),fake_basedata(n_in=3, batch_size=6)
+    x_train,y_train = fake_basedata(n_in=3, batch_size=6),fake_basedata(n_in=3, batch_size=6)
     bs=5
     train_ds = TensorDataset(x_train, y_train)
     data = DataBunch.create(train_ds, None, bs=bs)
@@ -69,10 +69,29 @@ def test_DataBunch_show_batch(capsys):
     match = re.findall(r'tensor', captured.out)
     assert match
 
-## TO DO: check over file created ?
-##def test_DataBunch_export():
-##     data = fake_data()
-##     data.export()
+def test_DataBunch_save_load():
+    save_name = 'data_save.pkl'
+    this_tests(DataBunch.save, load_data)
+
+    data = fake_data(n_in=4, n_out=5, batch_size=6)
+    data.save(save_name)
+    loaded_data = load_data(data.path, save_name, bs=6)
+    this_tests(loaded_data.one_batch)
+    x,y = loaded_data.one_batch()
+    assert 4 == x[0].shape[0]
+    assert 6 == x.shape[0]
+    assert 6 == y.shape[0]
+
+    # save/load using buffer
+    output_buffer = io.BytesIO()
+    data.save(output_buffer)
+    input_buffer = io.BytesIO(output_buffer.getvalue())
+    loaded_data = load_data(data.path, input_buffer, bs=6)
+    this_tests(loaded_data.one_batch)
+    x,y = loaded_data.one_batch()
+    assert 4 == x[0].shape[0]
+    assert 6 == x.shape[0]
+    assert 6 == y.shape[0]
 
 def test_DeviceDataLoader_getitem():
     this_tests('na')

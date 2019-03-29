@@ -1,4 +1,6 @@
 "`fastai.core` contains essential util functions to format and split data"
+from io import BufferedWriter, BytesIO
+
 from .imports.core import *
 
 warnings.filterwarnings("ignore", message="numpy.dtype size changed")
@@ -28,6 +30,7 @@ OptRange = Optional[Tuple[float,float]]
 OptStrTuple = Optional[Tuple[str,str]]
 OptStats = Optional[Tuple[np.ndarray, np.ndarray]]
 PathOrStr = Union[Path,str]
+PathLikeOrBinaryStream = Union[PathOrStr, BufferedWriter, BytesIO]
 PBar = Union[MasterBar, ProgressBar]
 Point=Tuple[float,float]
 Points=Collection[Point]
@@ -37,7 +40,6 @@ StartOptEnd=Union[float,Tuple[float,float]]
 StrList = Collection[str]
 Tokens = Collection[Collection[str]]
 OptStrList = Optional[StrList]
-
 np.set_printoptions(precision=6, threshold=50, edgeitems=4, linewidth=120)
 
 def num_cpus()->int:
@@ -51,6 +53,7 @@ defaults = SimpleNamespace(cpus=_default_cpus, cmap='viridis', return_fig=False)
 def is_listy(x:Any)->bool: return isinstance(x, (tuple,list))
 def is_tuple(x:Any)->bool: return isinstance(x, tuple)
 def is_dict(x:Any)->bool: return isinstance(x, dict)
+def is_pathlike(x:Any)->bool: return isinstance(x, (str,Path))
 def noop(x): return x
 
 def chunks(l:Collection, n:int)->Iterable:
