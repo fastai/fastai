@@ -81,12 +81,12 @@
     "fastai.basic_train.Learner.destroy": [
         {
             "file": "tests/test_basic_train.py",
-            "line": 158,
+            "line": 166,
             "test": "test_destroy"
         },
         {
             "file": "tests/test_basic_train.py",
-            "line": 201,
+            "line": 209,
             "test": "test_memory"
         }
     ],
@@ -133,7 +133,7 @@
         },
         {
             "file": "tests/test_basic_train.py",
-            "line": 201,
+            "line": 209,
             "test": "test_memory"
         }
     ],
@@ -162,7 +162,7 @@
         },
         {
             "file": "tests/test_basic_train.py",
-            "line": 201,
+            "line": 209,
             "test": "test_memory"
         }
     ],
@@ -174,7 +174,7 @@
         },
         {
             "file": "tests/test_basic_train.py",
-            "line": 201,
+            "line": 209,
             "test": "test_memory"
         }
     ],
@@ -1413,6 +1413,20 @@
             "file": "tests/test_vision_train.py",
             "line": 78,
             "test": "test_interp_shortcut"
+        }
+    ],
+    "fastai.vision.learner.create_body": [
+        {
+            "file": "tests/test_vision_learner.py",
+            "line": 15,
+            "test": "test_create_body"
+        }
+    ],
+    "fastai.vision.learner.create_head": [
+        {
+            "file": "tests/test_vision_learner.py",
+            "line": 38,
+            "test": "test_create_head"
         }
     ],
     "fastai.vision.models.unet.DynamicUnet": [
