@@ -12,6 +12,7 @@ Chances are that you may need to know some git when using fastai - for example i
 While this guide is mostly suitable for creating PRs for any github project, it includes several steps specific to the `fastai` project repositories, which currently are:
 
 * [https://github.com/fastai/fastai](https://github.com/fastai/fastai)
+* [https://github.com/fastai/fastai_docs](https://github.com/fastai/fastai_docs)
 * [https://github.com/fastai/course-v3](https://github.com/fastai/course-v3)
 * [https://github.com/fastai/fastprogress](https://github.com/fastai/fastprogress)
 
@@ -19,8 +20,7 @@ If you already know how to make PRs, you only need to read: the "Step 3" and "St
 
 The following instructions use `USERNAME` as a github username placeholder. The easiest way to follow this guide is to copy-n-paste the whole section into a file, replace `USERNAME` with your real username and then follow the steps.
 
-The guide is written for those who want to contribute to the `fastai` repository.
-If you'd like to contribute to other `fastai`-project repositories, just replace `fastai` with that other repository name in the instructions below.
+All the examples in this guide are written for working with the [fastai repository](https://github.com/fastai/fastai). If you'd like to contribute to other `fastai`-project repositories, just replace `fastai` with that other repository name in the instructions below.
 
 For the purpose of these examples, we will clone into a folder `fastai-fork`, to differentiate from `fastai` which you most likely already checked out to install it.
 
