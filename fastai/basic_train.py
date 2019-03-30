@@ -41,7 +41,7 @@ def get_preds(model:nn.Module, dl:DataLoader, pbar:Optional[PBar]=None, cb_handl
     "Tuple of predictions and targets, and optional losses (if `loss_func`) using `dl`, max batches `n_batch`."
     res = [torch.cat(o).cpu() for o in
            zip(*validate(model, dl, cb_handler=cb_handler, pbar=pbar, average=False, n_batch=n_batch))]
-    if loss_func is not None: 
+    if loss_func is not None:
         with NoneReduceOnCPU(loss_func) as lf: res.append(lf(res[0], res[1]))
     if activ is not None: res[0] = activ(res[0])
     return res
@@ -84,7 +84,7 @@ class BasicLearner():
 def fit(epochs:int, learn:BasicLearner, callbacks:Optional[CallbackList]=None, metrics:OptMetrics=None)->None:
     "Fit the `model` on `data` and learn using `loss_func` and `opt`."
     assert len(learn.data.train_dl) != 0, f"""Your training dataloader is empty, can't train a model.
-        Use a smaller batch size (batch size={data.train_dl.batch_size} for {len(data.train_dl.dataset)} elements)."""
+        Use a smaller batch size (batch size={learn.data.train_dl.batch_size} for {len(learn.data.train_dl.dataset)} elements)."""
     cb_handler = CallbackHandler(callbacks, metrics)
     pbar = master_bar(range(epochs))
     cb_handler.on_train_begin(epochs, pbar=pbar, metrics=metrics)
@@ -169,7 +169,7 @@ class Learner():
         self.callback_fns = [partial(Recorder, add_time=self.add_time)] + listify(self.callback_fns)
 
     def init(self, init): apply_init(self.model, init)
-        
+
     def _test_writeable_path(self):
         path = self.path/self.model_dir
         try: tmp_file = get_tmp_file(path)
@@ -566,10 +566,10 @@ class Recorder(LearnerCallback):
             ax.plot(val_iter, values)
         if ifnone(return_fig, defaults.return_fig): return fig
         if not IN_NOTEBOOK: plot_sixel(fig)
-     
+
     def _split_list(self, vals:Collection[float], skip_start:int, skip_end:int):
         return vals[skip_start:-skip_end] if skip_end > 0 else vals[skip_start:]
-    
+
     def _split_list_val(self, vals:Collection[float], skip_start:int, skip_end:int):
         val_iter = np.cumsum(self.nb_batches)
         start_val = (val_iter - skip_start >= 0).nonzero()[0].min()
