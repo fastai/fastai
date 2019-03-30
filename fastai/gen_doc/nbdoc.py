@@ -59,7 +59,7 @@ def type_repr(t):
     else: return link_type(t)
 
 def partial_repr(t):
-    args = (t.func,) + t.args + tuple([f'k={link_type(v)}' for k,v in t.keywords.items()])
+    args = (t.func,) + t.args + tuple([f'{k}={v}' for k,v in t.keywords.items()])
     reprs = ', '.join([link_type(o) for o in args])
     return f'<code>partial(</code>{reprs}<code>)</code>'
 
