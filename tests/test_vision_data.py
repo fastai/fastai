@@ -165,7 +165,7 @@ responses = try_import('responses')
 def test_trunc_download():
     this_tests(untar_data)
     url = URLs.COCO_TINY
-    fname = datapath4file(f'{url2name(url)}.tgz')
+    fname = datapath4file(url2name(url)).with_suffix(".tgz")
     # backup user's current state
     fname_bak = fname.parent/f"{fname.name}-bak"
     if fname.exists(): os.rename(fname, fname_bak)
