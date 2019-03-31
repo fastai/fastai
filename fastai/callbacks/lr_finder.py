@@ -39,4 +39,6 @@ class LRFinder(LearnerCallback):
         self.data.valid_dl = self.valid_dl
         self.learn.load('tmp', purge=False)
         if hasattr(self.learn.model, 'reset'): self.learn.model.reset()
+        for cb in self.callbacks:
+            if hasattr(cb, 'reset'): cb.reset()
         print('LR Finder is complete, type {learner_name}.recorder.plot() to see the graph.')
