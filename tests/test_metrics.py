@@ -152,6 +152,17 @@ def test_msle(p, t, expect):
     this_tests(mean_squared_logarithmic_error)
     assert np.isclose(mean_squared_logarithmic_error(p, t), expect, rtol=1.e-4)
 
+@pytest.mark.parametrize("p, t, expect", [
+    (torch.arange(-5, 5).float(), torch.arange(-10,  0).float(), 1.),
+    (torch.zeros(10).float(), torch.arange(-5, 5).float(), 0.),
+    (torch.arange(-5, 5).float(), torch.zeros(10).float(), -float("inf")),
+    (p1/2., p1, 0.75),
+    (p1, t2, -0.5),
+])
+def test_explained_variance(p, t, expect):
+    this_tests(explained_variance)
+    assert np.isclose(explained_variance(p, t), expect)
+
 ### metric as a custom class
 dummy_base_val = 9876
 class DummyMetric(Callback):
