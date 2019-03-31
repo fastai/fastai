@@ -92,6 +92,7 @@ def test_DataBunch_save_load():
     assert 4 == x[0].shape[0]
     assert 6 == x.shape[0]
     assert 6 == y.shape[0]
+    os.remove(save_name)
 
 def test_DeviceDataLoader_getitem():
     this_tests('na')

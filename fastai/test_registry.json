@@ -706,6 +706,13 @@
             "test": "test_exp_rmspe_num_of_ele"
         }
     ],
+    "fastai.metrics.explained_variance": [
+        {
+            "file": "tests/test_metrics.py",
+            "line": 162,
+            "test": "test_explained_variance"
+        }
+    ],
     "fastai.metrics.fbeta": [
         {
             "file": "tests/test_metrics.py",
