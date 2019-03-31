@@ -31,7 +31,7 @@ def lr_find(learn:Learner, start_lr:Floats=1e-7, end_lr:Floats=10, num_it:int=10
     epochs = int(np.ceil(num_it/len(learn.data.train_dl)))
     learn.fit(epochs, start_lr, callbacks=[cb], wd=wd)
 
-def to_fp16(learn:Learner, loss_scale:float=None, max_noskip:int=1000, dynamic:bool=False, clip:float=None,
+def to_fp16(learn:Learner, loss_scale:float=None, max_noskip:int=1000, dynamic:bool=True, clip:float=None,
             flat_master:bool=False, max_scale:float=2**24)->Learner:
     "Put `learn` in FP16 precision mode."
     learn.model = model2half(learn.model)
