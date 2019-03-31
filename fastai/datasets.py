@@ -196,11 +196,12 @@ def modelpath4file(filename, ext:str='.tgz'):
     if local_path.exists() or local_path.with_suffix(ext).exists(): return local_path
     else: return Config.model_path()/filename
 
-def datapath4file(filename, ext:str='.tgz'):
+def datapath4file(filename, ext:str='.tgz', archive=True):
     "Return data path to `filename`, checking locally first then in the config file."
     local_path = URLs.LOCAL_PATH/'data'/filename
     if local_path.exists() or local_path.with_suffix(ext).exists(): return local_path
-    else: return Config.data_path()/filename
+    elif archive: return Config.data_path() / filename
+    else: return Config.data_archive_path() / filename
 
 def download_data(url:str, fname:PathOrStr=None, data:bool=True, ext:str='.tgz') -> Path:
     "Download `url` to destination `fname`."
