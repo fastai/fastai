@@ -34,7 +34,10 @@ class MixUpLoss(nn.Module):
     
     def __init__(self, crit):
         super().__init__()
-        self.crit = crit
+        if hasattr(crit, 'reduction'): 
+            self.crit = crit
+            setattr(self.crit, 'reduction', 'none')
+        else: self.crit = partial(crit, reduction='none')
         
     def forward(self, output, target, reduction='elementwise_mean'):
         if len(target.size()) == 2:
