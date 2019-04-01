@@ -23,7 +23,7 @@ of that change.
 ### Fixed:
 
 - Default to using training set for `batch_stats` instead of validation
-
+- Bug in averaging the losses in Mixup
 
 ## 1.0.50 (2019-03-19)
 
