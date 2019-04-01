@@ -51,7 +51,6 @@ def to_fp32(learn:Learner):
 
 def mixup(learn:Learner, alpha:float=0.4, stack_x:bool=False, stack_y:bool=True) -> Learner:
     "Add mixup https://arxiv.org/abs/1710.09412 to `learn`."
-    if stack_y: learn.loss_func = MixUpLoss(learn.loss_func)
     learn.callback_fns.append(partial(MixUpCallback, alpha=alpha, stack_x=stack_x, stack_y=stack_y))
     return learn
 

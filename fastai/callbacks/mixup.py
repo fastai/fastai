@@ -8,6 +8,9 @@ class MixUpCallback(LearnerCallback):
     def __init__(self, learn:Learner, alpha:float=0.4, stack_x:bool=False, stack_y:bool=True):
         super().__init__(learn)
         self.alpha,self.stack_x,self.stack_y = alpha,stack_x,stack_y
+    
+    def on_train_begin(self, **kwargs):
+        if self.stack_y: self.learn.loss_func = MixUpLoss(self.learn.loss_func)
         
     def on_batch_begin(self, last_input, last_target, train, **kwargs):
         "Applies mixup to `last_input` and `last_target` if `train`."
@@ -28,6 +31,10 @@ class MixUpCallback(LearnerCallback):
                 lambd = lambd.unsqueeze(1).float()
             new_target = last_target.float() * lambd + y1.float() * (1-lambd)
         return {'last_input': new_input, 'last_target': new_target}  
+    
+    def on_train_end(self, **kwargs):
+        self.learn.loss_func = self.learn.loss_func.get_old()
+        
 
 class MixUpLoss(nn.Module):
     "Adapt the loss function `crit` to go with mixup."
@@ -36,8 +43,11 @@ class MixUpLoss(nn.Module):
         super().__init__()
         if hasattr(crit, 'reduction'): 
             self.crit = crit
+            self.old_red = crit.reduction
             setattr(self.crit, 'reduction', 'none')
-        else: self.crit = partial(crit, reduction='none')
+        else: 
+            self.crit = partial(crit, reduction='none')
+            self.old_crit = crit
         self.reduction = reduction
         
     def forward(self, output, target):
@@ -48,3 +58,9 @@ class MixUpLoss(nn.Module):
         if self.reduction == 'mean': return d.mean()
         elif self.reduction == 'sum':            return d.sum()
         return d
+    
+    def get_old(self):
+        if hasattr(self, 'old_crit'):  return self.old_crit
+        elif hasattr(self, 'old_red'): 
+            setattr(self.crit, 'reduction', self.old_red)
+            return self.crit
