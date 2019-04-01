@@ -322,9 +322,9 @@ class BatchNorm1dFlat(nn.BatchNorm1d):
         return super().forward(x).view(*f,l)
 
 class LabelSmoothingCrossEntropy(nn.Module):
-    def __init__(self, eps:float=0.1):
+    def __init__(self, eps:float=0.1, reduction:str='elementwise_mean'):
         super().__init__()
-        self.eps,self.reduction = eps,'elementwise_mean'
+        self.eps,self.reduction = eps,reduction
     
     def forward(self, output, target):
         c = output.size()[-1]
