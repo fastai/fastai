@@ -32,18 +32,19 @@ class MixUpCallback(LearnerCallback):
 class MixUpLoss(nn.Module):
     "Adapt the loss function `crit` to go with mixup."
     
-    def __init__(self, crit):
+    def __init__(self, crit, reduction='elementwise_mean'):
         super().__init__()
         if hasattr(crit, 'reduction'): 
             self.crit = crit
             setattr(self.crit, 'reduction', 'none')
         else: self.crit = partial(crit, reduction='none')
+        self.reduction = reduction
         
-    def forward(self, output, target, reduction='elementwise_mean'):
+    def forward(self, output, target):
         if len(target.size()) == 2:
             loss1, loss2 = self.crit(output,target[:,0].long()), self.crit(output,target[:,1].long())
             d = (loss1 * target[:,2] + loss2 * (1-target[:,2])).mean()
         else:  d = self.crit(output, target)
-        if reduction == 'elementwise_mean': return d.mean()
-        elif reduction == 'sum':            return d.sum()
+        if self.reduction == 'elementwise_mean': return d.mean()
+        elif self.reduction == 'sum':            return d.sum()
         return d
