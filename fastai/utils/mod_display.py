@@ -16,7 +16,6 @@ class progress_disabled_ctx():
         #silence progress bar
         fastprogress.fastprogress.NO_BAR = True
         fastai.basic_train.master_bar, fastai.basic_train.progress_bar = fastprogress.force_console_behavior()
-        return
         self.orig_callback_fns = copy(self.learn.callback_fns)
         rec_name = [x for x in self.learn.callback_fns if hasattr(x, 'func') and x.func == Recorder]
         if len(rec_name):
