@@ -5,7 +5,7 @@ from utils.fakes import *
 from utils.text import CaptureStdout
 
 def stop_after_n_batches_run_n_check(learn, bs, run_n_batches_exp):
-    has_batches = len(learn.data.train_ds)//2
+    has_batches = len(learn.data.train_ds)//bs
     with CaptureStdout() as cs:
         learn.fit_one_cycle(3, max_lr=1e-2)
     for s in ['train_loss', 'valid_loss']:
