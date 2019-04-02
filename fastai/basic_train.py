@@ -158,6 +158,7 @@ class Learner():
     callbacks:Collection[Callback]=field(default_factory=list)
     layer_groups:Collection[nn.Module]=None
     add_time:bool=True
+    silent:bool=None
     def __post_init__(self)->None:
         "Setup path,metrics, callbacks and ensure model directory exists."
         self.path = Path(ifnone(self.path, self.data.path))
@@ -167,7 +168,8 @@ class Learner():
         self.metrics=listify(self.metrics)
         if not self.layer_groups: self.layer_groups = [nn.Sequential(*flatten_model(self.model))]
         self.callbacks = listify(self.callbacks)
-        self.callback_fns = [partial(Recorder, add_time=self.add_time)] + listify(self.callback_fns)
+        if self.silent is None: self.silent = defaults.silent
+        self.callback_fns = [partial(Recorder, add_time=self.add_time, silent=self.silent)] + listify(self.callback_fns)
 
     def init(self, init): apply_init(self.model, init)
 
