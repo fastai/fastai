@@ -286,7 +286,7 @@
     "fastai.callbacks.misc.StopAfterNBatches": [
         {
             "file": "tests/test_callbacks_misc.py",
-            "line": 23,
+            "line": 22,
             "test": "test_stop_after_n_batches"
         }
     ],
@@ -1195,7 +1195,7 @@
     "fastai.utils.mod_display.progress_disabled_ctx": [
         {
             "file": "tests/test_mod_display.py",
-            "line": 17,
+            "line": 16,
             "test": "test_progress_disabled_ctx"
         }
     ],
