@@ -14,7 +14,8 @@ __all__ = ['Learner', 'LearnerCallback', 'Recorder', 'RecordOnCPU', 'fit', 'loss
 
 defaults.lr = slice(3e-3)
 defaults.wd = 1e-2
-defaults.extra_callbacks = None
+defaults.extra_callbacks    = None
+defaults.extra_callback_fns = None
 
 def loss_batch(model:nn.Module, xb:Tensor, yb:Tensor, loss_func:OptLossFunc=None, opt:OptOptimizer=None,
                cb_handler:Optional[CallbackHandler]=None)->Tuple[Union[Tensor,int,float,str]]:
@@ -100,7 +101,7 @@ def fit(epochs:int, learn:BasicLearner, callbacks:Optional[CallbackList]=None, m
                 loss = loss_batch(learn.model, xb, yb, learn.loss_func, learn.opt, cb_handler)
                 if cb_handler.on_batch_end(loss): break
 
-            if not learn.data.empty_val:
+            if not cb_handler.skip_validate and not learn.data.empty_val:
                 val_loss = validate(learn.model, learn.data.valid_dl, loss_func=learn.loss_func,
                                        cb_handler=cb_handler, pbar=pbar)
             else: val_loss=None
@@ -191,7 +192,7 @@ class Learner():
         if wd is None: wd = self.wd
         if not getattr(self, 'opt', False): self.create_opt(lr, wd)
         else: self.opt.lr,self.opt.wd = lr,wd
-        callbacks = [cb(self) for cb in self.callback_fns] + listify(callbacks)
+        callbacks = [cb(self) for cb in self.callback_fns + listify(defaults.extra_callback_fns)] + listify(callbacks)
         if defaults.extra_callbacks is not None: callbacks += defaults.extra_callbacks
         fit(epochs, self, metrics=self.metrics, callbacks=self.callbacks+callbacks)
 

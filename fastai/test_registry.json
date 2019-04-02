@@ -286,7 +286,7 @@
     "fastai.callbacks.misc.StopAfterNBatches": [
         {
             "file": "tests/test_callbacks_misc.py",
-            "line": 19,
+            "line": 23,
             "test": "test_stop_after_n_batches"
         }
     ],
