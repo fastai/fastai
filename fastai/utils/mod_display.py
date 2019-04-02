@@ -5,9 +5,9 @@ import fastprogress
 from ..basic_train import *
 from ..core import *
 
-__all__ = ['progress_disabled']
+__all__ = ['progress_disabled_ctx']
 
-class progress_disabled():
+class progress_disabled_ctx():
     ''' Context manager to disable the progress update bar and Recorder print'''
     def __init__(self,learn:Learner):
         self.learn = learn
