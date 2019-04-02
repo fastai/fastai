@@ -324,7 +324,9 @@ def parallel(func, arr:Collection, max_workers:int=None):
     else:
         with ProcessPoolExecutor(max_workers=max_workers) as ex:
             futures = [ex.submit(func,o,i) for i,o in enumerate(arr)]
-            for f in progress_bar(concurrent.futures.as_completed(futures), total=len(arr)): pass
+            results = []
+            for f in progress_bar(concurrent.futures.as_completed(futures), total=len(arr)): results.append(f.result())
+    if any([o is not None for o in results]): return results
 
 def subplots(rows:int, cols:int, imgsize:int=4, figsize:Optional[Tuple[int,int]]=None, title=None, **kwargs):
     "Like `plt.subplots` but with consistent axs shape, `kwargs` passed to `fig.suptitle` with `title`"
