@@ -12,10 +12,6 @@ class LRFinder(LearnerCallback):
         super().__init__(learn)
         self.data,self.stop_div = learn.data,stop_div
         self.sched = Scheduler((start_lr, end_lr), num_it, annealing_exp)
-        #To avoid validating if the train_dl has less than num_it batches, we put aside the valid_dl and remove it
-        #during the call to fit.
-        self.valid_dl = learn.data.valid_dl
-        self.data.valid_dl = None
 
     def on_train_begin(self, pbar, **kwargs:Any)->None:
         "Initialize optimizer and learner hyperparameters."
@@ -24,6 +20,7 @@ class LRFinder(LearnerCallback):
         self.opt = self.learn.opt
         self.opt.lr = self.sched.start
         self.stop,self.best_loss = False,0.
+        return {'skip_validate': True}
 
     def on_batch_end(self, iteration:int, smooth_loss:TensorOrNumber, **kwargs:Any)->None:
         "Determine if loss has runaway and we should stop."
@@ -34,9 +31,7 @@ class LRFinder(LearnerCallback):
             return {'stop_epoch': True, 'stop_training': True}
 
     def on_train_end(self, **kwargs:Any)->None:
-        "Cleanup learn model weights disturbed during LRFind exploration."
-        # restore the valid_dl we turned off on `__init__`
-        self.data.valid_dl = self.valid_dl
+        "Cleanup learn model weights disturbed during LRFinder exploration."
         self.learn.load('tmp', purge=False)
         if hasattr(self.learn.model, 'reset'): self.learn.model.reset()
         for cb in self.callbacks:

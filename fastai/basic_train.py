@@ -100,7 +100,7 @@ def fit(epochs:int, learn:BasicLearner, callbacks:Optional[CallbackList]=None, m
                 loss = loss_batch(learn.model, xb, yb, learn.loss_func, learn.opt, cb_handler)
                 if cb_handler.on_batch_end(loss): break
 
-            if not learn.data.empty_val:
+            if not cb_handler.skip_validate and not learn.data.empty_val:
                 val_loss = validate(learn.model, learn.data.valid_dl, loss_func=learn.loss_func,
                                        cb_handler=cb_handler, pbar=pbar)
             else: val_loss=None
