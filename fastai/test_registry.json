@@ -1192,6 +1192,13 @@
             "test": "test_gpu_with_max_free_mem"
         }
     ],
+    "fastai.utils.mod_display.progress_disabled_ctx": [
+        {
+            "file": "tests/test_mod_display.py",
+            "line": 17,
+            "test": "test_progress_disabled_ctx"
+        }
+    ],
     "fastai.vision.data.ImageDataBunch.from_csv": [
         {
             "file": "tests/test_vision_data.py",
