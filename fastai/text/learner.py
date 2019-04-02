@@ -176,8 +176,8 @@ class LanguageLearner(RNNLearner):
         items,names = [],['text', 'target', 'pred']
         for i, (x,y,z) in enumerate(zip(xs,ys,zs)):
             txt_x = ' '.join(x.text.split(' ')[:max_len])
-            txt_y = ' '.join(y.text.split(' ')[max_len:2*max_len])
-            txt_z = ' '.join(z.text.split(' ')[max_len:2*max_len])
+            txt_y = ' '.join(y.text.split(' ')[max_len-1:2*max_len-1])
+            txt_z = ' '.join(z.text.split(' ')[max_len-1:2*max_len-1])
             items.append([txt_x, txt_y, txt_z])
         items = np.array(items)
         df = pd.DataFrame({n:items[:,i] for i,n in enumerate(names)}, columns=names)
