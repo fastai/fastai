@@ -435,11 +435,11 @@ class LearnerCallback(Callback):
 class Recorder(LearnerCallback):
     "A `LearnerCallback` that records epoch, loss, opt and metric data during training."
     _order=-10
-    def __init__(self, learn:Learner, add_time:bool=True):
+    def __init__(self, learn:Learner, add_time:bool=True, silent:bool=False):
         super().__init__(learn)
         self.opt = self.learn.opt
         self.train_dl = self.learn.data.train_dl
-        self.no_val,self.silent,self.add_time = False,False,add_time
+        self.no_val,self.silent,self.add_time = False,silent,add_time
 
     def on_train_begin(self, pbar:PBar, metrics_names:Collection[str], **kwargs:Any)->None:
         "Initialize recording status at beginning of training."
