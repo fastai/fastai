@@ -10,6 +10,8 @@ def stop_after_n_batches_run_n_check(learn, bs, run_n_batches_exp):
         learn.fit_one_cycle(3, max_lr=1e-2)
     for s in ['train_loss', 'valid_loss']:
         assert s in cs.out, f"expecting '{s}' in \n{cs.out}"
+
+    #print(cs.out)
     # test that epochs are stopped at epoch 0
     assert "\n0" in cs.out, "expecting epoch0"
     assert "\n1" not in cs.out, "epoch 1 shouldn't run"
