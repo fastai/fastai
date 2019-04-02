@@ -8,21 +8,28 @@ from ..core import *
 __all__ = ['progress_disabled_ctx']
 
 class progress_disabled_ctx():
-    ''' Context manager to disable the progress update bar and Recorder print'''
+    "Context manager to disable the progress update bar and Recorder print."
     def __init__(self,learn:Learner):
         self.learn = learn
 
-    def __enter__(self):
+    def disable(self):
         #silence progress bar
         fastprogress.fastprogress.NO_BAR = True
         fastai.basic_train.master_bar, fastai.basic_train.progress_bar = fastprogress.force_console_behavior()
+        return
         self.orig_callback_fns = copy(self.learn.callback_fns)
-        rec_name = [x for x in self.learn.callback_fns if x.func == Recorder][0]
-        rec_idx = self.learn.callback_fns.index(rec_name)
-        self.learn.callback_fns[rec_idx] = partial(Recorder,add_time=True,silent=True) #silence recorder
+        rec_name = [x for x in self.learn.callback_fns if hasattr(x, 'func') and x.func == Recorder]
+        if len(rec_name):
+            rec_idx = self.learn.callback_fns.index(rec_name[0])
+            self.learn.callback_fns[rec_idx] = partial(Recorder,add_time=True,silent=True) #silence recorder
 
+    def enable(self):
+        fastai.basic_train.master_bar,fastai.basic_train.progress_bar = master_bar,progress_bar
+        #self.learn.callback_fns = self.orig_callback_fns
+
+    def __enter__(self):
+        self.disable()
         return self.learn
 
-    def __exit__(self,type,value,traceback):
-        fastai.basic_train.master_bar, fastai.basic_train.progress_bar = master_bar,progress_bar
-        self.learn.callback_fns = self.orig_callback_fns
+    def __exit__(self, *args):
+        self.enable()
