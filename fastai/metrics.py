@@ -11,6 +11,9 @@ __all__ = ['error_rate', 'accuracy', 'accuracy_thresh', 'dice', 'exp_rmspe', 'fb
 
 def fbeta(y_pred:Tensor, y_true:Tensor, thresh:float=0.2, beta:float=2, eps:float=1e-9, sigmoid:bool=True)->Rank0Tensor:
     "Computes the f_beta between `preds` and `targets`"
+    if len(y_true.shape)==1:
+        y_pred = y_pred[:,1][:,None]
+        y_true = y_true[:,None]
     beta2 = beta ** 2
     if sigmoid: y_pred = y_pred.sigmoid()
     y_pred = (y_pred>thresh).float()
@@ -273,7 +276,10 @@ def auc_roc_score(input:Tensor, targ:Tensor):
 
 def roc_curve(input:Tensor, targ:Tensor):
     "Returns the false positive and true positive rates"
-    targ = (targ == 1)
+    targ = (targ == 1).cpu()
+    input = input.cpu()
+    if len(targ.shape)==1:
+        input = input[:,1]
     desc_score_indices = torch.flip(input.argsort(-1), [-1])
     input = input[desc_score_indices]
     targ = targ[desc_score_indices]
