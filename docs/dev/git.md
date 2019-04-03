@@ -36,10 +36,10 @@ Below you will find detailed steps towards creating a PR.
 
 ### Helper Program
 
-There is a smart [program](https://github.com/fastai/fastai/blob/master/tools/fastai-make-pr-branch) that can do all the heavy lifting of the first 2 steps for you. Then you just need to do your work, commit changes and submit PR. To run it:
+There is a smart [program](https://github.com/fastai/git-tools/blob/master/fastai-make-pr-branch) that can do all the heavy lifting of the first 2 steps for you. Then you just need to do your work, commit changes and submit PR. To run it:
 
 ```
-curl -O https://raw.githubusercontent.com/fastai/fastai/master/tools/fastai-make-pr-branch
+curl -O https://raw.githubusercontent.com/fastai/git-tools/master/fastai-make-pr-branch
 chmod a+x fastai-make-pr-branch
 ./fastai-make-pr-branch https your-github-username fastai new-feature
 ```
@@ -53,7 +53,7 @@ While this is new and experimental, you probably want to place that script somew
 
 And now we also have a python version of the same:
 ```
-curl -O https://raw.githubusercontent.com/fastai/fastai/master/tools/fastai-make-pr-branch-py
+curl -O https://raw.githubusercontent.com/fastai/git-tools/master/fastai-make-pr-branch-py
 chmod a+x fastai-make-pr-branch-py
 ./fastai-make-pr-branch-py https your-github-username fastai new-feature
 ```
