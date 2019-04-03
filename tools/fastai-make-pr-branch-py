@@ -96,7 +96,7 @@ def parse_args():
     #     args.prefix = f'https://{args.token}@github.com/'
 
     args.path = f'{args.repo_name}-{args.new_branch_name}'
-    args.url = f'{args.prefix}/{args.user_name}/{args.repo_name}.git'
+    args.url = f'{args.prefix}{args.user_name}/{args.repo_name}.git'
     args.orig_repo_url = f'{args.prefix}{args.orig_user_name}/{args.repo_name}.git'
 
     return args
