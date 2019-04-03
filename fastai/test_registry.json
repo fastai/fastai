@@ -647,7 +647,7 @@
     "fastai.layers.SelfAttention": [
         {
             "file": "tests/test_torch_core.py",
-            "line": 118,
+            "line": 123,
             "test": "test_keep_parameter"
         }
     ],
@@ -978,7 +978,7 @@
     "fastai.torch_core.NoneReduceOnCPU": [
         {
             "file": "tests/test_torch_core.py",
-            "line": 98,
+            "line": 103,
             "test": "test_none_reduce_on_cpu"
         }
     ],
@@ -1096,6 +1096,13 @@
             "file": "tests/test_fp16.py",
             "line": 25,
             "test": "test_to_half"
+        }
+    ],
+    "fastai.torch_core.to_np": [
+        {
+            "file": "tests/test_torch_core.py",
+            "line": 98,
+            "test": "test_to_np"
         }
     ],
     "fastai.train.ClassificationInterpretation": [
