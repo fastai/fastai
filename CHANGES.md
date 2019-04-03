@@ -15,9 +15,11 @@ of that change.
 
 ### New:
 
+- added `defaults.silent` that controls whether `fit` calls print out any output.
+
 ### Changed:
 
-- add support for `defaults.extra_callback_fns`
+- added support for `defaults.extra_callback_fns`
 
 ### Fixed:
 
