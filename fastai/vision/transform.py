@@ -229,6 +229,9 @@ def zoom_crop(scale:float, do_rand:bool=False, p:float=1.0):
     crop_fn = rand_crop if do_rand else crop_pad
     return [zoom_fn(scale=scale, p=p), crop_fn()]
 
+torch_end = torch.__version__.split('.')[-1]
+_solve_func = torch.solve if torch_end.startswith('dev') and torch_end >= 'dev201904' else torch.gesv
+
 def _find_coeffs(orig_pts:Points, targ_pts:Points)->Tensor:
     "Find 8 coeff mentioned [here](https://web.archive.org/web/20150222120106/xenia.media.mit.edu/~cwren/interpolator/)."
     matrix = []
@@ -240,7 +243,7 @@ def _find_coeffs(orig_pts:Points, targ_pts:Points)->Tensor:
     A = FloatTensor(matrix)
     B = FloatTensor(orig_pts).view(8, 1)
     #The 8 scalars we seek are solution of AX = B
-    return torch.gesv(B,A)[0][:,0]
+    return _solve_func(B,A)[0][:,0]
 
 def _apply_perspective(coords:FlowField, coeffs:Points)->FlowField:
     "Transform `coords` with `coeffs`."
