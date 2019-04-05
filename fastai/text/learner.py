@@ -273,7 +273,7 @@ def get_text_classifier(arch:Callable, vocab_sz:int, n_class:int, bptt:int=70, m
     for k in config.keys(): 
         if k.endswith('_p'): config[k] *= drop_mult
     if lin_ftrs is None: lin_ftrs = [50]
-    if ps is None:  ps = [0.1]
+    if ps is None:  ps = [0.1]*len(lin_ftrs)
     layers = [config[meta['hid_name']] * 3] + lin_ftrs + [n_class]
     ps = [config.pop('output_p')] + ps
     init = config.pop('init') if 'init' in config else None
