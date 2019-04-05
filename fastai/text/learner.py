@@ -224,6 +224,8 @@ class PoolingLinearClassifier(nn.Module):
     def __init__(self, layers:Collection[int], drops:Collection[float]):
         super().__init__()
         mod_layers = []
+        if len(layers) != len(drops)-1:
+            raise ValueError("Number of layers and dropout values do not match.")
         activs = [nn.ReLU(inplace=True)] * (len(layers) - 2) + [None]
         for n_in,n_out,p,actn in zip(layers[:-1],layers[1:], drops, activs):
             mod_layers += bn_drop_lin(n_in, n_out, p=p, actn=actn)
