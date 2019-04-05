@@ -768,7 +768,8 @@ class MixedItemList(ItemList):
         default_procs = [[p(ds=il) for p in listify(il._processor)] for il in item_lists]
         if processor is None:
             processor = MixedProcessor([ifnone(il.processor, dp) for il,dp in zip(item_lists, default_procs)])
-        super().__init__(range_of(item_lists[0]), processor=processor, path=ifnone(path, item_lists[0].path), 
+        items = range_of(item_lists[0]) if len(item_lists) >= 1 else []
+        super().__init__(items, processor=processor, path=ifnone(path, item_lists[0].path), 
                          label_cls=label_cls, inner_df=inner_df, x=x, ignore_empty=ignore_empty)
     
     def new(self, item_lists, processor:PreProcessor=None, **kwargs)->'ItemList':
