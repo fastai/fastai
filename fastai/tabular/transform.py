@@ -156,14 +156,14 @@ class FillMissing(TabularProc):
         "Fill missing values in `self.cont_names` according to `self.fill_strategy`."
         self.na_dict = {}
         for name in self.cont_names:
-            if pd.isnull(df.loc[:,name]).sum():
+            if pd.isnull(df[name]).sum():
                 if self.add_col:
-                    df.loc[:,name+'_na'] = pd.isnull(df.loc[:,name])
+                    df[name+'_na'] = pd.isnull(df[name])
                     if name+'_na' not in self.cat_names: self.cat_names.append(name+'_na')
-                if self.fill_strategy == FillStrategy.MEDIAN: filler = df.loc[:,name].median()
+                if self.fill_strategy == FillStrategy.MEDIAN: filler = df[name].median()
                 elif self.fill_strategy == FillStrategy.CONSTANT: filler = self.fill_val
-                else: filler = df.loc[:,name].dropna().value_counts().idxmax()
-                df.loc[:,name] = df.loc[:,name].fillna(filler)
+                else: filler = df[name].dropna().value_counts().idxmax()
+                df[name] = df[name].fillna(filler)
                 self.na_dict[name] = filler
 
     def apply_test(self, df:DataFrame):
@@ -171,9 +171,9 @@ class FillMissing(TabularProc):
         for name in self.cont_names:
             if name in self.na_dict:
                 if self.add_col:
-                    df.loc[:,name+'_na'] = pd.isnull(df[name])
+                    df[name+'_na'] = pd.isnull(df[name])
                     if name+'_na' not in self.cat_names: self.cat_names.append(name+'_na')
-                df.loc[:,name] = df.loc[:,name].fillna(self.na_dict[name])
+                df[name] = df[name].fillna(self.na_dict[name])
             elif pd.isnull(df[name]).sum() != 0:
                 raise Exception(f"""There are nan values in field {name} but there were none in the training set. 
                 Please fix those manually.""")
