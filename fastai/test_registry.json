@@ -898,7 +898,7 @@
     "fastai.text.models.qrnn.QRNNLayer": [
         {
             "file": "tests/test_text_qrnn.py",
-            "line": 96,
+            "line": 89,
             "test": "test_qrnn_layer"
         }
     ],

@@ -229,8 +229,9 @@ def zoom_crop(scale:float, do_rand:bool=False, p:float=1.0):
     crop_fn = rand_crop if do_rand else crop_pad
     return [zoom_fn(scale=scale, p=p), crop_fn()]
 
+# XXX: replace this with direct usage of `solve` once fastai requires pytorch 1.1+
 torch_end = torch.__version__.split('.')[-1]
-_solve_func = torch.solve if torch_end.startswith('dev') and torch_end >= 'dev201904' else torch.gesv
+_solve_func = torch.solve if torch.__version__.startswith('1.1') or torch_end.startswith('dev') and torch_end >= 'dev201904' else torch.gesv
 
 def _find_coeffs(orig_pts:Points, targ_pts:Points)->Tensor:
     "Find 8 coeff mentioned [here](https://web.archive.org/web/20150222120106/xenia.media.mit.edu/~cwren/interpolator/)."
@@ -345,6 +346,5 @@ zoom_squish = TfmCoord(_zoom_squish)
 
 def rand_resize_crop(size:int, max_scale:float=2., ratios:Tuple[float,float]=(0.75,1.33)):
     "Randomly resize and crop the image to a ratio in `ratios` after a zoom of `max_scale`."
-    return [zoom_squish(scale=(1.,max_scale,8), squish=(*ratios,8), invert=(0.5,8), row_pct=(0.,1.), col_pct=(0.,1.)), 
+    return [zoom_squish(scale=(1.,max_scale,8), squish=(*ratios,8), invert=(0.5,8), row_pct=(0.,1.), col_pct=(0.,1.)),
             crop(size=size)]
-
