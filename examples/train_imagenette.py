@@ -49,10 +49,11 @@ def main(
     bs_rat = bs/256
     lr *= bs_rat
 
-    learn = (Learner(data, models.xresnet50(),
+    learn = (Learner(data, models.resnet50(),
              metrics=[accuracy,top_k_accuracy], wd=1e-3, opt_func=opt_func,
              bn_wd=False, true_wd=True, loss_func = LabelSmoothingCrossEntropy())
             )
+    #print(learn.model); exit()
     if mixup: learn = learn.mixup(alpha=0.2)
     learn = learn.to_fp16(dynamic=True)
     if gpu is None:       learn.to_parallel()
