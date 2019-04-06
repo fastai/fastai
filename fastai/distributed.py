@@ -23,22 +23,22 @@ class DistributedTrainer(LearnerCallback):
     _order = -20 # Needs to run before the recorder
     def __init__(self, learn:Learner, cuda_id:int=0):
         super().__init__(learn)
-        self.cuda_id,self.train_sampler,self.sampler_type = cuda_id,None,sampler
+        self.cuda_id,self.train_sampler = cuda_id,None
 
     def on_train_begin(self, **kwargs):
-        self.learn.model = DistributedDataParallel(self.learn.model, device_ids=[self.cuda_id],
+        self.model = DistributedDataParallel(self.model, device_ids=[self.cuda_id],
                                                    output_device=self.cuda_id)
-        self.train_sampler = OurDistributedSampler(self.learn.data.train_dl.dataset, shuffle=self.learn.data.train_dl.shuffle)
-        self.old_train_dl = seld.learn.data.train_dl
-        self.learn.data.train_dl = self.learn.data.train_dl.new(shuffle=False, sampler=self.train_sampler)
-        self.learn.data.train_dl.add_tfm(make_async)
-        if hasattr(self.learn.data, 'valid_dl') and self.learn.data.valid_dl is not None:
-            self.old_valid_dl = seld.learn.data.valid_dl
-            self.valid_sampler = OurDistributedSampler(self.learn.data.valid_dl.dataset, shuffle=self.learn.data.train_dl.shuffle)
-            self.learn.data.valid_dl = self.learn.data.valid_dl.new(shuffle=False, sampler=self.valid_sampler)
-            self.learn.data.valid_dl.add_tfm(make_async)
+        self.old_train_dl = seld.data.train_dl
+        self.train_sampler = OurDistributedSampler(self.data.train_dl.dataset, shuffle=self.data.train_dl.shuffle)
+        self.data.train_dl = self.data.train_dl.new(shuffle=False, sampler=self.train_sampler)
+        self.data.train_dl.add_tfm(make_async)
+        if hasattr(self.data, 'valid_dl') and self.data.valid_dl is not None:
+            self.old_valid_dl = seld.data.valid_dl
+            self.valid_sampler = OurDistributedSampler(self.data.valid_dl.dataset, shuffle=self.data.train_dl.shuffle)
+            self.data.valid_dl = self.data.valid_dl.new(shuffle=False, sampler=self.valid_sampler)
+            self.data.valid_dl.add_tfm(make_async)
         self.rank = rank_distrib()
-        self.learn.recorder.silent = (self.rank != 0)
+        self.recorder.silent = (self.rank != 0)
 
     def on_epoch_begin(self, epoch, **kwargs): self.train_sampler.set_epoch(epoch)
 
