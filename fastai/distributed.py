@@ -21,18 +21,20 @@ class ParallelTrainer(LearnerCallback):
 
 class DistributedTrainer(LearnerCallback):
     _order = -20 # Needs to run before the recorder
-    def __init__(self, learn:Learner, cuda_id:int=0, sampler:Sampler=DistributedSampler):
+    def __init__(self, learn:Learner, cuda_id:int=0):
         super().__init__(learn)
         self.cuda_id,self.train_sampler,self.sampler_type = cuda_id,None,sampler
 
     def on_train_begin(self, **kwargs):
         self.learn.model = DistributedDataParallel(self.learn.model, device_ids=[self.cuda_id],
                                                    output_device=self.cuda_id)
-        self.train_sampler = self.sampler_type(self.learn.data.train_dl.dataset)
+        self.train_sampler = OurDistributedSampler(self.learn.data.train_dl.dataset, shuffle=self.learn.data.train_dl.shuffle)
+        self.old_train_dl = seld.learn.data.train_dl
         self.learn.data.train_dl = self.learn.data.train_dl.new(shuffle=False, sampler=self.train_sampler)
         self.learn.data.train_dl.add_tfm(make_async)
         if hasattr(self.learn.data, 'valid_dl') and self.learn.data.valid_dl is not None:
-            self.valid_sampler = self.sampler_type(self.learn.data.valid_dl.dataset)
+            self.old_valid_dl = seld.learn.data.valid_dl
+            self.valid_sampler = OurDistributedSampler(self.learn.data.valid_dl.dataset, shuffle=self.learn.data.train_dl.shuffle)
             self.learn.data.valid_dl = self.learn.data.valid_dl.new(shuffle=False, sampler=self.valid_sampler)
             self.learn.data.valid_dl.add_tfm(make_async)
         self.rank = rank_distrib()
@@ -43,8 +45,10 @@ class DistributedTrainer(LearnerCallback):
     def on_train_end(self, **kwargs):
         self.learn.model = self.learn.model.module
         self.learn.data.train_dl.remove_tfm(make_async)
+        self.learn.data.train_dl = self.old_train_dl
         if hasattr(self.learn.data, 'valid_dl') and self.learn.data.valid_dl is not None:
             self.learn.data.valid_dl.remove_tfm(make_async)
+            self.learn.data.valid_dl = self.old_valid_dl
 
 class DistributedRecorder(LearnerCallback):
     def __init__(self, learn:Learner, cuda_id:int=0, cache_dir:PathOrStr='tmp'):
@@ -68,13 +72,9 @@ def _learner_parallel(learn:Learner):
     learn.callbacks.append(ParallelTrainer(learn))
     return learn
 
-def _learner_distributed(learn:Learner, cuda_id:int, cache_dir:PathOrStr='tmp', custom_sampler:Sampler=None):
+def _learner_distributed(learn:Learner, cuda_id:int, cache_dir:PathOrStr='tmp'):
     "Put `learn` on distributed training with `cuda_id`."
-    sampler = DistributedSampler
-    if learn.data.__class__ == TextLMDataBunch: sampler = DistributedChunkSampler # Chunks are better for language models; see https://github.com/fastai/fastai/issues/1933
-    if custom_sampler != None: sampler = custom_sampler
-
-    learn.callbacks.append(DistributedTrainer(learn, cuda_id, sampler))
+    learn.callbacks.append(DistributedTrainer(learn, cuda_id))
     learn.callbacks.append(DistributedRecorder(learn, cuda_id, cache_dir))
     return learn
 
@@ -99,10 +99,19 @@ def setup_distrib(gpu:Any=None):
         torch.distributed.init_process_group(backend='nccl', init_method='env://')
     return gpu
 
-class DistributedChunkSampler(DistributedSampler):
-    "A sampler for language models that passes chunks to each process rather than a random permutation."
+class OurDistributedSampler(DistributedSampler):
+    "A sampler for language models with the option to not shuffle."
+    
+     def __init__(self, dataset, num_replicas=None, rank=None, shuffle=True):
+            super().__init__(dataset, num_replicas=num_replicas, rank=rank)
+            self.shuffle = shuffle
+    
     def __iter__(self):
-        indices = torch.arange(len(self.dataset)).tolist() # in DistributedSampler this is `torch.randperm`
+        if self.shuffle:
+            g = torch.Generator()
+            g.manual_seed(self.epoch)
+            indices = torch.randperm(len(self.dataset), generator=g).tolist()
+        else: indices = torch.arange(len(self.dataset)).tolist()
 
         # add extra samples to make it evenly divisible
         indices += indices[:(self.total_size - len(indices))]
