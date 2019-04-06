@@ -3,6 +3,8 @@ from .basic_train import Learner,LearnerCallback
 from torch.nn.parallel import DistributedDataParallel, DataParallel
 from torch.utils.data.distributed import DistributedSampler
 
+from fastai.text import TextLMDataBunch
+
 __all__ = ['DistributedRecorder', 'DistributedTrainer', 'read_metrics', 'setup_distrib']
 
 def rnn_reset(self):
@@ -19,18 +21,18 @@ class ParallelTrainer(LearnerCallback):
 
 class DistributedTrainer(LearnerCallback):
     _order = -20 # Needs to run before the recorder
-    def __init__(self, learn:Learner, cuda_id:int=0):
+    def __init__(self, learn:Learner, cuda_id:int=0, sampler:Sampler=DistributedSampler):
         super().__init__(learn)
-        self.cuda_id,self.train_sampler = cuda_id,None
+        self.cuda_id,self.train_sampler,self.sampler_type = cuda_id,None,sampler
 
     def on_train_begin(self, **kwargs):
         self.learn.model = DistributedDataParallel(self.learn.model, device_ids=[self.cuda_id],
                                                    output_device=self.cuda_id)
-        self.train_sampler = DistributedSampler(self.learn.data.train_dl.dataset)
+        self.train_sampler = self.sampler_type(self.learn.data.train_dl.dataset)
         self.learn.data.train_dl = self.learn.data.train_dl.new(shuffle=False, sampler=self.train_sampler)
         self.learn.data.train_dl.add_tfm(make_async)
         if hasattr(self.learn.data, 'valid_dl') and self.learn.data.valid_dl is not None:
-            self.valid_sampler = DistributedSampler(self.learn.data.valid_dl.dataset)
+            self.valid_sampler = self.sampler_type(self.learn.data.valid_dl.dataset)
             self.learn.data.valid_dl = self.learn.data.valid_dl.new(shuffle=False, sampler=self.valid_sampler)
             self.learn.data.valid_dl.add_tfm(make_async)
         self.rank = rank_distrib()
@@ -66,9 +68,13 @@ def _learner_parallel(learn:Learner):
     learn.callbacks.append(ParallelTrainer(learn))
     return learn
 
-def _learner_distributed(learn:Learner, cuda_id:int, cache_dir:PathOrStr='tmp'):
+def _learner_distributed(learn:Learner, cuda_id:int, cache_dir:PathOrStr='tmp', custom_sampler:Sampler=None):
     "Put `learn` on distributed training with `cuda_id`."
-    learn.callbacks.append(DistributedTrainer(learn, cuda_id))
+    sampler = DistributedSampler
+    if learn.data.__class__ == TextLMDataBunch: sampler = DistributedChunkSampler # Chunks are better for language models; see https://github.com/fastai/fastai/issues/1933
+    if custom_sampler != None: sampler = custom_sampler
+
+    learn.callbacks.append(DistributedTrainer(learn, cuda_id, sampler))
     learn.callbacks.append(DistributedRecorder(learn, cuda_id, cache_dir))
     return learn
 
@@ -93,3 +99,17 @@ def setup_distrib(gpu:Any=None):
         torch.distributed.init_process_group(backend='nccl', init_method='env://')
     return gpu
 
+class DistributedChunkSampler(DistributedSampler):
+    "A sampler for language models that passes chunks to each process rather than a random permutation."
+    def __iter__(self):
+        indices = torch.arange(len(self.dataset)).tolist() # in DistributedSampler this is `torch.randperm`
+
+        # add extra samples to make it evenly divisible
+        indices += indices[:(self.total_size - len(indices))]
+        assert len(indices) == self.total_size
+
+        # subsample
+        indices = indices[self.rank:self.total_size:self.num_replicas]
+        assert len(indices) == self.num_samples
+
+        return iter(indices)
