@@ -6,7 +6,7 @@ __all__ = ['TabularModel']
 class TabularModel(nn.Module):
     "Basic model for tabular data."
     def __init__(self, emb_szs:ListSizes, n_cont:int, out_sz:int, layers:Collection[int], ps:Collection[float]=None,
-                 emb_drop:float=0., y_range:OptRange=None, use_bn:bool=True, bn_final:bool=False):
+                 emb_drop:float=0., y_range:OptRange=None, use_bn:bool=True, bn_final:bool=False, actn_final:bool=False):
         super().__init__()
         ps = ifnone(ps, [0]*len(layers))
         ps = listify(ps, layers)
@@ -16,7 +16,9 @@ class TabularModel(nn.Module):
         n_emb = sum(e.embedding_dim for e in self.embeds)
         self.n_emb,self.n_cont,self.y_range = n_emb,n_cont,y_range
         sizes = self.get_sizes(layers, out_sz)
-        actns = [nn.ReLU(inplace=True) for _ in range(len(sizes)-2)] + [None]
+        actns = [nn.ReLU(inplace=True) for _ in range(len(sizes)-2)]
+        if(actn_final): actns += [nn.ReLU(inplace=True)]
+        else: actns += [None]
         layers = []
         for i,(n_in,n_out,dp,act) in enumerate(zip(sizes[:-1],sizes[1:],[0.]+ps,actns)):
             layers += bn_drop_lin(n_in, n_out, bn=use_bn and i!=0, p=dp, actn=act)
