@@ -224,8 +224,10 @@ class PoolingLinearClassifier(nn.Module):
     def __init__(self, layers:Collection[int], drops:Collection[float]):
         super().__init__()
         mod_layers = []
+        if len(drops) != len(layers)-1:
+            raise ValueError("Number of layers and dropout values do not match.")
         activs = [nn.ReLU(inplace=True)] * (len(layers) - 2) + [None]
-        for n_in,n_out,p,actn in zip(layers[:-1],layers[1:], drops, activs):
+        for n_in, n_out, p, actn in zip(layers[:-1], layers[1:], drops, activs):
             mod_layers += bn_drop_lin(n_in, n_out, p=p, actn=actn)
         self.layers = nn.Sequential(*mod_layers)
 
@@ -273,7 +275,7 @@ def get_text_classifier(arch:Callable, vocab_sz:int, n_class:int, bptt:int=70, m
     for k in config.keys(): 
         if k.endswith('_p'): config[k] *= drop_mult
     if lin_ftrs is None: lin_ftrs = [50]
-    if ps is None:  ps = [0.1]
+    if ps is None:  ps = [0.1]*len(lin_ftrs)
     layers = [config[meta['hid_name']] * 3] + lin_ftrs + [n_class]
     ps = [config.pop('output_p')] + ps
     init = config.pop('init') if 'init' in config else None
