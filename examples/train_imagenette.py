@@ -3,6 +3,8 @@ from fastai.vision import *
 from fastai.callbacks import *
 from fastai.distributed import *
 from fastprogress import fastprogress
+from fastai.vision.models.xresnet import *
+from fastai.vision.models.presnet import *
 
 torch.backends.cudnn.benchmark = True
 fastprogress.MAX_COLS = 80
@@ -24,6 +26,7 @@ def get_data(size, woof, bs, workers=None):
 
 @call_parse
 def main(
+        gpu:Param("GPU to run on", str)=None,
         woof: Param("Use imagewoof (otherwise imagenette)", bool)=False,
         lr: Param("Learning rate", float)=1e-3,
         size: Param("Size (px: 128,192,224)", int)=128,
@@ -34,7 +37,8 @@ def main(
         bs: Param("Batch size", int)=256,
         mixup: Param("Mixup", bool)=True,
         opt: Param("Optimizer (adam,rms,sgd)", str)='adam',
-        gpu:Param("GPU to run on", str)=None,
+        arch: Param("Architecture (xresnet34, xresnet50, presnet34, presnet50)", str)='xresnet50',
+        dump: Param("Print model; don't train", bool)=False,
         ):
     "Distributed training of Imagenette."
 
@@ -49,11 +53,13 @@ def main(
     bs_rat = bs/256
     lr *= bs_rat
 
-    learn = (Learner(data, models.resnet50(),
-             metrics=[accuracy,top_k_accuracy], wd=1e-3, opt_func=opt_func,
-             bn_wd=False, true_wd=True, loss_func = LabelSmoothingCrossEntropy())
+    m = globals()[arch]
+    learn = (Learner(data, m(), wd=1e-2, opt_func=opt_func,
+             metrics=[accuracy,top_k_accuracy],
+             bn_wd=False, true_wd=True,
+             loss_func = LabelSmoothingCrossEntropy())
             )
-    #print(learn.model); exit()
+    if dump: print(learn.model); exit()
     if mixup: learn = learn.mixup(alpha=0.2)
     learn = learn.to_fp16(dynamic=True)
     if gpu is None:       learn.to_parallel()
