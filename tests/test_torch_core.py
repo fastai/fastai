@@ -95,6 +95,11 @@ def test_np2model_tensor():
     t = np2model_tensor(a)
     assert isinstance(t,torch.FloatTensor)
 
+def test_to_np():
+    this_tests(to_np)
+    a = to_np(exp)
+    assert isinstance(a,np.ndarray)
+
 def test_none_reduce_on_cpu():
     this_tests(NoneReduceOnCPU)
     y_pred = torch.ones([3,8], requires_grad=True)

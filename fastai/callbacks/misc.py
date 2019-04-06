@@ -8,4 +8,5 @@ class StopAfterNBatches(Callback):
         self.stop,self.n_batches = False,n_batches-1 # iteration starts from 0
 
     def on_batch_end(self, iteration, **kwargs):
-        if iteration == self.n_batches: return {'stop_epoch': True, 'stop_training': True}
+        if iteration == self.n_batches:
+            return {'stop_epoch': True, 'stop_training': True, 'skip_validate': True}

@@ -217,7 +217,7 @@ class SmoothenValue():
 
 CallbackList = Collection[Callback]
 
-def _get_init_state(): return {'epoch':0, 'iteration':0, 'num_batch':0}
+def _get_init_state(): return {'epoch':0, 'iteration':0, 'num_batch':0, 'skip_validate': False}
 
 @dataclass
 class CallbackHandler():
@@ -320,6 +320,9 @@ class CallbackHandler():
     def on_train_end(self, exception:Union[bool,Exception])->None:
         "Handle end of training, `exception` is an `Exception` or False if no exceptions during training."
         self('train_end', exception=exception)
+        
+    @property
+    def skip_validate(self): return self.state_dict['skip_validate']
 
 class AverageMetric(Callback):
     "Wrap a `func` in a callback for metrics computation."

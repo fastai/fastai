@@ -10,20 +10,27 @@ Note that the top-most release is changes in the unreleased master branch on
 Github. Parentheses after an item show the name or github id of the contributor
 of that change.
 
+
 ## 1.0.52.dev0 (Work In Progress)
 
 ### New:
 
+- added `defaults.silent` that controls whether `fit` calls print out any output.
+
 ### Changed:
+
+- added support for `defaults.extra_callback_fns`
 
 ### Fixed:
 
+- `StopAfterNBatches` and `TerminateOnNaNCallback` fixed not to run validation
 
 
 ## 1.0.51 (2019-04-01)
 
-### Breaking changed:
-- Loading and saving. Added option to save/load from streams (buffers or file pointers). 
+### Breaking changes:
+
+- Loading and saving. Added option to save/load from streams (buffers or file pointers).
 **Note** In all save/load related functions (`Learn.save`, `Learn.export`, `load_learner`, `DataBunch.save`, `load_data`), the parameter name `fname` was renamed to `file`.
 
 ### New:
@@ -34,6 +41,7 @@ of that change.
 
 - Default to using training set for `batch_stats` instead of validation
 - Bug in averaging the losses in Mixup
+
 
 ## 1.0.50 (2019-03-19)
 
@@ -59,6 +67,7 @@ of that change.
 - bug in `DataBunch.export` or `Learner.export` in object detection
 - `TextClassificationInterpretation` now works again (thanks to code from mikonapoli)
 - `create_cnn` hangs on Windows with PyTorch 1.0.1
+
 
 ## 1.0.48 (2019-03-09)
 

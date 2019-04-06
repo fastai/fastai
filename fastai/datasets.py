@@ -186,7 +186,7 @@ def url2name(url): return url.split('/')[-1]
 def url2path(url, data=True, ext:str='.tgz'):
     "Change `url` to a path."
     name = url2name(url)
-    return datapath4file(name, ext=ext) if data else modelpath4file(name, ext=ext)
+    return datapath4file(name, ext=ext, archive=False) if data else modelpath4file(name, ext=ext, archive=False)
 def _url2tgz(url, data=True, ext:str='.tgz'):
     return datapath4file(f'{url2name(url)}{ext}', ext=ext) if data else modelpath4file(f'{url2name(url)}{ext}', ext=ext)
 
@@ -228,8 +228,7 @@ def untar_data(url:str, fname:PathOrStr=None, dest:PathOrStr=None, data=True, fo
         if dest.exists(): shutil.rmtree(dest)
     if not dest.exists():
         fname = download_data(url, fname=fname, data=data)
-        data_archive_dir = Config().data_archive_path()
         if url in _checks:
-            assert _check_file(fname) == _checks[url], f"Downloaded file {fname} does not match checksum expected! Remove that file from {data_archive_dir} and try your code again."
+            assert _check_file(fname) == _checks[url], f"Downloaded file {fname} does not match checksum expected! Remove that file from {Config().data_archive_path()} and try your code again."
         tarfile.open(fname, 'r:gz').extractall(dest.parent)
     return dest

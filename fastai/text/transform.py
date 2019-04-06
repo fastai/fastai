@@ -22,7 +22,7 @@ class BaseTokenizer():
 class SpacyTokenizer(BaseTokenizer):
     "Wrapper around a spacy tokenizer to make it a `BaseTokenizer`."
     def __init__(self, lang:str):
-        self.tok = spacy.blank(lang)
+        self.tok = spacy.blank(lang, disable=["parser","tagger","ner"])
 
     def tokenizer(self, t:str) -> List[str]:
         return [t.text for t in self.tok.tokenizer(t)]

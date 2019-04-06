@@ -44,9 +44,9 @@ sidebar: home_sidebar
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="StopAfterNBatches" class="doc_header"><code>class</code> <code>StopAfterNBatches</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/misc.py#L5" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#StopAfterNBatches-pytest" style="float:right; padding-right:10px">[test]</a></h2><blockquote><p><code>StopAfterNBatches</code>(<strong><code>n_batches</code></strong>:<code>int</code>=<strong><em><code>2</code></em></strong>) :: <a href="/callback.html#Callback"><code>Callback</code></a></p>
+<h2 id="StopAfterNBatches" class="doc_header"><code>class</code> <code>StopAfterNBatches</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/misc.py#L6" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#StopAfterNBatches-pytest" style="float:right; padding-right:10px">[test]</a></h2><blockquote><p><code>StopAfterNBatches</code>(<strong><code>n_batches</code></strong>:<code>int</code>=<strong><em><code>2</code></em></strong>) :: <a href="/callback.html#Callback"><code>Callback</code></a></p>
 </blockquote>
-<div class="collapse" id="StopAfterNBatches-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#StopAfterNBatches-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>StopAfterNBatches</code>:</p><ul><li><code>pytest -sv tests/test_callbacks_misc.py::test_stop_after_n_batches</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_callbacks_misc.py#L19" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><p>Stop training after n batches of the first epoch.</p>
+<div class="collapse" id="StopAfterNBatches-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#StopAfterNBatches-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>StopAfterNBatches</code>:</p><ul><li><code>pytest -sv tests/test_callbacks_misc.py::test_stop_after_n_batches</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_callbacks_misc.py#L22" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><p>Stop training after n batches of the first epoch.</p>
 
 </div>
 
@@ -73,7 +73,7 @@ sidebar: home_sidebar
 <pre><code>from fastai.callbacks.misc import StopAfterNBatches
 [...]
 learn = cnn_learner([...])
-learn.callbacks.append(StopAfterNBatches(n_batches=2))
+learn.callbacks.append(StopAfterNBatches(learn, n_batches=2))
 learn.fit_one_cycle(3, max_lr=1e-2)</code></pre>
 <p>and it'll either fit into the existing memory or it'll immediately fail with OOM error. You may want to add <a href="https://github.com/stas00/ipyexperiments/">ipyexperiments</a> to show you the memory usage, including the peak usage.</p>
 <p>This is good, but it's cumbersome since you have to change the notebook source code and often you will have multiple learners and fit calls in the same notebook, so here is how to do it globally by placing the following code somewhere on top of your notebook and leaving the rest of your notebook unmodified:</p>
@@ -83,10 +83,13 @@ learn.fit_one_cycle(3, max_lr=1e-2)</code></pre>
 tune = True
 #tune = False
 if tune:
+    defaults.silent = True # don't print the fit metric headers
     defaults.extra_callbacks = [StopAfterNBatches(n_batches=2)]
 else:
+    defaults.silent = False
     defaults.extra_callbacks = None</code></pre>
 <p>When you're done tuning your hyper-parameters, just set <code>tune</code> to <code>False</code> and re-run the notebook to do true fitting.</p>
+<p>The setting <code>defaults.silent</code> controls whether <a href="/basic_train.html#fit"><code>fit</code></a> calls print out any output.</p>
 <p>Do note that when you run this callback, each fit call will be interrupted resulting in the red colored output - that's just an indication that the normal fit didn't happen, so you shouldn't expect any qualitative results out of it.</p>
 
 </div>
