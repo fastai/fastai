@@ -101,8 +101,7 @@ def setup_distrib(gpu:Any=None):
 
 class OurDistributedSampler(DistributedSampler):
     "A sampler for language models with the option to not shuffle."
-    
-     def __init__(self, dataset, num_replicas=None, rank=None, shuffle=True):
+    def __init__(self, dataset, num_replicas=None, rank=None, shuffle=True):
             super().__init__(dataset, num_replicas=num_replicas, rank=rank)
             self.shuffle = shuffle
     
