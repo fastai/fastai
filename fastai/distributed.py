@@ -26,15 +26,15 @@ class DistributedTrainer(LearnerCallback):
         self.cuda_id,self.train_sampler = cuda_id,None
 
     def on_train_begin(self, **kwargs):
-        self.model = DistributedDataParallel(self.model, device_ids=[self.cuda_id],
-                                                   output_device=self.cuda_id)
+        self.model = DistributedDataParallel(self.model, device_ids=[self.cuda_id], output_device=self.cuda_id)
         self.old_train_dl = seld.data.train_dl
-        self.train_sampler = OurDistributedSampler(self.data.train_dl.dataset, shuffle=self.data.train_dl.shuffle)
+        shuffle = self.data.train_dl.init_kwargs['shuffle'] if hasattr(self.data.train_dl, 'init_kwargs') else True
+        self.train_sampler = OurDistributedSampler(self.data.train_dl.dataset, shuffle=shuffle)
         self.data.train_dl = self.data.train_dl.new(shuffle=False, sampler=self.train_sampler)
         self.data.train_dl.add_tfm(make_async)
         if hasattr(self.data, 'valid_dl') and self.data.valid_dl is not None:
             self.old_valid_dl = seld.data.valid_dl
-            self.valid_sampler = OurDistributedSampler(self.data.valid_dl.dataset, shuffle=self.data.train_dl.shuffle)
+            self.valid_sampler = OurDistributedSampler(self.data.valid_dl.dataset, shuffle=shuffle)
             self.data.valid_dl = self.data.valid_dl.new(shuffle=False, sampler=self.valid_sampler)
             self.data.valid_dl.add_tfm(make_async)
         self.rank = rank_distrib()
