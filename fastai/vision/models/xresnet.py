@@ -14,8 +14,7 @@ class Flatten(nn.Module):
 
 def init_cnn(m):
     if getattr(m, 'bias', None) is not None: nn.init.constant_(m.bias, 0)
-    if isinstance(m, nn.Conv2d): nn.init.kaiming_normal_(m.weight)
-    elif isinstance(m, nn.Linear): m.weight.data.normal_(0, 0.01)
+    if isinstance(m, (nn.Conv2d,nn.Linear)): nn.init.kaiming_normal_(m.weight)
     # TODO init final linear bias to return 1/c (with log etc)
     # TODO linear weight should be kaiming or something?
     for l in m.children(): init_cnn(l)
@@ -55,7 +54,7 @@ class XResNet(nn.Sequential):
             nn.MaxPool2d(kernel_size=3, stride=2, padding=1),
             *blocks,
             nn.AdaptiveAvgPool2d(1), Flatten(),
-            nn.Linear(block_szs[-1]*expansion, num_classes)
+            nn.Linear(block_szs[-1]*expansion, num_classes),
         )
         init_cnn(self)
 
