@@ -95,6 +95,11 @@ def test_np2model_tensor():
     t = np2model_tensor(a)
     assert isinstance(t,torch.FloatTensor)
 
+def test_trange_of():
+    this_tests(trange_of)
+    t = trange_of(a)
+    assert len(t) == len(a)
+    
 def test_to_np():
     this_tests(to_np)
     a = to_np(exp)
