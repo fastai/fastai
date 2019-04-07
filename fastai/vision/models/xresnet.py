@@ -2,6 +2,7 @@ import torch.nn as nn
 import torch
 import math
 import torch.utils.model_zoo as model_zoo
+from functools import partial
 
 __all__ = ['XResNet', 'xresnet18', 'xresnet34', 'xresnet50', 'xresnet101', 'xresnet152']
 
@@ -22,6 +23,8 @@ def init_cnn(m):
 def conv(ni, nf, ks=3, stride=1, bias=False):
     return nn.Conv2d(ni, nf, kernel_size=ks, stride=stride, padding=ks//2, bias=bias)
 
+def noop(x): return x
+
 def conv_layer(ni, nf, ks=3, stride=1, zero_bn=False, act=True):
     bn = nn.BatchNorm2d(nf)
     nn.init.constant_(bn.weight, 0. if zero_bn else 1.)
@@ -29,93 +32,56 @@ def conv_layer(ni, nf, ks=3, stride=1, zero_bn=False, act=True):
     if act: layers.append(act_fn)
     return nn.Sequential(*layers)
 
-class BasicBlock(nn.Module):
-    expansion = 1
+class ResBlock(nn.Module):
+    def __init__(self, expansion, ni, nh, stride=1):
+        super().__init__()
+        nf,ni = nh*expansion,ni*expansion
+        self.convs = nn.Sequential(
+            noop if expansion==1 else conv_layer(ni, nh, 1),
+            conv_layer(ni if expansion==1 else nh, nh, stride=stride),
+            conv_layer(nh, nf, 3 if expansion==1 else 1, zero_bn=True, act=False))
+        self.idconv = noop if ni==nf else conv_layer(ni, nf, 1)
+        self.pool = noop if stride==1 else nn.AvgPool2d(2)
 
-    def __init__(self, ni, nf, stride=1, downsample=None):
-        super(BasicBlock, self).__init__()
-        self.conv1 = conv_layer(ni, nf, stride=stride)
-        self.conv2 = conv_layer(nf, nf, zero_bn=True, act=False)
-        self.downsample = downsample
-        self.stride = stride
-
-    def forward(self, x):
-        identity = x.clone() if self.downsample is None else self.downsample(x)
-        x = self.conv1(x)
-        x = self.conv2(x)
-        x += identity
-        x = act_fn(x)
-        return x
-
-class Bottleneck(nn.Module):
-    expansion = 4
-
-    def __init__(self, ni, nf, stride=1, downsample=None):
-        super(Bottleneck, self).__init__()
-        self.conv1 = conv_layer(ni, nf, 1)
-        self.conv2 = conv_layer(nf, nf, 3, stride=stride)
-        self.conv3 = conv_layer(nf, nf*self.expansion, 1, zero_bn=True, act=False)
-        self.downsample = downsample
-        self.stride = stride
-
-    def forward(self, x):
-        identity = x.clone() if self.downsample is None else self.downsample(x)
-        x = self.conv1(x)
-        x = self.conv2(x)
-        x = self.conv3(x)
-        x += identity
-        x = act_fn(x)
-        return x
+    def forward(self, x): return act_fn(self.convs(x) + self.pool(self.idconv(x)))
 
 class XResNet(nn.Sequential):
-    def __init__(self, block, layers, num_classes=1000):
-        self.ni = 64
+    def __init__(self, expansion, layers, num_classes=1000):
+        block_szs = [64//expansion,64,128,256,512]
+        blocks = [self._make_layer(expansion, block_szs[i], block_szs[i+1], l, 1 if i==0 else 2)
+                  for i,l in enumerate(layers)]
         super().__init__(
-            conv_layer(3, 32, stride=2),
-            conv_layer(32, 32),
-            conv_layer(32, 64),
+            conv_layer(3, 16, stride=2), conv_layer(16, 32), conv_layer(32, 64),
             nn.MaxPool2d(kernel_size=3, stride=2, padding=1),
-            self._make_layer(block, 64, layers[0]),
-            self._make_layer(block, 128, layers[1], stride=2),
-            self._make_layer(block, 256, layers[2], stride=2),
-            self._make_layer(block, 512, layers[3], stride=2),
-            nn.AdaptiveAvgPool2d(1),
-            Flatten(),
-            nn.Linear(512 * block.expansion, num_classes)
+            *blocks,
+            nn.AdaptiveAvgPool2d(1), Flatten(),
+            nn.Linear(block_szs[-1]*expansion, num_classes)
         )
+        init_cnn(self)
 
-    def _make_layer(self, block, nf, blocks, stride=1):
-        downsample = None
-        if stride != 1 or self.ni != nf*block.expansion:
-            dlayers = [conv_layer(self.ni, nf*block.expansion, 1)]
-            if stride==2: dlayers.append(nn.AvgPool2d(2))
-            downsample = nn.Sequential(*dlayers)
+    def _make_layer(self, expansion, ni, nf, blocks, stride):
+        return nn.Sequential(
+            *[ResBlock(expansion, ni if i==0 else nf, nf, stride if i==0 else 1)
+              for i in range(blocks)])
 
-        layers = []
-        layers.append(block(self.ni, nf, stride, downsample))
-        self.ni = nf * block.expansion
-        for i in range(1, blocks): layers.append(block(self.ni, nf))
-        return nn.Sequential(*layers)
-
-
-def xresnet(block, n_layers, name, pre=False, **kwargs):
-    model = XResNet(block, n_layers, **kwargs)
+def xresnet(expansion, n_layers, name, pre=False, **kwargs):
+    model = XResNet(expansion, n_layers, **kwargs)
     #if pre: model.load_state_dict(model_zoo.load_url(model_urls[name]))
     if pre: model.load_state_dict(torch.load(model_urls[name]))
     return model
 
 def xresnet18(pretrained=False, **kwargs):
-    return xresnet(BasicBlock, [2, 2, 2, 2], 'xresnet18', pre=pretrained, **kwargs)
+    return xresnet(1, [2, 2, 2, 2], 'xresnet18', pre=pretrained, **kwargs)
 
 def xresnet34(pretrained=False, **kwargs):
-    return xresnet(BasicBlock, [3, 4, 6, 3], 'xresnet34', pre=pretrained, **kwargs)
+    return xresnet(1, [3, 4, 6, 3], 'xresnet34', pre=pretrained, **kwargs)
 
 def xresnet50(pretrained=False, **kwargs):
-    return xresnet(Bottleneck, [3, 4, 6, 3], 'xresnet50', pre=pretrained, **kwargs)
+    return xresnet(4, [3, 4, 6, 3], 'xresnet50', pre=pretrained, **kwargs)
 
 def xresnet101(pretrained=False, **kwargs):
-    return xresnet(Bottleneck, [3, 4, 23, 3], 'xresnet101', pre=pretrained, **kwargs)
+    return xresnet(4, [3, 4, 23, 3], 'xresnet101', pre=pretrained, **kwargs)
 
 def xresnet152(pretrained=False, **kwargs):
-    return xresnet(Bottleneck, [3, 8, 36, 3], 'xresnet152', pre=pretrained, **kwargs)
+    return xresnet(4, [3, 8, 36, 3], 'xresnet152', pre=pretrained, **kwargs)
 

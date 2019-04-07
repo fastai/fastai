@@ -3,6 +3,7 @@ from fastai.vision import *
 from fastai.callbacks import *
 from fastai.distributed import *
 from fastprogress import fastprogress
+from torchvision.models import *
 from fastai.vision.models.xresnet import *
 from fastai.vision.models.presnet import *
 
@@ -48,9 +49,10 @@ def main(
     elif opt=='rms'  : opt_func = partial(optim.RMSprop, alpha=alpha, eps=eps)
     elif opt=='sgd'  : opt_func = partial(optim.SGD, momentum=mom)
 
-    print(f'lr: {lr}; size: {size}; alpha: {alpha}; mom: {mom}; eps: {eps}')
     data = get_data(size, woof, bs)
     bs_rat = bs/256
+    if gpu is not None: bs_rat *= num_distrib()
+    print(f'lr: {lr}; eff_lr: {lr*bs_rat}; size: {size}; alpha: {alpha}; mom: {mom}; eps: {eps}')
     lr *= bs_rat
 
     m = globals()[arch]
