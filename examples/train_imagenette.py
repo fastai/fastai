@@ -36,7 +36,7 @@ def main(
         eps: Param("epsilon", float)=1e-6,
         epochs: Param("Number of epochs", int)=5,
         bs: Param("Batch size", int)=256,
-        mixup: Param("Mixup", bool)=True,
+        mixup: Param("Mixup", float)=0.,
         opt: Param("Optimizer (adam,rms,sgd)", str)='adam',
         arch: Param("Architecture (xresnet34, xresnet50, presnet34, presnet50)", str)='xresnet50',
         dump: Param("Print model; don't train", bool)=False,
@@ -52,7 +52,7 @@ def main(
     data = get_data(size, woof, bs)
     bs_rat = bs/256
     if gpu is not None: bs_rat *= num_distrib()
-    print(f'lr: {lr}; eff_lr: {lr*bs_rat}; size: {size}; alpha: {alpha}; mom: {mom}; eps: {eps}')
+    if not gpu: print(f'lr: {lr}; eff_lr: {lr*bs_rat}; size: {size}; alpha: {alpha}; mom: {mom}; eps: {eps}')
     lr *= bs_rat
 
     m = globals()[arch]
@@ -62,7 +62,7 @@ def main(
              loss_func = LabelSmoothingCrossEntropy())
             )
     if dump: print(learn.model); exit()
-    if mixup: learn = learn.mixup(alpha=0.2)
+    if mixup: learn = learn.mixup(alpha=mixup)
     learn = learn.to_fp16(dynamic=True)
     if gpu is None:       learn.to_parallel()
     elif num_distrib()>1: learn.to_distributed(gpu) # Requires `-m fastai.launch`
