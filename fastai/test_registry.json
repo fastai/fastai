@@ -565,8 +565,47 @@
     "fastai.datasets.Config": [
         {
             "file": "tests/test_datasets.py",
-            "line": 13,
+            "line": 15,
             "test": "test_creates_config"
+        },
+        {
+            "file": "tests/test_datasets.py",
+            "line": 26,
+            "test": "test_load_config"
+        },
+        {
+            "file": "tests/test_datasets.py",
+            "line": 29,
+            "test": "test_default_config"
+        },
+        {
+            "file": "tests/test_datasets.py",
+            "line": 42,
+            "test": "test_user_config"
+        }
+    ],
+    "fastai.datasets.datapath4file": [
+        {
+            "file": "tests/test_datasets.py",
+            "line": 26,
+            "test": "test_load_config"
+        },
+        {
+            "file": "tests/test_datasets.py",
+            "line": 42,
+            "test": "test_user_config"
+        }
+    ],
+    "fastai.datasets.download_data": [
+        {
+            "file": "tests/test_datasets.py",
+            "line": 26,
+            "test": "test_load_config"
+        },
+        {
+            "file": "tests/test_datasets.py",
+            "line": 42,
+            "test": "test_user_config"
         }
     ],
     "fastai.datasets.untar_data": [
@@ -574,6 +613,28 @@
             "file": "tests/test_vision_data.py",
             "line": 165,
             "test": "test_trunc_download"
+        },
+        {
+            "file": "tests/test_datasets.py",
+            "line": 26,
+            "test": "test_load_config"
+        },
+        {
+            "file": "tests/test_datasets.py",
+            "line": 42,
+            "test": "test_user_config"
+        }
+    ],
+    "fastai.datasets.url2path": [
+        {
+            "file": "tests/test_datasets.py",
+            "line": 26,
+            "test": "test_load_config"
+        },
+        {
+            "file": "tests/test_datasets.py",
+            "line": 42,
+            "test": "test_user_config"
         }
     ],
     "fastai.gen_doc.doctest.merge_registries": [
