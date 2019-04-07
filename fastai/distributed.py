@@ -3,6 +3,8 @@ from .basic_train import Learner,LearnerCallback
 from torch.nn.parallel import DistributedDataParallel, DataParallel
 from torch.utils.data.distributed import DistributedSampler
 
+from fastai.text import TextLMDataBunch
+
 __all__ = ['DistributedRecorder', 'DistributedTrainer', 'read_metrics', 'setup_distrib']
 
 def rnn_reset(self):
@@ -23,26 +25,31 @@ class DistributedTrainer(LearnerCallback):
         super().__init__(learn)
         self.cuda_id,self.train_sampler = cuda_id,None
 
+    def _change_dl(self, dl, shuffle):
+        old_dl = dl
+        sampler = OurDistributedSampler(dl.dataset, shuffle=shuffle)
+        new_dl = dl.new(shuffle=False, sampler=sampler)
+        new_dl.add_tfm(make_async)
+        return old_dl,new_dl,sampler
+
     def on_train_begin(self, **kwargs):
-        self.learn.model = DistributedDataParallel(self.learn.model, device_ids=[self.cuda_id],
-                                                   output_device=self.cuda_id)
-        self.train_sampler = DistributedSampler(self.learn.data.train_dl.dataset)
-        self.learn.data.train_dl = self.learn.data.train_dl.new(shuffle=False, sampler=self.train_sampler)
-        self.learn.data.train_dl.add_tfm(make_async)
-        if hasattr(self.learn.data, 'valid_dl') and self.learn.data.valid_dl is not None:
-            self.valid_sampler = DistributedSampler(self.learn.data.valid_dl.dataset)
-            self.learn.data.valid_dl = self.learn.data.valid_dl.new(shuffle=False, sampler=self.valid_sampler)
-            self.learn.data.valid_dl.add_tfm(make_async)
+        self.learn.model = DistributedDataParallel(self.model, device_ids=[self.cuda_id], output_device=self.cuda_id)
+        shuffle = self.data.train_dl.init_kwargs['shuffle'] if hasattr(self.data.train_dl, 'init_kwargs') else True
+        self.old_train_dl,self.data.train_dl,self.train_sampler = self._change_dl(self.data.train_dl, shuffle)
+        if hasattr(self.data, 'valid_dl') and self.data.valid_dl is not None:
+            self.old_valid_dl,self.data.valid_dl,self.valid_sampler = self._change_dl(self.data.valid_dl, shuffle)
         self.rank = rank_distrib()
-        self.learn.recorder.silent = (self.rank != 0)
+        self.recorder.silent = (self.rank != 0)
 
     def on_epoch_begin(self, epoch, **kwargs): self.train_sampler.set_epoch(epoch)
 
     def on_train_end(self, **kwargs):
         self.learn.model = self.learn.model.module
         self.learn.data.train_dl.remove_tfm(make_async)
+        self.learn.data.train_dl = self.old_train_dl
         if hasattr(self.learn.data, 'valid_dl') and self.learn.data.valid_dl is not None:
             self.learn.data.valid_dl.remove_tfm(make_async)
+            self.learn.data.valid_dl = self.old_valid_dl
 
 class DistributedRecorder(LearnerCallback):
     def __init__(self, learn:Learner, cuda_id:int=0, cache_dir:PathOrStr='tmp'):
@@ -93,3 +100,25 @@ def setup_distrib(gpu:Any=None):
         torch.distributed.init_process_group(backend='nccl', init_method='env://')
     return gpu
 
+class OurDistributedSampler(DistributedSampler):
+    "A sampler for language models with the option to not shuffle."
+    def __init__(self, dataset, num_replicas=None, rank=None, shuffle=True):
+            super().__init__(dataset, num_replicas=num_replicas, rank=rank)
+            self.shuffle = shuffle
+    
+    def __iter__(self):
+        if self.shuffle:
+            g = torch.Generator()
+            g.manual_seed(self.epoch)
+            indices = torch.randperm(len(self.dataset), generator=g).tolist()
+        else: indices = torch.arange(len(self.dataset)).tolist()
+
+        # add extra samples to make it evenly divisible
+        indices += indices[:(self.total_size - len(indices))]
+        assert len(indices) == self.total_size
+
+        # subsample
+        indices = indices[self.rank:self.total_size:self.num_replicas]
+        assert len(indices) == self.num_samples
+
+        return iter(indices)

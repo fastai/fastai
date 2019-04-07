@@ -286,7 +286,7 @@
     "fastai.callbacks.misc.StopAfterNBatches": [
         {
             "file": "tests/test_callbacks_misc.py",
-            "line": 19,
+            "line": 22,
             "test": "test_stop_after_n_batches"
         }
     ],
@@ -647,7 +647,7 @@
     "fastai.layers.SelfAttention": [
         {
             "file": "tests/test_torch_core.py",
-            "line": 118,
+            "line": 123,
             "test": "test_keep_parameter"
         }
     ],
@@ -898,7 +898,7 @@
     "fastai.text.models.qrnn.QRNNLayer": [
         {
             "file": "tests/test_text_qrnn.py",
-            "line": 96,
+            "line": 89,
             "test": "test_qrnn_layer"
         }
     ],
@@ -978,7 +978,7 @@
     "fastai.torch_core.NoneReduceOnCPU": [
         {
             "file": "tests/test_torch_core.py",
-            "line": 98,
+            "line": 103,
             "test": "test_none_reduce_on_cpu"
         }
     ],
@@ -1098,6 +1098,13 @@
             "test": "test_to_half"
         }
     ],
+    "fastai.torch_core.to_np": [
+        {
+            "file": "tests/test_torch_core.py",
+            "line": 98,
+            "test": "test_to_np"
+        }
+    ],
     "fastai.train.ClassificationInterpretation": [
         {
             "file": "tests/test_vision_train.py",
@@ -1190,6 +1197,13 @@
             "file": "tests/test_utils_mem.py",
             "line": 44,
             "test": "test_gpu_with_max_free_mem"
+        }
+    ],
+    "fastai.utils.mod_display.progress_disabled_ctx": [
+        {
+            "file": "tests/test_mod_display.py",
+            "line": 16,
+            "test": "test_progress_disabled_ctx"
         }
     ],
     "fastai.vision.data.ImageDataBunch.from_csv": [

@@ -115,6 +115,10 @@ summary: "Helper functions to search for api tests"
 <ul>
 <li><code>pytest -sv tests/test_train.py::test_fit</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_train.py#L28" class="source_link" style="float:right">[source]</a></li>
 </ul>
+<p>Some other tests where <code>fit</code> is used:</p>
+<ul>
+<li><code>pytest -sv tests/test_basic_train.py::test_destroy</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_basic_train.py#L166" class="source_link" style="float:right">[source]</a></li>
+</ul>
 <p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p>
 
 </div>
@@ -156,6 +160,12 @@ summary: "Helper functions to search for api tests"
 <ul>
 <li><code>pytest -sv tests/test_data_block.py::test_custom_dataset</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_data_block.py#L143" class="source_link" style="float:right">[source]</a></li>
 </ul>
+<p>Some other tests where <code>DataBunch</code> is used:</p>
+<ul>
+<li><code>pytest -sv tests/test_basic_data.py::test_DataBunch_Create</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_basic_data.py#L19" class="source_link" style="float:right">[source]</a></li>
+<li><code>pytest -sv tests/test_basic_data.py::test_DataBunch_no_valid_dl</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_basic_data.py#L33" class="source_link" style="float:right">[source]</a></li>
+<li><code>pytest -sv tests/test_basic_data.py::test_DataBunch_save_load</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_basic_data.py#L72" class="source_link" style="float:right">[source]</a></li>
+</ul>
 <p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p>
 
 </div>
@@ -186,7 +196,14 @@ summary: "Helper functions to search for api tests"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<p>No tests found for <code>TextList</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p>
+<p>Tests found for <code>TextList</code>:</p>
+<p>Some other tests where <code>TextList</code> is used:</p>
+<ul>
+<li><code>pytest -sv tests/test_text_data.py::test_filter_classes</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_text_data.py#L42" class="source_link" style="float:right">[source]</a></li>
+<li><code>pytest -sv tests/test_text_data.py::test_from_folder</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_text_data.py#L30" class="source_link" style="float:right">[source]</a></li>
+<li><code>pytest -sv tests/test_text_data.py::test_regression</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_text_data.py#L174" class="source_link" style="float:right">[source]</a></li>
+</ul>
+<p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p>
 
 </div>
 
@@ -230,7 +247,7 @@ summary: "Helper functions to search for api tests"
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="doctest" class="doc_header"><code>doctest</code><a href="https://github.com/fastai/fastai/blob/master/fastai/gen_doc/nbtest.py#L25" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#doctest-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>doctest</code>(<strong><code>elt</code></strong>)</p>
 </blockquote>
-<div class="collapse" id="doctest-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#doctest-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>doctest</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Inline notebook popup for <a href="/gen_doc.nbtest.html#show_test"><code>show_test</code></a></p>
+<div class="collapse" id="doctest-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#doctest-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>doctest</code>:</p><p>Some other tests where <code>doctest</code> is used:</p><ul><li><code>pytest -sv tests/test_gen_doc_nbtest.py::test_this_tests</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_gen_doc_nbtest.py#L75" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><p>Inline notebook popup for <a href="/gen_doc.nbtest.html#show_test"><code>show_test</code></a></p>
 
 </div>
 

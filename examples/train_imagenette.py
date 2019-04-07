@@ -3,6 +3,9 @@ from fastai.vision import *
 from fastai.callbacks import *
 from fastai.distributed import *
 from fastprogress import fastprogress
+from torchvision.models import *
+from fastai.vision.models.xresnet import *
+from fastai.vision.models.presnet import *
 
 torch.backends.cudnn.benchmark = True
 fastprogress.MAX_COLS = 80
@@ -24,35 +27,45 @@ def get_data(size, woof, bs, workers=None):
 
 @call_parse
 def main(
+        gpu:Param("GPU to run on", str)=None,
         woof: Param("Use imagewoof (otherwise imagenette)", bool)=False,
         lr: Param("Learning rate", float)=1e-3,
         size: Param("Size (px: 128,192,224)", int)=128,
-        alpha: Param("Alpha", float)=0.9,
+        alpha: Param("Alpha", float)=0.99,
         mom: Param("Momentum", float)=0.9,
-        eps: Param("epsilon", float)=1e-7,
+        eps: Param("epsilon", float)=1e-6,
         epochs: Param("Number of epochs", int)=5,
         bs: Param("Batch size", int)=256,
-        gpu:Param("GPU to run on", str)=None,
+        mixup: Param("Mixup", bool)=True,
+        opt: Param("Optimizer (adam,rms,sgd)", str)='adam',
+        arch: Param("Architecture (xresnet34, xresnet50, presnet34, presnet50)", str)='xresnet50',
+        dump: Param("Print model; don't train", bool)=False,
         ):
     "Distributed training of Imagenette."
 
     gpu = setup_distrib(gpu)
     if gpu is None: bs *= torch.cuda.device_count()
-    opt_func = partial(optim.Adam, betas=(mom,alpha), eps=eps)
+    if   opt=='adam' : opt_func = partial(optim.Adam, betas=(mom,alpha), eps=eps)
+    elif opt=='rms'  : opt_func = partial(optim.RMSprop, alpha=alpha, eps=eps)
+    elif opt=='sgd'  : opt_func = partial(optim.SGD, momentum=mom)
 
-    print(f'lr: {lr}; size: {size}; alpha: {alpha}; mom: {mom}; eps: {eps}')
     data = get_data(size, woof, bs)
     bs_rat = bs/256
+    if gpu is not None: bs_rat *= num_distrib()
+    print(f'lr: {lr}; eff_lr: {lr*bs_rat}; size: {size}; alpha: {alpha}; mom: {mom}; eps: {eps}')
     lr *= bs_rat
 
-    learn = (Learner(data, models.xresnet50(),
-             metrics=[accuracy,top_k_accuracy], wd=1e-3, opt_func=opt_func,
-             bn_wd=False, true_wd=True, loss_func = LabelSmoothingCrossEntropy())
-        .mixup(alpha=0.2)
-        .to_fp16(dynamic=True)
-    )
+    m = globals()[arch]
+    learn = (Learner(data, m(), wd=1e-2, opt_func=opt_func,
+             metrics=[accuracy,top_k_accuracy],
+             bn_wd=False, true_wd=True,
+             loss_func = LabelSmoothingCrossEntropy())
+            )
+    if dump: print(learn.model); exit()
+    if mixup: learn = learn.mixup(alpha=0.2)
+    learn = learn.to_fp16(dynamic=True)
     if gpu is None:       learn.to_parallel()
     elif num_distrib()>1: learn.to_distributed(gpu) # Requires `-m fastai.launch`
 
-    learn.fit_one_cycle(epochs, lr, div_factor=10, pct_start=0.5)
+    learn.fit_one_cycle(epochs, lr, div_factor=10, pct_start=0.3)
 

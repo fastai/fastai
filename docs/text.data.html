@@ -68,7 +68,7 @@ summary: "Basic dataset for NLP tasks and helper functions to create a DataBunch
 <div class="output_markdown rendered_html output_subarea ">
 <h3 id="TextLMDataBunch" class="doc_header"><code>class</code> <code>TextLMDataBunch</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/data.py#L237" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#TextLMDataBunch-pytest" style="float:right; padding-right:10px">[test]</a></h3><blockquote><p><code>TextLMDataBunch</code>(<strong><code>train_dl</code></strong>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>, <strong><code>valid_dl</code></strong>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>, <strong><code>fix_dl</code></strong>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>=<strong><em><code>None</code></em></strong>, <strong><code>test_dl</code></strong>:<code>Optional</code>[<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>]=<strong><em><code>None</code></em></strong>, <strong><code>device</code></strong>:<a href="https://pytorch.org/docs/stable/tensor_attributes.html#torch-device"><code>device</code></a>=<strong><em><code>None</code></em></strong>, <strong><code>dl_tfms</code></strong>:<code>Optional</code>[<code>Collection</code>[<code>Callable</code>]]=<strong><em><code>None</code></em></strong>, <strong><code>path</code></strong>:<code>PathOrStr</code>=<strong><em><code>'.'</code></em></strong>, <strong><code>collate_fn</code></strong>:<code>Callable</code>=<strong><em><code>'data_collate'</code></em></strong>, <strong><code>no_check</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>) :: <a href="/text.data.html#TextDataBunch"><code>TextDataBunch</code></a></p>
 </blockquote>
-<div class="collapse" id="TextLMDataBunch-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#TextLMDataBunch-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>TextLMDataBunch</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Create a <a href="/text.data.html#TextDataBunch"><code>TextDataBunch</code></a> suitable for training a language model.</p>
+<div class="collapse" id="TextLMDataBunch-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#TextLMDataBunch-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>TextLMDataBunch</code>:</p><p>Some other tests where <code>TextLMDataBunch</code> is used:</p><ul><li><code>pytest -sv tests/test_text_data.py::test_from_csv_and_from_df</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_text_data.py#L57" class="source_link" style="float:right">[source]</a></li><li><code>pytest -sv tests/test_text_data.py::test_should_load_backwards_lm_1</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_text_data.py#L83" class="source_link" style="float:right">[source]</a></li><li><code>pytest -sv tests/test_text_data.py::test_should_load_backwards_lm_2</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_text_data.py#L99" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><p>Create a <a href="/text.data.html#TextDataBunch"><code>TextDataBunch</code></a> suitable for training a language model.</p>
 
 </div>
 
@@ -117,7 +117,7 @@ summary: "Basic dataset for NLP tasks and helper functions to create a DataBunch
 <div class="output_markdown rendered_html output_subarea ">
 <h3 id="TextClasDataBunch" class="doc_header"><code>class</code> <code>TextClasDataBunch</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/data.py#L252" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#TextClasDataBunch-pytest" style="float:right; padding-right:10px">[test]</a></h3><blockquote><p><code>TextClasDataBunch</code>(<strong><code>train_dl</code></strong>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>, <strong><code>valid_dl</code></strong>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>, <strong><code>fix_dl</code></strong>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>=<strong><em><code>None</code></em></strong>, <strong><code>test_dl</code></strong>:<code>Optional</code>[<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>]=<strong><em><code>None</code></em></strong>, <strong><code>device</code></strong>:<a href="https://pytorch.org/docs/stable/tensor_attributes.html#torch-device"><code>device</code></a>=<strong><em><code>None</code></em></strong>, <strong><code>dl_tfms</code></strong>:<code>Optional</code>[<code>Collection</code>[<code>Callable</code>]]=<strong><em><code>None</code></em></strong>, <strong><code>path</code></strong>:<code>PathOrStr</code>=<strong><em><code>'.'</code></em></strong>, <strong><code>collate_fn</code></strong>:<code>Callable</code>=<strong><em><code>'data_collate'</code></em></strong>, <strong><code>no_check</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>) :: <a href="/text.data.html#TextDataBunch"><code>TextDataBunch</code></a></p>
 </blockquote>
-<div class="collapse" id="TextClasDataBunch-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#TextClasDataBunch-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>TextClasDataBunch</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Create a <a href="/text.data.html#TextDataBunch"><code>TextDataBunch</code></a> suitable for training an RNN classifier.</p>
+<div class="collapse" id="TextClasDataBunch-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#TextClasDataBunch-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>TextClasDataBunch</code>:</p><p>Some other tests where <code>TextClasDataBunch</code> is used:</p><ul><li><code>pytest -sv tests/test_text_data.py::test_backwards_cls_databunch</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_text_data.py#L110" class="source_link" style="float:right">[source]</a></li><li><code>pytest -sv tests/test_text_data.py::test_from_csv_and_from_df</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_text_data.py#L57" class="source_link" style="float:right">[source]</a></li><li><code>pytest -sv tests/test_text_data.py::test_from_ids_works_for_equally_length_sentences</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_text_data.py#L158" class="source_link" style="float:right">[source]</a></li><li><code>pytest -sv tests/test_text_data.py::test_from_ids_works_for_variable_length_sentences</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_text_data.py#L166" class="source_link" style="float:right">[source]</a></li><li><code>pytest -sv tests/test_text_data.py::test_load_and_save_test</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_text_data.py#L129" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><p>Create a <a href="/text.data.html#TextDataBunch"><code>TextDataBunch</code></a> suitable for training an RNN classifier.</p>
 
 </div>
 
@@ -218,7 +218,7 @@ summary: "Basic dataset for NLP tasks and helper functions to create a DataBunch
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="TextDataBunch.from_folder" class="doc_header"><code>from_folder</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/data.py#L223" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#TextDataBunch-from_folder-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>from_folder</code>(<strong><code>path</code></strong>:<code>PathOrStr</code>, <strong><code>train</code></strong>:<code>str</code>=<strong><em><code>'train'</code></em></strong>, <strong><code>valid</code></strong>:<code>str</code>=<strong><em><code>'valid'</code></em></strong>, <strong><code>test</code></strong>:<code>Optional</code>[<code>str</code>]=<strong><em><code>None</code></em></strong>, <strong><code>classes</code></strong>:<code>ArgStar</code>=<strong><em><code>None</code></em></strong>, <strong><code>tokenizer</code></strong>:<a href="/text.transform.html#Tokenizer"><code>Tokenizer</code></a>=<strong><em><code>None</code></em></strong>, <strong><code>vocab</code></strong>:<a href="/text.transform.html#Vocab"><code>Vocab</code></a>=<strong><em><code>None</code></em></strong>, <strong><code>chunksize</code></strong>:<code>int</code>=<strong><em><code>10000</code></em></strong>, <strong><code>max_vocab</code></strong>:<code>int</code>=<strong><em><code>60000</code></em></strong>, <strong><code>min_freq</code></strong>:<code>int</code>=<strong><em><code>2</code></em></strong>, <strong><code>mark_fields</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>, <strong><code>include_bos</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>, <strong><code>include_eos</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
-<div class="collapse" id="TextDataBunch-from_folder-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#TextDataBunch-from_folder-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>from_folder</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Create a <a href="/text.data.html#TextDataBunch"><code>TextDataBunch</code></a> from text files in folders.</p>
+<div class="collapse" id="TextDataBunch-from_folder-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#TextDataBunch-from_folder-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>from_folder</code>:</p><p>Some other tests where <code>from_folder</code> is used:</p><ul><li><code>pytest -sv tests/test_text_data.py::test_filter_classes</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_text_data.py#L42" class="source_link" style="float:right">[source]</a></li><li><code>pytest -sv tests/test_text_data.py::test_from_folder</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_text_data.py#L30" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><p>Create a <a href="/text.data.html#TextDataBunch"><code>TextDataBunch</code></a> from text files in folders.</p>
 
 </div>
 
@@ -276,7 +276,7 @@ summary: "Basic dataset for NLP tasks and helper functions to create a DataBunch
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="TextDataBunch.from_df" class="doc_header"><code>from_df</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/data.py#L189" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#TextDataBunch-from_df-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>from_df</code>(<strong><code>path</code></strong>:<code>PathOrStr</code>, <strong><code>train_df</code></strong>:<code>DataFrame</code>, <strong><code>valid_df</code></strong>:<code>DataFrame</code>, <strong><code>test_df</code></strong>:<code>OptDataFrame</code>=<strong><em><code>None</code></em></strong>, <strong><code>tokenizer</code></strong>:<a href="/text.transform.html#Tokenizer"><code>Tokenizer</code></a>=<strong><em><code>None</code></em></strong>, <strong><code>vocab</code></strong>:<a href="/text.transform.html#Vocab"><code>Vocab</code></a>=<strong><em><code>None</code></em></strong>, <strong><code>classes</code></strong>:<code>StrList</code>=<strong><em><code>None</code></em></strong>, <strong><code>text_cols</code></strong>:<code>IntsOrStrs</code>=<strong><em><code>1</code></em></strong>, <strong><code>label_cols</code></strong>:<code>IntsOrStrs</code>=<strong><em><code>0</code></em></strong>, <strong><code>label_delim</code></strong>:<code>str</code>=<strong><em><code>None</code></em></strong>, <strong><code>chunksize</code></strong>:<code>int</code>=<strong><em><code>10000</code></em></strong>, <strong><code>max_vocab</code></strong>:<code>int</code>=<strong><em><code>60000</code></em></strong>, <strong><code>min_freq</code></strong>:<code>int</code>=<strong><em><code>2</code></em></strong>, <strong><code>mark_fields</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>, <strong><code>include_bos</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>, <strong><code>include_eos</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>, <strong>**<code>kwargs</code></strong>) → <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a></p>
 </blockquote>
-<div class="collapse" id="TextDataBunch-from_df-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#TextDataBunch-from_df-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>from_df</code>:</p><ul><li><code>pytest -sv tests/test_text_data.py::test_from_csv_and_from_df</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_text_data.py#L57" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><p>Create a <a href="/text.data.html#TextDataBunch"><code>TextDataBunch</code></a> from DataFrames. <code>kwargs</code> are passed to the dataloader creation.</p>
+<div class="collapse" id="TextDataBunch-from_df-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#TextDataBunch-from_df-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>from_df</code>:</p><ul><li><code>pytest -sv tests/test_text_data.py::test_from_csv_and_from_df</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_text_data.py#L57" class="source_link" style="float:right">[source]</a></li></ul><p>Some other tests where <code>from_df</code> is used:</p><ul><li><code>pytest -sv tests/test_text_data.py::test_backwards_cls_databunch</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_text_data.py#L110" class="source_link" style="float:right">[source]</a></li><li><code>pytest -sv tests/test_text_data.py::test_load_and_save_test</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_text_data.py#L129" class="source_link" style="float:right">[source]</a></li><li><code>pytest -sv tests/test_text_data.py::test_regression</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_text_data.py#L174" class="source_link" style="float:right">[source]</a></li><li><code>pytest -sv tests/test_text_data.py::test_should_load_backwards_lm_1</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_text_data.py#L83" class="source_link" style="float:right">[source]</a></li><li><code>pytest -sv tests/test_text_data.py::test_should_load_backwards_lm_2</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_text_data.py#L99" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><p>Create a <a href="/text.data.html#TextDataBunch"><code>TextDataBunch</code></a> from DataFrames. <code>kwargs</code> are passed to the dataloader creation.</p>
 
 </div>
 
@@ -603,7 +603,7 @@ summary: "Basic dataset for NLP tasks and helper functions to create a DataBunch
 <div class="output_markdown rendered_html output_subarea ">
 <h3 id="TextList" class="doc_header"><code>class</code> <code>TextList</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/data.py#L313" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#TextList-pytest" style="float:right; padding-right:10px">[test]</a></h3><blockquote><p><code>TextList</code>(<strong><code>items</code></strong>:<code>Iterator</code>[<code>T_co</code>], <strong><code>vocab</code></strong>:<a href="/text.transform.html#Vocab"><code>Vocab</code></a>=<strong><em><code>None</code></em></strong>, <strong><code>pad_idx</code></strong>:<code>int</code>=<strong><em><code>1</code></em></strong>, <strong>**<code>kwargs</code></strong>) :: <a href="/data_block.html#ItemList"><code>ItemList</code></a></p>
 </blockquote>
-<div class="collapse" id="TextList-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#TextList-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>TextList</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Basic <a href="/data_block.html#ItemList"><code>ItemList</code></a> for text data.</p>
+<div class="collapse" id="TextList-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#TextList-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>TextList</code>:</p><p>Some other tests where <code>TextList</code> is used:</p><ul><li><code>pytest -sv tests/test_text_data.py::test_filter_classes</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_text_data.py#L42" class="source_link" style="float:right">[source]</a></li><li><code>pytest -sv tests/test_text_data.py::test_from_folder</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_text_data.py#L30" class="source_link" style="float:right">[source]</a></li><li><code>pytest -sv tests/test_text_data.py::test_regression</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_text_data.py#L174" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><p>Basic <a href="/data_block.html#ItemList"><code>ItemList</code></a> for text data.</p>
 
 </div>
 
@@ -626,7 +626,7 @@ summary: "Basic dataset for NLP tasks and helper functions to create a DataBunch
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">tokenizer</span> <span class="o">=</span> <span class="n">Tokenizer</span><span class="p">(</span><span class="n">SpacyTokenizer</span><span class="p">,</span> <span class="s1">&#39;en&#39;</span><span class="p">)</span>
-<span class="n">processor</span> <span class="o">=</span> <span class="p">[</span><span class="n">TokenizeProcessor</span><span class="p">(</span><span class="n">tokenizer</span><span class="o">=</span><span class="n">tokenizer</span><span class="p">,</span> <span class="n">NumericalizeProcessor</span><span class="p">(</span><span class="n">max_vocab</span><span class="o">=</span><span class="mi">30000</span><span class="p">)]</span>
+<span class="n">processor</span> <span class="o">=</span> <span class="p">[</span><span class="n">TokenizeProcessor</span><span class="p">(</span><span class="n">tokenizer</span><span class="o">=</span><span class="n">tokenizer</span><span class="p">),</span> <span class="n">NumericalizeProcessor</span><span class="p">(</span><span class="n">max_vocab</span><span class="o">=</span><span class="mi">30000</span><span class="p">)]</span>
 </pre></div>
 
     </div>
@@ -673,7 +673,7 @@ summary: "Basic dataset for NLP tasks and helper functions to create a DataBunch
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="TextList.from_folder" class="doc_header"><code>from_folder</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/data.py#L339" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#TextList-from_folder-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>from_folder</code>(<strong><code>path</code></strong>:<code>PathOrStr</code>=<strong><em><code>'.'</code></em></strong>, <strong><code>extensions</code></strong>:<code>StrList</code>=<strong><em><code>{'.txt'}</code></em></strong>, <strong><code>vocab</code></strong>:<a href="/text.transform.html#Vocab"><code>Vocab</code></a>=<strong><em><code>None</code></em></strong>, <strong><code>processor</code></strong>:<a href="/data_block.html#PreProcessor"><code>PreProcessor</code></a>=<strong><em><code>None</code></em></strong>, <strong>**<code>kwargs</code></strong>) → <code>TextList</code></p>
 </blockquote>
-<div class="collapse" id="TextList-from_folder-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#TextList-from_folder-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>from_folder</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Get the list of files in <code>path</code> that have a text suffix. <code>recurse</code> determines if we search subfolders.</p>
+<div class="collapse" id="TextList-from_folder-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#TextList-from_folder-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>from_folder</code>:</p><p>Some other tests where <code>from_folder</code> is used:</p><ul><li><code>pytest -sv tests/test_text_data.py::test_filter_classes</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_text_data.py#L42" class="source_link" style="float:right">[source]</a></li><li><code>pytest -sv tests/test_text_data.py::test_from_folder</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_text_data.py#L30" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><p>Get the list of files in <code>path</code> that have a text suffix. <code>recurse</code> determines if we search subfolders.</p>
 
 </div>
 
@@ -893,278 +893,310 @@ summary: "Basic dataset for NLP tasks and helper functions to create a DataBunch
       <th>12</th>
       <th>13</th>
       <th>14</th>
+      <th>15</th>
+      <th>16</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <th>0</th>
-      <td>xxbos</td>
-      <td>xxmaj</td>
-      <td>name</td>
-      <td>just</td>
-      <td>says</td>
+      <td>crew</td>
+      <td>that</td>
+      <td>he</td>
+      <td>can</td>
+      <td>trust</td>
+      <td>to</td>
+      <td>help</td>
+      <td>him</td>
+      <td>pull</td>
       <td>it</td>
-      <td>all</td>
-      <td>.</td>
-      <td>i</td>
-      <td>watched</td>
-      <td>this</td>
-      <td>movie</td>
-      <td>with</td>
-      <td>my</td>
-      <td>dad</td>
+      <td>off</td>
+      <td>and</td>
+      <td>get</td>
+      <td>his</td>
+      <td>xxunk</td>
+      <td>None</td>
+      <td>None</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>going</td>
-      <td>to</td>
-      <td>see</td>
-      <td>anything</td>
-      <td>you</td>
-      <td>'ll</td>
-      <td>remember</td>
-      <td>.</td>
-      <td>xxbos</td>
-      <td>xxmaj</td>
-      <td>evidently</td>
-      <td>when</td>
-      <td>you</td>
-      <td>offer</td>
+      <td>want</td>
       <td>a</td>
+      <td>good</td>
+      <td>family</td>
+      <td>movie</td>
+      <td>,</td>
+      <td>this</td>
+      <td>might</td>
+      <td>do</td>
+      <td>.</td>
+      <td>xxmaj</td>
+      <td>it</td>
+      <td>is</td>
+      <td>clean</td>
+      <td>.</td>
+      <td>None</td>
+      <td>None</td>
     </tr>
     <tr>
       <th>2</th>
+      <td>director</td>
       <td>of</td>
+      <td>many</td>
+      <td>bad</td>
+      <td>xxunk</td>
+      <td>)</td>
+      <td>tries</td>
+      <td>to</td>
+      <td>cover</td>
       <td>the</td>
-      <td>xxunk</td>
-      <td>xxunk</td>
-      <td>xxmaj</td>
-      <td>superbly</td>
-      <td>shot</td>
+      <td>info</td>
+      <td>up</td>
       <td>,</td>
-      <td>this</td>
-      <td>thrilling</td>
-      <td>adult</td>
-      <td>adventure</td>
-      <td>certainly</td>
-      <td>contains</td>
-      <td>some</td>
+      <td>but</td>
+      <td>goo</td>
+      <td>None</td>
+      <td>None</td>
     </tr>
     <tr>
       <th>3</th>
-      <td>\n\n</td>
-      <td>xxmaj</td>
-      <td>one</td>
-      <td>bright</td>
-      <td>light</td>
-      <td>in</td>
+      <td>film</td>
+      <td>,</td>
+      <td>and</td>
       <td>the</td>
-      <td>midst</td>
-      <td>of</td>
-      <td>this</td>
-      <td>is</td>
-      <td>xxmaj</td>
-      <td>fred</td>
-      <td>xxmaj</td>
       <td>xxunk</td>
+      <td>xxunk</td>
+      <td>of</td>
+      <td>the</td>
+      <td>villain</td>
+      <td>,</td>
+      <td>humorous</td>
+      <td>or</td>
+      <td>not</td>
+      <td>,</td>
+      <td>are</td>
+      <td>None</td>
+      <td>None</td>
     </tr>
     <tr>
       <th>4</th>
+      <td>cole</td>
+      <td>in</td>
+      <td>the</td>
+      <td>beginning</td>
+      <td>are</td>
+      <td>meant</td>
+      <td>to</td>
+      <td>draw</td>
+      <td>comparisons</td>
+      <td>which</td>
       <td>leave</td>
-      <td>you</td>
+      <td>the</td>
+      <td>audience</td>
       <td>xxunk</td>
-      <td>that</td>
-      <td>you</td>
-      <td>watched</td>
-      <td>it</td>
       <td>.</td>
-      <td>i</td>
-      <td>feel</td>
-      <td>really</td>
-      <td>bad</td>
-      <td>for</td>
-      <td>those</td>
-      <td>xxmaj</td>
+      <td>None</td>
+      <td>None</td>
     </tr>
     <tr>
       <th>5</th>
+      <td>witness</td>
       <td>xxmaj</td>
-      <td>ginger</td>
-      <td>'s</td>
-      <td>blonde</td>
-      <td>hair</td>
-      <td>)</td>
-      <td>has</td>
-      <td>a</td>
-      <td>couple</td>
-      <td>of</td>
-      <td>emotional</td>
-      <td>solo</td>
-      <td>numbers</td>
+      <td>brian</td>
+      <td>dealing</td>
+      <td>with</td>
+      <td>his</td>
+      <td>situation</td>
+      <td>through</td>
+      <td>first</td>
       <td>,</td>
-      <td>including</td>
+      <td>primitive</td>
+      <td>means</td>
+      <td>,</td>
+      <td>and</td>
+      <td>then</td>
+      <td>None</td>
+      <td>None</td>
     </tr>
     <tr>
       <th>6</th>
+      <td>film</td>
+      <td>,</td>
+      <td>or</td>
+      <td>not</td>
       <td>.</td>
+      <td>\n</td>
+      <td>\n</td>
+      <td></td>
       <td>xxmaj</td>
-      <td>this</td>
-      <td>is</td>
-      <td>what</td>
-      <td>really</td>
-      <td>attracted</td>
-      <td>me</td>
-      <td>to</td>
       <td>this</td>
       <td>film</td>
       <td>.</td>
-      <td>i</td>
-      <td>was</td>
-      <td>impressed</td>
+      <td>xxmaj</td>
+      <td>film</td>
+      <td>?</td>
+      <td>xxmaj</td>
+      <td>this</td>
     </tr>
     <tr>
       <th>7</th>
-      <td>into</td>
+      <td>xxunk</td>
+      <td>sitting</td>
+      <td>through</td>
+      <td>this</td>
+      <td>bomb</td>
+      <td>.</td>
+      <td>xxmaj</td>
       <td>the</td>
-      <td>hype</td>
-      <td>that</td>
-      <td>one</td>
-      <td>you</td>
-      <td>are</td>
-      <td>somehow</td>
-      <td>white</td>
-      <td>or</td>
-      <td>superior</td>
-      <td>...</td>
-      <td>you</td>
-      <td>are</td>
-      <td>not</td>
+      <td>crew</td>
+      <td>member</td>
+      <td>who</td>
+      <td>was</td>
+      <td>in</td>
+      <td>charge</td>
+      <td>of</td>
+      <td>None</td>
+      <td>None</td>
     </tr>
     <tr>
       <th>8</th>
-      <td>come</td>
-      <td>unintentionally</td>
-      <td>,</td>
-      <td>like</td>
-      <td>when</td>
-      <td>they</td>
-      <td>try</td>
-      <td>to</td>
-      <td>explain</td>
-      <td>that</td>
-      <td>an</td>
-      <td>invisible</td>
-      <td>man</td>
-      <td>'s</td>
+      <td>this</td>
+      <td>film</td>
+      <td>is</td>
+      <td>viewed</td>
+      <td>as</td>
+      <td>non</td>
+      <td>xxup</td>
       <td>xxunk</td>
+      <td>but</td>
+      <td>there</td>
+      <td>is</td>
+      <td>a</td>
+      <td>speech</td>
+      <td>by</td>
+      <td>xxmaj</td>
+      <td>None</td>
+      <td>None</td>
     </tr>
     <tr>
       <th>9</th>
-      <td>just</td>
-      <td>watch</td>
+      <td>mention</td>
+      <td>the</td>
+      <td>pace</td>
+      <td>of</td>
       <td>the</td>
       <td>movie</td>
+      <td>.</td>
+      <td>xxmaj</td>
+      <td>to</td>
+      <td>my</td>
+      <td>mind</td>
       <td>,</td>
-      <td>and</td>
-      <td>i</td>
-      <td>dear</td>
-      <td>say</td>
-      <td>you</td>
-      <td>'ll</td>
-      <td>see</td>
-      <td>things</td>
-      <td>a</td>
-      <td>bit</td>
+      <td>this</td>
+      <td>new</td>
+      <td>version</td>
+      <td>None</td>
+      <td>None</td>
     </tr>
     <tr>
       <th>10</th>
-      <td>for</td>
-      <td>the</td>
-      <td>reform</td>
-      <td>movement</td>
-      <td>and</td>
-      <td>meets</td>
+      <td>of</td>
+      <td>yours</td>
+      <td>!</td>
+      <td>'</td>
+      <td>\n</td>
+      <td>\n</td>
+      <td></td>
       <td>xxmaj</td>
-      <td>eponine</td>
-      <td>.</td>
+      <td>director</td>
       <td>xxmaj</td>
-      <td>except</td>
-      <td>...</td>
-      <td>not</td>
+      <td>xxunk</td>
       <td>xxmaj</td>
-      <td>eponine</td>
+      <td>xxunk</td>
+      <td>,</td>
+      <td>who</td>
+      <td>is</td>
+      <td>xxunk</td>
     </tr>
     <tr>
       <th>11</th>
+      <td>pair</td>
+      <td>,</td>
       <td>xxmaj</td>
-      <td>well</td>
+      <td>harry</td>
+      <td>xxmaj</td>
+      <td>michell</td>
+      <td>as</td>
+      <td>xxmaj</td>
+      <td>harry</td>
       <td>,</td>
-      <td>given</td>
-      <td>the</td>
-      <td>target</td>
-      <td>audience</td>
-      <td>,</td>
-      <td>that</td>
-      <td>may</td>
-      <td>not</td>
-      <td>have</td>
-      <td>been</td>
-      <td>too</td>
-      <td>bad</td>
+      <td>xxmaj</td>
+      <td>rosie</td>
+      <td>xxmaj</td>
+      <td>michell</td>
+      <td>as</td>
+      <td>None</td>
+      <td>None</td>
     </tr>
     <tr>
       <th>12</th>
-      <td>gets</td>
-      <td>roles</td>
-      <td>in</td>
-      <td>movies</td>
+      <td>cares</td>
+      <td>who</td>
+      <td>lives</td>
+      <td>and</td>
+      <td>who</td>
+      <td>dies</td>
       <td>,</td>
-      <td>in</td>
-      <td>my</td>
-      <td>opinion</td>
-      <td>though</td>
-      <td>she</td>
-      <td>should</td>
-      <td>stick</td>
-      <td>to</td>
-      <td>movies</td>
-      <td>of</td>
+      <td>i</td>
+      <td>'ll</td>
+      <td>be</td>
+      <td>shocked</td>
+      <td>.</td>
+      <td>xxmaj</td>
+      <td>the</td>
+      <td>same</td>
+      <td>None</td>
+      <td>None</td>
     </tr>
     <tr>
       <th>13</th>
-      <td>its</td>
-      <td>share</td>
+      <td>is</td>
+      <td>incredibly</td>
+      <td>stupid</td>
       <td>,</td>
-      <td>though</td>
-      <td>far</td>
-      <td>smaller</td>
-      <td>than</td>
-      <td>xxunk</td>
-      <td>even</td>
-      <td>including</td>
+      <td>with</td>
       <td>a</td>
-      <td>basic</td>
-      <td>view</td>
-      <td>of</td>
-      <td>the</td>
+      <td>detective</td>
+      <td>trying</td>
+      <td>to</td>
+      <td>track</td>
+      <td>down</td>
+      <td>a</td>
+      <td>suspected</td>
+      <td>serial</td>
+      <td>killer</td>
+      <td>None</td>
+      <td>None</td>
     </tr>
     <tr>
       <th>14</th>
-      <td>ruins</td>
-      <td>-</td>
-      <td>scene</td>
-      <td>is</td>
-      <td>xxup</td>
-      <td>almost</td>
-      <td>european</td>
-      <td>-</td>
-      <td>like</td>
-      <td>cinema</td>
-      <td>(</td>
+      <td>independent</td>
+      <td>film</td>
+      <td>was</td>
+      <td>one</td>
+      <td>of</td>
       <td>the</td>
-      <td>movie</td>
-      <td>is</td>
-      <td>eager</td>
+      <td>best</td>
+      <td>films</td>
+      <td>at</td>
+      <td>the</td>
+      <td>tall</td>
+      <td>grass</td>
+      <td>film</td>
+      <td>festival</td>
+      <td>that</td>
+      <td>None</td>
+      <td>None</td>
     </tr>
   </tbody>
 </table>
@@ -1289,26 +1321,17 @@ summary: "Basic dataset for NLP tasks and helper functions to create a DataBunch
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>tensor([[   1,    1,    1,    1,    1,    1,    1,    2,   18,  310,    9,    0,
-           11,    0,    9,   48,    8,    0,   11, 2301],
-        [   1,    1,    1,    1,    1,    1,    1,    2,    4, 1427,   15,    8,
-          521,   10,    4,   90,  131,    9, 1427,  242],
-        [   1,    1,    1,    1,    1,    1,    1,    2,   18,  175,   55, 2063,
-         4677,   14,    8,  209,   22, 1343,   26,   20],
-        [   1,    1,    1,    1,    1,    1,    1,    1,    2,    4,   20,   30,
-           24,    8,  110,  616,   30,  164,  745,   18],
-        [   1,    1,    1,    1,    1,    1,    1,    1,    2,   18,   24, 3560,
-           14,  130,    8,   30,   26,   85,  193,    9],
-        [   1,    1,    1,    1,    1,    1,    1,    1,    2,   18,  101,    0,
-           20,  153,   71,   18,   24, 4055,   17,    4],
-        [   1,    1,    1,    1,    1,    1,    1,    1,    2,    4, 1998,  256,
-            4,    0,    4,    0,  273,   34,    8,    0],
-        [   1,    1,    1,    1,    1,    1,    1,    1,    1,    2,    4,   20,
-           24,   12,  119,   30,   19,   83,   12,  202],
-        [   1,    1,    1,    1,    1,    1,    1,    1,    1,    2,    4,    8,
-           79, 1031,  185,   13,   20,   30,   24,    8],
-        [   1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    2,   18,
-           61,   36,  143,  104,   20,   30, 1408,   51]], device=&#39;cuda:0&#39;)</pre>
+<pre>tensor([[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]],
+       device=&#39;cuda:0&#39;)</pre>
 </div>
 
 </div>
