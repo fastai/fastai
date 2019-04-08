@@ -647,7 +647,7 @@
     "fastai.layers.SelfAttention": [
         {
             "file": "tests/test_torch_core.py",
-            "line": 128,
+            "line": 137,
             "test": "test_keep_parameter"
         }
     ],
@@ -978,7 +978,7 @@
     "fastai.torch_core.NoneReduceOnCPU": [
         {
             "file": "tests/test_torch_core.py",
-            "line": 108,
+            "line": 117,
             "test": "test_none_reduce_on_cpu"
         }
     ],
@@ -1025,6 +1025,13 @@
             "file": "tests/test_fp16.py",
             "line": 16,
             "test": "test_model2half_forward"
+        }
+    ],
+    "fastai.torch_core.model_type": [
+        {
+            "file": "tests/test_torch_core.py",
+            "line": 98,
+            "test": "test_model_type"
         }
     ],
     "fastai.torch_core.np2model_tensor": [
@@ -1101,14 +1108,14 @@
     "fastai.torch_core.to_np": [
         {
             "file": "tests/test_torch_core.py",
-            "line": 103,
+            "line": 112,
             "test": "test_to_np"
         }
     ],
     "fastai.torch_core.trange_of": [
         {
             "file": "tests/test_torch_core.py",
-            "line": 98,
+            "line": 107,
             "test": "test_trange_of"
         }
     ],

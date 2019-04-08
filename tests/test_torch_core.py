@@ -95,6 +95,15 @@ def test_np2model_tensor():
     t = np2model_tensor(a)
     assert isinstance(t,torch.FloatTensor)
 
+def test_model_type(): 
+    this_tests(model_type) 
+    a=np.array([1.,2.,3.]).dtype 
+    b=np.array([1,2,3]).dtype 
+    c=np.array(["1","2","3"]).dtype 
+    assert model_type(a) == torch.float32 
+    assert model_type(b) == torch.int64 
+    assert model_type(c) == None   
+    
 def test_trange_of():
     this_tests(trange_of)
     t = trange_of(a)
