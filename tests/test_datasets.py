@@ -73,9 +73,9 @@ def test_user_config():
         # No file should exist prior to download
         assert not Path(Config.DEFAULT_CONFIG_LOCATION + '/data_test/mnist_sample').exists()
         assert not Path(Config.DEFAULT_CONFIG_LOCATION + '/archive/mnist_sample.tgz').exists()
-        untar_data(URLs.MNIST_SAMPLE)
+        untar_data(URLs.ML_SAMPLE)
         # untar_data on dataset without local archive downloads the data too
-        assert Path(Config.DEFAULT_CONFIG_LOCATION + '/data_test/mnist_sample').exists()
-        assert Path(Config.DEFAULT_CONFIG_LOCATION + '/archive/mnist_sample.tgz').exists()
+        assert Path(Config.DEFAULT_CONFIG_LOCATION + '/data_test/movie_lens_sample').exists()
+        assert Path(Config.DEFAULT_CONFIG_LOCATION + '/archive/movie_lens_sample.tgz').exists()
     finally:
         clean_test_config(Config.DEFAULT_CONFIG_LOCATION)
