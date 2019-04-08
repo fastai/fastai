@@ -33,14 +33,18 @@ class ResBlock(nn.Module):
     def __init__(self, expansion, ni, nh, stride=1):
         super().__init__()
         nf,ni = nh*expansion,ni*expansion
-        self.convs = nn.Sequential(
-            noop if expansion==1 else conv_layer(ni, nh, 1),
-            conv_layer(ni if expansion==1 else nh, nh, stride=stride),
-            conv_layer(nh, nf, 3 if expansion==1 else 1, zero_bn=True, act=False))
+        layers  = [conv_layer(ni, nh, 1)]
+        layers += [
+            conv_layer(nh, nf, 3, stride=stride, zero_bn=True, act=False)
+        ] if expansion==1 else [
+            conv_layer(nh, nh, 3, stride=stride),
+            conv_layer(nh, nf, 1, zero_bn=True, act=False)
+        ]
+        self.convs = nn.Sequential(*layers)
         self.idconv = noop if ni==nf else conv_layer(ni, nf, 1)
         self.pool = noop if stride==1 else nn.AvgPool2d(2)
 
-    def forward(self, x): return act_fn(self.convs(x) + self.idconv(self.pool(x)))
+    def forward(self, x): return act_fn(self.convs(x) + self.pool(self.idconv(x)))
 
 def filt_sz(recep): return min(64, 2**math.floor(math.log2(recep*0.75)))
 
