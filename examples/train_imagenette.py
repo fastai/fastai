@@ -56,7 +56,7 @@ def main(
     lr *= bs_rat
 
     m = globals()[arch]
-    learn = (Learner(data, m(), wd=1e-2, opt_func=opt_func,
+    learn = (Learner(data, m(c_out=10), wd=1e-2, opt_func=opt_func,
              metrics=[accuracy,top_k_accuracy],
              bn_wd=False, true_wd=True,
              loss_func = LabelSmoothingCrossEntropy())

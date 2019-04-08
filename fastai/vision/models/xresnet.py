@@ -1,6 +1,5 @@
 import torch.nn as nn
-import torch
-import math
+import torch,math,sys
 import torch.utils.model_zoo as model_zoo
 from functools import partial
 
@@ -16,7 +15,6 @@ def init_cnn(m):
     if getattr(m, 'bias', None) is not None: nn.init.constant_(m.bias, 0)
     if isinstance(m, (nn.Conv2d,nn.Linear)): nn.init.kaiming_normal_(m.weight)
     # TODO init final linear bias to return 1/c (with log etc)
-    # TODO linear weight should be kaiming or something?
     for l in m.children(): init_cnn(l)
 
 def conv(ni, nf, ks=3, stride=1, bias=False):
@@ -44,17 +42,25 @@ class ResBlock(nn.Module):
 
     def forward(self, x): return act_fn(self.convs(x) + self.pool(self.idconv(x)))
 
+def filt_sz(recep): return min(64, 2**math.floor(math.log2(recep*0.75)))
+
 class XResNet(nn.Sequential):
-    def __init__(self, expansion, layers, num_classes=1000):
+    def __init__(self, expansion, layers, c_in=3, c_out=1000):
+        stem = []
+        for i in range(3):
+            nf = filt_sz(c_in*9)
+            stem.append(conv_layer(c_in, nf, stride=2 if i==1 else 1))
+            c_in = nf
+
         block_szs = [64//expansion,64,128,256,512]
         blocks = [self._make_layer(expansion, block_szs[i], block_szs[i+1], l, 1 if i==0 else 2)
                   for i,l in enumerate(layers)]
         super().__init__(
-            conv_layer(3, 16, stride=2), conv_layer(16, 32), conv_layer(32, 64),
+            *stem,
             nn.MaxPool2d(kernel_size=3, stride=2, padding=1),
             *blocks,
             nn.AdaptiveAvgPool2d(1), Flatten(),
-            nn.Linear(block_szs[-1]*expansion, num_classes),
+            nn.Linear(block_szs[-1]*expansion, c_out),
         )
         init_cnn(self)
 
@@ -63,24 +69,19 @@ class XResNet(nn.Sequential):
             *[ResBlock(expansion, ni if i==0 else nf, nf, stride if i==0 else 1)
               for i in range(blocks)])
 
-def xresnet(expansion, n_layers, name, pre=False, **kwargs):
+def xresnet(expansion, n_layers, name, pretrained=False, **kwargs):
     model = XResNet(expansion, n_layers, **kwargs)
-    #if pre: model.load_state_dict(model_zoo.load_url(model_urls[name]))
-    if pre: model.load_state_dict(torch.load(model_urls[name]))
+    if pretrained: model.load_state_dict(model_zoo.load_url(model_urls[name]))
     return model
 
-def xresnet18(pretrained=False, **kwargs):
-    return xresnet(1, [2, 2, 2, 2], 'xresnet18', pre=pretrained, **kwargs)
-
-def xresnet34(pretrained=False, **kwargs):
-    return xresnet(1, [3, 4, 6, 3], 'xresnet34', pre=pretrained, **kwargs)
-
-def xresnet50(pretrained=False, **kwargs):
-    return xresnet(4, [3, 4, 6, 3], 'xresnet50', pre=pretrained, **kwargs)
-
-def xresnet101(pretrained=False, **kwargs):
-    return xresnet(4, [3, 4, 23, 3], 'xresnet101', pre=pretrained, **kwargs)
-
-def xresnet152(pretrained=False, **kwargs):
-    return xresnet(4, [3, 8, 36, 3], 'xresnet152', pre=pretrained, **kwargs)
+me = sys.modules[__name__]
+for n,e,l in [
+    [ 18 , 1, [2,2,2 ,2] ],
+    [ 34 , 1, [3,4,6 ,3] ],
+    [ 50 , 4, [3,4,6 ,3] ],
+    [ 101, 4, [3,4,23,3] ],
+    [ 152, 4, [3,8,36,3] ],
+]:
+    name = f'xresnet{n}'
+    setattr(me, name, partial(xresnet, expansion=e, n_layers=l, name=name))
 
