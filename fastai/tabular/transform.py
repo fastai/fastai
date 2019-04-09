@@ -186,10 +186,10 @@ class Normalize(TabularProc):
         for n in self.cont_names:
             assert is_numeric_dtype(df[n]), (f"""Cannot normalize '{n}' column as it isn't numerical.
                 Are you sure it doesn't belong in the categorical set of columns?""")
-            self.means[n],self.stds[n] = df.loc[:,n].mean(),df.loc[:,n].std()
-            df.loc[:,n] = (df.loc[:,n]-self.means[n]) / (1e-7 + self.stds[n])
+            self.means[n],self.stds[n] = df[n].mean(),df[n].std()
+            df[n] = (df[n]-self.means[n]) / (1e-7 + self.stds[n])
 
     def apply_test(self, df:DataFrame):
         "Normalize `self.cont_names` with the same statistics as in `apply_train`."
         for n in self.cont_names:
-            df.loc[:,n] = (df.loc[:,n]-self.means[n]) / (1e-7 + self.stds[n])
+            df[n] = (df[n]-self.means[n]) / (1e-7 + self.stds[n])
