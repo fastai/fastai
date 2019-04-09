@@ -5,7 +5,7 @@ from functools import partial
 
 __all__ = ['XResNet', 'xresnet18', 'xresnet34', 'xresnet50', 'xresnet101', 'xresnet152']
 
-# TODO: ELU init (a=0.54; gain=1.55)
+# or: ELU+init (a=0.54; gain=1.55)
 act_fn = nn.ReLU(inplace=True)
 
 class Flatten(nn.Module):
@@ -14,7 +14,6 @@ class Flatten(nn.Module):
 def init_cnn(m):
     if getattr(m, 'bias', None) is not None: nn.init.constant_(m.bias, 0)
     if isinstance(m, (nn.Conv2d,nn.Linear)): nn.init.kaiming_normal_(m.weight)
-    # TODO init final linear bias to return 1/c (with log etc)
     for l in m.children(): init_cnn(l)
 
 def conv(ni, nf, ks=3, stride=1, bias=False):
