@@ -185,6 +185,7 @@ def _cl_int_plot_multi_top_losses(self, samples:int=3, figsize:Tuple[int,int]=(8
     for w in ordlosses: ordlosses_idxs.append(w[1])
     mismatches_ordered_byloss = ds[ordlosses_idxs]
     print(f'{str(len(mismatches))} misclassified samples over {str(len(self.data.valid_ds))} samples in the validation set.')
+    samples = min(samples, len(mismatches))
     for ima in range(len(mismatches_ordered_byloss)):
         mismatchescontainer.append(mismatches_ordered_byloss[ima][0])
     for sampleN in range(samples):
