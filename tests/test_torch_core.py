@@ -102,7 +102,7 @@ def test_num_children():
     assert isinstance(n, int)
     assert n == 2
 
-def test_np_address():
+def test_np_address(): 
     this_tests(np_address)
     a=np.ndarray(shape=(2,2))
     add=np_address(a)
