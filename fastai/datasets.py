@@ -186,7 +186,7 @@ def url2name(url): return url.split('/')[-1]
 def url2path(url, data=True, ext:str='.tgz'):
     "Change `url` to a path."
     name = url2name(url)
-    return datapath4file(name, ext=ext, archive=False) if data else modelpath4file(name, ext=ext, archive=False)
+    return datapath4file(name, ext=ext, archive=False) if data else modelpath4file(name, ext=ext)
 def _url2tgz(url, data=True, ext:str='.tgz'):
     return datapath4file(f'{url2name(url)}{ext}', ext=ext) if data else modelpath4file(f'{url2name(url)}{ext}', ext=ext)
 

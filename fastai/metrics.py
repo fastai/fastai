@@ -279,7 +279,7 @@ def roc_curve(input:Tensor, targ:Tensor):
     targ = targ[desc_score_indices]
     d = input[1:] - input[:-1]
     distinct_value_indices = torch.nonzero(d).transpose(0,1)[0]
-    threshold_idxs = torch.cat((distinct_value_indices, LongTensor([len(targ) - 1])))
+    threshold_idxs = torch.cat((distinct_value_indices, LongTensor([len(targ) - 1]).to(targ.device)))
     tps = torch.cumsum(targ * 1, dim=-1)[threshold_idxs]
     fps = (1 + threshold_idxs - tps)
     if tps[0] != 0 or fps[0] != 0:
