@@ -40,10 +40,10 @@ class ResBlock(nn.Module):
             conv_layer(nh, nf, 1, zero_bn=True, act=False)
         ]
         self.convs = nn.Sequential(*layers)
-        self.idconv = noop if ni==nf else conv_layer(ni, nf, 1)
+        self.idconv = noop if ni==nf else conv_layer(ni, nf, 1, act=False)
         self.pool = noop if stride==1 else nn.AvgPool2d(2)
 
-    def forward(self, x): return act_fn(self.convs(x) + self.pool(self.idconv(x)))
+    def forward(self, x): return act_fn(self.convs(x) + self.idconv(self.pool(x)))
 
 def filt_sz(recep): return min(64, 2**math.floor(math.log2(recep*0.75)))
 

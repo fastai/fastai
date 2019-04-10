@@ -85,7 +85,7 @@ def conv2d(ni, nf, stride):
 
 class XResNet(nn.Module):
 
-    def __init__(self, block, layers, num_classes=1000):
+    def __init__(self, block, layers, c_out=1000):
         self.inplanes = 64
         super(XResNet, self).__init__()
         self.conv1 = conv2d(3, 32, 2)
@@ -97,7 +97,7 @@ class XResNet(nn.Module):
         self.layer3 = self._make_layer(block, 256, layers[2], stride=2)
         self.layer4 = self._make_layer(block, 512, layers[3], stride=2)
         self.avgpool = nn.AdaptiveAvgPool2d(1)
-        self.fc = nn.Linear(512 * block.expansion, num_classes)
+        self.fc = nn.Linear(512 * block.expansion, c_out)
 
         for m in self.modules():
             if isinstance(m, nn.Conv2d):
