@@ -25,7 +25,6 @@ class DistributedTrainer(LearnerCallback):
     def _change_dl(self, dl, shuffle):
         old_dl = dl
         sampler = OurDistributedSampler(dl.dataset, shuffle=shuffle)
-        new_dl = dl.new(shuffle=False, sampler=sampler)
         return old_dl,new_dl,sampler
 
     def on_train_begin(self, **kwargs):
@@ -41,10 +40,8 @@ class DistributedTrainer(LearnerCallback):
 
     def on_train_end(self, **kwargs):
         self.learn.model = self.learn.model.module
-        self.learn.data.train_dl.remove_tfm(make_async)
         self.learn.data.train_dl = self.old_train_dl
         if hasattr(self.learn.data, 'valid_dl') and self.learn.data.valid_dl is not None:
-            self.learn.data.valid_dl.remove_tfm(make_async)
             self.learn.data.valid_dl = self.old_valid_dl
 
 class DistributedRecorder(LearnerCallback):
