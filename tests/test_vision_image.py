@@ -45,3 +45,11 @@ def test_tis2hw_str_raises_an_error():
     this_tests(tis2hw)
     with pytest.raises(RuntimeError) as e:
         tis2hw("224")
+
+def test_image_resize_same_size_shortcut():
+    this_tests(Image.resize)
+    px = torch.Tensor([[[1, 2,], [3, 4]]])
+    image = Image(px)
+    old_size = image.size
+    image = image.resize(px.size()) 
+    assert(image is not None and (old_size == image.size))

@@ -11,9 +11,6 @@ def rnn_reset(self):
     if hasattr(self.module, 'reset'): self.module.reset()
 DistributedDataParallel.reset = rnn_reset
 
-def make_async(b:Tuple[Tensor,Tensor]):
-    return [o.to(o.device, non_blocking=True) for o in b]
-
 class ParallelTrainer(LearnerCallback):
     _order = -20
     def on_train_begin(self, **kwargs): self.learn.model = DataParallel(self.learn.model)
@@ -28,8 +25,6 @@ class DistributedTrainer(LearnerCallback):
     def _change_dl(self, dl, shuffle):
         old_dl = dl
         sampler = OurDistributedSampler(dl.dataset, shuffle=shuffle)
-        new_dl = dl.new(shuffle=False, sampler=sampler)
-        new_dl.add_tfm(make_async)
         return old_dl,new_dl,sampler
 
     def on_train_begin(self, **kwargs):
@@ -45,10 +40,8 @@ class DistributedTrainer(LearnerCallback):
 
     def on_train_end(self, **kwargs):
         self.learn.model = self.learn.model.module
-        self.learn.data.train_dl.remove_tfm(make_async)
         self.learn.data.train_dl = self.old_train_dl
         if hasattr(self.learn.data, 'valid_dl') and self.learn.data.valid_dl is not None:
-            self.learn.data.valid_dl.remove_tfm(make_async)
             self.learn.data.valid_dl = self.old_valid_dl
 
 class DistributedRecorder(LearnerCallback):

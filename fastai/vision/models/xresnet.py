@@ -5,7 +5,7 @@ from functools import partial
 
 __all__ = ['XResNet', 'xresnet18', 'xresnet34', 'xresnet50', 'xresnet101', 'xresnet152']
 
-# TODO: ELU init (a=0.54; gain=1.55)
+# or: ELU+init (a=0.54; gain=1.55)
 act_fn = nn.ReLU(inplace=True)
 
 class Flatten(nn.Module):
@@ -14,7 +14,6 @@ class Flatten(nn.Module):
 def init_cnn(m):
     if getattr(m, 'bias', None) is not None: nn.init.constant_(m.bias, 0)
     if isinstance(m, (nn.Conv2d,nn.Linear)): nn.init.kaiming_normal_(m.weight)
-    # TODO init final linear bias to return 1/c (with log etc)
     for l in m.children(): init_cnn(l)
 
 def conv(ni, nf, ks=3, stride=1, bias=False):
@@ -33,14 +32,18 @@ class ResBlock(nn.Module):
     def __init__(self, expansion, ni, nh, stride=1):
         super().__init__()
         nf,ni = nh*expansion,ni*expansion
-        self.convs = nn.Sequential(
-            noop if expansion==1 else conv_layer(ni, nh, 1),
-            conv_layer(ni if expansion==1 else nh, nh, stride=stride),
-            conv_layer(nh, nf, 3 if expansion==1 else 1, zero_bn=True, act=False))
+        layers  = [conv_layer(ni, nh, 1)]
+        layers += [
+            conv_layer(nh, nf, 3, stride=stride, zero_bn=True, act=False)
+        ] if expansion==1 else [
+            conv_layer(nh, nh, 3, stride=stride),
+            conv_layer(nh, nf, 1, zero_bn=True, act=False)
+        ]
+        self.convs = nn.Sequential(*layers)
         self.idconv = noop if ni==nf else conv_layer(ni, nf, 1)
         self.pool = noop if stride==1 else nn.AvgPool2d(2)
 
-    def forward(self, x): return act_fn(self.convs(x) + self.idconv(self.pool(x)))
+    def forward(self, x): return act_fn(self.convs(x) + self.pool(self.idconv(x)))
 
 def filt_sz(recep): return min(64, 2**math.floor(math.log2(recep*0.75)))
 

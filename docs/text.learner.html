@@ -117,7 +117,7 @@ summary: "Easy access of language models and ULMFiT"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="text_classifier_learner" class="doc_header"><code>text_classifier_learner</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/learner.py#L284" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#text_classifier_learner-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>text_classifier_learner</code>(<strong><code>data</code></strong>:<a href="/basic_data.html#DataBunch"><code>DataBunch</code></a>, <strong><code>arch</code></strong>:<code>Callable</code>, <strong><code>bptt</code></strong>:<code>int</code>=<strong><em><code>70</code></em></strong>, <strong><code>max_len</code></strong>:<code>int</code>=<strong><em><code>1400</code></em></strong>, <strong><code>config</code></strong>:<code>dict</code>=<strong><em><code>None</code></em></strong>, <strong><code>pretrained</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>, <strong><code>drop_mult</code></strong>:<code>float</code>=<strong><em><code>1.0</code></em></strong>, <strong><code>lin_ftrs</code></strong>:<code>Collection</code>[<code>int</code>]=<strong><em><code>None</code></em></strong>, <strong><code>ps</code></strong>:<code>Collection</code>[<code>float</code>]=<strong><em><code>None</code></em></strong>, <strong>**<code>learn_kwargs</code></strong>) → <code>TextClassifierLearner</code></p>
+<h4 id="text_classifier_learner" class="doc_header"><code>text_classifier_learner</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/learner.py#L286" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#text_classifier_learner-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>text_classifier_learner</code>(<strong><code>data</code></strong>:<a href="/basic_data.html#DataBunch"><code>DataBunch</code></a>, <strong><code>arch</code></strong>:<code>Callable</code>, <strong><code>bptt</code></strong>:<code>int</code>=<strong><em><code>70</code></em></strong>, <strong><code>max_len</code></strong>:<code>int</code>=<strong><em><code>1400</code></em></strong>, <strong><code>config</code></strong>:<code>dict</code>=<strong><em><code>None</code></em></strong>, <strong><code>pretrained</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>, <strong><code>drop_mult</code></strong>:<code>float</code>=<strong><em><code>1.0</code></em></strong>, <strong><code>lin_ftrs</code></strong>:<code>Collection</code>[<code>int</code>]=<strong><em><code>None</code></em></strong>, <strong><code>ps</code></strong>:<code>Collection</code>[<code>float</code>]=<strong><em><code>None</code></em></strong>, <strong>**<code>learn_kwargs</code></strong>) → <code>TextClassifierLearner</code></p>
 </blockquote>
 <div class="collapse" id="text_classifier_learner-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#text_classifier_learner-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>text_classifier_learner</code>:</p><ul><li><code>pytest -sv tests/test_text_train.py::test_classifier</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_text_train.py#L100" class="source_link" style="float:right">[source]</a></li><li><code>pytest -sv tests/test_text_train.py::test_order_preds</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_text_train.py#L139" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><p>Create a <a href="/basic_train.html#Learner"><code>Learner</code></a> with a text classifier from <code>data</code> and <code>arch</code>.</p>
 
@@ -211,6 +211,103 @@ summary: "Easy access of language models and ULMFiT"
 
 </div>
 </div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h3 id="TextClassificationInterpretation" class="doc_header"><code>class</code> <code>TextClassificationInterpretation</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/models/awd_lstm.py#L206" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#TextClassificationInterpretation-pytest" style="float:right; padding-right:10px">[test]</a></h3><blockquote><p><code>TextClassificationInterpretation</code>(<strong><code>data</code></strong>:<a href="/text.data.html#TextClasDataBunch"><code>TextClasDataBunch</code></a>, <strong><code>model</code></strong>:<a href="/text.models.awd_lstm.html#AWD_LSTM"><code>AWD_LSTM</code></a>)</p>
+</blockquote>
+<div class="collapse" id="TextClassificationInterpretation-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#TextClassificationInterpretation-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>TextClassificationInterpretation</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Provides an interpretation of classification based on input sensitivity. This was designed for AWD-LSTM only for the moment, because Transformer already has its own attentional model.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The darker the word-shading in the below example, the more it contributes to the classification.  Results here are without any fitting.  After fitting to acceptable accuracy, this class can show you what is being used to produce the classification of a particular case.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.cm</span> <span class="k">as</span> <span class="nn">cm</span>
+
+<span class="n">txt_ci</span> <span class="o">=</span> <span class="n">TextClassificationInterpretation</span><span class="o">.</span><span class="n">from_learner</span><span class="p">(</span><span class="n">learn</span><span class="p">)</span>
+<span class="n">test_text</span> <span class="o">=</span> <span class="s2">&quot;Zombiegeddon was perhaps the GREATEST movie i have ever seen!&quot;</span>
+<span class="n">txt_ci</span><span class="o">.</span><span class="n">show_intrinsic_attention</span><span class="p">(</span><span class="n">test_text</span><span class="p">,</span><span class="n">cmap</span><span class="o">=</span><span class="n">cm</span><span class="o">.</span><span class="n">Purples</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea ">
+<span style="font-family: monospace;"><span title="0.608" style="background-color: rgba(132, 128, 187, 0.5);">xxbos</span> <span title="0.496" style="background-color: rgba(159, 155, 200, 0.5);">xxmaj</span> <span title="0.471" style="background-color: rgba(165, 162, 204, 0.5);">xxunk</span> <span title="0.495" style="background-color: rgba(159, 155, 200, 0.5);">was</span> <span title="0.523" style="background-color: rgba(152, 148, 197, 0.5);">perhaps</span> <span title="0.539" style="background-color: rgba(148, 144, 195, 0.5);">the</span> <span title="0.566" style="background-color: rgba(142, 138, 192, 0.5);">xxup</span> <span title="0.615" style="background-color: rgba(130, 127, 187, 0.5);">greatest</span> <span title="0.689" style="background-color: rgba(116, 102, 174, 0.5);">movie</span> <span title="0.805" style="background-color: rgba(95, 61, 153, 0.5);">i</span> <span title="0.933" style="background-color: rgba(74, 20, 134, 0.5);">have</span> <span title="1.000" style="background-color: rgba(63, 0, 125, 0.5);">ever</span> <span title="0.908" style="background-color: rgba(78, 28, 137, 0.5);">seen</span> <span title="0.579" style="background-color: rgba(138, 135, 190, 0.5);">!</span></span>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>You can also view the raw attention values with <code>.intrinsic_attention(text)</code></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">txt_ci</span><span class="o">.</span><span class="n">intrinsic_attention</span><span class="p">(</span><span class="n">test_text</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>tensor([0.6078, 0.4961, 0.4707, 0.4946, 0.5228, 0.5393, 0.5656, 0.6153, 0.6893,
+        0.8047, 0.9329, 1.0000, 0.9080, 0.5786], device=&#39;cuda:0&#39;)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -434,7 +531,7 @@ summary: "Easy access of language models and ULMFiT"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_text_classifier" class="doc_header"><code>get_text_classifier</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/learner.py#L267" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#get_text_classifier-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>get_text_classifier</code>(<strong><code>arch</code></strong>:<code>Callable</code>, <strong><code>vocab_sz</code></strong>:<code>int</code>, <strong><code>n_class</code></strong>:<code>int</code>, <strong><code>bptt</code></strong>:<code>int</code>=<strong><em><code>70</code></em></strong>, <strong><code>max_len</code></strong>:<code>int</code>=<strong><em><code>1400</code></em></strong>, <strong><code>config</code></strong>:<code>dict</code>=<strong><em><code>None</code></em></strong>, <strong><code>drop_mult</code></strong>:<code>float</code>=<strong><em><code>1.0</code></em></strong>, <strong><code>lin_ftrs</code></strong>:<code>Collection</code>[<code>int</code>]=<strong><em><code>None</code></em></strong>, <strong><code>ps</code></strong>:<code>Collection</code>[<code>float</code>]=<strong><em><code>None</code></em></strong>, <strong><code>pad_idx</code></strong>:<code>int</code>=<strong><em><code>1</code></em></strong>) → <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
+<h4 id="get_text_classifier" class="doc_header"><code>get_text_classifier</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/learner.py#L269" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#get_text_classifier-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>get_text_classifier</code>(<strong><code>arch</code></strong>:<code>Callable</code>, <strong><code>vocab_sz</code></strong>:<code>int</code>, <strong><code>n_class</code></strong>:<code>int</code>, <strong><code>bptt</code></strong>:<code>int</code>=<strong><em><code>70</code></em></strong>, <strong><code>max_len</code></strong>:<code>int</code>=<strong><em><code>1400</code></em></strong>, <strong><code>config</code></strong>:<code>dict</code>=<strong><em><code>None</code></em></strong>, <strong><code>drop_mult</code></strong>:<code>float</code>=<strong><em><code>1.0</code></em></strong>, <strong><code>lin_ftrs</code></strong>:<code>Collection</code>[<code>int</code>]=<strong><em><code>None</code></em></strong>, <strong><code>ps</code></strong>:<code>Collection</code>[<code>float</code>]=<strong><em><code>None</code></em></strong>, <strong><code>pad_idx</code></strong>:<code>int</code>=<strong><em><code>1</code></em></strong>) → <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
 </blockquote>
 <div class="collapse" id="get_text_classifier-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#get_text_classifier-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>get_text_classifier</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Create a text classifier from <code>arch</code> and its <code>config</code>, maybe <code>pretrained</code>.</p>
 

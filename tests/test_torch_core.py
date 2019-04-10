@@ -95,6 +95,19 @@ def test_np2model_tensor():
     t = np2model_tensor(a)
     assert isinstance(t,torch.FloatTensor)
 
+def test_num_children():
+    this_tests(num_children)
+    m=nn.Sequential(nn.Linear(2,2), nn.ReLU())
+    n=num_children(m)
+    assert isinstance(n, int)
+    assert n == 2
+
+def test_np_address(): 
+    this_tests(np_address)
+    a=np.ndarray(shape=(2,2))
+    add=np_address(a)
+    assert isinstance(add, int)
+
 def test_model_type(): 
     this_tests(model_type) 
     a=np.array([1.,2.,3.]).dtype 
@@ -108,6 +121,9 @@ def test_trange_of():
     this_tests(trange_of)
     t = trange_of(a)
     assert len(t) == len(a)
+    assert t[0] == 0
+    assert t[1] == 1
+    assert t[2] == 2
     
 def test_to_np():
     this_tests(to_np)
