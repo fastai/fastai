@@ -15,8 +15,7 @@ def pil2tensor(image:Union[NPImage,NPArray],dtype:np.dtype)->TensorImage:
     "Convert PIL style `image` array to torch style image tensor."
     a = np.asarray(image)
     if a.ndim==2 : a = np.expand_dims(a,2)
-    a = np.transpose(a, (1, 0, 2))
-    a = np.transpose(a, (2, 1, 0))
+    a = np.transpose(a, (2, 0, 1))
     return torch.from_numpy(a.astype(dtype, copy=False) )
 
 def image2np(image:Tensor)->np.ndarray:
