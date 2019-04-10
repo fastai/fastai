@@ -321,16 +321,15 @@ class BatchNorm1dFlat(nn.BatchNorm1d):
         x = x.contiguous().view(-1,l)
         return super().forward(x).view(*f,l)
 
-class LabelSmoothingCrossEntropy(nn.Module):
-    def __init__(self, eps:float=0.1, reduction:str='mean'):
+class LabelSmoothingCrossEntropy1(nn.Module):
+    def __init__(self, eps:float=0.1, reduction='mean'):
         super().__init__()
         self.eps,self.reduction = eps,reduction
     
     def forward(self, output, target):
         c = output.size()[-1]
         log_preds = F.log_softmax(output, dim=-1)
-        losses = -log_preds.sum(dim=-1) * self.eps/c # deviation of predicted label distribution p from the prior uniform
-        losses += (1 - self.eps) * F.nll_loss(log_preds, target, reduction='none')
-        if self.reduction == 'mean': return losses.mean()
-        elif self.reduction == 'sum':            return losses.sum()
-        else:                                    return losses
+        if self.reduction == 'mean':  loss = -log_preds.sum(dim=-1).mean()
+        elif self.reduction == 'sum': loss = -log_preds.sum()
+        else:                         loss = -log_preds.sum(dim=-1)
+        return loss * self.eps/c + (1-self.eps) * F.nll_loss(log_preds, target, reduction=self.reduction)
