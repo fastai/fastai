@@ -5,6 +5,7 @@ from fastai.distributed import *
 from fastprogress import fastprogress
 from torchvision.models import *
 from fastai.vision.models.xresnet import *
+from fastai.vision.models.xresnet2 import *
 from fastai.vision.models.presnet import *
 
 torch.backends.cudnn.benchmark = True
@@ -12,7 +13,7 @@ fastprogress.MAX_COLS = 80
 
 def get_data(size, woof, bs, workers=None):
     if   size<=128: path = URLs.IMAGEWOOF_160 if woof else URLs.IMAGENETTE_160
-    elif size<=192: path = URLs.IMAGEWOOF_320 if woof else URLs.IMAGENETTE_320
+    elif size<=224: path = URLs.IMAGEWOOF_320 if woof else URLs.IMAGENETTE_320
     else          : path = URLs.IMAGEWOOF     if woof else URLs.IMAGENETTE
     path = untar_data(path)
 
@@ -28,7 +29,7 @@ def get_data(size, woof, bs, workers=None):
 @call_parse
 def main(
         gpu:Param("GPU to run on", str)=None,
-        woof: Param("Use imagewoof (otherwise imagenette)", bool)=False,
+        woof: Param("Use imagewoof (otherwise imagenette)", int)=0,
         lr: Param("Learning rate", float)=1e-3,
         size: Param("Size (px: 128,192,224)", int)=128,
         alpha: Param("Alpha", float)=0.99,
@@ -39,7 +40,7 @@ def main(
         mixup: Param("Mixup", float)=0.,
         opt: Param("Optimizer (adam,rms,sgd)", str)='adam',
         arch: Param("Architecture (xresnet34, xresnet50, presnet34, presnet50)", str)='xresnet50',
-        dump: Param("Print model; don't train", bool)=False,
+        dump: Param("Print model; don't train", int)=0,
         ):
     "Distributed training of Imagenette."
 

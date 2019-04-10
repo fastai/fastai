@@ -25,6 +25,7 @@ class DistributedTrainer(LearnerCallback):
     def _change_dl(self, dl, shuffle):
         old_dl = dl
         sampler = OurDistributedSampler(dl.dataset, shuffle=shuffle)
+        new_dl = dl.new(shuffle=False, sampler=sampler)
         return old_dl,new_dl,sampler
 
     def on_train_begin(self, **kwargs):
