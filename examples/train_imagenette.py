@@ -12,7 +12,7 @@ fastprogress.MAX_COLS = 80
 
 def get_data(size, woof, bs, workers=None):
     if   size<=128: path = URLs.IMAGEWOOF_160 if woof else URLs.IMAGENETTE_160
-    elif size<=192: path = URLs.IMAGEWOOF_320 if woof else URLs.IMAGENETTE_320
+    elif size<=224: path = URLs.IMAGEWOOF_320 if woof else URLs.IMAGENETTE_320
     else          : path = URLs.IMAGEWOOF     if woof else URLs.IMAGENETTE
     path = untar_data(path)
 
