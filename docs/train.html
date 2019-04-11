@@ -32,6 +32,7 @@ summary: "Extensions to Learner that easily implement Callback"
 <li><a href="/train.html#ShowGraph"><code>ShowGraph</code></a></li>
 <li><a href="/train.html#GradientClipping"><code>GradientClipping</code></a></li>
 <li><a href="/train.html#BnFreeze"><code>BnFreeze</code></a></li>
+<li><a href="/train.html#AccumulateScheduler"><code>AccumulateScheduler</code></a></li>
 </ul>
 
 </div>
@@ -355,21 +356,26 @@ summary: "Extensions to Learner that easily implement Callback"
 
 
 <div class="output_html rendered_html output_subarea ">
-Total time: 00:11 <p><table style='width:300px; margin-bottom:10px'>
-  <tr>
-    <th>epoch</th>
-    <th>train_loss</th>
-    <th>valid_loss</th>
-    <th>accuracy</th>
-  </tr>
-  <tr>
-    <th>1</th>
-    <th>0.131133</th>
-    <th>0.078190</th>
-    <th>0.973013</th>
-  </tr>
+Total time: 00:40 <p><table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: left;">
+      <th>epoch</th>
+      <th>train_loss</th>
+      <th>valid_loss</th>
+      <th>accuracy</th>
+      <th>time</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>0.141420</td>
+      <td>0.089811</td>
+      <td>0.966634</td>
+      <td>00:40</td>
+    </tr>
+  </tbody>
 </table>
-
 </div>
 
 </div>
@@ -447,21 +453,26 @@ Total time: 00:11 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_html rendered_html output_subarea ">
-Total time: 00:07 <p><table style='width:300px; margin-bottom:10px'>
-  <tr>
-    <th>epoch</th>
-    <th>train_loss</th>
-    <th>valid_loss</th>
-    <th>accuracy</th>
-  </tr>
-  <tr>
-    <th>1</th>
-    <th>0.132564</th>
-    <th>0.078910</th>
-    <th>0.972031</th>
-  </tr>
+Total time: 00:06 <p><table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: left;">
+      <th>epoch</th>
+      <th>train_loss</th>
+      <th>valid_loss</th>
+      <th>accuracy</th>
+      <th>time</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>0.152064</td>
+      <td>0.088010</td>
+      <td>0.971050</td>
+      <td>00:06</td>
+    </tr>
+  </tbody>
 </table>
-
 </div>
 
 </div>
@@ -483,6 +494,112 @@ Total time: 00:07 <p><table style='width:300px; margin-bottom:10px'>
 </blockquote>
 <div class="collapse" id="BnFreeze-on_epoch_begin-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#BnFreeze-on_epoch_begin-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>on_epoch_begin</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Put bn layers in eval mode just after <code>model.train()</code>.</p>
 
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="AccumulateScheduler" class="doc_header"><code>class</code> <code>AccumulateScheduler</code><a href="https://github.com/fastai/fastai/blob/master/fastai/train.py#L98" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#AccumulateScheduler-pytest" style="float:right; padding-right:10px">[test]</a></h2><blockquote><p><code>AccumulateScheduler</code>(<strong><code>learn</code></strong>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <strong><code>n_step</code></strong>:<code>int</code>=<strong><em><code>1</code></em></strong>, <strong><code>drop_last</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>) :: <a href="/basic_train.html#LearnerCallback"><code>LearnerCallback</code></a></p>
+</blockquote>
+<div class="collapse" id="AccumulateScheduler-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#AccumulateScheduler-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>AccumulateScheduler</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Does accumlated step every nth step by accumulating gradients</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Let's force <code>batch_size=2</code> to mimic a scenario where we can't fit enough batch samples to our memory. We can then set <code>n_step</code> as desired to have an effective batch_size of <code>effective_batch_size=batch_size*n_step</code>.</p>
+<p>It is also important to use loss func with <code>reduce='sum'</code> in order to calculate exact average accumulated gradients.</p>
+<p>Another important note for users is that <code>batchnorm</code> is not yet adapted to accumulated gradients. So you should use this callback at your own risk until a hero fixes it :)</p>
+<p>Here we demonstrate this callback with a model without <code>batchnorm</code> layers, alternatively you can use <code>nn.InstanceNorm</code> or <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.GroupNorm"><code>nn.GroupNorm</code></a>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">torchvision.models</span> <span class="k">import</span> <span class="n">vgg11</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">ImageDataBunch</span><span class="o">.</span><span class="n">from_folder</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span> <span class="o">=</span> <span class="n">cnn_learner</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">vgg11</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="n">accuracy</span><span class="p">,</span> <span class="n">loss_func</span><span class="o">=</span><span class="n">CrossEntropyFlat</span><span class="p">(</span><span class="n">reduction</span><span class="o">=</span><span class="s1">&#39;sum&#39;</span><span class="p">),</span>
+                    <span class="n">callback_fns</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span><span class="n">AccumulateScheduler</span><span class="p">,</span> <span class="n">n_step</span><span class="o">=</span><span class="mi">16</span><span class="p">))</span>
+<span class="n">learn</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea ">
+Total time: 01:11 <p><table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: left;">
+      <th>epoch</th>
+      <th>train_loss</th>
+      <th>valid_loss</th>
+      <th>accuracy</th>
+      <th>time</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>0.912131</td>
+      <td>18.422800</td>
+      <td>0.821884</td>
+      <td>01:11</td>
+    </tr>
+  </tbody>
+</table>
 </div>
 
 </div>
