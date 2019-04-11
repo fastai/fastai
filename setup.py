@@ -98,6 +98,7 @@ dep_groups = {
         fastprogress>=0.1.19
         beautifulsoup4
         matplotlib
+        tabulate
         numexpr              # performance-improvement for numpy
         numpy>=1.15
         nvidia-ml-py3

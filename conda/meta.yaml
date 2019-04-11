@@ -53,6 +53,7 @@ requirements:
     - beautifulsoup4
     - fastprogress >=0.1.19
     - matplotlib
+    - tabulate
     - numpy >=1.15
     - pandas
     - bottleneck
