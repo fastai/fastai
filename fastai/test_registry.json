@@ -708,7 +708,7 @@
     "fastai.layers.SelfAttention": [
         {
             "file": "tests/test_torch_core.py",
-            "line": 153,
+            "line": 162,
             "test": "test_keep_parameter"
         }
     ],
@@ -1039,7 +1039,7 @@
     "fastai.torch_core.NoneReduceOnCPU": [
         {
             "file": "tests/test_torch_core.py",
-            "line": 133,
+            "line": 142,
             "test": "test_none_reduce_on_cpu"
         }
     ],
@@ -1062,6 +1062,13 @@
             "file": "tests/test_fp16.py",
             "line": 32,
             "test": "test_batch_to_half"
+        }
+    ],
+    "fastai.torch_core.children": [
+        {
+            "file": "tests/test_torch_core.py",
+            "line": 98,
+            "test": "test_children"
         }
     ],
     "fastai.torch_core.in_channels": [
@@ -1091,7 +1098,7 @@
     "fastai.torch_core.model_type": [
         {
             "file": "tests/test_torch_core.py",
-            "line": 111,
+            "line": 120,
             "test": "test_model_type"
         }
     ],
@@ -1105,14 +1112,14 @@
     "fastai.torch_core.np_address": [
         {
             "file": "tests/test_torch_core.py",
-            "line": 105,
+            "line": 114,
             "test": "test_np_address"
         }
     ],
     "fastai.torch_core.num_children": [
         {
             "file": "tests/test_torch_core.py",
-            "line": 98,
+            "line": 107,
             "test": "test_num_children"
         }
     ],
@@ -1183,14 +1190,14 @@
     "fastai.torch_core.to_np": [
         {
             "file": "tests/test_torch_core.py",
-            "line": 128,
+            "line": 137,
             "test": "test_to_np"
         }
     ],
     "fastai.torch_core.trange_of": [
         {
             "file": "tests/test_torch_core.py",
-            "line": 120,
+            "line": 129,
             "test": "test_trange_of"
         }
     ],
@@ -1425,6 +1432,13 @@
             "file": "tests/test_vision_transform.py",
             "line": 58,
             "test": "test_mask_data_aug"
+        }
+    ],
+    "fastai.vision.image.Image.resize": [
+        {
+            "file": "tests/test_vision_image.py",
+            "line": 49,
+            "test": "test_image_resize_same_size_shortcut"
         }
     ],
     "fastai.vision.image.ImageBBox": [

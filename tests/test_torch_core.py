@@ -94,6 +94,15 @@ def test_np2model_tensor():
     a = np.ones([2,2])
     t = np2model_tensor(a)
     assert isinstance(t,torch.FloatTensor)
+    
+def test_children():
+    this_tests(children)
+    m=nn.Sequential(nn.Linear(2,2), nn.ReLU())
+    ch=children(m)
+    assert len(ch) == 2
+    assert isinstance(ch, list)
+    assert isinstance(ch[0], torch.nn.modules.linear.Linear)
+    assert isinstance(ch[1], torch.nn.modules.activation.ReLU)
 
 def test_num_children():
     this_tests(num_children)
