@@ -205,14 +205,12 @@ def _eval_dropouts(mod):
         module_name =  mod.__class__.__name__
         if 'Dropout' in module_name or 'BatchNorm' in module_name: mod.training = False
         for module in mod.children(): _eval_dropouts(module)
-    
-@dataclass
+
+
 class TextClassificationInterpretation(ClassificationInterpretation):
     """Provides an interpretation of classification based on input sensitivity.
     This was designed for AWD-LSTM only for the moment, because Transformer already has its own attentional model.
     """
-    data: TextClasDataBunch
-    model: AWD_LSTM
 
     def __init__(self, learn: Learner, probs: Tensor, y_true: Tensor, losses: Tensor, ds_type: DatasetType = DatasetType.Valid):
         super(TextClassificationInterpretation, self).__init__(learn,probs,y_true,losses,ds_type)
@@ -246,30 +244,27 @@ class TextClassificationInterpretation(ClassificationInterpretation):
         text, attn = self.intrinsic_attention(text, class_id)
         show_piece_attn(text.text.split(), to_np(attn), **kwargs)
 
-    def show_top_losses(self, k:int)->None:
+    def show_top_losses(self, k:int, width:int=80)->None:
         table_header = ['Text', 'Prediction', 'Actual', 'Loss', 'Probability']
         table_data = []
         tl_val,tl_idx = self.top_losses()
         for i,idx in enumerate(tl_idx):
+            if k <= 0: break
+            k -= 1
             tx,cl = self.data.dl(self.ds_type).dataset[idx]
             cl = cl.data
             classes = self.data.classes
-            tmp = (self.cut_by_line(tx.text), f'{classes[self.pred_class[idx]]}', f'{classes[cl]}', f'{self.losses[idx]:.2f}', f'{self.probs[idx][cl]:.2f}')
+            tmp = (self.cut_by_line(tx.text,width), f'{classes[self.pred_class[idx]]}', f'{classes[cl]}', f'{self.losses[idx]:.2f}', f'{self.probs[idx][cl]:.2f}')
             table_data.append(tmp)
-            k -= 1
-            if k==0: break
         print(tabulate(table_data, headers=table_header, tablefmt='orgtbl'))
 
-    def cut_by_line(self,text):
+    def cut_by_line(self, text, width):
         res = ""
-        width = 80
         lines = len(text) // width
-        if lines == 0:
-            res += text
+        if lines == 0: res += text
         else:
-            for i in range(lines):
-                res += text[i * width:(i + 1) * width] + '\n'
-            res += text[(range(lines)[-1] + 1) * width:]
+            for i in range(lines): res += text[i*width:(i+1)*width] + '\n'
+            res += text[lines*width:]
         return res
 
 
