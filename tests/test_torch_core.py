@@ -110,7 +110,21 @@ def test_num_children():
     n=num_children(m)
     assert isinstance(n, int)
     assert n == 2
-
+    
+def test_first_layer():
+    this_tests(first_layer)
+    m=nn.Sequential(nn.Linear(2,2), nn.ReLU())
+    fl=first_layer(m)
+    assert isinstance(fl, nn.Module)
+    assert isinstance(fl, torch.nn.modules.linear.Linear)
+    
+def test_last_layer():
+    this_tests(last_layer)
+    m=nn.Sequential(nn.Linear(2,2), nn.ReLU())
+    ll=last_layer(m)
+    assert isinstance(ll, nn.Module)
+    assert isinstance(ll, torch.nn.modules.activation.ReLU)
+    
 def test_np_address(): 
     this_tests(np_address)
     a=np.ndarray(shape=(2,2))

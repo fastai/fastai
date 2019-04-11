@@ -708,7 +708,7 @@
     "fastai.layers.SelfAttention": [
         {
             "file": "tests/test_torch_core.py",
-            "line": 162,
+            "line": 176,
             "test": "test_keep_parameter"
         }
     ],
@@ -1039,7 +1039,7 @@
     "fastai.torch_core.NoneReduceOnCPU": [
         {
             "file": "tests/test_torch_core.py",
-            "line": 142,
+            "line": 156,
             "test": "test_none_reduce_on_cpu"
         }
     ],
@@ -1071,6 +1071,13 @@
             "test": "test_children"
         }
     ],
+    "fastai.torch_core.first_layer": [
+        {
+            "file": "tests/test_torch_core.py",
+            "line": 114,
+            "test": "test_first_layer"
+        }
+    ],
     "fastai.torch_core.in_channels": [
         {
             "file": "tests/test_torch_core.py",
@@ -1081,6 +1088,13 @@
             "file": "tests/test_torch_core.py",
             "line": 62,
             "test": "test_in_channels_no_weights"
+        }
+    ],
+    "fastai.torch_core.last_layer": [
+        {
+            "file": "tests/test_torch_core.py",
+            "line": 121,
+            "test": "test_last_layer"
         }
     ],
     "fastai.torch_core.model2half": [
@@ -1098,7 +1112,7 @@
     "fastai.torch_core.model_type": [
         {
             "file": "tests/test_torch_core.py",
-            "line": 120,
+            "line": 134,
             "test": "test_model_type"
         }
     ],
@@ -1112,7 +1126,7 @@
     "fastai.torch_core.np_address": [
         {
             "file": "tests/test_torch_core.py",
-            "line": 114,
+            "line": 128,
             "test": "test_np_address"
         }
     ],
@@ -1190,14 +1204,14 @@
     "fastai.torch_core.to_np": [
         {
             "file": "tests/test_torch_core.py",
-            "line": 137,
+            "line": 151,
             "test": "test_to_np"
         }
     ],
     "fastai.torch_core.trange_of": [
         {
             "file": "tests/test_torch_core.py",
-            "line": 129,
+            "line": 143,
             "test": "test_trange_of"
         }
     ],
