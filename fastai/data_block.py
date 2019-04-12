@@ -25,10 +25,10 @@ def get_files(path:PathOrStr, extensions:Collection[str]=None, recurse:bool=Fals
     "Return list of files in `path` that have a suffix in `extensions`; optionally `recurse`."
     if recurse:
         res = []
-        for p,d,f in os.walk(path):
+        for i,(p,d,f) in enumerate(os.walk(path)): 
             # skip hidden dirs
-            if include is not None: d[:] = [o for o in d if o in include]
-            else:                   d[:] = [o for o in d if not o.startswith('.')]
+            if include is not None and i==0:  d[:] = [o for o in d if o in include]
+            else:                             d[:] = [o for o in d if not o.startswith('.')]
             res += _get_files(path, p, f, extensions)
         return res
     else:
