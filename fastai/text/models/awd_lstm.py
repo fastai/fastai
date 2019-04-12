@@ -5,7 +5,6 @@ from ...basic_train import *
 from ...basic_data import *
 from ..data import TextClasDataBunch
 import matplotlib.cm as cm
-from tabulate import tabulate
 
 __all__ = ['EmbeddingDropout', 'LinearDecoder', 'AWD_LSTM', 'RNNDropout',
            'SequentialRNN', 'WeightDropout', 'dropout_mask', 'awd_lstm_lm_split', 'awd_lstm_clas_split',
@@ -244,9 +243,13 @@ class TextClassificationInterpretation(ClassificationInterpretation):
         text, attn = self.intrinsic_attention(text, class_id)
         show_piece_attn(text.text.split(), to_np(attn), **kwargs)
 
-    def show_top_losses(self, k:int, width:int=80)->None:
-        table_header = ['Text', 'Prediction', 'Actual', 'Loss', 'Probability']
-        table_data = []
+    def show_top_losses(self, k:int, max_len:int=70)->None:
+        """
+        Create a tabulation showing the first `k` texts in top_losses along with their prediction, actual,loss, and probability of
+        actual class. `max_len` is the maximum number of tokens displayed.
+        """
+        from IPython.display import display, HTML
+        items = []
         tl_val,tl_idx = self.top_losses()
         for i,idx in enumerate(tl_idx):
             if k <= 0: break
@@ -254,17 +257,13 @@ class TextClassificationInterpretation(ClassificationInterpretation):
             tx,cl = self.data.dl(self.ds_type).dataset[idx]
             cl = cl.data
             classes = self.data.classes
-            tmp = (self.cut_by_line(tx.text,width), f'{classes[self.pred_class[idx]]}', f'{classes[cl]}', f'{self.losses[idx]:.2f}', f'{self.probs[idx][cl]:.2f}')
-            table_data.append(tmp)
-        print(tabulate(table_data, headers=table_header, tablefmt='orgtbl'))
-
-    def cut_by_line(self, text, width):
-        res = ""
-        lines = len(text) // width
-        if lines == 0: res += text
-        else:
-            for i in range(lines): res += text[i*width:(i+1)*width] + '\n'
-            res += text[lines*width:]
-        return res
-
+            txt = ' '.join(tx.text.split(' ')[:max_len]) if max_len is not None else tx.text
+            tmp = [txt, f'{classes[self.pred_class[idx]]}', f'{classes[cl]}', f'{self.losses[idx]:.2f}',
+                   f'{self.probs[idx][cl]:.2f}']
+            items.append(tmp)
+        items = np.array(items)
+        names = ['Text', 'Prediction', 'Actual', 'Loss', 'Probability']
+        df = pd.DataFrame({n:items[:,i] for i,n in enumerate(names)}, columns=names)
+        with pd.option_context('display.max_colwidth', -1):
+            display(HTML(df.to_html(index=False)))
 
