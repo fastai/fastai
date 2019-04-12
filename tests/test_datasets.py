@@ -39,6 +39,7 @@ def test_default_config():
     finally:
         clean_test_config(Config.DEFAULT_CONFIG_LOCATION)
 
+@pytest.mark.slow
 def test_user_config():
     this_tests(Config, download_data, untar_data, url2path, datapath4file)
     Config.DEFAULT_CONFIG_LOCATION = 'config_test'
