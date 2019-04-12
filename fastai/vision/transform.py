@@ -230,8 +230,7 @@ def zoom_crop(scale:float, do_rand:bool=False, p:float=1.0):
     return [zoom_fn(scale=scale, p=p), crop_fn()]
 
 # XXX: replace this with direct usage of `solve` once fastai requires pytorch 1.1+
-torch_end = torch.__version__.split('.')[-1]
-_solve_func = torch.solve if torch.__version__.startswith('1.1') or torch_end.startswith('dev') and torch_end >= 'dev201904' else torch.gesv
+_solve_func = getattr(torch, 'solve', torch.gesv)
 
 def _find_coeffs(orig_pts:Points, targ_pts:Points)->Tensor:
     "Find 8 coeff mentioned [here](https://web.archive.org/web/20150222120106/xenia.media.mit.edu/~cwren/interpolator/)."
