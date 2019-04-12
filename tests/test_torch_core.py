@@ -64,7 +64,7 @@ def test_in_channels_no_weights():
     with pytest.raises(Exception) as e_info:
         in_channels(nn.Sequential())
     assert e_info.value.args[0] == 'No weight layer'
-
+    
 def test_range_children():
     this_tests(range_children)
     m = simple_cnn(b)
@@ -94,6 +94,23 @@ def test_np2model_tensor():
     a = np.ones([2,2])
     t = np2model_tensor(a)
     assert isinstance(t,torch.FloatTensor)
+
+def test_to_half():
+    this_tests(to_half)
+    a=[1.,2.,3.]
+    b=[3.,6.,6.]
+    c=[1,2,3]
+    d=[3,6,6]
+    ta=torch.tensor(a)
+    tb=torch.tensor(b)
+    tc=torch.tensor(c)
+    td=torch.tensor(d) 
+    hfl=to_half([ta,tb])
+    hint=to_half([tc,td])
+    assert hfl[0].dtype == torch.float16
+    assert hfl[1].dtype == torch.float16
+    assert hint[0].dtype == torch.int64 or torch.int32 or torch.int16
+    assert hint[1].dtype == torch.int64 or torch.int32 or torch.int16    
     
 def test_children():
     this_tests(children)
