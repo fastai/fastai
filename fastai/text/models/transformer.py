@@ -25,7 +25,7 @@ class GeLU(nn.Module):
 class Swish(nn.Module):
     def forward(self, x): return x * torch.sigmoid(x)
     
-_activ_func = {Activation.ReLU:nn.ReLU(inplace=True), Activation.GeLU:GeLU(), Activation.Swish: Swish}
+_activ_func = {Activation.ReLU:nn.ReLU(inplace=True), Activation.GeLU:GeLU(), Activation.Swish: Swish()}
 
 def feed_forward(d_model:int, d_ff:int, ff_p:float=0., act:Activation=Activation.ReLU, double_drop:bool=True):
     layers = [nn.Linear(d_model, d_ff), _activ_func[act]]
