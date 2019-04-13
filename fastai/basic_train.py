@@ -360,7 +360,7 @@ class Learner():
         "Return predicted class, label and probabilities for `item`."
         batch = self.data.one_item(item)
         res = self.pred_batch(batch=batch)
-        pred,x = res[0],batch[0]
+        pred,x = grab_idx(res,0),batch[0]
         norm = getattr(self.data,'norm',False)
         if norm:
             x = self.data.denorm(x)
