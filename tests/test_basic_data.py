@@ -2,6 +2,7 @@ import pytest
 from utils.fakes import *
 import sys
 from fastai.gen_doc.doctest import this_tests
+from fastai.basic_data import intercept_args
 
 ## run: pytest tests/test_basic_data.py -s
 
@@ -10,9 +11,16 @@ from fastai.gen_doc.doctest import this_tests
 
 ## Test Cases
 
-    ## TO DO: Function intercept_args
-
     ## TO DO: Class DeviceDataLoader
+
+## Function intercept_args
+
+def test_intercept_args():
+    data = fake_data()
+    this_tests(intercept_args)
+
+    assert hasattr(data.train_dl, 'init_kwargs')
+    assert hasattr(data.valid_dl, 'init_kwargs')
 
 ## Class DataBunch
 
