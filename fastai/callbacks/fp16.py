@@ -78,11 +78,11 @@ class MixedPrecision(LearnerCallback):
         #Get a copy of the model params in FP32
         self.model_params, self.master_params = get_master(self.learn.layer_groups, self.flat_master)
         #Changes the optimizer so that the optimization step is done in FP32.
-        if self.opt is None or self.opt.n_params != self.learn.opt.n_params:
-            self.opt = self.learn.opt.new_with_params(self.master_params)
-            self.opt.load_state_dict(self.learn.opt.state_dict())
-        else: self.opt.lr,self.opt.wd = self.learn.opt.lr,self.learn.opt.wd
-        self.learn.opt.opt = self.opt.opt
+        new_opt = self.learn.opt.new_with_params(self.master_params)
+        if self.opt is not None: 
+            self.opt.lr,self.opt.wd = self.learn.opt.lr,self.learn.opt.wd
+            new_opt.load_state_dict(self.opt)
+        self.learn.opt.opt = new_opt
         self.noskip = 0
 
     def on_loss_begin(self, last_output:Tensor, **kwargs:Any) -> Tensor:

@@ -14,7 +14,8 @@ __all__ = ['Learner', 'LearnerCallback', 'Recorder', 'RecordOnCPU', 'fit', 'loss
 
 defaults.lr = slice(3e-3)
 defaults.wd = 1e-2
-defaults.extra_callbacks = None
+defaults.extra_callbacks    = None
+defaults.extra_callback_fns = None
 
 def loss_batch(model:nn.Module, xb:Tensor, yb:Tensor, loss_func:OptLossFunc=None, opt:OptOptimizer=None,
                cb_handler:Optional[CallbackHandler]=None)->Tuple[Union[Tensor,int,float,str]]:
@@ -100,7 +101,7 @@ def fit(epochs:int, learn:BasicLearner, callbacks:Optional[CallbackList]=None, m
                 loss = loss_batch(learn.model, xb, yb, learn.loss_func, learn.opt, cb_handler)
                 if cb_handler.on_batch_end(loss): break
 
-            if not learn.data.empty_val:
+            if not cb_handler.skip_validate and not learn.data.empty_val:
                 val_loss = validate(learn.model, learn.data.valid_dl, loss_func=learn.loss_func,
                                        cb_handler=cb_handler, pbar=pbar)
             else: val_loss=None
@@ -157,6 +158,7 @@ class Learner():
     callbacks:Collection[Callback]=field(default_factory=list)
     layer_groups:Collection[nn.Module]=None
     add_time:bool=True
+    silent:bool=None
     def __post_init__(self)->None:
         "Setup path,metrics, callbacks and ensure model directory exists."
         self.path = Path(ifnone(self.path, self.data.path))
@@ -166,7 +168,8 @@ class Learner():
         self.metrics=listify(self.metrics)
         if not self.layer_groups: self.layer_groups = [nn.Sequential(*flatten_model(self.model))]
         self.callbacks = listify(self.callbacks)
-        self.callback_fns = [partial(Recorder, add_time=self.add_time)] + listify(self.callback_fns)
+        if self.silent is None: self.silent = defaults.silent
+        self.callback_fns = [partial(Recorder, add_time=self.add_time, silent=self.silent)] + listify(self.callback_fns)
 
     def init(self, init): apply_init(self.model, init)
 
@@ -191,7 +194,7 @@ class Learner():
         if wd is None: wd = self.wd
         if not getattr(self, 'opt', False): self.create_opt(lr, wd)
         else: self.opt.lr,self.opt.wd = lr,wd
-        callbacks = [cb(self) for cb in self.callback_fns] + listify(callbacks)
+        callbacks = [cb(self) for cb in self.callback_fns + listify(defaults.extra_callback_fns)] + listify(callbacks)
         if defaults.extra_callbacks is not None: callbacks += defaults.extra_callbacks
         fit(epochs, self, metrics=self.metrics, callbacks=self.callbacks+callbacks)
 
@@ -434,11 +437,11 @@ class LearnerCallback(Callback):
 class Recorder(LearnerCallback):
     "A `LearnerCallback` that records epoch, loss, opt and metric data during training."
     _order=-10
-    def __init__(self, learn:Learner, add_time:bool=True):
+    def __init__(self, learn:Learner, add_time:bool=True, silent:bool=False):
         super().__init__(learn)
         self.opt = self.learn.opt
         self.train_dl = self.learn.data.train_dl
-        self.no_val,self.silent,self.add_time = False,False,add_time
+        self.no_val,self.silent,self.add_time = False,silent,add_time
 
     def on_train_begin(self, pbar:PBar, metrics_names:Collection[str], **kwargs:Any)->None:
         "Initialize recording status at beginning of training."

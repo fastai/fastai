@@ -2,6 +2,7 @@ import pytest
 from utils.fakes import *
 import sys
 from fastai.gen_doc.doctest import this_tests
+from fastai.basic_data import intercept_args
 
 ## run: pytest tests/test_basic_data.py -s
 
@@ -10,9 +11,19 @@ from fastai.gen_doc.doctest import this_tests
 
 ## Test Cases
 
-    ## TO DO: Function intercept_args
-
     ## TO DO: Class DeviceDataLoader
+
+## Function intercept_args
+
+def test_intercept_args():
+    dataset = TensorDataset(fake_basedata(n_in=4, batch_size=6))
+    dataloader = DataLoader(dataset, batch_size=5, shuffle=True, drop_last=True, timeout=3)
+    this_tests(intercept_args)
+
+    assert dataloader.init_kwargs['batch_size'] == 5
+    assert dataloader.init_kwargs['shuffle'] == True
+    assert dataloader.init_kwargs['drop_last'] == True
+    assert dataloader.init_kwargs['timeout'] == 3
 
 ## Class DataBunch
 
@@ -92,6 +103,7 @@ def test_DataBunch_save_load():
     assert 4 == x[0].shape[0]
     assert 6 == x.shape[0]
     assert 6 == y.shape[0]
+    os.remove(save_name)
 
 def test_DeviceDataLoader_getitem():
     this_tests('na')
