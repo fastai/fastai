@@ -9,19 +9,19 @@
     "fastai.basic_data.DataBunch.create": [
         {
             "file": "tests/test_basic_data.py",
-            "line": 19,
+            "line": 30,
             "test": "test_DataBunch_Create"
         },
         {
             "file": "tests/test_basic_data.py",
-            "line": 33,
+            "line": 44,
             "test": "test_DataBunch_no_valid_dl"
         }
     ],
     "fastai.basic_data.DataBunch.one_batch": [
         {
             "file": "tests/test_basic_data.py",
-            "line": 47,
+            "line": 58,
             "test": "test_DataBunch_onebatch"
         },
         {
@@ -41,29 +41,36 @@
         },
         {
             "file": "tests/test_basic_data.py",
-            "line": 72,
+            "line": 83,
             "test": "test_DataBunch_save_load"
         }
     ],
     "fastai.basic_data.DataBunch.one_item": [
         {
             "file": "tests/test_basic_data.py",
-            "line": 56,
+            "line": 67,
             "test": "test_DataBunch_oneitem"
         }
     ],
     "fastai.basic_data.DataBunch.save": [
         {
             "file": "tests/test_basic_data.py",
-            "line": 72,
+            "line": 83,
             "test": "test_DataBunch_save_load"
         }
     ],
     "fastai.basic_data.DataBunch.show_batch": [
         {
             "file": "tests/test_basic_data.py",
-            "line": 64,
+            "line": 75,
             "test": "test_DataBunch_show_batch"
+        }
+    ],
+    "fastai.basic_data.intercept_args": [
+        {
+            "file": "tests/test_basic_data.py",
+            "line": 18,
+            "test": "test_intercept_args"
         }
     ],
     "fastai.basic_data.load_data": [
@@ -74,7 +81,7 @@
         },
         {
             "file": "tests/test_basic_data.py",
-            "line": 72,
+            "line": 83,
             "test": "test_DataBunch_save_load"
         }
     ],
@@ -708,7 +715,7 @@
     "fastai.layers.SelfAttention": [
         {
             "file": "tests/test_torch_core.py",
-            "line": 193,
+            "line": 210,
             "test": "test_keep_parameter"
         }
     ],
@@ -1039,7 +1046,7 @@
     "fastai.torch_core.NoneReduceOnCPU": [
         {
             "file": "tests/test_torch_core.py",
-            "line": 173,
+            "line": 190,
             "test": "test_none_reduce_on_cpu"
         }
     ],
@@ -1067,14 +1074,14 @@
     "fastai.torch_core.children": [
         {
             "file": "tests/test_torch_core.py",
-            "line": 115,
+            "line": 132,
             "test": "test_children"
         }
     ],
     "fastai.torch_core.first_layer": [
         {
             "file": "tests/test_torch_core.py",
-            "line": 131,
+            "line": 148,
             "test": "test_first_layer"
         }
     ],
@@ -1093,7 +1100,7 @@
     "fastai.torch_core.last_layer": [
         {
             "file": "tests/test_torch_core.py",
-            "line": 138,
+            "line": 155,
             "test": "test_last_layer"
         }
     ],
@@ -1112,7 +1119,7 @@
     "fastai.torch_core.model_type": [
         {
             "file": "tests/test_torch_core.py",
-            "line": 151,
+            "line": 168,
             "test": "test_model_type"
         }
     ],
@@ -1126,14 +1133,14 @@
     "fastai.torch_core.np_address": [
         {
             "file": "tests/test_torch_core.py",
-            "line": 145,
+            "line": 162,
             "test": "test_np_address"
         }
     ],
     "fastai.torch_core.num_children": [
         {
             "file": "tests/test_torch_core.py",
-            "line": 124,
+            "line": 141,
             "test": "test_num_children"
         }
     ],
@@ -1194,6 +1201,13 @@
             "test": "test_tensor_with_tensor"
         }
     ],
+    "fastai.torch_core.to_float": [
+        {
+            "file": "tests/test_torch_core.py",
+            "line": 115,
+            "test": "test_to_float"
+        }
+    ],
     "fastai.torch_core.to_half": [
         {
             "file": "tests/test_fp16.py",
@@ -1209,14 +1223,14 @@
     "fastai.torch_core.to_np": [
         {
             "file": "tests/test_torch_core.py",
-            "line": 168,
+            "line": 185,
             "test": "test_to_np"
         }
     ],
     "fastai.torch_core.trange_of": [
         {
             "file": "tests/test_torch_core.py",
-            "line": 160,
+            "line": 177,
             "test": "test_trange_of"
         }
     ],
