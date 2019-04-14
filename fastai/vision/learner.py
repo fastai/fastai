@@ -98,7 +98,7 @@ def cnn_learner(data:DataBunch, base_arch:Callable, cut:Union[int,Callable]=None
     learn = Learner(data, model, **kwargs)
     learn.split(split_on or meta['split'])
     if pretrained: learn.freeze()
-    if init: apply_init(model[1], nn.init.kaiming_normal_)
+    if init: apply_init(model[1], init)
     return learn
 
 def create_cnn(data, base_arch, **kwargs):
