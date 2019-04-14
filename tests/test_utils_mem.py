@@ -224,7 +224,7 @@ def reduce_mem_usage(df):
                     if c_min > np.finfo(np.float32).min and c_max < np.finfo(np.float32).max:
                         df[col] = df[col].astype(np.float32)
                     else:
-                        df[col] = df[col].astype(np.float64)
+                        print('Error '+col+' value would be a float64. Disregarding.')
             else:
                 df[col] = df[col].astype('category')
 
