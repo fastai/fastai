@@ -9,6 +9,7 @@ __all__ = ['AverageMetric', 'Callback', 'CallbackHandler', 'OptimWrapper', 'Smoo
 class OptimWrapper():
     "Basic wrapper around `opt` to simplify hyper-parameters changes."
     def __init__(self, opt:optim.Optimizer, wd:Floats=0., true_wd:bool=False, bn_wd:bool=True):
+        assert not isinstance(opt, OptimWrapper)
         self.opt,self.true_wd,self.bn_wd = opt,true_wd,bn_wd
         self.opt_keys = list(self.opt.param_groups[0].keys())
         self.opt_keys.remove('params')

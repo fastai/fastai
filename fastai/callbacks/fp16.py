@@ -82,7 +82,7 @@ class MixedPrecision(LearnerCallback):
         if self.opt is not None: 
             self.opt.lr,self.opt.wd = self.learn.opt.lr,self.learn.opt.wd
             new_opt.load_state_dict(self.opt)
-        self.learn.opt.opt = new_opt
+        self.learn.opt = new_opt
         self.noskip = 0
 
     def on_loss_begin(self, last_output:Tensor, **kwargs:Any) -> Tensor:
