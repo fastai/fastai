@@ -76,7 +76,8 @@ class HookCallback(LearnerCallback):
         "Remove the `Hooks`."
         if self.do_remove: self.remove()
 
-    def remove(self): self.hooks.remove()
+    def remove(self): 
+        if getattr(self, 'hooks', None): self.hooks.remove()
     def __del__(self): self.remove()
 
 class ActivationStats(HookCallback):

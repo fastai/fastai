@@ -38,6 +38,11 @@
             "file": "tests/test_text_data.py",
             "line": 110,
             "test": "test_backwards_cls_databunch"
+        },
+        {
+            "file": "tests/test_basic_data.py",
+            "line": 72,
+            "test": "test_DataBunch_save_load"
         }
     ],
     "fastai.basic_data.DataBunch.one_item": [
@@ -45,6 +50,13 @@
             "file": "tests/test_basic_data.py",
             "line": 56,
             "test": "test_DataBunch_oneitem"
+        }
+    ],
+    "fastai.basic_data.DataBunch.save": [
+        {
+            "file": "tests/test_basic_data.py",
+            "line": 72,
+            "test": "test_DataBunch_save_load"
         }
     ],
     "fastai.basic_data.DataBunch.show_batch": [
@@ -59,24 +71,29 @@
             "file": "tests/test_text_data.py",
             "line": 129,
             "test": "test_load_and_save_test"
+        },
+        {
+            "file": "tests/test_basic_data.py",
+            "line": 72,
+            "test": "test_DataBunch_save_load"
         }
     ],
     "fastai.basic_train.Learner.destroy": [
         {
             "file": "tests/test_basic_train.py",
-            "line": 158,
+            "line": 166,
             "test": "test_destroy"
         },
         {
             "file": "tests/test_basic_train.py",
-            "line": 201,
+            "line": 209,
             "test": "test_memory"
         }
     ],
     "fastai.basic_train.Learner.export": [
         {
             "file": "tests/test_basic_train.py",
-            "line": 218,
+            "line": 226,
             "test": "test_export_load_learner"
         }
     ],
@@ -116,7 +133,7 @@
         },
         {
             "file": "tests/test_basic_train.py",
-            "line": 201,
+            "line": 209,
             "test": "test_memory"
         }
     ],
@@ -145,7 +162,7 @@
         },
         {
             "file": "tests/test_basic_train.py",
-            "line": 201,
+            "line": 209,
             "test": "test_memory"
         }
     ],
@@ -157,7 +174,7 @@
         },
         {
             "file": "tests/test_basic_train.py",
-            "line": 201,
+            "line": 209,
             "test": "test_memory"
         }
     ],
@@ -195,7 +212,7 @@
     "fastai.basic_train.load_learner": [
         {
             "file": "tests/test_basic_train.py",
-            "line": 218,
+            "line": 226,
             "test": "test_export_load_learner"
         }
     ],
@@ -255,7 +272,7 @@
         },
         {
             "file": "tests/test_basic_train.py",
-            "line": 218,
+            "line": 226,
             "test": "test_export_load_learner"
         }
     ],
@@ -269,7 +286,7 @@
     "fastai.callbacks.misc.StopAfterNBatches": [
         {
             "file": "tests/test_callbacks_misc.py",
-            "line": 19,
+            "line": 22,
             "test": "test_stop_after_n_batches"
         }
     ],
@@ -548,8 +565,47 @@
     "fastai.datasets.Config": [
         {
             "file": "tests/test_datasets.py",
-            "line": 13,
+            "line": 15,
             "test": "test_creates_config"
+        },
+        {
+            "file": "tests/test_datasets.py",
+            "line": 26,
+            "test": "test_load_config"
+        },
+        {
+            "file": "tests/test_datasets.py",
+            "line": 29,
+            "test": "test_default_config"
+        },
+        {
+            "file": "tests/test_datasets.py",
+            "line": 42,
+            "test": "test_user_config"
+        }
+    ],
+    "fastai.datasets.datapath4file": [
+        {
+            "file": "tests/test_datasets.py",
+            "line": 26,
+            "test": "test_load_config"
+        },
+        {
+            "file": "tests/test_datasets.py",
+            "line": 42,
+            "test": "test_user_config"
+        }
+    ],
+    "fastai.datasets.download_data": [
+        {
+            "file": "tests/test_datasets.py",
+            "line": 26,
+            "test": "test_load_config"
+        },
+        {
+            "file": "tests/test_datasets.py",
+            "line": 42,
+            "test": "test_user_config"
         }
     ],
     "fastai.datasets.untar_data": [
@@ -557,6 +613,28 @@
             "file": "tests/test_vision_data.py",
             "line": 165,
             "test": "test_trunc_download"
+        },
+        {
+            "file": "tests/test_datasets.py",
+            "line": 26,
+            "test": "test_load_config"
+        },
+        {
+            "file": "tests/test_datasets.py",
+            "line": 42,
+            "test": "test_user_config"
+        }
+    ],
+    "fastai.datasets.url2path": [
+        {
+            "file": "tests/test_datasets.py",
+            "line": 26,
+            "test": "test_load_config"
+        },
+        {
+            "file": "tests/test_datasets.py",
+            "line": 42,
+            "test": "test_user_config"
         }
     ],
     "fastai.gen_doc.doctest.merge_registries": [
@@ -630,7 +708,7 @@
     "fastai.layers.SelfAttention": [
         {
             "file": "tests/test_torch_core.py",
-            "line": 118,
+            "line": 193,
             "test": "test_keep_parameter"
         }
     ],
@@ -689,11 +767,46 @@
             "test": "test_exp_rmspe_num_of_ele"
         }
     ],
+    "fastai.metrics.explained_variance": [
+        {
+            "file": "tests/test_metrics.py",
+            "line": 162,
+            "test": "test_explained_variance"
+        }
+    ],
     "fastai.metrics.fbeta": [
         {
             "file": "tests/test_metrics.py",
             "line": 114,
             "test": "test_fbeta"
+        }
+    ],
+    "fastai.metrics.mean_absolute_error": [
+        {
+            "file": "tests/test_metrics.py",
+            "line": 123,
+            "test": "test_mae"
+        }
+    ],
+    "fastai.metrics.mean_squared_error": [
+        {
+            "file": "tests/test_metrics.py",
+            "line": 132,
+            "test": "test_mse"
+        }
+    ],
+    "fastai.metrics.mean_squared_logarithmic_error": [
+        {
+            "file": "tests/test_metrics.py",
+            "line": 151,
+            "test": "test_msle"
+        }
+    ],
+    "fastai.metrics.root_mean_squared_error": [
+        {
+            "file": "tests/test_metrics.py",
+            "line": 141,
+            "test": "test_rmse"
         }
     ],
     "fastai.metrics.top_k_accuracy": [
@@ -839,21 +952,21 @@
     "fastai.text.models.qrnn.QRNN": [
         {
             "file": "tests/test_text_qrnn.py",
-            "line": 102,
+            "line": 105,
             "test": "test_qrnn_bidir"
         }
     ],
     "fastai.text.models.qrnn.QRNNLayer": [
         {
             "file": "tests/test_text_qrnn.py",
-            "line": 86,
+            "line": 89,
             "test": "test_qrnn_layer"
         }
     ],
     "fastai.text.models.qrnn.forget_mult_CPU": [
         {
             "file": "tests/test_text_qrnn.py",
-            "line": 74,
+            "line": 75,
             "test": "test_forget_mult"
         }
     ],
@@ -926,7 +1039,7 @@
     "fastai.torch_core.NoneReduceOnCPU": [
         {
             "file": "tests/test_torch_core.py",
-            "line": 98,
+            "line": 173,
             "test": "test_none_reduce_on_cpu"
         }
     ],
@@ -951,6 +1064,20 @@
             "test": "test_batch_to_half"
         }
     ],
+    "fastai.torch_core.children": [
+        {
+            "file": "tests/test_torch_core.py",
+            "line": 115,
+            "test": "test_children"
+        }
+    ],
+    "fastai.torch_core.first_layer": [
+        {
+            "file": "tests/test_torch_core.py",
+            "line": 131,
+            "test": "test_first_layer"
+        }
+    ],
     "fastai.torch_core.in_channels": [
         {
             "file": "tests/test_torch_core.py",
@@ -961,6 +1088,13 @@
             "file": "tests/test_torch_core.py",
             "line": 62,
             "test": "test_in_channels_no_weights"
+        }
+    ],
+    "fastai.torch_core.last_layer": [
+        {
+            "file": "tests/test_torch_core.py",
+            "line": 138,
+            "test": "test_last_layer"
         }
     ],
     "fastai.torch_core.model2half": [
@@ -975,11 +1109,32 @@
             "test": "test_model2half_forward"
         }
     ],
+    "fastai.torch_core.model_type": [
+        {
+            "file": "tests/test_torch_core.py",
+            "line": 151,
+            "test": "test_model_type"
+        }
+    ],
     "fastai.torch_core.np2model_tensor": [
         {
             "file": "tests/test_torch_core.py",
             "line": 92,
             "test": "test_np2model_tensor"
+        }
+    ],
+    "fastai.torch_core.np_address": [
+        {
+            "file": "tests/test_torch_core.py",
+            "line": 145,
+            "test": "test_np_address"
+        }
+    ],
+    "fastai.torch_core.num_children": [
+        {
+            "file": "tests/test_torch_core.py",
+            "line": 124,
+            "test": "test_num_children"
         }
     ],
     "fastai.torch_core.range_children": [
@@ -1044,6 +1199,25 @@
             "file": "tests/test_fp16.py",
             "line": 25,
             "test": "test_to_half"
+        },
+        {
+            "file": "tests/test_torch_core.py",
+            "line": 98,
+            "test": "test_to_half"
+        }
+    ],
+    "fastai.torch_core.to_np": [
+        {
+            "file": "tests/test_torch_core.py",
+            "line": 168,
+            "test": "test_to_np"
+        }
+    ],
+    "fastai.torch_core.trange_of": [
+        {
+            "file": "tests/test_torch_core.py",
+            "line": 160,
+            "test": "test_trange_of"
         }
     ],
     "fastai.train.ClassificationInterpretation": [
@@ -1138,6 +1312,13 @@
             "file": "tests/test_utils_mem.py",
             "line": 44,
             "test": "test_gpu_with_max_free_mem"
+        }
+    ],
+    "fastai.utils.mod_display.progress_disabled_ctx": [
+        {
+            "file": "tests/test_mod_display.py",
+            "line": 16,
+            "test": "test_progress_disabled_ctx"
         }
     ],
     "fastai.vision.data.ImageDataBunch.from_csv": [
@@ -1272,6 +1453,13 @@
             "test": "test_mask_data_aug"
         }
     ],
+    "fastai.vision.image.Image.resize": [
+        {
+            "file": "tests/test_vision_image.py",
+            "line": 49,
+            "test": "test_image_resize_same_size_shortcut"
+        }
+    ],
     "fastai.vision.image.ImageBBox": [
         {
             "file": "tests/test_vision_transform.py",
@@ -1368,6 +1556,20 @@
             "file": "tests/test_vision_train.py",
             "line": 78,
             "test": "test_interp_shortcut"
+        }
+    ],
+    "fastai.vision.learner.create_body": [
+        {
+            "file": "tests/test_vision_learner.py",
+            "line": 15,
+            "test": "test_create_body"
+        }
+    ],
+    "fastai.vision.learner.create_head": [
+        {
+            "file": "tests/test_vision_learner.py",
+            "line": 38,
+            "test": "test_create_head"
         }
     ],
     "fastai.vision.models.unet.DynamicUnet": [

@@ -1,4 +1,5 @@
 import pytest,torch
+from fastai.basics import have_min_pkg_version
 from fastai.gen_doc.doctest import this_tests
 from fastai.text.models.qrnn import ForgetMultGPU, BwdForgetMultGPU, forget_mult_CPU, QRNN, QRNNLayer
 
@@ -82,7 +83,9 @@ def test_forget_mult():
         th_out = manual_forget_mult(x, f, h=h, batch_first=bf, backward=bw)
         out = forget_mult_CPU(x, f, hidden_init=h, batch_first=bf, backward=bw)
         assert torch.allclose(th_out,out)
-        
+
+# bug in pytorch=1.0.1, fixed in 1.0.2 https://github.com/pytorch/pytorch/issues/18189
+@pytest.mark.skipif(not have_min_pkg_version("torch", "1.0.2"), reason="requires torch>=1.0.2")
 def test_qrnn_layer():
     this_tests(QRNNLayer)
     qrnn_fwd = QRNNLayer(10, 20, save_prev_x=True, zoneout=0, window=2, output_gate=True)
@@ -98,7 +101,7 @@ def test_qrnn_layer():
     y_bwd,h_bwd = qrnn_bwd(x_bwd, h_bwd)
     assert torch.allclose(y_fwd, y_bwd.flip(1), rtol=1e-4, atol=1e-5)
     assert torch.allclose(h_fwd, h_bwd, rtol=1e-4, atol=1e-5)
-    
+
 def test_qrnn_bidir():
     this_tests(QRNN)
     qrnn = QRNN(10, 20, 2, bidirectional=True, batch_first=True, window=2, output_gate=False)

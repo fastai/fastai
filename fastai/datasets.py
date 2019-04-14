@@ -132,6 +132,7 @@ class Config():
     DEFAULT_CONFIG_PATH = DEFAULT_CONFIG_LOCATION + '/config.yml'
     DEFAULT_CONFIG = {
         'data_path': DEFAULT_CONFIG_LOCATION + '/data',
+        'data_archive_path': DEFAULT_CONFIG_LOCATION + '/data',
         'model_path': DEFAULT_CONFIG_LOCATION + '/models'
     }
 
@@ -149,6 +150,11 @@ class Config():
     def data_path(cls):
         "Get the path to data in the config file."
         return cls.get_path('data_path')
+
+    @classmethod
+    def data_archive_path(cls):
+        "Get the path to data archives in the config file."
+        return cls.get_path('data_archive_path')
 
     @classmethod
     def model_path(cls):
@@ -180,7 +186,7 @@ def url2name(url): return url.split('/')[-1]
 def url2path(url, data=True, ext:str='.tgz'):
     "Change `url` to a path."
     name = url2name(url)
-    return datapath4file(name, ext=ext) if data else modelpath4file(name, ext=ext)
+    return datapath4file(name, ext=ext, archive=False) if data else modelpath4file(name, ext=ext)
 def _url2tgz(url, data=True, ext:str='.tgz'):
     return datapath4file(f'{url2name(url)}{ext}', ext=ext) if data else modelpath4file(f'{url2name(url)}{ext}', ext=ext)
 
@@ -190,11 +196,12 @@ def modelpath4file(filename, ext:str='.tgz'):
     if local_path.exists() or local_path.with_suffix(ext).exists(): return local_path
     else: return Config.model_path()/filename
 
-def datapath4file(filename, ext:str='.tgz'):
+def datapath4file(filename, ext:str='.tgz', archive=True):
     "Return data path to `filename`, checking locally first then in the config file."
     local_path = URLs.LOCAL_PATH/'data'/filename
     if local_path.exists() or local_path.with_suffix(ext).exists(): return local_path
-    else: return Config.data_path()/filename
+    elif archive: return Config.data_archive_path() / filename
+    else: return Config.data_path() / filename
 
 def download_data(url:str, fname:PathOrStr=None, data:bool=True, ext:str='.tgz') -> Path:
     "Download `url` to destination `fname`."
@@ -221,8 +228,7 @@ def untar_data(url:str, fname:PathOrStr=None, dest:PathOrStr=None, data=True, fo
         if dest.exists(): shutil.rmtree(dest)
     if not dest.exists():
         fname = download_data(url, fname=fname, data=data)
-        data_dir = Config().data_path()
         if url in _checks:
-            assert _check_file(fname) == _checks[url], f"Downloaded file {fname} does not match checksum expected! Remove that file from {data_dir} and try your code again."
+            assert _check_file(fname) == _checks[url], f"Downloaded file {fname} does not match checksum expected! Remove that file from {Config().data_archive_path()} and try your code again."
         tarfile.open(fname, 'r:gz').extractall(dest.parent)
     return dest

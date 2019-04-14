@@ -55,7 +55,8 @@ fastai_types = {
     TensorImageSize:'TensorImageSize', Tensors:'Tensors', Weights:'Weights', AffineFunc:'AffineFunc',
     HookFunc:'HookFunc', LogitTensorImage:'LogitTensorImage', LossFunction:'LossFunction', MetricFunc:'MetricFunc',
     MetricFuncList:'MetricFuncList', MetricsList:'MetricsList', OptLossFunc:'OptLossFunc', OptMetrics:'OptMetrics',
-    OptSplitFunc:'OptSplitFunc', PixelFunc:'PixelFunc', LightingFunc:'LightingFunc', IntsOrStrs:'IntsOrStrs'
+    OptSplitFunc:'OptSplitFunc', PixelFunc:'PixelFunc', LightingFunc:'LightingFunc', IntsOrStrs:'IntsOrStrs',
+    PathLikeOrBinaryStream:'PathLikeOrBinaryStream'
 }
 
 bn_types = (nn.BatchNorm1d, nn.BatchNorm2d, nn.BatchNorm3d)
@@ -403,8 +404,9 @@ def add_metrics(last_metrics:Collection[Rank0Tensor], mets:Union[Rank0Tensor, Co
     last_metrics,mets = listify(last_metrics),listify(mets)
     return {'last_metrics': last_metrics + mets}
 
-def try_save(state:Dict, path:Path, fname:PathOrStr):
-    try: torch.save(state, open(path/fname, 'wb'))
+def try_save(state:Dict, path:Path=None, file:PathLikeOrBinaryStream=None):
+    target = open(path/file, 'wb') if is_pathlike(file) else file
+    try: torch.save(state, target)
     except OSError as e:
-        raise Exception(f"{e}\n Can't write {path/fname}. Pass an absolute writable pathlib obj `fname`.")
+        raise Exception(f"{e}\n Can't write {path/file}. Pass an absolute writable pathlib obj `fname`.")
 

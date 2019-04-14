@@ -25,10 +25,10 @@ def get_files(path:PathOrStr, extensions:Collection[str]=None, recurse:bool=Fals
     "Return list of files in `path` that have a suffix in `extensions`; optionally `recurse`."
     if recurse:
         res = []
-        for p,d,f in os.walk(path):
+        for i,(p,d,f) in enumerate(os.walk(path)): 
             # skip hidden dirs
-            if include is not None: d[:] = [o for o in d if o in include]
-            else:                   d[:] = [o for o in d if not o.startswith('.')]
+            if include is not None and i==0:  d[:] = [o for o in d if o in include]
+            else:                             d[:] = [o for o in d if not o.startswith('.')]
             res += _get_files(path, p, f, extensions)
         return res
     else:
@@ -192,7 +192,8 @@ class ItemList():
         return self.split_by_idxs(train_idx, valid_idx)
 
     def _get_by_folder(self, name):
-        return [i for i in range_of(self) if self.items[i].parts[self.num_parts]==name]
+        return [i for i in range_of(self) if (self.items[i].parts[self.num_parts] if isinstance(self.items[i], Path) 
+                else self.items[i].split(os.path.sep)[0]) == name ]
 
     def split_by_folder(self, train:str='train', valid:str='valid')->'ItemLists':
         "Split the data depending on the folder (`train` or `valid`) in which the filenames are."
@@ -287,7 +288,8 @@ class ItemList():
 
     def label_from_folder(self, label_cls:Callable=None, **kwargs)->'LabelList':
         "Give a label to each filename depending on its folder."
-        return self.label_from_func(func=lambda o: o.parts[-2], label_cls=label_cls, **kwargs)
+        return self.label_from_func(func=lambda o: (o.parts if isinstance(o, Path) else o.split(os.path.sep))[-2], 
+                                    label_cls=label_cls, **kwargs)
 
     def label_from_re(self, pat:str, full_path:bool=False, label_cls:Callable=None, **kwargs)->'LabelList':
         "Apply the re in `pat` to determine the label of every filename.  If `full_path`, search in the full name."
@@ -763,10 +765,12 @@ class MixedItemList(ItemList):
     def __init__(self, item_lists, path:PathOrStr=None, label_cls:Callable=None, inner_df:Any=None, 
                  x:'ItemList'=None, ignore_empty:bool=False, processor=None):
         self.item_lists = item_lists
-        default_procs = [[p(ds=il) for p in listify(il._processor)] for il in item_lists]
         if processor is None:
+            default_procs = [[p(ds=il) for p in listify(il._processor)] for il in item_lists]
             processor = MixedProcessor([ifnone(il.processor, dp) for il,dp in zip(item_lists, default_procs)])
-        super().__init__(range_of(item_lists[0]), processor=processor, path=ifnone(path, item_lists[0].path), 
+        items = range_of(item_lists[0]) if len(item_lists) >= 1 else []
+        if path is None and len(item_lists) >= 1: path = item_lists[0].path
+        super().__init__(items, processor=processor, path=path, 
                          label_cls=label_cls, inner_df=inner_df, x=x, ignore_empty=ignore_empty)
     
     def new(self, item_lists, processor:PreProcessor=None, **kwargs)->'ItemList':
