@@ -95,18 +95,32 @@ def test_np2model_tensor():
     t = np2model_tensor(a)
     assert isinstance(t,torch.FloatTensor)
 
+@pytest.mark.cuda    
+def test_to_cpu():
+    this_tests(to_cpu)
+    a=([1,2,3],[3,6,6])
+    b=([4,5,6],[4,7,7])
+    ta=torch.tensor(a).cuda()
+    tb=torch.tensor(b)
+    tacpu=to_cpu(ta)
+    tbcpu=to_cpu(tb)
+    assert ta.is_cuda
+    assert isinstance(ta, (torch.cuda.LongTensor or torch.cuda.IntTensor or torch.cuda.ShortTensor))
+    assert not tacpu.is_cuda
+    assert isinstance(tacpu, (torch.LongTensor or torch.IntTensor or torch.ShortTensor))
+    assert not tb.is_cuda
+    assert isinstance(tb, (torch.LongTensor or torch.IntTensor or torch.ShortTensor))
+    assert not tbcpu.is_cuda
+    assert isinstance(tbcpu, (torch.LongTensor or torch.IntTensor or torch.ShortTensor))
+
 def test_to_half():
     this_tests(to_half)
-    a=[1.,2.,3.]
-    b=[3.,6.,6.]
-    c=[1,2,3]
-    d=[3,6,6]
+    a=([1.,2.,3.],[3.,6.,6.])
+    b=([1,2,3],[3,6,6])
     ta=torch.tensor(a)
     tb=torch.tensor(b)
-    tc=torch.tensor(c)
-    td=torch.tensor(d) 
-    tfl=to_half([ta,tb])
-    tint=to_half([tc,td])
+    tfl=to_half(ta)
+    tint=to_half(tb)
     assert tfl[0].dtype == torch.half
     assert tfl[1].dtype == torch.half
     assert tint[0].dtype == torch.int64 or torch.int32 or torch.int16
@@ -114,16 +128,12 @@ def test_to_half():
     
 def test_to_float():
     this_tests(to_float)
-    a=[1.,2.,3.]
-    b=[3.,6.,6.]
-    c=[1,2,3]
-    d=[3,6,6]
+    a=([1.,2.,3.],[3.,6.,6.])
+    b=([1,2,3],[3,6,6])
     ta=torch.tensor(a)
     tb=torch.tensor(b)
-    tc=torch.tensor(c)
-    td=torch.tensor(d) 
-    tfl=to_float([ta,tb])
-    tint=to_float([tc,td])
+    tfl=to_float(ta)
+    tint=to_float(tb)
     assert tfl[0].dtype == torch.float32
     assert tfl[1].dtype == torch.float32
     assert tint[0].dtype == torch.int64 or torch.int32 or torch.int16
