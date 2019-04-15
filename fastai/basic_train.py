@@ -447,7 +447,8 @@ class Recorder(LearnerCallback):
         "Initialize recording status at beginning of training."
         self.pbar = pbar
         self.names = ['epoch', 'train_loss'] if self.no_val else ['epoch', 'train_loss', 'valid_loss']
-        self.names += metrics_names
+        self.metrics_names = metrics_names
+        self.names += self.metrics_names
         if hasattr(self, '_added_met_names'): self.names += self._added_met_names
         if self.add_time: self.names.append('time')
         if not self.silent: self.pbar.write(self.names, table=True)
@@ -567,6 +568,8 @@ class Recorder(LearnerCallback):
             values = [met[i] for met in self.metrics]
             values = self._split_list_val(values, skip_start, skip_end)
             ax.plot(val_iter, values)
+            ax.set_ylabel(str(self.metrics_names[i]))
+            ax.set_xlabel('Batches processed')             
         if ifnone(return_fig, defaults.return_fig): return fig
         if not IN_NOTEBOOK: plot_sixel(fig)
 
