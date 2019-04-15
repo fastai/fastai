@@ -127,11 +127,13 @@ _checks = {
 
 #TODO: This can probably be coded more shortly and nicely.
 class Config():
-    "Creates a default config file at `~/.fastai/config.yml`"
-    DEFAULT_CONFIG_PATH = '~/.fastai/config.yml'
+    "Creates a default config file 'config.yml' in $FASTAI_HOME (default `~/.fastai/`)"
+    DEFAULT_CONFIG_LOCATION = os.path.expanduser(os.getenv('FASTAI_HOME', '~/.fastai'))
+    DEFAULT_CONFIG_PATH = DEFAULT_CONFIG_LOCATION + '/config.yml'
     DEFAULT_CONFIG = {
-        'data_path': '~/.fastai/data',
-        'model_path': '~/.fastai/models'
+        'data_path': DEFAULT_CONFIG_LOCATION + '/data',
+        'data_archive_path': DEFAULT_CONFIG_LOCATION + '/data',
+        'model_path': DEFAULT_CONFIG_LOCATION + '/models'
     }
 
     @classmethod
@@ -150,6 +152,11 @@ class Config():
         return cls.get_path('data_path')
 
     @classmethod
+    def data_archive_path(cls):
+        "Get the path to data archives in the config file."
+        return cls.get_path('data_archive_path')
+
+    @classmethod
     def model_path(cls):
         "Get the path to fastai pretrained models in the config file."
         return cls.get_path('model_path')
@@ -160,7 +167,7 @@ class Config():
         fpath = _expand_path(fpath or cls.DEFAULT_CONFIG_PATH)
         if not fpath.exists() and create_missing: cls.create(fpath)
         assert fpath.exists(), f'Could not find config at: {fpath}. Please create'
-        with open(fpath, 'r') as yaml_file: return yaml.load(yaml_file)
+        with open(fpath, 'r') as yaml_file: return yaml.safe_load(yaml_file)
 
     @classmethod
     def create(cls, fpath):
@@ -174,32 +181,35 @@ class Config():
 
 def _expand_path(fpath): return Path(fpath).expanduser()
 def url2name(url): return url.split('/')[-1]
-def url2path(url, data=True):
+
+#TODO: simplify this mess
+def url2path(url, data=True, ext:str='.tgz'):
     "Change `url` to a path."
     name = url2name(url)
-    return datapath4file(name) if data else modelpath4file(name)
-def _url2tgz(url, data=True):
-    return datapath4file(f'{url2name(url)}.tgz') if data else modelpath4file(f'{url2name(url)}.tgz')
+    return datapath4file(name, ext=ext, archive=False) if data else modelpath4file(name, ext=ext)
+def _url2tgz(url, data=True, ext:str='.tgz'):
+    return datapath4file(f'{url2name(url)}{ext}', ext=ext) if data else modelpath4file(f'{url2name(url)}{ext}', ext=ext)
 
-def modelpath4file(filename):
+def modelpath4file(filename, ext:str='.tgz'):
     "Return model path to `filename`, checking locally first then in the config file."
     local_path = URLs.LOCAL_PATH/'models'/filename
-    if local_path.exists() or local_path.with_suffix('.tgz').exists(): return local_path
+    if local_path.exists() or local_path.with_suffix(ext).exists(): return local_path
     else: return Config.model_path()/filename
 
-def datapath4file(filename):
+def datapath4file(filename, ext:str='.tgz', archive=True):
     "Return data path to `filename`, checking locally first then in the config file."
     local_path = URLs.LOCAL_PATH/'data'/filename
-    if local_path.exists() or local_path.with_suffix('.tgz').exists(): return local_path
-    else: return Config.data_path()/filename
+    if local_path.exists() or local_path.with_suffix(ext).exists(): return local_path
+    elif archive: return Config.data_archive_path() / filename
+    else: return Config.data_path() / filename
 
-def download_data(url:str, fname:PathOrStr=None, data:bool=True) -> Path:
+def download_data(url:str, fname:PathOrStr=None, data:bool=True, ext:str='.tgz') -> Path:
     "Download `url` to destination `fname`."
-    fname = Path(ifnone(fname, _url2tgz(url, data)))
+    fname = Path(ifnone(fname, _url2tgz(url, data, ext=ext)))
     os.makedirs(fname.parent, exist_ok=True)
     if not fname.exists():
         print(f'Downloading {url}')
-        download_url(f'{url}.tgz', fname)
+        download_url(f'{url}{ext}', fname)
     return fname
 
 def _check_file(fname):
@@ -218,8 +228,7 @@ def untar_data(url:str, fname:PathOrStr=None, dest:PathOrStr=None, data=True, fo
         if dest.exists(): shutil.rmtree(dest)
     if not dest.exists():
         fname = download_data(url, fname=fname, data=data)
-        data_dir = Config().data_path()
         if url in _checks:
-            assert _check_file(fname) == _checks[url], f"Downloaded file {fname} does not match checksum expected! Remove that file from {data_dir} and try your code again."
+            assert _check_file(fname) == _checks[url], f"Downloaded file {fname} does not match checksum expected! Remove that file from {Config().data_archive_path()} and try your code again."
         tarfile.open(fname, 'r:gz').extractall(dest.parent)
     return dest

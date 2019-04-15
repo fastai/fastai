@@ -59,7 +59,7 @@ def type_repr(t):
     else: return link_type(t)
 
 def partial_repr(t):
-    args = (t.func,) + t.args + tuple([f'k={link_type(v)}' for k,v in t.keywords.items()])
+    args = (t.func,) + t.args + tuple([f'{k}={v}' for k,v in t.keywords.items()])
     reprs = ', '.join([link_type(o) for o in args])
     return f'<code>partial(</code>{reprs}<code>)</code>'
 
@@ -104,7 +104,7 @@ def show_doc(elt, doc_string:bool=True, full_name:str=None, arg_comments:dict=No
              ignore_warn:bool=False, markdown=True, show_tests=True):
     "Show documentation for element `elt`. Supported types: class, Callable, and enum."
     arg_comments = ifnone(arg_comments, {})
-    anchor_id = full_name or get_anchor(elt)
+    anchor_id = get_anchor(elt)
     elt = getattr(elt, '__func__', elt)
     full_name = full_name or fn_name(elt)
     if inspect.isclass(elt):
@@ -280,8 +280,6 @@ def get_fn_link(ft)->str:
     ft = getattr(ft, '__func__', ft)
     anchor = strip_fastai(get_anchor(ft))
     module_name = strip_fastai(get_module_name(ft))
-    func_name = strip_fastai(fn_name(ft))
-    if func_name.startswith('_'): return get_function_source(ft, display_text=None)
     base = '' if use_relative_links else FASTAI_DOCS
     return f'{base}/{module_name}.html#{anchor}'
 

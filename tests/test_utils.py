@@ -12,7 +12,7 @@ def test_show_install(capsys):
     #print(captured.out)
     match = re.findall(rf'fastai\s+: {fastai.__version__}', captured.out)
     assert match
-    match = re.findall(rf'torch\s+: {torch.__version__}',   captured.out)
+    match = re.findall(rf'torch\s+: {re.escape(torch.__version__)}', captured.out)
     assert match
 
 def test_check_perf(capsys):

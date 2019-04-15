@@ -152,7 +152,7 @@ train_clas.py --dir-path DIR_PATH --cuda-id CUDA_ID [--lm-id LM_ID] [--clas-id C
 - `FROM_SCRATCH`: whether to train the model from scratch (without loading a pretrained model)
 - `TRAIN_FILE_ID`: can be used to indicate different training files (e.g. to test training sizes)
 
-For fine-tuning the classifier on IMDb, we set `--cl`, the number of epochs to `50`.
+For fine-tuning the classifier on IMDb, we set `--cl`, the number of epochs to `50`. `--lr .005`, works well if `--backwards` is set to True, otherwise the default .01 is fine.
 
 ### 5. Evaluate the classifier
 

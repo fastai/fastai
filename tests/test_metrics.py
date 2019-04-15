@@ -115,6 +115,53 @@ def test_fbeta(p, t, expect):
     this_tests(fbeta)
     assert np.isclose(fbeta(p, t).item(), expect)
 
+@pytest.mark.parametrize("p, t, expect", [
+    (torch.arange(-10, 10).float(), torch.arange(-9, 11).float(), 1),
+    (torch.arange(-10, 10).float(), torch.arange(-11, 9).float(), 1),
+    (torch.arange(-10, 10).float(), torch.arange(-10, 10).float(), 0)
+])
+def test_mae(p, t, expect):
+    this_tests(mean_absolute_error)
+    assert np.isclose(mean_absolute_error(p, t), expect)
+
+@pytest.mark.parametrize("p, t, expect", [
+    (torch.arange(-10, 10).float(), torch.arange(-8, 12).float(), 4),
+    (torch.arange(-10, 10).float(), torch.arange(-12, 8).float(), 4),
+    (torch.arange(-10, 10).float(), torch.arange(-10, 10).float(), 0)
+])
+def test_mse(p, t, expect):
+    this_tests(mean_squared_error)
+    assert np.isclose(mean_squared_error(p, t), expect)
+
+@pytest.mark.parametrize("p, t, expect", [
+    (torch.arange(-10, 10).float(), torch.arange(-8, 12).float(), 2),
+    (torch.arange(-10, 10).float(), torch.arange(-12, 8).float(), 2),
+    (torch.arange(-10, 10).float(), torch.arange(-10, 10).float(), 0)
+])
+def test_rmse(p, t, expect):
+    this_tests(root_mean_squared_error)
+    assert np.isclose(root_mean_squared_error(p, t), expect)
+
+@pytest.mark.parametrize("p, t, expect", [
+    (torch.exp(torch.arange(-10, 10).float())-1,
+     torch.exp(torch.arange(-8,  12).float())-1, 4),
+    (torch.exp(torch.arange(-10, 10).float())-1,
+     torch.exp(torch.arange(-12,  8).float())-1, 4),
+])
+def test_msle(p, t, expect):
+    this_tests(mean_squared_logarithmic_error)
+    assert np.isclose(mean_squared_logarithmic_error(p, t), expect, rtol=1.e-4)
+
+@pytest.mark.parametrize("p, t, expect", [
+    (torch.arange(-5, 5).float(), torch.arange(-10,  0).float(), 1.),
+    (torch.zeros(10).float(), torch.arange(-5, 5).float(), 0.),
+    (torch.arange(-5, 5).float(), torch.zeros(10).float(), -float("inf")),
+    (p1/2., p1, 0.75),
+    (p1, t2, -0.5),
+])
+def test_explained_variance(p, t, expect):
+    this_tests(explained_variance)
+    assert np.isclose(explained_variance(p, t), expect)
 
 ### metric as a custom class
 dummy_base_val = 9876

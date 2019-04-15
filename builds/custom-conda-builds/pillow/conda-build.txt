@@ -8,8 +8,8 @@ https://github.com/conda-forge/pillow-feedstock
 
 w/ custom-built `libjpeg-turbo` + libtiff conda packages (via builds/custom-conda-builds/libjpeg-turbo and builds/custom-conda-builds/libtiff):
 
-* python 3.6 + pillow-dev (5.4.0.dev git HEAD)
-* python 3.7 + pillow-dev (5.4.0.dev git HEAD)
+* python 3.6 + pillow 5.4.1
+* python 3.7 + pillow 5.4.1
 
 w/ `-c conda-forge libjpeg-turbo` (bad idea though because it taps into a whole pile of packages from `conda-forge`
 
@@ -33,7 +33,8 @@ cd builds/custom-conda-builds/pillow # this dir
 git clone https://github.com/python-pillow/Pillow Pillow
 cd Pillow
 # optionally switch to a desired release tag, otherwise you're on the bleeding edge
-# git checkout tags/5.4.0
+# git fetch --all
+# git checkout tags/5.4.1
 cp -r ../recipe .
 
 

@@ -42,7 +42,6 @@ def test_logger():
     with CaptureStdout() as cs: learn.fit_one_cycle(3)
     csv_df = learn.csv_logger.read_logged_file()
     stdout_df = convert_into_dataframe(cs.out)
-    csv_df.drop(columns=['time'], axis=1, inplace=True)
     pd.testing.assert_frame_equal(csv_df, stdout_df, check_exact=False, check_less_precise=2)
     recorder_df = create_metrics_dataframe(learn)
     # XXX: there is a bug in pandas:

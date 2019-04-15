@@ -60,11 +60,13 @@ class RNNLearner(Learner):
         if hasattr(encoder, 'module'): encoder = encoder.module
         torch.save(encoder.state_dict(), self.path/self.model_dir/f'{name}.pth')
 
-    def load_encoder(self, name:str):
+    def load_encoder(self, name:str, device:torch.device=None):
         "Load the encoder `name` from the model directory."
         encoder = get_model(self.model)[0]
+        if device is None: device = self.data.device
         if hasattr(encoder, 'module'): encoder = encoder.module
         encoder.load_state_dict(torch.load(self.path/self.model_dir/f'{name}.pth'))
+        encoder.load_state_dict(torch.load(self.path/self.model_dir/f'{name}.pth', map_location=device))
         self.freeze()
 
     def load_pretrained(self, wgts_fname:str, itos_fname:str, strict:bool=True):
@@ -158,7 +160,7 @@ class LanguageLearner(RNNLearner):
                 xb = nodes[:,-1][:,None]
         if temperature != 1.: scores.div_(temperature)
         node_idx = torch.multinomial(torch.exp(-scores), 1).item()
-        return sep.join(decoder(self.data.vocab.textify([i.item() for i in nodes[node_idx][1:] ], sep=None)))
+        return text + sep + sep.join(decoder(self.data.vocab.textify([i.item() for i in nodes[node_idx][1:] ], sep=None)))
 
     def show_results(self, ds_type=DatasetType.Valid, rows:int=5, max_len:int=20):
         from IPython.display import display, HTML
@@ -174,8 +176,8 @@ class LanguageLearner(RNNLearner):
         items,names = [],['text', 'target', 'pred']
         for i, (x,y,z) in enumerate(zip(xs,ys,zs)):
             txt_x = ' '.join(x.text.split(' ')[:max_len])
-            txt_y = ' '.join(y.text.split(' ')[max_len:2*max_len])
-            txt_z = ' '.join(z.text.split(' ')[max_len:2*max_len])
+            txt_y = ' '.join(y.text.split(' ')[max_len-1:2*max_len-1])
+            txt_z = ' '.join(z.text.split(' ')[max_len-1:2*max_len-1])
             items.append([txt_x, txt_y, txt_z])
         items = np.array(items)
         df = pd.DataFrame({n:items[:,i] for i,n in enumerate(names)}, columns=names)
@@ -222,8 +224,10 @@ class PoolingLinearClassifier(nn.Module):
     def __init__(self, layers:Collection[int], drops:Collection[float]):
         super().__init__()
         mod_layers = []
+        if len(drops) != len(layers)-1:
+            raise ValueError("Number of layers and dropout values do not match.")
         activs = [nn.ReLU(inplace=True)] * (len(layers) - 2) + [None]
-        for n_in,n_out,p,actn in zip(layers[:-1],layers[1:], drops, activs):
+        for n_in, n_out, p, actn in zip(layers[:-1], layers[1:], drops, activs):
             mod_layers += bn_drop_lin(n_in, n_out, p=p, actn=actn)
         self.layers = nn.Sequential(*mod_layers)
 
@@ -231,7 +235,7 @@ class PoolingLinearClassifier(nn.Module):
         raw_outputs,outputs,mask = input
         output = outputs[-1]
         avg_pool = output.masked_fill(mask[:,:,None], 0).mean(dim=1)
-        avg_pool *= output.size(1) / (output.size(1)-mask.float().sum(dim=1))[:,None]
+        avg_pool *= output.size(1) / (output.size(1)-mask.type(avg_pool.dtype).sum(dim=1))[:,None]
         max_pool = output.masked_fill(mask[:,:,None], -float('inf')).max(dim=1)[0]
         x = torch.cat([output[:,-1], max_pool, avg_pool], 1)
         x = self.layers(x)
@@ -271,7 +275,7 @@ def get_text_classifier(arch:Callable, vocab_sz:int, n_class:int, bptt:int=70, m
     for k in config.keys(): 
         if k.endswith('_p'): config[k] *= drop_mult
     if lin_ftrs is None: lin_ftrs = [50]
-    if ps is None:  ps = [0.1]
+    if ps is None:  ps = [0.1]*len(lin_ftrs)
     layers = [config[meta['hid_name']] * 3] + lin_ftrs + [n_class]
     ps = [config.pop('output_p')] + ps
     init = config.pop('init') if 'init' in config else None

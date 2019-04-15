@@ -14,7 +14,7 @@ class PositionalEncoding(nn.Module):
         super().__init__()
         self.register_buffer('freq', 1 / (10000 ** (torch.arange(0., d, 2.)/d)))
     
-    def forward(self, pos:Tensor, bs:int=None):
+    def forward(self, pos:Tensor):
         inp = torch.ger(pos, self.freq)
         enc = torch.cat([inp.sin(), inp.cos()], dim=-1)
         return enc

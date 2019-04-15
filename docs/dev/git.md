@@ -12,6 +12,7 @@ Chances are that you may need to know some git when using fastai - for example i
 While this guide is mostly suitable for creating PRs for any github project, it includes several steps specific to the `fastai` project repositories, which currently are:
 
 * [https://github.com/fastai/fastai](https://github.com/fastai/fastai)
+* [https://github.com/fastai/fastai_docs](https://github.com/fastai/fastai_docs)
 * [https://github.com/fastai/course-v3](https://github.com/fastai/course-v3)
 * [https://github.com/fastai/fastprogress](https://github.com/fastai/fastprogress)
 
@@ -19,8 +20,7 @@ If you already know how to make PRs, you only need to read: the "Step 3" and "St
 
 The following instructions use `USERNAME` as a github username placeholder. The easiest way to follow this guide is to copy-n-paste the whole section into a file, replace `USERNAME` with your real username and then follow the steps.
 
-The guide is written for those who want to contribute to the `fastai` repository.
-If you'd like to contribute to other `fastai`-project repositories, just replace `fastai` with that other repository name in the instructions below.
+All the examples in this guide are written for working with the [fastai repository](https://github.com/fastai/fastai). If you'd like to contribute to other `fastai`-project repositories, just replace `fastai` with that other repository name in the instructions below.
 
 For the purpose of these examples, we will clone into a folder `fastai-fork`, to differentiate from `fastai` which you most likely already checked out to install it.
 
@@ -36,10 +36,10 @@ Below you will find detailed steps towards creating a PR.
 
 ### Helper Program
 
-There is a smart [program](https://github.com/fastai/fastai/blob/master/tools/fastai-make-pr-branch) that can do all the heavy lifting of the first 2 steps for you. Then you just need to do your work, commit changes and submit PR. To run it:
+There is a smart [program](https://github.com/fastai/git-tools/blob/master/fastai-make-pr-branch) that can do all the heavy lifting of the first 2 steps for you. Then you just need to do your work, commit changes and submit PR. To run it:
 
 ```
-curl -O https://raw.githubusercontent.com/fastai/fastai/master/tools/fastai-make-pr-branch
+curl -O https://raw.githubusercontent.com/fastai/git-tools/master/fastai-make-pr-branch
 chmod a+x fastai-make-pr-branch
 ./fastai-make-pr-branch https your-github-username fastai new-feature
 ```
@@ -53,7 +53,7 @@ While this is new and experimental, you probably want to place that script somew
 
 And now we also have a python version of the same:
 ```
-curl -O https://raw.githubusercontent.com/fastai/fastai/master/tools/fastai-make-pr-branch-py
+curl -O https://raw.githubusercontent.com/fastai/git-tools/master/fastai-make-pr-branch-py
 chmod a+x fastai-make-pr-branch-py
 ./fastai-make-pr-branch-py https your-github-username fastai new-feature
 ```
@@ -316,13 +316,38 @@ You can go to Azure CI following the failing link and check what has failed. Unl
 
 ### How to Keep Your Feature Branch Up-to-date
 
-If you synced the `master` branch with the original repository and you have feature branches that you're still working on, now you want to update those. For example to update your previously existing branch `my-cool-feature`:
+Normally you don't need to worry about updating your feature branch to synchronize with the fastai code base (upstream master). The only time you must perform the update is when the same code you have been working on has undergone changes in the master. So when you submit a PR, github will tell you that there is a merge conflict.
+
+You could update your feature branch directly, but it's best to update the master branch of your fork, first.
+
+* Step 1: sync your forked `master` branch:
 
    ```
+   cd my-cool-feature # your fastai fork clone directory
+   git fetch upstream
    git checkout master
-   git pull
-   git checkout my-cool-feature
+   git merge --no-edit upstream/master
+   git push --set-upstream origin master
    ```
+
+* Step 2: update your feature branch `my-cool-feature`:
+
+   ```
+   git checkout my-cool-feature
+   git merge origin/master
+   ```
+
+* Step 3:  resolve any conflicts resulting from the merge (using your editor or a special merge tool), followed by `git add` to the files which had conflict.
+
+* Step 4: push to github the updates to your branch:
+
+   ```
+   git push
+   ```
+
+   If your PR is already open, github will automatically update its status showing the new commits and the conflict shouldn't be there any more if you followed the steps above.
+
+
 
 ### How To Reset Your Forked Master Branch
 

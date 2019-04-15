@@ -233,3 +233,12 @@ If you'd like to get a sense of how much memory each stage uses (bypassing pytor
 **Real memory usage**
 
 * pytorch caches memory through its memory allocator, so you can't use tools like `nvidia-smi` to see how much real memory is available. So you either need to use pytorch's memory management functions to get that information or if you want to rely on `nvidia-smi` you have to flush the cache. Refer to this [document](https://docs.fast.ai/dev/gpu.html#cached-memory) for details.
+
+
+## TODO/Help Wanted
+
+This tutorial is a work in progress, some areas partially covered, some not at all. So if you have the know how or see something is missing please submit a PR.
+
+Here is a wish list:
+
+* [`torch.utils.checkpoint`](https://pytorch.org/docs/stable/checkpoint.html) can be used to use less GPU RAM by re-computing gradients. Here is a good in-depth [article](https://medium.com/tensorflow/fitting-larger-networks-into-memory-583e3c758ff9) explaining this feature in tensorflow, and [another one](https://medium.com/huggingface/training-larger-batches-practical-tips-on-1-gpu-multi-gpu-distributed-setups-ec88c3e51255) that talks about the theory. Here is the [notebook](https://github.com/prigoyal/pytorch_memonger/blob/master/tutorial/Checkpointing_for_PyTorch_models.ipynb) from the person who contributed this feature to pytorch (still uses pre pytorch-0.4 syntax). We need pytorch/fastai examples. Contributions are welcome.
