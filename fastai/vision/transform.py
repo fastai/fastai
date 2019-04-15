@@ -4,7 +4,7 @@ from .image import *
 from .image import _affine_mult
 
 __all__ = ['brightness', 'contrast', 'crop', 'crop_pad', 'cutout', 'dihedral', 'dihedral_affine', 'flip_affine', 'flip_lr',
-           'get_transforms', 'jitter', 'pad', 'perspective_warp', 'rand_pad', 'rand_crop', 'rand_zoom', 'rotate', 'skew', 'squish',
+           'get_transforms', 'jitter', 'pad', 'perspective_warp', 'rand_pad', 'rand_crop', 'rand_zoom', 'rgb_randomize', 'rotate', 'skew', 'squish',
            'rand_resize_crop', 'symmetric_warp', 'tilt', 'zoom', 'zoom_crop']
 
 _pad_mode_convert = {'reflection':'reflect', 'zeros':'constant', 'border':'replicate'}
@@ -134,6 +134,14 @@ def _cutout(x, n_holes:uniform_int=1, length:uniform_int=40):
 
 cutout = TfmPixel(_cutout, order=20)
 
+def _rgb_randomize(x, channel:int=None, thresh:float=0.3):
+    "Randomize one of the channels of the input image"
+    if channel is None: channel = np.random.randint(0, x.shape[0] - 1)
+    x[channel] = torch.rand(x.shape[1:]) * np.random.uniform(0, thresh)
+    return x
+
+rgb_randomize = TfmPixel(_rgb_randomize)
+
 def _minus_epsilon(row_pct:float, col_pct:float, eps:float=1e-7):
     if row_pct==1.: row_pct -= 1e-7
     if col_pct==1.: col_pct -= 1e-7
@@ -221,6 +229,9 @@ def zoom_crop(scale:float, do_rand:bool=False, p:float=1.0):
     crop_fn = rand_crop if do_rand else crop_pad
     return [zoom_fn(scale=scale, p=p), crop_fn()]
 
+# XXX: replace this with direct usage of `solve` once fastai requires pytorch 1.1+
+_solve_func = getattr(torch, 'solve', torch.gesv)
+
 def _find_coeffs(orig_pts:Points, targ_pts:Points)->Tensor:
     "Find 8 coeff mentioned [here](https://web.archive.org/web/20150222120106/xenia.media.mit.edu/~cwren/interpolator/)."
     matrix = []
@@ -232,7 +243,7 @@ def _find_coeffs(orig_pts:Points, targ_pts:Points)->Tensor:
     A = FloatTensor(matrix)
     B = FloatTensor(orig_pts).view(8, 1)
     #The 8 scalars we seek are solution of AX = B
-    return torch.gesv(B,A)[0][:,0]
+    return _solve_func(B,A)[0][:,0]
 
 def _apply_perspective(coords:FlowField, coeffs:Points)->FlowField:
     "Transform `coords` with `coeffs`."
@@ -334,6 +345,5 @@ zoom_squish = TfmCoord(_zoom_squish)
 
 def rand_resize_crop(size:int, max_scale:float=2., ratios:Tuple[float,float]=(0.75,1.33)):
     "Randomly resize and crop the image to a ratio in `ratios` after a zoom of `max_scale`."
-    return [zoom_squish(scale=(1.,max_scale,8), squish=(*ratios,8), invert=(0.5,8), row_pct=(0.,1.), col_pct=(0.,1.)), 
+    return [zoom_squish(scale=(1.,max_scale,8), squish=(*ratios,8), invert=(0.5,8), row_pct=(0.,1.), col_pct=(0.,1.)),
             crop(size=size)]
-

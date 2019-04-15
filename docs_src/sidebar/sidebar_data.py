@@ -84,13 +84,15 @@ sidebar_d = {
         'Helpers': '/utils.collect_env',
         'Memory Management': '/utils.mem',
         'ipython helpers': '/utils.ipython',
+        'Dislay utils': '/utils.mod_display',
     },
     'Tutorials': {
         'Overview': '/tutorials',
         'Look at data': '/tutorial.data',
         'Inference Learner': '/tutorial.inference',
         'Custom ItemList': '/tutorial.itemlist',
-        'DL on a Shoestring': '/tutorial.resources'
+        'DL on a Shoestring': '/tutorial.resources',
+        'Distributed training': '/distributed',
     },
     'Doc authoring': {
         'Instructions': '/gen_doc_main',

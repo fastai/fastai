@@ -28,6 +28,7 @@ OptRange = Optional[Tuple[float,float]]
 OptStrTuple = Optional[Tuple[str,str]]
 OptStats = Optional[Tuple[np.ndarray, np.ndarray]]
 PathOrStr = Union[Path,str]
+PathLikeOrBinaryStream = Union[PathOrStr, BufferedWriter, BytesIO]
 PBar = Union[MasterBar, ProgressBar]
 Point=Tuple[float,float]
 Points=Collection[Point]
@@ -37,7 +38,6 @@ StartOptEnd=Union[float,Tuple[float,float]]
 StrList = Collection[str]
 Tokens = Collection[Collection[str]]
 OptStrList = Optional[StrList]
-
 np.set_printoptions(precision=6, threshold=50, edgeitems=4, linewidth=120)
 
 def num_cpus()->int:
@@ -46,11 +46,12 @@ def num_cpus()->int:
     except AttributeError: return os.cpu_count()
 
 _default_cpus = min(16, num_cpus())
-defaults = SimpleNamespace(cpus=_default_cpus, cmap='viridis', return_fig=False)
+defaults = SimpleNamespace(cpus=_default_cpus, cmap='viridis', return_fig=False, silent=False)
 
 def is_listy(x:Any)->bool: return isinstance(x, (tuple,list))
 def is_tuple(x:Any)->bool: return isinstance(x, tuple)
 def is_dict(x:Any)->bool: return isinstance(x, dict)
+def is_pathlike(x:Any)->bool: return isinstance(x, (str,Path))
 def noop(x): return x
 
 def chunks(l:Collection, n:int)->Iterable:
@@ -319,11 +320,13 @@ def text2html_table(items:Collection[Collection[str]])->str:
 def parallel(func, arr:Collection, max_workers:int=None):
     "Call `func` on every element of `arr` in parallel using `max_workers`."
     max_workers = ifnone(max_workers, defaults.cpus)
-    if max_workers<2: _ = [func(o,i) for i,o in enumerate(arr)]
+    if max_workers<2: results = [func(o,i) for i,o in enumerate(arr)]
     else:
         with ProcessPoolExecutor(max_workers=max_workers) as ex:
             futures = [ex.submit(func,o,i) for i,o in enumerate(arr)]
-            for f in progress_bar(concurrent.futures.as_completed(futures), total=len(arr)): pass
+            results = []
+            for f in progress_bar(concurrent.futures.as_completed(futures), total=len(arr)): results.append(f.result())
+    if any([o is not None for o in results]): return results
 
 def subplots(rows:int, cols:int, imgsize:int=4, figsize:Optional[Tuple[int,int]]=None, title=None, **kwargs):
     "Like `plt.subplots` but with consistent axs shape, `kwargs` passed to `fig.suptitle` with `title`"

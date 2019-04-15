@@ -9,6 +9,7 @@ __all__ = ['AverageMetric', 'Callback', 'CallbackHandler', 'OptimWrapper', 'Smoo
 class OptimWrapper():
     "Basic wrapper around `opt` to simplify hyper-parameters changes."
     def __init__(self, opt:optim.Optimizer, wd:Floats=0., true_wd:bool=False, bn_wd:bool=True):
+        assert not isinstance(opt, OptimWrapper)
         self.opt,self.true_wd,self.bn_wd = opt,true_wd,bn_wd
         self.opt_keys = list(self.opt.param_groups[0].keys())
         self.opt_keys.remove('params')
@@ -217,7 +218,7 @@ class SmoothenValue():
 
 CallbackList = Collection[Callback]
 
-def _get_init_state(): return {'epoch':0, 'iteration':0, 'num_batch':0}
+def _get_init_state(): return {'epoch':0, 'iteration':0, 'num_batch':0, 'skip_validate': False}
 
 @dataclass
 class CallbackHandler():
@@ -320,6 +321,9 @@ class CallbackHandler():
     def on_train_end(self, exception:Union[bool,Exception])->None:
         "Handle end of training, `exception` is an `Exception` or False if no exceptions during training."
         self('train_end', exception=exception)
+        
+    @property
+    def skip_validate(self): return self.state_dict['skip_validate']
 
 class AverageMetric(Callback):
     "Wrap a `func` in a callback for metrics computation."

@@ -64,7 +64,7 @@ def test_in_channels_no_weights():
     with pytest.raises(Exception) as e_info:
         in_channels(nn.Sequential())
     assert e_info.value.args[0] == 'No weight layer'
-
+    
 def test_range_children():
     this_tests(range_children)
     m = simple_cnn(b)
@@ -94,6 +94,81 @@ def test_np2model_tensor():
     a = np.ones([2,2])
     t = np2model_tensor(a)
     assert isinstance(t,torch.FloatTensor)
+
+def test_to_half():
+    this_tests(to_half)
+    a=[1.,2.,3.]
+    b=[3.,6.,6.]
+    c=[1,2,3]
+    d=[3,6,6]
+    ta=torch.tensor(a)
+    tb=torch.tensor(b)
+    tc=torch.tensor(c)
+    td=torch.tensor(d) 
+    hfl=to_half([ta,tb])
+    hint=to_half([tc,td])
+    assert hfl[0].dtype == torch.float16
+    assert hfl[1].dtype == torch.float16
+    assert hint[0].dtype == torch.int64 or torch.int32 or torch.int16
+    assert hint[1].dtype == torch.int64 or torch.int32 or torch.int16    
+    
+def test_children():
+    this_tests(children)
+    m=nn.Sequential(nn.Linear(2,2), nn.ReLU())
+    ch=children(m)
+    assert len(ch) == 2
+    assert isinstance(ch, list)
+    assert isinstance(ch[0], torch.nn.modules.linear.Linear)
+    assert isinstance(ch[1], torch.nn.modules.activation.ReLU)
+
+def test_num_children():
+    this_tests(num_children)
+    m=nn.Sequential(nn.Linear(2,2), nn.ReLU())
+    n=num_children(m)
+    assert isinstance(n, int)
+    assert n == 2
+    
+def test_first_layer():
+    this_tests(first_layer)
+    m=nn.Sequential(nn.Linear(2,2), nn.ReLU())
+    fl=first_layer(m)
+    assert isinstance(fl, nn.Module)
+    assert isinstance(fl, torch.nn.modules.linear.Linear)
+    
+def test_last_layer():
+    this_tests(last_layer)
+    m=nn.Sequential(nn.Linear(2,2), nn.ReLU())
+    ll=last_layer(m)
+    assert isinstance(ll, nn.Module)
+    assert isinstance(ll, torch.nn.modules.activation.ReLU)
+    
+def test_np_address(): 
+    this_tests(np_address)
+    a=np.ndarray(shape=(2,2))
+    add=np_address(a)
+    assert isinstance(add, int)
+
+def test_model_type(): 
+    this_tests(model_type) 
+    a=np.array([1.,2.,3.]).dtype 
+    b=np.array([1,2,3]).dtype 
+    c=np.array(["1","2","3"]).dtype 
+    assert model_type(a) == torch.float32 
+    assert model_type(b) == torch.int64 
+    assert model_type(c) == None   
+    
+def test_trange_of():
+    this_tests(trange_of)
+    t = trange_of(a)
+    assert len(t) == len(a)
+    assert t[0] == 0
+    assert t[1] == 1
+    assert t[2] == 2
+    
+def test_to_np():
+    this_tests(to_np)
+    a = to_np(exp)
+    assert isinstance(a,np.ndarray)
 
 def test_none_reduce_on_cpu():
     this_tests(NoneReduceOnCPU)

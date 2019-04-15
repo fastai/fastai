@@ -16,6 +16,7 @@ Note: windows users, not using bash emulation, will need to invoke the command a
 
     python tools\run-after-git-clone
 
+This applies to the following `fastai` github user repos: `fastai`, `fastai_docs`, `course-v3`.
 
 ### after-git-clone #1: a mandatory notebook strip out
 
@@ -81,12 +82,15 @@ Unfortunately, we can't enforce this, because github doesn't allow server-side h
 
 So it's your responsibility to watch the status of your commits at the commits page:
 
-* [fastai](https://github.com/fastai/fastai/commits/master)
+* [fastai](https://github.com/fastai/fastai/commits)
+* [fastai_docs](https://github.com/fastai/fastai_docs/commits)
 * [course-v3](https://github.com/fastai/course-v3/commits)
 
 Alternatively, you can watch CI builds for the project you committed to:
 
 * [fastai @ azure CI](https://dev.azure.com/fastdotai/fastai/_build?definitionId=7)
+* [fastai_docs @ azure CI](https://dev.azure.com/fastdotai/fastai/_build?definitionId=11)
+* [course-v3 @ azure CI](https://dev.azure.com/fastdotai/fastai/_build?definitionId=10)
 
 It's very important that you do that on a consistent basis, because when you make this mistake you affect everybody who works on the same project. You basically make it impossible for other developers to `git pull` without some workarounds.
 
@@ -129,8 +133,8 @@ Inside the `course-v3` repo, it'd be the same, but since the notebooks are in a 
 In the `fastai_docs` repo, we have two different types of notebooks: "code" and "docs" notebooks, therefore in step 2 we strip them out differently:
 
    ```
-   tools/fastai-nbstripout    dev_nb/*ipynb dev_nb/experiments/*ipynb
-   tools/fastai-nbstripout -d docs/*ipynb docs/*/*ipynb
+   tools/fastai-nbstripout dev_nb/*ipynb dev_nb/experiments/*ipynb
+   tools/fastai-nbstripout -d dev_course/*/*ipynb dev_swift/*ipynb
    ```
 
 Here are the quick copy-n-paste recipes (that assume you don't have anything else modified):
@@ -149,11 +153,14 @@ Here are the quick copy-n-paste recipes (that assume you don't have anything els
    The `fastai_docs` repo:
    ```
    tools/trust-origin-git-config -d
-   tools/fastai-nbstripout -d dev_nb/*ipynb dev_nb/experiments/*ipynb dev_course/*/*ipynb
+   tools/fastai-nbstripout dev_nb/*ipynb dev_nb/experiments/*ipynb
+   tools/fastai-nbstripout -d dev_course/*/*ipynb dev_swift/*ipynb
    git commit dev_nb dev_course
    git push
    tools/trust-origin-git-config -e
    ```
+   or just:
+   `make strip`
 
    The `course-v3` repo:
    ```
@@ -175,6 +182,16 @@ Here are the quick copy-n-paste recipes (that assume you don't have anything els
    python tools\trust-origin-git-config -e
    ```
 
+   The `fastai_docs` repo:
+   ```
+   python tools\trust-origin-git-config -d
+   python tools\fastai-nbstripout dev_nb\*ipynb dev_nb\experiments\*ipynb
+   python tools\fastai-nbstripout -d dev_course\*\*ipynb dev_swift\*ipynb
+   git commit dev_nb dev_course
+   git push
+   python tools\trust-origin-git-config -e
+   ```
+
    The `course-v3` repo:
 
    ```
@@ -188,7 +205,7 @@ Here are the quick copy-n-paste recipes (that assume you don't have anything els
 
 ## Development Editable Install
 
-For deploying the `fastai` module's files, while being able to edit them, make sure to uninstall any previously installed `fastai`:
+For deploying the `fastai` repo's files, while being able to edit them, make sure to uninstall any previously installed `fastai`:
 
    ```
    pip   uninstall fastai
@@ -208,9 +225,9 @@ It's almost the same as:
    pip install -e .
    ```
 
-but adding `[dev]` tells pip to install optional packages in the `dev` group of the `dev_requirements` dictionary variable in `fastai/setup.py`. These extra dependencies are needed only by developers and contributors.
+but adding `[dev]` tells `pip` to install optional packages in the `dev` group of the `dev_requirements` dictionary variable in `fastai/setup.py`. These extra dependencies are needed only by developers and contributors.
 
-Best not to use `python setup.py develop` method [doc](https://setuptools.readthedocs.io/en/latest/setuptools.html#develop-deploy-the-project-source-in-development-mode).
+It's best not to use `python setup.py develop` method [doc](https://setuptools.readthedocs.io/en/latest/setuptools.html#develop-deploy-the-project-source-in-development-mode).
 
 When you'd like to sync your codebase with the `master`, simply go back into the cloned `fastai` directory and update it:
 

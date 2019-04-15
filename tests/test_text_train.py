@@ -57,7 +57,7 @@ def test_val_loss(learn):
     this_tests(learn.validate)
     assert learn.validate()[1] > 0.3
 
-@pytest.mark.skip(reason="fix me: broken on CPU")
+@pytest.mark.slow
 def test_qrnn_works_with_no_split():
     this_tests(language_model_learner)
     gc.collect()
@@ -69,7 +69,7 @@ def test_qrnn_works_with_no_split():
     learn.fit_one_cycle(2, 0.1)
     assert learn.validate()[1] > 0.3
 
-@pytest.mark.skip(reason="fix me: broken on CPU")
+@pytest.mark.slow
 def test_qrnn_works_if_split_fn_provided():
     this_tests(language_model_learner)
     gc.collect()

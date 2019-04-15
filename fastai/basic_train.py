@@ -14,7 +14,8 @@ __all__ = ['Learner', 'LearnerCallback', 'Recorder', 'RecordOnCPU', 'fit', 'loss
 
 defaults.lr = slice(3e-3)
 defaults.wd = 1e-2
-defaults.extra_callbacks = None
+defaults.extra_callbacks    = None
+defaults.extra_callback_fns = None
 
 def loss_batch(model:nn.Module, xb:Tensor, yb:Tensor, loss_func:OptLossFunc=None, opt:OptOptimizer=None,
                cb_handler:Optional[CallbackHandler]=None)->Tuple[Union[Tensor,int,float,str]]:
@@ -41,7 +42,7 @@ def get_preds(model:nn.Module, dl:DataLoader, pbar:Optional[PBar]=None, cb_handl
     "Tuple of predictions and targets, and optional losses (if `loss_func`) using `dl`, max batches `n_batch`."
     res = [torch.cat(o).cpu() for o in
            zip(*validate(model, dl, cb_handler=cb_handler, pbar=pbar, average=False, n_batch=n_batch))]
-    if loss_func is not None: 
+    if loss_func is not None:
         with NoneReduceOnCPU(loss_func) as lf: res.append(lf(res[0], res[1]))
     if activ is not None: res[0] = activ(res[0])
     return res
@@ -84,7 +85,7 @@ class BasicLearner():
 def fit(epochs:int, learn:BasicLearner, callbacks:Optional[CallbackList]=None, metrics:OptMetrics=None)->None:
     "Fit the `model` on `data` and learn using `loss_func` and `opt`."
     assert len(learn.data.train_dl) != 0, f"""Your training dataloader is empty, can't train a model.
-        Use a smaller batch size (batch size={data.train_dl.batch_size} for {len(data.train_dl.dataset)} elements)."""
+        Use a smaller batch size (batch size={learn.data.train_dl.batch_size} for {len(learn.data.train_dl.dataset)} elements)."""
     cb_handler = CallbackHandler(callbacks, metrics)
     pbar = master_bar(range(epochs))
     cb_handler.on_train_begin(epochs, pbar=pbar, metrics=metrics)
@@ -100,7 +101,7 @@ def fit(epochs:int, learn:BasicLearner, callbacks:Optional[CallbackList]=None, m
                 loss = loss_batch(learn.model, xb, yb, learn.loss_func, learn.opt, cb_handler)
                 if cb_handler.on_batch_end(loss): break
 
-            if not learn.data.empty_val:
+            if not cb_handler.skip_validate and not learn.data.empty_val:
                 val_loss = validate(learn.model, learn.data.valid_dl, loss_func=learn.loss_func,
                                        cb_handler=cb_handler, pbar=pbar)
             else: val_loss=None
@@ -157,6 +158,7 @@ class Learner():
     callbacks:Collection[Callback]=field(default_factory=list)
     layer_groups:Collection[nn.Module]=None
     add_time:bool=True
+    silent:bool=None
     def __post_init__(self)->None:
         "Setup path,metrics, callbacks and ensure model directory exists."
         self.path = Path(ifnone(self.path, self.data.path))
@@ -166,10 +168,11 @@ class Learner():
         self.metrics=listify(self.metrics)
         if not self.layer_groups: self.layer_groups = [nn.Sequential(*flatten_model(self.model))]
         self.callbacks = listify(self.callbacks)
-        self.callback_fns = [partial(Recorder, add_time=self.add_time)] + listify(self.callback_fns)
+        if self.silent is None: self.silent = defaults.silent
+        self.callback_fns = [partial(Recorder, add_time=self.add_time, silent=self.silent)] + listify(self.callback_fns)
 
     def init(self, init): apply_init(self.model, init)
-        
+
     def _test_writeable_path(self):
         path = self.path/self.model_dir
         try: tmp_file = get_tmp_file(path)
@@ -191,7 +194,7 @@ class Learner():
         if wd is None: wd = self.wd
         if not getattr(self, 'opt', False): self.create_opt(lr, wd)
         else: self.opt.lr,self.opt.wd = lr,wd
-        callbacks = [cb(self) for cb in self.callback_fns] + listify(callbacks)
+        callbacks = [cb(self) for cb in self.callback_fns + listify(defaults.extra_callback_fns)] + listify(callbacks)
         if defaults.extra_callbacks is not None: callbacks += defaults.extra_callbacks
         fit(epochs, self, metrics=self.metrics, callbacks=self.callbacks+callbacks)
 
@@ -224,8 +227,8 @@ class Learner():
         self.freeze_to(0)
         self.create_opt(defaults.lr)
 
-    def export(self, fname:PathOrStr='export.pkl', destroy=False):
-        "Export the state of the `Learner` in `self.path/fname`."
+    def export(self, file:PathLikeOrBinaryStream='export.pkl', destroy=False):
+        "Export the state of the `Learner` in `self.path/file`. `file` can be file-like (file or buffer)"
         if rank_distrib(): return # don't save if slave proc
         args = ['opt_func', 'loss_func', 'metrics', 'true_wd', 'bn_wd', 'wd', 'train_bn', 'model_dir', 'callback_fns']
         state = {a:getattr(self,a) for a in args}
@@ -237,31 +240,32 @@ class Learner():
             xtra = dict(normalize=self.data.norm.keywords) if getattr(self.data, 'norm', False) else {}
             state['data'] = self.data.valid_ds.get_state(**xtra)
             state['cls'] = self.__class__
-            try_save(state, self.path, fname)
+            try_save(state, self.path, file)
         if destroy: self.destroy()
 
-    def save(self, name:PathOrStr, return_path:bool=False, with_opt:bool=True):
-        "Save model and optimizer state (if `with_opt`) with `name` to `self.model_dir`."
-        self._test_writeable_path()
+    def save(self, file:PathLikeOrBinaryStream=None, return_path:bool=False, with_opt:bool=True):
+        "Save model and optimizer state (if `with_opt`) with `file` to `self.model_dir`. `file` can be file-like (file or buffer)"
+        if is_pathlike(file): self._test_writeable_path()
         if rank_distrib(): return # don't save if slave proc
-        path = self.path/self.model_dir/f'{name}.pth'
+        target = self.path/self.model_dir/f'{file}.pth' if is_pathlike(file) else file
         if not hasattr(self, 'opt'): with_opt=False
         if not with_opt: state = get_model(self.model).state_dict()
         else: state = {'model': get_model(self.model).state_dict(), 'opt':self.opt.state_dict()}
-        torch.save(state, path)
-        if return_path: return path
+        torch.save(state, target)
+        if return_path: return target
 
     def dl(self, ds_type:DatasetType=DatasetType.Valid):
         "Return DataLoader for DatasetType `ds_type`."
         return self.data.dl(ds_type)
 
-    def load(self, name:PathOrStr, device:torch.device=None, strict:bool=True, with_opt:bool=None, purge:bool=True,
-            remove_module:bool=False):
-        "Load model and optimizer state (if `with_opt`) `name` from `self.model_dir` using `device`."
+    def load(self, file:PathLikeOrBinaryStream=None, device:torch.device=None, strict:bool=True,
+             with_opt:bool=None, purge:bool=True, remove_module:bool=False):
+        "Load model and optimizer state (if `with_opt`) `file` from `self.model_dir` using `device`. `file` can be file-like (file or buffer)"
         if purge: self.purge(clear_opt=ifnone(with_opt, False))
         if device is None: device = self.data.device
         elif isinstance(device, int): device = torch.device('cuda', device)
-        state = torch.load(self.path/self.model_dir/f'{name}.pth', map_location=device)
+        source = self.path/self.model_dir/f'{file}.pth' if is_pathlike(file) else file
+        state = torch.load(source, map_location=device)
         if set(state.keys()) == {'model', 'opt'}:
             model_state = state['model']
             if remove_module: model_state = remove_module_load(model_state)
@@ -319,7 +323,8 @@ class Learner():
         cb_state = state.pop('cb_state')
         self.callbacks = [load_callback(c,s, self) for c,s in cb_state.items()]
         if not clear_opt and 'opt' in state:
-            self.opt = OptimWrapper.load_with_state_and_layer_group(state['opt'], self.layer_groups)
+            try: self.opt = OptimWrapper.load_with_state_and_layer_group(state['opt'], self.layer_groups)
+            except: warn("Wasn't able to properly load the optimizer state again.")
         del state
         gc.collect()
         return self
@@ -358,14 +363,14 @@ class Learner():
         "Return predicted class, label and probabilities for `item`."
         batch = self.data.one_item(item)
         res = self.pred_batch(batch=batch)
-        pred,x = res[0],batch[0]
+        pred,x = grab_idx(res,0),batch[0]
         norm = getattr(self.data,'norm',False)
         if norm:
             x = self.data.denorm(x)
             if norm.keywords.get('do_y',False): pred = self.data.denorm(pred)
         ds = self.data.single_ds
         pred = ds.y.analyze_pred(pred, **kwargs)
-        out = ds.y.reconstruct(pred, ds.x.reconstruct(x[0])) if has_arg(ds.y.reconstruct, 'x') else ds.y.reconstruct(pred)
+        out = ds.y.reconstruct(pred, ds.x.reconstruct(item.data)) if has_arg(ds.y.reconstruct, 'x') else ds.y.reconstruct(pred)
         return out, pred, res[0]
 
     def validate(self, dl=None, callbacks=None, metrics=None):
@@ -432,11 +437,11 @@ class LearnerCallback(Callback):
 class Recorder(LearnerCallback):
     "A `LearnerCallback` that records epoch, loss, opt and metric data during training."
     _order=-10
-    def __init__(self, learn:Learner, add_time:bool=True):
+    def __init__(self, learn:Learner, add_time:bool=True, silent:bool=False):
         super().__init__(learn)
         self.opt = self.learn.opt
         self.train_dl = self.learn.data.train_dl
-        self.no_val,self.silent,self.add_time = False,False,add_time
+        self.no_val,self.silent,self.add_time = False,silent,add_time
 
     def on_train_begin(self, pbar:PBar, metrics_names:Collection[str], **kwargs:Any)->None:
         "Initialize recording status at beginning of training."
@@ -482,15 +487,15 @@ class Recorder(LearnerCallback):
 
     def add_metric_names(self, names):
         "Add `names` to the inner metric names."
-        self._added_met_names = names
+        if hasattr(self, '_added_met_names'): self._added_met_names += names
+        else:                                 self._added_met_names  = names
 
     def plot_lr(self, show_moms=False, skip_start:int=0, skip_end:int=0, return_fig:bool=None)->Optional[plt.Figure]:
         "Plot learning rate, `show_moms` to include momentum."
-        iterations = range_of(self.lrs)
-        lrs = self.lrs[skip_start:-skip_end] if skip_end > 0 else self.lrs[skip_start:]
-        iterations = iterations[skip_start:-skip_end] if skip_end > 0 else iterations[skip_start:]
+        lrs = self._split_list(self.lrs, skip_start, skip_end)
+        iterations = self._split_list(range_of(self.lrs), skip_start, skip_end)
         if show_moms:
-            moms = self.moms[skip_start:-skip_end] if skip_end > 0 else self.moms[skip_start:]
+            moms = self._split_list(self.moms, skip_start, skip_end)
             fig, axs = plt.subplots(1,2, figsize=(12,4))
             axs[0].plot(iterations, lrs)
             axs[0].set_xlabel('Iterations')
@@ -516,8 +521,8 @@ class Recorder(LearnerCallback):
     def plot(self, skip_start:int=10, skip_end:int=5, suggestion:bool=False, return_fig:bool=None,
              **kwargs)->Optional[plt.Figure]:
         "Plot learning rate and losses, trimmed between `skip_start` and `skip_end`. Optionally plot and return min gradient"
-        lrs = self.lrs[skip_start:-skip_end] if skip_end > 0 else self.lrs[skip_start:]
-        losses = self.losses[skip_start:-skip_end] if skip_end > 0 else self.losses[skip_start:]
+        lrs = self._split_list(self.lrs, skip_start, skip_end)
+        losses = self._split_list(self.losses, skip_start, skip_end)
         losses = [x.item() for x in losses]
         if 'k' in kwargs: losses = self.smoothen_by_spline(lrs, losses, **kwargs)
         fig, ax = plt.subplots(1,1)
@@ -540,15 +545,11 @@ class Recorder(LearnerCallback):
     def plot_losses(self, skip_start:int=0, skip_end:int=0, return_fig:bool=None)->Optional[plt.Figure]:
         "Plot training and validation losses."
         fig, ax = plt.subplots(1,1)
-        iterations = range_of(self.losses)
-        losses = self.losses[skip_start:-skip_end] if skip_end > 0 else self.losses[skip_start:]
-        iterations = iterations[skip_start:-skip_end] if skip_end > 0 else iterations[skip_start:]
+        losses = self._split_list(self.losses, skip_start, skip_end)
+        iterations = self._split_list(range_of(self.losses), skip_start, skip_end)
         ax.plot(iterations, losses, label='Train')
-        val_iter = np.cumsum(self.nb_batches)
-        start_val = (val_iter - skip_start >= 0).nonzero()[0].min()
-        end_val = (val_iter[-1] - val_iter - skip_end >= 0).nonzero()[0].max()+1
-        val_iter = val_iter[start_val:end_val] if skip_end > 0 else val_iter[start_val:]
-        val_losses = self.val_losses[start_val:end_val] if skip_end > 0 else self.val_losses[start_val:]
+        val_iter = self._split_list_val(np.cumsum(self.nb_batches), skip_start, skip_end)
+        val_losses = self._split_list_val(self.val_losses, skip_start, skip_end)
         ax.plot(val_iter, val_losses, label='Validation')
         ax.set_ylabel('Loss')
         ax.set_xlabel('Batches processed')
@@ -556,18 +557,27 @@ class Recorder(LearnerCallback):
         if ifnone(return_fig, defaults.return_fig): return fig
         if not IN_NOTEBOOK: plot_sixel(fig)
 
-    def plot_metrics(self, return_fig:bool=None)->Optional[plt.Figure]:
+    def plot_metrics(self, skip_start:int=0, skip_end:int=0, return_fig:bool=None)->Optional[plt.Figure]:
         "Plot metrics collected during training."
         assert len(self.metrics) != 0, "There are no metrics to plot."
         fig, axes = plt.subplots(len(self.metrics[0]),1,figsize=(6, 4*len(self.metrics[0])))
-        val_iter = self.nb_batches
-        val_iter = np.cumsum(val_iter)
+        val_iter = self._split_list_val(np.cumsum(self.nb_batches), skip_start, skip_end)
         axes = axes.flatten() if len(self.metrics[0]) != 1 else [axes]
         for i, ax in enumerate(axes):
             values = [met[i] for met in self.metrics]
+            values = self._split_list_val(values, skip_start, skip_end)
             ax.plot(val_iter, values)
         if ifnone(return_fig, defaults.return_fig): return fig
         if not IN_NOTEBOOK: plot_sixel(fig)
+
+    def _split_list(self, vals:Collection[float], skip_start:int, skip_end:int):
+        return vals[skip_start:-skip_end] if skip_end > 0 else vals[skip_start:]
+
+    def _split_list_val(self, vals:Collection[float], skip_start:int, skip_end:int):
+        val_iter = np.cumsum(self.nb_batches)
+        start_val = (val_iter - skip_start >= 0).nonzero()[0].min()
+        end_val = (val_iter[-1] - val_iter - skip_end >= 0).nonzero()[0].max()+1
+        return vals[start_val:end_val] if skip_end > 0 else vals[start_val:]
 
 class FakeOptimizer():
     def step(self): pass
@@ -579,9 +589,10 @@ def load_callback(class_func, state, learn:Learner):
     for k,v in others.items(): setattr(res, k, v)
     return res
 
-def load_learner(path:PathOrStr, fname:PathOrStr='export.pkl', test:ItemList=None, **db_kwargs):
-    "Load a `Learner` object saved with `export_state` in `path/fn` with empty data, optionally add `test` and load on `cpu`."
-    state = torch.load(Path(path)/fname, map_location='cpu') if defaults.device == torch.device('cpu') else torch.load(Path(path)/fname)
+def load_learner(path:PathOrStr, file:PathLikeOrBinaryStream='export.pkl', test:ItemList=None, **db_kwargs):
+    "Load a `Learner` object saved with `export_state` in `path/file` with empty data, optionally add `test` and load on `cpu`. `file` can be file-like (file or buffer)"
+    source = Path(path)/file if is_pathlike(file) else file
+    state = torch.load(source, map_location='cpu') if defaults.device == torch.device('cpu') else torch.load(source)
     model = state.pop('model')
     src = LabelLists.load_state(path, state.pop('data'))
     if test is not None: src.add_test(test)

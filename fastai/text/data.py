@@ -71,9 +71,8 @@ class LanguageModelPreLoader(Callback):
 
     def __getitem__(self, k:int):
         j = k % self.bs
-        if j==0:
-            if self.item is not None: return self.dataset[0]
-            if self.idx is None: self.on_epoch_begin()
+        if self.item is not None: return self.dataset[0]
+        if self.idx is None: self.on_epoch_begin()
         self.ro[j],self.ri[j] = self.fill_row(not self.backwards, self.dataset.x.items, self.idx, self.batch[j],
                                               self.ro[j], self.ri[j], overlap=1, lengths=self.lengths)
         return self.batch_x[j], self.batch_y[j]
@@ -200,7 +199,9 @@ class TextDataBunch(DataBunch):
         src = ItemLists(path, TextList.from_df(train_df, path, cols=text_cols, processor=processor),
                         TextList.from_df(valid_df, path, cols=text_cols, processor=processor))
         if cls==TextLMDataBunch: src = src.label_for_lm()
-        else: src = src.label_from_df(cols=label_cols, classes=classes, label_delim=label_delim)
+        else: 
+            if label_delim is not None: src = src.label_from_df(cols=label_cols, classes=classes, label_delim=label_delim)
+            else: src = src.label_from_df(cols=label_cols, classes=classes)
         if test_df is not None: src.add_test(TextList.from_df(test_df, path, cols=text_cols))
         return src.databunch(**kwargs)
 
@@ -259,7 +260,7 @@ class TextClasDataBunch(TextDataBunch):
         datasets = cls._init_ds(train_ds, valid_ds, test_ds)
         val_bs = ifnone(val_bs, bs)
         collate_fn = partial(pad_collate, pad_idx=pad_idx, pad_first=pad_first, backwards=backwards)
-        train_sampler = SortishSampler(datasets[0].x, key=lambda t: len(datasets[0][t][0].data), bs=bs//2)
+        train_sampler = SortishSampler(datasets[0].x, key=lambda t: len(datasets[0][t][0].data), bs=bs)
         train_dl = DataLoader(datasets[0], batch_size=bs, sampler=train_sampler, drop_last=True, **dl_kwargs)
         dataloaders = [train_dl]
         for ds in datasets[1:]:
@@ -335,7 +336,7 @@ class TextList(ItemList):
     def reconstruct(self, t:Tensor):
         idx_min = (t != self.pad_idx).nonzero().min()
         idx_max = (t != self.pad_idx).nonzero().max()
-        return Text(t[idx_min:idx_max], self.vocab.textify(t[idx_min:idx_max]))
+        return Text(t[idx_min:idx_max+1], self.vocab.textify(t[idx_min:idx_max+1]))
 
     @classmethod
     def from_folder(cls, path:PathOrStr='.', extensions:Collection[str]=text_extensions, vocab:Vocab=None,

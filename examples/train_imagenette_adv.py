@@ -65,7 +65,7 @@ def bn_and_final(m):
 
 def on_step(self, p, group, group_idx):
     st = self.state[p]
-    alpha = (st['alpha_buffer'].sqrt() + group['eps']
+    alpha = ((st['alpha_buffer'] + group['eps']).sqrt()
             ) if 'alpha_buffer' in st else mom.new_tensor(1.)
     clip = group['clip'] if 'clip' in group else 1e9
     alr = (st['alpha_buffer']).clamp_min_(clip)
@@ -79,12 +79,12 @@ def main(
         debias_mom: Param("Debias statistics", bool)=False,
         debias_sqr: Param("Debias statistics", bool)=False,
         opt: Param("Optimizer: 'adam','genopt','rms','sgd'", str)='genopt',
-        alpha: Param("Alpha", float)=0.9,
+        alpha: Param("Alpha", float)=0.99,
         mom: Param("Momentum", float)=0.9,
         eps: Param("epsilon", float)=1e-7,
         decay: Param("Decay AvgStatistic (momentum)", bool)=False,
         epochs: Param("Number of epochs", int)=5,
-        bs: Param("Batch size", int)=256,
+        bs: Param("Batch size", int)=128,
         ):
     """Distributed training of Imagenette.
     Fastest multi-gpu speed is if you run with: python -m fastai.launch"""

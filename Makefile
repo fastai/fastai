@@ -182,8 +182,7 @@ tools-update: ## install/update build tools
 	conda install -y conda-verify conda-build anaconda-client
 	pip install -U twine
 
-docs: ## build test_registry.json and update docs
-	${MAKE} test-full
+docs: ## update docs
 	tools/build-docs -f
 
 log_file := release-`date +"%Y-%m-%d-%H-%M-%S"`.log

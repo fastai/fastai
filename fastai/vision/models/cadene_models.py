@@ -29,7 +29,7 @@ def nasnetamobile(pretrained:bool=False):
 model_meta[nasnetamobile] = {'cut': noop, 'split': lambda m: (list(m[0][0].children())[8], m[1])}
 
 def pnasnet5large(pretrained:bool=False):
-    model = get_model(pmodels.pnasnet5large, pretrained, num_classes=1000)
+    model = get_model('pnasnet5large', pretrained, num_classes=1000)
     model.logits = noop
     return nn.Sequential(model)
 model_meta[pnasnet5large] = {'cut': noop, 'split': lambda m: (list(m[0][0].children())[8], m[1])}
