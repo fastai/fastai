@@ -154,6 +154,21 @@ def test_sortish_sampler():
     assert len(train_sampler) == 2
     ds_srt = [ds[i] for i in train_sampler]
     assert ds_srt[0] == 10
+    
+def test_sort_sampler():
+    this_tests(SortSampler)
+    ds = [1,2,3,4,5,6,7,8,9,10]
+    train_sampler = SortSampler(ds, key=lambda t: ds[t])
+    assert len(train_sampler) == 10
+    ds_srt = [ds[i] for i in train_sampler]
+    assert ds_srt[0] == 10
+
+    # test on small datasets
+    ds = [1, 10]
+    train_sampler = SortSampler(ds, key=lambda t: ds[t])
+    assert len(train_sampler) == 2
+    ds_srt = [ds[i] for i in train_sampler]
+    assert ds_srt[0] == 10
 
 def test_from_ids_works_for_equally_length_sentences():
     this_tests(TextClasDataBunch.from_ids)
