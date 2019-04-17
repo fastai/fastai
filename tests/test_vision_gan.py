@@ -1,5 +1,6 @@
 import pytest, torch
 from fastai.gen_doc.doctest import this_tests
+from utils.text import CaptureStdout
 from fastai.datasets import untar_data, URLs
 from fastai.core import noop
 from fastai.vision.gan import *
@@ -18,6 +19,12 @@ def data(path):
                        .transform(size=32, tfm_y=True) # image size needs to be a power of 2
                        .databunch(bs=16))
     return data
+
+@pytest.fixture(scope="module")
+def gan_learner(data):
+    generator = basic_generator(32, 3, 5)
+    critic = basic_critic(32, 3, 16)
+    return GANLearner.wgan(data, generator, critic)
 
 
 def test_gan_datasets(path):
@@ -68,6 +75,14 @@ def test_gan_module(data):
     gan_module.switch()
     assert gan_module.gen_mode == False
     assert isinstance(gan_module(image), torch.Tensor)
+
+def test_gan_trainer(gan_learner):
+    this_tests(GANTrainer)
+    gan_trainer = gan_learner.gan_trainer
+    with CaptureStdout() as cs: gan_learner.fit(1, 1e-4)
+    assert gan_trainer.imgs
+    assert gan_trainer.gen_mode
+    assert gan_trainer.titles
 
 
 
