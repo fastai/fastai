@@ -94,7 +94,36 @@ def test_np2model_tensor():
     a = np.ones([2,2])
     t = np2model_tensor(a)
     assert isinstance(t,torch.FloatTensor)
-
+    
+def test_np_address(): 
+    this_tests(np_address)
+    a=np.ndarray(shape=(2,2))
+    add=np_address(a)
+    assert isinstance(add, int)
+    
+@pytest.mark.cuda
+def test_to_detach():
+    this_tests(to_detach)
+    a=([1.,2.,3.],[3.,6.,6.])
+    b=np.array([[4,5,6],[4,7,7]])
+    ta=torch.tensor(a, requires_grad=True).cuda()
+    dta=to_detach(a)
+    dtta=to_detach(ta, False)
+    dttacpu=to_detach(ta, True)
+    db=to_detach(b)
+    assert ta.is_cuda
+    assert isinstance(ta, (torch.cuda.FloatTensor or torch.cuda.DoubleTensor or torch.cuda.HalfTensor))
+    assert ta.requires_grad 
+    assert dtta.is_cuda
+    assert isinstance(dtta, (torch.cuda.FloatTensor or torch.cuda.DoubleTensor or torch.cuda.HalfTensor))
+    assert not dtta.requires_grad
+    assert not dttacpu.is_cuda
+    assert isinstance(dttacpu, (torch.FloatTensor or torch.DoubleTensor or torch.HalfTensor))
+    assert not dttacpu.requires_grad
+    assert isinstance(b,np.ndarray)
+    assert isinstance(db,np.ndarray)
+    assert np.all([b,db]) 
+    
 @pytest.mark.cuda    
 def test_to_cpu():
     this_tests(to_cpu)
@@ -169,12 +198,6 @@ def test_last_layer():
     assert isinstance(ll, nn.Module)
     assert isinstance(ll, torch.nn.modules.activation.ReLU)
     
-def test_np_address(): 
-    this_tests(np_address)
-    a=np.ndarray(shape=(2,2))
-    add=np_address(a)
-    assert isinstance(add, int)
-
 def test_model_type(): 
     this_tests(model_type) 
     a=np.array([1.,2.,3.]).dtype 
