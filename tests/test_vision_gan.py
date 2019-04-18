@@ -76,6 +76,7 @@ def test_gan_module(data):
     assert gan_module.gen_mode == False
     assert isinstance(gan_module(image), torch.Tensor)
 
+@pytest.mark.slow
 def test_gan_trainer(gan_learner):
     this_tests(GANTrainer)
     gan_trainer = gan_learner.gan_trainer
@@ -83,19 +84,4 @@ def test_gan_trainer(gan_learner):
     assert gan_trainer.imgs
     assert gan_trainer.gen_mode
     assert gan_trainer.titles
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
