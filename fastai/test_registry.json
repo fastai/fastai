@@ -1494,7 +1494,7 @@
     "fastai.vision.gan.GANTrainer": [
         {
             "file": "tests/test_vision_gan.py",
-            "line": 79,
+            "line": 80,
             "test": "test_gan_trainer"
         }
     ],
