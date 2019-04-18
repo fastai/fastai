@@ -245,7 +245,7 @@
     "fastai.callbacks.csv_logger.CSVLogger": [
         {
             "file": "tests/test_callbacks_csv_logger.py",
-            "line": 37,
+            "line": 42,
             "test": "test_logger"
         }
     ],
