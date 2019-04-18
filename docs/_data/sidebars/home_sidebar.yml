@@ -179,6 +179,9 @@ entries:
     - output: web,pdf
       title: torch_core
       url: /torch_core.html
+    - output: web,pdf
+      title: imports
+      url: /imports.html
     output: web
     title: Core
   - folderitems:

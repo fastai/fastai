@@ -79,6 +79,7 @@ sidebar_d = {
         'datasets': '/datasets',
         'core': '/core',
         'torch_core': '/torch_core',
+        'imports': '/imports',
     },
     'Utils': {
         'Helpers': '/utils.collect_env',
