@@ -4,19 +4,19 @@ title: Imports
 
 ## Introduction
 
-To support interactive computing, fastai provides easy access to commonly-used external modules. A star import such as
+To support interactive computing, fastai provides easy access to commonly-used external modules. A star import such as:
 ```
-from fastai.basics *
+from fastai.basics import *
 ```
 will populate the current namespace with these external modules in addition to fastai-specific functions and variables. This page documents these convenience imports, which are defined in [fastai.imports](https://github.com/fastai/fastai/blob/master/fastai/imports).
 
 *Names in bold are modules. If an object was aliased during its import, the original name is listed in parentheses.*
 
-| Name | Description | 
+| Name | Description |
 |-|-|
 | [**`csv`**](https://docs.python.org/3/library/csv.html) | CSV file reading and writing |
 | [**`gc`**](https://docs.python.org/3/library/gc.html) | Garbage collector interface |
-| [**`gzip`**](https://docs.python.org/3/library/gzip.html) | Support for gzip files | 
+| [**`gzip`**](https://docs.python.org/3/library/gzip.html) | Support for gzip files |
 | [**`os`**](https://docs.python.org/3/library/os.html) | Miscellaneous operating system interfaces |
 | [**`pickle`**](https://docs.python.org/3/library/pickle.html) | Python object serialization |
 | [**`shutil`**](https://docs.python.org/3/library/shutil.html) | High level file operations |
@@ -33,7 +33,7 @@ will populate the current namespace with these external modules in addition to f
 | [**`scipy.stats`**](https://docs.scipy.org/doc/scipy/reference/stats.html) | Statistical functions |
 | [**`scipy.special`**](https://docs.scipy.org/doc/scipy/reference/special.html) | Special functions |
 | [`abstractmethod`](https://docs.python.org/3/library/abc.html#abc.abstractmethod), [`abstractproperty`](https://docs.python.org/3/library/abc.html#abc.abstractproperty) | Abstract base classes |
-| [**`collections`**](https://docs.python.org/3/library/collections.html), [`Counter`](https://docs.python.org/3/library/collections.html#collections.Counter), [`defaultdict`](https://docs.python.org/3/library/collections.html#collections.defaultdict), <br/>[`namedtuple`](https://docs.python.org/3/library/collections.html#collections.namedtuple), [`OrderedDict`](https://docs.python.org/3/library/collections.html#collections.OrderedDict) | Container datatypes | 
+| [**`collections`**](https://docs.python.org/3/library/collections.html), [`Counter`](https://docs.python.org/3/library/collections.html#collections.Counter), [`defaultdict`](https://docs.python.org/3/library/collections.html#collections.defaultdict), <br/>[`namedtuple`](https://docs.python.org/3/library/collections.html#collections.namedtuple), [`OrderedDict`](https://docs.python.org/3/library/collections.html#collections.OrderedDict) | Container datatypes |
 | [**`abc`** (`collections.abc`)](https://docs.python.org/3/library/collections.abc.html#module-collections.abc), [`Iterable`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable) | Abstract base classes for containers |
 | [**`hashlib`**](https://docs.python.org/3/library/hashlib.html) | Secure hashes and message digests |
 | [**`itertools`**](https://docs.python.org/3/library/itertools.html) | Functions creating iterators for efficient looping |
@@ -67,4 +67,4 @@ will populate the current namespace with these external modules in addition to f
 | [**`nn`** (`torch.nn`)](https://pytorch.org/docs/stable/nn.html), [`weight_norm`](https://pytorch.org/docs/stable/nn.html#torch.nn.utils.weight_norm), [`spectral_norm`](https://pytorch.org/docs/stable/nn.html#torch.nn.utils.spectral_norm) | Neural networks with PyTorch |
 | [**`F`** (`torch.nn.functional`)](https://pytorch.org/docs/stable/nn.html#torch-nn-functional) | PyTorch functional interface |
 | [**`optim`** (`torch.optim`)](https://pytorch.org/docs/stable/optim.html) | Optimization algorithms in PyTorch |
-| [`BatchSampler`](https://pytorch.org/docs/stable/data.html#torch.utils.data.BatchSampler), [`DataLoader`](https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader), [`Dataset`](https://pytorch.org/docs/stable/data.html#torch.utils.data.Dataset),<br/> [`Sampler`](https://pytorch.org/docs/stable/data.html#torch.utils.data.Sampler), [`TensorDataset`](https://pytorch.org/docs/stable/data.html#torch.utils.data.TensorDataset) | PyTorch data utils | 
+| [`BatchSampler`](https://pytorch.org/docs/stable/data.html#torch.utils.data.BatchSampler), [`DataLoader`](https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader), [`Dataset`](https://pytorch.org/docs/stable/data.html#torch.utils.data.Dataset),<br/> [`Sampler`](https://pytorch.org/docs/stable/data.html#torch.utils.data.Sampler), [`TensorDataset`](https://pytorch.org/docs/stable/data.html#torch.utils.data.TensorDataset) | PyTorch data utils |
