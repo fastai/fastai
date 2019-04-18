@@ -14,12 +14,17 @@ def create_metrics_dataframe(learn):
             learn.recorder.metrics))]
     return pd.DataFrame(records, columns=learn.recorder.names[:-1])
 
+def float_or_x(x):
+    "Tries to convert to float, returns x if it can't"
+    try:return float(x)
+    except:return x
+
 def convert_into_dataframe(buffer):
     "Converts data captured from `fastprogress.ConsoleProgressBar` into dataframe."
     lines = buffer.split('\n')
     header, *lines = [l.strip() for l in lines if l and not l.startswith('Total')]
-    header = header.split()[:-1]
-    floats = [[float(x) for x in line.split()[:-1]] for line in lines]
+    header = header.split()[:]
+    floats = [[float_or_x(x) for x in line.split()[:]] for line in lines]
     records = [dict(zip(header, metrics_list)) for metrics_list in floats]
     df = pd.DataFrame(records, columns=header)
     df['epoch'] = df['epoch'].astype(int)
@@ -48,7 +53,8 @@ def test_logger():
     # https://github.com/pandas-dev/pandas/issues/25068#issuecomment-460014120
     # which quite often fails on CI.
     # once it's resolved can change the setting back to check_less_precise=True (or better =3), until then using =2 as it works, but this check is less good.
-    pd.testing.assert_frame_equal(csv_df, recorder_df, check_exact=False, check_less_precise=2)
+    csv_df_notime = csv_df.drop(['time'], axis=1)
+    pd.testing.assert_frame_equal(csv_df_notime, recorder_df, check_exact=False, check_less_precise=2)
 
 @pytest.fixture(scope="module", autouse=True)
 def cleanup(request):
