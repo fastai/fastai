@@ -14,11 +14,6 @@ def create_metrics_dataframe(learn):
             learn.recorder.metrics))]
     return pd.DataFrame(records, columns=learn.recorder.names[:-1])
 
-def float_or_x(x):
-    "Tries to convert to float, returns x if it can't"
-    try:return float(x)
-    except:return x
-
 def convert_into_dataframe(buffer):
     "Converts data captured from `fastprogress.ConsoleProgressBar` into dataframe."
     lines = buffer.split('\n')
