@@ -10,6 +10,12 @@ from fastai.basics import *
 ```
 will populate the current namespace with these external modules in addition to fastai-specific functions and variables. This page documents these convenience imports, which are defined in [fastai.imports](https://github.com/fastai/fastai/blob/master/fastai/imports).
 
+Note: since this document was manually created, it could be outdated by the time you read it. To get the up-date-listing of imports, use:
+
+```python
+python -c 'a = set([*vars().keys(), "a"]); from fastai.basics import *; print(*sorted(set(vars().keys())-a), sep="\n")'
+```
+
 *Names in bold are modules. If an object was aliased during its import, the original name is listed in parentheses.*
 
 | Name | Description |
