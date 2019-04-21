@@ -1025,6 +1025,7 @@ In some situations you may want to remove randomness for your tests. To get iden
 seed = 42
 
 # python RNG
+import random
 random.seed(seed)
 
 # pytorch RNGs
