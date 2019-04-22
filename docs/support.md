@@ -52,7 +52,7 @@ When you make a post, make sure to include in your post:
    ```
    git clone https://github.com/fastai/fastai
    cd fastai
-   python -c 'import fastai.utils.collect_env; fastai.utils.collect_env.show_install(1)'
+   python -c 'import fastai.utils; fastai.utils.show_install(1)'
    ```
 
    The reporting script won't work if `pytorch` wasn't installed, so if that's the case, then send in the following details:
