@@ -7,7 +7,7 @@ from ..layers import *
 from ..callback import Callback
 
 __all__ = ['LanguageModelPreLoader', 'SortSampler', 'SortishSampler', 'TextList', 'pad_collate', 'TextDataBunch',
-           'TextLMDataBunch', 'TextClasDataBunch', 'Text', 'open_text', 'TokenizeProcessor', 'NumericalizeProcessor',
+           'TextLMDataBunch', 'TextClasDataBunch', 'Text', 'open_text', 'TokenizeProcessor', 
            'OpenFileProcessor', 'LMLabelList']
 
 TextMtd = IntEnum('TextMtd', 'DF TOK IDS')
@@ -140,8 +140,8 @@ def pad_collate(samples:BatchSamples, pad_idx:int=1, pad_first:bool=True, backwa
 def _get_processor(tokenizer:Tokenizer=None, vocab:Vocab=None, chunksize:int=10000, max_vocab:int=60000,
                    min_freq:int=2, mark_fields:bool=False, include_bos:bool=True, include_eos:bool=False):
     return [TokenizeProcessor(tokenizer=tokenizer, chunksize=chunksize, 
-                              mark_fields=mark_fields, include_bos=include_bos, include_eos=include_eos),
-            NumericalizeProcessor(vocab=vocab, max_vocab=max_vocab, min_freq=min_freq)]
+                              mark_fields=mark_fields, include_bos=include_bos, include_eos=include_eos,
+                              vocab=vocab, max_vocab=max_vocab, min_freq=min_freq)]
 
 class TextDataBunch(DataBunch):
     "General class to get a `DataBunch` for NLP. Subclassed by `TextLMDataBunch` and `TextClasDataBunch`."
@@ -157,7 +157,7 @@ class TextDataBunch(DataBunch):
         src = src.label_for_lm() if cls==TextLMDataBunch else src.label_from_lists(train_lbls, valid_lbls, classes=classes, processor=[])
         if not is1d(train_lbls): src.train.y.one_hot,src.valid.y.one_hot = True,True
         if test_ids is not None: src.add_test(TextList(test_ids, vocab, path=path), label=train_lbls[0])
-        src.valid.x.processor = ifnone(processor, [TokenizeProcessor(), NumericalizeProcessor(vocab=vocab)])
+        src.valid.x.processor = ifnone(processor, [TokenizeProcessor(vocab=vocab)])
         return src.databunch(**kwargs)
 
     @classmethod
@@ -179,6 +179,7 @@ class TextDataBunch(DataBunch):
                  tst_tok:Collection[Collection[str]]=None, classes:Collection[Any]=None, max_vocab:int=60000, min_freq:int=3,
                  **kwargs) -> DataBunch:
         "Create a `TextDataBunch` from tokens and labels. `kwargs` are passed to the dataloader creation."
+        ##  ??? What to do here? Is this really used?  
         processor = NumericalizeProcessor(vocab=vocab, max_vocab=max_vocab, min_freq=min_freq)
         src = ItemLists(path, TextList(trn_tok, path=path, processor=processor),
                         TextList(val_tok, path=path, processor=processor))
@@ -279,35 +280,53 @@ class Text(ItemBase):
 class TokenizeProcessor(PreProcessor):
     "`PreProcessor` that tokenizes the texts in `ds`."
     def __init__(self, ds:ItemList=None, tokenizer:Tokenizer=None, chunksize:int=10000, 
-                 mark_fields:bool=False, include_bos:bool=True, include_eos:bool=False):
+                 mark_fields:bool=False, include_bos:bool=True, include_eos:bool=False,
+                 vocab:Vocab=None, max_vocab:int=60000, min_freq:int=3):
+
         self.tokenizer,self.chunksize,self.mark_fields = ifnone(tokenizer, Tokenizer()),chunksize,mark_fields
         self.include_bos, self.include_eos = include_bos, include_eos
 
-    def process_one(self, item):
-        return self.tokenizer._process_all_1(_join_texts([item], self.mark_fields, self.include_bos, self.include_eos))[0]
-
-    def process(self, ds):
-        ds.items = _join_texts(ds.items, self.mark_fields, self.include_bos, self.include_eos)
-        freq = Counter()
-        for i in progress_bar(range(0,len(ds),self.chunksize), leave=False):
-            tokens = self.tokenizer.process_all(ds.items[i:i+self.chunksize])
-            freq.update(p for o in tokens for p in o)
-        ds.tk_freq = freq
-
-class NumericalizeProcessor(PreProcessor):
-    "`PreProcessor` that numericalizes the tokens in `ds`."
-    def __init__(self, ds:ItemList=None, vocab:Vocab=None, max_vocab:int=60000, min_freq:int=3):
         vocab = ifnone(vocab, ds.vocab if ds is not None else None)
         self.vocab,self.max_vocab,self.min_freq = vocab,max_vocab,min_freq
-
-    def process_one(self,item): return np.array(self.vocab.numericalize(item), dtype=np.int64)
-    def process(self, ds):
+        
+    def process_one(self, item):
         if self.vocab is None:
-            if ds.tk_freq is None: self.vocab = Vocab.create(ds.items, self.max_vocab, self.min_freq)
-            else:                  self.vocab = Vocab.from_freq(ds.tk_freq, self.max_vocab, self.min_freq)
-        ds.vocab = self.vocab
-        super().process(ds)
+            out = self.tokenizer._process_all_1(_join_texts([item], self.mark_fields, self.include_bos, self.include_eos))[0]
+        else:
+            out = np.array(self.vocab.numericalize(item), dtype=np.int64)
+        return out
 
+    def process(self, ds):
+        def maybe_remove(filename):
+            try: os.remove(filename) #remove if it is there
+            except OSError: pass
+            
+        ds.items = _join_texts(ds.items, self.mark_fields, self.include_bos, self.include_eos)
+        freq = Counter()
+
+        TOK_SEP_CHR = chr(9602) # _ char to separate
+        NEW_TXT_CHR = chr(9600) #'XXnewnoteXX' #chr(9600) # square char to separate
+        maybe_remove('tmp_all_tokens')
+        
+        with open('tmp_all_tokens','a+') as f:
+            for i in progress_bar(range(0,len(ds),self.chunksize), leave=False):
+                tokens = self.tokenizer.process_all(ds.items[i:i+self.chunksize])
+                stringed_tokens = NEW_TXT_CHR + NEW_TXT_CHR.join([TOK_SEP_CHR.join(x) for x in tokens])
+                f.write(stringed_tokens + os.linesep)
+                freq.update(p for o in tokens for p in o)
+        ds.tk_freq = freq
+
+        if self.vocab is None: self.vocab = Vocab.from_freq(ds.tk_freq, self.max_vocab, self.min_freq)
+        ds.vocab = self.vocab
+
+        all_items = []
+        with open('tmp_all_tokens','r') as f:
+            for line in f:
+                tokens = [x.split(TOK_SEP_CHR) for x in line.rstrip('\n').split(NEW_TXT_CHR)][1:]
+                all_items.append([self.process_one(item) for item in tokens])
+        ds.items = array(all_items).squeeze()
+        maybe_remove('tmp_all_tokens')
+        
 class OpenFileProcessor(PreProcessor):
     "`PreProcessor` that opens the filenames and read the texts."
     def process_one(self,item):
@@ -316,7 +335,7 @@ class OpenFileProcessor(PreProcessor):
 class TextList(ItemList):
     "Basic `ItemList` for text data."
     _bunch = TextClasDataBunch
-    _processor = [TokenizeProcessor, NumericalizeProcessor]
+    _processor = [TokenizeProcessor]
     _is_lm = False
 
     def __init__(self, items:Iterator, vocab:Vocab=None, pad_idx:int=1, **kwargs):
@@ -343,7 +362,7 @@ class TextList(ItemList):
     def from_folder(cls, path:PathOrStr='.', extensions:Collection[str]=text_extensions, vocab:Vocab=None,
                     processor:PreProcessor=None, **kwargs)->'TextList':
         "Get the list of files in `path` that have a text suffix. `recurse` determines if we search subfolders."
-        processor = ifnone(processor, [OpenFileProcessor(), TokenizeProcessor(), NumericalizeProcessor(vocab=vocab)])
+        processor = ifnone(processor, [OpenFileProcessor(), TokenizeProcessor(vocab=vocab)])
         return super().from_folder(path=path, extensions=extensions, processor=processor, **kwargs)
 
     def show_xys(self, xs, ys, max_len:int=70)->None:
