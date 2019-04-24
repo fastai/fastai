@@ -385,6 +385,75 @@ class ImageBBox(ImagePoints):
             else: text=None
             _draw_rect(ax, bb2hw(bbox), text=text, color=color)
 
+class MultiIp:
+    "for displaying multiple sets of ImagePoints with distinct styling params"
+    def __init__(self, list_ips, list_params=[], labels=None, legend=None, **kwargs):
+        ''' TODO - add typing to args
+            TODO - argument documentation moves to doc_src
+            required input: list_ips - list of ImagePoint object(s)
+            optional input: list_params - list of dict(s);        len=len(list_ips)
+                            legend - true, false, or list of str  len=len(list_ips))
+                            labels - true, false, or list of str  len=list_ips[0].shape[0]
+                            label_offset - int                    default=3
+                            label_enumerate - bool                default=false
+        '''
+        self.ips =    list_ips
+        self.params = list_params
+        
+        #TODO - move these notes doc_src 
+        # if labels/legend is False or not specified, feature is off
+        # if its passed True, feature is on with default titling strategy
+        # if its passed a list of strings, feature is on with that list as titling strategy
+        self.b_legend =   legend if isinstance(legend, bool) else (legend is not None)
+        self.d_legend =   None if isinstance(legend, bool) else legend
+        self.b_labels =   labels if isinstance(labels, bool) else (labels is not None)
+        self.d_labels =   None if isinstance(labels, bool) else labels
+        
+        # extra args
+        self.label_offset =     kwargs.get('label_offset', 3)
+        self.label_enumerate =  kwargs.get('label_enumerate', False)
+        self.annotate_args =    kwargs.get('annotate_args', {})
+        
+    def show(self, ax, **kwargs):
+        ''' when this class is passed as y, this method get called inside Image.show'''
+
+        kwargs_save = kwargs.copy()
+
+        for _i, (_ip, _param) in enumerate(zip(self.ips, self.params)):
+            
+            unique_kwargs = {**_param, **kwargs_save}
+            _ip.show(ax, **unique_kwargs)   #TODO, pass in args like figsize to this call to ImagePoints.show
+
+            if self.b_labels:
+                self._label(ax, _ip, set_index=_i)
+
+        if self.b_legend:
+            legend = (self.d_legend if self.d_legend is not None else 
+                      [str(i) for i,v in enumerate(self.ips)])
+            ax.legend(legend)
+
+    def _label(self, ax, ips, set_index='?'):
+        '''apply a label to each point, based on params passed-in during init'''
+        
+        # same proc as ImagePoints.show() + offset so labels are centered in marker
+        pnts = scale_flow(FlowField(ips.size, ips.data), to_unit=False).flow.flip(1)
+        pnts[:,0] = pnts[:,0].sub_(self.label_offset)
+        pnts[:,1] = pnts[:,1].add_(self.label_offset)
+        pnts = pnts.tolist()
+        
+        for _ptindex, _pt in enumerate(pnts):
+            
+            # decide the labelling strategy
+            if self.d_labels is not None:
+                point_label = self.d_labels[_ptindex]
+            elif self.label_enumerate:
+                point_label = _ptindex    
+            else:
+                point_label = set_index
+            point_label = str(point_label)
+            
+            ax.annotate(point_label, _pt, **self.annotate_args)
+
 def open_image(fn:PathOrStr, div:bool=True, convert_mode:str='RGB', cls:type=Image,
         after_open:Callable=None)->Image:
     "Return `Image` object created from image in file `fn`."
