@@ -42,7 +42,7 @@ class ResBlock(nn.Module):
         self.convs = nn.Sequential(*layers)
         # TODO: check whether act=True works better
         self.idconv = noop if ni==nf else conv_layer(ni, nf, 1, act=False)
-        self.pool = noop if stride==1 else nn.AvgPool2d(2)
+        self.pool = noop if stride==1 else nn.AvgPool2d(2, ceil_mode=True)
 
     def forward(self, x): return act_fn(self.convs(x) + self.idconv(self.pool(x)))
 
