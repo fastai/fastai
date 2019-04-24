@@ -288,10 +288,11 @@ class TokenizeProcessor(PreProcessor):
 
     def process(self, ds):
         ds.items = _join_texts(ds.items, self.mark_fields, self.include_bos, self.include_eos)
-        tokens = []
+        freq = Counter()
         for i in progress_bar(range(0,len(ds),self.chunksize), leave=False):
-            tokens += self.tokenizer.process_all(ds.items[i:i+self.chunksize])
-        ds.items = tokens
+            tokens = self.tokenizer.process_all(ds.items[i:i+self.chunksize])
+            freq.update(p for o in tokens for p in o)
+        ds.tk_freq = freq
 
 class NumericalizeProcessor(PreProcessor):
     "`PreProcessor` that numericalizes the tokens in `ds`."
@@ -301,7 +302,9 @@ class NumericalizeProcessor(PreProcessor):
 
     def process_one(self,item): return np.array(self.vocab.numericalize(item), dtype=np.int64)
     def process(self, ds):
-        if self.vocab is None: self.vocab = Vocab.create(ds.items, self.max_vocab, self.min_freq)
+        if self.vocab is None:
+            if ds.tk_freq is None: self.vocab = Vocab.create(ds.items, self.max_vocab, self.min_freq)
+            else:                  self.vocab = Vocab.from_freq(ds.tk_freq, self.max_vocab, self.min_freq)
         ds.vocab = self.vocab
         super().process(ds)
 
@@ -318,7 +321,7 @@ class TextList(ItemList):
 
     def __init__(self, items:Iterator, vocab:Vocab=None, pad_idx:int=1, **kwargs):
         super().__init__(items, **kwargs)
-        self.vocab,self.pad_idx = vocab,pad_idx
+        self.vocab,self.pad_idx,self.tk_freq = vocab,pad_idx,None
         self.copy_new += ['vocab', 'pad_idx']
 
     def get(self, i):

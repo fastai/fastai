@@ -148,6 +148,11 @@ class Vocab():
     def create(cls, tokens:Tokens, max_vocab:int, min_freq:int) -> 'Vocab':
         "Create a vocabulary from a set of `tokens`."
         freq = Counter(p for o in tokens for p in o)
+        return cls.from_freq(freq,max_vocab,min_freq)
+
+    @classmethod
+    def from_freq(cls, freq:Counter, max_vocab:int, min_freq:int) -> 'Vocab':
+        "Create a vocabulary from the `Counter(tokens)`."
         itos = [o for o,c in freq.most_common(max_vocab) if c >= min_freq]
         for o in reversed(defaults.text_spec_tok):
             if o in itos: itos.remove(o)
