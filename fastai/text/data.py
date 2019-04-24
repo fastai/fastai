@@ -323,7 +323,7 @@ class TokenizeProcessor(PreProcessor):
         with open('tmp_all_tokens','r') as f:
             for line in f:
                 tokens = [x.split(TOK_SEP_CHR) for x in line.rstrip('\n').split(NEW_TXT_CHR)][1:]
-                all_items.append([self.process_one(item) for item in tokens])
+                all_items += [self.process_one(item) for item in tokens]
         ds.items = array(all_items).squeeze()
         maybe_remove('tmp_all_tokens')
         
