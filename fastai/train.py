@@ -34,6 +34,7 @@ def lr_find(learn:Learner, start_lr:Floats=1e-7, end_lr:Floats=10, num_it:int=10
 def to_fp16(learn:Learner, loss_scale:float=None, max_noskip:int=1000, dynamic:bool=True, clip:float=None,
             flat_master:bool=False, max_scale:float=2**24)->Learner:
     "Put `learn` in FP16 precision mode."
+    learn.to_fp32()
     learn.model = model2half(learn.model)
     learn.data.add_tfm(batch_to_half)
     learn.mp_cb = MixedPrecision(learn, loss_scale=loss_scale, max_noskip=max_noskip, dynamic=dynamic, clip=clip, 

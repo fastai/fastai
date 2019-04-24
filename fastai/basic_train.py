@@ -158,6 +158,7 @@ class Learner():
     callbacks:Collection[Callback]=field(default_factory=list)
     layer_groups:Collection[nn.Module]=None
     add_time:bool=True
+    silent:bool=None
     def __post_init__(self)->None:
         "Setup path,metrics, callbacks and ensure model directory exists."
         self.path = Path(ifnone(self.path, self.data.path))
@@ -167,7 +168,8 @@ class Learner():
         self.metrics=listify(self.metrics)
         if not self.layer_groups: self.layer_groups = [nn.Sequential(*flatten_model(self.model))]
         self.callbacks = listify(self.callbacks)
-        self.callback_fns = [partial(Recorder, add_time=self.add_time)] + listify(self.callback_fns)
+        if self.silent is None: self.silent = defaults.silent
+        self.callback_fns = [partial(Recorder, add_time=self.add_time, silent=self.silent)] + listify(self.callback_fns)
 
     def init(self, init): apply_init(self.model, init)
 
@@ -361,14 +363,14 @@ class Learner():
         "Return predicted class, label and probabilities for `item`."
         batch = self.data.one_item(item)
         res = self.pred_batch(batch=batch)
-        pred,x = res[0],batch[0]
+        pred,x = grab_idx(res,0),batch[0]
         norm = getattr(self.data,'norm',False)
         if norm:
             x = self.data.denorm(x)
             if norm.keywords.get('do_y',False): pred = self.data.denorm(pred)
         ds = self.data.single_ds
         pred = ds.y.analyze_pred(pred, **kwargs)
-        out = ds.y.reconstruct(pred, ds.x.reconstruct(x[0])) if has_arg(ds.y.reconstruct, 'x') else ds.y.reconstruct(pred)
+        out = ds.y.reconstruct(pred, ds.x.reconstruct(item.data)) if has_arg(ds.y.reconstruct, 'x') else ds.y.reconstruct(pred)
         return out, pred, res[0]
 
     def validate(self, dl=None, callbacks=None, metrics=None):
@@ -435,17 +437,18 @@ class LearnerCallback(Callback):
 class Recorder(LearnerCallback):
     "A `LearnerCallback` that records epoch, loss, opt and metric data during training."
     _order=-10
-    def __init__(self, learn:Learner, add_time:bool=True):
+    def __init__(self, learn:Learner, add_time:bool=True, silent:bool=False):
         super().__init__(learn)
         self.opt = self.learn.opt
         self.train_dl = self.learn.data.train_dl
-        self.no_val,self.silent,self.add_time = False,False,add_time
+        self.no_val,self.silent,self.add_time = False,silent,add_time
 
     def on_train_begin(self, pbar:PBar, metrics_names:Collection[str], **kwargs:Any)->None:
         "Initialize recording status at beginning of training."
         self.pbar = pbar
         self.names = ['epoch', 'train_loss'] if self.no_val else ['epoch', 'train_loss', 'valid_loss']
-        self.names += metrics_names
+        self.metrics_names = metrics_names
+        self.names += self.metrics_names
         if hasattr(self, '_added_met_names'): self.names += self._added_met_names
         if self.add_time: self.names.append('time')
         if not self.silent: self.pbar.write(self.names, table=True)
@@ -565,6 +568,8 @@ class Recorder(LearnerCallback):
             values = [met[i] for met in self.metrics]
             values = self._split_list_val(values, skip_start, skip_end)
             ax.plot(val_iter, values)
+            ax.set_ylabel(str(self.metrics_names[i]))
+            ax.set_xlabel('Batches processed')             
         if ifnone(return_fig, defaults.return_fig): return fig
         if not IN_NOTEBOOK: plot_sixel(fig)
 

@@ -46,7 +46,7 @@ def num_cpus()->int:
     except AttributeError: return os.cpu_count()
 
 _default_cpus = min(16, num_cpus())
-defaults = SimpleNamespace(cpus=_default_cpus, cmap='viridis', return_fig=False)
+defaults = SimpleNamespace(cpus=_default_cpus, cmap='viridis', return_fig=False, silent=False)
 
 def is_listy(x:Any)->bool: return isinstance(x, (tuple,list))
 def is_tuple(x:Any)->bool: return isinstance(x, tuple)
@@ -320,7 +320,7 @@ def text2html_table(items:Collection[Collection[str]])->str:
 def parallel(func, arr:Collection, max_workers:int=None):
     "Call `func` on every element of `arr` in parallel using `max_workers`."
     max_workers = ifnone(max_workers, defaults.cpus)
-    if max_workers<2: results = [func(o,i) for i,o in enumerate(arr)]
+    if max_workers<2: results = [func(o,i) for i,o in progress_bar(enumerate(arr), total=len(arr))]
     else:
         with ProcessPoolExecutor(max_workers=max_workers) as ex:
             futures = [ex.submit(func,o,i) for i,o in enumerate(arr)]
@@ -358,3 +358,8 @@ def compose(funcs:List[Callable])->Callable:
 class PrettyString(str):
     "Little hack to get strings to show properly in Jupyter."
     def __repr__(self): return self
+    
+def float_or_x(x):
+    "Tries to convert to float, returns x if it can't"
+    try:   return float(x)
+    except:return x

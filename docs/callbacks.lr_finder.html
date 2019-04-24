@@ -584,7 +584,7 @@ red dot on the graph. We can use that point as a first guess for an LR.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="LRFinder.on_train_begin" class="doc_header"><code>on_train_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/lr_finder.py#L20" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#LRFinder-on_train_begin-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>on_train_begin</code>(<strong><code>pbar</code></strong>, <strong>**<code>kwargs</code></strong>:<code>Any</code>)</p>
+<h4 id="LRFinder.on_train_begin" class="doc_header"><code>on_train_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/lr_finder.py#L16" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#LRFinder-on_train_begin-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>on_train_begin</code>(<strong><code>pbar</code></strong>, <strong>**<code>kwargs</code></strong>:<code>Any</code>)</p>
 </blockquote>
 <div class="collapse" id="LRFinder-on_train_begin-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#LRFinder-on_train_begin-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>on_train_begin</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Initialize optimizer and learner hyperparameters.</p>
 
@@ -605,7 +605,7 @@ red dot on the graph. We can use that point as a first guess for an LR.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="LRFinder.on_batch_end" class="doc_header"><code>on_batch_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/lr_finder.py#L28" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#LRFinder-on_batch_end-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>on_batch_end</code>(<strong><code>iteration</code></strong>:<code>int</code>, <strong><code>smooth_loss</code></strong>:<code>TensorOrNumber</code>, <strong>**<code>kwargs</code></strong>:<code>Any</code>)</p>
+<h4 id="LRFinder.on_batch_end" class="doc_header"><code>on_batch_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/lr_finder.py#L25" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#LRFinder-on_batch_end-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>on_batch_end</code>(<strong><code>iteration</code></strong>:<code>int</code>, <strong><code>smooth_loss</code></strong>:<code>TensorOrNumber</code>, <strong>**<code>kwargs</code></strong>:<code>Any</code>)</p>
 </blockquote>
 <div class="collapse" id="LRFinder-on_batch_end-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#LRFinder-on_batch_end-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>on_batch_end</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Determine if loss has runaway and we should stop.</p>
 
@@ -626,7 +626,7 @@ red dot on the graph. We can use that point as a first guess for an LR.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Callback.on_epoch_end" class="doc_header"><code>on_epoch_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callback.py#L185" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#Callback-on_epoch_end-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>on_epoch_end</code>(<strong>**<code>kwargs</code></strong>:<code>Any</code>)</p>
+<h4 id="Callback.on_epoch_end" class="doc_header"><code>on_epoch_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callback.py#L186" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#Callback-on_epoch_end-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>on_epoch_end</code>(<strong>**<code>kwargs</code></strong>:<code>Any</code>)</p>
 </blockquote>
 <div class="collapse" id="Callback-on_epoch_end-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#Callback-on_epoch_end-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>on_epoch_end</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Called at the end of an epoch.</p>
 
@@ -647,9 +647,9 @@ red dot on the graph. We can use that point as a first guess for an LR.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="LRFinder.on_train_end" class="doc_header"><code>on_train_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/lr_finder.py#L36" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#LRFinder-on_train_end-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>on_train_end</code>(<strong>**<code>kwargs</code></strong>:<code>Any</code>)</p>
+<h4 id="LRFinder.on_train_end" class="doc_header"><code>on_train_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/lr_finder.py#L33" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#LRFinder-on_train_end-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>on_train_end</code>(<strong>**<code>kwargs</code></strong>:<code>Any</code>)</p>
 </blockquote>
-<div class="collapse" id="LRFinder-on_train_end-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#LRFinder-on_train_end-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>on_train_end</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Cleanup learn model weights disturbed during LRFind exploration.</p>
+<div class="collapse" id="LRFinder-on_train_end-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#LRFinder-on_train_end-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>on_train_end</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Cleanup learn model weights disturbed during LRFinder exploration.</p>
 
 </div>
 

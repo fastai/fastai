@@ -15,7 +15,11 @@ of that change.
 
 ### New:
 
+- added `defaults.silent` that controls whether `fit` calls print out any output.
+
 ### Changed:
+
+- added support for `defaults.extra_callback_fns`
 
 ### Fixed:
 
@@ -24,7 +28,8 @@ of that change.
 
 ## 1.0.51 (2019-04-01)
 
-### Breaking changed:
+### Breaking changes:
+
 - Loading and saving. Added option to save/load from streams (buffers or file pointers).
 **Note** In all save/load related functions (`Learn.save`, `Learn.export`, `load_learner`, `DataBunch.save`, `load_data`), the parameter name `fname` was renamed to `file`.
 

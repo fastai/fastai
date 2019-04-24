@@ -79,11 +79,13 @@ sidebar_d = {
         'datasets': '/datasets',
         'core': '/core',
         'torch_core': '/torch_core',
+        'imports': '/imports',
     },
     'Utils': {
         'Helpers': '/utils.collect_env',
         'Memory Management': '/utils.mem',
         'ipython helpers': '/utils.ipython',
+        'Dislay utils': '/utils.mod_display',
     },
     'Tutorials': {
         'Overview': '/tutorials',
