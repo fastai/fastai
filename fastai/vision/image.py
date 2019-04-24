@@ -240,7 +240,7 @@ class ImageSegment(Image):
         ax = show_image(self, ax=ax, hide_axis=hide_axis, cmap=cmap, figsize=figsize,
                         interpolation='nearest', alpha=alpha, vmin=0)
         if title: ax.set_title(title)
-            
+
     def reconstruct(self, t:Tensor): return ImageSegment(t)
 
 class ImagePoints(Image):
@@ -270,7 +270,7 @@ class ImagePoints(Image):
 
     def __repr__(self): return f'{self.__class__.__name__} {tuple(self.size)}'
     def _repr_image_format(self, format_str): return None
-    
+
     @property
     def flow(self)->FlowField:
         "Access the flow-field grid after applying queued affine and coord transforms."
@@ -483,6 +483,7 @@ class RandTransform():
     resolved:dict = field(default_factory=dict)
     do_run:bool = True
     is_random:bool = True
+    skip_y=False
     def __post_init__(self): functools.update_wrapper(self, self.tfm)
 
     def resolve(self)->None:
