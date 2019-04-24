@@ -297,7 +297,7 @@ class TokenizeProcessor(PreProcessor):
         return out
 
     def process(self, ds):
-        def maybe_remove(filename):
+        def maybe_remove_file(filename):
             try: os.remove(filename) #remove if it is there
             except OSError: pass
             
@@ -305,8 +305,8 @@ class TokenizeProcessor(PreProcessor):
         freq = Counter()
 
         TOK_SEP_CHR = chr(9602) # _ char to separate
-        NEW_TXT_CHR = chr(9600) #'XXnewnoteXX' #chr(9600) # square char to separate
-        maybe_remove('tmp_all_tokens')
+        NEW_TXT_CHR = chr(9600) # square char to separate
+        maybe_remove_file('tmp_all_tokens')
         
         with open('tmp_all_tokens','a+') as f:
             for i in progress_bar(range(0,len(ds),self.chunksize), leave=False):
@@ -325,8 +325,20 @@ class TokenizeProcessor(PreProcessor):
                 tokens = [x.split(TOK_SEP_CHR) for x in line.rstrip('\n').split(NEW_TXT_CHR)][1:]
                 all_items += [self.process_one(item) for item in tokens]
         ds.items = array(all_items).squeeze()
-        maybe_remove('tmp_all_tokens')
+        maybe_remove_file('tmp_all_tokens')
+
+class NumericalizeProcessor(PreProcessor):
+    "`PreProcessor` that numericalizes the tokens in `ds`."
+    def __init__(self, ds:ItemList=None, vocab:Vocab=None, max_vocab:int=60000, min_freq:int=3):
+        vocab = ifnone(vocab, ds.vocab if ds is not None else None)
+        self.vocab,self.max_vocab,self.min_freq = vocab,max_vocab,min_freq
         
+    def process_one(self,item): return np.array(self.vocab.numericalize(item), dtype=np.int64)
+    def process(self, ds):
+        if self.vocab is None: self.vocab = Vocab.create(ds.items, self.max_vocab, self.min_freq)
+        ds.vocab = self.vocab
+        super().process(ds)
+                        
 class OpenFileProcessor(PreProcessor):
     "`PreProcessor` that opens the filenames and read the texts."
     def process_one(self,item):
