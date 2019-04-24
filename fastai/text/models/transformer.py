@@ -51,10 +51,10 @@ class MultiHeadAttention(nn.Module):
     def _apply_attention(self, x:Tensor, mask:Tensor=None):
         bs,x_len = x.size(0),x.size(1)
         wq,wk,wv = torch.chunk(self.attention(x), 3, dim=-1)
-        wq,wk,wv = map(lambda x:x.view(bs, x.size(1), self.n_heads, self.d_head), (wq,wk,wv))
+        wq,wk,wv = map(lambda x:x.view(bs, x_len, self.n_heads, self.d_head), (wq,wk,wv))
         wq,wk,wv = wq.permute(0, 2, 1, 3),wk.permute(0, 2, 3, 1),wv.permute(0, 2, 1, 3)
         attn_score = torch.matmul(wq, wk)
-        if self.scale: attn_score = attn_score.div_(self.d_head ** 0.5)
+        if self.scale: attn_score.div_(self.d_head ** 0.5)
         if mask is not None: 
             attn_score = attn_score.float().masked_fill(mask, -float('inf')).type_as(attn_score)
         attn_prob = self.drop_att(F.softmax(attn_score, dim=-1))
@@ -65,9 +65,9 @@ class MultiHeadAttention(nn.Module):
         # Permute and matmul is a little bit faster but this implementation is more readable
         bs,x_len = x.size(0),x.size(1)
         wq,wk,wv = torch.chunk(self.attention(x), 3, dim=-1)
-        wq,wk,wv = map(lambda x:x.view(bs, x.size(1), self.n_heads, self.d_head), (wq,wk,wv))
+        wq,wk,wv = map(lambda x:x.view(bs, x_len, self.n_heads, self.d_head), (wq,wk,wv))
         attn_score = torch.einsum('bind,bjnd->bijn', (wq, wk))
-        if self.scale: attn_score = attn_score.mul_(1/(self.d_head ** 0.5))
+        if self.scale: attn_score.mul_(1/(self.d_head ** 0.5))
         if mask is not None: 
             attn_score = attn_score.float().masked_fill(mask, -float('inf')).type_as(attn_score)
         attn_prob = self.drop_att(F.softmax(attn_score, dim=2))
