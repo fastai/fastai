@@ -719,8 +719,8 @@ class LabelList(Dataset):
         _check_kwargs(self.y, tfms, **kwargs)
         self.tfm_y=True
         if tfms is None:
-            self.tfms = list(filter(lambda t: t.use_on_y, self.tfms))
-            self.tfms_y,self.tfmargs_y = self.tfms,{**self.tfmargs, **kwargs}
+            self.tfms_y = list(filter(lambda t: t.use_on_y, self.tfms))
+            self.tfmargs_y = {**self.tfmargs, **kwargs}
         else:
             tfms = list(filter(lambda t: t.use_on_y, tfms))
             self.tfms_y,self.tfmargs_y = tfms,kwargs
