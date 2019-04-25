@@ -459,7 +459,7 @@ class Transform():
         setattr(Image, func.__name__,
                 lambda x, *args, **kwargs: self.calc(x, *args, **kwargs))
 
-    def __call__(self, *args:Any, p:float=1., is_random:bool=True, use_on_y=True, **kwargs:Any)->Image:
+    def __call__(self, *args:Any, p:float=1., is_random:bool=True, use_on_y:bool=True, **kwargs:Any)->Image:
         "Calc now if `args` passed; else create a transform called prob `p` if `random`."
         if args: return self.calc(*args, **kwargs)
         else: return RandTransform(self, kwargs=kwargs, is_random=is_random, use_on_y=use_on_y, p=p)
