@@ -303,7 +303,7 @@ class ItemList():
     
     def databunch(self, **kwargs):
         "To throw a clear error message when the data wasn't split and labeled."
-        raise Exception("Your data is neither split nor labeled, can't turn it in a `DataBunch` yet.")
+        raise Exception("Your data is neither split nor labeled, can't turn it into a `DataBunch` yet.")
 
 class EmptyLabelList(ItemList):
     "Basic `ItemList` for dummy labels."
@@ -505,7 +505,7 @@ class ItemLists():
                 
     def databunch(self, **kwargs):
         "To throw a clear error message when the data wasn't labeled."
-        raise Exception("Your data isn't labeled, can't turn it in a `DataBunch` yet!")
+        raise Exception("Your data isn't labeled, can't turn it into a `DataBunch` yet!")
 
 class LabelLists(ItemLists):
     "A `LabelList` for each of `train` and `valid` (optional `test`)."
