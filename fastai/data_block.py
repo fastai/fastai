@@ -25,7 +25,7 @@ def get_files(path:PathOrStr, extensions:Collection[str]=None, recurse:bool=Fals
     "Return list of files in `path` that have a suffix in `extensions`; optionally `recurse`."
     if recurse:
         res = []
-        for i,(p,d,f) in enumerate(os.walk(path)): 
+        for i,(p,d,f) in enumerate(os.walk(path)):
             # skip hidden dirs
             if include is not None and i==0:  d[:] = [o for o in d if o in include]
             else:                             d[:] = [o for o in d if not o.startswith('.')]
@@ -48,7 +48,7 @@ class ItemList():
     "A collection of items with `__len__` and `__getitem__` with `ndarray` indexing semantics."
     _bunch,_processor,_label_cls,_square_show,_square_show_res = DataBunch,None,None,False,False
 
-    def __init__(self, items:Iterator, path:PathOrStr='.', label_cls:Callable=None, inner_df:Any=None, 
+    def __init__(self, items:Iterator, path:PathOrStr='.', label_cls:Callable=None, inner_df:Any=None,
                  processor:PreProcessors=None, x:'ItemList'=None, ignore_empty:bool=False):
         self.path = Path(path)
         self.num_parts = len(self.path.parts)
@@ -121,12 +121,12 @@ class ItemList():
     def from_df(cls, df:DataFrame, path:PathOrStr='.', cols:IntsOrStrs=0, processor:PreProcessors=None, **kwargs)->'ItemList':
         "Create an `ItemList` in `path` from the inputs in the `cols` of `df`."
         inputs = df.iloc[:,df_names_to_idx(cols, df)]
-        assert inputs.isna().sum().sum() == 0, f"You have NaN values in column(s) {cols} of your dataframe, please fix it." 
+        assert inputs.isna().sum().sum() == 0, f"You have NaN values in column(s) {cols} of your dataframe, please fix it."
         res = cls(items=_maybe_squeeze(inputs.values), path=path, inner_df=df, processor=processor, **kwargs)
         return res
 
     @classmethod
-    def from_csv(cls, path:PathOrStr, csv_name:str, cols:IntsOrStrs=0, delimiter:str=None, header:str='infer', 
+    def from_csv(cls, path:PathOrStr, csv_name:str, cols:IntsOrStrs=0, delimiter:str=None, header:str='infer',
                  processor:PreProcessors=None, **kwargs)->'ItemList':
         """Create an `ItemList` in `path` from the inputs in the `cols` of `path/csv_name`"""
         df = pd.read_csv(Path(path)/csv_name, delimiter=delimiter, header=header)
@@ -166,7 +166,7 @@ class ItemList():
         "Keep random sample of `items` with probability `p` and an optional `seed`."
         if seed is not None: np.random.seed(seed)
         return self.filter_by_func(lambda o: rand_bool(p))
-                
+
     def no_split(self):
         warn("`no_split` is deprecated, please use `split_none`.")
         return self.split_none()
@@ -192,17 +192,17 @@ class ItemList():
         return self.split_by_idxs(train_idx, valid_idx)
 
     def _get_by_folder(self, name):
-        return [i for i in range_of(self) if (self.items[i].parts[self.num_parts] if isinstance(self.items[i], Path) 
+        return [i for i in range_of(self) if (self.items[i].parts[self.num_parts] if isinstance(self.items[i], Path)
                 else self.items[i].split(os.path.sep)[0]) == name ]
 
     def split_by_folder(self, train:str='train', valid:str='valid')->'ItemLists':
         "Split the data depending on the folder (`train` or `valid`) in which the filenames are."
         return self.split_by_idxs(self._get_by_folder(train), self._get_by_folder(valid))
-     
+
     def random_split_by_pct(self, valid_pct:float=0.2, seed:int=None):
         warn("`random_split_by_pct` is deprecated, please use `split_by_rand_pct`.")
-        return self.split_by_rand_pct(valid_pct=valid_pct, seed=seed)         
-    
+        return self.split_by_rand_pct(valid_pct=valid_pct, seed=seed)
+
     def split_by_rand_pct(self, valid_pct:float=0.2, seed:int=None)->'ItemLists':
         "Split the items randomly by putting `valid_pct` in the validation set, optional `seed` can be passed."
         if valid_pct==0.: return self.split_none()
@@ -246,7 +246,7 @@ class ItemList():
     def get_label_cls(self, labels, label_cls:Callable=None, label_delim:str=None, **kwargs):
         "Return `label_cls` or guess one from the first element of `labels`."
         if label_cls is not None:               return label_cls
-        if self.label_cls is not None:          return self.label_cls 
+        if self.label_cls is not None:          return self.label_cls
         if label_delim is not None:             return MultiCategoryList
         it = index_row(labels,0)
         if isinstance(it, (float, np.float32)): return FloatList
@@ -256,7 +256,7 @@ class ItemList():
 
     def _label_from_list(self, labels:Iterator, label_cls:Callable=None, from_item_lists:bool=False, **kwargs)->'LabelList':
         "Label `self.items` with `labels`."
-        if not from_item_lists: 
+        if not from_item_lists:
             raise Exception("Your data isn't split, if you don't want a validation set, please use `split_none`.")
         labels = array(labels, dtype=object)
         label_cls = self.get_label_cls(labels, label_cls=label_cls, **kwargs)
@@ -267,8 +267,8 @@ class ItemList():
     def label_from_df(self, cols:IntsOrStrs=1, label_cls:Callable=None, **kwargs):
         "Label `self.items` from the values in `cols` in `self.inner_df`."
         labels = self.inner_df.iloc[:,df_names_to_idx(cols, self.inner_df)]
-        assert labels.isna().sum().sum() == 0, f"You have NaN values in column(s) {cols} of your dataframe, please fix it." 
-        if is_listy(cols) and len(cols) > 1 and (label_cls is None or label_cls == MultiCategoryList): 
+        assert labels.isna().sum().sum() == 0, f"You have NaN values in column(s) {cols} of your dataframe, please fix it."
+        if is_listy(cols) and len(cols) > 1 and (label_cls is None or label_cls == MultiCategoryList):
             new_kwargs,label_cls = dict(one_hot=True, classes= cols),MultiCategoryList
             kwargs = {**new_kwargs, **kwargs}
         return self._label_from_list(_maybe_squeeze(labels), label_cls=label_cls, **kwargs)
@@ -288,7 +288,7 @@ class ItemList():
 
     def label_from_folder(self, label_cls:Callable=None, **kwargs)->'LabelList':
         "Give a label to each filename depending on its folder."
-        return self.label_from_func(func=lambda o: (o.parts if isinstance(o, Path) else o.split(os.path.sep))[-2], 
+        return self.label_from_func(func=lambda o: (o.parts if isinstance(o, Path) else o.split(os.path.sep))[-2],
                                     label_cls=label_cls, **kwargs)
 
     def label_from_re(self, pat:str, full_path:bool=False, label_cls:Callable=None, **kwargs)->'LabelList':
@@ -300,7 +300,7 @@ class ItemList():
             assert res,f'Failed to find "{pat}" in "{s}"'
             return res.group(1)
         return self.label_from_func(_inner, label_cls=label_cls, **kwargs)
-    
+
     def databunch(self, **kwargs):
         "To throw a clear error message when the data wasn't split and labeled."
         raise Exception("Your data is neither split nor labeled, can't turn it into a `DataBunch` yet.")
@@ -339,10 +339,10 @@ class CategoryProcessor(PreProcessor):
         super().process(ds)
 
     def __getstate__(self): return {n:getattr(self,n) for n in self.state_attrs}
-    def __setstate__(self, state:dict): 
+    def __setstate__(self, state:dict):
         self.create_classes(state['classes'])
         self.state_attrs = state.keys()
-        for n in state.keys(): 
+        for n in state.keys():
             if n!='classes': setattr(self, n, state[n])
 
 class CategoryListBase(ItemList):
@@ -502,7 +502,7 @@ class ItemLists():
         self.valid.transform_y(tfms[1], **kwargs)
         if self.test: self.test.transform_y(tfms[1], **kwargs)
         return self
-                
+
     def databunch(self, **kwargs):
         "To throw a clear error message when the data wasn't labeled."
         raise Exception("Your data isn't labeled, can't turn it into a `DataBunch` yet!")
@@ -524,7 +524,7 @@ class LabelLists(ItemLists):
         for ds in self.lists:
             if getattr(ds, 'warn', False): warn(ds.warn)
         return self
-                
+
     def filter_by_func(self, func:Callable):
         for ds in self.lists: ds.filter_by_func(func)
         return self
@@ -548,7 +548,7 @@ class LabelLists(ItemLists):
         if label is None: labels = EmptyLabelList([0] * len(items))
         else: labels = self.valid.y.new([label] * len(items)).process()
         if isinstance(items, ItemList): items = self.valid.x.new(items.items, inner_df=items.inner_df).process()
-        else: items = self.valid.x.new(items).process()          
+        else: items = self.valid.x.new(items).process()
         self.test = self.valid.new(items, labels)
         return self
 
@@ -698,7 +698,7 @@ class LabelList(Dataset):
                 self.x,self.y = self.x[~filt],self.y[~filt]
         self.x.process(xp)
         return self
-                
+
     def filter_by_func(self, func:Callable):
         filt = array([func(x,y) for x,y in zip(self.x.items, self.y.items)])
         self.x,self.y = self.x[~filt],self.y[~filt]
@@ -709,16 +709,21 @@ class LabelList(Dataset):
         _check_kwargs(self.x, tfms, **kwargs)
         if tfm_y is None: tfm_y = self.tfm_y
         if tfm_y: _check_kwargs(self.y, tfms, **kwargs)
-        self.tfms,self.tfmargs = tfms,kwargs
-        self.tfm_y,self.tfms_y,self.tfmargs_y = tfm_y,tfms,kwargs
+        self.tfms,  self.tfmargs   = tfms,kwargs
+        self.tfm_y, self.tfmargs_y = tfm_y,kwargs
+        self.tfms_y = None if tfms is None else list(filter(lambda t: t.use_on_y, tfms))
         return self
 
     def transform_y(self, tfms:TfmList=None, **kwargs):
         "Set `tfms` to be applied to the targets only."
         _check_kwargs(self.y, tfms, **kwargs)
         self.tfm_y=True
-        if tfms is None: self.tfms_y,self.tfmargs_y = self.tfms,{**self.tfmargs, **kwargs}
-        else:            self.tfms_y,self.tfmargs_y = tfms,kwargs
+        if tfms is None:
+            self.tfms_y = list(filter(lambda t: t.use_on_y, self.tfms))
+            self.tfmargs_y = {**self.tfmargs, **kwargs}
+        else:
+            tfms = list(filter(lambda t: t.use_on_y, tfms))
+            self.tfms_y,self.tfmargs_y = tfms,kwargs
         return self
 
     def databunch(self, **kwargs):
@@ -736,33 +741,33 @@ DataBunch.load_empty = _databunch_load_empty
 class MixedProcessor(PreProcessor):
     def __init__(self, procs:Collection[Union[PreProcessor, Collection[PreProcessor]]]):
         self.procs = procs
-    
-    def process_one(self, item:Any): 
+
+    def process_one(self, item:Any):
         res = []
         for procs, i in zip(self.procs, item):
             for p in procs: i = p.process_one(i)
             res.append(i)
         return res
-    
-    def process(self, ds:Collection): 
+
+    def process(self, ds:Collection):
         for procs, il in zip(self.procs, ds.item_lists):
             for p in procs: p.process(il)
-                
+
 class MixedItem(ItemBase):
     def __init__(self, items):
         self.obj = items
         self.data = [item.data for item in items]
-    
-    def __repr__(self): return '\n'.join([f'{self.__class__.__name__}'] + [repr(item) for item in self.obj]) 
-    
+
+    def __repr__(self): return '\n'.join([f'{self.__class__.__name__}'] + [repr(item) for item in self.obj])
+
     def apply_tfms(self, tfms:Collection, **kwargs):
         self.obj = [item.apply_tfms(t, **kwargs) for item,t in zip(self.obj, tfms)]
         self.data = [item.data for item in self.obj]
         return self
 
 class MixedItemList(ItemList):
-    
-    def __init__(self, item_lists, path:PathOrStr=None, label_cls:Callable=None, inner_df:Any=None, 
+
+    def __init__(self, item_lists, path:PathOrStr=None, label_cls:Callable=None, inner_df:Any=None,
                  x:'ItemList'=None, ignore_empty:bool=False, processor=None):
         self.item_lists = item_lists
         if processor is None:
@@ -770,22 +775,22 @@ class MixedItemList(ItemList):
             processor = MixedProcessor([ifnone(il.processor, dp) for il,dp in zip(item_lists, default_procs)])
         items = range_of(item_lists[0]) if len(item_lists) >= 1 else []
         if path is None and len(item_lists) >= 1: path = item_lists[0].path
-        super().__init__(items, processor=processor, path=path, 
+        super().__init__(items, processor=processor, path=path,
                          label_cls=label_cls, inner_df=inner_df, x=x, ignore_empty=ignore_empty)
-    
+
     def new(self, item_lists, processor:PreProcessor=None, **kwargs)->'ItemList':
         "Create a new `ItemList` from `items`, keeping the same attributes."
         processor = ifnone(processor, self.processor)
         copy_d = {o:getattr(self,o) for o in self.copy_new}
         kwargs = {**copy_d, **kwargs}
         return self.__class__(item_lists, processor=processor, **kwargs)
-    
+
     def get(self, i):
         return MixedItem([il.get(i) for il in self.item_lists])
-    
+
     def __getitem__(self,idxs:int)->Any:
         idxs = try_int(idxs)
         if isinstance(idxs, Integral): return self.get(idxs)
-        else: 
+        else:
             item_lists = [il.new(il.items[idxs], inner_df=index_row(il.inner_df, idxs)) for il in self.item_lists]
             return self.new(item_lists, inner_df=index_row(self.inner_df, idxs))

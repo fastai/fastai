@@ -240,7 +240,7 @@ class ImageSegment(Image):
         ax = show_image(self, ax=ax, hide_axis=hide_axis, cmap=cmap, figsize=figsize,
                         interpolation='nearest', alpha=alpha, vmin=0)
         if title: ax.set_title(title)
-            
+
     def reconstruct(self, t:Tensor): return ImageSegment(t)
 
 class ImagePoints(Image):
@@ -270,7 +270,7 @@ class ImagePoints(Image):
 
     def __repr__(self): return f'{self.__class__.__name__} {tuple(self.size)}'
     def _repr_image_format(self, format_str): return None
-    
+
     @property
     def flow(self)->FlowField:
         "Access the flow-field grid after applying queued affine and coord transforms."
@@ -459,10 +459,10 @@ class Transform():
         setattr(Image, func.__name__,
                 lambda x, *args, **kwargs: self.calc(x, *args, **kwargs))
 
-    def __call__(self, *args:Any, p:float=1., is_random:bool=True, **kwargs:Any)->Image:
+    def __call__(self, *args:Any, p:float=1., is_random:bool=True, use_on_y:bool=True, **kwargs:Any)->Image:
         "Calc now if `args` passed; else create a transform called prob `p` if `random`."
         if args: return self.calc(*args, **kwargs)
-        else: return RandTransform(self, kwargs=kwargs, is_random=is_random, p=p)
+        else: return RandTransform(self, kwargs=kwargs, is_random=is_random, use_on_y=use_on_y, p=p)
 
     def calc(self, x:Image, *args:Any, **kwargs:Any)->Image:
         "Apply to image `x`, wrapping it if necessary."
@@ -483,6 +483,7 @@ class RandTransform():
     resolved:dict = field(default_factory=dict)
     do_run:bool = True
     is_random:bool = True
+    use_on_y:bool = True
     def __post_init__(self): functools.update_wrapper(self, self.tfm)
 
     def resolve(self)->None:
