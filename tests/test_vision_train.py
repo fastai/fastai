@@ -65,7 +65,7 @@ def test_preds(learn):
     pass_tst = False
     for i in range(3):
         img, label = learn.data.valid_ds[i]
-        pred_class,pred_idx,outputs = learn.predict(img)
+        _, pred_class,pred_idx,outputs = learn.predict(img)
         if outputs[int(label)] > outputs[1-int(label)]: return
     assert False, 'Failed to predict correct class'
 
