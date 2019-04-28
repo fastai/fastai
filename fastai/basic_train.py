@@ -359,7 +359,7 @@ class Learner():
                           cb_handler=CallbackHandler(self.callbacks))
         return loss
 
-    def predict(self, item:ItemBase, return_x:bool:False, batch_first:bool=True, **kwargs):
+    def predict(self, item:ItemBase, return_x:bool=False, batch_first:bool=True, **kwargs):
         "Return predicted class, label and probabilities for `item`."
         batch = self.data.one_item(item)
         res = self.pred_batch(batch=batch)
