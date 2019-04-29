@@ -268,6 +268,22 @@ def test_itembase_eq():
     assert t1 != t2
     assert t1 == t3
 
+    t4 = TestItemBase([1, 2])
+    t5 = TestItemBase([1])
+    t6 = TestItemBase([1, 2])
+
+    assert t4 == t4
+    assert t4 != t5
+    assert t4 == t6
+
+    t7 = TestItemBase([[1]])
+    t8 = TestItemBase([1])
+    t9 = TestItemBase([[1]])
+
+    assert t7 == t7
+    assert t7 != t8
+    assert t7 == t9
+
 def test_itembase_hash():
     this_tests(ItemBase.__eq__, Category.__hash__, FloatItem.__hash__, MultiCategory.__hash__)
 

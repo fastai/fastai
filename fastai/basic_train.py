@@ -359,19 +359,20 @@ class Learner():
                           cb_handler=CallbackHandler(self.callbacks))
         return loss
 
-    def predict(self, item:ItemBase, **kwargs):
+    def predict(self, item:ItemBase, return_x:bool=False, batch_first:bool=True, **kwargs):
         "Return predicted class, label and probabilities for `item`."
         batch = self.data.one_item(item)
         res = self.pred_batch(batch=batch)
-        pred,x = grab_idx(res,0),batch[0]
+        raw_pred,x = grab_idx(res,0,batch_first=batch_first),batch[0]
         norm = getattr(self.data,'norm',False)
         if norm:
             x = self.data.denorm(x)
             if norm.keywords.get('do_y',False): pred = self.data.denorm(pred)
         ds = self.data.single_ds
-        pred = ds.y.analyze_pred(pred, **kwargs)
-        out = ds.y.reconstruct(pred, ds.x.reconstruct(item.data)) if has_arg(ds.y.reconstruct, 'x') else ds.y.reconstruct(pred)
-        return out, pred, res[0]
+        pred = ds.y.analyze_pred(raw_pred, **kwargs)
+        x = ds.x.reconstruct(x[0])
+        y = ds.y.reconstruct(pred, x) if has_arg(ds.y.reconstruct, 'x') else ds.y.reconstruct(pred)
+        return (x, y, pred, raw_pred) if return_x else (y, pred, raw_pred)
 
     def validate(self, dl=None, callbacks=None, metrics=None):
         "Validate on `dl` with potential `callbacks` and `metrics`."

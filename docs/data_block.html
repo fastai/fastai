@@ -585,7 +585,7 @@ summary: "The data block API"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Then we can easily define a <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a> using the data block API. Here we need to use <code>tfm_y=True</code> in the transform call because we need the same transforms to be applied to the target mask as were applied to the image.</p>
+<p>Then we can easily define a <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a> using the data block API. Here we need to use <code>tfm_y=True</code> in the transform call because we need the same transforms to be applied to the target mask as were applied to the image. Side note: For further control over which transformations are used on the target, each transformation has a <code>use_on_y</code> parameter</p>
 
 </div>
 </div>
@@ -1272,6 +1272,14 @@ Path: /Users/georgezhang/.fastai/data/mnist_tiny</pre>
 </div>
 
 </div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><code>path</code> is your root data folder. In the <code>path</code> directory you have <em>train</em> and <em>valid</em> folders which would contain your images. For the below example, <em>train</em> folder contains two folders/classes <em>cat</em> and <em>dog</em>.</p>
+<p><img src="imgs/from_folder.png" alt="from_folder"></p>
+
+</div>
+</div>
+</div>
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -1292,6 +1300,15 @@ Path: /Users/georgezhang/.fastai/data/mnist_tiny</pre>
 </div>
 </div>
 
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Dataframe has 2 columns. The first column is the path to the image and the second column contains label id for that image. In case you have multi-labels (i.e more than one label for a single image), you will have a space(as determined by <code>label_delim</code> argument of <code>label_from_df</code>) seperated string in the labels column.</p>
+<p><code>from_df</code> and <code>from_csv</code> can be used in a more general way. In cases you are not able to figure out how to get your ImageList, it is very easy to make a csv file with the above format.</p>
+<p>How to set <code>path</code>? <code>path</code> refers to your root data directory. So the paths in your csv file should be relative to <code>path</code> and not absolute paths. In the below example, in <em>labels.csv</em> the paths to the images are <strong>path + train/3/7463.png</strong></p>
+
+</div>
+</div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
@@ -2285,6 +2302,93 @@ Path: /Users/georgezhang/.fastai/data/mnist_sample</pre>
 </div>
 
 </div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Let's try this functions for cifar-10. In every folder, we have our image files that are named as 0001.png, 0002.png. So we have 10 images of 0001.png (one for each class) in the train folder. <code>valid_names</code> can be a list containing names of your images that you want to place in your validation set.</p>
+<p><strong>Note</strong> :- Here in <code>valid_names</code> you need to specify the image name and not the image path. So for <code>/path/to/image.png</code>, we only need to add <code>image.png</code> in our valid_names.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">path</span> <span class="o">=</span> <span class="n">untar_data</span><span class="p">(</span><span class="n">URLs</span><span class="o">.</span><span class="n">CIFAR</span><span class="p">)</span>
+<span class="n">path</span><span class="o">.</span><span class="n">ls</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[PosixPath(&#39;/home/kushaj/Desktop/Data/cifar10/train&#39;),
+ PosixPath(&#39;/home/kushaj/Desktop/Data/cifar10/valid&#39;)]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="p">(</span><span class="n">ImageList</span><span class="o">.</span><span class="n">from_folder</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+                 <span class="o">.</span><span class="n">split_by_files</span><span class="p">(</span><span class="n">valid_names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;0001.png&#39;</span><span class="p">,</span> <span class="s1">&#39;0002.png&#39;</span><span class="p">]))</span>
+<span class="n">data</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>ItemLists;
+
+Train: ImageList (59960 items)
+Image (3, 32, 32),Image (3, 32, 32),Image (3, 32, 32),Image (3, 32, 32),Image (3, 32, 32)
+Path: /home/kushaj/Desktop/Data/cifar10;
+
+Valid: ImageList (40 items)
+Image (3, 32, 32),Image (3, 32, 32),Image (3, 32, 32),Image (3, 32, 32),Image (3, 32, 32)
+Path: /home/kushaj/Desktop/Data/cifar10;
+
+Test: None</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In the Valid we can see 40 images (20 images of 0001.png, 20 images of 0002.png from both train and valid folders)</p>
+
+</div>
+</div>
+</div>
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -2305,6 +2409,13 @@ Path: /Users/georgezhang/.fastai/data/mnist_sample</pre>
 </div>
 </div>
 
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Internally makes a call to <code>split_by_files</code>. <code>fname</code> contains your image file names like 0001.png.</p>
+
+</div>
+</div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 
@@ -2367,6 +2478,134 @@ Path: /Users/georgezhang/.fastai/data/mnist_sample</pre>
 
 </div>
 <div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">path</span> <span class="o">=</span> <span class="n">untar_data</span><span class="p">(</span><span class="n">URLs</span><span class="o">.</span><span class="n">MNIST_SAMPLE</span><span class="p">)</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">path</span><span class="o">/</span><span class="s1">&#39;labels.csv&#39;</span><span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>name</th>
+      <th>label</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>train/3/7463.png</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>train/3/21102.png</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>train/3/31559.png</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>train/3/46882.png</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>train/3/26209.png</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>You can pass a list of indices that you want to put in the validation set like [1, 3, 10]. Or you can pass a contiguous list like <code>list(range(1000))</code></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="p">(</span><span class="n">ImageList</span><span class="o">.</span><span class="n">from_df</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+                 <span class="o">.</span><span class="n">split_by_idx</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1000</span><span class="p">))))</span>
+<span class="n">data</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>ItemLists;
+
+Train: ImageList (13434 items)
+Image (3, 28, 28),Image (3, 28, 28),Image (3, 28, 28),Image (3, 28, 28),Image (3, 28, 28)
+Path: /home/kushaj/.fastai/data/mnist_sample;
+
+Valid: ImageList (1000 items)
+Image (3, 28, 28),Image (3, 28, 28),Image (3, 28, 28),Image (3, 28, 28),Image (3, 28, 28)
+Path: /home/kushaj/.fastai/data/mnist_sample;
+
+Test: None</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
 <div class="output">
@@ -2408,6 +2647,13 @@ Path: /Users/georgezhang/.fastai/data/mnist_sample</pre>
 </div>
 
 </div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This is more of an internal method, you should be using <code>split_by_files</code> if you want to pass a list of filenames for the validation set.</p>
+
+</div>
+</div>
+</div>
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -2442,6 +2688,155 @@ Path: /Users/georgezhang/.fastai/data/mnist_sample</pre>
 </blockquote>
 <div class="collapse" id="ItemList-split_from_df-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#ItemList-split_from_df-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>split_from_df</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Split the data from the <code>col</code> in the dataframe in <code>self.inner_df</code>.</p>
 
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>To use this function, you need a boolean column <code>is_valid</code>. If <code>is_valid[index] = True</code>, then that example is put in the validation set and if <code>is_valid[index] = False</code> the example is put in the training set.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">path</span> <span class="o">=</span> <span class="n">untar_data</span><span class="p">(</span><span class="n">URLs</span><span class="o">.</span><span class="n">MNIST_SAMPLE</span><span class="p">)</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">path</span><span class="o">/</span><span class="s1">&#39;labels.csv&#39;</span><span class="p">)</span>
+
+<span class="c1"># Create a new column for is_valid</span>
+<span class="n">df</span><span class="p">[</span><span class="s1">&#39;is_valid&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="kc">True</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">//</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="kc">False</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">//</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="c1"># Randomly shuffle dataframe</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">reindex</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">permutation</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>(14434, 3)
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>name</th>
+      <th>label</th>
+      <th>is_valid</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>6851</th>
+      <td>train/7/36197.png</td>
+      <td>1</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>12440</th>
+      <td>valid/3/3078.png</td>
+      <td>0</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>2523</th>
+      <td>train/3/56574.png</td>
+      <td>0</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>13803</th>
+      <td>valid/7/9463.png</td>
+      <td>1</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>14100</th>
+      <td>valid/7/4200.png</td>
+      <td>1</td>
+      <td>False</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="p">(</span><span class="n">ImageList</span><span class="o">.</span><span class="n">from_df</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+                 <span class="o">.</span><span class="n">split_from_df</span><span class="p">())</span>
+<span class="n">data</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>ItemLists;
+
+Train: ImageList (7217 items)
+Image (3, 28, 28),Image (3, 28, 28),Image (3, 28, 28),Image (3, 28, 28),Image (3, 28, 28)
+Path: /home/kushaj/.fastai/data/mnist_sample;
+
+Valid: ImageList (7217 items)
+Image (3, 28, 28),Image (3, 28, 28),Image (3, 28, 28),Image (3, 28, 28),Image (3, 28, 28)
+Path: /home/kushaj/.fastai/data/mnist_sample;
+
+Test: None</pre>
 </div>
 
 </div>
@@ -3329,7 +3724,7 @@ learn.validate(data_test.valid_dl)</code></pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="LabelList.transform_y" class="doc_header"><code>transform_y</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L716" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#LabelList-transform_y-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>transform_y</code>(<strong><code>tfms</code></strong>:<code>Union</code>[<code>Callable</code>, <code>Collection</code>[<code>Callable</code>]]=<strong><em><code>None</code></em></strong>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="LabelList.transform_y" class="doc_header"><code>transform_y</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L717" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#LabelList-transform_y-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>transform_y</code>(<strong><code>tfms</code></strong>:<code>Union</code>[<code>Callable</code>, <code>Collection</code>[<code>Callable</code>]]=<strong><em><code>None</code></em></strong>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <div class="collapse" id="LabelList-transform_y-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#LabelList-transform_y-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>transform_y</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Set <code>tfms</code> to be applied to the targets only.</p>
 
