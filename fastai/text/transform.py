@@ -134,7 +134,7 @@ class TokenizerMulti():
         maybe_remove(self.path/output_file)
             
         counts = Counter()
-        with open(self.path/output_file,'a+',newline='') as f:
+        with open(self.path/output_file,'w',newline='') as f:
             for docs in tok.tok.pipe(all_docs, batch_size=chunksize):
                 toks = [t.text for t in docs]
                 for rule in self.post_rules: toks = rule(toks)
@@ -151,10 +151,8 @@ class TokenizerMulti():
         progress_queue = Queue()
         c = Counter()
         processes = []
-
-        for i,batch in enumerate(np.array_split(texts,self.n_cpus)):
-            # self._process_multi(batch,queue,f'tokens{i}',chunksize)
-            ## reduce memory footprint further by writing to file here, then passing filename to process?
+        
+        for i,batch in enumerate(np.array_split(text,self.n_cpus)):
             processes.append(Process(target=self._process_multi, args=(batch,queue,progress_queue,f'tokens{i}',chunksize)))
             
         for p in processes: p.start()
