@@ -219,7 +219,7 @@ def _check_file(fname):
     return size,hash_nb
 
 def untar_data(url:str, fname:PathOrStr=None, dest:PathOrStr=None, data=True, force_download=False) -> Path:
-    "Download `url` to `fname` if it doesn't exist, and un-tgz to folder `dest`."
+    "Download `url` to `fname` if `dest` doesn't exist, and un-tgz to folder `dest`."
     dest = url2path(url, data) if dest is None else Path(dest)/url2name(url)
     fname = Path(ifnone(fname, _url2tgz(url, data)))
     if force_download or (fname.exists() and url in _checks and _check_file(fname) != _checks[url]):
