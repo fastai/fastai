@@ -1563,7 +1563,7 @@ Test: None</pre>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Create a <a href="/data_block.html#ItemList"><code>ItemList</code></a> in <code>path</code> from filenames in <code>items</code>. <code>create_func</code> will default to <a href="/vision.image.html#open_image"><code>open_image</code></a>. <code>label_cls</code> can be specified for the labels, <code>xtra</code> contains any extra information (usually in the form of a dataframe) and <code>processor</code> is applied to the <a href="/data_block.html#ItemList"><code>ItemList</code></a> after splitting and labelling.</p>
+<p>It inherits from <a href="/data_block.html#ItemList"><code>ItemList</code></a> and overwrite <a href="/data_block.html#ItemList.get"><code>ItemList.get</code></a> to call <a href="/vision.image.html#open_image"><code>open_image</code></a> in order to turn an image file in <code>Path</code> object into an <a href="/vision.image.html#Image"><code>Image</code></a> object. <code>label_cls</code> can be specified for the labels, <code>xtra</code> contains any extra information (usually in the form of a dataframe) and <code>processor</code> is applied to the <a href="/data_block.html#ItemList"><code>ItemList</code></a> after splitting and labelling.</p>
 
 </div>
 </div>
