@@ -13,6 +13,7 @@ def _decode(df):
 def _maybe_squeeze(arr): return (arr if is1d(arr) else np.squeeze(arr))
 
 def _get_files(parent, p, f, extensions):
+    "It turns all filenames inside `f` from directory `parent/p` into a list of FilePath objects. All filenames must have a suffix in `extensions`. All hidden files are ignored."
     p = Path(p)#.relative_to(parent)
     if isinstance(extensions,str): extensions = [extensions]
     low_extensions = [e.lower() for e in extensions] if extensions is not None else None
@@ -22,7 +23,7 @@ def _get_files(parent, p, f, extensions):
 
 def get_files(path:PathOrStr, extensions:Collection[str]=None, recurse:bool=False,
               include:Optional[Collection[str]]=None)->FilePathList:
-    "Return list of files in `path` that have a suffix in `extensions`; optionally `recurse`."
+    "Return list of FilePath objects using files in `path` that must have a suffix in `extensions`, and hidden folders and files are ignored. If `recurse=True`, all files in subfolders will be applied; `include` is used to select particular folders to apply."
     if recurse:
         res = []
         for i,(p,d,f) in enumerate(os.walk(path)):
