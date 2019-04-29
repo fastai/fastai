@@ -22,7 +22,7 @@ def _get_files(parent, p, f, extensions):
 
 def get_files(path:PathOrStr, extensions:Collection[str]=None, recurse:bool=False,
               include:Optional[Collection[str]]=None)->FilePathList:
-    "Return list of files in `path` that have a suffix in `extensions`; optionally `recurse`." 
+    "Return list of files in `path` that have a suffix in `extensions`; optionally `recurse`."
     if recurse:
         res = []
         for i,(p,d,f) in enumerate(os.walk(path)):
