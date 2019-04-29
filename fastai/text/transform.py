@@ -152,7 +152,7 @@ class TokenizerMulti():
         c = Counter()
         processes = []
         
-        for i,batch in enumerate(np.array_split(text,self.n_cpus)):
+        for i,batch in enumerate(np.array_split(texts, self.n_cpus)):
             processes.append(Process(target=self._process_multi, args=(batch,queue,progress_queue,f'tokens{i}',chunksize)))
             
         for p in processes: p.start()
