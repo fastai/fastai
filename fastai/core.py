@@ -164,7 +164,7 @@ class ItemBase():
     def __eq__(self, other): return recurse_eq(self.data, other.data)
 
 def recurse_eq(arr1, arr2):
-    if is_listy(arr1): return len(arr1) == len(arr2) and np.all([recurse_eq(x,y) for x,y in zip(arr1,arr2)])
+    if is_listy(arr1): return is_listy(arr2) and len(arr1) == len(arr2) and np.all([recurse_eq(x,y) for x,y in zip(arr1,arr2)])
     else:              return np.all(np.atleast_1d(arr1 == arr2))
         
 def download_url(url:str, dest:str, overwrite:bool=False, pbar:ProgressBar=None,
