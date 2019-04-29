@@ -6,12 +6,13 @@ from spacy.symbols import ORTH
 
 __all__ = ['BaseTokenizer', 'SpacyTokenizer', 'Tokenizer', 'Vocab', 'fix_html', 'replace_all_caps', 'replace_rep', 'replace_wrep',
            'rm_useless_spaces', 'spec_add_spaces', 'BOS', 'EOS', 'FLD', 'UNK', 'PAD', 'TK_MAJ', 'TK_UP', 'TK_REP', 'TK_REP', 'TK_WREP',
-           'deal_caps']
+           'deal_caps', 'TokenizerMulti','TOK_SEP_CHAR','NEW_TXT']
 
 BOS,EOS,FLD,UNK,PAD = 'xxbos','xxeos','xxfld','xxunk','xxpad'
 TK_MAJ,TK_UP,TK_REP,TK_WREP = 'xxmaj','xxup','xxrep','xxwrep'
 defaults.text_spec_tok = [UNK,PAD,BOS,EOS,FLD,TK_MAJ,TK_UP,TK_REP,TK_WREP]
 
+TOK_SEP_CHAR,NEW_TXT = chr(9602),chr(9600) # special _ and square , unliekly to be in corpus
 
 class BaseTokenizer():
     "Basic class for a tokenizer function."
@@ -84,6 +85,88 @@ def deal_caps(x:Collection[str]) -> Collection[str]:
 defaults.text_pre_rules = [fix_html, replace_rep, replace_wrep, spec_add_spaces, rm_useless_spaces]
 defaults.text_post_rules = [replace_all_caps, deal_caps]
 
+from multiprocessing import Process, Queue
+
+class TokenizerMulti():
+    "Put together rules and a tokenizer function to tokenize text with multiprocessing."
+    def __init__(self, tok_func:Callable=SpacyTokenizer, lang:str='en', pre_rules:ListRules=None,
+                 post_rules:ListRules=None, special_cases:Collection[str]=None, n_cpus:int=None):
+        self.tok_func,self.lang,self.special_cases = tok_func,lang,special_cases
+        self.pre_rules  = ifnone(pre_rules,  defaults.text_pre_rules )
+        self.post_rules = ifnone(post_rules, defaults.text_post_rules)
+        self.special_cases = special_cases if special_cases else defaults.text_spec_tok
+        self.n_cpus = ifnone(n_cpus, defaults.cpus)
+        self.path = Path('./')
+
+    def __repr__(self) -> str:
+        res = f'Tokenizer {self.tok_func.__name__} in {self.lang} with the following rules:\n'
+        for rule in self.pre_rules: res += f' - {rule.__name__}\n'
+        for rule in self.post_rules: res += f' - {rule.__name__}\n'
+        return res
+
+    def process_text(self, t:str, tok:BaseTokenizer,chunksize:int=10000) -> List[str]:
+        "Process one text `t` with tokenizer `tok`."
+        for rule in self.pre_rules: t = rule(t)
+        toks = tok.tokenizer(t) #Tokenizer.__call__
+        for rule in self.post_rules: toks = rule(toks)
+        return toks
+
+    def _process_all_1(self, texts:Collection[str]) -> List[List[str]]:
+        "Process a list of `texts` in one process."
+        tok = self.tok_func(self.lang)
+        if self.special_cases: tok.add_special_cases(self.special_cases)
+        return [self.process_text(str(t), tok) for t in texts]
+        
+    def _process_multi(self, texts:Collection[str], queue:Queue, progress_queue:Queue,
+                       output_file:str, chunksize:int=10000) -> None:
+        "Process a list of `texts` with a `pipe` across multiple cores and store in flat files."
+        tok = self.tok_func(self.lang)
+        if self.special_cases: tok.add_special_cases(self.special_cases)
+
+        all_docs = []
+        for doc in texts:
+            for rule in self.pre_rules: doc = rule(doc)
+            all_docs.append(doc)
+            
+        def maybe_remove(f):
+            try: os.remove(f)
+            except OSError: pass
+        maybe_remove(self.path/output_file)
+            
+        counts = Counter()
+        with open(self.path/output_file,'a+',newline='') as f:
+            for docs in tok.tok.pipe(all_docs, batch_size=chunksize):
+                toks = [t.text for t in docs]
+                for rule in self.post_rules: toks = rule(toks)
+
+                f.write(TOK_SEP_CHAR.join(toks) + NEW_TXT)
+                counts += Counter(toks)
+                if progress_queue is not None: progress_queue.put(1)
+        queue.put(counts)
+        
+    def process_all(self, texts:Collection[str], chunksize:int=10000) -> List[List[str]]:
+        "Process a list of `texts`."
+        if self.n_cpus <= 1: return self._process_all_1(texts)
+        queue = Queue(maxsize=self.n_cpus)
+        progress_queue = Queue()
+        c = Counter()
+        processes = []
+
+        for i,batch in enumerate(np.array_split(texts,self.n_cpus)):
+            # self._process_multi(batch,queue,f'tokens{i}',chunksize)
+            ## reduce memory footprint further by writing to file here, then passing filename to process?
+            processes.append(Process(target=self._process_multi, args=(batch,queue,progress_queue,f'tokens{i}',chunksize)))
+            
+        for p in processes: p.start()
+
+        ## empty both queues
+        for _ in progress_bar(texts): _ = progress_queue.get()       
+        for _ in processes: c += queue.get()
+        
+        for p in processes: p.join()
+
+        return {"tk_freq":c, "nfiles":self.n_cpus}
+
 class Tokenizer():
     "Put together rules and a tokenizer function to tokenize text with multiprocessing."
     def __init__(self, tok_func:Callable=SpacyTokenizer, lang:str='en', pre_rules:ListRules=None,
@@ -93,7 +176,7 @@ class Tokenizer():
         self.post_rules = ifnone(post_rules, defaults.text_post_rules)
         self.special_cases = special_cases if special_cases else defaults.text_spec_tok
         self.n_cpus = ifnone(n_cpus, defaults.cpus)
-
+        
     def __repr__(self) -> str:
         res = f'Tokenizer {self.tok_func.__name__} in {self.lang} with the following rules:\n'
         for rule in self.pre_rules: res += f' - {rule.__name__}\n'
@@ -118,7 +201,7 @@ class Tokenizer():
         if self.n_cpus <= 1: return self._process_all_1(texts)
         with ProcessPoolExecutor(self.n_cpus) as e:
             return sum(e.map(self._process_all_1, partition_by_cores(texts, self.n_cpus)), [])
-
+            
 class Vocab():
     "Contain the correspondence between numbers and tokens and numericalize."
     def __init__(self, itos:Collection[str]):
@@ -148,6 +231,11 @@ class Vocab():
     def create(cls, tokens:Tokens, max_vocab:int, min_freq:int) -> 'Vocab':
         "Create a vocabulary from a set of `tokens`."
         freq = Counter(p for o in tokens for p in o)
+        return cls.from_freq(freq, max_vocab, min_freq)
+
+    @classmethod
+    def from_freq(cls, freq:Counter, max_vocab:int, min_freq:int) -> 'Vocab':
+        "Create a vocabulary from the `Counter(tokens)`"
         itos = [o for o,c in freq.most_common(max_vocab) if c >= min_freq]
         for o in reversed(defaults.text_spec_tok):
             if o in itos: itos.remove(o)

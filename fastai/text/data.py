@@ -282,6 +282,53 @@ class TokenizeProcessor(PreProcessor):
     "`PreProcessor` that tokenizes the texts in `ds`."
     def __init__(self, ds:ItemList=None, tokenizer:Tokenizer=None, chunksize:int=10000, 
                  mark_fields:bool=False, include_bos:bool=True, include_eos:bool=False):
+        self.tokenizer,self.chunksize,self.mark_fields = ifnone(tokenizer, TokenizerMulti()),chunksize,mark_fields
+        self.include_bos, self.include_eos = include_bos, include_eos
+
+    def process_one(self, item):
+        return self.tokenizer._process_all_1(_join_texts([item], self.mark_fields, self.include_bos, self.include_eos))[0]
+
+    def process(self, ds):
+        ds.items = _join_texts(ds.items, self.mark_fields, self.include_bos, self.include_eos)
+        ds.tk_info = self.tokenizer.process_all(ds.items,self.chunksize)
+
+        
+def myreadlines(f, newline:str='\n', rsz:int=4096):
+    "read with custom newline"
+    buf = ''
+    while True:
+        while newline in buf:
+            pos = buf.index(newline)
+            yield buf[:pos]
+            buf = buf[pos + len(newline):]
+        chunk = f.read(rsz)
+        if not chunk: break
+        buf += chunk            
+
+class NumericalizeProcessor(PreProcessor):
+    "`PreProcessor` that numericalizes the tokens in `ds`."
+    def __init__(self, ds:ItemList=None, vocab:Vocab=None, max_vocab:int=60000, min_freq:int=3):
+        vocab = ifnone(vocab, ds.vocab if ds is not None else None)
+        self.vocab,self.max_vocab,self.min_freq = vocab,max_vocab,min_freq
+
+    def process_one(self,item): return np.array(self.vocab.numericalize(item), dtype=np.int64)
+    def process(self, ds):
+        # if self.vocab is None: self.vocab = Vocab.create(ds.items, self.max_vocab, self.min_freq)
+        if self.vocab is None: self.vocab = Vocab.from_freq(ds.tk_info['tk_freq'], self.max_vocab, self.min_freq)
+        ds.vocab = self.vocab
+        all_items = []
+        for fnum in range(ds.tk_info['nfiles']):
+            with open(f'tokens{fnum}','r',newline='') as f:
+                for line in myreadlines(f,newline=NEW_TXT):
+                    tokens = line.rstrip(NEW_TXT).split(TOK_SEP_CHAR)
+                    all_items.append([self.process_one(tokens)])
+        ds.items = array(all_items).squeeze()
+        # super().process(ds)
+        
+class old_TokenizeProcessor(PreProcessor):
+    "`PreProcessor` that tokenizes the texts in `ds`."
+    def __init__(self, ds:ItemList=None, tokenizer:Tokenizer=None, chunksize:int=10000, 
+                 mark_fields:bool=False, include_bos:bool=True, include_eos:bool=False):
         self.tokenizer,self.chunksize,self.mark_fields = ifnone(tokenizer, Tokenizer()),chunksize,mark_fields
         self.include_bos, self.include_eos = include_bos, include_eos
 
@@ -295,7 +342,7 @@ class TokenizeProcessor(PreProcessor):
             tokens += self.tokenizer.process_all(ds.items[i:i+self.chunksize])
         ds.items = tokens
 
-class NumericalizeProcessor(PreProcessor):
+class old_NumericalizeProcessor(PreProcessor):
     "`PreProcessor` that numericalizes the tokens in `ds`."
     def __init__(self, ds:ItemList=None, vocab:Vocab=None, max_vocab:int=60000, min_freq:int=3):
         vocab = ifnone(vocab, ds.vocab if ds is not None else None)
@@ -320,7 +367,7 @@ class TextList(ItemList):
 
     def __init__(self, items:Iterator, vocab:Vocab=None, pad_idx:int=1, **kwargs):
         super().__init__(items, **kwargs)
-        self.vocab,self.pad_idx = vocab,pad_idx
+        self.vocab,self.pad_idx,self.tk_info = vocab,pad_idx,None
         self.copy_new += ['vocab', 'pad_idx']
 
     def get(self, i):
