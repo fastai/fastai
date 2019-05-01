@@ -4120,6 +4120,277 @@ learn.validate(data_test.valid_dl)</code></pre>
 </div>
 
 </div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>To to more precise, this function returns list of FilePath objects using files in <code>path</code> that must have a suffix in <code>extensions</code>, and hidden folders and files are ignored. If <code>recurse=True</code>, all files in subfolders will be applied; <code>include</code> is used to select particular folders to apply.</p>
+<p>Inside <a href="/data_block.html#get_files"><code>get_files</code></a>, there is <a href="/data_block.html#_get_files"><code>_get_files</code></a> which turns all filenames inside <code>f</code> from directory <code>parent/p</code> into a list of FilePath objects. All filenames must have a suffix in <code>extensions</code>. All hidden files are ignored.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">path_data</span> <span class="o">=</span> <span class="n">untar_data</span><span class="p">(</span><span class="n">URLs</span><span class="o">.</span><span class="n">MNIST_TINY</span><span class="p">)</span> 
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">path_data</span><span class="o">.</span><span class="n">ls</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[PosixPath(&#39;/Users/Natsume/.fastai/data/mnist_tiny/valid&#39;),
+ PosixPath(&#39;/Users/Natsume/.fastai/data/mnist_tiny/labels.csv&#39;),
+ PosixPath(&#39;/Users/Natsume/.fastai/data/mnist_tiny/test&#39;),
+ PosixPath(&#39;/Users/Natsume/.fastai/data/mnist_tiny/history.csv&#39;),
+ PosixPath(&#39;/Users/Natsume/.fastai/data/mnist_tiny/models&#39;),
+ PosixPath(&#39;/Users/Natsume/.fastai/data/mnist_tiny/train&#39;)]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Without <code>recurse=False</code>, no subfolder files are made available.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">list_FilePath_noRecurse</span> <span class="o">=</span> <span class="n">get_files</span><span class="p">(</span><span class="n">path_data</span><span class="p">)</span> 
+<span class="n">list_FilePath_noRecurse</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[PosixPath(&#39;/Users/Natsume/.fastai/data/mnist_tiny/labels.csv&#39;),
+ PosixPath(&#39;/Users/Natsume/.fastai/data/mnist_tiny/history.csv&#39;)]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>With <code>recurse=True</code>, all subfolder files are made available, except hidden files.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">list_FilePath_recurse</span> <span class="o">=</span> <span class="n">get_files</span><span class="p">(</span><span class="n">path_data</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">list_FilePath_recurse</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[PosixPath(&#39;/Users/Natsume/.fastai/data/mnist_tiny/labels.csv&#39;),
+ PosixPath(&#39;/Users/Natsume/.fastai/data/mnist_tiny/history.csv&#39;),
+ PosixPath(&#39;/Users/Natsume/.fastai/data/mnist_tiny/valid/7/9294.png&#39;)]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">list_FilePath_recurse</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[PosixPath(&#39;/Users/Natsume/.fastai/data/mnist_tiny/train/3/7263.png&#39;),
+ PosixPath(&#39;/Users/Natsume/.fastai/data/mnist_tiny/train/3/7288.png&#39;)]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>With <code>extensions=['.csv']</code>, only files with the suffix of <code>.csv</code> are made available.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">list_FilePath_recurse_csv</span> <span class="o">=</span> <span class="n">get_files</span><span class="p">(</span><span class="n">path_data</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">extensions</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;.csv&#39;</span><span class="p">])</span>
+<span class="n">list_FilePath_recurse_csv</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[PosixPath(&#39;/Users/Natsume/.fastai/data/mnist_tiny/labels.csv&#39;),
+ PosixPath(&#39;/Users/Natsume/.fastai/data/mnist_tiny/history.csv&#39;)]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>With <code>include=['test']</code>, only files in <code>path_data</code> and its subfolder <code>test</code> are made available.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">list_FilePath_include</span> <span class="o">=</span> <span class="n">get_files</span><span class="p">(</span><span class="n">path_data</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">extensions</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;.png&#39;</span><span class="p">,</span><span class="s1">&#39;.jpg&#39;</span><span class="p">,</span><span class="s1">&#39;.jpeg&#39;</span><span class="p">],</span>
+                                  <span class="n">include</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;test&#39;</span><span class="p">])</span>
+<span class="n">list_FilePath_include</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[PosixPath(&#39;/Users/Natsume/.fastai/data/mnist_tiny/test/4605.png&#39;),
+ PosixPath(&#39;/Users/Natsume/.fastai/data/mnist_tiny/test/617.png&#39;),
+ PosixPath(&#39;/Users/Natsume/.fastai/data/mnist_tiny/test/205.png&#39;)]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">list_FilePath_include</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">:]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[PosixPath(&#39;/Users/Natsume/.fastai/data/mnist_tiny/test/1605.png&#39;),
+ PosixPath(&#39;/Users/Natsume/.fastai/data/mnist_tiny/test/2642.png&#39;),
+ PosixPath(&#39;/Users/Natsume/.fastai/data/mnist_tiny/test/5071.png&#39;)]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
 </div>
  
 

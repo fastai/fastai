@@ -370,7 +370,7 @@ class Learner():
             if norm.keywords.get('do_y',False): raw_pred = self.data.denorm(raw_pred)
         ds = self.data.single_ds
         pred = ds.y.analyze_pred(raw_pred, **kwargs)
-        x = ds.x.reconstruct(x[0])
+        x = ds.x.reconstruct(grab_idx(x, 0))
         y = ds.y.reconstruct(pred, x) if has_arg(ds.y.reconstruct, 'x') else ds.y.reconstruct(pred)
         return (x, y, pred, raw_pred) if return_x else (y, pred, raw_pred)
 

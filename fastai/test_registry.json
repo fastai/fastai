@@ -307,7 +307,7 @@
     "fastai.core.Category.__hash__": [
         {
             "file": "tests/test_core.py",
-            "line": 271,
+            "line": 287,
             "test": "test_itembase_hash"
         }
     ],
@@ -321,7 +321,7 @@
     "fastai.core.FloatItem.__hash__": [
         {
             "file": "tests/test_core.py",
-            "line": 271,
+            "line": 287,
             "test": "test_itembase_hash"
         }
     ],
@@ -333,7 +333,7 @@
         },
         {
             "file": "tests/test_core.py",
-            "line": 271,
+            "line": 287,
             "test": "test_itembase_hash"
         }
     ],
@@ -347,7 +347,7 @@
     "fastai.core.MultiCategory.__hash__": [
         {
             "file": "tests/test_core.py",
-            "line": 271,
+            "line": 287,
             "test": "test_itembase_hash"
         }
     ],
