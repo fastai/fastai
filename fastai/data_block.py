@@ -571,7 +571,7 @@ class LabelLists(ItemLists):
         "Create a `LabelLists` with empty sets from the serialized file in `path/fn`."
         path = Path(path)
         state = torch.load(open(path/fn, 'rb'))
-        return LabelLists.load_state(path, state)
+        return LabelLists.load_state(path, state['data'])
 
 def _check_kwargs(ds:ItemList, tfms:TfmList, **kwargs):
     tfms = listify(tfms)
