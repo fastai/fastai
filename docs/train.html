@@ -201,6 +201,13 @@ summary: "Extensions to Learner that easily implement Callback"
 </div>
 
 </div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>See <a href="/callbacks.mixup.html#MixUpCallback"><code>MixUpCallback</code></a> for more details.</p>
+
+</div>
+</div>
+</div>
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -222,12 +229,341 @@ summary: "Extensions to Learner that easily implement Callback"
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>See <a href="/callbacks.mixup.html#MixUpCallback"><code>MixUpCallback</code></a> for more details.</p>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">path</span> <span class="o">=</span> <span class="n">untar_data</span><span class="p">(</span><span class="n">URLs</span><span class="o">.</span><span class="n">MNIST_SAMPLE</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">ImageDataBunch</span><span class="o">.</span><span class="n">from_folder</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+<span class="n">learn</span> <span class="o">=</span> <span class="n">cnn_learner</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">models</span><span class="o">.</span><span class="n">resnet18</span><span class="p">)</span>
+<span class="n">learn</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">preds</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">losses</span> <span class="o">=</span> <span class="n">learn</span><span class="o">.</span><span class="n">get_preds</span><span class="p">(</span><span class="n">with_loss</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">interp</span> <span class="o">=</span> <span class="n">ClassificationInterpretation</span><span class="p">(</span><span class="n">learn</span><span class="p">,</span> <span class="n">preds</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">losses</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">show_doc</span><span class="p">(</span><span class="n">ClassificationInterpretation</span><span class="o">.</span><span class="n">top_losses</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="ClassificationInterpretation.top_losses" class="doc_header"><code>top_losses</code><a href="https://github.com/fastai/fastai/blob/master/fastai/train.py#L194" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#ClassificationInterpretation-top_losses-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>top_losses</code>(<strong><code>k</code></strong>:<code>int</code>=<strong><em><code>None</code></em></strong>, <strong><code>largest</code></strong>=<strong><em><code>True</code></em></strong>)</p>
+</blockquote>
+<div class="collapse" id="ClassificationInterpretation-top_losses-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#ClassificationInterpretation-top_losses-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>top_losses</code>:</p><p>Some other tests where <code>top_losses</code> is used:</p><ul><li><code>pytest -sv tests/test_vision_train.py::test_interp</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_vision_train.py#L72" class="source_link" style="float:right">[source]</a></li><li><code>pytest -sv tests/test_vision_train.py::test_interp_shortcut</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_vision_train.py#L78" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><p><code>k</code> largest(/smallest) losses and indexes, defaulting to all losses (sorted by <code>largest</code>).</p>
+
+</div>
+
+</div>
 
 </div>
 </div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Returns tuple of <em>(losses,indices)</em>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>torch.return_types.topk(
+values=tensor([5.6738, 5.3409, 5.2642, 4.5904, 4.4153, 3.9903, 3.6914, 3.3204, 3.2644]),
+indices=tensor([ 859,  983, 1378,  754, 1811,  358,  443, 1498, 1023]))</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="ClassificationInterpretation.plot_confusion_matrix" class="doc_header"><code>plot_confusion_matrix</code><a href="https://github.com/fastai/fastai/blob/master/fastai/train.py#L161" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#ClassificationInterpretation-plot_confusion_matrix-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>plot_confusion_matrix</code>(<strong><code>normalize</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>, <strong><code>title</code></strong>:<code>str</code>=<strong><em><code>'Confusion matrix'</code></em></strong>, <strong><code>cmap</code></strong>:<code>Any</code>=<strong><em><code>'Blues'</code></em></strong>, <strong><code>slice_size</code></strong>:<code>int</code>=<strong><em><code>1</code></em></strong>, <strong><code>norm_dec</code></strong>:<code>int</code>=<strong><em><code>2</code></em></strong>, <strong><code>plot_txt</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>, <strong><code>return_fig</code></strong>:<code>bool</code>=<strong><em><code>None</code></em></strong>, <strong>**<code>kwargs</code></strong>) → <code>Optional</code>[<code>Figure</code>]</p>
+</blockquote>
+<div class="collapse" id="ClassificationInterpretation-plot_confusion_matrix-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#ClassificationInterpretation-plot_confusion_matrix-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>plot_confusion_matrix</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Plot the confusion matrix, with <code>title</code> and using <code>cmap</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>If <a href="/vision.data.html#normalize"><code>normalize</code></a>, plots the percentages with <code>norm_dec</code> digits. <code>slice_size</code> can be used to avoid out of memory error if your set is too big. <code>kwargs</code> are passed to <code>plt.figure</code>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">interp</span><span class="o">.</span><span class="n">plot_confusion_matrix</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea ">
+<img src="data:image/png;base64,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
+"
+>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">show_doc</span><span class="p">(</span><span class="n">ClassificationInterpretation</span><span class="o">.</span><span class="n">confusion_matrix</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="ClassificationInterpretation.confusion_matrix" class="doc_header"><code>confusion_matrix</code><a href="https://github.com/fastai/fastai/blob/master/fastai/train.py#L149" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#ClassificationInterpretation-confusion_matrix-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>confusion_matrix</code>(<strong><code>slice_size</code></strong>:<code>int</code>=<strong><em><code>1</code></em></strong>)</p>
+</blockquote>
+<div class="collapse" id="ClassificationInterpretation-confusion_matrix-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#ClassificationInterpretation-confusion_matrix-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>confusion_matrix</code>:</p><ul><li><code>pytest -sv tests/test_tabular_train.py::test_confusion_tabular</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_tabular_train.py#L84" class="source_link" style="float:right">[source]</a></li></ul><p>Some other tests where <code>confusion_matrix</code> is used:</p><ul><li><code>pytest -sv tests/test_vision_train.py::test_ClassificationInterpretation</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_vision_train.py#L95" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><p>Confusion matrix as an <code>np.ndarray</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">interp</span><span class="o">.</span><span class="n">confusion_matrix</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>array([[984,  26],
+       [ 37, 991]])</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">show_doc</span><span class="p">(</span><span class="n">ClassificationInterpretation</span><span class="o">.</span><span class="n">most_confused</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="ClassificationInterpretation.most_confused" class="doc_header"><code>most_confused</code><a href="https://github.com/fastai/fastai/blob/master/fastai/train.py#L186" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#ClassificationInterpretation-most_confused-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>most_confused</code>(<strong><code>min_val</code></strong>:<code>int</code>=<strong><em><code>1</code></em></strong>, <strong><code>slice_size</code></strong>:<code>int</code>=<strong><em><code>1</code></em></strong>) → <code>Collection</code>[<code>Tuple</code>[<code>str</code>, <code>str</code>, <code>int</code>]]</p>
+</blockquote>
+<div class="collapse" id="ClassificationInterpretation-most_confused-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#ClassificationInterpretation-most_confused-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>most_confused</code>:</p><p>Some other tests where <code>most_confused</code> is used:</p><ul><li><code>pytest -sv tests/test_vision_train.py::test_ClassificationInterpretation</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_vision_train.py#L95" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><p>Sorted descending list of largest non-diagonal entries of confusion matrix, presented as actual, predicted, number of occurrences.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Working-with-large-datasets">Working with large datasets<a class="anchor-link" href="#Working-with-large-datasets">&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>When working with large datasets, memory problems can arise when computing the confusion matrix. For example, an error can look like this:</p>
+
+<pre><code>RuntimeError: $ Torch: not enough memory: you tried to allocate 64GB. Buy new RAM!
+
+</code></pre>
+<p>In this case it is possible to force <a href="/train.html#ClassificationInterpretation"><code>ClassificationInterpretation</code></a> to compute the confusion matrix for data slices and then aggregate the result by specifying slice_size parameter.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">interp</span><span class="o">.</span><span class="n">confusion_matrix</span><span class="p">(</span><span class="n">slice_size</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>array([[984,  26],
+       [ 37, 991]])</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">interp</span><span class="o">.</span><span class="n">plot_confusion_matrix</span><span class="p">(</span><span class="n">slice_size</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea ">
+<img src="data:image/png;base64,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
+"
+>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">interp</span><span class="o">.</span><span class="n">most_confused</span><span class="p">(</span><span class="n">slice_size</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[(&#39;7&#39;, &#39;3&#39;, 37), (&#39;3&#39;, &#39;7&#39;, 26)]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
