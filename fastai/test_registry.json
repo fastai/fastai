@@ -230,6 +230,13 @@
             "test": "test_accuracy"
         }
     ],
+    "fastai.callback.AverageMetric": [
+        {
+            "file": "tests/test_metrics.py",
+            "line": 190,
+            "test": "test_average_metric_naming"
+        }
+    ],
     "fastai.callback.Callback": [
         {
             "file": "tests/test_callback.py",

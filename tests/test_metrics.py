@@ -186,3 +186,18 @@ def test_custom_metric_class():
     # expecting column header 'dummy', and the metrics per class definition
     for s in ['dummy', f'{dummy_base_val}.00', f'{dummy_base_val**2}.00']:
         assert s in cs.out, f"{s} is in the output:\n{cs.out}"
+
+def test_average_metric_naming():
+    this_tests(AverageMetric)
+    top2_accuracy = partial(top_k_accuracy, k=2)
+    top3_accuracy = partial(top_k_accuracy, k=3)
+    top4_accuracy = partial(top_k_accuracy, k=4)
+    # give top2_accuracy and top4_accuracy a custom name
+    top2_accuracy.__name__ = "top2_accuracy"
+    top4_accuracy.__name__ = "top4_accuracy"
+    # prewrap top4_accuracy
+    top4_accuracy = AverageMetric(top4_accuracy)
+    learn = fake_learner()
+    learn.metrics = [accuracy, top2_accuracy, top3_accuracy, top4_accuracy]
+    learn.fit(1)
+    assert learn.recorder.names[3:7] == ["accuracy", "top2_accuracy", "top_k_accuracy", "top4_accuracy"]
