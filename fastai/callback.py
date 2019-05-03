@@ -328,8 +328,8 @@ class CallbackHandler():
 class AverageMetric(Callback):
     "Wrap a `func` in a callback for metrics computation."
     def __init__(self, func):
-        # If it's a partial, use func.func
-        name = getattr(func,'func', func).__name__
+        # If func has a __name__ use this one else it should be a partial
+        name = func.__name__ if hasattr(func, '__name__') else func.func.__name__
         self.func, self.name = func, name
         self.world = num_distrib()
 
