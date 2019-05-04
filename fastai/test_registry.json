@@ -88,19 +88,19 @@
     "fastai.basic_train.Learner.destroy": [
         {
             "file": "tests/test_basic_train.py",
-            "line": 166,
+            "line": 170,
             "test": "test_destroy"
         },
         {
             "file": "tests/test_basic_train.py",
-            "line": 209,
+            "line": 213,
             "test": "test_memory"
         }
     ],
     "fastai.basic_train.Learner.export": [
         {
             "file": "tests/test_basic_train.py",
-            "line": 226,
+            "line": 230,
             "test": "test_export_load_learner"
         }
     ],
@@ -135,12 +135,12 @@
     "fastai.basic_train.Learner.load": [
         {
             "file": "tests/test_basic_train.py",
-            "line": 100,
+            "line": 104,
             "test": "test_save_load"
         },
         {
             "file": "tests/test_basic_train.py",
-            "line": 209,
+            "line": 213,
             "test": "test_memory"
         }
     ],
@@ -164,24 +164,24 @@
         },
         {
             "file": "tests/test_basic_train.py",
-            "line": 100,
+            "line": 104,
             "test": "test_save_load"
         },
         {
             "file": "tests/test_basic_train.py",
-            "line": 209,
+            "line": 213,
             "test": "test_memory"
         }
     ],
     "fastai.basic_train.Learner.save": [
         {
             "file": "tests/test_basic_train.py",
-            "line": 100,
+            "line": 104,
             "test": "test_save_load"
         },
         {
             "file": "tests/test_basic_train.py",
-            "line": 209,
+            "line": 213,
             "test": "test_memory"
         }
     ],
@@ -219,7 +219,7 @@
     "fastai.basic_train.load_learner": [
         {
             "file": "tests/test_basic_train.py",
-            "line": 226,
+            "line": 230,
             "test": "test_export_load_learner"
         }
     ],
@@ -286,7 +286,7 @@
         },
         {
             "file": "tests/test_basic_train.py",
-            "line": 226,
+            "line": 230,
             "test": "test_export_load_learner"
         }
     ],
