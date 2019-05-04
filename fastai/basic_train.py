@@ -162,6 +162,7 @@ class Learner():
     def __post_init__(self)->None:
         "Setup path,metrics, callbacks and ensure model directory exists."
         self.path = Path(ifnone(self.path, self.data.path))
+        (self.path/self.model_dir).mkdir(parents=True, exist_ok=True)
         self.model = self.model.to(self.data.device)
         self.loss_func = self.loss_func or self.data.loss_func
         self.metrics=listify(self.metrics)
@@ -174,9 +175,7 @@ class Learner():
 
     def _test_writeable_path(self):
         path = self.path/self.model_dir
-        try:
-            path.mkdir(parents=True, exist_ok=True)
-            tmp_file = get_tmp_file(path)
+        try: tmp_file = get_tmp_file(path)
         except OSError as e:
             raise Exception(f"{e}\nCan't write to '{path}', set `learn.model_dir` attribute in Learner to a full libpath path that is writable") from None
         os.remove(tmp_file)
