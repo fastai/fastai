@@ -12,6 +12,13 @@ def _decode(df):
 
 def _maybe_squeeze(arr): return (arr if is1d(arr) else np.squeeze(arr))
 
+def _path_to_same_str(p_fn):
+    "path -> str, but same on nt+posix, for alpha-sort only"
+    s_fn = str(p_fn)
+    s_fn = s_fn.replace('\\','.')
+    s_fn = s_fn.replace('/','.')
+    return s_fn
+
 def _get_files(parent, p, f, extensions):
     p = Path(p)#.relative_to(parent)
     if isinstance(extensions,str): extensions = [extensions]
@@ -21,7 +28,7 @@ def _get_files(parent, p, f, extensions):
     return res
 
 def get_files(path:PathOrStr, extensions:Collection[str]=None, recurse:bool=False,
-              include:Optional[Collection[str]]=None)->FilePathList:
+              include:Optional[Collection[str]]=None, presort:bool=False)->FilePathList:
     "Return list of files in `path` that have a suffix in `extensions`; optionally `recurse`."
     if recurse:
         res = []
@@ -30,10 +37,13 @@ def get_files(path:PathOrStr, extensions:Collection[str]=None, recurse:bool=Fals
             if include is not None and i==0:  d[:] = [o for o in d if o in include]
             else:                             d[:] = [o for o in d if not o.startswith('.')]
             res += _get_files(path, p, f, extensions)
+        if presort: res = sorted(res, key=lambda p: _path_to_same_str(p), reverse=False)
         return res
     else:
         f = [o.name for o in os.scandir(path) if o.is_file()]
-        return _get_files(path, path, f, extensions)
+        res = _get_files(path, path, f, extensions)
+        if presort: res = sorted(res, key=lambda p: _path_to_same_str(p), reverse=False)
+        return res
 
 class PreProcessor():
     "Basic class for a processor that will be applied to items at the end of the data block API."
@@ -111,11 +121,11 @@ class ItemList():
 
     @classmethod
     def from_folder(cls, path:PathOrStr, extensions:Collection[str]=None, recurse:bool=True,
-                    include:Optional[Collection[str]]=None, processor:PreProcessors=None, **kwargs)->'ItemList':
+                    include:Optional[Collection[str]]=None, processor:PreProcessors=None, presort:Optional[bool]=False, **kwargs)->'ItemList':
         """Create an `ItemList` in `path` from the filenames that have a suffix in `extensions`.
         `recurse` determines if we search subfolders."""
         path = Path(path)
-        return cls(get_files(path, extensions, recurse=recurse, include=include), path=path, processor=processor, **kwargs)
+        return cls(get_files(path, extensions, recurse=recurse, include=include, presort=presort), path=path, processor=processor, **kwargs)
 
     @classmethod
     def from_df(cls, df:DataFrame, path:PathOrStr='.', cols:IntsOrStrs=0, processor:PreProcessors=None, **kwargs)->'ItemList':
