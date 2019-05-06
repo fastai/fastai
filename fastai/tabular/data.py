@@ -57,6 +57,7 @@ class TabularProcessor(PreProcessor):
     def process(self, ds):
         if ds.inner_df is None:
             ds.classes,ds.cat_names,ds.cont_names = self.classes,self.cat_names,self.cont_names
+            ds.col_names = self.cat_names + self.cont_names
             ds.preprocessed = True
             return
         for i,proc in enumerate(self.procs):

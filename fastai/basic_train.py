@@ -162,7 +162,6 @@ class Learner():
     def __post_init__(self)->None:
         "Setup path,metrics, callbacks and ensure model directory exists."
         self.path = Path(ifnone(self.path, self.data.path))
-        (self.path/self.model_dir).mkdir(parents=True, exist_ok=True)
         self.model = self.model.to(self.data.device)
         self.loss_func = self.loss_func or self.data.loss_func
         self.metrics=listify(self.metrics)
@@ -175,7 +174,9 @@ class Learner():
 
     def _test_writeable_path(self):
         path = self.path/self.model_dir
-        try: tmp_file = get_tmp_file(path)
+        try:
+            path.mkdir(parents=True, exist_ok=True)
+            tmp_file = get_tmp_file(path)
         except OSError as e:
             raise Exception(f"{e}\nCan't write to '{path}', set `learn.model_dir` attribute in Learner to a full libpath path that is writable") from None
         os.remove(tmp_file)
@@ -359,19 +360,20 @@ class Learner():
                           cb_handler=CallbackHandler(self.callbacks))
         return loss
 
-    def predict(self, item:ItemBase, **kwargs):
+    def predict(self, item:ItemBase, return_x:bool=False, batch_first:bool=True, **kwargs):
         "Return predicted class, label and probabilities for `item`."
         batch = self.data.one_item(item)
         res = self.pred_batch(batch=batch)
-        pred,x = grab_idx(res,0),batch[0]
+        raw_pred,x = grab_idx(res,0,batch_first=batch_first),batch[0]
         norm = getattr(self.data,'norm',False)
         if norm:
             x = self.data.denorm(x)
-            if norm.keywords.get('do_y',False): pred = self.data.denorm(pred)
+            if norm.keywords.get('do_y',False): raw_pred = self.data.denorm(raw_pred)
         ds = self.data.single_ds
-        pred = ds.y.analyze_pred(pred, **kwargs)
-        out = ds.y.reconstruct(pred, ds.x.reconstruct(item.data)) if has_arg(ds.y.reconstruct, 'x') else ds.y.reconstruct(pred)
-        return out, pred, res[0]
+        pred = ds.y.analyze_pred(raw_pred, **kwargs)
+        x = ds.x.reconstruct(grab_idx(x, 0))
+        y = ds.y.reconstruct(pred, x) if has_arg(ds.y.reconstruct, 'x') else ds.y.reconstruct(pred)
+        return (x, y, pred, raw_pred) if return_x else (y, pred, raw_pred)
 
     def validate(self, dl=None, callbacks=None, metrics=None):
         "Validate on `dl` with potential `callbacks` and `metrics`."

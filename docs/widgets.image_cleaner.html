@@ -84,27 +84,33 @@ sidebar: home_sidebar
 
 
 <div class="output_html rendered_html output_subarea ">
-Total time: 00:17 <p><table style='width:300px; margin-bottom:10px'>
-  <tr>
-    <th>epoch</th>
-    <th>train_loss</th>
-    <th>valid_loss</th>
-    <th>error_rate</th>
-  </tr>
-  <tr>
-    <th>1</th>
-    <th>0.167665</th>
-    <th>0.106727</th>
-    <th>0.037291</th>
-  </tr>
-  <tr>
-    <th>2</th>
-    <th>0.103579</th>
-    <th>0.077936</th>
-    <th>0.023553</th>
-  </tr>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: left;">
+      <th>epoch</th>
+      <th>train_loss</th>
+      <th>valid_loss</th>
+      <th>error_rate</th>
+      <th>time</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>0.184135</td>
+      <td>0.103444</td>
+      <td>0.037291</td>
+      <td>00:06</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>0.110252</td>
+      <td>0.082977</td>
+      <td>0.028459</td>
+      <td>00:05</td>
+    </tr>
+  </tbody>
 </table>
-
 </div>
 
 </div>
@@ -297,7 +303,7 @@ Total time: 00:17 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>&lt;fastai.widgets.image_cleaner.ImageCleaner at 0x7f9da3659b00&gt;</pre>
+<pre>&lt;fastai.widgets.image_cleaner.ImageCleaner at 0x7f23cb106dd8&gt;</pre>
 </div>
 
 </div>
@@ -407,7 +413,7 @@ Total time: 00:17 <p><table style='width:300px; margin-bottom:10px'>
             }
         </style>
       <progress value='226' class='' max='226', style='width:300px; height:20px; vertical-align: middle;'></progress>
-      100.00% [226/226 00:03<00:00]
+      100.00% [226/226 00:02<00:00]
     </div>
     
 </div>
@@ -446,7 +452,7 @@ Total time: 00:17 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>&lt;fastai.widgets.image_cleaner.ImageCleaner at 0x7f9d3dfd53c8&gt;</pre>
+<pre>&lt;fastai.widgets.image_cleaner.ImageCleaner at 0x7f236f7214a8&gt;</pre>
 </div>
 
 </div>
@@ -517,7 +523,7 @@ Total time: 00:17 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>&lt;fastai.widgets.image_downloader.ImageDownloader at 0x7f9da36599b0&gt;</pre>
+<pre>&lt;fastai.widgets.image_downloader.ImageDownloader at 0x7f236c056358&gt;</pre>
 </div>
 
 </div>
@@ -721,32 +727,6 @@ Total time: 00:17 <p><table style='width:300px; margin-bottom:10px'>
             }
         </style>
       <progress value='50' class='' max='50', style='width:300px; height:20px; vertical-align: middle;'></progress>
-      100.00% [50/50 00:01<00:00]
-    </div>
-    
-</div>
-
-</div>
-
-<div class="output_area">
-
-
-<div class="output_html rendered_html output_subarea ">
-
-    <div>
-        <style>
-            /* Turns off some styling */
-            progress {
-                /* gets rid of default border in Firefox and Opera. */
-                border: none;
-                /* Needs to be in here for Safari polyfill so background images work as expected. */
-                background-size: auto;
-            }
-            .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
-                background: #F44336;
-            }
-        </style>
-      <progress value='50' class='' max='50', style='width:300px; height:20px; vertical-align: middle;'></progress>
       100.00% [50/50 00:00<00:00]
     </div>
     
@@ -756,6 +736,15 @@ Total time: 00:17 <p><table style='width:300px; margin-bottom:10px'>
 
 <div class="output_area">
 
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>cannot identify image file &lt;_io.BufferedReader name=&#39;/home/ubuntu/.fastai/data/image_downloader/boston terrier/00000044.jpg&#39;&gt;
+cannot identify image file &lt;_io.BufferedReader name=&#39;/home/ubuntu/.fastai/data/image_downloader/boston terrier/00000014.jpg&#39;&gt;
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
 
 <div class="output_html rendered_html output_subarea ">
 
@@ -772,8 +761,8 @@ Total time: 00:17 <p><table style='width:300px; margin-bottom:10px'>
                 background: #F44336;
             }
         </style>
-      <progress value='50' class='' max='50', style='width:300px; height:20px; vertical-align: middle;'></progress>
-      100.00% [50/50 00:01<00:00]
+      <progress value='0' class='progress-bar-interrupted' max='50', style='width:300px; height:20px; vertical-align: middle;'></progress>
+      Interrupted
     </div>
     
 </div>
@@ -782,37 +771,114 @@ Total time: 00:17 <p><table style='width:300px; margin-bottom:10px'>
 
 <div class="output_area">
 
+<div class="output_subarea output_text output_error">
+<pre>
+<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">_RemoteTraceback</span>                          Traceback (most recent call last)
+<span class="ansi-red-fg">_RemoteTraceback</span>: 
+&#34;&#34;&#34;
+Traceback (most recent call last):
+  File &#34;/home/ubuntu/anaconda3/lib/python3.7/site-packages/urllib3/connection.py&#34;, line 159, in _new_conn
+    (self._dns_host, self.port), self.timeout, **extra_kw)
+  File &#34;/home/ubuntu/anaconda3/lib/python3.7/site-packages/urllib3/util/connection.py&#34;, line 57, in create_connection
+    for res in socket.getaddrinfo(host, port, family, socket.SOCK_STREAM):
+  File &#34;/home/ubuntu/anaconda3/lib/python3.7/socket.py&#34;, line 748, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+socket.gaierror: [Errno -3] Temporary failure in name resolution
 
-<div class="output_html rendered_html output_subarea ">
-Total time: 00:33 <p><table style='width:300px; margin-bottom:10px'>
-  <tr>
-    <th>epoch</th>
-    <th>train_loss</th>
-    <th>valid_loss</th>
-    <th>accuracy</th>
-  </tr>
-  <tr>
-    <th>1</th>
-    <th>1.161491</th>
-    <th>0.424679</th>
-    <th>0.807692</th>
-  </tr>
-  <tr>
-    <th>2</th>
-    <th>0.751288</th>
-    <th>0.086240</th>
-    <th>0.961538</th>
-  </tr>
-  <tr>
-    <th>3</th>
-    <th>0.523341</th>
-    <th>0.066993</th>
-    <th>1.000000</th>
-  </tr>
-</table>
+During handling of the above exception, another exception occurred:
 
+Traceback (most recent call last):
+  File &#34;/home/ubuntu/anaconda3/lib/python3.7/site-packages/urllib3/connectionpool.py&#34;, line 600, in urlopen
+    chunked=chunked)
+  File &#34;/home/ubuntu/anaconda3/lib/python3.7/site-packages/urllib3/connectionpool.py&#34;, line 343, in _make_request
+    self._validate_conn(conn)
+  File &#34;/home/ubuntu/anaconda3/lib/python3.7/site-packages/urllib3/connectionpool.py&#34;, line 839, in _validate_conn
+    conn.connect()
+  File &#34;/home/ubuntu/anaconda3/lib/python3.7/site-packages/urllib3/connection.py&#34;, line 301, in connect
+    conn = self._new_conn()
+  File &#34;/home/ubuntu/anaconda3/lib/python3.7/site-packages/urllib3/connection.py&#34;, line 168, in _new_conn
+    self, &#34;Failed to establish a new connection: %s&#34; % e)
+urllib3.exceptions.NewConnectionError: &lt;urllib3.connection.VerifiedHTTPSConnection object at 0x7f236da84358&gt;: Failed to establish a new connection: [Errno -3] Temporary failure in name resolution
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File &#34;/home/ubuntu/anaconda3/lib/python3.7/site-packages/requests/adapters.py&#34;, line 449, in send
+    timeout=timeout
+  File &#34;/home/ubuntu/anaconda3/lib/python3.7/site-packages/urllib3/connectionpool.py&#34;, line 638, in urlopen
+    _stacktrace=sys.exc_info()[2])
+  File &#34;/home/ubuntu/anaconda3/lib/python3.7/site-packages/urllib3/util/retry.py&#34;, line 398, in increment
+    raise MaxRetryError(_pool, url, error or ResponseError(cause))
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host=&#39;frenchbulldogpuppiesflorida.com&#39;, port=443): Max retries exceeded with url: /wp-content/uploads/2018/04/cropped-frenchbulldog2-french840-2.jpg (Caused by NewConnectionError(&#39;&lt;urllib3.connection.VerifiedHTTPSConnection object at 0x7f236da84358&gt;: Failed to establish a new connection: [Errno -3] Temporary failure in name resolution&#39;))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File &#34;/home/ubuntu/anaconda3/lib/python3.7/concurrent/futures/process.py&#34;, line 232, in _process_worker
+    r = call_item.fn(*call_item.args, **call_item.kwargs)
+  File &#34;/home/ubuntu/fastai/fastai/widgets/image_downloader.py&#34;, line 179, in _download_single_image
+    download_url(img_tuple[1], label_path/fname, timeout=timeout)
+  File &#34;/home/ubuntu/fastai/fastai/core.py&#34;, line 177, in download_url
+    u = s.get(url, stream=True, timeout=timeout)
+  File &#34;/home/ubuntu/anaconda3/lib/python3.7/site-packages/requests/sessions.py&#34;, line 546, in get
+    return self.request(&#39;GET&#39;, url, **kwargs)
+  File &#34;/home/ubuntu/anaconda3/lib/python3.7/site-packages/requests/sessions.py&#34;, line 533, in request
+    resp = self.send(prep, **send_kwargs)
+  File &#34;/home/ubuntu/anaconda3/lib/python3.7/site-packages/requests/sessions.py&#34;, line 646, in send
+    r = adapter.send(request, **kwargs)
+  File &#34;/home/ubuntu/anaconda3/lib/python3.7/site-packages/requests/adapters.py&#34;, line 516, in send
+    raise ConnectionError(e, request=request)
+requests.exceptions.ConnectionError: HTTPSConnectionPool(host=&#39;frenchbulldogpuppiesflorida.com&#39;, port=443): Max retries exceeded with url: /wp-content/uploads/2018/04/cropped-frenchbulldog2-french840-2.jpg (Caused by NewConnectionError(&#39;&lt;urllib3.connection.VerifiedHTTPSConnection object at 0x7f236da84358&gt;: Failed to establish a new connection: [Errno -3] Temporary failure in name resolution&#39;))
+&#34;&#34;&#34;
+
+The above exception was the direct cause of the following exception:
+
+<span class="ansi-red-fg">ConnectionError</span>                           Traceback (most recent call last)
+<span class="ansi-green-fg">&lt;ipython-input-25-460e5f861575&gt;</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span>
+<span class="ansi-green-intense-fg ansi-bold">      5</span> <span class="ansi-red-fg"># Download images</span>
+<span class="ansi-green-intense-fg ansi-bold">      6</span> <span class="ansi-green-fg">for</span> label <span class="ansi-green-fg">in</span> labels<span class="ansi-blue-fg">:</span>
+<span class="ansi-green-fg">----&gt; 7</span><span class="ansi-red-fg">     </span>download_google_images<span class="ansi-blue-fg">(</span>path<span class="ansi-blue-fg">,</span> label<span class="ansi-blue-fg">,</span> size<span class="ansi-blue-fg">=</span><span class="ansi-blue-fg">&#39;&gt;400*300&#39;</span><span class="ansi-blue-fg">,</span> n_images<span class="ansi-blue-fg">=</span><span class="ansi-cyan-fg">50</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">      8</span> 
+<span class="ansi-green-intense-fg ansi-bold">      9</span> <span class="ansi-red-fg"># Build a databunch and train!</span>
+
+<span class="ansi-green-fg">~/fastai/fastai/widgets/image_downloader.py</span> in <span class="ansi-cyan-fg">download_google_images</span><span class="ansi-blue-fg">(path, search_term, size, n_images, format, max_workers, timeout)</span>
+<span class="ansi-green-intense-fg ansi-bold">     86</span>     <span class="ansi-green-fg">if</span> n_images <span class="ansi-blue-fg">&lt;=</span> <span class="ansi-cyan-fg">100</span><span class="ansi-blue-fg">:</span> img_tuples <span class="ansi-blue-fg">=</span> _fetch_img_tuples<span class="ansi-blue-fg">(</span>search_url<span class="ansi-blue-fg">,</span> format<span class="ansi-blue-fg">=</span>format<span class="ansi-blue-fg">,</span> n_images<span class="ansi-blue-fg">=</span>n_images<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">     87</span>     <span class="ansi-green-fg">else</span><span class="ansi-blue-fg">:</span>               img_tuples <span class="ansi-blue-fg">=</span> _fetch_img_tuples_webdriver<span class="ansi-blue-fg">(</span>search_url<span class="ansi-blue-fg">,</span> format<span class="ansi-blue-fg">=</span>format<span class="ansi-blue-fg">,</span> n_images<span class="ansi-blue-fg">=</span>n_images<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-fg">---&gt; 88</span><span class="ansi-red-fg">     </span>downloaded_images <span class="ansi-blue-fg">=</span> _download_images<span class="ansi-blue-fg">(</span>label_path<span class="ansi-blue-fg">,</span> img_tuples<span class="ansi-blue-fg">,</span> max_workers<span class="ansi-blue-fg">=</span>max_workers<span class="ansi-blue-fg">,</span> timeout<span class="ansi-blue-fg">=</span>timeout<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">     89</span>     <span class="ansi-green-fg">if</span> len<span class="ansi-blue-fg">(</span>downloaded_images<span class="ansi-blue-fg">)</span> <span class="ansi-blue-fg">==</span> <span class="ansi-cyan-fg">0</span><span class="ansi-blue-fg">:</span> <span class="ansi-green-fg">raise</span> RuntimeError<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">f&#34;Couldn&#39;t download any images.&#34;</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">     90</span>     verify_images<span class="ansi-blue-fg">(</span>label_path<span class="ansi-blue-fg">,</span> max_workers<span class="ansi-blue-fg">=</span>max_workers<span class="ansi-blue-fg">)</span>
+
+<span class="ansi-green-fg">~/fastai/fastai/widgets/image_downloader.py</span> in <span class="ansi-cyan-fg">_download_images</span><span class="ansi-blue-fg">(label_path, img_tuples, max_workers, timeout)</span>
+<span class="ansi-green-intense-fg ansi-bold">    165</span>     &#34;&#34;&#34;
+<span class="ansi-green-intense-fg ansi-bold">    166</span>     os<span class="ansi-blue-fg">.</span>makedirs<span class="ansi-blue-fg">(</span>Path<span class="ansi-blue-fg">(</span>label_path<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">,</span> exist_ok<span class="ansi-blue-fg">=</span><span class="ansi-green-fg">True</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-fg">--&gt; 167</span><span class="ansi-red-fg">     </span>parallel<span class="ansi-blue-fg">(</span> partial<span class="ansi-blue-fg">(</span>_download_single_image<span class="ansi-blue-fg">,</span> label_path<span class="ansi-blue-fg">,</span> timeout<span class="ansi-blue-fg">=</span>timeout<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">,</span> img_tuples<span class="ansi-blue-fg">,</span> max_workers<span class="ansi-blue-fg">=</span>max_workers<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    168</span>     <span class="ansi-green-fg">return</span> get_image_files<span class="ansi-blue-fg">(</span>label_path<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    169</span> 
+
+<span class="ansi-green-fg">~/fastai/fastai/core.py</span> in <span class="ansi-cyan-fg">parallel</span><span class="ansi-blue-fg">(func, arr, max_workers)</span>
+<span class="ansi-green-intense-fg ansi-bold">    326</span>             futures <span class="ansi-blue-fg">=</span> <span class="ansi-blue-fg">[</span>ex<span class="ansi-blue-fg">.</span>submit<span class="ansi-blue-fg">(</span>func<span class="ansi-blue-fg">,</span>o<span class="ansi-blue-fg">,</span>i<span class="ansi-blue-fg">)</span> <span class="ansi-green-fg">for</span> i<span class="ansi-blue-fg">,</span>o <span class="ansi-green-fg">in</span> enumerate<span class="ansi-blue-fg">(</span>arr<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">]</span>
+<span class="ansi-green-intense-fg ansi-bold">    327</span>             results <span class="ansi-blue-fg">=</span> <span class="ansi-blue-fg">[</span><span class="ansi-blue-fg">]</span>
+<span class="ansi-green-fg">--&gt; 328</span><span class="ansi-red-fg">             </span><span class="ansi-green-fg">for</span> f <span class="ansi-green-fg">in</span> progress_bar<span class="ansi-blue-fg">(</span>concurrent<span class="ansi-blue-fg">.</span>futures<span class="ansi-blue-fg">.</span>as_completed<span class="ansi-blue-fg">(</span>futures<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">,</span> total<span class="ansi-blue-fg">=</span>len<span class="ansi-blue-fg">(</span>arr<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span> results<span class="ansi-blue-fg">.</span>append<span class="ansi-blue-fg">(</span>f<span class="ansi-blue-fg">.</span>result<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    329</span>     <span class="ansi-green-fg">if</span> any<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">[</span>o <span class="ansi-green-fg">is</span> <span class="ansi-green-fg">not</span> <span class="ansi-green-fg">None</span> <span class="ansi-green-fg">for</span> o <span class="ansi-green-fg">in</span> results<span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span> <span class="ansi-green-fg">return</span> results
+<span class="ansi-green-intense-fg ansi-bold">    330</span> 
+
+<span class="ansi-green-fg">~/anaconda3/lib/python3.7/concurrent/futures/_base.py</span> in <span class="ansi-cyan-fg">result</span><span class="ansi-blue-fg">(self, timeout)</span>
+<span class="ansi-green-intense-fg ansi-bold">    423</span>                 <span class="ansi-green-fg">raise</span> CancelledError<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    424</span>             <span class="ansi-green-fg">elif</span> self<span class="ansi-blue-fg">.</span>_state <span class="ansi-blue-fg">==</span> FINISHED<span class="ansi-blue-fg">:</span>
+<span class="ansi-green-fg">--&gt; 425</span><span class="ansi-red-fg">                 </span><span class="ansi-green-fg">return</span> self<span class="ansi-blue-fg">.</span>__get_result<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    426</span> 
+<span class="ansi-green-intense-fg ansi-bold">    427</span>             self<span class="ansi-blue-fg">.</span>_condition<span class="ansi-blue-fg">.</span>wait<span class="ansi-blue-fg">(</span>timeout<span class="ansi-blue-fg">)</span>
+
+<span class="ansi-green-fg">~/anaconda3/lib/python3.7/concurrent/futures/_base.py</span> in <span class="ansi-cyan-fg">__get_result</span><span class="ansi-blue-fg">(self)</span>
+<span class="ansi-green-intense-fg ansi-bold">    382</span>     <span class="ansi-green-fg">def</span> __get_result<span class="ansi-blue-fg">(</span>self<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-intense-fg ansi-bold">    383</span>         <span class="ansi-green-fg">if</span> self<span class="ansi-blue-fg">.</span>_exception<span class="ansi-blue-fg">:</span>
+<span class="ansi-green-fg">--&gt; 384</span><span class="ansi-red-fg">             </span><span class="ansi-green-fg">raise</span> self<span class="ansi-blue-fg">.</span>_exception
+<span class="ansi-green-intense-fg ansi-bold">    385</span>         <span class="ansi-green-fg">else</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-intense-fg ansi-bold">    386</span>             <span class="ansi-green-fg">return</span> self<span class="ansi-blue-fg">.</span>_result
+
+<span class="ansi-red-fg">ConnectionError</span>: None: Max retries exceeded with url: /wp-content/uploads/2018/04/cropped-frenchbulldog2-french840-2.jpg (Caused by None)</pre>
 </div>
-
 </div>
 
 </div>

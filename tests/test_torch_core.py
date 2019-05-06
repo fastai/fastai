@@ -1,5 +1,7 @@
 import pytest, torch, fastai
 from fastai.gen_doc.doctest import this_tests
+from fastai import *
+from fastai.vision import *
 from fastai.torch_core import *
 from fastai.layers import *
 from math import isclose
@@ -100,6 +102,30 @@ def test_np_address():
     a=np.ndarray(shape=(2,2))
     add=np_address(a)
     assert isinstance(add, int)
+
+def test_to_data():
+    this_tests(to_data)    
+    path = untar_data(URLs.MNIST_SAMPLE)
+    data1 = ImageDataBunch.from_folder(path)
+    ys1 = list(data1.y)
+    a=([1,2,3],[3,6,6])
+    b=([4,5,6],[4,7,7])
+    data2 = torch.tensor([a,b])
+    ys2= list(data2[0])
+    assert isinstance(data1, fastai.vision.data.ImageDataBunch)
+    assert isinstance(data1.y, ItemList)
+    assert isinstance(ys1, list)
+    assert isinstance(ys1[0], Category)
+    assert isinstance(ys1[0].data, np.int64)
+    assert isinstance(to_data(ys1[0]), np.int64)
+    assert ys1[0].data == to_data(ys1[0]) 
+    assert isinstance(data2, torch.Tensor)
+    assert isinstance(data2[0], torch.Tensor)
+    assert isinstance(ys2, list)
+    assert isinstance(ys2[0], torch.Tensor)
+    assert isinstance(ys2[0].data, torch.Tensor)
+    assert isinstance(to_data(ys2[0]), torch.Tensor) 
+    assert torch.all(torch.eq(ys2[0].data, to_data(ys2[0]))) 
     
 @pytest.mark.cuda
 def test_to_detach():
