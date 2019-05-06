@@ -32,12 +32,12 @@ class ResBlock(nn.Module):
     def __init__(self, expansion, ni, nh, stride=1):
         super().__init__()
         nf,ni = nh*expansion,ni*expansion
-        layers  = [conv_layer(ni, nh, 1)]
-        layers += [
-            conv_layer(nh, nf, 3, stride=stride, zero_bn=True, act=False)
-        ] if expansion==1 else [
-            conv_layer(nh, nh, 3, stride=stride),
-            conv_layer(nh, nf, 1, zero_bn=True, act=False)
+        layers  = [conv_layer(ni, nh, 3, stride=stride),
+                   conv_layer(nh, nf, 3, zero_bn=True, act=False)
+        ] if expansion == 1 else [
+                   conv_layer(ni, nh, 1),
+                   conv_layer(nh, nh, 3, stride=stride),
+                   conv_layer(nh, nf, 1, zero_bn=True, act=False)
         ]
         self.convs = nn.Sequential(*layers)
         # TODO: check whether act=True works better
