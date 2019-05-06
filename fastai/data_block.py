@@ -28,7 +28,7 @@ def _get_files(parent, p, f, extensions):
     return res
 
 def get_files(path:PathOrStr, extensions:Collection[str]=None, recurse:bool=False,
-              include:Optional[Collection[str]]=None, presort:bool=True)->FilePathList:
+              include:Optional[Collection[str]]=None, presort:bool=False)->FilePathList:
     "Return list of files in `path` that have a suffix in `extensions`; optionally `recurse`."
     if recurse:
         res = []
@@ -121,7 +121,7 @@ class ItemList():
 
     @classmethod
     def from_folder(cls, path:PathOrStr, extensions:Collection[str]=None, recurse:bool=True,
-                    include:Optional[Collection[str]]=None, processor:PreProcessors=None, presort:bool=True, **kwargs)->'ItemList':
+                    include:Optional[Collection[str]]=None, processor:PreProcessors=None, presort:Optional[bool]=False, **kwargs)->'ItemList':
         """Create an `ItemList` in `path` from the filenames that have a suffix in `extensions`.
         `recurse` determines if we search subfolders."""
         path = Path(path)
