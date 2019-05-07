@@ -12,7 +12,7 @@ from ..torch_core import *
 from .nbtest import get_pytest_html
 from ..utils.ipython import IS_IN_COLAB
 
-__all__ = ['get_fn_link', 'link_docstring', 'show_doc', 'get_ft_names', 'md2thml'
+__all__ = ['get_fn_link', 'link_docstring', 'show_doc', 'get_ft_names', 'md2html'
            'get_exports', 'show_video', 'show_video_from_youtube', 'import_mod', 'get_source_link',
            'is_enum', 'jekyll_note', 'jekyll_warn', 'jekyll_important', 'doc']
 
