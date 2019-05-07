@@ -25,7 +25,7 @@ def show_test(elt)->str:
 def doctest(elt):
     "Inline notebook popup for `show_test`"
     md = build_tests_markdown(elt)
-    output = HTMLExporter().markdown2html(md)
+    output = nbdoc.md2html(md)
     try:    page.page({'text/html': output})
     except: display(Markdown(md))
 
@@ -54,7 +54,7 @@ def tests2md(tests, type_label:str):
 
 def get_pytest_html(elt, anchor_id:str)->Tuple[str,str]:
     md = build_tests_markdown(elt)
-    html = HTMLExporter().markdown2html(md).replace('\n','') # nbconverter fails to parse markdown if it has both html and '\n'
+    html = nbdoc.md2html(md).replace('\n','') # nbconverter fails to parse markdown if it has both html and '\n'
     anchor_id = anchor_id.replace('.', '-') + '-pytest'
     link, body = get_pytest_card(html, anchor_id)
     return link, body

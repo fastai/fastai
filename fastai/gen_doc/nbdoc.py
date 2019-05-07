@@ -1,6 +1,6 @@
 "`gen_doc.nbdoc` generates notebook documentation from module functions and links to correct places"
 
-import inspect,importlib,enum,os,re
+import inspect,importlib,enum,os,re,nbconvert
 from IPython.core.display import display, Markdown, HTML
 from nbconvert import HTMLExporter
 from IPython.core import page
@@ -12,7 +12,7 @@ from ..torch_core import *
 from .nbtest import get_pytest_html
 from ..utils.ipython import IS_IN_COLAB
 
-__all__ = ['get_fn_link', 'link_docstring', 'show_doc', 'get_ft_names',
+__all__ = ['get_fn_link', 'link_docstring', 'show_doc', 'get_ft_names', 'md2thml'
            'get_exports', 'show_video', 'show_video_from_youtube', 'import_mod', 'get_source_link',
            'is_enum', 'jekyll_note', 'jekyll_warn', 'jekyll_important', 'doc']
 
@@ -123,6 +123,10 @@ def show_doc(elt, doc_string:bool=True, full_name:str=None, arg_comments:dict=No
     if markdown: display(Markdown(doc))
     else: return doc
 
+def md2html(md):
+    if nbconvert.__version__ < '5.5.0': return HTMLExporter().markdown2html(md)
+    else: return HTMLExporter().markdown2html(defaultdict(lambda: defaultdict(dict)), md)
+    
 def doc(elt):
     "Show `show_doc` info in preview window along with link to full docs."
     global use_relative_links
@@ -131,7 +135,7 @@ def doc(elt):
     md = show_doc(elt, markdown=False)
     if is_fastai_class(elt):
         md += f'\n\n<a href="{get_fn_link(elt)}" target="_blank" rel="noreferrer noopener">Show in docs</a>'
-    output = HTMLExporter().markdown2html(md)
+    output = md2html(md)
     use_relative_links = True
     if IS_IN_COLAB: get_ipython().run_cell_magic(u'html', u'', output)
     else:
