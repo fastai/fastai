@@ -47,7 +47,8 @@ def cnn_config(arch):
 
 def has_pool_type(m):
     if is_pool_type(m): return True
-    for l in m.children(): return has_pool_type(l)
+    for l in m.children():
+        if has_pool_type(l): return True
     return False
 
 def create_body(arch:Callable, pretrained:bool=True, cut:Optional[Union[int, Callable]]=None):

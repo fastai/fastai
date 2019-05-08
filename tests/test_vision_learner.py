@@ -6,6 +6,7 @@ from fastai.vision.learner import *
 from fastai.callbacks.hooks import *
 from torchvision.models import resnet18
 from torchvision.models.resnet import BasicBlock
+from fastai.vision.learner import has_pool_type
 
 @pytest.fixture
 def image():
@@ -40,3 +41,9 @@ def test_create_head(image):
     nc = 4 # number of output classes
     head = create_head(nf=image.shape[1]*2,nc=nc)
     assert list(head(image).shape) == [image.shape[0],nc]
+
+def test_has_pool_type():
+	this_tests(has_pool_type)
+	nc = 5 # dummy number of output classes
+	rn18m = create_cnn_model(resnet18, nc=nc)
+	assert has_pool_type(rn18m) # rn34 has pool type
