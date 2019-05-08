@@ -6,6 +6,7 @@ from fastai.vision.learner import *
 from fastai.callbacks.hooks import *
 from torchvision.models import resnet18
 from torchvision.models.resnet import BasicBlock
+from fastai.vision.learner import has_pool_type
 
 @pytest.fixture
 def image():
