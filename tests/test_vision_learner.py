@@ -45,5 +45,5 @@ def test_create_head(image):
 def test_has_pool_type():
 	this_tests(has_pool_type)
 	nc = 5 # dummy number of output classes
-	rn34m = create_cnn_model(models.resnet34, nc=nc)
-	assert has_pool_type(rn34m) # rn34 has pool type
+	rn18m = create_cnn_model(resnet18, nc=nc)
+	assert has_pool_type(rn18m) # rn34 has pool type
