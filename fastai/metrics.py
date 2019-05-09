@@ -2,12 +2,13 @@
 from .torch_core import *
 from .callback import *
 from .layers import *
+from .basic_train import LearnerCallback
 
 __all__ = ['error_rate', 'accuracy', 'accuracy_thresh', 'dice', 'exp_rmspe', 'fbeta','FBeta', 'mse', 'mean_squared_error',
             'mae', 'mean_absolute_error', 'rmse', 'root_mean_squared_error', 'msle', 'mean_squared_logarithmic_error',
             'explained_variance', 'r2_score', 'top_k_accuracy', 'KappaScore', 'ConfusionMatrix', 'MatthewsCorreff',
             'Precision', 'Recall', 'R2Score', 'ExplainedVariance', 'ExpRMSPE', 'RMSE', 'Perplexity', 'AUROC', 'auc_roc_score', 
-            'roc_curve']
+            'roc_curve', 'MultiLabelFbeta']
 
 def fbeta(y_pred:Tensor, y_true:Tensor, thresh:float=0.2, beta:float=2, eps:float=1e-9, sigmoid:bool=True)->Rank0Tensor:
     "Computes the f_beta between `preds` and `targets`"
@@ -301,3 +302,50 @@ class AUROC(Callback):
     
     def on_epoch_end(self, last_metrics, **kwargs):
         return add_metrics(last_metrics, auc_roc_score(self.preds, self.targs))
+
+class MultiLabelFbeta(LearnerCallback):
+    "Computes the fbeta score for multilabel classification"
+    # https://scikit-learn.org/stable/modules/generated/sklearn.metrics.f1_score.html
+    _order = -20 
+    def __init__(self, learn, beta=2, eps=1e-15, thresh=0.3, sigmoid=True, average="micro"):
+        super().__init__(learn)
+        self.eps, self.thresh, self.sigmoid, self.average, self.beta2 = \
+            eps, thresh, sigmoid, average, beta**2
+
+    def on_train_begin(self, **kwargs):
+        self.c = self.learn.data.c
+        if self.average != "none": self.learn.recorder.add_metric_names([f'{self.average}_fbeta'])
+        else: self.learn.recorder.add_metric_names([f"fbeta_{c}" for c in self.learn.data.classes])
+
+    def on_epoch_begin(self, **kwargs):
+        dvc = self.learn.data.device
+        self.tp = torch.zeros(self.c).to(dvc)
+        self.total_pred = torch.zeros(self.c).to(dvc)
+        self.total_targ = torch.zeros(self.c).to(dvc)
+    
+    def on_batch_end(self, last_output, last_target, **kwargs):
+        pred, targ = (last_output.sigmoid() if self.sigmoid else last_output) > self.thresh, last_target.byte()
+        m = pred*targ
+        self.tp += m.sum(0).float()
+        self.total_pred += pred.sum(0).float()
+        self.total_targ += targ.sum(0).float()
+    
+    def fbeta_score(self, precision, recall):
+        return (1 + self.beta2)*(precision*recall)/((self.beta2*precision + recall) + self.eps)
+
+    def on_epoch_end(self, last_metrics, **kwargs):
+        self.total_pred += self.eps
+        if self.average == "micro":
+            precision, recall = self.tp.sum() / self.total_pred.sum(), self.tp.sum() / self.total_targ.sum()
+            res = self.fbeta_score(precision, recall)
+        elif self.average == "macro":
+            res = self.fbeta_score((self.tp / self.total_pred), (self.tp / self.total_targ)).mean()
+        elif self.average == "weighted":
+            scores = self.fbeta_score((self.tp / self.total_pred), (self.tp / self.total_targ))
+            res = (scores*self.total_targ).sum() / self.total_targ.sum()
+        elif self.average == "none":
+            res = listify(self.fbeta_score((self.tp / self.total_pred), (self.tp / self.total_targ)))
+        else:
+            raise Exception("Choose one of the average types: [micro, macro, weighted, none]")
+        
+        return add_metrics(last_metrics, res)
