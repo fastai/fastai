@@ -2,6 +2,7 @@
 from .torch_core import *
 from .callback import *
 from .layers import *
+from .basic_train import LearnerCallback
 
 __all__ = ['error_rate', 'accuracy', 'accuracy_thresh', 'dice', 'exp_rmspe', 'fbeta','FBeta', 'mse', 'mean_squared_error',
             'mae', 'mean_absolute_error', 'rmse', 'root_mean_squared_error', 'msle', 'mean_squared_logarithmic_error',
