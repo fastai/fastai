@@ -65,7 +65,7 @@ Here is the tl;dr version to install `Pillow-SIMD` w/ `libjpeg-turbo` and w/o `T
    ```
    conda uninstall -y --force pillow pil jpeg libtiff
    pip   uninstall -y         pillow pil jpeg libtiff
-   conda install -c conda-forge libjpeg-turbo
+   conda install -yc conda-forge libjpeg-turbo
    CFLAGS="${CFLAGS} -mavx2" pip install --upgrade --no-cache-dir --force-reinstall --no-binary :all: --compile pillow-simd
    conda install -y jpeg libtiff
    ```
@@ -88,7 +88,7 @@ Here are the detailed instructions, with an optional `TIFF` support:
 2. Now we are ready to replace `libjpeg` with a drop-in replacement of `libjpeg-turbo` and then replace `Pillow` with `Pillow-SIMD`:
 
    ```
-   conda install -c conda-forge libjpeg-turbo
+   conda install -yc conda-forge libjpeg-turbo
    CFLAGS="${CFLAGS} -mavx2" pip install --upgrade --no-cache-dir --force-reinstall --no-binary :all: --compile pillow-simd
    ```
    Do note that since you're building from source, you may end up not having some of the features that come with the binary `Pillow` package if the corresponding libraries aren't available on your system during the build time. For more information see: [Building from source](https://pillow.readthedocs.io/en/latest/installation.html#building-from-source).
