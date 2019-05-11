@@ -48,7 +48,7 @@ def add_cyclic_datepart(df:DataFrame, field_name:str, prefix:str=None, drop:bool
     series = field.apply(partial(cyclic_dt_features, time=time, add_linear=add_linear))
     columns = [prefix + c for c in cyclic_dt_feat_names(time, add_linear)]
     df_feats = pd.DataFrame([item for item in series], columns=columns, index=series.index)
-    df = pd.concat([df, df_feats], axis=1)
+    for column in columns: df[column] = df_feats[column]
     if drop: df.drop(field_name, axis=1, inplace=True)
     return df
 
