@@ -128,9 +128,15 @@ def _cl_int_from_learner(cls, learn:Learner, ds_type:DatasetType=DatasetType.Val
     preds = learn.TTA(ds_type=ds_type, with_loss=True) if tta else learn.get_preds(ds_type=ds_type, with_loss=True)
     return cls(learn, *preds, ds_type=ds_type)
 
-def _cl_int_plot_top_losses(self, k, largest=True, figsize=(12,12), heatmap:bool=True, heatmap_thresh:int=16,
+def _test_cnn(m):
+    if not isinstance(m, nn.Sequential) or not len(m) == 2: return False
+    return isinstance(m[1][0], (AdaptiveConcatPool2d, nn.AdaptiveAvgPool2d))
+
+def _cl_int_plot_top_losses(self, k, largest=True, figsize=(12,12), heatmap:bool=None, heatmap_thresh:int=16,
                             return_fig:bool=None)->Optional[plt.Figure]:
     "Show images in `top_losses` along with their prediction, actual, loss, and probability of actual class."
+    assert not heatmap or _test_cnn(self.learn.model), "`heatmap=True` requires a model like `cnn_learner` produces."
+    if heatmap is None: heatmap = _test_cnn(self.learn.model)
     tl_val,tl_idx = self.top_losses(k, largest)
     classes = self.data.classes
     cols = math.ceil(math.sqrt(k))
