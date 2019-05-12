@@ -67,7 +67,7 @@ Let's welcome a new function: `learn.purge` that solves this problem transparent
 ```
 learn.purge()
 ```
-which removes any of the `Learner` guts that are no longer needed and reloads the model on GPU, which also helps to reduce [memory fragmentation](https://docs.fast.ai/dev/gpu.html#gpu-ram-fragmentation). Therefore, whenever you need the no longer memory purges, this is the way to do it.
+which removes any of the `Learner` guts that are no longer needed and reloads the model on GPU, which also helps to reduce [memory fragmentation](/dev/gpu.html#gpu-ram-fragmentation). Therefore, whenever you need the no longer memory purges, this is the way to do it.
 
 Furthermore, the purging functionality is included in `learn.load` and is performed by default. You can override the default behavior of it not to purge with `purge=False` argument).
 
@@ -204,14 +204,14 @@ learn.destroy()
 
 ## CUDA out of memory
 
-One of the main culprits leading to a need to restart the notebook is when the notebook runs out of memory with the known to all `CUDA out of memory` (OOM) exception. This is covered in this [section](https://docs.fast.ai/troubleshoot.html#cuda-out-of-memory-exception).
+One of the main culprits leading to a need to restart the notebook is when the notebook runs out of memory with the known to all `CUDA out of memory` (OOM) exception. This is covered in this [section](/troubleshoot.html#cuda-out-of-memory-exception).
 
-And also you need to know about the current bug in ipython that may prevent you from being able to continue to use the notebook on OOM. This problem is mainly taken care of automatically in fastai, and is explained in details [here](https://docs.fast.ai/troubleshoot.html#memory-leakage-on-exception).
+And also you need to know about the current bug in ipython that may prevent you from being able to continue to use the notebook on OOM. This problem is mainly taken care of automatically in fastai, and is explained in details [here](/troubleshoot.html#memory-leakage-on-exception).
 
 
 ## GPU Memory Usage Anatomy
 
-1. About 0.5GB per process is used by CUDA context, see [Unusable GPU RAM per process](https://docs.fast.ai/dev/gpu.html#unusable-gpu-ram-per-process). This memory is consumed during the first call to `.cuda`, when the first tensor is moved to GPU. You can test your card with:
+1. About 0.5GB per process is used by CUDA context, see [Unusable GPU RAM per process](/dev/gpu.html#unusable-gpu-ram-per-process). This memory is consumed during the first call to `.cuda`, when the first tensor is moved to GPU. You can test your card with:
 
    ```
    python -c 'from fastai.utils.mem import *; b=gpu_mem_get_used_no_cache(); preload_pytorch(); print(gpu_mem_get_used_no_cache()-b);'
@@ -227,12 +227,12 @@ If you'd like to get a sense of how much memory each stage uses (bypassing pytor
 
 * For per-notebook and per-cell: [ipyexperiments](https://github.com/stas00/ipyexperiments/).
 * For per-epoch use: [`PeakMemMetric`](/callbacks.mem.html#PeakMemMetric).
-* For even more fine-grained profiling:  [GPUMemTrace](https://docs.fast.ai/utils.mem.html#GPUMemTrace).
+* For even more fine-grained profiling:  [GPUMemTrace](/utils.mem.html#GPUMemTrace).
 
 
 **Real memory usage**
 
-* pytorch caches memory through its memory allocator, so you can't use tools like `nvidia-smi` to see how much real memory is available. So you either need to use pytorch's memory management functions to get that information or if you want to rely on `nvidia-smi` you have to flush the cache. Refer to this [document](https://docs.fast.ai/dev/gpu.html#cached-memory) for details.
+* pytorch caches memory through its memory allocator, so you can't use tools like `nvidia-smi` to see how much real memory is available. So you either need to use pytorch's memory management functions to get that information or if you want to rely on `nvidia-smi` you have to flush the cache. Refer to this [document](/dev/gpu.html#cached-memory) for details.
 
 
 ## TODO/Help Wanted

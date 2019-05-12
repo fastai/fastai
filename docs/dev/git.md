@@ -214,7 +214,7 @@ It's very important that you **always work inside a branch**. If you make any co
 
    If you previously installed `fastai` via `pip` you don't need to uninstall it - `pip` will automatically do it for you when you install `fastai` in the next step.
 
-   Also this is probably a good time for you to deepen your understanding of [Editable installs](https://docs.fast.ai/dev/develop.html#editable-install-explained).
+   Also this is probably a good time for you to deepen your understanding of [Editable installs](/dev/develop.html#editable-install-explained).
 
 2. Install the prerequisites.
 

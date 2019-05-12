@@ -8,7 +8,7 @@ Here is how you can contribute to the `fastai` documentation in just 4 steps.
 
 ### Step 1. Create a `fastai` git branch
 
-The process of creating a branch (with a fork), including a program that will do it for you in one step, and submitting the PR is explained in details in [How to Make a Pull Request (PR)](https://docs.fast.ai/dev/git.html#how-to-make-a-pull-request-pr)
+The process of creating a branch (with a fork), including a program that will do it for you in one step, and submitting the PR is explained in details in [How to Make a Pull Request (PR)](/dev/git.html#how-to-make-a-pull-request-pr)
 
 ### Step 2. Setup
 
@@ -25,19 +25,19 @@ cd docs_src
 mklink /d imgs ..\docs\imgs
 ```
 
-If you followed the fastai-specific instructions explained [here](https://docs.fast.ai/dev/git.html#how-to-make-a-pull-request-pr), you're all set. If you made a PR branch in some other way, it's crucial that you execute:
+If you followed the fastai-specific instructions explained [here](/dev/git.html#how-to-make-a-pull-request-pr), you're all set. If you made a PR branch in some other way, it's crucial that you execute:
 
 ```bash
 tools/run-after-git-clone  # or python tools\run-after-git-clone on windows
 ```
 
-in that branch once. You can read more about it [here](https://docs.fast.ai/dev/develop.html#things-to-run-after-git-clone).
+in that branch once. You can read more about it [here](/dev/develop.html#things-to-run-after-git-clone).
 
 ### Step 3. Edit the documents
 
 There are two types of source files: `*ipynb` and `*md` files.
 
-1. `*ipynb` notebook files, located under the directory `docs_src`, are the sources for most of the `*html` files on [docs.fast.ai](https://docs.fast.ai/). For example, [https://docs.fast.ai/data_block.html](https://docs.fast.ai/data_block.html) is generated from the [docs_src/data_block.ipynb](https://github.com/fastai/fastai/blob/master/docs_src/data_block.ipynb).
+1. `*ipynb` notebook files, located under the directory `docs_src`, are the sources for most of the `*html` files on [docs.fast.ai](https://docs.fast.ai/). For example, [https://docs.fast.ai/data_block.html](/data_block.html) is generated from the [docs_src/data_block.ipynb](https://github.com/fastai/fastai/blob/master/docs_src/data_block.ipynb).
 
    While you can use a normal editor for editing this type of files, it's difficult to edit `json`-format files and it's very easy to break them. Instead edit `*ipynb` files by opening them in your jupyter notebook environment.
 
@@ -47,9 +47,9 @@ There are two types of source files: `*ipynb` and `*md` files.
 
    You don't need to convert your work to HTML, we will do it after your PR is accepted and merged.
 
-   **Note**: jupyter lab is currently not supported. If you missed this warning and have already edited `.ipynb` files in jupyter lab, you can [fix them](https://docs.fast.ai/dev/develop.html#unstripped-notebook-repair).
+   **Note**: jupyter lab is currently not supported. If you missed this warning and have already edited `.ipynb` files in jupyter lab, you can [fix them](/dev/develop.html#unstripped-notebook-repair).
 
-2. `*md` text files, located at `docs/*.md` and `docs/*/*.md` require no jupyter environment - i.e. they contain plain text formatted using the `markdown` format. Note, that unlike `*ipynb`, these are located in the `docs` directory. For example,  [https://docs.fast.ai/troubleshoot.html](https://docs.fast.ai/troubleshoot.html)'s source is [docs/troubleshoot.md](https://github.com/fastai/fastai/blob/master/docs/troubleshoot.md).
+2. `*md` text files, located at `docs/*.md` and `docs/*/*.md` require no jupyter environment - i.e. they contain plain text formatted using the `markdown` format. Note, that unlike `*ipynb`, these are located in the `docs` directory. For example,  [https://docs.fast.ai/troubleshoot.html](/troubleshoot.html)'s source is [docs/troubleshoot.md](https://github.com/fastai/fastai/blob/master/docs/troubleshoot.md).
 
    Edit these files in your editor. To validate the markdown use [grip](https://github.com/joeyespo/grip) or any other markdown rendering/validating tool of your liking.
 
@@ -57,7 +57,7 @@ There are two types of source files: `*ipynb` and `*md` files.
 
 ### Step 4. Submit a PR with your changes
 
-See [Submit Your PR](https://docs.fast.ai/dev/git.html#step-7-submit-your-pr).
+See [Submit Your PR](/dev/git.html#step-7-submit-your-pr).
 
 **You're done**. You don't need to do anything more at this point, other than checking on the status of your PR and if everything is good it'll be merged, if there are some issues with it, you may be requested to make some changes, which you just commit and push like your initial commit. The PR will get automatically updated with your new changes.
 
@@ -171,7 +171,7 @@ git commit docs_src/data_block.ipynb docs/data_block.html
 
 and then push the changes into the repo.
 
-Several minutes after the push you will see the updated documents at https://docs.fast.ai/data_block.html.
+Several minutes after the push you will see the updated documents at [https://docs.fast.ai/data_block.html] (https://docs.fast.ai/data_block.html).
 
 ### Updating an existing function/class
 

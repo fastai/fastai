@@ -15,7 +15,7 @@ python -c "import fastai.utils; fastai.utils.check_perf()"
 
 Combined FP16/FP32 training can tremendously improve training speed and use less GPU RAM. For theory behind it see this [thread](https://forums.fast.ai/t/mixed-precision-training/20720/3)
 
-To deploy it see [these instructions](http://docs.fast.ai/callbacks.fp16.html).
+To deploy it see [these instructions](/callbacks.fp16.html).
 
 
 
@@ -223,4 +223,4 @@ If you have problems with these experimental packages please post [here](https:/
 
 ## GPU Performance
 
-See [GPU Memory Notes](https://docs.fast.ai/dev/gpu.html#gpu-memory-notes).
+See [GPU Memory Notes](/dev/gpu.html#gpu-memory-notes).

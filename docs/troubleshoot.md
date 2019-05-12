@@ -602,4 +602,4 @@ If after reading this section, you still have questions, please ask in this [thr
 
 ## Support
 
-If troubleshooting wasn't successful please refer next to [the support document](https://docs.fast.ai/support.html).
+If troubleshooting wasn't successful please refer next to [the support document](/support.html).
