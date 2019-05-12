@@ -23,7 +23,7 @@ Generally, pytorch GPU build should work fine on machines that don't have a CUDA
 
 * conda
 
-   The conda way is more involved. Since we have only a single fastai package that relies on the default `pytorch` package working with and without GPU environment, if you want to install something custom you will have to manually tweak the dependencies. This is explained in detail [here](https://docs.fast.ai/install.html#custom-dependencies). So follow the instructions there, but replace `pytorch` with `pytorch-cpu`, and `torchvision` with `torchvision-cpu`.
+   The conda way is more involved. Since we have only a single fastai package that relies on the default `pytorch` package working with and without GPU environment, if you want to install something custom you will have to manually tweak the dependencies. This is explained in detail [here](/install.html#custom-dependencies). So follow the instructions there, but replace `pytorch` with `pytorch-cpu`, and `torchvision` with `torchvision-cpu`.
 
 
 ## Jupyter notebook dependencies
@@ -224,4 +224,4 @@ conda env list
 ```
 
 
-Also see [bash-git-prompt](https://docs.fast.ai/dev/git.html#bash-git-prompt) which will help you tell at any moment which environment you're in.
+Also see [bash-git-prompt](/dev/git.html#bash-git-prompt) which will help you tell at any moment which environment you're in.

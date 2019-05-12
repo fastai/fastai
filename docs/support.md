@@ -33,7 +33,7 @@ Before making a new issue report, please:
 
 3. Make sure you follow [the exact installation instructions](https://github.com/fastai/fastai/blob/master/README.md#installation). If you improvise and it works that's great, if it fails please RTFM ;)
 
-4. Check the [Troubleshooting](https://docs.fast.ai/troubleshoot.html) document.
+4. Check the [Troubleshooting](/troubleshoot.html) document.
 
 5. Search [forums](https://forums.fast.ai/) for a similar issues already reported.
 
