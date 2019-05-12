@@ -1214,8 +1214,8 @@ summary: "The data block API"
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>ItemList (3 items)
-/home/ubuntu/.fastai/data/mnist_tiny/labels.csv,/home/ubuntu/.fastai/data/mnist_tiny/history.csv,/home/ubuntu/.fastai/data/mnist_tiny/cleaned.csv
+<pre>ItemList (2 items)
+/home/ubuntu/.fastai/data/mnist_tiny/labels.csv,/home/ubuntu/.fastai/data/mnist_tiny/cleaned.csv
 Path: /home/ubuntu/.fastai/data/mnist_tiny</pre>
 </div>
 
@@ -4658,6 +4658,180 @@ Test: None</pre>
 </div>
 </div>
 </div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><a href="/data_block.html#CategoryList"><code>CategoryList</code></a> uses <code>labels</code> to create an <a href="/data_block.html#ItemList"><code>ItemList</code></a> for dealing with categorical labels. Behind the scenes, <a href="/data_block.html#CategoryList"><code>CategoryList</code></a> is a subclass of <a href="/data_block.html#CategoryListBase"><code>CategoryListBase</code></a> which is a subclass of <a href="/data_block.html#ItemList"><code>ItemList</code></a>. <a href="/data_block.html#CategoryList"><code>CategoryList</code></a> inherits from <a href="/data_block.html#CategoryListBase"><code>CategoryListBase</code></a> the properties such as <code>classes</code> (default as <code>None</code>), <code>filter_missing_y</code> (default as <code>True</code>), and has its own unique property <code>loss_func</code> (default as <code>CrossEntropyFlat()</code>), and its own class attribute <code>_processor</code> (default as <a href="/data_block.html#CategoryProcessor"><code>CategoryProcessor</code></a>).</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">fastai.vision</span> <span class="k">import</span> <span class="o">*</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">path_data</span> <span class="o">=</span> <span class="n">untar_data</span><span class="p">(</span><span class="n">URLs</span><span class="o">.</span><span class="n">MNIST_TINY</span><span class="p">)</span>
+<span class="n">ll</span> <span class="o">=</span> <span class="n">ImageList</span><span class="o">.</span><span class="n">from_folder</span><span class="p">(</span><span class="n">path_data</span><span class="p">)</span><span class="o">.</span><span class="n">split_by_folder</span><span class="p">(</span><span class="s1">&#39;train&#39;</span><span class="p">,</span> <span class="s1">&#39;valid&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">label_from_folder</span><span class="p">()</span>
+<span class="n">ll</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">items</span><span class="p">,</span> <span class="n">ll</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">classes</span><span class="p">,</span> <span class="n">ll</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>(array([1, 1, 1, 1, ..., 0, 0, 0, 0]), [&#39;3&#39;, &#39;7&#39;], Category 7)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">cl</span> <span class="o">=</span> <span class="n">CategoryList</span><span class="p">(</span><span class="n">ll</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">items</span><span class="p">,</span> <span class="n">ll</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">classes</span><span class="p">);</span> <span class="n">cl</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>CategoryList (709 items)
+7,7,7,7,7
+Path: .</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>For the behavior of printing out <a href="/data_block.html#CategoryList"><code>CategoryList</code></a> object or access an element using index, please see <a href="/data_block.html#CategoryList.get"><code>CategoryList.get</code></a> below.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Behind the scenes, <a href="/data_block.html#CategoryList.get"><code>CategoryList.get</code></a> is used inexplicitly when printing out the <a href="/data_block.html#CategoryList"><code>CategoryList</code></a> object or <code>cl[idx]</code>. According to the source of <a href="/data_block.html#CategoryList.get"><code>CategoryList.get</code></a>, each <code>item</code> is used to get its own <code>class</code>. When 'classes' is a list of strings, then elements of <code>items</code> are used as index of a list, therefore they must be integers in the range from 0 to <code>len(classes)-1</code>; if <code>classes</code> is a dictionary, then elements of <code>items</code> are used as keys, therefore they can be strings too. See examples below for details.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">fastai.vision</span> <span class="k">import</span> <span class="o">*</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">items</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+<span class="n">cl</span> <span class="o">=</span> <span class="n">CategoryList</span><span class="p">(</span><span class="n">items</span><span class="p">,</span> <span class="n">classes</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;3&#39;</span><span class="p">,</span> <span class="s1">&#39;7&#39;</span><span class="p">,</span> <span class="s1">&#39;9&#39;</span><span class="p">]);</span> <span class="n">cl</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>CategoryList (5 items)
+3,7,9,7,3
+Path: .</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">items</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">&#39;3&#39;</span><span class="p">,</span> <span class="s1">&#39;7&#39;</span><span class="p">,</span> <span class="s1">&#39;9&#39;</span><span class="p">,</span> <span class="s1">&#39;7&#39;</span><span class="p">,</span> <span class="s1">&#39;3&#39;</span><span class="p">])</span>
+<span class="n">classes</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;3&#39;</span><span class="p">:</span><span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;7&#39;</span><span class="p">:</span><span class="mi">7</span><span class="p">,</span> <span class="s1">&#39;9&#39;</span><span class="p">:</span><span class="mi">9</span><span class="p">}</span>
+<span class="n">cl</span> <span class="o">=</span> <span class="n">CategoryList</span><span class="p">(</span><span class="n">items</span><span class="p">,</span> <span class="n">classes</span><span class="p">);</span> <span class="n">cl</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>CategoryList (5 items)
+3,7,9,7,3
+Path: .</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -5149,6 +5323,95 @@ learn.validate(data_test.valid_dl)</code></pre>
 </div>
 </div>
 </div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Behind the scenes, it takes inputs <a href="/data_block.html#ItemList"><code>ItemList</code></a> and labels <a href="/data_block.html#ItemList"><code>ItemList</code></a> as its properties <code>x</code> and <code>y</code>, sets property <code>item</code> to <code>None</code>, and uses <a href="/data_block.html#LabelList.transform"><code>LabelList.transform</code></a> to apply a list of transforms <code>TfmList</code> to <code>x</code> and <code>y</code> if <code>tfm_y</code> is set <code>True</code>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">fastai.vision</span> <span class="k">import</span> <span class="o">*</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">path_data</span> <span class="o">=</span> <span class="n">untar_data</span><span class="p">(</span><span class="n">URLs</span><span class="o">.</span><span class="n">MNIST_TINY</span><span class="p">)</span>
+<span class="n">ll</span> <span class="o">=</span> <span class="n">ImageList</span><span class="o">.</span><span class="n">from_folder</span><span class="p">(</span><span class="n">path_data</span><span class="p">)</span><span class="o">.</span><span class="n">split_by_folder</span><span class="p">(</span><span class="s1">&#39;train&#39;</span><span class="p">,</span> <span class="s1">&#39;valid&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">label_from_folder</span><span class="p">()</span>
+<span class="n">ll</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">ll</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">y</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>(ImageList (709 items)
+ Image (3, 28, 28),Image (3, 28, 28),Image (3, 28, 28),Image (3, 28, 28),Image (3, 28, 28)
+ Path: /Users/Natsume/.fastai/data/mnist_tiny, CategoryList (709 items)
+ 7,7,7,7,7
+ Path: /Users/Natsume/.fastai/data/mnist_tiny)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">LabelList</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">ll</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">ll</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>LabelList (709 items)
+x: ImageList
+Image (3, 28, 28),Image (3, 28, 28),Image (3, 28, 28),Image (3, 28, 28),Image (3, 28, 28)
+y: CategoryList
+7,7,7,7,7
+Path: /Users/Natsume/.fastai/data/mnist_tiny</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -5267,6 +5530,119 @@ learn.validate(data_test.valid_dl)</code></pre>
 </blockquote>
 <div class="collapse" id="LabelList-process-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#LabelList-process-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>process</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Launch the processing on <code>self.x</code> and <code>self.y</code> with <code>xp</code> and <code>yp</code>.</p>
 
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Behind the scenes, <a href="/data_block.html#LabelList.process"><code>LabelList.process</code></a> does 3 three things: 1. ask labels <code>y</code> to be processed by <code>yp</code> with <code>y.process(yp)</code>; 2. if <code>y.filter_missing_y</code> is <code>True</code>, then removes the missing data samples from <code>x</code> and <code>y</code>; 3. ask inputs <code>x</code> to be processed by <code>xp</code> with <code>x.process(xp)</code></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">fastai.vision</span> <span class="k">import</span> <span class="o">*</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">path_data</span> <span class="o">=</span> <span class="n">untar_data</span><span class="p">(</span><span class="n">URLs</span><span class="o">.</span><span class="n">MNIST_TINY</span><span class="p">)</span>
+<span class="n">sd</span> <span class="o">=</span> <span class="n">ImageList</span><span class="o">.</span><span class="n">from_folder</span><span class="p">(</span><span class="n">path_data</span><span class="p">)</span><span class="o">.</span><span class="n">split_by_folder</span><span class="p">(</span><span class="s1">&#39;train&#39;</span><span class="p">,</span> <span class="s1">&#39;valid&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">sd</span><span class="o">.</span><span class="n">train</span> <span class="o">=</span> <span class="n">sd</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">label_from_folder</span><span class="p">(</span><span class="n">from_item_lists</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">sd</span><span class="o">.</span><span class="n">valid</span> <span class="o">=</span> <span class="n">sd</span><span class="o">.</span><span class="n">valid</span><span class="o">.</span><span class="n">label_from_folder</span><span class="p">(</span><span class="n">from_item_lists</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">sd</span><span class="o">.</span><span class="vm">__class__</span> <span class="o">=</span> <span class="n">LabelLists</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">xp</span><span class="p">,</span><span class="n">yp</span> <span class="o">=</span> <span class="n">sd</span><span class="o">.</span><span class="n">get_processors</span><span class="p">()</span>
+<span class="n">xp</span><span class="p">,</span><span class="n">yp</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>([], [&lt;fastai.data_block.CategoryProcessor at 0x1a23757a90&gt;])</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">sd</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="n">xp</span><span class="p">,</span> <span class="n">yp</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>LabelList (709 items)
+x: ImageList
+Image (3, 28, 28),Image (3, 28, 28),Image (3, 28, 28),Image (3, 28, 28),Image (3, 28, 28)
+y: CategoryList
+7,7,7,7,7
+Path: /Users/Natsume/.fastai/data/mnist_tiny</pre>
 </div>
 
 </div>
@@ -6024,6 +6400,69 @@ Path: /Users/Natsume/.fastai/data/mnist_tiny/test</pre>
 
 </div>
 
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Behind the scenes, <code>LabelLists.get_processors()</code> first puts <code>train.x._processor</code> classes and <code>train.y._processor</code> classes into separate lists, and then instantiates those processors and put them into <code>xp</code> and <code>yp</code>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">fastai.vision</span> <span class="k">import</span> <span class="o">*</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">path_data</span> <span class="o">=</span> <span class="n">untar_data</span><span class="p">(</span><span class="n">URLs</span><span class="o">.</span><span class="n">MNIST_TINY</span><span class="p">)</span>
+<span class="n">sd</span> <span class="o">=</span> <span class="n">ImageList</span><span class="o">.</span><span class="n">from_folder</span><span class="p">(</span><span class="n">path_data</span><span class="p">)</span><span class="o">.</span><span class="n">split_by_folder</span><span class="p">(</span><span class="s1">&#39;train&#39;</span><span class="p">,</span> <span class="s1">&#39;valid&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">sd</span><span class="o">.</span><span class="n">train</span> <span class="o">=</span> <span class="n">sd</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">label_from_folder</span><span class="p">(</span><span class="n">from_item_lists</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">sd</span><span class="o">.</span><span class="n">valid</span> <span class="o">=</span> <span class="n">sd</span><span class="o">.</span><span class="n">valid</span><span class="o">.</span><span class="n">label_from_folder</span><span class="p">(</span><span class="n">from_item_lists</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">sd</span><span class="o">.</span><span class="vm">__class__</span> <span class="o">=</span> <span class="n">LabelLists</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">xp</span><span class="p">,</span><span class="n">yp</span> <span class="o">=</span> <span class="n">sd</span><span class="o">.</span><span class="n">get_processors</span><span class="p">()</span>
+<span class="n">xp</span><span class="p">,</span><span class="n">yp</span>
+</pre></div>
+
+    </div>
 </div>
 </div>
 
