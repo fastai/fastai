@@ -1655,15 +1655,22 @@
     "fastai.vision.learner.create_body": [
         {
             "file": "tests/test_vision_learner.py",
-            "line": 15,
+            "line": 16,
             "test": "test_create_body"
         }
     ],
     "fastai.vision.learner.create_head": [
         {
             "file": "tests/test_vision_learner.py",
-            "line": 38,
+            "line": 39,
             "test": "test_create_head"
+        }
+    ],
+    "fastai.vision.learner.has_pool_type": [
+        {
+            "file": "tests/test_vision_learner.py",
+            "line": 45,
+            "test": "test_has_pool_type"
         }
     ],
     "fastai.vision.models.unet.DynamicUnet": [

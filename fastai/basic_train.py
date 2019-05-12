@@ -542,6 +542,8 @@ class Recorder(LearnerCallback):
             print(f"Min numerical gradient: {lrs[mg]:.2E}")
             ax.plot(lrs[mg],losses[mg],markersize=10,marker='o',color='red')
             self.min_grad_lr = lrs[mg]
+            ml = np.argmin(losses)
+            print(f"Min loss divided by 10: {lrs[ml]/10:.2E}")
         if ifnone(return_fig, defaults.return_fig): return fig
         if not IN_NOTEBOOK: plot_sixel(fig)
 

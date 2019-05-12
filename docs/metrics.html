@@ -619,6 +619,34 @@ learn = cnn_learner(data, model, metrics=[error_rate, kappa])</code></pre>
 </div>
 
 </div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h3 id="MultiLabelFbeta" class="doc_header"><code>class</code> <code>MultiLabelFbeta</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L306" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#MultiLabelFbeta-pytest" style="float:right; padding-right:10px">[test]</a></h3><blockquote><p><code>MultiLabelFbeta</code>(<strong><code>learn</code></strong>, <strong><code>beta</code></strong>=<strong><em><code>2</code></em></strong>, <strong><code>eps</code></strong>=<strong><em><code>1e-15</code></em></strong>, <strong><code>thresh</code></strong>=<strong><em><code>0.3</code></em></strong>, <strong><code>sigmoid</code></strong>=<strong><em><code>True</code></em></strong>, <strong><code>average</code></strong>=<strong><em><code>'micro'</code></em></strong>) :: <a href="/basic_train.html#LearnerCallback"><code>LearnerCallback</code></a></p>
+</blockquote>
+<div class="collapse" id="MultiLabelFbeta-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#MultiLabelFbeta-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>MultiLabelFbeta</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Computes the fbeta score for multilabel classification</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><a href="/metrics.html#MultiLabelFbeta"><code>MultiLabelFbeta</code></a> implements mutlilabel classification fbeta score similar to <a href="https://scikit-learn.org/stable/modules/generated/sklearn.metrics.f1_score.html">scikit-learn's</a> as a <a href="/basic_train.html#LearnerCallback"><code>LearnerCallback</code></a>. Average options: ["micro", "macro", "weighted", "none"]. Intended to use with one-hot encoded targets with 1s and 0s.</p>
+
+</div>
+</div>
+</div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Creating-your-own-metric">Creating your own metric<a class="anchor-link" href="#Creating-your-own-metric">&#182;</a></h2>
