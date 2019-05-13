@@ -4989,7 +4989,8 @@ Path: .</pre>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Process a dataset. This default to apply <code>process_one</code> on every <code>item</code> of <code>ds</code>.</p>
+<p><code>ds</code>: an object of <a href="/data_block.html#ItemList"><code>ItemList</code></a><br>
+Process a dataset. This default to apply <code>process_one</code> on every <code>item</code> of <code>ds</code>.</p>
 
 </div>
 </div>
@@ -5035,6 +5036,41 @@ Path: .</pre>
 </div>
 </div>
 
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="CategoryProcessor.process" class="doc_header"><code>process</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L345" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#CategoryProcessor-process-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>process</code>(<strong><code>ds</code></strong>)</p>
+</blockquote>
+<div class="collapse" id="CategoryProcessor-process-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#CategoryProcessor-process-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>process</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><code>ds</code> is an object of <a href="/data_block.html#CategoryList"><code>CategoryList</code></a>.<br>
+It basically generates a list of unique labels (assigned to <code>ds.classes</code>) and a dictionary mapping <code>classes</code> to indexes (assigned to <code>ds.c2i</code>).</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>It is an internal function only called to apply processors to training, validation and testing datasets after the labeling step.</p>
+
+</div>
+</div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 
@@ -6529,6 +6565,45 @@ Path: /Users/Natsume/.fastai/data/mnist_tiny/test</pre>
 </div>
 </div>
 
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">show_doc</span><span class="p">(</span><span class="n">ItemList</span><span class="o">.</span><span class="n">process</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="ItemList.process" class="doc_header"><code>process</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L81" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#ItemList-process-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>process</code>(<strong><code>processor</code></strong>:<code>Union</code>[<a href="/data_block.html#PreProcessor"><code>PreProcessor</code></a>, <code>Collection</code>[<a href="/data_block.html#PreProcessor"><code>PreProcessor</code></a>]]=<strong><em><code>None</code></em></strong>)</p>
+</blockquote>
+<div class="collapse" id="ItemList-process-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#ItemList-process-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>process</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Apply <code>processor</code> or <code>self.processor</code> to <code>self</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><code>processor</code> is one or more <code>PreProcessors</code> objects<br>
+Behind the scenes, we put all of <code>processor</code> into a list and apply them all to an object of <a href="/data_block.html#ItemList"><code>ItemList</code></a> or its subclasses.</p>
+
+</div>
+</div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
