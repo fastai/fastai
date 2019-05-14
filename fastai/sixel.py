@@ -13,7 +13,8 @@ def _sixel_encode(data, width, height):
 
 def plot_sixel(fig=None):
     if not libsixel:
-        raise Exception('Error: `libsixel` is needed. See https://github.com/saitoha/libsixel')
+        warn("You could see this plot with `libsixel`. See https://github.com/saitoha/libsixel")
+        return
     if fig is None: fig = plt.gcf()
     fig.canvas.draw()
     dpi = fig.get_dpi()
