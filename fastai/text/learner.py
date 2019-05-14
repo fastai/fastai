@@ -194,9 +194,10 @@ def get_language_model(arch:Callable, vocab_sz:int, config:dict=None, drop_mult:
     init = config.pop('init') if 'init' in config else None
     encoder = arch(vocab_sz, **config)
     enc = encoder.encoder if tie_weights else None
+    if init: encoder.apply(init)
     decoder = LinearDecoder(vocab_sz, config[meta['hid_name']], output_p, tie_encoder=enc, bias=out_bias)
     model = SequentialRNN(encoder, decoder)
-    return model if init is None else model.apply(init)
+    return model
 
 def language_model_learner(data:DataBunch, arch, config:dict=None, drop_mult:float=1., pretrained:bool=True,
                            pretrained_fnames:OptStrTuple=None, **learn_kwargs) -> 'LanguageLearner':
