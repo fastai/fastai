@@ -58,10 +58,20 @@ def chunks(l:Collection, n:int)->Iterable:
     "Yield successive `n`-sized chunks from `l`."
     for i in range(0, len(l), n): yield l[i:i+n]
 
+def recurse(func:Callable, x:Any, *args, **kwargs)->Any:
+    if is_listy(x): return [recurse(func, o, *args, **kwargs) for o in x]
+    if is_dict(x):  return {k: recurse(func, v, *args, **kwargs) for k,v in x.items()}
+    return func(x, *args, **kwargs)
+
+def first_el(x: Any)->Any:
+    "Recursively get the first element of `x`."
+    if is_listy(x): return first_el(x[0])
+    if is_dict(x):  return first_el(x[list(d.keys())[0]])
+    return x
+        
 def to_int(b:Any)->Union[int,List[int]]:
-    "Convert `b` to an int or list of ints (if `is_listy`); raises exception if not convertible"
-    if is_listy(b): return [to_int(x) for x in b]
-    else:          return int(b)
+    "Recursively convert `b` to an int or list/dict of ints; raises exception if not convertible."
+    return recurse(lambda x: int(x), b)
 
 def ifnone(a:Any,b:Any)->Any:
     "`a` if `a` is not None, otherwise `b`."

@@ -90,37 +90,32 @@ def np_address(x:np.ndarray)->int:
 
 def to_detach(b:Tensors, cpu:bool=True):
     "Recursively detach lists of tensors in `b `; put them on the CPU if `cpu=True`."
-    if is_listy(b): return [to_detach(o, cpu) for o in b]
-    if not isinstance(b,Tensor): return b
-    b = b.detach()
-    return b.cpu() if cpu else b
+    def _inner(x, cpu=True):
+        if not isinstance(x,Tensor): return x
+        x = x.detach()
+        return x.cpu() if cpu else x
+    return recurse(_inner, b, cpu=cpu)
 
 def to_data(b:ItemsList):
     "Recursively map lists of items in `b ` to their wrapped data."
-    if is_listy(b): return [to_data(o) for o in b]
-    return b.data if isinstance(b,ItemBase) else b
+    return recurse(lambda x: x.data if isinstance(x,ItemBase) else x, b)
 
 def to_cpu(b:ItemsList):
     "Recursively map lists of tensors in `b ` to the cpu."
-    if is_listy(b): return [to_cpu(o) for o in b]
-    return b.cpu() if isinstance(b,Tensor) else b
+    return recurse(lambda x: x.cpu() if isinstance(x,Tensor) else x, b)
 
 def to_half(b:Collection[Tensor])->Collection[Tensor]:
     "Recursively map lists of tensors in `b ` to FP16."
-    if is_listy(b): return [to_half(o) for o in b]
-    return b.half() if b.dtype not in [torch.int64, torch.int32, torch.int16] else b
+    return recurse(lambda x: x.half() if x.dtype not in [torch.int64, torch.int32, torch.int16] else x, b)
 
 def to_float(b:Collection[Tensor])->Collection[Tensor]:
     "Recursively map lists of tensors in `b ` to FP16."
-    if is_listy(b): return [to_float(o) for o in b]
-    return b.float() if b.dtype not in [torch.int64, torch.int32, torch.int16] else b
+    return recurse(lambda x: x.float() if x.dtype not in [torch.int64, torch.int32, torch.int16] else x, b)
 
 def to_device(b:Tensors, device:torch.device):
     "Recursively put `b` on `device`."
     device = ifnone(device, defaults.device)
-    if is_listy(b): return [to_device(o, device) for o in b]
-    if is_dict(b): return {k: to_device(v, device) for k, v in b.items()}
-    return b.to(device, non_blocking=True)
+    return recurse(lambda x: x.to(device, non_blocking=True), b)
 
 def data_collate(batch:ItemsList)->Tensor:
     "Convert `batch` items to tensor data."

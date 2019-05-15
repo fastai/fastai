@@ -263,13 +263,15 @@ Test that your changes don't break things. Choose one according to which project
 
 * `docs_src`
 
-   In the `docs_src` folder, if you made changes to the notebooks, run:
+   In the `docs_src` folder, if you made changes to the code cells of the documentation notebooks, run:
 
    ```
    cd docs_src
    ./run_tests.sh
    ```
    You will need at least 8GB free GPU RAM to run these tests.
+
+   Please ignore this if you're just adding/changing the prose.
 
 ### Step 6. Push Your Changes
 
