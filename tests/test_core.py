@@ -26,6 +26,15 @@ def test_listify(p, q, expected):
     this_tests(listify)
     assert listify(p, q) == expected
 
+def test_recurse():
+    def to_plus(x, a=1): return recurse(lambda x,a: x+a, x, a)
+    assert to_plus(1) == 2
+    assert to_plus([1,2,3]) == [2,3,4]
+    assert to_plus([1,2,3], a=3) == [4,5,6]
+    assert to_plus({'a': 1, 'b': 2, 'c': 3}) == {'a': 2, 'b': 3, 'c': 4}
+    assert to_plus({'a': 1, 'b': 2, 'c': 3}, a=2) == {'a': 3, 'b': 4, 'c': 5}
+    assert to_plus({'a': 1, 'b': [1,2,3], 'c': {'d': 4, 'e': 5}}) == {'a': 2, 'b': [2, 3, 4], 'c': {'d': 5, 'e': 6}}
+    
 def test_ifnone():
     this_tests(ifnone)
     assert ifnone(None, 5) == 5
