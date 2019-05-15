@@ -62,6 +62,12 @@ def recurse(func:Callable, x:Any, *args, **kwargs)->Any:
     if is_listy(x): return [recurse(func, o, *args, **kwargs) for o in x]
     if is_dict(x):  return {k: recurse(func, v, *args, **kwargs) for k,v in x.items()}
     return func(x, *args, **kwargs)
+
+def first_el(x: Any)->Any:
+    "Recursively get the first element of `x`."
+    if is_listy(x): return first_el(x[0])
+    if is_dict(x):  return first_el(x[list(d.keys())[0]])
+    return x
         
 def to_int(b:Any)->Union[int,List[int]]:
     "Recursively convert `b` to an int or list/dict of ints; raises exception if not convertible."
