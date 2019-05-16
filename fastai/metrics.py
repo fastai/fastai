@@ -335,6 +335,7 @@ class MultiLabelFbeta(LearnerCallback):
 
     def on_epoch_end(self, last_metrics, **kwargs):
         self.total_pred += self.eps
+        self.total_targ += self.eps
         if self.average == "micro":
             precision, recall = self.tp.sum() / self.total_pred.sum(), self.tp.sum() / self.total_targ.sum()
             res = self.fbeta_score(precision, recall)
