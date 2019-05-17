@@ -30,21 +30,21 @@ summary: "Implementation of mixup"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="What-is-Mixup?">What is Mixup?<a class="anchor-link" href="#What-is-Mixup?">&#182;</a></h2>
+<h2 id="What-is-mixup?">What is mixup?<a class="anchor-link" href="#What-is-mixup?">&#182;</a></h2>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>This module contains the implementation of a data augmentation technique called <a href="https://arxiv.org/abs/1710.09412">Mixup</a>. It is extremely efficient at regularizing models in computer vision (we used it to get our time to train CIFAR10 to 94% on one GPU to 6 minutes).</p>
-<p>As the name kind of suggests, the authors of the mixup article propose to train the model on a mix of the pictures of the training set. Let’s say we’re on CIFAR10 for instance, then instead of feeding the model the raw images, we take two (which could be in the same class or not) and do a linear combination of them: in terms of tensor it’s</p>
+<p>This module contains the implementation of a data augmentation technique called <a href="https://arxiv.org/abs/1710.09412">mixup</a>. It is extremely efficient at regularizing models in computer vision (we used it to get our time to train CIFAR10 to 94% on one GPU to 6 minutes).</p>
+<p>As the name kind of suggests, the authors of the mixup article propose training the model on mixes of the training set images. For example, suppose we’re training on CIFAR10.  Instead of feeding the model the raw images, we take two images (not necessarily from the same class) and make a linear combination of them: in terms of tensors, we have:</p>
 <p><code>new_image = t * image1 + (1-t) * image2</code></p>
-<p>where t is a float between 0 and 1. Then the target we assign to that image is the same combination of the original targets:</p>
+<p>where t is a float between 0 and 1. The target we assign to that new image is the same combination of the original targets:</p>
 <p><code>new_target = t * target1 + (1-t) * target2</code></p>
-<p>assuming your targets are one-hot encoded (which isn’t the case in pytorch usually). And that’s as simple as this.</p>
+<p>assuming the targets are one-hot encoded (which isn’t the case in PyTorch usually). And it's as simple as that.</p>
 <p><img src="imgs/mixup.png" alt="mixup"></p>
 <p>Dog or cat? The right answer here is 70% dog and 30% cat!</p>
-<p>As the picture above shows, it’s a bit hard for a human eye to comprehend the pictures obtained (although we do see the shapes of a dog and a cat) but somehow, it makes a lot of sense to the model which trains more efficiently. The final loss (training or validation) will be higher than when training without mixup even if the accuracy is far better, which means that a model trained like this will make predictions that are a bit less confident.</p>
+<p>As the picture above shows, it’s a bit hard for the human eye to make sense of images obtained in this way (although we do see the shapes of a dog and a cat). However, it somehow makes a lot of sense to the model, which trains more efficiently. One important side note is that when training with mixup, the final loss (training or validation) will be higher than when training without it, even when the accuracy is far better: a model trained like this will make predictions that are a bit less confident.</p>
 
 </div>
 </div>
@@ -57,7 +57,7 @@ summary: "Implementation of mixup"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>To test this method, we will first build a <a href="/layers.html#simple_cnn"><code>simple_cnn</code></a> and train it like we did with <a href="/basic_train.html#basic_train"><code>basic_train</code></a> so we can compare its results with a network trained with Mixup.</p>
+<p>To test this method, we first create a <a href="/layers.html#simple_cnn"><code>simple_cnn</code></a> and train it like we did with <a href="/basic_train.html#basic_train"><code>basic_train</code></a> so we can compare its results with a network trained with mixup.</p>
 
 </div>
 </div>
@@ -182,46 +182,46 @@ summary: "Implementation of mixup"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>In the original article, the authors suggested four things:</p>
+<p>In the original article, the authors suggest four things:</p>
 
-<pre><code>1. Create two separate dataloaders and draw a batch from each at every iteration to mix them up
-2. Draw a t value following a beta distribution with a parameter alpha (0.4 is suggested in their article)
-3. Mix up the two batches with the same value t.
+<pre><code>1. Create two separate dataloaders, and draw a batch from each at every iteration to mix them up
+2. Draw a value for t following a beta distribution with a parameter alpha (0.4 is suggested in their article)
+3. Mix up the two batches with the same value t
 4. Use one-hot encoded targets
 
 </code></pre>
-<p>The implementation of this module is based on these suggestions but was modified when experiments suggested modifications with positive impact in performance.</p>
+<p>This module's implementation is based on these suggestions, and modified where experimental results suggested changes that would improve performance.</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The authors suggest to use the beta distribution with the same parameters alpha. Why do they suggest this? Well it looks like this:</p>
+<p>The authors suggest using the beta distribution with parameters alpha=0.4. (In general, the beta distribution has two parameters, but in this case they're going to be equal.)  Why do they suggest this? Well, with the parameters they suggest, the beta distribution looks like this:</p>
 <p><img src="imgs/betadist-mixup.png" alt="betadist"></p>
-<p>so it means there is a very high probability of picking values close to 0 or 1 (in which case the image is almost from 1 category) and then a somewhat constant probability of picking something in the middle (0.33 as likely as 0.5 for instance).</p>
-<p>While this works very well, it’s not the fastest way we can do this and this is the first suggestion we will adjust. The main point that slows down this process is wanting two different batches at every iteration (which means loading twice the amount of images and applying to them the other data augmentation function). To avoid this slow down, ou be a little smarter and mixup a batch with a shuffled version of itself (this way the images mixed up are still different).</p>
-<p>Using the same parameter t for the whole batch is another suggestion we will modify. In our experiments, we noticed that the model can train faster if we draw a different <code>t</code> for every image in the batch (both options get to the same result in terms of accuracy, it’s just that one arrives there more slowly).
-The last trick we have to apply with this is that there can be some duplicates with this strategy: let’s say we decide to mix <code>image0</code> with <code>image1</code> then <code>image1</code> with <code>image0</code>, and that we draw <code>t=0.1</code> for the first, and <code>t=0.9</code> for the second. Then</p>
+<p>meaning that there's a very high probability of picking values close to 0 or 1 (in which case the mixed up image is mostly from only one category) and then a somewhat constant, much smaller probability of picking something in the middle (notice that 0.33 is nearly as likely as 0.5, for instance).</p>
+<p>While this works very well, it’s not the fastest way, and this is the first suggestion we adjust. The unnecessary slowdown with this approach comes from drawing two different batches at every iteration, which means loading twice the number of images and additionally applying any other data augmentation functions to them. To avoid this, we apply mixup on a batch with a shuffled version of itself: this way, the images mixed up are still different.</p>
+<p>Using the same value of <code>t</code> for the whole batch is another suggestion we modify. In our experiments, we noticed that the model trained faster if we drew a different <code>t</code> for every image in the batch. (Both options got to the same result in terms of accuracy, it’s just that one arrived there more slowly.)</p>
+<p>Finally, notice that with this strategy we might create duplicate images: let’s say we are mixing <code>image0</code> with <code>image1</code> and <code>image1</code> with <code>image0</code>, and that we draw <code>t=0.1</code> for the first mix and <code>t=0.9</code> for the second. Then</p>
 <p><code>image0 * 0.1 + shuffle0 * (1-0.1) = image0 * 0.1 + image1 * 0.9</code></p>
 <p>and</p>
 <p><code>image1 * 0.9 + shuffle1 * (1-0.9) = image1 * 0.9 + image0 * 0.1</code></p>
-<p>will be the same. Of course we have to be a bit unlucky but in practice, we saw there was a drop in accuracy by using this without removing those duplicates. To avoid them, the tricks is to replace the vector of parameters <code>t</code> we drew by:</p>
+<p>will be the same. Of course we have to be a bit unlucky for this to happen, but in practice, we saw a drop in accuracy when we didn't remove duplicates. To avoid this, the trick is to replace the vector of <code>t</code> we drew with:</p>
 <p><code>t = max(t, 1-t)</code></p>
-<p>The beta distribution with the two parameters equal is symmetric in any case, and this way we insure that the biggest coefficient is always near the first image (the non-shuffled batch).</p>
+<p>The beta distribution with the two parameters equal is symmetric in any case, and this way we ensure that the largest coefficient is always near the first image (the non-shuffled batch).</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Adding-Mixup-to-the-Mix">Adding Mixup to the Mix<a class="anchor-link" href="#Adding-Mixup-to-the-Mix">&#182;</a></h2>
+<h2 id="Adding-mixup-to-the-mix">Adding mixup to the mix<a class="anchor-link" href="#Adding-mixup-to-the-mix">&#182;</a></h2>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Now we will add <a href="/callbacks.mixup.html#MixUpCallback"><code>MixUpCallback</code></a> to our Learner so that it modifies our input and target accordingly. The <a href="/train.html#mixup"><code>mixup</code></a> function does that for us behind the scene, with a few other tweaks detailed below.</p>
+<p>We now add <a href="/callbacks.mixup.html#MixUpCallback"><code>MixUpCallback</code></a> to our Learner so that it modifies our input and target accordingly. The <a href="/train.html#mixup"><code>mixup</code></a> function does this for us behind the scenes, along with a few other tweaks described below:</p>
 
 </div>
 </div>
@@ -326,7 +326,7 @@ The last trick we have to apply with this is that there can be some duplicates w
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Training the net with Mixup improves the best accuracy. Note that the validation loss is higher than without MixUp, because the model makes less confident predictions: without mixup, most precisions are very close to 0. or 1. (in terms of probability) whereas the model with MixUp will give predictions that are more nuanced. Be sure to know what is the thing you want to optimize (lower loss or better accuracy) before using it.</p>
+<p>Training with mixup improves the best accuracy. Note that the validation loss is higher than without mixup, because the model makes less confident predictions: without mixup, most predictions are very close to 0. or 1. (in terms of probability) whereas the model with mixup makes predictions that are more nuanced. Before using mixup, make sure you know whether it's more important to optimize lower loss or better accuracy.</p>
 
 </div>
 </div>
@@ -354,7 +354,7 @@ The last trick we have to apply with this is that there can be some duplicates w
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Create a <a href="/callback.html#Callback"><code>Callback</code></a> for mixup on <code>learn</code> with a parameter <code>alpha</code> for the beta distribution. <code>stack_x</code> and <code>stack_y</code> determines if we stack our inputs/targets with the vector lambda drawn or do the linear combination (in general, we stack the inputs or outputs when they correspond to categories or classes and do the linear combination otherwise).</p>
+<p>Create a <a href="/callback.html#Callback"><code>Callback</code></a> for mixup on <code>learn</code> with a parameter <code>alpha</code> for the beta distribution. <code>stack_x</code> and <code>stack_y</code> determine whether we stack our inputs/targets with the vector lambda drawn or do the linear combination. (In general, we stack the inputs or outputs when they correspond to categories or classes and do the linear combination otherwise.)</p>
 
 </div>
 </div>
@@ -408,10 +408,10 @@ The last trick we have to apply with this is that there can be some duplicates w
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>We often have to modify the loss so that it is compatible with Mixup: pytorch was very careful to avoid one-hot encoding targets when it could, so it seems a bit of a drag to undo this. Fortunately for us, if the loss is a classic <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.functional.cross_entropy">cross-entropy</a>, we have</p>
+<p>We often have to modify the loss so that it is compatible with mixup. PyTorch was very careful to avoid one-hot encoding targets when possible, so it seems a bit of a drag to undo this. Fortunately for us, if the loss is a classic <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.functional.cross_entropy">cross-entropy</a>, we have</p>
 <p><code>loss(output, new_target) = t * loss(output, target1) + (1-t) * loss(output, target2)</code></p>
-<p>so we won’t one-hot encode anything and just compute those two losses then do the linear combination.</p>
-<p>The following class is used to adapt the loss to mixup. Note that the <a href="/train.html#mixup"><code>mixup</code></a> function will use it to change the <code>Learner.loss_func</code> if necessary.</p>
+<p>so we don’t one-hot encode anything and instead just compute those two losses and find the linear combination.</p>
+<p>The following class is used to adapt the loss for mixup. Note that the <a href="/train.html#mixup"><code>mixup</code></a> function will use it to change the <code>Learner.loss_func</code> if necessary.</p>
 
 </div>
 </div>
