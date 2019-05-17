@@ -115,7 +115,7 @@ class ItemList():
         return self
 
     def __getitem__(self,idxs:int)->Any:
-        "returns a single item based if `idxs` is an integer or an `ItemList` object if `idxs` is a range."
+        "returns a single item based if `idxs` is an integer or a new `ItemList` object if `idxs` is a range."
         idxs = try_int(idxs)
         if isinstance(idxs, Integral): return self.get(idxs)
         else: return self.new(self.items[idxs], inner_df=index_row(self.inner_df, idxs))
