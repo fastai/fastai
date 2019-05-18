@@ -125,7 +125,7 @@ class AWD_LSTM(nn.Module):
     def _one_hidden(self, l:int)->Tensor:
         "Return one hidden state."
         nh = (self.n_hid if l != self.n_layers - 1 else self.emb_sz) // self.n_dir
-        return one_param(self).new(1, self.bs, nh).zero_()
+        return one_param(self).new(self.n_dir, self.bs, nh).zero_()
 
     def select_hidden(self, idxs):
         if self.qrnn: self.hidden = [h[:,idxs,:] for h in self.hidden]
