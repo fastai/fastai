@@ -68,6 +68,15 @@ def test_top_k_accuracy(p, t, k, expect):
     this_tests(top_k_accuracy)
     assert np.isclose(top_k_accuracy(p, t, k).item(), expect)
 
+@pytest.mark.parametrize("p, t, expect, atol", [
+    (torch.randn((128, 2, 224, 224)),  torch.randint(0, 2, (128, 1, 224, 224)), 1/2, 1e-3),
+    (torch.randn((128, 8, 224, 224)),  torch.randint(0, 8, (128, 1, 224, 224)), 1/8, 1e-3),
+    (torch.randn((128, 16, 224, 224)),  torch.randint(0, 16, (128, 1, 224, 224)), 1/16, 1e-3),
+])
+def test_foreground_acc(p, t, expect, atol):
+    this_tests(foreground_acc)
+    assert np.isclose(partial(foreground_acc, void_code=0)(p, t).item(), expect, atol=atol)
+
 @pytest.mark.parametrize("p, t, expect", [
     (p1, t1, 0.8),
     (torch.eye(5), t1, 0),

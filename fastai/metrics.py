@@ -8,7 +8,7 @@ __all__ = ['error_rate', 'accuracy', 'accuracy_thresh', 'dice', 'exp_rmspe', 'fb
             'mae', 'mean_absolute_error', 'rmse', 'root_mean_squared_error', 'msle', 'mean_squared_logarithmic_error',
             'explained_variance', 'r2_score', 'top_k_accuracy', 'KappaScore', 'ConfusionMatrix', 'MatthewsCorreff',
             'Precision', 'Recall', 'R2Score', 'ExplainedVariance', 'ExpRMSPE', 'RMSE', 'Perplexity', 'AUROC', 'auc_roc_score', 
-            'roc_curve', 'MultiLabelFbeta']
+            'roc_curve', 'MultiLabelFbeta', 'foreground_acc']
 
 def fbeta(y_pred:Tensor, y_true:Tensor, thresh:float=0.2, beta:float=2, eps:float=1e-9, sigmoid:bool=True)->Rank0Tensor:
     "Computes the f_beta between `preds` and `targets`"
@@ -39,6 +39,12 @@ def top_k_accuracy(input:Tensor, targs:Tensor, k:int=5)->Rank0Tensor:
     input = input.topk(k=k, dim=-1)[1]
     targs = targs.unsqueeze(dim=-1).expand_as(input)
     return (input == targs).max(dim=-1)[0].float().mean()
+
+def foreground_acc(input, target, void_code):
+    "Computes non-background accuracy, e.g. camvid for multiclass segmentation"
+    target = target.squeeze(1)
+    mask = target != void_code
+    return (input.argmax(dim=1)[mask]==target[mask]).float().mean()
 
 def error_rate(input:Tensor, targs:Tensor)->Rank0Tensor:
     "1 - `accuracy`"
