@@ -32,14 +32,6 @@ seq_preds = torch.Tensor([
     [0.6, 0.3, 0.08, 0.02],
 ]).expand(5,4,-1)
 
-# Test data for multi-class single-label segmentation models
-# classes: 6, nonvoid_classes: 5
-segment_targ = torch.LongTensor([[[
-    [0,1,2,3,4,5],
-    [0,1,2,3,4,5],
-    [0,1,2,3,4,5],    
-]]])
-
 @pytest.mark.parametrize("p, t, expect", [
     (p1, t1, 0.2),
     (torch.eye(5), t1, 1),
