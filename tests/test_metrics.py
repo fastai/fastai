@@ -32,6 +32,14 @@ seq_preds = torch.Tensor([
     [0.6, 0.3, 0.08, 0.02],
 ]).expand(5,4,-1)
 
+# Test data for multi-class single-label segmentation models
+# classes: 6, nonvoid_classes: 5
+segment_targ = torch.LongTensor([[[
+    [0,1,2,3,4,5],
+    [0,1,2,3,4,5],
+    [0,1,2,3,4,5],    
+]]])
+
 @pytest.mark.parametrize("p, t, expect", [
     (p1, t1, 0.2),
     (torch.eye(5), t1, 1),
@@ -67,6 +75,15 @@ def test_accuracy(p, t, expect):
 def test_top_k_accuracy(p, t, k, expect):
     this_tests(top_k_accuracy)
     assert np.isclose(top_k_accuracy(p, t, k).item(), expect)
+
+@pytest.mark.parametrize("p, t, expect, atol", [
+    (torch.randn((128, 2, 224, 224)),  torch.randint(0, 2, (128, 1, 224, 224)), 1/2, 1e-3),
+    (torch.randn((128, 8, 224, 224)),  torch.randint(0, 8, (128, 1, 224, 224)), 1/8, 1e-3),
+    (torch.randn((128, 16, 224, 224)),  torch.randint(0, 16, (128, 1, 224, 224)), 1/16, 1e-3),
+])
+def test_nonvoid_accuracy(p, t, expect, atol):
+    this_tests(nonvoid_accuracy)
+    assert np.isclose(partial(nonvoid_accuracy, void_code=0)(p, t).item(), expect, atol=atol)
 
 @pytest.mark.parametrize("p, t, expect", [
     (p1, t1, 0.8),
