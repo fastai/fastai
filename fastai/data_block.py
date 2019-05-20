@@ -75,7 +75,7 @@ class ItemList():
         "Subclass if you want to customize how to create item `i` from `self.items`."
         return self.items[i]
     def __repr__(self)->str:
-        items = [self[i] for i in range(min(5,len(self.items)))]
+        items = [self.items[i] for i in range(min(5,len(self.items)))]
         return f'{self.__class__.__name__} ({len(self.items)} items)\n{show_some(items)}\nPath: {self.path}'
 
     def process(self, processor:PreProcessors=None):
