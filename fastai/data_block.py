@@ -720,7 +720,7 @@ class LabelList(Dataset):
         "Set the `tfms` and `tfm_y` value to be applied to the inputs and targets."
         _check_kwargs(self.x, tfms, **kwargs)
         if tfm_y is None: tfm_y = self.tfm_y
-        tfms_y = None if tfms is None else list(filter(lambda t: t.use_on_y, listify(tfms)))
+        tfms_y = None if tfms is None else list(filter(lambda t: getattr(t, 'use_on_y', True), listify(tfms)))
         if tfm_y: _check_kwargs(self.y, tfms_y, **kwargs)
         self.tfms,self.tfmargs  = tfms,kwargs
         self.tfm_y,self.tfms_y,self.tfmargs_y = tfm_y,tfms_y,kwargs
@@ -728,7 +728,7 @@ class LabelList(Dataset):
 
     def transform_y(self, tfms:TfmList=None, **kwargs):
         "Set `tfms` to be applied to the targets only."
-        tfms_y = list(filter(lambda t: t.use_on_y, listify(self.tfms if tfms is None else tfms)))
+        tfms_y = list(filter(lambda t: getattr(t, 'use_on_y', True), listify(self.tfms if tfms is None else tfms)))
         tfmargs_y = {**self.tfmargs, **kwargs} if tfms is None else kwargs
         _check_kwargs(self.y, tfms_y, **tfmargs_y)
         self.tfm_y,self.tfms_y,self.tfmargs_y=True,tfms_y,tfmargs_y
