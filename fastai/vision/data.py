@@ -7,14 +7,45 @@ from ..basic_data import *
 from ..layers import *
 from .learner import *
 from torchvision import transforms as tvt
+from . import *
+import os
+import json
+import cv2
+import torch
+from torch.utils.data import Dataset, DataLoader
+from torchvision import utils
+from pathlib import Path
 
-__all__ = ['get_image_files', 'denormalize', 'get_annotations', 'ImageDataBunch',
+__all__ = ['load_coco', 'get_image_files', 'denormalize', 'get_annotations', 'ImageDataBunch',
            'ImageList', 'normalize', 'normalize_funcs', 'resize_to',
            'channel_view', 'mnist_stats', 'cifar_stats', 'imagenet_stats', 'download_images',
            'verify_images', 'bb_pad_collate', 'ImageImageList', 'PointsLabelList',
-           'ObjectCategoryList', 'ObjectItemList', 'SegmentationLabelList', 'SegmentationItemList', 'PointsItemList']
+           'ObjectCategoryList', 'ObjectItemList', 'SegmentationLabelList', 'SegmentationItemList', 'PointsItemList', 'CocoDataset']
 
 image_extensions = set(k for k,v in mimetypes.types_map.items() if v.startswith('image/'))
+
+def load_coco(root_dir, train_annot, valid_annot, tfms = [], resize = 608, bunch_size = 4):
+    """
+    Args:
+        root_dir (string): Path to the directory with train and valid folders.
+        train_annot (string): Path to the COCO-style json file with annotations for training image set.
+        valid_annot (string): Path to the COCO-style json file with annotations for validation image set.
+        tfms (get_transforms() function): Optional transformations to be applied to images.
+        resize (int): Size to which all images will be resized. Also resizes bounding boxes.
+        bunch_size (int): How many images we load and use at once.
+    """
+    coco_train = CocoDataset(train_annot)
+    coco_valid = CocoDataset(valid_annot)
+    
+    boxes = coco_train.get_bboxes()
+    boxes2 = coco_valid.get_bboxes()
+    boxes.update(boxes2)
+    get_y_func = lambda o:boxes[Path(o).name] #input dict is being transformed during pipeline, thats why it operates on Path objects
+    all_objects = (ObjectItemList.from_folder(root_dir).split_by_folder()
+                    .label_from_func(get_y_func)
+                    .transform(tfms, tfm_y=True, size=resize)
+                    .databunch(bs=4, collate_fn=bb_pad_collate))
+    return all_objects
 
 def get_image_files(c:PathOrStr, check_ext:bool=True, recurse=False)->FilePathList:
     "Return list of files in `c` that are images. `check_ext` will filter to `image_extensions`."
@@ -430,6 +461,55 @@ class ImageImageList(ImageList):
             y.show(ax=axs[i,2], **kwargs)
             z.show(ax=axs[i,1], **kwargs)
 
+            
+class CocoDataset(Dataset):
+    """Common Objects in Context dataset."""
+    def __init__(self, json_file):
+        """
+        Args:
+            json_file (string): Path to the csv file with annotations.
+        """
+        with open(json_file) as file:  
+            self.json = json.load(file)
+        self.images = {self.json['images'][i]['id']:self.json['images'][i] for i in range(len(self.json['images']))}
+        self.bbox = {self.json['annotations'][i]['id']:self.json['annotations'][i] for i in range(len(self.json['annotations']))}
+        self.images_ids = list(self.images.keys())
+        self.image_id_to_bbox_id = {}
+        for i in self.bbox:
+            try:
+                self.image_id_to_bbox_id[self.bbox[i]['image_id']].append(i)
+            except:
+                self.image_id_to_bbox_id[self.bbox[i]['image_id']] = [i]
+        for anomaly in set(self.images_ids).difference(set(self.image_id_to_bbox_id.keys())):
+            self.image_id_to_bbox_id[anomaly] = []
+        self.images_ids = list(self.images.keys())
+        self.categories = {i['id']:i['name'] for i in self.json['categories']}
+        
+    def coco_bbox_to_fastai(self, bb):
+        return np.array([ bb[1], bb[0], bb[3] + bb[1] - 1, bb[2] + bb[0] - 1 ])
+    
+    def get_bboxes(self):
+        """
+        Dict of image names with corresponding bounding boxes.
+        """
+        all_bboxes = []
+        image_names = []
+        for image_id in self.images_ids:
+            img_name = self.images[image_id]['file_name']
+            bboxes_ids = self.image_id_to_bbox_id[image_id]
+            bboxes = []
+            labels = []
+            for i in bboxes_ids:
+                current_box = self.bbox[i]
+                bboxes.append(self.coco_bbox_to_fastai(current_box['bbox']))
+                labels.append(self.categories[current_box['category_id']])
+            for i in bboxes: i = [int(k) for k in i]
+            all_bboxes.append([bboxes, labels])
+            image_names.append(img_name)
+        return dict(zip(image_names, all_bboxes))
+    
+    def __len__(self):
+        return len(self.images)
 
 def _ll_pre_transform(self, train_tfm:List[Callable], valid_tfm:List[Callable]):
     "Call `train_tfm` and `valid_tfm` after opening image, before converting from `PIL.Image`"
