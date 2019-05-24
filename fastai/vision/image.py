@@ -1,6 +1,7 @@
 "`Image` provides support to convert, transform and show images"
 from ..torch_core import *
 from ..basic_data import *
+from ..layers import MSELossFlat
 from io import BytesIO
 import PIL
 
@@ -97,11 +98,12 @@ class Image(ItemBase):
                    mult:int=None, padding_mode:str='reflection', mode:str='bilinear', remove_out:bool=True)->TensorImage:
         "Apply all `tfms` to the `Image`, if `do_resolve` picks value for random args."
         if not (tfms or xtra or size): return self
+        tfms = listify(tfms)
         xtra = ifnone(xtra, {})
-        tfms = sorted(listify(tfms), key=lambda o: o.tfm.order)
         default_rsz = ResizeMethod.SQUISH if (size is not None and is_listy(size)) else ResizeMethod.CROP
         resize_method = ifnone(resize_method, default_rsz)
-        if resize_method <= 2: tfms = self._maybe_add_crop_pad(tfms)
+        if resize_method <= 2 and size is not None: tfms = self._maybe_add_crop_pad(tfms)
+        tfms = sorted(tfms, key=lambda o: o.tfm.order)
         if do_resolve: _resolve_tfms(tfms)
         x = self.clone()
         x.set_sample(padding_mode=padding_mode, mode=mode, remove_out=remove_out)
@@ -185,6 +187,7 @@ class Image(ItemBase):
         "Resize the image to `size`, size can be a single int."
         assert self._flow is None
         if isinstance(size, int): size=(self.shape[0], size, size)
+        if tuple(size)==tuple(self.shape): return self
         self.flow = _affine_grid(size)
         return self
 
@@ -237,7 +240,7 @@ class ImageSegment(Image):
         ax = show_image(self, ax=ax, hide_axis=hide_axis, cmap=cmap, figsize=figsize,
                         interpolation='nearest', alpha=alpha, vmin=0)
         if title: ax.set_title(title)
-            
+
     def reconstruct(self, t:Tensor): return ImageSegment(t)
 
 class ImagePoints(Image):
@@ -250,6 +253,7 @@ class ImagePoints(Image):
         self.flow_func = []
         self.sample_kwargs = {}
         self.transformed = False
+        self.loss_func = MSELossFlat()
 
     def clone(self):
         "Mimic the behavior of torch.clone for `ImagePoints` objects."
@@ -266,7 +270,7 @@ class ImagePoints(Image):
 
     def __repr__(self): return f'{self.__class__.__name__} {tuple(self.size)}'
     def _repr_image_format(self, format_str): return None
-    
+
     @property
     def flow(self)->FlowField:
         "Access the flow-field grid after applying queued affine and coord transforms."
@@ -325,8 +329,6 @@ class ImagePoints(Image):
         ax.scatter(pnt[:, 0], pnt[:, 1], **params)
         if hide_axis: ax.axis('off')
         if title: ax.set_title(title)
-     
-    def reconstruct(self, t, x): return ImagePoints(FlowField(x.size, t), scale=False)
 
 class ImageBBox(ImagePoints):
     "Support applying transforms to a `flow` of bounding boxes."
@@ -383,18 +385,20 @@ class ImageBBox(ImagePoints):
             else: text=None
             _draw_rect(ax, bb2hw(bbox), text=text, color=color)
 
-def open_image(fn:PathOrStr, div:bool=True, convert_mode:str='RGB', cls:type=Image)->Image:
+def open_image(fn:PathOrStr, div:bool=True, convert_mode:str='RGB', cls:type=Image,
+        after_open:Callable=None)->Image:
     "Return `Image` object created from image in file `fn`."
     with warnings.catch_warnings():
         warnings.simplefilter("ignore", UserWarning) # EXIF warning from TiffPlugin
         x = PIL.Image.open(fn).convert(convert_mode)
+    if after_open: x = after_open(x)
     x = pil2tensor(x,np.float32)
     if div: x.div_(255)
     return cls(x)
 
-def open_mask(fn:PathOrStr, div=False, convert_mode='L')->ImageSegment:
+def open_mask(fn:PathOrStr, div=False, convert_mode='L', after_open:Callable=None)->ImageSegment:
     "Return `ImageSegment` object create from mask in file `fn`. If `div`, divides pixel values by 255."
-    return open_image(fn, div=div, convert_mode=convert_mode, cls=ImageSegment)
+    return open_image(fn, div=div, convert_mode=convert_mode, cls=ImageSegment, after_open=after_open)
 
 def open_mask_rle(mask_rle:str, shape:Tuple[int, int])->ImageSegment:
     "Return `ImageSegment` object create from run-length encoded string in `mask_lre` with size in `shape`."
@@ -455,10 +459,10 @@ class Transform():
         setattr(Image, func.__name__,
                 lambda x, *args, **kwargs: self.calc(x, *args, **kwargs))
 
-    def __call__(self, *args:Any, p:float=1., is_random:bool=True, **kwargs:Any)->Image:
+    def __call__(self, *args:Any, p:float=1., is_random:bool=True, use_on_y:bool=True, **kwargs:Any)->Image:
         "Calc now if `args` passed; else create a transform called prob `p` if `random`."
         if args: return self.calc(*args, **kwargs)
-        else: return RandTransform(self, kwargs=kwargs, is_random=is_random, p=p)
+        else: return RandTransform(self, kwargs=kwargs, is_random=is_random, use_on_y=use_on_y, p=p)
 
     def calc(self, x:Image, *args:Any, **kwargs:Any)->Image:
         "Apply to image `x`, wrapping it if necessary."
@@ -479,6 +483,7 @@ class RandTransform():
     resolved:dict = field(default_factory=dict)
     do_run:bool = True
     is_random:bool = True
+    use_on_y:bool = True
     def __post_init__(self): functools.update_wrapper(self, self.tfm)
 
     def resolve(self)->None:

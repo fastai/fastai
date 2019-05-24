@@ -200,7 +200,9 @@ It also might be helpful to note that `torch.cuda.memory_cached()` doesn't show 
 
 How can we do a lot of experimentation in a given jupyter notebook w/o needing to restart the kernel all the time? You can delete the variables that hold the memory, can call `import gc; gc.collect()` to reclaim memory by deleted objects with circular references, optionally (if you have just one process) calling `torch.cuda.empty_cache()` and you can now re-use the GPU memory inside the same kernel.
 
-To automate this process, and get various stats on memory consumption, you can use [IPyExperiments](https://github.com/stas00/ipyexperiments). Other than helping you to reclaim general and GPU RAM, it is also helpful with efficiently tuning up your notebook parameters to avoid `cuda: out of memory` errors and detecting various other memory leaks.
+To automate this process, and get various stats on memory consumption, you can use [IPyExperiments](https://github.com/stas00/ipyexperiments). Other than helping you to reclaim general and GPU RAM, it is also helpful with efficiently tuning up your notebook parameters to avoid `CUDA: out of memory` errors and detecting various other memory leaks.
+
+And also make sure you read the tutorial on `learn.purge` and its friends [here](/tutorial.resources.html), which provide an even better solution.
 
 
 ### GPU RAM Fragmentation
@@ -290,4 +292,32 @@ if os.path.isfile('kill.me'):
 After you add this code to the training iteration, once you want to stop it, just cd into the directory of the training program and run
 ```
 touch kill.me
+```
+
+## Multi-GPU
+
+### Order of GPUs
+
+When having multiple GPUs you may discover that `pytorch` and `nvidia-smi` don't order them in the same way, so what `nvidia-smi` reports as `gpu0`, could be assigned to `gpu1` by `pytorch`. `pytorch` uses CUDA GPU ordering, which is done by [computing power](https://developer.nvidia.com/cuda-gpus) (higher computer power GPUs first).
+
+If you want `pytorch` to use the PCI bus device order, to match `nvidia-smi`, set:
+
+```
+export CUDA_DEVICE_ORDER=PCI_BUS_ID
+```
+
+before starting your program (or put in your `~/.bashrc`).
+
+If you just want to run on a specific gpu ID, you can use the `CUDA_VISIBLE_DEVICES` environment variable. It can be set to a single GPU ID or a list:
+
+```
+export CUDA_VISIBLE_DEVICES=1
+export CUDA_VISIBLE_DEVICES=2,3
+```
+
+If you don't set the environment variables in shell, you can set those in your code at the beginning of your program, with help of: `import os; os.environ['CUDA_VISIBLE_DEVICES']='2'`.
+
+A less flexible way is to hardcode the device ID in your code, e.g. to set it to `gpu1`:
+```
+torch.cuda.set_device(1)
 ```

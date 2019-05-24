@@ -14,8 +14,8 @@ class PositionalEncoding(nn.Module):
         super().__init__()
         self.register_buffer('freq', 1 / (10000 ** (torch.arange(0., d, 2.)/d)))
     
-    def forward(self, pos:Tensor, bs:int=None):
-        inp = torch.ger(pos.float(), self.freq)
+    def forward(self, pos:Tensor):
+        inp = torch.ger(pos, self.freq)
         enc = torch.cat([inp.sin(), inp.cos()], dim=-1)
         return enc
 
@@ -25,7 +25,7 @@ class GeLU(nn.Module):
 class Swish(nn.Module):
     def forward(self, x): return x * torch.sigmoid(x)
     
-_activ_func = {Activation.ReLU:nn.ReLU(inplace=True), Activation.GeLU:GeLU(), Activation.Swish: Swish}
+_activ_func = {Activation.ReLU:nn.ReLU(inplace=True), Activation.GeLU:GeLU(), Activation.Swish: Swish()}
 
 def feed_forward(d_model:int, d_ff:int, ff_p:float=0., act:Activation=Activation.ReLU, double_drop:bool=True):
     layers = [nn.Linear(d_model, d_ff), _activ_func[act]]
@@ -54,7 +54,7 @@ class MultiHeadAttention(nn.Module):
         wq,wk,wv = map(lambda x:x.view(bs, x.size(1), self.n_heads, self.d_head), (wq,wk,wv))
         wq,wk,wv = wq.permute(0, 2, 1, 3),wk.permute(0, 2, 3, 1),wv.permute(0, 2, 1, 3)
         attn_score = torch.matmul(wq, wk)
-        if self.scale: attn_score = attn_score.div_(self.d_head ** 0.5)
+        if self.scale: attn_score.div_(self.d_head ** 0.5)
         if mask is not None: 
             attn_score = attn_score.float().masked_fill(mask, -float('inf')).type_as(attn_score)
         attn_prob = self.drop_att(F.softmax(attn_score, dim=-1))
@@ -67,7 +67,7 @@ class MultiHeadAttention(nn.Module):
         wq,wk,wv = torch.chunk(self.attention(x), 3, dim=-1)
         wq,wk,wv = map(lambda x:x.view(bs, x.size(1), self.n_heads, self.d_head), (wq,wk,wv))
         attn_score = torch.einsum('bind,bjnd->bijn', (wq, wk))
-        if self.scale: attn_score = attn_score.mul_(1/(self.d_head ** 0.5))
+        if self.scale: attn_score.mul_(1/(self.d_head ** 0.5))
         if mask is not None: 
             attn_score = attn_score.float().masked_fill(mask, -float('inf')).type_as(attn_score)
         attn_prob = self.drop_att(F.softmax(attn_score, dim=2))
@@ -190,7 +190,7 @@ class TransformerXL(nn.Module):
         self.u = nn.Parameter(torch.Tensor(n_heads, 1, d_head)) #Remove 1 for einsum implementation of attention
         self.v = nn.Parameter(torch.Tensor(n_heads, 1, d_head)) #Remove 1 for einsum implementation of attention
         self.mem_len,self.n_layers,self.d_model,self.mask = mem_len,n_layers,d_model,mask
-        if self.mem_len > 0: self.reset()
+        self.init = False
         self.layers = nn.ModuleList([DecoderLayer(n_heads, d_model, d_head, d_inner, resid_p=resid_p, attn_p=attn_p,
                       ff_p=ff_p, bias=bias, scale=scale, act=act, double_drop=double_drop, 
                       attn_cls=attn_cls) for k in range(n_layers)])
@@ -210,6 +210,10 @@ class TransformerXL(nn.Module):
     def select_hidden(self, idxs): self.hidden = [h[idxs] for h in self.hidden]
     
     def forward(self, x):
+        #The hidden state has to be initiliazed in the forward pass for nn.DataParallel
+        if self.mem_len > 0 and not self.init: 
+            self.reset()
+            self.init = True
         bs,x_len = x.size()
         inp = self.drop_emb(self.encoder(x)) #.mul_(self.d_model ** 0.5)
         m_len = self.hidden[0].size(1) if hasattr(self, 'hidden') and len(self.hidden[0].size()) > 1 else 0

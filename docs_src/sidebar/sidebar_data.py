@@ -31,7 +31,9 @@ sidebar_d = {
                 'RNNTrainer': '/callbacks.rnn',
                 'GeneralScheduler': '/callbacks.general_sched',
                 'CSV Logger': '/callbacks.csv_logger',
-                'Tracking callbacks': '/callbacks.tracker'
+                'Tracking': '/callbacks.tracker',
+                'Memory Profiling': '/callbacks.mem',
+                'Miscellaneous': '/callbacks.misc',
             }
         },
     },
@@ -77,22 +79,28 @@ sidebar_d = {
         'datasets': '/datasets',
         'core': '/core',
         'torch_core': '/torch_core',
+        'imports': '/imports',
     },
     'Utils': {
         'Helpers': '/utils.collect_env',
         'Memory Management': '/utils.mem',
+        'ipython helpers': '/utils.ipython',
+        'Dislay utils': '/utils.mod_display',
     },
     'Tutorials': {
         'Overview': '/tutorials',
         'Look at data': '/tutorial.data',
         'Inference Learner': '/tutorial.inference',
         'Custom ItemList': '/tutorial.itemlist',
+        'DL on a Shoestring': '/tutorial.resources',
+        'Distributed training': '/distributed',
     },
     'Doc authoring': {
         'Instructions': '/gen_doc_main',
         'gen_doc': '/gen_doc',
         'gen_doc.gen_notebooks': '/gen_doc.gen_notebooks',
         'gen_doc.nbdoc': '/gen_doc.nbdoc',
+        'gen_doc.nbtest': '/gen_doc.nbtest',
         'gen_doc.convert2html': '/gen_doc.convert2html',
     },
     'Library development': {

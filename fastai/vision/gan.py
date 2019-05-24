@@ -4,7 +4,7 @@ from ..callback import *
 from ..basic_data import *
 from ..basic_train import Learner, LearnerCallback
 from .image import Image
-from .data import ImageItemList
+from .data import ImageList
 
 __all__ = ['basic_critic', 'basic_generator', 'GANModule', 'GANLoss', 'GANTrainer', 'FixedGANSwitcher', 'AdaptiveGANSwitcher',
            'GANLearner', 'NoisyItem', 'GANItemList', 'gan_critic', 'AdaptiveLoss', 'accuracy_thresh_expand',
@@ -99,7 +99,7 @@ class GANTrainer(LearnerCallback):
         self.switch(self.gen_mode)
         self.closses,self.glosses = [],[]
         self.smoothenerG,self.smoothenerC = SmoothenValue(self.beta),SmoothenValue(self.beta)
-        self.recorder.no_val=True
+        #self.recorder.no_val=True
         self.recorder.add_metric_names(['gen_loss', 'disc_loss'])
         self.imgs,self.titles = [],[]
 
@@ -111,7 +111,7 @@ class GANTrainer(LearnerCallback):
         "Clamp the weights with `self.clip` if it's not None, return the correct input."
         if self.clip is not None:
             for p in self.critic.parameters(): p.data.clamp_(-self.clip, self.clip)
-        return (last_input,last_target) if self.gen_mode else (last_target, last_input)
+        return {'last_input':last_input,'last_target':last_target} if self.gen_mode else {'last_input':last_target,'last_target':last_input}
 
     def on_backward_begin(self, last_loss, last_output, **kwargs):
         "Record `last_loss` in the proper list."
@@ -128,9 +128,8 @@ class GANTrainer(LearnerCallback):
         "Put the critic or the generator back to eval if necessary."
         self.switch(self.gen_mode)
 
-    def on_epoch_end(self, pbar, epoch, **kwargs):
+    def on_epoch_end(self, pbar, epoch, last_metrics, **kwargs):
         "Put the various losses in the recorder and show a sample image."
-        self.recorder.add_metrics([getattr(self.smoothenerG,'smooth',None),getattr(self.smoothenerC,'smooth',None)])
         if not hasattr(self, 'last_gen') or not self.show_img: return
         data = self.learn.data
         img = self.last_gen[0]
@@ -140,6 +139,7 @@ class GANTrainer(LearnerCallback):
         self.imgs.append(img)
         self.titles.append(f'Epoch {epoch}')
         pbar.show_imgs(self.imgs, self.titles)
+        return add_metrics(last_metrics, [getattr(self.smoothenerG,'smooth',None),getattr(self.smoothenerC,'smooth',None)])
 
     def switch(self, gen_mode:bool=None):
         "Switch the model, if `gen_mode` is provided, in the desired mode."
@@ -233,9 +233,9 @@ class NoisyItem(ItemBase):
     def __str__(self):  return ''
     def apply_tfms(self, tfms, **kwargs): return self
 
-class GANItemList(ImageItemList):
+class GANItemList(ImageList):
     "`ItemList` suitable for GANs."
-    _label_cls = ImageItemList
+    _label_cls = ImageList
 
     def __init__(self, items, noise_sz:int=100, **kwargs):
         super().__init__(items, **kwargs)

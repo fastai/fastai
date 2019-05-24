@@ -13,7 +13,7 @@ The fastai library simplifies training fast and accurate neural nets using moder
 ```python
 untar_data(MNIST_PATH)
 data = image_data_from_folder(MNIST_PATH)
-learn = create_cnn(data, tvm.resnet18, metrics=accuracy)
+learn = cnn_learner(data, tvm.resnet18, metrics=accuracy)
 learn.fit(1)
 ```
 
@@ -21,15 +21,17 @@ learn.fit(1)
 
 This document is written for `fastai v1`, which we use for the current, third version of part 1 of the [course.fast.ai](http://course.fast.ai) deep learning course. If you're following along with a course at [course18.fast.ai](http://course18.fast.ai)&mdash;that is, part 2 of the deep learning course, or the machine learning course (which aren't yet updated for v1)&mdash;you need to use `fastai 0.7`;  please follow the installation instructions [here](https://forums.fast.ai/t/fastai-v0-install-issues-thread/24652).
 
-*Note: If you want to dive deep in to fastai, Jeremy Howard, its lead developer, will be showing internals and advanced features in [Deep Learning Part II](https://www.usfca.edu/data-institute/certificates/deep-learning-part-two) at the University of San Francisco from March 18th, 2018.*
+*Note: If you want to dive deep into fastai, Jeremy Howard, its lead developer, will be showing internals and advanced features in [Deep Learning Part II](https://www.usfca.edu/data-institute/certificates/deep-learning-part-two) at the University of San Francisco from March 18th, 2018.*
 
 ## Installation
 
 **NB:** *fastai v1 currently supports Linux only, and requires **PyTorch v1** and **Python 3.6** or later. Windows support is at an experimental stage: it should work fine but we haven't thoroughly tested it. Since Macs don't currently have good Nvidia GPU support, we do not currently prioritize Mac development.*
 
-`fastai-1.x` can be installed with either `conda` or `pip` package managers and also from source. At the moment you can't just run *install*, since you first need to get the correct `pytorch` version installed - thus to get `fastai-1.x` installed choose one of the installation recipes below using your favourite python package manager. Note that **PyTorch v1** and **Python 3.6** are the minimal version requirements.
+`fastai-1.x` can be installed with either `conda` or `pip` package managers and also from source. At the moment you can't just run *install*, since you first need to get the correct `pytorch` version installed - thus to get `fastai-1.x` installed choose one of the installation recipes below using your favorite python package manager. Note that **PyTorch v1** and **Python 3.6** are the minimal version requirements.
 
 It's highly recommended you install `fastai` and its dependencies in a virtual environment ([`conda`](https://conda.io/docs/user-guide/tasks/manage-environments.html) or others), so that you don't interfere with system-wide python packages. It's not that you must, but if you experience problems with any dependency packages, please consider using a fresh virtual environment just for `fastai`.
+
+Starting with pytorch-1.x you no longer need to install a special pytorch-cpu version. Instead use the normal pytorch and it works with and without GPU. But [you can install the cpu build too](https://docs.fast.ai/install.html#cpu-build).
 
 If you experience installation problems, please read about [installation issues](https://github.com/fastai/fastai/blob/master/README.md#installation-issues).
 
@@ -137,7 +139,7 @@ conda install conda
 
    The `pytorch` binary package comes with its own CUDA, CuDNN, NCCL, MKL, and other libraries so you don't have to install system-wide NVIDIA's CUDA and related libraries if you don't need them for something else. If you have them installed already it doesn't matter which NVIDIA's CUDA version library you have installed system-wide. Your system could have CUDA 9.0 libraries, and you can still use `pytorch` build with CUDA 10.0 libraries without any problem, since the `pytorch` binary package is self-contained.
 
-   The only requirement is that you have installed and configured the NVIDIA driver correctly. Usually you can test that by running `nvidia-smi`. While it's possible that this application is not available on your system, it's very likely that if it doesn't work, than your don't have your NVIDIA drivers configured properly. And remember that a reboot is always required after installing NVIDIA drivers.
+   The only requirement is that you have installed and configured the NVIDIA driver correctly. Usually you can test that by running `nvidia-smi`. While it's possible that this application is not available on your system, it's very likely that if it doesn't work, then you don't have your NVIDIA drivers configured properly. And remember that a reboot is always required after installing NVIDIA drivers.
 
 3. Operating System:
 

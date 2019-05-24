@@ -16,7 +16,7 @@ class TabularModel(nn.Module):
         n_emb = sum(e.embedding_dim for e in self.embeds)
         self.n_emb,self.n_cont,self.y_range = n_emb,n_cont,y_range
         sizes = self.get_sizes(layers, out_sz)
-        actns = [nn.ReLU(inplace=True)] * (len(sizes)-2) + [None]
+        actns = [nn.ReLU(inplace=True) for _ in range(len(sizes)-2)] + [None]
         layers = []
         for i,(n_in,n_out,dp,act) in enumerate(zip(sizes[:-1],sizes[1:],[0.]+ps,actns)):
             layers += bn_drop_lin(n_in, n_out, bn=use_bn and i!=0, p=dp, actn=act)

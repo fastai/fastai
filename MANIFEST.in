@@ -1,11 +1,12 @@
 include AUTHORS.md
 include CONTRIBUTING.md
-include HISTORY.md
+include CHANGES.md
 include LICENSE
 include README.md
 include fastai/gen_doc/*tpl
-include fastai/text/models/forget_mult*cpp
-include fastai/text/models/forget_mult*cu
+include fastai/text/models/*cpp
+include fastai/text/models/*cu
+include fastai/test_registry.json
 
 recursive-include tests *
 recursive-exclude * __pycache__

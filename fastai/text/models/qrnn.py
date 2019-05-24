@@ -9,131 +9,159 @@ if torch.cuda.is_available():
     fastai_path = Path(fastai.__path__[0])/'text'/'models'
     files = ['forget_mult_cuda.cpp', 'forget_mult_cuda_kernel.cu']
     forget_mult_cuda = load(name='forget_mult_cuda', sources=[fastai_path/f for f in files])
+    files = ['bwd_forget_mult_cuda.cpp', 'bwd_forget_mult_cuda_kernel.cu']
+    bwd_forget_mult_cuda = load(name='bwd_forget_mult_cuda', sources=[fastai_path/f for f in files])
 
+def dispatch_cuda(cuda_class, cpu_func, x):
+    return cuda_class.apply if x.device.type == 'cuda' else cpu_func
+    
 class ForgetMultGPU(Function):
     
-    def __init__(self, batch_first:bool=True):
-        self.batch_first = batch_first
-        super().__init__()
-    
-    def forward(self, x, f, hidden_init=None):
-        if self.batch_first:
+    @staticmethod
+    def forward(ctx, x:Tensor, f:Tensor, hidden_init:Optional[Tensor]=None, batch_first:bool=True):
+        if batch_first:
             batch_size, seq_size, hidden_size = f.size()
-            output = f.new(batch_size, seq_size + 1, hidden_size)
-            if hidden_init is not None: output[:, 0, :] = hidden_init
-            else: output = output.zero_()
+            output = f.new_zeros(batch_size, seq_size + 1, hidden_size)
+            if hidden_init is not None: output[:, 0] = hidden_init
+            else: output.zero_()
         else: 
             seq_size, batch_size, hidden_size = f.size()
             output = f.new(seq_size + 1, batch_size, hidden_size)
-            if hidden_init is not None: output[0, :, :] = hidden_init
-            else: output = output.zero_()
-        output = forget_mult_cuda.forward(x, f, output, self.batch_first)
-        self.save_for_backward(x, f, hidden_init, output)
-        return output[:,1:,:] if self.batch_first else output[1:,:,:]
+            if hidden_init is not None: output[0] = hidden_init
+            else: output.zero_()
+        output = forget_mult_cuda.forward(x, f, output, batch_first)
+        ctx.save_for_backward(x, f, hidden_init, output)
+        ctx.batch_first = batch_first
+        return output[:,1:] if batch_first else output[1:]
     
-    def backward(self, grad_output):
-        x, f, hidden_init, output = self.saved_tensors
-        grad_x, grad_f, grad_h = forget_mult_cuda.backward(x, f, output, grad_output, self.batch_first)
-        return (grad_x, grad_f, grad_h) if hidden_init is not None else (grad_x, grad_f)
+    @staticmethod
+    def backward(ctx, grad_output):
+        x, f, hidden_init, output = ctx.saved_tensors
+        grad_x, grad_f, grad_h = forget_mult_cuda.backward(x, f, output, grad_output, ctx.batch_first)
+        return (grad_x, grad_f, (None if hidden_init is None else grad_h), None)
     
-class ForgetMultCPU(nn.Module):
+class BwdForgetMultGPU(Function):
     
-    def __init__(self, batch_first:bool=True):
-        self.batch_first = batch_first
-        super().__init__()
+    @staticmethod
+    def forward(ctx, x:Tensor, f:Tensor, hidden_init:Optional[Tensor]=None, batch_first:bool=True):
+        if batch_first:
+            batch_size, seq_size, hidden_size = f.size()
+            output = f.new(batch_size, seq_size + 1, hidden_size)
+            if hidden_init is not None: output[:, -1] = hidden_init
+            else: output.zero_()
+        else: 
+            seq_size, batch_size, hidden_size = f.size()
+            output = f.new(seq_size + 1, batch_size, hidden_size)
+            if hidden_init is not None: output[-1] = hidden_init
+            else: output.zero_()
+        output = bwd_forget_mult_cuda.forward(x, f, output, batch_first)
+        ctx.save_for_backward(x, f, hidden_init, output)
+        ctx.batch_first = batch_first
+        return output[:,:-1] if batch_first else output[:-1]
     
-    def forward(self, x, f, hidden_init=None):
-        result = []
-        dim = (1 if self.batch_first else 0)
-        forgets = f.split(1, dim=dim)
-        inputs = x.split(1, dim=dim)
-        prev_h = None if hidden_init is None else hidden_init.unsqueeze(dim)
-        for inp, fo in zip(inputs, forgets):
-            prev_h = inp * fo if prev_h is None else inp * fo + (1-fo) * prev_h
-            result.append(prev_h)
-        return torch.cat(result, dim=dim)
+    @staticmethod
+    def backward(ctx, grad_output:Tensor):
+        x, f, hidden_init, output = ctx.saved_tensors
+        grad_x, grad_f, grad_h = bwd_forget_mult_cuda.backward(x, f, output, grad_output, ctx.batch_first)
+        return (grad_x, grad_f, (None if hidden_init is None else grad_h), None)
+    
+def forget_mult_CPU(x:Tensor, f:Tensor, hidden_init:Optional[Tensor]=None, batch_first:bool=True, backward:bool=False):
+    result = []
+    dim = (1 if batch_first else 0)
+    forgets = f.split(1, dim=dim)
+    inputs =  x.split(1, dim=dim)
+    prev_h = None if hidden_init is None else hidden_init.unsqueeze(1 if batch_first else 0)
+    idx_range = range(len(inputs)-1,-1,-1) if backward else range(len(inputs))
+    for i in idx_range:
+        prev_h = inputs[i] * forgets[i] if prev_h is None else inputs[i] * forgets[i] + (1-forgets[i]) * prev_h
+        if backward: result.insert(0, prev_h)
+        else:        result.append(prev_h)
+    return torch.cat(result, dim=dim)
 
 class QRNNLayer(nn.Module):
     "Apply a single layer Quasi-Recurrent Neural Network (QRNN) to an input sequence."
 
     def __init__(self, input_size:int, hidden_size:int=None, save_prev_x:bool=False, zoneout:float=0, window:int=1, 
-                 output_gate:bool=True, use_cuda:bool=True, batch_first:bool=True):
+                 output_gate:bool=True, batch_first:bool=True, backward:bool=False):
         super().__init__()
-
         assert window in [1, 2], "This QRNN implementation currently only handles convolutional window of size 1 or size 2"
-        self.window,self.input_size,self.zoneout,self.save_prev_x = window,input_size,zoneout,save_prev_x
-        self.hidden_size = ifnone(hidden_size, input_size)
-        self.prevX = None
-        self.output_gate,self.use_cuda,self.batch_first = output_gate,use_cuda,batch_first
-        self.use_cuda = use_cuda
+        self.save_prev_x,self.zoneout,self.window = save_prev_x,zoneout,window
+        self.output_gate,self.batch_first,self.backward = output_gate,batch_first,backward
+        hidden_size = ifnone(hidden_size, input_size)
         #One large matmul with concat is faster than N small matmuls and no concat
-        self.linear = nn.Linear(self.window * self.input_size,
-                                3 * self.hidden_size if self.output_gate else 2 * self.hidden_size)
-        #self.ln = nn.LayerNorm(3 * self.hidden_size if self.output_gate else 2 * self.hidden_size)
+        mult = (3 if output_gate else 2)
+        self.linear = nn.Linear(window * input_size, mult * hidden_size)
+        self.prevX = None
 
     def reset(self):
         # If you are saving the previous value of x, you should call this when starting with a new state
         self.prevX = None
-
-    def forward(self, X, hidden=None):
-        if self.window == 1: source = X
-        elif self.window == 2:
-            Xm1 = [self.prevX if self.prevX is not None else (X[:,:1] if self.batch_first else X[:1])* 0]
-            if self.batch_first and X.shape[1] > 1:   Xm1.append(X[:,:-1])
-            elif not self.batch_first and len(X) > 1: Xm1.append(X[:-1])
-            Xm1 = torch.cat(Xm1, dim = (1 if self.batch_first else 0))
-            source = torch.cat([X, Xm1], 2)
-        # Matrix multiplication for the three outputs: Z, F, O
-        Y = self.linear(source)
-        #Y = self.ln(self.linear(source))
-        # Convert the tensor back to (batch, seq_len, len([Z, F, O]) * hidden_size)
-        if self.output_gate:
-            Y = Y.view(*X.shape[:2], 3 * self.hidden_size)
-            z_gate,f_gate,o_gate = Y.chunk(3, dim=2)
-        else:
-            Y = Y.view(*X.shape[:2], 2 * self.hidden_size)
-            z_gate,f_gate = Y.chunk(2, dim=2)
+        
+    def forward(self, inp, hid=None):
+        y = self.linear(self._get_source(inp))
+        if self.output_gate: z_gate,f_gate,o_gate = y.chunk(3, dim=2)
+        else:                z_gate,f_gate        = y.chunk(2, dim=2)
         z_gate.tanh_()
         f_gate.sigmoid_()
         if self.zoneout and self.training:
             mask = dropout_mask(f_gate, f_gate.size(), self.zoneout).requires_grad_(False)
             f_gate = f_gate * mask
         z_gate,f_gate = z_gate.contiguous(),f_gate.contiguous()
-        forget_mult = ForgetMultGPU(self.batch_first) if self.use_cuda else ForgetMultCPU(self.batch_first)
-        #To avoid expected Variable but got None error
-        c_gate = forget_mult(z_gate, f_gate) if hidden is None else forget_mult(z_gate, f_gate, hidden)
+        if self.backward: forget_mult = dispatch_cuda(BwdForgetMultGPU, partial(forget_mult_CPU, backward=True), inp)
+        else:             forget_mult = dispatch_cuda(ForgetMultGPU, forget_mult_CPU, inp)
+        c_gate = forget_mult(z_gate, f_gate, hid, self.batch_first)
         output = torch.sigmoid(o_gate) * c_gate if self.output_gate else c_gate
         if self.window > 1 and self.save_prev_x: 
-            self.prevX = (X[:, -1:] if self.batch_first else X[-1:]).detach()
-        return output, (c_gate[:, -1].unsqueeze(0) if self.batch_first else c_gate[-1:])
+            if self.backward: self.prevX = (inp[:, :1] if self.batch_first else inp[:1]).detach()
+            else:             self.prevX = (inp[:, -1:] if self.batch_first else inp[-1:]).detach()
+        idx = 0 if self.backward else -1
+        return output, (c_gate[:, idx] if self.batch_first else c_gate[idx])
+
+    def _get_source(self, inp):
+        if self.window == 1: return inp
+        dim = (1 if self.batch_first else 0)
+        inp_shift = [torch.zeros_like(inp[:,:1] if self.batch_first else inp[:1]) if self.prevX is None else self.prevX]
+        if self.backward: inp_shift.insert(0,inp[:,1:] if self.batch_first else inp[1:])
+        else:             inp_shift.append(inp[:,:-1] if self.batch_first else inp[:-1])
+        inp_shift = torch.cat(inp_shift, dim)
+        return torch.cat([inp, inp_shift], 2)
     
 class QRNN(nn.Module):
     "Apply a multiple layer Quasi-Recurrent Neural Network (QRNN) to an input sequence."
 
-    def __init__(self, input_size:int, hidden_size:int, num_layers:int=1, bias:bool=True, batch_first:bool=True,
-                 dropout:float=0, bidirectional:bool=False, **kwargs):
-        assert bidirectional == False, 'Bidirectional QRNN is not yet supported'
+    def __init__(self, input_size:int, hidden_size:int, n_layers:int=1, bias:bool=True, batch_first:bool=True,
+                 dropout:float=0, bidirectional:bool=False, save_prev_x:bool=False, zoneout:float=0, window:int=None, 
+                 output_gate:bool=True):
+        assert not (save_prev_x and bidirectional), "Can't save the previous X with bidirectional."
         assert bias == True, 'Removing underlying bias is not yet supported'
         super().__init__()
+        kwargs = dict(batch_first=batch_first, zoneout=zoneout, output_gate=output_gate)
         self.layers = nn.ModuleList([QRNNLayer(input_size if l == 0 else hidden_size, hidden_size, 
-                                                batch_first=batch_first, **kwargs) 
-                                           for l in range(num_layers)])
-        self.input_size,self.hidden_size,self.bias,self.batch_first = input_size,hidden_size,bias,batch_first
-        self.num_layers,self.dropout,self.bidirectional = num_layers,dropout,bidirectional
+                                               window=((2 if l ==0 else 1) if window is None else window), **kwargs) 
+                                     for l in range(n_layers)])
+        if bidirectional:
+            self.layers_bwd = nn.ModuleList([QRNNLayer(input_size if l == 0 else hidden_size, hidden_size, 
+                                                       backward=True, window=((2 if l ==0 else 1) if window is None else window), 
+                                                       **kwargs) for l in range(n_layers)])
+        self.n_layers,self.batch_first,self.dropout,self.bidirectional = n_layers,batch_first,dropout,bidirectional
         
     def reset(self):
-        "If your convolutional window is greater than 1, you must reset at the beginning of each new sequence."
-        [layer.reset() for layer in self.layers]
+        "If your convolutional window is greater than 1 and you save previous xs, you must reset at the beginning of each new sequence."
+        for layer in self.layers:     layer.reset()
+        if self.bidirectional:
+            for layer in self.layers_bwd: layer.reset()    
 
-    def forward(self, input, hidden=None):
-        next_hidden = []
+    def forward(self, inp, hid=None):
+        new_hid = []
+        if self.bidirectional: inp_bwd = inp.clone()
         for i, layer in enumerate(self.layers):
-            input, hn = layer(input, None if hidden is None else hidden[i])
-            next_hidden.append(hn)
+            inp, h = layer(inp, None if hid is None else hid[2*i if self.bidirectional else i])
+            new_hid.append(h)
+            if self.bidirectional:
+                inp_bwd, h_bwd = self.layers_bwd[i](inp_bwd, None if hid is None else hid[2*i+1])
+                new_hid.append(h_bwd)
             if self.dropout != 0 and i < len(self.layers) - 1:
-                input = F.dropout(input, p=self.dropout, training=self.training, inplace=False)
-        if self.batch_first:
-            next_hidden = torch.cat(next_hidden, 1).transpose(0,1).view(self.num_layers, -1, next_hidden[0].size(-1))
-        else:
-            next_hidden = torch.cat(next_hidden, 0).view(self.num_layers, *next_hidden[0].size()[-2:])
-        return input, next_hidden
+                for o in ([inp, inp_bwd] if self.bidirectional else [inp]):
+                    o = F.dropout(o, p=self.dropout, training=self.training, inplace=False)
+        if self.bidirectional: inp = torch.cat([inp, inp_bwd], dim=2)
+        return inp, torch.stack(new_hid, 0)

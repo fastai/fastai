@@ -1,4 +1,5 @@
 import pytest, re
+from fastai.gen_doc.doctest import this_tests
 from utils.fakes import *
 from utils.text import CaptureStdout
 
@@ -10,15 +11,15 @@ def create_metrics_dataframe(learn):
         in enumerate(zip(
             get_train_losses(learn),
             learn.recorder.val_losses,
-            learn.recorder.metrics), 1)]
-    return pd.DataFrame(records, columns=learn.recorder.names)
+            learn.recorder.metrics))]
+    return pd.DataFrame(records, columns=learn.recorder.names[:-1])
 
 def convert_into_dataframe(buffer):
     "Converts data captured from `fastprogress.ConsoleProgressBar` into dataframe."
     lines = buffer.split('\n')
     header, *lines = [l.strip() for l in lines if l and not l.startswith('Total')]
-    header = header.split()
-    floats = [[float(x) for x in line.split()] for line in lines]
+    header = header.split()[:]
+    floats = [[float_or_x(x) for x in line.split()[:]] for line in lines]
     records = [dict(zip(header, metrics_list)) for metrics_list in floats]
     df = pd.DataFrame(records, columns=header)
     df['epoch'] = df['epoch'].astype(int)
@@ -37,16 +38,18 @@ def test_logger():
     learn = fake_learner()
     learn.metrics = [accuracy, error_rate]
     learn.callback_fns.append(callbacks.CSVLogger)
+    this_tests(callbacks.CSVLogger)
     with CaptureStdout() as cs: learn.fit_one_cycle(3)
     csv_df = learn.csv_logger.read_logged_file()
+    stdout_df = convert_into_dataframe(cs.out)
+    pd.testing.assert_frame_equal(csv_df, stdout_df, check_exact=False, check_less_precise=2)
     recorder_df = create_metrics_dataframe(learn)
     # XXX: there is a bug in pandas:
     # https://github.com/pandas-dev/pandas/issues/25068#issuecomment-460014120
     # which quite often fails on CI.
     # once it's resolved can change the setting back to check_less_precise=True (or better =3), until then using =2 as it works, but this check is less good.
-    pd.testing.assert_frame_equal(csv_df, recorder_df, check_exact=False, check_less_precise=2)
-    stdout_df = convert_into_dataframe(cs.out)
-    pd.testing.assert_frame_equal(csv_df, stdout_df, check_exact=False, check_less_precise=2)
+    csv_df_notime = csv_df.drop(['time'], axis=1)
+    pd.testing.assert_frame_equal(csv_df_notime, recorder_df, check_exact=False, check_less_precise=2)
 
 @pytest.fixture(scope="module", autouse=True)
 def cleanup(request):
