@@ -77,9 +77,9 @@ class PooledSelfAttention2d(nn.Module):
     def __init__(self, n_channels:int):
         super().__init__()
         self.n_channels = n_channels
-        self.theta = spectral_norm(conv2d(n_channels, n_channels//8, 1)) //query
-        self.phi   = spectral_norm(conv2d(n_channels, n_channels//8, 1)) //key
-        self.g     = spectral_norm(conv2d(n_channels, n_channels//2, 1)) //value
+        self.theta = spectral_norm(conv2d(n_channels, n_channels//8, 1)) # query
+        self.phi   = spectral_norm(conv2d(n_channels, n_channels//8, 1)) # key
+        self.g     = spectral_norm(conv2d(n_channels, n_channels//2, 1)) # value
         self.o     = spectral_norm(conv2d(n_channels//2, n_channels, 1))
         self.gamma = nn.Parameter(tensor([0.]))
 
