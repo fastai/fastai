@@ -229,7 +229,7 @@ def model2half(model:nn.Module)->nn.Module:
     "Convert `model` to half precision except the batchnorm layers."
     return bn2float(model.half())
 
-def init_default(m:nn.Module, func:LayerFunc=nn.init.kaiming_normal_)->None:
+def init_default(m:nn.Module, func:LayerFunc=nn.init.kaiming_normal_)->nn.Module:
     "Initialize `m` weights with `func` and set `bias` to 0."
     if func:
         if hasattr(m, 'weight'): func(m.weight)
