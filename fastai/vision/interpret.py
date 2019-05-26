@@ -52,7 +52,7 @@ class SegmentationInterpretation(Interpretation):
     def show_xyz(self, i, classes=None, sz=10):
         'show (image, true and pred) from dataset with color mappings'
         x,y = self.ds[i]
-        self.data.valid_ds.x.show_xys([x],[y], figsize=(sz/2,sz/2))
+        self.ds.show_xys([x],[y], figsize=(sz/2,sz/2))
         self._interp_show(ImageSegment(self.y_true[i]), classes, sz=sz, title_suffix='true')
         self._interp_show(ImageSegment(self.pred_class[i][None,:]), classes, sz=sz, title_suffix='pred')
 
