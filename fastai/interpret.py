@@ -1,6 +1,7 @@
 from .torch_core import *       
 from .basic_data import *
 from .basic_train import *
+from .vision import *
 
 __all__ = ['Interpretation', 'SegmentationInterpretation', 'MultiLabelClassificationInterpretation', 'ObjectDetectionInterpretation',
            'ClassificationInterpretation', 'TextClassificationInterpretation']
