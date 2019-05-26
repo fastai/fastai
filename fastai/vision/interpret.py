@@ -3,6 +3,7 @@ from ..basic_data import *
 from ..basic_train import *
 from .image import *
 from ..train import Interpretation
+from textwrap import wrap
 
 __all__ = ['SegmentationInterpretation', 'ObjectDetectionInterpretation', 'MultiLabelClassificationInterpretation']
 
