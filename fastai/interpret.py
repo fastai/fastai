@@ -1,12 +1,18 @@
-from .torch_core import *
+from .torch_core import *       
 
+__all__ = ['Interpretation', 'SegmentationInterpretation', 'MultiLabelClassificationInterpretation', 'ObjectDetectionInterpretation',
+           'ClassificationInterpretation', 'TextClassificationInterpretation']
 
 class Interpretation():
     "Interpretation base class"
     def __init__(self, learn:Learner, preds:Tensor, y_true:Tensor, losses:Tensor, ds_type:DatasetType=DatasetType.Valid):
         self.data,self.preds,self.y_true,self.losses,self.ds_type, self.learn = \
                                  learn.data,preds,y_true,losses,ds_type,learn
-        
+        self.ds = (self.data.train_ds if ds_type == DatasetType.Train else
+                   self.data.test_ds if ds_type == DatasetType.Test else
+                   self.data.valid_ds if ds_type == DatasetType.Valid else
+                   self.data.single_ds if ds_type == DatasetType.Single else
+                   self.data.fix_ds)
 
     @classmethod
     def from_learner(cls, learn: Learner,  ds_type:DatasetType=DatasetType.Valid):
@@ -41,14 +47,6 @@ class SegmentationInterpretation(Interpretation):
     
     def _interp_show(self, ims:ImageSegment, classes:Collection, sz:int=20, cmap='tab20',
                     title_suffix:str=None):
-        '''
-        ims: ImageSegment to plot
-        classes: List of classes to plot
-        sz: figsize
-        cmap: colormap
-        c2i: class to pixel value map
-
-        '''
         fig,axes=plt.subplots(1,2,figsize=(sz,sz))
         class_idxs = [self.c2i[c] for c in classes]
         
@@ -67,13 +65,13 @@ class SegmentationInterpretation(Interpretation):
             axes[1].text(mod, div, f"{l}", ha='center', color='white', fontdict={'size':sz})
 
         if title_suffix:
-            axes[0].set_title(f"{title_suffix}_imsegment");
-            axes[1].set_title(f"{title_suffix}_labels");
+            axes[0].set_title(f"{title_suffix}_imsegment")
+            axes[1].set_title(f"{title_suffix}_labels")
 
     def show_xyz(self, i, classes=None, sz=10):
         'show image, true and pred'
         classes = ifnone(classes, self.data.classes)
-        x,y = interp.data.valid_ds[i]
+        x,y = self.ds[i]
         self.data.valid_ds.x.show_xys([x],[y], figsize=(sz/2,sz/2))
         self._interp_show(ImageSegment(self.y_true[i]), classes, sz=sz, title_suffix='true')
         self._interp_show(ImageSegment(self.pred_class[i][None,:]), classes, sz=sz, title_suffix='pred')
