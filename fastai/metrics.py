@@ -58,7 +58,7 @@ def dice(input:Tensor, targs:Tensor, iou:bool=False)->Rank0Tensor:
     intersect = (input * targs).sum().float()
     union = (input+targs).sum().float()
     if not iou: return (2. * intersect / union if union > 0 else union.new([1.]).squeeze())
-    else: return intersect / (union-intersect+1.0)
+    else: return intersect / (union-intersect+1.0) if union > 0 else union.new([1.]).squeeze())
 
 def exp_rmspe(pred:Tensor, targ:Tensor)->Rank0Tensor:
     "Exp RMSE between `pred` and `targ`."
