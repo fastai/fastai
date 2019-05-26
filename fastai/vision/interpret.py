@@ -20,23 +20,28 @@ class SegmentationInterpretation(Interpretation):
         losses = self.losses.view(-1, np.prod(sizes)).mean(-1)
         return losses.topk(ifnone(k, len(losses)), largest=largest)
     
-    def _interp_show(self, ims:ImageSegment, classes:Collection, sz:int=20, cmap='tab20',
+    def _interp_show(self, ims:ImageSegment, classes:Collection=None, sz:int=20, cmap='tab20',
                     title_suffix:str=None):
         fig,axes=plt.subplots(1,2,figsize=(sz,sz))
-        class_idxs = [self.c2i[c] for c in classes]
-        
-        #image
-        mask = torch.cat([ims.data==i for i in class_idxs]).max(dim=0)[0][None,:].long()
-        masked_im = image2np(ims.data*mask)
-        im=axes[0].imshow(masked_im, cmap=cmap)
+        np_im = to_np(ims.data).copy()
+        # tab20 - qualitative colormaps support max of 20 distinc colors
+        # if len(classes) > 20 close idxs map to same color
+        # image
+        if classes is not None:
+            class_idxs = [self.c2i[c] for c in classes]
+            mask = np.max(np.stack([np_im==i for i in class_idxs]),axis=0)
+            np_im = (np_im*mask).astype(np.float)
+            np_im[np.where(mask==0)] = np.nan
+        im=axes[0].imshow(np_im[0], cmap=cmap)
 
-        #labels
-        masked_im_labels = list(np.unique(masked_im))
-        c = len(masked_im_labels); n = math.ceil(np.sqrt(c))
-        label_im = np.array(masked_im_labels + [np.nan]*(n**2-c)).reshape(n,n)
+        # labels
+        np_im_labels = list(np.unique(np_im[~np.isnan(np_im)]))
+        c = len(np_im_labels); n = math.ceil(np.sqrt(c))
+        label_im = np.array(np_im_labels + [np.nan]*(n**2-c)).reshape(n,n)
         axes[1].imshow(label_im, cmap=cmap)
-        for i,l in enumerate([self.i2c[l] for l in masked_im_labels]):
+        for i,l in enumerate([self.i2c[l] for l in np_im_labels]):
             div,mod=divmod(i,n)
+            l = "\n".join(wrap(l,10)) if len(l) > 10 else l
             axes[1].text(mod, div, f"{l}", ha='center', color='white', fontdict={'size':sz})
 
         if title_suffix:
@@ -45,7 +50,6 @@ class SegmentationInterpretation(Interpretation):
 
     def show_xyz(self, i, classes=None, sz=10):
         'show (image, true and pred) from dataset with color mappings'
-        classes = ifnone(classes, self.data.classes)
         x,y = self.ds[i]
         self.data.valid_ds.x.show_xys([x],[y], figsize=(sz/2,sz/2))
         self._interp_show(ImageSegment(self.y_true[i]), classes, sz=sz, title_suffix='true')
