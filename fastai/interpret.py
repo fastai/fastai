@@ -69,7 +69,7 @@ class SegmentationInterpretation(Interpretation):
             axes[1].set_title(f"{title_suffix}_labels")
 
     def show_xyz(self, i, classes=None, sz=10):
-        'show image, true and pred'
+        'show (image, true and pred) from dataset with color mappings'
         classes = ifnone(classes, self.data.classes)
         x,y = self.ds[i]
         self.data.valid_ds.x.show_xys([x],[y], figsize=(sz/2,sz/2))
