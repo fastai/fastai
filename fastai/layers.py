@@ -76,9 +76,10 @@ class PooledSelfAttention2d(nn.Module):
     "Pooled self attention layer for 2d."
     def __init__(self, n_channels:int):
         super().__init__()
-        self.theta = spectral_norm(conv2d(n_channels, n_channels//8, 1))
-        self.phi   = spectral_norm(conv2d(n_channels, n_channels//8, 1))
-        self.g     = spectral_norm(conv2d(n_channels, n_channels//2, 1))
+        self.n_channels = n_channels
+        self.theta = spectral_norm(conv2d(n_channels, n_channels//8, 1)) # query
+        self.phi   = spectral_norm(conv2d(n_channels, n_channels//8, 1)) # key
+        self.g     = spectral_norm(conv2d(n_channels, n_channels//2, 1)) # value
         self.o     = spectral_norm(conv2d(n_channels//2, n_channels, 1))
         self.gamma = nn.Parameter(tensor([0.]))
 
@@ -87,11 +88,11 @@ class PooledSelfAttention2d(nn.Module):
         theta = self.theta(x)
         phi = F.max_pool2d(self.phi(x), [2,2])
         g = F.max_pool2d(self.g(x), [2,2])    
-        theta = theta.view(-1, self. ch // 8, x.shape[2] * x.shape[3])
-        phi = phi.view(-1, self. ch // 8, x.shape[2] * x.shape[3] // 4)
-        g = g.view(-1, self. ch // 2, x.shape[2] * x.shape[3] // 4)
+        theta = theta.view(-1, self.n_channels // 8, x.shape[2] * x.shape[3])
+        phi = phi.view(-1, self.n_channels // 8, x.shape[2] * x.shape[3] // 4)
+        g = g.view(-1, self.n_channels // 2, x.shape[2] * x.shape[3] // 4)
         beta = F.softmax(torch.bmm(theta.transpose(1, 2), phi), -1)
-        o = self.o(torch.bmm(g, beta.transpose(1,2)).view(-1, self.ch // 2, x.shape[2], x.shape[3]))
+        o = self.o(torch.bmm(g, beta.transpose(1,2)).view(-1, self.n_channels // 2, x.shape[2], x.shape[3]))
         return self.gamma * o + x
 
 class SelfAttention(nn.Module):

@@ -29,7 +29,7 @@ class LearnerTensorboardWriter(LearnerCallback):
         super().__init__(learn=learn)
         self.base_dir,self.name,self.loss_iters,self.hist_iters,self.stats_iters  = base_dir,name,loss_iters,hist_iters,stats_iters
         log_dir = base_dir/name
-        self.tbwriter = SummaryWriter(log_dir=str(log_dir))
+        self.tbwriter = SummaryWriter(str(log_dir))
         self.hist_writer = HistogramTBWriter()
         self.stats_writer = ModelStatsTBWriter()
         self.graph_writer = GraphTBWriter()
