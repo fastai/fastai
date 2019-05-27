@@ -31,7 +31,7 @@ __all__ = ['COCO_download, 'load_coco', 'get_image_files', 'denormalize', 'get_a
            'ImageList', 'normalize', 'normalize_funcs', 'resize_to',
            'channel_view', 'mnist_stats', 'cifar_stats', 'imagenet_stats', 'download_images',
            'verify_images', 'bb_pad_collate', 'ImageImageList', 'PointsLabelList',
-           'ObjectCategoryList', 'ObjectItemList', 'SegmentationLabelList', 'SegmentationItemList', 'PointsItemList', 'CocoDataset']
+           'ObjectCategoryList', 'ObjectItemList', 'SegmentationLabelList', 'SegmentationItemList', 'PointsItemList', 'COCODataset']
 
 image_extensions = set(k for k,v in mimetypes.types_map.items() if v.startswith('image/'))
 
@@ -119,7 +119,7 @@ def make_dataset_dirs(dataset_command, path):
             print('Invalid dataset - enter either all, train or valid.')
             return []
 
-def COCO_load(root_dir, train_annot, valid_annot, tfms = [], resize = 608, bunch_size = 4):
+def COCO_load(root_dir, train_annot, valid_annot, tfms = [], resize = 608, bunch_size = 4, num_workers = 2):
     """
     Args:
         root_dir (string): Path to the directory with train and valid folders.
@@ -128,9 +128,10 @@ def COCO_load(root_dir, train_annot, valid_annot, tfms = [], resize = 608, bunch
         tfms (get_transforms() function): Optional transformations to be applied to images.
         resize (int): Size to which all images will be resized. Also resizes bounding boxes.
         bunch_size (int): How many images we load and use at once.
+	num_workers  (int): How many workers provide for databunch (more workers = more power will be used).
     """
-    coco_train = CocoDataset(train_annot)
-    coco_valid = CocoDataset(valid_annot)
+    coco_train = COCODataset(train_annot)
+    coco_valid = COCODataset(valid_annot)
     
     boxes = coco_train.get_bboxes()
     boxes2 = coco_valid.get_bboxes()
@@ -139,7 +140,7 @@ def COCO_load(root_dir, train_annot, valid_annot, tfms = [], resize = 608, bunch
     all_objects = (ObjectItemList.from_folder(root_dir).split_by_folder()
                     .label_from_func(get_y_func)
                     .transform(tfms, tfm_y=True, size=resize)
-                    .databunch(bs=4, collate_fn=bb_pad_collate))
+                    .databunch(bs=4, collate_fn=bb_pad_collate, num_workers=num_workers ))
     return all_objects
 
 def download_open_images(Dataset=None, classes=['Violin'], command='downloader', image_IsDepiction=None, image_IsGroupOf=None, image_IsInside=None, image_IsOccluded=None, image_IsTruncated=None, limit=None, multiclasses='0', n_threads=None, noLabels=False, sub=None, type_csv='validation'):
@@ -567,7 +568,7 @@ class ImageImageList(ImageList):
             z.show(ax=axs[i,1], **kwargs)
 
             
-class CocoDataset(Dataset):
+class COCODataset(Dataset):
     """Common Objects in Context dataset."""
     def __init__(self, json_file):
         """
