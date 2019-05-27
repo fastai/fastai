@@ -5,7 +5,8 @@ __all__ = ['AdaptiveConcatPool2d', 'BCEWithLogitsFlat', 'BCEFlat', 'MSELossFlat'
            'Flatten', 'Lambda', 'PoolFlatten', 'View', 'ResizeBatch', 'bn_drop_lin', 'conv2d', 'conv2d_trans', 'conv_layer',
            'embedding', 'simple_cnn', 'NormType', 'relu', 'batchnorm_2d', 'trunc_normal_', 'PixelShuffle_ICNR', 'icnr',
            'NoopLoss', 'WassersteinLoss', 'SelfAttention', 'SequentialEx', 'MergeLayer', 'res_block', 'sigmoid_range',
-           'SigmoidRange', 'PartialLayer', 'FlattenedLoss', 'BatchNorm1dFlat', 'LabelSmoothingCrossEntropy', 'PooledSelfAttention2d']
+           'SigmoidRange', 'PartialLayer', 'FlattenedLoss', 'BatchNorm1dFlat', 'LabelSmoothingCrossEntropy', 'PooledSelfAttention2d',
+           'Shortcut', 'Route', 'Yolo']
 
 class Lambda(nn.Module):
     "An easy way to create a pytorch layer for a simple `func`."
@@ -332,3 +333,72 @@ class LabelSmoothingCrossEntropy(nn.Module):
         losses = -log_preds.sum(dim=-1) * self.eps/c # deviation of predicted label distribution p from the prior uniform
         losses += (1 - self.eps) * F.nll_loss(log_preds, target)
         return losses.mean()
+
+
+class Route(nn.Module):
+    def __init__(self, layers):
+        super(Route, self).__init__()
+        self.layers = layers
+
+    def forward(self, outputs):
+        return torch.cat(tuple([outputs[i] for i in self.layers]), 1)
+
+
+class Shortcut(nn.Module):
+    def __init__(self, from_layer, prev_layer):
+        super(Shortcut, self).__init__()
+        self.from_layer = from_layer
+        self.prev_layer = prev_layer
+
+    def forward(self, outputs):
+        # checking whether the given layers have the same size
+        assert outputs[self.prev_layer].size() == outputs[self.from_layer].size()
+        return outputs[self.prev_layer] + outputs[self.from_layer]
+
+
+class Yolo(nn.Module):
+    def __init__(self, anchors, dims, num_classes):
+        super(Yolo, self).__init__()
+        self.anchors = anchors  # anchors chosen for this layer
+        self.inp_width, self.inp_height = dims
+        self.num_classes = num_classes
+
+    def forward(self, prediction):
+        batch_size = prediction.size(0)
+        pred_width, pred_height = prediction.size(2), prediction.size(3)
+        stride_width = self.inp_width // pred_width
+        stride_height = self.inp_height // pred_height
+        box_attrs = 5 + self.num_classes
+        num_anchors = len(self.anchors)
+
+        prediction = prediction.view(batch_size, box_attrs*num_anchors, pred_width*pred_height)  # one dim for all parameter, one dim for every cell
+        prediction = prediction.transpose(1, 2).contiguous()  # swap parameters with cells
+        prediction = prediction.view(batch_size, pred_width*pred_height*num_anchors, box_attrs)  # every row is one anchor box
+
+        anchors = [[aa/stride for aa, stride in zip(a, [stride_width, stride_height])] for a in self.anchors]
+
+        a, b = np.meshgrid(np.arange(pred_width), np.arange(pred_height))
+
+        offset = torch.cat((torch.FloatTensor(a).view(-1, 1),
+                            torch.FloatTensor(b).view(-1, 1)), 1).repeat(1, num_anchors).view(-1, 2).unsqueeze(0)
+
+        prediction[:, :, :2] += offset
+
+        # transform the results according to YOLO architecture
+        # x co-ordinate
+        prediction[:, :, 0] = torch.sigmoid(prediction[:, :, 0])
+        # y co-ordinate
+        prediction[:, :, 1] = torch.sigmoid(prediction[:, :, 1])
+        # objectness score
+        prediction[:, :, 4] = torch.sigmoid(prediction[:, :, 4])
+        # classes
+        prediction[:, :, 5:5+num_anchors] = torch.sigmoid((prediction[:, :, 5:5+num_anchors]))
+        # width and height of a box
+        anchors = torch.FloatTensor(anchors).repeat(pred_width*pred_height, 1).unsqueeze(0)
+        prediction[:, :, 2:4] = torch.exp(prediction[:, :, 2:4]) * anchors
+
+        # resize for the input image
+        prediction[:, :, [0, 2]] *= stride_width
+        prediction[:, :, [1, 3]] *= stride_height
+
+        return prediction
