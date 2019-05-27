@@ -6,6 +6,14 @@ from ..data_block import *
 from ..basic_data import *
 from ..layers import *
 from .learner import *
+from ..core import *
+from ..modules.parser import *
+from ..modules.utils import *
+from ..modules.downloader import *
+from ..modules.show import *
+from ..modules.csv_downloader import *
+from ..modules.bounding_boxes import *
+from ..modules.image_level import *
 from torchvision import transforms as tvt
 from . import *
 import os
@@ -15,8 +23,11 @@ import torch
 from torch.utils.data import Dataset, DataLoader
 from torchvision import utils
 from pathlib import Path
+from zipfile import ZipFile
+import urllib.request
+from argparse import Namespace
 
-__all__ = ['load_coco', 'get_image_files', 'denormalize', 'get_annotations', 'ImageDataBunch',
+__all__ = ['COCO_download, 'load_coco', 'get_image_files', 'denormalize', 'get_annotations', 'ImageDataBunch',
            'ImageList', 'normalize', 'normalize_funcs', 'resize_to',
            'channel_view', 'mnist_stats', 'cifar_stats', 'imagenet_stats', 'download_images',
            'verify_images', 'bb_pad_collate', 'ImageImageList', 'PointsLabelList',
@@ -24,7 +35,91 @@ __all__ = ['load_coco', 'get_image_files', 'denormalize', 'get_annotations', 'Im
 
 image_extensions = set(k for k,v in mimetypes.types_map.items() if v.startswith('image/'))
 
-def load_coco(root_dir, train_annot, valid_annot, tfms = [], resize = 608, bunch_size = 4):
+def COCO_download(root_dir = str(os.getcwd()), destiny_folder = "COCO", dataset = None, category = None, annot_link = 'http://images.cocodataset.org/annotations/annotations_trainval2017.zip'):
+    '''
+    Download COCO annotations and image sets, either all or specific classes.
+    Args:
+        root_dir - path where the COCO database will be stored.
+        destiny_folder - name of folder to which download COCO database.
+        dataset - either 'all', 'train', or 'valid' - determines which image set will be downloaded.
+        category - if list of categories provided, only images of those categories will be downloaded.
+        annot_link - URL to COCO annotations.
+    '''
+    os.makedirs(destiny_folder, exist_ok=True)
+    path = root_dir+'/{}'.format(destiny_folder) #go to COCO directory
+    if os.path.isfile('{}/{}'.format(path,annot_link.split('/')[-1])):
+        print('Found annotations zip.')
+        pass
+    elif os.path.isdir('{}/annotations'.format(path)):
+        print('Found annotations folder.')
+        pass
+    else:
+        print('No annotations found, downloading.')
+        urllib.request.urlretrieve(annot_link, '{}/{}'.format(path, annot_link.split('/')[-1]))
+    try:
+        zip_ref = ZipFile('{}/{}'.format(path, annot_link.split('/')[-1]), 'r')
+        zip_ref.extractall(path)
+        zip_ref.close()
+        os.remove('{}/{}'.format(path, annot_link.split('/')[-1]))
+    except FileNotFoundError:
+        pass
+    datasets = make_dataset_dirs(dataset, path)
+    for i in datasets:
+        if i == 'train':
+            with open('{}/{}/annotations/instances_train2017.json'.format(root_dir, destiny_folder), 'r') as file:  
+                annots = json.load(file)
+        else:
+            with open('{}/{}/annotations/instances_val2017.json'.format(root_dir, destiny_folder), 'r') as file:  
+                annots = json.load(file)
+        print('Getting images urls.')
+        images_to_download = get_image_urls_and_names(annots, category)
+        print('Downloading {} {} images to {}. Images in destination folder with same name will NOT be replaced.'.format(len(images_to_download), i, '{}/{}/{}'.format(root_dir, destiny_folder, i)))
+        path = '{}/{}/{}'.format(root_dir, destiny_folder, i)
+        onlyfiles = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
+        for k in onlyfiles: images_to_download.pop(k, None)
+        found_in_folder = len(onlyfiles)
+        for file_name in images_to_download:
+            urllib.request.urlretrieve(images_to_download[file_name], '{}/{}'.format(path, file_name))
+        print('Downloaded {} images, {} images were already in folder.'.format(len(images_to_download), found_in_folder))
+
+def get_image_urls_and_names(annots, category=None):
+    '''
+    Filters loaded JSON COCO annotations and returns dict of image_name:coco_url_to_image.
+    '''
+    categories = {i['id']:i['name'] for i in annots['categories']}
+    images = {i['id']:[i['file_name'], i['coco_url']] for i in annots['images']}
+    annotations = [[i['image_id'], i['category_id']] for i in annots['annotations']]
+    chosen_images = dict()
+    for annotation in annotations:
+        corr_image = images[annotation[0]]
+        if category is not None:
+                if categories[annotation[1]] not in category:
+                    continue
+        chosen_images[corr_image[0]] = corr_image[1]
+    return chosen_images
+
+def make_dataset_dirs(dataset_command, path):
+    """
+    Prepare COCO catalogue structure - make folders if they not exist.
+    """
+    if dataset_command is None:
+        print('No datasets selected.')
+    else:
+        if dataset_command == 'all':
+            os.makedirs('{}/train'.format(path), exist_ok=True)
+            os.makedirs('{}/valid'.format(path), exist_ok=True)
+            return ['train', 'valid']
+        elif dataset_command == 'train':
+            os.makedirs('{}/train'.format(path), exist_ok=True)
+            return ['train']
+        elif dataset_command == 'valid':
+            os.makedirs('{}/valid'.format(path), exist_ok=True)
+            return ['valid']
+        else:
+            print('Invalid dataset - enter either all, train or valid.')
+            return []
+
+def COCO_load(root_dir, train_annot, valid_annot, tfms = [], resize = 608, bunch_size = 4):
     """
     Args:
         root_dir (string): Path to the directory with train and valid folders.
@@ -46,6 +141,16 @@ def load_coco(root_dir, train_annot, valid_annot, tfms = [], resize = 608, bunch
                     .transform(tfms, tfm_y=True, size=resize)
                     .databunch(bs=4, collate_fn=bb_pad_collate))
     return all_objects
+
+def download_open_images(Dataset=None, classes=['Violin'], command='downloader', image_IsDepiction=None, image_IsGroupOf=None, image_IsInside=None, image_IsOccluded=None, image_IsTruncated=None, limit=None, multiclasses='0', n_threads=None, noLabels=False, sub=None, type_csv='validation'):
+    'Wrapper on OID package'
+    ROOT_DIR = ''
+    DEFAULT_OID_DIR = os.path.join(ROOT_DIR, 'data')
+    args = Namespace(Dataset=Dataset, classes=classes, command=command, image_IsDepiction=image_IsDepiction, image_IsGroupOf=image_IsGroupOf, image_IsInside=image_IsInside, image_IsOccluded=image_IsOccluded, image_IsTruncated=image_IsTruncated, limit=limit, multiclasses=multiclasses, n_threads=n_threads, noLabels=noLabels, sub=sub, type_csv=type_csv)
+    if args.command == 'downloader_ill':
+        image_level(args, DEFAULT_OID_DIR)
+    else:
+        bounding_boxes_images(args, DEFAULT_OID_DIR)
 
 def get_image_files(c:PathOrStr, check_ext:bool=True, recurse=False)->FilePathList:
     "Return list of files in `c` that are images. `check_ext` will filter to `image_extensions`."

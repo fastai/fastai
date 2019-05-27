@@ -13,7 +13,6 @@ from urllib.parse import quote
 from bs4 import BeautifulSoup
 import time
 from sys import exit
-from argparse import Namespace
 
 __all__ = ['ImageDownloader', 'download_google_images']
 
@@ -186,13 +185,3 @@ def _download_single_image(label_path:Path, img_tuple:tuple, i:int, timeout:int=
     suffix = suffix[0].lower() if len(suffix)>0  else '.jpg'
     fname = f"{i:08d}{suffix}"
     download_url(img_tuple[1], label_path/fname, timeout=timeout)
-
-def download_open_images(Dataset=None, classes=['Violin'], command='downloader', image_IsDepiction=None, image_IsGroupOf=None, image_IsInside=None, image_IsOccluded=None, image_IsTruncated=None, limit=None, multiclasses='0', n_threads=None, noLabels=False, sub=None, type_csv='validation'):
-    'Wrapper on OID package'
-    ROOT_DIR = ''
-    DEFAULT_OID_DIR = os.path.join(ROOT_DIR, 'data')
-    args = Namespace(Dataset=Dataset, classes=classes, command=command, image_IsDepiction=image_IsDepiction, image_IsGroupOf=image_IsGroupOf, image_IsInside=image_IsInside, image_IsOccluded=image_IsOccluded, image_IsTruncated=image_IsTruncated, limit=limit, multiclasses=multiclasses, n_threads=n_threads, noLabels=noLabels, sub=sub, type_csv=type_csv)
-    if args.command == 'downloader_ill':
-        image_level(args, DEFAULT_OID_DIR)
-    else:
-        bounding_boxes_images(args, DEFAULT_OID_DIR)
