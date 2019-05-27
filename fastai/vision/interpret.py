@@ -75,19 +75,19 @@ class SegmentationInterpretation(Interpretation):
         self.mean_cm = to_np(torch.tensor(mean_confusion).view(self.data.c, self.data.c))
         return self.mean_cm, self.single_img_cm
 
-    def plot_intersect_cm(interp, cm, title="Intersection with Predict given True"):
+    def _plot_intersect_cm(self, cm, title="Intersection with Predict given True"):
         fig,ax=plt.subplots(1,1,figsize=(10,10))
         im=ax.imshow(cm, cmap="Blues")
         ax.set_xlabel("Predicted")
         ax.set_ylabel("True")
         ax.set_title(f"{title}")
-        ax.set_xticks(range(interp.data.c))
-        ax.set_yticks(range(interp.data.c))
-        ax.set_xticklabels(interp.data.classes, rotation='vertical')
-        ax.set_yticklabels(interp.data.classes)
+        ax.set_xticks(range(self.data.c))
+        ax.set_yticks(range(self.data.c))
+        ax.set_xticklabels(self.data.classes, rotation='vertical')
+        ax.set_yticklabels(self.data.classes)
         fig.colorbar(im)
         
-        df = (pd.DataFrame([interp.data.classes, cm.diagonal()], index=['label', 'score'])
+        df = (pd.DataFrame([self.data.classes, cm.diagonal()], index=['label', 'score'])
             .T.sort_values('score', ascending=False))
         with pd.option_context('display.max_colwidth', -1):
             display(HTML(df.to_html(index=False)))
