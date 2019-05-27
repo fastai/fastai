@@ -109,4 +109,4 @@ class MultiLabelClassificationInterpretation(Interpretation):
                      sigmoid:bool=True, thresh:float=0.3):
         raise NotImplementedError
         super(MultiLabelClassificationInterpretation, self).__init__(learn,probs,y_true,losses,ds_type)
-        self.pred_class = self.probs.sigmoid(dim=1)>thresh if sigmoid else self.probs>thresh
+        self.pred_class = self.preds.sigmoid(dim=1)>thresh if sigmoid else self.preds>thresh

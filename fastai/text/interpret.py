@@ -58,7 +58,7 @@ class TextClassificationInterpretation(ClassificationInterpretation):
             classes = self.data.classes
             txt = ' '.join(tx.text.split(' ')[:max_len]) if max_len is not None else tx.text
             tmp = [txt, f'{classes[self.pred_class[idx]]}', f'{classes[cl]}', f'{self.losses[idx]:.2f}',
-                   f'{self.probs[idx][cl]:.2f}']
+                   f'{self.preds[idx][cl]:.2f}']
             items.append(tmp)
         items = np.array(items)
         names = ['Text', 'Prediction', 'Actual', 'Loss', 'Probability']
