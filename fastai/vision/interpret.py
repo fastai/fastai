@@ -76,6 +76,7 @@ class SegmentationInterpretation(Interpretation):
         return self.mean_cm, self.single_img_cm
 
     def _plot_intersect_cm(self, cm, title="Intersection with Predict given True"):
+        from IPython.display import display, HTML
         fig,ax=plt.subplots(1,1,figsize=(10,10))
         im=ax.imshow(cm, cmap="Blues")
         ax.set_xlabel("Predicted")
