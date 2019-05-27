@@ -238,7 +238,7 @@ class ImageSegment(Image):
         cmap:str='tab20', alpha:float=0.5, **kwargs):
         "Show the `ImageSegment` on `ax`."
         ax = show_image(self, ax=ax, hide_axis=hide_axis, cmap=cmap, figsize=figsize,
-                        interpolation='nearest', alpha=alpha, vmin=0)
+                        interpolation='nearest', alpha=alpha, vmin=0, **kwargs)
         if title: ax.set_title(title)
 
     def reconstruct(self, t:Tensor): return ImageSegment(t)

@@ -7,8 +7,10 @@ from utils.text import CaptureStdout
 
 p1 = torch.Tensor([0,1,0,0,0]).expand(5,-1)
 p2 = torch.Tensor([[0,0,0,0,0],[0,1,0,0,0]]).expand(5,2,-1).float()
+p3 = torch.Tensor([[0,0,0,0,0],[0,0,0,0,0]]).expand(5,2,-1).float()
 t1 = torch.arange(5)
 t2 = torch.Tensor([1,1,1,1,0]).expand(5,-1)
+t3 = torch.Tensor([0,0,0,0,0]).expand(5,-1)
 
 # Test data for multi-class single-label sequential models (like language models)
 # batch size: 5, sequence length: 4, classes: 4
@@ -107,14 +109,15 @@ def test_dice(p, t, expect):
     this_tests(dice)
     assert np.isclose(dice(p, t.long()).item(), expect)
 
-@pytest.mark.parametrize("p, t, expect", [
-    (p2, t2, 0.238095),
-    (p2, torch.eye(5,5), 0.1),
-    (p2, torch.zeros(5,5), 0),
+@pytest.mark.parametrize("p, t, expect, atol", [
+    (p2, t2, 0.25, 0.),
+    (p3, t3, 1.0, 0.),
+    (p2, torch.eye(5,5), 0.111, 1e-3),
+    (p2, torch.zeros(5,5), 0, 0.),
 ])
-def test_dice_iou(p, t, expect):
+def test_dice_iou(p, t, expect, atol):
     this_tests(dice)
-    assert np.isclose(dice(p, t.long(), iou=True).item(), expect)
+    assert np.isclose(dice(p, t.long(), iou=True).item(), expect, atol=atol)
 
 @pytest.mark.parametrize("p, t, expect", [
     (torch.ones(1,10), torch.ones(1,10), 1),

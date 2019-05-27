@@ -50,7 +50,7 @@ def error_rate(input:Tensor, targs:Tensor)->Rank0Tensor:
     "1 - `accuracy`"
     return 1 - accuracy(input, targs)
 
-def dice(input:Tensor, targs:Tensor, iou:bool=False)->Rank0Tensor:
+def dice(input:Tensor, targs:Tensor, iou:bool=False, eps:float=1e-8)->Rank0Tensor:
     "Dice coefficient metric for binary target. If iou=True, returns iou metric, classic for segmentation problems."
     n = targs.shape[0]
     input = input.argmax(dim=1).view(n,-1)
@@ -58,7 +58,7 @@ def dice(input:Tensor, targs:Tensor, iou:bool=False)->Rank0Tensor:
     intersect = (input * targs).sum().float()
     union = (input+targs).sum().float()
     if not iou: return (2. * intersect / union if union > 0 else union.new([1.]).squeeze())
-    else: return intersect / (union-intersect+1.0)
+    else: return (intersect / (union-intersect+eps) if union > 0 else union.new([1.]).squeeze())
 
 def exp_rmspe(pred:Tensor, targ:Tensor)->Rank0Tensor:
     "Exp RMSE between `pred` and `targ`."
