@@ -64,6 +64,7 @@ class SegmentationInterpretation(Interpretation):
             true_binary = self.y_true.squeeze(1) == c_j
             total_true = true_binary.view(n,-1).sum(dim=1).float()
             for c_i in range(self.data.c):
+                n =  self.pred_class.shape[0]
                 pred_binary = self.pred_class == c_i
                 total_intersect = (true_binary*pred_binary).view(n,-1).sum(dim=1).float()
                 p_given_t = (total_intersect / (total_true))
