@@ -9,10 +9,10 @@ __all__ = ['SegmentationInterpretation', 'ObjectDetectionInterpretation', 'Multi
 
 class SegmentationInterpretation(Interpretation):
     "Interpretation methods for classification models."
-    def __init__(self, learn:Learner, preds:Tensor, y_true:Tensor, losses:Tensor,
+    def __init__(self, learn:Learner, probs:Tensor, y_true:Tensor, losses:Tensor,
                  ds_type:DatasetType=DatasetType.Valid):
-        super(SegmentationInterpretation, self).__init__(learn,preds,y_true,losses,ds_type)
-        self.pred_class = self.preds.argmax(dim=1)
+        super(SegmentationInterpretation, self).__init__(learn,probs,y_true,losses,ds_type)
+        self.pred_class = self.probs.argmax(dim=1)
         self.c2i = {c:i for i,c in enumerate(self.data.classes)}
         self.i2c = {i:c for c,i in self.c2i.items()}
     
@@ -98,15 +98,15 @@ class SegmentationInterpretation(Interpretation):
 
 class ObjectDetectionInterpretation(Interpretation):
     "Interpretation methods for classification models."
-    def __init__(self, learn:Learner, preds:Tensor, y_true:Tensor, losses:Tensor, ds_type:DatasetType=DatasetType.Valid):
+    def __init__(self, learn:Learner, probs:Tensor, y_true:Tensor, losses:Tensor, ds_type:DatasetType=DatasetType.Valid):
         raise NotImplementedError
-        super(ObjectDetectionInterpretation, self).__init__(learn,preds,y_true,losses,ds_type)
+        super(ObjectDetectionInterpretation, self).__init__(learn,probs,y_true,losses,ds_type)
         
 
 class MultiLabelClassificationInterpretation(Interpretation):
     "Interpretation methods for classification models."
-    def __init__(self, learn:Learner, preds:Tensor, y_true:Tensor, losses:Tensor, ds_type:DatasetType=DatasetType.Valid,
+    def __init__(self, learn:Learner, probs:Tensor, y_true:Tensor, losses:Tensor, ds_type:DatasetType=DatasetType.Valid,
                      sigmoid:bool=True, thresh:float=0.3):
         raise NotImplementedError
-        super(MultiLabelClassificationInterpretation, self).__init__(learn,preds,y_true,losses,ds_type)
-        self.pred_class = self.preds.sigmoid(dim=1)>thresh if sigmoid else self.preds>thresh
+        super(MultiLabelClassificationInterpretation, self).__init__(learn,probs,y_true,losses,ds_type)
+        self.pred_class = self.probs.sigmoid(dim=1)>thresh if sigmoid else self.probs>thresh
