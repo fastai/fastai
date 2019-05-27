@@ -56,6 +56,43 @@ class SegmentationInterpretation(Interpretation):
         self._interp_show(ImageSegment(self.y_true[i]), classes, sz=sz, title_suffix='true')
         self._interp_show(ImageSegment(self.pred_class[i][None,:]), classes, sz=sz, title_suffix='pred')
 
+    def _generate_confusion(self):
+        "Average and Per Image Confusion: intersection of pixels given a true label, true label sums to 1"
+        single_img_confusion = []
+        mean_confusion = []
+        for c_j in range(self.data.c):
+            true_binary = self.y_true.squeeze(1) == c_j
+            total_true = true_binary.view(n,-1).sum(dim=1).float()
+            for c_i in range(self.data.c):
+                pred_binary = self.pred_class == c_i
+                total_intersect = (true_binary*pred_binary).view(n,-1).sum(dim=1).float()
+                p_given_t = (total_intersect / (total_true))
+                p_given_t_mean = p_given_t[~torch.isnan(p_given_t)].mean()
+                single_img_confusion.append(p_given_t)
+                mean_confusion.append(p_given_t_mean)
+        self.single_img_cm = to_np(torch.stack(single_img_confusion).permute(1,0).view(-1, self.data.c, self.data.c))
+        self.mean_cm = to_np(torch.tensor(mean_confusion).view(self.data.c, self.data.c))
+        return self.mean_cm, self.single_img_cm
+
+    def plot_intersect_cm(interp, cm, title="Intersection with Predict given True"):
+        fig,ax=plt.subplots(1,1,figsize=(10,10))
+        im=ax.imshow(cm, cmap="Blues")
+        ax.set_xlabel("Predicted")
+        ax.set_ylabel("True")
+        ax.set_title(f"{title}")
+        ax.set_xticks(range(interp.data.c))
+        ax.set_yticks(range(interp.data.c))
+        ax.set_xticklabels(interp.data.classes, rotation='vertical')
+        ax.set_yticklabels(interp.data.classes)
+        fig.colorbar(im)
+        
+        df = (pd.DataFrame([interp.data.classes, cm.diagonal()], index=['label', 'score'])
+            .T.sort_values('score', ascending=False))
+        with pd.option_context('display.max_colwidth', -1):
+            display(HTML(df.to_html(index=False)))
+        return df
+
+
 
 class ObjectDetectionInterpretation(Interpretation):
     "Interpretation methods for classification models."
