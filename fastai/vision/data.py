@@ -27,7 +27,7 @@ from zipfile import ZipFile
 import urllib.request
 from argparse import Namespace
 
-__all__ = ['COCO_download, 'load_coco', 'get_image_files', 'denormalize', 'get_annotations', 'ImageDataBunch',
+__all__ = ['COCO_download, 'COCO_load', 'get_image_files', 'denormalize', 'get_annotations', 'ImageDataBunch',
            'ImageList', 'normalize', 'normalize_funcs', 'resize_to',
            'channel_view', 'mnist_stats', 'cifar_stats', 'imagenet_stats', 'download_images',
            'verify_images', 'bb_pad_collate', 'ImageImageList', 'PointsLabelList',
@@ -45,8 +45,8 @@ def COCO_download(root_dir = str(os.getcwd()), destiny_folder = "COCO", dataset 
         category - if list of categories provided, only images of those categories will be downloaded.
         annot_link - URL to COCO annotations.
     '''
-    os.makedirs(destiny_folder, exist_ok=True)
-    path = root_dir+'/{}'.format(destiny_folder) #go to COCO directory
+    os.makedirs('{}/{}'.format(root_dir,destiny_folder), exist_ok=True)
+    path = '{}/{}'.format(root_dir, destiny_folder) #go to COCO directory
     if os.path.isfile('{}/{}'.format(path,annot_link.split('/')[-1])):
         print('Found annotations zip.')
         pass
