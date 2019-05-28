@@ -67,22 +67,34 @@ def COCO_download(root_dir = str(os.getcwd()), destiny_folder = "COCO", dataset 
     datasets = make_dataset_dirs(dataset, path)
     for i in datasets:
         if i == 'train':
-            with open('{}/{}/annotations/instances_train2017.json'.format(root_dir, destiny_folder), 'r') as file:  
+            path2 = '{}/annotations'.format(path)
+            for i2 in os.listdir(path2):
+                if os.path.isfile(os.path.join(path2,i2)) and 'instances_train' in i2:
+                    train_annot = '{}/{}'.format(path2, i2)
+                    print('Found train annotations in {}'.format(train_annot))
+                    break
+            with open(train_annot, 'r') as file:  
                 annots = json.load(file)
             random_sample = random_train
         else:
-            with open('{}/{}/annotations/instances_val2017.json'.format(root_dir, destiny_folder), 'r') as file:  
+            path2 = '{}/annotations'.format(path)
+            for i2 in os.listdir(path2):
+                if os.path.isfile(os.path.join(path2,i2)) and 'instances_val' in i2:
+                    val_annots = '{}/{}'.format(path2, i2)
+                    print('Found validation annotations in {}'.format(val_annots))
+                    break
+            with open(val_annots, 'r') as file:  
                 annots = json.load(file)
             random_sample = random_valid
         print('Getting images urls.')
         images_to_download = get_image_urls_and_names(annots, random_sample, category)
         print('Downloading {} {} images to {}. Images in destination folder with same name will NOT be replaced.'.format(len(images_to_download), i, '{}/{}/{}'.format(root_dir, destiny_folder, i)))
-        path = '{}/{}/{}'.format(root_dir, destiny_folder, i)
-        onlyfiles = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
+        path3 = '{}/{}/{}'.format(root_dir, destiny_folder, i)
+        onlyfiles = [f for f in os.listdir(path3) if os.path.isfile(os.path.join(path3, f))]
         for k in onlyfiles: images_to_download.pop(k, None)
         found_in_folder = len(onlyfiles)
         for file_name in images_to_download:
-            urllib.request.urlretrieve(images_to_download[file_name], '{}/{}'.format(path, file_name))
+            urllib.request.urlretrieve(images_to_download[file_name], '{}/{}'.format(path3, file_name))
         print('Downloaded {} images, {} images were already in folder.'.format(len(images_to_download), found_in_folder))
 
 def get_image_urls_and_names(annots, random_sample, category=None):
@@ -125,7 +137,7 @@ def make_dataset_dirs(dataset_command, path):
             print('Invalid dataset - enter either all, train or valid.')
             return []
 
-def COCO_load(root_dir, train_annot, valid_annot, tfms = [], resize = 608, bunch_size = 4, num_workers = 2):
+def COCO_load(root_dir, train_annot = False, valid_annot = False, tfms = [], resize = 608, bunch_size = 4):
     """
     Args:
         root_dir (string): Path to the directory with train and valid folders.
@@ -134,8 +146,19 @@ def COCO_load(root_dir, train_annot, valid_annot, tfms = [], resize = 608, bunch
         tfms (get_transforms() function): Optional transformations to be applied to images.
         resize (int): Size to which all images will be resized. Also resizes bounding boxes.
         bunch_size (int): How many images we load and use at once.
-	num_workers  (int): How many workers provide for databunch (more workers = more power will be used).
     """
+    if not train_annot:
+        path = '{}/annotations'.format(root_dir)
+        for i in os.listdir(path):
+            if os.path.isfile(os.path.join(path,i)) and 'instances_train' in i:
+                train_annot = '{}/{}'.format(path, i)
+                print('Found train annotations in {}'.format(train_annot))
+    if not valid_annot:
+        path = '{}/annotations/'.format(root_dir)
+        for i in os.listdir(path):
+            if os.path.isfile(os.path.join(path,i)) and 'instances_val' in i:
+                valid_annot = '{}/{}'.format(path, i)
+                print('Found validation annotations in {}'.format(valid_annot))
     coco_train = COCODataset(train_annot)
     coco_valid = COCODataset(valid_annot)
     
@@ -146,7 +169,7 @@ def COCO_load(root_dir, train_annot, valid_annot, tfms = [], resize = 608, bunch
     all_objects = (ObjectItemList.from_folder(root_dir).split_by_folder()
                     .label_from_func(get_y_func)
                     .transform(tfms, tfm_y=True, size=resize)
-                    .databunch(bs=4, collate_fn=bb_pad_collate, num_workers=num_workers ))
+                    .databunch(bs=4, collate_fn=bb_pad_collate))
     return all_objects
 
 def download_open_images(Dataset=None, classes=['Violin'], command='downloader', image_IsDepiction=None, image_IsGroupOf=None, image_IsInside=None, image_IsOccluded=None, image_IsTruncated=None, limit=None, multiclasses='0', n_threads=None, noLabels=False, sub=None, type_csv='validation'):
