@@ -9,19 +9,19 @@
     "fastai.basic_data.DataBunch.create": [
         {
             "file": "tests/test_basic_data.py",
-            "line": 30,
+            "line": 31,
             "test": "test_DataBunch_Create"
         },
         {
             "file": "tests/test_basic_data.py",
-            "line": 44,
+            "line": 45,
             "test": "test_DataBunch_no_valid_dl"
         }
     ],
     "fastai.basic_data.DataBunch.one_batch": [
         {
             "file": "tests/test_basic_data.py",
-            "line": 58,
+            "line": 59,
             "test": "test_DataBunch_onebatch"
         },
         {
@@ -41,35 +41,35 @@
         },
         {
             "file": "tests/test_basic_data.py",
-            "line": 83,
+            "line": 84,
             "test": "test_DataBunch_save_load"
         }
     ],
     "fastai.basic_data.DataBunch.one_item": [
         {
             "file": "tests/test_basic_data.py",
-            "line": 67,
+            "line": 68,
             "test": "test_DataBunch_oneitem"
         }
     ],
     "fastai.basic_data.DataBunch.save": [
         {
             "file": "tests/test_basic_data.py",
-            "line": 83,
+            "line": 84,
             "test": "test_DataBunch_save_load"
         }
     ],
     "fastai.basic_data.DataBunch.show_batch": [
         {
             "file": "tests/test_basic_data.py",
-            "line": 75,
+            "line": 76,
             "test": "test_DataBunch_show_batch"
         }
     ],
     "fastai.basic_data.intercept_args": [
         {
             "file": "tests/test_basic_data.py",
-            "line": 18,
+            "line": 19,
             "test": "test_intercept_args"
         }
     ],
@@ -81,7 +81,7 @@
         },
         {
             "file": "tests/test_basic_data.py",
-            "line": 83,
+            "line": 84,
             "test": "test_DataBunch_save_load"
         }
     ],
@@ -233,7 +233,7 @@
     "fastai.callback.AverageMetric": [
         {
             "file": "tests/test_metrics.py",
-            "line": 199,
+            "line": 202,
             "test": "test_average_metric_naming"
         }
     ],
@@ -729,7 +729,7 @@
     "fastai.metrics.accuracy": [
         {
             "file": "tests/test_metrics.py",
-            "line": 42,
+            "line": 44,
             "test": "test_accuracy"
         },
         {
@@ -741,26 +741,26 @@
     "fastai.metrics.accuracy_thresh": [
         {
             "file": "tests/test_metrics.py",
-            "line": 97,
+            "line": 99,
             "test": "test_accuracy_thresh"
         }
     ],
     "fastai.metrics.dice": [
         {
             "file": "tests/test_metrics.py",
-            "line": 106,
+            "line": 108,
             "test": "test_dice"
         },
         {
             "file": "tests/test_metrics.py",
-            "line": 115,
+            "line": 118,
             "test": "test_dice_iou"
         }
     ],
     "fastai.metrics.error_rate": [
         {
             "file": "tests/test_metrics.py",
-            "line": 84,
+            "line": 86,
             "test": "test_error_rate"
         },
         {
@@ -772,68 +772,68 @@
     "fastai.metrics.exp_rmspe": [
         {
             "file": "tests/test_metrics.py",
-            "line": 88,
+            "line": 90,
             "test": "test_exp_rmspe"
         },
         {
             "file": "tests/test_metrics.py",
-            "line": 92,
+            "line": 94,
             "test": "test_exp_rmspe_num_of_ele"
         }
     ],
     "fastai.metrics.explained_variance": [
         {
             "file": "tests/test_metrics.py",
-            "line": 171,
+            "line": 174,
             "test": "test_explained_variance"
         }
     ],
     "fastai.metrics.fbeta": [
         {
             "file": "tests/test_metrics.py",
-            "line": 123,
+            "line": 126,
             "test": "test_fbeta"
         }
     ],
     "fastai.metrics.foreground_acc": [
         {
             "file": "tests/test_metrics.py",
-            "line": 76,
+            "line": 78,
             "test": "test_foreground_acc"
         }
     ],
     "fastai.metrics.mean_absolute_error": [
         {
             "file": "tests/test_metrics.py",
-            "line": 132,
+            "line": 135,
             "test": "test_mae"
         }
     ],
     "fastai.metrics.mean_squared_error": [
         {
             "file": "tests/test_metrics.py",
-            "line": 141,
+            "line": 144,
             "test": "test_mse"
         }
     ],
     "fastai.metrics.mean_squared_logarithmic_error": [
         {
             "file": "tests/test_metrics.py",
-            "line": 160,
+            "line": 163,
             "test": "test_msle"
         }
     ],
     "fastai.metrics.root_mean_squared_error": [
         {
             "file": "tests/test_metrics.py",
-            "line": 150,
+            "line": 153,
             "test": "test_rmse"
         }
     ],
     "fastai.metrics.top_k_accuracy": [
         {
             "file": "tests/test_metrics.py",
-            "line": 67,
+            "line": 69,
             "test": "test_top_k_accuracy"
         }
     ],

@@ -2,16 +2,43 @@ from ..torch_core import *
 from ..basic_data import *
 from ..basic_train import *
 from ..train import ClassificationInterpretation
+import matplotlib.cm as cm
 
 __all__ = ['TextClassificationInterpretation']
 
+def value2rgba(x:float, cmap:Callable=cm.RdYlGn, alpha_mult:float=1.0)->Tuple:
+    "Convert a value `x` from 0 to 1 (inclusive) to an RGBA tuple according to `cmap` times transparency `alpha_mult`."
+    c = cmap(x)
+    rgb = (np.array(c[:-1]) * 255).astype(int)
+    a = c[-1] * alpha_mult
+    return tuple(rgb.tolist() + [a])
+
+def piece_attn_html(pieces:List[str], attns:List[float], sep:str=' ', **kwargs)->str:
+    html_code,spans = ['<span style="font-family: monospace;">'], []
+    for p, a in zip(pieces, attns):
+        p = html.escape(p)
+        c = str(value2rgba(a, alpha_mult=0.5, **kwargs))
+        spans.append(f'<span title="{a:.3f}" style="background-color: rgba{c};">{p}</span>')
+    html_code.append(sep.join(spans))
+    html_code.append('</span>')
+    return ''.join(html_code)
+
+def show_piece_attn(*args, **kwargs):
+    from IPython.display import display, HTML
+    display(HTML(piece_attn_html(*args, **kwargs)))
+
+def _eval_dropouts(mod):
+        module_name =  mod.__class__.__name__
+        if 'Dropout' in module_name or 'BatchNorm' in module_name: mod.training = False
+        for module in mod.children(): _eval_dropouts(module)
+            
 class TextClassificationInterpretation(ClassificationInterpretation):
     """Provides an interpretation of classification based on input sensitivity.
     This was designed for AWD-LSTM only for the moment, because Transformer already has its own attentional model.
     """
 
-    def __init__(self, learn: Learner, probs: Tensor, y_true: Tensor, losses: Tensor, ds_type: DatasetType = DatasetType.Valid):
-        super(TextClassificationInterpretation, self).__init__(learn,probs,y_true,losses,ds_type)
+    def __init__(self, learn: Learner, preds: Tensor, y_true: Tensor, losses: Tensor, ds_type: DatasetType = DatasetType.Valid):
+        super(TextClassificationInterpretation, self).__init__(learn,preds,y_true,losses,ds_type)
         self.model = learn.model
 
     def intrinsic_attention(self, text:str, class_id:int=None):
@@ -58,7 +85,7 @@ class TextClassificationInterpretation(ClassificationInterpretation):
             classes = self.data.classes
             txt = ' '.join(tx.text.split(' ')[:max_len]) if max_len is not None else tx.text
             tmp = [txt, f'{classes[self.pred_class[idx]]}', f'{classes[cl]}', f'{self.losses[idx]:.2f}',
-                   f'{self.probs[idx][cl]:.2f}']
+                   f'{self.preds[idx][cl]:.2f}']
             items.append(tmp)
         items = np.array(items)
         names = ['Text', 'Prediction', 'Actual', 'Loss', 'Probability']

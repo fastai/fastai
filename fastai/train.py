@@ -4,8 +4,8 @@ from .callbacks import *
 from .basic_data import *
 from .basic_train import *
 
-__all__ = ['BnFreeze', 'GradientClipping', 'ShowGraph', 'Interpretation', 'ClassificationInterpretation', 'fit_one_cycle', 'lr_find', 
-           'one_cycle_scheduler', 'to_fp16', 'to_fp32', 'mixup', 'AccumulateScheduler']
+__all__ = ['BnFreeze', 'GradientClipping', 'ShowGraph', 'Interpretation', 'ClassificationInterpretation', 'MultiLabelClassificationInterpretation',
+ 'fit_one_cycle', 'lr_find', 'one_cycle_scheduler', 'to_fp16', 'to_fp32', 'mixup', 'AccumulateScheduler']
 
 def one_cycle_scheduler(lr_max:float, **kwargs:Any)->OneCycleScheduler:
     "Instantiate a `OneCycleScheduler` with `lr_max`."
@@ -134,10 +134,10 @@ class AccumulateScheduler(LearnerCallback):
 
 
 class Interpretation():
-    "Interpretation base class"
-    def __init__(self, learn:Learner, probs:Tensor, y_true:Tensor, losses:Tensor, ds_type:DatasetType=DatasetType.Valid):
-        self.data,self.probs,self.y_true,self.losses,self.ds_type, self.learn = \
-                                 learn.data,probs,y_true,losses,ds_type,learn
+    "Interpretation base class, can be inherited for task specific Interpretation classes"
+    def __init__(self, learn:Learner, preds:Tensor, y_true:Tensor, losses:Tensor, ds_type:DatasetType=DatasetType.Valid):
+        self.data,self.preds,self.y_true,self.losses,self.ds_type, self.learn = \
+                                 learn.data,preds,y_true,losses,ds_type,learn
         self.ds = (self.data.train_ds if ds_type == DatasetType.Train else
                    self.data.test_ds if ds_type == DatasetType.Test else
                    self.data.valid_ds if ds_type == DatasetType.Valid else
@@ -146,7 +146,7 @@ class Interpretation():
 
     @classmethod
     def from_learner(cls, learn: Learner,  ds_type:DatasetType=DatasetType.Valid):
-        "Gets preds, y_true, losses to construct base class"
+        "Gets preds, y_true, losses to construct base class from a learner"
         preds_res = learn.get_preds(ds_type=ds_type, with_loss=True)
         return cls(learn, *preds_res)
 
@@ -156,15 +156,15 @@ class Interpretation():
 
     # def top_scores(self, metric:Callable=None, k:int=None, largest=True):
     #     "`k` largest(/smallest) metric scores and indexes, defaulting to all scores (sorted by `largest`)."
-    #     self.scores = metric(self.probs, self.y_true) 
+    #     self.scores = metric(self.preds, self.y_true) 
     #     return self.scores.topk(ifnone(k, len(self.scores)), largest=largest)
 
 
 class ClassificationInterpretation(Interpretation):
     "Interpretation methods for classification models."
-    def __init__(self, learn:Learner, probs:Tensor, y_true:Tensor, losses:Tensor, ds_type:DatasetType=DatasetType.Valid):
-        super(ClassificationInterpretation, self).__init__(learn,probs,y_true,losses,ds_type)
-        self.pred_class = self.probs.argmax(dim=1)
+    def __init__(self, learn:Learner, preds:Tensor, y_true:Tensor, losses:Tensor, ds_type:DatasetType=DatasetType.Valid):
+        super(ClassificationInterpretation, self).__init__(learn,preds,y_true,losses,ds_type)
+        self.pred_class = self.preds.argmax(dim=1)
 
     def confusion_matrix(self, slice_size:int=1):
         "Confusion matrix as an `np.ndarray`."
@@ -216,3 +216,11 @@ def _learner_interpret(learn:Learner, ds_type:DatasetType=DatasetType.Valid):
     "Create a `ClassificationInterpretation` object from `learner` on `ds_type` with `tta`."
     return ClassificationInterpretation.from_learner(learn, ds_type=ds_type)
 Learner.interpret = _learner_interpret
+
+class MultiLabelClassificationInterpretation(Interpretation):
+    "Interpretation methods for classification models."
+    def __init__(self, learn:Learner, preds:Tensor, y_true:Tensor, losses:Tensor, ds_type:DatasetType=DatasetType.Valid,
+                     sigmoid:bool=True, thresh:float=0.3):
+        raise NotImplementedError
+        super(MultiLabelClassificationInterpretation, self).__init__(learn,preds,y_true,losses,ds_type)
+        self.pred_class = self.preds.sigmoid(dim=1)>thresh if sigmoid else self.preds>thresh
