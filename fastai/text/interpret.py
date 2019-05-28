@@ -1,17 +1,36 @@
-from ..torch_core import *
+rfrom ..torch_core import *
 from ..basic_data import *
 from ..basic_train import *
 from ..train import ClassificationInterpretation
 
 __all__ = ['TextClassificationInterpretation']
 
+def piece_attn_html(pieces:List[str], attns:List[float], sep:str=' ', **kwargs)->str:
+    html_code,spans = ['<span style="font-family: monospace;">'], []
+    for p, a in zip(pieces, attns):
+        p = html.escape(p)
+        c = str(value2rgba(a, alpha_mult=0.5, **kwargs))
+        spans.append(f'<span title="{a:.3f}" style="background-color: rgba{c};">{p}</span>')
+    html_code.append(sep.join(spans))
+    html_code.append('</span>')
+    return ''.join(html_code)
+
+def show_piece_attn(*args, **kwargs):
+    from IPython.display import display, HTML
+    display(HTML(piece_attn_html(*args, **kwargs)))
+
+def _eval_dropouts(mod):
+        module_name =  mod.__class__.__name__
+        if 'Dropout' in module_name or 'BatchNorm' in module_name: mod.training = False
+        for module in mod.children(): _eval_dropouts(module)
+            
 class TextClassificationInterpretation(ClassificationInterpretation):
     """Provides an interpretation of classification based on input sensitivity.
     This was designed for AWD-LSTM only for the moment, because Transformer already has its own attentional model.
     """
 
-    def __init__(self, learn: Learner, probs: Tensor, y_true: Tensor, losses: Tensor, ds_type: DatasetType = DatasetType.Valid):
-        super(TextClassificationInterpretation, self).__init__(learn,probs,y_true,losses,ds_type)
+    def __init__(self, learn: Learner, preds: Tensor, y_true: Tensor, losses: Tensor, ds_type: DatasetType = DatasetType.Valid):
+        super(TextClassificationInterpretation, self).__init__(learn,preds,y_true,losses,ds_type)
         self.model = learn.model
 
     def intrinsic_attention(self, text:str, class_id:int=None):
