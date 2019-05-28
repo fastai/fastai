@@ -98,6 +98,9 @@ entries:
           title: vision.learner
           url: /vision.learner.html
         - output: web,pdf
+          title: vision.interpret
+          url: /vision.interpret.html
+        - output: web,pdf
           title: vision.transform
           url: /vision.transform.html
         - output: web,pdf
@@ -127,6 +130,9 @@ entries:
         - output: web,pdf
           title: text.learner
           url: /text.learner.html
+        - output: web,pdf
+          title: text.interpret
+          url: /text.interpret.html
         - output: web,pdf
           title: text.transform
           url: /text.transform.html
