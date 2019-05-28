@@ -51,7 +51,7 @@ class SegmentationInterpretation(Interpretation):
             axes[1].set_title(f"{title_suffix}_labels")
 
     def show_xyz(self, i, classes:list=None, sz=10):
-        'show (image, true and pred) from self.ds with color mappings, optionally only plot classes'
+        'show (image, true and pred) from self.ds with color mappings, optionally only plot'
         x,y = self.ds[i]
         self.ds.show_xys([x],[y], figsize=(sz/2,sz/2))
         self._interp_show(ImageSegment(self.y_true[i]), classes, sz=sz, title_suffix='true')
