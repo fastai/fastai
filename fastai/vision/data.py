@@ -26,8 +26,9 @@ from pathlib import Path
 from zipfile import ZipFile
 import urllib.request
 from argparse import Namespace
+import random
 
-__all__ = ['COCO_download, 'load_coco', 'get_image_files', 'denormalize', 'get_annotations', 'ImageDataBunch',
+__all__ = ['COCO_download, 'COCO_load', 'get_image_files', 'denormalize', 'get_annotations', 'ImageDataBunch',
            'ImageList', 'normalize', 'normalize_funcs', 'resize_to',
            'channel_view', 'mnist_stats', 'cifar_stats', 'imagenet_stats', 'download_images',
            'verify_images', 'bb_pad_collate', 'ImageImageList', 'PointsLabelList',
@@ -35,7 +36,7 @@ __all__ = ['COCO_download, 'load_coco', 'get_image_files', 'denormalize', 'get_a
 
 image_extensions = set(k for k,v in mimetypes.types_map.items() if v.startswith('image/'))
 
-def COCO_download(root_dir = str(os.getcwd()), destiny_folder = "COCO", dataset = None, category = None, annot_link = 'http://images.cocodataset.org/annotations/annotations_trainval2017.zip'):
+def COCO_download(root_dir = str(os.getcwd()), destiny_folder = "COCO", dataset = None, category = None, random_train = None, random_valid = None, annot_link = 'http://images.cocodataset.org/annotations/annotations_trainval2017.zip'):
     '''
     Download COCO annotations and image sets, either all or specific classes.
     Args:
@@ -45,8 +46,8 @@ def COCO_download(root_dir = str(os.getcwd()), destiny_folder = "COCO", dataset 
         category - if list of categories provided, only images of those categories will be downloaded.
         annot_link - URL to COCO annotations.
     '''
-    os.makedirs(destiny_folder, exist_ok=True)
-    path = root_dir+'/{}'.format(destiny_folder) #go to COCO directory
+    os.makedirs('{}/{}'.format(root_dir,destiny_folder), exist_ok=True)
+    path = '{}/{}'.format(root_dir, destiny_folder) #go to COCO directory
     if os.path.isfile('{}/{}'.format(path,annot_link.split('/')[-1])):
         print('Found annotations zip.')
         pass
@@ -68,11 +69,13 @@ def COCO_download(root_dir = str(os.getcwd()), destiny_folder = "COCO", dataset 
         if i == 'train':
             with open('{}/{}/annotations/instances_train2017.json'.format(root_dir, destiny_folder), 'r') as file:  
                 annots = json.load(file)
+            random_sample = random_train
         else:
             with open('{}/{}/annotations/instances_val2017.json'.format(root_dir, destiny_folder), 'r') as file:  
                 annots = json.load(file)
+            random_sample = random_valid
         print('Getting images urls.')
-        images_to_download = get_image_urls_and_names(annots, category)
+        images_to_download = get_image_urls_and_names(annots, random_sample, category)
         print('Downloading {} {} images to {}. Images in destination folder with same name will NOT be replaced.'.format(len(images_to_download), i, '{}/{}/{}'.format(root_dir, destiny_folder, i)))
         path = '{}/{}/{}'.format(root_dir, destiny_folder, i)
         onlyfiles = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
@@ -82,7 +85,7 @@ def COCO_download(root_dir = str(os.getcwd()), destiny_folder = "COCO", dataset 
             urllib.request.urlretrieve(images_to_download[file_name], '{}/{}'.format(path, file_name))
         print('Downloaded {} images, {} images were already in folder.'.format(len(images_to_download), found_in_folder))
 
-def get_image_urls_and_names(annots, category=None):
+def get_image_urls_and_names(annots, random_sample, category=None):
     '''
     Filters loaded JSON COCO annotations and returns dict of image_name:coco_url_to_image.
     '''
@@ -96,6 +99,9 @@ def get_image_urls_and_names(annots, category=None):
                 if categories[annotation[1]] not in category:
                     continue
         chosen_images[corr_image[0]] = corr_image[1]
+    if random_sample:
+        if random_sample <= len(chosen_images):
+            chosen_images = dict(random.sample(chosen_images.items(), random_sample))
     return chosen_images
 
 def make_dataset_dirs(dataset_command, path):
@@ -640,4 +646,3 @@ LabelLists.pre_transform = _ll_pre_transform
 DataBunch.pre_transform = _db_pre_transform
 LabelLists.presize = _presize
 DataBunch.presize = _presize
-
