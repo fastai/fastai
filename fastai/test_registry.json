@@ -9,19 +9,19 @@
     "fastai.basic_data.DataBunch.create": [
         {
             "file": "tests/test_basic_data.py",
-            "line": 30,
+            "line": 31,
             "test": "test_DataBunch_Create"
         },
         {
             "file": "tests/test_basic_data.py",
-            "line": 44,
+            "line": 45,
             "test": "test_DataBunch_no_valid_dl"
         }
     ],
     "fastai.basic_data.DataBunch.one_batch": [
         {
             "file": "tests/test_basic_data.py",
-            "line": 58,
+            "line": 59,
             "test": "test_DataBunch_onebatch"
         },
         {
@@ -41,35 +41,35 @@
         },
         {
             "file": "tests/test_basic_data.py",
-            "line": 83,
+            "line": 84,
             "test": "test_DataBunch_save_load"
         }
     ],
     "fastai.basic_data.DataBunch.one_item": [
         {
             "file": "tests/test_basic_data.py",
-            "line": 67,
+            "line": 68,
             "test": "test_DataBunch_oneitem"
         }
     ],
     "fastai.basic_data.DataBunch.save": [
         {
             "file": "tests/test_basic_data.py",
-            "line": 83,
+            "line": 84,
             "test": "test_DataBunch_save_load"
         }
     ],
     "fastai.basic_data.DataBunch.show_batch": [
         {
             "file": "tests/test_basic_data.py",
-            "line": 75,
+            "line": 76,
             "test": "test_DataBunch_show_batch"
         }
     ],
     "fastai.basic_data.intercept_args": [
         {
             "file": "tests/test_basic_data.py",
-            "line": 18,
+            "line": 19,
             "test": "test_intercept_args"
         }
     ],
@@ -81,7 +81,7 @@
         },
         {
             "file": "tests/test_basic_data.py",
-            "line": 83,
+            "line": 84,
             "test": "test_DataBunch_save_load"
         }
     ],
