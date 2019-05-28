@@ -952,6 +952,19 @@ summary: "Transforms to clean and preprocess tabular data"
 
 </div>
 <div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">norm</span> <span class="o">=</span> <span class="n">Normalize</span><span class="p">(</span><span class="n">cat_names</span><span class="p">,</span> <span class="n">cont_names</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
 <div class="output">
@@ -973,6 +986,109 @@ summary: "Transforms to clean and preprocess tabular data"
 
 </div>
 <div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">norm</span><span class="o">.</span><span class="n">apply_train</span><span class="p">(</span><span class="n">train_df</span><span class="p">)</span>
+<span class="n">train_df</span><span class="p">[</span><span class="n">cont_names</span><span class="p">]</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>age</th>
+      <th>fnlwgt</th>
+      <th>education-num</th>
+      <th>capital-gain</th>
+      <th>capital-loss</th>
+      <th>hours-per-week</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0.829039</td>
+      <td>-0.812589</td>
+      <td>0.981643</td>
+      <td>-0.136271</td>
+      <td>4.416656</td>
+      <td>-0.050230</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>0.443977</td>
+      <td>0.355532</td>
+      <td>2.078450</td>
+      <td>1.153121</td>
+      <td>-0.228760</td>
+      <td>0.361492</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>-0.018098</td>
+      <td>-0.856881</td>
+      <td>-0.115165</td>
+      <td>-0.136271</td>
+      <td>-0.228760</td>
+      <td>-0.708985</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>-0.018098</td>
+      <td>-0.713162</td>
+      <td>2.626854</td>
+      <td>-0.136271</td>
+      <td>-0.228760</td>
+      <td>-0.050230</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0.289952</td>
+      <td>-0.976672</td>
+      <td>-0.115165</td>
+      <td>-0.136271</td>
+      <td>-0.228760</td>
+      <td>0.773213</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
 <div class="output">
@@ -985,6 +1101,109 @@ summary: "Transforms to clean and preprocess tabular data"
 </blockquote>
 <div class="collapse" id="Normalize-apply_test-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#Normalize-apply_test-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>apply_test</code>:</p><p>Some other tests where <code>apply_test</code> is used:</p><ul><li><code>pytest -sv tests/test_tabular_transform.py::test_categorify</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_tabular_transform.py#L6" class="source_link" style="float:right">[source]</a></li><li><code>pytest -sv tests/test_tabular_transform.py::test_fill_missing_leaves_no_na_values</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_tabular_transform.py#L36" class="source_link" style="float:right">[source]</a></li><li><code>pytest -sv tests/test_tabular_transform.py::test_fill_missing_returns_correct_medians</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_tabular_transform.py#L49" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><p>Normalize <code>self.cont_names</code> with the same statistics as in <code>apply_train</code>.</p>
 
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">norm</span><span class="o">.</span><span class="n">apply_test</span><span class="p">(</span><span class="n">valid_df</span><span class="p">)</span>
+<span class="n">valid_df</span><span class="p">[</span><span class="n">cont_names</span><span class="p">]</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>age</th>
+      <th>fnlwgt</th>
+      <th>education-num</th>
+      <th>capital-gain</th>
+      <th>capital-loss</th>
+      <th>hours-per-week</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>800</th>
+      <td>0.520989</td>
+      <td>-0.850066</td>
+      <td>-0.115165</td>
+      <td>-0.136271</td>
+      <td>-0.22876</td>
+      <td>-0.050230</td>
+    </tr>
+    <tr>
+      <th>801</th>
+      <td>0.598002</td>
+      <td>-0.023706</td>
+      <td>-0.115165</td>
+      <td>1.705157</td>
+      <td>-0.22876</td>
+      <td>1.596657</td>
+    </tr>
+    <tr>
+      <th>802</th>
+      <td>-0.172123</td>
+      <td>1.560596</td>
+      <td>-0.115165</td>
+      <td>-0.136271</td>
+      <td>-0.22876</td>
+      <td>-0.214919</td>
+    </tr>
+    <tr>
+      <th>803</th>
+      <td>-1.019260</td>
+      <td>-1.254793</td>
+      <td>-0.115165</td>
+      <td>-0.136271</td>
+      <td>-0.22876</td>
+      <td>0.361492</td>
+    </tr>
+    <tr>
+      <th>804</th>
+      <td>-0.095110</td>
+      <td>-0.267403</td>
+      <td>-0.115165</td>
+      <td>-0.136271</td>
+      <td>-0.22876</td>
+      <td>-0.050230</td>
+    </tr>
+  </tbody>
+</table>
+</div>
 </div>
 
 </div>
@@ -1026,6 +1245,253 @@ summary: "Transforms to clean and preprocess tabular data"
 
 </div>
 </div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;col1&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;02/03/2017&#39;</span><span class="p">,</span> <span class="s1">&#39;02/04/2017&#39;</span><span class="p">,</span> <span class="s1">&#39;02/05/2017&#39;</span><span class="p">],</span> <span class="s1">&#39;col2&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">]})</span>
+<span class="n">add_datepart</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s1">&#39;col1&#39;</span><span class="p">)</span> <span class="c1"># inplace</span>
+<span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>col2</th>
+      <th>col1Year</th>
+      <th>col1Month</th>
+      <th>col1Week</th>
+      <th>col1Day</th>
+      <th>col1Dayofweek</th>
+      <th>col1Dayofyear</th>
+      <th>col1Is_month_end</th>
+      <th>col1Is_month_start</th>
+      <th>col1Is_quarter_end</th>
+      <th>col1Is_quarter_start</th>
+      <th>col1Is_year_end</th>
+      <th>col1Is_year_start</th>
+      <th>col1Elapsed</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>a</td>
+      <td>2017</td>
+      <td>2</td>
+      <td>5</td>
+      <td>3</td>
+      <td>4</td>
+      <td>34</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>1486080000</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>b</td>
+      <td>2017</td>
+      <td>2</td>
+      <td>5</td>
+      <td>4</td>
+      <td>5</td>
+      <td>35</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>1486166400</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>a</td>
+      <td>2017</td>
+      <td>2</td>
+      <td>5</td>
+      <td>5</td>
+      <td>6</td>
+      <td>36</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>1486252800</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">show_doc</span><span class="p">(</span><span class="n">add_cyclic_datepart</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="add_cyclic_datepart" class="doc_header"><code>add_cyclic_datepart</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/transform.py#L43" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#add_cyclic_datepart-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>add_cyclic_datepart</code>(<strong><code>df</code></strong>:<code>DataFrame</code>, <strong><code>field_name</code></strong>:<code>str</code>, <strong><code>prefix</code></strong>:<code>str</code>=<strong><em><code>None</code></em></strong>, <strong><code>drop</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>, <strong><code>time</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>, <strong><code>add_linear</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>)</p>
+</blockquote>
+<div class="collapse" id="add_cyclic_datepart-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#add_cyclic_datepart-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>add_cyclic_datepart</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Helper function that adds trigonometric date/time features to a date in the column <code>field_name</code> of <code>df</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;col1&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;02/03/2017&#39;</span><span class="p">,</span> <span class="s1">&#39;02/04/2017&#39;</span><span class="p">,</span> <span class="s1">&#39;02/05/2017&#39;</span><span class="p">],</span> <span class="s1">&#39;col2&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">]})</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">add_cyclic_datepart</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s1">&#39;col1&#39;</span><span class="p">)</span> <span class="c1"># returns a dataframe</span>
+<span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>col2</th>
+      <th>col1weekday_cos</th>
+      <th>col1weekday_sin</th>
+      <th>col1day_month_cos</th>
+      <th>col1day_month_sin</th>
+      <th>col1month_year_cos</th>
+      <th>col1month_year_sin</th>
+      <th>col1day_year_cos</th>
+      <th>col1day_year_sin</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>a</td>
+      <td>-0.900969</td>
+      <td>-0.433884</td>
+      <td>0.900969</td>
+      <td>0.433884</td>
+      <td>0.866025</td>
+      <td>0.5</td>
+      <td>0.842942</td>
+      <td>0.538005</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>b</td>
+      <td>-0.222521</td>
+      <td>-0.974928</td>
+      <td>0.781831</td>
+      <td>0.623490</td>
+      <td>0.866025</td>
+      <td>0.5</td>
+      <td>0.833556</td>
+      <td>0.552435</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>a</td>
+      <td>0.623490</td>
+      <td>-0.781831</td>
+      <td>0.623490</td>
+      <td>0.781831</td>
+      <td>0.866025</td>
+      <td>0.5</td>
+      <td>0.823923</td>
+      <td>0.566702</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">

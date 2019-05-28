@@ -43,6 +43,7 @@ sidebar_d = {
             'vision': {
                 'Overview': '/vision',
                 'vision.learner': '/vision.learner',
+                'vision.interpret': '/vision.interpret',
                 'vision.transform': '/vision.transform',
                 'vision.image': '/vision.image',
                 'vision.data': '/vision.data',
@@ -56,6 +57,7 @@ sidebar_d = {
             'text': {
                 'Overview': '/text',
                 'text.learner': '/text.learner',
+                'text.interpret': '/text.interpret',
                 'text.transform': '/text.transform',
                 'text.data': '/text.data',
                 'text.models': '/text.models'

@@ -217,7 +217,77 @@ summary: "Extensions to Learner that easily implement Callback"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ClassificationInterpretation" class="doc_header"><code>class</code> <code>ClassificationInterpretation</code><a href="https://github.com/fastai/fastai/blob/master/fastai/train.py#L136" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#ClassificationInterpretation-pytest" style="float:right; padding-right:10px">[test]</a></h2><blockquote><p><code>ClassificationInterpretation</code>(<strong><code>learn</code></strong>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <strong><code>probs</code></strong>:<code>Tensor</code>, <strong><code>y_true</code></strong>:<code>Tensor</code>, <strong><code>losses</code></strong>:<code>Tensor</code>, <strong><code>ds_type</code></strong>:<a href="/basic_data.html#DatasetType"><code>DatasetType</code></a>=<strong><em><code>&lt;DatasetType.Valid: 2&gt;</code></em></strong>)</p>
+<h2 id="Interpretation" class="doc_header"><code>class</code> <code>Interpretation</code><a href="https://github.com/fastai/fastai/blob/master/fastai/train.py#L136" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#Interpretation-pytest" style="float:right; padding-right:10px">[test]</a></h2><blockquote><p><code>Interpretation</code>(<strong><code>learn</code></strong>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <strong><code>preds</code></strong>:<code>Tensor</code>, <strong><code>y_true</code></strong>:<code>Tensor</code>, <strong><code>losses</code></strong>:<code>Tensor</code>, <strong><code>ds_type</code></strong>:<a href="/basic_data.html#DatasetType"><code>DatasetType</code></a>=<strong><em><code>&lt;DatasetType.Valid: 2&gt;</code></em></strong>)</p>
+</blockquote>
+<div class="collapse" id="Interpretation-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#Interpretation-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>Interpretation</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Interpretation base class, can be inherited for task specific Interpretation classes</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="Interpretation.from_learner" class="doc_header"><code>from_learner</code><a href="https://github.com/fastai/fastai/blob/master/fastai/train.py#L147" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#Interpretation-from_learner-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>from_learner</code>(<strong><code>learn</code></strong>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <strong><code>ds_type</code></strong>:<a href="/basic_data.html#DatasetType"><code>DatasetType</code></a>=<strong><em><code>&lt;DatasetType.Valid: 2&gt;</code></em></strong>)</p>
+</blockquote>
+<div class="collapse" id="Interpretation-from_learner-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#Interpretation-from_learner-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>from_learner</code>:</p><p>Some other tests where <code>from_learner</code> is used:</p><ul><li><code>pytest -sv tests/test_tabular_train.py::test_confusion_tabular</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_tabular_train.py#L84" class="source_link" style="float:right">[source]</a></li><li><code>pytest -sv tests/test_vision_train.py::test_ClassificationInterpretation</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_vision_train.py#L95" class="source_link" style="float:right">[source]</a></li><li><code>pytest -sv tests/test_vision_train.py::test_interp</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_vision_train.py#L72" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><p>Gets preds, y_true, losses to construct base class from a learner</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="Interpretation.top_losses" class="doc_header"><code>top_losses</code><a href="https://github.com/fastai/fastai/blob/master/fastai/train.py#L153" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#Interpretation-top_losses-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>top_losses</code>(<strong><code>k</code></strong>:<code>int</code>=<strong><em><code>None</code></em></strong>, <strong><code>largest</code></strong>=<strong><em><code>True</code></em></strong>)</p>
+</blockquote>
+<div class="collapse" id="Interpretation-top_losses-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#Interpretation-top_losses-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>top_losses</code>:</p><p>Some other tests where <code>top_losses</code> is used:</p><ul><li><code>pytest -sv tests/test_vision_train.py::test_interp</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_vision_train.py#L72" class="source_link" style="float:right">[source]</a></li><li><code>pytest -sv tests/test_vision_train.py::test_interp_shortcut</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_vision_train.py#L78" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><p><code>k</code> largest(/smallest) losses and indexes, defaulting to all losses (sorted by <code>largest</code>).</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>For example in <a href="/train.html#ClassificationInterpretation"><code>ClassificationInterpretation</code></a> is implemented using argmax on preds to set <code>self.pred_class</code> whereas and optional sigmoid is used for <code>MultilabelClassificationInterpretation</code></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="ClassificationInterpretation" class="doc_header"><code>class</code> <code>ClassificationInterpretation</code><a href="https://github.com/fastai/fastai/blob/master/fastai/train.py#L163" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#ClassificationInterpretation-pytest" style="float:right; padding-right:10px">[test]</a></h2><blockquote><p><code>ClassificationInterpretation</code>(<strong><code>learn</code></strong>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <strong><code>preds</code></strong>:<code>Tensor</code>, <strong><code>y_true</code></strong>:<code>Tensor</code>, <strong><code>losses</code></strong>:<code>Tensor</code>, <strong><code>ds_type</code></strong>:<a href="/basic_data.html#DatasetType"><code>DatasetType</code></a>=<strong><em><code>&lt;DatasetType.Valid: 2&gt;</code></em></strong>) :: <a href="/train.html#Interpretation"><code>Interpretation</code></a></p>
 </blockquote>
 <div class="collapse" id="ClassificationInterpretation-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#ClassificationInterpretation-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>ClassificationInterpretation</code>:</p><ul><li><code>pytest -sv tests/test_vision_train.py::test_ClassificationInterpretation</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_vision_train.py#L95" class="source_link" style="float:right">[source]</a></li></ul><p>Some other tests where <code>ClassificationInterpretation</code> is used:</p><ul><li><code>pytest -sv tests/test_tabular_train.py::test_confusion_tabular</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_tabular_train.py#L84" class="source_link" style="float:right">[source]</a></li><li><code>pytest -sv tests/test_vision_train.py::test_interp</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_vision_train.py#L72" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><p>Interpretation methods for classification models.</p>
 
@@ -248,16 +318,6 @@ summary: "Extensions to Learner that easily implement Callback"
 
 </div>
 <div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">show_doc</span><span class="p">(</span><span class="n">ClassificationInterpretation</span><span class="o">.</span><span class="n">top_losses</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
 
 <div class="output_wrapper">
 <div class="output">
@@ -266,9 +326,9 @@ summary: "Extensions to Learner that easily implement Callback"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ClassificationInterpretation.top_losses" class="doc_header"><code>top_losses</code><a href="https://github.com/fastai/fastai/blob/master/fastai/train.py#L194" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#ClassificationInterpretation-top_losses-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>top_losses</code>(<strong><code>k</code></strong>:<code>int</code>=<strong><em><code>None</code></em></strong>, <strong><code>largest</code></strong>=<strong><em><code>True</code></em></strong>)</p>
+<h4 id="Interpretation.top_losses" class="doc_header"><code>top_losses</code><a href="https://github.com/fastai/fastai/blob/master/fastai/train.py#L153" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#Interpretation-top_losses-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>top_losses</code>(<strong><code>k</code></strong>:<code>int</code>=<strong><em><code>None</code></em></strong>, <strong><code>largest</code></strong>=<strong><em><code>True</code></em></strong>)</p>
 </blockquote>
-<div class="collapse" id="ClassificationInterpretation-top_losses-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#ClassificationInterpretation-top_losses-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>top_losses</code>:</p><p>Some other tests where <code>top_losses</code> is used:</p><ul><li><code>pytest -sv tests/test_vision_train.py::test_interp</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_vision_train.py#L72" class="source_link" style="float:right">[source]</a></li><li><code>pytest -sv tests/test_vision_train.py::test_interp_shortcut</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_vision_train.py#L78" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><p><code>k</code> largest(/smallest) losses and indexes, defaulting to all losses (sorted by <code>largest</code>).</p>
+<div class="collapse" id="Interpretation-top_losses-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#Interpretation-top_losses-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>top_losses</code>:</p><p>Some other tests where <code>top_losses</code> is used:</p><ul><li><code>pytest -sv tests/test_vision_train.py::test_interp</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_vision_train.py#L72" class="source_link" style="float:right">[source]</a></li><li><code>pytest -sv tests/test_vision_train.py::test_interp_shortcut</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_vision_train.py#L78" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><p><code>k</code> largest(/smallest) losses and indexes, defaulting to all losses (sorted by <code>largest</code>).</p>
 
 </div>
 
@@ -296,8 +356,9 @@ summary: "Extensions to Learner that easily implement Callback"
 
 <div class="output_text output_subarea output_execute_result">
 <pre>torch.return_types.topk(
-values=tensor([5.6738, 5.3409, 5.2642, 4.5904, 4.4153, 3.9903, 3.6914, 3.3204, 3.2644]),
-indices=tensor([ 859,  983, 1378,  754, 1811,  358,  443, 1498, 1023]))</pre>
+values=tensor([10.5023,  7.5183,  7.4790,  5.0515,  4.5135,  4.3364,  4.1073,  3.8588,
+         3.7758]),
+indices=tensor([ 979,  977,  226, 1019,  161, 1393, 1500, 1697, 1276]))</pre>
 </div>
 
 </div>
@@ -315,7 +376,7 @@ indices=tensor([ 859,  983, 1378,  754, 1811,  358,  443, 1498, 1023]))</pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ClassificationInterpretation.plot_confusion_matrix" class="doc_header"><code>plot_confusion_matrix</code><a href="https://github.com/fastai/fastai/blob/master/fastai/train.py#L161" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#ClassificationInterpretation-plot_confusion_matrix-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>plot_confusion_matrix</code>(<strong><code>normalize</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>, <strong><code>title</code></strong>:<code>str</code>=<strong><em><code>'Confusion matrix'</code></em></strong>, <strong><code>cmap</code></strong>:<code>Any</code>=<strong><em><code>'Blues'</code></em></strong>, <strong><code>slice_size</code></strong>:<code>int</code>=<strong><em><code>1</code></em></strong>, <strong><code>norm_dec</code></strong>:<code>int</code>=<strong><em><code>2</code></em></strong>, <strong><code>plot_txt</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>, <strong><code>return_fig</code></strong>:<code>bool</code>=<strong><em><code>None</code></em></strong>, <strong>**<code>kwargs</code></strong>) → <code>Optional</code>[<code>Figure</code>]</p>
+<h4 id="ClassificationInterpretation.plot_confusion_matrix" class="doc_header"><code>plot_confusion_matrix</code><a href="https://github.com/fastai/fastai/blob/master/fastai/train.py#L181" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#ClassificationInterpretation-plot_confusion_matrix-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>plot_confusion_matrix</code>(<strong><code>normalize</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>, <strong><code>title</code></strong>:<code>str</code>=<strong><em><code>'Confusion matrix'</code></em></strong>, <strong><code>cmap</code></strong>:<code>Any</code>=<strong><em><code>'Blues'</code></em></strong>, <strong><code>slice_size</code></strong>:<code>int</code>=<strong><em><code>1</code></em></strong>, <strong><code>norm_dec</code></strong>:<code>int</code>=<strong><em><code>2</code></em></strong>, <strong><code>plot_txt</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>, <strong><code>return_fig</code></strong>:<code>bool</code>=<strong><em><code>None</code></em></strong>, <strong>**<code>kwargs</code></strong>) → <code>Optional</code>[<code>Figure</code>]</p>
 </blockquote>
 <div class="collapse" id="ClassificationInterpretation-plot_confusion_matrix-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#ClassificationInterpretation-plot_confusion_matrix-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>plot_confusion_matrix</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Plot the confusion matrix, with <code>title</code> and using <code>cmap</code>.</p>
 
@@ -354,7 +415,7 @@ indices=tensor([ 859,  983, 1378,  754, 1811,  358,  443, 1498, 1023]))</pre>
 
 
 <div class="output_png output_subarea ">
-<img src="data:image/png;base64,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
+<img src="data:image/png;base64,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
 "
 >
 </div>
@@ -366,16 +427,6 @@ indices=tensor([ 859,  983, 1378,  754, 1811,  358,  443, 1498, 1023]))</pre>
 
 </div>
 <div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">show_doc</span><span class="p">(</span><span class="n">ClassificationInterpretation</span><span class="o">.</span><span class="n">confusion_matrix</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
 
 <div class="output_wrapper">
 <div class="output">
@@ -384,7 +435,7 @@ indices=tensor([ 859,  983, 1378,  754, 1811,  358,  443, 1498, 1023]))</pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ClassificationInterpretation.confusion_matrix" class="doc_header"><code>confusion_matrix</code><a href="https://github.com/fastai/fastai/blob/master/fastai/train.py#L149" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#ClassificationInterpretation-confusion_matrix-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>confusion_matrix</code>(<strong><code>slice_size</code></strong>:<code>int</code>=<strong><em><code>1</code></em></strong>)</p>
+<h4 id="ClassificationInterpretation.confusion_matrix" class="doc_header"><code>confusion_matrix</code><a href="https://github.com/fastai/fastai/blob/master/fastai/train.py#L169" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#ClassificationInterpretation-confusion_matrix-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>confusion_matrix</code>(<strong><code>slice_size</code></strong>:<code>int</code>=<strong><em><code>1</code></em></strong>)</p>
 </blockquote>
 <div class="collapse" id="ClassificationInterpretation-confusion_matrix-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#ClassificationInterpretation-confusion_matrix-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>confusion_matrix</code>:</p><ul><li><code>pytest -sv tests/test_tabular_train.py::test_confusion_tabular</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_tabular_train.py#L84" class="source_link" style="float:right">[source]</a></li></ul><p>Some other tests where <code>confusion_matrix</code> is used:</p><ul><li><code>pytest -sv tests/test_vision_train.py::test_ClassificationInterpretation</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_vision_train.py#L95" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><p>Confusion matrix as an <code>np.ndarray</code>.</p>
 
@@ -416,8 +467,8 @@ indices=tensor([ 859,  983, 1378,  754, 1811,  358,  443, 1498, 1023]))</pre>
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>array([[984,  26],
-       [ 37, 991]])</pre>
+<pre>array([[983,  27],
+       [ 30, 998]])</pre>
 </div>
 
 </div>
@@ -427,16 +478,6 @@ indices=tensor([ 859,  983, 1378,  754, 1811,  358,  443, 1498, 1023]))</pre>
 
 </div>
 <div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">show_doc</span><span class="p">(</span><span class="n">ClassificationInterpretation</span><span class="o">.</span><span class="n">most_confused</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
 
 <div class="output_wrapper">
 <div class="output">
@@ -445,10 +486,49 @@ indices=tensor([ 859,  983, 1378,  754, 1811,  358,  443, 1498, 1023]))</pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ClassificationInterpretation.most_confused" class="doc_header"><code>most_confused</code><a href="https://github.com/fastai/fastai/blob/master/fastai/train.py#L186" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#ClassificationInterpretation-most_confused-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>most_confused</code>(<strong><code>min_val</code></strong>:<code>int</code>=<strong><em><code>1</code></em></strong>, <strong><code>slice_size</code></strong>:<code>int</code>=<strong><em><code>1</code></em></strong>) → <code>Collection</code>[<code>Tuple</code>[<code>str</code>, <code>str</code>, <code>int</code>]]</p>
+<h4 id="ClassificationInterpretation.most_confused" class="doc_header"><code>most_confused</code><a href="https://github.com/fastai/fastai/blob/master/fastai/train.py#L206" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#ClassificationInterpretation-most_confused-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>most_confused</code>(<strong><code>min_val</code></strong>:<code>int</code>=<strong><em><code>1</code></em></strong>, <strong><code>slice_size</code></strong>:<code>int</code>=<strong><em><code>1</code></em></strong>) → <code>Collection</code>[<code>Tuple</code>[<code>str</code>, <code>str</code>, <code>int</code>]]</p>
 </blockquote>
 <div class="collapse" id="ClassificationInterpretation-most_confused-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#ClassificationInterpretation-most_confused-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>most_confused</code>:</p><p>Some other tests where <code>most_confused</code> is used:</p><ul><li><code>pytest -sv tests/test_vision_train.py::test_ClassificationInterpretation</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_vision_train.py#L95" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><p>Sorted descending list of largest non-diagonal entries of confusion matrix, presented as actual, predicted, number of occurrences.</p>
 
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="MultiLabelClassificationInterpretation" class="doc_header"><code>class</code> <code>MultiLabelClassificationInterpretation</code><a href="https://github.com/fastai/fastai/blob/master/fastai/train.py#L220" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#MultiLabelClassificationInterpretation-pytest" style="float:right; padding-right:10px">[test]</a></h2><blockquote><p><code>MultiLabelClassificationInterpretation</code>(<strong><code>learn</code></strong>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <strong><code>preds</code></strong>:<code>Tensor</code>, <strong><code>y_true</code></strong>:<code>Tensor</code>, <strong><code>losses</code></strong>:<code>Tensor</code>, <strong><code>ds_type</code></strong>:<a href="/basic_data.html#DatasetType"><code>DatasetType</code></a>=<strong><em><code>&lt;DatasetType.Valid: 2&gt;</code></em></strong>, <strong><code>sigmoid</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>, <strong><code>thresh</code></strong>:<code>float</code>=<strong><em><code>0.3</code></em></strong>) :: <a href="/train.html#Interpretation"><code>Interpretation</code></a></p>
+</blockquote>
+<div class="collapse" id="MultiLabelClassificationInterpretation-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#MultiLabelClassificationInterpretation-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>MultiLabelClassificationInterpretation</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Interpretation methods for classification models.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<div markdown="span" class="alert alert-danger" role="alert"><i class="fa fa-danger-circle"></i> <b>Warning: </b>MultiLabelClassificationInterpretation is not implemented yet. Feel free to implement it :)</div>
 </div>
 
 </div>
