@@ -143,7 +143,6 @@ class LanguageLearner(RNNLearner):
         self.model.eval()
         xb, yb = self.data.one_item(text)
         nodes = None
-        xb = xb.repeat(top_k, 1)
         nodes = xb.clone()
         scores = xb.new_zeros(1).float()
         with torch.no_grad():
