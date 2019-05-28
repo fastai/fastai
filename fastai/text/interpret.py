@@ -1,9 +1,17 @@
-rfrom ..torch_core import *
+from ..torch_core import *
 from ..basic_data import *
 from ..basic_train import *
 from ..train import ClassificationInterpretation
+import matplotlib.cm as cm
 
 __all__ = ['TextClassificationInterpretation']
+
+def value2rgba(x:float, cmap:Callable=cm.RdYlGn, alpha_mult:float=1.0)->Tuple:
+    "Convert a value `x` from 0 to 1 (inclusive) to an RGBA tuple according to `cmap` times transparency `alpha_mult`."
+    c = cmap(x)
+    rgb = (np.array(c[:-1]) * 255).astype(int)
+    a = c[-1] * alpha_mult
+    return tuple(rgb.tolist() + [a])
 
 def piece_attn_html(pieces:List[str], attns:List[float], sep:str=' ', **kwargs)->str:
     html_code,spans = ['<span style="font-family: monospace;">'], []
