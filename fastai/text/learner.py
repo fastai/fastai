@@ -118,6 +118,7 @@ class LanguageLearner(RNNLearner):
         "Return the `n_words` that come after `text`."
         ds = self.data.single_dl.dataset
         self.model.reset()
+        self.model.eval()
         xb,yb = self.data.one_item(text)
         new_idx = []
         for _ in range(n_words): #progress_bar(range(n_words), leave=False):
