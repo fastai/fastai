@@ -154,7 +154,7 @@ def COCO_load(root_dir, train_annot = False, valid_annot = False, tfms = [], res
                 train_annot = '{}/{}'.format(path, i)
                 print('Found train annotations in {}'.format(train_annot))
     if not valid_annot:
-        path = '{}/annotations/'.format(root_dir)
+        path = '{}/annotations'.format(root_dir)
         for i in os.listdir(path):
             if os.path.isfile(os.path.join(path,i)) and 'instances_val' in i:
                 valid_annot = '{}/{}'.format(path, i)
