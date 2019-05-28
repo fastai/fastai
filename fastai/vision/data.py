@@ -28,7 +28,7 @@ import urllib.request
 from argparse import Namespace
 import random
 
-__all__ = ['COCO_download, 'COCO_load', 'get_image_files', 'denormalize', 'get_annotations', 'ImageDataBunch',
+__all__ = ['COCO_download', 'COCO_load', 'get_image_files', 'denormalize', 'get_annotations', 'ImageDataBunch',
            'ImageList', 'normalize', 'normalize_funcs', 'resize_to',
            'channel_view', 'mnist_stats', 'cifar_stats', 'imagenet_stats', 'download_images',
            'verify_images', 'bb_pad_collate', 'ImageImageList', 'PointsLabelList',
