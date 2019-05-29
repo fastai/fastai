@@ -204,15 +204,14 @@ def _eval_dropouts(mod):
         module_name =  mod.__class__.__name__
         if 'Dropout' in module_name or 'BatchNorm' in module_name: mod.training = False
         for module in mod.children(): _eval_dropouts(module)
-
-
+            
 class TextClassificationInterpretation(ClassificationInterpretation):
     """Provides an interpretation of classification based on input sensitivity.
     This was designed for AWD-LSTM only for the moment, because Transformer already has its own attentional model.
     """
 
-    def __init__(self, learn: Learner, probs: Tensor, y_true: Tensor, losses: Tensor, ds_type: DatasetType = DatasetType.Valid):
-        super(TextClassificationInterpretation, self).__init__(learn,probs,y_true,losses,ds_type)
+    def __init__(self, learn: Learner, preds: Tensor, y_true: Tensor, losses: Tensor, ds_type: DatasetType = DatasetType.Valid):
+        super(TextClassificationInterpretation, self).__init__(learn,preds,y_true,losses,ds_type)
         self.model = learn.model
 
     def intrinsic_attention(self, text:str, class_id:int=None):
@@ -259,11 +258,10 @@ class TextClassificationInterpretation(ClassificationInterpretation):
             classes = self.data.classes
             txt = ' '.join(tx.text.split(' ')[:max_len]) if max_len is not None else tx.text
             tmp = [txt, f'{classes[self.pred_class[idx]]}', f'{classes[cl]}', f'{self.losses[idx]:.2f}',
-                   f'{self.probs[idx][cl]:.2f}']
+                   f'{self.preds[idx][cl]:.2f}']
             items.append(tmp)
         items = np.array(items)
         names = ['Text', 'Prediction', 'Actual', 'Loss', 'Probability']
         df = pd.DataFrame({n:items[:,i] for i,n in enumerate(names)}, columns=names)
         with pd.option_context('display.max_colwidth', -1):
             display(HTML(df.to_html(index=False)))
-
