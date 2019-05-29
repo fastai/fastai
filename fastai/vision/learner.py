@@ -147,7 +147,7 @@ def _cl_int_plot_top_losses(self, k, largest=True, figsize=(12,12), heatmap:bool
         im,cl = self.data.dl(self.ds_type).dataset[idx]
         cl = int(cl)
         im.show(ax=axes.flat[i], title=
-            f'{classes[self.pred_class[idx]]}/{classes[cl]} / {self.losses[idx]:.2f} / {self.probs[idx][cl]:.2f}')
+            f'{classes[self.pred_class[idx]]}/{classes[cl]} / {self.losses[idx]:.2f} / {self.preds[idx][cl]:.2f}')
         if heatmap:
             xb,_ = self.data.one_item(im, detach=False, denorm=False)
             m = self.learn.model.eval()
@@ -183,8 +183,8 @@ def _cl_int_plot_multi_top_losses(self, samples:int=3, figsize:Tuple[int,int]=(8
             mismatches_idxs.append(i)
             if l_dim > 1 : losses_mismatches.append((losses[i][pred], i))
             else: losses_mismatches.append((losses[i], i))
-        if l_dim > 1: infotup = (i, pred, where_truth, losses[i][pred], np.round(self.probs[i], decimals=3)[pred], mismatch)
-        else: infotup = (i, pred, where_truth, losses[i], np.round(self.probs[i], decimals=3)[pred], mismatch)
+        if l_dim > 1: infotup = (i, pred, where_truth, losses[i][pred], np.round(self.preds[i], decimals=3)[pred], mismatch)
+        else: infotup = (i, pred, where_truth, losses[i], np.round(self.preds[i], decimals=3)[pred], mismatch)
         infolist.append(infotup)
     ds = self.data.dl(self.ds_type).dataset
     mismatches = ds[mismatches_idxs]
