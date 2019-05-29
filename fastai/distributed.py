@@ -64,6 +64,7 @@ class DistributedRecorder(LearnerCallback):
 
 def _learner_parallel(learn:Learner):
     "Use nn.DataParallel when training and remove when done"
+    if not torch.cuda.is_available(): warnings.warn('CUDA is not available, check your drivers - training will continue on CPU', ResourceWarning) 
     learn.callbacks.append(ParallelTrainer(learn))
     return learn
 
