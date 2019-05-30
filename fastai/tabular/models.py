@@ -48,10 +48,8 @@ def _cl_int_from_learner(cls, learn:Learner, ds_type=DatasetType.Valid):
     preds = learn.get_preds(ds_type=ds_type, with_loss=True)
     return cls(learn, *preds, ds_type=ds_type)
 
-def _cl_int_plot_top_losses(self, k:int=5, show_all:bool = False, largest:bool=True, return_table:bool=False)->Optional[plt.Figure]:
+def _cl_int_plot_top_losses(self, k, largest:bool=True, return_table:bool=False)->Optional[plt.Figure]:
     "Generates a dataframe of 'top_losses' along with their prediction, actual, loss, and probability of the actual class."
-    if show_all:
-        k = len(self.losses)
     tl_val, tl_idx = self.top_losses(k, largest)
     classes = self.data.classes
     cat_names = self.data.x.cat_names
