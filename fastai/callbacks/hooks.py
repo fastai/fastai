@@ -76,7 +76,8 @@ class HookCallback(LearnerCallback):
         "Remove the `Hooks`."
         if self.do_remove: self.remove()
 
-    def remove(self): self.hooks.remove()
+    def remove(self): 
+        if getattr(self, 'hooks', None): self.hooks.remove()
     def __del__(self): self.remove()
 
 class ActivationStats(HookCallback):
@@ -93,7 +94,7 @@ class ActivationStats(HookCallback):
     def on_batch_end(self, train, **kwargs):
         "Take the stored results and puts it in `self.stats`"
         if train: self.stats.append(self.hooks.stored)
-    def on_train_end(self, **kwargs): 
+    def on_train_end(self, **kwargs):
         "Polish the final result."
         self.stats = tensor(self.stats).permute(2,1,0)
 
@@ -114,7 +115,12 @@ def model_sizes(m:nn.Module, size:tuple=(64,64))->Tuple[Sizes,Tensor,Hooks]:
 
 def num_features_model(m:nn.Module)->int:
     "Return the number of output features for `model`."
-    return model_sizes(m)[-1][1]
+    sz = 64
+    while True:
+        try: return model_sizes(m, size=(sz,sz))[-1][1]
+        except Exception as e:
+            sz *= 2
+            if sz > 2048: raise
 
 def total_params(m:nn.Module)->int:
     params, trainable = 0, False
@@ -127,23 +133,24 @@ def total_params(m:nn.Module)->int:
 def hook_params(modules:Collection[nn.Module])->Hooks:
     return Hooks(modules, lambda m, i, o: total_params(m))
 
-def params_size(m: nn.Module, size: tuple = (64, 64))->Tuple[Sizes, Tensor, Hooks]:
+def params_size(m: Union[nn.Module,Learner], size: tuple = (3, 64, 64))->Tuple[Sizes, Tensor, Hooks]:
     "Pass a dummy input through the model to get the various sizes. Returns (res,x,hooks) if `full`"
     if isinstance(m, Learner):
-        x = m.data.one_batch(detach=False, denorm=False)[0]
+        if m.data.is_empty:
+            raise Exception("This is an empty `Learner` and `Learner.summary` requires some data to pass through the model.")
+        ds_type = DatasetType.Train if m.data.train_dl else (DatasetType.Valid if m.data.valid_dl else DatasetType.Test)
+        x = m.data.one_batch(ds_type=ds_type, detach=False, denorm=False)[0]
+        x = [o[:1] for o in x]  if is_listy(x) else x[:1]
         m = m.model
-    elif isinstance(m, nn.Module):
-        ch_in = in_channels(m)
-        x = next(m.parameters()).new(1, ch_in, *size)
+    elif isinstance(m, nn.Module): x = next(m.parameters()).new(1, *size)
     else: raise TypeError('You should either pass in a Learner or nn.Module')
-    hooks_outputs = hook_outputs(flatten_model(m))
-    hooks_params = hook_params(flatten_model(m))
-    hooks = zip(hooks_outputs, hooks_params)
-    x = m.eval()(*x) if is_listy(x) else m.eval()(x)
-    output_size = [(o.stored.shape) for o in hooks_outputs]
-    params = [o.stored for o in hooks_params]
+    with hook_outputs(flatten_model(m)) as hook_o:
+        with hook_params(flatten_model(m))as hook_p:
+            x = m.eval()(*x) if is_listy(x) else m.eval()(x)
+            output_size = [((o.stored.shape[1:]) if o.stored is not None else None) for o in hook_o]
+            params = [(o.stored if o.stored is not None else (None,None)) for o in hook_p]
     params, trainables = map(list,zip(*params))
-    return (output_size, params, trainables, hooks)
+    return output_size, params, trainables
 
 def get_layer_name(layer:nn.Module)->str:
     return str(layer.__class__).split(".")[-1].split("'")[0]
@@ -151,11 +158,11 @@ def get_layer_name(layer:nn.Module)->str:
 def layers_info(m:Collection[nn.Module]) -> Collection[namedtuple]:
     func = lambda m:list(map(get_layer_name, flatten_model(m)))
     layers_names = func(m.model) if isinstance(m, Learner) else func(m)
-    layers_sizes, layers_params, layers_trainable, _ = params_size(m)
+    layers_sizes, layers_params, layers_trainable = params_size(m)
     layer_info = namedtuple('Layer_Information', ['Layer', 'OutputSize', 'Params', 'Trainable'])
     return list(map(layer_info, layers_names, layers_sizes, layers_params, layers_trainable))
 
-def model_summary(m:Collection[nn.Module], n:int=70):
+def model_summary(m:Learner, n:int=70):
     "Print a summary of `m` using a output text width of `n` chars"
     info = layers_info(m)
     header = ["Layer (type)", "Output Shape", "Param #", "Trainable"]
@@ -165,15 +172,15 @@ def model_summary(m:Collection[nn.Module], n:int=70):
     total_params = 0
     total_trainable_params = 0
     for layer, size, params, trainable in info:
+        if size is None: continue
         total_params += int(params)
         total_trainable_params += int(params) * trainable
-        params, size, trainable = str(params), str(list(size)), str(trainable)
-        res += f"{layer:<20} {size:<20} {params:<10} {trainable:<10}\n"
+        size, trainable = str(list(size)), str(trainable)
+        res += f"{layer:<20} {size:<20} {int(params):<10,} {trainable:<10}\n"
         res += "_" * n + "\n"
-    res += f"\nTotal params: {total_params}\n"
-    res += f"Total trainable params: {total_trainable_params}\n"
-    res += f"Total non-trainable params: {total_params - total_trainable_params}\n"
-    return res
+    res += f"\nTotal params: {total_params:,}\n"
+    res += f"Total trainable params: {total_trainable_params:,}\n"
+    res += f"Total non-trainable params: {total_params - total_trainable_params:,}\n"
+    return PrettyString(res)
 
 Learner.summary = model_summary
-

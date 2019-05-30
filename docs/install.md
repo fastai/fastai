@@ -8,62 +8,175 @@ Please refer to [README](https://github.com/fastai/fastai/blob/master/README.md#
 
 ## CPU build
 
-Generally pytorch GPU build should work fine on machines that don't have a CUDA-capable GPU, and will just use the CPU. However, you can install CPU-only versions of Pytorch if needed:
-
-* conda
-
-   ```bash
-   conda install -c pytorch pytorch-cpu torchvision
-   conda install -c fastai fastai
-   ```
+Generally, pytorch GPU build should work fine on machines that don't have a CUDA-capable GPU, and will just use the CPU. However, you can install CPU-only versions of Pytorch if needed with `fastai`.
 
 * pip
+
+   The pip ways is very easy:
 
    ```bash
    pip install http://download.pytorch.org/whl/cpu/torch-1.0.0-cp36-cp36m-linux_x86_64.whl
    pip install fastai
    ```
 
+   Just make sure to pick the correct torch wheel url, according to the needed platform, python and CUDA version, which you will find [here](https://pytorch.org/get-started/locally/).
+
+* conda
+
+   The conda way is more involved. Since we have only a single fastai package that relies on the default `pytorch` package working with and without GPU environment, if you want to install something custom you will have to manually tweak the dependencies. This is explained in detail [here](/install.html#custom-dependencies). So follow the instructions there, but replace `pytorch` with `pytorch-cpu`, and `torchvision` with `torchvision-cpu`.
+
+Also, please note, that if you have an old GPU and `pytorch` fails because it can't support it, you can still use the normal (GPU) `pytorch` build, by setting the env var `CUDA_VISIBLE_DEVICES=""`, in which case pytorch will not try to check if you even have a GPU.
+
+
+## Jupyter notebook dependencies
+
+The `fastai` library doesn't require the jupyter environment to work, therefore those dependencies aren't included. So if you are planning on using `fastai` in the jupyter notebook environment, e.g. to run the `fastai` course lessons and you haven't already setup the jupyter environment, here is how you can do it.
+
+
+* conda
+
+   ```bash
+   conda install jupyter notebook
+   conda install -c conda-forge jupyter_contrib_nbextensions
+   ```
+
+   Some users also [seem to need](https://stackoverflow.com/questions/39604271/conda-environments-not-showing-up-in-jupyter-notebook) this conda package to be able to choose the right kernel environment, however, most likely you won't need this package.
+
+   ```bash
+   conda install nb_conda
+   ```
+
+* pip
+
+   ```bash
+   pip install jupyter notebook jupyter_contrib_nbextensions
+   ```
+
 
 ## Custom dependencies
 
-If for any reason you don't want to install all of `fastai`'s dependencies, since, perhaps, you have a limited disk space on your remote instance, here is how you can install only the dependencies that you need.
+If for any reason you don't want to install all of `fastai`'s dependencies, since, perhaps, you have limited disk space on your remote instance, here is how you can install only the dependencies that you need.
 
-First, install `fastai` without its dependencies, and then install the dependencies that you need directly:
+1. First, install `fastai` without its dependencies using either `pip` or `conda`:
 
-```
-pip install --no-deps fastai
-pip install "matplotlib" "numpy>=1.12" "pandas" ...
-```
-this will work with conda too:
+   ```
+   # pip
+   pip install --no-deps fastai
+   # conda
+   conda install --no-deps -c fastai fastai
+   ```
 
-```
-conda install --no-deps -c fastai fastai
-conda install -c pytorch -c fastai "matplotlib" "numpy>=1.12" "pandas"  ...
-```
+2. The rest of this section assumes you're inside the `fastai` git repo, since that's where `setup.py` resides. If you don't have the repository checked out, do:
 
-Don't forget to add `-c fastai` for the conda installs, e.g. it's needed for `torchvision`.
+   ```
+   git clone https://github.com/fastai/fastai
+   cd fastai
+   tools/run-after-git-clone
+   ```
 
-Below you will find the groups of dependencies for you to choose from. `fastai.base` is mandatory, the rest are optional:
+3. Next, find out which groups of dependencies you want:
 
-```
-fastai.base:
+   ```
+   python setup.py -q deps
+   ```
+   You should get something like:
+   ```
+   Available dependency groups: core, text, vision
+   ```
 
-   "matplotlib" "numpy>=1.12" "pandas" "fastprogress>=0.1.18" "bottleneck" "beautifulsoup4" "numexpr" "Pillow" "requests" "scipy" "typing" "pyyaml" "pytorch" "packaging" "nvidia-ml-py3"
+   You need to use at least the `core` group.
 
-fastai.text:
+   Do note that the `deps` command is a custom `distutils` extension, i.e. it only works in the `fastai` setup.
 
-  "spacy" "regex" "thinc" "cymem"
+4. Finally, install the custom dependencies for the desired groups.
 
-fastai.text.qrnn:
+   For the sake of this demonstration, let's say you want to get the core dependencies (`core`), plus dependencies specific to computer vision (`vision`). The following command will give you the up-to-date dependencies for these two groups:
 
-  "cupy"
+   ```
+   python setup.py -q deps --dep-groups=core,vision
+   ```
+   It will return something like:
+   ```
+   Pillow beautifulsoup4 bottleneck dataclasses;python_version<'3.7' fastprogress>=0.1.18 matplotlib numexpr numpy>=1.12 nvidia-ml-py3 packaging pandas pyyaml requests scipy torch>=1.0.0 torchvision typing
+   ```
+   which can be fed directly to `pip install`:
 
-fastai.vision:
+   ```
+   pip install $(python setup.py -q deps --dep-groups=core,vision)
+   ```
 
-  "torchvision"
+   Since conda uses a slightly different syntax/package names, to get the same output suitable for conda, add `--dep-conda`:
 
-```
+   ```
+   python setup.py -q deps --dep-groups=core,vision --dep-conda
+   ```
+
+   If your shell doesn't support `$()` syntax, it most likely will support backticks, which are deprecated in modern `bash`. (The two are equivalent, but `$()` has a superior flexibility). If that's your situation, use the following syntax instead:
+
+   ```
+   pip install `python setup.py -q deps --dep-groups=core,vision`
+   ```
+
+* Manual copy-n-paste case:
+
+   If, instead of feeding the output directly to `pip` or `conda`, you want to do it manually via copy-n-paste, you need to quote the arguments, in which case add the `--dep-quote` option, which will do it for you:
+
+   ```
+   # pip:
+   python setup.py -q deps --dep-groups=core,vision --dep-quote
+   # conda:
+   python setup.py -q deps --dep-groups=core,vision --dep-quote --dep-conda
+   ```
+
+   So the output for pip will look like:
+   ```
+   "Pillow" "beautifulsoup4" "bottleneck" "dataclasses;python_version<'3.7'" "fastprogress>=0.1.18" "matplotlib" "numexpr" "numpy>=1.12" "nvidia-ml-py3" "packaging" "pandas" "pyyaml" "requests" "scipy" "torch>=1.0.0" "torchvision" "typing"
+   ```
+
+* Summary:
+
+   pip selective dependency installation:
+   ```
+   pip install --no-deps fastai
+   pip install $(python setup.py -q deps --dep-groups=core,vision)
+   ```
+
+   same for conda:
+   ```
+   conda install --no-deps -c fastai fastai
+   conda install -c pytorch -c fastai $(python setup.py -q deps --dep-conda --dep-groups=core,vision)
+   ```
+
+   adjust the `--dep-groups` argument to match your needs.
+
+
+* Full usage:
+
+   ```
+   # show available dependency groups:
+   python setup.py -q deps
+
+   # print dependency list for specified groups
+   python setup.py -q deps --dep-groups=core,vision
+
+   # see all options:
+   python setup.py -q deps --help
+   ```
+
+
+## Development dependencies
+
+As explained in [Development Editable Install](/dev/develop.html#development-editable-install), if you want to work on contributing to fastai you will also need to install the optional development dependencies. In addition to the ways explained in the aforementioned document, you can also install `fastai` with developer dependencies without needing to check out the `fastai` repo.
+
+* To install the latest released version of `fastai` with developer dependencies, do:
+
+   `pip install "fastai[dev]"`
+
+* To accomplish the same for the cutting edge master git version:
+
+   `pip install "git+https://github.com/fastai/fastai#egg=fastai[dev]"`
+
+
 
 
 ## Virtual environment
@@ -113,4 +226,4 @@ conda env list
 ```
 
 
-Also see [bash-git-prompt](https://docs.fast.ai/dev/git.html#bash-git-prompt) which will help you tell at any moment which environment you're in.
+Also see [bash-git-prompt](/dev/git.html#bash-git-prompt) which will help you tell at any moment which environment you're in.

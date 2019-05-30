@@ -11,16 +11,16 @@ Chances are that you may need to know some git when using fastai - for example i
 
 While this guide is mostly suitable for creating PRs for any github project, it includes several steps specific to the `fastai` project repositories, which currently are:
 
-* https://github.com/fastai/fastai
-* https://github.com/fastai/course-v3
-* https://github.com/fastai/fastprogress
+* [https://github.com/fastai/fastai](https://github.com/fastai/fastai)
+* [https://github.com/fastai/fastai_docs](https://github.com/fastai/fastai_docs)
+* [https://github.com/fastai/course-v3](https://github.com/fastai/course-v3)
+* [https://github.com/fastai/fastprogress](https://github.com/fastai/fastprogress)
 
 If you already know how to make PRs, you only need to read: the "Step 3" and "Step 5" sections, since they are unique requirements for the fastai project.
 
 The following instructions use `USERNAME` as a github username placeholder. The easiest way to follow this guide is to copy-n-paste the whole section into a file, replace `USERNAME` with your real username and then follow the steps.
 
-The guide is written for those who want to contribute to the `fastai` repository.
-If you'd like to contribute to other `fastai`-project repositories, just replace `fastai` with that other repository name in the instructions below.
+All the examples in this guide are written for working with the [fastai repository](https://github.com/fastai/fastai). If you'd like to contribute to other `fastai`-project repositories, just replace `fastai` with that other repository name in the instructions below.
 
 For the purpose of these examples, we will clone into a folder `fastai-fork`, to differentiate from `fastai` which you most likely already checked out to install it.
 
@@ -32,14 +32,14 @@ https://github.com/fastai/fastai/tree/master/fastai
                  username reponame        modulename
 ```
 
-Below you will find detailed 5 steps towards creating a PR.
+Below you will find detailed steps towards creating a PR.
 
 ### Helper Program
 
-There is a smart [program](https://github.com/fastai/fastai/blob/master/tools/fastai-make-pr-branch) that can do all the heavy lifting of the first 2 steps for you. Then you just need to do your work, commit changes and submit PR. To run it:
+There is a smart [program](https://github.com/fastai/git-tools/blob/master/fastai-make-pr-branch) that can do all the heavy lifting of the first 2 steps for you. Then you just need to do your work, commit changes and submit PR. To run it:
 
 ```
-curl -O https://raw.githubusercontent.com/fastai/fastai/master/tools/fastai-make-pr-branch
+curl -O https://raw.githubusercontent.com/fastai/git-tools/master/fastai-make-pr-branch
 chmod a+x fastai-make-pr-branch
 ./fastai-make-pr-branch https your-github-username fastai new-feature
 ```
@@ -53,7 +53,7 @@ While this is new and experimental, you probably want to place that script somew
 
 And now we also have a python version of the same:
 ```
-curl -O https://raw.githubusercontent.com/fastai/fastai/master/tools/fastai-make-pr-branch-py
+curl -O https://raw.githubusercontent.com/fastai/git-tools/master/fastai-make-pr-branch-py
 chmod a+x fastai-make-pr-branch-py
 ./fastai-make-pr-branch-py https your-github-username fastai new-feature
 ```
@@ -66,7 +66,7 @@ If you made the fork of the desired repository already, proceed to section 1b.
 
 If it's your first time, you just need to make a fork of the original repository:
 
-1. Go to https://github.com/fastai/fastai and in the right upper corner click on `[Fork]`. This will generate a fork of this repository, and you will be redirected to
+1. Go to [https://github.com/fastai/fastai](https://github.com/fastai/fastai) and in the right upper corner click on `[Fork]`. This will generate a fork of this repository, and you will be redirected to
  github.com/USERNAME/fastai.
 
 2. Clone the main repository fork. Click on `[Clone or download]` button to get the clone url and then clone your repository.
@@ -98,8 +98,15 @@ If it's your first time, you just need to make a fork of the original repository
 
    Finally, let's setup this fork to track the upstream:
 
+   * Using SSH:
+
    ```
    git remote add upstream git@github.com:fastai/fastai.git
+   ```
+   * Using HTTPS:
+
+   ```
+   git remote add upstream https://github.com/fastai/fastai.git
    ```
 
    You can check your setup:
@@ -108,11 +115,22 @@ If it's your first time, you just need to make a fork of the original repository
    ```
 
    It should show:
+
+   * If you used SSH:
+
    ```
    origin  git@github.com:USERNAME/fastai.git (fetch)
    origin  git@github.com:USERNAME/fastai.git (push)
-   upstream        git@github.com:fastai/fastai.git (fetch)
-   upstream        git@github.com:fastai/fastai.git (push)
+   upstream  git@github.com:fastai/fastai.git (fetch)
+   upstream  git@github.com:fastai/fastai.git (push)
+   ```
+   * If you used HTTPS:
+
+   ```
+   origin  https://github.com/USERNAME/fastai.git (fetch)
+   origin  https://github.com/USERNAME/fastai.git (push)
+   upstream  https://github.com/fastai/fastai.git (fetch)
+   upstream  https://github.com/fastai/fastai.git (push)
    ```
 
    You can now proceed to step 2.
@@ -196,7 +214,7 @@ It's very important that you **always work inside a branch**. If you make any co
 
    If you previously installed `fastai` via `pip` you don't need to uninstall it - `pip` will automatically do it for you when you install `fastai` in the next step.
 
-   Also this is probably a good time for you to deepen your understanding of [Editable installs](https://docs.fast.ai/dev/develop.html#editable-install-explained).
+   Also this is probably a good time for you to deepen your understanding of [Editable installs](/dev/develop.html#editable-install-explained).
 
 2. Install the prerequisites.
 
@@ -245,13 +263,15 @@ Test that your changes don't break things. Choose one according to which project
 
 * `docs_src`
 
-   In the `docs_src` folder, if you made changes to the notebooks, run:
+   In the `docs_src` folder, if you made changes to the code cells of the documentation notebooks, run:
 
    ```
    cd docs_src
-   run_tests.sh
+   ./run_tests.sh
    ```
    You will need at least 8GB free GPU RAM to run these tests.
+
+   Please ignore this if you're just adding/changing the prose.
 
 ### Step 6. Push Your Changes
 
@@ -286,16 +306,50 @@ Test that your changes don't break things. Choose one according to which project
 
 If you work on several unrelated PRs, make different directories for each one, ideally using the same directory name as the branch name, to simplify things.
 
+### Step 8. Passing CI Tests
+
+Once your PR was submitted, you will see on github that we have various tests running on CI servers that will validate your PR. The tests run on various platforms and on both pip and conda virtual environments, so we have all bases covered.
+
+Do note that since our test suite contains many non-deterministic tests, at times you will notice that one of the checks on a single platform will fail. Most of the time it's normal, and there is nothing to worry about. We are constantly trying to make those less error-prone, but we can't make them too loose either, otherwise the test would be ineffective. Hence the occasional failures.
+
+You can go to Azure CI following the failing link and check what has failed. Unless you see the failure is related to your PR, please ignore it and consider that all tests have succeeded. The maintainer can always initiate a re-run of a CI job on the failed platform if need be.
+
+
 
 ### How to Keep Your Feature Branch Up-to-date
 
-If you synced the `master` branch with the original repository and you have feature branches that you're still working on, now you want to update those. For example to update your previously existing branch `my-cool-feature`:
+Normally you don't need to worry about updating your feature branch to synchronize with the fastai code base (upstream master). The only time you must perform the update is when the same code you have been working on has undergone changes in the master. So when you submit a PR, github will tell you that there is a merge conflict.
+
+You could update your feature branch directly, but it's best to update the master branch of your fork, first.
+
+* Step 1: sync your forked `master` branch:
 
    ```
+   cd my-cool-feature # your fastai fork clone directory
+   git fetch upstream
    git checkout master
-   git pull
-   git checkout my-cool-feature
+   git merge --no-edit upstream/master
+   git push --set-upstream origin master
    ```
+
+* Step 2: update your feature branch `my-cool-feature`:
+
+   ```
+   git checkout my-cool-feature
+   git merge origin/master
+   ```
+
+* Step 3:  resolve any conflicts resulting from the merge (using your editor or a special merge tool), followed by `git add` to the files which had conflict.
+
+* Step 4: push to github the updates to your branch:
+
+   ```
+   git push
+   ```
+
+   If your PR is already open, github will automatically update its status showing the new commits and the conflict shouldn't be there any more if you followed the steps above.
+
+
 
 ### How To Reset Your Forked Master Branch
 
@@ -375,9 +429,11 @@ hub == hub helps you win at git
 
 [`hub`](https://github.com/github/hub) is the command line GitHub. It provides integration between git and github in command line. One of the most useful commands is creating pull request by just typing `hub pull-request` in your terminal.
 
-Installation:
+We have a script that will do the installing for you: [hub-install.py](https://github.com/fastai/git-tools/blob/master/hub-install.py).
 
-There is a variety of [ways to install](https://github.com/github/hub#installation) this application (written in go), but the easiest is to download the latest binary for your platform at https://github.com/github/hub/releases/latest, un-archiving the package and running `./install`, for example for the `linux-64` build:
+If for any reason you can't use the script, here are the manual installation instructions:
+
+There is a variety of [ways to install](https://github.com/github/hub#installation) this application (written in go), but the easiest is to download the latest binary for your platform at [https://github.com/github/hub/releases/latest](https://github.com/github/hub/releases/latest), un-archiving the package and running `./install`, for example for the `linux-64` build:
 
 ```
 wget https://github.com/github/hub/releases/download/v2.5.1/hub-linux-amd64-2.5.1.tgz
@@ -405,13 +461,6 @@ conda info | grep 'location' | awk '{print $5}'
 ```
 but the first one is more reliable, `conda info`'s output may change down the road.
 
-HELP-WANTED: If you'd like to contribute a little tool, this process could be automated, by getting the json output of all platform-specific urls for the latest binary release:
-
-```
-curl https://api.github.com/repos/github/hub/releases/latest
-```
-identifying user's platform, retrieving the corresponding to that platform package, unarchiving it, identifying the conda base as shown above, and running `install` with that prefix. If you work on it, please write it in python, so that windows users w/o bash could use it too. It'd go into `tools/hub-install` in the `fastai` repo.
-
 
 ## Github Shortcuts
 
@@ -419,19 +468,19 @@ identifying user's platform, retrieving the corresponding to that platform packa
 
    You can filter commits by author in the commit view by appending param `?author=github_username`.
 
-   For example, the link https://github.com/fastai/fastai/commits/master?author=jph00 shows a list of commits `jph00` commits to the fastai repository.
+   For example, the link [https://github.com/fastai/fastai/commits/master?author=jph00](https://github.com/fastai/fastai/commits/master?author=jph00) shows a list of commits `jph00` commits to the fastai repository.
 
 * show commits by range: `master@{time}..master`
 
    You can create a compare view in GitHub by using the URL `github.com/user/repo/compare/{range}`. Range can be two SHAs like sha1…sha2 or two branch names like `master…my-branch`. Range is also smart enough to take time into consideration.
 
-   For example, you can filter a list of commits since yesterday by using format like `master@{1.day.ago}…master`. The link https://github.com/fastai/fastai/compare/master@{1.day.ago}…master, for example, gets all commits since yesterday for the `fastai` repository:
+   For example, you can filter a list of commits since yesterday by using format like `master@{1.day.ago}…master`. The link [https://github.com/fastai/fastai/compare/master@{1.day.ago}…master](https://github.com/fastai/fastai/compare/master@{1.day.ago}…master), for example, gets all commits since yesterday for the `fastai` repository:
 
 * show `.diff` & `.patch`
 
    Add `.diff` or `.patch` to the URLs of compare view, pull request or commit page to get the diff or patch in text format.
 
-   For example, the link https://github.com/fastai/fastai/compare/master@{1.day.ago}…master.patch gets the patch for all the commits since yesterday in the `fastai` repository.
+   For example, the link [https://github.com/fastai/fastai/compare/master@{1.day.ago}…master.patch](https://github.com/fastai/fastai/compare/master@{1.day.ago}…master.patch) gets the patch for all the commits since yesterday in the `fastai` repository.
 
 * line linking
 
@@ -829,7 +878,7 @@ git diff stash@{0}..stash@{1}
 ```
 
 check out nbdime - diffing and merging of Jupyter Notebooks
-https://nbdime.readthedocs.io/en/stable/
+[https://nbdime.readthedocs.io/en/stable/](https://nbdime.readthedocs.io/en/stable/)
 
 
 
@@ -957,24 +1006,20 @@ git branch --contains <commit>
 
 find when a commit was merged into one or more branches.
 
-https://github.com/mhagger/git-when-merged
+[https://github.com/mhagger/git-when-merged](https://github.com/mhagger/git-when-merged)
 ```
 git when-merged [OPTIONS] COMMIT [BRANCH...]
 ```
 
 
 some good docs on branching strategies:
-```
-https://nvie.com/posts/a-successful-git-branching-model/
-```
+[https://nvie.com/posts/a-successful-git-branching-model/](https://nvie.com/posts/a-successful-git-branching-model/)
 
 
 ### reverting/resetting/undoing
 
 lots of scenarios here:
-```
-https://blog.github.com/2015-06-08-how-to-undo-almost-anything-with-git/
-```
+[https://blog.github.com/2015-06-08-how-to-undo-almost-anything-with-git/](https://blog.github.com/2015-06-08-how-to-undo-almost-anything-with-git/)
 
 
 revert the last commit
@@ -996,7 +1041,7 @@ this is a safe and easy way to rollback to a previous state. No history is destr
 
 if merge happened earlier, revert could fail and ask for a specific parent branch via -m flag to specify which mainline to use
 
-for details: http://schacon.github.io/git/howto/revert-a-faulty-merge.txt and https://stackoverflow.com/questions/5970889/why-does-git-revert-complain-about-a-missing-m-option
+for details: [http://schacon.github.io/git/howto/revert-a-faulty-merge.txt](http://schacon.github.io/git/howto/revert-a-faulty-merge.txt) and [https://stackoverflow.com/questions/5970889/why-does-git-revert-complain-about-a-missing-m-option](https://stackoverflow.com/questions/5970889/why-does-git-revert-complain-about-a-missing-m-option)
 
 
 revert your repository to a specific revision
@@ -1014,7 +1059,7 @@ git checkout <rev> -- dir1 dir2 file1 file2
 
 If somehow the HEAD of the branch got messed up and it got moved to some place in master, when someone by mistake merges it into master, here is how to reset it back. In this example we will use a release branch-1.0.36 with a postfix changes applied at a later time, resulting in tag `1.0.36.post`.
 
-1. find the last commit that was supposed to be the HEAD, e.g.: https://github.com/fastai/fastai/commit/1c63e868d3d11e73d9f51f58cbd271e67a0fe983
+1. find the last commit that was supposed to be the HEAD, e.g.: [https://github.com/fastai/fastai/commit/1c63e868d3d11e73d9f51f58cbd271e67a0fe983](https://github.com/fastai/fastai/commit/1c63e868d3d11e73d9f51f58cbd271e67a0fe983)
 
    Either use this to help find the right commit:
    ```
@@ -1064,7 +1109,7 @@ git check-attr -a dev_nb/001b_fit.ipynb
 ```
 
 
-more here: https://git-scm.com/book/en/v2/Git-Tools-Debugging-with-Git
+more here: [https://git-scm.com/book/en/v2/Git-Tools-Debugging-with-Git](https://git-scm.com/book/en/v2/Git-Tools-Debugging-with-Git)
 
 
 
@@ -1138,10 +1183,7 @@ no such option exists for merge drivers.
 
 
 
-to fix a bad merge
-```
-https://stackoverflow.com/questions/307828/how-do-you-fix-a-bad-merge-and-replay-your-good-commits-onto-a-fixed-merge
-```
+to fix a bad merge: [https://stackoverflow.com/questions/307828/how-do-you-fix-a-bad-merge-and-replay-your-good-commits-onto-a-fixed-merge](https://stackoverflow.com/questions/307828/how-do-you-fix-a-bad-merge-and-replay-your-good-commits-onto-a-fixed-merge)
 
 
 "fatal: Unknown index entry format 61740000".
@@ -1165,7 +1207,7 @@ or you clone the repo again.
 
 tell git not to merge certain files (i.e. keep the local version) by defining merge filter 'ours'.
 
-https://stackoverflow.com/a/5895890/9201239
+[https://stackoverflow.com/a/5895890/9201239](https://stackoverflow.com/a/5895890/9201239)
 
 
 
@@ -1186,7 +1228,7 @@ git config merge.ours.driver true
 ## workflows
 
 
-working and updating the local checkout with upstream changes https://stackoverflow.com/questions/457927/git-workflow-and-rebase-vs-merge-questions?rq=1
+working and updating the local checkout with upstream changes [https://stackoverflow.com/questions/457927/git-workflow-and-rebase-vs-merge-questions?rq=1](https://stackoverflow.com/questions/457927/git-workflow-and-rebase-vs-merge-questions?rq=1)
 ```
 clone the remote repository
 git checkout -b my_new_feature
@@ -1320,15 +1362,13 @@ git check-attr -a repo-relative/path/to/file
 #### useful git filters
 
 git keyword expansion.
-```
-https://github.com/gistya/expandr
-```
+[https://github.com/gistya/expandr](https://github.com/gistya/expandr)
 
 
 
 ## Miscellaneous Recipes
 
-* download a sub-directory from a git tree, e.g. https://github.com/buckyroberts/Source-Code-from-Tutorials/tree/master/Python
+* download a sub-directory from a git tree, e.g. [https://github.com/buckyroberts/Source-Code-from-Tutorials/tree/master/Python](https://github.com/buckyroberts/Source-Code-from-Tutorials/tree/master/Python)
 
    1. replace tree/master => trunk
    2. svn co the new url
@@ -1339,4 +1379,4 @@ https://github.com/gistya/expandr
 
 ## Useful Resources
 
-* https://learngitbranching.js.org/ - visual teaching with exercises
+* [https://learngitbranching.js.org/](https://learngitbranching.js.org/) - visual teaching with exercises

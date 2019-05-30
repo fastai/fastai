@@ -1,4 +1,5 @@
 import pytest
+from fastai.gen_doc.doctest import this_tests
 from fastai.basics import *
 from fastai.collab import *
 
@@ -12,4 +13,6 @@ def learn():
     learn.fit_one_cycle(3, 5e-3)
     return learn
 
-def test_val_loss(learn): assert learn.validate()[0] < 0.8
+def test_val_loss(learn):
+    this_tests(learn.validate)
+    assert learn.validate()[0] < 0.8

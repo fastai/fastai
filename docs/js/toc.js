@@ -46,7 +46,9 @@
       html = settings.title + " <"+settings.listType+">";
     headers.on('click', function() {
       if (!settings.noBackToTopLinks) {
+        var pos = $(window).scrollTop();
         window.location.hash = this.id;
+        $(window).scrollTop(pos);
       }
     })
     .addClass('clickable-header')
@@ -57,7 +59,7 @@
       //if (!settings.noBackToTopLinks && this_level > 1) {
       //  $(header).addClass('top-level-header').before(return_to_top);
       //}
-      txt = header.textContent.split('¶')[0].split('(')[0].split('[')[0];
+      txt = header.textContent.split('¶')[0].split(/\[(test|source)\]/)[0];
       if (!txt) {return;}
       if (this_level === level) // same level as before; same indenting
         html += "<li><a href='" + base_url + "#" + header.id + "'>" + txt + "</a>";

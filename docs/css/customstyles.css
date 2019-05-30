@@ -1,4 +1,4 @@
-.anchor-link{
+.anchor-link {
     display: none;
 }
 
@@ -311,7 +311,6 @@ div#toc ul li {
     margin: 8px 0px 8px 22px;
     font-size: 100%;
     list-style-type: none;
-    //list-style: square;
 }
 
 div#toc ul li ul {
@@ -321,10 +320,6 @@ div#toc ul li ul {
     padding-bottom: 0px;
     list-style-type: none;
 }
-
-//div#toc ul li ul li::before {
-//    content: "–  ";
-//}
 
 div#toc ul li ul li.hide_content::before {
     content: none;
@@ -1264,7 +1259,7 @@ h4.panel-title {
     }
 }
 
-.input_area  pre {
+.input_area pre {
         padding-bottom: 3;
         margin-top: 10px;
         background-color: #f5f1e0;
@@ -1276,6 +1271,15 @@ h4.panel-title {
         margin-bottom: 10px;
         border: 0px;
         padding-left: 2em;
+}
+.pytest_card {
+    padding: 10px 1em 4px 1em;
+    background-color: #eef2ff;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+.pytest_card .close {
+    color: #000
 }
 blockquote {
         font-family: Menlo,Monaco,Consolas,"Courier New",monospace;

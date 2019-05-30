@@ -43,11 +43,11 @@ class RandomItemList(ItemList):
     def reconstruct(self, t): return RandomItem.from_val(t)
 
     def show_xys(self, xs, ys, **kwargs):
-        res = [f'{repr(x)},{repr(y)}' for x,y in zip(xs, ys)]
+        res = [f'{x},{y}' for x,y in zip(xs, ys)]
         print('\n'.join(res))
 
     def show_xyzs(self, xs, ys, zs, **kwargs):
-        res = [f'{repr(x)},{repr(y)},{repr(z)}' for x,y,z in zip(xs, ys, zs)]
+        res = [f'{x},{y},{z}' for x,y,z in zip(xs, ys, zs)]
         print('\n'.join(res))
 
 def fake_basedata(n_in:int=5,batch_size:int=5, train_length:int=None, valid_length:int=None):
@@ -57,7 +57,7 @@ def fake_basedata(n_in:int=5,batch_size:int=5, train_length:int=None, valid_leng
     return torch.empty([train_length+valid_length, n_in]).random_(-10, 10)
 
 
-def fake_data(n_in:int=5, n_out:int=4, batch_size:int=5, train_length:int=None, valid_length:int=None):
+def fake_data(n_in:int=5, n_out:int=4, batch_size:int=5, train_length:int=None, valid_length:int=None) -> DataBunch:
     if train_length is None: train_length = 2 * batch_size
     if valid_length is None: valid_length = batch_size
     return (RandomItemList([0] * (train_length+valid_length), sizes=[n_in])
@@ -65,7 +65,12 @@ def fake_data(n_in:int=5, n_out:int=4, batch_size:int=5, train_length:int=None, 
                 .label_const(0., y_range=[0,n_out])
                 .databunch(bs=batch_size))
 
-def fake_learner(n_in:int=5, n_out:int=4, batch_size:int=5, train_length:int=None, valid_length:int=None):
+def fake_learner(n_in:int=5, n_out:int=4, batch_size:int=5, train_length:int=None, valid_length:int=None, layer_group_count:int=1) -> Learner:
     data = fake_data(n_in=n_in, n_out=n_out, batch_size=batch_size, train_length=train_length, valid_length=valid_length)
-    model = nn.Linear(n_in,n_out)
-    return Learner(data, model)
+    additional = [nn.Sequential(nn.Linear(n_in, n_in)) for _ in range(layer_group_count - 1)]
+    final = [nn.Sequential(nn.Linear(n_in, n_out))]
+    layer_groups = additional + final 
+    model = nn.Sequential(*layer_groups)
+    learner = Learner(data, model)
+    learner.layer_groups = layer_groups
+    return learner
