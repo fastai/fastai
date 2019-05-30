@@ -1,4 +1,5 @@
 #include <ATen/ATen.h>
+#include <THC/THC.h>
 
 #include <cuda.h>
 #include <cuda_runtime.h>
@@ -83,6 +84,7 @@ at::Tensor forget_mult_cuda_forward(at::Tensor x, at::Tensor f, at::Tensor outpu
         seq_length, n_hidden, batch_first);
   }));
 
+  THCudaCheck(cudaGetLastError());
   return output;
 }
 
@@ -105,6 +107,7 @@ std::vector<at::Tensor> forget_mult_cuda_backward(at::Tensor x, at::Tensor f,
         seq_length, n_hidden, batch_first);
   }));
 
+  THCudaCheck(cudaGetLastError());
   return {grad_x, grad_f, grad_h};
 }
 

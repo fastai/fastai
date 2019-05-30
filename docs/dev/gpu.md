@@ -200,7 +200,9 @@ It also might be helpful to note that `torch.cuda.memory_cached()` doesn't show 
 
 How can we do a lot of experimentation in a given jupyter notebook w/o needing to restart the kernel all the time? You can delete the variables that hold the memory, can call `import gc; gc.collect()` to reclaim memory by deleted objects with circular references, optionally (if you have just one process) calling `torch.cuda.empty_cache()` and you can now re-use the GPU memory inside the same kernel.
 
-To automate this process, and get various stats on memory consumption, you can use [IPyExperiments](https://github.com/stas00/ipyexperiments). Other than helping you to reclaim general and GPU RAM, it is also helpful with efficiently tuning up your notebook parameters to avoid `cuda: out of memory` errors and detecting various other memory leaks.
+To automate this process, and get various stats on memory consumption, you can use [IPyExperiments](https://github.com/stas00/ipyexperiments). Other than helping you to reclaim general and GPU RAM, it is also helpful with efficiently tuning up your notebook parameters to avoid `CUDA: out of memory` errors and detecting various other memory leaks.
+
+And also make sure you read the tutorial on `learn.purge` and its friends [here](/tutorial.resources.html), which provide an even better solution.
 
 
 ### GPU RAM Fragmentation
@@ -237,11 +239,18 @@ x3 = allocate_gb(3) # failure to allocate 3GB w/ RuntimeError: CUDA out of memor
 
 despite having a total of 4GB of free GPU RAM (cached and free), the last command will fail, because it can't get 3GB of contiguous memory.
 
-You can conclude from this example, that it's crucial to always free up anything that's on CUDA as soon as you're done using it, and only then move new objects to CUDA. Normally a simple `del obj` does the trick. However, if your object has circular references in it, it will not be freed despite the `del()` call, until `gc.collect()` will not be called by python. And until the latter happens, it'll still hold the allocated GPU RAM! And that also means that in some situations you may want to call `gc.collect()` yourself.
+Except, this example isn't quite valid, because under the hood CUDA relocates physical pages, and makes them appear as if they are of a contiguous type of memory to pytorch. So in the example above it'll reuse most or all of those fragments as long as there is nothing else occupying those memory pages.
+
+So for this example to be applicable to the CUDA memory fragmentation situation it needs to allocate fractions of a memory page, which currently for most CUDA cards is of 2MB. So if less than 2MB is allocated in the same scenario as this example, fragmentation will occur.
+
+Given that GPU RAM is a scarce resource, it helps to always try free up anything that's on CUDA as soon as you're done using it, and only then move new objects to CUDA. Normally a simple `del obj` does the trick. However, if your object has circular references in it, it will not be freed despite the `del()` call, until `gc.collect()` will not be called by python. And until the latter happens, it'll still hold the allocated GPU RAM! And that also means that in some situations you may want to call `gc.collect()` yourself.
 
 If you want to educate yourself on how and when the python garbage collector gets automatically invoked see [gc](https://docs.python.org/3/library/gc.html#gc.get_threshold) and [this](https://rushter.com/blog/python-garbage-collector/).
 
 
+### Peak Memory Usage
+
+If you were to run a GPU memory profiler on a function like `Learner` `fit()` you would notice that on the very first epoch it will cause a very large GPU RAM usage spike and then stabilize at a much lower memory usage pattern. This happens because the pytorch memory allocator tries to build the computational graph and gradients for the loaded model in the most efficient way. Luckily, you don't need to worry about this spike, since the allocator is smart enough to recognize when the memory is tight and it will be able to do the same with much less memory, just not as efficiently. Typically, continuing with the `fit()` example, the allocator needs to have at least as much memory as the 2nd and subsequent epochs require for the normal run.  You can read an excellent thread on this topic [here](https://discuss.pytorch.org/t/high-gpu-memory-usage-problem/34694).
 
 
 ### pytorch Tensor Memory Tracking
@@ -259,3 +268,56 @@ for obj in gc.get_objects():
 Note, that gc will not contain some tensors that consume memory [inside autograd](https://discuss.pytorch.org/t/how-to-debug-causes-of-gpu-memory-leaks/6741/22).
 
 Here is a good [discussion on this topic](https://discuss.pytorch.org/t/how-to-debug-causes-of-gpu-memory-leaks/6741) with more related code snippets.
+
+
+### GPU Reset
+
+If for some reason after exiting the python process the GPU doesn't free the memory, you can try to reset it (change 0 to the desired GPU ID):
+
+```
+sudo nvidia-smi --gpu-reset -i 0
+```
+
+When using multiprocessing, sometimes some of the client processes get stuck and go zombie and won't release the GPU memory. They also may become invisible to `nvidia-smi`, so that it reports no memory used, but the card is unusable and fails with OOM even when trying to create a tiny tensor on that card. In such a case locate the relevant processes with `fuser -v /dev/nvidia*`and kill them with `kill -9`.
+
+This blog [post](https://jianchao-li.github.io/2018/11/02/killing-pytorch-multi-gpu-training-the-safe-way/) suggests the following trick to arrange for the processes to cleanly exit on demand:
+```
+if os.path.isfile('kill.me'):
+    num_gpus = torch.cuda.device_count()
+    for gpu_id in range(num_gpus):
+        torch.cuda.set_device(gpu_id)
+        torch.cuda.empty_cache()
+    exit(0)
+```
+After you add this code to the training iteration, once you want to stop it, just cd into the directory of the training program and run
+```
+touch kill.me
+```
+
+## Multi-GPU
+
+### Order of GPUs
+
+When having multiple GPUs you may discover that `pytorch` and `nvidia-smi` don't order them in the same way, so what `nvidia-smi` reports as `gpu0`, could be assigned to `gpu1` by `pytorch`. `pytorch` uses CUDA GPU ordering, which is done by [computing power](https://developer.nvidia.com/cuda-gpus) (higher computer power GPUs first).
+
+If you want `pytorch` to use the PCI bus device order, to match `nvidia-smi`, set:
+
+```
+export CUDA_DEVICE_ORDER=PCI_BUS_ID
+```
+
+before starting your program (or put in your `~/.bashrc`).
+
+If you just want to run on a specific gpu ID, you can use the `CUDA_VISIBLE_DEVICES` environment variable. It can be set to a single GPU ID or a list:
+
+```
+export CUDA_VISIBLE_DEVICES=1
+export CUDA_VISIBLE_DEVICES=2,3
+```
+
+If you don't set the environment variables in shell, you can set those in your code at the beginning of your program, with help of: `import os; os.environ['CUDA_VISIBLE_DEVICES']='2'`.
+
+A less flexible way is to hardcode the device ID in your code, e.g. to set it to `gpu1`:
+```
+torch.cuda.set_device(1)
+```

@@ -1,0 +1,15 @@
+steps:
+- name: 'gcr.io/cloud-builders/git'
+  args: ['clone', 'https://github.com/fastai/fastai.git', 'fastai-src']
+  id: 'clone'
+- name: 'gcr.io/cloud-builders/git'
+  args: ['checkout', '${COMMIT_SHA}']
+  dir: 'fastai-src'
+  id: 'checkout'
+- name: 'gcr.io/deeplearning-platform-release/pytorch-cpu'
+  args: ['-c', 'papermill applications.ipynb gs://dl-platform-fastai/${COMMIT_SHA}/docs_src/applications.ipynb --log-output']
+  dir: 'fastai-src/docs_src'
+  entrypoint: '/bin/bash'
+  id: 'applications.ipynb'
+  waitFor: ['checkout']
+timeout: 90m
