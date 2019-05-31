@@ -201,7 +201,7 @@ entries:
       title: ipython helpers
       url: /utils.ipython.html
     - output: web,pdf
-      title: Dislay utils
+      title: Display utils
       url: /utils.mod_display.html
     output: web
     title: Utils
