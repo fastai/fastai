@@ -9,7 +9,7 @@ from ..layers import *
 from ..callbacks.hooks import *
 from ..train import ClassificationInterpretation
 
-__all__ = ['cnn_learner', 'create_cnn', 'create_cnn_model', 'create_body', 'create_head', 'unet_learner']
+__all__ = ['cnn_learner', 'create_cnn', 'create_cnn_model', 'create_body', 'create_head', 'unet_learner', 'yolo_learner']
 # By default split models between first and second layer
 def _default_split(m:nn.Module): return (m[1],)
 # Split a resnet style model
@@ -206,3 +206,11 @@ def _learner_interpret(learn:Learner, ds_type:DatasetType=DatasetType.Valid, tta
     "Create a `ClassificationInterpretation` object from `learner` on `ds_type` with `tta`."
     return ClassificationInterpretation.from_learner(learn, ds_type=ds_type, tta=tta)
 Learner.interpret = _learner_interpret
+
+
+def yolo_learner(data:DataBunch, model_name:str='yolov3', pretrained:bool=True, **learn_kwargs:Any)->Learner:
+    "Build YOLOv3 learner from `data`."
+
+    model = models.YOLOv3(model_name, pretrained=pretrained)
+    learn = Learner(data, model, **learn_kwargs)
+    return learn

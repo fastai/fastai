@@ -6,6 +6,9 @@ from fastai.vision.learner import *
 from fastai.callbacks.hooks import *
 from torchvision.models import resnet18
 from torchvision.models.resnet import BasicBlock
+from fastai.datasets import *
+from fastai.vision.data import *
+from fastai.vision import *
 
 @pytest.fixture
 def image():
@@ -40,3 +43,26 @@ def test_create_head(image):
     nc = 4 # number of output classes
     head = create_head(nf=image.shape[1]*2,nc=nc)
     assert list(head(image).shape) == [image.shape[0],nc]
+
+
+def test_yolo_learner():
+    tfms = get_transforms(flip_vert=True, max_lighting=0.1, max_zoom=1.05, max_warp=0.)
+    data = load_coco('./coco_dataset/', './coco_dataset/annotations/train.json',
+                     './coco_dataset/annotations/valid.json', tfms=tfms)
+    '''
+    mnist = untar_data(URLs.MNIST_TINY)
+    tfms = get_transforms(do_flip=False)
+    data = (ImageList.from_folder(mnist)
+            .split_by_folder()
+            .label_from_folder()
+            .transform(tfms, size=32)
+            .databunch()
+            .normalize(imagenet_stats))
+    '''
+    learn = yolo_learner(data, metrics=accuracy)
+    preds, y = learn.get_preds()
+
+    #learner.fit_one_cycle(1,1e-2)
+    #learner.show_results()
+
+

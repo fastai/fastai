@@ -26,6 +26,7 @@ def loss_batch(model:nn.Module, xb:Tensor, yb:Tensor, loss_func:OptLossFunc=None
     out = cb_handler.on_loss_begin(out)
 
     if not loss_func: return to_detach(out), yb[0].detach()
+    print(type(loss_func))
     loss = loss_func(out, *yb)
 
     if opt is not None:
