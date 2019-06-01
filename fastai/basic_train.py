@@ -416,11 +416,11 @@ class Learner():
 
     def apply_dropout(self, m):
         "If a module contains 'dropout' in it's name, it will be switched to .train() mode."
-	if 'dropout' in m.__class__.__name__.lower(): m.train()
+        if 'dropout' in m.__class__.__name__.lower(): m.train()
 
     def predict_with_mc_dropout(self, item:ItemBase, with_dropout:bool=True, n_times=10, **kwargs):
-	"Make predictions with dropout turned on for n_times (default 10)."
-	return [self.predict(item, with_dropout=with_dropout) for _ in range(n_times)]
+        "Make predictions with dropout turned on for n_times (default 10)."
+        return [self.predict(item, with_dropout=with_dropout) for _ in range(n_times)]
 
 class RecordOnCPU(Callback):
     "Store the `input` and `target` going through the model on the CPU."
