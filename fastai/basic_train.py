@@ -422,8 +422,7 @@ class Learner():
 	    m.train()
 
     def predict_with_mc_dropout(self, item:ItemBase, return_x:bool=False, batch_first:bool=True, with_dropout:bool=True, n_times=10, **kwargs):
-	"Make predictions with dropout turned on for n_times (default 10).
-	Returns a list of predictions made with dropout turned on."
+	"Make predictions with dropout turned on for n_times (default 10)."
 	predictions = []
 	for _ in range(n_times):
 	    predictions.append(self.predict(item, with_dropout=with_dropout))
