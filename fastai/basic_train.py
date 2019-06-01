@@ -343,10 +343,8 @@ class Learner():
         else: xb,yb = self.data.one_batch(ds_type, detach=False, denorm=False)
         cb_handler = CallbackHandler(self.callbacks)
         xb,yb = cb_handler.on_batch_begin(xb,yb, train=False)
-	if not with_dropout:
-	    preds = loss_batch(self.model.eval(), xb, yb, cb_handler=cb_handler)
-	else:
-	    preds = loss_batch(self.model.eval().apply(self.apply_dropout), xb, yb, cb_handler=cb_handler)
+	if not with_dropout: preds = loss_batch(self.model.eval(), xb, yb, cb_handler=cb_handler)
+	else: preds = loss_batch(self.model.eval().apply(self.apply_dropout), xb, yb, cb_handler=cb_handler)
         res = _loss_func2activ(self.loss_func)(preds[0])
         if not reconstruct: return res
         res = res.detach().cpu()
@@ -418,16 +416,11 @@ class Learner():
 
     def apply_dropout(self, m):
         "If a module contains 'dropout' in it's name, it will be switched to .train() mode."
-	if 'dropout' in m.__class__.__name__.lower():
-	    m.train()
+	if 'dropout' in m.__class__.__name__.lower(): m.train()
 
-    def predict_with_mc_dropout(self, item:ItemBase, return_x:bool=False, batch_first:bool=True, with_dropout:bool=True, n_times=10, **kwargs):
+    def predict_with_mc_dropout(self, item:ItemBase, with_dropout:bool=True, n_times=10, **kwargs):
 	"Make predictions with dropout turned on for n_times (default 10)."
-	predictions = []
-	for _ in range(n_times):
-	    predictions.append(self.predict(item, with_dropout=with_dropout))
-	return predictions
-
+	return [self.predict(item, with_dropout=with_dropout) for _ in range(n_times)]
 
 class RecordOnCPU(Callback):
     "Store the `input` and `target` going through the model on the CPU."
