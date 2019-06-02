@@ -18,10 +18,8 @@ from torchvision import transforms as tvt
 from . import *
 import os
 import json
-import cv2
 import torch
-from torch.utils.data import Dataset, DataLoader
-from torchvision import utils
+from torch.utils.data import Dataset
 from pathlib import Path
 from zipfile import ZipFile
 import urllib.request
@@ -36,7 +34,10 @@ __all__ = ['COCO_download', 'COCO_load', 'get_image_files', 'denormalize', 'get_
 
 image_extensions = set(k for k,v in mimetypes.types_map.items() if v.startswith('image/'))
 
-def COCO_download(root_dir = str(os.getcwd()), destiny_folder = "COCO", dataset = None, category = None, random_train = None, random_valid = None, annot_link = 'http://images.cocodataset.org/annotations/annotations_trainval2017.zip'):
+
+def COCO_download(root_dir=str(os.getcwd()), destiny_folder="COCO", dataset=None, category=None, random_train=None,
+                  random_valid=None,
+                  annot_link='http://images.cocodataset.org/annotations/annotations_trainval2017.zip'):
     '''
     Download COCO annotations and image sets, either all or specific classes.
     Args:
@@ -46,9 +47,9 @@ def COCO_download(root_dir = str(os.getcwd()), destiny_folder = "COCO", dataset 
         category - if list of categories provided, only images of those categories will be downloaded.
         annot_link - URL to COCO annotations.
     '''
-    os.makedirs('{}/{}'.format(root_dir,destiny_folder), exist_ok=True)
-    path = '{}/{}'.format(root_dir, destiny_folder) #go to COCO directory
-    if os.path.isfile('{}/{}'.format(path,annot_link.split('/')[-1])):
+    os.makedirs('{}/{}'.format(root_dir, destiny_folder), exist_ok=True)
+    path = '{}/{}'.format(root_dir, destiny_folder)  # go to COCO directory
+    if os.path.isfile('{}/{}'.format(path, annot_link.split('/')[-1])):
         print('Found annotations zip.')
         pass
     elif os.path.isdir('{}/annotations'.format(path)):
@@ -69,52 +70,57 @@ def COCO_download(root_dir = str(os.getcwd()), destiny_folder = "COCO", dataset 
         if i == 'train':
             path2 = '{}/annotations'.format(path)
             for i2 in os.listdir(path2):
-                if os.path.isfile(os.path.join(path2,i2)) and 'instances_train' in i2:
+                if os.path.isfile(os.path.join(path2, i2)) and 'instances_train' in i2:
                     train_annot = '{}/{}'.format(path2, i2)
                     print('Found train annotations in {}'.format(train_annot))
                     break
-            with open(train_annot, 'r') as file:  
+            with open(train_annot, 'r') as file:
                 annots = json.load(file)
             random_sample = random_train
         else:
             path2 = '{}/annotations'.format(path)
             for i2 in os.listdir(path2):
-                if os.path.isfile(os.path.join(path2,i2)) and 'instances_val' in i2:
+                if os.path.isfile(os.path.join(path2, i2)) and 'instances_val' in i2:
                     val_annots = '{}/{}'.format(path2, i2)
                     print('Found validation annotations in {}'.format(val_annots))
                     break
-            with open(val_annots, 'r') as file:  
+            with open(val_annots, 'r') as file:
                 annots = json.load(file)
             random_sample = random_valid
         print('Getting images urls.')
         images_to_download = get_image_urls_and_names(annots, random_sample, category)
-        print('Downloading {} {} images to {}. Images in destination folder with same name will NOT be replaced.'.format(len(images_to_download), i, '{}/{}/{}'.format(root_dir, destiny_folder, i)))
+        print(
+            'Downloading {} {} images to {}. Images in destination folder with same name will NOT be replaced.'.format(
+                len(images_to_download), i, '{}/{}/{}'.format(root_dir, destiny_folder, i)))
         path3 = '{}/{}/{}'.format(root_dir, destiny_folder, i)
         onlyfiles = [f for f in os.listdir(path3) if os.path.isfile(os.path.join(path3, f))]
         for k in onlyfiles: images_to_download.pop(k, None)
         found_in_folder = len(onlyfiles)
         for file_name in images_to_download:
             urllib.request.urlretrieve(images_to_download[file_name], '{}/{}'.format(path3, file_name))
-        print('Downloaded {} images, {} images were already in folder.'.format(len(images_to_download), found_in_folder))
+        print(
+            'Downloaded {} images, {} images were already in folder.'.format(len(images_to_download), found_in_folder))
+
 
 def get_image_urls_and_names(annots, random_sample, category=None):
     '''
     Filters loaded JSON COCO annotations and returns dict of image_name:coco_url_to_image.
     '''
-    categories = {i['id']:i['name'] for i in annots['categories']}
-    images = {i['id']:[i['file_name'], i['coco_url']] for i in annots['images']}
+    categories = {i['id']: i['name'] for i in annots['categories']}
+    images = {i['id']: [i['file_name'], i['coco_url']] for i in annots['images']}
     annotations = [[i['image_id'], i['category_id']] for i in annots['annotations']]
     chosen_images = dict()
     for annotation in annotations:
         corr_image = images[annotation[0]]
         if category is not None:
-                if categories[annotation[1]] not in category:
-                    continue
+            if categories[annotation[1]] not in category:
+                continue
         chosen_images[corr_image[0]] = corr_image[1]
     if random_sample:
         if random_sample <= len(chosen_images):
             chosen_images = dict(random.sample(chosen_images.items(), random_sample))
     return chosen_images
+
 
 def make_dataset_dirs(dataset_command, path):
     """
@@ -137,7 +143,7 @@ def make_dataset_dirs(dataset_command, path):
             print('Invalid dataset - enter either all, train or valid.')
             return []
 
-def COCO_load(root_dir, train_annot = False, valid_annot = False, tfms = [], resize = 608, bunch_size = 4):
+def COCO_load(root_dir, train_annot=False, valid_annot=False, tfms=[], resize=608, batch_size=4):
     """
     Args:
         root_dir (string): Path to the directory with train and valid folders.
@@ -145,31 +151,34 @@ def COCO_load(root_dir, train_annot = False, valid_annot = False, tfms = [], res
         valid_annot (string): Path to the COCO-style json file with annotations for validation image set.
         tfms (get_transforms() function): Optional transformations to be applied to images.
         resize (int): Size to which all images will be resized. Also resizes bounding boxes.
-        bunch_size (int): How many images we load and use at once.
+        batch_size (int): How many images we load and use at once.
     """
     if not train_annot:
         path = '{}/annotations'.format(root_dir)
         for i in os.listdir(path):
-            if os.path.isfile(os.path.join(path,i)) and 'instances_train' in i:
+            if os.path.isfile(os.path.join(path, i)) and 'instances_train' in i:
                 train_annot = '{}/{}'.format(path, i)
                 print('Found train annotations in {}'.format(train_annot))
     if not valid_annot:
         path = '{}/annotations'.format(root_dir)
         for i in os.listdir(path):
-            if os.path.isfile(os.path.join(path,i)) and 'instances_val' in i:
+            if os.path.isfile(os.path.join(path, i)) and 'instances_val' in i:
                 valid_annot = '{}/{}'.format(path, i)
                 print('Found validation annotations in {}'.format(valid_annot))
     coco_train = COCODataset(train_annot)
     coco_valid = COCODataset(valid_annot)
-    
+
     boxes = coco_train.get_bboxes()
     boxes2 = coco_valid.get_bboxes()
     boxes.update(boxes2)
-    get_y_func = lambda o:boxes[Path(o).name] #input dict is being transformed during pipeline, thats why it operates on Path objects
+    get_y_func = lambda o: \
+        boxes[Path(o).name]  # input dict is being transformed during pipeline, thats why it operates on Path objects
+
     all_objects = (ObjectItemList.from_folder(root_dir).split_by_folder()
-                    .label_from_func(get_y_func)
-                    .transform(tfms, tfm_y=True, size=resize)
-                    .databunch(bs=4, collate_fn=bb_pad_collate))
+                   .label_from_func(get_y_func)
+                   .transform(tfms, tfm_y=True, size=resize)
+                   .databunch(bs=batch_size, collate_fn=bb_pad_collate)
+                   .normalize())
     return all_objects
 
 def download_open_images(Dataset=None, classes=['Violin'], command='downloader', image_IsDepiction=None, image_IsGroupOf=None, image_IsInside=None, image_IsOccluded=None, image_IsTruncated=None, limit=None, multiclasses='0', n_threads=None, noLabels=False, sub=None, type_csv='validation'):
@@ -596,18 +605,19 @@ class ImageImageList(ImageList):
             y.show(ax=axs[i,2], **kwargs)
             z.show(ax=axs[i,1], **kwargs)
 
-            
 class COCODataset(Dataset):
     """Common Objects in Context dataset."""
+
     def __init__(self, json_file):
         """
         Args:
             json_file (string): Path to the csv file with annotations.
         """
-        with open(json_file) as file:  
+        with open(json_file) as file:
             self.json = json.load(file)
-        self.images = {self.json['images'][i]['id']:self.json['images'][i] for i in range(len(self.json['images']))}
-        self.bbox = {self.json['annotations'][i]['id']:self.json['annotations'][i] for i in range(len(self.json['annotations']))}
+        self.images = {self.json['images'][i]['id']: self.json['images'][i] for i in range(len(self.json['images']))}
+        self.bbox = {self.json['annotations'][i]['id']: self.json['annotations'][i] for i in
+                     range(len(self.json['annotations']))}
         self.images_ids = list(self.images.keys())
         self.image_id_to_bbox_id = {}
         for i in self.bbox:
@@ -618,11 +628,11 @@ class COCODataset(Dataset):
         for anomaly in set(self.images_ids).difference(set(self.image_id_to_bbox_id.keys())):
             self.image_id_to_bbox_id[anomaly] = []
         self.images_ids = list(self.images.keys())
-        self.categories = {i['id']:i['name'] for i in self.json['categories']}
-        
+        self.categories = {i['id']: i['name'] for i in self.json['categories']}
+
     def coco_bbox_to_fastai(self, bb):
-        return np.array([ bb[1], bb[0], bb[3] + bb[1] - 1, bb[2] + bb[0] - 1 ])
-    
+        return np.array([bb[1], bb[0], bb[3] + bb[1] - 1, bb[2] + bb[0] - 1])
+
     def get_bboxes(self):
         """
         Dict of image names with corresponding bounding boxes.
@@ -642,7 +652,7 @@ class COCODataset(Dataset):
             all_bboxes.append([bboxes, labels])
             image_names.append(img_name)
         return dict(zip(image_names, all_bboxes))
-    
+
     def __len__(self):
         return len(self.images)
 
