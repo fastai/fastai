@@ -335,13 +335,14 @@ class Learner():
         return get_preds(self.model, self.dl(ds_type), cb_handler=CallbackHandler(self.callbacks),
                          activ=_loss_func2activ(self.loss_func), loss_func=lf, n_batch=n_batch, pbar=pbar)
 
-    def pred_batch(self, ds_type:DatasetType=DatasetType.Valid, batch:Tuple=None, reconstruct:bool=False) -> List[Tensor]:
+    def pred_batch(self, ds_type:DatasetType=DatasetType.Valid, batch:Tuple=None, reconstruct:bool=False, with_dropout:bool=False) -> List[Tensor]:
         "Return output of the model on one batch from `ds_type` dataset."
         if batch is not None: xb,yb = batch
         else: xb,yb = self.data.one_batch(ds_type, detach=False, denorm=False)
         cb_handler = CallbackHandler(self.callbacks)
         xb,yb = cb_handler.on_batch_begin(xb,yb, train=False)
-        preds = loss_batch(self.model.eval(), xb, yb, cb_handler=cb_handler)
+        if not with_dropout: preds = loss_batch(self.model.eval(), xb, yb, cb_handler=cb_handler)
+        else: preds = loss_batch(self.model.eval().apply(self.apply_dropout), xb, yb, cb_handler=cb_handler)
         res = _loss_func2activ(self.loss_func)(preds[0])
         if not reconstruct: return res
         res = res.detach().cpu()
@@ -358,10 +359,10 @@ class Learner():
                           cb_handler=CallbackHandler(self.callbacks))
         return loss
 
-    def predict(self, item:ItemBase, return_x:bool=False, batch_first:bool=True, **kwargs):
+    def predict(self, item:ItemBase, return_x:bool=False, batch_first:bool=True, with_dropout:bool=False, **kwargs):
         "Return predicted class, label and probabilities for `item`."
         batch = self.data.one_item(item)
-        res = self.pred_batch(batch=batch)
+        res = self.pred_batch(batch=batch, with_dropout=with_dropout)
         raw_pred,x = grab_idx(res,0,batch_first=batch_first),batch[0]
         norm = getattr(self.data,'norm',False)
         if norm:
@@ -410,6 +411,14 @@ class Learner():
             ys = [ds.y.reconstruct(grab_idx(y, i)) for i in range(n_items)]
             zs = [ds.y.reconstruct(z) for z in preds]
         ds.x.show_xyzs(xs, ys, zs, **kwargs)
+
+    def apply_dropout(self, m):
+        "If a module contains 'dropout' in it's name, it will be switched to .train() mode."
+        if 'dropout' in m.__class__.__name__.lower(): m.train()
+
+    def predict_with_mc_dropout(self, item:ItemBase, with_dropout:bool=True, n_times=10, **kwargs):
+        "Make predictions with dropout turned on for n_times (default 10)."
+        return [self.predict(item, with_dropout=with_dropout) for _ in range(n_times)]
 
 class RecordOnCPU(Callback):
     "Store the `input` and `target` going through the model on the CPU."
