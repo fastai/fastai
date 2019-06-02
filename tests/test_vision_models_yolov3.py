@@ -1,5 +1,5 @@
 import pytest
-from fastai.vision.models.yolov3 import *
+from ..fastai.vision.models.yolov3 import *
 import torch
 
 
