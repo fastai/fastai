@@ -221,12 +221,10 @@ class Learner():
         "Freeze up to last layer group."
         assert(len(self.layer_groups)>1)
         self.freeze_to(-1)
-        self.create_opt(defaults.lr)
 
     def unfreeze(self):
         "Unfreeze entire model."
         self.freeze_to(0)
-        self.create_opt(defaults.lr)
 
     def export(self, file:PathLikeOrBinaryStream='export.pkl', destroy=False):
         "Export the state of the `Learner` in `self.path/file`. `file` can be file-like (file or buffer)"
