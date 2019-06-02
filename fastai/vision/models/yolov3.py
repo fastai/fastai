@@ -4,7 +4,7 @@ import numpy as np
 from ...layers import *
 
 
-__all__ = ['parse_cfg', 'create_modules', 'get_IoUs', 'YOLOv3']
+__all__ = ['parse_cfg', 'create_modules', 'get_IoUs', 'rewrite_results', 'YOLOv3']
 
 
 class NoNetBlock(Exception):
@@ -179,6 +179,19 @@ def create_modules(blocks, dims):
     return modules
 
 
+def get_corners(center_x, center_y, width, height):
+    """
+    Transform coordinates of the center, width and height of the bounding
+    box into coordinates of the top-left and right-bottom corners.
+    """
+    x1 = center_x - width/2
+    y1 = center_y - height/2
+    x2 = center_x + width/2
+    y2 = center_y + height/2
+
+    return x1, y1, x2, y2
+
+
 def get_IoUs(bbox, others):
     """
     Counting Intersection over Union value for given bounding box with each of boxes in given 'others' list.
@@ -186,10 +199,11 @@ def get_IoUs(bbox, others):
     :param others: list of bounding boxes to compare with bbox
     :return: list of IoUs values for each bounding box
     """
-    x1, y1, x2, y2 = bbox[:4]
+
+    x1, y1, x2, y2 = get_corners(*bbox[:4])
     ious = torch.zeros(others.size(0))
     for i, other in enumerate(others):
-        xx1, yy1, xx2, yy2 = other[:4]
+        xx1, yy1, xx2, yy2 = get_corners(*other[:4])
         # intersection area
         if xx1 > x2 or xx2 < x1 or yy1 > y2 or yy2 < y1:
             iou = 0.0
@@ -208,6 +222,81 @@ def get_IoUs(bbox, others):
     return ious
 
 
+def rewrite_results(detections, confidence, nms_conf):
+
+    corners = torch.zeros(detections.size(0), detections.size(1), 4)
+    corners[:, :, 0] = detections[:, :, 0] - detections[:, :, 2]/2
+    corners[:, :, 1] = detections[:, :, 1] - detections[:, :, 3]/2
+    corners[:, :, 2] = detections[:, :, 0] + detections[:, :, 2]/2
+    corners[:, :, 3] = detections[:, :, 1] + detections[:, :, 3]/2
+    detections[:, :, :4] = corners
+
+    outputs = []
+    max_bbox = 0
+    for image in detections:
+        # select bounding boxes which objectness score is above confidence score
+        bboxes = image[(image[:, 4] > confidence).nonzero().squeeze(), :]
+        if bboxes.size(0) == 0:
+            outputs.append(None)
+            continue
+        class_conf, class_number = torch.max(bboxes[:, 5:], 1)
+        class_conf, class_number = class_conf.float().unsqueeze(1), class_number.float().unsqueeze(1)
+        bboxes = torch.cat((bboxes[:, :5], class_conf, class_number), 1)
+
+        # get list of possible classes of bounding boxes from the image
+        img_classes = torch.from_numpy(np.unique(bboxes[:, -1].detach().numpy()))
+
+        # perform Non-maximum suppression
+        selected_bboxes = []
+        for class_ in img_classes:
+            # get bounding boxes indices for given class
+            class_bboxes = [index for index, bbox in enumerate(bboxes) if bbox[-1] == class_]
+            if len(class_bboxes) == 0:
+                continue
+            # sort bounding boxes descending by the objectness confidence
+            class_bboxes = [class_bboxes[i] for i in bboxes[class_bboxes, 4].sort(descending=True)[1]]
+
+            removed = []
+            for index in class_bboxes:
+                if index not in removed:
+                    next_indices = [i for i in class_bboxes[index+1:] if i not in removed]
+
+                    ious = get_IoUs(bboxes[index], bboxes[next_indices])
+
+                    removed += [i for ii, i in enumerate(next_indices) if ious[ii] >= nms_conf]
+
+            selected_bboxes += [i for i in class_bboxes if i not in removed]
+
+        if len(selected_bboxes) > max_bbox:
+            max_bbox = len(selected_bboxes)
+        outputs.append(bboxes[selected_bboxes])
+
+    batch_size = detections.size(0)
+    assert len(outputs) == batch_size
+    output_coords = torch.zeros(batch_size, max_bbox, 4)
+    output_classes = torch.zeros(batch_size, max_bbox)
+
+    for i, output in enumerate(outputs):
+        if output is not None:
+            start_pos = max_bbox - len(output)
+            output_coords[i, start_pos:] = output[:, :4]
+            output_classes[i, start_pos:] = output[:, -1]
+
+    return [output_coords, output_classes]
+
+
+def yolo_loss(input, target, lambda_coords, lambda_noobj):
+
+    # width, height and center coords of the target
+    w_ = target[:, :, 2] - target[:, :, 0]
+    h_ = target[:, :, 3] - target[:, :, 1]
+    x_ = target[:, :, 0] + w_/2
+    y_ = target[:, :, 1] + h_/2
+
+
+    pass
+
+
 class YOLOv3(nn.Module):
 
     def __init__(self, model_name='yolov3', pretrained=False):
@@ -219,7 +308,7 @@ class YOLOv3(nn.Module):
             self.header = self.load_weights(model_name)
             self.seen = self.header[3]
 
-    def forward(self, data, confidence=0.5, nms_conf=0.4):
+    def forward(self, data):
         assert data.size(2) == data.size(3)  # YOLOv3 architecture accepts only square images
         outputs = [data]
         for module in self.modules_list:
@@ -235,7 +324,7 @@ class YOLOv3(nn.Module):
                     detections = torch.cat((detections, output), 1)
             outputs.append(output)
 
-        return self.rewrite_results(detections, confidence, nms_conf)
+        return detections
 
     def load_weights(self, model_name):
         file = open('./data/weights/{}.weights'.format(model_name), 'rb')
@@ -285,66 +374,4 @@ class YOLOv3(nn.Module):
         file.close()
         return header
 
-    def rewrite_results(self, detections, confidence, nms_conf):
 
-        # transform coordinates of the center, width and height of the bounding box into coordinates of the
-        # top-left and right-bottom corners
-        corners = torch.zeros(detections.size(0), detections.size(1), 4)
-        corners[:, :, 0] = detections[:, :, 0] - detections[:, :, 2]/2
-        corners[:, :, 1] = detections[:, :, 1] - detections[:, :, 3]/2
-        corners[:, :, 2] = detections[:, :, 0] + detections[:, :, 2]/2
-        corners[:, :, 3] = detections[:, :, 1] + detections[:, :, 3]/2
-        detections[:, :, :4] = corners
-
-        outputs = []
-        max_bbox = 0
-        for image in detections:
-            # select bounding boxes which objectness score is above confidence score
-            bboxes = image[(image[:, 4] > confidence).nonzero().squeeze(), :]
-            if bboxes.size(0) == 0:
-                outputs.append(None)
-                continue
-            class_conf, class_number = torch.max(bboxes[:, 5:], 1)
-            class_conf, class_number = class_conf.float().unsqueeze(1), class_number.float().unsqueeze(1)
-            bboxes = torch.cat((bboxes[:, :5], class_conf, class_number), 1)
-
-            # get list of possible classes of bounding boxes from the image
-            img_classes = torch.from_numpy(np.unique(bboxes[:, -1].detach().numpy()))
-
-            # perform Non-maximum suppression
-            selected_bboxes = []
-            for class_ in img_classes:
-                # get bounding boxes indices for given class
-                class_bboxes = [index for index, bbox in enumerate(bboxes) if bbox[-1] == class_]
-                if len(class_bboxes) == 0:
-                    continue
-                # sort bounding boxes descending by the objectness confidence
-                class_bboxes = [class_bboxes[i] for i in bboxes[class_bboxes, 4].sort(descending=True)[1]]
-
-                removed = []
-                for index in class_bboxes:
-                    if index not in removed:
-                        next_indices = [i for i in class_bboxes[index+1:] if i not in removed]
-
-                        ious = get_IoUs(bboxes[index], bboxes[next_indices])
-
-                        removed += [i for ii, i in enumerate(next_indices) if ious[ii] >= nms_conf]
-
-                selected_bboxes += [i for i in class_bboxes if i not in removed]
-
-            if len(selected_bboxes) > max_bbox:
-                max_bbox = len(selected_bboxes)
-            outputs.append(bboxes[selected_bboxes])
-
-        batch_size = detections.size(0)
-        assert len(outputs) == batch_size
-        output_coords = torch.zeros(batch_size, max_bbox, 4)
-        output_classes = torch.zeros(batch_size, max_bbox)
-
-        for i, output in enumerate(outputs):
-            if output is not None:
-                start_pos = max_bbox - len(output)
-                output_coords[i, start_pos:] = output[:, :4]
-                output_classes[i, start_pos:] = output[:, -1]
-
-        return [output_coords, output_classes]

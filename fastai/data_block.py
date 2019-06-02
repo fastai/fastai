@@ -632,10 +632,12 @@ class LabelList(Dataset):
 
     def __getitem__(self,idxs:Union[int,np.ndarray])->'LabelList':
         idxs = try_int(idxs)
+        print('idxs: {}'.format(idxs))
         if isinstance(idxs, Integral):
             if self.item is None: x,y = self.x[idxs],self.y[idxs]
-            else:                 x,y = self.item   ,0
+            else:                 x,y = self.item, 0
             if self.tfms or self.tfmargs:
+                print('apply_tfms {}'.format(type(x)))
                 x = x.apply_tfms(self.tfms, **self.tfmargs)
             if hasattr(self, 'tfms_y') and self.tfm_y and self.item is None:
                 y = y.apply_tfms(self.tfms_y, **{**self.tfmargs_y, 'do_resolve':False})

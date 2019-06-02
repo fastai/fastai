@@ -208,9 +208,44 @@ def _learner_interpret(learn:Learner, ds_type:DatasetType=DatasetType.Valid, tta
 Learner.interpret = _learner_interpret
 
 
-def yolo_learner(data:DataBunch, model_name:str='yolov3', pretrained:bool=True, **learn_kwargs:Any)->Learner:
+def yolo_learner(data:DataBunch, loss_func=None, model_name:str='yolov3', pretrained:bool=True, **learn_kwargs:Any)->Learner:
     "Build YOLOv3 learner from `data`."
 
     model = models.YOLOv3(model_name, pretrained=pretrained)
-    learn = Learner(data, model, **learn_kwargs)
+    learn = Yolo_Learner(data, model)
     return learn
+
+
+class Yolo_Learner():
+
+    def __init__(self, data, model):
+
+        self.data = data
+        self.model = model
+        self.classes = {number: name for name, number in data.train_dl.y.c2i.items()}
+
+    def predict(self, images=None, confidence=0.5, nms_conf=0.4):
+        self.target = None
+        if images is None:
+            images, self.target = self.data.valid_ds
+            print('Loaded images from valid dataset')
+
+        self.images = images
+        self.prediction = models.rewrite_results(self.model(images), confidence, nms_conf)
+        print('Predicted {} images'.format(images.size(0)))
+
+    def show_results(self, n=3, rows=3, figsize=(10,10)):
+
+        import matplotlib.pyplot as plt
+        import matplotlib.patches as patches
+
+        cols = math.ceil(n/rows)
+        fig, axs = plt.subplots(rows, cols, figsize=figsize)
+        for i, ax in enumerate(axs):
+            ax.imshow(self.images[i])
+            colors = iter(plt.cm.rainbow(np.linspace(0,1,len(self.prediction[i]))))
+            for box in self.prediction[i]:
+                color = next(colors)
+                rect = patches.Rectangle(box[:2], box[2], box[3], linewidth=2*box[4], edgecolor=color, facecolor='none')
+                ax.add_patch(rect)
+                ax.text(box[0], box[3], caption=self.classes[box[-1]], color=color)

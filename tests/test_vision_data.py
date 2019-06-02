@@ -389,3 +389,11 @@ def test_vision_pil2tensor_numpy():
     arr  = np.random.rand(16,16,3)
     diff = np.sort( pil2tensor(arr,np.float).data.numpy().flatten() ) - np.sort(arr.flatten())
     assert( np.sum(diff==0)==len(arr.flatten()) )
+
+
+@pytest.mark.parametrize("images_path, annotations_file",
+                         [('../data/COCO/train', '../data/COCO/annotations/instances_train2017.json'),
+                          ('../data/COCO/valid', '../data/COCO/annotations/instances_val2017.json')])
+def test_clip_annotations(images_path='/home/marni/COCO/train',
+                          annotations_file='/home/marni/COCO/annotations/instances_train2017.json'):
+    clip_annotations(images_path, annotations_file)

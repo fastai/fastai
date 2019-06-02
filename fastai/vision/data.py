@@ -28,15 +28,17 @@ import urllib.request
 from argparse import Namespace
 import random
 
-__all__ = ['COCO_download, 'COCO_load', 'get_image_files', 'denormalize', 'get_annotations', 'ImageDataBunch',
+__all__ = ['COCO_download', 'COCO_load', 'get_image_files', 'denormalize', 'get_annotations', 'ImageDataBunch',
            'ImageList', 'normalize', 'normalize_funcs', 'resize_to',
            'channel_view', 'mnist_stats', 'cifar_stats', 'imagenet_stats', 'download_images',
            'verify_images', 'bb_pad_collate', 'ImageImageList', 'PointsLabelList',
-           'ObjectCategoryList', 'ObjectItemList', 'SegmentationLabelList', 'SegmentationItemList', 'PointsItemList', 'COCODataset']
+           'ObjectCategoryList', 'ObjectItemList', 'SegmentationLabelList', 'SegmentationItemList', 'PointsItemList',
+           'clip_annotations', 'COCODataset']
 
 image_extensions = set(k for k,v in mimetypes.types_map.items() if v.startswith('image/'))
 
-def COCO_download(root_dir = str(os.getcwd()), destiny_folder = "COCO", dataset = None, category = None, random_train = None, random_valid = None, annot_link = 'http://images.cocodataset.org/annotations/annotations_trainval2017.zip'):
+def COCO_download(root_dir = str(os.getcwd()), destiny_folder = "COCO", dataset = None, category = None,
+                  random_train = None, random_valid = None, annot_link = 'http://images.cocodataset.org/annotations/annotations_trainval2017.zip'):
     '''
     Download COCO annotations and image sets, either all or specific classes.
     Args:
@@ -148,6 +150,35 @@ def COCO_load(root_dir, train_annot, valid_annot, tfms = [], resize = 608, bunch
                     .transform(tfms, tfm_y=True, size=resize)
                     .databunch(bs=4, collate_fn=bb_pad_collate, num_workers=num_workers ))
     return all_objects
+
+
+def clip_annotations(images_path, annotations_file):
+    images = os.listdir(images_path)
+    towrite = {}
+    with open(annotations_file) as file:
+        annots = json.load(file)
+    towrite['info'] = annots['info']
+    towrite['licenses'] = annots['licenses']
+    towrite['images'] = []
+    ids = set()
+    removed = [0, 0]
+    for im in annots['images']:
+        if im['file_name'] in images:
+            towrite['images'].append(im)
+            ids.add(im['id'])
+        else:
+            removed[0] += 1
+    towrite['annotations'] = []
+    for an in annots['annotations']:
+        if an['image_id'] in ids:
+            towrite['annotations'].append(an)
+        else:
+            removed[1] += 1
+    towrite['categories'] = annots['categories']
+    with open('{}_clipped.json'.format(annotations_file[:-5]), 'w') as file:
+        json.dump(towrite, file)
+    print('Clipped json file was written to file! {} images and {} annotations were removed'.format(*removed))
+
 
 def download_open_images(Dataset=None, classes=['Violin'], command='downloader', image_IsDepiction=None, image_IsGroupOf=None, image_IsInside=None, image_IsOccluded=None, image_IsTruncated=None, limit=None, multiclasses='0', n_threads=None, noLabels=False, sub=None, type_csv='validation'):
     'Wrapper on OID package'

@@ -47,22 +47,10 @@ def test_create_head(image):
 
 def test_yolo_learner():
     tfms = get_transforms(flip_vert=True, max_lighting=0.1, max_zoom=1.05, max_warp=0.)
-    data = load_coco('./coco_dataset/', './coco_dataset/annotations/train.json',
-                     './coco_dataset/annotations/valid.json', tfms=tfms)
-    '''
-    mnist = untar_data(URLs.MNIST_TINY)
-    tfms = get_transforms(do_flip=False)
-    data = (ImageList.from_folder(mnist)
-            .split_by_folder()
-            .label_from_folder()
-            .transform(tfms, size=32)
-            .databunch()
-            .normalize(imagenet_stats))
-    '''
-    learn = yolo_learner(data, metrics=accuracy)
-    preds, y = learn.get_preds()
-
-    #learner.fit_one_cycle(1,1e-2)
-    #learner.show_results()
+    data = COCO_load('/home/marni/COCO/', '/home/marni/COCO/annotations/instances_train2017_clipped.json',
+                     '/home/marni/COCO/annotations/instances_val2017_clipped.json', tfms=tfms)
+    learner = yolo_learner(data)
+    learner.predict()
+    learner.show_results()
 
 
