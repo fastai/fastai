@@ -164,9 +164,12 @@ def layers_info(m:Collection[nn.Module]) -> Collection[namedtuple]:
 
 def model_summary(m:Learner, n:int=70):
     "Print a summary of `m` using a output text width of `n` chars"
+    #TODO docstrings of callbacks appear to be none (bug)
+    #TODO the tweak adamw require some extra code
     info = layers_info(m)
     header = ["Layer (type)", "Output Shape", "Param #", "Trainable"]
-    res = "=" * n + "\n"
+    res = m.model.__class__.__name__ + "\n"
+    res += "=" * n + "\n"
     res += f"{header[0]:<20} {header[1]:<20} {header[2]:<10} {header[3]:<10}\n"
     res += "=" * n + "\n"
     total_params = 0
@@ -181,6 +184,18 @@ def model_summary(m:Learner, n:int=70):
     res += f"\nTotal params: {total_params:,}\n"
     res += f"Total trainable params: {total_trainable_params:,}\n"
     res += f"Total non-trainable params: {total_params - total_trainable_params:,}\n"
+           
+    res += f"Optimized with {str(m.opt_func)[25:-1].replace('>', '')}\n"
+    if m.true_wd and "adam" in str(m.opt_func).lower():
+        res += f"Using true weight decay as discussed in https://www.fast.ai/2018/07/02/adam-weight-decay/ \n"
+    res += f"Loss function : {m.loss_func.__class__.__name__}\n"
+    res += "=" * n + "\n"
+    res += "Callbacks functions applied \n"
+    for cbk in m.callbacks:
+        if cbk.__doc__ is None:
+            cbk.__doc__ = "No description provided"
+        res += f"    {cbk.__class__.__name__} : {cbk.__doc__}\n"
+
     return PrettyString(res)
 
 Learner.summary = model_summary
