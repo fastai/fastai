@@ -164,8 +164,6 @@ def layers_info(m:Collection[nn.Module]) -> Collection[namedtuple]:
 
 def model_summary(m:Learner, n:int=70):
     "Print a summary of `m` using a output text width of `n` chars"
-    #TODO docstrings of callbacks appear to be none (bug)
-    #TODO the tweak adamw require some extra code
     info = layers_info(m)
     header = ["Layer (type)", "Output Shape", "Param #", "Trainable"]
     res = m.model.__class__.__name__ + "\n"
@@ -187,10 +185,11 @@ def model_summary(m:Learner, n:int=70):
            
     res += f"Optimized with {str(m.opt_func)[25:-1].replace('>', '')}\n"
     if m.true_wd: res += f"Using true weight decay as discussed in https://www.fast.ai/2018/07/02/adam-weight-decay/ \n"
+    if "wd" in str(m.opt_func) or "weight_decay" in str(m.opt_func): res += f"\x1b[1;31m Specifying weight decay in the optimizer has no effect, Learner will overwrite \x1b[0m \n" 
     res += f"Loss function : {m.loss_func.__class__.__name__}\n"
     res += "=" * n + "\n"
     res += "Callbacks functions applied \n"
-    res += "\n".join([f"    {cbk.__class__.__name__}" for cbs in m.callbacks])
+    res += "\n".join([f"    {cbs.__class__.__name__}" for cbs in m.callbacks])
 
     return PrettyString(res)
 
