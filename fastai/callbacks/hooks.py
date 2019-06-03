@@ -96,6 +96,7 @@ class ActivationStats(HookCallback):
         if train: self.stats.append(self.hooks.stored)
     def on_train_end(self, **kwargs):
         "Polish the final result."
+        super().on_train_end(**kwargs)
         self.stats = tensor(self.stats).permute(2,1,0)
 
 def dummy_batch(m: nn.Module, size:tuple=(64,64))->Tensor:
