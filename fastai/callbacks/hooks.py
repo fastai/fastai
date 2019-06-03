@@ -186,13 +186,11 @@ def model_summary(m:Learner, n:int=70):
     res += f"Total non-trainable params: {total_params - total_trainable_params:,}\n"
            
     res += f"Optimized with {str(m.opt_func)[25:-1].replace('>', '')}\n"
-    if m.true_wd:
-        res += f"Using true weight decay as discussed in https://www.fast.ai/2018/07/02/adam-weight-decay/ \n"
+    if m.true_wd: res += f"Using true weight decay as discussed in https://www.fast.ai/2018/07/02/adam-weight-decay/ \n"
     res += f"Loss function : {m.loss_func.__class__.__name__}\n"
     res += "=" * n + "\n"
     res += "Callbacks functions applied \n"
-    for cbk in m.callbacks:
-        res += f"    {cbk.__class__.__name__}\n"
+    res += "\n".join([f"    {cbk.__class__.__name__}" for cbs in m.callbacks])
 
     return PrettyString(res)
 
