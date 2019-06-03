@@ -9,19 +9,19 @@
     "fastai.basic_data.DataBunch.create": [
         {
             "file": "tests/test_basic_data.py",
-            "line": 31,
+            "line": 30,
             "test": "test_DataBunch_Create"
         },
         {
             "file": "tests/test_basic_data.py",
-            "line": 45,
+            "line": 44,
             "test": "test_DataBunch_no_valid_dl"
         }
     ],
     "fastai.basic_data.DataBunch.one_batch": [
         {
             "file": "tests/test_basic_data.py",
-            "line": 59,
+            "line": 58,
             "test": "test_DataBunch_onebatch"
         },
         {
@@ -41,35 +41,35 @@
         },
         {
             "file": "tests/test_basic_data.py",
-            "line": 84,
+            "line": 83,
             "test": "test_DataBunch_save_load"
         }
     ],
     "fastai.basic_data.DataBunch.one_item": [
         {
             "file": "tests/test_basic_data.py",
-            "line": 68,
+            "line": 67,
             "test": "test_DataBunch_oneitem"
         }
     ],
     "fastai.basic_data.DataBunch.save": [
         {
             "file": "tests/test_basic_data.py",
-            "line": 84,
+            "line": 83,
             "test": "test_DataBunch_save_load"
         }
     ],
     "fastai.basic_data.DataBunch.show_batch": [
         {
             "file": "tests/test_basic_data.py",
-            "line": 76,
+            "line": 75,
             "test": "test_DataBunch_show_batch"
         }
     ],
     "fastai.basic_data.intercept_args": [
         {
             "file": "tests/test_basic_data.py",
-            "line": 19,
+            "line": 18,
             "test": "test_intercept_args"
         }
     ],
@@ -81,7 +81,7 @@
         },
         {
             "file": "tests/test_basic_data.py",
-            "line": 84,
+            "line": 83,
             "test": "test_DataBunch_save_load"
         }
     ],
@@ -842,6 +842,20 @@
             "file": "tests/test_tabular_data.py",
             "line": 5,
             "test": "test_from_df"
+        }
+    ],
+    "fastai.tabular.models._cl_int_from_learner": [
+        {
+            "file": "tests/test_vision_train.py",
+            "line": 72,
+            "test": "test_interp"
+        }
+    ],
+    "fastai.tabular.models._learner_interpret": [
+        {
+            "file": "tests/test_vision_train.py",
+            "line": 78,
+            "test": "test_interp_shortcut"
         }
     ],
     "fastai.tabular.transform.Categorify": [
