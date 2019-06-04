@@ -186,7 +186,8 @@ def model_summary(m:Learner, n:int=70):
            
     res += f"Optimized with {str(m.opt_func)[25:-1].replace('>', '')}\n"
     if m.true_wd: res += f"Using true weight decay as discussed in https://www.fast.ai/2018/07/02/adam-weight-decay/ \n"
-    if "wd" in str(m.opt_func) or "weight_decay" in str(m.opt_func): res += f"\x1b[1;31m Specifying weight decay in the optimizer has no effect, Learner will overwrite \x1b[0m \n" 
+    if "wd" in str(m.opt_func) or "weight_decay" in str(m.opt_func): res += f"\x1b[1;31m Specifying weight decay in the optimizer has no effect, Learner will overwrite \x1b[0m \n"
+    if "lr" in str(m.opt_func) or "learning_rate" in str(m.opt_func): res += f"\x1b[1;31m Specifying lr in the optimizer has no effect, pass it to fit or the defaults.lr will apply \x1b[0m \n" 
     res += f"Loss function : {m.loss_func.__class__.__name__}\n"
     res += "=" * n + "\n"
     res += "Callbacks functions applied \n"
