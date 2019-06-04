@@ -51,7 +51,7 @@ class LanguageModelPreLoader(Callback):
         self.ri    = np.zeros(self.bs, dtype=np.int)
 
     def on_epoch_begin(self, **kwargs):
-        if self.idx is None: self.allocate_buffers()
+        if self.idx is None or len(self.idx) != len(self.dataset.x.items): self.allocate_buffers()
         elif self.shuffle:   self.idx.shuffle()
         self.idx.forward = not self.backwards
 

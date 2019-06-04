@@ -96,6 +96,7 @@ class ActivationStats(HookCallback):
         if train: self.stats.append(self.hooks.stored)
     def on_train_end(self, **kwargs):
         "Polish the final result."
+        super().on_train_end(**kwargs)
         self.stats = tensor(self.stats).permute(2,1,0)
 
 def dummy_batch(m: nn.Module, size:tuple=(64,64))->Tensor:
@@ -166,7 +167,8 @@ def model_summary(m:Learner, n:int=70):
     "Print a summary of `m` using a output text width of `n` chars"
     info = layers_info(m)
     header = ["Layer (type)", "Output Shape", "Param #", "Trainable"]
-    res = "=" * n + "\n"
+    res = m.model.__class__.__name__ + "\n"
+    res += "=" * n + "\n"
     res += f"{header[0]:<20} {header[1]:<20} {header[2]:<10} {header[3]:<10}\n"
     res += "=" * n + "\n"
     total_params = 0
@@ -181,6 +183,16 @@ def model_summary(m:Learner, n:int=70):
     res += f"\nTotal params: {total_params:,}\n"
     res += f"Total trainable params: {total_trainable_params:,}\n"
     res += f"Total non-trainable params: {total_params - total_trainable_params:,}\n"
+           
+    res += f"Optimized with {str(m.opt_func)[25:-1].replace('>', '')}\n"
+    if m.true_wd: res += f"Using true weight decay as discussed in https://www.fast.ai/2018/07/02/adam-weight-decay/ \n"
+    if "wd" in str(m.opt_func) or "weight_decay" in str(m.opt_func): res += f"\x1b[1;31m Specifying weight decay in the optimizer has no effect, Learner will overwrite \x1b[0m \n"
+    if "lr" in str(m.opt_func) or "learning_rate" in str(m.opt_func): res += f"\x1b[1;31m Specifying lr in the optimizer has no effect, pass it to fit or the defaults.lr will apply \x1b[0m \n" 
+    res += f"Loss function : {m.loss_func.__class__.__name__}\n"
+    res += "=" * n + "\n"
+    res += "Callbacks functions applied \n"
+    res += "\n".join([f"    {cbs.__class__.__name__}" for cbs in m.callbacks])
+
     return PrettyString(res)
 
 Learner.summary = model_summary

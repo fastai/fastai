@@ -56,6 +56,7 @@ class RNNLearner(Learner):
 
     def save_encoder(self, name:str):
         "Save the encoder to `name` inside the model directory."
+        if is_pathlike(file): self._test_writeable_path()
         encoder = get_model(self.model)[0]
         if hasattr(encoder, 'module'): encoder = encoder.module
         torch.save(encoder.state_dict(), self.path/self.model_dir/f'{name}.pth')
