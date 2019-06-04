@@ -144,6 +144,7 @@ def make_dataset_dirs(dataset_command, path):
             print('Invalid dataset - enter either all, train or valid.')
             return []
 
+
 def COCO_load(root_dir, train_annot=False, valid_annot=False, tfms=[], resize=608, batch_size=4):
     """
     Args:
@@ -178,8 +179,7 @@ def COCO_load(root_dir, train_annot=False, valid_annot=False, tfms=[], resize=60
     all_objects = (ObjectItemList.from_folder(root_dir).split_by_folder()
                    .label_from_func(get_y_func)
                    .transform(tfms, tfm_y=True, size=resize)
-                   .databunch(bs=batch_size, collate_fn=bb_pad_collate)
-                   .normalize())
+                   .databunch(bs=batch_size, collate_fn=bb_pad_collate))
     return all_objects
 
 
@@ -658,6 +658,7 @@ class COCODataset(Dataset):
                 self.image_id_to_bbox_id[self.bbox[i]['image_id']] = [i]
         for anomaly in set(self.images_ids).difference(set(self.image_id_to_bbox_id.keys())):
             self.image_id_to_bbox_id[anomaly] = []
+
         self.images_ids = list(self.images.keys())
         self.categories = {i['id']: i['name'] for i in self.json['categories']}
 

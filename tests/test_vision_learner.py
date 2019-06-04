@@ -1,14 +1,14 @@
 import pytest
 import torch
 import torch.nn as nn
-from fastai.gen_doc.doctest import this_tests
-from fastai.vision.learner import *
-from fastai.callbacks.hooks import *
+from ..fastai.gen_doc.doctest import this_tests
+from ..fastai.vision.learner import *
+from ..fastai.callbacks.hooks import *
 from torchvision.models import resnet18
 from torchvision.models.resnet import BasicBlock
-from fastai.datasets import *
-from fastai.vision.data import *
-from fastai.vision import *
+from ..fastai.datasets import *
+from ..fastai.vision.data import *
+from ..fastai.vision import *
 
 @pytest.fixture
 def image():
@@ -47,10 +47,8 @@ def test_create_head(image):
 
 def test_yolo_learner():
     tfms = get_transforms(flip_vert=True, max_lighting=0.1, max_zoom=1.05, max_warp=0.)
-    data = COCO_load('/home/marni/COCO/', train_annot='/home/marni/COCO/annotations/instances_train2017_clipped.json',
-                     valid_annot='/home/marni/COCO/annotations/instances_val2017_clipped.json', tfms=tfms)
+    data = COCO_load('d:/Studia/IVrok/ADPB/Coco', tfms=tfms, batch_size=2)
     learner = yolo_learner(data)
     learner.predict()
     learner.show_results()
-
 

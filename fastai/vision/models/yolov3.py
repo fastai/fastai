@@ -53,7 +53,7 @@ def parse_cfg(model):
     """
 
     blocks = []
-    with open('./data/cfg/{}.cfg'.format(model), 'r') as file:
+    with open('d:/Studia/IVrok/ADPB/pycharm_fastai/data/cfg/{}.cfg'.format(model), 'r') as file:
         block = {}
         for line in file:
             line = line.strip()
@@ -327,7 +327,7 @@ class YOLOv3(nn.Module):
         return detections
 
     def load_weights(self, model_name):
-        file = open('./data/weights/{}.weights'.format(model_name), 'rb')
+        file = open('d:/Studia/IVrok/ADPB/weights/{}.weights'.format(model_name), 'rb')
         header = torch.from_numpy(np.fromfile(file, dtype=np.int32, count=5))
         for i, module in enumerate(self.modules_list):
 
