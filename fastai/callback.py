@@ -272,37 +272,37 @@ class CallbackHandler():
         self.state_dict['num_batch'],self.state_dict['stop_training'] = 0,False
         self('epoch_begin')
 
-    def on_batch_begin(self, xb:Tensor, yb:Tensor, train:bool=True)->None:
+    def on_batch_begin(self, xb:Tensor, yb:Tensor, train:bool=True)->Tuple[Any,Any]:
         "Handle new batch `xb`,`yb` in `train` or validation."
         self.state_dict.update(dict(last_input=xb, last_target=yb, train=train, 
             stop_epoch=False, skip_step=False, skip_zero=False, skip_bwd=False))
         self('batch_begin', mets = not self.state_dict['train'])
         return self.state_dict['last_input'], self.state_dict['last_target']
 
-    def on_loss_begin(self, out:Tensor)->None:
+    def on_loss_begin(self, out:Tensor)->Any:
         "Handle start of loss calculation with model output `out`."
         self.state_dict['last_output'] = out
         self('loss_begin', call_mets=False)
         return self.state_dict['last_output']
 
-    def on_backward_begin(self, loss:Tensor)->None:
+    def on_backward_begin(self, loss:Tensor)->Tuple[Any,Any]:
         "Handle gradient calculation on `loss`."
         self.smoothener.add_value(loss.detach().cpu())
         self.state_dict['last_loss'], self.state_dict['smooth_loss'] = loss, self.smoothener.smooth
         self('backward_begin', call_mets=False)
         return self.state_dict['last_loss'], self.state_dict['skip_bwd']
 
-    def on_backward_end(self)->None:
+    def on_backward_end(self)->Any:
         "Handle end of gradient calculation."
         self('backward_end', call_mets=False)
         return self.state_dict['skip_step']
 
-    def on_step_end(self)->None:
+    def on_step_end(self)->Any:
         "Handle end of optimization step."
         self('step_end', call_mets=False)
         return self.state_dict['skip_zero']
 
-    def on_batch_end(self, loss:Tensor)->None:
+    def on_batch_end(self, loss:Tensor)->Any:
         "Handle end of processing one batch with `loss`."
         self.state_dict['last_loss'] = loss
         self('batch_end', call_mets = not self.state_dict['train'])
