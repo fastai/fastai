@@ -50,7 +50,6 @@ class TrackerCallback(LearnerCallback):
             warn(f'{self.__class__} conditioned on metric `{self.monitor}` which is not available. Available metrics are: {", ".join(map(str, self.learn.recorder.names[1:-1]))}')
         return values.get(self.monitor)
 
-@dataclass
 class EarlyStoppingCallback(TrackerCallback):
     "A `TrackerCallback` that terminates training when monitored quantity stops improving."
     def __init__(self, learn:Learner, monitor:str='valid_loss', mode:str='auto', min_delta:int=0, patience:int=0):
