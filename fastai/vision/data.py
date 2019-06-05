@@ -658,7 +658,7 @@ class LoadVideo:
         Args:
             size(int): Size to resize the frame to, 608 by default.
         '''
-        if bunny.video.isOpened():
+        if self.video.isOpened():
             success, image = self.video.read()
             if success is False:
                 self.video.release()
