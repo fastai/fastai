@@ -26,6 +26,18 @@ def _get_files(parent, p, f, extensions):
     res = [p/o for o in f if not o.startswith('.')
            and (extensions is None or f'.{o.split(".")[-1].lower()}' in low_extensions)]
     return res
+                
+def __get_files(p:PathOrStr, extensions:Collection[str]=None):
+    p = Path(p)
+    res = [] # result list    
+    if (not extensions):  return p.glob("**/*") # all files
+    if extensions.__class__==str: extensions = [extensions]
+    for _ in extensions:
+        if(_.__class__==str):
+            res.extend(p.glob("**/*"+_))
+        else:            
+            raise ValueError(f"Extensions must be strings, not {_}")
+    return res
 
 def get_files(path:PathOrStr, extensions:Collection[str]=None, recurse:bool=False,
               include:Optional[Collection[str]]=None, presort:bool=False)->FilePathList:
