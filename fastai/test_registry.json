@@ -307,54 +307,54 @@
     "fastai.core.Category": [
         {
             "file": "tests/test_core.py",
-            "line": 234,
+            "line": 240,
             "test": "test_itembase_eq"
         }
     ],
     "fastai.core.Category.__hash__": [
         {
             "file": "tests/test_core.py",
-            "line": 296,
+            "line": 302,
             "test": "test_itembase_hash"
         }
     ],
     "fastai.core.FloatItem": [
         {
             "file": "tests/test_core.py",
-            "line": 234,
+            "line": 240,
             "test": "test_itembase_eq"
         }
     ],
     "fastai.core.FloatItem.__hash__": [
         {
             "file": "tests/test_core.py",
-            "line": 296,
+            "line": 302,
             "test": "test_itembase_hash"
         }
     ],
     "fastai.core.ItemBase.__eq__": [
         {
             "file": "tests/test_core.py",
-            "line": 234,
+            "line": 240,
             "test": "test_itembase_eq"
         },
         {
             "file": "tests/test_core.py",
-            "line": 296,
+            "line": 302,
             "test": "test_itembase_hash"
         }
     ],
     "fastai.core.MultiCategory": [
         {
             "file": "tests/test_core.py",
-            "line": 234,
+            "line": 240,
             "test": "test_itembase_eq"
         }
     ],
     "fastai.core.MultiCategory.__hash__": [
         {
             "file": "tests/test_core.py",
-            "line": 296,
+            "line": 302,
             "test": "test_itembase_hash"
         }
     ],

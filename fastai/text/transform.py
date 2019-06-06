@@ -152,6 +152,9 @@ class Vocab():
         for o in reversed(defaults.text_spec_tok):
             if o in itos: itos.remove(o)
             itos.insert(0, o)
+        itos = itos[:max_vocab]
+        if len(itos) < max_vocab: #Make sure vocab size is a multiple of 8 for fast mixed precision training
+            while len(itos)%8 !=0: itos.append('xxfake')
         return cls(itos)
     
     @classmethod
