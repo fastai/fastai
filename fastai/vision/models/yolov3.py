@@ -4,7 +4,7 @@ import numpy as np
 from ...layers import *
 
 
-__all__ = ['parse_cfg', 'create_modules', 'get_IoUs', 'rewrite_results', 'YOLOv3']
+__all__ = ['parse_cfg', 'create_modules', 'get_IoUs', 'rewrite_results', 'rewrite_bboxes', 'YOLOv3']
 
 
 class NoNetBlock(Exception):
@@ -222,7 +222,7 @@ def get_IoUs(bbox, others):
     return ious
 
 
-def rewrite_results(detections, confidence, nms_conf):
+def rewrite_results(detections, confidence, nms_conf, nonzero_only=True):
 
     corners = torch.zeros(detections.size(0), detections.size(1), 4)
     corners[:, :, 0] = detections[:, :, 0] - detections[:, :, 2]/2
@@ -235,10 +235,15 @@ def rewrite_results(detections, confidence, nms_conf):
     max_bbox = 0
     for image in detections:
         # select bounding boxes which objectness score is above confidence score
-        bboxes = image[(image[:, 4] > confidence).nonzero().squeeze(), :]
+
+        bconf = (image[:, 4] > confidence).nonzero()
+        bboxes = image[bconf.squeeze(), :]
         if bboxes.size(0) == 0:
             outputs.append(None)
             continue
+        elif bboxes.dim() == 1:
+            bboxes = bboxes.view(len(bconf), -1)
+
         class_conf, class_number = torch.max(bboxes[:, 5:], 1)
         class_conf, class_number = class_conf.float().unsqueeze(1), class_number.float().unsqueeze(1)
         bboxes = torch.cat((bboxes[:, :5], class_conf, class_number), 1)
@@ -273,16 +278,40 @@ def rewrite_results(detections, confidence, nms_conf):
 
     batch_size = detections.size(0)
     assert len(outputs) == batch_size
-    output_coords = torch.zeros(batch_size, max_bbox, 4)
-    output_classes = torch.zeros(batch_size, max_bbox)
 
-    for i, output in enumerate(outputs):
-        if output is not None:
-            start_pos = max_bbox - len(output)
-            output_coords[i, start_pos:] = output[:, :4]
-            output_classes[i, start_pos:] = output[:, -1]
+    if nonzero_only:
+        images = []
+        for output in outputs:
+            if output is not None:
+                images.append((output[:, :5].detach(), output[:, -1].detach()))
+            else:
+                images.append((torch.zeros(0, 5, requires_grad=False), torch.zeros(0, requires_grad=False)))
+        return images
+    else:
+        output_bboxes = torch.zeros(batch_size, max_bbox, 5, requires_grad=False)
+        output_classes = torch.zeros(batch_size, max_bbox, requires_grad=False)
+        for i, output in enumerate(outputs):
+            if output is not None:
+                start_pos = max_bbox - len(output)
+                output_bboxes[i, start_pos:] = output[:, :5].detach()
+                output_classes[i, start_pos:] = output[:, -1].detach()
 
-    return [output_coords, output_classes]
+        return [output_bboxes, output_classes]
+
+
+def rewrite_bboxes(bboxes, classes):
+
+    images = []
+    for image_bboxes, image_classes in zip(bboxes, classes):
+        real = image_classes.nonzero()
+        num_real = real.size(0)
+        params = image_bboxes.size(2)
+        if num_real == 0:
+            images.append((torch.zeros(0, params), torch.zeros(0)))
+        else:
+            real = real.squeeze()
+            images.append((image_bboxes[real, :].view(num_real, -1), image_classes[real].view(num_real)))
+    return images
 
 
 def yolo_loss(input, target, lambda_coords, lambda_noobj):

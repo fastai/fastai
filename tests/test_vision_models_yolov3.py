@@ -1,6 +1,7 @@
 import pytest
-from ..fastai.vision.models.yolov3 import *
+from fastai.vision.models.yolov3 import *
 import torch
+import random
 
 
 @pytest.mark.parametrize("model", {"test/test_parse"})
@@ -54,6 +55,20 @@ def test_get_IoUs(bboxes):
     assert round(result[1].item(), 4) == 0.1463
     assert result[2].item() == 0.0
     print(result)
+
+
+def test_rewrite_bboxes(n=5, b=6):
+    bboxes = torch.zeros(n, b, 4)
+    classes = torch.zeros(n, b)
+    nonzeros = []
+    for image, c in zip(bboxes, classes):
+        non = random.sample(range(b), random.randrange(0, b))
+        nonzeros.append(len(non))
+        image[non] = torch.rand(len(non), 4)
+        c[non] = torch.Tensor(random.sample(range(1, 10), len(non)))
+    result = rewrite_bboxes(bboxes, classes)
+    for i, (image, non) in enumerate(zip(result, nonzeros)):
+        assert image[1].size(0) == non
 
 
 @pytest.mark.parametrize("pretrained", {False})

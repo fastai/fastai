@@ -364,7 +364,6 @@ class Yolo(nn.Module):
         self.num_classes = num_classes
 
     def forward(self, prediction):
-        print('before yolo: {}'.format(prediction.shape))
         batch_size = prediction.size(0)
         pred_width, pred_height = prediction.size(2), prediction.size(3)
         stride_width = self.inp_width // pred_width

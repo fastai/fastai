@@ -48,9 +48,10 @@ def test_create_head(image):
 def test_yolo_learner():
     tfms = get_transforms(flip_vert=True, max_lighting=0.1, max_zoom=1.05, max_warp=0.)
     data = COCO_load('/home/marni/COCO/', train_annot='/home/marni/COCO/annotations/instances_train2017_clipped.json',
-                     valid_annot='/home/marni/COCO/annotations/instances_val2017_clipped.json', tfms=tfms)
+                     valid_annot='/home/marni/COCO/annotations/instances_val2017_clipped.json', tfms=tfms, resize=128)
     learner = yolo_learner(data)
     learner.predict()
-    learner.show_results()
+    #print(learner.prediction)
+    learner.show_results(num=2)
 
 
