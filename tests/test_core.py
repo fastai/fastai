@@ -231,6 +231,12 @@ def test_subplots_single():
     assert (len(axs) == 1)
     assert (len(axs[0]) == 1)
 
+def test_is1d():
+    assert is1d([1, 2, 3, 4])
+    assert is1d((1, 2, 3, 4))
+    assert not is1d([[1, 2], [3, 4]])
+    assert not is1d(np.array(((1,2), (3,4))))
+
 def test_itembase_eq():
     this_tests(ItemBase.__eq__, Category, FloatItem, MultiCategory)
     c1 = Category(0, 'cat')

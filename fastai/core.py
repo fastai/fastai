@@ -79,7 +79,7 @@ def ifnone(a:Any,b:Any)->Any:
 
 def is1d(a:Collection)->bool:
     "Return `True` if `a` is one-dimensional"
-    return len(a.shape) == 1 if hasattr(a, 'shape') else True
+    return len(a.shape) == 1 if hasattr(a, 'shape') else len(np.array(a).shape) == 1
 
 def uniqueify(x:Series, sort:bool=False)->List:
     "Return sorted unique values of `x`."
