@@ -7,13 +7,6 @@ from ..basic_data import *
 from ..layers import *
 from .learner import *
 from ..core import *
-from ..modules.parser import *
-from ..modules.utils import *
-from ..modules.downloader import *
-from ..modules.show import *
-from ..modules.csv_downloader import *
-from ..modules.bounding_boxes import *
-from ..modules.image_level import *
 from torchvision import transforms as tvt
 from . import *
 import os
@@ -23,7 +16,6 @@ from torch.utils.data import Dataset
 from pathlib import Path
 from zipfile import ZipFile
 import urllib.request
-from argparse import Namespace
 import random
 from skimage import io, transform
 
@@ -109,6 +101,9 @@ def COCO_download(root_dir=str(os.getcwd()), destiny_folder="COCO", dataset=None
 def get_image_urls_and_names(annots, random_sample, category=None):
     '''
     Filters loaded JSON COCO annotations and returns dict of image_name:coco_url_to_image.
+    Args:
+        annots (JSON): Loaded COCO-like annotions in JSON format.
+        random_sample (int): Number of images to download.
     '''
     categories = {i['id']: i['name'] for i in annots['categories']}
     images = {i['id']: [i['file_name'], i['coco_url']] for i in annots['images']}
@@ -129,6 +124,9 @@ def get_image_urls_and_names(annots, random_sample, category=None):
 def make_dataset_dirs(dataset_command, path):
     """
     Prepare COCO catalogue structure - make folders if they not exist.
+    Args:
+        dataset_command (string): Defines dataset for which the folders will be made.
+        path (string): Path to place where folders will be created.
     """
     if dataset_command is None:
         print('No datasets selected.')
@@ -213,16 +211,6 @@ def clip_annotations(images_path, annotations_file):
         json.dump(towrite, file)
     print('Clipped json file was written to file! {} images and {} annotations were removed'.format(*removed))
 
-
-def download_open_images(Dataset=None, classes=['Violin'], command='downloader', image_IsDepiction=None, image_IsGroupOf=None, image_IsInside=None, image_IsOccluded=None, image_IsTruncated=None, limit=None, multiclasses='0', n_threads=None, noLabels=False, sub=None, type_csv='validation'):
-    'Wrapper on OID package'
-    ROOT_DIR = ''
-    DEFAULT_OID_DIR = os.path.join(ROOT_DIR, 'data')
-    args = Namespace(Dataset=Dataset, classes=classes, command=command, image_IsDepiction=image_IsDepiction, image_IsGroupOf=image_IsGroupOf, image_IsInside=image_IsInside, image_IsOccluded=image_IsOccluded, image_IsTruncated=image_IsTruncated, limit=limit, multiclasses=multiclasses, n_threads=n_threads, noLabels=noLabels, sub=sub, type_csv=type_csv)
-    if args.command == 'downloader_ill':
-        image_level(args, DEFAULT_OID_DIR)
-    else:
-        bounding_boxes_images(args, DEFAULT_OID_DIR)
 
 def get_image_files(c:PathOrStr, check_ext:bool=True, recurse=False)->FilePathList:
     "Return list of files in `c` that are images. `check_ext` will filter to `image_extensions`."
@@ -682,10 +670,22 @@ class LoadVideo:
         return (int(self.video.get(cv2.CAP_PROP_FRAME_WIDTH)), int(self.video.get(cv2.CAP_PROP_FRAME_HEIGHT)))
 
     def check_last_frame_sum(self):
+        """
+        Check if last read frame was not all black.
+        """
         if self.last_frame is not None:
             return self.last_frame.sum()
         else:
             return None
+
+    def get_last_frame_resized(self, x=608, y=608):
+        """
+        Get last read frame in form of a tensor resized to given resolution.
+        :param x: Width to resize image to.
+        :param y: Height to resize image to.
+        :return:
+        """
+        return torch.from_numpy(transform.resize(self.last_frame, (x, y))).float()
 
     def __len__(self):
         return int(self.video.get(cv2.CAP_PROP_FRAME_COUNT))
@@ -696,8 +696,7 @@ class COCODataset(Dataset):
 
     def __init__(self, json_file):
         """
-        Args:
-            json_file (string): Path to the csv file with annotations.
+        :param json_file: Path to the csv file with annotations.
         """
         with open(json_file) as file:
             self.json = json.load(file)
@@ -723,6 +722,7 @@ class COCODataset(Dataset):
     def get_bboxes(self):
         """
         Dict of image names with corresponding bounding boxes.
+        :return:
         """
         all_bboxes = []
         image_names = []
