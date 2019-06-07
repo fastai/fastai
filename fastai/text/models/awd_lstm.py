@@ -91,7 +91,7 @@ class AWD_LSTM(nn.Module):
         if self.qrnn:
             #Using QRNN requires an installation of cuda
             from .qrnn import QRNN
-            self.rnns = [QRNN(emb_sz if l == 0 else n_hid, n_hid if l != n_layers - 1 else emb_sz, 1,
+            self.rnns = [QRNN(emb_sz if l == 0 else n_hid, (n_hid if l != n_layers - 1 else emb_sz)//self.n_dir, 1,
                               save_prev_x=True, zoneout=0, window=2 if l == 0 else 1, output_gate=True) 
                          for l in range(n_layers)]
             for rnn in self.rnns: 
