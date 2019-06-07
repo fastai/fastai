@@ -224,13 +224,14 @@ def get_IoUs(bbox, others):
 
 def rewrite_results(detections, confidence, nms_conf, nonzero_only=True):
 
+    '''
     corners = torch.zeros(detections.size(0), detections.size(1), 4)
     corners[:, :, 0] = detections[:, :, 0] - detections[:, :, 2]/2
     corners[:, :, 1] = detections[:, :, 1] - detections[:, :, 3]/2
     corners[:, :, 2] = detections[:, :, 0] + detections[:, :, 2]/2
     corners[:, :, 3] = detections[:, :, 1] + detections[:, :, 3]/2
     detections[:, :, :4] = corners
-
+    '''
     outputs = []
     max_bbox = 0
     for image in detections:

@@ -260,6 +260,8 @@ class Yolo_Learner():
 
         import matplotlib.pyplot as plt
 
+        if rows > len(x):
+            rows = len(x)
         cols = math.ceil(len(x) / rows)
         fig, axs = plt.subplots(rows, cols)
         try:
@@ -283,10 +285,10 @@ class Yolo_Learner():
         for box, class_ in zip(boxes, classes):
             # color = next(colors)
             if constant_conf is not None:
-                rect = patches.Rectangle(box[:2], box[2], box[3], linewidth=2 * constant_conf, edgecolor=color,
-                                         facecolor='none')
+                rect = patches.Rectangle((box[0]-box[2]/2, box[1]-box[3]/2), box[2], box[3], linewidth=2*constant_conf,
+                                         edgecolor=color, facecolor='none')
             else:
-                rect = patches.Rectangle(box[:2], box[2], box[3], linewidth=2 * box[4], edgecolor=color,
-                                         facecolor='none')
+                rect = patches.Rectangle((box[0]-box[2]/2, box[1]-box[3]/2), box[2], box[3], linewidth=2*box[4],
+                                         edgecolor=color, facecolor='none')
             ax.add_patch(rect)
-            ax.text(box[0], box[3], self.classes[class_], color=color)
+            ax.text(box[0]-box[2]/2, box[1]-box[3]/2, self.classes[int(class_)], color=color)

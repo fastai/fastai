@@ -25,13 +25,14 @@ from zipfile import ZipFile
 import urllib.request
 from argparse import Namespace
 import random
+from skimage import io, transform
 
 __all__ = ['COCO_download', 'COCO_load', 'get_image_files', 'denormalize', 'get_annotations', 'ImageDataBunch',
            'ImageList', 'normalize', 'normalize_funcs', 'resize_to',
            'channel_view', 'mnist_stats', 'cifar_stats', 'imagenet_stats', 'download_images',
            'verify_images', 'bb_pad_collate', 'ImageImageList', 'PointsLabelList',
            'ObjectCategoryList', 'ObjectItemList', 'SegmentationLabelList', 'SegmentationItemList', 'PointsItemList',
-           'clip_annotations', 'COCODataset']
+           'clip_annotations', 'COCODataset', 'LoadVideo']
 
 image_extensions = set(k for k,v in mimetypes.types_map.items() if v.startswith('image/'))
 
@@ -42,11 +43,13 @@ def COCO_download(root_dir=str(os.getcwd()), destiny_folder="COCO", dataset=None
     '''
     Download COCO annotations and image sets, either all or specific classes.
     Args:
-        root_dir - path where the COCO database will be stored.
-        destiny_folder - name of folder to which download COCO database.
-        dataset - either 'all', 'train', or 'valid' - determines which image set will be downloaded.
-        category - if list of categories provided, only images of those categories will be downloaded.
-        annot_link - URL to COCO annotations.
+        root_dir (string): path where the COCO database will be stored.
+        destiny_folder (string): name of folder to which download COCO database.
+        dataset (string): either 'all', 'train', or 'valid' - determines which image set will be downloaded.
+        category (list): if list of categories provided, only images of those categories will be downloaded.
+        random_train (int): number of images to download from training set.
+        random_valid (int): number of images to download from validation set.
+        annot_link (string): URL to COCO annotations.
     '''
     os.makedirs('{}/{}'.format(root_dir, destiny_folder), exist_ok=True)
     path = '{}/{}'.format(root_dir, destiny_folder)  # go to COCO directory
@@ -144,6 +147,7 @@ def make_dataset_dirs(dataset_command, path):
             print('Invalid dataset - enter either all, train or valid.')
             return []
 
+
 def COCO_load(root_dir, train_annot=False, valid_annot=False, tfms=[], resize=608, batch_size=4):
     """
     Args:
@@ -178,8 +182,7 @@ def COCO_load(root_dir, train_annot=False, valid_annot=False, tfms=[], resize=60
     all_objects = (ObjectItemList.from_folder(root_dir).split_by_folder()
                    .label_from_func(get_y_func)
                    .transform(tfms, tfm_y=True, size=resize)
-                   .databunch(bs=batch_size, collate_fn=bb_pad_collate)
-                   .normalize())
+                   .databunch(bs=batch_size, collate_fn=bb_pad_collate))
     return all_objects
 
 
@@ -635,7 +638,59 @@ class ImageImageList(ImageList):
             y.show(ax=axs[i,2], **kwargs)
             z.show(ax=axs[i,1], **kwargs)
 
-            
+
+class LoadVideo:
+    '''
+    Class for loading video frames as tensors.
+    '''
+
+    def __init__(self, video_path):
+        '''
+        Args:
+            video_path(str): Path to video file.
+        '''
+        self.video = cv2.VideoCapture(video_path)
+        self.last_frame = None
+
+    def get_frame(self, x=608, y=608):
+        '''
+        Returns next resized frame from the video as a tensor.
+        Args:
+            size(int): Size to resize the frame to, 608 by default.
+        '''
+        if self.video.isOpened():
+            success, image = self.video.read()
+            if success is False:
+                self.video.release()
+                cv2.destroyAllWindows()
+                return None
+            self.last_frame = image
+            return torch.from_numpy(transform.resize(image, (x, y))).float()
+        else:
+            return None
+
+    def get_fps(self):
+        """
+        Return framerate of the video.
+        """
+        return self.video.get(cv2.CAP_PROP_FPS)
+
+    def get_resolution(self):
+        """
+        Return resolution of the video.
+        """
+        return (int(self.video.get(cv2.CAP_PROP_FRAME_WIDTH)), int(self.video.get(cv2.CAP_PROP_FRAME_HEIGHT)))
+
+    def check_last_frame_sum(self):
+        if self.last_frame is not None:
+            return self.last_frame.sum()
+        else:
+            return None
+
+    def __len__(self):
+        return int(self.video.get(cv2.CAP_PROP_FRAME_COUNT))
+
+
 class COCODataset(Dataset):
     """Common Objects in Context dataset."""
 
@@ -658,6 +713,7 @@ class COCODataset(Dataset):
                 self.image_id_to_bbox_id[self.bbox[i]['image_id']] = [i]
         for anomaly in set(self.images_ids).difference(set(self.image_id_to_bbox_id.keys())):
             self.image_id_to_bbox_id[anomaly] = []
+
         self.images_ids = list(self.images.keys())
         self.categories = {i['id']: i['name'] for i in self.json['categories']}
 

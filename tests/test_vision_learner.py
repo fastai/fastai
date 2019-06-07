@@ -54,4 +54,3 @@ def test_yolo_learner():
     #print(learner.prediction)
     learner.show_results(num=2)
 
-
