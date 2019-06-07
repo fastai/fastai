@@ -341,9 +341,10 @@ class Learner():
         else: xb,yb = self.data.one_batch(ds_type, detach=False, denorm=False)
         cb_handler = CallbackHandler(self.callbacks)
         xb,yb = cb_handler.on_batch_begin(xb,yb, train=False)
-        if not with_dropout: preds = loss_batch(self.model.eval(), xb, yb, cb_handler=cb_handler)
-        else: preds = loss_batch(self.model.eval().apply(self.apply_dropout), xb, yb, cb_handler=cb_handler)
-        res = _loss_func2activ(self.loss_func)(preds[0])
+        with torch.no_grad():
+            if not with_dropout: preds = loss_batch(self.model.eval(), xb, yb, cb_handler=cb_handler)
+            else: preds = loss_batch(self.model.eval().apply(self.apply_dropout), xb, yb, cb_handler=cb_handler)
+            res = _loss_func2activ(self.loss_func)(preds[0])
         if not reconstruct: return res
         res = res.detach().cpu()
         ds = self.dl(ds_type).dataset
