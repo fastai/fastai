@@ -92,7 +92,7 @@ class AWD_LSTM(nn.Module):
             #Using QRNN requires an installation of cuda
             from .qrnn import QRNN
             self.rnns = [QRNN(emb_sz if l == 0 else n_hid, (n_hid if l != n_layers - 1 else emb_sz)//self.n_dir, 1,
-                              save_prev_x=True, zoneout=0, window=2 if l == 0 else 1, output_gate=True) 
+                              save_prev_x=True, zoneout=0, window=2 if l == 0 else 1, output_gate=True, bidirectional=bidir) 
                          for l in range(n_layers)]
             for rnn in self.rnns: 
                 rnn.layers[0].linear = WeightDropout(rnn.layers[0].linear, weight_p, layer_names=['weight'])
