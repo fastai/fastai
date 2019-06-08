@@ -189,7 +189,7 @@ def get_language_model(arch:Callable, vocab_sz:int, config:dict=None, drop_mult:
     "Create a language model from `arch` and its `config`, maybe `pretrained`."
     meta = _model_meta[arch]
     config = ifnone(config, meta['config_lm'].copy())
-    for k in config.keys(): 
+    for k in config.keys():
         if k.endswith('_p'): config[k] *= drop_mult
     tie_weights,output_p,out_bias = map(config.pop, ['tie_weights', 'output_p', 'out_bias'])
     init = config.pop('init') if 'init' in config else None
@@ -206,16 +206,15 @@ def language_model_learner(data:DataBunch, arch, config:dict=None, drop_mult:flo
     meta = _model_meta[arch]
     learn = LanguageLearner(data, model, split_func=meta['split_lm'], **learn_kwargs)
     url = 'url_bwd' if data.backwards else 'url'
-    if pretrained:
-        if url not in meta: 
-            warn("There are no pretrained weights for that architecture yet!")
-            return learn
-        model_path = untar_data(meta[url] , data=False)
-        fnames = [list(model_path.glob(f'*.{ext}'))[0] for ext in ['pth', 'pkl']]
-        learn.load_pretrained(*fnames)
-        learn.freeze()
-    if pretrained_fnames is not None:
-        fnames = [learn.path/learn.model_dir/f'{fn}.{ext}' for fn,ext in zip(pretrained_fnames, ['pth', 'pkl'])]
+    if pretrained or pretrained_fnames:
+        if pretrained_fnames is not None:
+            fnames = [learn.path/learn.model_dir/f'{fn}.{ext}' for fn,ext in zip(pretrained_fnames, ['pth', 'pkl'])]
+        else:
+            if url not in meta:
+                warn("There are no pretrained weights for that architecture yet!")
+                return learn
+            model_path = untar_data(meta[url] , data=False)
+            fnames = [list(model_path.glob(f'*.{ext}'))[0] for ext in ['pth', 'pkl']]
         learn.load_pretrained(*fnames)
         learn.freeze()
     return learn
@@ -267,7 +266,7 @@ class MultiBatchEncoder(nn.Module):
                 raw_outputs.append(r)
                 outputs.append(o)
         return self.concat(raw_outputs),self.concat(outputs),torch.cat(masks,dim=1)
-    
+
 def get_text_classifier(arch:Callable, vocab_sz:int, n_class:int, bptt:int=70, max_len:int=20*70, config:dict=None, 
                         drop_mult:float=1., lin_ftrs:Collection[int]=None, ps:Collection[float]=None,
                         pad_idx:int=1) -> nn.Module:

@@ -15,10 +15,14 @@ of that change.
 
 ### New:
 
+- `bunzip(fn:PathOrStr)`: bunzip a file
+- `working_directory`: context manager to change to a directory and return to original directory when done
+
 ### Changed:
 
 ### Fixed:
 
+- `get_language_model`: `pretrained_fnames` no longer requires `pretrained` be `False`
 
 
 ## 1.0.52 (2019-04-26)

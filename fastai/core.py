@@ -368,8 +368,26 @@ def compose(funcs:List[Callable])->Callable:
 class PrettyString(str):
     "Little hack to get strings to show properly in Jupyter."
     def __repr__(self): return self
-    
+
 def float_or_x(x):
     "Tries to convert to float, returns x if it can't"
     try:   return float(x)
     except:return x
+
+def bunzip(fn:PathOrStr):
+    "bunzip `fn`, raising exception if output already exists"
+    fn = Path(fn)
+    assert fn.exists(), f"{fn} doesn't exist"
+    out_fn = fn.with_suffix('')
+    assert not out_fn.exists(), f"{out_fn} already exists"
+    with bz2.BZ2File(fn, 'rb') as src, out_fn.open('wb') as dst:
+        for d in iter(lambda: src.read(1024*1024), b''): dst.write(d)
+
+@contextmanager
+def working_directory(path:PathOrStr):
+    "Change working directory to `path` and return to previous on exit."
+    prev_cwd = Path.cwd()
+    os.chdir(path)
+    try: yield
+    finally: os.chdir(prev_cwd)
+
