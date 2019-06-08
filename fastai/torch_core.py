@@ -405,3 +405,10 @@ def try_save(state:Dict, path:Path=None, file:PathLikeOrBinaryStream=None):
     except OSError as e:
         raise Exception(f"{e}\n Can't write {path/file}. Pass an absolute writable pathlib obj `fname`.")
 
+def np_func(f):
+    "Convert a function taking and returning numpy arrays to one taking and returning tensors"
+    def _inner(*args, **kwargs):
+        nargs = [to_np(arg) if isinstance(arg,Tensor) else arg for arg in args]
+        return tensor(f(*nargs, **kwargs))
+    return _inner
+

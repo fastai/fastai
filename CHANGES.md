@@ -17,6 +17,7 @@ of that change.
 
 - `bunzip(fn:PathOrStr)`: bunzip a file
 - `working_directory`: context manager to change to a directory and return to original directory when done
+- `np_func`: decorator for creating metrics from numpy functions
 
 ### Changed:
 
