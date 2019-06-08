@@ -23,14 +23,14 @@ def fbeta(y_pred:Tensor, y_true:Tensor, thresh:float=0.2, beta:float=2, eps:floa
     return res.mean()
 
 def accuracy(input:Tensor, targs:Tensor)->Rank0Tensor:
-    "Compute accuracy with `targs` when `input` is bs * n_classes."
+    "Computes accuracy with `targs` when `input` is bs * n_classes."
     n = targs.shape[0]
     input = input.argmax(dim=-1).view(n,-1)
     targs = targs.view(n,-1)
     return (input==targs).float().mean()
 
 def accuracy_thresh(y_pred:Tensor, y_true:Tensor, thresh:float=0.5, sigmoid:bool=True)->Rank0Tensor:
-    "Compute accuracy when `y_pred` and `y_true` are the same size."
+    "Computes accuracy when `y_pred` and `y_true` are the same size."
     if sigmoid: y_pred = y_pred.sigmoid()
     return ((y_pred>thresh)==y_true.byte()).float().mean()
 
@@ -111,22 +111,22 @@ class RegMetrics(Callback):
         self.targs = torch.cat((self.targs, last_target.cpu()))
 
 class R2Score(RegMetrics):
-    "Compute the R2 score (coefficient of determination)."
+    "Computes the R2 score (coefficient of determination)."
     def on_epoch_end(self, last_metrics, **kwargs):
         return add_metrics(last_metrics, r2_score(self.preds, self.targs))
 
 class ExplainedVariance(RegMetrics):
-    "Compute the explained variance."
+    "Computes the explained variance."
     def on_epoch_end(self, last_metrics, **kwargs):
         return add_metrics(last_metrics, explained_variance(self.preds, self.targs))
 
 class RMSE(RegMetrics):
-    "Compute the root mean squared error."
+    "Computes the root mean squared error."
     def on_epoch_end(self, last_metrics, **kwargs):
         return add_metrics(last_metrics, root_mean_squared_error(self.preds, self.targs))
 
 class ExpRMSPE(RegMetrics):
-    "Compute the exponential of the root mean square error."
+    "Computes the exponential of the root mean square error."
     def on_epoch_end(self, last_metrics, **kwargs):
         return add_metrics(last_metrics, exp_rmspe(self.preds, self.targs))
 
@@ -196,18 +196,18 @@ class CMScores(ConfusionMatrix):
 
 
 class Recall(CMScores):
-    "Compute the Recall."
+    "Computes the Recall."
     def on_epoch_end(self, last_metrics, **kwargs): 
         return add_metrics(last_metrics, self._recall())
 
 class Precision(CMScores):
-    "Compute the Precision."
+    "Computes the Precision."
     def on_epoch_end(self, last_metrics, **kwargs): 
         return add_metrics(last_metrics, self._precision())
 
 @dataclass
 class FBeta(CMScores):
-    "Compute the F`beta` score."
+    "Computes the F`beta` score."
     beta:float=2
 
     def on_train_begin(self, **kwargs):
@@ -228,7 +228,7 @@ class FBeta(CMScores):
 
 @dataclass
 class KappaScore(ConfusionMatrix):
-    "Compute the rate of agreement (Cohens Kappa)."
+    "Computes the rate of agreement (Cohens Kappa)."
     weights:Optional[str]=None      # None, `linear`, or `quadratic`
 
     def on_epoch_end(self, last_metrics, **kwargs):
@@ -248,7 +248,7 @@ class KappaScore(ConfusionMatrix):
 
 @dataclass
 class MatthewsCorreff(ConfusionMatrix):
-    "Compute the Matthews correlation coefficient."
+    "Computes the Matthews correlation coefficient."
     def on_epoch_end(self, last_metrics, **kwargs):
         t_sum = self.cm.sum(dim=1)
         p_sum = self.cm.sum(dim=0)
@@ -297,7 +297,7 @@ def roc_curve(input:Tensor, targ:Tensor):
 
 @dataclass
 class AUROC(Callback):
-    "Calculate the auc score based on the roc curve. Restricted to the binary classification task."
+    "Calculates the auc score based on the roc curve. Restricted to the binary classification task."
     def on_epoch_begin(self, **kwargs):
         self.targs, self.preds = LongTensor([]), Tensor([])
         

@@ -52,7 +52,7 @@ summary: "Useful metrics for training"
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="accuracy" class="doc_header"><code>accuracy</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L25" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#accuracy-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>accuracy</code>(<strong><code>input</code></strong>:<code>Tensor</code>, <strong><code>targs</code></strong>:<code>Tensor</code>) → <code>Rank0Tensor</code></p>
 </blockquote>
-<div class="collapse" id="accuracy-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#accuracy-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>accuracy</code>:</p><ul><li><code>pytest -sv tests/test_metrics.py::test_accuracy</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_metrics.py#L44" class="source_link" style="float:right">[source]</a></li><li><code>pytest -sv tests/test_vision_train.py::test_accuracy</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_vision_train.py#L41" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><p>Compute accuracy with <code>targs</code> when <code>input</code> is bs * n_classes.</p>
+<div class="collapse" id="accuracy-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#accuracy-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>accuracy</code>:</p><ul><li><code>pytest -sv tests/test_metrics.py::test_accuracy</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_metrics.py#L44" class="source_link" style="float:right">[source]</a></li><li><code>pytest -sv tests/test_vision_train.py::test_accuracy</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_vision_train.py#L41" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><p>Computes accuracy with <code>targs</code> when <code>input</code> is bs * n_classes.</p>
 
 </div>
 
@@ -122,7 +122,7 @@ summary: "Useful metrics for training"
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="accuracy_thresh" class="doc_header"><code>accuracy_thresh</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L32" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#accuracy_thresh-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>accuracy_thresh</code>(<strong><code>y_pred</code></strong>:<code>Tensor</code>, <strong><code>y_true</code></strong>:<code>Tensor</code>, <strong><code>thresh</code></strong>:<code>float</code>=<strong><em><code>0.5</code></em></strong>, <strong><code>sigmoid</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>) → <code>Rank0Tensor</code></p>
 </blockquote>
-<div class="collapse" id="accuracy_thresh-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#accuracy_thresh-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>accuracy_thresh</code>:</p><ul><li><code>pytest -sv tests/test_metrics.py::test_accuracy_thresh</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_metrics.py#L99" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><p>Compute accuracy when <code>y_pred</code> and <code>y_true</code> are the same size.</p>
+<div class="collapse" id="accuracy_thresh-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#accuracy_thresh-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>accuracy_thresh</code>:</p><ul><li><code>pytest -sv tests/test_metrics.py::test_accuracy_thresh</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_metrics.py#L99" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><p>Computes accuracy when <code>y_pred</code> and <code>y_true</code> are the same size.</p>
 
 </div>
 
@@ -134,7 +134,7 @@ summary: "Useful metrics for training"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Prediction are compared to <code>thresh</code> after <code>sigmoid</code> is maybe applied. Then we count the numbers that match the targets.</p>
+<p>Predictions are compared to <code>thresh</code> after <code>sigmoid</code> is maybe applied. Then we count the numbers that match the targets.</p>
 
 </div>
 </div>
@@ -610,7 +610,7 @@ $$ {R^2} = 1 - \frac{\sum( targ - pred )^2}{\sum( targ - \overline{targ})^2}$$<p
 <div class="output_markdown rendered_html output_subarea ">
 <h3 id="RMSE" class="doc_header"><code>class</code> <code>RMSE</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L123" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#RMSE-pytest" style="float:right; padding-right:10px">[test]</a></h3><blockquote><p><code>RMSE</code>() :: <a href="/metrics.html#RegMetrics"><code>RegMetrics</code></a></p>
 </blockquote>
-<div class="collapse" id="RMSE-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#RMSE-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>RMSE</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Compute the root mean squared error.</p>
+<div class="collapse" id="RMSE-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#RMSE-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>RMSE</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Computes the root mean squared error.</p>
 
 </div>
 
@@ -631,7 +631,7 @@ $$ {R^2} = 1 - \frac{\sum( targ - pred )^2}{\sum( targ - \overline{targ})^2}$$<p
 <div class="output_markdown rendered_html output_subarea ">
 <h3 id="ExpRMSPE" class="doc_header"><code>class</code> <code>ExpRMSPE</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L128" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#ExpRMSPE-pytest" style="float:right; padding-right:10px">[test]</a></h3><blockquote><p><code>ExpRMSPE</code>() :: <a href="/metrics.html#RegMetrics"><code>RegMetrics</code></a></p>
 </blockquote>
-<div class="collapse" id="ExpRMSPE-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#ExpRMSPE-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>ExpRMSPE</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Compute the exponential of the root mean square error.</p>
+<div class="collapse" id="ExpRMSPE-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#ExpRMSPE-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>ExpRMSPE</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Computes the exponential of the root mean square error.</p>
 
 </div>
 
@@ -652,7 +652,7 @@ $$ {R^2} = 1 - \frac{\sum( targ - pred )^2}{\sum( targ - \overline{targ})^2}$$<p
 <div class="output_markdown rendered_html output_subarea ">
 <h3 id="Precision" class="doc_header"><code>class</code> <code>Precision</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L203" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#Precision-pytest" style="float:right; padding-right:10px">[test]</a></h3><blockquote><p><code>Precision</code>(<strong><code>average</code></strong>:<code>Optional</code>[<code>str</code>]=<strong><em><code>'binary'</code></em></strong>, <strong><code>pos_label</code></strong>:<code>int</code>=<strong><em><code>1</code></em></strong>, <strong><code>eps</code></strong>:<code>float</code>=<strong><em><code>1e-09</code></em></strong>) :: <a href="/metrics.html#CMScores"><code>CMScores</code></a></p>
 </blockquote>
-<div class="collapse" id="Precision-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#Precision-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>Precision</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Compute the Precision.</p>
+<div class="collapse" id="Precision-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#Precision-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>Precision</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Computes the Precision.</p>
 
 </div>
 
@@ -673,7 +673,7 @@ $$ {R^2} = 1 - \frac{\sum( targ - pred )^2}{\sum( targ - \overline{targ})^2}$$<p
 <div class="output_markdown rendered_html output_subarea ">
 <h3 id="Recall" class="doc_header"><code>class</code> <code>Recall</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L198" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#Recall-pytest" style="float:right; padding-right:10px">[test]</a></h3><blockquote><p><code>Recall</code>(<strong><code>average</code></strong>:<code>Optional</code>[<code>str</code>]=<strong><em><code>'binary'</code></em></strong>, <strong><code>pos_label</code></strong>:<code>int</code>=<strong><em><code>1</code></em></strong>, <strong><code>eps</code></strong>:<code>float</code>=<strong><em><code>1e-09</code></em></strong>) :: <a href="/metrics.html#CMScores"><code>CMScores</code></a></p>
 </blockquote>
-<div class="collapse" id="Recall-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#Recall-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>Recall</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Compute the Recall.</p>
+<div class="collapse" id="Recall-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#Recall-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>Recall</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Computes the Recall.</p>
 
 </div>
 
@@ -694,7 +694,7 @@ $$ {R^2} = 1 - \frac{\sum( targ - pred )^2}{\sum( targ - \overline{targ})^2}$$<p
 <div class="output_markdown rendered_html output_subarea ">
 <h3 id="FBeta" class="doc_header"><code>class</code> <code>FBeta</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L209" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#FBeta-pytest" style="float:right; padding-right:10px">[test]</a></h3><blockquote><p><code>FBeta</code>(<strong><code>average</code></strong>:<code>Optional</code>[<code>str</code>]=<strong><em><code>'binary'</code></em></strong>, <strong><code>pos_label</code></strong>:<code>int</code>=<strong><em><code>1</code></em></strong>, <strong><code>eps</code></strong>:<code>float</code>=<strong><em><code>1e-09</code></em></strong>, <strong><code>beta</code></strong>:<code>float</code>=<strong><em><code>2</code></em></strong>) :: <a href="/metrics.html#CMScores"><code>CMScores</code></a></p>
 </blockquote>
-<div class="collapse" id="FBeta-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#FBeta-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>FBeta</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Compute the F<code>beta</code> score.</p>
+<div class="collapse" id="FBeta-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#FBeta-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>FBeta</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Computes the F<code>beta</code> score.</p>
 
 </div>
 
@@ -715,7 +715,7 @@ $$ {R^2} = 1 - \frac{\sum( targ - pred )^2}{\sum( targ - \overline{targ})^2}$$<p
 <div class="output_markdown rendered_html output_subarea ">
 <h3 id="R2Score" class="doc_header"><code>class</code> <code>R2Score</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L113" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#R2Score-pytest" style="float:right; padding-right:10px">[test]</a></h3><blockquote><p><code>R2Score</code>() :: <a href="/metrics.html#RegMetrics"><code>RegMetrics</code></a></p>
 </blockquote>
-<div class="collapse" id="R2Score-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#R2Score-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>R2Score</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Compute the R2 score (coefficient of determination).</p>
+<div class="collapse" id="R2Score-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#R2Score-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>R2Score</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Computes the R2 score (coefficient of determination).</p>
 
 </div>
 
@@ -736,7 +736,7 @@ $$ {R^2} = 1 - \frac{\sum( targ - pred )^2}{\sum( targ - \overline{targ})^2}$$<p
 <div class="output_markdown rendered_html output_subarea ">
 <h3 id="ExplainedVariance" class="doc_header"><code>class</code> <code>ExplainedVariance</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L118" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#ExplainedVariance-pytest" style="float:right; padding-right:10px">[test]</a></h3><blockquote><p><code>ExplainedVariance</code>() :: <a href="/metrics.html#RegMetrics"><code>RegMetrics</code></a></p>
 </blockquote>
-<div class="collapse" id="ExplainedVariance-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#ExplainedVariance-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>ExplainedVariance</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Compute the explained variance.</p>
+<div class="collapse" id="ExplainedVariance-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#ExplainedVariance-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>ExplainedVariance</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Computes the explained variance.</p>
 
 </div>
 
@@ -757,7 +757,7 @@ $$ {R^2} = 1 - \frac{\sum( targ - pred )^2}{\sum( targ - \overline{targ})^2}$$<p
 <div class="output_markdown rendered_html output_subarea ">
 <h3 id="MatthewsCorreff" class="doc_header"><code>class</code> <code>MatthewsCorreff</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L250" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#MatthewsCorreff-pytest" style="float:right; padding-right:10px">[test]</a></h3><blockquote><p><code>MatthewsCorreff</code>() :: <a href="/metrics.html#ConfusionMatrix"><code>ConfusionMatrix</code></a></p>
 </blockquote>
-<div class="collapse" id="MatthewsCorreff-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#MatthewsCorreff-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>MatthewsCorreff</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Compute the Matthews correlation coefficient.</p>
+<div class="collapse" id="MatthewsCorreff-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#MatthewsCorreff-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>MatthewsCorreff</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Computes the Matthews correlation coefficient.</p>
 
 </div>
 
@@ -785,7 +785,7 @@ $$ {R^2} = 1 - \frac{\sum( targ - pred )^2}{\sum( targ - \overline{targ})^2}$$<p
 <div class="output_markdown rendered_html output_subarea ">
 <h3 id="KappaScore" class="doc_header"><code>class</code> <code>KappaScore</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L230" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#KappaScore-pytest" style="float:right; padding-right:10px">[test]</a></h3><blockquote><p><code>KappaScore</code>(<strong><code>weights</code></strong>:<code>Optional</code>[<code>str</code>]=<strong><em><code>None</code></em></strong>) :: <a href="/metrics.html#ConfusionMatrix"><code>ConfusionMatrix</code></a></p>
 </blockquote>
-<div class="collapse" id="KappaScore-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#KappaScore-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>KappaScore</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Compute the rate of agreement (Cohens Kappa).</p>
+<div class="collapse" id="KappaScore-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#KappaScore-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>KappaScore</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Computes the rate of agreement (Cohens Kappa).</p>
 
 </div>
 
@@ -987,9 +987,9 @@ learn = cnn_learner(data, model, metrics=[error_rate, kappa])</code></pre>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>To deploy it, you need to pass an instance of this custom metric in the <a href="/metrics.html#metrics"><code>metrics</code></a> argument:</p>
-
-<pre><code>learn = cnn_learner(data, model, metrics=[accuracy, TraceMallocMetric()])
-learn.fit_one_cycle(3, max_lr=1e-2)</code></pre>
+<div class="highlight"><pre><span></span><span class="n">learn</span> <span class="o">=</span> <span class="n">cnn_learner</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="n">accuracy</span><span class="p">,</span> <span class="n">TraceMallocMetric</span><span class="p">()])</span>
+<span class="n">learn</span><span class="o">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">max_lr</span><span class="o">=</span><span class="mf">1e-2</span><span class="p">)</span>
+</pre></div>
 <p>And then the output changes to:</p>
 
 <pre><code>Total time: 00:54
@@ -1055,9 +1055,9 @@ epoch   train_loss  valid_loss  accuracy    peak RAM
 <p>Note, that it subclasses <a href="/basic_train.html#LearnerCallback"><code>LearnerCallback</code></a> and not <a href="/callback.html#Callback"><code>Callback</code></a>, since the former provides extra features not available in the latter.</p>
 <p>Also <code>_order=-20</code> is crucial - without it the custom columns will not be added - it tells the callback system to run this callback before the recorder system.</p>
 <p>To deploy it, you need to pass the name of the class (not an instance!) of the class in the <code>callback_fns</code> argument. This is because the <code>learn</code> object doesn't exist yet, and it's required to instantiate <code>TraceMallocMultiColMetric</code>. The system will do it for us automatically as soon as the learn object has been created.</p>
-
-<pre><code>learn = cnn_learner(data, model, metrics=[accuracy], callback_fns=TraceMallocMultiColMetric)
-learn.fit_one_cycle(3, max_lr=1e-2)</code></pre>
+<div class="highlight"><pre><span></span><span class="n">learn</span> <span class="o">=</span> <span class="n">cnn_learner</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="n">accuracy</span><span class="p">],</span> <span class="n">callback_fns</span><span class="o">=</span><span class="n">TraceMallocMultiColMetric</span><span class="p">)</span>
+<span class="n">learn</span><span class="o">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">max_lr</span><span class="o">=</span><span class="mf">1e-2</span><span class="p">)</span>
+</pre></div>
 <p>And then the output changes to:</p>
 
 <pre><code>Total time: 00:53
@@ -1066,14 +1066,14 @@ epoch   train_loss valid_loss   accuracy     used   max_used   peak
     2   0.093551    0.032776    0.988500     79343  2408404   2348085
     3   0.047178    0.025307    0.992100     79568  2408404   2342754</code></pre>
 <p>Another way to do the same is by using <code>learn.callbacks.append</code>, and this time we need to instantiate <code>TraceMallocMultiColMetric</code> with <code>learn</code> object which we now have, as it is called after the latter was created:</p>
-
-<pre><code>learn = cnn_learner(data, model, metrics=[accuracy])
-learn.callbacks.append(TraceMallocMultiColMetric(learn))
-learn.fit_one_cycle(3, max_lr=1e-2)</code></pre>
+<div class="highlight"><pre><span></span><span class="n">learn</span> <span class="o">=</span> <span class="n">cnn_learner</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="n">accuracy</span><span class="p">])</span>
+<span class="n">learn</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">TraceMallocMultiColMetric</span><span class="p">(</span><span class="n">learn</span><span class="p">))</span>
+<span class="n">learn</span><span class="o">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">max_lr</span><span class="o">=</span><span class="mf">1e-2</span><span class="p">)</span>
+</pre></div>
 <p>Configuring the custom metrics in the <code>learn</code> object sets them to run in all future <a href="/basic_train.html#fit"><code>fit</code></a>-family calls. However, if you'd like to configure it for just one call, you can configure it directly inside <a href="/basic_train.html#fit"><code>fit</code></a> or <a href="/train.html#fit_one_cycle"><code>fit_one_cycle</code></a>:</p>
-
-<pre><code>learn = cnn_learner(data, model, metrics=[accuracy])
-learn.fit_one_cycle(3, max_lr=1e-2, callbacks=TraceMallocMultiColMetric(learn))</code></pre>
+<div class="highlight"><pre><span></span><span class="n">learn</span> <span class="o">=</span> <span class="n">cnn_learner</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="n">accuracy</span><span class="p">])</span>
+<span class="n">learn</span><span class="o">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">max_lr</span><span class="o">=</span><span class="mf">1e-2</span><span class="p">,</span> <span class="n">callbacks</span><span class="o">=</span><span class="n">TraceMallocMultiColMetric</span><span class="p">(</span><span class="n">learn</span><span class="p">))</span>
+</pre></div>
 <p>And to stress the differences:</p>
 <ul>
 <li>the <code>callback_fns</code> argument expects a classname or a list of those</li>
