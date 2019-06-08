@@ -410,5 +410,6 @@ def np_func(f):
     def _inner(*args, **kwargs):
         nargs = [to_np(arg) if isinstance(arg,Tensor) else arg for arg in args]
         return tensor(f(*nargs, **kwargs))
+    functools.update_wrapper(_inner, f)
     return _inner
 
