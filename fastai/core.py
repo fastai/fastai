@@ -327,7 +327,7 @@ def text2html_table(items:Collection[Collection[str]])->str:
     html_code += "  </tbody>\n</table>"
     return html_code
 
-def parallel(func, arr:Collection, max_workers:int=None):
+def parallel(func, arr:Collection, max_workers:int=None, leave=False):
     "Call `func` on every element of `arr` in parallel using `max_workers`."
     max_workers = ifnone(max_workers, defaults.cpus)
     if max_workers<2: results = [func(o,i) for i,o in progress_bar(enumerate(arr), total=len(arr))]
@@ -335,7 +335,8 @@ def parallel(func, arr:Collection, max_workers:int=None):
         with ProcessPoolExecutor(max_workers=max_workers) as ex:
             futures = [ex.submit(func,o,i) for i,o in enumerate(arr)]
             results = []
-            for f in progress_bar(concurrent.futures.as_completed(futures), total=len(arr)): results.append(f.result())
+            for f in progress_bar(concurrent.futures.as_completed(futures), total=len(arr), leave=leave): 
+                results.append(f.result())
     if any([o is not None for o in results]): return results
 
 def subplots(rows:int, cols:int, imgsize:int=4, figsize:Optional[Tuple[int,int]]=None, title=None, **kwargs):

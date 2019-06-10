@@ -394,6 +394,7 @@ def _join_texts(texts:Collection[str], mark_fields:bool=False, include_bos:bool=
     return text_col.values
 
 def apply_rules(text, i=0, pre_rules=None, post_rules=None):
+    "Apply `pre_rules` and `post_rules` to `text`"
     text = text.rstrip(' ').lstrip(' ')
     for r in ifnone(pre_rules, defaults.text_pre_rules): text = r(text)
     toks = text.split()
@@ -401,12 +402,14 @@ def apply_rules(text, i=0, pre_rules=None, post_rules=None):
     return ' '.join(toks) 
 
 def get_default_size(texts, max_vocab_sz):
-    #TODO: make it nearest multiple of 8
+    "Either max_vocab_sz or one quarter of the number of unique words in `texts`"
     cnt = Counter()
     for t in texts: 
         cnt.update(t.split())
         if len(cnt)//4 > max_vocab_sz: return max_vocab_sz
-    return len(cnt)//4
+    res = len(cnt)//4
+    while res%8 != ): res+=1
+    return res
 
 full_char_coverage_langs = ["bg", "cs", "da", "de", "el", "en", "es", "et", "fi", "fr", "ga", "hr", "hu",
                        "it","lt","lv","mt","nl","pl","pt","ro","sk","sl","sv"] # all European langs
@@ -414,6 +417,7 @@ full_char_coverage_langs = ["bg", "cs", "da", "de", "el", "en", "es", "et", "fi"
 def train_sentencepiece(texts:Collection[str], path:PathOrStr, pre_rules: ListRules=None, post_rules:ListRules=None, 
     vocab_sz:int=None, max_vocab_sz:int=30000, model_type:str='unigram', max_sentence_len:int=20480, lang='en',
     char_coverage=None, tmp_dir='tmp'):
+    "Train a sentencepiece tokenizer on `texts` and save it in `path/tmp_dir`"
     from sentencepiece import SentencePieceTrainer
     cache_dir = Path(path)/tmp_dir
     os.makedirs(cache_dir, exist_ok=True)
@@ -430,6 +434,7 @@ def train_sentencepiece(texts:Collection[str], path:PathOrStr, pre_rules: ListRu
     return cache_dir
 
 class SPProcessor(PreProcessor):
+    "`PreProcessor` that tokenize and numericalizes with `sentencepiece`"
     def __init__(self, ds:ItemList=None, chunksize:int=10000, pre_rules: ListRules=None, post_rules:ListRules=None, 
                  vocab_sz:int=None, max_vocab_sz:int=30000, model_type:str='unigram', max_sentence_len:int=20480, 
                  lang='en', char_coverage=None, tmp_dir='tmp', mark_fields:bool=False, include_bos:bool=True, 

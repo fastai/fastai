@@ -21,6 +21,7 @@ https://s3.amazonaws.com/fast-ai-modelzoo/wt103-1.tgz
 
 ### New:
 
+- sentencepiece tokenizer in fastai.text via `SPProcessor`
 - a backward pretrained model for NLP (automatically used if the databunch was created via the datablock API
 using `backwards=True`)
 - `bunzip(fn:PathOrStr)`: bunzip a file
