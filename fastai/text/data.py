@@ -8,7 +8,7 @@ from ..callback import Callback
 
 __all__ = ['LanguageModelPreLoader', 'SortSampler', 'SortishSampler', 'TextList', 'pad_collate', 'TextDataBunch',
            'TextLMDataBunch', 'TextClasDataBunch', 'Text', 'open_text', 'TokenizeProcessor', 'NumericalizeProcessor',
-           'OpenFileProcessor', 'LMLabelList', 'LMTextList']
+           'OpenFileProcessor', 'LMLabelList', 'LMTextList', 'SPProcessor']
 
 TextMtd = IntEnum('TextMtd', 'DF TOK IDS')
 text_extensions = {'.txt'}
@@ -392,3 +392,73 @@ def _join_texts(texts:Collection[str], mark_fields:bool=False, include_bos:bool=
         text_col += (f' {FLD} {i+1} ' if mark_fields else ' ') + df[i].astype(str)
     if include_eos: text_col = text_col + f' {EOS}'
     return text_col.values
+
+def apply_rules(text, i=0, pre_rules=None, post_rules=None):
+    text = text.rstrip(' ').lstrip(' ')
+    for r in ifnone(pre_rules, defaults.text_pre_rules): text = r(text)
+    toks = text.split()
+    for r in ifnone(post_rules, defaults.text_post_rules): toks = r(toks)
+    return ' '.join(toks) 
+
+def get_default_size(texts, max_vocab_sz):
+    #TODO: make it nearest multiple of 8
+    cnt = Counter()
+    for t in texts: 
+        cnt.update(t.split())
+        if len(cnt)//4 > max_vocab_sz: return max_vocab_sz
+    return len(cnt)//4
+
+full_char_coverage_langs = ["bg", "cs", "da", "de", "el", "en", "es", "et", "fi", "fr", "ga", "hr", "hu",
+                       "it","lt","lv","mt","nl","pl","pt","ro","sk","sl","sv"] # all European langs
+
+def train_sentencepiece(texts:Collection[str], path:PathOrStr, pre_rules: ListRules=None, post_rules:ListRules=None, 
+    vocab_sz:int=None, max_vocab_sz:int=30000, model_type:str='unigram', max_sentence_len:int=20480, lang='en',
+    char_coverage=None, tmp_dir='tmp'):
+    from sentencepiece import SentencePieceTrainer
+    cache_dir = Path(path)/tmp_dir
+    os.makedirs(cache_dir, exist_ok=True)
+    if vocab_sz is None: vocab_sz=get_default_size(texts, max_vocab_sz)
+    raw_text_path = cache_dir / 'all_text.txt'
+    with open(raw_text_path, 'w') as f: f.write("\n".join(texts))
+    spec_tokens = ['\u2581'+s for s in defaults.text_spec_tok]
+    SentencePieceTrainer.Train(" ".join([
+        f"--input={raw_text_path} --max_sentence_length={max_sentence_len}",
+        f"--character_coverage={ifnone(char_coverage, 1 if lang in full_char_coverage_langs else 0.99)}",
+        f"--unk_id={len(defaults.text_spec_tok)} --pad_id=-1 --bos_id=-1 --eos_id=-1",
+        f"--user_defined_symbols={','.join(spec_tokens)}",
+        f"--model_prefix={cache_dir/'spm'} --vocab_size={vocab_sz} --model_type={model_type}"]))
+    return cache_dir
+
+class SPProcessor(PreProcessor):
+    def __init__(self, ds:ItemList=None, chunksize:int=10000, pre_rules: ListRules=None, post_rules:ListRules=None, 
+                 vocab_sz:int=None, max_vocab_sz:int=30000, model_type:str='unigram', max_sentence_len:int=20480, 
+                 lang='en', char_coverage=None, tmp_dir='tmp', mark_fields:bool=False, include_bos:bool=True, 
+                 include_eos:bool=False, sp_model=None, sp_vocab=None):
+        try: from sentencepiece import SentencePieceTrainer,SentencePieceProcessor
+        except ImportError:
+            raise Exception('sentencepiece module is missing: run `pip install sentencepiece`')
+        self.chunksize,self.pre_rules,self.post_rules = chunksize,pre_rules,post_rules
+        self.mark_fields,self.include_bos,self.include_eos = mark_fields,include_bos,include_eos
+        self.sp_model,self.sp_vocab = sp_model,sp_vocab
+        self.train_func = partial(train_sentencepiece, pre_rules=pre_rules, post_rules=post_rules, vocab_sz=vocab_sz,
+                max_vocab_sz=max_vocab_sz, model_type=model_type, max_sentence_len=max_sentence_len, lang=lang,
+                char_coverage=char_coverage, tmp_dir=tmp_dir)
+    
+    def process_one(self, item, i=0, join=True):
+        if join: text = _join_texts([item], self.mark_fields, self.include_bos, self.include_eos)[0]
+        text = apply_rules(text, i=i, pre_rules=self.pre_rules, post_rules=self.post_rules)
+        return self.tok.EncodeAsIds(text)
+
+    def process(self, ds):
+        ds.items = _join_texts(ds.items, self.mark_fields, self.include_bos, self.include_eos)
+        ds.items = parallel(partial(apply_rules, pre_rules=self.pre_rules, post_rules=self.post_rules), ds.items)
+        if self.sp_model is None or self.sp_vocab is None:
+            cache_dir = self.train_func(ds.items, ds.path)
+            self.sp_model,self.sp_vocab = cache_dir/'spm.model',cache_dir/'spm.vocab'
+        if not getattr(self, 'tok', False) or not getattr(self, 'vocab', False): 
+            from sentencepiece import SentencePieceProcessor
+            self.tok = SentencePieceProcessor()
+            self.tok.Load(str(self.sp_model))
+            with open(self.sp_vocab, 'r') as f: self.vocab = Vocab([line.split('\t')[0] for line in f.readlines()])
+        ds.items = np.array([self.tok.EncodeAsIds(t) for t in ds.items])
+        ds.vocab = self.vocab
