@@ -438,13 +438,13 @@ class SPProcessor(PreProcessor):
     def __init__(self, ds:ItemList=None, pre_rules: ListRules=None, post_rules:ListRules=None, vocab_sz:int=None,
                  max_vocab_sz:int=30000, model_type:str='unigram', max_sentence_len:int=20480, lang='en',
                  char_coverage=None, tmp_dir='tmp', mark_fields:bool=False, include_bos:bool=True, 
-                 include_eos:bool=False, sp_model=None, sp_vocab=None):
+                 include_eos:bool=False, sp_model=None, sp_vocab=None, n_cpus:int=None):
         try: from sentencepiece import SentencePieceTrainer,SentencePieceProcessor
         except ImportError:
             raise Exception('sentencepiece module is missing: run `pip install sentencepiece`')
         self.pre_rules,self.post_rules = pre_rules,post_rules
         self.mark_fields,self.include_bos,self.include_eos = mark_fields,include_bos,include_eos
-        self.sp_model,self.sp_vocab = sp_model,sp_vocab
+        self.sp_model,self.sp_vocab,self.n_cpus = sp_model,sp_vocab,ifnone(n_cpus,defaults.cpus)
         self.train_func = partial(train_sentencepiece, pre_rules=pre_rules, post_rules=post_rules, vocab_sz=vocab_sz,
                 max_vocab_sz=max_vocab_sz, model_type=model_type, max_sentence_len=max_sentence_len, lang=lang,
                 char_coverage=char_coverage, tmp_dir=tmp_dir)
@@ -452,7 +452,7 @@ class SPProcessor(PreProcessor):
     def process_one(self, item, i=0, join=True):
         if join: text = _join_texts([item], self.mark_fields, self.include_bos, self.include_eos)[0]
         text = apply_rules(text, i=i, pre_rules=self.pre_rules, post_rules=self.post_rules)
-        return self.tok.EncodeAsIds(text)
+        return self._encode_batch([text])
 
     def process(self, ds):
         ds.items = _join_texts(ds.items, self.mark_fields, self.include_bos, self.include_eos)
@@ -460,10 +460,15 @@ class SPProcessor(PreProcessor):
         if self.sp_model is None or self.sp_vocab is None:
             cache_dir = self.train_func(ds.items, ds.path)
             self.sp_model,self.sp_vocab = cache_dir/'spm.model',cache_dir/'spm.vocab'
-        if not getattr(self, 'tok', False) or not getattr(self, 'vocab', False): 
-            from sentencepiece import SentencePieceProcessor
-            self.tok = SentencePieceProcessor()
-            self.tok.Load(str(self.sp_model))
+        if not getattr(self, 'vocab', False): 
             with open(self.sp_vocab, 'r') as f: self.vocab = Vocab([line.split('\t')[0] for line in f.readlines()])
-        ds.items = np.array([self.tok.EncodeAsIds(t) for t in ds.items])
+        if self.n_cpus <= 1: return self._encode_batch(ds.items)
+        with ProcessPoolExecutor(self.n_cpus) as e:
+            ds.items = np.array(sum(e.map(self._encode_batch, partition_by_cores(ds.items, self.n_cpus)), []))
         ds.vocab = self.vocab
+    
+    def _encode_batch(self, texts):
+        from sentencepiece import SentencePieceProcessor
+        tok = SentencePieceProcessor()
+        tok.Load(str(self.sp_model))
+        return [tok.EncodeAsIds(t) for t in texts]
