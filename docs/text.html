@@ -343,21 +343,26 @@ summary: "Application to NLP, including ULMFiT fine-tuning"
 
 
 <div class="output_html rendered_html output_subarea ">
-Total time: 00:13 <p><table style='width:300px; margin-bottom:10px'>
-  <tr>
-    <th>epoch</th>
-    <th>train_loss</th>
-    <th>valid_loss</th>
-    <th>accuracy</th>
-  </tr>
-  <tr>
-    <th>1</th>
-    <th>4.514897</th>
-    <th>3.974741</th>
-    <th>0.282455</th>
-  </tr>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: left;">
+      <th>epoch</th>
+      <th>train_loss</th>
+      <th>valid_loss</th>
+      <th>accuracy</th>
+      <th>time</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>4.319174</td>
+      <td>3.882361</td>
+      <td>0.288155</td>
+      <td>00:13</td>
+    </tr>
+  </tbody>
 </table>
-
 </div>
 
 </div>
@@ -393,21 +398,26 @@ Total time: 00:13 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_html rendered_html output_subarea ">
-Total time: 00:17 <p><table style='width:300px; margin-bottom:10px'>
-  <tr>
-    <th>epoch</th>
-    <th>train_loss</th>
-    <th>valid_loss</th>
-    <th>accuracy</th>
-  </tr>
-  <tr>
-    <th>1</th>
-    <th>4.159299</th>
-    <th>3.886238</th>
-    <th>0.289092</th>
-  </tr>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: left;">
+      <th>epoch</th>
+      <th>train_loss</th>
+      <th>valid_loss</th>
+      <th>accuracy</th>
+      <th>time</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>3.935607</td>
+      <td>3.811058</td>
+      <td>0.297262</td>
+      <td>00:16</td>
+    </tr>
+  </tbody>
 </table>
-
 </div>
 
 </div>
@@ -443,7 +453,7 @@ Total time: 00:17 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>&#39;This is a review about dog - twist credited , and that , along with&#39;</pre>
+<pre>&#39;This is a review about what was worth a word of reading , where some&#39;</pre>
 </div>
 
 </div>
@@ -519,32 +529,36 @@ Total time: 00:17 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_html rendered_html output_subarea ">
-<table>  <col width='90%'>  <col width='10%'>  <tr>
-    <th>text</th>
-    <th>target</th>
-  </tr>
-  <tr>
-    <th>xxbos xxmaj raising xxmaj victor xxmaj vargas : a xxmaj review \n \n  xxmaj you know , xxmaj raising xxmaj victor xxmaj vargas is like sticking your hands into a big , xxunk bowl of xxunk . xxmaj it 's warm and gooey , but you 're not sure if it feels right . xxmaj try as i might , no matter how warm and gooey xxmaj raising xxmaj</th>
-    <th>negative</th>
-  </tr>
-  <tr>
-    <th>xxbos xxmaj now that xxmaj che(2008 ) has finished its relatively short xxmaj australian cinema run ( extremely limited xxunk screen in xxmaj xxunk , after xxunk ) , i can xxunk join both xxunk of " xxmaj at xxmaj the xxmaj movies " in taking xxmaj steven xxmaj soderbergh to task . \n \n  xxmaj it 's usually satisfying to watch a film director change his style /</th>
-    <th>negative</th>
-  </tr>
-  <tr>
-    <th>xxbos i really wanted to love this show . i truly , honestly did . \n \n  xxmaj for the first time , gay viewers get their own version of the " xxmaj the xxmaj xxunk " . xxmaj with the help of his obligatory " hag " xxmaj xxunk , xxmaj james , a good looking , well - to - do thirty - something has the chance</th>
-    <th>negative</th>
-  </tr>
-  <tr>
-    <th>xxbos xxmaj to review this movie , i without any doubt would have to quote that memorable scene in xxmaj tarantino 's " xxmaj pulp xxmaj fiction " ( xxunk ) when xxmaj jules and xxmaj vincent are talking about xxmaj mia xxmaj wallace and what she does for a living . xxmaj jules tells xxmaj vincent that the " xxmaj only thing she did worthwhile was pilot " .</th>
-    <th>negative</th>
-  </tr>
-  <tr>
-    <th>xxbos xxmaj how viewers react to this new " adaption " of xxmaj shirley xxmaj jackson 's book , which was promoted as xxup not being a remake of the original 1963 movie ( true enough ) , will be based , i suspect , on the following : those who were big fans of either the book or original movie are not going to think much of this one</th>
-    <th>negative</th>
-  </tr>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>text</th>
+      <th>target</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>xxbos xxmaj raising xxmaj victor xxmaj vargas : a xxmaj review \n \n  xxmaj you know , xxmaj raising xxmaj victor xxmaj vargas is like sticking your hands into a big , steaming bowl of xxunk . xxmaj it 's warm and gooey , but you 're not sure if it feels right . xxmaj try as i might , no matter how warm and gooey xxmaj raising xxmaj</td>
+      <td>negative</td>
+    </tr>
+    <tr>
+      <td>xxbos xxup the xxup shop xxup around xxup the xxup corner is one of the xxunk and most feel - good romantic comedies ever made . xxmaj there 's just no getting around that , and it 's hard to actually put one 's feeling for this film into words . xxmaj it 's not one of those films that tries too hard , nor does it come up with</td>
+      <td>positive</td>
+    </tr>
+    <tr>
+      <td>xxbos xxmaj now that xxmaj che(2008 ) has finished its relatively short xxmaj australian cinema run ( extremely limited xxunk screen in xxmaj sydney , after xxunk ) , i can xxunk join both xxunk of " xxmaj at xxmaj the xxmaj movies " in taking xxmaj steven xxmaj soderbergh to task . \n \n  xxmaj it 's usually satisfying to watch a film director change his style /</td>
+      <td>negative</td>
+    </tr>
+    <tr>
+      <td>xxbos xxmaj this film sat on my xxmaj tivo for weeks before i watched it . i dreaded a self - indulgent xxunk flick about relationships gone bad . i was wrong ; this was an xxunk xxunk into the screwed - up xxunk of xxmaj new xxmaj yorkers . \n \n  xxmaj the format is the same as xxmaj max xxmaj xxunk ' " xxmaj la xxmaj ronde</td>
+      <td>positive</td>
+    </tr>
+    <tr>
+      <td>xxbos i really wanted to love this show . i truly , honestly did . \n \n  xxmaj for the first time , gay viewers get their own version of the " xxmaj the xxmaj bachelor " . xxmaj with the help of his obligatory " hag " xxmaj xxunk , xxmaj james , a good looking , well - to - do thirty - something has the chance</td>
+      <td>negative</td>
+    </tr>
+  </tbody>
 </table>
-
 </div>
 
 </div>
@@ -572,21 +586,26 @@ Total time: 00:17 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_html rendered_html output_subarea ">
-Total time: 00:33 <p><table style='width:300px; margin-bottom:10px'>
-  <tr>
-    <th>epoch</th>
-    <th>train_loss</th>
-    <th>valid_loss</th>
-    <th>accuracy</th>
-  </tr>
-  <tr>
-    <th>1</th>
-    <th>0.650518</th>
-    <th>0.599687</th>
-    <th>0.691542</th>
-  </tr>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: left;">
+      <th>epoch</th>
+      <th>train_loss</th>
+      <th>valid_loss</th>
+      <th>accuracy</th>
+      <th>time</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>0.603350</td>
+      <td>0.531586</td>
+      <td>0.741294</td>
+      <td>00:23</td>
+    </tr>
+  </tbody>
 </table>
-
 </div>
 
 </div>
@@ -622,21 +641,26 @@ Total time: 00:33 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_html rendered_html output_subarea ">
-Total time: 00:38 <p><table style='width:300px; margin-bottom:10px'>
-  <tr>
-    <th>epoch</th>
-    <th>train_loss</th>
-    <th>valid_loss</th>
-    <th>accuracy</th>
-  </tr>
-  <tr>
-    <th>1</th>
-    <th>0.628320</th>
-    <th>0.563579</th>
-    <th>0.716418</th>
-  </tr>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: left;">
+      <th>epoch</th>
+      <th>train_loss</th>
+      <th>valid_loss</th>
+      <th>accuracy</th>
+      <th>time</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>0.503833</td>
+      <td>0.444084</td>
+      <td>0.800995</td>
+      <td>00:29</td>
+    </tr>
+  </tbody>
 </table>
-
 </div>
 
 </div>
@@ -665,21 +689,26 @@ Total time: 00:38 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_html rendered_html output_subarea ">
-Total time: 00:56 <p><table style='width:300px; margin-bottom:10px'>
-  <tr>
-    <th>epoch</th>
-    <th>train_loss</th>
-    <th>valid_loss</th>
-    <th>accuracy</th>
-  </tr>
-  <tr>
-    <th>1</th>
-    <th>0.533411</th>
-    <th>0.539693</th>
-    <th>0.721393</th>
-  </tr>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: left;">
+      <th>epoch</th>
+      <th>train_loss</th>
+      <th>valid_loss</th>
+      <th>accuracy</th>
+      <th>time</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>0.410422</td>
+      <td>0.363226</td>
+      <td>0.850746</td>
+      <td>00:42</td>
+    </tr>
+  </tbody>
 </table>
-
 </div>
 
 </div>
@@ -715,7 +744,7 @@ Total time: 00:56 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>(Category positive, tensor(1), tensor([0.0118, 0.9882]))</pre>
+<pre>(Category positive, tensor(1), tensor([0.0049, 0.9951]))</pre>
 </div>
 
 </div>

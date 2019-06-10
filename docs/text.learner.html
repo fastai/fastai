@@ -70,7 +70,8 @@ summary: "Easy access of language models and ULMFiT"
 <li>a <a href="/text.models.html#Transformer"><code>Transformer</code></a> decoder (<a href="https://arxiv.org/abs/1706.03762">Vaswani et al.</a>)</li>
 <li>a <a href="/text.models.html#TransformerXL"><code>TransformerXL</code></a> (<a href="https://arxiv.org/abs/1901.02860">Dai et al.</a>)</li>
 </ul>
-<p>They each have a default config for language modelling that is in <code>{lower_case_class_name}_lm_config</code> if you want to change the default parameter. At this stage, only the AWD LSTM support <code>pretrained=True</code> but we hope to add more pretrained models soon. <code>drop_mult</code> is applied to all the dropouts weights of the <code>config</code>, <code>learn_kwargs</code> are passed to the <a href="/basic_train.html#Learner"><code>Learner</code></a> initialization.</p>
+<p>They each have a default config for language modelling that is in <code>{lower_case_class_name}\_lm\_config</code> if you want to change the default parameter. At this stage, only the AWD LSTM and Tranformer support <code>pretrained=True</code> but we hope to add more pretrained models soon. <code>drop_mult</code> is applied to all the dropouts weights of the <code>config</code>, <code>learn_kwargs</code> are passed to the <a href="/basic_train.html#Learner"><code>Learner</code></a> initialization.</p>
+<p>If your <a href="/text.data.html#text.data"><code>data</code></a> is backward, the pretrained model downloaded will also be a backard one (only available for <a href="/text.models.awd_lstm.html#AWD_LSTM"><code>AWD_LSTM</code></a>).</p>
 
 </div>
 </div>

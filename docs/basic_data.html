@@ -247,16 +247,6 @@ summary: "Basic classes to contain the data for model training."
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">show_doc</span><span class="p">(</span><span class="n">DataBunch</span><span class="o">.</span><span class="n">save</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
 
 <div class="output_wrapper">
 <div class="output">
@@ -278,16 +268,6 @@ summary: "Basic classes to contain the data for model training."
 
 </div>
 <div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">show_doc</span><span class="p">(</span><span class="n">load_data</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
 
 <div class="output_wrapper">
 <div class="output">
@@ -369,7 +349,7 @@ summary: "Basic classes to contain the data for model training."
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="_databunch_load_empty" class="doc_header"><code>load_empty</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L742" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#_databunch_load_empty-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>load_empty</code>(<strong><code>path</code></strong>, <strong><code>fname</code></strong>:<code>str</code>=<strong><em><code>'export.pkl'</code></em></strong>)</p>
+<h4 id="_databunch_load_empty" class="doc_header"><code>load_empty</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L740" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#_databunch_load_empty-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>load_empty</code>(<strong><code>path</code></strong>, <strong><code>fname</code></strong>:<code>str</code>=<strong><em><code>'export.pkl'</code></em></strong>)</p>
 </blockquote>
 <div class="collapse" id="_databunch_load_empty-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#_databunch_load_empty-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>_databunch_load_empty</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Load an empty <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a> from the exported file in <code>path/fname</code> with optional <code>tfms</code>.</p>
 
@@ -531,13 +511,13 @@ summary: "Basic classes to contain the data for model training."
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>(tensor([[[0.4784, 0.5531, 0.0379],
-          [0.4204, 0.2199, 0.9813],
-          [0.1865, 0.5576, 0.0301]],
+<pre>(tensor([[[0.8053, 0.5914, 0.5369],
+          [0.6880, 0.4680, 0.5457],
+          [0.0051, 0.2096, 0.3469]],
  
-         [[0.9470, 0.3304, 0.9657],
-          [0.0684, 0.7492, 0.3756],
-          [0.3199, 0.3054, 0.2380]]], dtype=torch.float64), tensor([[0.],
+         [[0.5170, 0.2542, 0.9869],
+          [0.0176, 0.5049, 0.4417],
+          [0.3495, 0.7276, 0.5426]]], dtype=torch.float64), tensor([[0.],
          [0.]], dtype=torch.float64))</pre>
 </div>
 

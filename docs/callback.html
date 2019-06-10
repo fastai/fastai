@@ -636,7 +636,7 @@ Examples: save log_files, load best model found during training</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="CallbackHandler.on_backward_begin" class="doc_header"><code>on_backward_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callback.py#L288" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#CallbackHandler-on_backward_begin-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>on_backward_begin</code>(<strong><code>loss</code></strong>:<code>Tensor</code>)</p>
+<h4 id="CallbackHandler.on_backward_begin" class="doc_header"><code>on_backward_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callback.py#L288" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#CallbackHandler-on_backward_begin-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>on_backward_begin</code>(<strong><code>loss</code></strong>:<code>Tensor</code>) → <code>Tuple</code>[<code>Any</code>, <code>Any</code>]</p>
 </blockquote>
 <div class="collapse" id="CallbackHandler-on_backward_begin-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#CallbackHandler-on_backward_begin-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>on_backward_begin</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Handle gradient calculation on <code>loss</code>.</p>
 
@@ -657,7 +657,7 @@ Examples: save log_files, load best model found during training</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="CallbackHandler.on_backward_end" class="doc_header"><code>on_backward_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callback.py#L295" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#CallbackHandler-on_backward_end-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>on_backward_end</code>()</p>
+<h4 id="CallbackHandler.on_backward_end" class="doc_header"><code>on_backward_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callback.py#L295" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#CallbackHandler-on_backward_end-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>on_backward_end</code>() → <code>Any</code></p>
 </blockquote>
 <div class="collapse" id="CallbackHandler-on_backward_end-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#CallbackHandler-on_backward_end-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>on_backward_end</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Handle end of gradient calculation.</p>
 
@@ -678,7 +678,7 @@ Examples: save log_files, load best model found during training</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="CallbackHandler.on_batch_begin" class="doc_header"><code>on_batch_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callback.py#L275" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#CallbackHandler-on_batch_begin-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>on_batch_begin</code>(<strong><code>xb</code></strong>:<code>Tensor</code>, <strong><code>yb</code></strong>:<code>Tensor</code>, <strong><code>train</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>)</p>
+<h4 id="CallbackHandler.on_batch_begin" class="doc_header"><code>on_batch_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callback.py#L275" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#CallbackHandler-on_batch_begin-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>on_batch_begin</code>(<strong><code>xb</code></strong>:<code>Tensor</code>, <strong><code>yb</code></strong>:<code>Tensor</code>, <strong><code>train</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>) → <code>Tuple</code>[<code>Any</code>, <code>Any</code>]</p>
 </blockquote>
 <div class="collapse" id="CallbackHandler-on_batch_begin-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#CallbackHandler-on_batch_begin-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>on_batch_begin</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Handle new batch <code>xb</code>,<code>yb</code> in <code>train</code> or validation.</p>
 
@@ -699,7 +699,7 @@ Examples: save log_files, load best model found during training</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="CallbackHandler.on_batch_end" class="doc_header"><code>on_batch_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callback.py#L305" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#CallbackHandler-on_batch_end-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>on_batch_end</code>(<strong><code>loss</code></strong>:<code>Tensor</code>)</p>
+<h4 id="CallbackHandler.on_batch_end" class="doc_header"><code>on_batch_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callback.py#L305" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#CallbackHandler-on_batch_end-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>on_batch_end</code>(<strong><code>loss</code></strong>:<code>Tensor</code>) → <code>Any</code></p>
 </blockquote>
 <div class="collapse" id="CallbackHandler-on_batch_end-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#CallbackHandler-on_batch_end-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>on_batch_end</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Handle end of processing one batch with <code>loss</code>.</p>
 
@@ -762,7 +762,7 @@ Examples: save log_files, load best model found during training</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="CallbackHandler.on_loss_begin" class="doc_header"><code>on_loss_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callback.py#L282" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#CallbackHandler-on_loss_begin-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>on_loss_begin</code>(<strong><code>out</code></strong>:<code>Tensor</code>)</p>
+<h4 id="CallbackHandler.on_loss_begin" class="doc_header"><code>on_loss_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callback.py#L282" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#CallbackHandler-on_loss_begin-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>on_loss_begin</code>(<strong><code>out</code></strong>:<code>Tensor</code>) → <code>Any</code></p>
 </blockquote>
 <div class="collapse" id="CallbackHandler-on_loss_begin-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#CallbackHandler-on_loss_begin-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>on_loss_begin</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Handle start of loss calculation with model output <code>out</code>.</p>
 
@@ -783,7 +783,7 @@ Examples: save log_files, load best model found during training</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="CallbackHandler.on_step_end" class="doc_header"><code>on_step_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callback.py#L300" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#CallbackHandler-on_step_end-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>on_step_end</code>()</p>
+<h4 id="CallbackHandler.on_step_end" class="doc_header"><code>on_step_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callback.py#L300" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#CallbackHandler-on_step_end-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>on_step_end</code>() → <code>Any</code></p>
 </blockquote>
 <div class="collapse" id="CallbackHandler-on_step_end-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#CallbackHandler-on_step_end-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>on_step_end</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Handle end of optimization step.</p>
 
