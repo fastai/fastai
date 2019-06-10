@@ -188,7 +188,7 @@ class LanguageLearner(RNNLearner):
 def get_language_model(arch:Callable, vocab_sz:int, config:dict=None, drop_mult:float=1.):
     "Create a language model from `arch` and its `config`, maybe `pretrained`."
     meta = _model_meta[arch]
-    config = ifnone(config, meta['config_lm'].copy())
+    config = ifnone(config, meta['config_lm']).copy()
     for k in config.keys():
         if k.endswith('_p'): config[k] *= drop_mult
     tie_weights,output_p,out_bias = map(config.pop, ['tie_weights', 'output_p', 'out_bias'])
@@ -272,7 +272,7 @@ def get_text_classifier(arch:Callable, vocab_sz:int, n_class:int, bptt:int=70, m
                         pad_idx:int=1) -> nn.Module:
     "Create a text classifier from `arch` and its `config`, maybe `pretrained`."
     meta = _model_meta[arch]
-    config = ifnone(config, meta['config_clas'].copy())
+    config = ifnone(config, meta['config_clas']).copy()
     for k in config.keys(): 
         if k.endswith('_p'): config[k] *= drop_mult
     if lin_ftrs is None: lin_ftrs = [50]

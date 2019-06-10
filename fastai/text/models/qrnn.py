@@ -136,7 +136,7 @@ class QRNN(nn.Module):
         assert bias == True, 'Removing underlying bias is not yet supported'
         super().__init__()
         kwargs = dict(batch_first=batch_first, zoneout=zoneout, output_gate=output_gate)
-        self.layers = nn.ModuleList([QRNNLayer(input_size if l == 0 else hidden_size, hidden_size, 
+        self.layers = nn.ModuleList([QRNNLayer(input_size if l == 0 else hidden_size, hidden_size, save_prev_x=save_prev_x, 
                                                window=((2 if l ==0 else 1) if window is None else window), **kwargs) 
                                      for l in range(n_layers)])
         if bidirectional:
