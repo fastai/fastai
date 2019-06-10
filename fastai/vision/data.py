@@ -395,8 +395,9 @@ class PointsProcessor(PreProcessor):
 class PointsLabelList(ItemList):
     "`ItemList` for points."
     _processor = PointsProcessor
-
-    def __post_init__(self): self.loss_func = MSELossFlat()
+    def __init__(self, items:Iterator, **kwargs):
+        super().__init__(items, **kwargs)
+        self.loss_func = MSELossFlat()
 
     def get(self, i):
         o = super().get(i)

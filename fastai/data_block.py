@@ -67,9 +67,7 @@ class ItemList():
         self.label_cls,self.inner_df,self.processor = ifnone(label_cls,self._label_cls),inner_df,processor
         self._label_list,self._split = LabelList,ItemLists
         self.copy_new = ['x', 'label_cls', 'path']
-        self.__post_init__()
 
-    def __post_init__(self): pass
     def __len__(self)->int: return len(self.items) or 1
     def get(self, i)->Any:
         "Subclass if you want to customize how to create item `i` from `self.items`."
