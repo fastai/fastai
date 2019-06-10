@@ -13,13 +13,25 @@ of that change.
 
 ## 1.0.53.dev0 (Work In Progress)
 
+### Breaking changes:
+
+- In the AWD-LSTM defaut config, the default embedding size is now 1152. New pretrained models have been released 
+accordingly, the old pretrained model (with embedding size of 1150) is still available at 
+https://s3.amazonaws.com/fast-ai-modelzoo/wt103-1.tgz
+
 ### New:
 
+- a backward pretrained model for NLP (automatically used if the databunch was created via the datablock API
+using `backwards=True`)
 - `bunzip(fn:PathOrStr)`: bunzip a file
 - `working_directory`: context manager to change to a directory and return to original directory when done
 - `np_func`: decorator for creating metrics from numpy functions
 
 ### Changed:
+
+- a `Vocab` is either exactly of size `max_vocab` or a size that is a multiple of 8. This coupled with the breaking
+change of embedding size 1152 (also a mutliple of 8) allows a speed-up of 2 to 3 when training a language model
+in mixed precision.
 
 ### Fixed:
 

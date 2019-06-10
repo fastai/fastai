@@ -15,7 +15,7 @@ from .data import *
 __all__ = ['RNNLearner', 'LanguageLearner', 'convert_weights', 'decode_spec_tokens', 'get_language_model', 'language_model_learner', 
            'MultiBatchEncoder', 'get_text_classifier', 'text_classifier_learner', 'PoolingLinearClassifier']
 
-_model_meta = {AWD_LSTM: {'hid_name':'emb_sz', 'url':URLs.WT103_1, #'url_bwd':URLs.WT103_BWD,
+_model_meta = {AWD_LSTM: {'hid_name':'emb_sz', 'url':URLs.WT103_FWD, 'url_bwd':URLs.WT103_BWD,
                           'config_lm':awd_lstm_lm_config, 'split_lm': awd_lstm_lm_split,
                           'config_clas':awd_lstm_clas_config, 'split_clas': awd_lstm_clas_split},
                Transformer: {'hid_name':'d_model', 'url':URLs.OPENAI_TRANSFORMER,
