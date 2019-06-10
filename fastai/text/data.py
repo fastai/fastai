@@ -408,7 +408,7 @@ def get_default_size(texts, max_vocab_sz):
         cnt.update(t.split())
         if len(cnt)//4 > max_vocab_sz: return max_vocab_sz
     res = len(cnt)//4
-    while res%8 != ): res+=1
+    while res%8 != 0: res+=1
     return res
 
 full_char_coverage_langs = ["bg", "cs", "da", "de", "el", "en", "es", "et", "fi", "fr", "ga", "hr", "hu",
