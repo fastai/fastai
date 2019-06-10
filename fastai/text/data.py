@@ -435,14 +435,14 @@ def train_sentencepiece(texts:Collection[str], path:PathOrStr, pre_rules: ListRu
 
 class SPProcessor(PreProcessor):
     "`PreProcessor` that tokenize and numericalizes with `sentencepiece`"
-    def __init__(self, ds:ItemList=None, chunksize:int=10000, pre_rules: ListRules=None, post_rules:ListRules=None, 
-                 vocab_sz:int=None, max_vocab_sz:int=30000, model_type:str='unigram', max_sentence_len:int=20480, 
-                 lang='en', char_coverage=None, tmp_dir='tmp', mark_fields:bool=False, include_bos:bool=True, 
+    def __init__(self, ds:ItemList=None, pre_rules: ListRules=None, post_rules:ListRules=None, vocab_sz:int=None,
+                 max_vocab_sz:int=30000, model_type:str='unigram', max_sentence_len:int=20480, lang='en',
+                 char_coverage=None, tmp_dir='tmp', mark_fields:bool=False, include_bos:bool=True, 
                  include_eos:bool=False, sp_model=None, sp_vocab=None):
         try: from sentencepiece import SentencePieceTrainer,SentencePieceProcessor
         except ImportError:
             raise Exception('sentencepiece module is missing: run `pip install sentencepiece`')
-        self.chunksize,self.pre_rules,self.post_rules = chunksize,pre_rules,post_rules
+        self.pre_rules,self.post_rules = pre_rules,post_rules
         self.mark_fields,self.include_bos,self.include_eos = mark_fields,include_bos,include_eos
         self.sp_model,self.sp_vocab = sp_model,sp_vocab
         self.train_func = partial(train_sentencepiece, pre_rules=pre_rules, post_rules=post_rules, vocab_sz=vocab_sz,
