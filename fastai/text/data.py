@@ -310,8 +310,8 @@ class NumericalizeProcessor(PreProcessor):
 
 class OpenFileProcessor(PreProcessor):
     "`PreProcessor` that opens the filenames and read the texts."
-    def process_one(self,item):
-        return open_text(item) if isinstance(item, Path) else item
+    def process(self, ds:Collection): ds.items = array([self.process_one(item) for item in ds.items], dtype=np.object)
+    def process_one(self,item): return open_text(item) if isinstance(item, Path) else item
 
 class TextList(ItemList):
     "Basic `ItemList` for text data."
