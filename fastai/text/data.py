@@ -434,7 +434,7 @@ def train_sentencepiece(texts:Collection[str], path:PathOrStr, pre_rules: ListRu
     return cache_dir
 
 class SPProcessor(PreProcessor):
-    "`PreProcessor` that tokenize and numericalizes with `sentencepiece`"
+    "`PreProcessor` that tokenizes and numericalizes with `sentencepiece`"
     def __init__(self, ds:ItemList=None, pre_rules: ListRules=None, post_rules:ListRules=None, vocab_sz:int=None,
                  max_vocab_sz:int=30000, model_type:str='unigram', max_sentence_len:int=20480, lang='en',
                  char_coverage=None, tmp_dir='tmp', mark_fields:bool=False, include_bos:bool=True, 
