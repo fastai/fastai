@@ -310,8 +310,8 @@ class NumericalizeProcessor(PreProcessor):
 
 class OpenFileProcessor(PreProcessor):
     "`PreProcessor` that opens the filenames and read the texts."
-    def process_one(self,item):
-        return open_text(item) if isinstance(item, Path) else item
+    def process(self, ds:Collection): ds.items = array([self.process_one(item) for item in ds.items], dtype=np.object)
+    def process_one(self,item): return open_text(item) if isinstance(item, Path) else item
 
 class TextList(ItemList):
     "Basic `ItemList` for text data."
@@ -462,6 +462,7 @@ class SPProcessor(PreProcessor):
             self.sp_model,self.sp_vocab = cache_dir/'spm.model',cache_dir/'spm.vocab'
         if not getattr(self, 'vocab', False): 
             with open(self.sp_vocab, 'r') as f: self.vocab = Vocab([line.split('\t')[0] for line in f.readlines()])
+<<<<<<< HEAD
         if self.n_cpus <= 1: return self._encode_batch(ds.items)
         with ProcessPoolExecutor(self.n_cpus) as e:
             ds.items = np.array(sum(e.map(self._encode_batch, partition_by_cores(ds.items, self.n_cpus)), []))
@@ -472,3 +473,7 @@ class SPProcessor(PreProcessor):
         tok = SentencePieceProcessor()
         tok.Load(str(self.sp_model))
         return [tok.EncodeAsIds(t) for t in texts]
+=======
+        ds.items = np.array([self.tok.EncodeAsIds(t) for t in ds.items])
+        ds.vocab = self.vocab
+>>>>>>> 8d7d69a30fb6169d91dd6ab0e1a1941a1ee6ad8c
