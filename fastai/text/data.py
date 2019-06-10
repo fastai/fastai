@@ -395,7 +395,7 @@ def _join_texts(texts:Collection[str], mark_fields:bool=False, include_bos:bool=
 
 def apply_rules(text, i=0, pre_rules=None, post_rules=None):
     "Apply `pre_rules` and `post_rules` to `text`"
-    text = text.rstrip(' ').lstrip(' ')
+    text = text.strip(' ')
     for r in ifnone(pre_rules, defaults.text_pre_rules): text = r(text)
     toks = text.split()
     for r in ifnone(post_rules, defaults.text_post_rules): toks = r(toks)
