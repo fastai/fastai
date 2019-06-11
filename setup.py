@@ -151,7 +151,7 @@ dev_requirements = { 'dev' : to_list("""
     notebook>=5.7.0
     pip>=9.0.1
     pipreqs>=0.4.9
-    pytest
+    pytest>=4.4.0
     pytest-xdist                 # make test-fast (faster parallel testing)
     responses                    # for requests testing
     traitlets
