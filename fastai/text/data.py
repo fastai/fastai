@@ -422,15 +422,16 @@ def train_sentencepiece(texts:Collection[str], path:PathOrStr, pre_rules: ListRu
     cache_dir = Path(path)/tmp_dir
     os.makedirs(cache_dir, exist_ok=True)
     if vocab_sz is None: vocab_sz=get_default_size(texts, max_vocab_sz)
-    raw_text_path = cache_dir / 'all_text.txt'
+    raw_text_path = cache_dir / 'all_text.out'
     with open(raw_text_path, 'w') as f: f.write("\n".join(texts))
     spec_tokens = ['\u2581'+s for s in defaults.text_spec_tok]
     SentencePieceTrainer.Train(" ".join([
         f"--input={raw_text_path} --max_sentence_length={max_sentence_len}",
-        f"--character_coverage={ifnone(char_coverage, 1 if lang in full_char_coverage_langs else 0.99)}",
+        f"--character_coverage={ifnone(char_coverage, 0.99999 if lang in full_char_coverage_langs else 0.9998)}",
         f"--unk_id={len(defaults.text_spec_tok)} --pad_id=-1 --bos_id=-1 --eos_id=-1",
         f"--user_defined_symbols={','.join(spec_tokens)}",
         f"--model_prefix={cache_dir/'spm'} --vocab_size={vocab_sz} --model_type={model_type}"]))
+    raw_text_path.unlink()
     return cache_dir
 
 class SPProcessor(PreProcessor):
@@ -448,7 +449,7 @@ class SPProcessor(PreProcessor):
         self.train_func = partial(train_sentencepiece, pre_rules=pre_rules, post_rules=post_rules, vocab_sz=vocab_sz,
                 max_vocab_sz=max_vocab_sz, model_type=model_type, max_sentence_len=max_sentence_len, lang=lang,
                 char_coverage=char_coverage, tmp_dir=tmp_dir)
-    
+
     def process_one(self, item, i=0, join=True):
         if join: text = _join_texts([item], self.mark_fields, self.include_bos, self.include_eos)[0]
         text = apply_rules(text, i=i, pre_rules=self.pre_rules, post_rules=self.post_rules)
@@ -462,11 +463,12 @@ class SPProcessor(PreProcessor):
             self.sp_model,self.sp_vocab = cache_dir/'spm.model',cache_dir/'spm.vocab'
         if not getattr(self, 'vocab', False): 
             with open(self.sp_vocab, 'r') as f: self.vocab = Vocab([line.split('\t')[0] for line in f.readlines()])
-        if self.n_cpus <= 1: return self._encode_batch(ds.items)
-        with ProcessPoolExecutor(self.n_cpus) as e:
-            ds.items = np.array(sum(e.map(self._encode_batch, partition_by_cores(ds.items, self.n_cpus)), []))
+        if self.n_cpus <= 1: ds.items = self._encode_batch(ds.items)
+        else:
+            with ProcessPoolExecutor(self.n_cpus) as e:
+                ds.items = np.array(sum(e.map(self._encode_batch, partition_by_cores(ds.items, self.n_cpus)), []))
         ds.vocab = self.vocab
-    
+
     def _encode_batch(self, texts):
         from sentencepiece import SentencePieceProcessor
         tok = SentencePieceProcessor()
