@@ -168,8 +168,11 @@ def COCO_load(root_dir, train_annot=False, valid_annot=False, tfms=[], resize=60
             if os.path.isfile(os.path.join(path, i)) and 'instances_val' in i:
                 valid_annot = '{}/{}'.format(path, i)
                 print('Found validation annotations in {}'.format(valid_annot))
-    coco_train = COCODataset(train_annot)
-    coco_valid = COCODataset(valid_annot)
+
+    with open(train_annot) as tr:
+        coco_train = COCODataset(json.load(tr))
+    with open(valid_annot) as vl:
+        coco_valid = COCODataset(json.load(vl))
 
     boxes = coco_train.get_bboxes()
     boxes2 = coco_valid.get_bboxes()
@@ -696,10 +699,10 @@ class COCODataset(Dataset):
 
     def __init__(self, json_file):
         """
-        :param json_file: Path to the csv file with annotations.
+        Args:
+            json_file (string): Loaded JSON file with annotations.
         """
-        with open(json_file) as file:
-            self.json = json.load(file)
+        self.json = json_file
         self.images = {self.json['images'][i]['id']: self.json['images'][i] for i in range(len(self.json['images']))}
         self.bbox = {self.json['annotations'][i]['id']: self.json['annotations'][i] for i in
                      range(len(self.json['annotations']))}
@@ -722,7 +725,6 @@ class COCODataset(Dataset):
     def get_bboxes(self):
         """
         Dict of image names with corresponding bounding boxes.
-        :return:
         """
         all_bboxes = []
         image_names = []
