@@ -474,3 +474,7 @@ class SPProcessor(PreProcessor):
         tok = SentencePieceProcessor()
         tok.Load(str(self.sp_model))
         return [tok.EncodeAsIds(t) for t in texts]
+
+    @classmethod
+    def load(cls, path:PathOrStr, name:str='spm'):
+        return cls(sp_model=Path(path)/f'{name}.model', sp_vocab=Path(path)/f'{name}.vocab')
