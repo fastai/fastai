@@ -18,22 +18,22 @@ def path_var_size():
     return path
 
 
-@pytest.mark.parametrize("ex_json", ex_json={'info': [],
-                                             'licenses': [],
-                                             'images': [{'license': 4,
-                                                         'file_name': '000000397133.jpg',
-                                                         'coco_url': 'http://images.cocodataset.org/val2017/000000397133.jpg',
-                                                         'height': 427,
-                                                         'width': 640,
-                                                         'date_captured': '2013-11-14 17:02:52',
-                                                         'flickr_url': 'http://farm7.staticflickr.com/6116/6255196340_da26cf2c9e_z.jpg',
-                                                         'id': 397133}
-                                                        ],
-                                             'annotations': [{'image_id': 397133,
-                                                              'bbox': [473.07, 395.93, 38.65, 28.67],
-                                                              'category_id': 18,
-                                                              'id': 1768}],
-                                             'categories': [{'supercategory': 'person', 'id': 1, 'name': 'person'}]})
+@pytest.mark.parametrize("ex_json", {'info': [],
+                                     'licenses': [],
+                                     'images': [{'license': 4,
+                                                 'file_name': '000000397133.jpg',
+                                                 'coco_url': 'http://images.cocodataset.org/val2017/000000397133.jpg',
+                                                 'height': 427,
+                                                 'width': 640,
+                                                 'date_captured': '2013-11-14 17:02:52',
+                                                 'flickr_url': 'http://farm7.staticflickr.com/6116/6255196340_da26cf2c9e_z.jpg',
+                                                 'id': 397133}
+                                                ],
+                                     'annotations': [{'image_id': 397133,
+                                                      'bbox': [473.07, 395.93, 38.65, 28.67],
+                                                      'category_id': 18,
+                                                      'id': 1768}],
+                                     'categories': [{'supercategory': 'person', 'id': 1, 'name': 'person'}]})
 def test_COCODataset(ex_json):
     test_dataset = COCODataset(ex_json)
     assert 1 == len(test_dataset)
