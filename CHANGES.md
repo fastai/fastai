@@ -15,8 +15,6 @@ of that change.
 
 ### Fixed:
 
-- The new sentencepiece tokenizer from 1.0.53 had some bugs, so this is a quick fix release for them
-
 ## 1.0.53 (2019-06-10)
 
 ### Breaking changes:
