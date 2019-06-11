@@ -32,7 +32,7 @@ def create_data(path):
     test =  read_file(path/'test.txt')
     all_texts = np.concatenate([valid, train, test])
     df = pd.DataFrame({'texts':all_texts})
-    del train ; del valid ; del text #Free RQM before tokenizing
+    del train ; del valid ; del test #Free RQM before tokenizing
     data = (TextList.from_df(df, path, cols='texts')
                     .split_by_idx(range(0,60))
                     .label_for_lm()
