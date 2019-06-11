@@ -476,5 +476,6 @@ class SPProcessor(PreProcessor):
         return [tok.EncodeAsIds(t) for t in texts]
 
     @classmethod
-    def load(cls, path:PathOrStr, name:str='spm'):
-        return cls(sp_model=Path(path)/f'{name}.model', sp_vocab=Path(path)/f'{name}.vocab')
+    def load(cls, path:PathOrStr, tmp_dir:PathOrStr='tmp', name:str='spm'):
+        cache_dir = Path(path)/tmp_dir
+        return cls(sp_model=cache_dir/f'{name}.model', sp_vocab=cache_dir/f'{name}.vocab')
