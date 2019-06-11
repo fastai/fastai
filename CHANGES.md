@@ -13,27 +13,24 @@ of that change.
 
 ## 1.0.54.dev0 (Work In Progress)
 
-### New:
-
-### Changed:
-
 ### Fixed:
 
-
+- The new sentencepiece tokenizer from 1.0.53 had some bugs, so this is a quick fix release for them
 
 ## 1.0.53 (2019-06-10)
 
 ### Breaking changes:
 
-- In the AWD-LSTM defaut config, the default embedding size is now 1152. New pretrained models have been released 
-accordingly, the old pretrained model (with embedding size of 1150) is still available at 
-https://s3.amazonaws.com/fast-ai-modelzoo/wt103-1.tgz
+- In the AWD-LSTM defaut config, the default embedding size is now 1152, for
+  faster fp16 training. New pretrained models have been released accordingly,
+  the old pretrained model (with embedding size of 1150) is still available at 
+  https://s3.amazonaws.com/fast-ai-modelzoo/wt103-1.tgz
 
 ### New:
 
 - sentencepiece tokenizer in fastai.text via `SPProcessor`
-- a backward pretrained model for NLP (automatically used if the databunch was created via the datablock API
-using `backwards=True`)
+- a backward pretrained model for NLP (automatically used if the databunch was
+  created via the datablock API using `backwards=True`)
 - `bunzip(fn:PathOrStr)`: bunzip a file
 - `working_directory`: context manager to change to a directory and return to original directory when done
 - `np_func`: decorator for creating metrics from numpy functions
