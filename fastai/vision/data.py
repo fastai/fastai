@@ -101,48 +101,49 @@ class ImageDataBunch(DataBunch):
 
     @classmethod
     def from_folder(cls, path:PathOrStr, train:PathOrStr='train', valid:PathOrStr='valid',
-                    valid_pct=None, classes:Collection=None, **kwargs:Any)->'ImageDataBunch':
+                    valid_pct=None, seed:int=None, classes:Collection=None, **kwargs:Any)->'ImageDataBunch':
         "Create from imagenet style dataset in `path` with `train`,`valid`,`test` subfolders (or provide `valid_pct`)."
         path=Path(path)
         il = ImageList.from_folder(path)
         if valid_pct is None: src = il.split_by_folder(train=train, valid=valid)
-        else: src = il.split_by_rand_pct(valid_pct)
+        else: src = il.split_by_rand_pct(valid_pct, seed)
         src = src.label_from_folder(classes=classes)
         return cls.create_from_ll(src, **kwargs)
 
     @classmethod
     def from_df(cls, path:PathOrStr, df:pd.DataFrame, folder:PathOrStr=None, label_delim:str=None, valid_pct:float=0.2,
-                fn_col:IntsOrStrs=0, label_col:IntsOrStrs=1, suffix:str='', **kwargs:Any)->'ImageDataBunch':
+                seed:int=None, fn_col:IntsOrStrs=0, label_col:IntsOrStrs=1, suffix:str='', **kwargs:Any)->'ImageDataBunch':
         "Create from a `DataFrame` `df`."
         src = (ImageList.from_df(df, path=path, folder=folder, suffix=suffix, cols=fn_col)
-                .split_by_rand_pct(valid_pct)
+                .split_by_rand_pct(valid_pct, seed)
                 .label_from_df(label_delim=label_delim, cols=label_col))
         return cls.create_from_ll(src, **kwargs)
 
     @classmethod
     def from_csv(cls, path:PathOrStr, folder:PathOrStr=None, label_delim:str=None, csv_labels:PathOrStr='labels.csv',
-                 valid_pct:float=0.2, fn_col:int=0, label_col:int=1, suffix:str='', delimiter:str=None,
+                 valid_pct:float=0.2, seed:int=None, fn_col:int=0, label_col:int=1, suffix:str='', delimiter:str=None,
                  header:Optional[Union[int,str]]='infer', **kwargs:Any)->'ImageDataBunch':
         "Create from a csv file in `path/csv_labels`."
         path = Path(path)
         df = pd.read_csv(path/csv_labels, header=header, delimiter=delimiter)
-        return cls.from_df(path, df, folder=folder, label_delim=label_delim, valid_pct=valid_pct,
+        return cls.from_df(path, df, folder=folder, label_delim=label_delim, valid_pct=valid_pct, seed=seed,
                 fn_col=fn_col, label_col=label_col, suffix=suffix, **kwargs)
 
     @classmethod
-    def from_lists(cls, path:PathOrStr, fnames:FilePathList, labels:Collection[str], valid_pct:float=0.2,
+    def from_lists(cls, path:PathOrStr, fnames:FilePathList, labels:Collection[str], valid_pct:float=0.2, seed:int=None,
                    item_cls:Callable=None, **kwargs):
         "Create from list of `fnames` in `path`."
         item_cls = ifnone(item_cls, ImageList)
         fname2label = {f:l for (f,l) in zip(fnames, labels)}
-        src = (item_cls(fnames, path=path).split_by_rand_pct(valid_pct)
+        src = (item_cls(fnames, path=path).split_by_rand_pct(valid_pct, seed)
                                 .label_from_func(lambda x:fname2label[x]))
         return cls.create_from_ll(src, **kwargs)
 
     @classmethod
-    def from_name_func(cls, path:PathOrStr, fnames:FilePathList, label_func:Callable, valid_pct:float=0.2, **kwargs):
+    def from_name_func(cls, path:PathOrStr, fnames:FilePathList, label_func:Callable, valid_pct:float=0.2, seed:int=None,
+                       **kwargs):
         "Create from list of `fnames` in `path` with `label_func`."
-        src = ImageList(fnames, path=path).split_by_rand_pct(valid_pct)
+        src = ImageList(fnames, path=path).split_by_rand_pct(valid_pct, seed)
         return cls.create_from_ll(src.label_from_func(label_func), **kwargs)
 
     @classmethod
