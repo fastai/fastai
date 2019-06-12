@@ -35,3 +35,13 @@ def test_tokenize_ignores_extraneous_space():
     tokenizer = Tokenizer(BaseTokenizer)
     toks = tokenizer.process_all(texts)
     assert toks[0] == ['test']
+
+def test_numericalize_and_textify():
+    toks = [['ok', '!', 'xxmaj', 'nice', '!', 'anti', '-', 'virus'], ['!', 'xxmaj', 'meg', 'xxmaj', 'nice', 'meg']]
+    vocab = Vocab.create(toks, max_vocab=20, min_freq=2)
+    this_tests(vocab.numericalize, vocab.textify)
+    assert vocab.numericalize(toks[0]) == [0, 9, 5, 10, 9, 0, 0, 0]
+    assert vocab.textify([0, 3, 10, 11, 9]) == 'xxunk xxeos nice meg !'
+    print(vocab.stoi)
+    with pytest.raises(IndexError):
+        vocab.textify([16])

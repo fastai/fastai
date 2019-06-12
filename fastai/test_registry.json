@@ -1048,6 +1048,20 @@
             "test": "test_tokenize_ignores_extraneous_space"
         }
     ],
+    "fastai.text.transform.Vocab.numericalize": [
+        {
+            "file": "tests/test_text_transform.py",
+            "line": 39,
+            "test": "test_numericalize_and_textify"
+        }
+    ],
+    "fastai.text.transform.Vocab.textify": [
+        {
+            "file": "tests/test_text_transform.py",
+            "line": 39,
+            "test": "test_numericalize_and_textify"
+        }
+    ],
     "fastai.text.transform.deal_caps": [
         {
             "file": "tests/test_text_transform.py",
