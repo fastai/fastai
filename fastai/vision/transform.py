@@ -1,7 +1,6 @@
 "Image transformations for data augmentation. All transforms are done on the tensor level"
 from ..torch_core import *
 from .image import *
-from .image import _affine_mult
 
 __all__ = ['brightness', 'contrast', 'crop', 'crop_pad', 'cutout', 'dihedral', 'dihedral_affine', 'flip_affine', 'flip_lr',
            'get_transforms', 'jitter', 'pad', 'perspective_warp', 'rand_pad', 'rand_crop', 'rand_zoom', 'rgb_randomize', 'rotate', 'skew', 'squish',
