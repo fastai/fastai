@@ -473,7 +473,7 @@ class SPProcessor(PreProcessor):
         from sentencepiece import SentencePieceProcessor
         tok = SentencePieceProcessor()
         tok.Load(str(self.sp_model))
-        return [tok.EncodeAsIds(t) for t in texts]
+        return [np.array(tok.EncodeAsIds(t)) for t in texts]
 
     @classmethod
     def load(cls, path:PathOrStr, tmp_dir:PathOrStr='tmp', name:str='spm'):
