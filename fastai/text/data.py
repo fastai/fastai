@@ -393,7 +393,7 @@ def _join_texts(texts:Collection[str], mark_fields:bool=False, include_bos:bool=
     if include_eos: text_col = text_col + f' {EOS}'
     return text_col.values
 
-def apply_rules(text, i=0, pre_rules=None, post_rules=None):
+def apply_rules(text, pre_rules=None, post_rules=None):
     "Apply `pre_rules` and `post_rules` to `text`"
     text = text.strip(' ')
     for r in ifnone(pre_rules, defaults.text_pre_rules): text = r(text)
@@ -450,14 +450,15 @@ class SPProcessor(PreProcessor):
                 max_vocab_sz=max_vocab_sz, model_type=model_type, max_sentence_len=max_sentence_len, lang=lang,
                 char_coverage=char_coverage, tmp_dir=tmp_dir)
 
-    def process_one(self, item, i=0, join=True):
+    def process_one(self, item, join=True):
         if join: text = _join_texts([item], self.mark_fields, self.include_bos, self.include_eos)[0]
-        text = apply_rules(text, i=i, pre_rules=self.pre_rules, post_rules=self.post_rules)
+        text = apply_rules(text, pre_rules=self.pre_rules, post_rules=self.post_rules)
         return self._encode_batch([text])
 
     def process(self, ds):
         ds.items = _join_texts(ds.items, self.mark_fields, self.include_bos, self.include_eos)
-        ds.items = parallel(partial(apply_rules, pre_rules=self.pre_rules, post_rules=self.post_rules), ds.items)
+        ds.items = [apply_rules(t, pre_rules=self.pre_rules, post_rules=self.post_rules) 
+                    for t in progress_bar(ds.items, leave=False)]
         if self.sp_model is None or self.sp_vocab is None:
             cache_dir = self.train_func(ds.items, ds.path)
             self.sp_model,self.sp_vocab = cache_dir/'spm.model',cache_dir/'spm.vocab'
