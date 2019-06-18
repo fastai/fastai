@@ -65,7 +65,7 @@ class ShowGraph(LearnerCallback):
     "Update a graph of learner stats and metrics after each epoch."
     def on_epoch_end(self, n_epochs:int, last_metrics:MetricsList, **kwargs)->bool:
         "If we have `last_metrics` plot them in our pbar graph"
-        if last_metrics is not None and np.any(last_metrics):
+        if last_metrics is not None and last_metrics[0] is not None:
             rec = self.learn.recorder
             iters = range_of(rec.losses)
             val_iter = np.array(rec.nb_batches).cumsum()
