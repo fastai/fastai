@@ -453,7 +453,7 @@ class SPProcessor(PreProcessor):
     def process_one(self, item, join=True):
         if join: text = _join_texts([item], self.mark_fields, self.include_bos, self.include_eos)[0]
         text = apply_rules(text, pre_rules=self.pre_rules, post_rules=self.post_rules)
-        return self._encode_batch([text])
+        return self._encode_batch([text])[0]
 
     def process(self, ds):
         ds.items = _join_texts(ds.items, self.mark_fields, self.include_bos, self.include_eos)
