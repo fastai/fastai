@@ -60,6 +60,7 @@ class PrePostInitMeta(type):
         x = super().__new__(cls, name, bases, dct)
         old_init = x.__init__
         def _pass(self): pass
+        @functools.wraps(old_init)
         def _init(self,*args,**kwargs):
             self.__pre_init__()
             old_init(self, *args,**kwargs)

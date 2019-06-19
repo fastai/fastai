@@ -597,21 +597,21 @@ tensor([[1, 2],
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>[tensor([[-1.1983]], device=&#39;cuda:0&#39;), tensor([[-2.4861]], device=&#39;cuda:0&#39;), tensor([[0.2554]], device=&#39;cuda:0&#39;)]
+<pre>[tensor([[-0.0729]], device=&#39;cuda:0&#39;), tensor([[0.6379]], device=&#39;cuda:0&#39;), tensor([[-1.1639]], device=&#39;cuda:0&#39;)]
 Id of tensors in a: 
-139969813054880
-139969813056320
-139969813055888
-[tensor([[-1.1983]]), tensor([[-2.4861]]), tensor([[0.2554]])]
+140198250940456
+140198119936216
+140198119936432
+[tensor([[-0.0729]]), tensor([[0.6379]]), tensor([[-1.1639]])]
 Id of tensors in b:
-139969813056248
-139969813057328
-139969813056104
-[tensor([[-1.1983]]), tensor([[-2.4861]]), tensor([[0.2554]])]
+140198119936792
+140198119936864
+140198119937656
+[tensor([[-0.0729]]), tensor([[0.6379]]), tensor([[-1.1639]])]
 Id of tensors in c:
-139969813056248
-139969813057328
-139969813056104
+140198119936792
+140198119936864
+140198119937656
 </pre>
 </div>
 </div>
@@ -1365,7 +1365,7 @@ dtype of bs: 	torch.int64	torch.int32	torch.int16	torch.float16	torch.float16	to
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>tensor([1.1061, 1.5625, 1.8831, 1.6008, 0.8857, 0.9837, 1.0485, 0.5625])</pre>
+<pre>tensor([1.3422, 1.7174, 1.7097, 0.9742, 1.8986, 1.4985, 1.8341, 0.7608])</pre>
 </div>
 
 </div>
@@ -1415,7 +1415,7 @@ dtype of bs: 	torch.int64	torch.int32	torch.int16	torch.float16	torch.float16	to
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>tensor([1, 0, 1, 1, 1, 1, 0, 0], dtype=torch.uint8)</pre>
+<pre>tensor([0, 0, 1, 0, 0, 0, 1, 0], dtype=torch.uint8)</pre>
 </div>
 
 </div>
@@ -1465,7 +1465,7 @@ dtype of bs: 	torch.int64	torch.int32	torch.int16	torch.float16	torch.float16	to
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>tensor([0.5795, 0.1149, 0.4750, 0.6167, 0.1151, 0.0553, 0.4241, 0.3728])</pre>
+<pre>tensor([0.6441, 0.4143, 0.6510, 0.4366, 0.7045, 0.0803, 0.8638, 0.1684])</pre>
 </div>
 
 </div>
@@ -1515,7 +1515,7 @@ dtype of bs: 	torch.int64	torch.int32	torch.int16	torch.float16	torch.float16	to
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>tensor([0, 1, 2, 2, 0, 1, 0, 0])</pre>
+<pre>tensor([1, 1, 2, 1, 0, 2, 1, 1])</pre>
 </div>
 
 </div>
@@ -1539,7 +1539,7 @@ dtype of bs: 	torch.int64	torch.int32	torch.int16	torch.float16	torch.float16	to
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="Module" class="doc_header"><code>class</code> <code>Module</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L87" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#Module-pytest" style="float:right; padding-right:10px">[test]</a></h3><blockquote><p><code>Module</code>(<strong>*<code>args</code></strong>, <strong>**<code>kwargs</code></strong>) :: <a href="/core.html#PrePostInitMeta"><code>PrePostInitMeta</code></a> :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
+<h3 id="Module" class="doc_header"><code>class</code> <code>Module</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L87" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#Module-pytest" style="float:right; padding-right:10px">[test]</a></h3><blockquote><p><code>Module</code>() :: <a href="/core.html#PrePostInitMeta"><code>PrePostInitMeta</code></a> :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
 </blockquote>
 <div class="collapse" id="Module-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#Module-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>Module</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Same as <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>nn.Module</code></a>, but no need for subclasses to call <code>super().__init__</code></p>
 
@@ -1557,11 +1557,12 @@ dtype of bs: 	torch.int64	torch.int32	torch.int16	torch.float16	torch.float16	to
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">_T</span><span class="p">(</span><span class="n">Module</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">f</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+    <span class="s2">&quot;my doc string&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">f</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">x</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 
 <span class="n">t</span> <span class="o">=</span> <span class="n">_T</span><span class="p">()</span>
-<span class="n">t</span><span class="p">(</span><span class="n">tensor</span><span class="p">([</span><span class="mf">1.</span><span class="p">]))</span>
+<span class="n">t</span><span class="p">(</span><span class="n">tensor</span><span class="p">(</span><span class="mf">1.</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
 </pre></div>
 
     </div>
@@ -1576,7 +1577,7 @@ dtype of bs: 	torch.int64	torch.int32	torch.int16	torch.float16	torch.float16	to
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>tensor([0.6516], grad_fn=&lt;AddBackward0&gt;)</pre>
+<pre>tensor([-0.6151], grad_fn=&lt;AddBackward0&gt;)</pre>
 </div>
 
 </div>
@@ -1636,7 +1637,7 @@ dtype of bs: 	torch.int64	torch.int32	torch.int16	torch.float16	torch.float16	to
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="ParameterModule" class="doc_header"><code>class</code> <code>ParameterModule</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L153" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#ParameterModule-pytest" style="float:right; padding-right:10px">[test]</a></h3><blockquote><p><code>ParameterModule</code>(<strong>*<code>args</code></strong>, <strong>**<code>kwargs</code></strong>) :: <a href="/core.html#PrePostInitMeta"><code>PrePostInitMeta</code></a> :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
+<h3 id="ParameterModule" class="doc_header"><code>class</code> <code>ParameterModule</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L153" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#ParameterModule-pytest" style="float:right; padding-right:10px">[test]</a></h3><blockquote><p><code>ParameterModule</code>(<strong><code>p</code></strong>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Parameter"><code>Parameter</code></a>) :: <a href="/core.html#PrePostInitMeta"><code>PrePostInitMeta</code></a> :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
 </blockquote>
 <div class="collapse" id="ParameterModule-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#ParameterModule-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>ParameterModule</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Register a lone parameter <code>p</code> in a module.</p>
 
