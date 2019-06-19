@@ -2,13 +2,14 @@ import torch.nn as nn
 import torch,math,sys
 import torch.utils.model_zoo as model_zoo
 from functools import partial
+from ...torch_core import Module
 
 __all__ = ['XResNet', 'xresnet18', 'xresnet34', 'xresnet50', 'xresnet101', 'xresnet152']
 
 # or: ELU+init (a=0.54; gain=1.55)
 act_fn = nn.ReLU(inplace=True)
 
-class Flatten(nn.Module):
+class Flatten(Module):
     def forward(self, x): return x.view(x.size(0), -1)
 
 def init_cnn(m):
@@ -28,9 +29,8 @@ def conv_layer(ni, nf, ks=3, stride=1, zero_bn=False, act=True):
     if act: layers.append(act_fn)
     return nn.Sequential(*layers)
 
-class ResBlock(nn.Module):
+class ResBlock(Module):
     def __init__(self, expansion, ni, nh, stride=1):
-        super().__init__()
         nf,ni = nh*expansion,ni*expansion
         layers  = [conv_layer(ni, nh, 3, stride=stride),
                    conv_layer(nh, nf, 3, zero_bn=True, act=False)

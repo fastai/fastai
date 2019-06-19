@@ -21,9 +21,8 @@ def conv(ni,nf,ks=1,stride=1, pad=None, act=True):
     if act: layers.append(nn.ReLU())
     return nn.Sequential(*layers)
 
-class ConvSkip(nn.Module):
+class ConvSkip(Module):
     def __init__(self,ni,nf=None,act=True):
-        super().__init__()
         self.nf,self.ni = nf,ni
         if self.nf is None: self.nf = ni
         self.conv = conv(ni,nf,stride=2, act=False)

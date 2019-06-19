@@ -8,23 +8,21 @@ __all__ = ['Activation', 'PositionalEncoding', 'GeLU', 'Swish', 'feed_forward', 
 
 Activation = Enum('Activation', 'ReLU Swish GeLU')
 
-class PositionalEncoding(nn.Module):
+class PositionalEncoding(Module):
     "Encode the position with a sinusoid."
-    def __init__(self, d:int):
-        super().__init__()
-        self.register_buffer('freq', 1 / (10000 ** (torch.arange(0., d, 2.)/d)))
-    
+    def __init__(self, d:int): self.register_buffer('freq', 1 / (10000 ** (torch.arange(0., d, 2.)/d)))
+
     def forward(self, pos:Tensor):
         inp = torch.ger(pos, self.freq)
         enc = torch.cat([inp.sin(), inp.cos()], dim=-1)
         return enc
 
-class GeLU(nn.Module):
+class GeLU(Module):
     def forward(self, x): return 0.5 * x * (1 + torch.tanh(math.sqrt(2 / math.pi) * (x + 0.044715 * torch.pow(x, 3))))
 
-class Swish(nn.Module):
+class Swish(Module):
     def forward(self, x): return x * torch.sigmoid(x)
-    
+
 _activ_func = {Activation.ReLU:nn.ReLU(inplace=True), Activation.GeLU:GeLU(), Activation.Swish: Swish()}
 
 def feed_forward(d_model:int, d_ff:int, ff_p:float=0., act:Activation=Activation.ReLU, double_drop:bool=True):
@@ -32,22 +30,20 @@ def feed_forward(d_model:int, d_ff:int, ff_p:float=0., act:Activation=Activation
     if double_drop: layers.append(nn.Dropout(ff_p))
     return SequentialEx(*layers, nn.Linear(d_ff, d_model), nn.Dropout(ff_p), MergeLayer(), nn.LayerNorm(d_model))
 
-class MultiHeadAttention(nn.Module):
+class MultiHeadAttention(Module):
     "MutiHeadAttention."
-    
     def __init__(self, n_heads:int, d_model:int, d_head:int=None, resid_p:float=0., attn_p:float=0., bias:bool=True,
                  scale:bool=True):
-        super().__init__()
         d_head = ifnone(d_head, d_model//n_heads)
         self.n_heads,self.d_head,self.scale = n_heads,d_head,scale
         self.attention = nn.Linear(d_model, 3 * n_heads * d_head, bias=bias)
         self.out = nn.Linear(n_heads * d_head, d_model, bias=bias)
         self.drop_att,self.drop_res = nn.Dropout(attn_p),nn.Dropout(resid_p)
         self.ln = nn.LayerNorm(d_model)
-        
+
     def forward(self, x:Tensor, mask:Tensor=None, **kwargs):
         return self.ln(x + self.drop_res(self.out(self._apply_attention(x, mask=mask, **kwargs))))
-    
+
     def _apply_attention(self, x:Tensor, mask:Tensor=None):
         bs,x_len = x.size(0),x.size(1)
         wq,wk,wv = torch.chunk(self.attention(x), 3, dim=-1)
@@ -55,12 +51,12 @@ class MultiHeadAttention(nn.Module):
         wq,wk,wv = wq.permute(0, 2, 1, 3),wk.permute(0, 2, 3, 1),wv.permute(0, 2, 1, 3)
         attn_score = torch.matmul(wq, wk)
         if self.scale: attn_score.div_(self.d_head ** 0.5)
-        if mask is not None: 
+        if mask is not None:
             attn_score = attn_score.float().masked_fill(mask, -float('inf')).type_as(attn_score)
         attn_prob = self.drop_att(F.softmax(attn_score, dim=-1))
         attn_vec = torch.matmul(attn_prob, wv)
         return attn_vec.permute(0, 2, 1, 3).contiguous().contiguous().view(bs, x_len, -1)
-        
+
     def _attention_einsum(self, x, mask=None):
         # Permute and matmul is a little bit faster but this implementation is more readable
         bs,x_len = x.size(0),x.size(1)
@@ -68,7 +64,7 @@ class MultiHeadAttention(nn.Module):
         wq,wk,wv = map(lambda x:x.view(bs, x.size(1), self.n_heads, self.d_head), (wq,wk,wv))
         attn_score = torch.einsum('bind,bjnd->bijn', (wq, wk))
         if self.scale: attn_score.mul_(1/(self.d_head ** 0.5))
-        if mask is not None: 
+        if mask is not None:
             attn_score = attn_score.float().masked_fill(mask, -float('inf')).type_as(attn_score)
         attn_prob = self.drop_att(F.softmax(attn_score, dim=2))
         attn_vec = torch.einsum('bijn,bjnd->bind', (attn_prob, wv))
@@ -92,12 +88,12 @@ def _line_shift(x:Tensor, mask:bool=False):
 
 class MultiHeadRelativeAttention(MultiHeadAttention):
     "MutiHeadAttention with relative positional encoding."
-    
+
     def __init__(self, n_heads:int, d_model:int, d_head:int, resid_p:float=0., attn_p:float=0., bias:bool=True,
                  scale:bool=True):
         super().__init__(n_heads, d_model, d_head, resid_p=resid_p, attn_p=attn_p, bias=bias, scale=scale)
         self.r_attn = nn.Linear(d_model, n_heads * d_head, bias=bias)
-        
+
     def _apply_attention(self, x:Tensor, r:Tensor=None, u:Tensor=None, v:Tensor=None, mask:Tensor=None, mem:Tensor=None):
         #Notations from the paper: x input, r vector of relative distance between two elements, u et v learnable
         #parameters of the model common between all layers, mask to avoid cheating and mem the previous hidden states.
@@ -114,12 +110,12 @@ class MultiHeadRelativeAttention(MultiHeadAttention):
         AC = torch.matmul(wq+u,wk)
         BD = _line_shift(torch.matmul(wq+v, wkr))
         if self.scale: attn_score = (AC + BD).mul_(1/(self.d_head ** 0.5))
-        if mask is not None: 
+        if mask is not None:
             attn_score = attn_score.float().masked_fill(mask, -float('inf')).type_as(attn_score)
         attn_prob = self.drop_att(F.softmax(attn_score, dim=-1))
         attn_vec = torch.matmul(attn_prob, wv)
         return attn_vec.permute(0, 2, 1, 3).contiguous().view(bs, x_len, -1)
-    
+
     def _attention_einsum(self, x:Tensor, r:Tensor=None, u:Tensor=None, v:Tensor=None, mask:Tensor=None, mem:Tensor=None):
         # Permute and matmul is a little bit faster but this implementation is more readable
         bs,x_len,seq_len = x.size(0),x.size(1),r.size(0)
@@ -128,46 +124,44 @@ class MultiHeadRelativeAttention(MultiHeadAttention):
         wq = wq[:,-x_len:]
         wkr = self.r_attn(r)
         wq,wk,wv = map(lambda x:x.view(bs, x.size(1), self.n_heads, self.d_head), (wq,wk,wv))
-        wkr = wkr.view(seq_len, self.n_heads, self.d_head)     
+        wkr = wkr.view(seq_len, self.n_heads, self.d_head)
         #### compute attention score (AC is (a) + (c) and BS is (b) + (d) in the paper)
         AC = torch.einsum('bind,bjnd->bijn', (wq+u, wk))
         BD = _line_shift1(torch.einsum('bind,jnd->bijn', (wq+v, wkr)))
         attn_score = (AC + BD).mul_(1/(self.d_head ** 0.5))
-        if mask is not None: 
+        if mask is not None:
             attn_score = attn_score.float().masked_fill(mask, -float('inf')).type_as(attn_score)
         attn_prob = self.drop_att(F.softmax(attn_score, dim=2))
         attn_vec = torch.einsum('bijn,bjnd->bind', (attn_prob, wv))
         return attn_vec.contiguous().view(bs, x_len, -1)
 
-class DecoderLayer(nn.Module):
+class DecoderLayer(Module):
     "Basic block of a Transformer model."
     #Can't use Sequential directly cause more than one input...
     def __init__(self, n_heads:int, d_model:int, d_head:int, d_inner:int, resid_p:float=0., attn_p:float=0., ff_p:float=0.,
                  bias:bool=True, scale:bool=True, act:Activation=Activation.ReLU, double_drop:bool=True,
                  attn_cls:Callable=MultiHeadAttention):
-        super().__init__()
         self.mhra = attn_cls(n_heads, d_model, d_head, resid_p=resid_p, attn_p=attn_p, bias=bias, scale=scale)
         self.ff   = feed_forward(d_model, d_inner, ff_p=ff_p, act=act, double_drop=double_drop)
-    
+
     def forward(self, x:Tensor, mask:Tensor=None, **kwargs): return self.ff(self.mhra(x, mask=mask, **kwargs))
 
-class Transformer(nn.Module):
+class Transformer(Module):
     "Transformer model: https://arxiv.org/abs/1706.03762."
-    def __init__(self, vocab_sz:int, ctx_len:int, n_layers:int, n_heads:int, d_model:int, d_head:int, d_inner:int, 
+    def __init__(self, vocab_sz:int, ctx_len:int, n_layers:int, n_heads:int, d_model:int, d_head:int, d_inner:int,
                  resid_p:float=0., attn_p:float=0., ff_p:float=0., embed_p:float=0., bias:bool=True, scale:bool=True,
                  act:Activation=Activation.ReLU, double_drop:bool=True, attn_cls:Callable=MultiHeadAttention,
                  learned_pos_enc:bool=True, mask:bool=True):
-        super().__init__()
         self.mask = mask
         self.encoder = nn.Embedding(vocab_sz, d_model)
         self.pos_enc = nn.Embedding(ctx_len, d_model) if learned_pos_enc else PositionalEncoding(d_model)
         self.drop_emb = nn.Dropout(embed_p)
         self.layers = nn.ModuleList([DecoderLayer(n_heads, d_model, d_head, d_inner, resid_p=resid_p, attn_p=attn_p,
-                      ff_p=ff_p, bias=bias, scale=scale, act=act, double_drop=double_drop, 
+                      ff_p=ff_p, bias=bias, scale=scale, act=act, double_drop=double_drop,
                       attn_cls=attn_cls) for k in range(n_layers)])
-    
+
     def reset(self): pass
-    
+
     def forward(self, x):
         bs, x_len = x.size()
         pos = torch.arange(0, x_len, device=x.device, dtype=x.dtype)
@@ -177,13 +171,12 @@ class Transformer(nn.Module):
         for layer in self.layers: inp = layer(inp, mask=mask)
         return ([inp],[inp]) #For the LinearDecoder
 
-class TransformerXL(nn.Module):
+class TransformerXL(Module):
     "TransformerXL model: https://arxiv.org/abs/1901.02860."
-    def __init__(self, vocab_sz:int, ctx_len:int, n_layers:int, n_heads:int, d_model:int, d_head:int, d_inner:int, 
+    def __init__(self, vocab_sz:int, ctx_len:int, n_layers:int, n_heads:int, d_model:int, d_head:int, d_inner:int,
                  resid_p:float=0., attn_p:float=0., ff_p:float=0., embed_p:float=0., bias:bool=False, scale:bool=True,
                  act:Activation=Activation.ReLU, double_drop:bool=True, attn_cls:Callable=MultiHeadRelativeAttention,
                  learned_pos_enc:bool=False, mask:bool=True, mem_len:int=0):
-        super().__init__()
         self.encoder = nn.Embedding(vocab_sz, d_model)
         self.pos_enc = nn.Embedding(ctx_len, d_model) if learned_pos_enc else PositionalEncoding(d_model)
         self.drop_emb = nn.Dropout(embed_p)
@@ -192,9 +185,9 @@ class TransformerXL(nn.Module):
         self.mem_len,self.n_layers,self.d_model,self.mask = mem_len,n_layers,d_model,mask
         self.init = False
         self.layers = nn.ModuleList([DecoderLayer(n_heads, d_model, d_head, d_inner, resid_p=resid_p, attn_p=attn_p,
-                      ff_p=ff_p, bias=bias, scale=scale, act=act, double_drop=double_drop, 
+                      ff_p=ff_p, bias=bias, scale=scale, act=act, double_drop=double_drop,
                       attn_cls=attn_cls) for k in range(n_layers)])
-    
+
     def reset(self):
         "Reset the internal memory."
         self.hidden = [next(self.parameters()).data.new(0) for i in range(self.n_layers+1)]
@@ -206,12 +199,12 @@ class TransformerXL(nn.Module):
             for i in range(len(hids)):
                 cat = torch.cat([self.hidden[i], hids[i]], dim=1)
                 self.hidden[i] = cat[:,-self.mem_len:].detach()
-    
+
     def select_hidden(self, idxs): self.hidden = [h[idxs] for h in self.hidden]
-    
+
     def forward(self, x):
         #The hidden state has to be initiliazed in the forward pass for nn.DataParallel
-        if self.mem_len > 0 and not self.init: 
+        if self.mem_len > 0 and not self.init:
             self.reset()
             self.init = True
         bs,x_len = x.size()

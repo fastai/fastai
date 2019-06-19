@@ -54,6 +54,21 @@ def is_dict(x:Any)->bool: return isinstance(x, dict)
 def is_pathlike(x:Any)->bool: return isinstance(x, (str,Path))
 def noop(x): return x
 
+class PrePostInitMeta(type):
+    "A metaclass that calls optional `__pre_init__` and `__post_init__` methods"
+    def __new__(cls, name, bases, dct):
+        x = super().__new__(cls, name, bases, dct)
+        old_init = x.__init__
+        def _pass(self): pass
+        def _init(self,*args,**kwargs):
+            self.__pre_init__()
+            old_init(self, *args,**kwargs)
+            self.__post_init__()
+        x.__init__ = _init
+        if not hasattr(x,'__pre_init__'):  x.__pre_init__  = _pass
+        if not hasattr(x,'__post_init__'): x.__post_init__ = _pass
+        return x
+
 def chunks(l:Collection, n:int)->Iterable:
     "Yield successive `n`-sized chunks from `l`."
     for i in range(0, len(l), n): yield l[i:i+n]
@@ -68,7 +83,7 @@ def first_el(x: Any)->Any:
     if is_listy(x): return first_el(x[0])
     if is_dict(x):  return first_el(x[list(d.keys())[0]])
     return x
-        
+
 def to_int(b:Any)->Union[int,List[int]]:
     "Recursively convert `b` to an int or list/dict of ints; raises exception if not convertible."
     return recurse(lambda x: int(x), b)

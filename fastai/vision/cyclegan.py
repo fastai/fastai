@@ -23,9 +23,8 @@ def pad_conv_norm_relu(ch_in:int, ch_out:int, pad_mode:str, norm_layer:nn.Module
     if activ: layers.append(nn.ReLU(inplace=True))
     return layers
 
-class ResnetBlock(nn.Module):
+class ResnetBlock(Module):
     def __init__(self, dim:int, pad_mode:str='reflection', norm_layer:nn.Module=None, dropout:float=0., bias:bool=True):
-        super().__init__()
         assert pad_mode in ['zeros', 'reflection', 'border'], f'padding {pad_mode} not implemented.'
         norm_layer = ifnone(norm_layer, nn.InstanceNorm2d)
         layers = pad_conv_norm_relu(dim, dim, pad_mode, norm_layer, bias=bias)
@@ -75,11 +74,10 @@ def critic(ch_in:int, n_ftrs:int=64, n_layers:int=3, norm_layer:nn.Module=None, 
     if sigmoid: layers.append(nn.Sigmoid())
     return nn.Sequential(*layers)
 
-class CycleGAN(nn.Module):
+class CycleGAN(Module):
 
     def __init__(self, ch_in:int, ch_out:int, n_features:int=64, disc_layers:int=3, gen_blocks:int=6, lsgan:bool=True,
                  drop:float=0., norm_layer:nn.Module=None):
-        super().__init__()
         self.D_A = critic(ch_in, n_features, disc_layers, norm_layer, sigmoid=not lsgan)
         self.D_B = critic(ch_in, n_features, disc_layers, norm_layer, sigmoid=not lsgan)
         self.G_A = resnet_generator(ch_in, ch_out, n_features, norm_layer, drop, gen_blocks)
@@ -95,19 +93,15 @@ class CycleGAN(nn.Module):
         idt_A, idt_B = self.G_A(real_A), self.G_B(real_B)
         return [fake_A, fake_B, idt_A, idt_B]
 
-class AdaptiveLoss(nn.Module):
-    def __init__(self, crit):
-        super().__init__()
-        self.crit = crit
+class AdaptiveLoss(Module):
+    def __init__(self, crit): self.crit = crit
 
     def forward(self, output, target:bool):
         targ = output.new_ones(*output.size()) if target else output.new_zeros(*output.size())
         return self.crit(output, targ)
 
-class CycleGanLoss(nn.Module):
-
+class CycleGanLoss(Module):
     def __init__(self, cgan:nn.Module, lambda_A:float=10., lambda_B:float=10, lambda_idt:float=0.5, lsgan:bool=True):
-        super().__init__()
         self.cgan,self.l_A,self.l_B,self.l_idt = cgan,lambda_A,lambda_B,lambda_idt
         #self.crit = F.mse_loss if lsgan else F.binary_cross_entropy
         self.crit = AdaptiveLoss(F.mse_loss if lsgan else F.binary_cross_entropy)

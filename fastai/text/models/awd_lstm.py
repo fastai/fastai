@@ -14,7 +14,7 @@ def dropout_mask(x:Tensor, sz:Collection[int], p:float):
     "Return a dropout mask of the same type as `x`, size `sz`, with probability `p` to cancel an element."
     return x.new(*sz).bernoulli_(1-p).div_(1-p)
 
-class RNNDropout(nn.Module):
+class RNNDropout(Module):
     "Dropout with probability `p` that is consistent on the seq_len dimension."
 
     def __init__(self, p:float=0.5):
@@ -26,7 +26,7 @@ class RNNDropout(nn.Module):
         m = dropout_mask(x.data, (x.size(0), 1, x.size(2)), self.p)
         return x * m
 
-class WeightDropout(nn.Module):
+class WeightDropout(Module):
     "A module that warps another layer in which some weights will be replaced by 0 during training."
 
     def __init__(self, module:nn.Module, weight_p:float, layer_names:Collection[str]=['weight_hh_l0']):
@@ -57,7 +57,7 @@ class WeightDropout(nn.Module):
             self.module._parameters[layer] = F.dropout(raw_w, p=self.weight_p, training=False)
         if hasattr(self.module, 'reset'): self.module.reset()
 
-class EmbeddingDropout(nn.Module):
+class EmbeddingDropout(Module):
     "Apply dropout with probabily `embed_p` to an embedding layer `emb`."
 
     def __init__(self, emb:nn.Module, embed_p:float):
@@ -76,7 +76,7 @@ class EmbeddingDropout(nn.Module):
         return F.embedding(words, masked_embed, self.pad_idx, self.emb.max_norm,
                            self.emb.norm_type, self.emb.scale_grad_by_freq, self.emb.sparse)
 
-class AWD_LSTM(nn.Module):
+class AWD_LSTM(Module):
     "AWD-LSTM/QRNN inspired by https://arxiv.org/abs/1708.02182."
 
     initrange=0.1
@@ -138,7 +138,7 @@ class AWD_LSTM(nn.Module):
         if self.qrnn: self.hidden = [self._one_hidden(l) for l in range(self.n_layers)]
         else: self.hidden = [(self._one_hidden(l), self._one_hidden(l)) for l in range(self.n_layers)]
 
-class LinearDecoder(nn.Module):
+class LinearDecoder(Module):
     "To go on top of a RNNCore module and create a Language Model."
     initrange=0.1
 

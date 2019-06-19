@@ -7,7 +7,6 @@ __all__ = [*tabular.__all__, 'EmbeddingDotBias', 'EmbeddingNN', 'collab_learner'
 
 class CollabProcessor(TabularProcessor):
     "Subclass `TabularProcessor for `process_one`."
-    
     def process_one(self, item):
         res = super().process_one(item)
         return CollabLine(res.cats,res.conts,res.classes,res.names)
@@ -34,10 +33,9 @@ class EmbeddingNN(TabularModel):
     def forward(self, users:LongTensor, items:LongTensor) -> Tensor:
         return super().forward(torch.stack([users,items], dim=1), None)
 
-class EmbeddingDotBias(nn.Module):
+class EmbeddingDotBias(Module):
     "Base dot model for collaborative filtering."
     def __init__(self, n_factors:int, n_users:int, n_items:int, y_range:Tuple[float,float]=None):
-        super().__init__()
         self.y_range = y_range
         (self.u_weight, self.i_weight, self.u_bias, self.i_bias) = [embedding(*o) for o in [
             (n_users, n_factors), (n_items, n_factors), (n_users,1), (n_items,1)

@@ -7,41 +7,25 @@ __all__ = ['AdaptiveConcatPool2d', 'BCEWithLogitsFlat', 'BCEFlat', 'MSELossFlat'
            'NoopLoss', 'WassersteinLoss', 'SelfAttention', 'SequentialEx', 'MergeLayer', 'res_block', 'sigmoid_range',
            'SigmoidRange', 'PartialLayer', 'FlattenedLoss', 'BatchNorm1dFlat', 'LabelSmoothingCrossEntropy', 'PooledSelfAttention2d']
 
-class Lambda(nn.Module):
-    "An easy way to create a pytorch layer for a simple `func`."
-    def __init__(self, func:LambdaFunc):
-        "create a layer that simply calls `func` with `x`"
-        super().__init__()
-        self.func=func
-
+class Lambda(Module):
+    "Create a layer that simply calls `func` with `x`"
+    def __init__(self, func:LambdaFunc): self.func=func
     def forward(self, x): return self.func(x)
 
-class View(nn.Module):
+class View(Module):
     "Reshape `x` to `size`"
-    def __init__(self, *size:int):
-        super().__init__()
-        self.size = size
-
+    def __init__(self, *size:int): self.size = size
     def forward(self, x): return x.view(self.size)
 
-class ResizeBatch(nn.Module):
+class ResizeBatch(Module):
     "Reshape `x` to `size`, keeping batch dim the same size"
-    def __init__(self, *size:int):
-        super().__init__()
-        self.size = size
+    def __init__(self, *size:int): self.size = size
+    def forward(self, x): return x.view((x.size(0),) + self.size)
 
-    def forward(self, x):
-        size = (x.size(0),) + self.size
-        return x.view(size)
-
-class Flatten(nn.Module):
+class Flatten(Module):
     "Flatten `x` to a single dimension, often used at the end of a model. `full` for rank-1 tensor"
-    def __init__(self, full:bool=False):
-        super().__init__()
-        self.full = full
-
-    def forward(self, x):
-        return x.view(-1) if self.full else x.view(x.size(0), -1)
+    def __init__(self, full:bool=False): self.full = full
+    def forward(self, x): return x.view(-1) if self.full else x.view(x.size(0), -1)
 
 def PoolFlatten()->nn.Sequential:
     "Apply `nn.AdaptiveAvgPool2d` to `x` and then flatten the result."
@@ -72,10 +56,9 @@ def conv1d(ni:int, no:int, ks:int=1, stride:int=1, padding:int=0, bias:bool=Fals
     if bias: conv.bias.data.zero_()
     return spectral_norm(conv)
 
-class PooledSelfAttention2d(nn.Module):
+class PooledSelfAttention2d(Module):
     "Pooled self attention layer for 2d."
     def __init__(self, n_channels:int):
-        super().__init__()
         self.n_channels = n_channels
         self.theta = spectral_norm(conv2d(n_channels, n_channels//8, 1)) # query
         self.phi   = spectral_norm(conv2d(n_channels, n_channels//8, 1)) # key
@@ -95,10 +78,9 @@ class PooledSelfAttention2d(nn.Module):
         o = self.o(torch.bmm(g, beta.transpose(1,2)).view(-1, self.n_channels // 2, x.shape[2], x.shape[3]))
         return self.gamma * o + x
 
-class SelfAttention(nn.Module):
+class SelfAttention(Module):
     "Self attention layer for nd."
     def __init__(self, n_channels:int):
-        super().__init__()
         self.query = conv1d(n_channels, n_channels//8)
         self.key   = conv1d(n_channels, n_channels//8)
         self.value = conv1d(n_channels, n_channels)
@@ -143,11 +125,9 @@ def conv_layer(ni:int, nf:int, ks:int=3, stride:int=1, padding:int=None, bias:bo
     if self_attention: layers.append(SelfAttention(nf))
     return nn.Sequential(*layers)
 
-class SequentialEx(nn.Module):
+class SequentialEx(Module):
     "Like `nn.Sequential`, but with ModuleList semantics, and can access module input"
-    def __init__(self, *layers):
-        super().__init__()
-        self.layers = nn.ModuleList(layers)
+    def __init__(self, *layers): self.layers = nn.ModuleList(layers)
 
     def forward(self, x):
         res = x
@@ -164,12 +144,9 @@ class SequentialEx(nn.Module):
     def extend(self,l): return self.layers.extend(l)
     def insert(self,i,l): return self.layers.insert(i,l)
 
-class MergeLayer(nn.Module):
+class MergeLayer(Module):
     "Merge a shortcut with the result of the module by adding them or concatenating thme if `dense=True`."
-    def __init__(self, dense:bool=False):
-        super().__init__()
-        self.dense=dense
-
+    def __init__(self, dense:bool=False): self.dense=dense
     def forward(self, x): return torch.cat([x,x.orig], dim=1) if self.dense else (x+x.orig)
 
 def res_block(nf, dense:bool=False, norm_type:Optional[NormType]=NormType.Batch, bottle:bool=False, **conv_kwargs):
@@ -185,35 +162,28 @@ def sigmoid_range(x, low, high):
     "Sigmoid function with range `(low, high)`"
     return torch.sigmoid(x) * (high - low) + low
 
-class SigmoidRange(nn.Module):
+class SigmoidRange(Module):
     "Sigmoid module with range `(low,x_max)`"
-    def __init__(self, low, high):
-        super().__init__()
-        self.low,self.high = low,high
-
+    def __init__(self, low, high): self.low,self.high = low,high
     def forward(self, x): return sigmoid_range(x, self.low, self.high)
 
-class PartialLayer(nn.Module):
+class PartialLayer(Module):
     "Layer that applies `partial(func, **kwargs)`."
-    def __init__(self, func, **kwargs):
-        super().__init__()
-        self.repr = f'{func}({kwargs})'
-        self.func = partial(func, **kwargs)
-
+    def __init__(self, func, **kwargs): self.repr,self.func = f'{func}({kwargs})', partial(func, **kwargs)
     def forward(self, x): return self.func(x)
     def __repr__(self): return self.repr
 
-class AdaptiveConcatPool2d(nn.Module):
+class AdaptiveConcatPool2d(Module):
     "Layer that concats `AdaptiveAvgPool2d` and `AdaptiveMaxPool2d`."
     def __init__(self, sz:Optional[int]=None):
         "Output will be 2*sz or 2 if sz is None"
-        super().__init__()
         self.output_size = sz or 1
         self.ap = nn.AdaptiveAvgPool2d(self.output_size)
         self.mp = nn.AdaptiveMaxPool2d(self.output_size)
+
     def forward(self, x): return torch.cat([self.mp(x), self.ap(x)], 1)
 
-class Debugger(nn.Module):
+class Debugger(Module):
     "A module to debug inside a model."
     def forward(self,x:Tensor) -> Tensor:
         set_trace()
@@ -229,10 +199,9 @@ def icnr(x, scale=2, init=nn.init.kaiming_normal_):
     k = k.contiguous().view([nf,ni,h,w]).transpose(0, 1)
     x.data.copy_(k)
 
-class PixelShuffle_ICNR(nn.Module):
+class PixelShuffle_ICNR(Module):
     "Upsample by `scale` from `ni` filters to `nf` (default `ni`), using `nn.PixelShuffle`, `icnr` init, and `weight_norm`."
     def __init__(self, ni:int, nf:int=None, scale:int=2, blur:bool=False, norm_type=NormType.Weight, leaky:float=None):
-        super().__init__()
         nf = ifnone(nf, ni)
         self.conv = conv_layer(ni, nf*(scale**2), ks=1, norm_type=norm_type, use_activ=False)
         icnr(self.conv[0].weight)
@@ -283,11 +252,11 @@ def MSELossFlat(*args, axis:int=-1, floatify:bool=True, **kwargs):
     "Same as `nn.MSELoss`, but flattens input and target."
     return FlattenedLoss(nn.MSELoss, *args, axis=axis, floatify=floatify, is_2d=False, **kwargs)
 
-class NoopLoss(nn.Module):
+class NoopLoss(Module):
     "Just returns the mean of the `output`."
     def forward(self, output, *args): return output.mean()
 
-class WassersteinLoss(nn.Module):
+class WassersteinLoss(Module):
     "For WGAN."
     def forward(self, real, fake): return real.mean() - fake.mean()
 
@@ -322,11 +291,9 @@ class BatchNorm1dFlat(nn.BatchNorm1d):
         x = x.contiguous().view(-1,l)
         return super().forward(x).view(*f,l)
 
-class LabelSmoothingCrossEntropy(nn.Module):
-    def __init__(self, eps:float=0.1, reduction='mean'):
-        super().__init__()
-        self.eps,self.reduction = eps,reduction
-    
+class LabelSmoothingCrossEntropy(Module):
+    def __init__(self, eps:float=0.1, reduction='mean'): self.eps,self.reduction = eps,reduction
+
     def forward(self, output, target):
         c = output.size()[-1]
         log_preds = F.log_softmax(output, dim=-1)

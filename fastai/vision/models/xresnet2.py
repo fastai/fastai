@@ -11,7 +11,7 @@ def conv3x3(in_planes, out_planes, stride=1):
     return nn.Conv2d(in_planes, out_planes, kernel_size=3, stride=stride, padding=1, bias=False)
 
 
-class BasicBlock(nn.Module):
+class BasicBlock(Module):
     expansion = 1
 
     def __init__(self, inplanes, planes, stride=1, downsample=None):
@@ -42,7 +42,7 @@ class BasicBlock(nn.Module):
         return out
 
 
-class Bottleneck(nn.Module):
+class Bottleneck(Module):
     expansion = 4
 
     def __init__(self, inplanes, planes, stride=1, downsample=None):
@@ -83,7 +83,7 @@ def conv2d(ni, nf, stride):
     return nn.Sequential(nn.Conv2d(ni, nf, kernel_size=3, stride=stride, padding=1, bias=False),
                          nn.BatchNorm2d(nf), nn.ReLU(inplace=True))
 
-class XResNet(nn.Module):
+class XResNet(Module):
 
     def __init__(self, block, layers, c_out=1000):
         self.inplanes = 64

@@ -78,7 +78,7 @@ def forget_mult_CPU(x:Tensor, f:Tensor, hidden_init:Optional[Tensor]=None, batch
         else:        result.append(prev_h)
     return torch.cat(result, dim=dim)
 
-class QRNNLayer(nn.Module):
+class QRNNLayer(Module):
     "Apply a single layer Quasi-Recurrent Neural Network (QRNN) to an input sequence."
 
     def __init__(self, input_size:int, hidden_size:int=None, save_prev_x:bool=False, zoneout:float=0, window:int=1, 
@@ -126,7 +126,7 @@ class QRNNLayer(nn.Module):
         inp_shift = torch.cat(inp_shift, dim)
         return torch.cat([inp, inp_shift], 2)
     
-class QRNN(nn.Module):
+class QRNN(Module):
     "Apply a multiple layer Quasi-Recurrent Neural Network (QRNN) to an input sequence."
 
     def __init__(self, input_size:int, hidden_size:int, n_layers:int=1, bias:bool=True, batch_first:bool=True,

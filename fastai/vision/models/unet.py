@@ -11,11 +11,10 @@ def _get_sfs_idxs(sizes:Sizes) -> List[int]:
     if feature_szs[0] != feature_szs[1]: sfs_idxs = [0] + sfs_idxs
     return sfs_idxs
 
-class UnetBlock(nn.Module):
+class UnetBlock(Module):
     "A quasi-UNet block, using `PixelShuffle_ICNR upsampling`."
     def __init__(self, up_in_c:int, x_in_c:int, hook:Hook, final_div:bool=True, blur:bool=False, leaky:float=None,
                  self_attention:bool=False, **kwargs):
-        super().__init__()
         self.hook = hook
         self.shuf = PixelShuffle_ICNR(up_in_c, up_in_c//2, blur=blur, leaky=leaky, **kwargs)
         self.bn = batchnorm_2d(x_in_c)

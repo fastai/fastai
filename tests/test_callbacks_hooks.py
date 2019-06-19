@@ -60,7 +60,7 @@ def test_model_summary_collab():
 #    _ = model_summary(nn.Conv2d(16,16,3,padding=1))
 #
 #def test_model_summary_nn_modules():
-#    class BasicBlock(nn.Module):
+#    class BasicBlock(Module):
 #        def __init__(self):
 #            super().__init__()
 #            self.conv1 = conv2d(16,16,3,1)
