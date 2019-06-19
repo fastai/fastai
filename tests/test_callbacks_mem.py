@@ -4,6 +4,7 @@ from fastai.gen_doc.doctest import this_tests
 from utils.fakes import *
 from utils.text import CaptureStdout
 
+@pytest.mark.skip("occassional random failures")
 @pytest.mark.cuda
 def test_peak_mem_metric():
     learn = fake_learner()
