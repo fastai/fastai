@@ -13,7 +13,11 @@ of that change.
 
 ## 1.0.54.dev0 (Work In Progress)
 
-### Fixed:
+### New:
+
+- `torch_core.Module` is a replacement for `nn.Module` that doesn't require calling `super().__init__`
+- `torch_core.Module` is implemented using new metaclass `PrePostInit` which will call
+  optional `__pre_init__` and `__post_init__` methods
 
 ## 1.0.53 (2019-06-10)
 
