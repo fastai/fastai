@@ -184,7 +184,6 @@ def test_explained_variance(p, t, expect):
 ])
 def test_r2_score(p, t, expect):
     this_tests(r2_score)
-    print(r2_score(p, t), expect)
     assert np.isclose(r2_score(p, t), expect, atol=1e-2)
 
 ### metric as a custom class
