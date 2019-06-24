@@ -175,6 +175,17 @@ def test_explained_variance(p, t, expect):
     this_tests(explained_variance)
     assert np.isclose(explained_variance(p, t), expect)
 
+@pytest.mark.parametrize("p, t, expect", [
+    (torch.arange(-5, 5).float(), torch.arange(-5,  5).float(), 1),
+    (torch.zeros(10).float(), torch.arange(-5, 5).float(), -0.0303),
+    (torch.arange(-5, 5).float(), torch.zeros(10).float(), -float("inf")),
+    (p1/2., p1, 0.6875),
+    (p1, t2, -2.75),
+])
+def test_r2_score(p, t, expect):
+    this_tests(r2_score)
+    assert np.isclose(r2_score(p, t), expect, atol=1e-2)
+
 ### metric as a custom class
 dummy_base_val = 9876
 class DummyMetric(Callback):
