@@ -37,7 +37,7 @@ def to_fp16(learn:Learner, loss_scale:float=None, max_noskip:int=1000, dynamic:b
     learn.to_fp32()
     learn.model = model2half(learn.model)
     learn.data.add_tfm(batch_to_half)
-    learn.mp_cb = MixedPrecision(learn, loss_scale=loss_scale, max_noskip=max_noskip, dynamic=dynamic, clip=clip, 
+    learn.mp_cb = MixedPrecision(learn, loss_scale=loss_scale, max_noskip=max_noskip, dynamic=dynamic, clip=clip,
                                  flat_master=flat_master, max_scale=max_scale)
     learn.callbacks.append(learn.mp_cb)
     return learn
@@ -45,7 +45,7 @@ def to_fp16(learn:Learner, loss_scale:float=None, max_noskip:int=1000, dynamic:b
 def to_fp32(learn:Learner):
     "Put `learn` back to FP32 precision mode."
     learn.data.remove_tfm(batch_to_half)
-    for cb in learn.callbacks: 
+    for cb in learn.callbacks:
         if isinstance(cb, MixedPrecision): learn.callbacks.remove(cb)
     learn.model = learn.model.float()
     return learn
@@ -95,28 +95,28 @@ def clip_grad(learn:Learner, clip:float=0.1)->Learner:
     learn.callback_fns.append(partial(GradientClipping, clip=clip))
     return learn
 Learner.clip_grad = clip_grad
-     
+
 class AccumulateScheduler(LearnerCallback):
     "Does accumlated step every nth step by accumulating gradients"
-    
+
     def __init__(self, learn:Learner, n_step:int = 1, drop_last:bool = False):
         super().__init__(learn)
         self.n_step,self.drop_last = n_step,drop_last
- 
+
     def on_train_begin(self, **kwargs):
         "check if loss is reduction"
         if hasattr(self.loss_func, "reduction") and (self.loss_func.reduction != "sum"):
              warn("For better gradients consider 'reduction=sum'")
-        
+
     def on_epoch_begin(self, **kwargs):
         "init samples and batches, change optimizer"
-        self.acc_samples, self.acc_batches = 0., 0. 
-        
+        self.acc_samples, self.acc_batches = 0., 0.
+
     def on_batch_begin(self, last_input, last_target, **kwargs):
         "accumulate samples and batches"
         self.acc_samples += last_input.shape[0]
         self.acc_batches += 1
-        
+
     def on_backward_end(self, **kwargs):
         "accumulated step and reset samples, True will result in no stepping"
         if (self.acc_batches % self.n_step) == 0:
@@ -124,7 +124,7 @@ class AccumulateScheduler(LearnerCallback):
                 if p.requires_grad: p.grad.div_(self.acc_samples)
             self.acc_samples = 0
         else: return {'skip_step':True, 'skip_zero':True}
-    
+
     def on_epoch_end(self, **kwargs):
         "step the rest of the accumulated grads if not perfectly divisible"
         for p in (self.learn.model.parameters()):
@@ -147,7 +147,7 @@ class Interpretation():
     @classmethod
     def from_learner(cls, learn: Learner,  ds_type:DatasetType=DatasetType.Valid):
         "Gets preds, y_true, losses to construct base class from a learner"
-        preds_res = learn.get_preds(ds_type=ds_type, with_loss=True)
+        preds_res = learn.get_preds(ds_type=ds_type, with_loss=True, ordered=True)
         return cls(learn, *preds_res)
 
     def top_losses(self, k:int=None, largest=True):
@@ -156,7 +156,7 @@ class Interpretation():
 
     # def top_scores(self, metric:Callable=None, k:int=None, largest=True):
     #     "`k` largest(/smallest) metric scores and indexes, defaulting to all scores (sorted by `largest`)."
-    #     self.scores = metric(self.preds, self.y_true) 
+    #     self.scores = metric(self.preds, self.y_true)
     #     return self.scores.topk(ifnone(k, len(self.scores)), largest=largest)
 
 
