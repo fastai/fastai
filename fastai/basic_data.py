@@ -153,9 +153,9 @@ class DataBunch():
             return
         try_save(self.label_list, self.path, file)
 
-    def add_test(self, items:Iterator, label:Any=None)->None:
+    def add_test(self, items:Iterator, label:Any=None, tfms=None, tfm_y=None)->None:
         "Add the `items` as a test set. Pass along `label` otherwise label them with `EmptyLabel`."
-        self.label_list.add_test(items, label=label)
+        self.label_list.add_test(items, label=label, tfms=tfms, tfm_y=tfm_y)
         vdl = self.valid_dl
         dl = DataLoader(self.label_list.test, vdl.batch_size, shuffle=False, drop_last=False, num_workers=vdl.num_workers)
         self.test_dl = DeviceDataLoader(dl, vdl.device, vdl.tfms, vdl.collate_fn)

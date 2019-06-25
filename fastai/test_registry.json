@@ -233,7 +233,7 @@
     "fastai.callback.AverageMetric": [
         {
             "file": "tests/test_metrics.py",
-            "line": 202,
+            "line": 213,
             "test": "test_average_metric_naming"
         }
     ],
@@ -835,6 +835,13 @@
             "file": "tests/test_metrics.py",
             "line": 163,
             "test": "test_msle"
+        }
+    ],
+    "fastai.metrics.r2_score": [
+        {
+            "file": "tests/test_metrics.py",
+            "line": 185,
+            "test": "test_r2_score"
         }
     ],
     "fastai.metrics.root_mean_squared_error": [
