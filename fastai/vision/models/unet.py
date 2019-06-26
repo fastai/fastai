@@ -36,10 +36,10 @@ class UnetBlock(Module):
 
 class DynamicUnet(SequentialEx):
     "Create a U-Net from a given architecture."
-    def __init__(self, encoder:nn.Module, n_classes:int, blur:bool=False, blur_final=True, self_attention:bool=False,
+    def __init__(self, encoder:nn.Module, n_classes:int, img_size:Tuple[int,int]=(256,256), blur:bool=False, blur_final=True, self_attention:bool=False,
                  y_range:Optional[Tuple[float,float]]=None,
                  last_cross:bool=True, bottle:bool=False, **kwargs):
-        imsize = (256,256)
+        imsize = img_size
         sfs_szs = model_sizes(encoder, size=imsize)
         sfs_idxs = list(reversed(_get_sfs_idxs(sfs_szs)))
         self.sfs = hook_outputs([encoder[i] for i in sfs_idxs])
@@ -63,6 +63,8 @@ class DynamicUnet(SequentialEx):
 
         ni = x.shape[1]
         if imsize != sfs_szs[0][-2:]: layers.append(PixelShuffle_ICNR(ni, **kwargs))
+        x = PixelShuffle_ICNR(ni)(x)
+        if imsize != x.shape[-2:]: layers.append(Lambda(lambda x: F.interpolate(x, imsize, mode='nearest')))
         if last_cross:
             layers.append(MergeLayer(dense=True))
             ni += in_channels(encoder)
