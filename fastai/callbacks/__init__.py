@@ -8,3 +8,4 @@ from .rnn import *
 from .tracker import *
 from .csv_logger import *
 from .loss_metrics import *
+from .oversampling import *
