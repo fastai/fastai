@@ -147,7 +147,7 @@ class Interpretation():
     @classmethod
     def from_learner(cls, learn: Learner,  ds_type:DatasetType=DatasetType.Valid):
         "Gets preds, y_true, losses to construct base class from a learner"
-        preds_res = learn.get_preds(ds_type=ds_type, with_loss=True, ordered=True)
+        preds_res = learn.get_preds(ds_type=ds_type, with_loss=True)
         return cls(learn, *preds_res)
 
     def top_losses(self, k:int=None, largest=True):

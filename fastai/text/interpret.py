@@ -41,6 +41,12 @@ class TextClassificationInterpretation(ClassificationInterpretation):
         super(TextClassificationInterpretation, self).__init__(learn,preds,y_true,losses,ds_type)
         self.model = learn.model
 
+    @classmethod
+    def from_learner(cls, learn: Learner,  ds_type:DatasetType=DatasetType.Valid):
+        "Gets preds, y_true, losses to construct base class from a learner"
+        preds_res = learn.get_preds(ds_type=ds_type, with_loss=True, ordered=True)
+        return cls(learn, *preds_res)
+
     def intrinsic_attention(self, text:str, class_id:int=None):
         """Calculate the intrinsic attention of the input w.r.t to an output `class_id`, or the classification given by the model if `None`.
         For reference, see the Sequential Jacobian session at https://www.cs.toronto.edu/~graves/preprint.pdf
