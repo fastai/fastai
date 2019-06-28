@@ -1,17 +1,16 @@
 from ..torch_core import *
 from ..basic_data import DataBunch
 from ..callback import *
-from ..basic_train import Learner
+from ..basic_train import Learner,LearnerCallback
 from torch.utils.data.sampler import WeightedRandomSampler
 
 __all__ = ['OverSamplingCallback']
 
 
 
-class OverSamplingCallback(Callback):
+class OverSamplingCallback(LearnerCallback):
     def __init__(self,learn:Learner):
-        #super().__init__(learn)
-        self.learn = learn
+        super().__init__(learn)
         self.labels = self.learn.data.train_dl.dataset.y.items
         _, counts = np.unique(self.labels,return_counts=True)
         self.weights = torch.DoubleTensor((1/counts)[self.labels])
