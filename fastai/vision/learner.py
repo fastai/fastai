@@ -113,7 +113,9 @@ def unet_learner(data:DataBunch, arch:Callable, pretrained:bool=True, blur_final
     "Build Unet learner from `data` and `arch`."
     meta = cnn_config(arch)
     body = create_body(arch, pretrained, cut)
-    model = to_device(models.unet.DynamicUnet(body, n_classes=data.c, blur=blur, blur_final=blur_final,
+    try:    size = data.train_ds[0][0].size
+    except: size = next(iter(data.train_dl))[0].shape[-2:]
+    model = to_device(models.unet.DynamicUnet(body, n_classes=data.c, img_size=size, blur=blur, blur_final=blur_final,
           self_attention=self_attention, y_range=y_range, norm_type=norm_type, last_cross=last_cross,
           bottle=bottle), data.device)
     learn = Learner(data, model, **learn_kwargs)

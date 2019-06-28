@@ -28,7 +28,7 @@ class MLFlowTracker(LearnerCallback):
         if kwargs['smooth_loss'] is None or kwargs["last_metrics"] is None: return
         metrics = [kwargs['smooth_loss']] + kwargs["last_metrics"]
         for name, val in zip(self.metrics_names, metrics):
-            self.client.log_metric(self.run, name, np.float(val))
+            self.client.log_metric(self.run, name, np.float(val), step=epoch)
         
     def on_train_end(self, **kwargs: Any) -> None:  
         "Store the notebook and stop run"
