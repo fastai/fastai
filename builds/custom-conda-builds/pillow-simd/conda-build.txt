@@ -1,0 +1,110 @@
+
+Mostly the same (some important) notes appli as in ../simd/conda-build.txt
+
+
+## Successful Builds
+
+w/ custom-built `libjpeg-turbo` + libtiff conda packages (via builds/custom-conda-builds/libjpeg-turbo and builds/custom-conda-builds/libtiff):
+
+* python 3.6 + pillow-simd-dev (5.3.0.post0)
+
+
+
+## Failing Builds
+
+* python 3.7 failing + any pillow (except current Pillow master HEAD, which works, but Pillow-SIMD is not syncing it until a new release).
+ModuleNotFoundError: No module named '_sysconfigdata_x86_64_conda_cos6_linux_gnu'
+Unresolved issue of toolchain conflicts:
+https://github.com/conda-forge/python-feedstock/issues/220
+
+
+
+## Prep
+
+sudo apt-get install libjpeg-dev zlib1g-dev
+conda install -y conda-build conda-verify
+cd builds/custom-conda-builds/pillow-simd # this dir
+git clone https://github.com/uploadcare/pillow-simd/ Pillow-SIMD
+cd Pillow-SIMD
+# optionally switch to a desired release tag, otherwise you're on the bleeding edge
+# git checkout tags/5.3.0
+cp -r ../recipe .
+
+# apply patches:
+
+1. only if pillow-simd < 5.4.0 - once pillow-simd 5.4.0.postX is released we don't need this patch anymore
+git apply ../libjpeg-turbo-feature.patch
+
+2. Make it possible to turn Pillow-SIMD package into Pillow package (if env var REPLACEPILLOW=1 during package build)
+git apply ../pretend-pill-package.patch
+
+
+
+## Build against a custom build libjpeg-turbo conda package
+
+conda uninstall -y --force pillow pil jpeg libtiff
+pip   uninstall -y         pillow pil jpeg libtiff
+
+
+# presumes libjpeg-turbo libtiff were built locally - see
+# builds/custom-conda-builds/libjpeg-turbo and
+# builds/custom-conda-builds/libtiff
+conda install -c ${CONDA_PREFIX}/conda-bld/ libjpeg-turbo libtiff
+# or if they are already on fastai:
+conda install -c fastai/label/test libjpeg-turbo libtiff
+
+
+python setup.py sdist
+CFLAGS="${CFLAGS} -mavx2" MAKEFLAGS="-j" conda-build -c fastai recipe/meta.yaml
+# add REPLACEPILLOW=1 to make into Pillow package
+
+
+### Build against -c conda-forge libjpeg-turbo
+
+XXX: outdated - probably don't need any more?
+
+conda uninstall -y --force pillow pil jpeg libtiff
+pip   uninstall -y         pillow pil jpeg libtiff
+
+conda install -y -c conda-forge libjpeg-turbo
+
+python setup.py sdist
+CFLAGS="${CFLAGS} -mavx2" MAKEFLAGS="-j" conda-build -c conda-forge recipe/meta.yaml
+
+
+
+## Install
+
+conda install -c ${CONDA_PREFIX}/conda-bld/ pillow-simd
+
+# need to add the build channel as highest priority, otherwise the
+# package will get overridden with `conda install pillow` or any other
+# install/update that depends on pillow.
+conda config --prepend channels ${CONDA_PREFIX}/conda-bld/
+# this is for local use - if this package ends up on the `fastai`
+# conda channel, then this should be done instead:
+# conda config --prepend channels fastai
+
+
+
+
+## Check
+
+python -m fastai.utils.check_perf
+
+
+# list out the active channels and their priorities
+conda config --get channels
+
+
+## Upload to fastai's anaconda channel
+
+Probably start with label/test:
+
+anaconda upload anaconda3/envs/xxx/conda-bld/linux-64/libjpeg-turbo-xxx.tar.bz2 -u fastai --label test
+anaconda upload anaconda3/envs/xxx/conda-bld/linux-64/pillow-simd.tar.bz2 -u fastai --label test
+
+and to install from the test label:
+
+conda uninstall -y pillow libjpeg-turbo
+conda install -c fastai/label/test pillow-simd

@@ -94,11 +94,11 @@
 <path fill="none" stroke="#000000" d="M119,-169.9551C119,-161.8828 119,-152.1764 119,-143.1817"/>
 <polygon fill="#000000" stroke="#000000" points="122.5001,-143.0903 119,-133.0904 115.5001,-143.0904 122.5001,-143.0903"/>
 </g>
-<!-- data_block -->
+<!-- basic_data -->
 <g id="node5" class="node">
-<title>data_block</title>
+<title>basic_data</title>
 <polygon fill="none" stroke="#000000" points="241.9262,-133 164.0738,-133 164.0738,-97 241.9262,-97 241.9262,-133"/>
-<text text-anchor="middle" x="203" y="-110.8" font-family="Times,serif" font-size="14.00" fill="#000000">data_block</text>
+<text text-anchor="middle" x="203" y="-110.8" font-family="Times,serif" font-size="14.00" fill="#000000">basic_data</text>
 </g>
 <!-- torch_core&#45;&gt;data_block -->
 <g id="edge4" class="edge">
@@ -106,15 +106,15 @@
 <path fill="none" stroke="#000000" d="M139.7641,-169.9551C150.2642,-160.8299 163.1674,-149.6165 174.5739,-139.7036"/>
 <polygon fill="#000000" stroke="#000000" points="176.9315,-142.2918 182.1837,-133.0904 172.3398,-137.0082 176.9315,-142.2918"/>
 </g>
-<!-- basic_data -->
+<!-- data_block -->
 <g id="node6" class="node">
-<title>basic_data</title>
+<title>data_block</title>
 <polygon fill="none" stroke="#000000" points="240.5842,-60 165.4158,-60 165.4158,-24 240.5842,-24 240.5842,-60"/>
-<text text-anchor="middle" x="203" y="-37.8" font-family="Times,serif" font-size="14.00" fill="#000000">basic_data</text>
+<text text-anchor="middle" x="203" y="-37.8" font-family="Times,serif" font-size="14.00" fill="#000000">data_block</text>
 </g>
-<!-- data_block&#45;&gt;basic_data -->
+<!-- basic_data&#45;&gt;data_block -->
 <g id="edge5" class="edge">
-<title>data_block&#45;&gt;basic_data</title>
+<title>basic_data&#45;&gt;data_block</title>
 <path fill="none" stroke="#000000" d="M203,-96.9551C203,-88.8828 203,-79.1764 203,-70.1817"/>
 <polygon fill="#000000" stroke="#000000" points="206.5001,-70.0903 203,-60.0904 199.5001,-70.0904 206.5001,-70.0903"/>
 </g>

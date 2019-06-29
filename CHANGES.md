@@ -3,18 +3,464 @@
 Most recent releases are shown at the top. Each release shows:
 
 - **New**: New classes, methods, functions, etc
-- **Changed**: Additional paramaters, changes to inputs or outputs, etc
+- **Changed**: Additional parameters, changes to inputs or outputs, etc
 - **Fixed**: Bug fixes that don't change documented behaviour
 
 Note that the top-most release is changes in the unreleased master branch on
 Github. Parentheses after an item show the name or github id of the contributor
 of that change.
 
-## 1.0.31.dev0 (Work In Progress)
+
+## 1.0.55.dev0 (Work In Progress)
 
 ### New:
 
-- `SequentialResBlock` to easily create resnet blocks
+### Changed:
+
+### Fixed:
+
+
+
+## 1.0.54 (2019-06-19)
+
+### New:
+
+- `torch_core.Module` is a replacement for `nn.Module` that doesn't require calling `super().__init__`
+- `torch_core.Module` is implemented using new metaclass `PrePostInit` which will call
+  optional `__pre_init__` and `__post_init__` methods
+
+## 1.0.53 (2019-06-10)
+
+### Breaking changes:
+
+- In the AWD-LSTM defaut config, the default embedding size is now 1152, for
+  faster fp16 training. New pretrained models have been released accordingly,
+  the old pretrained model (with embedding size of 1150) is still available at 
+  https://s3.amazonaws.com/fast-ai-modelzoo/wt103-1.tgz
+
+### New:
+
+- sentencepiece tokenizer in fastai.text via `SPProcessor`
+- a backward pretrained model for NLP (automatically used if the databunch was
+  created via the datablock API using `backwards=True`)
+- `bunzip(fn:PathOrStr)`: bunzip a file
+- `working_directory`: context manager to change to a directory and return to original directory when done
+- `np_func`: decorator for creating metrics from numpy functions
+
+### Changed:
+
+- a `Vocab` is either exactly of size `max_vocab` or a size that is a multiple of 8. This coupled with the breaking
+change of embedding size 1152 (also a mutliple of 8) allows a speed-up of 2 to 3 when training a language model
+in mixed precision.
+
+### Fixed:
+
+- `get_language_model`: `pretrained_fnames` no longer requires `pretrained` be `False`
+
+
+## 1.0.52 (2019-04-26)
+
+### New:
+
+- added `defaults.silent` that controls whether `fit` calls print out any output.
+
+### Changed:
+
+- added support for `defaults.extra_callback_fns`
+
+### Fixed:
+
+- `StopAfterNBatches` and `TerminateOnNaNCallback` fixed not to run validation
+
+
+## 1.0.51 (2019-04-01)
+
+### Breaking changes:
+
+- Loading and saving. Added option to save/load from streams (buffers or file pointers).
+**Note** In all save/load related functions (`Learn.save`, `Learn.export`, `load_learner`, `DataBunch.save`, `load_data`), the parameter name `fname` was renamed to `file`.
+
+### New:
+
+### Changed:
+
+### Fixed:
+
+- Default to using training set for `batch_stats` instead of validation
+- Bug in averaging the losses in Mixup
+
+
+## 1.0.50 (2019-03-19)
+
+### New:
+
+### Changed:
+
+### Fixed:
+
+
+
+## 1.0.49 (2019-03-15)
+
+### New:
+
+### Changed:
+
+- `MixedPrecisionCallback`: `dynamic` now defaults to True
+- `fit` now takes a `BasicLearner`
+
+### Fixed:
+
+- bug in `DataBunch.export` or `Learner.export` in object detection
+- `TextClassificationInterpretation` now works again (thanks to code from mikonapoli)
+- `create_cnn` hangs on Windows with PyTorch 1.0.1
+
+
+## 1.0.48 (2019-03-09)
+
+### Breaking changes:
+
+- `Learner.distributed` is now called `Learner.to_distributed`
+
+### New:
+
+- `Learner.to_parallel`: callback wraps in nn.DataParallel during train and unwraps at end
+- Initial work to provide a `GeneralOptimizer` that keeps track and update given `Statistic` then perform the step you want.
+
+### Fixed:
+
+- A few `Callback`s didn't have proper return
+
+
+## 1.0.47 (2019-03-06)
+
+### Breaking changes:
+
+- `create_cnn` becomes `cnn_learner`
+- `random_split_by_pct` becomes `split_by_rand_pct`
+- `no_split` becomes `split_none`
+
+### New:
+
+- `tensorboard` callback to use Tensorboard (requires installing tensorboardx)
+- `LabelLists.pre_transform`: call transforms on PIL.Image, before converting to float tensor
+- `LabelLists.presize`: standard Imagenet image resizing/cropping using `pre_transform`
+- `compose`: compose a list of functions
+- Added functional `[test]` links to docs.fast.ai
+- `TrackEpochCallback`: Store completed epoch number in `learn.model_dir/name`
+- `rank_distrib`: get rank of distributed process
+
+### Changed:
+
+- Change `flip_lr` to use much faster method
+- In `text_classifier_learner` the outputs of the encoder corresponding to pad indices are ignored in the poolings
+- Default number of OpenMP threads to 2 (previously 4), due to observed performance benefits
+- `purge` now relies on a writable `learn.model_dir`, which can be set to a full writable path in case `learn.path` is not writable (kaggle, et al)
+- In any event of a `Callback` returning a dictionary will update the state of the `CallbackHandler`
+- When creating a custom metric in a `Callback`, instead of storing the result in `self.metric`, you should add it to `last_metrics` using the method above (see https://docs.fast.ai/metrics.html#Creating-your-own-metric).
+
+### Fixed:
+
+- Do nothing if `Image.resize` called with image already at required size
+- Lighting transforms moved to later in pipeline to avoid redundant computation
+
+## 1.0.46 (2019-02-25)
+
+### Breaking change:
+
+- In `CollabDataBunch`, `pct_val` is renamed `valid_pct` for consistency
+- `ImageItemList` becomes `ImageList` for consistency with `TextList` and `TabularList`
+- `load_learner` will fail for exported (pickled) models with error
+  "AttributeError: Can't get attribute 'ImageItemList' on module
+  'fastai.vision.data'". You will need to re-export with version 1.0.46 or use 1.0.44
+
+### New:
+
+- `Learner.destroy`: completely free up `learn`, leaving an empty shell
+- added NVML query support on OSX via `pynvx` in addition to `pynvml` (Windows/Linux)
+- Added `XResNet`, which is ResNet plus tricks from
+  [Bag of Tricks for Image Classification](https://arxiv.org/abs/1812.01187).
+  Note pretrained models not available yet for this architecture.
+- `TextClassificationInterpretation`, which computes intrisic attention to give some interpretation of classification
+  results in text (thanks to herrmann)
+- `add_cyclical_datepart`, which add the dateparts as cosine embeddings in tabular data (thanks to herrmann)
+- `MixedItemList` two mix several kinds of `ItemList` together
+
+### Changed:
+
+- revamped `Learner.purge` to reclaim more RAM
+- clearer error messages when using the data block API in the wrong order
+- `ItemList.label_from_list` becomes private to avoid confusion
+- `recurse` parameter for `verify_images`
+
+### Fixed:
+
+- various memory usage improvements
+- `verify_images` fixes channels even if no new size is passed
+
+
+## 1.0.45
+
+Not Released
+
+
+## 1.0.44 (2019-02-13)
+
+### New:
+
+- `DataBunch.save` now works on every application, load the data back with `load_data`.
+- `TextDataBunch.load` is kept for now to let people use it for loading old serialized text data, but is deprecated.
+
+### Changed:
+
+### Fixed:
+
+- `extensions` are checked with a case-insensitive match.
+
+
+## 1.0.43 (2019-02-11)
+
+### Breaking change:
+
+- `language_model_learner`and `text_classifier_learner` have a different syntax: `(data, arch, pretrained=True,...)` to mimic the behaivor of `create_cnn`
+
+### New:
+
+- More models supported by `create_cnn` (`densenet121`, `densenet169`,
+  `densenet201`, `densenet161`, `vgg16_bn`, `vgg19_bn`, `alexnet`) thanks to PPPW
+- Backward option in `text_classifier_learner` (thanks to tpietruszka)
+- Automate custom dependency groups installation via extending `distutils`
+- Transformer and TransformerXL architectures
+- Add `val_bs` parameter to all `DataBunch` creation methods
+- `LanguageLearner.beam_search` to make text generation using beam search
+- Dynamic loss scaling (with `to_fp16(dynamic=True)`), thanks to flpeters
+- `Learner.purge` to purge the `Learner` of needless objects that may take GPU memory
+
+### Changed:
+
+- `ClassificationInterpration.plot_multi_top_losses` supports one-hot encoded labels (thanks to terriblissimo)
+- `model_summary` only supports `Learner` now
+- `Learner.bn_wd` controls if we apply weight decay to all layer classes in `bn_types` and all bias parameter of layers classes in `bias_types`
+
+### Fixed:
+
+- Fixed argument name in `ImageDataBunch.single_from_classes`.
+- Bud in `bb_pad_colalte` when no bboxes where left due to data augmentation (thanks to pouannes)
+- fix the conda package dependency for py36
+- Bugs in `ForgetMult` and check cuda version are consistent (thanks to mkardas)
+- Bug `label_empty` got an unexpected keyword argument 'label_cls'
+- For a language model `predict` is now way faster and more accurate
+
+## 1.0.42 (2019-01-24)
+
+### New:
+
+- `gpu_mem_restore` decorator - Reclaim GPU RAM if CUDA out of memory happened, or execution was interrupted
+- `gpu_mem_restore_ctx` context manager - same functionality as `gpu_mem_restore`
+- `PeakMemMetric` callback to profile general and GPU RAM used and peaked by epoch
+- `ClassificationInterpration.plot_multi_top_losses` (thanks to terriblissimo)
+- `Learner.export` serializes the model on the CPU to avoid loading on the GPU when there are none (thanks to pouannes)
+
+### Changed:
+
+### Fixed:
+
+- any fastai function that internally uses `fit` will no longer suffer from
+  unrecoverable 'CUDA out of memory error' unless overridden by the `FASTAI_TB_CLEAR_FRAMES` environment variable, which also allows extending this protection to all other exceptions.
+- `DataBunch.show_batch` and `Learner.show_results` show at maximum batch_size elements
+- `DataBunch.show_batch` and `Learner.show_results` handle `rows=1` (thanks to xnutsive)
+- `LanguageModelPreLoader` is way faster (thanks to kasparlund)
+
+
+## 1.0.41 (2019-01-22)
+
+### Breaking change:
+
+- `sep` (in ImageDataBunch factory methods) is now called `label_delim`
+
+### New:
+
+### Changed:
+
+- Clearer representation of `FlattenedLoss`
+
+### Fixed:
+
+- Bug when loading text data in multi-classification with `TextDataBunch.load`
+- Wrong values for metrics like MSE due to broadcasting errors
+- `ImageDataBunch` doesn't shuffle the validation labels anymore
+
+
+## 1.0.40 (2019-01-17)
+
+### New:
+
+- `ImageDownloader` widget for quick image datasets research
+- `Learner.export` to export the state of a `Learner` for inference (with `Callback.get_state` to get the state of a callback behind the scenes)
+- `load_learner` to load a `Learner` from an exported state (with `load_callback` to load the state of a callback behind the scenes)
+- A dataset can also be a `Callback` if we want to apply changes at the beginning of every epoch
+
+### Changed:
+
+- If no label is provided, the test set has `EmptyLabel` for every item
+- `LanguageModelLoader` becomes `LanguageModelPreLoader` and is a dataset to wrap in a pytorch `DataLoader`
+
+### Fixed:
+
+- Avoid bugs in tabular by copying the dataframe in `TabularList.from_df`
+- Can properly change the batch size even if the `DataLoader` is an `LanguageDataLoader`
+- Bug in `ImageBBox` when all the targets had the same number of bboxes
+- Default metric in `RNNLearner` is accuracy only for language models or classification tasks
+- Throws a clear error message when trying to use `databunch` on not-split data
+- Fix `flatten_model` that removed parameters not registered in modules
+- Fix behavior of `apply_tfms` with `mult` and output size.
+- Fix bug in `DataBunch.one_item` when doing object detection
+
+## 1.0.39 (2018-12-28)
+
+### Breaking changes:
+
+- `Fbeta_binary` is now `FBeta`
+
+### New:
+
+- `Learner.to_fp32` to go back to FP32 precision mode
+- `cont_cat_split` function to automatically get categorical/continuous variables (thanks to RealLankinen)
+- Lots of new metrics thanks to Sven Becker: `mse/mean_squared_error`, `mae/mean_absolute_error`, `rmse/root_mean_squared_error`, `msle/ mean_squared_logarithmic_error`, `explained_variance`, `r2_score`, `top_k_accuracy`, `KappaScore`, `MatthewsCorreff`, `Precision`, `Recall`, `FBeta`
+- `BatchNorm1dFlat` for using batchnorm in sequence models (e.g. RNNs, and their inputs and outputs)
+
+### Changed:
+
+- The data block API has additional checks with assertions (NaNs in columns used for inputs/labels in dataframes, empty items)
+- kwargs are checked in the data block API
+- `model_summary` now returns summary instead of printing it
+
+### Fixed:
+
+- Predictions now work in FP16 mode
+- Model is unwrapped at the end of a distributed training (thanks to mgrankin)
+- `DataBunch.export` works for multi-classification problems where `one_hot=True`
+- Fix bug in `DatasetFormatter`
+- Fix `LanguageLearner.predict`
+
+
+## 1.0.38 (2018-12-18)
+
+### Breaking changes:
+
+- If you want to import basic fastai functionality without an application, you
+  should now use `from fastai.basics import *` instead of `from fastai import
+  *`. (However note that you now don't need either, when using an application,
+  as mentioned in *Changed* below)
+- In fastai.text batch is now the first dimension
+
+### New:
+
+- `fastai.script` module contains a simple decorator for quickly creating CLIs
+- `setup_distrib` does all setup required for distributed training for you
+- Sample training scripts for MNIST sample (single GPU) and CIFAR10 (multi-GPU fp16) in `examples`
+- `fastai.launch` module for simplified single-machine multi-GPU training
+- `check_perf` - performance improvement recommendations
+- `distributed` module with helper functions to quickly launch a distributed training
+- temptative use of JIT C++ extensions to code the QRNN with `batch_first` argument, it needs a proper installation
+  of cuda to be compiled at execution time
+
+### Changed:
+
+- When importing an application such as `from fastai.vision import *` you no
+  longer need to also `from fastai import *`
+
+
+## 1.0.37 (2018-12-13)
+
+### New:
+
+- `SequentialEx`, `MergeLayer`, and `res_block` to more easily create resnet and densenet architectures
+- `no_split` method in the data block API
+- `sigmoid_range` function to scale sigmoid to given range, along with `SigmoidRange` layer
+- `DataBunch` performs a sanity check after its initialization and will throw a warning if something is wrong with the data.
+- More GAN stuff: `gan_critic`, `AdaptiveLoss`, `accuracy_thresh_expand`, and `GANDiscriminativeLR`
+- Support for one-hot encoded labels in multiclassification problems
+- Add `Dataset.Fix` (same as train but with `shuffle=False`, `drop_last=False` and valid transforms)
+
+### Changed:
+
+- Experimental cross-connection from raw input plus extra resblock at end of unet
+- Add an execution-time check for a specific version of fastprogress (`git pull` fastai updates)
+- `DataBunch.export` now serializes everything (transforms and normalization included)
+- `DataBunch` now has `fix_dl` attr, which is same data as `train_dl` but without shuffle or train tfms
+- `pred_batch` now has `reconstruct` param, which will reconstruct each prediction into an object
+- `Learner.show_results` gives a better output for image classification tasks
+
+### Fixed:
+
+- Windows fixes, including:
+  - Most transforms can now be used in Windows with `num_workers`>0
+  - Avoid recursion error with data blocks API
+  - Try to avoid default `np.int32` creation where possible
+- `y_range` for unet output activation
+- `Image.apply_tfms` doesn't accept any kwargs anymore
+- `split_from_files` works with `from_df`/`from_csv`
+
+
+## 1.0.36 (2018-12-08)
+
+### New:
+
+- `LabelLists.load_empty` (most useful for adding test sets for inference)
+
+
+## 1.0.35 (2018-12-08)
+
+### Changed:
+
+- Update deps to release version of pytorch v1
+
+
+## 1.0.34 (2018-12-06)
+
+### Fixed:
+
+- pypi wheel `dataclasses` dependency for py3.6 is there again
+
+
+## 1.0.33 (2018-12-05)
+
+### New:
+
+- `Learner.interpret` is a shortcut to `ClassificationLearner.from_learner`.
+
+### Changed:
+
+- Language models now use flattened loss, instead of flattening y in data loader
+- `ItemList.from_folder` now has an `include` parameter to only include certain folders
+
+### Fixed:
+
+- `Learner.load` won't throw an error when trying to load an optimizer state of
+  the wrong size, and silently ignore that optimizer state loading
+
+
+## 1.0.32 (2018-12-02)
+
+### Changed:
+
+- `TabularDatBunch.from_df` accepts a `test_df` argument
+
+### Fixed:
+
+- `LanguageLearner.predict` now returns better text predictions
+- Unfreezing layers didn't create a new optimizer so the unfrozen layers weren't training
+- Bug in `TextDataBunch` with a mismatched test set was causing problems on the validation set
+
+
+## 1.0.31 (2018-12-01)
+
+### New:
+
+- `ImageCleaner` with duplicates=True to use as a duplicate detector
+- `DatasetFormatter.from_similars` to feed the most similar indexes into `ImageCleaner`
+- `chunks` to separate a Collection into smaller iterables
 - `batchnorm_2d` wrapper for batchnorm with init
 
 ### Changed:
@@ -26,9 +472,14 @@ of that change.
 - unet kwargs are passed down to `conv_layer`
 - `Learner.fit` no longer creates a new optimizer at each call
 - Add batchnorm to end of unet
+- Restore `ImageDataBunch.single_from_classes`
+- `ItemList.set_item` is now a context manager, so you don't need to call `clear_item`
+- Removed `ItemList.clear_item`
+- Init `torch.set_num_threads(4)` to avoid OpenMP process creation overhead
 
 ### Fixed:
 
+- `Tokenizer` wasn't using >1 thread
 
 ## 1.0.30 (2018-11-28)
 
@@ -69,7 +520,7 @@ of that change.
 - `LabelList.{to_df,to_csv}` to save items including labels
 - `DataBunch` convenience properties: `test_ds` and `single_ds`
 - `DataBunch.single_item` to convert an `ItemBase` in to a batch (tensor + dummy y)
-- `Learner.pred_batch()` can now take an optional batch to predict, rather than grabbing its own
+- `Learner.pred_batch` can now take an optional batch to predict, rather than grabbing its own
 - introduce `EmptyLabel` and `EmptyLabelList`
 
 ### Changed:
@@ -180,8 +631,8 @@ of that change.
 
 ### New:
 
-- `Learner.predict` works accross applications
-- `Learner.show_batch` works accross applications
+- `Learner.predict` works across applications
+- `Learner.show_batch` works across applications
 
 ### Changed:
 
@@ -216,12 +667,12 @@ of that change.
 - `CSVLogger` callback (thanks to devorfu)
 - Initial support for image regression problems
 - If a dataset class has `learner_type` then `create_cnn` uses that type to create the `Learner`
-- Introduce TaskType in `DatasetBase` to deal with single/multi-class or regression problems accross applications
+- Introduce TaskType in `DatasetBase` to deal with single/multi-class or regression problems across applications
 
 ### Changed:
 
-- `datasets()` now can automatically figure out what class to use in many situations
-- `download_images()` now saves images with their original extensions
+- `datasets` now can automatically figure out what class to use in many situations
+- `download_images` now saves images with their original extensions
 
 
 ## 1.0.20 (2018-11-07)
@@ -308,7 +759,7 @@ of that change.
 - `validate` now takes optional `n_batch`
 - `create_cnn` now returns a `ClassificationLearner`
 - `return_path` flag to `Learner.save`
-- `ImageDataBunch.show_batch()` now works for every type of dataset, removes `show_images` and `show_xy_images` as a result
+- `ImageDataBunch.show_batch` now works for every type of dataset, removes `show_images` and `show_xy_images` as a result
 - Monkey-patched torch.utils.data.dataloader.DataLoader to create a passthrough to the dataset
 - `max_workers` for `download_images`
 - Change the arguments of `ObjectDetectDataset` to make it consistent with the rest of the API, changes the return of `get_annotations` to go with it
@@ -355,9 +806,9 @@ of that change.
 - `ImageDataBunch.from_folder` now takes `valid_pct`
 - master bar support in `download_url`
 - various fixes to support the latest of `fastprogress`
-- `Learner.normalize()` (without args) stores calculated stats in `Learner.stats`
+- `Learner.normalize` (without args) stores calculated stats in `Learner.stats`
 - `pred_batch` moved to `basic_train` and fixed for multiple inputs
-- `lr_find()` prints the next step to type when completed
+- `lr_find` prints the next step to type when completed
 - New version of fastprogress used; doesn't require ipywidgets
 - Removed `cifar_norm`,`cifar_denorm`,`imagenet_norm`,`imagenet_denorm`
 
@@ -369,12 +820,12 @@ of that change.
 ### New:
 
 - pretrained language model is now downloaded directly in the .fastai/models/ folder. Use `pretrained_model=URLs.WT103`
-- add an argument `stop_div` to `Learner.lr_find()` to prevent early stopping, useful for negative losses
+- add an argument `stop_div` to `Learner.lr_find` to prevent early stopping, useful for negative losses
 - add an argument `convert_mode` to `open_mask` and `SegmentationDataset` to choose the PIL conversion mode of the masks
 
 ### Changed:
 
-- `URLs.download_wt103()` has been removed
+- `URLs.download_wt103` has been removed
 
 
 ## 1.0.12 (2018-10-23)
@@ -416,7 +867,7 @@ of that change.
 - `datapath4file(filename)` returns suitable path to store or find data file
   called `filename`, using config file `~/.fastai/config.yml`, and default data
   directory `~/.fastai/data`, unless `./data` exists and contains that file
-- MSELossFlat() loss function
+- MSELossFlat loss function
 - Simple integration tests for all applications
 
 ### Changed:
@@ -449,7 +900,7 @@ of that change.
   model in `Learner` for an image
 - New function `Learner.validate` to validate on a given dl (default
   `valid_dl`), with maybe new metrics or callbacks
-- New function `error_rate` which is just `1-accuracy()`
+- New function `error_rate` which is just `1-accuracy`
 
 ### Changed:
 

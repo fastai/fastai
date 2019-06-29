@@ -96,7 +96,7 @@ dependencies:
 - prompt_toolkit
 #- pytest
 - pip:
-  - torchvision>=0.1.9
+  - torchvision==0.1.9
   - opencv-python
   - isoweek
   - pandas_summary
@@ -107,5 +107,5 @@ dependencies:
 #  - plotnine
   - kaggle-cli
   - ipywidgets
-#  - pdpbox<=0.1.0
+  - pdpbox<=0.1.0
   - treeinterpreter

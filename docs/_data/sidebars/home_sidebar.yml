@@ -18,6 +18,12 @@ entries:
     - output: web,pdf
       title: Troubleshooting
       url: /troubleshoot.html
+    - output: web,pdf
+      title: Performance
+      url: /performance.html
+    - output: web,pdf
+      title: Support
+      url: /support.html
     output: web
     title: Getting started
   - folderitems:
@@ -67,8 +73,14 @@ entries:
           title: CSV Logger
           url: /callbacks.csv_logger.html
         - output: web,pdf
-          title: Tracking callbacks
+          title: Tracking
           url: /callbacks.tracker.html
+        - output: web,pdf
+          title: Memory Profiling
+          url: /callbacks.mem.html
+        - output: web,pdf
+          title: Miscellaneous
+          url: /callbacks.misc.html
         title: callbacks
     output: web
     title: Training
@@ -86,6 +98,9 @@ entries:
           title: vision.learner
           url: /vision.learner.html
         - output: web,pdf
+          title: vision.interpret
+          url: /vision.interpret.html
+        - output: web,pdf
           title: vision.transform
           url: /vision.transform.html
         - output: web,pdf
@@ -95,14 +110,17 @@ entries:
           title: vision.data
           url: /vision.data.html
         - output: web,pdf
+          title: vision.gan
+          url: /vision.gan.html
+        - output: web,pdf
           title: vision.model overview
           url: /vision.models.html
         - output: web,pdf
           title: vision.models.unet
           url: /vision.models.unet.html
         - output: web,pdf
-          title: vision.widgets
-          url: /widgets.html
+          title: widgets.image_cleaner
+          url: /widgets.image_cleaner.html
         title: vision
       - output: web
         subfolderitems:
@@ -112,6 +130,9 @@ entries:
         - output: web,pdf
           title: text.learner
           url: /text.learner.html
+        - output: web,pdf
+          title: text.interpret
+          url: /text.interpret.html
         - output: web,pdf
           title: text.transform
           url: /text.transform.html
@@ -164,9 +185,30 @@ entries:
     - output: web,pdf
       title: torch_core
       url: /torch_core.html
+    - output: web,pdf
+      title: imports
+      url: /imports.html
     output: web
     title: Core
   - folderitems:
+    - output: web,pdf
+      title: Helpers
+      url: /utils.collect_env.html
+    - output: web,pdf
+      title: Memory Management
+      url: /utils.mem.html
+    - output: web,pdf
+      title: ipython helpers
+      url: /utils.ipython.html
+    - output: web,pdf
+      title: Display utils
+      url: /utils.mod_display.html
+    output: web
+    title: Utils
+  - folderitems:
+    - output: web,pdf
+      title: Overview
+      url: /tutorials.html
     - output: web,pdf
       title: Look at data
       url: /tutorial.data.html
@@ -176,11 +218,20 @@ entries:
     - output: web,pdf
       title: Custom ItemList
       url: /tutorial.itemlist.html
+    - output: web,pdf
+      title: DL on a Shoestring
+      url: /tutorial.resources.html
+    - output: web,pdf
+      title: Distributed training
+      url: /distributed.html
     output: web
     title: Tutorials
   - folderitems:
     - output: web,pdf
-      title: Overview
+      title: Instructions
+      url: /gen_doc_main.html
+    - output: web,pdf
+      title: gen_doc
       url: /gen_doc.html
     - output: web,pdf
       title: gen_doc.gen_notebooks
@@ -189,11 +240,17 @@ entries:
       title: gen_doc.nbdoc
       url: /gen_doc.nbdoc.html
     - output: web,pdf
+      title: gen_doc.nbtest
+      url: /gen_doc.nbtest.html
+    - output: web,pdf
       title: gen_doc.convert2html
       url: /gen_doc.convert2html.html
     output: web
     title: Doc authoring
   - folderitems:
+    - external_url: https://github.com/fastai/fastai/blob/master/CONTRIBUTING.md
+      output: web,pdf
+      title: Contributing
     - output: web,pdf
       title: Dev Notes
       url: /dev/develop.html

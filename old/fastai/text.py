@@ -149,7 +149,7 @@ class SortishSampler(Sampler):
 
 class LanguageModelLoader():
     """ Returns a language model iterator that iterates through batches that are of length N(bptt,5)
-    The first batch returned is always bptt+25; the max possible width.  This is done because of they way that pytorch
+    The first batch returned is always bptt+25; the max possible width.  This is done because of the way that pytorch
     allocates cuda memory in order to prevent multiple buffers from being created as the batch width grows.
     """
     def __init__(self, nums, bs, bptt, backwards=False):

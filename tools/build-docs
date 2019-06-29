@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 # usage:
 #   tools/build-docs -h
@@ -40,12 +40,13 @@ def add_bool_arg(parser, name, default=False, help='', true_aliases=None, false_
 parser = argparse.ArgumentParser(description="Build fastai docs from .ipynb files")
 parser.add_argument('files', type=str, nargs='*')
 parser.add_argument('-f', '--force', action="store_true", help="force .html files to be rebuilt")
+parser.add_argument('--dest-path', default='docs_src', type=str, help="Folder location to generate .ipynb notebook from fastai.* module'")
 add_bool_arg(parser, 'document-new-fns',   default=False, help='scan module and adds any new module functions to documentation notebook')
 add_bool_arg(parser, 'update-html',        default=True,  help='update .html files from .ipynb notebooks')
 add_bool_arg(parser, 'update-nb-links',    default=True,  help='update documentation links and source code line numbers', false_aliases=['-l', '--html-only'])
 args = parser.parse_args()
 
-# if no files were specified pass the dir instead for all files
+# if no files were specified pass `docs_src`, instead, to collect all files
 files = args.files
 del args.files
 if not files: files.append('docs_src')
