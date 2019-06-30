@@ -337,11 +337,11 @@ def logit_(x:Tensor)->Tensor:
     x.clamp_(1e-7, 1-1e-7)
     return (x.reciprocal_().sub_(1)).log_().neg_()
 
-def set_uniform_seed(seed:int)->None:
-    "Sets the seed for the uniform function"
-    if seed is not None:
-            torch.manual_seed(seed)
-            random.seed(seed)
+def set_random_seed(seed:int)->None:
+    "Sets the seeds for all pseudo random generators in fastai lib"
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    random.seed(seed)
 
 def uniform(low:Number, high:Number=None, size:Optional[List[int]]=None)->FloatOrTensor:
     "Draw 1 or shape=`size` random floats from uniform dist: min=`low`, max=`high`."
