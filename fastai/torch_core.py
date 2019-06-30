@@ -337,7 +337,7 @@ def logit_(x:Tensor)->Tensor:
     x.clamp_(1e-7, 1-1e-7)
     return (x.reciprocal_().sub_(1)).log_().neg_()
 
-def set_random_seed(seed:int)->None:
+def set_all_seed(seed:int)->None:
     "Sets the seeds for all pseudo random generators in fastai lib"
     np.random.seed(seed)
     torch.manual_seed(seed)
