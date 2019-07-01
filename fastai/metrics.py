@@ -166,7 +166,7 @@ class CMScores(ConfusionMatrix):
     eps:float=1e-9
 
     def _recall(self):
-        rec = torch.diag(self.cm) / (self.cm.sum(dim=1) + self.eps)
+        rec = torch.diag(self.cm) / self.cm.sum(dim=1)
         if self.average is None: return rec
         else:
             if self.average == "micro": weights = self._weights(avg="weighted")
