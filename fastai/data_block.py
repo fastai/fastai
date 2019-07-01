@@ -173,7 +173,7 @@ class ItemList():
 
     def filter_by_rand(self, p:float, seed:int=None):
         "Keep random sample of `items` with probability `p` and an optional `seed`."
-        if seed is not None: np.random.seed(seed)
+        if seed is not None: set_all_seed(seed)
         return self.filter_by_func(lambda o: rand_bool(p))
 
     def no_split(self):

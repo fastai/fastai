@@ -109,6 +109,15 @@ def test_splitdata_datasets():
     assert len(sd.valid)==ratio*n, 'Validation set is right size'
     assert set(list(sd.train.items)+list(sd.valid.items))==set(range(n)), 'All items covered'
 
+def test_filter_by_rand():
+    c1,p,n,seed = list('abc'),0.2,100,759
+    
+    this_tests(ItemList.filter_by_rand)
+    sd1 = ItemList(range(n)).filter_by_rand(p,seed)
+    sd2 = ItemList(range(n)).filter_by_rand(p,seed)
+    assert len(sd1) == len(sd2), 'Identically seeded random data sets are of different sizes'
+    assert (sd1.items == sd2.items).all(), 'Identically seeded random data sets contain different values'
+
 def test_split_subsets():
     this_tests(ItemList.split_subsets)
     sd = ItemList(range(10)).split_subsets(train_size=.1, valid_size=.2).label_const(0)
