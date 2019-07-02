@@ -319,14 +319,16 @@ class TextList(ItemList):
     _processor = [TokenizeProcessor, NumericalizeProcessor]
     _is_lm = False
 
-    def __init__(self, items:Iterator, vocab:Vocab=None, pad_idx:int=1, **kwargs):
+    def __init__(self, items:Iterator, vocab:Vocab=None, pad_idx:int=1,
+                 sep=' ', **kwargs):
         super().__init__(items, **kwargs)
         self.vocab,self.pad_idx = vocab,pad_idx
         self.copy_new += ['vocab', 'pad_idx']
+        self.sep = sep 
 
     def get(self, i):
         o = super().get(i)
-        return Text(o, self.vocab.textify(o))
+        return Text(o, self.vocab.textify(o, self.sep))
 
     def label_for_lm(self, **kwargs):
         "A special labelling method for language models."
