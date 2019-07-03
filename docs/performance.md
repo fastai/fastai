@@ -63,8 +63,8 @@ This section explains how to install `Pillow-SIMD` w/ `libjpeg-turbo` (but the v
 Here is the tl;dr version to install `Pillow-SIMD` w/ `libjpeg-turbo` and w/o `TIFF` support:
 
    ```
-   conda uninstall -y --force pillow pil jpeg libtiff
-   pip   uninstall -y         pillow pil jpeg libtiff
+   conda uninstall -y --force pillow pil jpeg libtiff libjpeg-turbo
+   pip   uninstall -y         pillow pil jpeg libtiff libjpeg-turbo
    conda install -yc conda-forge libjpeg-turbo
    CFLAGS="${CFLAGS} -mavx2" pip install --upgrade --no-cache-dir --force-reinstall --no-binary :all: --compile pillow-simd
    conda install -y jpeg libtiff
@@ -72,11 +72,11 @@ Here is the tl;dr version to install `Pillow-SIMD` w/ `libjpeg-turbo` and w/o `T
 
 Here are the detailed instructions, with an optional `TIFF` support:
 
-1. First remove `pil`, `pillow`, `jpeg` and `libtiff` packages:
+1. First remove `pil`, `pillow`, `jpeg` and `libtiff` packages. Also remove 'libjpeg-tubo' if a previous version is installed:
 
    ```
-   conda uninstall -y --force pillow pil jpeg libtiff
-   pip   uninstall -y         pillow pil jpeg libtiff
+   conda uninstall -y --force pillow pil jpeg libtiff libjpeg-turbo
+   pip   uninstall -y         pillow pil jpeg libtiff libjpeg-turbo
    ```
    Both conda packages `jpeg` and `libjpeg-turbo` contain a `libjpeg.so` library.
    `jpeg`'s `libjpeg.so` library will be replaced later in these instructions with `libjpeg-turbo`'s one for the duration of the build.
