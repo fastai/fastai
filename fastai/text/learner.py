@@ -219,13 +219,12 @@ def language_model_learner(data:DataBunch, arch, config:dict=None, drop_mult:flo
     return learn
 
 def masked_concat_pool(outputs, mask):
-    """Pool MultiBatchEncoder outputs into one vector [last_hidden, max_pool, avg_pool]."""
+    "Pool MultiBatchEncoder outputs into one vector [last_hidden, max_pool, avg_pool]."
     output = outputs[-1]
     avg_pool = output.masked_fill(mask[:, :, None], 0).mean(dim=1)
-    avg_pool *= output.size(1) / (output.size(1) - mask.type(avg_pool.dtype).sum(dim=1))[:,
-                                 None]
-    max_pool = output.masked_fill(mask[:, :, None], -float('inf')).max(dim=1)[0]
-    x = torch.cat([output[:, -1], max_pool, avg_pool], 1)
+    avg_pool *= output.size(1) / (output.size(1)-mask.type(avg_pool.dtype).sum(dim=1))[:,None]
+    max_pool = output.masked_fill(mask[:,:,None], -float('inf')).max(dim=1)[0]
+    x = torch.cat([output[:,-1], max_pool, avg_pool], 1)
     return x
 
 class PoolingLinearClassifier(Module):
