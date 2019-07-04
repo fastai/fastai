@@ -244,9 +244,6 @@ class PoolingLinearClassifier(Module):
         x = self.layers(x)
         return x, raw_outputs, outputs
 
-
-
-
 class MultiBatchEncoder(Module):
     "Create an encoder over `module` that can process a full sentence."
     def __init__(self, bptt:int, max_len:int, module:nn.Module, pad_idx:int=1):
