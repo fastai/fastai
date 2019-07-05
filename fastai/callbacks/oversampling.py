@@ -9,11 +9,12 @@ __all__ = ['OverSamplingCallback']
 
 
 class OverSamplingCallback(LearnerCallback):
-    def __init__(self,learn:Learner):
+    def __init__(self,learn:Learner, weights:torch.Tensor=None):
         super().__init__(learn)
         self.labels = self.learn.data.train_dl.dataset.y.items
         _, counts = np.unique(self.labels,return_counts=True)
-        self.weights = torch.DoubleTensor((1/counts)[self.labels])
-        
+        self.weights = (weights if weights is not None else
+                        torch.DoubleTensor((1/counts)[self.labels]))
+
     def on_train_begin(self, **kwargs):
         self.learn.data.train_dl.dl.batch_sampler = BatchSampler(WeightedRandomSampler(self.weights,len(self.learn.data.train_dl.dataset)), self.learn.data.train_dl.batch_size,False)        
