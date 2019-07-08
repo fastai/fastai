@@ -78,8 +78,8 @@ def create_head(nf:int, nc:int, lin_ftrs:Optional[Collection[int]]=None, ps:Floa
     return nn.Sequential(*layers)
 
 def create_cnn_model(base_arch:Callable, nc:int, cut:Union[int,Callable]=None, pretrained:bool=True,
-        lin_ftrs:Optional[Collection[int]]=None, ps:Floats=0.5, custom_head:Optional[nn.Module]=None,
-        split_on:Optional[SplitFuncOrIdxList]=None, bn_final:bool=False, concat_pool:bool=True):
+                     lin_ftrs:Optional[Collection[int]]=None, ps:Floats=0.5, custom_head:Optional[nn.Module]=None,
+                     bn_final:bool=False, concat_pool:bool=True):
     "Create custom convnet architecture"
     body = create_body(base_arch, pretrained, cut)
     if custom_head is None:
@@ -95,7 +95,7 @@ def cnn_learner(data:DataBunch, base_arch:Callable, cut:Union[int,Callable]=None
     "Build convnet style learner."
     meta = cnn_config(base_arch)
     model = create_cnn_model(base_arch, data.c, cut, pretrained, lin_ftrs, ps=ps, custom_head=custom_head,
-        split_on=split_on, bn_final=bn_final, concat_pool=concat_pool)
+        bn_final=bn_final, concat_pool=concat_pool)
     learn = Learner(data, model, **kwargs)
     learn.split(split_on or meta['split'])
     if pretrained: learn.freeze()
