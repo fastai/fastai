@@ -399,7 +399,7 @@ jobs:
     # check that notebooks are stripped out. if they aren't that means the committer doesn't have the correct configuration for the stripout filter.
   - script: |
       echo "Trying to load all notebooks"
-      tools/read-nbs
+      if [ -n "$(grep "corrputed" tools/read-nbs)" ]; then false; fi
 
       echo "Check we are starting with clean git checkout"
       if [ -n "$(git status -uno -s)" ]; then echo "git status is not clean"; false; fi
