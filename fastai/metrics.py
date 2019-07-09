@@ -271,7 +271,7 @@ class Perplexity(Callback):
         return add_metrics(last_metrics, torch.exp(self.loss / self.len))
 
 def auc_roc_score(input:Tensor, targ:Tensor):
-    "Using trapezoid method to calculate the area under roc curve"
+    "Computes the area under the receiver operator characteristic (ROC) curve using the trapezoid method. Restricted binary classification tasks."
     fpr, tpr = roc_curve(input, targ)
     d = fpr[1:] - fpr[:-1]
     sl1, sl2 = [slice(None)], [slice(None)]
@@ -279,7 +279,7 @@ def auc_roc_score(input:Tensor, targ:Tensor):
     return (d * (tpr[tuple(sl1)] + tpr[tuple(sl2)]) / 2.).sum(-1)
 
 def roc_curve(input:Tensor, targ:Tensor):
-    "Returns the false positive and true positive rates"
+    "Computes the receiver operator characteristic (ROC) curve by determining the true positive ratio (TPR) and false positive ratio (FPR) for various classification thresholds. Restricted binary classification tasks."
     targ = (targ == 1)
     desc_score_indices = torch.flip(input.argsort(-1), [-1])
     input = input[desc_score_indices]
@@ -297,7 +297,7 @@ def roc_curve(input:Tensor, targ:Tensor):
 
 @dataclass
 class AUROC(Callback):
-    "Calculates the auc score based on the roc curve. Restricted to the binary classification task."
+    "Computes the area under the curve (AUC) score based on the receiver operator characteristic (ROC) curve. Restricted to binary classification tasks."
     def on_epoch_begin(self, **kwargs):
         self.targs, self.preds = LongTensor([]), Tensor([])
         
