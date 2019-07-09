@@ -23,8 +23,8 @@ class MixUpCallback(LearnerCallback):
         if self.stack_x:
             new_input = [last_input, last_input[shuffle], lambd]
         else: 
-            outshape = [lambd.size(0)] + [1 for _ in range(len(x1.shape) - 1)]
-            new_input = (last_input * lambd.view(outshape) + x1 * (1-lambd).view(outshape))
+            out_shape = [lambd.size(0)] + [1 for _ in range(len(x1.shape) - 1)]
+            new_input = (last_input * lambd.view(out_shape) + x1 * (1-lambd).view(out_shape))
         if self.stack_y:
             new_target = torch.cat([last_target[:,None].float(), y1[:,None].float(), lambd[:,None].float()], 1)
         else:
