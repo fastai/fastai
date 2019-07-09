@@ -326,7 +326,7 @@ class TextList(ItemList):
 
     def get(self, i):
         o = super().get(i)
-        return Text(o, self.vocab.textify(o, self.sep))
+        return o if self.vocab is None else Text(o, self.vocab.textify(o, self.sep))
 
     def label_for_lm(self, **kwargs):
         "A special labelling method for language models."
