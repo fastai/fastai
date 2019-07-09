@@ -14,7 +14,7 @@ UNK = '<unk>'
 PAD = '<pad>'
 PAD_TOKEN_ID = 1
 
-number_match_re = re.compile(r'^([0-9]+[,.]?)+$')
+number_match_re = re.compile(r'^[0-9]+(?:[,.][0-9]*)*$')
 number_split_re = re.compile(r'([,.])')
 
 
