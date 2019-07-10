@@ -258,7 +258,7 @@ class Learner():
         return self.data.dl(ds_type)
 
     def load(self, file:PathLikeOrBinaryStream=None, device:torch.device=None, strict:bool=True,
-             with_opt:bool=None, purge:bool=True, remove_module:bool=False):
+             with_opt:bool=None, purge:bool=False, remove_module:bool=False):
         "Load model and optimizer state (if `with_opt`) `file` from `self.model_dir` using `device`. `file` can be file-like (file or buffer)"
         if purge: self.purge(clear_opt=ifnone(with_opt, False))
         if device is None: device = self.data.device
