@@ -109,7 +109,7 @@ dep_groups = {
         requests
         scipy
         torch>=1.0.0
-        typing
+        typing ; python_version<'3.7'
 """),
     'text':   to_list("""
         spacy>=2.0.18
