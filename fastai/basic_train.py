@@ -380,7 +380,7 @@ class Learner():
         dl = ifnone(dl, self.data.valid_dl)
         metrics = ifnone(metrics, self.metrics)
         cb_handler = CallbackHandler(self.callbacks + ifnone(callbacks, []), metrics)
-        cb_handler.on_epoch_begin()
+        cb_handler.on_train_begin(1, None, metrics); cb_handler.on_epoch_begin()
         val_metrics = validate(self.model, dl, self.loss_func, cb_handler)
         cb_handler.on_epoch_end(val_metrics)
         return cb_handler.state_dict['last_metrics']
