@@ -12,4 +12,10 @@ steps:
   entrypoint: '/bin/bash'
   id: 'applications.ipynb'
   waitFor: ['checkout']
+- name: 'gcr.io/deeplearning-platform-release/pytorch-cpu'
+  args: ['-c', 'papermill basic_data.ipynb gs://dl-platform-fastai/${COMMIT_SHA}/docs_src/basic_data.ipynb --log-output']
+  dir: 'fastai-src/docs_src'
+  entrypoint: '/bin/bash'
+  id: 'basic_data.ipynb'
+  waitFor: ['checkout']
 timeout: 90m
