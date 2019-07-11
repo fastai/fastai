@@ -2099,7 +2099,7 @@ Total non-trainable params: 11,166,912</code></pre>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>If agument <code>name</code> is a pathlib object that's an absolute path, it'll override the default base directory (<code>learn.path</code>), otherwise the model will be saved in a file relative to <code>learn.path</code>.</p>
+<p>If argument <code>name</code> is a pathlib object that's an absolute path, it'll override the default base directory (<code>learn.path</code>), otherwise the model will be saved in a file relative to <code>learn.path</code>.</p>
 
 </div>
 </div>
@@ -2155,7 +2155,7 @@ Total non-trainable params: 11,166,912</code></pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Learner.load" class="doc_header"><code>load</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_train.py#L260" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#Learner-load-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>load</code>(<strong><code>file</code></strong>:<code>PathLikeOrBinaryStream</code>=<strong><em><code>None</code></em></strong>, <strong><code>device</code></strong>:<a href="https://pytorch.org/docs/stable/tensor_attributes.html#torch-device"><code>device</code></a>=<strong><em><code>None</code></em></strong>, <strong><code>strict</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>, <strong><code>with_opt</code></strong>:<code>bool</code>=<strong><em><code>None</code></em></strong>, <strong><code>purge</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>, <strong><code>remove_module</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>)</p>
+<h4 id="Learner.load" class="doc_header"><code>load</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_train.py#L260" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#Learner-load-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>load</code>(<strong><code>file</code></strong>:<code>PathLikeOrBinaryStream</code>=<strong><em><code>None</code></em></strong>, <strong><code>device</code></strong>:<a href="https://pytorch.org/docs/stable/tensor_attributes.html#torch-device"><code>device</code></a>=<strong><em><code>None</code></em></strong>, <strong><code>strict</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>, <strong><code>with_opt</code></strong>:<code>bool</code>=<strong><em><code>None</code></em></strong>, <strong><code>purge</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>, <strong><code>remove_module</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>)</p>
 </blockquote>
 <div class="collapse" id="Learner-load-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#Learner-load-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>Tests found for <code>load</code>:</p><ul><li><code>pytest -sv tests/test_basic_train.py::test_memory</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_basic_train.py#L213" class="source_link" style="float:right">[source]</a></li><li><code>pytest -sv tests/test_basic_train.py::test_save_load</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_basic_train.py#L104" class="source_link" style="float:right">[source]</a></li></ul><p>Some other tests where <code>load</code> is used:</p><ul><li><code>pytest -sv tests/test_basic_train.py::test_model_load_mem_leak</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_basic_train.py#L270" class="source_link" style="float:right">[source]</a></li></ul><p>To run tests please refer to this <a href="/dev/test.html#quick-guide">guide</a>.</p></div></div><p>Load model and optimizer state (if <code>with_opt</code>) <code>file</code> from <code>self.model_dir</code> using <code>device</code>. <code>file</code> can be file-like (file or buffer)</p>
 
@@ -2224,7 +2224,7 @@ Total non-trainable params: 11,166,912</code></pre>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>If agument <code>fname</code> is a pathlib object that's an absolute path, it'll override the default base directory (<code>learn.path</code>), otherwise the model will be saved in a file relative to <code>learn.path</code>.</p>
+<p>If argument <code>fname</code> is a pathlib object that's an absolute path, it'll override the default base directory (<code>learn.path</code>), otherwise the model will be saved in a file relative to <code>learn.path</code>.</p>
 
 </div>
 </div>
