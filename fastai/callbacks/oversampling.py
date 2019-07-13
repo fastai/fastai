@@ -19,4 +19,4 @@ class OverSamplingCallback(LearnerCallback):
         self.total_len_oversample = int(self.learn.data.c*np.max(self.label_counts))
         
     def on_train_begin(self, **kwargs):
-        self.learn.data.train_dl.dl.batch_sampler = BatchSampler(WeightedRandomSampler(weights,self.total_len_oversample), self.learn.data.train_dl.batch_size,False)
+        self.learn.data.train_dl.dl.batch_sampler = BatchSampler(WeightedRandomSampler(self.weights,self.total_len_oversample), self.learn.data.train_dl.batch_size,False)
