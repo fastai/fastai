@@ -147,7 +147,7 @@ def _cl_int_gradcam(self, idx, heatmap_thresh:int=16, image:bool=True):
     if (acts.shape[-1]*acts.shape[-2]) >= heatmap_thresh:
         grad = hook_g.stored[0][0].cpu()
         grad_chan = grad.mean(1).mean(1)
-        mult = ((acts*grad_chan[...,None,None])).sum(0) #F.relu(((acts*grad_chan[...,None,None])).sum(0))
+        mult = F.relu(((acts*grad_chan[...,None,None])).sum(0))
         if image:
             xb_im = Image(xb[0])
             _,ax = plt.subplots()
