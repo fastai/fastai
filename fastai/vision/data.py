@@ -259,7 +259,7 @@ class ImageList(ItemList):
     def __init__(self, *args, convert_mode='RGB', after_open:Callable=None, **kwargs):
         super().__init__(*args, **kwargs)
         self.convert_mode,self.after_open = convert_mode,after_open
-        self.copy_new.append('convert_mode')
+        self.copy_new += ['convert_mode', 'after_open']
         self.c,self.sizes = 3,{}
 
     def open(self, fn):

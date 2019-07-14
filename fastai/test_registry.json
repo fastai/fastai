@@ -2,7 +2,7 @@
     "fastai.basic_data.DataBunch": [
         {
             "file": "tests/test_data_block.py",
-            "line": 143,
+            "line": 152,
             "test": "test_custom_dataset"
         }
     ],
@@ -553,8 +553,15 @@
     "fastai.data_block.ItemList.filter_by_folder": [
         {
             "file": "tests/test_data_block.py",
-            "line": 152,
+            "line": 161,
             "test": "test_filter_by_folder"
+        }
+    ],
+    "fastai.data_block.ItemList.filter_by_rand": [
+        {
+            "file": "tests/test_data_block.py",
+            "line": 112,
+            "test": "test_filter_by_rand"
         }
     ],
     "fastai.data_block.ItemList.label_from_folder": [
@@ -579,7 +586,7 @@
     "fastai.data_block.ItemList.split_subsets": [
         {
             "file": "tests/test_data_block.py",
-            "line": 112,
+            "line": 121,
             "test": "test_split_subsets"
         }
     ],

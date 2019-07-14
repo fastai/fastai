@@ -12,4 +12,28 @@ steps:
   entrypoint: '/bin/bash'
   id: 'applications.ipynb'
   waitFor: ['checkout']
+- name: 'gcr.io/deeplearning-platform-release/pytorch-cpu'
+  args: ['-c', 'papermill basic_data.ipynb gs://dl-platform-fastai/${COMMIT_SHA}/docs_src/basic_data.ipynb --log-output']
+  dir: 'fastai-src/docs_src'
+  entrypoint: '/bin/bash'
+  id: 'basic_data.ipynb'
+  waitFor: ['checkout']
+- name: 'gcr.io/deeplearning-platform-release/pytorch-cpu'
+  args: ['-c', 'papermill training.ipynb gs://dl-platform-fastai/${COMMIT_SHA}/docs_src/training.ipynb --log-output']
+  dir: 'fastai-src/docs_src'
+  entrypoint: '/bin/bash'
+  id: 'training.ipynb'
+  waitFor: ['checkout']
+- name: 'gcr.io/deeplearning-platform-release/pytorch-cpu'
+  args: ['-c', 'papermill basic_train.ipynb gs://dl-platform-fastai/${COMMIT_SHA}/docs_src/basic_train.ipynb --log-output']
+  dir: 'fastai-src/docs_src'
+  entrypoint: '/bin/bash'
+  id: 'basic_train.ipynb'
+  waitFor: ['checkout']
+- name: 'gcr.io/deeplearning-platform-release/pytorch-cpu'
+  args: ['-c', 'papermill train.ipynb gs://dl-platform-fastai/${COMMIT_SHA}/docs_src/train.ipynb --log-output']
+  dir: 'fastai-src/docs_src'
+  entrypoint: '/bin/bash'
+  id: 'train.ipynb'
+  waitFor: ['checkout']
 timeout: 90m

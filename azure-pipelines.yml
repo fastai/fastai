@@ -389,8 +389,18 @@ jobs:
       versionSpec: '3.6'
       architecture: 'x64'
 
+
+    # Install nbformat
+  - script: |
+      pip install nbformat
+    displayName: 'Install nbformat'
+    continueOnError: false
+
     # check that notebooks are stripped out. if they aren't that means the committer doesn't have the correct configuration for the stripout filter.
   - script: |
+      echo "Trying to load all notebooks"
+      tools/read-nbs
+
       echo "Check we are starting with clean git checkout"
       if [ -n "$(git status -uno -s)" ]; then echo "git status is not clean"; false; fi
 
@@ -400,5 +410,6 @@ jobs:
       echo "Check that strip out was unnecessary"
       git status -s # display the status to see which nbs need cleaning up
       if [ -n "$(git status -uno -s)" ]; then echo -e "!!! Detected unstripped out notebooks\n!!!Remember to run tools/run-after-git-clone"; false; fi
-    displayName: 'Detect unstripped out notebook commits'
+    displayName: 'Detect corrupted or unstripped out notebook commits'
+    failOnStderr: true
     continueOnError: false
