@@ -134,6 +134,31 @@ def _test_cnn(m):
     if not isinstance(m, nn.Sequential) or not len(m) == 2: return False
     return isinstance(m[1][0], (AdaptiveConcatPool2d, nn.AdaptiveAvgPool2d))
 
+def _cl_int_gradcam(self, idx, heatmap_thresh:int=16, image:bool=True):
+    m = self.learn.model.eval()
+    im,cl = self.learn.data.dl(DatasetType.Valid).dataset[idx]
+    cl = int(cl)
+    xb,_ = self.data.one_item(im, detach=False, denorm=False) #put into a minibatch of batch size = 1
+    with hook_output(m[0]) as hook_a: 
+        with hook_output(m[0], grad=True) as hook_g:
+            preds = m(xb)
+            preds[0,int(cl)].backward() 
+    acts  = hook_a.stored[0].cpu() #activation maps
+    if (acts.shape[-1]*acts.shape[-2]) >= heatmap_thresh:
+        grad = hook_g.stored[0][0].cpu()
+        grad_chan = grad.mean(1).mean(1)
+        mult = F.relu(((acts*grad_chan[...,None,None])).sum(0))
+        if image:
+            xb_im = Image(xb[0])
+            _,ax = plt.subplots()
+            sz = list(xb_im.shape[-2:])
+            xb_im.show(ax,title=f"pred. class: {self.pred_class[idx]}, actual class: {self.learn.data.classes[cl]}")
+            ax.imshow(mult, alpha=0.4, extent=(0,*sz[::-1],0),
+              interpolation='bilinear', cmap='magma')
+        return mult
+
+ClassificationInterpretation.GradCAM =_cl_int_gradcam
+
 def _cl_int_plot_top_losses(self, k, largest=True, figsize=(12,12), heatmap:bool=None, heatmap_thresh:int=16,
                             return_fig:bool=None)->Optional[plt.Figure]:
     "Show images in `top_losses` along with their prediction, actual, loss, and probability of actual class."
@@ -151,17 +176,8 @@ def _cl_int_plot_top_losses(self, k, largest=True, figsize=(12,12), heatmap:bool
         im.show(ax=axes.flat[i], title=
             f'{classes[self.pred_class[idx]]}/{classes[cl]} / {self.losses[idx]:.2f} / {self.preds[idx][cl]:.2f}')
         if heatmap:
-            xb,_ = self.data.one_item(im, detach=False, denorm=False)
-            m = self.learn.model.eval()
-            with hook_output(m[0]) as hook_a:
-                with hook_output(m[0], grad= True) as hook_g:
-                    preds = m(xb)
-                    preds[0,cl].backward()
-            acts = hook_a.stored[0].cpu()
-            if (acts.shape[-1]*acts.shape[-2]) >= heatmap_thresh:
-                grad = hook_g.stored[0][0].cpu()
-                grad_chan = grad.mean(1).mean(1)
-                mult = F.relu(((acts*grad_chan[...,None,None])).sum(0))
+            mult = self.GradCAM(idx,heatmap_thresh,image=False)
+            if mult is not None:
                 sz = list(im.shape[-2:])
                 axes.flat[i].imshow(mult, alpha=0.6, extent=(0,*sz[::-1],0), interpolation='bilinear', cmap='magma')                
     if ifnone(return_fig, defaults.return_fig): return fig
@@ -211,6 +227,7 @@ def _cl_int_plot_multi_top_losses(self, samples:int=3, figsize:Tuple[int,int]=(8
 ClassificationInterpretation.from_learner          = _cl_int_from_learner
 ClassificationInterpretation.plot_top_losses       = _cl_int_plot_top_losses
 ClassificationInterpretation.plot_multi_top_losses = _cl_int_plot_multi_top_losses
+ 
 
 def _learner_interpret(learn:Learner, ds_type:DatasetType=DatasetType.Valid, tta=False):
     "Create a `ClassificationInterpretation` object from `learner` on `ds_type` with `tta`."
