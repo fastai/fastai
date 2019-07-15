@@ -43,9 +43,9 @@ class TabularModel(Module):
         return x
 
 @classmethod
-def _cl_int_from_learner(cls, learn:Learner, ds_type=DatasetType.Valid):
+def _cl_int_from_learner(cls, learn:Learner, ds_type=DatasetType.Valid, activ:nn.Module=None):
     "Creates an instance of 'ClassificationInterpretation"
-    preds = learn.get_preds(ds_type=ds_type, with_loss=True)
+    preds = learn.get_preds(ds_type=ds_type, activ=activ, with_loss=True)
     return cls(learn, *preds, ds_type=ds_type)
 
 def _cl_int_plot_top_losses(self, k, largest:bool=True, return_table:bool=False)->Optional[plt.Figure]:
