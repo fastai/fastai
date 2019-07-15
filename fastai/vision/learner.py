@@ -125,9 +125,10 @@ def unet_learner(data:DataBunch, arch:Callable, pretrained:bool=True, blur_final
     return learn
 
 @classmethod
-def _cl_int_from_learner(cls, learn:Learner, ds_type:DatasetType=DatasetType.Valid, tta=False):
+def _cl_int_from_learner(cls, learn:Learner, ds_type:DatasetType=DatasetType.Valid, activ:nn.Module=None, tta=False):
     "Create an instance of `ClassificationInterpretation`. `tta` indicates if we want to use Test Time Augmentation."
-    preds = learn.TTA(ds_type=ds_type, with_loss=True) if tta else learn.get_preds(ds_type=ds_type, with_loss=True)
+    preds = learn.TTA(ds_type=ds_type, with_loss=True) if tta else learn.get_preds(ds_type=ds_type, activ=activ, with_loss=True)
+
     return cls(learn, *preds, ds_type=ds_type)
 
 def _test_cnn(m):
