@@ -6,7 +6,7 @@ from itertools import permutations
 from ..train import ClassificationInterpretation
 import ipywidgets as widgets
 
-class ClassLosses():
+class ClassConfusion():
     "Plot the most confused datapoints and statistics for the models misses." 
     def __init__(self, interp:ClassificationInterpretation, classlist:list, 
                is_ordered:bool=False, cut_off:int=100, varlist:list=None,
