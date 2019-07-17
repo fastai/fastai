@@ -2,7 +2,6 @@ import math
 import pandas as pd
 import matplotlib.pyplot as plt
 from tqdm import tqdm
-
 from itertools import permutations
 from ..train import ClassificationInterpretation
 import ipywidgets as widgets
@@ -26,7 +25,6 @@ class ClassLosses():
         self.vars = varlist
         self.classl = classlist
         self._show_losses(classlist)
-
         
     def _show_losses(self, classl:list, **kwargs):
         "Checks if the model is for Tabular or Images and gathers top losses"
@@ -35,9 +33,7 @@ class ClassLosses():
         
     def _create_tabs(self):
         "Creates a tab for each variable"
-
         self.lis = self.classl if self.is_ordered else list(permutations(self.classl, 2))
-        
         if self._is_tab:
             self._boxes = len(self.df_list)
             self._cols = math.ceil(math.sqrt(self._boxes))
@@ -53,7 +49,6 @@ class ClassLosses():
                     if x[0:2] == self.lis[y]:
                         self._ranges.append(x[2])
                         self.tbnames.append(str(x[0] + ' | ' + x[1]))
-
         items = [widgets.Output() for i, tab in enumerate(self.tbnames)]
         self.tabs = widgets.Tab()
         self.tabs.children = items
@@ -106,20 +101,14 @@ class ClassLosses():
                     print('Less than two unique values, cannot graph the KDE')
         plt.show(fig)
         plt.tight_layout()
-      
-
-        
-
 
     def _plot_imgs(self, tab:str, i:int ,**kwargs):
         "Plots the most confused images"
         classes_gnd = self.interp.data.classes
-        
         x = 0
         if self._ranges[i] < k:
             cols = math.ceil(math.sqrt(self._ranges[i]))
             rows = math.ceil(self._ranges[i]/cols)
-            
         if self._ranges[i] < 4 or k < 4:
             cols = 2
             rows = 2
@@ -127,7 +116,6 @@ class ClassLosses():
             cols = math.ceil(math.sqrt(self._boxes))
             rows = math.ceil(self._boxes/cols)
         fig, ax = plt.subplots(rows, cols, figsize=self.figsize)
-
         [axi.set_axis_off() for axi in ax.ravel()]
         for j, idx in enumerate(self.tl_idx):
             if k < x+1 or x > self._ranges[i]:
@@ -135,8 +123,6 @@ class ClassLosses():
             da, cl = self.interp.data.dl(self.interp.ds_type).dataset[idx]
             row = (int)(x / cols)
             col = x % cols
-
-            ix = int(cl)
             if str(cl) == tab.split(' ')[0] and str(classes_gnd[self.interp.pred_class[idx]]) == tab.split(' ')[2]:
                 img, lbl = self.interp.data.valid_ds[idx]
                 fn = self.interp.data.valid_ds.x.items[idx]
@@ -153,9 +139,7 @@ class ClassLosses():
         cat_names = self.interp.data.x.cat_names
         cont_names = self.interp.data.x.cont_names
         comb = self.classl if self.is_ordered else list(permutations(self.classl,2))
-
-        dfarr = []
-
+        self.df_list = []
         arr = []
         for i, idx in enumerate(self.tl_idx):
             da, _ = self.interp.data.dl(self.interp.ds_type).dataset[idx]
@@ -165,7 +149,6 @@ class ClassLosses():
                 if string == 'True' or string == 'False':
                     string += ';'
                     res += string
-
                 else:
                     string = string[1:]
                     res += string + ';'
@@ -176,14 +159,12 @@ class ClassLosses():
         for i, var in enumerate(self.interp.data.cont_names):
             f[var] = f[var].apply(lambda x: float(x) * self.stds[var] + self.means[var])
         f['Original'] = 'Original'
-        dfarr.append(f)
-
+        self.df_list.append(f)
         for j, x in enumerate(comb):
             arr = []
             for i, idx in enumerate(self.tl_idx):
                 da, cl = self.interp.data.dl(self.interp.ds_type).dataset[idx]
                 cl = int(cl)
-
                 if classes[self.interp.pred_class[idx]] == comb[j][0] and classes[cl] == comb[j][1]:
                     res = ''
                     for c, n in zip(da.cats, da.names[:len(da.cats)]):
@@ -201,7 +182,6 @@ class ClassLosses():
             for i, var in enumerate(self.interp.data.cont_names):
                 f[var] = f[var].apply(lambda x: float(x) * self.stds[var] + self.means[var])
             f[str(x)] = str(x)
-            dfarr.append(f)
-        self.df_list = dfarr
+            self.df_list.append(f)
         self.cat_names = cat_names
         self._create_tabs()
