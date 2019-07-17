@@ -188,14 +188,13 @@ def test_from_ids_works_for_variable_length_sentences():
 
 def test_from_ids_exports_classes():
     this_tests(TextClasDataBunch.from_ids)
-    ids = [np.array([0]),np.array([0,1])]*5 # notice diffrent number of elements in arrays
+    ids = [np.array([0])]*10
     lbl = [0]*10
     data = TextClasDataBunch.from_ids('/tmp', vocab=Vocab({0: BOS, 1:PAD}),
                                       train_ids=ids, train_lbls=lbl,
                                       valid_ids=ids, valid_lbls=lbl, classes={0:0}, bs=8)
     data.export('/tmp')
-    empty_data = TextClasDataBunch.load_empty('/tmp')
-    assert empty_data.classes is not None
+    TextClasDataBunch.load_empty('/tmp').classes
 
 def test_regression():
     this_tests('na')
