@@ -2,16 +2,12 @@ import math
 import pandas as pd
 import matplotlib.pyplot as plt
 
-from itertools import permutations, combinations
+from itertools import permutations
 from fastai.train import ClassificationInterpretation
 import ipywidgets as widgets
 
 class ClassLosses():
-    
-    """Plot the most confused datapoints and statistics for your misses. 
-    \nPass in a `interp` object and a list of classes to look at. 
-    Optionally you can include an odered list in the form of [[class_1, class_2]],
-    \n a figure size, and a cut_off limit for the maximum categorical categories to use on a variable"""
+    "Plot the most confused datapoints and statistics for your misses." 
     def __init__(self, interp:ClassificationInterpretation, classlist:list, 
                is_ordered:bool=False, cut_off:int=100, varlist:list=None,
                figsize:tuple=(8,8)):
@@ -26,11 +22,12 @@ class ClassLosses():
         self.cut_off = cut_off
         self.figsize = figsize
         self.vars = varlist
-        self.show_losses(classlist)
+        self._show_losses(classlist)
     
 
     
-    def create_tabs(self, df_list:list, cat_names:list):
+    def _create_tabs(self, df_list:list, cat_names:list):
+        "Creates a tab for each variable"
         self.cols = math.ceil(math.sqrt(len(df_list)))
         self.rows = math.ceil(len(df_list)/self.cols)
         self.boxes = len(df_list)
@@ -43,9 +40,11 @@ class ClassLosses():
         self.tabs.children = items
         for i in range(len(items)):
             self.tabs.set_title(i, tbnames[i])
-        self.populate_tabs(self.classl)
+        self._populate_tabs(self.classl)
+        
       
-    def populate_tabs(self, classl:list):
+    def _populate_tabs(self, classl:list):
+        "Adds relevent graphs to each tab"
         for i, tab in enumerate(self.tbnames):
             with self.tabs.children[i]:
                 if self.boxes is not None:
@@ -92,14 +91,16 @@ class ClassLosses():
                 plt.tight_layout
         display(self.tabs)
         
-    def show_losses(self, classl:list, **kwargs):
+    def _show_losses(self, classl:list, **kwargs):
+        "Checks if the model is for Tabular or Images"
         if str(type(self.interp.learn.data)) == "<class 'fastai.tabular.data.TabularDataBunch'>":
-            self.tab_losses(classl)
+            self._tab_losses(classl)
         else:
-            self.im_losses(classl)
+            self._im_losses(classl)
 
-    def im_losses(self, classl:list, **kwargs):
-        if self.is_ordered == True:
+    def _im_losses(self, classl:list, **kwargs):
+        "Plots the most confused images"
+        if self.is_ordered:
             lis = classl
         else: 
             lis = list(permutations(classl, 2))
@@ -108,8 +109,8 @@ class ClassLosses():
         vals = self.interp.most_confused()
         ranges = []
         tbnames = []
-        k = input('Please enter a value for `k`, or the top images you will see: ')
-        k = int(k)
+        self.boxes = input('Please enter a value for `k`, or the top images you will see: ')
+        k = int(self.boxes)
         self.k = k
         for x in iter(vals):
             for y in range(len(lis)):
@@ -128,18 +129,16 @@ class ClassLosses():
             with self.tabs.children[i]:
                 x = 0
                 if self.ranges[i] < k:
-                    cols = math.ceil(math.sqrt(self.k))
+                    cols = math.ceil(math.sqrt(self.ranges[i]))
                     rows = math.ceil(self.ranges[i]/cols)
-                    fig, ax = plt.subplots(rows, cols, figsize=self.figsize)
-
-                if self.ranges[i] < 4:
+                    
+                if self.ranges[i] < 4 or k < 4:
                     cols = 2
                     rows = 2
-                    fig, ax = plt.subplots(rows, cols, figsize=self.figsize)
                 else:
                     cols = math.ceil(math.sqrt(self.k))
                     rows = math.ceil(self.k/cols)
-                    fig, ax = plt.subplots(rows, cols, figsize=self.figsize)
+                fig, ax = plt.subplots(rows, cols, figsize=self.figsize)
 
                 [axi.set_axis_off() for axi in ax.ravel()]
                 for j, idx in enumerate(self.tl_idx):
@@ -161,15 +160,16 @@ class ClassLosses():
                 plt.tight_layout()
         display(self.tabs)
 
-    def tab_losses(self, classl:list, **kwargs):
+    def _tab_losses(self, classl:list, **kwargs):
+        "Gathers dataframes of the combinations data"
         tl_val, tl_idx = self.interp.top_losses(len(self.interp.losses))
         classes = self.interp.data.classes
         cat_names = self.interp.data.x.cat_names
         cont_names = self.interp.data.x.cont_names
-        if self.is_ordered == False:
-            comb = list(permutations(classl,2))
+        if self.is_ordered:
+            comb = classl            
         else:
-            comb = classl
+            comb = list(permutations(classl,2))
 
         dfarr = []
 
@@ -194,7 +194,6 @@ class ClassLosses():
             f[var] = f[var].apply(lambda x: float(x) * self.stds[var] + self.means[var])
         f['Original'] = 'Original'
         dfarr.append(f)
-
 
         for j, x in enumerate(comb):
             arr = []
@@ -223,4 +222,4 @@ class ClassLosses():
         self.dfs = dfarr
         self.cat_names = cat_names
         self.classl = classl
-        self.create_tabs(dfarr, cat_names)
+        self._create_tabs(dfarr, cat_names)
