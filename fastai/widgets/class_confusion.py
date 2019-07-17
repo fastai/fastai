@@ -1,5 +1,6 @@
 import math
 import pandas as pd
+import matplotlib as plt
 from tqdm import tqdm
 
 from itertools import permutations
