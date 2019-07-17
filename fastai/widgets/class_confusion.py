@@ -26,24 +26,23 @@ class ClassLosses():
     
 
     
-    def _create_tabs(self, df_list:list, cat_names:list):
+    def _create_tabs(self):
         "Creates a tab for each variable"
-        self.boxes = len(df_list)
+        self.boxes = len(self.df_list)
         self.cols = math.ceil(math.sqrt(self.boxes))
         self.rows = math.ceil(self.boxes/self.cols)
         
-        df_list[0].columns = df_list[0].columns.get_level_values(0)
-        tbnames = list(df_list[0].columns)[:-1]
+        tbnames = list(self.df_list[0].columns)[:-1]
         items = [widgets.Output() for i, tab in enumerate(tbnames)]
         self.tbnames = tbnames
         self.tabs = widgets.Tab()
         self.tabs.children = items
         for i in range(len(items)):
             self.tabs.set_title(i, tbnames[i])
-        self._populate_tabs(self.classl)
+        self._populate_tabs()
         
       
-    def _populate_tabs(self, classl:list):
+    def _populate_tabs(self):
         "Adds relevant graphs to each tab"
         for i, tab in enumerate(self.tbnames):
             with self.tabs.children[i]:
@@ -52,7 +51,7 @@ class ClassLosses():
                 else:
                     fig, ax = plt.subplots(self.cols, self.rows, figsize=self.figsize)
                 fig.subplots_adjust(hspace=.5)
-                for j, x in enumerate(self.dfs):
+                for j, x in enumerate(self.df_list):
                     ttl = f'{"".join(x.columns[-1])} {tab} distribution'
                     title = ttl if j == 0 else f'Misclassified {ttl}'
 
@@ -109,15 +108,14 @@ class ClassLosses():
         self.tabs.children = items
         for i in range(len(items)):
             self.tabs.set_title(i, self.tbnames[i])
-        self.classl = classl
         for i, tab in enumerate(self.tbnames):
             with self.tabs.children[i]:
                 x = 0
-                if self.ranges[i] < self.k:
+                if self.ranges[i] < k:
                     cols = math.ceil(math.sqrt(self.ranges[i]))
                     rows = math.ceil(self.ranges[i]/cols)
                     
-                if self.ranges[i] or self.k < 4:
+                if self.ranges[i] < 4 or k < 4:
                     cols = 2
                     rows = 2
                 else:
@@ -127,7 +125,7 @@ class ClassLosses():
 
                 [axi.set_axis_off() for axi in ax.ravel()]
                 for j, idx in enumerate(self.tl_idx):
-                    if self.k < x+1 or x > self.ranges[i]:
+                    if k < x+1 or x > self.ranges[i]:
                         break
                     da, cl = self.interp.data.dl(self.interp.ds_type).dataset[idx]
                     row = (int)(x / cols)
@@ -201,7 +199,6 @@ class ClassLosses():
                 f[var] = f[var].apply(lambda x: float(x) * self.stds[var] + self.means[var])
             f[str(x)] = str(x)
             dfarr.append(f)
-        self.dfs = dfarr
+        self.df_list = dfarr
         self.cat_names = cat_names
-        self.classl = classl
-        self._create_tabs(dfarr, cat_names)
+        self._create_tabs()
