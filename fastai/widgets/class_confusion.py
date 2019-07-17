@@ -7,7 +7,7 @@ from fastai.train import ClassificationInterpretation
 import ipywidgets as widgets
 
 class ClassLosses():
-    "Plot the most confused datapoints and statistics for your misses." 
+    "Plot the most confused datapoints and statistics for the models misses." 
     def __init__(self, interp:ClassificationInterpretation, classlist:list, 
                is_ordered:bool=False, cut_off:int=100, varlist:list=None,
                figsize:tuple=(8,8)):
@@ -44,7 +44,7 @@ class ClassLosses():
         
       
     def _populate_tabs(self, classl:list):
-        "Adds relevent graphs to each tab"
+        "Adds relevant graphs to each tab"
         for i, tab in enumerate(self.tbnames):
             with self.tabs.children[i]:
                 if self.boxes is not None:
