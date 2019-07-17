@@ -27,6 +27,12 @@ class ClassLosses():
         self.classl = classlist
         self._show_losses(classlist)
 
+        
+    def _show_losses(self, classl:list, **kwargs):
+        "Checks if the model is for Tabular or Images and gathers top losses"
+        _, self.tl_idx = self.interp.top_losses(len(self.interp.losses))
+        self._tab_losses() if self._is_tab else self._create_tabs()
+        
     def _create_tabs(self):
         "Creates a tab for each variable"
 
@@ -54,6 +60,15 @@ class ClassLosses():
         for i in range(len(items)):
             self.tabs.set_title(i, self.tbnames[i])
         self._populate_tabs()
+        
+    def _populate_tabs(self):
+        "Adds relevant graphs to each tab"
+        with tqdm(total=len(self.tbnames)) as pbar:
+            for i, tab in enumerate(self.tbnames):
+                with self.tabs.children[i]:
+                    self._plot_tab(tab) if self._is_tab else self._plot_imgs(tab, i)
+                pbar.update(1)
+        display(self.tabs)
         
     def _plot_tab(self, tab:str):
         "Generates graphs"
@@ -92,19 +107,9 @@ class ClassLosses():
         plt.show(fig)
         plt.tight_layout()
       
-    def _populate_tabs(self):
-        "Adds relevant graphs to each tab"
-        with tqdm(total=len(self.tbnames)) as pbar:
-            for i, tab in enumerate(self.tbnames):
-                with self.tabs.children[i]:
-                    self._plot_tab(tab) if self._is_tab else self._plot_imgs(tab, i)
-                pbar.update(1)
-        display(self.tabs)
+
         
-    def _show_losses(self, classl:list, **kwargs):
-        "Checks if the model is for Tabular or Images and gathers top losses"
-        _, self.tl_idx = self.interp.top_losses(len(self.interp.losses))
-        self._tab_losses() if self._is_tab else self._create_tabs()
+
 
     def _plot_imgs(self, tab:str, i:int ,**kwargs):
         "Plots the most confused images"
