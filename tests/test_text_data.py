@@ -193,7 +193,7 @@ def test_from_ids_exports_classes():
     data = TextClasDataBunch.from_ids('/tmp', vocab=Vocab({0: BOS, 1:PAD}),
                                       train_ids=ids, train_lbls=lbl,
                                       valid_ids=ids, valid_lbls=lbl, classes={0:0}, bs=8)
-    data.export('/tmp')
+    data.export('/tmp/export.pkl')
     TextClasDataBunch.load_empty('/tmp').classes
 
 def test_regression():
