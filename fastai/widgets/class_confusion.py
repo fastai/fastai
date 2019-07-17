@@ -28,12 +28,12 @@ class ClassLosses():
     
     def _create_tabs(self, df_list:list, cat_names:list):
         "Creates a tab for each variable"
-        self.cols = math.ceil(math.sqrt(len(df_list)))
-        self.rows = math.ceil(len(df_list)/self.cols)
         self.boxes = len(df_list)
+        self.cols = math.ceil(math.sqrt(self.boxes))
+        self.rows = math.ceil(self.boxes/self.cols)
+        
         df_list[0].columns = df_list[0].columns.get_level_values(0)
-        tbnames = list(df_list[0].columns)
-        tbnames = tbnames[:-1]
+        tbnames = list(df_list[0].columns)[:-1]
         items = [widgets.Output() for i, tab in enumerate(tbnames)]
         self.tbnames = tbnames
         self.tabs = widgets.Tab()
@@ -49,21 +49,18 @@ class ClassLosses():
             with self.tabs.children[i]:
                 if self.boxes is not None:
                     fig, ax = plt.subplots(self.boxes, figsize=self.figsize)
-                    fig.subplots_adjust(hspace=.5)
                 else:
                     fig, ax = plt.subplots(self.cols, self.rows, figsize=self.figsize)
-                    fig.subplots_adjust(hspace=.5)
+                fig.subplots_adjust(hspace=.5)
                 for j, x in enumerate(self.dfs):
+                    ttl = f'{"".join(x.columns[-1])} {tab} distribution'
+                    title = ttl if j == 0 else f'Misclassified {ttl}'
+
                     if self.boxes is None:
                         row = int(j / self.cols)
                         col = j % row
                     if tab in self.cat_names:
                         vals = pd.value_counts(x[tab].values)
-                        ttl = str.join('', x.columns[-1])
-                        if j == 0:
-                            title = ttl + ' ' + tab + ' distribution'
-                        else:
-                            title = 'Misclassified ' + ttl + ' ' + tab + ' distribution'
                         if self.boxes is not None:
                             if vals.nunique() < 10:
                                 fig = vals.plot(kind='bar', title=title,  ax=ax[j], rot=0, width=.75)
@@ -73,11 +70,6 @@ class ClassLosses():
                             fig = vals.plot(kind='barh', title=title,  ax=ax[row, col], width=.75)
                     else:
                         vals = x[tab]
-                        ttl = str.join('', x.columns[-1])
-                        if j == 0:
-                            title = ttl + ' ' + tab + ' distribution'
-                        else:
-                            title = 'Misclassified ' + ttl + ' ' + tab + ' distrobution'
                         if self.boxes is not None:
                             axs = vals.plot(kind='hist', ax=ax[j], title=title, y='Frequency')
                         else:
@@ -100,39 +92,32 @@ class ClassLosses():
 
     def _im_losses(self, classl:list, **kwargs):
         "Plots the most confused images"
-        if self.is_ordered:
-            lis = classl
-        else: 
-            lis = list(permutations(classl, 2))
+        lis = classl if self.is_ordered else list(permutations(classl, 2))
         self.tl_val, self.tl_idx = self.interp.top_losses(len(self.interp.losses))
         classes_gnd = self.interp.data.classes
         vals = self.interp.most_confused()
-        ranges = []
-        tbnames = []
-        self.boxes = input('Please enter a value for `k`, or the top images you will see: ')
-        k = int(self.boxes)
-        self.k = k
+        self.ranges = []
+        self.tbnames = []
+        self.k = int(input('Please enter a value for `k`, or the top images you will see: '))
         for x in iter(vals):
             for y in range(len(lis)):
                 if x[0:2] == lis[y]:
-                    ranges.append(x[2])
-                    tbnames.append(str(x[0] + ' | ' + x[1]))
-        items = [widgets.Output() for i, tab in enumerate(tbnames)]
-        self.tbnames = tbnames
+                    self.ranges.append(x[2])
+                    self.tbnames.append(str(x[0] + ' | ' + x[1]))
+        items = [widgets.Output() for i, tab in enumerate(self.tbnames)]
         self.tabs = widgets.Tab()
         self.tabs.children = items
         for i in range(len(items)):
-            self.tabs.set_title(i, tbnames[i])
-        self.ranges = ranges
+            self.tabs.set_title(i, self.tbnames[i])
         self.classl = classl
         for i, tab in enumerate(self.tbnames):
             with self.tabs.children[i]:
                 x = 0
-                if self.ranges[i] < k:
+                if self.ranges[i] < self.k:
                     cols = math.ceil(math.sqrt(self.ranges[i]))
                     rows = math.ceil(self.ranges[i]/cols)
                     
-                if self.ranges[i] < 4 or k < 4:
+                if self.ranges[i] or self.k < 4:
                     cols = 2
                     rows = 2
                 else:
@@ -142,7 +127,7 @@ class ClassLosses():
 
                 [axi.set_axis_off() for axi in ax.ravel()]
                 for j, idx in enumerate(self.tl_idx):
-                    if k < x+1 or x > self.ranges[i]:
+                    if self.k < x+1 or x > self.ranges[i]:
                         break
                     da, cl = self.interp.data.dl(self.interp.ds_type).dataset[idx]
                     row = (int)(x / cols)
@@ -166,10 +151,7 @@ class ClassLosses():
         classes = self.interp.data.classes
         cat_names = self.interp.data.x.cat_names
         cont_names = self.interp.data.x.cont_names
-        if self.is_ordered:
-            comb = classl            
-        else:
-            comb = list(permutations(classl,2))
+        comb = classl if self.is_ordered else list(permutations(classl,2))
 
         dfarr = []
 
