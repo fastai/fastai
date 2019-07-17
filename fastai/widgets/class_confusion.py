@@ -55,7 +55,7 @@ class ClassLosses():
         self._populate_tabs()
         
     def _plot_tab(self, tab:str):
-        "Generates graph"
+        "Generates graphs"
         if self._boxes is not None:
             fig, ax = plt.subplots(self._boxes, figsize=self.figsize)
         else:
