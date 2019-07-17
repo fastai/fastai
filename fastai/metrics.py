@@ -60,6 +60,9 @@ def dice(input:Tensor, targs:Tensor, iou:bool=False, eps:float=1e-8)->Rank0Tenso
     if not iou: return (2. * intersect / union if union > 0 else union.new([1.]).squeeze())
     else: return (intersect / (union-intersect+eps) if union > 0 else union.new([1.]).squeeze())
 
+def psnr(input:Tensor, targs:Tensor)->Rank0Tensor:
+    return 10 * (1. / mean_squared_error(input, targs)).log10()
+
 def exp_rmspe(pred:Tensor, targ:Tensor)->Rank0Tensor:
     "Exp RMSE between `pred` and `targ`."
     pred,targ = flatten_check(pred,targ)
