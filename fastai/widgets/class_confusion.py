@@ -107,10 +107,10 @@ class ClassConfusion():
         "Plots the most confused images"
         classes_gnd = self.interp.data.classes
         x = 0
-        if self._ranges[i] < k:
+        if self._ranges[i] < self._boxes:
             cols = math.ceil(math.sqrt(self._ranges[i]))
             rows = math.ceil(self._ranges[i]/cols)
-        if self._ranges[i] < 4 or k < 4:
+        if self._ranges[i] < 4 or self._boxes < 4:
             cols = 2
             rows = 2
         else:
@@ -119,7 +119,7 @@ class ClassConfusion():
         fig, ax = plt.subplots(rows, cols, figsize=self.figsize)
         [axi.set_axis_off() for axi in ax.ravel()]
         for j, idx in enumerate(self.tl_idx):
-            if k < x+1 or x > self._ranges[i]:
+            if self._boxes < x+1 or x > self._ranges[i]:
                 break
             da, cl = self.interp.data.dl(self.interp.ds_type).dataset[idx]
             row = (int)(x / cols)
