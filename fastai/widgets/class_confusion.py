@@ -74,9 +74,8 @@ class ClassConfusion():
             fig, ax = plt.subplots(self._cols, self._rows, figsize=self.figsize)
         fig.subplots_adjust(hspace=.5)
         for j, x in enumerate(self.df_list):
-            ttl = f'{"".join(x.columns[-1])} {tab} distribution'
-            title = ttl if j == 0 else f'Misclassified {ttl}'
-
+            title = f'{"".join(x.columns[-1])} {tab} distribution'
+            
             if self._boxes is None:
                 row = int(j / self._cols)
                 col = j % row
