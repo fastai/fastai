@@ -192,9 +192,12 @@ def test_from_ids_exports_classes():
     lbl = [0]*10
     data = TextClasDataBunch.from_ids('/tmp', vocab=Vocab({0: BOS, 1:PAD}),
                                       train_ids=ids, train_lbls=lbl,
-                                      valid_ids=ids, valid_lbls=lbl, classes={0:0}, bs=8)
+                                      valid_ids=ids, valid_lbls=lbl,
+                                      classes=['a', 'b', 'c'], bs=8)
     data.export('/tmp/export.pkl')
-    TextClasDataBunch.load_empty('/tmp').classes
+    empty_data = TextClasDataBunch.load_empty('/tmp')
+    assert hasattr(empty_data, 'classese')
+    assert empty_data.classes == ['a', 'b', 'c'] 
 
 def test_regression():
     this_tests('na')
