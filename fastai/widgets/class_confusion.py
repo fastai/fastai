@@ -12,7 +12,7 @@ class ClassConfusion():
                is_ordered:bool=False, cut_off:int=100, varlist:list=None,
                figsize:tuple=(8,8)):
         self.interp = interp
-        self._is_tab = (str(type(interp.learn.data)) == "<class 'fastai.tabular.data.TabularDataBunch'>")
+        self._is_tab = isinstance(interp.learn.data, TabularDataBunch)
         if self._is_tab:
             if interp.learn.data.train_ds.x.cont_names != []: 
                 for x in range(len(interp.learn.data.procs)):
