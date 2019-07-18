@@ -196,7 +196,7 @@ def test_from_ids_exports_classes():
                                       classes=['a', 'b', 'c'], bs=8)
     data.export('/tmp/export.pkl')
     empty_data = TextClasDataBunch.load_empty('/tmp')
-    assert hasattr(empty_data, 'classese')
+    assert hasattr(empty_data, 'classes')
     assert empty_data.classes == ['a', 'b', 'c'] 
 
 def test_regression():
