@@ -158,6 +158,7 @@ class TextDataBunch(DataBunch):
         if not is1d(train_lbls): src.train.y.one_hot,src.valid.y.one_hot = True,True
         if test_ids is not None: src.add_test(TextList(test_ids, vocab, path=path), label=train_lbls[0])
         src.valid.x.processor = ifnone(processor, [TokenizeProcessor(), NumericalizeProcessor(vocab=vocab)])
+        if classes is not None: src.valid.y.processor = ifnone(processor, [CategoryProcessor(src.valid.y)])
         return src.databunch(**kwargs)
 
     @classmethod
