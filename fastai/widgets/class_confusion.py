@@ -22,7 +22,7 @@ class ClassConfusion():
         self.is_ordered = is_ordered
         self.cut_off = cut_off
         self.figsize = figsize
-        self.vars = varlist
+        self.varlist = varlist
         self.classl = classlist
         self._show_losses(classlist)
         
@@ -38,7 +38,7 @@ class ClassConfusion():
             self._boxes = len(self.df_list)
             self._cols = math.ceil(math.sqrt(self._boxes))
             self._rows = math.ceil(self._boxes/self._cols)
-            self.tbnames = list(self.df_list[0].columns)[:-1]
+            self.tbnames = list(self.df_list[0].columns)[:-1] if self.varlist is None else self.varlist
         else:
             vals = self.interp.most_confused()
             self._ranges = []
