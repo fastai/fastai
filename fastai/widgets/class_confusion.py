@@ -85,6 +85,8 @@ class ClassConfusion():
                 if self._boxes is not None:
                     if vals.nunique() < 10:
                         fig = vals.plot(kind='bar', title=title,  ax=ax[j], rot=0, width=.75)
+                    elif vals.nunique() > self.cut_off:
+                        print(f'Number of values is above {self.cut_off}')
                     else:
                         fig = vals.plot(kind='barh', title=title,  ax=ax[j], width=.75)   
                 else:
