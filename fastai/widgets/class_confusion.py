@@ -74,9 +74,8 @@ class ClassConfusion():
             fig, ax = plt.subplots(self._cols, self._rows, figsize=self.figsize)
         fig.subplots_adjust(hspace=.5)
         for j, x in enumerate(self.df_list):
-            ttl = f'{"".join(x.columns[-1])} {tab} distribution'
-            title = ttl if j == 0 else f'Misclassified {ttl}'
-
+            title = f'{"".join(x.columns[-1])} {tab} distribution'
+            
             if self._boxes is None:
                 row = int(j / self._cols)
                 col = j % row
@@ -85,6 +84,8 @@ class ClassConfusion():
                 if self._boxes is not None:
                     if vals.nunique() < 10:
                         fig = vals.plot(kind='bar', title=title,  ax=ax[j], rot=0, width=.75)
+                    elif vals.nunique() > self.cut_off:
+                        print(f'Number of values is above {self.cut_off}')
                     else:
                         fig = vals.plot(kind='barh', title=title,  ax=ax[j], width=.75)   
                 else:
@@ -107,10 +108,10 @@ class ClassConfusion():
         "Plots the most confused images"
         classes_gnd = self.interp.data.classes
         x = 0
-        if self._ranges[i] < k:
+        if self._ranges[i] < self._boxes:
             cols = math.ceil(math.sqrt(self._ranges[i]))
             rows = math.ceil(self._ranges[i]/cols)
-        if self._ranges[i] < 4 or k < 4:
+        if self._ranges[i] < 4 or self._boxes < 4:
             cols = 2
             rows = 2
         else:
@@ -119,7 +120,7 @@ class ClassConfusion():
         fig, ax = plt.subplots(rows, cols, figsize=self.figsize)
         [axi.set_axis_off() for axi in ax.ravel()]
         for j, idx in enumerate(self.tl_idx):
-            if k < x+1 or x > self._ranges[i]:
+            if self._boxes < x+1 or x > self._ranges[i]:
                 break
             da, cl = self.interp.data.dl(self.interp.ds_type).dataset[idx]
             row = (int)(x / cols)
