@@ -118,9 +118,6 @@ entries:
         - output: web,pdf
           title: vision.models.unet
           url: /vision.models.unet.html
-        - output: web,pdf
-          title: widgets.image_cleaner
-          url: /widgets.image_cleaner.html
         title: vision
       - output: web
         subfolderitems:
@@ -161,6 +158,15 @@ entries:
     - output: web,pdf
       title: collab
       url: /collab.html
+      - output: web
+        subfolderitems:
+        - output: web,pdf
+          title: widgets.class_confusion
+          url: /widgets.class_confusion.html
+        - output: web,pdf
+          title: widgets.image_cleaner
+          url: /widgets.image_cleaner.html
+        title: widgets
     output: web
     title: Applications
   - folderitems:
