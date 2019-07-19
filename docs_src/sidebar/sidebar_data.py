@@ -70,13 +70,13 @@ sidebar_d = {
                 'tabular.models': '/tabular.models'
             },
         },
-        'collab': '/collab',
         'empty3': {
             'widgets': {
                 'widgets.class_confusion': '/widgets.class_confusion',
                 'widgets.image_cleaner': '/widgets.image_cleaner'
             },
         },
+        'collab': '/collab',
     },
     'Core': {
         'Overview': '/overview',

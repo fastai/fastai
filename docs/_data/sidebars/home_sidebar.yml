@@ -155,9 +155,6 @@ entries:
           title: tabular.models
           url: /tabular.models.html
         title: tabular
-    - output: web,pdf
-      title: collab
-      url: /collab.html
       - output: web
         subfolderitems:
         - output: web,pdf
@@ -167,6 +164,9 @@ entries:
           title: widgets.image_cleaner
           url: /widgets.image_cleaner.html
         title: widgets
+    - output: web,pdf
+      title: collab
+      url: /collab.html
     output: web
     title: Applications
   - folderitems:
