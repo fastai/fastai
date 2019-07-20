@@ -289,10 +289,10 @@ class ImageList(ItemList):
         return res
 
     @classmethod
-    def from_csv(cls, path:PathOrStr, csv_name:str, header:str='infer', **kwargs)->'ItemList':
+    def from_csv(cls, path:PathOrStr, csv_name:str, header:str='infer', delimiter:str=None, **kwargs)->'ItemList':
         "Get the filenames in `path/csv_name` opened with `header`."
         path = Path(path)
-        df = pd.read_csv(path/csv_name, header=header)
+        df = pd.read_csv(path/csv_name, header=header, delimiter=delimiter)
         return cls.from_df(df, path=path, **kwargs)
 
     def reconstruct(self, t:Tensor): return Image(t.float().clamp(min=0,max=1))
