@@ -169,6 +169,7 @@ class Learner():
         self.callbacks = listify(self.callbacks)
         if self.silent is None: self.silent = defaults.silent
         self.callback_fns = [partial(Recorder, add_time=self.add_time, silent=self.silent)] + listify(self.callback_fns)
+        if defaults.extra_callbacks is not None: self.callbacks += defaults.extra_callbacks
 
     def init(self, init): apply_init(self.model, init)
 
@@ -196,7 +197,6 @@ class Learner():
         if not getattr(self, 'opt', False): self.create_opt(lr, wd)
         else: self.opt.lr,self.opt.wd = lr,wd
         callbacks = [cb(self) for cb in self.callback_fns + listify(defaults.extra_callback_fns)] + listify(callbacks)
-        if defaults.extra_callbacks is not None: callbacks += defaults.extra_callbacks
         fit(epochs, self, metrics=self.metrics, callbacks=self.callbacks+callbacks)
 
     def create_opt(self, lr:Floats, wd:Floats=0.)->None:
