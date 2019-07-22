@@ -19,13 +19,11 @@ learn.fit(1)
 
 ## Note for [course.fast.ai](http://course.fast.ai) students
 
-This document is written for `fastai v1`, which we use for the current, third version of part 1 of the [course.fast.ai](http://course.fast.ai) deep learning course. If you're following along with a course at [course18.fast.ai](http://course18.fast.ai)&mdash;that is, part 2 of the deep learning course, or the machine learning course (which aren't yet updated for v1)&mdash;you need to use `fastai 0.7`;  please follow the installation instructions [here](https://forums.fast.ai/t/fastai-v0-install-issues-thread/24652).
-
-*Note: If you want to dive deep into fastai, Jeremy Howard, its lead developer, will be showing internals and advanced features in [Deep Learning Part II](https://www.usfca.edu/data-institute/certificates/deep-learning-part-two) at the University of San Francisco from March 18th, 2018.*
+This document is written for `fastai v1`, which we use for the current version the [course.fast.ai](http://course.fast.ai) deep learning courses. If you're following along with a course at [course18.fast.ai](http://course18.fast.ai) (i.e. the machine learning course, which isn't updated for v1) you need to use `fastai 0.7`;  please follow the installation instructions [here](https://forums.fast.ai/t/fastai-v0-install-issues-thread/24652).
 
 ## Installation
 
-**NB:** *fastai v1 currently supports Linux only, and requires **PyTorch v1** and **Python 3.6** or later. Windows support is at an experimental stage: it should work fine but we haven't thoroughly tested it. Since Macs don't currently have good Nvidia GPU support, we do not currently prioritize Mac development.*
+**NB:** *fastai v1 currently supports Linux only, and requires **PyTorch v1** and **Python 3.6** or later. Windows support is at an experimental stage: it should work fine but it's much slower and less well tested. Since Macs don't currently have good Nvidia GPU support, we do not currently prioritize Mac development.*
 
 `fastai-1.x` can be installed with either `conda` or `pip` package managers and also from source. At the moment you can't just run *install*, since you first need to get the correct `pytorch` version installed - thus to get `fastai-1.x` installed choose one of the installation recipes below using your favorite python package manager. Note that **PyTorch v1** and **Python 3.6** are the minimal version requirements.
 
