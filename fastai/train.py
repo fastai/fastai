@@ -3,6 +3,8 @@ from .torch_core import *
 from .callbacks import *
 from .basic_data import *
 from .basic_train import *
+from PIL import ImageFile
+ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 __all__ = ['BnFreeze', 'GradientClipping', 'ShowGraph', 'Interpretation', 'ClassificationInterpretation', 'MultiLabelClassificationInterpretation',
  'fit_one_cycle', 'lr_find', 'one_cycle_scheduler', 'to_fp16', 'to_fp32', 'mixup', 'AccumulateScheduler']
