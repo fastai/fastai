@@ -67,6 +67,7 @@ Note that there are always exceptions, especially when we try to comply with the
 |                  | configuration                       | cfg            |                                                  |
 |                  | random                              | rand           |                                                  |
 |                  | utility                             | util           |                                                  |
+|                  | filename                            | fname          |                                                  |
 |                  |                                     |                |                                                  |
 |                  | threshold                           | thresh         |                                                  |
 | **Data**         |                                     |                |                                                  |
