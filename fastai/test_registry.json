@@ -974,6 +974,11 @@
             "file": "tests/test_text_data.py",
             "line": 181,
             "test": "test_from_ids_works_for_variable_length_sentences"
+        },
+        {
+            "file": "tests/test_text_data.py",
+            "line": 189,
+            "test": "test_from_ids_exports_classes"
         }
     ],
     "fastai.text.learner.language_model_learner": [

@@ -17,9 +17,7 @@ def dropout_mask(x:Tensor, sz:Collection[int], p:float):
 class RNNDropout(Module):
     "Dropout with probability `p` that is consistent on the seq_len dimension."
 
-    def __init__(self, p:float=0.5):
-        super().__init__()
-        self.p=p
+    def __init__(self, p:float=0.5): self.p=p
 
     def forward(self, x:Tensor)->Tensor:
         if not self.training or self.p == 0.: return x
@@ -30,7 +28,6 @@ class WeightDropout(Module):
     "A module that warps another layer in which some weights will be replaced by 0 during training."
 
     def __init__(self, module:nn.Module, weight_p:float, layer_names:Collection[str]=['weight_hh_l0']):
-        super().__init__()
         self.module,self.weight_p,self.layer_names = module,weight_p,layer_names
         for layer in self.layer_names:
             #Makes a copy of the weights of the selected layers.
@@ -61,7 +58,6 @@ class EmbeddingDropout(Module):
     "Apply dropout with probabily `embed_p` to an embedding layer `emb`."
 
     def __init__(self, emb:nn.Module, embed_p:float):
-        super().__init__()
         self.emb,self.embed_p = emb,embed_p
         self.pad_idx = self.emb.padding_idx
         if self.pad_idx is None: self.pad_idx = -1
@@ -83,7 +79,6 @@ class AWD_LSTM(Module):
 
     def __init__(self, vocab_sz:int, emb_sz:int, n_hid:int, n_layers:int, pad_token:int=1, hidden_p:float=0.2,
                  input_p:float=0.6, embed_p:float=0.1, weight_p:float=0.5, qrnn:bool=False, bidir:bool=False):
-        super().__init__()
         self.bs,self.qrnn,self.emb_sz,self.n_hid,self.n_layers = 1,qrnn,emb_sz,n_hid,n_layers
         self.n_dir = 2 if bidir else 1
         self.encoder = nn.Embedding(vocab_sz, emb_sz, padding_idx=pad_token)
@@ -143,7 +138,6 @@ class LinearDecoder(Module):
     initrange=0.1
 
     def __init__(self, n_out:int, n_hid:int, output_p:float, tie_encoder:nn.Module=None, bias:bool=True):
-        super().__init__()
         self.decoder = nn.Linear(n_hid, n_out, bias=bias)
         self.decoder.weight.data.uniform_(-self.initrange, self.initrange)
         self.output_dp = RNNDropout(output_p)
@@ -211,7 +205,7 @@ class TextClassificationInterpretation(ClassificationInterpretation):
     """
 
     def __init__(self, learn: Learner, preds: Tensor, y_true: Tensor, losses: Tensor, ds_type: DatasetType = DatasetType.Valid):
-        super(TextClassificationInterpretation, self).__init__(learn,preds,y_true,losses,ds_type)
+        super().__init__(learn,preds,y_true,losses,ds_type)
         self.model = learn.model
 
     def intrinsic_attention(self, text:str, class_id:int=None):
