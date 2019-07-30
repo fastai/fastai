@@ -55,10 +55,45 @@ def dice(input:Tensor, targs:Tensor, iou:bool=False, eps:float=1e-8)->Rank0Tenso
     n = targs.shape[0]
     input = input.argmax(dim=1).view(n,-1)
     targs = targs.view(n,-1)
-    intersect = (input * targs).sum().float()
-    union = (input+targs).sum().float()
-    if not iou: return (2. * intersect / union if union > 0 else union.new([1.]).squeeze())
-    else: return (intersect / (union-intersect+eps) if union > 0 else union.new([1.]).squeeze())
+    if iou:  # TODO move IOU to separate API function?
+        intersect = (input * targs).sum().float()
+
+        """FIXME BUG
+            this code calculates sum while it must calculate union
+            TP pixels are counted twice
+        """
+        union = (input+targs).sum().float()
+
+        """FIXME BUG 2
+            this code will produce incorrect value for batch sizes > 0
+            Correct algorithm:
+                1. calculate IOU on every image
+                2. take mean of IOU values. See Dice calculation
+        """
+        return (intersect / (union-intersect+eps) if union > 0 else union.new([1.]).squeeze())
+    else:  # calculating Dice
+        intersect = (input * targs).sum(1).float()  # instersection for every element of the batch
+        sums = (input + targs).sum(1).float()
+
+        """ Dice formula has special case.
+        It is possible that some images are empty and
+            input = 0
+            targs = 0
+        In this case Dice value will be 2 * 0/(0 + 0) == NaN.
+        But Dice for empty images must be 1.
+        Set
+            intersect = 1
+            sums = 2
+        to get result
+            2 * 1 / 2 = 1
+        Setting values using masks to support batches with size > 1
+        """
+        empty_sums_mask = (sums == 0).float()
+        intersect += empty_sums_mask
+        sums += (2 * empty_sums_mask)
+
+        return (2. * intersect / sums).mean()
+
 
 def psnr(input:Tensor, targs:Tensor)->Rank0Tensor:
     return 10 * (1. / mean_squared_error(input, targs)).log10()

@@ -104,6 +104,28 @@ def test_accuracy_thresh():
     (p2, t2, 0.4),
     (torch.zeros(5,2,5), torch.eye(5,5), 1/3),
     (torch.zeros(5,2,5), torch.zeros(5,5), 0),
+    (torch.tensor([0, 1]).reshape((1, 2, 1)),
+        torch.tensor([1]).reshape((1, 1)), 1), # pred 1, label 1, Dice 1
+    (torch.tensor([1, 0]).reshape((1, 2, 1)),
+        torch.tensor([1]).reshape((1, 1)), 0), # pred 0, label 1, Dice 0
+    (torch.tensor([0, 1]).reshape((1, 2, 1)),
+        torch.tensor([0]).reshape((1, 1)), 0), # pred 1, label 0, Dice 0
+    (torch.tensor([1, 0]).reshape((1, 2, 1)),
+        torch.tensor([0]).reshape((1, 1)), 1), # pred 0, label 0, Dice 1. Special case
+
+     # 2 pixels. dice([11], [11]) = 1
+    (torch.tensor([0, 1, 0, 1]).reshape(1, 2, 2),
+        torch.tensor([1, 1]).reshape((1, 2)), 1),
+
+     # 2 pixels. 1 wrong. dice([10], [11]) = 2/3
+    (torch.tensor([0, 1, 1, 0]).reshape(1, 2, 2),
+        torch.tensor([1, 1]).reshape((1, 2)), 2/3),
+
+    # Metric on batch of 2 pixel images.
+    # mean([1, 2/3]) = 5/6
+    # See cases above
+    (torch.tensor([0, 1, 0, 1, 0, 1, 1, 0]).reshape(2, 2, 2),
+        torch.tensor([1, 1, 1, 1]).reshape((2, 2)), 5/6),
 ])
 def test_dice(p, t, expect):
     this_tests(dice)
