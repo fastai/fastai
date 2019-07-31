@@ -82,9 +82,9 @@ class LearnerTensorboardWriter(LearnerCallback):
         self.graph_writer.write(model=self.learn.model, tbwriter=self.tbwriter,
                                 input_to_model=next(iter(self.learn.data.dl(DatasetType.Single)))[0])
 
-    def on_batch_end(self, last_loss:Tensor, iteration:int, **kwargs)->None:
+    def on_batch_end(self, last_loss:Tensor, iteration:int, train:bool, **kwargs)->None:
         "Callback function that writes batch end appropriate data to Tensorboard."
-        if iteration == 0: return
+        if iteration == 0 or not train: return
         self._update_batches_if_needed()
         if iteration % self.loss_iters == 0: self._write_training_loss(iteration=iteration, last_loss=last_loss)
         if iteration % self.hist_iters == 0: self._write_weight_histograms(iteration=iteration)
