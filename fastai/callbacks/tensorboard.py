@@ -82,17 +82,17 @@ class LearnerTensorboardWriter(LearnerCallback):
         self.graph_writer.write(model=self.learn.model, tbwriter=self.tbwriter,
                                 input_to_model=next(iter(self.learn.data.dl(DatasetType.Single)))[0])
 
-    def on_batch_end(self, last_loss:Tensor, iteration:int, **kwargs)->None:
+    def on_batch_end(self, last_loss:Tensor, iteration:int, train:bool, **kwargs)->None:
         "Callback function that writes batch end appropriate data to Tensorboard."
-        if iteration == 0: return
+        if iteration == 0 or not train: return
         self._update_batches_if_needed()
         if iteration % self.loss_iters == 0: self._write_training_loss(iteration=iteration, last_loss=last_loss)
         if iteration % self.hist_iters == 0: self._write_weight_histograms(iteration=iteration)
 
     # Doing stuff here that requires gradient info, because they get zeroed out afterwards in training loop
-    def on_backward_end(self, iteration:int, **kwargs)->None:
+    def on_backward_end(self, iteration:int, train:bool, **kwargs)->None:
         "Callback function that writes backward end appropriate data to Tensorboard."
-        if iteration == 0: return
+        if iteration == 0 and not train: return
         self._update_batches_if_needed()
         if iteration % self.stats_iters == 0: self._write_model_stats(iteration=iteration)
 
@@ -155,15 +155,15 @@ class GANTensorboardWriter(LearnerTensorboardWriter):
                                     iteration=iteration, tbwriter=self.tbwriter)
         finally: trainer.switch(gen_mode=gen_mode)
 
-    def on_batch_end(self, iteration:int, **kwargs)->None:
+    def on_batch_end(self, iteration:int, train:bool, **kwargs)->None:
         "Callback function that writes batch end appropriate data to Tensorboard."
-        super().on_batch_end(iteration=iteration, **kwargs)
-        if iteration == 0: return
+        super().on_batch_end(iteration=iteration, train=train, **kwargs)
+        if iteration == 0 and not train: return
         if iteration % self.visual_iters == 0: self._write_images(iteration=iteration)
 
-    def on_backward_end(self, iteration:int, **kwargs)->None:
+    def on_backward_end(self, iteration:int, train:bool, **kwargs)->None:
         "Callback function that writes backward end appropriate data to Tensorboard."
-        if iteration == 0: return
+        if iteration == 0 and not train: return
         self._update_batches_if_needed()
         #TODO:  This could perhaps be implemented as queues of requests instead but that seemed like overkill. 
         # But I'm not the biggest fan of maintaining these boolean flags either... Review pls.
@@ -184,10 +184,10 @@ class ImageGenTensorboardWriter(LearnerTensorboardWriter):
         self.img_gen_vis.write(learn=self.learn, trn_batch=self.trn_batch, val_batch=self.val_batch, iteration=iteration, 
                                tbwriter=self.tbwriter)
 
-    def on_batch_end(self, iteration:int, **kwargs)->None:
+    def on_batch_end(self, iteration:int, train:bool, **kwargs)->None:
         "Callback function that writes batch end appropriate data to Tensorboard."
-        super().on_batch_end(iteration=iteration, **kwargs)
-        if iteration == 0: return
+        super().on_batch_end(iteration=iteration, train=train, **kwargs)
+        if iteration == 0 and not train: return
         if iteration % self.visual_iters == 0: self._write_images(iteration=iteration)
 
 class TBWriteRequest(ABC):
