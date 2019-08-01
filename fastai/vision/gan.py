@@ -230,7 +230,9 @@ class NoisyItem(ItemBase):
     "An random `ItemBase` of size `noise_sz`."
     def __init__(self, noise_sz): self.obj,self.data = noise_sz,torch.randn(noise_sz, 1, 1)
     def __str__(self):  return ''
-    def apply_tfms(self, tfms, **kwargs): return self
+    def apply_tfms(self, tfms, **kwargs): 
+        for f in listify(tfms): f.resolve()
+        return self
 
 class GANItemList(ImageList):
     "`ItemList` suitable for GANs."
