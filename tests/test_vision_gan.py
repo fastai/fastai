@@ -40,7 +40,6 @@ def test_noisy_item():
 
     assert item.obj == 10
     assert item.data.size() == torch.Size([10, 1, 1])
-    assert item.apply_tfms(99) is item
     assert f"{item}" is ""
 
 def test_basic_generator():

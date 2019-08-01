@@ -1576,7 +1576,7 @@
     "fastai.vision.gan.GANModule": [
         {
             "file": "tests/test_vision_gan.py",
-            "line": 67,
+            "line": 66,
             "test": "test_gan_module"
         }
     ],
@@ -1597,14 +1597,14 @@
     "fastai.vision.gan.basic_critic": [
         {
             "file": "tests/test_vision_gan.py",
-            "line": 56,
+            "line": 55,
             "test": "test_basic_critic"
         }
     ],
     "fastai.vision.gan.basic_generator": [
         {
             "file": "tests/test_vision_gan.py",
-            "line": 46,
+            "line": 45,
             "test": "test_basic_generator"
         }
     ],
