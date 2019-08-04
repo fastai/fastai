@@ -211,11 +211,12 @@ class PixelShuffle_ICNR(Module):
         # - https://arxiv.org/abs/1806.02658
         self.pad = nn.ReplicationPad2d((1,0,1,0))
         self.blur = nn.AvgPool2d(2, stride=1)
+        self.do_blur = blur
         self.relu = relu(True, leaky=leaky)
 
     def forward(self,x):
         x = self.shuf(self.relu(self.conv(x)))
-        return self.blur(self.pad(x)) if self.blur else x
+        return self.blur(self.pad(x)) if self.do_blur else x
 
 class FlattenedLoss():
     "Same as `func`, but flattens input and target."
