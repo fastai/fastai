@@ -15,6 +15,8 @@ of that change.
 
 ### New:
 
+- QRNNs now work in mixed precision and can be twice as fast on a moderen GPU (if all dims are nultiples of 8)
+
 ### Changed:
 
 ### Fixed:
