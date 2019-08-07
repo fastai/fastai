@@ -118,7 +118,6 @@ class LanguageLearner(RNNLearner):
     def predict(self, text:str, n_words:int=1, no_unk:bool=True, temperature:float=1., min_p:float=None, sep:str=' ',
                 decoder=decode_spec_tokens):
         "Return the `n_words` that come after `text`."
-        ds = self.data.single_dl.dataset
         self.model.reset()
         xb,yb = self.data.one_item(text)
         new_idx = []
@@ -139,7 +138,6 @@ class LanguageLearner(RNNLearner):
     def beam_search(self, text:str, n_words:int, no_unk:bool=True, top_k:int=10, beam_sz:int=1000, temperature:float=1.,
                     sep:str=' ', decoder=decode_spec_tokens):
         "Return the `n_words` that come after `text` using beam search."
-        ds = self.data.single_dl.dataset
         self.model.reset()
         self.model.eval()
         xb, yb = self.data.one_item(text)
