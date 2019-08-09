@@ -32,7 +32,7 @@ def accuracy(input:Tensor, targs:Tensor)->Rank0Tensor:
 def accuracy_thresh(y_pred:Tensor, y_true:Tensor, thresh:float=0.5, sigmoid:bool=True)->Rank0Tensor:
     "Computes accuracy when `y_pred` and `y_true` are the same size."
     if sigmoid: y_pred = y_pred.sigmoid()
-    return ((y_pred>thresh)==y_true.byte()).float().mean()
+    return ((y_pred>thresh).byte()==y_true.byte()).float().mean()
 
 def top_k_accuracy(input:Tensor, targs:Tensor, k:int=5)->Rank0Tensor:
     "Computes the Top-k accuracy (target is in the top k predictions)."
