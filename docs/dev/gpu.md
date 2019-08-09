@@ -280,7 +280,7 @@ sudo nvidia-smi --gpu-reset -i 0
 
 When using multiprocessing, sometimes some of the client processes get stuck and go zombie and won't release the GPU memory. They also may become invisible to `nvidia-smi`, so that it reports no memory used, but the card is unusable and fails with OOM even when trying to create a tiny tensor on that card. In such a case locate the relevant processes with `fuser -v /dev/nvidia*`and kill them with `kill -9`.
 
-This blog [post](https://jianchao-li.github.io/2018/11/02/killing-pytorch-multi-gpu-training-the-safe-way/) suggests the following trick to arrange for the processes to cleanly exit on demand:
+This blog [post](https://jianchao-li.github.io/post/killing-pytorch-multi-gpu-training-the-safe-way/) suggests the following trick to arrange for the processes to cleanly exit on demand:
 ```
 if os.path.isfile('kill.me'):
     num_gpus = torch.cuda.device_count()
