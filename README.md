@@ -107,17 +107,7 @@ If for any reason you can't use the prepackaged packages and have to build from 
    python setup.py install
    ```
 
-3. When both `pytorch` and `torchvision` are installed, first test that you can load each of these libraries:
-
-   ```bash
-   import torch
-   import torchvision
-   ```
-
-   to validate that they were installed correctly
-
-   Finally, proceed with `fastai` installation as normal, either through prepackaged pip or conda builds or installing from source ("the developer install") as explained in the sections above.
-
+Hello
 
 
 ## Installation Issues
