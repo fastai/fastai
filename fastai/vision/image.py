@@ -242,7 +242,7 @@ class ImageSegment(Image):
         if title: ax.set_title(title)
 
     def save(self, fn:PathOrStr):
-        "Save the mask to `fn`."
+        "Save the image segment to `fn`."
         x = image2np(self.data).astype(np.uint8)
         PIL.Image.fromarray(x).save(fn)
 
