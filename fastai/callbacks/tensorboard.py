@@ -78,6 +78,12 @@ class LearnerTensorboardWriter(LearnerCallback):
             scalar_value = last_metrics[i]
             self._write_scalar(name=name, scalar_value=scalar_value, iteration=iteration)
 
+    def _write_embedding(self, iteration:int)->None:
+        "Writes embedding to Tensorboard."
+        for name, emb in self.learn.model.named_children():
+            if isinstance(emb, nn.Embedding):
+                self.tbwriter.add_embedding(list(emb.parameters())[0], global_step=iteration, tag=name)
+
     def on_train_begin(self, **kwargs: Any) -> None:
         self.graph_writer.write(model=self.learn.model, tbwriter=self.tbwriter,
                                 input_to_model=next(iter(self.learn.data.dl(DatasetType.Single)))[0])
@@ -99,6 +105,7 @@ class LearnerTensorboardWriter(LearnerCallback):
     def on_epoch_end(self, last_metrics:MetricsList, iteration:int, **kwargs)->None:
         "Callback function that writes epoch end appropriate data to Tensorboard."
         self._write_metrics(iteration=iteration, last_metrics=last_metrics)
+        self._write_embedding(iteration=iteration)
 
 # TODO:  We're overriding almost everything here.  Seems like a good idea to question that ("is a" vs "has a")
 class GANTensorboardWriter(LearnerTensorboardWriter):
