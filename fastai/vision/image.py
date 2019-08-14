@@ -241,6 +241,11 @@ class ImageSegment(Image):
                         interpolation='nearest', alpha=alpha, vmin=0, **kwargs)
         if title: ax.set_title(title)
 
+    def save(self, fn:PathOrStr):
+        "Save the image segment to `fn`."
+        x = image2np(self.data).astype(np.uint8)
+        PIL.Image.fromarray(x).save(fn)
+
     def reconstruct(self, t:Tensor): return ImageSegment(t)
 
 class ImagePoints(Image):
