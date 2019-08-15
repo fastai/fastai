@@ -233,7 +233,7 @@
     "fastai.callback.AverageMetric": [
         {
             "file": "tests/test_metrics.py",
-            "line": 213,
+            "line": 232,
             "test": "test_average_metric_naming"
         }
     ],
@@ -769,12 +769,12 @@
     "fastai.metrics.dice": [
         {
             "file": "tests/test_metrics.py",
-            "line": 108,
+            "line": 127,
             "test": "test_dice"
         },
         {
             "file": "tests/test_metrics.py",
-            "line": 118,
+            "line": 137,
             "test": "test_dice_iou"
         }
     ],
@@ -805,14 +805,14 @@
     "fastai.metrics.explained_variance": [
         {
             "file": "tests/test_metrics.py",
-            "line": 174,
+            "line": 193,
             "test": "test_explained_variance"
         }
     ],
     "fastai.metrics.fbeta": [
         {
             "file": "tests/test_metrics.py",
-            "line": 126,
+            "line": 145,
             "test": "test_fbeta"
         }
     ],
@@ -826,35 +826,35 @@
     "fastai.metrics.mean_absolute_error": [
         {
             "file": "tests/test_metrics.py",
-            "line": 135,
+            "line": 154,
             "test": "test_mae"
         }
     ],
     "fastai.metrics.mean_squared_error": [
         {
             "file": "tests/test_metrics.py",
-            "line": 144,
+            "line": 163,
             "test": "test_mse"
         }
     ],
     "fastai.metrics.mean_squared_logarithmic_error": [
         {
             "file": "tests/test_metrics.py",
-            "line": 163,
+            "line": 182,
             "test": "test_msle"
         }
     ],
     "fastai.metrics.r2_score": [
         {
             "file": "tests/test_metrics.py",
-            "line": 185,
+            "line": 204,
             "test": "test_r2_score"
         }
     ],
     "fastai.metrics.root_mean_squared_error": [
         {
             "file": "tests/test_metrics.py",
-            "line": 153,
+            "line": 172,
             "test": "test_rmse"
         }
     ],

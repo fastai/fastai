@@ -104,6 +104,25 @@ def test_accuracy_thresh():
     (p2, t2, 0.4),
     (torch.zeros(5,2,5), torch.eye(5,5), 1/3),
     (torch.zeros(5,2,5), torch.zeros(5,5), 0),
+    (tensor([[[[1., 1.],
+               [1., 1.]],
+              [[0., 0.],
+               [0., 0.]]],
+             [[[1., 1.],
+               [1., 1.]],
+              [[1., 0.],
+               [0., 0.]]],
+             [[[1., 1.],
+               [1., 1.]],
+              [[0., 0.],
+               [1., 0.]]]]),
+     tensor([[[[0, 0],
+               [0, 0]]],
+             [[[0, 0],
+               [0, 1]]],
+             [[[0, 0],
+               [1, 0]]]]),
+     2/3)
 ])
 def test_dice(p, t, expect):
     this_tests(dice)
@@ -112,7 +131,7 @@ def test_dice(p, t, expect):
 @pytest.mark.parametrize("p, t, expect, atol", [
     (p2, t2, 0.25, 0.),
     (p3, t3, 1.0, 0.),
-    (p2, torch.eye(5,5), 0.111, 1e-3),
+    (p2, torch.eye(5,5), 0.200, 1e-3),
     (p2, torch.zeros(5,5), 0, 0.),
 ])
 def test_dice_iou(p, t, expect, atol):
