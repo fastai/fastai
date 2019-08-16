@@ -76,6 +76,9 @@ entries:
           title: Tracking
           url: /callbacks.tracker.html
         - output: web,pdf
+          title: Tensorboard
+          url: /callbacks.tensorboard.html
+        - output: web,pdf
           title: Memory Profiling
           url: /callbacks.mem.html
         - output: web,pdf

@@ -32,6 +32,7 @@ sidebar_d = {
                 'GeneralScheduler': '/callbacks.general_sched',
                 'CSV Logger': '/callbacks.csv_logger',
                 'Tracking': '/callbacks.tracker',
+                'Tensorboard': '/callbacks.tensorboard',
                 'Memory Profiling': '/callbacks.mem',
                 'Miscellaneous': '/callbacks.misc',
             }
