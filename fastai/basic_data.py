@@ -163,10 +163,10 @@ class DataBunch():
     def one_batch(self, ds_type:DatasetType=DatasetType.Train, detach:bool=True, denorm:bool=True, cpu:bool=True)->Collection[Tensor]:
         "Get one batch from the data loader of `ds_type`. Optionally `detach` and `denorm`."
         dl = self.dl(ds_type)
-        w = self.num_workers
-        self.num_workers = 0
+        w = dl.num_workers
+        dl.num_workers = 0
         try:     x,y = next(iter(dl))
-        finally: self.num_workers = w
+        finally: dl.num_workers = w
         if detach: x,y = to_detach(x,cpu=cpu),to_detach(y,cpu=cpu)
         norm = getattr(self,'norm',False)
         if denorm and norm:
