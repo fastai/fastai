@@ -16,7 +16,7 @@ class OverSamplingCallback(LearnerCallback):
     def on_train_begin(self, **kwargs):
         self.labels = self.learn.data.train_dl.dataset.y.items
         _, counts = np.unique(self.labels,return_counts=True)
-        self.weights = (torch.DoubleTensor((1/counts)[self.labels]) if weights is None)
+        if self.weights is None: self.weights = torch.DoubleTensor((1/counts)[self.labels]) 
         self.label_counts = np.bincount([self.learn.data.train_dl.dataset.y[i].data for i in range(len(self.learn.data.train_dl.dataset))])
         self.total_len_oversample = int(self.learn.data.c*np.max(self.label_counts))
         self.learn.data.train_dl.dl.batch_sampler = BatchSampler(WeightedRandomSampler(self.weights,self.total_len_oversample), self.learn.data.train_dl.batch_size,False)
