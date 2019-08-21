@@ -56,10 +56,10 @@ class MixUpLoss(Module):
     def forward(self, output, target):
         if len(target.size()) == 2:
             loss1, loss2 = self.crit(output,target[:,0].long()), self.crit(output,target[:,1].long())
-            d = (loss1 * target[:,2] + loss2 * (1-target[:,2])).mean()
+            d = loss1 * target[:,2] + loss2 * (1-target[:,2])
         else:  d = self.crit(output, target)
-        if self.reduction == 'mean': return d.mean()
-        elif self.reduction == 'sum':            return d.sum()
+        if self.reduction == 'mean':    return d.mean()
+        elif self.reduction == 'sum':   return d.sum()
         return d
     
     def get_old(self):
