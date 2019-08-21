@@ -68,6 +68,7 @@ class RNNLearner(Learner):
         if hasattr(encoder, 'module'): encoder = encoder.module
         encoder.load_state_dict(torch.load(self.path/self.model_dir/f'{name}.pth', map_location=device))
         self.freeze()
+        return self
 
     def load_pretrained(self, wgts_fname:str, itos_fname:str, strict:bool=True):
         "Load a pretrained model and adapts it to the data vocabulary."
@@ -77,13 +78,14 @@ class RNNLearner(Learner):
         if 'model' in wgts: wgts = wgts['model']
         wgts = convert_weights(wgts, old_stoi, self.data.train_ds.vocab.itos)
         self.model.load_state_dict(wgts, strict=strict)
+        return self
 
-    def get_preds(self, ds_type:DatasetType=DatasetType.Valid, with_loss:bool=False, n_batch:Optional[int]=None, pbar:Optional[PBar]=None,
-                  ordered:bool=False) -> List[Tensor]:
+    def get_preds(self, ds_type:DatasetType=DatasetType.Valid, activ:nn.Module=None, with_loss:bool=False, n_batch:Optional[int]=None,
+                  pbar:Optional[PBar]=None, ordered:bool=False) -> List[Tensor]:
         "Return predictions and targets on the valid, train, or test set, depending on `ds_type`."
         self.model.reset()
         if ordered: np.random.seed(42)
-        preds = super().get_preds(ds_type=ds_type, with_loss=with_loss, n_batch=n_batch, pbar=pbar)
+        preds = super().get_preds(ds_type=ds_type, activ=activ, with_loss=with_loss, n_batch=n_batch, pbar=pbar)
         if ordered and hasattr(self.dl(ds_type), 'sampler'):
             np.random.seed(42)
             sampler = [i for i in self.dl(ds_type).sampler]
@@ -116,7 +118,6 @@ class LanguageLearner(RNNLearner):
     def predict(self, text:str, n_words:int=1, no_unk:bool=True, temperature:float=1., min_p:float=None, sep:str=' ',
                 decoder=decode_spec_tokens):
         "Return the `n_words` that come after `text`."
-        ds = self.data.single_dl.dataset
         self.model.reset()
         xb,yb = self.data.one_item(text)
         new_idx = []
@@ -137,7 +138,6 @@ class LanguageLearner(RNNLearner):
     def beam_search(self, text:str, n_words:int, no_unk:bool=True, top_k:int=10, beam_sz:int=1000, temperature:float=1.,
                     sep:str=' ', decoder=decode_spec_tokens):
         "Return the `n_words` that come after `text` using beam search."
-        ds = self.data.single_dl.dataset
         self.model.reset()
         self.model.eval()
         xb, yb = self.data.one_item(text)
@@ -214,9 +214,18 @@ def language_model_learner(data:DataBunch, arch, config:dict=None, drop_mult:flo
                 return learn
             model_path = untar_data(meta[url] , data=False)
             fnames = [list(model_path.glob(f'*.{ext}'))[0] for ext in ['pth', 'pkl']]
-        learn.load_pretrained(*fnames)
+        learn = learn.load_pretrained(*fnames)
         learn.freeze()
     return learn
+
+def masked_concat_pool(outputs, mask):
+    "Pool MultiBatchEncoder outputs into one vector [last_hidden, max_pool, avg_pool]."
+    output = outputs[-1]
+    avg_pool = output.masked_fill(mask[:, :, None], 0).mean(dim=1)
+    avg_pool *= output.size(1) / (output.size(1)-mask.type(avg_pool.dtype).sum(dim=1))[:,None]
+    max_pool = output.masked_fill(mask[:,:,None], -float('inf')).max(dim=1)[0]
+    x = torch.cat([output[:,-1], max_pool, avg_pool], 1)
+    return x
 
 class PoolingLinearClassifier(Module):
     "Create a linear classifier with pooling."
@@ -230,11 +239,7 @@ class PoolingLinearClassifier(Module):
 
     def forward(self, input:Tuple[Tensor,Tensor, Tensor])->Tuple[Tensor,Tensor,Tensor]:
         raw_outputs,outputs,mask = input
-        output = outputs[-1]
-        avg_pool = output.masked_fill(mask[:,:,None], 0).mean(dim=1)
-        avg_pool *= output.size(1) / (output.size(1)-mask.type(avg_pool.dtype).sum(dim=1))[:,None]
-        max_pool = output.masked_fill(mask[:,:,None], -float('inf')).max(dim=1)[0]
-        x = torch.cat([output[:,-1], max_pool, avg_pool], 1)
+        x = masked_concat_pool(outputs, mask)
         x = self.layers(x)
         return x, raw_outputs, outputs
 
@@ -293,6 +298,6 @@ def text_classifier_learner(data:DataBunch, arch:Callable, bptt:int=70, max_len:
             return learn
         model_path = untar_data(meta['url'], data=False)
         fnames = [list(model_path.glob(f'*.{ext}'))[0] for ext in ['pth', 'pkl']]
-        learn.load_pretrained(*fnames, strict=False)
+        learn = learn.load_pretrained(*fnames, strict=False)
         learn.freeze()
     return learn

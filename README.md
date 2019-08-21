@@ -11,21 +11,20 @@
 The fastai library simplifies training fast and accurate neural nets using modern best practices. See the [fastai website](https://docs.fast.ai) to get started. The library is based on research into deep learning best practices undertaken at [fast.ai](http://www.fast.ai), and includes \"out of the box\" support for [`vision`](https://docs.fast.ai/vision.html#vision), [`text`](https://docs.fast.ai/text.html#text), [`tabular`](https://docs.fast.ai/tabular.html#tabular), and [`collab`](https://docs.fast.ai/collab.html#collab) (collaborative filtering) models. For brief examples, see the [examples](https://github.com/fastai/fastai/tree/master/examples) folder; detailed examples are provided in the full [documentation](https://docs.fast.ai/). For instance, here's how to train an MNIST model using [resnet18](https://arxiv.org/abs/1512.03385) (from the [vision example](https://github.com/fastai/fastai/blob/master/examples/vision.ipynb)):
 
 ```python
+from fastai.vision import *
 path = untar_data(MNIST_PATH)
 data = image_data_from_folder(path)
-learn = cnn_learner(data, tvm.resnet18, metrics=accuracy)
+learn = cnn_learner(data, models.resnet18, metrics=accuracy)
 learn.fit(1)
 ```
 
 ## Note for [course.fast.ai](http://course.fast.ai) students
 
-This document is written for `fastai v1`, which we use for the current, third version of part 1 of the [course.fast.ai](http://course.fast.ai) deep learning course. If you're following along with a course at [course18.fast.ai](http://course18.fast.ai)&mdash;that is, part 2 of the deep learning course, or the machine learning course (which aren't yet updated for v1)&mdash;you need to use `fastai 0.7`;  please follow the installation instructions [here](https://forums.fast.ai/t/fastai-v0-install-issues-thread/24652).
-
-*Note: If you want to dive deep into fastai, Jeremy Howard, its lead developer, will be showing internals and advanced features in [Deep Learning Part II](https://www.usfca.edu/data-institute/certificates/deep-learning-part-two) at the University of San Francisco from March 18th, 2018.*
+This document is written for `fastai v1`, which we use for the current version the [course.fast.ai](http://course.fast.ai) deep learning courses. If you're following along with a course at [course18.fast.ai](http://course18.fast.ai) (i.e. the machine learning course, which isn't updated for v1) you need to use `fastai 0.7`;  please follow the installation instructions [here](https://forums.fast.ai/t/fastai-v0-install-issues-thread/24652).
 
 ## Installation
 
-**NB:** *fastai v1 currently supports Linux only, and requires **PyTorch v1** and **Python 3.6** or later. Windows support is at an experimental stage: it should work fine but we haven't thoroughly tested it. Since Macs don't currently have good Nvidia GPU support, we do not currently prioritize Mac development.*
+**NB:** *fastai v1 currently supports Linux only, and requires **PyTorch v1** and **Python 3.6** or later. Windows support is at an experimental stage: it should work fine but it's much slower and less well tested. Since Macs don't currently have good Nvidia GPU support, we do not currently prioritize Mac development.*
 
 `fastai-1.x` can be installed with either `conda` or `pip` package managers and also from source. At the moment you can't just run *install*, since you first need to get the correct `pytorch` version installed - thus to get `fastai-1.x` installed choose one of the installation recipes below using your favorite python package manager. Note that **PyTorch v1** and **Python 3.6** are the minimal version requirements.
 

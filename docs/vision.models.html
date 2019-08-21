@@ -30,11 +30,19 @@ summary: "Overview of the models used for CV in fastai"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>On top of the models offered by <a href="https://pytorch.org/docs/stable/torchvision/models.html">torchvision</a>, the fastai library has implementations for the following models:</p>
+<p>The fastai library includes several pretrained models from <a href="https://pytorch.org/docs/stable/torchvision/models.html">torchvision</a>, namely:</p>
+<ul>
+<li>resnet18, resnet34, resnet50, resnet101, resnet152</li>
+<li>squeezenet1_0, squeezenet1_1</li>
+<li>densenet121, densenet169, densenet201, densenet161</li>
+<li>vgg16_bn, vgg19_bn</li>
+<li>alexnet</li>
+</ul>
+<p>On top of the models offered by torchvision, fastai has implementations for the following models:</p>
 <ul>
 <li>Darknet architecture, which is the base of <a href="https://pjreddie.com/media/files/papers/YOLOv3.pdf">Yolo v3</a></li>
 <li>Unet architecture based on a pretrained model. The original unet is described <a href="https://arxiv.org/abs/1505.04597">here</a>, the model implementation is detailed in <a href="/vision.models.unet.html#vision.models.unet"><code>models.unet</code></a></li>
-<li>Wide resnets architectures, as introduced in <a href="https://arxiv.org/abs/1605.07146">this article</a>.</li>
+<li>Wide resnets architectures, as introduced in <a href="https://arxiv.org/abs/1605.07146">this article</a></li>
 </ul>
 
 </div>

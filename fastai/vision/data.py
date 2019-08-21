@@ -259,7 +259,7 @@ class ImageList(ItemList):
     def __init__(self, *args, convert_mode='RGB', after_open:Callable=None, **kwargs):
         super().__init__(*args, **kwargs)
         self.convert_mode,self.after_open = convert_mode,after_open
-        self.copy_new.append('convert_mode')
+        self.copy_new += ['convert_mode', 'after_open']
         self.c,self.sizes = 3,{}
 
     def open(self, fn):
@@ -289,10 +289,10 @@ class ImageList(ItemList):
         return res
 
     @classmethod
-    def from_csv(cls, path:PathOrStr, csv_name:str, header:str='infer', **kwargs)->'ItemList':
+    def from_csv(cls, path:PathOrStr, csv_name:str, header:str='infer', delimiter:str=None, **kwargs)->'ItemList':
         "Get the filenames in `path/csv_name` opened with `header`."
         path = Path(path)
-        df = pd.read_csv(path/csv_name, header=header)
+        df = pd.read_csv(path/csv_name, header=header, delimiter=delimiter)
         return cls.from_df(df, path=path, **kwargs)
 
     def reconstruct(self, t:Tensor): return Image(t.float().clamp(min=0,max=1))

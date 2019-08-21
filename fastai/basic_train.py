@@ -159,6 +159,7 @@ class Learner():
     layer_groups:Collection[nn.Module]=None
     add_time:bool=True
     silent:bool=None
+    cb_fns_registered:bool=False
     def __post_init__(self)->None:
         "Setup path,metrics, callbacks and ensure model directory exists."
         self.path = Path(ifnone(self.path, self.data.path))
@@ -169,6 +170,7 @@ class Learner():
         self.callbacks = listify(self.callbacks)
         if self.silent is None: self.silent = defaults.silent
         self.callback_fns = [partial(Recorder, add_time=self.add_time, silent=self.silent)] + listify(self.callback_fns)
+        if defaults.extra_callbacks is not None: self.callbacks += defaults.extra_callbacks
 
     def init(self, init): apply_init(self.model, init)
 
@@ -196,7 +198,7 @@ class Learner():
         if not getattr(self, 'opt', False): self.create_opt(lr, wd)
         else: self.opt.lr,self.opt.wd = lr,wd
         callbacks = [cb(self) for cb in self.callback_fns + listify(defaults.extra_callback_fns)] + listify(callbacks)
-        if defaults.extra_callbacks is not None: callbacks += defaults.extra_callbacks
+        self.cb_fns_registered = True
         fit(epochs, self, metrics=self.metrics, callbacks=self.callbacks+callbacks)
 
     def create_opt(self, lr:Floats, wd:Floats=0.)->None:
@@ -258,7 +260,7 @@ class Learner():
         return self.data.dl(ds_type)
 
     def load(self, file:PathLikeOrBinaryStream=None, device:torch.device=None, strict:bool=True,
-             with_opt:bool=None, purge:bool=True, remove_module:bool=False):
+             with_opt:bool=None, purge:bool=False, remove_module:bool=False):
         "Load model and optimizer state (if `with_opt`) `file` from `self.model_dir` using `device`. `file` can be file-like (file or buffer)"
         if purge: self.purge(clear_opt=ifnone(with_opt, False))
         if device is None: device = self.data.device
@@ -328,12 +330,19 @@ class Learner():
         gc.collect()
         return self
 
-    def get_preds(self, ds_type:DatasetType=DatasetType.Valid, with_loss:bool=False, n_batch:Optional[int]=None,
-                  pbar:Optional[PBar]=None) -> List[Tensor]:
+    def get_preds(self, ds_type:DatasetType=DatasetType.Valid, activ:nn.Module=None,
+                  with_loss:bool=False, n_batch:Optional[int]=None, pbar:Optional[PBar]=None) -> List[Tensor]:
         "Return predictions and targets on `ds_type` dataset."
         lf = self.loss_func if with_loss else None
+        activ = ifnone(activ, _loss_func2activ(self.loss_func))
+        if not self.cb_fns_registered:
+            lr,wd = self.lr_range(defaults.lr),self.wd
+            if not getattr(self, 'opt', False): self.create_opt(lr, wd)
+            else: self.opt.lr,self.opt.wd = lr,wd
+            self.callbacks = [cb(self) for cb in self.callback_fns + listify(defaults.extra_callback_fns)] + listify(self.callbacks)
+            self.cb_fns_registered = True
         return get_preds(self.model, self.dl(ds_type), cb_handler=CallbackHandler(self.callbacks),
-                         activ=_loss_func2activ(self.loss_func), loss_func=lf, n_batch=n_batch, pbar=pbar)
+                         activ=activ, loss_func=lf, n_batch=n_batch, pbar=pbar)
 
     def pred_batch(self, ds_type:DatasetType=DatasetType.Valid, batch:Tuple=None, reconstruct:bool=False, with_dropout:bool=False) -> List[Tensor]:
         "Return output of the model on one batch from `ds_type` dataset."
@@ -380,7 +389,7 @@ class Learner():
         dl = ifnone(dl, self.data.valid_dl)
         metrics = ifnone(metrics, self.metrics)
         cb_handler = CallbackHandler(self.callbacks + ifnone(callbacks, []), metrics)
-        cb_handler.on_epoch_begin()
+        cb_handler.on_train_begin(1, None, metrics); cb_handler.on_epoch_begin()
         val_metrics = validate(self.model, dl, self.loss_func, cb_handler)
         cb_handler.on_epoch_end(val_metrics)
         return cb_handler.state_dict['last_metrics']

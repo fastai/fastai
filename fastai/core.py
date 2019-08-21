@@ -82,7 +82,7 @@ def recurse(func:Callable, x:Any, *args, **kwargs)->Any:
 def first_el(x: Any)->Any:
     "Recursively get the first element of `x`."
     if is_listy(x): return first_el(x[0])
-    if is_dict(x):  return first_el(x[list(d.keys())[0]])
+    if is_dict(x):  return first_el(x[list(x.keys())[0]])
     return x
 
 def to_int(b:Any)->Union[int,List[int]]:

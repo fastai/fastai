@@ -78,7 +78,7 @@ at::Tensor forget_mult_cuda_forward(at::Tensor x, at::Tensor f, at::Tensor outpu
   
   const int threads = 1024;
   const dim3 blocks((n_hidden + threads - 1) / threads, batch_size);
-  AT_DISPATCH_FLOATING_TYPES(x.type(), "forget_mult_cuda_forward", ([&] {
+  AT_DISPATCH_FLOATING_TYPES_AND_HALF(x.type(), "forget_mult_cuda_forward", ([&] {
     forget_mult_cuda_forward_kernel<scalar_t><<<blocks, threads>>>(
         x.data<scalar_t>(), f.data<scalar_t>(), output.data<scalar_t>(), batch_size,
         seq_length, n_hidden, batch_first);
@@ -100,7 +100,7 @@ std::vector<at::Tensor> forget_mult_cuda_backward(at::Tensor x, at::Tensor f,
   
   const int threads = 1024;
   const dim3 blocks((n_hidden + threads - 1) / threads, batch_size);
-  AT_DISPATCH_FLOATING_TYPES(x.type(), "forget_mult_cuda_forward", ([&] {
+  AT_DISPATCH_FLOATING_TYPES_AND_HALF(x.type(), "forget_mult_cuda_forward", ([&] {
     forget_mult_cuda_backward_kernel<scalar_t><<<blocks, threads>>>(
         x.data<scalar_t>(), f.data<scalar_t>(), output.data<scalar_t>(), grad_output.data<scalar_t>(),
         grad_x.data<scalar_t>(), grad_f.data<scalar_t>(), grad_h.data<scalar_t>(), batch_size,

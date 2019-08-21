@@ -36,10 +36,10 @@ class UnetBlock(Module):
 
 class DynamicUnet(SequentialEx):
     "Create a U-Net from a given architecture."
-    def __init__(self, encoder:nn.Module, n_classes:int, blur:bool=False, blur_final=True, self_attention:bool=False,
+    def __init__(self, encoder:nn.Module, n_classes:int, img_size:Tuple[int,int]=(256,256), blur:bool=False, blur_final=True, self_attention:bool=False,
                  y_range:Optional[Tuple[float,float]]=None,
                  last_cross:bool=True, bottle:bool=False, **kwargs):
-        imsize = (256,256)
+        imsize = img_size
         sfs_szs = model_sizes(encoder, size=imsize)
         sfs_idxs = list(reversed(_get_sfs_idxs(sfs_szs)))
         self.sfs = hook_outputs([encoder[i] for i in sfs_idxs])
@@ -56,13 +56,15 @@ class DynamicUnet(SequentialEx):
             up_in_c, x_in_c = int(x.shape[1]), int(sfs_szs[idx][1])
             do_blur = blur and (not_final or blur_final)
             sa = self_attention and (i==len(sfs_idxs)-3)
-            unet_block = UnetBlock(up_in_c, x_in_c, self.sfs[i], final_div=not_final, blur=blur, self_attention=sa,
+            unet_block = UnetBlock(up_in_c, x_in_c, self.sfs[i], final_div=not_final, blur=do_blur, self_attention=sa,
                                    **kwargs).eval()
             layers.append(unet_block)
             x = unet_block(x)
 
         ni = x.shape[1]
         if imsize != sfs_szs[0][-2:]: layers.append(PixelShuffle_ICNR(ni, **kwargs))
+        x = PixelShuffle_ICNR(ni)(x)
+        if imsize != x.shape[-2:]: layers.append(Lambda(lambda x: F.interpolate(x, imsize, mode='nearest')))
         if last_cross:
             layers.append(MergeLayer(dense=True))
             ni += in_channels(encoder)
