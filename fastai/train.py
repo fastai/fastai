@@ -1,5 +1,6 @@
 "Provides advanced training extensions to `fastai.basic_train`. Includes half-precision, learning rate finder, mixup, and one-cycle"
 from .torch_core import *
+from .callback import *
 from .callbacks import *
 from .basic_data import *
 from .basic_train import *
