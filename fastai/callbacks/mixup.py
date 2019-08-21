@@ -3,6 +3,8 @@ from ..torch_core import *
 from ..callback import *
 from ..basic_train import Learner, LearnerCallback
 
+__all__ = ["MixUpCallback", "MixUpLoss"]
+
 class MixUpCallback(LearnerCallback):
     "Callback that creates the mixed-up input and target."
     def __init__(self, learn:Learner, alpha:float=0.4, stack_x:bool=False, stack_y:bool=True):
