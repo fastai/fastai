@@ -79,3 +79,17 @@ def test_cont_cat_split():
     assert res_cat  == ['A','I']
 
 
+ def test_normalize():
+    this_tests(Normalize)
+
+    cont_names = ['height']
+    normalize_transform = Normalize([], cont_names)
+    train_df = pd.DataFrame({'height': [180, 140, 122], 'age': [24, 33, 45]})
+    test_df = pd.DataFrame({'height': [184, 102, 113], 'age': [44, 31, 19]})
+    normalize_transform(train_df)
+    normalize_transform(test_df, test=True)
+
+    expected_test_df = pd.DataFrame({'height': [1.235, -1.527, -1.157], 'age': [44, 31, 19]})
+
+    np.testing.assert_array_almost_equal(expected_test_df["height"], test_df["height"],decimal=3)
+    np.testing.assert_array_equal(expected_test_df["age"], test_df["age"])
