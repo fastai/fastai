@@ -79,7 +79,7 @@ def test_cont_cat_split():
     assert res_cat  == ['A','I']
 
 
- def test_normalize():
+def test_normalize():
     this_tests(Normalize)
 
     cont_names = ['height']
