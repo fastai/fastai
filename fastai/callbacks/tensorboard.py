@@ -3,7 +3,7 @@ from ..basic_train import Learner
 from ..basic_data import DatasetType, DataBunch
 from ..vision import Image
 from ..vision.gan import GANLearner
-from ..callbacks import LearnerCallback
+from ..basic_train import LearnerCallback
 from ..core import *
 from ..torch_core import *
 from threading import Thread, Event
