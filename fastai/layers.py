@@ -230,6 +230,11 @@ class FlattenedLoss():
     @reduction.setter
     def reduction(self, v): self.func.reduction = v
 
+    @property
+    def weight(self): return self.func.weight
+    @weight.setter
+    def weight(self, v): self.func.weight = v
+
     def __call__(self, input:Tensor, target:Tensor, **kwargs)->Rank0Tensor:
         input = input.transpose(self.axis,-1).contiguous()
         target = target.transpose(self.axis,-1).contiguous()

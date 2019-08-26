@@ -896,38 +896,52 @@
     "fastai.tabular.transform.FillMissing": [
         {
             "file": "tests/test_tabular_transform.py",
-            "line": 30,
+            "line": 31,
             "test": "test_default_fill_strategy_is_median"
         }
     ],
     "fastai.tabular.transform.FillMissing.apply_test": [
         {
             "file": "tests/test_tabular_transform.py",
-            "line": 36,
+            "line": 38,
             "test": "test_fill_missing_leaves_no_na_values"
         },
         {
             "file": "tests/test_tabular_transform.py",
-            "line": 49,
+            "line": 52,
             "test": "test_fill_missing_returns_correct_medians"
         }
     ],
     "fastai.tabular.transform.FillMissing.apply_train": [
         {
             "file": "tests/test_tabular_transform.py",
-            "line": 36,
+            "line": 38,
             "test": "test_fill_missing_leaves_no_na_values"
         },
         {
             "file": "tests/test_tabular_transform.py",
-            "line": 49,
+            "line": 52,
             "test": "test_fill_missing_returns_correct_medians"
+        }
+    ],
+    "fastai.tabular.transform.Normalize": [
+        {
+            "file": "tests/test_tabular_transform.py",
+            "line": 86,
+            "test": "test_normalize"
+        }
+    ],
+    "fastai.tabular.transform.add_datepart": [
+        {
+            "file": "tests/test_tabular_transform.py",
+            "line": 102,
+            "test": "test_add_datepart"
         }
     ],
     "fastai.tabular.transform.cont_cat_split": [
         {
             "file": "tests/test_tabular_transform.py",
-            "line": 64,
+            "line": 68,
             "test": "test_cont_cat_split"
         }
     ],
