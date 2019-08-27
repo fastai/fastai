@@ -276,7 +276,7 @@ class CallbackHandler():
         "Handle new batch `xb`,`yb` in `train` or validation."
         self.state_dict.update(dict(last_input=xb, last_target=yb, train=train, 
             stop_epoch=False, skip_step=False, skip_zero=False, skip_bwd=False))
-        self('batch_begin', mets = not self.state_dict['train'])
+        self('batch_begin', call_mets = not self.state_dict['train'])
         return self.state_dict['last_input'], self.state_dict['last_target']
 
     def on_loss_begin(self, out:Tensor)->Any:
