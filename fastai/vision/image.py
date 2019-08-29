@@ -432,8 +432,8 @@ def show_image(img:Image, ax:plt.Axes=None, figsize:tuple=(3,3), hide_axis:bool=
                 alpha:float=None, **kwargs)->plt.Axes:
     "Display `Image` in notebook."
     if ax is None: fig,ax = plt.subplots(figsize=figsize)
-    if ('cpu' not in dir(img)): ax.imshow(img)
-    else: ax.imshow(image2np(img.data), cmap=cmap, alpha=alpha, **kwargs)
+    xtr = dict(cmap=cmap, alpha=alpha, **kwargs)
+    ax.imshow(image2np(img.data), **xtr) if (hasattr(img, 'cpu')) else ax.imshow(img, **xtr)
     if hide_axis: ax.axis('off')
     return ax
 
