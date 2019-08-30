@@ -96,6 +96,7 @@ class ItemList():
 
     def reconstruct(self, t:Tensor, x:Tensor=None):
         "Reconstruct one of the underlying item for its data `t`."
+        if not hasattr(self[0], 'reconstruct'): return t
         return self[0].reconstruct(t,x) if has_arg(self[0].reconstruct, 'x') else self[0].reconstruct(t)
 
     def new(self, items:Iterator, processor:PreProcessors=None, **kwargs)->'ItemList':
