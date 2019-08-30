@@ -71,6 +71,7 @@ def mixup(learn:Learner, alpha:float=0.4, stack_x:bool=False, stack_y:bool=True)
     return learn
 
 Learner.fit_one_cycle = fit_one_cycle
+Learner.fit_fc = fit_fc
 Learner.lr_find = lr_find
 Learner.to_fp16 = to_fp16
 Learner.to_fp32 = to_fp32
