@@ -28,7 +28,7 @@ def fit_one_cycle(learn:Learner, cyc_len:int, max_lr:Union[Floats,slice]=default
     learn.fit(cyc_len, max_lr, wd=wd, callbacks=callbacks)
 
 def fit_fc(learn:Learner, tot_epochs:int=None, lr:float=defaults.lr,  moms:Tuple[float,float]=(0.95,0.85), start_pct:float=0.72,
-                  wd=wd, callbacks:Optional[CallbackList]=None)->None:
+                  wd:float=None, callbacks:Optional[CallbackList]=None)->None:
     "Fit a model with Flat Cosine Annealing"
     max_lr = learn.lr_range(lr)
     callbacks = listify(callbacks)
