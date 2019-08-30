@@ -1,3 +1,4 @@
+
 "Provides advanced training extensions to `fastai.basic_train`. Includes half-precision, learning rate finder, mixup, and one-cycle"
 from .torch_core import *
 from .callback import *
@@ -6,11 +7,15 @@ from .basic_data import *
 from .basic_train import *
 
 __all__ = ['BnFreeze', 'GradientClipping', 'ShowGraph', 'Interpretation', 'ClassificationInterpretation', 'MultiLabelClassificationInterpretation',
- 'fit_one_cycle', 'lr_find', 'one_cycle_scheduler', 'to_fp16', 'to_fp32', 'mixup', 'AccumulateScheduler']
+ 'fit_one_cycle', 'lr_find', 'one_cycle_scheduler', 'to_fp16', 'to_fp32', 'mixup', 'AccumulateScheduler', 'fc_fit_scheduler', 'fit_fc']
 
 def one_cycle_scheduler(lr_max:float, **kwargs:Any)->OneCycleScheduler:
     "Instantiate a `OneCycleScheduler` with `lr_max`."
     return partial(OneCycleScheduler, lr_max=lr_max, **kwargs)
+
+def fc_fit_scheduler(lr:float, **kwargs:Any)->FlatCosAnnealScheduler:
+	"Instantiate a 'FlatCosAnnealScheduler' with 'lr'"
+	return partial(FlatCosAnnealScheduler, lr=lr, **kwargs)
 
 def fit_one_cycle(learn:Learner, cyc_len:int, max_lr:Union[Floats,slice]=defaults.lr,
                   moms:Tuple[float,float]=(0.95,0.85), div_factor:float=25., pct_start:float=0.3, final_div:float=None,
@@ -22,6 +27,14 @@ def fit_one_cycle(learn:Learner, cyc_len:int, max_lr:Union[Floats,slice]=default
                                        final_div=final_div, tot_epochs=tot_epochs, start_epoch=start_epoch))
     learn.fit(cyc_len, max_lr, wd=wd, callbacks=callbacks)
 
+def fit_fc(learn:Learner, tot_epochs:int=None, lr:float=defaults.lr,  moms:Tuple[float,float]=(0.95,0.85), start_pct:float=0.72,
+                  wd:float=None, callbacks:Optional[CallbackList]=None, show_curve:bool=False)->None:
+    "Fit a model with Flat Cosine Annealing"
+    max_lr = learn.lr_range(lr)
+    callbacks = listify(callbacks)
+    callbacks.append(FlatCosAnnealScheduler(learn, lr, moms=moms, start_pct=start_pct, tot_epochs=tot_epochs))
+    learn.fit(tot_epochs, max_lr, wd=wd, callbacks=callbacks)
+
 def lr_find(learn:Learner, start_lr:Floats=1e-7, end_lr:Floats=10, num_it:int=100, stop_div:bool=True, wd:float=None):
     "Explore lr from `start_lr` to `end_lr` over `num_it` iterations in `learn`. If `stop_div`, stops when loss diverges."
     start_lr = learn.lr_range(start_lr)
@@ -31,6 +44,7 @@ def lr_find(learn:Learner, start_lr:Floats=1e-7, end_lr:Floats=10, num_it:int=10
     cb = LRFinder(learn, start_lr, end_lr, num_it, stop_div)
     epochs = int(np.ceil(num_it/len(learn.data.train_dl)))
     learn.fit(epochs, start_lr, callbacks=[cb], wd=wd)
+
 
 def to_fp16(learn:Learner, loss_scale:float=None, max_noskip:int=1000, dynamic:bool=True, clip:float=None,
             flat_master:bool=False, max_scale:float=2**24)->Learner:
