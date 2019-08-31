@@ -13,7 +13,7 @@ class FlatCosAnnealScheduler(LearnerCallback):
   """
   Manage FCFit training as found in the ImageNette experiments
   https://forums.fast.ai/t/how-we-beat-the-5-epoch-imagewoof-leaderboard-score-some-new-techniques-to-consider/53453
-  Bsed on idea by Mikhail Grankin
+  Based on idea by Mikhail Grankin
   """
   def __init__(self, learn:Learner, lr:float=4e-3, moms:Floats=(0.95,0.999),
              start_pct:float=0.72, start_epoch:int=1, tot_epochs:int=None,
