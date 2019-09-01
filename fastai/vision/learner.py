@@ -37,7 +37,7 @@ model_meta = {
 
     models.densenet121:{**_densenet_meta}, models.densenet169:{**_densenet_meta},
     models.densenet201:{**_densenet_meta}, models.densenet161:{**_densenet_meta},
-    models.vgg16_bn:{**_vgg_meta}, models.vgg19_bn:{**_vgg_meta},
+    models.vgg11_bn:{**_vgg_meta}, models.vgg13_bn:{**_vgg_meta}, models.vgg16_bn:{**_vgg_meta}, models.vgg19_bn:{**_vgg_meta},
     models.alexnet:{**_alexnet_meta}}
 
 def cnn_config(arch):
