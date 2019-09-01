@@ -4,6 +4,7 @@ import torch.nn as nn
 import torch
 import math
 import torch.utils.model_zoo as model_zoo
+from ...torch_core import Module
 
 __all__ = ['PResNet', 'presnet18', 'presnet34', 'presnet50', 'presnet101', 'presnet152']
 
