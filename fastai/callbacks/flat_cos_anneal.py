@@ -9,29 +9,22 @@ __all__ = ['FlatCosAnnealScheduler']
 # The brain child of Mikhail Grankin aimed for use of the new optimizers
 # For more information: https://forums.fast.ai/t/how-we-beat-the-5-epoch-imagewoof-leaderboard-score-some-new-techniques-to-consider/53453
 
-class FlatCosAnnealScheduler(LearnerCallback):
-  """
-  Manage FCFit training as found in the ImageNette experiments
-  https://forums.fast.ai/t/how-we-beat-the-5-epoch-imagewoof-leaderboard-score-some-new-techniques-to-consider/53453
-  Based on idea by Mikhail Grankin
-  """
-  def __init__(self, learn:Learner, lr:float=4e-3, tot_epochs:int=1, moms:Floats=(0.95,0.999),
-             start_pct:float=0.72, curve='cosine'):
-      super().__init__(learn)
-      n = len(learn.data.train_dl)
-      self.tot_epochs = tot_epochs
-      self.anneal_start = int(n * self.tot_epochs * start_pct)
-      self.batch_finish = (n * self.tot_epochs - self.anneal_start)
-      if curve=="cosine":
-          curve_type=annealing_cos
-      elif curve=="linear":
-          curve_type=annealing_linear
-      elif curve=="exponential":
-          curve_type=annealing_exp
-      else:
-          raiseValueError(f"annealing type not supported {curve}")
-      phase0 = TrainingPhase(self.anneal_start).schedule_hp('lr', lr).schedule_hp('mom', moms[0])
-      phase1 = TrainingPhase(self.batch_finish).schedule_hp('lr', lr, anneal=curve_type).schedule_hp('mom', moms[1])
-      phases = [phase0, phase1]
-      sched = GeneralScheduler(learn, phases)
-      self.learn.callbacks.append(sched)
+def FlatCosAnnealScheduler(learn, lr:float=4e-3, tot_epochs:int=1, moms:Floats=(0.95,0.999),
+                          start_pct:float=0.72, curve='cosine'):
+  "Manage FCFit trainnig as found in the ImageNette experiments"
+  n = len(learn.data.train_dl)
+  anneal_start = int(n * tot_epochs * start_pct)
+  batch_finish = ((n * tot_epochs) - anneal_start)
+  if curve=="cosine":
+      curve_type=annealing_cos
+  elif curve=="linear":
+      curve_type=annealing_linear
+  elif curve=="exponential":
+      curve_type=annealing_exp
+  else:
+      raiseValueError(f"annealing type not supported {curve}")
+      
+  phase0 = TrainingPhase(anneal_start).schedule_hp('lr', lr).schedule_hp('mom', moms[0])
+  phase1 = TrainingPhase(batch_finish).schedule_hp('lr', lr, anneal=curve_type).schedule_hp('mom', moms[1])
+  phases = [phase0, phase1]
+  return GeneralScheduler(learn, phases)
