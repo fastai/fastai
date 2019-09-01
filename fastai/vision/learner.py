@@ -37,7 +37,7 @@ model_meta = {
 
     models.densenet121:{**_densenet_meta}, models.densenet169:{**_densenet_meta},
     models.densenet201:{**_densenet_meta}, models.densenet161:{**_densenet_meta},
-    models.vgg11_bn:{**_vgg_meta}, models.vgg13_bn:{**_vgg_meta}, models.vgg16_bn:{**_vgg_meta}, models.vgg19_bn:{**_vgg_meta},
+    models.vgg16_bn:{**_vgg_meta}, models.vgg19_bn:{**_vgg_meta},
     models.alexnet:{**_alexnet_meta}}
 
 def cnn_config(arch):
@@ -140,10 +140,10 @@ def _cl_int_gradcam(self, idx, heatmap_thresh:int=16, image:bool=True):
     im,cl = self.learn.data.dl(DatasetType.Valid).dataset[idx]
     cl = int(cl)
     xb,_ = self.data.one_item(im, detach=False, denorm=False) #put into a minibatch of batch size = 1
-    with hook_output(m[0]) as hook_a: 
+    with hook_output(m[0]) as hook_a:
         with hook_output(m[0], grad=True) as hook_g:
             preds = m(xb)
-            preds[0,int(cl)].backward() 
+            preds[0,int(cl)].backward()
     acts  = hook_a.stored[0].cpu() #activation maps
     if (acts.shape[-1]*acts.shape[-2]) >= heatmap_thresh:
         grad = hook_g.stored[0][0].cpu()
@@ -160,7 +160,7 @@ def _cl_int_gradcam(self, idx, heatmap_thresh:int=16, image:bool=True):
 
 ClassificationInterpretation.GradCAM =_cl_int_gradcam
 
-def _cl_int_plot_top_losses(self, k, largest=True, figsize=(12,12), heatmap:bool=False, heatmap_thresh:int=16,
+def _cl_int_plot_top_losses(self, k, largest=True, figsize=(12,12), heatmap:bool=False, heatmap_thresh:int=16, alpha:float=0.6, cmap:str="magma", show_text:bool=True,
                             return_fig:bool=None)->Optional[plt.Figure]:
     "Show images in `top_losses` along with their prediction, actual, loss, and probability of actual class."
     assert not heatmap or _test_cnn(self.learn.model), "`heatmap=True` requires a model like `cnn_learner` produces."
@@ -170,17 +170,20 @@ def _cl_int_plot_top_losses(self, k, largest=True, figsize=(12,12), heatmap:bool
     cols = math.ceil(math.sqrt(k))
     rows = math.ceil(k/cols)
     fig,axes = plt.subplots(rows, cols, figsize=figsize)
-    fig.suptitle('prediction/actual/loss/probability', weight='bold', size=14)
     for i,idx in enumerate(tl_idx):
         im,cl = self.data.dl(self.ds_type).dataset[idx]
         cl = int(cl)
-        im.show(ax=axes.flat[i], title=
-            f'{classes[self.pred_class[idx]]}/{classes[cl]} / {self.losses[idx]:.2f} / {self.preds[idx][cl]:.2f}')
+        if show_text:
+            fig.suptitle('Prediction/Actual/Loss/Probability', weight='bold', size=14)
+            title = f'{classes[self.pred_class[idx]]}/{classes[cl]} / {self.losses[idx]:.2f} / {self.preds[idx][cl]:.2f}'
+        else:
+            title=None
+        im.show(ax=axes.flat[i], title=title)
         if heatmap:
             mult = self.GradCAM(idx,heatmap_thresh,image=False)
             if mult is not None:
                 sz = list(im.shape[-2:])
-                axes.flat[i].imshow(mult, alpha=0.6, extent=(0,*sz[::-1],0), interpolation='bilinear', cmap='magma')                
+                axes.flat[i].imshow(mult, alpha=alpha, extent=(0,*sz[::-1],0), interpolation='bilinear', cmap=cmap)
     if ifnone(return_fig, defaults.return_fig): return fig
 
 def _cl_int_plot_multi_top_losses(self, samples:int=3, figsize:Tuple[int,int]=(8,8), save_misclassified:bool=False):
@@ -228,7 +231,7 @@ def _cl_int_plot_multi_top_losses(self, samples:int=3, figsize:Tuple[int,int]=(8
 ClassificationInterpretation.from_learner          = _cl_int_from_learner
 ClassificationInterpretation.plot_top_losses       = _cl_int_plot_top_losses
 ClassificationInterpretation.plot_multi_top_losses = _cl_int_plot_multi_top_losses
- 
+
 
 def _learner_interpret(learn:Learner, ds_type:DatasetType=DatasetType.Valid, tta=False):
     "Create a `ClassificationInterpretation` object from `learner` on `ds_type` with `tta`."
