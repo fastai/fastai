@@ -6,8 +6,7 @@ from ..basic_train import Learner, LearnerCallback
 
 __all__ = ['FlatCosAnnealScheduler']
 
-# The brain child of Mikhail Grankin aimed for use of the new optimizers
-# For more information: https://forums.fast.ai/t/how-we-beat-the-5-epoch-imagewoof-leaderboard-score-some-new-techniques-to-consider/53453
+# A new scheduler by Mikhail Grankin aimed for use of the new optimizers
 
 def FlatCosAnnealScheduler(learn, lr:float=4e-3, tot_epochs:int=1, moms:Floats=(0.95,0.999),
                           start_pct:float=0.72, curve='cosine'):
