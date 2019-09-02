@@ -6,7 +6,7 @@ from .basic_data import *
 from .basic_train import *
 
 __all__ = ['BnFreeze', 'GradientClipping', 'ShowGraph', 'Interpretation', 'ClassificationInterpretation', 'MultiLabelClassificationInterpretation',
- 'fit_one_cycle', 'lr_find', 'one_cycle_scheduler', 'to_fp16', 'to_fp32', 'mixup', 'AccumulateScheduler']
+ 'fit_one_cycle', 'lr_find', 'one_cycle_scheduler', 'to_fp16', 'to_fp32', 'mixup', 'AccumulateScheduler', 'fit_fc']
 
 def one_cycle_scheduler(lr_max:float, **kwargs:Any)->OneCycleScheduler:
     "Instantiate a `OneCycleScheduler` with `lr_max`."
@@ -21,6 +21,14 @@ def fit_one_cycle(learn:Learner, cyc_len:int, max_lr:Union[Floats,slice]=default
     callbacks.append(OneCycleScheduler(learn, max_lr, moms=moms, div_factor=div_factor, pct_start=pct_start,
                                        final_div=final_div, tot_epochs=tot_epochs, start_epoch=start_epoch))
     learn.fit(cyc_len, max_lr, wd=wd, callbacks=callbacks)
+
+def fit_fc(learn:Learner, tot_epochs:int=1, lr:float=defaults.lr,  moms:Tuple[float,float]=(0.95,0.85), start_pct:float=0.72,
+                  wd:float=None, callbacks:Optional[CallbackList]=None)->None:
+    "Fit a model with Flat Cosine Annealing"
+    max_lr = learn.lr_range(lr)
+    callbacks = listify(callbacks)
+    callbacks.append(FlatCosAnnealScheduler(learn, lr, moms=moms, start_pct=start_pct, tot_epochs=tot_epochs))
+    learn.fit(tot_epochs, max_lr, wd=wd, callbacks=callbacks)
 
 def lr_find(learn:Learner, start_lr:Floats=1e-7, end_lr:Floats=10, num_it:int=100, stop_div:bool=True, wd:float=None):
     "Explore lr from `start_lr` to `end_lr` over `num_it` iterations in `learn`. If `stop_div`, stops when loss diverges."
@@ -61,6 +69,7 @@ Learner.lr_find = lr_find
 Learner.to_fp16 = to_fp16
 Learner.to_fp32 = to_fp32
 Learner.mixup = mixup
+Learner.fit_fc = fit_fc
 
 class ShowGraph(LearnerCallback):
     "Update a graph of learner stats and metrics after each epoch."
@@ -225,3 +234,4 @@ class MultiLabelClassificationInterpretation(Interpretation):
         raise NotImplementedError
         super(MultiLabelClassificationInterpretation, self).__init__(learn,preds,y_true,losses,ds_type)
         self.pred_class = self.preds.sigmoid(dim=1)>thresh if sigmoid else self.preds>thresh
+       
