@@ -110,11 +110,11 @@ summary: "Callbacks that take decisions depending on the evolution of metrics du
   </thead>
   <tbody>
     <tr>
-      <td>1</td>
+      <td>0</td>
       <td>nan</td>
       <td>nan</td>
       <td>0.495584</td>
-      <td>00:02</td>
+      <td>00:04</td>
     </tr>
   </tbody>
 </table>
@@ -199,7 +199,7 @@ summary: "Callbacks that take decisions depending on the evolution of metrics du
                 background: #F44336;
             }
         </style>
-      <progress value='0' class='progress-bar-interrupted' max='32', style='width:300px; height:20px; vertical-align: middle;'></progress>
+      <progress value='0' class='progress-bar-interrupted' max='193', style='width:300px; height:20px; vertical-align: middle;'></progress>
       Interrupted
     </div>
     
@@ -211,7 +211,6 @@ summary: "Callbacks that take decisions depending on the evolution of metrics du
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>Epoch/Batch (0/5): Invalid loss, terminating training.
-Epoch/Batch (0/6): Invalid loss, terminating training.
 </pre>
 </div>
 </div>
@@ -340,7 +339,7 @@ Epoch/Batch (0/6): Invalid loss, terminating training.
             }
         </style>
       <progress value='4' class='' max='50', style='width:300px; height:20px; vertical-align: middle;'></progress>
-      8.00% [4/50 00:09<01:51]
+      8.00% [4/50 00:16<03:12]
     </div>
     
 <table border="1" class="dataframe">
@@ -355,32 +354,32 @@ Epoch/Batch (0/6): Invalid loss, terminating training.
   </thead>
   <tbody>
     <tr>
+      <td>0</td>
+      <td>0.689492</td>
+      <td>0.690565</td>
+      <td>0.518646</td>
+      <td>00:04</td>
+    </tr>
+    <tr>
       <td>1</td>
-      <td>0.677729</td>
-      <td>0.677514</td>
-      <td>0.560353</td>
-      <td>00:02</td>
+      <td>0.689430</td>
+      <td>0.690565</td>
+      <td>0.518646</td>
+      <td>00:04</td>
     </tr>
     <tr>
       <td>2</td>
-      <td>0.679820</td>
-      <td>0.677514</td>
-      <td>0.560353</td>
-      <td>00:02</td>
+      <td>0.688645</td>
+      <td>0.690565</td>
+      <td>0.518646</td>
+      <td>00:04</td>
     </tr>
     <tr>
       <td>3</td>
-      <td>0.679434</td>
-      <td>0.677514</td>
-      <td>0.560353</td>
-      <td>00:02</td>
-    </tr>
-    <tr>
-      <td>4</td>
-      <td>0.679893</td>
-      <td>0.677514</td>
-      <td>0.560353</td>
-      <td>00:02</td>
+      <td>0.689386</td>
+      <td>0.690565</td>
+      <td>0.518646</td>
+      <td>00:04</td>
     </tr>
   </tbody>
 </table><p>
@@ -409,58 +408,8 @@ Epoch/Batch (0/6): Invalid loss, terminating training.
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Epoch 5: early stopping
+<pre>Epoch 4: early stopping
 </pre>
-</div>
-</div>
-
-<div class="output_area">
-
-<div class="output_subarea output_text output_error">
-<pre>
-<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
-<span class="ansi-red-fg">AttributeError</span>                            Traceback (most recent call last)
-<span class="ansi-green-fg">&lt;ipython-input-9-4384b4e1abc4&gt;</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span>
-<span class="ansi-green-intense-fg ansi-bold">      2</span> learn = Learner(data, model, metrics=[accuracy], 
-<span class="ansi-green-intense-fg ansi-bold">      3</span>                 callback_fns=[partial(EarlyStoppingCallback, monitor=&#39;accuracy&#39;, min_delta=0.01, patience=3)])
-<span class="ansi-green-fg">----&gt; 4</span><span class="ansi-red-fg"> </span>learn<span class="ansi-blue-fg">.</span>fit<span class="ansi-blue-fg">(</span><span class="ansi-cyan-fg">50</span><span class="ansi-blue-fg">,</span><span class="ansi-cyan-fg">1e-42</span><span class="ansi-blue-fg">)</span>
-
-<span class="ansi-green-fg">~/fastai/fastai/basic_train.py</span> in <span class="ansi-cyan-fg">fit</span><span class="ansi-blue-fg">(self, epochs, lr, wd, callbacks)</span>
-<span class="ansi-green-intense-fg ansi-bold">    180</span>         <span class="ansi-green-fg">if</span> defaults<span class="ansi-blue-fg">.</span>extra_callbacks <span class="ansi-green-fg">is</span> <span class="ansi-green-fg">not</span> <span class="ansi-green-fg">None</span><span class="ansi-blue-fg">:</span> callbacks <span class="ansi-blue-fg">+=</span> defaults<span class="ansi-blue-fg">.</span>extra_callbacks
-<span class="ansi-green-intense-fg ansi-bold">    181</span>         fit(epochs, self.model, self.loss_func, opt=self.opt, data=self.data, metrics=self.metrics,
-<span class="ansi-green-fg">--&gt; 182</span><span class="ansi-red-fg">             callbacks=self.callbacks+callbacks)
-</span><span class="ansi-green-intense-fg ansi-bold">    183</span> 
-<span class="ansi-green-intense-fg ansi-bold">    184</span>     <span class="ansi-green-fg">def</span> create_opt<span class="ansi-blue-fg">(</span>self<span class="ansi-blue-fg">,</span> lr<span class="ansi-blue-fg">:</span>Floats<span class="ansi-blue-fg">,</span> wd<span class="ansi-blue-fg">:</span>Floats<span class="ansi-blue-fg">=</span><span class="ansi-cyan-fg">0.</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">-&gt;</span><span class="ansi-green-fg">None</span><span class="ansi-blue-fg">:</span>
-
-<span class="ansi-green-fg">~/fastai/fastai/basic_train.py</span> in <span class="ansi-cyan-fg">fit</span><span class="ansi-blue-fg">(epochs, model, loss_func, opt, data, callbacks, metrics)</span>
-<span class="ansi-green-intense-fg ansi-bold">     97</span>                                        cb_handler=cb_handler, pbar=pbar)
-<span class="ansi-green-intense-fg ansi-bold">     98</span>             <span class="ansi-green-fg">else</span><span class="ansi-blue-fg">:</span> val_loss<span class="ansi-blue-fg">=</span><span class="ansi-green-fg">None</span>
-<span class="ansi-green-fg">---&gt; 99</span><span class="ansi-red-fg">             </span><span class="ansi-green-fg">if</span> cb_handler<span class="ansi-blue-fg">.</span>on_epoch_end<span class="ansi-blue-fg">(</span>val_loss<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span> <span class="ansi-green-fg">break</span>
-<span class="ansi-green-intense-fg ansi-bold">    100</span>     <span class="ansi-green-fg">except</span> Exception <span class="ansi-green-fg">as</span> e<span class="ansi-blue-fg">:</span>
-<span class="ansi-green-intense-fg ansi-bold">    101</span>         exception <span class="ansi-blue-fg">=</span> e
-
-<span class="ansi-green-fg">~/fastai/fastai/callback.py</span> in <span class="ansi-cyan-fg">on_epoch_end</span><span class="ansi-blue-fg">(self, val_loss)</span>
-<span class="ansi-green-intense-fg ansi-bold">    287</span>         self<span class="ansi-blue-fg">.</span>state_dict<span class="ansi-blue-fg">[</span><span class="ansi-blue-fg">&#39;last_metrics&#39;</span><span class="ansi-blue-fg">]</span> <span class="ansi-blue-fg">=</span> <span class="ansi-blue-fg">[</span>val_loss<span class="ansi-blue-fg">]</span> <span class="ansi-green-fg">if</span> val_loss <span class="ansi-green-fg">is</span> <span class="ansi-green-fg">not</span> <span class="ansi-green-fg">None</span> <span class="ansi-green-fg">else</span> <span class="ansi-green-fg">None</span>
-<span class="ansi-green-intense-fg ansi-bold">    288</span>         self<span class="ansi-blue-fg">.</span>state_dict<span class="ansi-blue-fg">[</span><span class="ansi-blue-fg">&#39;epoch&#39;</span><span class="ansi-blue-fg">]</span> <span class="ansi-blue-fg">+=</span> <span class="ansi-cyan-fg">1</span>
-<span class="ansi-green-fg">--&gt; 289</span><span class="ansi-red-fg">         </span>self<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">&#39;epoch_end&#39;</span><span class="ansi-blue-fg">,</span> call_mets <span class="ansi-blue-fg">=</span> val_loss <span class="ansi-green-fg">is</span> <span class="ansi-green-fg">not</span> <span class="ansi-green-fg">None</span><span class="ansi-blue-fg">)</span>
-<span class="ansi-green-intense-fg ansi-bold">    290</span>         <span class="ansi-green-fg">return</span> self<span class="ansi-blue-fg">.</span>state_dict<span class="ansi-blue-fg">[</span><span class="ansi-blue-fg">&#39;stop_training&#39;</span><span class="ansi-blue-fg">]</span>
-<span class="ansi-green-intense-fg ansi-bold">    291</span> 
-
-<span class="ansi-green-fg">~/fastai/fastai/callback.py</span> in <span class="ansi-cyan-fg">__call__</span><span class="ansi-blue-fg">(self, cb_name, call_mets, **kwargs)</span>
-<span class="ansi-green-intense-fg ansi-bold">    222</span>         <span class="ansi-green-fg">if</span> call_mets<span class="ansi-blue-fg">:</span>
-<span class="ansi-green-intense-fg ansi-bold">    223</span>             <span class="ansi-green-fg">for</span> met <span class="ansi-green-fg">in</span> self<span class="ansi-blue-fg">.</span>metrics<span class="ansi-blue-fg">:</span> self<span class="ansi-blue-fg">.</span>_call_and_update<span class="ansi-blue-fg">(</span>met<span class="ansi-blue-fg">,</span> cb_name<span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">**</span>kwargs<span class="ansi-blue-fg">)</span>
-<span class="ansi-green-fg">--&gt; 224</span><span class="ansi-red-fg">         </span><span class="ansi-green-fg">for</span> cb <span class="ansi-green-fg">in</span> self<span class="ansi-blue-fg">.</span>callbacks<span class="ansi-blue-fg">:</span> self<span class="ansi-blue-fg">.</span>_call_and_update<span class="ansi-blue-fg">(</span>cb<span class="ansi-blue-fg">,</span> cb_name<span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">**</span>kwargs<span class="ansi-blue-fg">)</span>
-<span class="ansi-green-intense-fg ansi-bold">    225</span> 
-<span class="ansi-green-intense-fg ansi-bold">    226</span>     <span class="ansi-green-fg">def</span> set_dl<span class="ansi-blue-fg">(</span>self<span class="ansi-blue-fg">,</span> dl<span class="ansi-blue-fg">:</span>DataLoader<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
-
-<span class="ansi-green-fg">~/fastai/fastai/callback.py</span> in <span class="ansi-cyan-fg">_call_and_update</span><span class="ansi-blue-fg">(self, cb, cb_name, **kwargs)</span>
-<span class="ansi-green-intense-fg ansi-bold">    213</span>         <span class="ansi-blue-fg">&#34;Call `cb_name` on `cb` and update the inner state.&#34;</span>
-<span class="ansi-green-intense-fg ansi-bold">    214</span>         new <span class="ansi-blue-fg">=</span> ifnone<span class="ansi-blue-fg">(</span>getattr<span class="ansi-blue-fg">(</span>cb<span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">f&#39;on_{cb_name}&#39;</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">**</span>self<span class="ansi-blue-fg">.</span>state_dict<span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">**</span>kwargs<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">,</span> dict<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">)</span>
-<span class="ansi-green-fg">--&gt; 215</span><span class="ansi-red-fg">         </span><span class="ansi-green-fg">for</span> k<span class="ansi-blue-fg">,</span>v <span class="ansi-green-fg">in</span> new<span class="ansi-blue-fg">.</span>items<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
-<span class="ansi-green-intense-fg ansi-bold">    216</span>             <span class="ansi-green-fg">if</span> k <span class="ansi-green-fg">not</span> <span class="ansi-green-fg">in</span> self<span class="ansi-blue-fg">.</span>state_dict<span class="ansi-blue-fg">:</span>
-<span class="ansi-green-intense-fg ansi-bold">    217</span>                 <span class="ansi-green-fg">raise</span> Exception<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">f&#34;{k} isn&#39;t a valid key in the state of the callbacks.&#34;</span><span class="ansi-blue-fg">)</span>
-
-<span class="ansi-red-fg">AttributeError</span>: &#39;bool&#39; object has no attribute &#39;items&#39;</pre>
 </div>
 </div>
 

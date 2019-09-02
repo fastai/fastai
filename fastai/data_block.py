@@ -96,6 +96,7 @@ class ItemList():
 
     def reconstruct(self, t:Tensor, x:Tensor=None):
         "Reconstruct one of the underlying item for its data `t`."
+        if not hasattr(self[0], 'reconstruct'): return t
         return self[0].reconstruct(t,x) if has_arg(self[0].reconstruct, 'x') else self[0].reconstruct(t)
 
     def new(self, items:Iterator, processor:PreProcessors=None, **kwargs)->'ItemList':
@@ -692,7 +693,7 @@ class LabelList(Dataset):
         if state.get('normalize', False): res.normalize = state['normalize']
         return res
 
-    def process(self, xp:PreProcessor=None, yp:PreProcessor=None, name:str=None):
+    def process(self, xp:PreProcessor=None, yp:PreProcessor=None, name:str=None, max_warn_items:int=5):
         "Launch the processing on `self.x` and `self.y` with `xp` and `yp`."
         self.y.process(yp)
         if getattr(self.y, 'filter_missing_y', False):
@@ -704,8 +705,8 @@ class LabelList(Dataset):
                 for p in self.y.processor:
                     if len(getattr(p, 'warns', [])) > 0:
                         warnings = list(set(p.warns))
-                        self.warn += ', '.join(warnings[:5])
-                        if len(warnings) > 5: self.warn += "..."
+                        self.warn += ', '.join(warnings[:max_warn_items])
+                        if len(warnings) > max_warn_items: self.warn += "..."
                     p.warns = []
                 self.x,self.y = self.x[~filt],self.y[~filt]
         self.x.process(xp)

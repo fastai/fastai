@@ -335,7 +335,7 @@ class MultiLabelFbeta(LearnerCallback):
         self.total_targ = torch.zeros(self.c).to(dvc)
     
     def on_batch_end(self, last_output, last_target, **kwargs):
-        pred, targ = (last_output.sigmoid() if self.sigmoid else last_output) > self.thresh, last_target.byte()
+        pred, targ = ((last_output.sigmoid() if self.sigmoid else last_output) > self.thresh).byte(), last_target.byte()
         m = pred*targ
         self.tp += m.sum(0).float()
         self.total_pred += pred.sum(0).float()
