@@ -135,9 +135,9 @@ def _test_cnn(m):
     if not isinstance(m, nn.Sequential) or not len(m) == 2: return False
     return isinstance(m[1][0], (AdaptiveConcatPool2d, nn.AdaptiveAvgPool2d))
 
-def _cl_int_gradcam(self, idx, heatmap_thresh:int=16, image:bool=True):
+def _cl_int_gradcam(self, idx, ds_type:DatasetType=DatasetType.Valid, heatmap_thresh:int=16, image:bool=True):
     m = self.learn.model.eval()
-    im,cl = self.learn.data.dl(DatasetType.Valid).dataset[idx]
+    im,cl = self.learn.data.dl(ds_type).dataset[idx]
     cl = int(cl)
     xb,_ = self.data.one_item(im, detach=False, denorm=False) #put into a minibatch of batch size = 1
     with hook_output(m[0]) as hook_a: 
@@ -177,7 +177,7 @@ def _cl_int_plot_top_losses(self, k, largest=True, figsize=(12,12), heatmap:bool
         im.show(ax=axes.flat[i], title=
             f'{classes[self.pred_class[idx]]}/{classes[cl]} / {self.losses[idx]:.2f} / {self.preds[idx][cl]:.2f}')
         if heatmap:
-            mult = self.GradCAM(idx,heatmap_thresh,image=False)
+            mult = self.GradCAM(idx,self.ds_type,heatmap_thresh,image=False)
             if mult is not None:
                 sz = list(im.shape[-2:])
                 axes.flat[i].imshow(mult, alpha=0.6, extent=(0,*sz[::-1],0), interpolation='bilinear', cmap='magma')                
