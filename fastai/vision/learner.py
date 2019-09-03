@@ -175,7 +175,6 @@ def _cl_int_plot_top_losses(self, k, largest=True, figsize=(12,12), heatmap:bool
     for i,idx in enumerate(tl_idx):
         im,cl = self.data.dl(self.ds_type).dataset[idx]
         cl = int(cl)
-        if show_text:
         title = f'{classes[self.pred_class[idx]]}/{classes[cl]} / {self.losses[idx]:.2f} / {self.preds[idx][cl]:.2f}' if show_text else None
         im.show(ax=axes.flat[i], title=title)
         if heatmap:
