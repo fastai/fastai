@@ -38,14 +38,6 @@ def learn(mnist_tiny):
     learn.fit_one_cycle(3)
     return learn
 
-def test_accuracy(learn):
-    this_tests(accuracy)
-    assert accuracy(*learn.get_preds()) > 0.9
-
-def test_error_rate(learn):
-    this_tests(error_rate)
-    assert error_rate(*learn.get_preds()) < 0.1
-
 def test_1cycle_lrs(learn):
     lrs = learn.recorder.lrs
     this_tests(learn.recorder.__class__)
@@ -59,6 +51,14 @@ def test_1cycle_moms(learn):
     assert moms[0]==0.95
     assert abs(moms[-1]-0.95)<0.01
     assert np.min(moms)==0.85
+    
+def test_accuracy(learn):
+    this_tests(accuracy)
+    assert accuracy(*learn.get_preds()) > 0.9
+
+def test_error_rate(learn):
+    this_tests(error_rate)
+    assert error_rate(*learn.get_preds()) < 0.1
 
 def test_preds(learn):
     this_tests(learn.predict)

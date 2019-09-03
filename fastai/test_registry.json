@@ -207,12 +207,12 @@
     "fastai.basic_train.Recorder": [
         {
             "file": "tests/test_vision_train.py",
-            "line": 49,
+            "line": 41,
             "test": "test_1cycle_lrs"
         },
         {
             "file": "tests/test_vision_train.py",
-            "line": 56,
+            "line": 48,
             "test": "test_1cycle_moms"
         }
     ],
@@ -755,7 +755,7 @@
         },
         {
             "file": "tests/test_vision_train.py",
-            "line": 41,
+            "line": 55,
             "test": "test_accuracy"
         }
     ],
@@ -786,7 +786,7 @@
         },
         {
             "file": "tests/test_vision_train.py",
-            "line": 45,
+            "line": 59,
             "test": "test_error_rate"
         }
     ],

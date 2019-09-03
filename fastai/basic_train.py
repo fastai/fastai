@@ -159,7 +159,6 @@ class Learner():
     layer_groups:Collection[nn.Module]=None
     add_time:bool=True
     silent:bool=None
-    cb_fns_registered:bool=False
     def __post_init__(self)->None:
         "Setup path,metrics, callbacks and ensure model directory exists."
         self.path = Path(ifnone(self.path, self.data.path))
@@ -198,7 +197,6 @@ class Learner():
         if not getattr(self, 'opt', False): self.create_opt(lr, wd)
         else: self.opt.lr,self.opt.wd = lr,wd
         callbacks = [cb(self) for cb in self.callback_fns + listify(defaults.extra_callback_fns)] + listify(callbacks)
-        self.cb_fns_registered = True
         fit(epochs, self, metrics=self.metrics, callbacks=self.callbacks+callbacks)
 
     def create_opt(self, lr:Floats, wd:Floats=0.)->None:
@@ -335,13 +333,9 @@ class Learner():
         "Return predictions and targets on `ds_type` dataset."
         lf = self.loss_func if with_loss else None
         activ = ifnone(activ, _loss_func2activ(self.loss_func))
-        if not self.cb_fns_registered:
-            lr,wd = self.lr_range(defaults.lr),self.wd
-            if not getattr(self, 'opt', False): self.create_opt(lr, wd)
-            else: self.opt.lr,self.opt.wd = lr,wd
-            self.callbacks = [cb(self) for cb in self.callback_fns + listify(defaults.extra_callback_fns)] + listify(self.callbacks)
-            self.cb_fns_registered = True
-        return get_preds(self.model, self.dl(ds_type), cb_handler=CallbackHandler(self.callbacks),
+        if not getattr(self, 'opt', False): self.create_opt(defaults.lr, self.wd)
+        callbacks = [cb(self) for cb in self.callback_fns + listify(defaults.extra_callback_fns)] + listify(self.callbacks)
+        return get_preds(self.model, self.dl(ds_type), cb_handler=CallbackHandler(callbacks),
                          activ=activ, loss_func=lf, n_batch=n_batch, pbar=pbar)
 
     def pred_batch(self, ds_type:DatasetType=DatasetType.Valid, batch:Tuple=None, reconstruct:bool=False, with_dropout:bool=False) -> List[Tensor]:
