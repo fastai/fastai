@@ -23,7 +23,7 @@ def _cl_int_from_learner(cls, learn:Learner, ds_type=DatasetType.Valid, activ:nn
     preds = learn.get_preds(ds_type=ds_type, activ=activ, with_loss=True)
     return cls(learn, *preds, ds_type=ds_type)
 
-def _cl_int_plot_top_losses(self, k, largest:bool=True, return_table:bool=False)->Optional[plt.Figure]:
+def _cl_int_plot_tab_top_losses(self, k, largest:bool=True, return_table:bool=False)->Optional[plt.Figure]:
     "Generates a dataframe of 'top_losses' along with their prediction, actual, loss, and probability of the actual class."
     tl_val, tl_idx = self.top_losses(k, largest)
     classes = self.data.classes
@@ -48,7 +48,7 @@ def _cl_int_plot_top_losses(self, k, largest:bool=True, return_table:bool=False)
 
 
 ClassificationInterpretation.from_learner = _cl_int_from_learner
-ClassificationInterpretation.plot_top_losses = _cl_int_plot_top_losses
+ClassificationInterpretation.plot_tab_top_losses = _cl_int_plot_tab_top_losses
 
 def _learner_interpret(learn:Learner, ds_type:DatasetType = DatasetType.Valid):
     "Create a 'ClassificationInterpretation' object from 'learner' on 'ds_type'."
