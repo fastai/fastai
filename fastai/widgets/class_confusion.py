@@ -3,7 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from tqdm import tqdm
 from itertools import permutations
-from ..tabular import TabularDataBunch
+from ..tabular.data import TabularDataBunch
 from ..train import ClassificationInterpretation
 import ipywidgets as widgets
 

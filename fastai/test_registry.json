@@ -872,6 +872,20 @@
             "test": "test_from_df"
         }
     ],
+    "fastai.tabular.learner._cl_int_from_learner": [
+        {
+            "file": "tests/test_vision_train.py",
+            "line": 72,
+            "test": "test_interp"
+        }
+    ],
+    "fastai.tabular.learner._learner_interpret": [
+        {
+            "file": "tests/test_vision_train.py",
+            "line": 78,
+            "test": "test_interp_shortcut"
+        }
+    ],
     "fastai.tabular.models._cl_int_from_learner": [
         {
             "file": "tests/test_vision_train.py",
