@@ -37,6 +37,8 @@ class CSVLogger(LearnerCallback):
         if self.add_time: stats.append(format_time(time() - self.start_epoch))
         str_stats = ','.join(stats)
         self.file.write(str_stats + '\n')
+        self.file.flush()
+        os.fsync(self.file.fileno())
 
     def on_train_end(self, **kwargs: Any) -> None:  
         "Close the file."
