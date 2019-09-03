@@ -160,7 +160,8 @@ def _cl_int_gradcam(self, idx, ds_type:DatasetType=DatasetType.Valid, heatmap_th
 
 ClassificationInterpretation.GradCAM =_cl_int_gradcam
 
-def _cl_int_plot_top_losses(self, k, largest=True, figsize=(12,12), heatmap:bool=False, heatmap_thresh:int=16,
+def _cl_int_plot_top_losses(self, k, largest=True, figsize=(12,12), heatmap:bool=False, heatmap_thresh:int=16, 
+                            alpha:float=0.6, cmap:str="magma", show_text:bool=True,
                             return_fig:bool=None)->Optional[plt.Figure]:
     "Show images in `top_losses` along with their prediction, actual, loss, and probability of actual class."
     assert not heatmap or _test_cnn(self.learn.model), "`heatmap=True` requires a model like `cnn_learner` produces."
@@ -170,19 +171,19 @@ def _cl_int_plot_top_losses(self, k, largest=True, figsize=(12,12), heatmap:bool
     cols = math.ceil(math.sqrt(k))
     rows = math.ceil(k/cols)
     fig,axes = plt.subplots(rows, cols, figsize=figsize)
-    fig.suptitle('prediction/actual/loss/probability', weight='bold', size=14)
+    if show_text: fig.suptitle('Prediction/Actual/Loss/Probability', weight='bold', size=14)
     for i,idx in enumerate(tl_idx):
         im,cl = self.data.dl(self.ds_type).dataset[idx]
         cl = int(cl)
-        im.show(ax=axes.flat[i], title=
-            f'{classes[self.pred_class[idx]]}/{classes[cl]} / {self.losses[idx]:.2f} / {self.preds[idx][cl]:.2f}')
+        title = f'{classes[self.pred_class[idx]]}/{classes[cl]} / {self.losses[idx]:.2f} / {self.preds[idx][cl]:.2f}' if show_text else None
+        im.show(ax=axes.flat[i], title=title)
         if heatmap:
             mult = self.GradCAM(idx,self.ds_type,heatmap_thresh,image=False)
             if mult is not None:
                 sz = list(im.shape[-2:])
-                axes.flat[i].imshow(mult, alpha=0.6, extent=(0,*sz[::-1],0), interpolation='bilinear', cmap='magma')                
+                axes.flat[i].imshow(mult, alpha=alpha, extent=(0,*sz[::-1],0), interpolation='bilinear', cmap=cmap)
     if ifnone(return_fig, defaults.return_fig): return fig
-
+    
 def _cl_int_plot_multi_top_losses(self, samples:int=3, figsize:Tuple[int,int]=(8,8), save_misclassified:bool=False):
     "Show images in `top_losses` along with their prediction, actual, loss, and probability of predicted class in a multilabeled dataset."
     if samples >20:
