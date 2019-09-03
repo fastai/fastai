@@ -1,6 +1,7 @@
 "Supports flat-cosine-annealling style training"
 
 from ..core import *
+from ..callback import *
 from ..callbacks import *
 from ..basic_train import Learner, LearnerCallback
 
