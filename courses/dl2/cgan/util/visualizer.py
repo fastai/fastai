@@ -4,8 +4,8 @@ import ntpath
 import time
 from . import util
 from . import html
-from scipy.misc import imresize
-
+#from scipy.misc import imresize
+from skimage.transform import resize as imresize
 
 class Visualizer():
     def __init__(self, opt):
