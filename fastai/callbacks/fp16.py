@@ -65,9 +65,10 @@ class MixedPrecision(LearnerCallback):
     _order = 999 #Need to run after things that could call on_backward_begin and change the loss
     "Callback that handles mixed-precision training."
     def __init__(self, learn:Learner, loss_scale:float=None, max_noskip:int=1000, dynamic:bool=True, clip:float=None,
-                 flat_master:bool=False, max_scale:float=2**24):
+                 flat_master:bool=False, max_scale:float=2**24, loss_fp32:bool=True):
         super().__init__(learn)
         self.flat_master,self.dynamic,self.max_noskip,self.clip,self.max_scale = flat_master,dynamic,max_noskip,clip,max_scale
+        self.loss_fp32 = loss_fp32
         self.loss_scale = ifnone(loss_scale, 2**16 if dynamic else 512)
         self.not_min += ['model_params', 'master_params']
         assert torch.backends.cudnn.enabled, "Mixed precision training requires cudnn."
@@ -87,7 +88,7 @@ class MixedPrecision(LearnerCallback):
 
     def on_loss_begin(self, last_output:Tensor, **kwargs:Any) -> Tensor:
         "Convert half precision output to FP32 to avoid reduction overflow."
-        return {'last_output': to_float(last_output)}
+        if self.loss_fp32: return {'last_output': to_float(last_output)}
 
     def on_backward_begin(self, last_loss:Rank0Tensor, **kwargs:Any) -> Rank0Tensor:
         "Scale gradients up by `self.loss_scale` to prevent underflow."
