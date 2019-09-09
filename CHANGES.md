@@ -17,6 +17,8 @@ of that change.
 
 ### Changed:
 
+- `MultiLabelFbeta` isn't a `LearnerCallback` anymore and can be passed as a metric.
+
 ### Fixed:
 
 
