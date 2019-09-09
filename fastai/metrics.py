@@ -314,25 +314,15 @@ class AUROC(Callback):
     def on_epoch_end(self, last_metrics, **kwargs):
         return add_metrics(last_metrics, auc_roc_score(self.preds, self.targs))
 
-class MultiLabelFbeta(LearnerCallback):
+class MultiLabelFbeta(Callback):
     "Computes the fbeta score for multilabel classification"
     # https://scikit-learn.org/stable/modules/generated/sklearn.metrics.f1_score.html
     _order = -20 
-    def __init__(self, learn, beta=2, eps=1e-15, thresh=0.3, sigmoid=True, average="micro"):
-        super().__init__(learn)
-        self.eps, self.thresh, self.sigmoid, self.average, self.beta2 = \
-            eps, thresh, sigmoid, average, beta**2
-
-    def on_train_begin(self, **kwargs):
-        self.c = self.learn.data.c
-        if self.average != "none": self.learn.recorder.add_metric_names([f'{self.average}_fbeta'])
-        else: self.learn.recorder.add_metric_names([f"fbeta_{c}" for c in self.learn.data.classes])
+    def __init__(self, beta=2, eps=1e-15, thresh=0.3, sigmoid=True, average="micro"):
+        self.eps,self.thresh,self.sigmoid,self.average,self.beta2 = eps,thresh,sigmoid,average,beta**2
 
     def on_epoch_begin(self, **kwargs):
-        dvc = self.learn.data.device
-        self.tp = torch.zeros(self.c).to(dvc)
-        self.total_pred = torch.zeros(self.c).to(dvc)
-        self.total_targ = torch.zeros(self.c).to(dvc)
+        self.tp,self.total_pred,self.total_targ = 0,0,0
     
     def on_batch_end(self, last_output, last_target, **kwargs):
         pred, targ = ((last_output.sigmoid() if self.sigmoid else last_output) > self.thresh).byte(), last_target.byte()
