@@ -123,7 +123,11 @@ class GANTrainer(LearnerCallback):
         else:
             self.smoothenerC.add_value(last_loss)
             self.closses.append(self.smoothenerC.smooth)
-
+    
+    def on_batch_end(self, **kwargs):
+        self.opt_critic.zero_grad()
+        self.opt_gen.zero_grad()
+    
     def on_epoch_begin(self, epoch, **kwargs):
         "Put the critic or the generator back to eval if necessary."
         self.switch(self.gen_mode)
