@@ -14,14 +14,14 @@
         },
         {
             "file": "tests/test_basic_data.py",
-            "line": 44,
+            "line": 45,
             "test": "test_DataBunch_no_valid_dl"
         }
     ],
     "fastai.basic_data.DataBunch.one_batch": [
         {
             "file": "tests/test_basic_data.py",
-            "line": 58,
+            "line": 60,
             "test": "test_DataBunch_onebatch"
         },
         {
@@ -41,28 +41,28 @@
         },
         {
             "file": "tests/test_basic_data.py",
-            "line": 83,
+            "line": 85,
             "test": "test_DataBunch_save_load"
         }
     ],
     "fastai.basic_data.DataBunch.one_item": [
         {
             "file": "tests/test_basic_data.py",
-            "line": 67,
+            "line": 69,
             "test": "test_DataBunch_oneitem"
         }
     ],
     "fastai.basic_data.DataBunch.save": [
         {
             "file": "tests/test_basic_data.py",
-            "line": 83,
+            "line": 85,
             "test": "test_DataBunch_save_load"
         }
     ],
     "fastai.basic_data.DataBunch.show_batch": [
         {
             "file": "tests/test_basic_data.py",
-            "line": 75,
+            "line": 77,
             "test": "test_DataBunch_show_batch"
         }
     ],
@@ -81,7 +81,7 @@
         },
         {
             "file": "tests/test_basic_data.py",
-            "line": 83,
+            "line": 85,
             "test": "test_DataBunch_save_load"
         }
     ],

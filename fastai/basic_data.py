@@ -192,7 +192,7 @@ class DataBunch():
             ys = [self.train_ds.y.reconstruct(grab_idx(y, i), x=x) for i,x in enumerate(xs)]
         else : ys = [self.train_ds.y.reconstruct(grab_idx(y, i)) for i in range(n_items)]
         self.train_ds.x.show_xys(xs, ys, **kwargs)
- 
+
     def export(self, file:PathLikeOrBinaryStream='export.pkl'):
         "Export the minimal state of `self` for inference in `self.path/file`. `file` can be file-like (file or buffer)"
         xtra = dict(normalize=self.norm.keywords) if getattr(self, 'norm', False) else {}
@@ -205,6 +205,8 @@ class DataBunch():
 
     @property
     def train_ds(self)->Dataset: return self._grab_dataset(self.train_dl)
+    @property
+    def fix_ds(self)->Dataset: return self._grab_dataset(self.fix_dl)
     @property
     def valid_ds(self)->Dataset: return self._grab_dataset(self.valid_dl)
     @property
@@ -225,10 +227,10 @@ class DataBunch():
 
     @property
     def is_empty(self)->bool:
-        return not ((self.train_dl and len(self.train_ds.items) != 0) or 
-                    (self.valid_dl and len(self.valid_ds.items) != 0) or 
+        return not ((self.train_dl and len(self.train_ds.items) != 0) or
+                    (self.valid_dl and len(self.valid_ds.items) != 0) or
                     (self.test_dl  and len(self.test_ds.items)  != 0))
-    
+
     @property
     def batch_size(self):   return self.train_dl.batch_size
     @batch_size.setter
