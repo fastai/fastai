@@ -38,6 +38,7 @@ def test_DataBunch_Create():
     assert 4 == len(data.dls)
     assert 3 == len(data.train_dl)
     assert 18 == len(data.train_ds)
+    assert 18 == len(data.fix_ds)
     assert 2 == len(data.valid_dl)
     assert 9 == len(data.valid_ds)
 
@@ -52,6 +53,7 @@ def test_DataBunch_no_valid_dl():
     assert 3 == len(data.dls)
     assert 3 == len(data.train_dl)
     assert 18 == len(data.train_ds)
+    assert 18 == len(data.fix_ds)
     assert None == data.valid_dl
 
 ## TO DO (?)ideally, call one_batch with type dataloader
