@@ -6,6 +6,7 @@ from itertools import permutations
 from ..tabular.data import TabularDataBunch
 from ..train import ClassificationInterpretation
 import ipywidgets as widgets
+from pathlib import Path
 
 class ClassConfusion():
     "Plot the most confused datapoints and statistics for the models misses." 
@@ -128,7 +129,7 @@ class ClassConfusion():
             if str(cl) == tab.split(' ')[0] and str(classes_gnd[self.interp.pred_class[idx]]) == tab.split(' ')[2]:
                 img, lbl = self.interp.data.valid_ds[idx]
                 fn = self.interp.data.valid_ds.x.items[idx]
-                fn = re.search('([^/*]+)_\d+.*$', str(fn)).group(0)
+                fn = Path(fn).name
                 img.show(ax=ax[row, col])
                 ax[row,col].set_title(fn)
                 x += 1
