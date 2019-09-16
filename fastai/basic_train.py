@@ -452,6 +452,7 @@ class Recorder(LearnerCallback):
     _order=-10
     def __init__(self, learn:Learner, add_time:bool=True, silent:bool=False):
         super().__init__(learn)
+        if not getattr(self.learn, 'opt', False): self.learn.create_opt(defaults.lr, self.learn.wd)
         self.opt = self.learn.opt
         self.train_dl = self.learn.data.train_dl
         self.no_val,self.silent,self.add_time = False,silent,add_time
