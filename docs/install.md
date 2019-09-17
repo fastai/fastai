@@ -12,18 +12,19 @@ Generally, pytorch GPU build should work fine on machines that don't have a CUDA
 
 * pip
 
-   The pip ways is very easy:
-
    ```bash
-   pip install http://download.pytorch.org/whl/cpu/torch-1.0.0-cp36-cp36m-linux_x86_64.whl
+   pip install torch==1.2.0+cpu torchvision==0.4.0+cpu -f https://download.pytorch.org/whl/torch_stable.html
    pip install fastai
    ```
 
-   Just make sure to pick the correct torch wheel url, according to the needed platform, python and CUDA version, which you will find [here](https://pytorch.org/get-started/locally/).
+   Versions of PyTorch and `torchvision` may change, up to date instructions can be found [here](https://pytorch.org/get-started/locally/).
 
 * conda
 
-   The conda way is more involved. Since we have only a single fastai package that relies on the default `pytorch` package working with and without GPU environment, if you want to install something custom you will have to manually tweak the dependencies. This is explained in detail [here](/install.html#custom-dependencies). So follow the instructions there, but replace `pytorch` with `pytorch-cpu`, and `torchvision` with `torchvision-cpu`.
+   ```bash
+   conda install pytorch torchvision cpuonly -c pytorch
+   conda install fastai -c fastai
+   ```
 
 Also, please note, that if you have an old GPU and `pytorch` fails because it can't support it, you can still use the normal (GPU) `pytorch` build, by setting the env var `CUDA_VISIBLE_DEVICES=""`, in which case pytorch will not try to check if you even have a GPU.
 
