@@ -1109,6 +1109,30 @@ have this notebook run quickly.</div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<p>If we're performing inference on a larger dataset, we can add it as a test set. This will batch up the items and make inference much faster.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">add_test</span><span class="p">([</span><span class="s2">&quot;That movie was terrible!&quot;</span><span class="p">,</span> 
+                     <span class="s2">&quot;I&#39;m a big fan of all movies with Hal 3000.&quot;</span><span class="p">])</span>
+
+<span class="n">preds</span><span class="p">,</span><span class="n">y</span> <span class="o">=</span> <span class="n">learn</span><span class="o">.</span><span class="n">get_preds</span><span class="p">(</span><span class="n">ds_type</span><span class="o">=</span><span class="n">DatasetType</span><span class="o">.</span><span class="n">Test</span><span class="p">)</span>
+<span class="n">preds</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Tabular">Tabular<a class="anchor-link" href="#Tabular">&#182;</a></h2>
 </div>
 </div>
