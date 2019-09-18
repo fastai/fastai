@@ -85,7 +85,7 @@ def execute_nb(fname, metadata=None, save=True, show_doc_only=False):
     metadata = metadata or {}
     ep.preprocess(nb, metadata)
     if save:
-        with open(fname, 'wt') as f: nbformat.write(nb, f)
+        with open(fname, 'wt', encoding='utf-8') as f: nbformat.write(nb, f)
         NotebookNotary().sign(nb)
 
 def _symbol_skeleton(name): return [get_doc_cell(name), get_md_cell(f"`{name}`")]
