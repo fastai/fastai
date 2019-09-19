@@ -117,7 +117,7 @@ class LanguageLearner(RNNLearner):
 
     def predict(self, text:str, n_words:int=1, no_unk:bool=True, temperature:float=1., min_p:float=None, sep:str=' ',
                 decoder=decode_spec_tokens):
-        "Return the `n_words` that come after `text`."
+        "Return `text` and the `n_words` that come after"
         self.model.reset()
         xb,yb = self.data.one_item(text)
         new_idx = []
