@@ -23,7 +23,7 @@ To deploy it see [these instructions](/callbacks.fp16.html).
 
 If you notice a bottleneck in JPEG decoding (decompression) it's enough to switch to a much faster [`libjpeg-turbo`](#libjpeg-turbo), using the normal version of `Pillow`.
 
-If you need faster image resize, blur, alpha composition, alpha premultiplication, division by alpha, grayscale and other image manipulations you need to switch to `Pillow-SIMD`](#pillow-simd).
+If you need faster image resize, blur, alpha composition, alpha premultiplication, division by alpha, grayscale and other image manipulations you need to switch to [`Pillow-SIMD`](#pillow-simd).
 
 At the moment this section is only relevant if you're on the x86 platform.
 
