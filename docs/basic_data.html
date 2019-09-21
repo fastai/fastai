@@ -306,6 +306,24 @@ summary: "Basic classes to contain the data for model training."
 </div>
 
 </div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<div markdown="span" class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i> <b>Note: </b>Data cannot be serialized on windows then loaded on Linux (or vice versa), because `Path` object don't support this, we will find a workaround that in v2.</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>This is to allow you to easily create a new <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a> with a different batch size for instance. You will also need to reapply any normalization (in vision) you might have done on your original <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a>.</p>
@@ -349,7 +367,7 @@ summary: "Basic classes to contain the data for model training."
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="_databunch_load_empty" class="doc_header"><code>load_empty</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L742" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#_databunch_load_empty-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>load_empty</code>(<strong><code>path</code></strong>, <strong><code>fname</code></strong>:<code>str</code>=<strong><em><code>'export.pkl'</code></em></strong>)</p>
+<h4 id="_databunch_load_empty" class="doc_header"><code>load_empty</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L744" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#_databunch_load_empty-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>load_empty</code>(<strong><code>path</code></strong>, <strong><code>fname</code></strong>:<code>str</code>=<strong><em><code>'export.pkl'</code></em></strong>)</p>
 </blockquote>
 <div class="collapse" id="_databunch_load_empty-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#_databunch_load_empty-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>_databunch_load_empty</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Load an empty <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a> from the exported file in <code>path/fname</code> with optional <code>tfms</code>.</p>
 
