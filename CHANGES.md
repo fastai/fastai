@@ -6,7 +6,7 @@ Most recent releases are shown at the top. Each release shows:
 - **Changed**: Additional parameters, changes to inputs or outputs, etc
 - **Fixed**: Bug fixes that don't change documented behaviour
 
-Note that the top-most release is changes in the unreleased master branch on
+Note that the top-most release changes in the unreleased master branch on
 Github. Parentheses after an item show the name or github id of the contributor
 of that change.
 
@@ -37,7 +37,7 @@ of that change.
 
 ### New:
 
-- QRNNs now work in mixed precision and can be twice as fast on a moderen GPU (if all dims are nultiples of 8)
+- QRNNs now work in mixed precision and can be twice as fast on a modern GPU (if all dims are multiples of 8)
 
 ### Changed:
 
@@ -67,7 +67,7 @@ of that change.
 
 ### Breaking changes:
 
-- In the AWD-LSTM defaut config, the default embedding size is now 1152, for
+- In the AWD-LSTM default config, the default embedding size is now 1152, for
   faster fp16 training. New pretrained models have been released accordingly,
   the old pretrained model (with embedding size of 1150) is still available at 
   https://s3.amazonaws.com/fast-ai-modelzoo/wt103-1.tgz
@@ -84,7 +84,7 @@ of that change.
 ### Changed:
 
 - a `Vocab` is either exactly of size `max_vocab` or a size that is a multiple of 8. This coupled with the breaking
-change of embedding size 1152 (also a mutliple of 8) allows a speed-up of 2 to 3 when training a language model
+change of embedding size 1152 (also a multiple of 8) allows a speed-up of 2 to 3 when training a language model
 in mixed precision.
 
 ### Fixed:
@@ -215,7 +215,7 @@ in mixed precision.
 - Added `XResNet`, which is ResNet plus tricks from
   [Bag of Tricks for Image Classification](https://arxiv.org/abs/1812.01187).
   Note pretrained models not available yet for this architecture.
-- `TextClassificationInterpretation`, which computes intrisic attention to give some interpretation of classification
+- `TextClassificationInterpretation`, which computes intrinsic attention to give some interpretation of classification
   results in text (thanks to herrmann)
 - `add_cyclical_datepart`, which add the dateparts as cosine embeddings in tabular data (thanks to herrmann)
 - `MixedItemList` two mix several kinds of `ItemList` together
