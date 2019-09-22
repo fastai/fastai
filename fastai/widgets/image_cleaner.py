@@ -170,7 +170,7 @@ class BasicImageWidget(ABC):
         idxs = ((i for i in fns_idxs if items[i].is_file())
                 if not drop_batch_on_nonfile
                 else chain.from_iterable(c for c in chunks(fns_idxs, self.batch_size)
-                                           if all(items[i].is_file() for i in c)))
+                                           if all(Path(items[i]).is_file() for i in c)))
         for i in idxs: yield ImgData(self._dataset.x[i]._repr_jpeg_(), self._get_label(i), self.make_payload(i))
 
     def _get_label(self, idx):
