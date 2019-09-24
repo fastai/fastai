@@ -33,6 +33,14 @@ def test_image_cleaner_wrong_input_type(data):
     n = len(data.valid_ds)
     ImageCleaner(data, np.arange(n), path)
 
+def test_image_cleaner_with_data_from_csv():
+    this_tests(ImageCleaner)
+    path = untar_data(URLs.MNIST_TINY)
+    data_from_csv = ImageList.from_csv(path, csv_name='labels.csv').split_none().label_from_df().transform(get_transforms(), size=224).databunch()
+    learn_cln = cnn_learner(data_from_csv, models.resnet34, metrics=error_rate)
+    ds, idxs = DatasetFormatter().from_similars(learn_cln)
+    ImageCleaner(ds, idxs, path=path, duplicates=True)
+
 def test_image_downloader_with_path():
     this_tests(ImageDownloader)
     ImageDownloader('.tmp/data')
