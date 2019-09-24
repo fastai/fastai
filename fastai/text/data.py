@@ -417,14 +417,14 @@ full_char_coverage_langs = ["bg", "cs", "da", "de", "el", "en", "es", "et", "fi"
 
 def train_sentencepiece(texts:Collection[str], path:PathOrStr, pre_rules: ListRules=None, post_rules:ListRules=None, 
     vocab_sz:int=None, max_vocab_sz:int=30000, model_type:str='unigram', max_sentence_len:int=20480, lang='en',
-    char_coverage=None, tmp_dir='tmp'):
+    char_coverage=None, tmp_dir='tmp', enc='utf8'):
     "Train a sentencepiece tokenizer on `texts` and save it in `path/tmp_dir`"
     from sentencepiece import SentencePieceTrainer
     cache_dir = Path(path)/tmp_dir
     os.makedirs(cache_dir, exist_ok=True)
     if vocab_sz is None: vocab_sz=get_default_size(texts, max_vocab_sz)
     raw_text_path = cache_dir / 'all_text.out'
-    with open(raw_text_path, 'w') as f: f.write("\n".join(texts))
+    with open(raw_text_path, 'w', encoding=enc) as f: f.write("\n".join(texts))
     spec_tokens = ['\u2581'+s for s in defaults.text_spec_tok]
     SentencePieceTrainer.Train(" ".join([
         f"--input={raw_text_path} --max_sentence_length={max_sentence_len}",
@@ -440,16 +440,16 @@ class SPProcessor(PreProcessor):
     def __init__(self, ds:ItemList=None, pre_rules: ListRules=None, post_rules:ListRules=None, vocab_sz:int=None,
                  max_vocab_sz:int=30000, model_type:str='unigram', max_sentence_len:int=20480, lang='en',
                  char_coverage=None, tmp_dir='tmp', mark_fields:bool=False, include_bos:bool=True, 
-                 include_eos:bool=False, sp_model=None, sp_vocab=None, n_cpus:int=None):
+                 include_eos:bool=False, sp_model=None, sp_vocab=None, n_cpus:int=None, enc='utf8'):
         try: from sentencepiece import SentencePieceTrainer,SentencePieceProcessor
         except ImportError:
             raise Exception('sentencepiece module is missing: run `pip install sentencepiece`')
-        self.pre_rules,self.post_rules = pre_rules,post_rules
+        self.pre_rules,self.post_rules,self.enc = pre_rules,post_rules,enc
         self.mark_fields,self.include_bos,self.include_eos = mark_fields,include_bos,include_eos
         self.sp_model,self.sp_vocab,self.n_cpus = sp_model,sp_vocab,ifnone(n_cpus,defaults.cpus)
         self.train_func = partial(train_sentencepiece, pre_rules=pre_rules, post_rules=post_rules, vocab_sz=vocab_sz,
                 max_vocab_sz=max_vocab_sz, model_type=model_type, max_sentence_len=max_sentence_len, lang=lang,
-                char_coverage=char_coverage, tmp_dir=tmp_dir)
+                char_coverage=char_coverage, tmp_dir=tmp_dir, enc=enc)
 
     def process_one(self, item, join=True):
         if join: text = _join_texts([item], self.mark_fields, self.include_bos, self.include_eos)[0]
@@ -464,7 +464,7 @@ class SPProcessor(PreProcessor):
             cache_dir = self.train_func(ds.items, ds.path)
             self.sp_model,self.sp_vocab = cache_dir/'spm.model',cache_dir/'spm.vocab'
         if not getattr(self, 'vocab', False): 
-            with open(self.sp_vocab, 'r') as f: self.vocab = Vocab([line.split('\t')[0] for line in f.readlines()])
+            with open(self.sp_vocab, 'r', encoding=self.enc) as f: self.vocab = Vocab([line.split('\t')[0] for line in f.readlines()])
         if self.n_cpus <= 1: ds.items = self._encode_batch(ds.items)
         else:
             with ProcessPoolExecutor(self.n_cpus) as e:
