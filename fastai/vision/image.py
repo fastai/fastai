@@ -544,9 +544,9 @@ def _affine_grid(size:TensorImageSize)->FlowField:
     size = ((1,)+size)
     N, C, H, W = size
     grid = FloatTensor(N, H, W, 2)
-    linear_points = torch.linspace(-1, 1, W) if W > 1 else tensor([-1])
+    linear_points = torch.linspace(-1, 1, W) if W > 1 else tensor([-1.])
     grid[:, :, :, 0] = torch.ger(torch.ones(H), linear_points).expand_as(grid[:, :, :, 0])
-    linear_points = torch.linspace(-1, 1, H) if H > 1 else tensor([-1])
+    linear_points = torch.linspace(-1, 1, H) if H > 1 else tensor([-1.])
     grid[:, :, :, 1] = torch.ger(linear_points, torch.ones(W)).expand_as(grid[:, :, :, 1])
     return FlowField(size[2:], grid)
 
