@@ -63,8 +63,9 @@ def denormalize(x:TensorImage, mean:FloatTensor,std:FloatTensor, do_x:bool=True)
 def _normalize_batch(b:Tuple[Tensor,Tensor], mean:FloatTensor, std:FloatTensor, do_x:bool=True, do_y:bool=False)->Tuple[Tensor,Tensor]:
     "`b` = `x`,`y` - normalize `x` array of imgs and `do_y` optionally `y`."
     x,y = b
-    mean,std = mean.to(x.device),std.to(x.device)
-    if do_x: x = normalize(x,mean,std)
+    if not isinstance(x, list): x = [x]
+    mean,std = mean.to(x[0].device),std.to(x[0].device)
+    if do_x: x = list(map(partial(normalize, mean=mean,std=std), x))
     if do_y and len(y.shape) == 4: y = normalize(y,mean,std)
     return x,y
 
