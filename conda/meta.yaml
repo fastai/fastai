@@ -48,7 +48,6 @@ requirements:
 #
 # note: since we don't make separate py36 and py37 fastai releases, the only way to preserve the `dataclasses` dependency when building the package with py37 is not
 # have the # [py36] selector. `dataclasses` will be installed on py37 too, which is OK. Full details: https://docs.fast.ai/dev/release.html#the-problem-of-supporting-different-architectures
-# same goes for `typing`
   run:
     - dataclasses
     - beautifulsoup4
@@ -64,7 +63,6 @@ requirements:
     - requests
     - scipy
     - spacy >=2.0.18
-    - typing
     - pyyaml
     - pytorch >=1.0.0
     - torchvision

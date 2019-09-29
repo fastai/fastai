@@ -1883,29 +1883,29 @@
     "fastai.widgets.image_cleaner.ImageCleaner": [
         {
             "file": "tests/test_widgets_image_cleaner.py",
-            "line": 17,
+            "line": 16,
             "test": "test_image_cleaner_index_length_mismatch"
         },
         {
             "file": "tests/test_widgets_image_cleaner.py",
-            "line": 24,
+            "line": 23,
             "test": "test_image_cleaner_length_correct"
         },
         {
             "file": "tests/test_widgets_image_cleaner.py",
-            "line": 31,
+            "line": 30,
             "test": "test_image_cleaner_wrong_input_type"
         },
         {
             "file": "tests/test_widgets_image_cleaner.py",
-            "line": 37,
+            "line": 36,
             "test": "test_image_cleaner_with_data_from_csv"
         }
     ],
     "fastai.widgets.image_downloader.ImageDownloader": [
         {
             "file": "tests/test_widgets_image_cleaner.py",
-            "line": 45,
+            "line": 44,
             "test": "test_image_downloader_with_path"
         }
     ]
