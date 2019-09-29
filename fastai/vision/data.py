@@ -76,7 +76,7 @@ def normalize_funcs(mean:FloatTensor, std:FloatTensor, do_x:bool=True, do_y:bool
 
 cifar_stats = ([0.491, 0.482, 0.447], [0.247, 0.243, 0.261])
 imagenet_stats = ([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
-mnist_stats = ([0.15]*3, [0.15]*3)
+mnist_stats = ([0.131], [0.308])
 
 def channel_view(x:Tensor)->Tensor:
     "Make channel the first axis of `x` and flatten remaining axes"
