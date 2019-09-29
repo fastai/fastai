@@ -21,7 +21,7 @@ of that change.
 
 ### Fixed:
 
-
+- `typing` removed as a dep since it's done nothing since py34 and we require py35+.
 
 ## 1.0.57 (2019-08-09)
 
