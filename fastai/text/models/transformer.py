@@ -161,6 +161,7 @@ class Transformer(Module):
                       attn_cls=attn_cls) for k in range(n_layers)])
 
     def reset(self): pass
+    def select_hidden(self, idxs): pass
 
     def forward(self, x):
         bs, x_len = x.size()
