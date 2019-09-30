@@ -70,7 +70,7 @@ class EarlyStoppingCallback(TrackerCallback):
             self.best,self.wait = current,0
         else:
             self.wait += 1
-            if self.wait >= self.patience:
+            if self.wait > self.patience:
                 print(f'Epoch {epoch}: early stopping')
                 return {"stop_training":True}
 
@@ -124,7 +124,7 @@ class ReduceLROnPlateauCallback(TrackerCallback):
         if self.operator(current - self.min_delta, self.best): self.best,self.wait = current,0
         else:
             self.wait += 1
-            if self.wait >= self.patience and self.opt.lr > self.min_lr:
+            if self.wait > self.patience and self.opt.lr > self.min_lr:
                 self.opt.lr *= self.factor
                 self.wait = 0
                 print(f'Epoch {epoch}: reducing lr to {self.opt.lr}')
