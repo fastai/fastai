@@ -297,7 +297,7 @@ summary: "Callbacks that take decisions depending on the evolution of metrics du
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>This callback tracks the quantity in <code>monitor</code> during the training of <code>learn</code>. <code>mode</code> can be forced to 'min' or 'max' but will automatically try to determine if the quantity should be the lowest possible (validation loss) or the highest possible (accuracy). Will stop training after <code>patience</code> epochs if the quantity hasn't improved by <code>min_delta</code>.</p>
+<p>This callback tracks the quantity in <code>monitor</code> during the training of <code>learn</code>. <code>mode</code> can be forced to 'min' or 'max' but will automatically try to determine if the quantity should be the lowest possible (validation loss) or the highest possible (accuracy). Will stop training after <code>patience+1</code> epochs if the quantity hasn't improved by <code>min_delta</code> with <code>min_lr</code> as the lower bound on the learning rate.</p>
 
 </div>
 </div>
