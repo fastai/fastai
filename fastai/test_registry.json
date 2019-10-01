@@ -1898,14 +1898,14 @@
         },
         {
             "file": "tests/test_widgets_image_cleaner.py",
-            "line": 36,
+            "line": 37,
             "test": "test_image_cleaner_with_data_from_csv"
         }
     ],
     "fastai.widgets.image_downloader.ImageDownloader": [
         {
             "file": "tests/test_widgets_image_cleaner.py",
-            "line": 44,
+            "line": 45,
             "test": "test_image_downloader_with_path"
         }
     ]
