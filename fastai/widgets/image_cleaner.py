@@ -167,7 +167,7 @@ class BasicImageWidget(ABC):
     def create_image_list(self, fns_idxs:Collection[int], drop_batch_on_nonfile=False) -> Iterator[ImgData]:
         "Create a list of images, filenames and labels but first removing files that are not supposed to be displayed."
         items = self._dataset.x.items
-        idxs = ((i for i in fns_idxs if items[i].is_file())
+        idxs = ((i for i in fns_idxs if Path(items[i]).is_file())
                 if not drop_batch_on_nonfile
                 else chain.from_iterable(c for c in chunks(fns_idxs, self.batch_size)
                                            if all(Path(items[i]).is_file() for i in c)))
