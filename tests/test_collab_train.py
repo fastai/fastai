@@ -14,5 +14,5 @@ def learn():
     return learn
 
 def test_val_loss(learn):
-    this_tests(learn.validate)
+    this_tests(learn.validate, CollabDataBunch.from_df, collab_learner)
     assert learn.validate()[0] < 0.8
