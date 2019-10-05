@@ -68,7 +68,8 @@ sidebar_d = {
                 'Overview': '/tabular',
                 'tabular.transform': '/tabular.transform',
                 'tabular.data': '/tabular.data',
-                'tabular.models': '/tabular.models'
+                'tabular.models': '/tabular.models',
+                'tabular.learner': '/tabular.learner'
             },
         },
         'empty3': {

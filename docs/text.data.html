@@ -230,7 +230,7 @@ summary: "Basic dataset for NLP tasks and helper functions to create a DataBunch
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The floders are scanned in <code>path</code> with a <code>train</code>, <code>valid</code> and maybe <code>test</code> folders. Text files in the <code>train</code> and <code>valid</code> folders should be places in subdirectories according to their classes (not applicable for a language model). <code>tokenizer</code> will be used to parse those texts into tokens.</p>
+<p>The folders are scanned in <code>path</code> with a <code>train</code>, <code>valid</code> and maybe <code>test</code> folders. Text files in the <code>train</code> and <code>valid</code> folders should be placed in subdirectories according to their classes (not applicable for a language model). <code>tokenizer</code> will be used to parse those texts into tokens.</p>
 <p>You can pass a specific <code>vocab</code> for the numericalization step (if you are building a classifier from a language model you fine-tuned for instance). kwargs will be split between the <a href="/text.data.html#TextDataset"><code>TextDataset</code></a> function and to the class initialization, you can precise there parameters such as <code>max_vocab</code>, <code>chunksize</code>, <code>min_freq</code>, <code>n_labels</code> (see the <a href="/text.data.html#TextDataset"><code>TextDataset</code></a> documentation) or <code>bs</code>, <code>bptt</code> and <code>pad_idx</code> (see the sections LM data and classifier data).</p>
 
 </div>

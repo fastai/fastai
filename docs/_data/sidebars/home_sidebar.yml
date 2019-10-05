@@ -157,6 +157,9 @@ entries:
         - output: web,pdf
           title: tabular.models
           url: /tabular.models.html
+        - output: web,pdf
+          title: tabular.learner
+          url: /tabular.learner.html
         title: tabular
       - output: web
         subfolderitems:
