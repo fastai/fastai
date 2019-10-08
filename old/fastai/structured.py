@@ -105,6 +105,8 @@ def add_datepart(df, fldnames, drop=True, time=False, errors="raise"):
     1	2000	    3	        11	        13	        0	            73	            False	            False	                False	                False               	False           	False           	952905600     	2000       	3	        11      	18  	5           	78          	False	            False           	False           	False               	False          	False           	953337600
     2	2000	    3	        11	        15	        2           	75          	False           	False               	False               	False               	False               False           	953078400      	2000    	4          	13      	1   	5           	92          	False           	True            	False           	True                	False          	False           	954547200
     """
+    if isinstance(fldnames,str): 
+        fldnames = [fldnames]
     for fldname in fldnames:
         fld = df[fldname]
         fld_dtype = fld.dtype
