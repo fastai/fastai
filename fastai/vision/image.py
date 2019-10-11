@@ -538,7 +538,10 @@ def _grid_sample(x:TensorImage, coords:FlowField, mode:str='bilinear', padding_m
         d = min(x.shape[1]/coords.shape[1], x.shape[2]/coords.shape[2])/2
         # If we're resizing up by >200%, and we're zooming less than that, interpolate first
         if d>1 and d>z: x = F.interpolate(x[None], scale_factor=1/d, mode='area')[0]
-    return F.grid_sample(x[None], coords, mode=mode, padding_mode=padding_mode)[0]
+    with warnings.catch_warnings():
+        #To avoid the warning that come from grid_sample.
+        warnings.simplefilter("ignore")
+        return F.grid_sample(x[None], coords, mode=mode, padding_mode=padding_mode)[0]
 
 def _affine_grid(size:TensorImageSize)->FlowField:
     size = ((1,)+size)
