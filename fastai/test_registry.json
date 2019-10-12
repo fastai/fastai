@@ -88,19 +88,19 @@
     "fastai.basic_train.Learner.destroy": [
         {
             "file": "tests/test_basic_train.py",
-            "line": 170,
+            "line": 156,
             "test": "test_destroy"
         },
         {
             "file": "tests/test_basic_train.py",
-            "line": 213,
+            "line": 199,
             "test": "test_memory"
         }
     ],
     "fastai.basic_train.Learner.export": [
         {
             "file": "tests/test_basic_train.py",
-            "line": 230,
+            "line": 216,
             "test": "test_export_load_learner"
         }
     ],
@@ -135,12 +135,12 @@
     "fastai.basic_train.Learner.load": [
         {
             "file": "tests/test_basic_train.py",
-            "line": 104,
+            "line": 90,
             "test": "test_save_load"
         },
         {
             "file": "tests/test_basic_train.py",
-            "line": 213,
+            "line": 199,
             "test": "test_memory"
         }
     ],
@@ -164,24 +164,24 @@
         },
         {
             "file": "tests/test_basic_train.py",
-            "line": 104,
+            "line": 90,
             "test": "test_save_load"
         },
         {
             "file": "tests/test_basic_train.py",
-            "line": 213,
+            "line": 199,
             "test": "test_memory"
         }
     ],
     "fastai.basic_train.Learner.save": [
         {
             "file": "tests/test_basic_train.py",
-            "line": 104,
+            "line": 90,
             "test": "test_save_load"
         },
         {
             "file": "tests/test_basic_train.py",
-            "line": 213,
+            "line": 199,
             "test": "test_memory"
         }
     ],
@@ -219,7 +219,7 @@
     "fastai.basic_train.load_learner": [
         {
             "file": "tests/test_basic_train.py",
-            "line": 230,
+            "line": 216,
             "test": "test_export_load_learner"
         }
     ],
@@ -286,7 +286,7 @@
         },
         {
             "file": "tests/test_basic_train.py",
-            "line": 230,
+            "line": 216,
             "test": "test_export_load_learner"
         }
     ],
@@ -302,6 +302,20 @@
             "file": "tests/test_callbacks_misc.py",
             "line": 22,
             "test": "test_stop_after_n_batches"
+        }
+    ],
+    "fastai.collab.CollabDataBunch.from_df": [
+        {
+            "file": "tests/test_collab_train.py",
+            "line": 16,
+            "test": "test_val_loss"
+        }
+    ],
+    "fastai.collab.collab_learner": [
+        {
+            "file": "tests/test_collab_train.py",
+            "line": 16,
+            "test": "test_val_loss"
         }
     ],
     "fastai.core.Category": [
