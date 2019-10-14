@@ -367,11 +367,11 @@ class Learner():
         "Return predicted class, label and probabilities for `item`."
         batch = self.data.one_item(item)
         res = self.pred_batch(batch=batch, with_dropout=with_dropout)
-        raw_pred,x = grab_idx(res,0,batch_first=batch_first),batch[0]
-        norm = getattr(self.data,'norm',False)
+        raw_pred, x = grab_idx(res, 0, batch_first=batch_first), batch[0]
+        norm = getattr(self.data, 'norm', False)
         if norm:
             x = self.data.denorm(x)
-            if norm.keywords.get('do_y',False): raw_pred = self.data.denorm(raw_pred)
+            if norm.keywords.get('do_y', False): raw_pred = self.data.denorm(raw_pred)
         ds = self.data.single_ds
         pred = ds.y.analyze_pred(raw_pred, **kwargs)
         x = ds.x.reconstruct(grab_idx(x, 0))
