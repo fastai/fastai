@@ -75,26 +75,28 @@ class TextClassificationInterpretation(ClassificationInterpretation):
         text, attn = self.intrinsic_attention(text, class_id)
         show_piece_attn(text.text.split(), to_np(attn), **kwargs)
 
-    def show_top_losses(self, k:int, max_len:int=70)->None:
+    def show_top_losses(self, ds_type:DatasetType=DatasetType.Valid, k:int=10, max_len:int=70)->None:
         """
         Create a tabulation showing the first `k` texts in top_losses along with their prediction, actual,loss, and probability of
         actual class. `max_len` is the maximum number of tokens displayed.
         """
+        pred, actual_ind,loss = learn.get_preds(ds_type, ordered=True,with_loss=True)
         from IPython.display import display, HTML
         items = []
-        tl_val,tl_idx = self.top_losses()
-        for i,idx in enumerate(tl_idx):
+        tl_val = loss.tolist()
+        l = [i[0] for i in sorted(enumerate(tl_val), key=lambda x:x[1], reverse=True)]
+        for i,idx in enumerate(l):
             if k <= 0: break
             k -= 1
-            tx,cl = self.data.dl(self.ds_type).dataset[idx]
+            tx,cl = learn.data.dl(ds_type).dataset[idx]
             cl = cl.data
-            classes = self.data.classes
+            classes = learn.data.classes
             txt = ' '.join(tx.text.split(' ')[:max_len]) if max_len is not None else tx.text
-            tmp = [txt, f'{classes[self.pred_class[idx]]}', f'{classes[cl]}', f'{self.losses[idx]:.2f}',
-                   f'{self.preds[idx][cl]:.2f}']
+            tmp = [idx, txt, f'{classes[pred.argmax(dim=-1)[idx]]}', f'{classes[actual_ind[idx]]}', f'{loss[idx]:.2f}',
+                   f'{pred[idx][pred[idx].argmax(dim=-1)]:.2f}']
             items.append(tmp)
         items = np.array(items)
-        names = ['Text', 'Prediction', 'Actual', 'Loss', 'Probability']
+        names = ['id','Text', 'Prediction', 'Actual', 'Loss', 'Probability']
         df = pd.DataFrame({n:items[:,i] for i,n in enumerate(names)}, columns=names)
         with pd.option_context('display.max_colwidth', -1):
             display(HTML(df.to_html(index=False)))
