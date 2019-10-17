@@ -4,6 +4,7 @@ from ..basic_train import *
 from ..basic_train import _loss_func2activ
 from ..basic_data import DatasetType
 from .transform import *
+from ..callbacks import MixedPrecision
 
 __all__ = []
 
@@ -32,6 +33,8 @@ Learner.tta_only = _tta_only
 
 def _TTA(learn:Learner, beta:float=0.4, scale:float=1.35, ds_type:DatasetType=DatasetType.Valid, activ:nn.Module=None, with_loss:bool=False) -> Tensors:
     "Applies TTA to predict on `ds_type` dataset."
+    for cb in learn.callbacks:
+        if isinstance(cb, MixedPrecision): raise Exception("TTA doesn't work in mixed precision. Use `learn = learn.to_fp32()` to convert back your Learner in FP32.")
     preds,y = learn.get_preds(ds_type, activ=activ)
     all_preds = list(learn.tta_only(ds_type=ds_type, activ=activ, scale=scale))
     avg_preds = torch.stack(all_preds).mean(0)
