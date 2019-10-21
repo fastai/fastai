@@ -133,6 +133,10 @@ def requires_grad(m:nn.Module, b:Optional[bool]=None)->Optional[bool]:
     if b is None: return ps[0].requires_grad
     for p in ps: p.requires_grad=b
 
+def has_params(m:nn.Module)->bool:
+    "Check if `m` has at least one parameter"
+    return len(list(m.parameters())) > 0
+        
 def trainable_params(m:nn.Module)->ParamList:
     "Return list of trainable params in `m`."
     res = filter(lambda p: p.requires_grad, m.parameters())
