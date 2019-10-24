@@ -207,6 +207,9 @@ class ClassificationInterpretation(Interpretation):
                 coeff = f'{cm[i, j]:.{norm_dec}f}' if normalize else f'{cm[i, j]}'
                 plt.text(j, i, coeff, horizontalalignment="center", verticalalignment="center", color="white" if cm[i, j] > thresh else "black")
 
+        ax = fig.gca()
+        ax.set_ylim(len(self.vocab)-.5,-.5)
+                           
         plt.tight_layout()
         plt.ylabel('Actual')
         plt.xlabel('Predicted')
