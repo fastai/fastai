@@ -314,14 +314,6 @@ def to_np(x):
     "Convert a tensor to a numpy array."
     return x.data.cpu().numpy()
 
-# monkey patching to allow matplotlib to plot tensors
-def tensor__array__(self, dtype=None):
-    res = to_np(self)
-    if dtype is None: return res
-    else: return res.astype(dtype, copy=False)
-Tensor.__array__ = tensor__array__
-Tensor.ndim = property(lambda x: len(x.shape))
-
 def grab_idx(x,i,batch_first:bool=True):
     "Grab the `i`-th batch in `x`, `batch_first` stating the batch dimension."
     if batch_first: return ([o[i].cpu() for o in x]   if is_listy(x) else x[i].cpu())
