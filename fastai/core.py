@@ -303,6 +303,7 @@ class EmptyLabel(ItemBase):
     def __init__(self): self.obj,self.data = 0,0
     def __str__(self):  return ''
     def __hash__(self): return hash(str(self))
+    def apply_tfms(self, tfms:Collection, **kwargs): return self
 
 class Category(ItemBase):
     "Basic class for single classification labels."
