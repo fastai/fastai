@@ -38,14 +38,13 @@ class TextClassificationInterpretation(ClassificationInterpretation):
     """
 
     def __init__(self, learn: Learner, preds: Tensor, y_true: Tensor, losses: Tensor, ds_type: DatasetType = DatasetType.Valid):
-        super(TextClassificationInterpretation, self).__init__(learn,preds,y_true,losses,ds_type)
+        super().__init__(learn,preds,y_true,losses,ds_type)
         self.model = learn.model
 
     @classmethod
     def from_learner(cls, learn: Learner,  ds_type:DatasetType=DatasetType.Valid, activ:nn.Module=None):
         "Gets preds, y_true, losses to construct base class from a learner"
-        preds_res = learn.get_preds(ds_type=ds_type, activ=activ, with_loss=True, ordered=True)
-        return cls(learn, *preds_res)
+        return cls(learn, *learn.get_preds(ds_type=ds_type, activ=activ, with_loss=True, ordered=True))
 
     def intrinsic_attention(self, text:str, class_id:int=None):
         """Calculate the intrinsic attention of the input w.r.t to an output `class_id`, or the classification given by the model if `None`.

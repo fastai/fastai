@@ -68,8 +68,7 @@ class HookCallback(LearnerCallback):
     def on_train_begin(self, **kwargs):
         "Register the `Hooks` on `self.modules`."
         if not self.modules:
-            self.modules = [m for m in flatten_model(self.learn.model)
-                            if hasattr(m, 'weight')]
+            self.modules = [m for m in flatten_model(self.model) if has_params(m)]
         self.hooks = Hooks(self.modules, self.hook)
 
     def on_train_end(self, **kwargs):

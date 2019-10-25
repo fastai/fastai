@@ -19,6 +19,7 @@ of that change.
 
 ### Fixed:
 
+`Learner.get_preds` and `Learner.TTA` now work in FP16
 
 
 ## 1.0.58 (2019-09-29)

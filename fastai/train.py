@@ -173,7 +173,7 @@ class Interpretation():
 class ClassificationInterpretation(Interpretation):
     "Interpretation methods for classification models."
     def __init__(self, learn:Learner, preds:Tensor, y_true:Tensor, losses:Tensor, ds_type:DatasetType=DatasetType.Valid):
-        super(ClassificationInterpretation, self).__init__(learn,preds,y_true,losses,ds_type)
+        super().__init__(learn,preds,y_true,losses,ds_type)
         self.pred_class = self.preds.argmax(dim=1)
 
     def confusion_matrix(self, slice_size:int=1):
@@ -207,6 +207,9 @@ class ClassificationInterpretation(Interpretation):
                 coeff = f'{cm[i, j]:.{norm_dec}f}' if normalize else f'{cm[i, j]}'
                 plt.text(j, i, coeff, horizontalalignment="center", verticalalignment="center", color="white" if cm[i, j] > thresh else "black")
 
+        ax = fig.gca()
+        ax.set_ylim(len(self.vocab)-.5,-.5)
+                           
         plt.tight_layout()
         plt.ylabel('Actual')
         plt.xlabel('Predicted')

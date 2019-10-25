@@ -380,7 +380,7 @@ class SegmentationLabelList(ImageList):
         self.copy_new.append('classes')
         self.classes,self.loss_func = classes,CrossEntropyFlat(axis=1)
 
-    def open(self, fn): return open_mask(fn)
+    def open(self, fn): return open_mask(fn, after_open=self.after_open)
     def analyze_pred(self, pred, thresh:float=0.5): return pred.argmax(dim=0)[None]
     def reconstruct(self, t:Tensor): return ImageSegment(t)
 

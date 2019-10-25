@@ -40,7 +40,7 @@ def loss_batch(model:nn.Module, xb:Tensor, yb:Tensor, loss_func:OptLossFunc=None
 def get_preds(model:nn.Module, dl:DataLoader, pbar:Optional[PBar]=None, cb_handler:Optional[CallbackHandler]=None,
               activ:nn.Module=None, loss_func:OptLossFunc=None, n_batch:Optional[int]=None) -> List[Tensor]:
     "Tuple of predictions and targets, and optional losses (if `loss_func`) using `dl`, max batches `n_batch`."
-    res = [torch.cat(o).cpu() for o in
+    res = [to_float(torch.cat(o).cpu()) for o in
            zip(*validate(model, dl, cb_handler=cb_handler, pbar=pbar, average=False, n_batch=n_batch))]
     if loss_func is not None:
         with NoneReduceOnCPU(loss_func) as lf: res.append(lf(res[0], res[1]))
@@ -338,16 +338,18 @@ class Learner():
         return get_preds(self.model, self.dl(ds_type), cb_handler=CallbackHandler(callbacks),
                          activ=activ, loss_func=lf, n_batch=n_batch, pbar=pbar)
 
-    def pred_batch(self, ds_type:DatasetType=DatasetType.Valid, batch:Tuple=None, reconstruct:bool=False, with_dropout:bool=False) -> List[Tensor]:
+    def pred_batch(self, ds_type:DatasetType=DatasetType.Valid, batch:Tuple=None, reconstruct:bool=False,
+                   with_dropout:bool=False, activ:nn.Module=None) -> List[Tensor]:
         "Return output of the model on one batch from `ds_type` dataset."
         if batch is not None: xb,yb = batch
         else: xb,yb = self.data.one_batch(ds_type, detach=False, denorm=False)
         cb_handler = CallbackHandler(self.callbacks)
         xb,yb = cb_handler.on_batch_begin(xb,yb, train=False)
+        activ = ifnone(activ, _loss_func2activ(self.loss_func))
         with torch.no_grad():
             if not with_dropout: preds = loss_batch(self.model.eval(), xb, yb, cb_handler=cb_handler)
             else: preds = loss_batch(self.model.eval().apply(self.apply_dropout), xb, yb, cb_handler=cb_handler)
-            res = _loss_func2activ(self.loss_func)(preds[0])
+            res = activ(preds[0])
         if not reconstruct: return res
         res = res.detach().cpu()
         ds = self.dl(ds_type).dataset
@@ -585,7 +587,7 @@ class Recorder(LearnerCallback):
             values = self._split_list_val(values, skip_start, skip_end)
             ax.plot(val_iter, values)
             ax.set_ylabel(str(self.metrics_names[i]))
-            ax.set_xlabel('Batches processed')             
+            ax.set_xlabel('Batches processed')
         if ifnone(return_fig, defaults.return_fig): return fig
         if not IN_NOTEBOOK: plot_sixel(fig)
 

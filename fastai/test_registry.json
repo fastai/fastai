@@ -607,7 +607,7 @@
     "fastai.data_block.LabelLists.databunch": [
         {
             "file": "tests/test_vision_data.py",
-            "line": 217,
+            "line": 222,
             "test": "test_vision_datasets"
         }
     ],
@@ -660,7 +660,7 @@
     "fastai.datasets.untar_data": [
         {
             "file": "tests/test_vision_data.py",
-            "line": 165,
+            "line": 170,
             "test": "test_trunc_download"
         },
         {
@@ -1493,14 +1493,14 @@
         },
         {
             "file": "tests/test_vision_data.py",
-            "line": 54,
+            "line": 59,
             "test": "test_from_csv_and_from_df"
         }
     ],
     "fastai.vision.data.ImageDataBunch.from_df": [
         {
             "file": "tests/test_vision_data.py",
-            "line": 54,
+            "line": 59,
             "test": "test_from_csv_and_from_df"
         }
     ],
@@ -1514,40 +1514,40 @@
     "fastai.vision.data.ImageDataBunch.from_lists": [
         {
             "file": "tests/test_vision_data.py",
-            "line": 39,
+            "line": 44,
             "test": "test_from_lists"
         }
     ],
     "fastai.vision.data.ImageDataBunch.from_name_re": [
         {
             "file": "tests/test_vision_data.py",
-            "line": 32,
+            "line": 37,
             "test": "test_from_name_re"
         },
         {
             "file": "tests/test_vision_data.py",
-            "line": 70,
+            "line": 75,
             "test": "test_image_resize"
         }
     ],
     "fastai.vision.data.ImageDataBunch.normalize": [
         {
             "file": "tests/test_vision_data.py",
-            "line": 120,
+            "line": 125,
             "test": "test_normalize"
         }
     ],
     "fastai.vision.data.ImageList.from_csv": [
         {
             "file": "tests/test_vision_data.py",
-            "line": 227,
+            "line": 232,
             "test": "test_multi"
         }
     ],
     "fastai.vision.data.ImageList.from_folder": [
         {
             "file": "tests/test_vision_data.py",
-            "line": 217,
+            "line": 222,
             "test": "test_vision_datasets"
         },
         {
@@ -1559,59 +1559,59 @@
     "fastai.vision.data.ObjectItemList": [
         {
             "file": "tests/test_vision_data.py",
-            "line": 267,
+            "line": 272,
             "test": "test_coco"
         },
         {
             "file": "tests/test_vision_data.py",
-            "line": 280,
+            "line": 285,
             "test": "test_coco_same_size"
         },
         {
             "file": "tests/test_vision_data.py",
-            "line": 297,
+            "line": 302,
             "test": "test_coco_pickle"
         }
     ],
     "fastai.vision.data.PointsItemList": [
         {
             "file": "tests/test_vision_data.py",
-            "line": 254,
+            "line": 259,
             "test": "test_points"
         }
     ],
     "fastai.vision.data.SegmentationItemList": [
         {
             "file": "tests/test_vision_data.py",
-            "line": 238,
+            "line": 243,
             "test": "test_camvid"
         }
     ],
     "fastai.vision.data.denormalize": [
         {
             "file": "tests/test_vision_data.py",
-            "line": 134,
+            "line": 139,
             "test": "test_denormalize"
         }
     ],
     "fastai.vision.data.download_images": [
         {
             "file": "tests/test_vision_data.py",
-            "line": 144,
+            "line": 149,
             "test": "test_download_images"
         }
     ],
     "fastai.vision.data.verify_image": [
         {
             "file": "tests/test_vision_data.py",
-            "line": 201,
+            "line": 206,
             "test": "test_verify_image"
         }
     ],
     "fastai.vision.data.verify_images": [
         {
             "file": "tests/test_vision_data.py",
-            "line": 190,
+            "line": 195,
             "test": "test_verify_images"
         }
     ],
@@ -1688,17 +1688,17 @@
     "fastai.vision.image.pil2tensor": [
         {
             "file": "tests/test_vision_data.py",
-            "line": 348,
+            "line": 353,
             "test": "test_vision_pil2tensor"
         },
         {
             "file": "tests/test_vision_data.py",
-            "line": 379,
+            "line": 384,
             "test": "test_vision_pil2tensor_16bit"
         },
         {
             "file": "tests/test_vision_data.py",
-            "line": 386,
+            "line": 391,
             "test": "test_vision_pil2tensor_numpy"
         }
     ],
@@ -1885,12 +1885,12 @@
     "fastai.vision.transform.get_transforms": [
         {
             "file": "tests/test_vision_data.py",
-            "line": 313,
+            "line": 318,
             "test": "test_image_to_image_different_y_size"
         },
         {
             "file": "tests/test_vision_data.py",
-            "line": 328,
+            "line": 333,
             "test": "test_image_to_image_different_tfms"
         }
     ],
