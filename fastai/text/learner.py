@@ -56,6 +56,7 @@ class RNNLearner(Learner):
 
     def save_encoder(self, name:str):
         "Save the encoder to `name` inside the model directory."
+        if rank_distrib(): return # don't save if slave proc
         if is_pathlike(name): self._test_writeable_path()
         encoder = get_model(self.model)[0]
         if hasattr(encoder, 'module'): encoder = encoder.module
