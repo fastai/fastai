@@ -264,6 +264,7 @@ class Learner():
         if device is None: device = self.data.device
         elif isinstance(device, int): device = torch.device('cuda', device)
         source = self.path/self.model_dir/f'{file}.pth' if is_pathlike(file) else file
+        distrib_barrier()
         state = torch.load(source, map_location=device)
         if set(state.keys()) == {'model', 'opt'}:
             model_state = state['model']
