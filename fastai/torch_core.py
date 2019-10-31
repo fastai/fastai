@@ -406,6 +406,10 @@ def rank_distrib():
     "Return the distributed rank of this process (if applicable)."
     return int(os.environ.get('RANK', 0))
 
+def distrib_barrier():
+    "Barrier synchronization in distributed training (if applicable).  Processes in the same process group must all arrive here before proceeding further. Example use case: avoid processes stepping on each other when saving and loading models in distributed training.  See https://pytorch.org/tutorials/intermediate/ddp_tutorial.html#save-and-load-checkpoints."
+    if num_distrib() > 1: torch.distributed.barrier()
+    
 def add_metrics(last_metrics:Collection[Rank0Tensor], mets:Union[Rank0Tensor, Collection[Rank0Tensor]]):
     "Return a dictionary for updating `last_metrics` with `mets`."
     last_metrics,mets = listify(last_metrics),listify(mets)
