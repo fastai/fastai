@@ -76,8 +76,8 @@ class XResNet(nn.Sequential):
             *[ResBlock(expansion, ni if i==0 else nf, nf, stride if i==0 else 1)
               for i in range(blocks)])
 
-def xresnet(expansion, n_layers, name, c_out=3, pretrained=False, **kwargs):
-    model = XResNet(expansion, n_layers, **kwargs)
+def xresnet(expansion, n_layers, name, c_out=1000, pretrained=False, **kwargs):
+    model = XResNet(expansion, n_layers, c_out=c_out, **kwargs)
     if pretrained: model.load_state_dict(model_zoo.load_url(model_urls[name]))
     return model
 
