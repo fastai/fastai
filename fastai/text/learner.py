@@ -56,6 +56,7 @@ class RNNLearner(Learner):
 
     def save_encoder(self, name:str):
         "Save the encoder to `name` inside the model directory."
+        if rank_distrib(): return # don't save if slave proc
         if is_pathlike(name): self._test_writeable_path()
         encoder = get_model(self.model)[0]
         if hasattr(encoder, 'module'): encoder = encoder.module
@@ -66,6 +67,7 @@ class RNNLearner(Learner):
         encoder = get_model(self.model)[0]
         if device is None: device = self.data.device
         if hasattr(encoder, 'module'): encoder = encoder.module
+        distrib_barrier()
         encoder.load_state_dict(torch.load(self.path/self.model_dir/f'{name}.pth', map_location=device))
         self.freeze()
         return self

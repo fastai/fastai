@@ -303,6 +303,11 @@ class EmptyLabel(ItemBase):
     def __init__(self): self.obj,self.data = 0,0
     def __str__(self):  return ''
     def __hash__(self): return hash(str(self))
+    def apply_tfms(self, *args, **kwargs):
+        raise Exception("""Attempting to apply transforms to an empty label. This usually means you are
+        trying to apply transforms on your xs and ys on an inference problem, which will give you wrong
+        predictions. Pass `tfms=None, tfm_y=False` when creating your test set.
+        """)
 
 class Category(ItemBase):
     "Basic class for single classification labels."

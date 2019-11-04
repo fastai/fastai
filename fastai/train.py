@@ -208,7 +208,7 @@ class ClassificationInterpretation(Interpretation):
                 plt.text(j, i, coeff, horizontalalignment="center", verticalalignment="center", color="white" if cm[i, j] > thresh else "black")
 
         ax = fig.gca()
-        ax.set_ylim(len(self.vocab)-.5,-.5)
+        ax.set_ylim(len(self.data.y.classes)-.5,-.5)
                            
         plt.tight_layout()
         plt.ylabel('Actual')

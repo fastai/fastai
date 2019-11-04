@@ -148,6 +148,7 @@ class DataBunch():
 
     def save(self, file:PathLikeOrBinaryStream= 'data_save.pkl')->None:
         "Save the `DataBunch` in `self.path/file`. `file` can be file-like (file or buffer)"
+        if rank_distrib(): return # don't save if slave proc
         if not getattr(self, 'label_list', False):
             warn("Serializing the `DataBunch` only works when you created it using the data block API.")
             return
@@ -276,6 +277,7 @@ def load_data(path:PathOrStr, file:PathLikeOrBinaryStream='data_save.pkl', bs:in
               no_check:bool=False, **kwargs)->DataBunch:
     "Load a saved `DataBunch` from `path/file`. `file` can be file-like (file or buffer)"
     source = Path(path)/file if is_pathlike(file) else file
+    distrib_barrier()
     ll = torch.load(source, map_location='cpu') if defaults.device == torch.device('cpu') else torch.load(source)
     return ll.databunch(path=path, bs=bs, val_bs=val_bs, num_workers=num_workers, dl_tfms=dl_tfms, device=device,
                         collate_fn=collate_fn, no_check=no_check, **kwargs)
