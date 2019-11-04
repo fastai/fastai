@@ -4,7 +4,8 @@ import torch.utils.model_zoo as model_zoo
 from functools import partial
 from ...torch_core import Module
 
-__all__ = ['XResNet', 'xresnet18', 'xresnet34', 'xresnet50', 'xresnet101', 'xresnet152']
+__all__ = ['XResNet', 'xresnet18', 'xresnet34', 'xresnet50', 'xresnet101', 'xresnet152',
+           'xresnet18_deep', 'xresnet34_deep', 'xresnet50_deep']
 
 # or: ELU+init (a=0.54; gain=1.55)
 act_fn = nn.ReLU(inplace=True)
@@ -58,7 +59,7 @@ class XResNet(nn.Sequential):
             #stem.append(conv_layer(c_in, nf, stride=2 if i==1 else 1))
             #c_in = nf
 
-        block_szs = [64//expansion,64,128,256,512]
+        block_szs = [64//expansion,64,128,256,512] +[256]*(len(layers)-4)
         blocks = [self._make_layer(expansion, block_szs[i], block_szs[i+1], l, 1 if i==0 else 2)
                   for i,l in enumerate(layers)]
         super().__init__(
@@ -75,7 +76,7 @@ class XResNet(nn.Sequential):
             *[ResBlock(expansion, ni if i==0 else nf, nf, stride if i==0 else 1)
               for i in range(blocks)])
 
-def xresnet(expansion, n_layers, name, pretrained=False, **kwargs):
+def xresnet(expansion, n_layers, name, c_out=3, pretrained=False, **kwargs):
     model = XResNet(expansion, n_layers, **kwargs)
     if pretrained: model.load_state_dict(model_zoo.load_url(model_urls[name]))
     return model
@@ -90,4 +91,8 @@ for n,e,l in [
 ]:
     name = f'xresnet{n}'
     setattr(me, name, partial(xresnet, expansion=e, n_layers=l, name=name))
+
+xresnet18_deep = partial(xresnet, expansion=1, n_layers=[2, 2,  2, 2,1,1], name='xresnet18_deep')
+xresnet34_deep = partial(xresnet, expansion=1, n_layers=[3, 4,  6, 3,1,1], name='xresnet34_deep')
+xresnet50_deep = partial(xresnet, expansion=4, n_layers=[3, 4,  6, 3,1,1], name='xresnet50_deep')
 
