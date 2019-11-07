@@ -117,3 +117,19 @@ def test_DeviceDataLoader_getitem():
 
     ds = DictDataset()
     next(iter(DeviceDataLoader.create(ds)))
+
+def test_DataBunch_slice():
+    x_train,y_train = fake_basedata(n_in=3, batch_size=6),fake_basedata(n_in=3, batch_size=6)
+    x_valid,y_valid = fake_basedata(n_in=3, batch_size=3),fake_basedata(n_in=3, batch_size=3)
+    train_ds,valid_ds = TensorDataset(x_train, y_train),TensorDataset(x_valid, y_valid)
+    data = DataBunch.create(train_ds, valid_ds, bs=5)
+    this_tests(data.slice)
+
+    small_data = data.slice(slice(None,2),slice(None,1)) # explicit slice
+    assert 2 == len(small_data.train_ds[0]) # len of `x` part
+    assert 1 == len(small_data.valid_ds[0])
+    assert None is small_data.test_ds
+
+    small_data = data[:2] # slice via __getitem__()
+    assert 2 == len(small_data.train_ds[0])
+    assert 2 == len(small_data.valid_ds[0])

@@ -66,6 +66,13 @@
             "test": "test_DataBunch_show_batch"
         }
     ],
+    "fastai.basic_data.DataBunch.slice": [
+        {
+            "file": "tests/test_basic_data.py",
+            "line": 121,
+            "test": "test_DataBunch_slice"
+        }
+    ],
     "fastai.basic_data.intercept_args": [
         {
             "file": "tests/test_basic_data.py",

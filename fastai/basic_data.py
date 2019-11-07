@@ -272,6 +272,19 @@ class DataBunch():
             warn(message)
             print(final_message)
 
+    def slice(self, slice_train:slice, slice_valid:slice=slice(None), slice_test:slice=slice(None)):
+        "Return sliced version of `self`, for quick experimenting with massive datasets"
+        dls = []
+        for ds, slc in zip((self.train_ds, self.valid_ds, self.test_ds), (slice_train, slice_valid, slice_test)):
+            if ds is None: dls.append(None)
+            else: dls.append(DataLoader(ds[slc], batch_size=self.batch_size))
+        return type(self)(*dls[:2], test_dl=dls[2],
+                          device=self.device, dl_tfms=self.dl_tfms, collate_fn=self.collate_fn, path=self.path)
+
+    def __getitem__(self, item):
+        assert isinstance(item, slice)
+        return self.slice(item, item, item)
+
 def load_data(path:PathOrStr, file:PathLikeOrBinaryStream='data_save.pkl', bs:int=64, val_bs:int=None, num_workers:int=defaults.cpus,
               dl_tfms:Optional[Collection[Callable]]=None, device:torch.device=None, collate_fn:Callable=data_collate,
               no_check:bool=False, **kwargs)->DataBunch:
