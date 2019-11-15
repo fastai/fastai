@@ -148,11 +148,11 @@ summary: "Basic functions using pytorch"
 <pre>Sequential(
   (0): Sequential(
     (0): Conv2d(3, 6, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))
-    (1): ReLU(inplace)
+    (1): ReLU(inplace=True)
   )
   (1): Sequential(
     (0): Conv2d(6, 12, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))
-    (1): ReLU(inplace)
+    (1): ReLU(inplace=True)
   )
   (2): Sequential(
     (0): AdaptiveAvgPool2d(output_size=1)
@@ -188,9 +188,9 @@ summary: "Basic functions using pytorch"
 
 <div class="output_text output_subarea output_execute_result">
 <pre>[Conv2d(3, 6, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1)),
- ReLU(inplace),
+ ReLU(inplace=True),
  Conv2d(6, 12, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1)),
- ReLU(inplace),
+ ReLU(inplace=True),
  AdaptiveAvgPool2d(output_size=1),
  Flatten()]</pre>
 </div>
@@ -220,7 +220,7 @@ summary: "Basic functions using pytorch"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="flatten_check" class="doc_header"><code>flatten_check</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L384" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#flatten_check-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>flatten_check</code>(<strong><code>out</code></strong>:<code>Tensor</code>, <strong><code>targ</code></strong>:<code>Tensor</code>) → <code>Tensor</code></p>
+<h4 id="flatten_check" class="doc_header"><code>flatten_check</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L376" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#flatten_check-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>flatten_check</code>(<strong><code>out</code></strong>:<code>Tensor</code>, <strong><code>targ</code></strong>:<code>Tensor</code>) → <code>Tensor</code></p>
 </blockquote>
 <div class="collapse" id="flatten_check-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#flatten_check-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>flatten_check</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Check that <code>out</code> and <code>targ</code> have the same number of elements and flatten them.</p>
 
@@ -597,21 +597,21 @@ tensor([[1, 2],
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>[tensor([[-0.0729]], device=&#39;cuda:0&#39;), tensor([[0.6379]], device=&#39;cuda:0&#39;), tensor([[-1.1639]], device=&#39;cuda:0&#39;)]
+<pre>[tensor([[0.0944]], device=&#39;cuda:0&#39;), tensor([[0.6601]], device=&#39;cuda:0&#39;), tensor([[-0.2045]], device=&#39;cuda:0&#39;)]
 Id of tensors in a: 
-140198250940456
-140198119936216
-140198119936432
-[tensor([[-0.0729]]), tensor([[0.6379]]), tensor([[-1.1639]])]
+139705804314496
+139705804315856
+139705804316576
+[tensor([[0.0944]]), tensor([[0.6601]]), tensor([[-0.2045]])]
 Id of tensors in b:
-140198119936792
-140198119936864
-140198119937656
-[tensor([[-0.0729]]), tensor([[0.6379]]), tensor([[-1.1639]])]
+139705804395696
+139705804200688
+139705804201648
+[tensor([[0.0944]]), tensor([[0.6601]]), tensor([[-0.2045]])]
 Id of tensors in c:
-140198119936792
-140198119936864
-140198119937656
+139705804395696
+139705804200688
+139705804201648
 </pre>
 </div>
 </div>
@@ -871,7 +871,7 @@ dtype of bs: 	torch.int64	torch.int32	torch.int16	torch.float16	torch.float16	to
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="try_int" class="doc_header"><code>try_int</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L372" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#try_int-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>try_int</code>(<strong><code>o</code></strong>:<code>Any</code>) → <code>Any</code></p>
+<h4 id="try_int" class="doc_header"><code>try_int</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L364" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#try_int-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>try_int</code>(<strong><code>o</code></strong>:<code>Any</code>) → <code>Any</code></p>
 </blockquote>
 <div class="collapse" id="try_int-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#try_int-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>try_int</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Try to convert <code>o</code> to int, default to <code>o</code> if not possible.</p>
 
@@ -1188,7 +1188,7 @@ dtype of bs: 	torch.int64	torch.int32	torch.int16	torch.float16	torch.float16	to
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="one_param" class="doc_header"><code>one_param</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L368" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#one_param-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>one_param</code>(<strong><code>m</code></strong>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>) → <code>Tensor</code></p>
+<h4 id="one_param" class="doc_header"><code>one_param</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L360" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#one_param-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>one_param</code>(<strong><code>m</code></strong>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>) → <code>Tensor</code></p>
 </blockquote>
 <div class="collapse" id="one_param-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#one_param-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>one_param</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Return the first parameter of <code>m</code>.</p>
 
@@ -1333,7 +1333,7 @@ dtype of bs: 	torch.int64	torch.int32	torch.int16	torch.float16	torch.float16	to
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="log_uniform" class="doc_header"><code>log_uniform</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L355" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#log_uniform-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>log_uniform</code>(<strong><code>low</code></strong>, <strong><code>high</code></strong>, <strong><code>size</code></strong>:<code>Optional</code>[<code>List</code>[<code>int</code>]]=<strong><em><code>None</code></em></strong>) → <code>FloatOrTensor</code></p>
+<h4 id="log_uniform" class="doc_header"><code>log_uniform</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L347" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#log_uniform-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>log_uniform</code>(<strong><code>low</code></strong>, <strong><code>high</code></strong>, <strong><code>size</code></strong>:<code>Optional</code>[<code>List</code>[<code>int</code>]]=<strong><em><code>None</code></em></strong>) → <code>FloatOrTensor</code></p>
 </blockquote>
 <div class="collapse" id="log_uniform-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#log_uniform-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>log_uniform</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Draw 1 or shape=<code>size</code> random floats from uniform dist: min=log(<code>low</code>), max=log(<code>high</code>).</p>
 
@@ -1365,7 +1365,7 @@ dtype of bs: 	torch.int64	torch.int32	torch.int16	torch.float16	torch.float16	to
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>tensor([1.3422, 1.7174, 1.7097, 0.9742, 1.8986, 1.4985, 1.8341, 0.7608])</pre>
+<pre>tensor([0.6463, 0.6198, 0.5594, 0.8552, 1.7712, 0.7278, 1.1318, 0.8701])</pre>
 </div>
 
 </div>
@@ -1383,7 +1383,7 @@ dtype of bs: 	torch.int64	torch.int32	torch.int16	torch.float16	torch.float16	to
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="rand_bool" class="doc_header"><code>rand_bool</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L360" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#rand_bool-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>rand_bool</code>(<strong><code>p</code></strong>:<code>float</code>, <strong><code>size</code></strong>:<code>Optional</code>[<code>List</code>[<code>int</code>]]=<strong><em><code>None</code></em></strong>) → <code>BoolOrTensor</code></p>
+<h4 id="rand_bool" class="doc_header"><code>rand_bool</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L352" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#rand_bool-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>rand_bool</code>(<strong><code>p</code></strong>:<code>float</code>, <strong><code>size</code></strong>:<code>Optional</code>[<code>List</code>[<code>int</code>]]=<strong><em><code>None</code></em></strong>) → <code>BoolOrTensor</code></p>
 </blockquote>
 <div class="collapse" id="rand_bool-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#rand_bool-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>rand_bool</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Draw 1 or shape=<code>size</code> random booleans (<code>True</code> occuring with probability <code>p</code>).</p>
 
@@ -1415,7 +1415,7 @@ dtype of bs: 	torch.int64	torch.int32	torch.int16	torch.float16	torch.float16	to
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>tensor([0, 0, 1, 0, 0, 0, 1, 0], dtype=torch.uint8)</pre>
+<pre>tensor([ True,  True,  True, False,  True,  True, False, False])</pre>
 </div>
 
 </div>
@@ -1433,7 +1433,7 @@ dtype of bs: 	torch.int64	torch.int32	torch.int16	torch.float16	torch.float16	to
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="uniform" class="doc_header"><code>uniform</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L350" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#uniform-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>uniform</code>(<strong><code>low</code></strong>:<code>Number</code>, <strong><code>high</code></strong>:<code>Number</code>=<strong><em><code>None</code></em></strong>, <strong><code>size</code></strong>:<code>Optional</code>[<code>List</code>[<code>int</code>]]=<strong><em><code>None</code></em></strong>) → <code>FloatOrTensor</code></p>
+<h4 id="uniform" class="doc_header"><code>uniform</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L342" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#uniform-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>uniform</code>(<strong><code>low</code></strong>:<code>Number</code>, <strong><code>high</code></strong>:<code>Number</code>=<strong><em><code>None</code></em></strong>, <strong><code>size</code></strong>:<code>Optional</code>[<code>List</code>[<code>int</code>]]=<strong><em><code>None</code></em></strong>) → <code>FloatOrTensor</code></p>
 </blockquote>
 <div class="collapse" id="uniform-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#uniform-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>uniform</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Draw 1 or shape=<code>size</code> random floats from uniform dist: min=<code>low</code>, max=<code>high</code>.</p>
 
@@ -1465,7 +1465,7 @@ dtype of bs: 	torch.int64	torch.int32	torch.int16	torch.float16	torch.float16	to
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>tensor([0.6441, 0.4143, 0.6510, 0.4366, 0.7045, 0.0803, 0.8638, 0.1684])</pre>
+<pre>tensor([0.1251, 0.5484, 0.8592, 0.0317, 0.4503, 0.8402, 0.6992, 0.9824])</pre>
 </div>
 
 </div>
@@ -1483,7 +1483,7 @@ dtype of bs: 	torch.int64	torch.int32	torch.int16	torch.float16	torch.float16	to
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="uniform_int" class="doc_header"><code>uniform_int</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L364" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#uniform_int-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>uniform_int</code>(<strong><code>low</code></strong>:<code>int</code>, <strong><code>high</code></strong>:<code>int</code>, <strong><code>size</code></strong>:<code>Optional</code>[<code>List</code>[<code>int</code>]]=<strong><em><code>None</code></em></strong>) → <code>IntOrTensor</code></p>
+<h4 id="uniform_int" class="doc_header"><code>uniform_int</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L356" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#uniform_int-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>uniform_int</code>(<strong><code>low</code></strong>:<code>int</code>, <strong><code>high</code></strong>:<code>int</code>, <strong><code>size</code></strong>:<code>Optional</code>[<code>List</code>[<code>int</code>]]=<strong><em><code>None</code></em></strong>) → <code>IntOrTensor</code></p>
 </blockquote>
 <div class="collapse" id="uniform_int-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#uniform_int-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>uniform_int</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Generate int or tensor <code>size</code> of ints between <code>low</code> and <code>high</code> (included).</p>
 
@@ -1515,7 +1515,7 @@ dtype of bs: 	torch.int64	torch.int32	torch.int16	torch.float16	torch.float16	to
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>tensor([1, 1, 2, 1, 0, 2, 1, 1])</pre>
+<pre>tensor([1, 0, 2, 2, 0, 2, 0, 2])</pre>
 </div>
 
 </div>
@@ -1576,7 +1576,7 @@ dtype of bs: 	torch.int64	torch.int32	torch.int16	torch.float16	torch.float16	to
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>tensor([-0.6151], grad_fn=&lt;AddBackward0&gt;)</pre>
+<pre>tensor([1.7807], grad_fn=&lt;AddBackward0&gt;)</pre>
 </div>
 
 </div>
@@ -1678,7 +1678,7 @@ dtype of bs: 	torch.int64	torch.int32	torch.int16	torch.float16	torch.float16	to
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_model" class="doc_header"><code>get_model</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L380" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#get_model-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>get_model</code>(<strong><code>model</code></strong>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>)</p>
+<h4 id="get_model" class="doc_header"><code>get_model</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L372" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#get_model-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>get_model</code>(<strong><code>model</code></strong>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>)</p>
 </blockquote>
 <div class="collapse" id="get_model-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#get_model-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>get_model</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Return the model maybe wrapped inside <code>model</code>.</p>
 
@@ -1699,7 +1699,7 @@ dtype of bs: 	torch.int64	torch.int32	torch.int16	torch.float16	torch.float16	to
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="grab_idx" class="doc_header"><code>grab_idx</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L329" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#grab_idx-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>grab_idx</code>(<strong><code>x</code></strong>, <strong><code>i</code></strong>, <strong><code>batch_first</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>)</p>
+<h4 id="grab_idx" class="doc_header"><code>grab_idx</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L321" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#grab_idx-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>grab_idx</code>(<strong><code>x</code></strong>, <strong><code>i</code></strong>, <strong><code>batch_first</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>)</p>
 </blockquote>
 <div class="collapse" id="grab_idx-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#grab_idx-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>grab_idx</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Grab the <code>i</code>-th batch in <code>x</code>, <code>batch_first</code> stating the batch dimension.</p>
 
@@ -1720,7 +1720,7 @@ dtype of bs: 	torch.int64	torch.int32	torch.int16	torch.float16	torch.float16	to
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="logit" class="doc_header"><code>logit</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L334" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#logit-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>logit</code>(<strong><code>x</code></strong>:<code>Tensor</code>) → <code>Tensor</code></p>
+<h4 id="logit" class="doc_header"><code>logit</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L326" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#logit-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>logit</code>(<strong><code>x</code></strong>:<code>Tensor</code>) → <code>Tensor</code></p>
 </blockquote>
 <div class="collapse" id="logit-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#logit-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>logit</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Logit of <code>x</code>, clamped to avoid inf.</p>
 
@@ -1741,7 +1741,7 @@ dtype of bs: 	torch.int64	torch.int32	torch.int16	torch.float16	torch.float16	to
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="logit_" class="doc_header"><code>logit_</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L339" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#logit_-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>logit_</code>(<strong><code>x</code></strong>:<code>Tensor</code>) → <code>Tensor</code></p>
+<h4 id="logit_" class="doc_header"><code>logit_</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L331" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#logit_-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>logit_</code>(<strong><code>x</code></strong>:<code>Tensor</code>) → <code>Tensor</code></p>
 </blockquote>
 <div class="collapse" id="logit_-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#logit_-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>logit_</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Inplace logit of <code>x</code>, clamped to avoid inf</p>
 

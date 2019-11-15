@@ -1126,7 +1126,7 @@ summary: "The data block API"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The basic class to get your inputs into is the following one. It's also the same class that will contain all of your labels (hence the name <a href="/data_block.html#ItemList"><code>ItemList</code></a>).</p>
+<p>The basic class to get your inputs is the following one. It's also the same class that will contain all of your labels (hence the name <a href="/data_block.html#ItemList"><code>ItemList</code></a>).</p>
 
 </div>
 </div>
@@ -1517,7 +1517,7 @@ Path: /home/ubuntu/.fastai/data/mnist_tiny/test</pre>
 <p>As we can see, the files do not necesarily return in alpha-numeric order by default. In the above: 1503.png, ... 617.png, 585.png ...</p>
 <p>This is OK when you're always using the same machine, as the same dataset should return in the same order. But when building a datablock on one machine (say GCP) and then porting the same code to a different machine (say your laptop) that same dataset and code might return the files in a different order.</p>
 <p>Since all random operations use the loaded order of the dataset as the starting point, you will not be able to replicate any random operations, say randomly splitting the data into 80% train, and 20% validation, even while correctly seeding.</p>
-<p>The solution is to use <code>presort=True</code> in the <code>.from_folder()</code> method. As can be seen below, with that argument turned on, the file return in ascending order, and this behavior will match across machines and across platforms. Now you can reproduce any random operation you perfrom on the loaded data.</p>
+<p>The solution is to use <code>presort=True</code> in the <code>.from_folder()</code> method. As can be seen below, with that argument turned on, the file is returned in ascending order, and this behavior will match across machines and across platforms. Now you can reproduce any random operation you perform on the loaded data.</p>
 
 </div>
 </div>
@@ -1556,7 +1556,7 @@ Path: /home/user/.fastai/data/mnist_tiny/test</pre>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>How does such output above is generated?</p>
+<p>How is the output above generated?</p>
 <p>behind the scenes, executing <code>itemlist</code> calls <a href="/data_block.html#ItemList.__repr__"><code>ItemList.__repr__</code></a> which basically prints out <code>itemlist[0]</code> to <code>itemlist[4]</code></p>
 
 </div>
@@ -1738,7 +1738,7 @@ Path: /home/ubuntu/.fastai/data/mnist_tiny</pre>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Dataframe has 2 columns. The first column is the path to the image and the second column contains label id for that image. In case you have multi-labels (i.e more than one label for a single image), you will have a space(as determined by <code>label_delim</code> argument of <code>label_from_df</code>) seperated string in the labels column.</p>
+<p>Dataframe has 2 columns. The first column is the path to the image and the second column contains label id for that image. In case you have multi-labels (i.e more than one label for a single image), you will have a space (as determined by <code>label_delim</code> argument of <code>label_from_df</code>) seperated string in the labels column.</p>
 <p><code>from_df</code> and <code>from_csv</code> can be used in a more general way. In cases you are not able to figure out how to get your ImageList, it is very easy to make a csv file with the above format.</p>
 <p>How to set <code>path</code>? <code>path</code> refers to your root data directory. So the paths in your csv file should be relative to <code>path</code> and not absolute paths. In the below example, in <em>labels.csv</em> the paths to the images are <strong>path + train/3/7463.png</strong></p>
 
@@ -2880,7 +2880,7 @@ Path: /home/ubuntu/.fastai/data/mnist_tiny/valid</pre>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>As you will see below, <code>copy_new</code> allows use to borrow any argument and its value from <code>itemlist1</code>, and <code>itemlist1.new(itemlist1.items)</code> allows us to use <code>items</code> and arguments inside <code>copy_new</code> to create another <a href="/data_block.html#ItemList"><code>ItemList</code></a> by calling <a href="/data_block.html#ItemList.__init__"><code>ItemList.__init__</code></a>.</p>
+<p>As you will see below, <code>copy_new</code> allows us to borrow any argument and its value from <code>itemlist1</code>, and <code>itemlist1.new(itemlist1.items)</code> allows us to use <code>items</code> and arguments inside <code>copy_new</code> to create another <a href="/data_block.html#ItemList"><code>ItemList</code></a> by calling <a href="/data_block.html#ItemList.__init__"><code>ItemList.__init__</code></a>.</p>
 
 </div>
 </div>
@@ -4853,7 +4853,7 @@ Path: .</pre>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>It will store list of labels in <code>items</code> belonging to <code>classes</code>. If <code>None</code> are passed, <code>classes</code> will be determined by the unique different labels. <code>sep</code> is used to split the content of <code>items</code> in a list of tags.</p>
+<p>It will store a list of labels in <code>items</code> belonging to <code>classes</code>. If <code>None</code> are passed, <code>classes</code> will be determined by the different unique labels. <code>sep</code> is used to split the content of <code>items</code> in a list of tags.</p>
 <p>If <code>one_hot=True</code>, the items contain the labels one-hot encoded. In this case, it is mandatory to pass a list of <code>classes</code> (as we can't use the different labels).</p>
 
 </div>
@@ -6072,7 +6072,7 @@ Test: None</pre>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Even when there is just an <a href="/vision.data.html#ImageList"><code>ImageList</code></a> from a traning set folder with no split needed, we still must do <code>split_none()</code> in order to create an <a href="/data_block.html#ItemLists"><code>ItemLists</code></a>, and only then we can do <code>ItemLists.label_from_folder()</code> nicely.</p>
+<p>Even when there is just an <a href="/vision.data.html#ImageList"><code>ImageList</code></a> from a training set folder with no split needed, we still must do <code>split_none()</code> in order to create an <a href="/data_block.html#ItemLists"><code>ItemLists</code></a>, and only then we can do <code>ItemLists.label_from_folder()</code> nicely.</p>
 
 </div>
 </div>
@@ -6440,7 +6440,7 @@ Path: /Users/Natsume/.fastai/data/mnist_tiny/test</pre>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Behind the scenes, <code>LabelLists.get_processors()</code> first puts <code>train.x._processor</code> classes and <code>train.y._processor</code> classes into separate lists, and then instantiates those processors and put them into <code>xp</code> and <code>yp</code>.</p>
+<p>Behind the scenes, <code>LabelLists.get_processors()</code> first puts <code>train.x._processor</code> classes and <code>train.y._processor</code> classes into separate lists, and then instantiates those processors and puts them into <code>xp</code> and <code>yp</code>.</p>
 
 </div>
 </div>
@@ -6632,7 +6632,7 @@ Behind the scenes, we put all of <code>processor</code> into a list and apply th
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>To to more precise, this function returns list of FilePath objects using files in <code>path</code> that must have a suffix in <code>extensions</code>, and hidden folders and files are ignored. If <code>recurse=True</code>, all files in subfolders will be applied; <code>include</code> is used to select particular folders to apply.</p>
+<p>To be more precise, this function returns a list of FilePath objects using files in <code>path</code> that must have a suffix in <code>extensions</code>, and hidden folders and files are ignored. If <code>recurse=True</code>, all files in subfolders will be applied; <code>include</code> is used to select particular folders to apply.</p>
 <p>Inside <a href="/data_block.html#get_files"><code>get_files</code></a>, there is <a href="/data_block.html#_get_files"><code>_get_files</code></a> which turns all filenames inside <code>f</code> from directory <code>parent/p</code> into a list of FilePath objects. All filenames must have a suffix in <code>extensions</code>. All hidden files are ignored.</p>
 
 </div>

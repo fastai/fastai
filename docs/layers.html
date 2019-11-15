@@ -725,7 +725,7 @@ ipdb&gt;</code></pre>
 <div class="output_markdown rendered_html output_subarea ">
 <h3 id="MergeLayer" class="doc_header"><code>class</code> <code>MergeLayer</code><a href="https://github.com/fastai/fastai/blob/master/fastai/layers.py#L147" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#MergeLayer-pytest" style="float:right; padding-right:10px">[test]</a></h3><blockquote><p><code>MergeLayer</code>(<strong><code>dense</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>) :: <a href="/core.html#PrePostInitMeta"><code>PrePostInitMeta</code></a> :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
 </blockquote>
-<div class="collapse" id="MergeLayer-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#MergeLayer-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>MergeLayer</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Merge a shortcut with the result of the module by adding them or concatenating thme if <code>dense=True</code>.</p>
+<div class="collapse" id="MergeLayer-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#MergeLayer-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>MergeLayer</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Merge a shortcut with the result of the module by adding them or concatenating them if <code>dense=True</code>.</p>
 
 </div>
 
@@ -872,9 +872,9 @@ ipdb&gt;</code></pre>
 <p>Create an instance of <code>func</code> with <code>args</code> and <code>kwargs</code>. When passing an output and target, it</p>
 <ul>
 <li>puts <code>axis</code> first in output and target with a transpose</li>
-<li>casts the target to <code>float</code> is <code>floatify=True</code></li>
+<li>casts the target to <code>float</code> if <code>floatify=True</code></li>
 <li>squeezes the <code>output</code> to two dimensions if <code>is_2d</code>, otherwise one dimension, squeezes the target to one dimension</li>
-<li>applied the instance of <code>func</code>.</li>
+<li>applies the instance of <code>func</code>.</li>
 </ul>
 
 </div>
@@ -1035,7 +1035,7 @@ ipdb&gt;</code></pre>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>The <a href="/layers.html#bn_drop_lin"><code>bn_drop_lin</code></a> function returns a sequence of <a href="https://arxiv.org/abs/1502.03167">batch normalization</a>, <a href="https://www.cs.toronto.edu/~hinton/absps/JMLRdropout.pdf">dropout</a> and a linear layer. This custom layer is usually used at the end of a model.</p>
-<p><code>n_in</code> represents the number of size of the input <code>n_out</code> the size of the output, <code>bn</code> whether we want batch norm or not, <code>p</code> is how much dropout and <code>actn</code> is an optional parameter to add an activation function at the end.</p>
+<p><code>n_in</code> represents the size of the input, <code>n_out</code> the size of the output, <code>bn</code> whether we want batch norm or not, <code>p</code> how much dropout, and <code>actn</code> (optional parameter) adds an activation function at the end.</p>
 
 </div>
 </div>
@@ -1105,7 +1105,7 @@ ipdb&gt;</code></pre>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>The <a href="/layers.html#conv_layer"><code>conv_layer</code></a> function returns a sequence of <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Conv2d">nn.Conv2D</a>, <a href="https://arxiv.org/abs/1502.03167">BatchNorm</a> and a ReLU or <a href="https://ai.stanford.edu/~amaas/papers/relu_hybrid_icml2013_final.pdf">leaky RELU</a> activation function.</p>
-<p><code>n_in</code> represents the number of size of the input <code>n_out</code> the size of the output, <code>ks</code> kernel size, <code>stride</code> the stride with which we want to apply the convolutions. <code>bias</code> will decide if they have bias or not (if None, defaults to True unless using batchnorm). <code>norm_type</code> selects type of normalization (or <code>None</code>). If <code>leaky</code> is None, the activation is a standard <code>ReLU</code>, otherwise it's a <code>LeakyReLU</code> of slope <code>leaky</code>. Finally if <code>transpose=True</code>, the convolution is replaced by a <code>ConvTranspose2D</code>.</p>
+<p><code>n_in</code> represents the size of the input, <code>n_out</code> the size of the output, <code>ks</code> the kernel size, <code>stride</code> the stride with which we want to apply the convolutions. <code>bias</code> will decide if they have bias or not (if None, defaults to True unless using batchnorm). <code>norm_type</code> selects the type of normalization (or <code>None</code>). If <code>leaky</code> is None, the activation is a standard <code>ReLU</code>, otherwise it's a <code>LeakyReLU</code> of slope <code>leaky</code>. Finally if <code>transpose=True</code>, the convolution is replaced by a <code>ConvTranspose2D</code>.</p>
 
 </div>
 </div>

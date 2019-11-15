@@ -426,12 +426,13 @@ def train_sentencepiece(texts:Collection[str], path:PathOrStr, pre_rules: ListRu
     raw_text_path = cache_dir / 'all_text.out'
     with open(raw_text_path, 'w', encoding=enc) as f: f.write("\n".join(texts))
     spec_tokens = ['\u2581'+s for s in defaults.text_spec_tok]
+    cache_dir = cache_dir/'spm'
     SentencePieceTrainer.Train(" ".join([
         f"--input={raw_text_path} --max_sentence_length={max_sentence_len}",
         f"--character_coverage={ifnone(char_coverage, 0.99999 if lang in full_char_coverage_langs else 0.9998)}",
         f"--unk_id={len(defaults.text_spec_tok)} --pad_id=-1 --bos_id=-1 --eos_id=-1",
         f"--user_defined_symbols={','.join(spec_tokens)}",
-        f'--model_prefix="{cache_dir/'spm'}" --vocab_size={vocab_sz} --model_type={model_type}']))
+        f'--model_prefix="cache_dir" --vocab_size={vocab_sz} --model_type={model_type}']))
     raw_text_path.unlink()
     return cache_dir
 

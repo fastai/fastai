@@ -73,7 +73,7 @@ sidebar: home_sidebar
 <pre><code>from fastai.callbacks.misc import StopAfterNBatches
 [...]
 learn = cnn_learner([...])
-learn.callbacks.append(StopAfterNBatches(learn, n_batches=2))
+learn.callbacks.append(StopAfterNBatches(n_batches=2))
 learn.fit_one_cycle(3, max_lr=1e-2)</code></pre>
 <p>and it'll either fit into the existing memory or it'll immediately fail with OOM error. You may want to add <a href="https://github.com/stas00/ipyexperiments/">ipyexperiments</a> to show you the memory usage, including the peak usage.</p>
 <p>This is good, but it's cumbersome since you have to change the notebook source code and often you will have multiple learners and fit calls in the same notebook, so here is how to do it globally by placing the following code somewhere on top of your notebook and leaving the rest of your notebook unmodified:</p>
