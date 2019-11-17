@@ -100,7 +100,7 @@ class AWD_LSTM(Module):
         self.input_dp = RNNDropout(input_p)
         self.hidden_dps = nn.ModuleList([RNNDropout(hidden_p) for l in range(n_layers)])
 
-    def forward(self, input:Tensor, from_embeddings:bool=False)->Tuple[Tensor,Tensor]:
+    def forward(self, input:Tensor, from_embeddings:bool=False)->Tuple[List[Tensor],List[Tensor]]:
         if from_embeddings: bs,sl,es = input.size()
         else: bs,sl = input.size()
         if bs!=self.bs:
@@ -156,12 +156,12 @@ class SequentialRNN(nn.Sequential):
         for c in self.children():
             if hasattr(c, 'reset'): c.reset()
 
-def awd_lstm_lm_split(model:nn.Module) -> List[nn.Module]:
+def awd_lstm_lm_split(model:nn.Module) -> List[List[nn.Module]]:
     "Split a RNN `model` in groups for differential learning rates."
     groups = [[rnn, dp] for rnn, dp in zip(model[0].rnns, model[0].hidden_dps)]
     return groups + [[model[0].encoder, model[0].encoder_dp, model[1]]]
 
-def awd_lstm_clas_split(model:nn.Module) -> List[nn.Module]:
+def awd_lstm_clas_split(model:nn.Module) -> List[List[nn.Module]]:
     "Split a RNN `model` in groups for differential learning rates."
     groups = [[model[0].module.encoder, model[0].module.encoder_dp]]
     groups += [[rnn, dp] for rnn, dp in zip(model[0].module.rnns, model[0].module.hidden_dps)]
