@@ -252,8 +252,6 @@ class MultiBatchEncoder(Module):
 
     def concat(self, arrs:Sequence[Sequence[Tensor]])->List[Tensor]:
         "Concatenate the `arrs` along the batch dimension."
-        # arrs - outer list: sequence dimension, inner: encoder layers
-        # returned value: list of complete tensors, elements correspond to encoder layers
         return [torch.cat([l[si] for l in arrs], dim=1) for si in range_of(arrs[0])]
 
     def reset(self):
