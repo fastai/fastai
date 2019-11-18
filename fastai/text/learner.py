@@ -220,7 +220,7 @@ def language_model_learner(data:DataBunch, arch, config:dict=None, drop_mult:flo
         learn.freeze()
     return learn
 
-def masked_concat_pool(outputs:List[Tensor], mask:Tensor)->Tensor:
+def masked_concat_pool(outputs:Sequence[Tensor], mask:Tensor)->Tensor:
     "Pool MultiBatchEncoder outputs into one vector [last_hidden, max_pool, avg_pool]."
     output = outputs[-1]
     avg_pool = output.masked_fill(mask[:, :, None], 0).mean(dim=1)
