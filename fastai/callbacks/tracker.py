@@ -50,29 +50,57 @@ class TrackerCallback(LearnerCallback):
             warn(f'{self.__class__} conditioned on metric `{self.monitor}` which is not available. Available metrics are: {", ".join(map(str, self.learn.recorder.names[1:-1]))}')
         return values.get(self.monitor)
 
-class EarlyStoppingCallback(TrackerCallback):
-    "A `TrackerCallback` that terminates training when monitored quantity stops improving."
-    def __init__(self, learn:Learner, monitor:str='valid_loss', mode:str='auto', min_delta:int=0, patience:int=0):
-        super().__init__(learn, monitor=monitor, mode=mode)
-        self.min_delta,self.patience = min_delta,patience
-        if self.operator == np.less:  self.min_delta *= -1
+class EarlyStoppingCallback(LearnerCallback):
+    "A `LearnerCallback` that terminates training when all monitored quantities stop improving."
 
-    def on_train_begin(self, **kwargs:Any)->None:
+    def __init__(self, learn: Learner, monitor: Union[str, List[str]] = 'valid_loss',
+                 mode: Union[str, List[str]] = 'auto', min_delta: Union[float, List[float]] = 0,
+                 patience: int = 0):
+        super().__init__(learn)
+        self.wait = 0
+        if isinstance(monitor, str):
+            monitors = [monitor]
+        else:
+            monitors = monitor
+        if isinstance(mode, str):
+            modes = [mode] * len(monitors)
+        else:
+            modes = mode
+        self.trackers = [TrackerCallback(self.learn, monitor, mode)
+                         for monitor, mode in zip(monitors, modes)]
+        self.patience = patience
+        if isinstance(min_delta, list):
+            self.min_deltas = min_delta
+        else:
+            self.min_deltas = [min_delta] * len(monitors)
+        for i, tracker in enumerate(self.trackers):
+            if tracker.operator == np.less:
+                self.min_deltas[i] *= -1
+
+    def on_train_begin(self, **kwargs: Any) -> None:
         "Initialize inner arguments."
         self.wait = 0
-        super().on_train_begin(**kwargs)
+        for tracker in self.trackers:
+            tracker.on_train_begin(**kwargs)
 
-    def on_epoch_end(self, epoch, **kwargs:Any)->None:
-        "Compare the value monitored to its best score and maybe stop training."
-        current = self.get_monitor_value()
-        if current is None: return
-        if self.operator(current - self.min_delta, self.best):
-            self.best,self.wait = current,0
-        else:
-            self.wait += 1
-            if self.wait > self.patience:
-                print(f'Epoch {epoch}: early stopping')
-                return {"stop_training":True}
+    def on_epoch_end(self, epoch, **kwargs: Any) -> dict:
+        "Compare the values monitored to their best score and maybe stop training."
+        self.wait += 1
+        improved_monitors = []
+        for tracker, min_delta in zip(self.trackers, self.min_deltas):
+            current = tracker.get_monitor_value()
+            if current is None:
+                continue
+            if tracker.operator(current - min_delta, tracker.best):
+                tracker.best = current
+                self.wait = 0
+                improved_monitors.append(f'{tracker.monitor} ({current})')
+        if len(improved_monitors) > 0:
+            print(f'Model improved at epoch {epoch} at metrics: {", ".join(improved_monitors)}.')
+        elif self.wait > self.patience:
+            print(f'Epoch {epoch}: early stopping')
+            return {"stop_training": True}
+        return {}
 
 class SaveModelCallback(TrackerCallback):
     "A `TrackerCallback` that saves the model when monitored quantity is best."
