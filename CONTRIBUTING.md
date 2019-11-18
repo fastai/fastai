@@ -5,7 +5,7 @@ https://docs.fast.ai/dev/style.html) first. (Note that we don't follow PEP8, but
 
 ## Note for new contributors from Jeremy
 
-It can be tempting to jump into a new project by questioning the stylistic decisions that have been made, such as naming, formatting, and so forth. It is especially so for python programmers coming to this project, which is unusual in following a number of conventions that are common in other programming communities, but not in Python. However, please don’t do this, for (amongst others) the following reasons:
+It can be tempting to jump into a new project by questioning the stylistic decisions that have been made, such as naming, formatting, and so forth. This can be especially so for python programmers contributing to this project, which is unusual in following a number of conventions that are common in other programming communities, but not in Python. However, please don’t do this, for (amongst others) the following reasons:
 
 - Contributing to [Parkinson’s law of triviality](https://www.wikiwand.com/en/Law_of_triviality) has negative consequences for a project. Let’s focus on deep learning!
 - It’s exhausting to repeat the same discussion over and over again, especially when it’s been well documented already. When you have a question about the project, please check the pages in the docs website linked here.
