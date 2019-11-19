@@ -93,7 +93,7 @@ class RNNLearner(Learner):
             sampler = [i for i in self.dl(ds_type).sampler]
             reverse_sampler = np.argsort(sampler)
             preds = [p[reverse_sampler] for p in preds]
-        return(preds)
+        return preds
 
 def decode_spec_tokens(tokens):
     new_toks,rule,arg = [],None,None
@@ -220,7 +220,7 @@ def language_model_learner(data:DataBunch, arch, config:dict=None, drop_mult:flo
         learn.freeze()
     return learn
 
-def masked_concat_pool(outputs, mask):
+def masked_concat_pool(outputs:Sequence[Tensor], mask:Tensor)->Tensor:
     "Pool MultiBatchEncoder outputs into one vector [last_hidden, max_pool, avg_pool]."
     output = outputs[-1]
     avg_pool = output.masked_fill(mask[:, :, None], 0).mean(dim=1)
@@ -250,14 +250,14 @@ class MultiBatchEncoder(Module):
     def __init__(self, bptt:int, max_len:int, module:nn.Module, pad_idx:int=1):
         self.max_len,self.bptt,self.module,self.pad_idx = max_len,bptt,module,pad_idx
 
-    def concat(self, arrs:Collection[Tensor])->Tensor:
+    def concat(self, arrs:Sequence[Sequence[Tensor]])->List[Tensor]:
         "Concatenate the `arrs` along the batch dimension."
         return [torch.cat([l[si] for l in arrs], dim=1) for si in range_of(arrs[0])]
 
     def reset(self):
         if hasattr(self.module, 'reset'): self.module.reset()
 
-    def forward(self, input:LongTensor)->Tuple[Tensor,Tensor]:
+    def forward(self, input:LongTensor)->Tuple[List[Tensor],List[Tensor],Tensor]:
         bs,sl = input.size()
         self.reset()
         raw_outputs,outputs,masks = [],[],[]
