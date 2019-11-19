@@ -83,7 +83,7 @@ class RNNLearner(Learner):
         return self
 
     def get_preds(self, ds_type:DatasetType=DatasetType.Valid, activ:nn.Module=None, with_loss:bool=False, n_batch:Optional[int]=None,
-                  pbar:Optional[PBar]=None, ordered:bool=False) -> List[Tensor]:
+                  pbar:Optional[PBar]=None, ordered:bool=True) -> List[Tensor]:
         "Return predictions and targets on the valid, train, or test set, depending on `ds_type`."
         self.model.reset()
         if ordered: np.random.seed(42)
