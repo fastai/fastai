@@ -135,7 +135,7 @@ sidebar: home_sidebar
 <p>In general, <a href="/datasets.html#untar_data"><code>untar_data</code></a> uses a <code>url</code> to download a <code>tgz</code> file under <code>fname</code>, and then un-tgz <code>fname</code> into a folder under <code>dest</code>.</p>
 <p>If you have run <a href="/datasets.html#untar_data"><code>untar_data</code></a> before, then running <code>untar_data(URLs.something)</code> again will just return you <code>dest</code> without downloading again.</p>
 <p>If you have run <a href="/datasets.html#untar_data"><code>untar_data</code></a> before, then running <a href="/datasets.html#untar_data"><code>untar_data</code></a> again with <code>force_download=True</code> or the tgz file under <code>fname</code> being corrupted somehow, will remove the existing <code>fname</code> and <code>dest</code> and start downloading again.</p>
-<p>If you have run <a href="/datasets.html#untar_data"><code>untar_data</code></a> before, but <code>dest</code> does not exist, meaning no folder under <code>dest</code> exist (the folder could be removed or renamed somehow), then running <code>untar_data(URLs.something)</code> again will execute <a href="/datasets.html#download_data"><code>download_data</code></a>. Furthermore, if the tgz file under <code>fname</code> does exist, then there will be no actual downloading rather than un-tgz <code>fname</code> into <code>dest</code>; if <code>fname</code> does not exist, then downloading for the tgz file will be actually executed.</p>
+<p>If you have run <a href="/datasets.html#untar_data"><code>untar_data</code></a> before, but <code>dest</code> does not exist, meaning no folder under <code>dest</code> exists (the folder could be removed or renamed somehow), then running <code>untar_data(URLs.something)</code> again will execute <a href="/datasets.html#download_data"><code>download_data</code></a>. Furthermore, if the tgz file under <code>fname</code> does exist, then there will be no actual downloading rather than un-tgz <code>fname</code> into <code>dest</code>; if <code>fname</code> does not exist, then downloading for the tgz file will be actually executed.</p>
 <p><strong>Note</strong>: the <code>url</code> you feed to <a href="/datasets.html#untar_data"><code>untar_data</code></a> must be one of <code>URLs.something</code>.</p>
 
 </div>
@@ -251,13 +251,13 @@ sidebar: home_sidebar
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>All the downloading functions use this to decide where to put the tgz and expanded folder. If <code>filename</code> already exists in a <code>data</code> directory in the same place as the calling notebook/script, that is used as the parent directly, otherwise <code>config.yml</code> is read to see what path to use, which defaults to <code>~/.fastai/data</code> is used. To override this default, simply modify the value in your <code>config.yml</code>:</p>
+<p>All the downloading functions use this to decide where to put the tgz and expanded folder. If <code>filename</code> already exists in a <code>data</code> directory in the same place as the calling notebook/script, that is used as the parent directly; otherwise, <code>config.yml</code> is read to see what path to use, which defaults to <code>~/.fastai/data</code> is used. To override this default, simply modify the value in your <code>config.yml</code>:</p>
 
 <pre><code>data_archive_path: ~/.fastai/data
 data_path: ~/.fastai/data
 
 </code></pre>
-<p><code>config.yml</code> is located in the directory specified in optional environment variable <code>FASTAI_HOME</code> (defaults to <code>~/.fastai/</code>).</p>
+<p><code>config.yml</code> is located in the directory specified in the optional environment variable <code>FASTAI_HOME</code> (defaults to <code>~/.fastai/</code>).</p>
 
 </div>
 </div>
