@@ -26,8 +26,9 @@ from matplotlib.patches import Patch
 from pandas import Series, DataFrame
 from io import BufferedWriter, BytesIO
 
-import pkg_resources
-pkg_resources.require("fastprogress>=0.1.19")
+#Mysteriously fails now
+#import pkg_resources
+#pkg_resources.require("fastprogress>=0.1.19")
 from fastprogress.fastprogress import master_bar, progress_bar
 
 #for type annotations

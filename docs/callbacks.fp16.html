@@ -99,21 +99,44 @@ summary: "Training in mixed precision implementation"
 
 
 <div class="output_html rendered_html output_subarea ">
-Total time: 00:03 <p><table style='width:300px; margin-bottom:10px'>
-  <tr>
-    <th>epoch</th>
-    <th>train_loss</th>
-    <th>valid_loss</th>
-    <th>accuracy</th>
-  </tr>
-  <tr>
-    <th>1</th>
-    <th>0.139469</th>
-    <th>0.115246</th>
-    <th>0.963199</th>
-  </tr>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: left;">
+      <th>epoch</th>
+      <th>train_loss</th>
+      <th>valid_loss</th>
+      <th>accuracy</th>
+      <th>time</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>0.126117</td>
+      <td>0.117945</td>
+      <td>0.956820</td>
+      <td>00:03</td>
+    </tr>
+  </tbody>
 </table>
+</div>
 
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<div markdown="span" class="alert alert-danger" role="alert"><i class="fa fa-danger-circle"></i> <b>Warning: </b>Known issue: `Learner.to_fp16` doesn't work when training GANs.</div>
 </div>
 
 </div>
