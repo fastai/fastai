@@ -10,7 +10,6 @@ from .foundation import *
 from .utils import *
 from .dispatch import *
 from ..test import *
-from nbdev.showdoc import show_doc
 
 #Cell
 class ArrayBase(ndarray):
