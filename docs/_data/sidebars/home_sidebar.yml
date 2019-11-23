@@ -176,23 +176,5 @@ entries:
       url: /medical.text.html
     output: web
     title: Medical
-  - folderitems:
-    - output: web,pdf
-      title: Export to modules
-      url: /notebook.export.html
-    - output: web,pdf
-      title: Convert to html
-      url: /notebook.export2html.html
-    - output: web,pdf
-      title: Show doc
-      url: /notebook.showdoc.html
-    - output: web,pdf
-      title: Test functions
-      url: notebook.test.html
-    - output: web,pdf
-      title: Core functions
-      url: notebook.core.html
-    output: web
-    title: Notebook
   output: web
   title: Sidebar
