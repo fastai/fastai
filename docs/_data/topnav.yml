@@ -1,0 +1,17 @@
+## if you want to list an external url, use external_url instead of url. the theme will apply a different link base.
+topnav:
+- title: Topnav
+  items:
+    - title: GitHub
+      external_url: https://github.com/fastai/fastai
+    - title: News
+      external_url: http://www.fast.ai
+
+#Topnav dropdowns
+topnav_dropdowns:
+- title: Topnav dropdowns
+  folders:
+#    - title: Products
+#      folderitems:
+#        - title: Jekyll Documentation Theme
+#          url: /mydoc_introduction.html

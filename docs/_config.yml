@@ -1,0 +1,112 @@
+repository: tomjoht/documentation-theme-jekyll
+
+output: web
+# this property is useful for conditional filtering of content that is separate from the PDF.
+
+topnav_title: fastai
+# this appears on the top navigation bar next to the home button
+
+site_title: fastai
+# this appears in the html browser tab for the site title (seen mostly by search engines, not users)
+
+company_name: fast.ai
+# this appears in the footer
+
+github_editme_path: 
+# if you're using Github, provide the basepath to the branch you've created for reviews, following the sample here. if not, leave this value blank.
+
+disqus_shortname: 
+# if you're using disqus for comments, add the shortname here. if not, leave this value blank.
+
+google_analytics: UA-89522379-3
+
+host: 127.0.0.1
+# the preview server used. Leave as is.
+
+port: 4000
+# the port where the preview is rendered. You can leave this as is unless you have other Jekyll builds using this same port that might cause conflicts. in that case, use another port such as 4006.
+
+exclude:
+  - .idea/
+  - .gitignore
+  - vendor
+ 
+# exclude: [vendor]
+# these are the files and directories that jekyll will exclude from the build
+
+feedback_subject_line: fastai
+
+feedback_email: info@fast.ai
+# used as a contact email for the Feedback link in the top navigation bar
+
+feedback_disable: true
+# if you uncomment the previous line, the Feedback link gets removed
+
+# feedback_text: "Need help?"
+# if you uncomment the previous line, it changes the Feedback text
+
+# feedback_link: "http://helpy.io/"
+# if you uncomment the previous line, it changes where the feedback link points to
+
+highlighter: rouge
+# library used for syntax highlighting
+
+markdown: kramdown
+kramdown:
+ input: GFM
+ auto_ids: true
+ hard_wrap: false
+ syntax_highlighter: rouge
+
+# filter used to process markdown. note that kramdown differs from github-flavored markdown in some subtle ways
+
+collections:
+  tooltips:
+    output: false
+# collections are declared here. this renders the content in _tooltips and processes it, but doesn't output it as actual files in the output unless you change output to true
+
+defaults:
+  -
+    scope:
+      path: ""
+      type: "pages"
+    values:
+      layout: "page"
+      comments: true
+      search: true
+      sidebar: home_sidebar
+      topnav: topnav
+  -
+    scope:
+      path: ""
+      type: "tooltips"
+    values:
+      layout: "page"
+      comments: true
+      search: true
+      tooltip: true
+
+  -
+    scope:
+      path: ""
+      type: "posts"
+    values:
+      layout: "post"
+      comments: true
+      search: true
+      sidebar: home_sidebar
+      topnav: topnav
+
+# these are defaults used for the frontmatter for these file types
+
+sidebars:
+- home_sidebar
+
+description: "Documentation for the fastai library"
+# the description is used in the feed.xml file
+
+# needed for sitemap.xml file only
+# url: http://idratherbewriting.com
+# baseurl: /documentation-theme-jekyll
+
+theme: jekyll-theme-cayman

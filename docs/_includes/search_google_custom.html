@@ -1,0 +1,145 @@
+<script>
+  (function() {
+    var cx = '000837339549978028235:ycech_9fn6e';
+    var gcse = document.createElement('script');
+    gcse.type = 'text/javascript';
+    gcse.async = true;
+    gcse.src = 'https://cse.google.com/cse.js?cx=' + cx;
+    var s = document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(gcse, s);
+  })();
+</script>
+
+<div id="gcs-search-container">
+    <gcse:search></gcse:search>
+</div>
+
+{% comment %}
+
+Google Custom Search requires the setting up of a 'search engine' using the web console at https://cse.google.com
+
+1) Go to https://cse.google.com and login with the authorized Google account for fast.ai Google Custom Search
+2) Once logged in , add a custom search engine for docs.fast.ai, if it doesn't already exist
+3) Configure the Setup, Look & Feel, Search Features and Statistics and Logs settings for this 'search engine' via the web console
+
+The current required configuration is documented below. If you change the configuration, please update the documentation below.
+
+SETUP
+=====
+
+Basics
+  Search engine name: docs.fast.ai/*
+  Search engine description: Search fast.ai documentation
+  Search engine keywords: not currently used - see https://support.google.com/customsearch//answer/70357?hl=en&ctx=topic for functionality
+  Edition: Free, with ads (the “Get Code” button to the right of Edition is for displaying & copying the source script for embedding the custom search engine)
+  Serach engine ID: defined by Google (this ID needs to be the value of the cx Javascript variable in the script above)
+  Public URL: [read only: for testing the custom search engine functionality outside of the context of any embedding]
+  Image Search: Off
+  SafeSearch: Off
+  Language: English
+  Sites to Search: https://docs.fast.ai
+  NB: It’s possible to submit indexing and removal requests if needed - https://support.google.com/customsearch/answer/4513925?hl=en&ctx=topic&visit_id=636766156114076408-2027030134&rd=1
+  Search the entire web: OFF
+  Programmatic Access: via JSON API - not currently used - https://developers.google.com/custom-search/v1/introduction
+  Restrict Pages using Schema.org Types: Not currently used
+
+Ads
+  Left at default settings for Free Edition with Ads
+
+Admin
+  Can add other users to add sites, refinements and promotions
+
+Advanced
+  CSE context not used
+
+LOOK & FEEL
+===========
+
+Layout
+  Currently uses “Overlay” layout
+  (Choice from Overlay, Two page, Full width, Two column, Compact, Results only and Google hosted)
+
+Themes
+  Currently set to “Default”
+
+Customize
+  Currently set to default Arial font. Border collar and Background collar set to #347DBE (but should match exact docs.fast.ai top-nav bar blue)
+
+Thumbnails
+  Automatic thumbnails in search results: currently set to ON
+
+SEARCH FEATURES
+===============
+
+Promotions: OFF
+Refinements: None added
+Autocomplete: ON
+(NB: "It can take up to 2-4 days for autocomplete to start appearing on your search engine” - https://support.google.com/customsearch/answer/4542657?hl=en&ctx=topic&visit_id=636766156114076408-2027030134&rd=2)
+Custom Autocompletions (Included, Excluded, Excluded Patterns): None added
+Synonyms: None added
+
+Advanced:
+  Results sorting: using defaults: sorted by relevance and date
+  Websearch Settings:
+    Refinement Style: Links
+    Results Browsing History: Disable
+    Structured data in results: Disable
+    No Results String: [no value in textbox]
+    Link Target: _parent [this is needed so a new browser tab isn't opened when clicking/tapping a result link]
+    Query Addition: [no value in textbox]
+    Query Parameter Name: [no value in textbox]
+  Websearch Restricts:
+    Language Restrict: All Languages (restricts search results to documents written in the defined language/s)
+    Country Restrict: All Languages (restricts search results to documents originating in the defined countries)
+    Boost Results By Locale: All Countries (Boost search results whose country of origin matches the defined values)
+    Result Size: [no value in textbox]
+    Sort By: relevance
+    As Sitesearch: [no value in textbox]
+    Extra Query Terms: [no value in textbox]
+    Filter: No value set (boolean option True or False)
+  Imagesearch Settings:
+    Language Restrict: All Languages (restricts search results to documents written in the defined language/s)
+    Country Restrict: All Languages (restricts search results to documents originating in the defined countries)
+    Boost Results By Locale: All Countries (Boost search results whose country of origin matches the defined values)
+    Result Size: [no value in textbox]
+    Sort By: relevance
+    As Sitesearch: [no value in textbox]
+    Extra Query Terms: [no value in textbox]
+    Filter: No value set (boolean option True or False)
+    Default to Imagesearch: Disable
+
+STATISTICS and LOGS
+===================
+
+Current left at default settings for all tabs (Stats, Google Analytics, Audit Log)
+
+Enter the fast.ai Google Analytics account details - as defined in _config.ylm (google_analytics: UA-89522379-3)
+
+TODOs
+=====
+
+- enhance search results of Google Custom Search with Structured Data
+https://developers.google.com/custom-search/docs/structured_data
+maybe use http://schema.org/Code
+
+USAGE TIPS
+==========
+
+To enable Google Custom Search, include
+
+{% include google_custom_search.html %}
+
+in an HTML file, but limit it to one per page, unless specifically catering for multiple search bars.
+
+Google Custom Search is currently included inj topnav.html
+
+To see what documents google is currently indexing at any particular URL, use the site: operator without any search term
+
+e.g. "site:docs.fast.ai"
+
+You can use this to sense check what a search term ought to return as the result
+
+As of 31st Oct 2018, there are 140 results indexed by Google at the domain docs.fast.ai
+https://www.google.com/search?q=site%3Adocs.fast.ai&btnK=Google+Search&oq=site%3Adocs.fast.ai
+
+{% endcomment %}

@@ -1,0 +1,7 @@
+#!/usr/bin/env python3
+from nbdev.export import notebook2script
+from fastai2.core.script import *
+
+@call_parse
+def main(fname:Param("A notebook name or glob to convert", str)=None):
+    notebook2script(fname=fname)

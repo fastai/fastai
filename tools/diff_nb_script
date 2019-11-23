@@ -1,0 +1,4 @@
+#!/usr/bin/env python3
+from nbdev.export import diff_nb_script
+
+diff_nb_script()
