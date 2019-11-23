@@ -3,7 +3,7 @@ from nbdev.export2html import convert_nb
 import yaml,os,sys,time,random,glob
 from pathlib import Path
 from functools import partial
-from nbdev.core import Config
+from nbdev.imports import Config
 
 from sidebar_data import sidebar_d
 from fastai2.core.script import *
