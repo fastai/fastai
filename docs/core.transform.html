@@ -32,6 +32,7 @@ summary: "Definition of [`Transform`](/core.transform.html#Transform) and [`Pipe
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">PIL</span> <span class="k">import</span> <span class="n">Image</span>
 <span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">from</span> <span class="nn">nbdev.showdoc</span> <span class="k">import</span> <span class="o">*</span>
 </pre></div>
 
     </div>
@@ -774,7 +775,7 @@ array([2, 3])</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Transform" class="doc_header"><code>class</code> <code>Transform</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/core/transform.py#L68" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Transform</code>(<strong><code>enc</code></strong>=<em><code>None</code></em>, <strong><code>dec</code></strong>=<em><code>None</code></em>, <strong><code>split_idx</code></strong>=<em><code>None</code></em>, <strong><code>as_item</code></strong>=<em><code>False</code></em>, <strong><code>order</code></strong>=<em><code>None</code></em>)</p>
+<h2 id="Transform" class="doc_header"><code>class</code> <code>Transform</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/core/transform.py#L67" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Transform</code>(<strong><code>enc</code></strong>=<em><code>None</code></em>, <strong><code>dec</code></strong>=<em><code>None</code></em>, <strong><code>split_idx</code></strong>=<em><code>None</code></em>, <strong><code>as_item</code></strong>=<em><code>False</code></em>, <strong><code>order</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Delegates (<code>__call__</code>,<code>decode</code>,<code>setup</code>) to (<a href="/tabular.core.html#encodes"><code>encodes</code></a>,<a href="/tabular.core.html#decodes"><code>decodes</code></a>,<a href="/tabular.core.html#setups"><code>setups</code></a>) if <code>split_idx</code> matches</p>
 
@@ -1160,7 +1161,7 @@ array([2, 3])</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="InplaceTransform" class="doc_header"><code>class</code> <code>InplaceTransform</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/core/transform.py#L105" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>InplaceTransform</code>(<strong><code>enc</code></strong>=<em><code>None</code></em>, <strong><code>dec</code></strong>=<em><code>None</code></em>, <strong><code>split_idx</code></strong>=<em><code>None</code></em>, <strong><code>as_item</code></strong>=<em><code>False</code></em>, <strong><code>order</code></strong>=<em><code>None</code></em>) :: <a href="/core.transform.html#Transform"><code>Transform</code></a></p>
+<h2 id="InplaceTransform" class="doc_header"><code>class</code> <code>InplaceTransform</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/core/transform.py#L104" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>InplaceTransform</code>(<strong><code>enc</code></strong>=<em><code>None</code></em>, <strong><code>dec</code></strong>=<em><code>None</code></em>, <strong><code>split_idx</code></strong>=<em><code>None</code></em>, <strong><code>as_item</code></strong>=<em><code>False</code></em>, <strong><code>order</code></strong>=<em><code>None</code></em>) :: <a href="/core.transform.html#Transform"><code>Transform</code></a></p>
 </blockquote>
 <p>A <a href="/core.transform.html#Transform"><code>Transform</code></a> that modifies in-place and just returns whatever it's passed</p>
 
@@ -1207,7 +1208,7 @@ array([2, 3])</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TupleTransform" class="doc_header"><code>class</code> <code>TupleTransform</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/core/transform.py#L112" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TupleTransform</code>(<strong><code>enc</code></strong>=<em><code>None</code></em>, <strong><code>dec</code></strong>=<em><code>None</code></em>, <strong><code>split_idx</code></strong>=<em><code>None</code></em>, <strong><code>as_item</code></strong>=<em><code>False</code></em>, <strong><code>order</code></strong>=<em><code>None</code></em>) :: <a href="/core.transform.html#Transform"><code>Transform</code></a></p>
+<h2 id="TupleTransform" class="doc_header"><code>class</code> <code>TupleTransform</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/core/transform.py#L111" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TupleTransform</code>(<strong><code>enc</code></strong>=<em><code>None</code></em>, <strong><code>dec</code></strong>=<em><code>None</code></em>, <strong><code>split_idx</code></strong>=<em><code>None</code></em>, <strong><code>as_item</code></strong>=<em><code>False</code></em>, <strong><code>order</code></strong>=<em><code>None</code></em>) :: <a href="/core.transform.html#Transform"><code>Transform</code></a></p>
 </blockquote>
 <p><a href="/core.transform.html#Transform"><code>Transform</code></a> that always treats <code>as_item</code> as <code>False</code></p>
 
@@ -1231,7 +1232,7 @@ array([2, 3])</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ItemTransform" class="doc_header"><code>class</code> <code>ItemTransform</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/core/transform.py#L117" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ItemTransform</code>(<strong><code>enc</code></strong>=<em><code>None</code></em>, <strong><code>dec</code></strong>=<em><code>None</code></em>, <strong><code>split_idx</code></strong>=<em><code>None</code></em>, <strong><code>as_item</code></strong>=<em><code>False</code></em>, <strong><code>order</code></strong>=<em><code>None</code></em>) :: <a href="/core.transform.html#Transform"><code>Transform</code></a></p>
+<h2 id="ItemTransform" class="doc_header"><code>class</code> <code>ItemTransform</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/core/transform.py#L116" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ItemTransform</code>(<strong><code>enc</code></strong>=<em><code>None</code></em>, <strong><code>dec</code></strong>=<em><code>None</code></em>, <strong><code>split_idx</code></strong>=<em><code>None</code></em>, <strong><code>as_item</code></strong>=<em><code>False</code></em>, <strong><code>order</code></strong>=<em><code>None</code></em>) :: <a href="/core.transform.html#Transform"><code>Transform</code></a></p>
 </blockquote>
 <p><a href="/core.transform.html#Transform"><code>Transform</code></a> that always treats <code>as_item</code> as <code>True</code></p>
 
@@ -1458,7 +1459,7 @@ array([2, 3])</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_func" class="doc_header"><code>get_func</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/core/transform.py#L122" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_func</code>(<strong><code>t</code></strong>, <strong><code>name</code></strong>, <strong>*<code>args</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="get_func" class="doc_header"><code>get_func</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/core/transform.py#L121" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_func</code>(<strong><code>t</code></strong>, <strong><code>name</code></strong>, <strong>*<code>args</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Get the <code>t.name</code> (potentially partial-ized with <code>args</code> and <code>kwargs</code>) or <code>noop</code> if not defined</p>
 
@@ -1516,7 +1517,7 @@ array([2, 3])</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Func" class="doc_header"><code>class</code> <code>Func</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/core/transform.py#L128" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Func</code>(<strong><code>name</code></strong>, <strong>*<code>args</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
+<h2 id="Func" class="doc_header"><code>class</code> <code>Func</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/core/transform.py#L127" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Func</code>(<strong><code>name</code></strong>, <strong>*<code>args</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Basic wrapper around a <code>name</code> with <code>args</code> and <code>kwargs</code> to call on a given type</p>
 
@@ -1569,7 +1570,7 @@ array([2, 3])</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Sig" class="doc_header"><code>Sig</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/core/transform.py#L138" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Sig</code>(<strong>*<code>args</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="Sig" class="doc_header"><code>Sig</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/core/transform.py#L137" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Sig</code>(<strong>*<code>args</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -1614,7 +1615,7 @@ array([2, 3])</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="compose_tfms" class="doc_header"><code>compose_tfms</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/core/transform.py#L144" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>compose_tfms</code>(<strong><code>x</code></strong>, <strong><code>tfms</code></strong>, <strong><code>is_enc</code></strong>=<em><code>True</code></em>, <strong><code>reverse</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="compose_tfms" class="doc_header"><code>compose_tfms</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/core/transform.py#L143" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>compose_tfms</code>(<strong><code>x</code></strong>, <strong><code>tfms</code></strong>, <strong><code>is_enc</code></strong>=<em><code>True</code></em>, <strong><code>reverse</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Apply all <code>func_nm</code> attribute of <code>tfms</code> on <code>x</code>, maybe in <code>reverse</code> order</p>
 
@@ -1707,7 +1708,7 @@ array([2, 3])</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="mk_transform" class="doc_header"><code>mk_transform</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/core/transform.py#L153" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>mk_transform</code>(<strong><code>f</code></strong>, <strong><code>as_item</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="mk_transform" class="doc_header"><code>mk_transform</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/core/transform.py#L152" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>mk_transform</code>(<strong><code>f</code></strong>, <strong><code>as_item</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 <p>Convert function <code>f</code> to <a href="/core.transform.html#Transform"><code>Transform</code></a> if it isn't already one</p>
 
@@ -1747,7 +1748,7 @@ array([2, 3])</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="gather_attrs" class="doc_header"><code>gather_attrs</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/core/transform.py#L159" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>gather_attrs</code>(<strong><code>o</code></strong>, <strong><code>k</code></strong>, <strong><code>nm</code></strong>)</p>
+<h4 id="gather_attrs" class="doc_header"><code>gather_attrs</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/core/transform.py#L158" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>gather_attrs</code>(<strong><code>o</code></strong>, <strong><code>k</code></strong>, <strong><code>nm</code></strong>)</p>
 </blockquote>
 <p>Used in <strong>getattr</strong> to collect all attrs <code>k</code> from <code>self.{nm}</code></p>
 
@@ -1771,7 +1772,7 @@ array([2, 3])</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="gather_attr_names" class="doc_header"><code>gather_attr_names</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/core/transform.py#L168" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>gather_attr_names</code>(<strong><code>o</code></strong>, <strong><code>nm</code></strong>)</p>
+<h4 id="gather_attr_names" class="doc_header"><code>gather_attr_names</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/core/transform.py#L167" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>gather_attr_names</code>(<strong><code>o</code></strong>, <strong><code>nm</code></strong>)</p>
 </blockquote>
 <p>Used in <strong>dir</strong> to collect all attrs <code>k</code> from <code>self.{nm}</code></p>
 
@@ -1795,7 +1796,7 @@ array([2, 3])</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Pipeline" class="doc_header"><code>class</code> <code>Pipeline</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/core/transform.py#L173" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Pipeline</code>(<strong><code>funcs</code></strong>=<em><code>None</code></em>, <strong><code>as_item</code></strong>=<em><code>False</code></em>, <strong><code>split_idx</code></strong>=<em><code>None</code></em>)</p>
+<h2 id="Pipeline" class="doc_header"><code>class</code> <code>Pipeline</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/core/transform.py#L172" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Pipeline</code>(<strong><code>funcs</code></strong>=<em><code>None</code></em>, <strong><code>as_item</code></strong>=<em><code>False</code></em>, <strong><code>split_idx</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>A pipeline of composed (for encode/decode) transforms, setup with types</p>
 
@@ -2127,7 +2128,7 @@ array([2, 3])</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Pipeline.__call__" class="doc_header"><code>Pipeline.__call__</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/core/transform.py#L201" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Pipeline.__call__</code>(<strong><code>o</code></strong>)</p>
+<h4 id="Pipeline.__call__" class="doc_header"><code>Pipeline.__call__</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/core/transform.py#L200" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Pipeline.__call__</code>(<strong><code>o</code></strong>)</p>
 </blockquote>
 <p>Call self as a function.</p>
 
@@ -2148,7 +2149,7 @@ array([2, 3])</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Pipeline.decode" class="doc_header"><code>Pipeline.decode</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/core/transform.py#L208" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Pipeline.decode</code>(<strong><code>o</code></strong>, <strong><code>full</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="Pipeline.decode" class="doc_header"><code>Pipeline.decode</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/core/transform.py#L207" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Pipeline.decode</code>(<strong><code>o</code></strong>, <strong><code>full</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 
 </div>
@@ -2168,7 +2169,7 @@ array([2, 3])</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Pipeline.setup" class="doc_header"><code>Pipeline.setup</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/core/transform.py#L192" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Pipeline.setup</code>(<strong><code>items</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="Pipeline.setup" class="doc_header"><code>Pipeline.setup</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/core/transform.py#L191" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Pipeline.setup</code>(<strong><code>items</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 
 </div>
