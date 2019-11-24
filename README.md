@@ -22,10 +22,9 @@ pip install pydicom kornia opencv-python scikit-image
 
 ## Tests
 
-To run the tests in parallel, do something like this:
-
-```bash
-tools/test_nbs
+To run the tests in parallel, run:
+```
+nbdev_test_nbs
 ```
 
 ## Contributing
