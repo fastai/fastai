@@ -1,0 +1,2 @@
+**/*.ipynb filter=clean-nbs
+**/*.ipynb diff=ipynb
