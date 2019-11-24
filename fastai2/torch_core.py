@@ -14,7 +14,7 @@ __all__ = ['progress_bar', 'master_bar', 'tensor', 'set_seed', 'unsqueeze', 'uns
 from .test import *
 from .core.all import *
 from .torch_imports import *
-from fastprogress import progress_bar,master_bar
+from fastprogress.fastprogress import progress_bar,master_bar
 
 #Cell
 if torch.cuda.is_available():

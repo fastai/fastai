@@ -5,7 +5,7 @@ __all__ = ['Config', 'URLs', 'download_url', 'download_data', 'tar_extract', 'un
 #Cell
 from ..torch_basics import *
 from ..test import *
-from fastprogress import progress_bar,master_bar
+from fastprogress.fastprogress import progress_bar,master_bar
 
 #Cell
 class Config:
