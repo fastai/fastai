@@ -75,8 +75,7 @@ def get_grid(n, rows=None, cols=None, add_vert=0, figsize=None, double=False, ti
     if double: cols*=2 ; n*=2
     figsize = (cols*3, rows*3+add_vert) if figsize is None else figsize
     fig,axs = subplots(rows, cols, figsize=figsize)
-    axs = axs.flatten()
-    for ax in axs[n:]: ax.set_axis_off()
+    axs = [ax if i<n else ax.set_axis_off() for i, ax in enumerate(axs.flatten())][:n]
     if title is not None: fig.suptitle(title, weight='bold', size=14)
     return (fig,axs) if return_fig else axs
 
