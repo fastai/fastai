@@ -51,10 +51,7 @@ def combine_scheds(pcts, scheds):
 
 #Cell
 def combined_cos(pct, start, middle, end):
-    "Return a combined scheduler with cosine annealing from `start` to `middle` then `middle` to `end`"
-    #if isinstance(start, Iterable):
-    #    return [combine_scheds([pct,1-pct], [SchedCos(s, m), SchedCos(m, e)])
-    #            for s,m,e in zip(start,middle,end)]
+    "Return a scheduler with cosine annealing from `start`→`middle` & `middle`→`end`"
     return combine_scheds([pct,1-pct], [SchedCos(start, middle), SchedCos(middle, end)])
 
 #Cell
