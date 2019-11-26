@@ -1,5 +1,6 @@
 {
   "Getting started": {
+    "Overview": "/",
     "Installation": "https://github.com/fastai/fastai/blob/master/README.md#installation"
   },
   "Tutorials": {
