@@ -487,7 +487,7 @@ class Recorder(LearnerCallback):
             self.pbar.child.comment = f'{smooth_loss:.4f}'
 
     def on_epoch_end(self, epoch:int, num_batch:int, smooth_loss:Tensor,
-                     last_metrics=MetricsList, **kwargs:Any)->bool:
+                     last_metrics:MetricsList, **kwargs:Any)->bool:
         "Save epoch info: num_batch, smooth_loss, metrics."
         self.nb_batches.append(num_batch)
         if last_metrics is not None: self.val_losses.append(last_metrics[0])
