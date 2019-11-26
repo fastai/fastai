@@ -3,9 +3,10 @@
     "Installation": "https://github.com/fastai/fastai/blob/master/README.md#installation"
   },
   "Tutorials": {
-    "Vision tutorial": "/tutorial.transfer.learning",
-    "Pets tutorial": "/pets.tutorial",
+    "Vision tutorial": "/tutorial.transfer_learning",
+    "Pets tutorial": "/tutorial.pets",
     "Imagenette tutorial": "/tutorial.imagenette",
+    "Data block examples": "/databloc.examples",
     "UlMFiT tutorial": "/tutorial.ulmfit",
     "Wikitext tutorial": "/tutorial.wikitext"
   },
@@ -35,7 +36,7 @@
   "Core": {
     "Foundation": "/core.foundation",
     "Utility functions": "/core.utils",
-    "PyTorch Core": "/torchcore",
+    "PyTorch Core": "/torch_core",
     "Type dispatch": "/core.dispatch",
     "Transforms and Pipelines": "/core.transform",
     "Layers": "/layers",

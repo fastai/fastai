@@ -14,166 +14,169 @@ entries:
   - folderitems:
     - output: web,pdf
       title: Vision tutorial
-      url: /tutorial.transfer.learning.html
+      url: /tutorial.transfer_learning
     - output: web,pdf
       title: Pets tutorial
-      url: /pets.tutorial.html
+      url: /tutorial.pets
     - output: web,pdf
       title: Imagenette tutorial
-      url: /tutorial.imagenette.html
+      url: /tutorial.imagenette
+    - output: web,pdf
+      title: Data block examples
+      url: /databloc.examples
     - output: web,pdf
       title: UlMFiT tutorial
-      url: /tutorial.ulmfit.html
+      url: /tutorial.ulmfit
     - output: web,pdf
       title: Wikitext tutorial
-      url: /tutorial.wikitext.html
+      url: /tutorial.wikitext
     output: web
     title: Tutorials
   - folderitems:
     - output: web,pdf
       title: Training loop
-      url: /learner.html
+      url: /learner
     - output: web,pdf
       title: Optimizer
-      url: /optimizer.html
+      url: /optimizer
     - output: web,pdf
       title: Metrics
-      url: /metrics.html
+      url: /metrics
       subfolders:
       - output: web
         subfolderitems:
         - output: web,pdf
           title: Schedulers
-          url: /callback.schedule.html
+          url: /callback.schedule
         - output: web,pdf
           title: Hooks and callbacks
-          url: /callback.hook.html
+          url: /callback.hook
         - output: web,pdf
           title: Mixed precision
-          url: /callback.fp16.html
+          url: /callback.fp16
         - output: web,pdf
           title: Mixup
-          url: /callback.mixup.html
+          url: /callback.mixup
         - output: web,pdf
           title: Trackers
-          url: /callback.tracker.html
+          url: /callback.tracker
         - output: web,pdf
           title: RNN
-          url: /callback.rnn.html
+          url: /callback.rnn
         - output: web,pdf
           title: Progress
-          url: /callback.progress.html
+          url: /callback.progress
         title: Callbacks
     output: web
     title: Training
   - folderitems:
     - output: web,pdf
       title: Data Blocks
-      url: /data.block.html
+      url: /data.block
     - output: web,pdf
       title: Data Transforms
-      url: /data.transforms.html
+      url: /data.transforms
     - output: web,pdf
       title: Data External
-      url: /data.external.html
+      url: /data.external
     - output: web,pdf
       title: Data Core
-      url: /data.core.html
+      url: /data.core
     - output: web,pdf
       title: DataLoader
-      url: /data.load.html
+      url: /data.load
     output: web
     title: Data
   - folderitems:
     - output: web,pdf
       title: Foundation
-      url: /core.foundation.html
+      url: /core.foundation
     - output: web,pdf
       title: Utility functions
-      url: /core.utils.html
+      url: /core.utils
     - output: web,pdf
       title: PyTorch Core
-      url: /torchcore.html
+      url: /torch_core
     - output: web,pdf
       title: Type dispatch
-      url: /core.dispatch.html
+      url: /core.dispatch
     - output: web,pdf
       title: Transforms and Pipelines
-      url: /core.transform.html
+      url: /core.transform
     - output: web,pdf
       title: Layers
-      url: /layers.html
+      url: /layers
     - output: web,pdf
       title: Test
-      url: /test.html
+      url: /test
     - output: web,pdf
       title: Script
-      url: /script.html
+      url: /script
     output: web
     title: Core
   - folderitems:
     - output: web,pdf
       title: Vision Core
-      url: /vision.core.html
+      url: /vision.core
     - output: web,pdf
       title: Vision Learner
-      url: /vision.learner.html
+      url: /vision.learner
     - output: web,pdf
       title: Vision Data Augmentation
-      url: /vision.augment.html
+      url: /vision.augment
       subfolders:
       - output: web
         subfolderitems:
         - output: web,pdf
           title: XResnet
-          url: /vision.models.xresnet.html
+          url: /vision.models.xresnet
         title: Models
     output: web
     title: Vision
   - folderitems:
     - output: web,pdf
       title: Text Core
-      url: /text.core.html
+      url: /text.core
     - output: web,pdf
       title: Text Data
-      url: /text.data.html
+      url: /text.data
     - output: web,pdf
       title: Text Learner
-      url: /text.learner.html
+      url: /text.learner
       subfolders:
       - output: web
         subfolderitems:
         - output: web,pdf
           title: Core
-          url: /text.models.core.html
+          url: /text.models.core
         - output: web,pdf
           title: AWD LSTM
-          url: /text.models.awdlstm.html
+          url: /text.models.awdlstm
         - output: web,pdf
           title: QRNN
-          url: /text.models.qrnn.html
+          url: /text.models.qrnn
         title: Models
     output: web
     title: Text
   - folderitems:
     - output: web,pdf
       title: Tabular Core
-      url: /tabular.core.html
+      url: /tabular.core
     - output: web,pdf
       title: Tabular Model
-      url: /tabular.model.html
+      url: /tabular.model
     - output: web,pdf
       title: RapidsAI
-      url: /tabular.rapids.html
+      url: /tabular.rapids
     output: web
     title: Tabular
   - folderitems:
     - output: web,pdf
       title: Medical imagery
-      url: /medical.imaging.html
+      url: /medical.imaging
     - output: web,pdf
       title: Medical text
-      url: /medical.text.html
+      url: /medical.text
     output: web
     title: Medical
   output: web
