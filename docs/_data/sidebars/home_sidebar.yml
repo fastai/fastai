@@ -6,6 +6,9 @@
 entries:
 - folders:
   - folderitems:
+    - output: web,pdf
+      title: Overview
+      url: /
     - external_url: https://github.com/fastai/fastai/blob/master/README.md#installation
       output: web,pdf
       title: Installation
