@@ -2,8 +2,8 @@
 
 __all__ = ['Identity', 'Lambda', 'PartialLambda', 'View', 'ResizeBatch', 'Flatten', 'Debugger', 'sigmoid_range',
            'SigmoidRange', 'AdaptiveConcatPool2d', 'PoolType', 'pool_layer', 'PoolFlatten', 'NormType', 'BatchNorm',
-           'BatchNorm1dFlat', 'LinBnDrop', 'init_default', 'ConvLayer', 'AdaptiveAvgPool', 'MaxPool', 'AvgPool',
-           'BaseLoss', 'CrossEntropyLossFlat', 'BCEWithLogitsLossFlat', 'BCELossFlat', 'MSELossFlat',
+           'InstanceNorm', 'BatchNorm1dFlat', 'LinBnDrop', 'init_default', 'ConvLayer', 'AdaptiveAvgPool', 'MaxPool',
+           'AvgPool', 'BaseLoss', 'CrossEntropyLossFlat', 'BCEWithLogitsLossFlat', 'BCELossFlat', 'MSELossFlat',
            'LabelSmoothingCrossEntropy', 'trunc_normal_', 'Embedding', 'SelfAttention', 'PooledSelfAttention2d',
            'SimpleSelfAttention', 'icnr_init', 'PixelShuffle_ICNR', 'SequentialEx', 'MergeLayer', 'Cat', 'SimpleCNN',
            'ResBlock', 'swish', 'Swish', 'MishJitAutoFn', 'mish', 'MishJit', 'ParameterModule',
@@ -98,16 +98,17 @@ class PoolFlatten(nn.Sequential):
     def __init__(self, pool_type=PoolType.Avg): super().__init__(pool_layer(pool_type)(1), Flatten())
 
 #Cell
-NormType = Enum('NormType', 'Batch BatchZero Weight Spectral')
+NormType = Enum('NormType', 'Batch BatchZero Weight Spectral Instance InstanceZero')
 
 #Cell
-def BatchNorm(nf, norm_type=NormType.Batch, ndim=2, **kwargs):
+def BatchNorm(nf, ndim=2, norm_type=NormType.Batch, **kwargs):
     "BatchNorm layer with `nf` features and `ndim` initialized depending on `norm_type`."
-    assert 1 <= ndim <= 3
-    bn = getattr(nn, f"BatchNorm{ndim}d")(nf, **kwargs)
-    bn.bias.data.fill_(1e-3)
-    bn.weight.data.fill_(0. if norm_type==NormType.BatchZero else 1.)
-    return bn
+    return _get_norm('BatchNorm', nf, ndim, zero=norm_type==NormType.BatchZero, **kwargs)
+
+#Cell
+def InstanceNorm(nf, ndim=2, norm_type=NormType.Instance, affine=True, **kwargs):
+    "InstanceNorm layer with `nf` features and `ndim` initialized depending on `norm_type`."
+    return _get_norm('InstanceNorm', nf, ndim, zero=norm_type==NormType.InstanceZero, affine=affine, **kwargs)
 
 #Cell
 class BatchNorm1dFlat(nn.BatchNorm1d):
@@ -153,7 +154,8 @@ class ConvLayer(nn.Sequential):
                  act_cls=defaults.activation, transpose=False, init=nn.init.kaiming_normal_, xtra=None, **kwargs):
         if padding is None: padding = ((ks-1)//2 if not transpose else 0)
         bn = norm_type in (NormType.Batch, NormType.BatchZero)
-        if bias is None: bias = not bn
+        inn = norm_type in (NormType.Instance, NormType.InstanceZero)
+        if bias is None: bias = not (bn or inn)
         conv_func = _conv_func(ndim, transpose=transpose)
         conv = init_default(conv_func(ni, nf, kernel_size=ks, bias=bias, stride=stride, padding=padding, **kwargs), init)
         if   norm_type==NormType.Weight:   conv = weight_norm(conv)
@@ -162,6 +164,7 @@ class ConvLayer(nn.Sequential):
         act_bn = []
         if act_cls is not None: act_bn.append(act_cls())
         if bn: act_bn.append(BatchNorm(nf, norm_type=norm_type, ndim=ndim))
+        if inn: act_bn.append(InstanceNorm(nf, norm_type=norm_type, ndim=ndim))
         if bn_1st: act_bn.reverse()
         layers += act_bn
         if xtra: layers.append(xtra)
@@ -418,6 +421,7 @@ class ResBlock(nn.Module):
                  norm_type=NormType.Batch, act_cls=defaults.activation, ndim=2, **kwargs):
         super().__init__()
         norm2 = NormType.BatchZero if norm_type==NormType.Batch else norm_type
+        norm2 = NormType.InstanceZero if norm_type==NormType.Instance else norm_type
         nf,ni = nh*expansion,ni*expansion
         layers  = [ConvLayer(ni, nh, 3, stride=stride, norm_type=norm_type, act_cls=act_cls, ndim=ndim, **kwargs),
                    ConvLayer(nh, nf, 3, norm_type=norm2, act_cls=None, ndim=ndim, **kwargs)
