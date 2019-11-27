@@ -4,11 +4,11 @@ __all__ = ['progress_bar', 'master_bar', 'tensor', 'set_seed', 'unsqueeze', 'uns
            'to_detach', 'to_half', 'to_float', 'default_device', 'to_device', 'to_cpu', 'to_np', 'to_concat',
            'TensorBase', 'TensorCategory', 'TensorMultiCategory', 'TensorImageBase', 'TensorImage', 'TensorImageBW',
            'TensorMask', 'concat', 'Chunks', 'one_param', 'item_find', 'find_device', 'find_bs', 'Module', 'get_model',
-           'one_hot', 'one_hot_decode', 'params', 'trainable_params', 'bn_types', 'bn_bias_params', 'batch_to_samples',
-           'logit', 'num_distrib', 'rank_distrib', 'distrib_barrier', 'make_cross_image', 'show_image_batch',
-           'requires_grad', 'init_default', 'cond_init', 'apply_leaf', 'apply_init', 'set_num_threads',
-           'ProcessPoolExecutor', 'parallel', 'run_procs', 'parallel_gen', 'script_use_ctx', 'script_save_ctx',
-           'script_fwd', 'script_bwd', 'grad_module', 'flatten_check']
+           'one_hot', 'one_hot_decode', 'params', 'trainable_params', 'norm_types', 'bn_bias_params',
+           'batch_to_samples', 'logit', 'num_distrib', 'rank_distrib', 'distrib_barrier', 'make_cross_image',
+           'show_image_batch', 'requires_grad', 'init_default', 'cond_init', 'apply_leaf', 'apply_init',
+           'set_num_threads', 'ProcessPoolExecutor', 'parallel', 'run_procs', 'parallel_gen', 'script_use_ctx',
+           'script_save_ctx', 'script_fwd', 'script_bwd', 'grad_module', 'flatten_check']
 
 #Cell
 from .test import *
@@ -325,12 +325,12 @@ def trainable_params(m):
     return [p for p in m.parameters() if p.requires_grad]
 
 #Cell
-bn_types = (nn.BatchNorm1d, nn.BatchNorm2d, nn.BatchNorm3d)
+norm_types = (nn.BatchNorm1d, nn.BatchNorm2d, nn.BatchNorm3d, nn.InstanceNorm1d, nn.InstanceNorm2d, nn.InstanceNorm3d)
 
 #Cell
-def bn_bias_params(m, with_bias=True):
+def bn_bias_params(m, with_bias=True): # TODO: Rename to `norm_bias_params`
     "Return all bias and BatchNorm parameters"
-    if isinstance(m, bn_types): return L(m.parameters()) if with_bias else L(m.weight)
+    if isinstance(m, norm_types): return L(m.parameters()) if with_bias else L(m.weight)
     res = L(m.children()).map(bn_bias_params, with_bias=with_bias).concat()
     #if with_bias and hasattr(m, 'bias'): res.append(m.bias)
     return res
@@ -434,7 +434,7 @@ def init_default(m, func=nn.init.kaiming_normal_):
 #Cell
 def cond_init(m, func):
     "Apply `init_default` to `m` unless it's a batchnorm module"
-    if (not isinstance(m, bn_types)) and requires_grad(m): init_default(m, func)
+    if (not isinstance(m, norm_types)) and requires_grad(m): init_default(m, func)
 
 #Cell
 def apply_leaf(m, f):
