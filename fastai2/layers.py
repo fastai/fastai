@@ -101,6 +101,15 @@ class PoolFlatten(nn.Sequential):
 NormType = Enum('NormType', 'Batch BatchZero Weight Spectral Instance InstanceZero')
 
 #Cell
+def _get_norm(prefix, nf, ndim=2, zero=False, **kwargs):
+    "Norm layer with `nf` features and `ndim` initialized depending on `norm_type`."
+    assert 1 <= ndim <= 3
+    bn = getattr(nn, f"{prefix}{ndim}d")(nf, **kwargs)
+    bn.bias.data.fill_(1e-3)
+    bn.weight.data.fill_(0. if zero else 1.)
+    return bn
+
+#Cell
 def BatchNorm(nf, ndim=2, norm_type=NormType.Batch, **kwargs):
     "BatchNorm layer with `nf` features and `ndim` initialized depending on `norm_type`."
     return _get_norm('BatchNorm', nf, ndim, zero=norm_type==NormType.BatchZero, **kwargs)
