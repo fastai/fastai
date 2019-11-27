@@ -295,7 +295,7 @@ def roc_curve(input:Tensor, targ:Tensor):
     tps = torch.cumsum(targ * 1, dim=-1)[threshold_idxs]
     fps = (1 + threshold_idxs - tps)
     if tps[0] != 0 or fps[0] != 0:
-        zer = torch.zeros(1, dtype=fps.dtype, device=fps.device)
+        zer = fps.new_zeros(1)
         fps = torch.cat((zer, fps))
         tps = torch.cat((zer, tps))
     fpr, tpr = fps.float() / fps[-1], tps.float() / tps[-1]
