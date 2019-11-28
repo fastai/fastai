@@ -23,8 +23,56 @@ summary: "NB: This is still in early development. Use v1 unless you want to cont
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Installation">Installation<a class="anchor-link" href="#Installation">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>You can get all the necessary dependencies by simply installing fastai v1: <code>conda install -c fastai -c pytorch fastai</code>. Or alternatively you can automatically install the dependencies into a new environment:</p>
+<div class="highlight"><pre><span></span><span class="nb">cd</span> fastai_dev
+conda env create -f environment.yml
+</pre></div>
+<p>Then, you can install fastai v2 with pip: <code>pip install git+https://github.com/fastai/fastai_dev</code>. Or clone this repo, cd to its directory, and <code>pip install -e .</code> for an <em>editable install</em> (which is probably the best approach at the moment, since fastai v2 is under heavy development).</p>
+<p>To use <code>fastai2.medical.imaging</code> you'll also need to:</p>
+<div class="highlight"><pre><span></span>conda install pyarrow
+pip install pydicom kornia opencv-python scikit-image
+</pre></div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Tests">Tests<a class="anchor-link" href="#Tests">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>To run the tests in parallel, launch:</p>
+<div class="highlight"><pre><span></span>nbdev_test_nbs
+</pre></div>
+<p>or</p>
+<div class="highlight"><pre><span></span>make <span class="nb">test</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Contributing">Contributing<a class="anchor-link" href="#Contributing">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>After you clone this repository, please run <code>nbdev_install_git_hooks</code> in your terminal. This sets up git hooks, which clean up the notebooks to remove the extraneous stuff stored in the notebooks (e.g. which cells you ran) which causes unnecessary merge conflicts.</p>
+<p>Before submitting a PR, check that the local library and notebooks match. The script <code>nbdev_diff_nbs</code> can let you know if there is a difference between the local library and the notebooks.</p>
 <ul>
-<li>TODO: write this page!</li>
+<li>If you made a change to the notebooks in one of the exported cells, you can export it to the library with <code>nbdev_build_lib</code> or <code>make fastai2</code>.</li>
+<li>If you made a change to the library, you can export it back to the notebooks with <code>nbdev_update_lib</code>.</li>
 </ul>
 
 </div>

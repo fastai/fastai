@@ -922,7 +922,8 @@ summary: "Basic function to preprocess text before assembling it in a `DataBunch
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">out</span><span class="p">,</span><span class="n">cnt</span> <span class="o">=</span> <span class="n">tokenize_df</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">text_cols</span><span class="o">=</span><span class="s1">&#39;text&#39;</span><span class="p">,</span> <span class="n">tok_func</span><span class="o">=</span><span class="n">SentencePieceTokenizer</span><span class="p">,</span> <span class="n">vocab_sz</span><span class="o">=</span><span class="mi">34</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#Prints too much in stdout. Uncomment when texts are debugged</span>
+<span class="c1">#out,cnt = tokenize_df(df, text_cols=&#39;text&#39;, tok_func=SentencePieceTokenizer, vocab_sz=34)</span>
 </pre></div>
 
     </div>

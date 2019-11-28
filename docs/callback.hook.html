@@ -88,13 +88,13 @@ summary: "Callback and helper function to add hooks in models"
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Linear(in_features=5, out_features=3, bias=True) (tensor([[-1.8820,  0.7021, -0.6919, -0.8470,  0.4694],
-        [ 1.6047,  1.1505,  1.9210, -0.4393,  1.6700],
-        [ 1.1959,  0.5682, -1.0785, -0.5261, -0.2628],
-        [-0.9082,  1.5110,  0.3545,  0.3456,  0.7868]]),) tensor([[-0.4622,  0.4920,  0.0128],
-        [ 0.5634, -1.1016,  1.5529],
-        [-0.1620,  0.0452,  0.6342],
-        [ 0.1072,  0.1193,  0.0884]], grad_fn=&lt;AddmmBackward&gt;)
+<pre>Linear(in_features=5, out_features=3, bias=True) (tensor([[-0.3563,  0.7410,  0.9486, -0.8864, -1.2964],
+        [-0.2798,  1.6655, -0.6188,  0.1075, -2.1705],
+        [ 1.6420,  1.5360, -0.2845, -0.6380,  1.7591],
+        [-1.1479,  0.2845,  0.2849,  2.5872,  0.0846]]),) tensor([[ 0.4370, -0.3222,  0.2326],
+        [ 0.1718, -0.5748,  0.6601],
+        [-1.3835, -0.1314, -1.0835],
+        [ 1.2134, -0.4971, -0.8952]], grad_fn=&lt;AddmmBackward&gt;)
 </pre>
 </div>
 </div>
@@ -135,14 +135,14 @@ summary: "Callback and helper function to add hooks in models"
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Linear(in_features=5, out_features=3, bias=True) (tensor([ 0.2188, -0.4699,  0.4320]), None, tensor([[-0.1662, -0.1490,  0.0825],
-        [ 0.5101,  0.0921,  0.0596],
-        [ 0.5675, -0.5542,  0.4907],
-        [-0.2050, -0.0900, -0.0019],
-        [-0.0335,  0.0810, -0.0717]])) (tensor([[ 0.0437, -0.1476,  0.1374],
-        [-0.1166, -0.0519,  0.0458],
-        [ 0.1882, -0.0790,  0.1273],
-        [ 0.1035, -0.1914,  0.1215]]),)
+<pre>Linear(in_features=5, out_features=3, bias=True) (tensor([-0.1539, -0.3470, -0.0100]), None, tensor([[-0.4274, -0.6939,  0.3375],
+        [-0.1051, -0.1490,  0.0808],
+        [ 0.3488,  0.6484, -0.2701],
+        [ 0.1623, -0.2269, -0.4089],
+        [ 0.2636,  0.1940, -0.4367]])) (tensor([[-0.0761, -0.0333,  0.0554],
+        [ 0.0658,  0.0298, -0.1120],
+        [-0.1287, -0.1773,  0.1630],
+        [-0.0149, -0.1663, -0.1164]]),)
 </pre>
 </div>
 </div>
@@ -249,7 +249,8 @@ summary: "Callback and helper function to add hooks in models"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<div markdown="span" class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i> <b>Note: </b>It's important to properly remove your hooks for your model when you're done to avoid them being called again next time your model is applied to some inputs, and to free the memory that go with their state.</div>
+<p>{% include note.html content="It's important to properly remove your hooks for your model when you're done to avoid them being called again next time your model is applied to some inputs, and to free the memory that go with their state." %}</p>
+
 </div>
 </div>
 </div>
@@ -857,7 +858,7 @@ summary: "Callback and helper function to add hooks in models"
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>(#4) [0,11.155611038208008,11.110326766967773,00:00]
+<pre>(#4) [0,20.480897903442383,19.39813995361328,00:00]
 </pre>
 </div>
 </div>
@@ -893,7 +894,7 @@ summary: "Callback and helper function to add hooks in models"
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>(#4) [0,14.338729858398438,9.407218933105469,00:00]
+<pre>(#4) [0,10.66642951965332,9.019244194030762,00:00]
 </pre>
 </div>
 </div>
@@ -1119,7 +1120,7 @@ Total params: 251
 Total trainable params: 151
 Total non-trainable params: 100
 
-Optimizer used: functools.partial(&lt;function SGD at 0x7f8216dfbdd0&gt;, mom=0.9)
+Optimizer used: functools.partial(&lt;function SGD at 0x7feec8084320&gt;, mom=0.9)
 Loss function: FlattenedLoss of MSELoss()
 
 Model unfrozen
@@ -1223,7 +1224,7 @@ Callbacks:
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>(#4) [0,15.506263732910156,14.684226989746094,00:00]
+<pre>(#4) [0,2.3466861248016357,2.18560791015625,00:00]
 </pre>
 </div>
 </div>
@@ -1252,7 +1253,7 @@ Callbacks:
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>(#3) [(#1) [{&#39;mean&#39;: -0.9653729200363159, &#39;std&#39;: 1.5585802793502808, &#39;percent_null&#39;: 0.8125}],(#1) [{&#39;mean&#39;: -0.9653729200363159, &#39;std&#39;: 1.5585802793502808, &#39;percent_null&#39;: 0.8125}],(#1) [{&#39;mean&#39;: -0.9653729200363159, &#39;std&#39;: 1.5585802793502808, &#39;percent_null&#39;: 0.8125}]]</pre>
+<pre>(#3) [(#1) [{&#39;mean&#39;: 0.5015566945075989, &#39;std&#39;: 1.9773917198181152, &#39;percent_null&#39;: 0.375}],(#1) [{&#39;mean&#39;: 0.5015566945075989, &#39;std&#39;: 1.9773917198181152, &#39;percent_null&#39;: 0.375}],(#1) [{&#39;mean&#39;: 0.5015566945075989, &#39;std&#39;: 1.9773917198181152, &#39;percent_null&#39;: 0.375}]]</pre>
 </div>
 
 </div>
@@ -1267,35 +1268,6 @@ Callbacks:
 
 </div>
 </div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">len</span><span class="p">(</span><span class="n">learn</span><span class="o">.</span><span class="n">activation_stats</span><span class="o">.</span><span class="n">stats</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;hist&#39;</span><span class="p">])</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>40</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
 </div>
 </div>
  

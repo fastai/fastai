@@ -225,7 +225,7 @@ summary: "Utility functions used in the fastai library"
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>&lt;__main__._t at 0x7f950ce439d0&gt;</pre>
+<pre>&lt;__main__._t at 0x7f3bb971a510&gt;</pre>
 </div>
 
 </div>
@@ -2256,7 +2256,7 @@ summary: "Utility functions used in the fastai library"
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>PosixPath(&#39;18_callback_fp16.ipynb&#39;)</pre>
+<pre>PosixPath(&#39;15a_vision.models.unet.ipynb&#39;)</pre>
 </div>
 
 </div>
@@ -2277,7 +2277,8 @@ summary: "Utility functions used in the fastai library"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">txt_files</span><span class="o">=</span><span class="n">path</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span><span class="n">file_type</span><span class="o">=</span><span class="s1">&#39;text&#39;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">lib_path</span> <span class="o">=</span> <span class="p">(</span><span class="n">path</span><span class="o">/</span><span class="s1">&#39;../fastai2&#39;</span><span class="p">)</span>
+<span class="n">txt_files</span><span class="o">=</span><span class="n">lib_path</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span><span class="n">file_type</span><span class="o">=</span><span class="s1">&#39;text&#39;</span><span class="p">)</span>
 <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">txt_files</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">txt_files</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">suffix</span><span class="o">==</span><span class="s1">&#39;.py&#39;</span>
 <span class="n">ipy_files</span><span class="o">=</span><span class="n">path</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span><span class="n">file_exts</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;.ipynb&#39;</span><span class="p">])</span>
 <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">ipy_files</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">ipy_files</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">suffix</span><span class="o">==</span><span class="s1">&#39;.ipynb&#39;</span>
@@ -2296,7 +2297,8 @@ summary: "Utility functions used in the fastai library"
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>(PosixPath(&#39;train_wt2.py&#39;), PosixPath(&#39;18_callback_fp16.ipynb&#39;))</pre>
+<pre>(PosixPath(&#39;../fastai2/test_utils.py&#39;),
+ PosixPath(&#39;15a_vision.models.unet.ipynb&#39;))</pre>
 </div>
 
 </div>
