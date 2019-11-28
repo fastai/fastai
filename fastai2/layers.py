@@ -429,8 +429,8 @@ class ResBlock(nn.Module):
     def __init__(self, expansion, ni, nh, stride=1, sa=False, sym=False,
                  norm_type=NormType.Batch, act_cls=defaults.activation, ndim=2, **kwargs):
         super().__init__()
-        norm2 = NormType.BatchZero if norm_type==NormType.Batch else norm_type
-        norm2 = NormType.InstanceZero if norm_type==NormType.Instance else norm_type
+        norm2 = (NormType.BatchZero if norm_type==NormType.Batch else
+                 NormType.InstanceZero if norm_type==NormType.Instance else norm_type)
         nf,ni = nh*expansion,ni*expansion
         layers  = [ConvLayer(ni, nh, 3, stride=stride, norm_type=norm_type, act_cls=act_cls, ndim=ndim, **kwargs),
                    ConvLayer(nh, nf, 3, norm_type=norm2, act_cls=None, ndim=ndim, **kwargs)
