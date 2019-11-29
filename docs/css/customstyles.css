@@ -643,12 +643,6 @@ a[data-toggle] {
 
 }
 
-.summary:before {
-    content: "Summary: ";
-    font-weight: bold;
-}
-
-
 a.fa.fa-envelope-o.mailto {
     font-weight: 600;
 }
