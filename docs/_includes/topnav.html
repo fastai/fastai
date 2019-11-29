@@ -50,14 +50,11 @@
                 </li>
                 {% endfor %}
                 {% endfor %}
-                {% if site.feedback_disable == null or site.feedback_disable == false %}
-			{% include feedback.html %}
-		{% endif %}
-                <!--comment out this block if you want to hide search-->
+                {% if site.google_search %}
                 <li>
                     {% include search_google_custom.html %}
-                    <!-- {% include search_simple_jekyll.html %} -->
                 </li>
+                {% endif %}
             </ul>
         </div>
         </div>
