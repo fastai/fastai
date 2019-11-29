@@ -466,7 +466,6 @@ def load(fn:Path):
     finally: fn.close()
 
 #Cell
-#NB: Please don't move this to a different line or module, since it's used in testing `get_source_link`
 @patch
 def ls(self:Path, n_max=None, file_type=None, file_exts=None):
     "Contents of path as a list"
