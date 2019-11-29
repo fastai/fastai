@@ -758,8 +758,9 @@ directly.</p>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Points are expected to come as an array/tensor of shape <code>(n,2)</code> or as a list of lists with two elements. Unless you change the defaults in <a href="/vision.core.html#PointScaler"><code>PointScaler</code></a> (see later on), coordinates should go from 0 to width/height, with the first one being the column index (so from 0 to width) and the second one being the row index (so from 0 to height).</p>
-<div markdown="span" class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i> <b>Note: </b>This is differnt from the usual indeixing convention for arrays in numpy or in PyTorch, but it's the way points are expected by matplotlib or the internal functions in PyTorch like `F.grid_sample`.</div>
+<p>Points are expected to come as an array/tensor of shape <code>(n,2)</code> or as a list of lists with two elements. Unless you change the defaults in <a href="/vision.core.html#PointScaler"><code>PointScaler</code></a> (see later on), coordinates should go from 0 to width/height, with the first one being the column index (so from 0 to width) and the second one being the row index (so from 0 to height).
+{% include note.html content="This is differnt from the usual indeixing convention for arrays in numpy or in PyTorch, but it's the way points are expected by matplotlib or the internal functions in PyTorch like <code>F.grid_sample</code>." %}</p>
+
 </div>
 </div>
 </div>
@@ -872,8 +873,9 @@ directly.</p>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Bounding boxes are expected to come as tuple with an array/tensor of shape <code>(n,4)</code> or as a list of lists with four elements adn a list of corresponding labels. Unless you change the defaults in <code>BBoxScaler</code> (see later on), coordinates for each bounding box should go from 0 to height/width, with the following convetion: top, left, bottom, right.</p>
-<div markdown="span" class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i> <b>Note: </b>We use the same convention as for points with y axis being before x.</div>
+<p>Bounding boxes are expected to come as tuple with an array/tensor of shape <code>(n,4)</code> or as a list of lists with four elements adn a list of corresponding labels. Unless you change the defaults in <code>BBoxScaler</code> (see later on), coordinates for each bounding box should go from 0 to height/width, with the following convetion: top, left, bottom, right.
+{% include note.html content="We use the same convention as for points with y axis being before x." %}</p>
+
 </div>
 </div>
 </div>
@@ -1167,8 +1169,9 @@ directly.</p>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>To work with data augmentation, and in particular the <code>grid_sample</code> method, points need to be represented with coordinates going from -1 to 1 (-1 being top or left, 1 bottom or right), which will be done unless you pass <code>do_scale=False</code>. We also need to make sure they are following our convention of points being x,y coordinates, so pass along <code>y_first=True</code> if you have your data in an y,x format to add a flip.</p>
-<div markdown="span" class="alert alert-danger" role="alert"><i class="fa fa-danger-circle"></i> <b>Warning: </b>This transform needs to run on the tuple level, before any transform that changes the image size.</div>
+<p>To work with data augmentation, and in particular the <code>grid_sample</code> method, points need to be represented with coordinates going from -1 to 1 (-1 being top or left, 1 bottom or right), which will be done unless you pass <code>do_scale=False</code>. We also need to make sure they are following our convention of points being x,y coordinates, so pass along <code>y_first=True</code> if you have your data in an y,x format to add a flip.
+{% include warning.html content="This transform needs to run on the tuple level, before any transform that changes the image size." %}</p>
+
 </div>
 </div>
 </div>
@@ -1201,8 +1204,9 @@ directly.</p>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>To work with data augmentation, and in particular the <code>grid_sample</code> method, points need to be represented with coordinates going from -1 to 1 (-1 being top or left, 1 bottom or right), which will be done unless you pass <code>do_scale=False</code>. We also need to make sure they are following our convention of points being x,y coordinates, so pass along <code>y_first=True</code> if you have your data in an y,x format to add a flip.</p>
-<div markdown="span" class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i> <b>Note: </b>This transform automatically grabs the sizes of the images it sees before a [`TensorPoint`](/vision.core.html#TensorPoint) object and embeds it in them. For this to work, those images need to be before any points in the order of your final tuple. If you don't have such images, you need to embed the size of the corresponding image when creating a [`TensorPoint`](/vision.core.html#TensorPoint) by passing it with `sz=...`.</div>
+<p>To work with data augmentation, and in particular the <code>grid_sample</code> method, points need to be represented with coordinates going from -1 to 1 (-1 being top or left, 1 bottom or right), which will be done unless you pass <code>do_scale=False</code>. We also need to make sure they are following our convention of points being x,y coordinates, so pass along <code>y_first=True</code> if you have your data in an y,x format to add a flip.
+{% include note.html content="This transform automatically grabs the sizes of the images it sees before a <a href="/vision.core.html#TensorPoint"><code>TensorPoint</code></a> object and embeds it in them. For this to work, those images need to be before any points in the order of your final tuple. If you don't have such images, you need to embed the size of the corresponding image when creating a <a href="/vision.core.html#TensorPoint"><code>TensorPoint</code></a> by passing it with <code>sz=...</code>." %}</p>
+
 </div>
 </div>
 </div>
