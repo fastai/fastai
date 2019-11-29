@@ -18,14 +18,6 @@ def load_cpp(name, files, path):
     return cpp_extension.load(name='forget_mult_cuda', sources=[fastai_path/f for f in files], build_directory=Config().model/'qrnn')
 
 #Cell
-if torch.cuda.is_available():
-    fastai_path = Path(__file__).parent
-    files = ['forget_mult_cuda.cpp', 'forget_mult_cuda_kernel.cu']
-    forget_mult_cuda = load_cpp(name='forget_mult_cuda', files=files, path=fastai_path)
-    files = ['bwd_forget_mult_cuda.cpp', 'bwd_forget_mult_cuda_kernel.cu']
-    bwd_forget_mult_cuda = load_cpp(name='bwd_forget_mult_cuda', files=files, path=fastai_path)
-
-#Cell
 def dispatch_cuda(cuda_class, cpu_func, x):
     "Depending on `x.device` uses `cpu_func` or `cuda_class.apply`"
     return cuda_class.apply if x.device.type == 'cuda' else cpu_func
