@@ -110,7 +110,7 @@ summary: "Define the general fastai optimizer and the variants"
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><a href="/torch.core.html#params"><code>params</code></a> will be used to create the <code>param_groups</code> of the optimizer. If it's a collection (or a generator) of parameters, it will be a <a href="/core.foundation.html#L"><code>L</code></a> containing one <a href="/core.foundation.html#L"><code>L</code></a> with all the parameters. To define multiple parameter groups <a href="/torch.core.html#params"><code>params</code></a> should be passed as a collection (or a generator) of <a href="/core.foundation.html#L"><code>L</code></a>s.
-{% include note.html content="In PyTorch, <code>model.parameters()</code> returns a generator with all the parameters, that you can directly pass to <a href="/optimizer.html#Optimizer"><code>Optimizer</code></a>." %}</p>
+{% include note.html content="In PyTorch, <code>model.parameters()</code> returns a generator with all the parameters, that you can directly pass to <code>Optimizer</code>." %}</p>
 
 </div>
 </div>
@@ -352,7 +352,7 @@ summary: "Define the general fastai optimizer and the variants"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>{% include warning.html content="Weight decay and L2 regularization is the same thing for basic SGD, but for more complex optimizers, they are very different. See <a href="https://arxiv.org/abs/1711.05101">Decoupled Weight Decay Regularization</a> for more information." %}</p>
+<p>{% include warning.html content="Weight decay and L2 regularization is the same thing for basic SGD, but for more complex optimizers, they are very different." %}</p>
 
 </div>
 </div>
