@@ -17,6 +17,7 @@ def load_cpp(name, files, path):
     os.makedirs(Config().model/'qrnn', exist_ok=True)
     return cpp_extension.load(name='forget_mult_cuda', sources=[fastai_path/f for f in files], build_directory=Config().model/'qrnn')
 
+#Cell
 if torch.cuda.is_available():
     fastai_path = Path(__file__).parent
     files = ['forget_mult_cuda.cpp', 'forget_mult_cuda_kernel.cu']
