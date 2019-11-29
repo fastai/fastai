@@ -133,8 +133,7 @@ def unet_learner(dbunch, arch, loss_func=None, pretrained=True, cut=None, splitt
     if config is None: config = {}
     meta = model_meta.get(arch, _default_meta)
     body = create_body(arch, pretrained, ifnone(cut, meta['cut']))
-    try:    size = dbunch.train_ds[0][0].size
-    except: size = dbunch.one_batch()[0].shape[-2:]
+    size = dbunch.one_batch()[0].shape[-2:]
     model = models.unet.DynamicUnet(body, get_c(dbunch), size, **config)
     learn = Learner(dbunch, model, loss_func=loss_func, splitter=ifnone(splitter, meta['split']), **kwargs)
     if pretrained: learn.freeze()
