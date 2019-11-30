@@ -332,7 +332,7 @@ def bn_bias_params(m, with_bias=True): # TODO: Rename to `norm_bias_params`
     "Return all bias and BatchNorm parameters"
     if isinstance(m, norm_types): return L(m.parameters()) if with_bias else L(m.weight)
     res = L(m.children()).map(bn_bias_params, with_bias=with_bias).concat()
-    #if with_bias and hasattr(m, 'bias'): res.append(m.bias)
+    if with_bias and getattr(m, 'bias', None) is not None: res.append(m.bias)
     return res
 
 #Cell
