@@ -16,15 +16,16 @@ def init_cnn(m):
 
 #Cell
 class XResNet(nn.Sequential):
-    def __init__(self, expansion, layers, c_in=3, c_out=1000, sa=False, sym=False, act_cls=defaults.activation, norm_type=NormType.Batch):
-        stem = []
-        sizes = [c_in,16,32,64] if c_in<3 else [c_in,32,32,64]
-        for i in range(3):
-            stem.append(ConvLayer(sizes[i], sizes[i+1], stride=2 if i==0 else 1, act_cls=act_cls, norm_type=norm_type))
+    def __init__(self, expansion, layers, c_in=3, c_out=1000,
+                 sa=False, sym=False, act_cls=defaults.activation,
+                 ):
+        sizes = [c_in, 16,32,64] if c_in < 3 else [c_in, 32, 64, 64]
+        stem = [ConvLayer(sizes[i], sizes[i+1], stride=2 if i==0 else 1, act_cls=act_cls)
+                for i in range(3)]
 
         block_szs = [64//expansion,64,128,256,512] +[256]*(len(layers)-4)
-        blocks = [self._make_layer(expansion, block_szs[i], block_szs[i+1], l, 1 if i==0 else 2,
-                                  sa = sa if i==len(layers)-4 else False, sym=sym, act_cls=act_cls, norm_type=norm_type)
+        blocks = [self._make_layer(expansion, ni=block_szs[i], nf=block_szs[i+1], blocks=l, stride=1 if i==0 else 2,
+                                  sa=sa if i==len(layers)-4 else False, sym=sym, act_cls=act_cls)
                   for i,l in enumerate(layers)]
         super().__init__(
             *stem,
@@ -35,10 +36,10 @@ class XResNet(nn.Sequential):
         )
         init_cnn(self)
 
-    def _make_layer(self, expansion, ni, nf, blocks, stride, sa, sym, act_cls, norm_type):
+    def _make_layer(self, expansion, ni, nf, blocks, stride, sa, sym, act_cls):
         return nn.Sequential(
             *[ResBlock(expansion, ni if i==0 else nf, nf, stride if i==0 else 1,
-                      sa if i==blocks-1 else False, sym=sym, act_cls=act_cls, norm_type=norm_type)
+                      sa if i==(blocks-1) else False, sym=sym, act_cls=act_cls)
               for i in range(blocks)])
 
 #Cell
