@@ -563,5 +563,6 @@ class NoneReduce():
 def in_channels(m):
     "Return the shape of the first weight layer in `m`."
     for l in flatten_model(m):
-        if hasattr(l, 'weight'): return l.weight.shape[1]
+        if getattr(l, 'weight', None) is not None and l.weight.ndim==4:
+            return l.weight.shape[1]
     raise Exception('No weight layer')
