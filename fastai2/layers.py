@@ -6,8 +6,9 @@ __all__ = ['Identity', 'Lambda', 'PartialLambda', 'View', 'ResizeBatch', 'Flatte
            'AvgPool', 'BaseLoss', 'CrossEntropyLossFlat', 'BCEWithLogitsLossFlat', 'BCELossFlat', 'MSELossFlat',
            'LabelSmoothingCrossEntropy', 'trunc_normal_', 'Embedding', 'SelfAttention', 'PooledSelfAttention2d',
            'SimpleSelfAttention', 'icnr_init', 'PixelShuffle_ICNR', 'SequentialEx', 'MergeLayer', 'Cat', 'SimpleCNN',
-           'ResBlock', 'swish', 'Swish', 'MishJitAutoFn', 'mish', 'MishJit', 'ParameterModule',
-           'children_and_parameters', 'TstModule', 'tst', 'children', 'flatten_model', 'NoneReduce', 'in_channels']
+           'ProdLayer', 'inplace_relu', 'SEModule', 'ResBlock', 'SEBlock', 'SEResNeXtBlock', 'SeparableBlock', 'swish',
+           'Swish', 'MishJitAutoFn', 'mish', 'MishJit', 'ParameterModule', 'children_and_parameters', 'TstModule',
+           'tst', 'children', 'flatten_model', 'NoneReduce', 'in_channels']
 
 #Cell
 from .core.all import *
@@ -423,29 +424,61 @@ class SimpleCNN(nn.Sequential):
         super().__init__(*layers)
 
 #Cell
+class ProdLayer(Module):
+    "Merge a shortcut with the result of the module by multiplying them."
+    def forward(self, x): return x * x.orig
+
+#Cell
+inplace_relu = partial(nn.ReLU, inplace=True)
+
+#Cell
+def SEModule(ch, reduction):
+    return SequentialEx(nn.AdaptiveAvgPool2d(1),
+                        ConvLayer(ch, ch//reduction, ks=1, norm_type=None, act_cls=inplace_relu),
+                        ConvLayer(ch//reduction, ch, ks=1, norm_type=None, act_cls=nn.Sigmoid),
+                        ProdLayer())
+
+#Cell
 class ResBlock(nn.Module):
     "Resnet block from `ni` to `nh` with `stride`"
     @delegates(ConvLayer.__init__)
-    def __init__(self, expansion, ni, nh, stride=1, sa=False, sym=False,
-                 norm_type=NormType.Batch, act_cls=defaults.activation, ndim=2, **kwargs):
+    def __init__(self, expansion, ni, nf, stride=1, groups=1, reduction=None, nh1=None, nh2=None, dw=False, g2=1,
+                 sa=False, sym=False, norm_type=NormType.Batch, act_cls=defaults.activation, ndim=2, **kwargs):
         super().__init__()
         norm2 = (NormType.BatchZero if norm_type==NormType.Batch else
                  NormType.InstanceZero if norm_type==NormType.Instance else norm_type)
-        nf,ni = nh*expansion,ni*expansion
-        layers  = [ConvLayer(ni, nh, 3, stride=stride, norm_type=norm_type, act_cls=act_cls, ndim=ndim, **kwargs),
-                   ConvLayer(nh, nf, 3, norm_type=norm2, act_cls=None, ndim=ndim, **kwargs)
+        if nh2 is None: nh2 = nf
+        if nh1 is None: nh1 = nh2
+        nf,ni = nf*expansion,ni*expansion
+        k0 = dict(norm_type=norm_type, act_cls=act_cls, ndim=ndim, **kwargs)
+        k1 = dict(norm_type=norm2, act_cls=None, ndim=ndim, **kwargs)
+        layers  = [ConvLayer(ni,  nh2, 3, stride=stride, groups=ni if dw else groups, **k0),
+                   ConvLayer(nh2,  nf, 3, groups=g2, **k1)
         ] if expansion == 1 else [
-                   ConvLayer(ni, nh, 1, norm_type=norm_type, act_cls=act_cls, ndim=ndim, **kwargs),
-                   ConvLayer(nh, nh, 3, stride=stride, norm_type=norm_type, act_cls=act_cls, ndim=ndim, **kwargs),
-                   ConvLayer(nh, nf, 1, norm_type=norm2, act_cls=None, ndim=ndim, **kwargs)
-        ]
+                   ConvLayer(ni,  nh1, 1, **k0),
+                   ConvLayer(nh1, nh2, 3, stride=stride, groups=nh1 if dw else groups, **k0),
+                   ConvLayer(nh2,  nf, 1, groups=g2, **k1)]
         self.convs = nn.Sequential(*layers)
         self.sa = SimpleSelfAttention(nf,ks=1,sym=sym) if sa else noop
         self.idconv = noop if ni==nf else ConvLayer(ni, nf, 1, act_cls=None, ndim=ndim, **kwargs)
         self.pool = noop if stride==1 else AvgPool(2, ndim=ndim, ceil_mode=True)
+        self.se = SEModule(nf, reduction=reduction) if reduction else noop
         self.act = defaults.activation(inplace=True) if act_cls is defaults.activation else act_cls()
 
-    def forward(self, x): return self.act(self.sa(self.convs(x)) + self.idconv(self.pool(x)))
+    def forward(self, x): return self.act(self.sa(self.se(self.convs(x))) + self.idconv(self.pool(x)))
+
+#Cell
+def SEBlock(expansion, ni, nf, groups=1, reduction=16, stride=1, **kwargs):
+    return ResBlock(expansion, ni, nf, stride=stride, groups=groups, reduction=reduction, nh1=nf*2, nh2=nf*expansion, **kwargs)
+
+#Cell
+def SEResNeXtBlock(expansion, ni, nf, groups=32, reduction=16, stride=1, base_width=4, **kwargs):
+    w = math.floor(nf * (base_width / 64)) * groups
+    return ResBlock(expansion, ni, nf, stride=stride, groups=groups, reduction=reduction, nh2=w, **kwargs)
+
+#Cell
+def SeparableBlock(expansion, ni, nf, reduction=16, stride=1, base_width=4, **kwargs):
+    return ResBlock(expansion, ni, nf, stride=stride, reduction=reduction, nh2=nf*2, dw=True, **kwargs)
 
 #Cell
 from torch.jit import script
