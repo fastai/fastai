@@ -106,8 +106,9 @@ def _get_norm(prefix, nf, ndim=2, zero=False, **kwargs):
     "Norm layer with `nf` features and `ndim` initialized depending on `norm_type`."
     assert 1 <= ndim <= 3
     bn = getattr(nn, f"{prefix}{ndim}d")(nf, **kwargs)
-    bn.bias.data.fill_(1e-3)
-    bn.weight.data.fill_(0. if zero else 1.)
+    if bn.affine:
+        bn.bias.data.fill_(1e-3)
+        bn.weight.data.fill_(0. if zero else 1.)
     return bn
 
 #Cell
@@ -595,5 +596,6 @@ class NoneReduce():
 def in_channels(m):
     "Return the shape of the first weight layer in `m`."
     for l in flatten_model(m):
-        if hasattr(l, 'weight'): return l.weight.shape[1]
+        if getattr(l, 'weight', None) is not None and l.weight.ndim==4:
+            return l.weight.shape[1]
     raise Exception('No weight layer')
