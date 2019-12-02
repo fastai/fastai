@@ -18,11 +18,12 @@
 You can get all the necessary dependencies by simply installing fastai v1: `conda install -c fastai -c pytorch fastai`. Or alternatively you can automatically install the dependencies into a new environment:
 
 ```bash
-cd fastai_dev
+cd fastai2
 conda env create -f environment.yml
+source activate fastai2
 ```
 
-Then, you can install fastai v2 with pip: `pip install git+https://github.com/fastai/fastai_dev`. Or clone this repo, cd to its directory, and `pip install -e .` for an *editable install* (which is probably the best approach at the moment, since fastai v2 is under heavy development).
+Then, you can install fastai v2 with pip: `pip install git+https://github.com/fastai/fastai2`. Or clone this repo, cd to its directory, and `pip install -e .[dev]` for an *editable install* (which is probably the best approach at the moment, since fastai v2 is under heavy development).
 
 To use `fastai2.medical.imaging` you'll also need to:
 
