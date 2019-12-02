@@ -169,6 +169,7 @@ def summary(self:Learner):
     res += f"{'Layer (type)':<20} {'Output Shape':<20} {'Param #':<10} {'Trainable':<10}\n"
     res += "=" * n + "\n"
     ps,trn_ps = 0,0
+    infos = [o for o in infos if o is not None] #see comment in previous cell
     for typ,np,trn,sz in infos:
         if sz is None: continue
         ps += np
