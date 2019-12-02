@@ -29,7 +29,7 @@ class WandbCallback(Callback):
 
     def begin_fit(self):
         "Call watch method to log model topology, gradients & weights"
-        self.run = not hasattr(self.learn, 'lr_finder') and not hasattr(self, "gather_preds")
+        self.run = not hasattr(self.learn, 'lr_finder') and not hasattr(self, "gather_preds") and rank_distrib()==0
         if not self.run: return
         if not WandbCallback._wandb_watch_called:
             WandbCallback._wandb_watch_called = True
