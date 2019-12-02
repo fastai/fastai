@@ -221,9 +221,9 @@ class Learner():
     def create_opt(self):
         self.opt = self.opt_func(self.splitter(self.model), lr=self.lr)
         if not self.wd_bn_bias:
-            for p in self._bn_bias_state(False): p['do_wd'] = False
+            for p in self._bn_bias_state(True ): p['do_wd'] = False
         if self.train_bn:
-            for p in self._bn_bias_state(True ): p['force_train'] = True
+            for p in self._bn_bias_state(False): p['force_train'] = True
 
     def _split(self, b):
         i = getattr(self.dbunch, 'n_inp', 1 if len(b)==1 else len(b)-1)
