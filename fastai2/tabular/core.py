@@ -26,10 +26,11 @@ class _TabIloc:
 #Cell
 class Tabular(CollBase, GetAttr, FilteredBase):
     "A `DataFrame` wrapper that knows which cols are cont/cat/y, and returns rows in `__getitem__`"
-    _default='items'
+    _default='procs'
     def __init__(self, df, procs=None, cat_names=None, cont_names=None, y_names=None, block_y=CategoryBlock, splits=None, do_setup=True):
         if splits is None: splits=[range_of(df)]
         df = df.iloc[sum(splits, [])].copy()
+        self.databunch = delegates(self._dl_type.__init__)(self.databunch)
         super().__init__(df)
 
         self.y_names = L(y_names)
@@ -46,12 +47,13 @@ class Tabular(CollBase, GetAttr, FilteredBase):
     def show(self, max_n=10, **kwargs): display_df(self.all_cols[:max_n])
     def setup(self): self.procs.setup(self)
     def process(self): self.procs(self)
+    def loc(self): return self.items.loc
     def iloc(self): return _TabIloc(self)
     def targ(self): return self.items[self.y_names]
     def all_col_names (self): return self.cat_names + self.cont_names + self.y_names
     def n_subsets(self): return 2
 
-properties(Tabular,'iloc','targ','all_col_names','n_subsets')
+properties(Tabular,'loc','iloc','targ','all_col_names','n_subsets')
 
 #Cell
 class TabularPandas(Tabular):
@@ -97,6 +99,7 @@ class Categorify(TabularProc):
 @Categorize
 def setups(self, to:Tabular):
     if len(to.y_names) > 0: self.vocab = CategoryMap(getattr(to, 'train', to).iloc[:,to.y_names[0]].items)
+    self.c = len(self.vocab)
     return self(to)
 
 @Categorize
@@ -185,6 +188,7 @@ def show_batch(x: Tabular, y, its, max_n=10, ctxs=None):
 class TabDataLoader(TfmdDL):
     do_item = noops
     def __init__(self, dataset, bs=16, shuffle=False, after_batch=None, num_workers=0, **kwargs):
+        if after_batch is None: after_batch = TransformBlock().batch_tfms
         after_batch = L(after_batch)+ReadTabBatch(dataset)
         super().__init__(dataset, bs=bs, shuffle=shuffle, after_batch=after_batch, num_workers=num_workers, **kwargs)
 

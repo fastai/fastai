@@ -78,7 +78,7 @@ def IndexSplitter(valid_idx):
     "Split `items` so that `val_idx` are in the validation set and the others in the training set"
     def _inner(o, **kwargs):
         train_idx = np.setdiff1d(np.array(range_of(o)), np.array(valid_idx))
-        return train_idx,valid_idx
+        return L(train_idx, use_list=True), L(valid_idx, use_list=True)
     return _inner
 
 #Cell

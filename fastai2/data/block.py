@@ -12,7 +12,7 @@ from .transforms import *
 #Cell
 class TransformBlock():
     "A basic wrapper that links defaults transforms for the data block API"
-    def __init__(self, type_tfms=None, item_tfms=None, batch_tfms=Cuda, dl_type=None, dbunch_kwargs=None):
+    def __init__(self, type_tfms=None, item_tfms=None, batch_tfms=None, dl_type=None, dbunch_kwargs=None):
         self.type_tfms  =            L(type_tfms)
         self.item_tfms  = ToTensor + L(item_tfms)
         self.batch_tfms = Cuda     + L(batch_tfms)
