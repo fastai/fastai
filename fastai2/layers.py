@@ -434,9 +434,10 @@ inplace_relu = partial(nn.ReLU, inplace=True)
 
 #Cell
 def SEModule(ch, reduction):
+    nf = math.ceil(ch//reduction/8)*8
     return SequentialEx(nn.AdaptiveAvgPool2d(1),
-                        ConvLayer(ch, ch//reduction, ks=1, norm_type=None, act_cls=inplace_relu),
-                        ConvLayer(ch//reduction, ch, ks=1, norm_type=None, act_cls=nn.Sigmoid),
+                        ConvLayer(ch, nf, ks=1, norm_type=None, act_cls=inplace_relu),
+                        ConvLayer(nf, ch, ks=1, norm_type=None, act_cls=nn.Sigmoid),
                         ProdLayer())
 
 #Cell

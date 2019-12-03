@@ -2,10 +2,10 @@
 
 __all__ = ['init_cnn', 'XResNet', 'xresnet18', 'xresnet34', 'xresnet50', 'xresnet101', 'xresnet152', 'xresnet18_deep',
            'xresnet34_deep', 'xresnet50_deep', 'xresnet18_deeper', 'xresnet34_deeper', 'xresnet50_deeper', 'se_kwargs1',
-           'se_kwargs2', 'g0', 'g1', 'g2', 'g3', 'xse_resnet18', 'xse_resnext18_32x4d', 'xse_resnet34',
-           'xse_resnext34_32x4d', 'xse_resnet50', 'xse_resnext50_32x4d', 'xse_resnet101', 'xse_resnext101_32x4d',
-           'xse_resnet152', 'xsenet154', 'xse_resnext18_deep', 'xse_resnext34_deep', 'xse_resnext50_deep',
-           'xse_resnext18_deeper', 'xse_resnext34_deeper', 'xse_resnext50_deeper']
+           'se_kwargs2', 'g0', 'g1', 'g2', 'g3', 'xse_resnet18', 'xse_resnext18', 'xse_resnet34', 'xse_resnext34',
+           'xse_resnet50', 'xse_resnext50', 'xse_resnet101', 'xse_resnext101', 'xse_resnet152', 'xsenet154',
+           'xse_resnext18_deep', 'xse_resnext34_deep', 'xse_resnext50_deep', 'xse_resnext18_deeper',
+           'xse_resnext34_deeper', 'xse_resnext50_deeper']
 
 #Cell
 from ...torch_basics import *
@@ -20,14 +20,15 @@ def init_cnn(m):
 
 #Cell
 class XResNet(nn.Sequential):
-    def __init__(self, block, expansion, layers, groups=1, reduction=None, p=0.0, c_in=3, c_out=1000,
-                 sa=False, sym=False, act_cls=defaults.activation):
+    def __init__(self, block, expansion, layers, groups=1, reduction=None, p=0.0, c_in=3, c_out=1000, stem_szs=(32,32,64),
+                 widen=1.0, sa=False, sym=False, act_cls=defaults.activation):
         store_attr(self, 'block,expansion,sa,sym,act_cls')
-        sizes = [c_in, 16,32,64] if c_in < 3 else [c_in, 32, 64, 64]
-        stem = [ConvLayer(sizes[i], sizes[i+1], stride=2 if i==0 else 1, act_cls=act_cls)
+        stem_szs = [c_in, *stem_szs]
+        stem = [ConvLayer(stem_szs[i], stem_szs[i+1], stride=2 if i==0 else 1, act_cls=act_cls)
                 for i in range(3)]
 
-        block_szs = [64//expansion,64,128,256,512] +[256]*(len(layers)-4)
+        block_szs = [int(o*widen) for o in [64,128,256,512] +[256]*(len(layers)-4)]
+        block_szs = [64//expansion] + block_szs
         blocks = [self._make_layer(ni=block_szs[i], nf=block_szs[i+1], blocks=l,
                                    groups=groups, reduction=reduction, stride=1 if i==0 else 2,
                                    sa=sa and i==len(layers)-4)
@@ -77,13 +78,13 @@ g3 = [3,8,36,3]
 
 #Cell
 def xse_resnet18(c_out=1000, pretrained=False, **kwargs):         return XResNet(SEBlock,  1, g0, c_out=c_out, **se_kwargs1, **kwargs)
-def xse_resnext18_32x4d(c_out=1000, pretrained=False, **kwargs):  return XResNet(SEResNeXtBlock, 1, g0, c_out=c_out, **se_kwargs2, **kwargs)
+def xse_resnext18(c_out=1000, pretrained=False, **kwargs):  return XResNet(SEResNeXtBlock, 1, g0, c_out=c_out, **se_kwargs2, **kwargs)
 def xse_resnet34(c_out=1000, pretrained=False, **kwargs):         return XResNet(SEBlock,  1, g1, c_out=c_out, **se_kwargs1, **kwargs)
-def xse_resnext34_32x4d(c_out=1000, pretrained=False, **kwargs):  return XResNet(SEResNeXtBlock, 1, g1, c_out=c_out, **se_kwargs2, **kwargs)
+def xse_resnext34(c_out=1000, pretrained=False, **kwargs):  return XResNet(SEResNeXtBlock, 1, g1, c_out=c_out, **se_kwargs2, **kwargs)
 def xse_resnet50(c_out=1000, pretrained=False, **kwargs):         return XResNet(SEBlock,  4, g1, c_out=c_out, **se_kwargs1, **kwargs)
-def xse_resnext50_32x4d(c_out=1000, pretrained=False, **kwargs):  return XResNet(SEResNeXtBlock, 4, g1, c_out=c_out, **se_kwargs2, **kwargs)
+def xse_resnext50(c_out=1000, pretrained=False, **kwargs):  return XResNet(SEResNeXtBlock, 4, g1, c_out=c_out, **se_kwargs2, **kwargs)
 def xse_resnet101(c_out=1000, pretrained=False, **kwargs):        return XResNet(SEBlock,  4, g2, c_out=c_out, **se_kwargs1, **kwargs)
-def xse_resnext101_32x4d(c_out=1000, pretrained=False, **kwargs): return XResNet(SEResNeXtBlock, 4, g2, c_out=c_out, **se_kwargs2, **kwargs)
+def xse_resnext101(c_out=1000, pretrained=False, **kwargs): return XResNet(SEResNeXtBlock, 4, g2, c_out=c_out, **se_kwargs2, **kwargs)
 def xse_resnet152(c_out=1000, pretrained=False, **kwargs):        return XResNet(SEBlock,  4, g3, c_out=c_out, **se_kwargs1, **kwargs)
 def xsenet154(c_out=1000, pretrained=False, **kwargs):
     return SENet(SEBlock, g3, groups=64, reduction=16, p=0.2, c_out=c_out)
