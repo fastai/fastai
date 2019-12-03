@@ -3,7 +3,6 @@
 __all__ = ['WandbCallback', 'wandb_process', 'wandb_process', 'wandb_process']
 
 #Cell
-from ..test import *
 from ..basics import *
 from .progress import *
 from ..text.data import TensorText

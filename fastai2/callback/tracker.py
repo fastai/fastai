@@ -4,7 +4,6 @@ __all__ = ['ShortEpochCallback', 'TerminateOnNaNCallback', 'TrackerCallback', 'E
            'SaveModelCallback', 'ReduceLROnPlateau']
 
 #Cell
-from ..test import *
 from ..basics import *
 from .progress import *
 

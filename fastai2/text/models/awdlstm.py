@@ -5,7 +5,6 @@ __all__ = ['dropout_mask', 'RNNDropout', 'WeightDropout', 'EmbeddingDropout', 'A
            'awd_qrnn_clas_config']
 
 #Cell
-from ...test import *
 from ...data.all import *
 from ..core import *
 

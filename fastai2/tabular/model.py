@@ -4,7 +4,6 @@ __all__ = ['emb_sz_rule', 'get_emb_sz', 'TabularModel']
 
 #Cell
 from ..torch_basics import *
-from ..test import *
 from .core import *
 
 #Cell

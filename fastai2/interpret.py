@@ -3,7 +3,6 @@
 __all__ = ['plot_top_losses', 'Interpretation', 'ClassificationInterpretation']
 
 #Cell
-from .test import *
 from .data.all import *
 from .optimizer import *
 from .learner import *

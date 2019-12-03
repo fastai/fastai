@@ -4,7 +4,6 @@ __all__ = ['load_cpp', 'forget_mult_cuda', 'bwd_forget_mult_cuda', 'dispatch_cud
            'QRNNLayer', 'QRNN']
 
 #Cell
-from ...test import *
 from ...data.all import *
 from ..core import *
 from .awdlstm import dropout_mask

@@ -3,7 +3,6 @@
 __all__ = ['synth_dbunch', 'RegModel', 'synth_learner']
 
 #Cell
-from .test import *
 from .data.all import *
 from .optimizer import *
 from .learner import *

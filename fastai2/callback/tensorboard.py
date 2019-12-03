@@ -3,7 +3,6 @@
 __all__ = ['TensorBoardCallback', 'tensorboard_log']
 
 #Cell
-from ..test import *
 from ..basics import *
 
 #Cell

@@ -3,9 +3,4 @@
 __all__ = []
 
 #Cell
-from ..test import *
-from ..core import *
-from ..data.all import *
-from ..optimizer import *
-from ..learner import *
-from ..metrics import *
+from ..basics import *

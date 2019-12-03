@@ -4,7 +4,6 @@ __all__ = ['Hook', 'hook_output', 'Hooks', 'hook_outputs', 'dummy_eval', 'model_
            'has_params', 'HookCallback', 'total_params', 'layer_info', 'ActivationStats']
 
 #Cell
-from ..test import *
 from ..basics import *
 
 #Cell

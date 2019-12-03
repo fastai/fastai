@@ -3,17 +3,12 @@
 __all__ = ['match_embeds', 'RNNLearner', 'language_model_learner', 'text_classifier_learner']
 
 #Cell
-from ..test import *
-from ..data.all import *
-from ..optimizer import *
-from ..learner import *
-from ..metrics import *
+from ..basics import *
 from .core import *
 from .data import *
 from .models.core import *
 from .models.awdlstm import *
 from ..callback.rnn import *
-from ..callback.all import *
 
 #Cell
 def match_embeds(old_wgts, old_vocab, new_vocab):
@@ -117,9 +112,6 @@ def text_classifier_learner(dbunch, arch, vocab, bptt=72, config=None, pretraine
     return learn
 
 #Cell
-#from fastai2.text.data import _get_empty_df
-from ..core.utils import get_empty_df
-
 @typedispatch
 def show_results(x: LMTensorText, y, samples, outs, ctxs=None, max_n=10, **kwargs):
     if ctxs is None: ctxs = get_empty_df(min(len(samples), max_n))

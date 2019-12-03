@@ -5,8 +5,6 @@ __all__ = ['Tabular', 'TabularPandas', 'TabularProc', 'Categorify', 'setups', 'e
 
 #Cell
 from ..torch_basics import *
-from ..test import *
-from ..core import *
 from ..data.all import *
 
 #Cell

@@ -4,7 +4,6 @@ __all__ = ['annealer', 'SchedLin', 'SchedCos', 'SchedNo', 'SchedExp', 'SchedPoly
            'ParamScheduler', 'LRFinder']
 
 #Cell
-from ..test import *
 from ..basics import *
 
 #Cell

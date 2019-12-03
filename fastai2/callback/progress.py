@@ -3,7 +3,6 @@
 __all__ = ['ProgressCallback', 'no_bar', 'ShowGraphCallback', 'CSVLogger']
 
 #Cell
-from ..test import *
 from ..basics import *
 
 #Cell
