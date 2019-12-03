@@ -28,9 +28,9 @@ class EmbeddingDotBias(Module):
         return torch.sigmoid(res) * (self.y_range[1]-self.y_range[0]) + self.y_range[0]
 
 #Cell
+@delegates()
 class EmbeddingNN(TabularModel):
     "Subclass `TabularModel` to create a NN suitable for collaborative filtering."
-    @delegates(TabularModel.__init__)
     def __init__(self, emb_szs, layers, **kwargs):
         super().__init__(emb_szs=emb_szs, n_cont=0, out_sz=1, layers=layers, **kwargs)
 
