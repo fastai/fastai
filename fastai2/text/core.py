@@ -8,8 +8,6 @@ __all__ = ['UNK', 'PAD', 'BOS', 'EOS', 'FLD', 'TK_REP', 'TK_WREP', 'TK_UP', 'TK_
 
 #Cell
 from ..torch_basics import *
-from ..test import *
-from ..core import *
 from ..data.all import *
 
 #Cell

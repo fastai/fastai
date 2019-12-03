@@ -4,7 +4,6 @@ __all__ = ['annealer', 'SchedLin', 'SchedCos', 'SchedNo', 'SchedExp', 'SchedPoly
            'ParamScheduler', 'LRFinder']
 
 #Cell
-from ..test import *
 from ..basics import *
 
 #Cell
@@ -46,7 +45,7 @@ def combine_scheds(pcts, scheds):
         if pos == 1.: return scheds[-1](1.)
         idx = (pos >= pcts).nonzero().max()
         actual_pos = (pos-pcts[idx]) / (pcts[idx+1]-pcts[idx])
-        return scheds[idx](actual_pos)
+        return scheds[idx](actual_pos.item())
     return _inner
 
 #Cell

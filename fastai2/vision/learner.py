@@ -4,7 +4,6 @@ __all__ = ['has_pool_type', 'create_body', 'create_head', 'create_cnn_model', 'c
            'model_meta', 'cnn_learner', 'unet_config', 'unet_learner', 'show_results']
 
 #Cell
-from ..test import *
 from ..basics import *
 from .core import *
 from .data import *

@@ -72,7 +72,7 @@ summary: "All the functions necessary to build `Learner` suitable for transfer l
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="has_pool_type" class="doc_header"><code>has_pool_type</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/learner.py#L18" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>has_pool_type</code>(<strong><code>m</code></strong>)</p>
+<h4 id="has_pool_type" class="doc_header"><code>has_pool_type</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/learner.py#L17" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>has_pool_type</code>(<strong><code>m</code></strong>)</p>
 </blockquote>
 <p>Return <code>True</code> if <code>m</code> is a pooling layer or has one in its children</p>
 
@@ -111,7 +111,7 @@ summary: "All the functions necessary to build `Learner` suitable for transfer l
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="create_body" class="doc_header"><code>create_body</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/learner.py#L26" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>create_body</code>(<strong><code>arch</code></strong>, <strong><code>pretrained</code></strong>=<em><code>True</code></em>, <strong><code>cut</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="create_body" class="doc_header"><code>create_body</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/learner.py#L25" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>create_body</code>(<strong><code>arch</code></strong>, <strong><code>pretrained</code></strong>=<em><code>True</code></em>, <strong><code>cut</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Cut off the body of a typically pretrained <code>arch</code> as determined by <code>cut</code></p>
 
@@ -169,7 +169,7 @@ summary: "All the functions necessary to build `Learner` suitable for transfer l
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="create_head" class="doc_header"><code>create_head</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/learner.py#L38" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>create_head</code>(<strong><code>nf</code></strong>, <strong><code>nc</code></strong>, <strong><code>lin_ftrs</code></strong>=<em><code>None</code></em>, <strong><code>ps</code></strong>=<em><code>0.5</code></em>, <strong><code>concat_pool</code></strong>=<em><code>True</code></em>, <strong><code>bn_final</code></strong>=<em><code>False</code></em>, <strong><code>lin_first</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="create_head" class="doc_header"><code>create_head</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/learner.py#L37" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>create_head</code>(<strong><code>nf</code></strong>, <strong><code>nc</code></strong>, <strong><code>lin_ftrs</code></strong>=<em><code>None</code></em>, <strong><code>ps</code></strong>=<em><code>0.5</code></em>, <strong><code>concat_pool</code></strong>=<em><code>True</code></em>, <strong><code>bn_final</code></strong>=<em><code>False</code></em>, <strong><code>lin_first</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 <p>Model head that takes <code>nf</code> features, runs through <code>lin_ftrs</code>, and out <code>nc</code> classes.</p>
 
@@ -239,7 +239,7 @@ summary: "All the functions necessary to build `Learner` suitable for transfer l
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="create_cnn_model" class="doc_header"><code>create_cnn_model</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/learner.py#L57" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>create_cnn_model</code>(<strong><code>arch</code></strong>, <strong><code>nc</code></strong>, <strong><code>cut</code></strong>, <strong><code>pretrained</code></strong>, <strong><code>lin_ftrs</code></strong>=<em><code>None</code></em>, <strong><code>ps</code></strong>=<em><code>0.5</code></em>, <strong><code>custom_head</code></strong>=<em><code>None</code></em>, <strong><code>bn_final</code></strong>=<em><code>False</code></em>, <strong><code>concat_pool</code></strong>=<em><code>True</code></em>, <strong><code>init</code></strong>=<em><code>'kaiming_normal_'</code></em>)</p>
+<h4 id="create_cnn_model" class="doc_header"><code>create_cnn_model</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/learner.py#L56" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>create_cnn_model</code>(<strong><code>arch</code></strong>, <strong><code>nc</code></strong>, <strong><code>cut</code></strong>, <strong><code>pretrained</code></strong>, <strong><code>lin_ftrs</code></strong>=<em><code>None</code></em>, <strong><code>ps</code></strong>=<em><code>0.5</code></em>, <strong><code>custom_head</code></strong>=<em><code>None</code></em>, <strong><code>bn_final</code></strong>=<em><code>False</code></em>, <strong><code>concat_pool</code></strong>=<em><code>True</code></em>, <strong><code>init</code></strong>=<em><code>'kaiming_normal_'</code></em>)</p>
 </blockquote>
 <p>Create custom convnet architecture using <code>base_arch</code></p>
 
@@ -276,7 +276,7 @@ summary: "All the functions necessary to build `Learner` suitable for transfer l
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="cnn_config" class="doc_header"><code>cnn_config</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/learner.py#L70" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>cnn_config</code>(<strong><code>lin_ftrs</code></strong>=<em><code>None</code></em>, <strong><code>ps</code></strong>=<em><code>0.5</code></em>, <strong><code>custom_head</code></strong>=<em><code>None</code></em>, <strong><code>bn_final</code></strong>=<em><code>False</code></em>, <strong><code>concat_pool</code></strong>=<em><code>True</code></em>, <strong><code>init</code></strong>=<em><code>'kaiming_normal_'</code></em>)</p>
+<h4 id="cnn_config" class="doc_header"><code>cnn_config</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/learner.py#L69" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>cnn_config</code>(<strong><code>lin_ftrs</code></strong>=<em><code>None</code></em>, <strong><code>ps</code></strong>=<em><code>0.5</code></em>, <strong><code>custom_head</code></strong>=<em><code>None</code></em>, <strong><code>bn_final</code></strong>=<em><code>False</code></em>, <strong><code>concat_pool</code></strong>=<em><code>True</code></em>, <strong><code>init</code></strong>=<em><code>'kaiming_normal_'</code></em>)</p>
 </blockquote>
 <p>Convenienc function to easily create a config for <a href="/vision.learner.html#create_cnn_model"><code>create_cnn_model</code></a></p>
 
@@ -299,7 +299,7 @@ summary: "All the functions necessary to build `Learner` suitable for transfer l
                  <span class="n">get_y</span><span class="o">=</span><span class="n">RegexLabeller</span><span class="p">(</span><span class="n">pat</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;/([^/]+)_\d+.jpg$&#39;</span><span class="p">))</span>
 
 <span class="n">dbunch</span> <span class="o">=</span> <span class="n">pets</span><span class="o">.</span><span class="n">databunch</span><span class="p">(</span><span class="n">untar_data</span><span class="p">(</span><span class="n">URLs</span><span class="o">.</span><span class="n">PETS</span><span class="p">)</span><span class="o">/</span><span class="s2">&quot;images&quot;</span><span class="p">,</span> <span class="n">item_tfms</span><span class="o">=</span><span class="n">RandomResizedCrop</span><span class="p">(</span><span class="mi">300</span><span class="p">,</span> <span class="n">min_scale</span><span class="o">=</span><span class="mf">0.5</span><span class="p">),</span> <span class="n">bs</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span>
-                        <span class="n">batch_tfms</span><span class="o">=</span><span class="p">[</span><span class="o">*</span><span class="n">aug_transforms</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">224</span><span class="p">),</span> <span class="n">Normalize</span><span class="p">(</span><span class="o">*</span><span class="n">imagenet_stats</span><span class="p">)])</span>
+                        <span class="n">batch_tfms</span><span class="o">=</span><span class="p">[</span><span class="o">*</span><span class="n">aug_transforms</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">224</span><span class="p">),</span> <span class="n">Normalize</span><span class="o">.</span><span class="n">from_stats</span><span class="p">(</span><span class="o">*</span><span class="n">imagenet_stats</span><span class="p">)])</span>
 </pre></div>
 
     </div>
@@ -336,7 +336,7 @@ summary: "All the functions necessary to build `Learner` suitable for transfer l
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="default_split" class="doc_header"><code>default_split</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/learner.py#L76" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>default_split</code>(<strong><code>m</code></strong>:<a href="/torch.core.html#Module"><code>Module</code></a>)</p>
+<h4 id="default_split" class="doc_header"><code>default_split</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/learner.py#L75" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>default_split</code>(<strong><code>m</code></strong>:<a href="/torch.core.html#Module"><code>Module</code></a>)</p>
 </blockquote>
 
 </div>
@@ -371,7 +371,7 @@ summary: "All the functions necessary to build `Learner` suitable for transfer l
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="cnn_learner" class="doc_header"><code>cnn_learner</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/learner.py#L113" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>cnn_learner</code>(<strong><code>dbunch</code></strong>, <strong><code>arch</code></strong>, <strong><code>loss_func</code></strong>=<em><code>None</code></em>, <strong><code>pretrained</code></strong>=<em><code>True</code></em>, <strong><code>cut</code></strong>=<em><code>None</code></em>, <strong><code>splitter</code></strong>=<em><code>None</code></em>, <strong><code>config</code></strong>=<em><code>None</code></em>, <strong><code>opt_func</code></strong>=<em><code>'Adam'</code></em>, <strong><code>lr</code></strong>=<em><code>slice(None, 0.003, None)</code></em>, <strong><code>cbs</code></strong>=<em><code>None</code></em>, <strong><code>cb_funcs</code></strong>=<em><code>None</code></em>, <strong><code>metrics</code></strong>=<em><code>None</code></em>, <strong><code>path</code></strong>=<em><code>None</code></em>, <strong><code>model_dir</code></strong>=<em><code>'models'</code></em>, <strong><code>wd_bn_bias</code></strong>=<em><code>False</code></em>, <strong><code>train_bn</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="cnn_learner" class="doc_header"><code>cnn_learner</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/learner.py#L112" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>cnn_learner</code>(<strong><code>dbunch</code></strong>, <strong><code>arch</code></strong>, <strong><code>loss_func</code></strong>=<em><code>None</code></em>, <strong><code>pretrained</code></strong>=<em><code>True</code></em>, <strong><code>cut</code></strong>=<em><code>None</code></em>, <strong><code>splitter</code></strong>=<em><code>None</code></em>, <strong><code>config</code></strong>=<em><code>None</code></em>, <strong><code>opt_func</code></strong>=<em><code>'Adam'</code></em>, <strong><code>lr</code></strong>=<em><code>slice(None, 0.003, None)</code></em>, <strong><code>cbs</code></strong>=<em><code>None</code></em>, <strong><code>cb_funcs</code></strong>=<em><code>None</code></em>, <strong><code>metrics</code></strong>=<em><code>None</code></em>, <strong><code>path</code></strong>=<em><code>None</code></em>, <strong><code>model_dir</code></strong>=<em><code>'models'</code></em>, <strong><code>wd_bn_bias</code></strong>=<em><code>False</code></em>, <strong><code>train_bn</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 <p>Build a convnet style learner</p>
 
@@ -415,7 +415,7 @@ summary: "All the functions necessary to build `Learner` suitable for transfer l
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="unet_config" class="doc_header"><code>unet_config</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/learner.py#L124" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>unet_config</code>(<strong><code>blur</code></strong>=<em><code>False</code></em>, <strong><code>blur_final</code></strong>=<em><code>True</code></em>, <strong><code>self_attention</code></strong>=<em><code>False</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>, <strong><code>last_cross</code></strong>=<em><code>True</code></em>, <strong><code>bottle</code></strong>=<em><code>False</code></em>, <strong><code>act_cls</code></strong>=<em><code>'ReLU'</code></em>, <strong><code>init</code></strong>=<em><code>'kaiming_normal_'</code></em>, <strong><code>norm_type</code></strong>=<em><code>NormType.Batch</code></em>)</p>
+<h4 id="unet_config" class="doc_header"><code>unet_config</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/learner.py#L123" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>unet_config</code>(<strong><code>blur</code></strong>=<em><code>False</code></em>, <strong><code>blur_final</code></strong>=<em><code>True</code></em>, <strong><code>self_attention</code></strong>=<em><code>False</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>, <strong><code>last_cross</code></strong>=<em><code>True</code></em>, <strong><code>bottle</code></strong>=<em><code>False</code></em>, <strong><code>act_cls</code></strong>=<em><code>'ReLU'</code></em>, <strong><code>init</code></strong>=<em><code>'kaiming_normal_'</code></em>, <strong><code>norm_type</code></strong>=<em><code>NormType.Batch</code></em>)</p>
 </blockquote>
 <p>Convenience function to easily create a config for <a href="/vision.models.unet.html#DynamicUnet"><code>DynamicUnet</code></a></p>
 
@@ -439,7 +439,7 @@ summary: "All the functions necessary to build `Learner` suitable for transfer l
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="unet_learner" class="doc_header"><code>unet_learner</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/learner.py#L130" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>unet_learner</code>(<strong><code>dbunch</code></strong>, <strong><code>arch</code></strong>, <strong><code>loss_func</code></strong>=<em><code>None</code></em>, <strong><code>pretrained</code></strong>=<em><code>True</code></em>, <strong><code>cut</code></strong>=<em><code>None</code></em>, <strong><code>splitter</code></strong>=<em><code>None</code></em>, <strong><code>config</code></strong>=<em><code>None</code></em>, <strong><code>opt_func</code></strong>=<em><code>'Adam'</code></em>, <strong><code>lr</code></strong>=<em><code>slice(None, 0.003, None)</code></em>, <strong><code>cbs</code></strong>=<em><code>None</code></em>, <strong><code>cb_funcs</code></strong>=<em><code>None</code></em>, <strong><code>metrics</code></strong>=<em><code>None</code></em>, <strong><code>path</code></strong>=<em><code>None</code></em>, <strong><code>model_dir</code></strong>=<em><code>'models'</code></em>, <strong><code>wd_bn_bias</code></strong>=<em><code>False</code></em>, <strong><code>train_bn</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="unet_learner" class="doc_header"><code>unet_learner</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/learner.py#L129" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>unet_learner</code>(<strong><code>dbunch</code></strong>, <strong><code>arch</code></strong>, <strong><code>loss_func</code></strong>=<em><code>None</code></em>, <strong><code>pretrained</code></strong>=<em><code>True</code></em>, <strong><code>cut</code></strong>=<em><code>None</code></em>, <strong><code>splitter</code></strong>=<em><code>None</code></em>, <strong><code>config</code></strong>=<em><code>None</code></em>, <strong><code>opt_func</code></strong>=<em><code>'Adam'</code></em>, <strong><code>lr</code></strong>=<em><code>slice(None, 0.003, None)</code></em>, <strong><code>cbs</code></strong>=<em><code>None</code></em>, <strong><code>cb_funcs</code></strong>=<em><code>None</code></em>, <strong><code>metrics</code></strong>=<em><code>None</code></em>, <strong><code>path</code></strong>=<em><code>None</code></em>, <strong><code>model_dir</code></strong>=<em><code>'models'</code></em>, <strong><code>wd_bn_bias</code></strong>=<em><code>False</code></em>, <strong><code>train_bn</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 <p>Build a unet learner from <code>dbunch</code> and <code>arch</code></p>
 
@@ -558,7 +558,7 @@ summary: "All the functions necessary to build `Learner` suitable for transfer l
 (TensorImage,TensorImageBase) -> show_results
 (TensorImage,TensorCategory) -> show_results
 (TensorImage,object) -> show_results
-(object,object) -> show_results</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/learner.py#L160" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>(TensorImage,TensorBBox) -> show_results
+(object,object) -> show_results</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/learner.py#L159" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>(TensorImage,TensorBBox) -> show_results
 (TensorImage,TensorPoint) -> show_results
 (TensorImage,TensorImageBase) -> show_results
 (TensorImage,TensorCategory) -> show_results

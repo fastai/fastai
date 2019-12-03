@@ -3,7 +3,6 @@
 __all__ = ['reduce_loss', 'MixUp']
 
 #Cell
-from ..test import *
 from ..basics import *
 from .progress import *
 from ..vision.core import *

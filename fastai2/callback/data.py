@@ -3,7 +3,6 @@
 __all__ = ['CollectDataCallback', 'WeightedDL', 'weighted_databunch']
 
 #Cell
-from ..test import *
 from ..basics import *
 
 #Cell

@@ -89,29 +89,11 @@ entries:
     title: Data
   - folderitems:
     - output: web,pdf
-      title: Foundation
-      url: /core.foundation
-    - output: web,pdf
-      title: Utility functions
-      url: /core.utils
-    - output: web,pdf
       title: PyTorch Core
       url: /torch_core
     - output: web,pdf
-      title: Type dispatch
-      url: /core.dispatch
-    - output: web,pdf
-      title: Transforms and Pipelines
-      url: /core.transform
-    - output: web,pdf
       title: Layers
       url: /layers
-    - output: web,pdf
-      title: Test
-      url: /test
-    - output: web,pdf
-      title: Script
-      url: /script
     output: web
     title: Core
   - folderitems:

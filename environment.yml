@@ -1,0 +1,21 @@
+name: fastai2
+channels:
+- fastai
+- pytorch
+- defaults
+dependencies:
+- jupyter
+- pytorch>=1.2.0
+- torchvision
+- matplotlib
+- pandas
+- requests
+- pyyaml
+- fastprogress>=0.1.22
+- pillow
+- python>=3.6
+- pip
+- scikit-learn
+- scipy
+- spacy
+

@@ -71,7 +71,7 @@ summary: "Basic function to preprocess text before assembling it in a `DataBunch
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="spec_add_spaces" class="doc_header"><code>spec_add_spaces</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L26" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>spec_add_spaces</code>(<strong><code>t</code></strong>)</p>
+<h4 id="spec_add_spaces" class="doc_header"><code>spec_add_spaces</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L24" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>spec_add_spaces</code>(<strong><code>t</code></strong>)</p>
 </blockquote>
 <p>Add spaces around / and #</p>
 
@@ -110,7 +110,7 @@ summary: "Basic function to preprocess text before assembling it in a `DataBunch
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="rm_useless_spaces" class="doc_header"><code>rm_useless_spaces</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L33" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>rm_useless_spaces</code>(<strong><code>t</code></strong>)</p>
+<h4 id="rm_useless_spaces" class="doc_header"><code>rm_useless_spaces</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L31" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>rm_useless_spaces</code>(<strong><code>t</code></strong>)</p>
 </blockquote>
 <p>Remove multiple spaces</p>
 
@@ -147,7 +147,7 @@ summary: "Basic function to preprocess text before assembling it in a `DataBunch
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="replace_rep" class="doc_header"><code>replace_rep</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L40" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>replace_rep</code>(<strong><code>t</code></strong>)</p>
+<h4 id="replace_rep" class="doc_header"><code>replace_rep</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L38" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>replace_rep</code>(<strong><code>t</code></strong>)</p>
 </blockquote>
 <p>Replace repetitions at the character level: cccc -- TK_REP 4 c</p>
 
@@ -195,7 +195,7 @@ summary: "Basic function to preprocess text before assembling it in a `DataBunch
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="replace_wrep" class="doc_header"><code>replace_wrep</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L51" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>replace_wrep</code>(<strong><code>t</code></strong>)</p>
+<h4 id="replace_wrep" class="doc_header"><code>replace_wrep</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L49" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>replace_wrep</code>(<strong><code>t</code></strong>)</p>
 </blockquote>
 <p>Replace word repetitions: word word word word -- TK_WREP 4 word</p>
 
@@ -244,7 +244,7 @@ summary: "Basic function to preprocess text before assembling it in a `DataBunch
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="fix_html" class="doc_header"><code>fix_html</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L59" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>fix_html</code>(<strong><code>x</code></strong>)</p>
+<h4 id="fix_html" class="doc_header"><code>fix_html</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L57" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>fix_html</code>(<strong><code>x</code></strong>)</p>
 </blockquote>
 <p>Various messy things we've seen in documents</p>
 
@@ -289,7 +289,7 @@ summary: "Basic function to preprocess text before assembling it in a `DataBunch
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="replace_all_caps" class="doc_header"><code>replace_all_caps</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L70" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>replace_all_caps</code>(<strong><code>t</code></strong>)</p>
+<h4 id="replace_all_caps" class="doc_header"><code>replace_all_caps</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L68" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>replace_all_caps</code>(<strong><code>t</code></strong>)</p>
 </blockquote>
 <p>Replace tokens in ALL CAPS by their lower version and add <code>TK_UP</code> before.</p>
 
@@ -331,7 +331,7 @@ summary: "Basic function to preprocess text before assembling it in a `DataBunch
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="replace_maj" class="doc_header"><code>replace_maj</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L81" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>replace_maj</code>(<strong><code>t</code></strong>)</p>
+<h4 id="replace_maj" class="doc_header"><code>replace_maj</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L79" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>replace_maj</code>(<strong><code>t</code></strong>)</p>
 </blockquote>
 <p>Replace tokens in ALL CAPS by their lower version and add <code>TK_UP</code> before.</p>
 
@@ -369,7 +369,7 @@ summary: "Basic function to preprocess text before assembling it in a `DataBunch
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="lowercase" class="doc_header"><code>lowercase</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L89" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>lowercase</code>(<strong><code>t</code></strong>, <strong><code>add_bos</code></strong>=<em><code>True</code></em>, <strong><code>add_eos</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="lowercase" class="doc_header"><code>lowercase</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L87" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>lowercase</code>(<strong><code>t</code></strong>, <strong><code>add_bos</code></strong>=<em><code>True</code></em>, <strong><code>add_eos</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 <p>Converts <code>t</code> to lowercase</p>
 
@@ -393,7 +393,7 @@ summary: "Basic function to preprocess text before assembling it in a `DataBunch
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="replace_space" class="doc_header"><code>replace_space</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L94" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>replace_space</code>(<strong><code>t</code></strong>)</p>
+<h4 id="replace_space" class="doc_header"><code>replace_space</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L92" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>replace_space</code>(<strong><code>t</code></strong>)</p>
 </blockquote>
 <p>Replace embedded spaces in a token with unicode line char to allow for split/join</p>
 
@@ -433,7 +433,7 @@ summary: "Basic function to preprocess text before assembling it in a `DataBunch
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="BaseTokenizer" class="doc_header"><code>class</code> <code>BaseTokenizer</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L105" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>BaseTokenizer</code>(<strong><code>split_char</code></strong>=<em><code>' '</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h3 id="BaseTokenizer" class="doc_header"><code>class</code> <code>BaseTokenizer</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L103" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>BaseTokenizer</code>(<strong><code>split_char</code></strong>=<em><code>' '</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Basic tokenizer that just splits on spaces</p>
 
@@ -473,7 +473,7 @@ summary: "Basic function to preprocess text before assembling it in a `DataBunch
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="SpacyTokenizer" class="doc_header"><code>class</code> <code>SpacyTokenizer</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L111" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>SpacyTokenizer</code>(<strong><code>lang</code></strong>=<em><code>'en'</code></em>, <strong><code>special_toks</code></strong>=<em><code>None</code></em>, <strong><code>buf_sz</code></strong>=<em><code>5000</code></em>)</p>
+<h3 id="SpacyTokenizer" class="doc_header"><code>class</code> <code>SpacyTokenizer</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L109" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>SpacyTokenizer</code>(<strong><code>lang</code></strong>=<em><code>'en'</code></em>, <strong><code>special_toks</code></strong>=<em><code>None</code></em>, <strong><code>buf_sz</code></strong>=<em><code>5000</code></em>)</p>
 </blockquote>
 <p>Spacy tokenizer for <code>lang</code></p>
 
@@ -512,7 +512,7 @@ summary: "Basic function to preprocess text before assembling it in a `DataBunch
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="TokenizeBatch" class="doc_header"><code>class</code> <code>TokenizeBatch</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L123" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>TokenizeBatch</code>(<strong><code>tok_func</code></strong>=<em><code>'SpacyTokenizer'</code></em>, <strong><code>rules</code></strong>=<em><code>None</code></em>, <strong><code>post_rules</code></strong>=<em><code>None</code></em>, <strong>**<code>tok_kwargs</code></strong>)</p>
+<h3 id="TokenizeBatch" class="doc_header"><code>class</code> <code>TokenizeBatch</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L121" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>TokenizeBatch</code>(<strong><code>tok_func</code></strong>=<em><code>'SpacyTokenizer'</code></em>, <strong><code>rules</code></strong>=<em><code>None</code></em>, <strong><code>post_rules</code></strong>=<em><code>None</code></em>, <strong>**<code>tok_kwargs</code></strong>)</p>
 </blockquote>
 <p>A wrapper around <code>tok_func</code> to apply <code>rules</code> and tokenize in parallel</p>
 
@@ -574,7 +574,7 @@ summary: "Basic function to preprocess text before assembling it in a `DataBunch
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="tokenize1" class="doc_header"><code>tokenize1</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L134" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>tokenize1</code>(<strong><code>text</code></strong>, <strong><code>tok_func</code></strong>=<em><code>'SpacyTokenizer'</code></em>, <strong><code>rules</code></strong>=<em><code>None</code></em>, <strong><code>post_rules</code></strong>=<em><code>None</code></em>, <strong>**<code>tok_kwargs</code></strong>)</p>
+<h4 id="tokenize1" class="doc_header"><code>tokenize1</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L132" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>tokenize1</code>(<strong><code>text</code></strong>, <strong><code>tok_func</code></strong>=<em><code>'SpacyTokenizer'</code></em>, <strong><code>rules</code></strong>=<em><code>None</code></em>, <strong><code>post_rules</code></strong>=<em><code>None</code></em>, <strong>**<code>tok_kwargs</code></strong>)</p>
 </blockquote>
 <p>Tokenize one <a href="/text.html"><code>text</code></a> with an instance of <code>tok_func</code> and some <code>rules</code></p>
 
@@ -614,7 +614,7 @@ summary: "Basic function to preprocess text before assembling it in a `DataBunch
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="parallel_tokenize" class="doc_header"><code>parallel_tokenize</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L139" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>parallel_tokenize</code>(<strong><code>items</code></strong>, <strong><code>tok_func</code></strong>, <strong><code>rules</code></strong>, <strong><code>as_gen</code></strong>=<em><code>False</code></em>, <strong><code>n_workers</code></strong>=<em><code>64</code></em>, <strong>**<code>tok_kwargs</code></strong>)</p>
+<h4 id="parallel_tokenize" class="doc_header"><code>parallel_tokenize</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L137" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>parallel_tokenize</code>(<strong><code>items</code></strong>, <strong><code>tok_func</code></strong>, <strong><code>rules</code></strong>, <strong><code>as_gen</code></strong>=<em><code>False</code></em>, <strong><code>n_workers</code></strong>=<em><code>64</code></em>, <strong>**<code>tok_kwargs</code></strong>)</p>
 </blockquote>
 <p>Calls a potential setup on <code>tok_func</code> before launching <a href="/text.core.html#TokenizeBatch"><code>TokenizeBatch</code></a> in parallel</p>
 
@@ -654,7 +654,7 @@ summary: "Basic function to preprocess text before assembling it in a `DataBunch
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="tokenize_folder" class="doc_header"><code>tokenize_folder</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L149" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>tokenize_folder</code>(<strong><code>path</code></strong>, <strong><code>extensions</code></strong>=<em><code>None</code></em>, <strong><code>folders</code></strong>=<em><code>None</code></em>, <strong><code>output_dir</code></strong>=<em><code>None</code></em>, <strong><code>n_workers</code></strong>=<em><code>64</code></em>, <strong><code>rules</code></strong>=<em><code>None</code></em>, <strong><code>tok_func</code></strong>=<em><code>'SpacyTokenizer'</code></em>, <strong><code>encoding</code></strong>=<em><code>'utf8'</code></em>, <strong>**<code>tok_kwargs</code></strong>)</p>
+<h4 id="tokenize_folder" class="doc_header"><code>tokenize_folder</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L147" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>tokenize_folder</code>(<strong><code>path</code></strong>, <strong><code>extensions</code></strong>=<em><code>None</code></em>, <strong><code>folders</code></strong>=<em><code>None</code></em>, <strong><code>output_dir</code></strong>=<em><code>None</code></em>, <strong><code>n_workers</code></strong>=<em><code>64</code></em>, <strong><code>rules</code></strong>=<em><code>None</code></em>, <strong><code>tok_func</code></strong>=<em><code>'SpacyTokenizer'</code></em>, <strong><code>encoding</code></strong>=<em><code>'utf8'</code></em>, <strong>**<code>tok_kwargs</code></strong>)</p>
 </blockquote>
 <p>Tokenize text files in <code>path</code> in parallel using <code>n_workers</code></p>
 
@@ -678,7 +678,7 @@ summary: "Basic function to preprocess text before assembling it in a `DataBunch
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="read_tokenized_file" class="doc_header"><code>read_tokenized_file</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L166" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>read_tokenized_file</code>(<strong><code>f</code></strong>)</p>
+<h4 id="read_tokenized_file" class="doc_header"><code>read_tokenized_file</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L164" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>read_tokenized_file</code>(<strong><code>f</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -718,7 +718,7 @@ summary: "Basic function to preprocess text before assembling it in a `DataBunch
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="tokenize_df" class="doc_header"><code>tokenize_df</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L177" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>tokenize_df</code>(<strong><code>df</code></strong>, <strong><code>text_cols</code></strong>, <strong><code>n_workers</code></strong>=<em><code>64</code></em>, <strong><code>rules</code></strong>=<em><code>None</code></em>, <strong><code>mark_fields</code></strong>=<em><code>None</code></em>, <strong><code>tok_func</code></strong>=<em><code>'SpacyTokenizer'</code></em>, <strong>**<code>tok_kwargs</code></strong>)</p>
+<h4 id="tokenize_df" class="doc_header"><code>tokenize_df</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L175" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>tokenize_df</code>(<strong><code>df</code></strong>, <strong><code>text_cols</code></strong>, <strong><code>n_workers</code></strong>=<em><code>64</code></em>, <strong><code>rules</code></strong>=<em><code>None</code></em>, <strong><code>mark_fields</code></strong>=<em><code>None</code></em>, <strong><code>tok_func</code></strong>=<em><code>'SpacyTokenizer'</code></em>, <strong>**<code>tok_kwargs</code></strong>)</p>
 </blockquote>
 <p>Tokenize texts in <code>df[text_cols]</code> in parallel using <code>n_workers</code></p>
 
@@ -750,7 +750,7 @@ summary: "Basic function to preprocess text before assembling it in a `DataBunch
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="tokenize_csv" class="doc_header"><code>tokenize_csv</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L194" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>tokenize_csv</code>(<strong><code>fname</code></strong>, <strong><code>text_cols</code></strong>, <strong><code>outname</code></strong>=<em><code>None</code></em>, <strong><code>n_workers</code></strong>=<em><code>4</code></em>, <strong><code>rules</code></strong>=<em><code>None</code></em>, <strong><code>mark_fields</code></strong>=<em><code>None</code></em>, <strong><code>tok_func</code></strong>=<em><code>'SpacyTokenizer'</code></em>, <strong><code>header</code></strong>=<em><code>'infer'</code></em>, <strong><code>chunksize</code></strong>=<em><code>50000</code></em>, <strong>**<code>tok_kwargs</code></strong>)</p>
+<h4 id="tokenize_csv" class="doc_header"><code>tokenize_csv</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L192" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>tokenize_csv</code>(<strong><code>fname</code></strong>, <strong><code>text_cols</code></strong>, <strong><code>outname</code></strong>=<em><code>None</code></em>, <strong><code>n_workers</code></strong>=<em><code>4</code></em>, <strong><code>rules</code></strong>=<em><code>None</code></em>, <strong><code>mark_fields</code></strong>=<em><code>None</code></em>, <strong><code>tok_func</code></strong>=<em><code>'SpacyTokenizer'</code></em>, <strong><code>header</code></strong>=<em><code>'infer'</code></em>, <strong><code>chunksize</code></strong>=<em><code>50000</code></em>, <strong>**<code>tok_kwargs</code></strong>)</p>
 </blockquote>
 <p>Tokenize texts in the <code>text_cols</code> of the csv <code>fname</code> in parallel using <code>n_workers</code></p>
 
@@ -774,7 +774,7 @@ summary: "Basic function to preprocess text before assembling it in a `DataBunch
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="load_tokenized_csv" class="doc_header"><code>load_tokenized_csv</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L211" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>load_tokenized_csv</code>(<strong><code>fname</code></strong>)</p>
+<h4 id="load_tokenized_csv" class="doc_header"><code>load_tokenized_csv</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L209" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>load_tokenized_csv</code>(<strong><code>fname</code></strong>)</p>
 </blockquote>
 <p>Utility function to quickly load a tokenized csv ans the corresponding counter</p>
 
@@ -858,6 +858,39 @@ summary: "Basic function to preprocess text before assembling it in a `DataBunch
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea ">
+
+</div>
+
+</div>
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea ">
+
+</div>
+
+</div>
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea ">
+
+</div>
+
+</div>
+
+</div>
+</div>
+
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -891,7 +924,7 @@ summary: "Basic function to preprocess text before assembling it in a `DataBunch
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="SentencePieceTokenizer" class="doc_header"><code>class</code> <code>SentencePieceTokenizer</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L220" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>SentencePieceTokenizer</code>(<strong><code>lang</code></strong>=<em><code>'en'</code></em>, <strong><code>special_toks</code></strong>=<em><code>None</code></em>, <strong><code>sp_model</code></strong>=<em><code>None</code></em>, <strong><code>vocab_sz</code></strong>=<em><code>None</code></em>, <strong><code>max_vocab_sz</code></strong>=<em><code>30000</code></em>, <strong><code>model_type</code></strong>=<em><code>'unigram'</code></em>, <strong><code>char_coverage</code></strong>=<em><code>None</code></em>, <strong><code>cache_dir</code></strong>=<em><code>'tmp'</code></em>)</p>
+<h3 id="SentencePieceTokenizer" class="doc_header"><code>class</code> <code>SentencePieceTokenizer</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L218" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>SentencePieceTokenizer</code>(<strong><code>lang</code></strong>=<em><code>'en'</code></em>, <strong><code>special_toks</code></strong>=<em><code>None</code></em>, <strong><code>sp_model</code></strong>=<em><code>None</code></em>, <strong><code>vocab_sz</code></strong>=<em><code>None</code></em>, <strong><code>max_vocab_sz</code></strong>=<em><code>30000</code></em>, <strong><code>model_type</code></strong>=<em><code>'unigram'</code></em>, <strong><code>char_coverage</code></strong>=<em><code>None</code></em>, <strong><code>cache_dir</code></strong>=<em><code>'tmp'</code></em>)</p>
 </blockquote>
 <p>Spacy tokenizer for <code>lang</code></p>
 
@@ -922,7 +955,7 @@ summary: "Basic function to preprocess text before assembling it in a `DataBunch
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#Prints too much in stdout. Uncomment when texts are debugged</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#Prints too much in stdout. Uncomment when tests are debugged</span>
 <span class="c1">#out,cnt = tokenize_df(df, text_cols=&#39;text&#39;, tok_func=SentencePieceTokenizer, vocab_sz=34)</span>
 </pre></div>
 

@@ -23,17 +23,25 @@ summary: "NB: This is still in early development. Use v1 unless you want to cont
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Installation">Installation<a class="anchor-link" href="#Installation">&#182;</a></h2>
+<h2 id="Installing">Installing<a class="anchor-link" href="#Installing">&#182;</a></h2>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>You can get all the necessary dependencies by simply installing fastai v1: <code>conda install -c fastai -c pytorch fastai</code>. Or alternatively you can automatically install the dependencies into a new environment:</p>
-<div class="highlight"><pre><span></span><span class="nb">cd</span> fastai_dev
+<div class="highlight"><pre><span></span><span class="nb">cd</span> fastai2
 conda env create -f environment.yml
+<span class="nb">source</span> activate fastai2
 </pre></div>
-<p>Then, you can install fastai v2 with pip: <code>pip install git+https://github.com/fastai/fastai_dev</code>. Or clone this repo, cd to its directory, and <code>pip install -e .</code> for an <em>editable install</em> (which is probably the best approach at the moment, since fastai v2 is under heavy development).</p>
+<p>Then, you can install fastai v2 with pip: <code>pip install git+https://github.com/fastai/fastai2</code>.</p>
+<p>Or you can use an editable install (which is probably the best approach at the moment, since fastai v2 is under heavy development):</p>
+
+<pre><code>pip install packaging
+git clone https://github.com/fastai/fastai2
+cd fastai2
+pip install -e .[dev]</code></pre>
+<p>You should also use an editable install of <code>fastcore</code> to go with it.</p>
 <p>To use <code>fastai2.medical.imaging</code> you'll also need to:</p>
 <div class="highlight"><pre><span></span>conda install pyarrow
 pip install pydicom kornia opencv-python scikit-image

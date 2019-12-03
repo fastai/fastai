@@ -5,7 +5,6 @@ __all__ = ['DcmDataset', 'DcmTag', 'DcmMultiValue', 'dcmread', 'pixels', 'scaled
            'crop_resize', 'shape']
 
 #Cell
-from ..test import *
 from ..basics import *
 from ..vision.all import *
 

@@ -8,7 +8,6 @@ __all__ = ['AccumMetric', 'skm_to_fastai', 'optim_metric', 'accuracy', 'error_ra
            'exp_rmspe', 'ExplainedVariance', 'R2Score', 'foreground_acc', 'Dice', 'JaccardCoeff']
 
 #Cell
-from .test import *
 from .data.all import *
 from .optimizer import *
 from .learner import *

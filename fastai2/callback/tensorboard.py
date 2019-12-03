@@ -3,7 +3,6 @@
 __all__ = ['TensorBoardCallback', 'tensorboard_log']
 
 #Cell
-from ..test import *
 from ..basics import *
 
 #Cell
@@ -18,6 +17,7 @@ class TensorBoardCallback(Callback):
         store_attr(self, 'log_dir,trace_model,log_preds,n_preds')
 
     def begin_fit(self):
+        self.run = not hasattr(self.learn, 'lr_finder') and not hasattr(self, "gather_preds") and rank_distrib()==0
         self.writer = SummaryWriter(log_dir=self.log_dir)
         if self.trace_model:
             if hasattr(self.learn, 'mixed_precision'):
