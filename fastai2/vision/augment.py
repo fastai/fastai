@@ -7,7 +7,6 @@ __all__ = ['RandTransform', 'TensorTypes', 'FlipItem', 'DihedralItem', 'PadMode'
            'Warp', 'LightingTfm', 'Brightness', 'Contrast', 'setup_aug_tfms', 'aug_transforms']
 
 #Cell
-from ..test import *
 from ..data.all import *
 from .core import *
 from .data import *

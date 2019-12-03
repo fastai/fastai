@@ -3,10 +3,8 @@
 __all__ = ['download_images', 'resize_to', 'verify_image', 'verify_images']
 
 #Cell
-from ..test import *
 from ..torch_basics import *
 from ..data.all import *
-
 from .core import *
 
 #Cell

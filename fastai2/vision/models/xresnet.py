@@ -9,7 +9,6 @@ __all__ = ['init_cnn', 'XResNet', 'xresnet18', 'xresnet34', 'xresnet50', 'xresne
 
 #Cell
 from ...torch_basics import *
-from ...test import *
 from torchvision.models.utils import load_state_dict_from_url
 
 #Cell

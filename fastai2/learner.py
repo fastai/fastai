@@ -6,7 +6,6 @@ __all__ = ['CancelFitException', 'CancelEpochException', 'CancelTrainException',
            'AvgSmoothLoss', 'Recorder']
 
 #Cell
-from .test import *
 from .data.all import *
 from .optimizer import *
 

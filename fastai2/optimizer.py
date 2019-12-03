@@ -7,7 +7,6 @@ __all__ = ['Optimizer', 'sgd_step', 'weight_decay', 'l2_reg', 'average_grad', 'a
 
 #Cell
 from .torch_basics import *
-from .test import *
 
 #Cell
 class _BaseOptimizer():
