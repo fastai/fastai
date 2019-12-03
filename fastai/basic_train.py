@@ -211,6 +211,7 @@ class Learner():
 
     def freeze_to(self, n:int)->None:
         "Freeze layers up to layer group `n`."
+        if hasattr(self.model, 'reset'): self.model.reset()
         for g in self.layer_groups[:n]:
             for l in g:
                 if not self.train_bn or not isinstance(l, bn_types): requires_grad(l, False)
