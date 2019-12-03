@@ -32,6 +32,7 @@ git clone https://github.com/fastai/fastai2
 cd fastai2
 pip install -e .[dev]
 ``` 
+You should also use an editable install of [`fastcore`](https://github.com/fastai/fastcore) to go with it.
 
 To use `fastai2.medical.imaging` you'll also need to:
 

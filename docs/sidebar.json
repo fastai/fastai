@@ -34,14 +34,8 @@
     "DataLoader": "/data.load"
   },
   "Core": {
-    "Foundation": "/core.foundation",
-    "Utility functions": "/core.utils",
     "PyTorch Core": "/torch_core",
-    "Type dispatch": "/core.dispatch",
-    "Transforms and Pipelines": "/core.transform",
-    "Layers": "/layers",
-    "Test": "/test",
-    "Script": "/script"
+    "Layers": "/layers"
   },
   "Vision": {
     "Vision Core": "/vision.core",
