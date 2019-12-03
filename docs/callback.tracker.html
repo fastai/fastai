@@ -50,7 +50,7 @@ summary: "Callbacks that make decisions depending how a monitored metric/loss be
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ShortEpochCallback" class="doc_header"><code>class</code> <code>ShortEpochCallback</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/tracker.py#L12" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ShortEpochCallback</code>(<strong><code>pct</code></strong>=<em><code>0.01</code></em>, <strong><code>short_valid</code></strong>=<em><code>True</code></em>) :: <a href="/learner.html#Callback"><code>Callback</code></a></p>
+<h2 id="ShortEpochCallback" class="doc_header"><code>class</code> <code>ShortEpochCallback</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/tracker.py#L11" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ShortEpochCallback</code>(<strong><code>pct</code></strong>=<em><code>0.01</code></em>, <strong><code>short_valid</code></strong>=<em><code>True</code></em>) :: <a href="/learner.html#Callback"><code>Callback</code></a></p>
 </blockquote>
 <p>Fit just <code>pct</code> of an epoch, then stop</p>
 
@@ -163,7 +163,7 @@ summary: "Callbacks that make decisions depending how a monitored metric/loss be
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TerminateOnNaNCallback" class="doc_header"><code>class</code> <code>TerminateOnNaNCallback</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/tracker.py#L21" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TerminateOnNaNCallback</code>() :: <a href="/learner.html#Callback"><code>Callback</code></a></p>
+<h2 id="TerminateOnNaNCallback" class="doc_header"><code>class</code> <code>TerminateOnNaNCallback</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/tracker.py#L20" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TerminateOnNaNCallback</code>() :: <a href="/learner.html#Callback"><code>Callback</code></a></p>
 </blockquote>
 <p>A <a href="/learner.html#Callback"><code>Callback</code></a> that terminates training if loss is NaN.</p>
 
@@ -247,7 +247,7 @@ summary: "Callbacks that make decisions depending how a monitored metric/loss be
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TrackerCallback" class="doc_header"><code>class</code> <code>TrackerCallback</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/tracker.py#L30" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TrackerCallback</code>(<strong><code>monitor</code></strong>=<em><code>'valid_loss'</code></em>, <strong><code>comp</code></strong>=<em><code>None</code></em>, <strong><code>min_delta</code></strong>=<em><code>0.0</code></em>) :: <a href="/learner.html#Callback"><code>Callback</code></a></p>
+<h2 id="TrackerCallback" class="doc_header"><code>class</code> <code>TrackerCallback</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/tracker.py#L29" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TrackerCallback</code>(<strong><code>monitor</code></strong>=<em><code>'valid_loss'</code></em>, <strong><code>comp</code></strong>=<em><code>None</code></em>, <strong><code>min_delta</code></strong>=<em><code>0.0</code></em>) :: <a href="/learner.html#Callback"><code>Callback</code></a></p>
 </blockquote>
 <p>A <a href="/learner.html#Callback"><code>Callback</code></a> that keeps track of the best value in <code>monitor</code>.</p>
 
@@ -279,7 +279,7 @@ summary: "Callbacks that make decisions depending how a monitored metric/loss be
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="EarlyStoppingCallback" class="doc_header"><code>class</code> <code>EarlyStoppingCallback</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/tracker.py#L55" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>EarlyStoppingCallback</code>(<strong><code>monitor</code></strong>=<em><code>'valid_loss'</code></em>, <strong><code>comp</code></strong>=<em><code>None</code></em>, <strong><code>min_delta</code></strong>=<em><code>0.0</code></em>, <strong><code>patience</code></strong>=<em><code>1</code></em>) :: <a href="/callback.tracker.html#TrackerCallback"><code>TrackerCallback</code></a></p>
+<h2 id="EarlyStoppingCallback" class="doc_header"><code>class</code> <code>EarlyStoppingCallback</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/tracker.py#L54" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>EarlyStoppingCallback</code>(<strong><code>monitor</code></strong>=<em><code>'valid_loss'</code></em>, <strong><code>comp</code></strong>=<em><code>None</code></em>, <strong><code>min_delta</code></strong>=<em><code>0.0</code></em>, <strong><code>patience</code></strong>=<em><code>1</code></em>) :: <a href="/callback.tracker.html#TrackerCallback"><code>TrackerCallback</code></a></p>
 </blockquote>
 <p>A <a href="/callback.tracker.html#TrackerCallback"><code>TrackerCallback</code></a> that terminates training when monitored quantity stops improving.</p>
 
@@ -376,7 +376,7 @@ summary: "Callbacks that make decisions depending how a monitored metric/loss be
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="SaveModelCallback" class="doc_header"><code>class</code> <code>SaveModelCallback</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/tracker.py#L73" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SaveModelCallback</code>(<strong><code>monitor</code></strong>=<em><code>'valid_loss'</code></em>, <strong><code>comp</code></strong>=<em><code>None</code></em>, <strong><code>min_delta</code></strong>=<em><code>0.0</code></em>, <strong><code>fname</code></strong>=<em><code>'model'</code></em>, <strong><code>every_epoch</code></strong>=<em><code>False</code></em>, <strong><code>add_save</code></strong>=<em><code>None</code></em>, <strong><code>with_opt</code></strong>=<em><code>False</code></em>) :: <a href="/callback.tracker.html#TrackerCallback"><code>TrackerCallback</code></a></p>
+<h2 id="SaveModelCallback" class="doc_header"><code>class</code> <code>SaveModelCallback</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/tracker.py#L72" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SaveModelCallback</code>(<strong><code>monitor</code></strong>=<em><code>'valid_loss'</code></em>, <strong><code>comp</code></strong>=<em><code>None</code></em>, <strong><code>min_delta</code></strong>=<em><code>0.0</code></em>, <strong><code>fname</code></strong>=<em><code>'model'</code></em>, <strong><code>every_epoch</code></strong>=<em><code>False</code></em>, <strong><code>add_save</code></strong>=<em><code>None</code></em>, <strong><code>with_opt</code></strong>=<em><code>False</code></em>) :: <a href="/callback.tracker.html#TrackerCallback"><code>TrackerCallback</code></a></p>
 </blockquote>
 <p>A <a href="/callback.tracker.html#TrackerCallback"><code>TrackerCallback</code></a> that saves the model's best during training and loads it at the end.</p>
 
@@ -501,7 +501,7 @@ summary: "Callbacks that make decisions depending how a monitored metric/loss be
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ReduceLROnPlateau" class="doc_header"><code>class</code> <code>ReduceLROnPlateau</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/tracker.py#L96" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ReduceLROnPlateau</code>(<strong><code>monitor</code></strong>=<em><code>'valid_loss'</code></em>, <strong><code>comp</code></strong>=<em><code>None</code></em>, <strong><code>min_delta</code></strong>=<em><code>0.0</code></em>, <strong><code>patience</code></strong>=<em><code>1</code></em>, <strong><code>factor</code></strong>=<em><code>10.0</code></em>) :: <a href="/callback.tracker.html#TrackerCallback"><code>TrackerCallback</code></a></p>
+<h2 id="ReduceLROnPlateau" class="doc_header"><code>class</code> <code>ReduceLROnPlateau</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/tracker.py#L95" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ReduceLROnPlateau</code>(<strong><code>monitor</code></strong>=<em><code>'valid_loss'</code></em>, <strong><code>comp</code></strong>=<em><code>None</code></em>, <strong><code>min_delta</code></strong>=<em><code>0.0</code></em>, <strong><code>patience</code></strong>=<em><code>1</code></em>, <strong><code>factor</code></strong>=<em><code>10.0</code></em>) :: <a href="/callback.tracker.html#TrackerCallback"><code>TrackerCallback</code></a></p>
 </blockquote>
 <p>A <a href="/callback.tracker.html#TrackerCallback"><code>TrackerCallback</code></a> that reduces learning rate when a metric has stopped improving.</p>
 

@@ -269,8 +269,15 @@ def broadcast_vec(dim, ndim, *t, cuda=True):
 class Normalize(Transform):
     "Normalize/denorm batch of `TensorImage`"
     order=99
-    def __init__(self, mean, std, dim=1, ndim=4, cuda=True):
-        self.mean,self.std = broadcast_vec(dim, ndim, mean, std, cuda=cuda)
+    def __init__(self, mean=None, std=None): self.mean,self.std = mean,std
+
+    @classmethod
+    def from_stats(cls, mean, std, dim=1, ndim=4, cuda=True): return cls(*broadcast_vec(dim, ndim, mean, std, cuda=cuda))
+
+    def setups(self, dl:DataLoader):
+        if self.mean is None or self.std is None:
+            x,*_ = dl.one_batch()
+            self.mean,self.std = x.mean(0, keepdim=True),x.std(0, keepdim=True)+1e-7
 
     def encodes(self, x:TensorImage): return (x-self.mean) / self.std
     def decodes(self, x:TensorImage):

@@ -13,7 +13,7 @@
 > NB: This is still in early development. Use v1 unless you want to contribute to the next version of fastai
 
 
-## Installation
+## Installing
 
 You can get all the necessary dependencies by simply installing fastai v1: `conda install -c fastai -c pytorch fastai`. Or alternatively you can automatically install the dependencies into a new environment:
 

@@ -26,20 +26,9 @@ summary: "Training a Language Model on WT2"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">fastai2.torch_basics</span> <span class="k">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">fastai2.test</span> <span class="k">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">fastai2.core</span> <span class="k">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">fastai2.layers</span> <span class="k">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">fastai2.data.all</span> <span class="k">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">fastai2.optimizer</span> <span class="k">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">fastai2.learner</span> <span class="k">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">fastai2.metrics</span> <span class="k">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">fastai2.text.core</span> <span class="k">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">fastai2.text.data</span> <span class="k">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">fastai2.text.models.core</span> <span class="k">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">fastai2.text.models.awdlstm</span> <span class="k">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">fastai2.callback.rnn</span> <span class="k">import</span> <span class="o">*</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">fastai2.basics</span> <span class="k">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">fastai2.callback.all</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">fastai2.text.all</span> <span class="k">import</span> <span class="o">*</span>
 </pre></div>
 
     </div>
@@ -143,23 +132,23 @@ summary: "Training a Language Model on WT2"
   </thead>
   <tbody>
     <tr>
-      <td>0</td>
+      <th>0</th>
       <td>\n = 2013 – 14 York City F.C. season = \n \n The 2013 – 14 season was the &lt;unk&gt; season of competitive association football and 77th season in the Football League played by York City Football Club , a professional football club based in York , North Yorkshire , England . Their 17th @-@ place finish in 2012 – 13 meant it was their second consecutive season in League Two . The season ran from 1 July 2013 to 30 June 2014 . \n Nigel Worthington , starting his first full season as York manager , made eight permanent summer signings . By the turn of the year York were only above the relegation z...</td>
     </tr>
     <tr>
-      <td>1</td>
+      <th>1</th>
       <td>\n = Big Boy ( song ) = \n \n " Big Boy " &lt;unk&gt; " I 'm A Big Boy Now " was the first single ever recorded by the Jackson 5 , which was released by Steeltown Records in January 1968 . The group played instruments on many of their Steeltown compositions , including " Big Boy " . The song was neither a critical nor commercial success , but the Jackson family were delighted with the outcome nonetheless . \n The Jackson 5 would release a second single with Steeltown Records before moving to Motown Records . The group 's recordings at Steeltown Records were thought to be lost , but they were re...</td>
     </tr>
     <tr>
-      <td>2</td>
+      <th>2</th>
       <td>\n = The Remix ( Lady Gaga album ) = \n \n The Remix is a remix album by American recording artist Lady Gaga . Released in Japan on March 3 , 2010 , it contains remixes of the songs from her first studio album , The Fame ( 2008 ) , and her third extended play , The Fame Monster ( 2009 ) . A revised version of the track list was prepared for release in additional markets , beginning with Mexico on May 3 , 2010 . A number of recording artists have produced the songs , including Pet Shop Boys , Passion Pit and The Sound of Arrows . The remixed versions feature both uptempo and &lt;unk&gt; composit...</td>
     </tr>
     <tr>
-      <td>3</td>
+      <th>3</th>
       <td>\n = New Year 's Eve ( Up All Night ) = \n \n " New Year 's Eve " is the twelfth episode of the first season of the American comedy television series Up All Night . The episode originally aired on NBC in the United States on January 12 , 2012 . It was written by Erica &lt;unk&gt; and was directed by Beth McCarthy @-@ Miller . The episode also featured a guest appearance from Jason Lee as Chris and Reagan 's neighbor and Ava 's boyfriend , Kevin . \n During Reagan ( Christina Applegate ) and Chris 's ( Will &lt;unk&gt; ) first New Year 's Eve game night , Reagan 's competitiveness comes out causing Ch...</td>
     </tr>
     <tr>
-      <td>4</td>
+      <th>4</th>
       <td>\n = Geopyxis carbonaria = \n \n Geopyxis carbonaria is a species of fungus in the genus Geopyxis , family &lt;unk&gt; . First described to science in 1805 , and given its current name in 1889 , the species is commonly known as the charcoal loving elf @-@ cup , dwarf &lt;unk&gt; cup , &lt;unk&gt; &lt;unk&gt; cup , or pixie cup . The small , &lt;unk&gt; @-@ shaped fruitbodies of the fungus are reddish @-@ brown with a whitish fringe and measure up to 2 cm ( 0 @.@ 8 in ) across . They have a short , tapered stalk . Fruitbodies are commonly found on soil where brush has recently been burned , sometimes in great numbers ....</td>
     </tr>
   </tbody>
@@ -199,6 +188,15 @@ summary: "Training a Language Model on WT2"
 <div class="output_area">
 
 
+<div class="output_html rendered_html output_subarea ">
+
+</div>
+
+</div>
+
+<div class="output_area">
+
+
 <div class="output_html rendered_html output_subarea output_execute_result">
 <div>
 <style scoped>
@@ -223,23 +221,23 @@ summary: "Training a Language Model on WT2"
   </thead>
   <tbody>
     <tr>
-      <td>0</td>
+      <th>0</th>
       <td>[xxbos, =, 2013, –, 14, xxmaj, york, xxmaj, city, xxup, f.c, ., season, =, \n▁\n▁, xxmaj, the, 2013, –, 14, season, was, the, xxunk, season, of, competitive, association, football, and, 77th, season, in, the, xxmaj, football, xxmaj, league, played, by, xxmaj, york, xxmaj, city, xxmaj, football, xxmaj, club, ,, a, professional, football, club, based, in, xxmaj, york, ,, xxmaj, north, xxmaj, yorkshire, ,, xxmaj, england, ., xxmaj, their, 17th, -, place, finish, in, 2012, –, 13, meant, it, was, their, second, consecutive, season, in, xxmaj, league, xxmaj, two, ., xxmaj, the, season, ran, from...</td>
     </tr>
     <tr>
-      <td>1</td>
+      <th>1</th>
       <td>[xxbos, =, xxmaj, big, xxmaj, boy, (, song, ), =, \n▁\n▁, ", xxmaj, big, xxmaj, boy, ", xxunk, ", i, ', m, a, xxmaj, big, xxmaj, boy, xxmaj, now, ", was, the, first, single, ever, recorded, by, the, xxmaj, jackson, 5, ,, which, was, released, by, xxmaj, steeltown, xxmaj, records, in, xxmaj, january, 1968, ., xxmaj, the, group, played, instruments, on, many, of, their, xxmaj, steeltown, compositions, ,, including, ", xxmaj, big, xxmaj, boy, ", ., xxmaj, the, song, was, neither, a, critical, nor, commercial, success, ,, but, the, xxmaj, jackson, family, were, delighted, with, the, outcome, n...</td>
     </tr>
     <tr>
-      <td>2</td>
+      <th>2</th>
       <td>[xxbos, =, xxmaj, the, xxmaj, remix, (, xxmaj, lady, xxmaj, gaga, album, ), =, \n▁\n▁, xxmaj, the, xxmaj, remix, is, a, remix, album, by, xxmaj, american, recording, artist, xxmaj, lady, xxmaj, gaga, ., xxmaj, released, in, xxmaj, japan, on, xxmaj, march, 3, ,, 2010, ,, it, contains, remixes, of, the, songs, from, her, first, studio, album, ,, xxmaj, the, xxmaj, fame, (, 2008, ), ,, and, her, third, extended, play, ,, xxmaj, the, xxmaj, fame, xxmaj, monster, (, 2009, ), ., a, revised, version, of, the, track, list, was, prepared, for, release, in, additional, markets, ,, beginning, with, x...</td>
     </tr>
     <tr>
-      <td>3</td>
+      <th>3</th>
       <td>[xxbos, =, xxmaj, new, xxmaj, year, 's, xxmaj, eve, (, xxmaj, up, xxmaj, all, xxmaj, night, ), =, \n▁\n▁, ", xxmaj, new, xxmaj, year, 's, xxmaj, eve, ", is, the, twelfth, episode, of, the, first, season, of, the, xxmaj, american, comedy, television, series, xxmaj, up, xxmaj, all, xxmaj, night, ., xxmaj, the, episode, originally, aired, on, xxup, nbc, in, the, xxmaj, united, xxmaj, states, on, xxmaj, january, 12, ,, 2012, ., xxmaj, it, was, written, by, xxmaj, erica, xxunk, and, was, directed, by, xxmaj, beth, mccarthy, -, miller, ., xxmaj, the, episode, also, featured, a, guest, appearance...</td>
     </tr>
     <tr>
-      <td>4</td>
+      <th>4</th>
       <td>[xxbos, =, xxmaj, geopyxis, carbonaria, =, \n▁\n▁, xxmaj, geopyxis, carbonaria, is, a, species, of, fungus, in, the, genus, xxmaj, geopyxis, ,, family, xxunk, ., xxmaj, first, described, to, science, in, 1805, ,, and, given, its, current, name, in, 1889, ,, the, species, is, commonly, known, as, the, charcoal, loving, elf, -, cup, ,, dwarf, xxunk, cup, ,, xxunk, xxunk, cup, ,, or, pixie, cup, ., xxmaj, the, small, ,, xxunk, -, shaped, fruitbodies, of, the, fungus, are, reddish, -, brown, with, a, whitish, fringe, and, measure, up, to, 2, cm, (, 0.8, in, ), across, ., xxmaj, they, have, a, ...</td>
     </tr>
   </tbody>
@@ -326,48 +324,54 @@ summary: "Training a Language Model on WT2"
     <tr style="text-align: right;">
       <th></th>
       <th>text</th>
+      <th>text_</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <th>0</th>
-      <td>xxbos = xxmaj moment of xxmaj surrender = \n▁\n▁ " xxmaj moment of xxmaj surrender " is a song by rock band xxup u2 and the third track on their 2009 album xxmaj no xxmaj line on the xxmaj horizon . xxmaj during the initial recording sessions for the album in 2007 in xxmaj fez , xxmaj morocco , the band wrote the song with producers xxmaj brian xxmaj eno and xxmaj</td>
+      <td>xxbos xxmaj naturally occurring cadmium is composed of 8 isotopes . xxmaj two of them are radioactive , and three are expected to decay but have not done so under laboratory conditions . xxmaj the two natural radioactive isotopes are xxunk ( beta decay , half - life is 7.7 × 1015 years ) and xxunk ( two - neutrino double beta decay , half - life is 2.9 × xxunk years</td>
+      <td>xxmaj naturally occurring cadmium is composed of 8 isotopes . xxmaj two of them are radioactive , and three are expected to decay but have not done so under laboratory conditions . xxmaj the two natural radioactive isotopes are xxunk ( beta decay , half - life is 7.7 × 1015 years ) and xxunk ( two - neutrino double beta decay , half - life is 2.9 × xxunk years )</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>, xxmaj bart starts to enjoy being a member of the xxmaj junior xxmaj campers , which xxmaj homer mocks him relentlessly for . xxmaj next , a father - son rafting trip is to be held , so xxmaj bart has to bring xxmaj homer . xxmaj homer does not enjoy the experience , especially when he learns that he and xxmaj bart have to share a raft with xxmaj ned</td>
+      <td>de xxmaj janeiro xxunk xxunk wheel after the countdown to the beginning of 2009 . xxmaj the structure erected on xxmaj copacabana beach to promote the candidature was 36 m ( 118 ft 1 in ) high , weighed 80 tonnes ( 180 @,@ xxrep 3 0 lb ) and had 24 xxunk for 144 people . \n▁ xxmaj rio de xxmaj janeiro previously hosted major sporting , business and cultural events</td>
+      <td>xxmaj janeiro xxunk xxunk wheel after the countdown to the beginning of 2009 . xxmaj the structure erected on xxmaj copacabana beach to promote the candidature was 36 m ( 118 ft 1 in ) high , weighed 80 tonnes ( 180 @,@ xxrep 3 0 lb ) and had 24 xxunk for 144 people . \n▁ xxmaj rio de xxmaj janeiro previously hosted major sporting , business and cultural events .</td>
     </tr>
     <tr>
       <th>2</th>
-      <td>xxmaj february 1895 , making the 1894 – 95 winter the xxunk on record . xxmaj annual rainfall averages well over 40 inches ( 1 @,@ xxrep 3 0 mm ) a year with some areas typically receiving over 50 inches ( 1 @,@ 300 mm ) . \n▁ xxmaj hurricanes are an ever - present threat during the summer and fall season , which puts xxmaj galveston in xxmaj coastal xxunk</td>
+      <td>well as how the player sometimes has to resort to a trial - and - error method due to the games only accepting specific pieces of evidence , and how testimony statements sometimes need to be pressed in a specific order . xxmaj some reviewers have criticized the lack of changes to the gameplay and presentation throughout the series , while some have said that fans of the series would not have</td>
+      <td>as how the player sometimes has to resort to a trial - and - error method due to the games only accepting specific pieces of evidence , and how testimony statements sometimes need to be pressed in a specific order . xxmaj some reviewers have criticized the lack of changes to the gameplay and presentation throughout the series , while some have said that fans of the series would not have a</td>
     </tr>
     <tr>
       <th>3</th>
-      <td>of stylistic xxunk including folk metal and others , while some contemporary music groups stick closer to a " traditional " sound . \n▁ xxmaj the earliest known xxmaj irish graphic art and sculpture are xxmaj neolithic carvings found at sites such as xxunk and is traced through xxmaj bronze age artefacts and the religious carvings and illuminated manuscripts of the medieval period . xxmaj during the course of the 19th and</td>
+      <td>gemma xxmaj constantine , xxmaj angie xxunk and xxmaj chas xxmaj chandler , a plan to reverse the problem is made , as tension builds among the soldiers now surrounding the city . xxmaj the soldiers xxunk listen to a xxmaj world xxmaj cup match between xxmaj england and xxmaj portugal on the radio . xxmaj when xxmaj england loses the match , it seems all is lost , but the expected</td>
+      <td>xxmaj constantine , xxmaj angie xxunk and xxmaj chas xxmaj chandler , a plan to reverse the problem is made , as tension builds among the soldiers now surrounding the city . xxmaj the soldiers xxunk listen to a xxmaj world xxmaj cup match between xxmaj england and xxmaj portugal on the radio . xxmaj when xxmaj england loses the match , it seems all is lost , but the expected psychic</td>
     </tr>
     <tr>
       <th>4</th>
-      <td>showed a report in xxmaj june 2014 that found 2 million men to be stay - at - home dads . xxmaj however , in 2010 , the number of stay - at - home dads had reached its highest point of 2.2 million . \n▁ xxmaj though the role is subject to many stereotypes , and men may have difficulties accessing parenting benefits , communities , and services targeted at mothers</td>
+      <td>xxmaj confederacy and the xxunk conquest of xxmaj ireland ) are estimated to include 20 @,@ xxrep 3 0 battlefield casualties . 200 @,@ xxrep 3 0 civilians are estimated to have died as a result of a combination of war - related famine , displacement , guerrilla activity and pestilence over the duration of the war . a further 50 @,@ xxrep 3 0 were sent into indentured servitude in the</td>
+      <td>confederacy and the xxunk conquest of xxmaj ireland ) are estimated to include 20 @,@ xxrep 3 0 battlefield casualties . 200 @,@ xxrep 3 0 civilians are estimated to have died as a result of a combination of war - related famine , displacement , guerrilla activity and pestilence over the duration of the war . a further 50 @,@ xxrep 3 0 were sent into indentured servitude in the xxmaj</td>
     </tr>
     <tr>
       <th>5</th>
-      <td>and inexperienced students alike , throwing them as if in real combat . xxmaj he reasoned that this behavior was a measure of respect towards his students , but it was often misunderstood and frightened many youngsters , who would abandon him in favor of other professors . \n▁\n▁ = = = xxmaj prelude to xxmaj kodokan 's expansion = = = \n▁\n▁ xxmaj in 1879 , xxmaj ulysses xxup s. xxmaj</td>
+      <td>heinrich xxmaj richter : " i look at my things for what they are , as xxunk xxunk [ toys ] , as xxunk xxunk [ worthless and useless things ] whose value is to be found not in its artistic content , but in public demand ( … ) " . \n▁ xxmaj from 1885 until his death in 1908 his work was dominated by prose and poems . xxmaj the</td>
+      <td>xxmaj richter : " i look at my things for what they are , as xxunk xxunk [ toys ] , as xxunk xxunk [ worthless and useless things ] whose value is to be found not in its artistic content , but in public demand ( … ) " . \n▁ xxmaj from 1885 until his death in 1908 his work was dominated by prose and poems . xxmaj the 1895</td>
     </tr>
     <tr>
       <th>6</th>
-      <td>population density of around 23 @,@ 400 inhabitants per square kilometre ( 61 @,@ xxrep 3 0 / sq mi ) . xxmaj as of xxmaj september 2014 , the xxmaj ministry of xxmaj planning and xxmaj international xxmaj cooperation is scheduled to launch the first population census for xxmaj somalia in over two decades . xxmaj the xxunk assisted the xxmaj ministry in the project , which is slated to be</td>
+      <td>planned for 10 xxmaj may using the cruiser xxup hms xxunk and proved more successful , but ultimately it also failed to completely close off xxmaj bruges . a third planned operation was never conducted as it rapidly became clear that the new channel carved at xxmaj zeebrugge was enough to allow access for xxmaj u - boats , thus calling for an even larger double assault , which would stretch the</td>
+      <td>for 10 xxmaj may using the cruiser xxup hms xxunk and proved more successful , but ultimately it also failed to completely close off xxmaj bruges . a third planned operation was never conducted as it rapidly became clear that the new channel carved at xxmaj zeebrugge was enough to allow access for xxmaj u - boats , thus calling for an even larger double assault , which would stretch the resources</td>
     </tr>
     <tr>
       <th>7</th>
-      <td>xxmaj federer and xxmaj djokovic have met 45 times with xxmaj djokovic leading 23 – 22 wins . xxmaj they are tied 17 – 17 on hard - courts and 4 – 4 on clay while xxmaj djokovic leads 2 – 1 on grass . xxmaj the xxmaj federer – xxmaj djokovic rivalry is the largest rivalry in men 's xxmaj grand xxmaj slam tournament history with a record 15 matches played</td>
+      <td>was deemed a threat by the xxmaj qing emperors and banned during the xxunk era . xxmaj in the novel , xxmaj zhou is portrayed as an elderly widower and xxmaj yue 's only military arts tutor . xxmaj the xxmaj general 's historical spear master xxmaj chen xxunk is never mentioned . xxmaj zhou teaches xxmaj yue xxmaj fei and his sworn brothers military and literary arts from chapters two through</td>
+      <td>deemed a threat by the xxmaj qing emperors and banned during the xxunk era . xxmaj in the novel , xxmaj zhou is portrayed as an elderly widower and xxmaj yue 's only military arts tutor . xxmaj the xxmaj general 's historical spear master xxmaj chen xxunk is never mentioned . xxmaj zhou teaches xxmaj yue xxmaj fei and his sworn brothers military and literary arts from chapters two through five</td>
     </tr>
     <tr>
       <th>8</th>
-      <td>in xxmaj columbus from fans and management who felt they finally had a number one center to play alongside of their best player , xxmaj rick xxmaj nash . xxmaj next , they traded for the negotiating rights of soon to be free agent xxmaj james xxmaj wisniewski . xxmaj wisniewski scored a career high 51 points during the 2010 – 11 season , splitting time between the xxmaj new xxmaj york</td>
-    </tr>
-    <tr>
-      <th>9</th>
-      <td>xxmaj april 2007 . \n▁ " xxmaj cambodia : xxmaj communists on the xxunk " . xxmaj time . 4 xxmaj may 1970 . xxmaj retrieved 10 xxmaj april 2007 . \n▁ " xxmaj between the xxmaj lines " . xxmaj time . 4 xxmaj may 1970 . xxmaj retrieved 10 xxmaj april 2007 . \n▁ " xxmaj the xxmaj new xxunk of xxmaj war " . xxmaj time . 11 xxmaj</td>
+      <td>and the final public advisory on xxmaj rachel was issued early on xxmaj october xxunk remnants continued accelerating over xxmaj texas until they lost their identity . \n▁ xxmaj the highest rainfall total from the system in xxmaj mexico totaled xxunk in ( 250 mm ) at xxmaj santa xxmaj anita near the tip of xxmaj baja xxmaj california . xxmaj across northern xxmaj mexico , thousands were homeless , and 18</td>
+      <td>the final public advisory on xxmaj rachel was issued early on xxmaj october xxunk remnants continued accelerating over xxmaj texas until they lost their identity . \n▁ xxmaj the highest rainfall total from the system in xxmaj mexico totaled xxunk in ( 250 mm ) at xxmaj santa xxmaj anita near the tip of xxmaj baja xxmaj california . xxmaj across northern xxmaj mexico , thousands were homeless , and 18 people</td>
     </tr>
   </tbody>
 </table>
@@ -460,11 +464,11 @@ summary: "Training a Language Model on WT2"
   <tbody>
     <tr>
       <td>0</td>
-      <td>7.410782</td>
-      <td>6.331675</td>
-      <td>0.155463</td>
-      <td>562.097351</td>
-      <td>00:45</td>
+      <td>5.541510</td>
+      <td>5.050310</td>
+      <td>0.241224</td>
+      <td>156.070786</td>
+      <td>01:05</td>
     </tr>
   </tbody>
 </table>
