@@ -96,7 +96,7 @@ class Categorify(TabularProc):
 #Cell
 @Categorize
 def setups(self, to:Tabular):
-    if len(to.y_names) > 0: self.vocab = CategoryMap(to.iloc[:,to.y_names[0]].items)
+    if len(to.y_names) > 0: self.vocab = CategoryMap(getattr(to, 'train', to).iloc[:,to.y_names[0]].items)
     return self(to)
 
 @Categorize
@@ -120,7 +120,7 @@ class NormalizeTab(TabularProc):
 #Cell
 @Normalize
 def setups(self, to:Tabular):
-    self.means,self.stds = to.conts.mean(),to.conts.std(ddof=0)+1e-7
+    self.means,self.stds = getattr(to, 'train', to).conts.mean(),getattr(to, 'train', to).conts.std(ddof=0)+1e-7
     return self(to)
 
 @Normalize
