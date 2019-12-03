@@ -19,6 +19,22 @@ def load_cpp(name, files, path):
     return cpp_extension.load(name=name, sources=[path/f for f in files], build_directory=Config().model/'qrnn')
 
 #Cell
+class _LazyBuiltModule():
+    "A module with a CPP extension that builds itself at first use"
+    def __init__(self, name, files): self.name,self.files,self.mod = name,files,None
+
+    def _build(self):
+        self.mod = load_cpp(name=self.name, files=self.files, path=Path(__file__).parent)
+
+    def forward(self, *args, **kwargs):
+        if self.mod is None: self._build()
+        return self.mod.forward(*args, **kwargs)
+
+    def backward(self, *args, **kwargs):
+        if self.mod is None: self._build()
+        return self.mod.backward(*args, **kwargs)
+
+#Cell
 forget_mult_cuda = _LazyBuiltModule('forget_mult_cuda', ['forget_mult_cuda.cpp', 'forget_mult_cuda_kernel.cu'])
 bwd_forget_mult_cuda = _LazyBuiltModule('bwd_forget_mult_cuda', ['bwd_forget_mult_cuda.cpp', 'bwd_forget_mult_cuda_kernel.cu'])
 

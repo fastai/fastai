@@ -88,13 +88,13 @@ summary: "Callback and helper function to add hooks in models"
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Linear(in_features=5, out_features=3, bias=True) (tensor([[-0.3563,  0.7410,  0.9486, -0.8864, -1.2964],
-        [-0.2798,  1.6655, -0.6188,  0.1075, -2.1705],
-        [ 1.6420,  1.5360, -0.2845, -0.6380,  1.7591],
-        [-1.1479,  0.2845,  0.2849,  2.5872,  0.0846]]),) tensor([[ 0.4370, -0.3222,  0.2326],
-        [ 0.1718, -0.5748,  0.6601],
-        [-1.3835, -0.1314, -1.0835],
-        [ 1.2134, -0.4971, -0.8952]], grad_fn=&lt;AddmmBackward&gt;)
+<pre>Linear(in_features=5, out_features=3, bias=True) (tensor([[-0.4661, -0.8696,  3.5391, -0.1422, -0.3282],
+        [-0.5657, -0.7814, -1.8638, -0.5353, -1.0138],
+        [ 0.1063, -1.3174, -0.9375, -1.0402, -1.3103],
+        [ 1.3275, -0.8143, -0.4068, -0.2873,  0.7801]]),) tensor([[-1.2485, -0.5543, -1.3205],
+        [ 0.1014,  0.1881, -0.9842],
+        [ 0.1860, -0.1538, -1.4546],
+        [-0.0770,  0.0282, -0.2192]], grad_fn=&lt;AddmmBackward&gt;)
 </pre>
 </div>
 </div>
@@ -135,14 +135,14 @@ summary: "Callback and helper function to add hooks in models"
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Linear(in_features=5, out_features=3, bias=True) (tensor([-0.1539, -0.3470, -0.0100]), None, tensor([[-0.4274, -0.6939,  0.3375],
-        [-0.1051, -0.1490,  0.0808],
-        [ 0.3488,  0.6484, -0.2701],
-        [ 0.1623, -0.2269, -0.4089],
-        [ 0.2636,  0.1940, -0.4367]])) (tensor([[-0.0761, -0.0333,  0.0554],
-        [ 0.0658,  0.0298, -0.1120],
-        [-0.1287, -0.1773,  0.1630],
-        [-0.0149, -0.1663, -0.1164]]),)
+<pre>Linear(in_features=5, out_features=3, bias=True) (tensor([-0.1446,  0.1404, -0.2802]), None, tensor([[ 0.2493, -0.2212, -0.0461],
+        [-0.0725,  0.0811, -0.0019],
+        [-0.1866,  0.0028,  0.0987],
+        [ 0.1345, -0.1236,  0.1283],
+        [-0.3493,  0.1928,  0.1887]])) (tensor([[-0.1036,  0.1271, -0.0924],
+        [ 0.0892, -0.0678, -0.1504],
+        [ 0.0262,  0.0225, -0.0139],
+        [-0.1563,  0.0586, -0.0234]]),)
 </pre>
 </div>
 </div>
@@ -858,7 +858,7 @@ summary: "Callback and helper function to add hooks in models"
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>(#4) [0,20.480897903442383,19.39813995361328,00:00]
+<pre>(#4) [0,11.266902923583984,11.03900146484375,00:00]
 </pre>
 </div>
 </div>
@@ -894,7 +894,7 @@ summary: "Callback and helper function to add hooks in models"
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>(#4) [0,10.66642951965332,9.019244194030762,00:00]
+<pre>(#4) [0,5.176340579986572,5.004493713378906,00:00]
 </pre>
 </div>
 </div>
@@ -1120,7 +1120,7 @@ Total params: 251
 Total trainable params: 151
 Total non-trainable params: 100
 
-Optimizer used: functools.partial(&lt;function SGD at 0x7feec8084320&gt;, mom=0.9)
+Optimizer used: functools.partial(&lt;function SGD at 0x7f7c207c9ef0&gt;, mom=0.9)
 Loss function: FlattenedLoss of MSELoss()
 
 Model unfrozen
@@ -1193,7 +1193,7 @@ Callbacks:
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ActivationStats" class="doc_header"><code>class</code> <code>ActivationStats</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/hook.py#L189" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ActivationStats</code>(<strong><code>with_hist</code></strong>=<em><code>False</code></em>, <strong><code>modules</code></strong>=<em><code>None</code></em>, <strong><code>every</code></strong>=<em><code>None</code></em>, <strong><code>remove_end</code></strong>=<em><code>True</code></em>, <strong><code>is_forward</code></strong>=<em><code>True</code></em>, <strong><code>detach</code></strong>=<em><code>True</code></em>, <strong><code>cpu</code></strong>=<em><code>True</code></em>, <strong><code>hook</code></strong>=<em><code>None</code></em>) :: <a href="/callback.hook.html#HookCallback"><code>HookCallback</code></a></p>
+<h2 id="ActivationStats" class="doc_header"><code>class</code> <code>ActivationStats</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/hook.py#L190" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ActivationStats</code>(<strong><code>with_hist</code></strong>=<em><code>False</code></em>, <strong><code>modules</code></strong>=<em><code>None</code></em>, <strong><code>every</code></strong>=<em><code>None</code></em>, <strong><code>remove_end</code></strong>=<em><code>True</code></em>, <strong><code>is_forward</code></strong>=<em><code>True</code></em>, <strong><code>detach</code></strong>=<em><code>True</code></em>, <strong><code>cpu</code></strong>=<em><code>True</code></em>, <strong><code>hook</code></strong>=<em><code>None</code></em>) :: <a href="/callback.hook.html#HookCallback"><code>HookCallback</code></a></p>
 </blockquote>
 <p>Callback that record the mean and std of activations.</p>
 

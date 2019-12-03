@@ -23,7 +23,15 @@ conda env create -f environment.yml
 source activate fastai2
 ```
 
-Then, you can install fastai v2 with pip: `pip install git+https://github.com/fastai/fastai2`. Or clone this repo, cd to its directory, and `pip install -e .[dev]` for an *editable install* (which is probably the best approach at the moment, since fastai v2 is under heavy development).
+Then, you can install fastai v2 with pip: `pip install git+https://github.com/fastai/fastai2`. 
+
+Or you can use an editable install (which is probably the best approach at the moment, since fastai v2 is under heavy development):
+``` 
+pip install packaging
+git clone https://github.com/fastai/fastai2
+cd fastai2
+pip install -e .[dev]
+``` 
 
 To use `fastai2.medical.imaging` you'll also need to:
 
