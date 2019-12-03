@@ -26,8 +26,9 @@ class _TabIloc:
 #Cell
 class Tabular(CollBase, GetAttr, FilteredBase):
     "A `DataFrame` wrapper that knows which cols are cont/cat/y, and returns rows in `__getitem__`"
-    _default='procs'
-    def __init__(self, df, procs=None, cat_names=None, cont_names=None, y_names=None, block_y=CategoryBlock, splits=None, do_setup=True):
+    _default,with_cont='procs',True
+    def __init__(self, df, procs=None, cat_names=None, cont_names=None, y_names=None, block_y=CategoryBlock, splits=None,
+                 do_setup=True):
         if splits is None: splits=[range_of(df)]
         df = df.iloc[sum(splits, [])].copy()
         self.databunch = delegates(self._dl_type.__init__)(self.databunch)
@@ -98,8 +99,9 @@ class Categorify(TabularProc):
 #Cell
 @Categorize
 def setups(self, to:Tabular):
-    if len(to.y_names) > 0: self.vocab = CategoryMap(getattr(to, 'train', to).iloc[:,to.y_names[0]].items)
-    self.c = len(self.vocab)
+    if len(to.y_names) > 0:
+        self.vocab = CategoryMap(getattr(to, 'train', to).iloc[:,to.y_names[0]].items)
+        self.c = len(self.vocab)
     return self(to)
 
 @Categorize
@@ -168,11 +170,12 @@ class ReadTabBatch(ItemTransform):
     order = -1 #run before cuda
     def __init__(self, to): self.to = to
     # TODO: use float for cont targ
-    def encodes(self, to): return tensor(to.cats).long(),tensor(to.conts).float(), tensor(to.targ)
+    def encodes(self, to):
+        if not to.with_cont: return tensor(to.cats).long(), tensor(to.targ)
+        return tensor(to.cats).long(),tensor(to.conts).float(), tensor(to.targ)
 
     def decodes(self, o):
-        cats,conts,targs = to_np(o)
-        vals = np.concatenate([cats,conts,targs], axis=1)
+        vals = np.concatenate(list(to_np(o)), axis=1)
         df = pd.DataFrame(vals, columns=self.to.all_col_names)
         to = self.to.new(df)
         to = self.to.procs.decode(to)
