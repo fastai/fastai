@@ -184,7 +184,7 @@ def radam_step(p, lr, mom, step, sqr_mom, grad_avg, sqr_avg, eps, **kwargs):
     debias2 = debias(sqr_mom, 1-sqr_mom, step)
     r_inf = 2/(1-sqr_mom) - 1
     r = r_inf - 2*step*sqr_mom**step/(1-sqr_mom**step)
-    if r > 4:
+    if r > 5:
         v = math.sqrt(((r-4) * (r-2) * r_inf)/((r_inf-4)*(r_inf-2)*r))
         p.data.addcdiv_(-lr*v / debias1, grad_avg, (sqr_avg/debias2).sqrt() + eps)
     else: p.data.add_(-lr / debias1, grad_avg)
