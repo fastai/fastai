@@ -209,15 +209,16 @@ def to_concat(xs, dim=0):
 
 #Cell
 @patch
-def as_subclass(self:Tensor, typ):
-    "Cast to `typ` (should be in future PyTorch version, so remove this then)"
-    return torch.Tensor._make_subclass(typ, self)
+def set_meta(self:Tensor, x):
+    "Set all metadata in `__dict__`"
+    if hasattr(x,'__dict__'): self.__dict__ = x.__dict__
 
 #Cell
 @patch
-def set_meta(self:Tensor, **kwargs):
-    "Set metadata `_meta`"
-    self._meta = kwargs
+def as_subclass(self:Tensor, typ):
+    "Cast to `typ` (should be in future PyTorch version, so remove this then)"
+    res = torch.Tensor._make_subclass(typ, self)
+    return retain_meta(self, res)
 
 #Cell
 class TensorBase(Tensor):
@@ -249,7 +250,7 @@ def _patch_tb():
         def _f(self, *args, **kwargs):
             cls = self.__class__
             res = getattr(super(TensorBase, self), fn)(*args, **kwargs)
-            return res.as_subclass(cls) if isinstance(res,Tensor) else res
+            return retain_type(res, self)
         return _f
 
     t = tensor([1])
