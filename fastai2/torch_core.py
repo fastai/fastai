@@ -62,11 +62,8 @@ def show_images(ims, rows=1, titles=None, **kwargs):
 
 #Cell
 class ArrayBase(ndarray):
-    def __new__(cls, x, *args, **kwargs):
-        if isinstance(x,tuple): super().__new__(cls, x, *args, **kwargs)
-        if args or kwargs: raise RuntimeError('Unknown array init args')
-        if not isinstance(x,ndarray): x = array(x)
-        return x.view(cls)
+    @classmethod
+    def _before_cast(cls, x): return x if isinstance(x,ndarray) else array(x)
 
 #Cell
 class ArrayImageBase(ArrayBase):
@@ -143,7 +140,7 @@ def apply(func, x, *args, **kwargs):
 
 #Cell
 def maybe_gather(x, axis=0):
-    "Gather copies of `x` on `axis` is training is distributed"
+    "Gather copies of `x` on `axis` (if training is distributed)"
     if num_distrib()<=1: return x
     ndim = x.ndim
     res = [x.new_zeros(*x.shape if ndim > 0 else (1,)) for _ in range(num_distrib())]
@@ -204,16 +201,33 @@ def to_concat(xs, dim=0):
     "Concat the element in `xs` (recursively if they are tuples/lists of tensors)"
     if is_listy(xs[0]): return type(xs[0])([to_concat([x[i] for x in xs], dim=dim) for i in range_of(xs[0])])
     if isinstance(xs[0],dict):  return {k: to_concat([x[k] for x in xs], dim=dim) for k in xs.keys()}
-    #We may receives xs that are not concatenatable (inputs of a text classifier for instance), in this case we return a big list
+    #We may receives xs that are not concatenatable (inputs of a text classifier for instance),
+    #   in this case we return a big list
     try:    return retain_type(torch.cat(xs, dim=dim), xs[0])
-    except: return sum([L(retain_type(o_.index_select(dim, tensor(i)).squeeze(dim), xs[0]) for i in range_of(o_)) for o_ in xs], L())
+    except: return sum([L(retain_type(o_.index_select(dim, tensor(i)).squeeze(dim), xs[0])
+                          for i in range_of(o_)) for o_ in xs], L())
+
+#Cell
+@patch
+def as_subclass(self:Tensor, typ):
+    "Cast to `typ` (should be in future PyTorch version, so remove this then)"
+    return torch.Tensor._make_subclass(typ, self)
+
+#Cell
+@patch
+def set_meta(self:Tensor, **kwargs):
+    "Set metadata `_meta`"
+    self._meta = kwargs
 
 #Cell
 class TensorBase(Tensor):
     def __new__(cls, x, **kwargs):
-        res = torch.Tensor._make_subclass(cls, tensor(x))
+        res = cast(tensor(x), cls)
         res._meta = kwargs
         return res
+
+    @classmethod
+    def _before_cast(cls, x): return x if isinstance(x,Tensor) else tensor(x)
 
     def __reduce_ex__(self,proto):
         torch.utils.hooks.warn_if_has_hooks(self)
@@ -224,7 +238,7 @@ class TensorBase(Tensor):
 
     def gi(self, i):
         res = self[i]
-        return type(self)(res) if isinstance(res,Tensor) else res
+        return res.as_subclass(type(self)) if isinstance(res,Tensor) else res
 
 #Cell
 def _patch_tb():
@@ -235,11 +249,11 @@ def _patch_tb():
         def _f(self, *args, **kwargs):
             cls = self.__class__
             res = getattr(super(TensorBase, self), fn)(*args, **kwargs)
-            return cls(res) if isinstance(res,Tensor) else res
+            return res.as_subclass(cls) if isinstance(res,Tensor) else res
         return _f
 
     t = tensor([1])
-    skips = '__getitem__ __class__ __deepcopy__ __delattr__ __dir__ __doc__ __getattribute__ __hash__ __init__ \
+    skips = 'as_subclass __getitem__ __class__ __deepcopy__ __delattr__ __dir__ __doc__ __getattribute__ __hash__ __init__ \
         __init_subclass__ __new__ __reduce__ __reduce_ex__ __module__ __setstate__'.split()
 
     for fn in dir(t):
