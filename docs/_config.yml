@@ -1,13 +1,12 @@
 repository: fastai/fastai2
-google_search: 000837339549978028235:mygjrpycyx2
 output: web
 topnav_title: fastai
 site_title: fastai
 company_name: fast.ai
 github_editme_path: 
+use_math: true
 google_analytics: UA-89522379-3
-host: 127.0.0.1
-port: 4000
+google_search: 000837339549978028235:mygjrpycyx2
 
 exclude:
   - .idea/
