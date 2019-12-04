@@ -4,7 +4,7 @@ __all__ = ['UNK', 'PAD', 'BOS', 'EOS', 'FLD', 'TK_REP', 'TK_WREP', 'TK_UP', 'TK_
            'rm_useless_spaces', 'replace_rep', 'replace_wrep', 'fix_html', 'replace_all_caps', 'replace_maj',
            'lowercase', 'replace_space', 'BaseTokenizer', 'SpacyTokenizer', 'TokenizeBatch', 'tokenize1',
            'parallel_tokenize', 'fn_counter_pkl', 'tokenize_folder', 'read_tokenized_file', 'tokenize_df',
-           'tokenize_csv', 'load_tokenized_csv', 'SentencePieceTokenizer']
+           'tokenize_csv', 'load_tokenized_csv', 'eu_langs', 'SentencePieceTokenizer']
 
 #Cell
 from ..torch_basics import *
@@ -213,6 +213,10 @@ def load_tokenized_csv(fname):
     for txt_col in out.columns[1:-1]:
         out[txt_col] = out[txt_col].str.split(' ')
     return out,fname.with_suffix('.pkl').load()
+
+#Cell
+eu_langs = ["bg", "cs", "da", "de", "el", "en", "es", "et", "fi", "fr", "ga", "hr", "hu",
+            "it","lt","lv","mt","nl","pl","pt","ro","sk","sl","sv"] # all European langs
 
 #Cell
 class SentencePieceTokenizer():#TODO: pass the special tokens symbol to sp
