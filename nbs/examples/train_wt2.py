@@ -1,18 +1,7 @@
-from local.imports import *
-from local.test import *
-from local.core import *
-from local.layers import *
-from local.data.all import *
-from local.notebook.showdoc import show_doc
-from local.optimizer import *
-from local.learner import *
-from local.metrics import *
-from local.text.data import *
-from local.text.models.core import *
-from local.text.models.awdlstm import *
-from local.callback.rnn import *
-from local.callback.all import *
-from local.script import *
+from fastai2.basics import *
+from fastai2.text.all import *
+from fastai2.callback.all import *
+from fastscript import *
 
 path = untar_data(URLs.WIKITEXT_TINY)
 

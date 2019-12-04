@@ -430,6 +430,14 @@ def interp_1d(x:Tensor, xp, fp):
     return slopes[locs]*x + incx[locs]
 
 #Cell
+@patch
+def pca(x:Tensor, k=2):
+    "Compute PCA of `x` with `k` dimensions."
+    x = x-torch.mean(x,0)
+    U,S,V = torch.svd(x.t())
+    return torch.mm(x,U[:,:k])
+
+#Cell
 def logit(x):
     "Logit of `x`, clamped to avoid inf."
     x = x.clamp(1e-7, 1-1e-7)

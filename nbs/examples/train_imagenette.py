@@ -5,6 +5,7 @@ from fastai2.distributed import *
 from fastprogress import fastprogress
 from torchvision.models import *
 from fastai2.vision.models.xresnet import *
+from fastscript import *
 
 torch.backends.cudnn.benchmark = True
 fastprogress.MAX_COLS = 80
