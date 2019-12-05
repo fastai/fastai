@@ -432,10 +432,10 @@ class ProdLayer(Module):
 inplace_relu = partial(nn.ReLU, inplace=True)
 
 #Cell
-def SEModule(ch, reduction):
+def SEModule(ch, reduction, act_cls=defaults.activation):
     nf = math.ceil(ch//reduction/8)*8
     return SequentialEx(nn.AdaptiveAvgPool2d(1),
-                        ConvLayer(ch, nf, ks=1, norm_type=None, act_cls=inplace_relu),
+                        ConvLayer(ch, nf, ks=1, norm_type=None, act_cls=act_cls),
                         ConvLayer(nf, ch, ks=1, norm_type=None, act_cls=nn.Sigmoid),
                         ProdLayer())
 
@@ -463,7 +463,7 @@ class ResBlock(nn.Module):
         self.sa = SimpleSelfAttention(nf,ks=1,sym=sym) if sa else noop
         self.idconv = noop if ni==nf else ConvLayer(ni, nf, 1, act_cls=None, ndim=ndim, **kwargs)
         self.pool = noop if stride==1 else AvgPool(2, ndim=ndim, ceil_mode=True)
-        self.se = SEModule(nf, reduction=reduction) if reduction else noop
+        self.se = SEModule(nf, reduction=reduction, act_cls=act_cls) if reduction else noop
         self.act = defaults.activation(inplace=True) if act_cls is defaults.activation else act_cls()
 
     def forward(self, x): return self.act(self.sa(self.se(self.convs(x))) + self.idconv(self.pool(x)))
