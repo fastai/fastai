@@ -99,7 +99,7 @@ _pad_modes = {'zeros': 'constant', 'border': 'edge', 'reflection': 'reflect'}
 @patch
 def _do_crop_pad(x:Image.Image, sz, tl, orig_sz,
                  pad_mode=PadMode.Zeros, resize_mode=Image.BILINEAR, resize_to=None):
-    if any(tl.gt(0)):
+    if any(tl.ge(0)):
         # At least one dim is inside the image, so needs to be cropped
         c = tl.max(0)
         x = x.crop((*c, *c.add(sz).min(orig_sz)))
