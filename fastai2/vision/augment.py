@@ -675,6 +675,6 @@ def aug_transforms(do_flip=True, flip_vert=False, max_rotate=10., max_zoom=1.1, 
     if max_rotate: res.append(Rotate(max_deg=max_rotate, p=p_affine, **tkw))
     if max_zoom>1: res.append(Zoom(max_zoom=max_zoom, p=p_affine, **tkw))
     if max_lighting:
-        res.append(Brightness(max_lighting=max_lighting, p=p_lighting))
-        res.append(Contrast(max_lighting=max_lighting, p=p_lighting))
+        res.append(Brightness(max_lighting=max_lighting, p=p_lighting, batch=batch))
+        res.append(Contrast(max_lighting=max_lighting, p=p_lighting, batch=batch))
     return setup_aug_tfms(res + L(xtra_tfms))
