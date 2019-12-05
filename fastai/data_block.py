@@ -10,7 +10,7 @@ __all__ = ['ItemList', 'CategoryList', 'MultiCategoryList', 'MultiCategoryProces
 def _decode(df):
     return np.array([[df.columns[i] for i,t in enumerate(x) if t==1] for x in df.values], dtype=np.object)
 
-def _maybe_squeeze(arr): return (arr if is1d(arr) else np.squeeze(arr))
+def _maybe_squeeze(arr): return arr if is1d(arr) else (np.array(arr).ravel() if np.array(arr).shape == () else np.squeeze(arr))
 
 def _path_to_same_str(p_fn):
     "path -> str, but same on nt+posix, for alpha-sort only"
