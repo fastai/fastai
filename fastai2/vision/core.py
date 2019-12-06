@@ -197,7 +197,7 @@ class PointScaler(Transform):
         return x
 
     def _get_sz(self, x):
-        sz = getattr(x, 'img_size', None)
+        sz = x.get_meta('img_size')
         assert sz is not None or self.sz is not None, "Size could not be inferred, pass it in the init of your TensorPoint with `img_size=...`"
         return self.sz if sz is None else sz
 

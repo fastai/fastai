@@ -73,7 +73,7 @@ def dihedral(x:TensorPoint, k):
 def dihedral(x:TensorBBox, k):
         pnts = TensorPoint(x.view(-1,2)).dihedral(k).view(-1,2,2)
         tl,br = pnts.min(dim=1)[0],pnts.max(dim=1)[0]
-        return TensorBBox(torch.cat([tl, br], dim=1), img_size=getattr(x, 'img_size', None))
+        return TensorBBox(torch.cat([tl, br], dim=1), img_size=x.get_meta('img_size'))
 
 #Cell
 class DihedralItem(RandTransform):
@@ -120,7 +120,7 @@ def _do_crop_pad(x:TensorPoint, sz, tl, orig_sz, pad_mode=PadMode.Zeros, resize_
 @patch
 def _do_crop_pad(x:TensorBBox, sz, tl, orig_sz, pad_mode=PadMode.Zeros, resize_to=None, **kwargs):
     bbox = TensorPoint._do_crop_pad(x.view(-1,2), sz, tl, orig_sz, pad_mode, resize_to).view(-1,4)
-    return TensorBBox(bbox, img_size=getattr(x, 'img_size', None))
+    return TensorBBox(bbox, img_size=x.get_meta('img_size'))
 
 @patch
 def crop_pad(x:(TensorBBox,TensorPoint,Image.Image),
@@ -264,7 +264,7 @@ def affine_coord(x: TensorMask, mat=None, coord_tfm=None, sz=None, mode='nearest
 @patch
 def affine_coord(x: TensorPoint, mat=None, coord_tfm=None, sz=None, mode='nearest', pad_mode=PadMode.Zeros):
     #assert pad_mode==PadMode.Zeros, "Only zero padding is supported for `TensorPoint` and `TensorBBox`"
-    if sz is None: sz = getattr(x, 'img_size', None)
+    if sz is None: sz = x.get_meta('img_size')
     if coord_tfm is not None: x = coord_tfm(x, invert=True)
     if mat is not None: x = (x - mat[:,:,2].unsqueeze(1)) @ torch.inverse(mat[:,:,:2].transpose(1,2))
     return TensorPoint(x, sz=sz)
@@ -272,7 +272,7 @@ def affine_coord(x: TensorPoint, mat=None, coord_tfm=None, sz=None, mode='neares
 @patch
 def affine_coord(x: TensorBBox, mat=None, coord_tfm=None, sz=None, mode='nearest', pad_mode=PadMode.Zeros):
     if mat is None and coord_tfm is None: return x
-    if sz is None: sz = getattr(x, 'img_size', None)
+    if sz is None: sz = x.get_meta('img_size')
     bs,n = x.shape[:2]
     pnts = stack([x[...,:2], stack([x[...,0],x[...,3]],dim=2),
                   stack([x[...,2],x[...,1]],dim=2), x[...,2:]], dim=2)
@@ -283,7 +283,7 @@ def affine_coord(x: TensorBBox, mat=None, coord_tfm=None, sz=None, mode='nearest
 
 #Cell
 def _prepare_mat(x, mat):
-    h,w = (x.img_size if hasattr(x, 'img_size') else x.shape[-2:])
+    h,w = x.get_meta('img_size', x.shape[-2:])
     mat[:,0,1] *= h/w
     mat[:,1,0] *= w/h
     return mat[:,:2]
