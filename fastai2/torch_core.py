@@ -224,7 +224,7 @@ def as_subclass(self:Tensor, typ):
 class TensorBase(Tensor):
     def __new__(cls, x, **kwargs):
         res = cast(tensor(x), cls)
-        res._meta = kwargs
+        res.__dict__.update(kwargs)
         return res
 
     @classmethod
