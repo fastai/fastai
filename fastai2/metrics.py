@@ -5,7 +5,7 @@ __all__ = ['AccumMetric', 'skm_to_fastai', 'optim_metric', 'accuracy', 'error_ra
            'MatthewsCorrCoef', 'Precision', 'Recall', 'RocAuc', 'Perplexity', 'perplexity', 'accuracy_multi',
            'APScoreMulti', 'BrierScoreMulti', 'F1ScoreMulti', 'FBetaMulti', 'HammingLossMulti', 'JaccardMulti',
            'MatthewsCorrCoefMulti', 'PrecisionMulti', 'RecallMulti', 'RocAucMulti', 'mse', 'rmse', 'mae', 'msle',
-           'exp_rmspe', 'ExplainedVariance', 'R2Score', 'foreground_acc', 'Dice', 'JaccardCoeff']
+           'exp_rmspe', 'ExplainedVariance', 'R2Score', 'foreground_acc', 'Dice', 'JaccardCoeff', 'LossMetric']
 
 #Cell
 from .data.all import *
@@ -297,3 +297,17 @@ class JaccardCoeff(Dice):
     "Implemetation of the jaccard coefficient that is lighter in RAM"
     @property
     def value(self): return self.inter/(self.union-self.inter) if self.union > 0 else None
+
+#Cell
+class LossMetric(AvgMetric):
+    "Create a metric from `loss_func.attr` named `nm`"
+    def __init__(self, attr, nm): store_attr(self, 'attr,nm')
+    def accumulate(self, learn):
+        bs = find_bs(learn.yb)
+        self.total += to_detach(getattr(learn.loss_func, self.attr, 0))*bs
+        self.count += bs
+
+    @property
+    def value(self): return self.total/self.count if self.count != 0 else None
+    @property
+    def name(self):  return self.nm
