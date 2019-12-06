@@ -5,7 +5,8 @@ __all__ = ['AccumMetric', 'skm_to_fastai', 'optim_metric', 'accuracy', 'error_ra
            'MatthewsCorrCoef', 'Precision', 'Recall', 'RocAuc', 'Perplexity', 'perplexity', 'accuracy_multi',
            'APScoreMulti', 'BrierScoreMulti', 'F1ScoreMulti', 'FBetaMulti', 'HammingLossMulti', 'JaccardMulti',
            'MatthewsCorrCoefMulti', 'PrecisionMulti', 'RecallMulti', 'RocAucMulti', 'mse', 'rmse', 'mae', 'msle',
-           'exp_rmspe', 'ExplainedVariance', 'R2Score', 'foreground_acc', 'Dice', 'JaccardCoeff', 'LossMetric']
+           'exp_rmspe', 'ExplainedVariance', 'R2Score', 'foreground_acc', 'Dice', 'JaccardCoeff', 'LossMetric',
+           'LossMetrics']
 
 #Cell
 from .data.all import *
@@ -301,13 +302,18 @@ class JaccardCoeff(Dice):
 #Cell
 class LossMetric(AvgMetric):
     "Create a metric from `loss_func.attr` named `nm`"
-    def __init__(self, attr, nm): store_attr(self, 'attr,nm')
+    def __init__(self, attr, nm=None): store_attr(self, 'attr,nm')
     def accumulate(self, learn):
         bs = find_bs(learn.yb)
         self.total += to_detach(getattr(learn.loss_func, self.attr, 0))*bs
         self.count += bs
 
     @property
-    def value(self): return self.total/self.count if self.count != 0 else None
-    @property
-    def name(self):  return self.nm
+    def name(self): return self.attr if self.nm is None else self.nm
+
+#Cell
+def LossMetrics(attrs, nms=None):
+    "List of `LossMetric` for each of `attrs` and `nms`"
+    if isinstance(attrs, str): attrs = attrs.split(',')
+    nms = attrs if nms is None else nms.split(',') if isinstance(nms, str) else nms
+    return [LossMetric(a, n) for a,n in zip(attrs,nms)]
