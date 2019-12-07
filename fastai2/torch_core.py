@@ -215,6 +215,12 @@ def set_meta(self:Tensor, x):
 
 #Cell
 @patch
+def get_meta(self:Tensor, n, d=None):
+    "Set `n` from `self._meta` if it exists and returns default `d` otherwise"
+    return getattr(self, '_meta', {}).get(n, d)
+
+#Cell
+@patch
 def as_subclass(self:Tensor, typ):
     "Cast to `typ` (should be in future PyTorch version, so remove this then)"
     res = torch.Tensor._make_subclass(typ, self)

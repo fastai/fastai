@@ -7,8 +7,8 @@ __all__ = ['Identity', 'Lambda', 'PartialLambda', 'View', 'ResizeBatch', 'Flatte
            'LabelSmoothingCrossEntropy', 'trunc_normal_', 'Embedding', 'SelfAttention', 'PooledSelfAttention2d',
            'SimpleSelfAttention', 'icnr_init', 'PixelShuffle_ICNR', 'SequentialEx', 'MergeLayer', 'Cat', 'SimpleCNN',
            'ProdLayer', 'inplace_relu', 'SEModule', 'ResBlock', 'SEBlock', 'SEResNeXtBlock', 'SeparableBlock', 'swish',
-           'Swish', 'MishJitAutoFn', 'mish', 'MishJit', 'ParameterModule', 'children_and_parameters', 'TstModule',
-           'tst', 'children', 'flatten_model', 'NoneReduce', 'in_channels']
+           'Swish', 'MishJitAutoFn', 'mish', 'MishJit', 'ParameterModule', 'children_and_parameters', 'flatten_model',
+           'NoneReduce', 'in_channels']
 
 #Cell
 from .imports import *
@@ -552,17 +552,6 @@ def children_and_parameters(m):
     for p in m.parameters():
         if id(p) not in children_p: children.append(ParameterModule(p))
     return children
-
-#Cell
-class TstModule(Module):
-    def __init__(self): self.a,self.lin = nn.Parameter(torch.randn(1)),nn.Linear(5,10)
-
-tst = TstModule()
-children = children_and_parameters(tst)
-test_eq(len(children), 2)
-test_eq(children[0], tst.lin)
-assert isinstance(children[1], ParameterModule)
-test_eq(children[1].val, tst.a)
 
 #Cell
 def _has_children(m:nn.Module):

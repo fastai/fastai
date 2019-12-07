@@ -50,10 +50,12 @@ class LMDataLoader(TfmdDL):
         self.seq_len = seq_len
         if lens is None: lens = [len(o) for o in self.items]
         self.lens = ReindexCollection(lens, idxs=self.items.idxs)
-        # The "-1" is to allow for final label
-        self.m = round_multiple(sum(lens)-1, bs*seq_len, round_down=True)
-        self.n = self.m//(seq_len)
-        self.spb = self.n//bs
+        # The "-1" is to allow for final label, we throw away the end that's less than bs
+        corpus = round_multiple(sum(lens)-1, bs, round_down=True)
+        self.bl = corpus//bs #bl for batch length
+        self.n_batches = self.bl//(seq_len) + int(self.bl%seq_len!=0)
+        self.last_len = self.bl - (self.n_batches-1)*seq_len
+        self.n = self.n_batches*bs
         self.make_chunks()
 
     def make_chunks(self): self.chunks = Chunks(self.items, self.lens)
@@ -64,8 +66,9 @@ class LMDataLoader(TfmdDL):
 
     def create_item(self, seq):
         if seq>=self.n: raise IndexError
-        st = ((seq%self.bs)*self.spb + (seq//self.bs)) * self.seq_len
-        txt = self.chunks[st : st+self.seq_len+1]
+        sl = self.last_len if seq//self.bs==self.n_batches-1 else self.seq_len
+        st = (seq%self.bs)*self.bl + (seq//self.bs)*self.seq_len
+        txt = self.chunks[st : st+sl+1]
         return LMTensorText(txt[:-1]),txt[1:]
 
 #Cell
