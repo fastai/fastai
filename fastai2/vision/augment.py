@@ -4,7 +4,8 @@ __all__ = ['RandTransform', 'TensorTypes', 'FlipItem', 'DihedralItem', 'PadMode'
            'OldRandomCrop', 'ResizeMethod', 'Resize', 'RandomResizedCrop', 'AffineCoordTfm', 'RandomResizedCropGPU',
            'affine_mat', 'mask_tensor', 'flip_mat', 'Flip', 'DeterministicDraw', 'DeterministicFlip', 'dihedral_mat',
            'Dihedral', 'DeterministicDihedral', 'rotate_mat', 'Rotate', 'zoom_mat', 'Zoom', 'find_coeffs',
-           'apply_perspective', 'Warp', 'LightingTfm', 'Brightness', 'Contrast', 'setup_aug_tfms', 'aug_transforms']
+           'apply_perspective', 'Warp', 'LightingTfm', 'Brightness', 'Contrast', 'RandomErasing', 'setup_aug_tfms',
+           'aug_transforms']
 
 #Cell
 from ..data.all import *
@@ -676,6 +677,30 @@ def contrast(x: TensorImage, **kwargs):
 def Contrast(max_lighting=0.2, p=0.75, draw=None, batch=False):
     "Apply change in contrast of `max_lighting` to batch of images with probability `p`."
     return LightingTfm(_ContrastLogit(max_lighting, p, draw, batch))
+
+#Cell
+class RandomErasing(RandTransform):
+    "Randomly selects a rectangle region in an image and randomizes its pixels."
+    order = 100 # After Normalize
+    def __init__(self, p=0.5, sl=0.02, sh=1/3, min_aspect=0.3, max_count=1):
+        super().__init__(p=p)
+        log_ratio = (math.log(min_aspect), math.log(1/min_aspect))
+        store_attr(self, 'sl,sh,log_ratio,max_count')
+
+    def _slice(self, area, sz):
+        bound  = int(round(math.sqrt(area)))
+        loc = random.randint(0, max(sz-bound, 0))
+        return slice(loc,loc+bound)
+
+    def encodes(self,x:TensorImage):
+        chan,img_h,img_w = x.shape[-3:]
+        count = 1 if self.max_count==1 else random.randint(1, self.max_count)
+        area = img_h*img_w/count
+        for _ in range(count):
+            r_area = random.uniform(self.sl,self.sh) * area
+            aspect = math.exp(random.uniform(*self.log_ratio))
+            x[..., self._slice(r_area*aspect, img_h), self._slice(r_area/aspect, img_w)].normal_()
+        return x
 
 #Cell
 def _compose_same_tfms(tfms):

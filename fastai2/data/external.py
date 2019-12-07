@@ -74,12 +74,12 @@ class URLs():
     MNIST_VAR_SIZE_TINY = f'{S3_IMAGE}mnist_var_size_tiny.tgz'
     PLANET_SAMPLE       = f'{URL}planet_sample.tgz'
     PLANET_TINY         = f'{URL}planet_tiny.tgz'
-    IMAGENETTE          = f'{S3_IMAGE}imagenette.tgz'
-    IMAGENETTE_160      = f'{S3_IMAGE}imagenette-160.tgz'
-    IMAGENETTE_320      = f'{S3_IMAGE}imagenette-320.tgz'
-    IMAGEWOOF           = f'{S3_IMAGE}imagewoof.tgz'
-    IMAGEWOOF_160       = f'{S3_IMAGE}imagewoof-160.tgz'
-    IMAGEWOOF_320       = f'{S3_IMAGE}imagewoof-320.tgz'
+    IMAGENETTE          = f'{S3_IMAGE}imagenette2.tgz'
+    IMAGENETTE_160      = f'{S3_IMAGE}imagenette2-160.tgz'
+    IMAGENETTE_320      = f'{S3_IMAGE}imagenette2-320.tgz'
+    IMAGEWOOF           = f'{S3_IMAGE}imagewoof2.tgz'
+    IMAGEWOOF_160       = f'{S3_IMAGE}imagewoof2-160.tgz'
+    IMAGEWOOF_320       = f'{S3_IMAGE}imagewoof2-320.tgz'
 
     # kaggle competitions download dogs-vs-cats -p {DOGS.absolute()}
     DOGS = f'{URL}dogscats.tgz'
