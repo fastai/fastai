@@ -170,5 +170,29 @@
   "https://s3.amazonaws.com/fast-ai-nlp/yelp_review_full_csv.tgz": [
     196146755,
     "1efd84215ea3e30d90e4c33764b889db"
+  ],
+  "https://s3.amazonaws.com/fast-ai-imageclas/imagenette2.tgz": [
+    1556918181,
+    "b5b50947cf39558600687b893f920542"
+  ],
+  "https://s3.amazonaws.com/fast-ai-imageclas/imagenette2-160.tgz": [
+    98947273,
+    "c7c20a00ed9fd8fdad6a65ecc27535f1"
+  ],
+  "https://s3.amazonaws.com/fast-ai-imageclas/imagenette2-320.tgz": [
+    341555993,
+    "8e73013b7e2e87ed7fcc6be116ae4670"
+  ],
+  "https://s3.amazonaws.com/fast-ai-imageclas/imagewoof2.tgz": [
+    1343488825,
+    "4a04e125f08e2994499e55d7c82b56d2"
+  ],
+  "https://s3.amazonaws.com/fast-ai-imageclas/imagewoof2-160.tgz": [
+    92560591,
+    "cacda0896ccfbc0fb3385dca5bc73da5"
+  ],
+  "https://s3.amazonaws.com/fast-ai-imageclas/imagewoof2-320.tgz": [
+    328288248,
+    "3e7d96d307874fd890fd11e38563bbaf"
   ]
 }

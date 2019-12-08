@@ -180,9 +180,9 @@ def _check_file(fname):
 #Cell
 def _add_check(url, fname):
     "Internal function to update the internal check file with `url` and check on `fname`."
-    checks = json.load(open(Path(_file_).parent/'checks.txt', 'r'))
+    checks = json.load(open(Path(__file__).parent/'checks.txt', 'r'))
     checks[url] = _check_file(fname)
-    json.dump(checks, open(Path(_file_).parent/'checks.txt', 'w'), indent=2)
+    json.dump(checks, open(Path(__file__).parent/'checks.txt', 'w'), indent=2)
 
 #Cell
 def tar_extract(fname, dest):
@@ -195,6 +195,7 @@ def untar_data(url, fname=None, dest=None, c_key='data', force_download=False, e
     default_dest = URLs.path(url, c_key=c_key).with_suffix('')
     dest = default_dest if dest is None else Path(dest)/default_dest.name
     fname = Path(fname or URLs.path(url))
+    print(dest)
     if fname.exists() and _get_check(url) and _check_file(fname) != _get_check(url):
         print("A new version of this is available, downloading...")
         force_download = True
