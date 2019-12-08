@@ -1,5 +1,6 @@
 import subprocess, torch
 from fastai2.basics import *
+from fastscript import *
 
 @call_parse
 def main(
