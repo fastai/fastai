@@ -2,7 +2,7 @@
 
 __all__ = ['Optimizer', 'sgd_step', 'weight_decay', 'l2_reg', 'average_grad', 'average_sqr_grad', 'momentum_step',
            'SGD', 'rms_prop_step', 'RMSProp', 'step_stat', 'debias', 'adam_step', 'Adam', 'radam_step', 'RAdam',
-           'qhadam_step', 'QHAdam', 'larc_layer_lr', 'larc_step', 'Larc', 'lamb_step', 'Lamb', 'Lookahead',
+           'qhadam_step', 'QHAdam', 'larc_layer_lr', 'larc_step', 'Larc', 'lamb_step', 'Lamb', 'Lookahead', 'ranger',
            'detuplify_pg', 'set_item_pg', 'pytorch_hp_map', 'OptimWrapper']
 
 #Cell
@@ -178,7 +178,7 @@ def Adam(params, lr, mom=0.9, sqr_mom=0.99, eps=1e-5, wd=0., decouple_wd=True):
     return Optimizer(params, steppers, stats=stats, lr=lr, mom=mom, sqr_mom=sqr_mom, eps=eps, wd=wd)
 
 #Cell
-def radam_step(p, lr, mom, step, sqr_mom, grad_avg, sqr_avg, eps, **kwargs):
+def radam_step(p, lr, mom, step, sqr_mom, grad_avg, sqr_avg, eps, beta, **kwargs):
     "Step for RAdam with `lr` on `p`"
     debias1 = debias(mom,     1-mom,     step)
     debias2 = debias(sqr_mom, 1-sqr_mom, step)
@@ -186,19 +186,22 @@ def radam_step(p, lr, mom, step, sqr_mom, grad_avg, sqr_avg, eps, **kwargs):
     r = r_inf - 2*step*sqr_mom**step/(1-sqr_mom**step)
     if r > 5:
         v = math.sqrt(((r-4) * (r-2) * r_inf)/((r_inf-4)*(r_inf-2)*r))
-        p.data.addcdiv_(-lr*v / debias1, grad_avg, (sqr_avg/debias2).sqrt() + eps)
+        denom = (sqr_avg/debias2).sqrt()
+        if eps: denom += eps
+        if beta: denom = F.softplus(denom, beta)
+        p.data.addcdiv_(-lr*v / debias1, grad_avg, denom)
     else: p.data.add_(-lr / debias1, grad_avg)
     return p
 
 radam_step._defaults = dict(eps=1e-5)
 
 #Cell
-def RAdam(params, lr, mom=0.9, sqr_mom=0.99, eps=1e-5, wd=0., decouple_wd=True):
+def RAdam(params, lr, mom=0.9, sqr_mom=0.99, eps=1e-5, wd=0., beta=0., decouple_wd=True):
     "A `Optimizer` for Adam with `lr`, `mom`, `sqr_mom`, `eps` and `params`"
     steppers = [weight_decay] if decouple_wd else [l2_reg]
     steppers.append(radam_step)
     stats = [partial(average_grad, dampening=True), average_sqr_grad, step_stat]
-    return Optimizer(params, steppers, stats=stats, lr=lr, mom=mom, sqr_mom=sqr_mom, eps=eps, wd=wd)
+    return Optimizer(params, steppers, stats=stats, lr=lr, mom=mom, sqr_mom=sqr_mom, eps=eps, wd=wd, beta=beta)
 
 #Cell
 def qhadam_step(p, lr, mom, sqr_mom, sqr_avg, nu_1, nu_2, step, grad_avg, eps, **kwargs):
@@ -303,6 +306,12 @@ class Lookahead(Optimizer, GetAttr):
     def param_groups(self): return self.opt.param_groups
     @param_groups.setter
     def param_groups(self, v): self.opt.param_groups = v
+
+#Cell
+@delegates(RAdam)
+def ranger(p, lr, mom=0.95, wd=0.01, eps=1e-6, **kwargs):
+    "Convenience method for `Lookahead` with `RAdam`"
+    return Lookahead(RAdam(p, lr=lr, mom=mom, wd=wd, eps=eps, **kwargs))
 
 #Cell
 def detuplify_pg(d):

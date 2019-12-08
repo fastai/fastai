@@ -187,7 +187,7 @@ def AdaptiveAvgPool(sz=1, ndim=2):
     return getattr(nn, f"AdaptiveAvgPool{ndim}d")(sz)
 
 #Cell
-def MaxPool(ks=2, stride=None, padding=0, ndim=2):
+def MaxPool(ks=2, stride=None, padding=0, ndim=2, ceil_mode=False):
     "nn.MaxPool layer for `ndim`"
     assert 1 <= ndim <= 3
     return getattr(nn, f"MaxPool{ndim}d")(ks, stride=stride, padding=padding)
@@ -444,7 +444,8 @@ class ResBlock(nn.Module):
     "Resnet block from `ni` to `nh` with `stride`"
     @delegates(ConvLayer.__init__)
     def __init__(self, expansion, ni, nf, stride=1, groups=1, reduction=None, nh1=None, nh2=None, dw=False, g2=1,
-                 sa=False, sym=False, norm_type=NormType.Batch, act_cls=defaults.activation, ndim=2, **kwargs):
+                 sa=False, sym=False, norm_type=NormType.Batch, act_cls=defaults.activation, ndim=2,
+                 pool=AvgPool, pool_first=True, **kwargs):
         super().__init__()
         norm2 = (NormType.BatchZero if norm_type==NormType.Batch else
                  NormType.InstanceZero if norm_type==NormType.Instance else norm_type)
@@ -460,13 +461,18 @@ class ResBlock(nn.Module):
                    ConvLayer(nh1, nh2, 3, stride=stride, groups=nh1 if dw else groups, **k0),
                    ConvLayer(nh2,  nf, 1, groups=g2, **k1)]
         self.convs = nn.Sequential(*layers)
-        self.sa = SimpleSelfAttention(nf,ks=1,sym=sym) if sa else noop
-        self.idconv = noop if ni==nf else ConvLayer(ni, nf, 1, act_cls=None, ndim=ndim, **kwargs)
-        self.pool = noop if stride==1 else AvgPool(2, ndim=ndim, ceil_mode=True)
-        self.se = SEModule(nf, reduction=reduction, act_cls=act_cls) if reduction else noop
+        convpath = [self.convs]
+        if reduction: convpath.append(SEModule(nf, reduction=reduction, act_cls=act_cls))
+        if sa: convpath.append(SimpleSelfAttention(nf,ks=1,sym=sym))
+        self.convpath = nn.Sequential(*convpath)
+        idpath = []
+        if ni!=nf:
+            idpath.append(ConvLayer(ni, nf, 1, act_cls=None, ndim=ndim, **kwargs))
+            if stride!=1: idpath.insert((1,0)[pool_first], pool(2, ndim=ndim, ceil_mode=True))
+        self.idpath = nn.Sequential(*idpath)
         self.act = defaults.activation(inplace=True) if act_cls is defaults.activation else act_cls()
 
-    def forward(self, x): return self.act(self.sa(self.se(self.convs(x))) + self.idconv(self.pool(x)))
+    def forward(self, x): return self.act(self.convpath(x) + self.idpath(x))
 
 #Cell
 def SEBlock(expansion, ni, nf, groups=1, reduction=16, stride=1, **kwargs):

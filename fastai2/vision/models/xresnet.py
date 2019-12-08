@@ -19,9 +19,10 @@ def init_cnn(m):
 
 #Cell
 class XResNet(nn.Sequential):
-    def __init__(self, block, expansion, layers, groups=1, reduction=None, p=0.0, c_in=3, c_out=1000, stem_szs=(32,32,64),
-                 widen=1.0, sa=False, sym=False, act_cls=defaults.activation):
-        store_attr(self, 'block,expansion,sa,sym,act_cls')
+    @delegates(ResBlock)
+    def __init__(self, block, expansion, layers, p=0.0, c_in=3, c_out=1000, stem_szs=(32,32,64),
+                 widen=1.0, sa=False, act_cls=defaults.activation, **kwargs):
+        store_attr(self, 'block,expansion,act_cls')
         stem_szs = [c_in, *stem_szs]
         stem = [ConvLayer(stem_szs[i], stem_szs[i+1], stride=2 if i==0 else 1, act_cls=act_cls)
                 for i in range(3)]
@@ -29,8 +30,7 @@ class XResNet(nn.Sequential):
         block_szs = [int(o*widen) for o in [64,128,256,512] +[256]*(len(layers)-4)]
         block_szs = [64//expansion] + block_szs
         blocks = [self._make_layer(ni=block_szs[i], nf=block_szs[i+1], blocks=l,
-                                   groups=groups, reduction=reduction, stride=1 if i==0 else 2,
-                                   sa=sa and i==len(layers)-4)
+                                   stride=1 if i==0 else 2, sa=sa and i==len(layers)-4, **kwargs)
                   for i,l in enumerate(layers)]
         drop = [] if p is None else [nn.Dropout(p)]
         super().__init__(
@@ -41,10 +41,10 @@ class XResNet(nn.Sequential):
         )
         init_cnn(self)
 
-    def _make_layer(self, ni, nf, blocks, groups, reduction, stride, sa):
+    def _make_layer(self, ni, nf, blocks, stride, sa, **kwargs):
         return nn.Sequential(
             *[self.block(self.expansion, ni if i==0 else nf, nf, stride=stride if i==0 else 1,
-                      sa=sa and i==(blocks-1), sym=self.sym, act_cls=self.act_cls)
+                      sa=sa and i==(blocks-1), act_cls=self.act_cls, **kwargs)
               for i in range(blocks)])
 
 #Cell
