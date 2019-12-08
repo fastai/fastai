@@ -4,8 +4,8 @@ __all__ = ['RandTransform', 'TensorTypes', 'FlipItem', 'DihedralItem', 'PadMode'
            'OldRandomCrop', 'ResizeMethod', 'Resize', 'RandomResizedCrop', 'AffineCoordTfm', 'RandomResizedCropGPU',
            'affine_mat', 'mask_tensor', 'flip_mat', 'Flip', 'DeterministicDraw', 'DeterministicFlip', 'dihedral_mat',
            'Dihedral', 'DeterministicDihedral', 'rotate_mat', 'Rotate', 'zoom_mat', 'Zoom', 'find_coeffs',
-           'apply_perspective', 'Warp', 'LightingTfm', 'Brightness', 'Contrast', 'RandomErasing', 'setup_aug_tfms',
-           'aug_transforms']
+           'apply_perspective', 'Warp', 'LightingTfm', 'Brightness', 'Contrast', 'cutout_gaussian', 'norm_apply_denorm',
+           'RandomErasing', 'setup_aug_tfms', 'aug_transforms']
 
 #Cell
 from ..data.all import *
@@ -19,7 +19,7 @@ from torch.distributions.bernoulli import Bernoulli
 #Cell
 class RandTransform(Transform):
     "A transform that before_call its state at each `__call__`"
-    do,nm,supports = True,None,[]
+    do,nm,supports,split_idx = True,None,[],0
     def __init__(self, p=1., nm=None, before_call=None, **kwargs):
         super().__init__(**kwargs)
         self.p,self.before_call = p,ifnone(before_call,self.before_call)
@@ -159,6 +159,7 @@ class CropPad(Transform):
 @delegates()
 class RandomCrop(RandTransform):
     "Randomly crop an image to `size`"
+    split_idx = None
     order = 6
     def __init__(self, size, **kwargs):
         super().__init__(**kwargs)
@@ -187,6 +188,7 @@ mk_class('ResizeMethod', **{o:o.lower() for o in ['Squish', 'Crop', 'Pad']},
 #Cell
 @delegates()
 class Resize(RandTransform):
+    split_idx = None
     mode,mode_mask,order,final_size = Image.BILINEAR,Image.NEAREST,10,None
     "Resize image to `size` using `method`"
     def __init__(self, size, method=ResizeMethod.Squish, pad_mode=PadMode.Reflection,
@@ -218,16 +220,19 @@ class Resize(RandTransform):
 @delegates()
 class RandomResizedCrop(RandTransform):
     "Picks a random scaled crop of an image and resize it to `size`"
-    def __init__(self, size, min_scale=0.08, ratio=(3/4, 4/3), resamples=(Image.BILINEAR, Image.NEAREST), val_xtra_size=32, **kwargs):
+    split_idx = None
+    def __init__(self, size, min_scale=0.08, ratio=(3/4, 4/3), resamples=(Image.BILINEAR, Image.NEAREST),
+                 val_xtra=0.14, **kwargs):
         super().__init__(**kwargs)
         self.size = _process_sz(size)
-        store_attr(self, 'min_scale,ratio,val_xtra_size')
+        store_attr(self, 'min_scale,ratio,val_xtra')
         self.mode,self.mode_mask = resamples
 
     def before_call(self, b, split_idx):
         w,h = self.orig_sz = _get_sz(b)
         if split_idx:
-            self.final_size = (self.size[0]+self.val_xtra_size, self.size[1]+self.val_xtra_size)
+            xtra = math.ceil(max(*self.size[:2])*self.val_xtra/8)*8
+            self.final_size = (self.size[0]+xtra, self.size[1]+xtra)
             self.tl,self.cp_size = (0,0),self.orig_sz
             return
         self.final_size = self.size
@@ -323,7 +328,7 @@ def _prepare_mat(x, mat):
 #Cell
 class AffineCoordTfm(RandTransform):
     "Combine and apply affine and coord transforms"
-    split_idx,order = None,30
+    order = 30
     def __init__(self, aff_fs=None, coord_fs=None, size=None, mode='bilinear', pad_mode=PadMode.Reflection, mode_mask='nearest'):
         self.aff_fs,self.coord_fs = L(aff_fs),L(coord_fs)
         store_attr(self, 'size,mode,pad_mode,mode_mask')
@@ -433,9 +438,11 @@ def _get_default(x, mode=None, pad_mode=None):
 
 #Cell
 @patch
-def flip_batch(x: (TensorImage,TensorMask,TensorPoint,TensorBBox), p=0.5, draw=None, size=None, mode=None, pad_mode=None, batch=False):
+def flip_batch(x: (TensorImage,TensorMask,TensorPoint,TensorBBox), p=0.5, draw=None, size=None,
+               mode=None, pad_mode=None, batch=False):
     x0,mode,pad_mode = _get_default(x, mode, pad_mode)
-    return x.affine_coord(mat=flip_mat(x0, p=p, draw=draw, batch=batch)[:,:2], sz=size, mode=mode, pad_mode=pad_mode)
+    mat=flip_mat(x0, p=p, draw=draw, batch=batch)
+    return x.affine_coord(mat=mat[:,:2], sz=size, mode=mode, pad_mode=pad_mode)
 
 #Cell
 def Flip(p=0.5, draw=None, size=None, mode='bilinear', pad_mode=PadMode.Reflection, batch=False):
@@ -472,7 +479,8 @@ def dihedral_mat(x, p=0.5, draw=None, batch=False):
 
 #Cell
 @patch
-def dihedral_batch(x: (TensorImage,TensorMask,TensorPoint,TensorBBox), p=0.5, draw=None, size=None, mode=None, pad_mode=None, batch=False):
+def dihedral_batch(x: (TensorImage,TensorMask,TensorPoint,TensorBBox), p=0.5, draw=None, size=None,
+                   mode=None, pad_mode=None, batch=False):
     x0,mode,pad_mode = _get_default(x, mode, pad_mode)
     mat = _prepare_mat(x, dihedral_mat(x0, p=p, draw=draw, batch=batch))
     return x.affine_coord(mat=mat, sz=size, mode=mode, pad_mode=pad_mode)
@@ -480,7 +488,8 @@ def dihedral_batch(x: (TensorImage,TensorMask,TensorPoint,TensorBBox), p=0.5, dr
 #Cell
 def Dihedral(p=0.5, draw=None, size=None, mode='bilinear', pad_mode=PadMode.Reflection, batch=False):
     "Apply a random dihedral transformation to a batch of images with a probability `p`"
-    return AffineCoordTfm(aff_fs=partial(dihedral_mat, p=p, draw=draw, batch=batch), size=size, mode=mode, pad_mode=pad_mode)
+    f = partial(dihedral_mat, p=p, draw=draw, batch=batch)
+    return AffineCoordTfm(aff_fs=f, size=size, mode=mode, pad_mode=pad_mode)
 
 #Cell
 def DeterministicDihedral(size=None, mode='bilinear', pad_mode=PadMode.Reflection):
@@ -590,14 +599,16 @@ class _WarpCoord():
 #Cell
 @delegates(_WarpCoord.__init__)
 @patch
-def warp(x: (TensorImage,TensorMask,TensorPoint,TensorBBox), size=None, mode='bilinear', pad_mode=PadMode.Reflection, **kwargs):
+def warp(x:(TensorImage,TensorMask,TensorPoint,TensorBBox), size=None, mode='bilinear',
+         pad_mode=PadMode.Reflection, **kwargs):
     x0,mode,pad_mode = _get_default(x, mode, pad_mode)
     coord_tfm = _WarpCoord(**kwargs)
     coord_tfm.before_call(x0)
     return x.affine_coord(coord_tfm=coord_tfm, sz=size, mode=mode, pad_mode=pad_mode)
 
 #Cell
-def Warp(magnitude=0.2, p=0.5, draw_x=None, draw_y=None,size=None, mode='bilinear', pad_mode=PadMode.Reflection, batch=False):
+def Warp(magnitude=0.2, p=0.5, draw_x=None, draw_y=None,size=None, mode='bilinear',
+         pad_mode=PadMode.Reflection, batch=False):
     "Apply perspective warping with `magnitude` and `p` on a batch of matrices"
     return AffineCoordTfm(coord_fs=_WarpCoord(magnitude=magnitude, p=p, draw_x=draw_x, draw_y=draw_y, batch=batch),
                           size=size, mode=mode, pad_mode=pad_mode)
@@ -679,28 +690,44 @@ def Contrast(max_lighting=0.2, p=0.75, draw=None, batch=False):
     return LightingTfm(_ContrastLogit(max_lighting, p, draw, batch))
 
 #Cell
+def cutout_gaussian(x, areas):
+    "Replace all `areas` in `x` with N(0,1) noise"
+    chan,img_h,img_w = x.shape[-3:]
+    for rl,rh,cl,ch in areas: x[..., rl:rh, cl:ch].normal_()
+    return x
+
+#Cell
+def norm_apply_denorm(x, f, nrm):
+    "Normalize `x` with `nrm`, then apply `f`, then denormalize"
+    y = f(nrm(x.clone()))
+    return nrm.decode(y).clamp(0,1)
+
+#Cell
+def _slice(area, sz):
+    bound = int(round(math.sqrt(area)))
+    loc = random.randint(0, max(sz-bound, 0))
+    return loc,loc+bound
+
+#Cell
 class RandomErasing(RandTransform):
     "Randomly selects a rectangle region in an image and randomizes its pixels."
     order = 100 # After Normalize
-    def __init__(self, p=0.5, sl=0.02, sh=1/3, min_aspect=0.3, max_count=1):
+    def __init__(self, p=0.5, sl=0., sh=0.3, min_aspect=0.3, max_count=1):
         super().__init__(p=p)
         log_ratio = (math.log(min_aspect), math.log(1/min_aspect))
         store_attr(self, 'sl,sh,log_ratio,max_count')
 
-    def _slice(self, area, sz):
-        bound  = int(round(math.sqrt(area)))
-        loc = random.randint(0, max(sz-bound, 0))
-        return slice(loc,loc+bound)
+    def _bounds(self, area, img_h, img_w):
+        r_area = random.uniform(self.sl,self.sh) * area
+        aspect = math.exp(random.uniform(*self.log_ratio))
+        return _slice(r_area*aspect, img_h) + _slice(r_area/aspect, img_w)
 
     def encodes(self,x:TensorImage):
-        chan,img_h,img_w = x.shape[-3:]
-        count = 1 if self.max_count==1 else random.randint(1, self.max_count)
+        count = random.randint(1, self.max_count)
+        _,img_h,img_w = x.shape[-3:]
         area = img_h*img_w/count
-        for _ in range(count):
-            r_area = random.uniform(self.sl,self.sh) * area
-            aspect = math.exp(random.uniform(*self.log_ratio))
-            x[..., self._slice(r_area*aspect, img_h), self._slice(r_area/aspect, img_w)].normal_()
-        return x
+        areas = [self._bounds(area, img_h, img_w) for _ in range(count)]
+        return cutout_gaussian(x, areas)
 
 #Cell
 def _compose_same_tfms(tfms):

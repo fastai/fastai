@@ -10,65 +10,64 @@ from fastscript import *
 torch.backends.cudnn.benchmark = True
 fastprogress.MAX_COLS = 80
 
-def get_dbunch(size, woof, bs, workers=None):
-    if   size<=128: path = URLs.IMAGEWOOF_160 if woof else URLs.IMAGENETTE_160
-    elif size<=224: path = URLs.IMAGEWOOF_320 if woof else URLs.IMAGENETTE_320
-    else          : path = URLs.IMAGEWOOF     if woof else URLs.IMAGENETTE
+def get_dbunch(size, woof, bs, sh=0., workers=None):
+    if size<=224: path = URLs.IMAGEWOOF_320 if woof else URLs.IMAGENETTE_320
+    else        : path = URLs.IMAGEWOOF     if woof else URLs.IMAGENETTE
     source = untar_data(path)
-
-    n_gpus = num_distrib() or 1
-    if workers is None: workers = min(8, num_cpus()//n_gpus)
-
+    if workers is None: workers = min(8, num_cpus())
     dblock = DataBlock(blocks=(ImageBlock, CategoryBlock),
                        splitter=GrandparentSplitter(valid_name='val'),
-                       get_items=get_image_files,
-                       get_y=parent_label)
-
+                       get_items=get_image_files, get_y=parent_label)
+    item_tfms=[RandomResizedCrop(size, min_scale=0.35), FlipItem(0.5)]
+    batch_tfms=RandomErasing(p=0.9, max_count=3, sh=sh) if sh else None
     return dblock.databunch(source, path=source, bs=bs, num_workers=workers,
-                            item_tfms=[RandomResizedCrop(size, min_scale=0.35), FlipItem(0.5)])
+                            item_tfms=item_tfms, batch_tfms=batch_tfms)
 
 @call_parse
 def main(
-        gpu:Param("GPU to run on", str)=None,
-        woof: Param("Use imagewoof (otherwise imagenette)", int)=0,
-        lr: Param("Learning rate", float)=1e-2,
-        size: Param("Size (px: 128,192,224)", int)=128,
-        alpha: Param("Alpha", float)=0.99,
-        mom: Param("Momentum", float)=0.9,
-        eps: Param("epsilon", float)=1e-6,
-        epochs: Param("Number of epochs", int)=5,
-        bs: Param("Batch size", int)=64,
+        gpu:   Param("GPU to run on", int),#=None,
+        woof:  Param("Use imagewoof (otherwise imagenette)", int)=0,
+        lr:    Param("Learning rate", float)=1e-2,
+        size:  Param("Size (px: 128,192,256)", int)=128,
+        sqrmom:Param("sqr_mom", float)=0.99,
+        mom:   Param("Momentum", float)=0.9,
+        eps:   Param("epsilon", float)=1e-6,
+        epochs:Param("Number of epochs", int)=5,
+        bs:    Param("Batch size", int)=64,
         mixup: Param("Mixup", float)=0.,
-        opt: Param("Optimizer (adam,rms,sgd)", str)='adam',
-        arch: Param("Architecture (xresnet34, xresnet50, presnet34, presnet50)", str)='xresnet50',
-        dump: Param("Print model; don't train", int)=0,
+        opt:   Param("Optimizer (adam,rms,sgd,ranger)", str)='ranger',
+        arch:  Param("Architecture", str)='xresnet50',
+        sh:    Param("Random erase max proportion", float)=0.,
+        sa:    Param("Self-attention", int)=0,
+        sym:   Param("Symmetry for self-attention", int)=0,
+        beta:  Param("SAdam softplus beta", float)=0.,
+        act_fn:Param("Activation function", str)='MishJit',
+        fp16:  Param("Use mixed precision training", int)=0,
+        pool:  Param("Pooling method", str)='AvgPool',
+        dump:  Param("Print model; don't train", int)=0,
         ):
     "Distributed training of Imagenette."
 
-    gpu = setup_distrib(gpu)
-    n_gpu = torch.cuda.device_count()
-    if gpu is None: bs *= n_gpu
-    if   opt=='adam' : opt_func = partial(Adam, mom=mom, sqr_mom=alpha, eps=eps)
-    elif opt=='rms'  : opt_func = partial(RMSprop, sqr_mom=alpha)
-    elif opt=='sgd'  : opt_func = partial(SGD, mom=mom)
+    #gpu = setup_distrib(gpu)
+    print(gpu,'gpu')
+    torch.cuda.set_device(gpu)
+    if   opt=='adam'  : opt_func = partial(Adam, mom=mom, sqr_mom=sqrmom, eps=eps)
+    elif opt=='rms'   : opt_func = partial(RMSprop, sqr_mom=sqrmom)
+    elif opt=='sgd'   : opt_func = partial(SGD, mom=mom)
+    elif opt=='ranger': opt_func = partial(ranger, mom=mom, sqr_mom=sqrmom, eps=eps, beta=beta)
 
     dbunch = get_dbunch(size, woof, bs)
-    bs_rat = bs/256
-    if gpu is not None: bs_rat *= num_distrib()
-    if not gpu: print(f'lr: {lr}; eff_lr: {lr*bs_rat}; size: {size}; alpha: {alpha}; mom: {mom}; eps: {eps}')
-    lr *= bs_rat
+    if not gpu: print(f'lr: {lr}; size: {size}; sqrmom: {sqrmom}; mom: {mom}; eps: {eps}')
 
-    m = globals()[arch]
-    learn = (Learner(dbunch, m(c_out=10), opt_func=opt_func,
-             metrics=[accuracy,top_k_accuracy],
-             wd_bn_bias=False,
-             loss_func = LabelSmoothingCrossEntropy())
-            )
+    m,act_fn,pool = [globals()[o] for o in (arch,act_fn,pool)]
+    learn = (Learner(dbunch, m(c_out=10, act_cls=act_fn, sa=sa, sym=sym, pool=pool), opt_func=opt_func,
+             metrics=[accuracy,top_k_accuracy], loss_func=LabelSmoothingCrossEntropy()))
     if dump: print(learn.model); exit()
     if mixup: learn = learn.mixup(alpha=mixup)
-    #learn = learn.to_fp16()
-    if gpu is None and n_gpu: learn.to_parallel()
-    elif num_distrib()>1: learn.to_distributed(gpu) # Requires `-m fastai.launch`
+    if fp16: learn = learn.to_fp16()
+    #n_gpu = torch.cuda.device_count()
+    #if gpu is None and n_gpu: learn.to_parallel()
+    if num_distrib()>1: learn.to_distributed(gpu) # Requires `-m fastai.launch`
 
-    learn.fit_one_cycle(epochs, lr, pct_start=0.72, wd=1e-2)
+    learn.fit_flat_cos(epochs, lr, wd=1e-2)
 
