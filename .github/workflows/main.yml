@@ -5,17 +5,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
-    - name: Install apt dependencies
-      run: |
-        sudo apt install -y apt-utils clang curl git libblocksruntime-dev libxml2
     - uses: actions/setup-python@v1
       with:
         python-version: '3.6'
         architecture: 'x64'
     - name: Install the library
       run: |
-        pip install packaging
-        pip install nbdev
+        pip install nbdev jupyter
+        pip install -e .
     - name: Read all notebooks
       run: |
         nbdev_read_nbs
