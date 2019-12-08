@@ -328,7 +328,7 @@ def _prepare_mat(x, mat):
 #Cell
 class AffineCoordTfm(RandTransform):
     "Combine and apply affine and coord transforms"
-    order = 30
+    order,split_idx = 30,None
     def __init__(self, aff_fs=None, coord_fs=None, size=None, mode='bilinear', pad_mode=PadMode.Reflection, mode_mask='nearest'):
         self.aff_fs,self.coord_fs = L(aff_fs),L(coord_fs)
         store_attr(self, 'size,mode,pad_mode,mode_mask')
