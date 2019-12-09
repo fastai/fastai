@@ -1,0 +1,8 @@
+include CONTIBUTING.md
+include LICENSE
+include README.md
+include fastai2/data/checks.txt
+include fastai2/text/models/*.cu
+include fastai2/text/models/*.cpp
+
+recursive-exclude * __pycache__
