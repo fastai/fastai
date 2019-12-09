@@ -27,6 +27,9 @@ class _BaseOptimizer():
         assert(len(self.param_groups)>1)
         self.freeze_to(-1)
 
+    def set_freeze(n, rg, ignore_force_train=False):
+        for p in self.param_groups[n]: p.requires_grad_(rg or (state.get('force_train', False) and not ignore_force_train))
+
     def unfreeze(self): self.freeze_to(0)
     def set_hypers(self, **kwargs): L(kwargs.items()).starmap(self.set_hyper)
     def _set_hyper(self, k, v):
