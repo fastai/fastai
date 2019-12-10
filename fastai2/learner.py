@@ -167,6 +167,9 @@ def _try_concat(o):
     except: return sum([L(o_[i,:] for i in range_of(o_)) for o_ in o], L())
 
 #Cell
+from contextlib import ExitStack
+
+#Cell
 class Learner():
     def __init__(self, dbunch, model, loss_func=None, opt_func=Adam, lr=defaults.lr, splitter=trainable_params, cbs=None,
                  cb_funcs=None, metrics=None, path=None, model_dir='models', wd_bn_bias=False, train_bn=True):
@@ -294,9 +297,13 @@ class Learner():
         return self.recorder.values[-1]
 
     @delegates(GatherPredsCallback.__init__)
-    def get_preds(self, ds_idx=1, dl=None, with_input=False, with_decoded=False, act=None, **kwargs):
-        cb = GatherPredsCallback(with_input=with_input, **kwargs)
-        with self.no_logging(), self.added_cbs(cb), self.loss_not_reduced(), self.no_mbar():
+    def get_preds(self, ds_idx=1, dl=None, with_input=False, with_decoded=False, with_loss=False, act=None, **kwargs):
+        cb = GatherPredsCallback(with_input=with_input, with_loss=with_loss, **kwargs)
+        #with self.no_logging(), self.added_cbs(cb), self.loss_not_reduced(), self.no_mbar():
+        ctx_mgrs = [self.no_logging(), self.added_cbs(cb), self.no_mbar()]
+        if with_loss: ctx_mgrs.append(self.loss_not_reduced())
+        with ExitStack() as stack:
+            for mgr in ctx_mgrs: stack.enter_context(mgr)
             self(_before_epoch)
             self._do_epoch_validate(ds_idx, dl)
             self(_after_epoch)
@@ -460,16 +467,19 @@ class Recorder(Callback):
     "Callback that registers statistics (lr, loss and metrics) during training"
     run_after = TrainEvalCallback
 
-    def __init__(self, add_time=True, train_metrics=False, beta=0.98):
-        self.add_time,self.train_metrics = add_time,train_metrics
+    def __init__(self, add_time=True, train_metrics=False, valid_metrics=True, beta=0.98):
+        store_attr(self, 'add_time,train_metrics,valid_metrics')
         self.loss,self.smooth_loss = AvgLoss(),AvgSmoothLoss(beta=beta)
 
     def begin_fit(self):
         "Prepare state for training"
         self.lrs,self.iters,self.losses,self.values = [],[],[],[]
-        names = self._valid_mets.attrgot('name')
-        if self.train_metrics: names = names.map('train_{}') + names.map('valid_{}')
-        else:                  names = L('train_loss', 'valid_loss') + names[1:]
+        names = self.metrics.attrgot('name')
+        if self.train_metrics and self.valid_metrics:
+            names = L('loss') + names
+            names = names.map('train_{}') + names.map('valid_{}')
+        elif self.valid_metrics: names = L('train_loss', 'valid_loss') + names
+        else: names = L('train_loss') + names
         if self.add_time: names.append('time')
         self.metric_names = 'epoch'+names
         self.smooth_loss.reset()
@@ -512,7 +522,7 @@ class Recorder(Callback):
     @property
     def _valid_mets(self):
         if getattr(self, 'cancel_valid', False): return L()
-        return L(self.loss) + self.metrics
+        return (L(self.loss) + self.metrics if self.valid_metrics else L())
 
     def plot_loss(self, skip_start=5, with_valid=True):
         plt.plot(list(range(skip_start, len(self.losses))), self.losses[skip_start:], label='train')
