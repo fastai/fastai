@@ -57,13 +57,13 @@ summary: "Regular training with square images and rectangular training"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Loading-the-data-with-DataSource">Loading the data with <a href="/data.core.html#DataSource"><code>DataSource</code></a><a class="anchor-link" href="#Loading-the-data-with-DataSource">&#182;</a></h3>
+<h3 id="Loading-the-data-with-DataSource">Loading the data with <a href="data.core.html#DataSource"><code>DataSource</code></a><a class="anchor-link" href="#Loading-the-data-with-DataSource">&#182;</a></h3>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>To load the data with the medium-level API <a href="/data.core.html#DataSource"><code>DataSource</code></a>, we need to gather all the images and define some way to split them between training and validation sets.</p>
+<p>To load the data with the medium-level API <a href="data.core.html#DataSource"><code>DataSource</code></a>, we need to gather all the images and define some way to split them between training and validation sets.</p>
 
 </div>
 </div>
@@ -85,7 +85,7 @@ summary: "Regular training with square images and rectangular training"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Then we detail the type transforms (applied to the items to form a tuple) and the dataset transforms. For our inputs we use <a href="/vision.core.html#PILImage.create"><code>PILImage.create</code></a> and for our targets, the <a href="/data.transforms.html#parent_label"><code>parent_label</code></a> function to convert a filename to its class, followed by <a href="/data.transforms.html#Categorize"><code>Categorize</code></a>. We'll also map the wordnet category ids used in Imagenette to words.</p>
+<p>Then we detail the type transforms (applied to the items to form a tuple) and the dataset transforms. For our inputs we use <a href="vision.core.html#PILImage.create"><code>PILImage.create</code></a> and for our targets, the <a href="data.transforms.html#parent_label"><code>parent_label</code></a> function to convert a filename to its class, followed by <a href="data.transforms.html#Categorize"><code>Categorize</code></a>. We'll also map the wordnet category ids used in Imagenette to words.</p>
 <p>The dataset transforms contain data augmentation using PIL and a resize to 128.</p>
 
 </div>
@@ -131,7 +131,7 @@ summary: "Regular training with square images and rectangular training"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>We can then pass all of this information to <a href="/data.core.html#DataSource"><code>DataSource</code></a>.</p>
+<p>We can then pass all of this information to <a href="data.core.html#DataSource"><code>DataSource</code></a>.</p>
 
 </div>
 </div>
@@ -151,7 +151,7 @@ summary: "Regular training with square images and rectangular training"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>To convert our <a href="/data.core.html#DataSource"><code>DataSource</code></a> to a <a href="/data.core.html#DataBunch"><code>DataBunch</code></a>, we need to indicate the transforms we want to use at the batch level, here putting on the GPU with <a href="/data.transforms.html#Cuda"><code>Cuda</code></a>, converting the tensors of bytes to float then normalizing using the traditional imagenet statistics.</p>
+<p>To convert our <a href="data.core.html#DataSource"><code>DataSource</code></a> to a <a href="data.core.html#DataBunch"><code>DataBunch</code></a>, we need to indicate the transforms we want to use at the batch level, here putting on the GPU with <a href="data.transforms.html#Cuda"><code>Cuda</code></a>, converting the tensors of bytes to float then normalizing using the traditional imagenet statistics.</p>
 
 </div>
 </div>
@@ -232,13 +232,13 @@ summary: "Regular training with square images and rectangular training"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Loading-the-data-with-DataBlock">Loading the data with <a href="/data.block.html#DataBlock"><code>DataBlock</code></a><a class="anchor-link" href="#Loading-the-data-with-DataBlock">&#182;</a></h3>
+<h3 id="Loading-the-data-with-DataBlock">Loading the data with <a href="data.block.html#DataBlock"><code>DataBlock</code></a><a class="anchor-link" href="#Loading-the-data-with-DataBlock">&#182;</a></h3>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>An easier way is to use the <a href="/data.block.html#DataBlock"><code>DataBlock</code></a> higher-level API. We just need to specify the types, how to get the items, how to split them and how to label to build an Imagenette datablock.</p>
+<p>An easier way is to use the <a href="data.block.html#DataBlock"><code>DataBlock</code></a> higher-level API. We just need to specify the types, how to get the items, how to split them and how to label to build an Imagenette datablock.</p>
 
 </div>
 </div>
@@ -358,7 +358,7 @@ summary: "Regular training with square images and rectangular training"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The following function will give us a <a href="/learner.html#Learner"><code>Learner</code></a> to train a model on imagenette.</p>
+<p>The following function will give us a <a href="learner.html#Learner"><code>Learner</code></a> to train a model on imagenette.</p>
 
 </div>
 </div>
@@ -441,7 +441,7 @@ summary: "Regular training with square images and rectangular training"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>To get predictions on one item, we use <a href="/learner.html#Learner.predict"><code>Learner.predict</code></a></p>
+<p>To get predictions on one item, we use <a href="learner.html#Learner.predict"><code>Learner.predict</code></a></p>
 
 </div>
 </div>
@@ -585,7 +585,7 @@ summary: "Regular training with square images and rectangular training"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>We use a sampler that will group the images by batches of the close size and aspect ratio (with a bit of shuffle for the training set) and a collation function that will resize them to the mdeian aspect ratio and median number of pixel (bound by <code>max_px</code>). <code>rand_min_scale</code> is used to do a <a href="/vision.augment.html#RandomResizedCrop"><code>RandomResizedCrop</code></a> to that size on the training set.</p>
+<p>We use a sampler that will group the images by batches of the close size and aspect ratio (with a bit of shuffle for the training set) and a collation function that will resize them to the mdeian aspect ratio and median number of pixel (bound by <code>max_px</code>). <code>rand_min_scale</code> is used to do a <a href="vision.augment.html#RandomResizedCrop"><code>RandomResizedCrop</code></a> to that size on the training set.</p>
 
 </div>
 </div>
@@ -611,7 +611,7 @@ summary: "Regular training with square images and rectangular training"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Then we create a <a href="/data.core.html#DataBunch"><code>DataBunch</code></a> with those two dataloaders.</p>
+<p>Then we create a <a href="data.core.html#DataBunch"><code>DataBunch</code></a> with those two dataloaders.</p>
 
 </div>
 </div>

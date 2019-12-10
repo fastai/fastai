@@ -576,7 +576,7 @@ summary: "Basic function to preprocess text before assembling it in a `DataBunch
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="tokenize1" class="doc_header"><code>tokenize1</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L132" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>tokenize1</code>(<strong><code>text</code></strong>, <strong><code>tok_func</code></strong>=<em><code>'SpacyTokenizer'</code></em>, <strong><code>rules</code></strong>=<em><code>None</code></em>, <strong><code>post_rules</code></strong>=<em><code>None</code></em>, <strong>**<code>tok_kwargs</code></strong>)</p>
 </blockquote>
-<p>Tokenize one <a href="/text.html"><code>text</code></a> with an instance of <code>tok_func</code> and some <code>rules</code></p>
+<p>Tokenize one <a href="text.html"><code>text</code></a> with an instance of <code>tok_func</code> and some <code>rules</code></p>
 
 </div>
 
@@ -616,7 +616,7 @@ summary: "Basic function to preprocess text before assembling it in a `DataBunch
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="parallel_tokenize" class="doc_header"><code>parallel_tokenize</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L137" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>parallel_tokenize</code>(<strong><code>items</code></strong>, <strong><code>tok_func</code></strong>, <strong><code>rules</code></strong>, <strong><code>as_gen</code></strong>=<em><code>False</code></em>, <strong><code>n_workers</code></strong>=<em><code>56</code></em>, <strong>**<code>tok_kwargs</code></strong>)</p>
 </blockquote>
-<p>Calls a potential setup on <code>tok_func</code> before launching <a href="/text.core.html#TokenizeBatch"><code>TokenizeBatch</code></a> in parallel</p>
+<p>Calls a potential setup on <code>tok_func</code> before launching <a href="text.core.html#TokenizeBatch"><code>TokenizeBatch</code></a> in parallel</p>
 
 </div>
 
@@ -692,7 +692,7 @@ summary: "Basic function to preprocess text before assembling it in a `DataBunch
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>The result will be in <code>output_dir</code> (defaults to a folder in the same parent directory as <code>path</code>, with <code>_tok</code> added to <code>path.name</code>) with the same structure as in <code>path</code>. Tokenized texts for a given file will be in the file having the same name in <code>output_dir</code>. Additionally, a file with a .len suffix contains the number of tokens and the count of all words is stored in <code>output_dir/counter.pkl</code>.</p>
-<p><code>extensions</code> will default to <code>['.txt']</code> and all text files in <code>path</code> are treated unless you specify a list of folders in <code>include</code>. <code>tok_func</code> is instantiated in each process with <code>tok_kwargs</code>, and <code>rules</code> (that defaults to <a href="/text.core.html#defaults.text_proc_rules"><code>defaults.text_proc_rules</code></a>) are applied to each text before going in the tokenizer.</p>
+<p><code>extensions</code> will default to <code>['.txt']</code> and all text files in <code>path</code> are treated unless you specify a list of folders in <code>include</code>. <code>tok_func</code> is instantiated in each process with <code>tok_kwargs</code>, and <code>rules</code> (that defaults to <a href="text.core.html#defaults.text_proc_rules"><code>defaults.text_proc_rules</code></a>) are applied to each text before going in the tokenizer.</p>
 
 </div>
 </div>
@@ -733,7 +733,7 @@ summary: "Basic function to preprocess text before assembling it in a `DataBunch
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>This function returns a new dataframe with the same non-text columns, a colum named text that contains the tokenized texts and a column named text_lengths that contains their respective length. It also returns a counter of all words see to quickly build a vocabulary afterward.</p>
-<p><code>tok_func</code> is instantiated in each process with <code>tok_kwargs</code>, and <code>rules</code> (that defaults to <a href="/text.core.html#defaults.text_proc_rules"><code>defaults.text_proc_rules</code></a>) are applied to each text before going in the tokenizer. If <code>mark_fields</code> isn't specified, it defaults to <code>False</code> when there is a single text column, <code>True</code> when there are several. In that case, the texts in each of those columns are joined with <code>FLD</code> markes followed by the number of the field.</p>
+<p><code>tok_func</code> is instantiated in each process with <code>tok_kwargs</code>, and <code>rules</code> (that defaults to <a href="text.core.html#defaults.text_proc_rules"><code>defaults.text_proc_rules</code></a>) are applied to each text before going in the tokenizer. If <code>mark_fields</code> isn't specified, it defaults to <code>False</code> when there is a single text column, <code>True</code> when there are several. In that case, the texts in each of those columns are joined with <code>FLD</code> markes followed by the number of the field.</p>
 
 </div>
 </div>
@@ -788,8 +788,8 @@ summary: "Basic function to preprocess text before assembling it in a `DataBunch
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The result will be written in a new csv file in <code>outname</code> (defaults to the same as <code>fname</code> with the suffix <code>_tok.csv</code>) and will have the same header as the original file, the same non-text columns, a text and a text_lengths column as described in <a href="/text.core.html#tokenize_df"><code>tokenize_df</code></a>.</p>
-<p><code>tok_func</code> is instantiated in each process with <code>tok_kwargs</code>, and <code>rules</code> (that defaults to <a href="/text.core.html#defaults.text_proc_rules"><code>defaults.text_proc_rules</code></a>) are applied to each text before going in the tokenizer. If <code>mark_fields</code> isn't specified, it defaults to <code>False</code> when there is a single text column, <code>True</code> when there are several. In that case, the texts in each of those columns are joined with <code>FLD</code> markes followed by the number of the field.</p>
+<p>The result will be written in a new csv file in <code>outname</code> (defaults to the same as <code>fname</code> with the suffix <code>_tok.csv</code>) and will have the same header as the original file, the same non-text columns, a text and a text_lengths column as described in <a href="text.core.html#tokenize_df"><code>tokenize_df</code></a>.</p>
+<p><code>tok_func</code> is instantiated in each process with <code>tok_kwargs</code>, and <code>rules</code> (that defaults to <a href="text.core.html#defaults.text_proc_rules"><code>defaults.text_proc_rules</code></a>) are applied to each text before going in the tokenizer. If <code>mark_fields</code> isn't specified, it defaults to <code>False</code> when there is a single text column, <code>True</code> when there are several. In that case, the texts in each of those columns are joined with <code>FLD</code> markes followed by the number of the field.</p>
 <p>The csv file is opened with <code>header</code> and optionally with blocks of <code>chunksize</code> at a time. If this argument is passed, each chunk is processed independtly and saved in the output file to save memory usage.</p>
 
 </div>

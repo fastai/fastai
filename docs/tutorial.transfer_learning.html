@@ -63,7 +63,7 @@ summary: "Fine-tuning a pretrained model on the pets dataset."
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>We use the data block API to get our data in a <a href="/data.core.html#DataBunch"><code>DataBunch</code></a>. Here our inputs are images and our targets categories. The images are all in a folder, so we use <a href="/data.transforms.html#get_image_files"><code>get_image_files</code></a> to collect them all, a <a href="/data.transforms.html#RandomSplitter"><code>RandomSplitter</code></a> to split between training and validation, then we get the label from the filenames with a regex labeller.</p>
+<p>We use the data block API to get our data in a <a href="data.core.html#DataBunch"><code>DataBunch</code></a>. Here our inputs are images and our targets categories. The images are all in a folder, so we use <a href="data.transforms.html#get_image_files"><code>get_image_files</code></a> to collect them all, a <a href="data.transforms.html#RandomSplitter"><code>RandomSplitter</code></a> to split between training and validation, then we get the label from the filenames with a regex labeller.</p>
 
 </div>
 </div>
@@ -86,7 +86,7 @@ summary: "Fine-tuning a pretrained model on the pets dataset."
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The pets object by itself is empty: it only containes the functions that will help us gather the data. We have to call its <code>datasource</code> or <code>databunch</code> method to get a <a href="/data.core.html#DataSource"><code>DataSource</code></a> or a <a href="/data.core.html#DataBunch"><code>DataBunch</code></a>. The first thing we need to pass to either of those functions is the source, here the folder where all the images are. Then we specify some dataset transforms (a random resized crop to 300 by 300) and some dataloader transforms (basic data augmentation on the GPU and normalization using the imagenet statistics).</p>
+<p>The pets object by itself is empty: it only containes the functions that will help us gather the data. We have to call its <code>datasource</code> or <code>databunch</code> method to get a <a href="data.core.html#DataSource"><code>DataSource</code></a> or a <a href="data.core.html#DataBunch"><code>DataBunch</code></a>. The first thing we need to pass to either of those functions is the source, here the folder where all the images are. Then we specify some dataset transforms (a random resized crop to 300 by 300) and some dataloader transforms (basic data augmentation on the GPU and normalization using the imagenet statistics).</p>
 
 </div>
 </div>
@@ -261,7 +261,7 @@ summary: "Fine-tuning a pretrained model on the pets dataset."
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Then we can call <a href="/vision.learner.html#cnn_learner"><code>cnn_learner</code></a> to build a <a href="/learner.html#Learner"><code>Learner</code></a> from our <a href="/data.core.html#DataBunch"><code>DataBunch</code></a>. Since we are using a pretrained model, it comes automatically frozen, which means only the head is going to be trained.</p>
+<p>Then we can call <a href="vision.learner.html#cnn_learner"><code>cnn_learner</code></a> to build a <a href="learner.html#Learner"><code>Learner</code></a> from our <a href="data.core.html#DataBunch"><code>DataBunch</code></a>. Since we are using a pretrained model, it comes automatically frozen, which means only the head is going to be trained.</p>
 
 </div>
 </div>
@@ -658,7 +658,7 @@ summary: "Fine-tuning a pretrained model on the pets dataset."
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Since we have a weird first transform (that is there to preprocess the names in the dataframe and make proper filenames) we remove it when we want to do inference in <a href="/learner.html#Learner.predict"><code>Learner.predict</code></a> or <a href="/data.core.html#test_dl"><code>test_dl</code></a> with the <code>rm_type_tfms</code> arg.</p>
+<p>Since we have a weird first transform (that is there to preprocess the names in the dataframe and make proper filenames) we remove it when we want to do inference in <a href="learner.html#Learner.predict"><code>Learner.predict</code></a> or <a href="data.core.html#test_dl"><code>test_dl</code></a> with the <code>rm_type_tfms</code> arg.</p>
 
 </div>
 </div>
