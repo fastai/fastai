@@ -1231,26 +1231,10 @@ directly.</p>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">pnt_tdl</span><span class="o">.</span><span class="n">after_item</span><span class="o">.</span><span class="n">c</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">test_eq</span><span class="p">(</span><span class="n">pnt_tdl</span><span class="o">.</span><span class="n">after_item</span><span class="o">.</span><span class="n">c</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>10</pre>
-</div>
-
-</div>
-
 </div>
 </div>
 
@@ -1271,6 +1255,7 @@ directly.</p>
 <span class="n">test_eq</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">y</span><span class="p">),</span> <span class="n">TensorPoint</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">a</span><span class="p">),</span> <span class="n">TensorImage</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">b</span><span class="p">),</span> <span class="n">TensorPoint</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">get_meta</span><span class="p">(</span><span class="s1">&#39;img_size&#39;</span><span class="p">),</span> <span class="p">(</span><span class="mi">28</span><span class="p">,</span><span class="mi">35</span><span class="p">))</span> <span class="c1">#Automatically picked the size of the input</span>
 </pre></div>
 
     </div>
@@ -1436,6 +1421,7 @@ directly.</p>
 <span class="n">test_eq</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">a</span><span class="p">),</span> <span class="n">TensorImage</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">b</span><span class="p">),</span> <span class="n">TensorBBox</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">c</span><span class="p">),</span> <span class="n">LabeledBBox</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">get_meta</span><span class="p">(</span><span class="s1">&#39;img_size&#39;</span><span class="p">),</span> <span class="p">(</span><span class="mi">128</span><span class="p">,</span><span class="mi">128</span><span class="p">))</span>
 </pre></div>
 
     </div>

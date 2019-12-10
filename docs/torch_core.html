@@ -343,7 +343,7 @@ summary: "Basic pytorch functions used in the fastai library"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ArrayBase" class="doc_header"><code>class</code> <code>ArrayBase</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L64" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ArrayBase</code>(<strong><code>x</code></strong>, <strong>*<code>args</code></strong>, <strong>**<code>kwargs</code></strong>) :: <code>ndarray</code></p>
+<h2 id="ArrayBase" class="doc_header"><code>class</code> <code>ArrayBase</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L64" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ArrayBase</code>() :: <code>ndarray</code></p>
 </blockquote>
 <p>ndarray(shape, dtype=float, buffer=None, offset=0,
         strides=None, order=None)</p>
@@ -465,7 +465,7 @@ array([2, 3])</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ArrayImageBase" class="doc_header"><code>class</code> <code>ArrayImageBase</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L72" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ArrayImageBase</code>(<strong><code>x</code></strong>, <strong>*<code>args</code></strong>, <strong>**<code>kwargs</code></strong>) :: <a href="/torch.core.html#ArrayBase"><code>ArrayBase</code></a></p>
+<h2 id="ArrayImageBase" class="doc_header"><code>class</code> <code>ArrayImageBase</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L69" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ArrayImageBase</code>() :: <a href="/torch.core.html#ArrayBase"><code>ArrayBase</code></a></p>
 </blockquote>
 <p>ndarray(shape, dtype=float, buffer=None, offset=0,
         strides=None, order=None)</p>
@@ -587,7 +587,7 @@ array([2, 3])</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ArrayImage" class="doc_header"><code>class</code> <code>ArrayImage</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L78" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ArrayImage</code>(<strong><code>x</code></strong>, <strong>*<code>args</code></strong>, <strong>**<code>kwargs</code></strong>) :: <a href="/torch.core.html#ArrayImageBase"><code>ArrayImageBase</code></a></p>
+<h2 id="ArrayImage" class="doc_header"><code>class</code> <code>ArrayImage</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L75" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ArrayImage</code>() :: <a href="/torch.core.html#ArrayImageBase"><code>ArrayImageBase</code></a></p>
 </blockquote>
 <p>ndarray(shape, dtype=float, buffer=None, offset=0,
         strides=None, order=None)</p>
@@ -709,7 +709,7 @@ array([2, 3])</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ArrayImageBW" class="doc_header"><code>class</code> <code>ArrayImageBW</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L81" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ArrayImageBW</code>(<strong><code>x</code></strong>, <strong>*<code>args</code></strong>, <strong>**<code>kwargs</code></strong>) :: <a href="/torch.core.html#ArrayImage"><code>ArrayImage</code></a></p>
+<h2 id="ArrayImageBW" class="doc_header"><code>class</code> <code>ArrayImageBW</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L78" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ArrayImageBW</code>() :: <a href="/torch.core.html#ArrayImage"><code>ArrayImage</code></a></p>
 </blockquote>
 <p>ndarray(shape, dtype=float, buffer=None, offset=0,
         strides=None, order=None)</p>
@@ -831,7 +831,7 @@ array([2, 3])</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ArrayMask" class="doc_header"><code>class</code> <code>ArrayMask</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L84" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ArrayMask</code>(<strong><code>x</code></strong>, <strong>*<code>args</code></strong>, <strong>**<code>kwargs</code></strong>) :: <a href="/torch.core.html#ArrayImageBase"><code>ArrayImageBase</code></a></p>
+<h2 id="ArrayMask" class="doc_header"><code>class</code> <code>ArrayMask</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L81" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ArrayMask</code>() :: <a href="/torch.core.html#ArrayImageBase"><code>ArrayImageBase</code></a></p>
 </blockquote>
 <p>ndarray(shape, dtype=float, buffer=None, offset=0,
         strides=None, order=None)</p>
@@ -959,23 +959,8 @@ array([2, 3])</p>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">im_t</span> <span class="o">=</span> <span class="n">ArrayImage</span><span class="p">(</span><span class="n">im</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">im_t</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">ArrayImage</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">im_t</span><span class="p">),</span> <span class="n">ArrayImage</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">im_t2</span> <span class="o">=</span> <span class="n">ArrayMask</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">im_t2</span><span class="p">),</span> <span class="n">ArrayMask</span><span class="p">)</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">im_t2</span><span class="p">,</span> <span class="n">array</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
 </pre></div>
 
     </div>
@@ -1045,7 +1030,7 @@ array([2, 3])</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Tensor.__array_eq__" class="doc_header"><code>Tensor.__array_eq__</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L87" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Tensor.__array_eq__</code>(<strong><code>b</code></strong>)</p>
+<h4 id="Tensor.__array_eq__" class="doc_header"><code>Tensor.__array_eq__</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L84" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Tensor.__array_eq__</code>(<strong><code>b</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -1071,7 +1056,7 @@ array([2, 3])</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="tensor" class="doc_header"><code>tensor</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L97" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>tensor</code>(<strong><code>x</code></strong>, <strong>*<code>rest</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="tensor" class="doc_header"><code>tensor</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L94" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>tensor</code>(<strong><code>x</code></strong>, <strong>*<code>rest</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Like <code>torch.as_tensor</code>, but handle lists too, and can pass multiple vector elements directly.</p>
 
@@ -1111,7 +1096,7 @@ array([2, 3])</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="set_seed" class="doc_header"><code>set_seed</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L112" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>set_seed</code>(<strong><code>s</code></strong>)</p>
+<h4 id="set_seed" class="doc_header"><code>set_seed</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L109" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>set_seed</code>(<strong><code>s</code></strong>)</p>
 </blockquote>
 <p>Set random seed for <code>random</code>, <code>torch</code>, and <code>numpy</code> (where available)</p>
 
@@ -1158,7 +1143,7 @@ array([2, 3])</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="unsqueeze" class="doc_header"><code>unsqueeze</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L121" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>unsqueeze</code>(<strong><code>x</code></strong>, <strong><code>dim</code></strong>=<em><code>-1</code></em>, <strong><code>n</code></strong>=<em><code>1</code></em>)</p>
+<h4 id="unsqueeze" class="doc_header"><code>unsqueeze</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L118" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>unsqueeze</code>(<strong><code>x</code></strong>, <strong><code>dim</code></strong>=<em><code>-1</code></em>, <strong><code>n</code></strong>=<em><code>1</code></em>)</p>
 </blockquote>
 <p>Same as <code>torch.unsqueeze</code> but can add <code>n</code> dims</p>
 
@@ -1197,7 +1182,7 @@ array([2, 3])</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="unsqueeze_" class="doc_header"><code>unsqueeze_</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L127" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>unsqueeze_</code>(<strong><code>x</code></strong>, <strong><code>dim</code></strong>=<em><code>-1</code></em>, <strong><code>n</code></strong>=<em><code>1</code></em>)</p>
+<h4 id="unsqueeze_" class="doc_header"><code>unsqueeze_</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L124" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>unsqueeze_</code>(<strong><code>x</code></strong>, <strong><code>dim</code></strong>=<em><code>-1</code></em>, <strong><code>n</code></strong>=<em><code>1</code></em>)</p>
 </blockquote>
 <p>Same as <code>torch.unsqueeze_</code> but can add <code>n</code> dims</p>
 
@@ -1239,7 +1224,7 @@ array([2, 3])</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="apply" class="doc_header"><code>apply</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L137" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>apply</code>(<strong><code>func</code></strong>, <strong><code>x</code></strong>, <strong>*<code>args</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="apply" class="doc_header"><code>apply</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L134" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>apply</code>(<strong><code>func</code></strong>, <strong><code>x</code></strong>, <strong>*<code>args</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Apply <code>func</code> recursively to <code>x</code>, passing on args</p>
 
@@ -1263,9 +1248,9 @@ array([2, 3])</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="maybe_gather" class="doc_header"><code>maybe_gather</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L145" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>maybe_gather</code>(<strong><code>x</code></strong>, <strong><code>axis</code></strong>=<em><code>0</code></em>)</p>
+<h4 id="maybe_gather" class="doc_header"><code>maybe_gather</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L142" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>maybe_gather</code>(<strong><code>x</code></strong>, <strong><code>axis</code></strong>=<em><code>0</code></em>)</p>
 </blockquote>
-<p>Gather copies of <code>x</code> on <code>axis</code> is training is distributed</p>
+<p>Gather copies of <code>x</code> on <code>axis</code> (if training is distributed)</p>
 
 </div>
 
@@ -1287,7 +1272,7 @@ array([2, 3])</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="to_detach" class="doc_header"><code>to_detach</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L154" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>to_detach</code>(<strong><code>b</code></strong>, <strong><code>cpu</code></strong>=<em><code>True</code></em>, <strong><code>gather</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="to_detach" class="doc_header"><code>to_detach</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L151" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>to_detach</code>(<strong><code>b</code></strong>, <strong><code>cpu</code></strong>=<em><code>True</code></em>, <strong><code>gather</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 <p>Recursively detach lists of tensors in <code>b</code>; put them on the CPU if <code>cpu=True</code>.</p>
 
@@ -1318,7 +1303,7 @@ array([2, 3])</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="to_half" class="doc_header"><code>to_half</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L164" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>to_half</code>(<strong><code>b</code></strong>)</p>
+<h4 id="to_half" class="doc_header"><code>to_half</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L161" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>to_half</code>(<strong><code>b</code></strong>)</p>
 </blockquote>
 <p>Recursively map lists of tensors in <code>b</code> to FP16.</p>
 
@@ -1342,7 +1327,7 @@ array([2, 3])</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="to_float" class="doc_header"><code>to_float</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L169" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>to_float</code>(<strong><code>b</code></strong>)</p>
+<h4 id="to_float" class="doc_header"><code>to_float</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L166" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>to_float</code>(<strong><code>b</code></strong>)</p>
 </blockquote>
 <p>Recursively map lists of int tensors in <code>b</code> to float.</p>
 
@@ -1369,7 +1354,7 @@ array([2, 3])</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="default_device" class="doc_header"><code>default_device</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L178" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>default_device</code>(<strong><code>use_cuda</code></strong>=<em><code>-1</code></em>)</p>
+<h4 id="default_device" class="doc_header"><code>default_device</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L175" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>default_device</code>(<strong><code>use_cuda</code></strong>=<em><code>-1</code></em>)</p>
 </blockquote>
 <p>Return or set default device; <code>use_cuda</code>: None - CUDA if available; True - error if not availabe; False - CPU</p>
 
@@ -1411,7 +1396,7 @@ array([2, 3])</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="to_device" class="doc_header"><code>to_device</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L186" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>to_device</code>(<strong><code>b</code></strong>, <strong><code>device</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="to_device" class="doc_header"><code>to_device</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L183" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>to_device</code>(<strong><code>b</code></strong>, <strong><code>device</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Recursively put <code>b</code> on <code>device</code>.</p>
 
@@ -1452,7 +1437,7 @@ array([2, 3])</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="to_cpu" class="doc_header"><code>to_cpu</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L193" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>to_cpu</code>(<strong><code>b</code></strong>)</p>
+<h4 id="to_cpu" class="doc_header"><code>to_cpu</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L190" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>to_cpu</code>(<strong><code>b</code></strong>)</p>
 </blockquote>
 <p>Recursively map lists of tensors in <code>b</code> to the cpu.</p>
 
@@ -1491,7 +1476,7 @@ array([2, 3])</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="to_np" class="doc_header"><code>to_np</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L198" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>to_np</code>(<strong><code>x</code></strong>)</p>
+<h4 id="to_np" class="doc_header"><code>to_np</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L195" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>to_np</code>(<strong><code>x</code></strong>)</p>
 </blockquote>
 <p>Convert a tensor to a numpy array.</p>
 
@@ -1530,7 +1515,7 @@ array([2, 3])</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="to_concat" class="doc_header"><code>to_concat</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L203" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>to_concat</code>(<strong><code>xs</code></strong>, <strong><code>dim</code></strong>=<em><code>0</code></em>)</p>
+<h4 id="to_concat" class="doc_header"><code>to_concat</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L200" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>to_concat</code>(<strong><code>xs</code></strong>, <strong><code>dim</code></strong>=<em><code>0</code></em>)</p>
 </blockquote>
 <p>Concat the element in <code>xs</code> (recursively if they are tuples/lists of tensors)</p>
 
@@ -1579,7 +1564,104 @@ array([2, 3])</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TensorBase" class="doc_header"><code>class</code> <code>TensorBase</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L212" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TensorBase</code>(<strong><code>x</code></strong>, <strong>**<code>kwargs</code></strong>) :: <code>Tensor</code></p>
+<h4 id="Tensor.set_meta" class="doc_header"><code>Tensor.set_meta</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L211" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Tensor.set_meta</code>(<strong><code>x</code></strong>)</p>
+</blockquote>
+<p>Set all metadata in <code>__dict__</code></p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="Tensor.get_meta" class="doc_header"><code>Tensor.get_meta</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L217" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Tensor.get_meta</code>(<strong><code>n</code></strong>, <strong><code>d</code></strong>=<em><code>None</code></em>)</p>
+</blockquote>
+<p>Set <code>n</code> from <code>self._meta</code> if it exists and returns default <code>d</code> otherwise</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="Tensor.as_subclass" class="doc_header"><code>Tensor.as_subclass</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L223" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Tensor.as_subclass</code>(<strong><code>typ</code></strong>)</p>
+</blockquote>
+<p>Cast to <code>typ</code> (should be in future PyTorch version, so remove this then)</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><a href="/torch.core.html#Tensor.set_meta"><code>Tensor.set_meta</code></a> and <a href="/torch.core.html#Tensor.as_subclass"><code>Tensor.as_subclass</code></a> work together to maintain <code>_meta</code> after casting.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">_T</span><span class="p">(</span><span class="n">Tensor</span><span class="p">):</span> <span class="k">pass</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">tensor</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">t</span><span class="o">.</span><span class="n">_meta</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;img_size&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span>
+<span class="n">t2</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">as_subclass</span><span class="p">(</span><span class="n">_T</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">_meta</span><span class="p">,</span> <span class="n">t2</span><span class="o">.</span><span class="n">_meta</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">t2</span><span class="o">.</span><span class="n">get_meta</span><span class="p">(</span><span class="s1">&#39;img_size&#39;</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="TensorBase" class="doc_header"><code>class</code> <code>TensorBase</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L230" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TensorBase</code>(<strong><code>x</code></strong>, <strong>**<code>kwargs</code></strong>) :: <code>Tensor</code></p>
 </blockquote>
 
 </div>
@@ -1605,7 +1687,7 @@ array([2, 3])</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TensorCategory" class="doc_header"><code>class</code> <code>TensorCategory</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L254" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TensorCategory</code>(<strong><code>x</code></strong>, <strong>**<code>kwargs</code></strong>) :: <a href="/torch.core.html#TensorBase"><code>TensorBase</code></a></p>
+<h2 id="TensorCategory" class="doc_header"><code>class</code> <code>TensorCategory</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L275" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TensorCategory</code>(<strong><code>x</code></strong>, <strong>**<code>kwargs</code></strong>) :: <a href="/torch.core.html#TensorBase"><code>TensorBase</code></a></p>
 </blockquote>
 
 </div>
@@ -1628,7 +1710,7 @@ array([2, 3])</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TensorMultiCategory" class="doc_header"><code>class</code> <code>TensorMultiCategory</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L257" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TensorMultiCategory</code>(<strong><code>x</code></strong>, <strong>**<code>kwargs</code></strong>) :: <a href="/torch.core.html#TensorCategory"><code>TensorCategory</code></a></p>
+<h2 id="TensorMultiCategory" class="doc_header"><code>class</code> <code>TensorMultiCategory</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L278" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TensorMultiCategory</code>(<strong><code>x</code></strong>, <strong>**<code>kwargs</code></strong>) :: <a href="/torch.core.html#TensorCategory"><code>TensorCategory</code></a></p>
 </blockquote>
 
 </div>
@@ -1645,8 +1727,19 @@ array([2, 3])</p>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">_T</span><span class="p">(</span><span class="n">TensorBase</span><span class="p">):</span> <span class="k">pass</span>
+</pre></div>
 
-<span class="n">t</span> <span class="o">=</span> <span class="n">_T</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">t</span> <span class="o">=</span> <span class="n">_T</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">0</span><span class="p">)</span>
 <span class="n">test_eq_type</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">gi</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">_T</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
 <span class="n">test_eq_type</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">gi</span><span class="p">(</span><span class="nb">slice</span><span class="p">(</span><span class="mi">2</span><span class="p">)),</span> <span class="n">_T</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]))</span>
@@ -1668,10 +1761,9 @@ array([2, 3])</p>
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">t</span> <span class="o">=</span> <span class="n">tensor</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
 <span class="n">m</span> <span class="o">=</span> <span class="n">TensorBase</span><span class="p">([</span><span class="kc">False</span><span class="p">,</span><span class="kc">True</span><span class="p">,</span><span class="kc">True</span><span class="p">])</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="n">m</span><span class="p">],</span> <span class="n">tensor</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]))</span>
-
 <span class="n">t</span> <span class="o">=</span> <span class="n">tensor</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]])</span>
-<span class="n">m</span> <span class="o">=</span> <span class="n">TensorBase</span><span class="p">([[</span><span class="kc">False</span><span class="p">,</span><span class="kc">True</span><span class="p">,</span><span class="kc">True</span><span class="p">],</span>
-                <span class="p">[</span><span class="kc">False</span><span class="p">,</span><span class="kc">True</span><span class="p">,</span><span class="kc">True</span><span class="p">]])</span>
+<span class="n">m</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">tensor</span><span class="p">([[</span><span class="kc">False</span><span class="p">,</span><span class="kc">True</span><span class="p">,</span><span class="kc">True</span><span class="p">],</span>
+                 <span class="p">[</span><span class="kc">False</span><span class="p">,</span><span class="kc">True</span><span class="p">,</span><span class="kc">True</span><span class="p">]]),</span> <span class="n">TensorBase</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="n">m</span><span class="p">],</span> <span class="n">tensor</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]))</span>
 </pre></div>
 
@@ -1685,10 +1777,14 @@ array([2, 3])</p>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">t</span> <span class="o">=</span> <span class="n">TensorBase</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]],</span> <span class="n">a</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">_meta</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">})</span>
-<span class="n">x</span> <span class="o">=</span> <span class="n">retain_type</span><span class="p">(</span><span class="n">tensor</span><span class="p">([</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">]),</span> <span class="n">t</span><span class="p">)</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">_meta</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">})</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">t</span> <span class="o">=</span> <span class="n">tensor</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]])</span>
+<span class="n">t</span><span class="o">.</span><span class="n">_meta</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;img_size&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span>
+<span class="n">t2</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">TensorBase</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">t2</span><span class="o">.</span><span class="n">_meta</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">_meta</span><span class="p">)</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">retain_type</span><span class="p">(</span><span class="n">tensor</span><span class="p">([</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">]),</span> <span class="n">t2</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">_meta</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">_meta</span><span class="p">)</span>
+<span class="n">t3</span> <span class="o">=</span> <span class="n">TensorBase</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]],</span> <span class="n">img_size</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">t3</span><span class="o">.</span><span class="n">_meta</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">_meta</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -1708,7 +1804,7 @@ array([2, 3])</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TensorImageBase" class="doc_header"><code>class</code> <code>TensorImageBase</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L260" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TensorImageBase</code>(<strong><code>x</code></strong>, <strong>**<code>kwargs</code></strong>) :: <a href="/torch.core.html#TensorBase"><code>TensorBase</code></a></p>
+<h2 id="TensorImageBase" class="doc_header"><code>class</code> <code>TensorImageBase</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L281" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TensorImageBase</code>(<strong><code>x</code></strong>, <strong>**<code>kwargs</code></strong>) :: <a href="/torch.core.html#TensorBase"><code>TensorBase</code></a></p>
 </blockquote>
 
 </div>
@@ -1731,7 +1827,7 @@ array([2, 3])</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TensorImage" class="doc_header"><code>class</code> <code>TensorImage</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L266" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TensorImage</code>(<strong><code>x</code></strong>, <strong>**<code>kwargs</code></strong>) :: <a href="/torch.core.html#TensorImageBase"><code>TensorImageBase</code></a></p>
+<h2 id="TensorImage" class="doc_header"><code>class</code> <code>TensorImage</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L287" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TensorImage</code>(<strong><code>x</code></strong>, <strong>**<code>kwargs</code></strong>) :: <a href="/torch.core.html#TensorImageBase"><code>TensorImageBase</code></a></p>
 </blockquote>
 
 </div>
@@ -1754,7 +1850,7 @@ array([2, 3])</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TensorImageBW" class="doc_header"><code>class</code> <code>TensorImageBW</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L269" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TensorImageBW</code>(<strong><code>x</code></strong>, <strong>**<code>kwargs</code></strong>) :: <a href="/torch.core.html#TensorImage"><code>TensorImage</code></a></p>
+<h2 id="TensorImageBW" class="doc_header"><code>class</code> <code>TensorImageBW</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L290" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TensorImageBW</code>(<strong><code>x</code></strong>, <strong>**<code>kwargs</code></strong>) :: <a href="/torch.core.html#TensorImage"><code>TensorImage</code></a></p>
 </blockquote>
 
 </div>
@@ -1777,7 +1873,7 @@ array([2, 3])</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TensorMask" class="doc_header"><code>class</code> <code>TensorMask</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L272" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TensorMask</code>(<strong><code>x</code></strong>, <strong>**<code>kwargs</code></strong>) :: <a href="/torch.core.html#TensorImageBase"><code>TensorImageBase</code></a></p>
+<h2 id="TensorMask" class="doc_header"><code>class</code> <code>TensorMask</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L293" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TensorMask</code>(<strong><code>x</code></strong>, <strong>**<code>kwargs</code></strong>) :: <a href="/torch.core.html#TensorImageBase"><code>TensorImageBase</code></a></p>
 </blockquote>
 
 </div>
@@ -1794,19 +1890,7 @@ array([2, 3])</p>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">im</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">TEST_IMAGE</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">im_t</span> <span class="o">=</span> <span class="n">TensorImage</span><span class="p">(</span><span class="n">array</span><span class="p">(</span><span class="n">im</span><span class="p">))</span>
+<span class="n">im_t</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">array</span><span class="p">(</span><span class="n">im</span><span class="p">),</span> <span class="n">TensorImage</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">im_t</span><span class="p">),</span> <span class="n">TensorImage</span><span class="p">)</span>
 </pre></div>
 
@@ -1820,7 +1904,7 @@ array([2, 3])</p>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">im_t2</span> <span class="o">=</span> <span class="n">TensorMask</span><span class="p">(</span><span class="n">tensor</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">im_t2</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">tensor</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">TensorMask</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">im_t2</span><span class="p">),</span> <span class="n">TensorMask</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">im_t2</span><span class="p">,</span> <span class="n">tensor</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
 </pre></div>
@@ -1886,7 +1970,7 @@ array([2, 3])</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="L.tensored" class="doc_header"><code>L.tensored</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L275" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>L.tensored</code>()</p>
+<h4 id="L.tensored" class="doc_header"><code>L.tensored</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L296" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>L.tensored</code>()</p>
 </blockquote>
 <p><code>mapped(tensor)</code></p>
 
@@ -1928,7 +2012,7 @@ array([2, 3])</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="L.stack" class="doc_header"><code>L.stack</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L279" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>L.stack</code>(<strong><code>dim</code></strong>=<em><code>0</code></em>)</p>
+<h4 id="L.stack" class="doc_header"><code>L.stack</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L300" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>L.stack</code>(<strong><code>dim</code></strong>=<em><code>0</code></em>)</p>
 </blockquote>
 <p>Same as <code>torch.stack</code></p>
 
@@ -1962,7 +2046,7 @@ array([2, 3])</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="L.cat" class="doc_header"><code>L.cat</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L283" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>L.cat</code>(<strong><code>dim</code></strong>=<em><code>0</code></em>)</p>
+<h4 id="L.cat" class="doc_header"><code>L.cat</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L304" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>L.cat</code>(<strong><code>dim</code></strong>=<em><code>0</code></em>)</p>
 </blockquote>
 <p>Same as <code>torch.cat</code></p>
 
@@ -2005,7 +2089,7 @@ array([2, 3])</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="concat" class="doc_header"><code>concat</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L289" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>concat</code>(<strong>*<code>ls</code></strong>)</p>
+<h4 id="concat" class="doc_header"><code>concat</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L310" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>concat</code>(<strong>*<code>ls</code></strong>)</p>
 </blockquote>
 <p>Concatenate tensors, arrays, lists, or tuples</p>
 
@@ -2050,7 +2134,7 @@ array([2, 3])</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Chunks" class="doc_header"><code>class</code> <code>Chunks</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L302" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Chunks</code>(<strong><code>chunks</code></strong>, <strong><code>lens</code></strong>=<em><code>None</code></em>)</p>
+<h2 id="Chunks" class="doc_header"><code>class</code> <code>Chunks</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L323" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Chunks</code>(<strong><code>chunks</code></strong>, <strong><code>lens</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Slice and int indexing into a list of lists</p>
 
@@ -2139,7 +2223,7 @@ array([2, 3])</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="one_param" class="doc_header"><code>one_param</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L330" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>one_param</code>(<strong><code>m</code></strong>)</p>
+<h4 id="one_param" class="doc_header"><code>one_param</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L351" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>one_param</code>(<strong><code>m</code></strong>)</p>
 </blockquote>
 <p>First parameter in <code>m</code></p>
 
@@ -2163,7 +2247,7 @@ array([2, 3])</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="item_find" class="doc_header"><code>item_find</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L335" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>item_find</code>(<strong><code>x</code></strong>, <strong><code>idx</code></strong>=<em><code>0</code></em>)</p>
+<h4 id="item_find" class="doc_header"><code>item_find</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L356" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>item_find</code>(<strong><code>x</code></strong>, <strong><code>idx</code></strong>=<em><code>0</code></em>)</p>
 </blockquote>
 <p>Recursively takes the <code>idx</code>-th element of <code>x</code></p>
 
@@ -2187,7 +2271,7 @@ array([2, 3])</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="find_device" class="doc_header"><code>find_device</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L344" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>find_device</code>(<strong><code>b</code></strong>)</p>
+<h4 id="find_device" class="doc_header"><code>find_device</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L365" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>find_device</code>(<strong><code>b</code></strong>)</p>
 </blockquote>
 <p>Recursively search the device of <code>b</code>.</p>
 
@@ -2204,7 +2288,8 @@ array([2, 3])</p>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dev</span> <span class="o">=</span> <span class="n">default_device</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">t2</span> <span class="o">=</span> <span class="n">to_device</span><span class="p">(</span><span class="n">tensor</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+<span class="n">dev</span> <span class="o">=</span> <span class="n">default_device</span><span class="p">()</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">find_device</span><span class="p">(</span><span class="n">t2</span><span class="p">),</span> <span class="n">dev</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">find_device</span><span class="p">([</span><span class="n">t2</span><span class="p">,</span><span class="n">t2</span><span class="p">]),</span> <span class="n">dev</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">find_device</span><span class="p">({</span><span class="s1">&#39;a&#39;</span><span class="p">:</span><span class="n">t2</span><span class="p">,</span><span class="s1">&#39;b&#39;</span><span class="p">:</span><span class="n">t2</span><span class="p">}),</span> <span class="n">dev</span><span class="p">)</span>
@@ -2228,7 +2313,7 @@ array([2, 3])</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="find_bs" class="doc_header"><code>find_bs</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L349" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>find_bs</code>(<strong><code>b</code></strong>)</p>
+<h4 id="find_bs" class="doc_header"><code>find_bs</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L370" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>find_bs</code>(<strong><code>b</code></strong>)</p>
 </blockquote>
 <p>Recursively search the batch size of <code>b</code>.</p>
 
@@ -2316,7 +2401,7 @@ array([2, 3])</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="Module" class="doc_header"><code>class</code> <code>Module</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L354" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>Module</code>() :: <a href="/torch.core.html#Module"><code>Module</code></a></p>
+<h3 id="Module" class="doc_header"><code>class</code> <code>Module</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L375" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>Module</code>() :: <a href="/torch.core.html#Module"><code>Module</code></a></p>
 </blockquote>
 <p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
 
@@ -2374,7 +2459,7 @@ array([2, 3])</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_model" class="doc_header"><code>get_model</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L362" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_model</code>(<strong><code>model</code></strong>)</p>
+<h4 id="get_model" class="doc_header"><code>get_model</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L383" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_model</code>(<strong><code>model</code></strong>)</p>
 </blockquote>
 <p>Return the model maybe wrapped inside <code>model</code>.</p>
 
@@ -2398,7 +2483,7 @@ array([2, 3])</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="one_hot" class="doc_header"><code>one_hot</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L367" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>one_hot</code>(<strong><code>x</code></strong>, <strong><code>c</code></strong>)</p>
+<h4 id="one_hot" class="doc_header"><code>one_hot</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L388" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>one_hot</code>(<strong><code>x</code></strong>, <strong><code>c</code></strong>)</p>
 </blockquote>
 <p>One-hot encode <code>x</code> with <code>c</code> classes.</p>
 
@@ -2437,7 +2522,7 @@ array([2, 3])</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="one_hot_decode" class="doc_header"><code>one_hot_decode</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L375" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>one_hot_decode</code>(<strong><code>x</code></strong>, <strong><code>vocab</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="one_hot_decode" class="doc_header"><code>one_hot_decode</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L396" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>one_hot_decode</code>(<strong><code>x</code></strong>, <strong><code>vocab</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 
 </div>
@@ -2475,7 +2560,7 @@ array([2, 3])</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="params" class="doc_header"><code>params</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L379" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>params</code>(<strong><code>m</code></strong>)</p>
+<h4 id="params" class="doc_header"><code>params</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L400" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>params</code>(<strong><code>m</code></strong>)</p>
 </blockquote>
 <p>Return all parameters of <code>m</code></p>
 
@@ -2499,7 +2584,7 @@ array([2, 3])</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="trainable_params" class="doc_header"><code>trainable_params</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L384" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>trainable_params</code>(<strong><code>m</code></strong>)</p>
+<h4 id="trainable_params" class="doc_header"><code>trainable_params</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L405" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>trainable_params</code>(<strong><code>m</code></strong>)</p>
 </blockquote>
 <p>Return all trainable parameters of <code>m</code></p>
 
@@ -2542,7 +2627,7 @@ array([2, 3])</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="bn_bias_params" class="doc_header"><code>bn_bias_params</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L392" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>bn_bias_params</code>(<strong><code>m</code></strong>, <strong><code>with_bias</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="bn_bias_params" class="doc_header"><code>bn_bias_params</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L413" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>bn_bias_params</code>(<strong><code>m</code></strong>, <strong><code>with_bias</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 <p>Return all bias and BatchNorm parameters</p>
 
@@ -2585,7 +2670,7 @@ array([2, 3])</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="batch_to_samples" class="doc_header"><code>batch_to_samples</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L400" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>batch_to_samples</code>(<strong><code>b</code></strong>, <strong><code>max_n</code></strong>=<em><code>10</code></em>)</p>
+<h4 id="batch_to_samples" class="doc_header"><code>batch_to_samples</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L421" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>batch_to_samples</code>(<strong><code>b</code></strong>, <strong><code>max_n</code></strong>=<em><code>10</code></em>)</p>
 </blockquote>
 <p>'Transposes' a batch to (at most <code>max_n</code>) samples</p>
 
@@ -2633,7 +2718,7 @@ array([2, 3])</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Tensor.interp_1d" class="doc_header"><code>Tensor.interp_1d</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L408" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Tensor.interp_1d</code>(<strong><code>x</code></strong>:<code>Tensor</code>, <strong><code>xp</code></strong>, <strong><code>fp</code></strong>)</p>
+<h4 id="Tensor.interp_1d" class="doc_header"><code>Tensor.interp_1d</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L429" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Tensor.interp_1d</code>(<strong><code>x</code></strong>:<code>Tensor</code>, <strong><code>xp</code></strong>, <strong><code>fp</code></strong>)</p>
 </blockquote>
 <p>Same as <code>np.interp</code></p>
 
@@ -2698,7 +2783,31 @@ array([2, 3])</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="logit" class="doc_header"><code>logit</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L418" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>logit</code>(<strong><code>x</code></strong>)</p>
+<h4 id="Tensor.pca" class="doc_header"><code>Tensor.pca</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L439" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Tensor.pca</code>(<strong><code>x</code></strong>:<code>Tensor</code>, <strong><code>k</code></strong>=<em><code>2</code></em>)</p>
+</blockquote>
+<p>Compute PCA of <code>x</code> with <code>k</code> dimensions.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="logit" class="doc_header"><code>logit</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L447" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>logit</code>(<strong><code>x</code></strong>)</p>
 </blockquote>
 <p>Logit of <code>x</code>, clamped to avoid inf.</p>
 
@@ -2722,7 +2831,7 @@ array([2, 3])</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="num_distrib" class="doc_header"><code>num_distrib</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L424" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>num_distrib</code>()</p>
+<h4 id="num_distrib" class="doc_header"><code>num_distrib</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L453" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>num_distrib</code>()</p>
 </blockquote>
 <p>Return the number of processes in distributed training (if applicable).</p>
 
@@ -2746,7 +2855,7 @@ array([2, 3])</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="rank_distrib" class="doc_header"><code>rank_distrib</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L429" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>rank_distrib</code>()</p>
+<h4 id="rank_distrib" class="doc_header"><code>rank_distrib</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L458" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>rank_distrib</code>()</p>
 </blockquote>
 <p>Return the distributed rank of this process (if applicable).</p>
 
@@ -2770,7 +2879,7 @@ array([2, 3])</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="distrib_barrier" class="doc_header"><code>distrib_barrier</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L434" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>distrib_barrier</code>()</p>
+<h4 id="distrib_barrier" class="doc_header"><code>distrib_barrier</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L463" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>distrib_barrier</code>()</p>
 </blockquote>
 <p>Place a synchronization barrier in distributed training so that ALL sub-processes in the pytorch process group must arrive here before proceeding.</p>
 
@@ -2800,7 +2909,7 @@ array([2, 3])</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Path.save_array" class="doc_header"><code>Path.save_array</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L447" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Path.save_array</code>(<strong><code>p</code></strong>:<code>Path</code>, <strong><code>o</code></strong>, <strong><code>complib</code></strong>=<em><code>'lz4'</code></em>, <strong><code>lvl</code></strong>=<em><code>3</code></em>)</p>
+<h4 id="Path.save_array" class="doc_header"><code>Path.save_array</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L476" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Path.save_array</code>(<strong><code>p</code></strong>:<code>Path</code>, <strong><code>o</code></strong>, <strong><code>complib</code></strong>=<em><code>'lz4'</code></em>, <strong><code>lvl</code></strong>=<em><code>3</code></em>)</p>
 </blockquote>
 <p>Save numpy array to a compressed <code>pytables</code> file, using compression level <code>lvl</code></p>
 
@@ -2831,7 +2940,7 @@ array([2, 3])</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Path.load_array" class="doc_header"><code>Path.load_array</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L454" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Path.load_array</code>(<strong><code>p</code></strong>:<code>Path</code>)</p>
+<h4 id="Path.load_array" class="doc_header"><code>Path.load_array</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L483" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Path.load_array</code>(<strong><code>p</code></strong>:<code>Path</code>)</p>
 </blockquote>
 <p>Save numpy array to a <code>pytables</code> file</p>
 
@@ -2861,7 +2970,7 @@ array([2, 3])</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="make_cross_image" class="doc_header"><code>make_cross_image</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L460" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>make_cross_image</code>(<strong><code>bw</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="make_cross_image" class="doc_header"><code>make_cross_image</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L489" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>make_cross_image</code>(<strong><code>bw</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 <p>Create a tensor containing a cross image, either <code>bw</code> (True) or color</p>
 
@@ -2947,7 +3056,7 @@ array([2, 3])</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="show_image_batch" class="doc_header"><code>show_image_batch</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L473" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>show_image_batch</code>(<strong><code>b</code></strong>, <strong><code>show</code></strong>=<em><code>'show_titled_image'</code></em>, <strong><code>items</code></strong>=<em><code>9</code></em>, <strong><code>cols</code></strong>=<em><code>3</code></em>, <strong><code>figsize</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="show_image_batch" class="doc_header"><code>show_image_batch</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L502" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>show_image_batch</code>(<strong><code>b</code></strong>, <strong><code>show</code></strong>=<em><code>'show_titled_image'</code></em>, <strong><code>items</code></strong>=<em><code>9</code></em>, <strong><code>cols</code></strong>=<em><code>3</code></em>, <strong><code>figsize</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Display batch <code>b</code> in a grid of size <code>items</code> with <code>cols</code> width</p>
 
@@ -3008,7 +3117,7 @@ array([2, 3])</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="requires_grad" class="doc_header"><code>requires_grad</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L482" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>requires_grad</code>(<strong><code>m</code></strong>)</p>
+<h4 id="requires_grad" class="doc_header"><code>requires_grad</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L511" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>requires_grad</code>(<strong><code>m</code></strong>)</p>
 </blockquote>
 <p>Check if the first parameter of <code>m</code> requires grad or not</p>
 
@@ -3048,7 +3157,7 @@ array([2, 3])</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="init_default" class="doc_header"><code>init_default</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L488" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>init_default</code>(<strong><code>m</code></strong>, <strong><code>func</code></strong>=<em><code>'kaiming_normal_'</code></em>)</p>
+<h4 id="init_default" class="doc_header"><code>init_default</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L517" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>init_default</code>(<strong><code>m</code></strong>, <strong><code>func</code></strong>=<em><code>'kaiming_normal_'</code></em>)</p>
 </blockquote>
 <p>Initialize <code>m</code> weights with <code>func</code> and set <code>bias</code> to 0.</p>
 
@@ -3090,7 +3199,7 @@ array([2, 3])</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="cond_init" class="doc_header"><code>cond_init</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L496" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>cond_init</code>(<strong><code>m</code></strong>, <strong><code>func</code></strong>)</p>
+<h4 id="cond_init" class="doc_header"><code>cond_init</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L525" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>cond_init</code>(<strong><code>m</code></strong>, <strong><code>func</code></strong>)</p>
 </blockquote>
 <p>Apply <a href="/layers.html#init_default"><code>init_default</code></a> to <code>m</code> unless it's a batchnorm module</p>
 
@@ -3138,7 +3247,7 @@ array([2, 3])</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="apply_leaf" class="doc_header"><code>apply_leaf</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L501" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>apply_leaf</code>(<strong><code>m</code></strong>, <strong><code>f</code></strong>)</p>
+<h4 id="apply_leaf" class="doc_header"><code>apply_leaf</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L530" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>apply_leaf</code>(<strong><code>m</code></strong>, <strong><code>f</code></strong>)</p>
 </blockquote>
 <p>Apply <code>f</code> to children of <code>m</code>.</p>
 
@@ -3178,7 +3287,7 @@ array([2, 3])</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="apply_init" class="doc_header"><code>apply_init</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L508" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>apply_init</code>(<strong><code>m</code></strong>, <strong><code>func</code></strong>=<em><code>'kaiming_normal_'</code></em>)</p>
+<h4 id="apply_init" class="doc_header"><code>apply_init</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L537" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>apply_init</code>(<strong><code>m</code></strong>, <strong><code>func</code></strong>=<em><code>'kaiming_normal_'</code></em>)</p>
 </blockquote>
 <p>Initialize all non-batchnorm layers of <code>m</code> with <code>func</code>.</p>
 
@@ -3230,7 +3339,7 @@ array([2, 3])</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="set_num_threads" class="doc_header"><code>set_num_threads</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L516" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>set_num_threads</code>(<strong><code>nt</code></strong>)</p>
+<h4 id="set_num_threads" class="doc_header"><code>set_num_threads</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L545" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>set_num_threads</code>(<strong><code>nt</code></strong>)</p>
 </blockquote>
 <p>Get numpy (and others) to use <code>nt</code> threads</p>
 
@@ -3254,7 +3363,7 @@ array([2, 3])</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ProcessPoolExecutor" class="doc_header"><code>class</code> <code>ProcessPoolExecutor</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L527" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ProcessPoolExecutor</code>(<strong><code>max_workers</code></strong>=<em><code>None</code></em>, <strong><code>on_exc</code></strong>=<em><code>'print'</code></em>, <strong><code>mp_context</code></strong>=<em><code>None</code></em>, <strong><code>initializer</code></strong>=<em><code>None</code></em>, <strong><code>initargs</code></strong>=<em><code>()</code></em>) :: <a href="/torch.core.html#ProcessPoolExecutor"><code>ProcessPoolExecutor</code></a></p>
+<h2 id="ProcessPoolExecutor" class="doc_header"><code>class</code> <code>ProcessPoolExecutor</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L556" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ProcessPoolExecutor</code>(<strong><code>max_workers</code></strong>=<em><code>None</code></em>, <strong><code>on_exc</code></strong>=<em><code>'print'</code></em>, <strong><code>mp_context</code></strong>=<em><code>None</code></em>, <strong><code>initializer</code></strong>=<em><code>None</code></em>, <strong><code>initargs</code></strong>=<em><code>()</code></em>) :: <a href="/torch.core.html#ProcessPoolExecutor"><code>ProcessPoolExecutor</code></a></p>
 </blockquote>
 <p>This is an abstract base class for concrete asynchronous executors.</p>
 
@@ -3278,7 +3387,7 @@ array([2, 3])</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="parallel" class="doc_header"><code>parallel</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L541" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>parallel</code>(<strong><code>f</code></strong>, <strong><code>items</code></strong>, <strong>*<code>args</code></strong>, <strong><code>n_workers</code></strong>=<em><code>64</code></em>, <strong><code>total</code></strong>=<em><code>None</code></em>, <strong><code>progress</code></strong>=<em><code>True</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="parallel" class="doc_header"><code>parallel</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L570" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>parallel</code>(<strong><code>f</code></strong>, <strong><code>items</code></strong>, <strong>*<code>args</code></strong>, <strong><code>n_workers</code></strong>=<em><code>56</code></em>, <strong><code>total</code></strong>=<em><code>None</code></em>, <strong><code>progress</code></strong>=<em><code>True</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Applies <code>func</code> in parallel to <code>items</code>, using <code>n_workers</code></p>
 
@@ -3365,7 +3474,7 @@ array([2, 3])</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="run_procs" class="doc_header"><code>run_procs</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L551" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>run_procs</code>(<strong><code>f</code></strong>, <strong><code>f_done</code></strong>, <strong><code>args</code></strong>)</p>
+<h4 id="run_procs" class="doc_header"><code>run_procs</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L580" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>run_procs</code>(<strong><code>f</code></strong>, <strong><code>f_done</code></strong>, <strong><code>args</code></strong>)</p>
 </blockquote>
 <p>Call <code>f</code> for each item in <code>args</code> in parallel, yielding <code>f_done</code></p>
 
@@ -3389,7 +3498,7 @@ array([2, 3])</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="parallel_gen" class="doc_header"><code>parallel_gen</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L560" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>parallel_gen</code>(<strong><code>items</code></strong>, <strong><code>n_workers</code></strong>=<em><code>64</code></em>, <strong><code>as_gen</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="parallel_gen" class="doc_header"><code>parallel_gen</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L589" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>parallel_gen</code>(<strong><code>items</code></strong>, <strong><code>n_workers</code></strong>=<em><code>56</code></em>, <strong><code>as_gen</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Instantiate <code>cls</code> in <code>n_workers</code> procs &amp; call each on a subset of <code>items</code> in parallel.</p>
 
@@ -3463,7 +3572,7 @@ array([2, 3])</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="script_use_ctx" class="doc_header"><code>script_use_ctx</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L571" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>script_use_ctx</code>(<strong><code>f</code></strong>)</p>
+<h4 id="script_use_ctx" class="doc_header"><code>script_use_ctx</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L600" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>script_use_ctx</code>(<strong><code>f</code></strong>)</p>
 </blockquote>
 <p>Decorator: create jit script and pass everything in <code>ctx.saved_variables to</code>f<code>, after</code>*args`</p>
 
@@ -3487,7 +3596,7 @@ array([2, 3])</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="script_save_ctx" class="doc_header"><code>script_save_ctx</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L578" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>script_save_ctx</code>(<strong><code>static</code></strong>, <strong>*<code>argidx</code></strong>)</p>
+<h4 id="script_save_ctx" class="doc_header"><code>script_save_ctx</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L607" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>script_save_ctx</code>(<strong><code>static</code></strong>, <strong>*<code>argidx</code></strong>)</p>
 </blockquote>
 <p>Decorator: create jit script and save args with indices <code>argidx</code> using <code>ctx.save_for_backward</code></p>
 
@@ -3511,7 +3620,7 @@ array([2, 3])</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="script_fwd" class="doc_header"><code>script_fwd</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L593" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>script_fwd</code>(<strong>*<code>argidx</code></strong>)</p>
+<h4 id="script_fwd" class="doc_header"><code>script_fwd</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L622" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>script_fwd</code>(<strong>*<code>argidx</code></strong>)</p>
 </blockquote>
 <p>Decorator: create static jit script and save args with indices <code>argidx</code> using <code>ctx.save_for_backward</code></p>
 
@@ -3535,7 +3644,7 @@ array([2, 3])</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="script_bwd" class="doc_header"><code>script_bwd</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L598" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>script_bwd</code>(<strong><code>f</code></strong>)</p>
+<h4 id="script_bwd" class="doc_header"><code>script_bwd</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L627" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>script_bwd</code>(<strong><code>f</code></strong>)</p>
 </blockquote>
 <p>Decorator: create static jit script and pass everything in <code>ctx.saved_variables to</code>f<code>, after</code>*args`</p>
 
@@ -3559,7 +3668,7 @@ array([2, 3])</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="grad_module" class="doc_header"><code>grad_module</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L603" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>grad_module</code>()</p>
+<h4 id="grad_module" class="doc_header"><code>grad_module</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L632" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>grad_module</code>()</p>
 </blockquote>
 <p>Decorator: convert <code>cls</code> into an autograd function</p>
 
