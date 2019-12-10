@@ -5,6 +5,7 @@ from fastai2.distributed import *
 from fastprogress import fastprogress
 from torchvision.models import *
 from fastai2.vision.models.xresnet import *
+from fastai2.callback.mixup import *
 from fastscript import *
 
 torch.backends.cudnn.benchmark = True
@@ -25,7 +26,7 @@ def get_dbunch(size, woof, bs, sh=0., workers=None):
 
 @call_parse
 def main(
-        gpu:   Param("GPU to run on", int),#=None,
+        gpu:   Param("GPU to run on", int)=None,
         woof:  Param("Use imagewoof (otherwise imagenette)", int)=0,
         lr:    Param("Learning rate", float)=1e-2,
         size:  Param("Size (px: 128,192,256)", int)=128,
@@ -49,25 +50,24 @@ def main(
     "Distributed training of Imagenette."
 
     #gpu = setup_distrib(gpu)
-    print(gpu,'gpu')
-    torch.cuda.set_device(gpu)
+    if gpu is not None: torch.cuda.set_device(gpu)
     if   opt=='adam'  : opt_func = partial(Adam, mom=mom, sqr_mom=sqrmom, eps=eps)
     elif opt=='rms'   : opt_func = partial(RMSprop, sqr_mom=sqrmom)
     elif opt=='sgd'   : opt_func = partial(SGD, mom=mom)
     elif opt=='ranger': opt_func = partial(ranger, mom=mom, sqr_mom=sqrmom, eps=eps, beta=beta)
 
-    dbunch = get_dbunch(size, woof, bs)
+    dbunch = get_dbunch(size, woof, bs, sh=sh)
     if not gpu: print(f'lr: {lr}; size: {size}; sqrmom: {sqrmom}; mom: {mom}; eps: {eps}')
 
     m,act_fn,pool = [globals()[o] for o in (arch,act_fn,pool)]
     learn = (Learner(dbunch, m(c_out=10, act_cls=act_fn, sa=sa, sym=sym, pool=pool), opt_func=opt_func,
              metrics=[accuracy,top_k_accuracy], loss_func=LabelSmoothingCrossEntropy()))
     if dump: print(learn.model); exit()
-    if mixup: learn = learn.mixup(alpha=mixup)
     if fp16: learn = learn.to_fp16()
+    cbs = MixUp(mixup) if mixup else []
     #n_gpu = torch.cuda.device_count()
     #if gpu is None and n_gpu: learn.to_parallel()
     if num_distrib()>1: learn.to_distributed(gpu) # Requires `-m fastai.launch`
 
-    learn.fit_flat_cos(epochs, lr, wd=1e-2)
+    learn.fit_flat_cos(epochs, lr, wd=1e-2, cbs=cbs)
 
