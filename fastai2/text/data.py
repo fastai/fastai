@@ -143,21 +143,24 @@ class TextDataBunch(DataBunch):
     def from_folder(cls, path, train='train', valid='valid', valid_pct=None, seed=None, vocab=None, text_vocab=None, is_lm=False, **kwargs):
         "Create from imagenet style dataset in `path` with `train`,`valid`,`test` subfolders (or provide `valid_pct`)."
         splitter = GrandparentSplitter(train_name=train, valid_name=valid) if valid_pct is None else RandomSplitter(valid_pct, seed=seed)
-        dblock = DataBlock(blocks=(TextBlock(text_vocab, is_lm), CategoryBlock(vocab=vocab)),
+        y_block = [] if is_lm else [CategoryBlock(vocab=vocab)]
+        dblock = DataBlock(blocks=(TextBlock(text_vocab, is_lm), *y_block),
                            get_items=get_text_files,
                            splitter=splitter,
                            get_x=read_file,
-                           get_y=parent_label)
+                           get_y=None if is_lm else parent_label)
         return cls.from_dblock(dblock, path, path=path, **kwargs)
 
     @classmethod
     @delegates(DataBunch.from_dblock)
     def from_df(cls, df, path='.', valid_pct=0.2, seed=None, text_col=0, label_col=1, label_delim=None, y_block=None,
                 text_vocab=None, is_lm=False, **kwargs):
-        if y_block is None: y_block = MultiCategoryBlock if is_listy(label_col) and len(label_col) > 1 else CategoryBlock
-        dblock = DataBlock(blocks=(TextBlock(text_vocab, is_lm), y_block),
+        if y_block is None and not is_lm: y_block = MultiCategoryBlock if is_listy(label_col) and len(label_col) > 1 else CategoryBlock
+        if is_lm: y_block = []
+        if not isinstance(y_block, list): y_block = [y_block]
+        dblock = DataBlock(blocks=(TextBlock(text_vocab, is_lm), *y_block),
                            get_x=ColReader(text_col),
-                           get_y=ColReader(label_col, label_delim=label_delim),
+                           get_y=None if is_lm else ColReader(label_col, label_delim=label_delim),
                            splitter=RandomSplitter(valid_pct, seed=seed))
         return cls.from_dblock(dblock, df, path=path, **kwargs)
 
