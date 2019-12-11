@@ -32,7 +32,7 @@ def pixels(self:DcmDataset):
 #Cell
 @patch_property
 def scaled_px(self:DcmDataset):
-    "`pixels` scaled by `RescaleSlope` and `RescaleIntercept"
+    "`pixels` scaled by `RescaleSlope` and `RescaleIntercept`"
     img = self.pixels
     return img*self.RescaleSlope + self.RescaleIntercept
 

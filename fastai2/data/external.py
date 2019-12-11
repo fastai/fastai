@@ -199,7 +199,7 @@ def untar_data(url, fname=None, dest=None, c_key='data', force_download=False, e
     dest = default_dest if dest is None else Path(dest)/default_dest.name
     fname = Path(fname or URLs.path(url))
     if fname.exists() and _get_check(url) and _check_file(fname) != _get_check(url):
-        print("A new version of this is available, downloading...")
+        print("A new version of this dataset is available, downloading...")
         force_download = True
     if force_download:
         if fname.exists(): os.remove(fname)
