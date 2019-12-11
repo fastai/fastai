@@ -274,8 +274,7 @@ def show_batch(x: Tabular, y, its, max_n=10, ctxs=None):
 class TabDataLoader(TfmdDL):
     do_item = noops
     def __init__(self, dataset, bs=16, shuffle=False, after_batch=None, num_workers=0, **kwargs):
-        if after_batch is None: after_batch = TransformBlock().batch_tfms
-        after_batch = L(after_batch)+ReadTabBatch(dataset)
+        if after_batch is None: after_batch = L(TransformBlock().batch_tfms)+ReadTabBatch(dataset)
         super().__init__(dataset, bs=bs, shuffle=shuffle, after_batch=after_batch, num_workers=num_workers, **kwargs)
 
     def create_batch(self, b): return self.dataset.iloc[b]
