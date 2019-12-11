@@ -21,5 +21,5 @@ def tabular_learner(dbunch, layers, emb_szs=None, config=None, **kwargs):
 @typedispatch
 def show_results(x:Tabular, y:Tabular, samples, outs, ctxs=None, max_n=10, **kwargs):
     df = x.all_cols[:max_n]
-    df[to.y_names+'_pred'] = y[to.y_names][:max_n].values
+    for n in to.y_names: df[n+'_pred'] = y[n][:max_n].values
     display_df(df)

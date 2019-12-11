@@ -245,6 +245,9 @@ class FillMissing(TabularProc):
                 if n+'_na' not in to.cat_names: to.cat_names.append(n+'_na')
 
 #Cell
+def _maybe_expand(o): return o[:,None] if o.ndim==1 else o
+
+#Cell
 class ReadTabBatch(ItemTransform):
     order = -1 #run before cuda
     def __init__(self, to): self.to = to
@@ -254,7 +257,8 @@ class ReadTabBatch(ItemTransform):
         return tensor(to.cats).long(),tensor(to.conts).float(), tensor(to.targ)
 
     def decodes(self, o):
-        vals = np.concatenate(list(to_np(o)), axis=1)
+        o = [_maybe_expand(o_) for o_ in to_np(o) if o_.size != 0]
+        vals = np.concatenate(o, axis=1)
         df = pd.DataFrame(vals, columns=self.to.all_col_names)
         to = self.to.new(df)
         to = self.to.procs.decode(to)
