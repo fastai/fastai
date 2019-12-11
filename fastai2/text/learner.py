@@ -70,10 +70,17 @@ class RNNLearner(Learner):
 from .models.core import _model_meta
 
 #Cell
+def _get_text_vocab(dbunch):
+    vocab = dbunch.vocab
+    if isinstance(vocab, L): vocab = vocab[0]
+    return vocab
+
+#Cell
 #TODO: When access is easier, grab vocab from dbunch
 @delegates(Learner.__init__)
-def language_model_learner(dbunch, arch, vocab, config=None, drop_mult=1., pretrained=True, pretrained_fnames=None, **kwargs):
+def language_model_learner(dbunch, arch, config=None, drop_mult=1., pretrained=True, pretrained_fnames=None, **kwargs):
     "Create a `Learner` with a language model from `data` and `arch`."
+    vocab = _get_text_vocab(dbunch)
     model = get_language_model(arch, len(vocab), config=config, drop_mult=drop_mult)
     meta = _model_meta[arch]
     learn = RNNLearner(dbunch, model, loss_func=CrossEntropyLossFlat(), splitter=meta['split_lm'], **kwargs)
@@ -94,10 +101,11 @@ def language_model_learner(dbunch, arch, vocab, config=None, drop_mult=1., pretr
 #Cell
 #TODO: When access is easier, grab vocab from dbunch
 @delegates(Learner.__init__)
-def text_classifier_learner(dbunch, arch, vocab, bptt=72, config=None, pretrained=True, drop_mult=1.,
+def text_classifier_learner(dbunch, arch, seq_len=72, config=None, pretrained=True, drop_mult=1.,
                             lin_ftrs=None, ps=None, **kwargs):
     "Create a `Learner` with a text classifier from `data` and `arch`."
-    model = get_text_classifier(arch, len(vocab), get_c(dbunch), bptt=bptt, config=config,
+    vocab = _get_text_vocab(dbunch)
+    model = get_text_classifier(arch, len(vocab), get_c(dbunch), seq_len=seq_len, config=config,
                                 drop_mult=drop_mult, lin_ftrs=lin_ftrs, ps=ps)
     meta = _model_meta[arch]
     learn = RNNLearner(dbunch, model, loss_func=CrossEntropyLossFlat(), splitter=meta['split_clas'], **kwargs)
@@ -123,7 +131,7 @@ def show_results(x: LMTensorText, y, samples, outs, ctxs=None, max_n=10, **kwarg
 
 #Cell
 @typedispatch
-def show_results(x: TensorText, y, samples, outs, ctxs=None, max_n=10, **kwargs):
+def show_results(x: TensorText, y, samples, outs, ctxs=None, max_n=10, trunc_at=150, **kwargs):
     if ctxs is None: ctxs = get_empty_df(min(len(samples), max_n))
     samples = L((s[0].truncate(trunc_at),*s[1:]) for s in samples)
     ctxs = show_results[object](x, y, samples, outs, ctxs=ctxs, max_n=max_n, **kwargs)
@@ -132,7 +140,7 @@ def show_results(x: TensorText, y, samples, outs, ctxs=None, max_n=10, **kwargs)
 
 #Cell
 @typedispatch
-def plot_top_losses(x: TensorText, y:TensorCategory, samples, outs, raws, losses, **kwargs):
+def plot_top_losses(x: TensorText, y:TensorCategory, samples, outs, raws, losses, trunc_at=150, **kwargs):
     rows = get_empty_df(len(samples))
     samples = L((s[0].truncate(trunc_at),*s[1:]) for s in samples)
     for i,l in enumerate(['input', 'target']):

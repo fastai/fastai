@@ -114,7 +114,7 @@ class PoolingLinearClassifier(Module):
         return x, raw, out
 
 #Cell
-def get_text_classifier(arch, vocab_sz, n_class, bptt=72, config=None, drop_mult=1., lin_ftrs=None,
+def get_text_classifier(arch, vocab_sz, n_class, seq_len=72, config=None, drop_mult=1., lin_ftrs=None,
                         ps=None, pad_idx=1):
     "Create a text classifier from `arch` and its `config`, maybe `pretrained`"
     meta = _model_meta[arch]
@@ -126,6 +126,6 @@ def get_text_classifier(arch, vocab_sz, n_class, bptt=72, config=None, drop_mult
     layers = [config[meta['hid_name']] * 3] + lin_ftrs + [n_class]
     ps = [config.pop('output_p')] + ps
     init = config.pop('init') if 'init' in config else None
-    encoder = SentenceEncoder(bptt, arch(vocab_sz, **config), pad_idx=pad_idx)
+    encoder = SentenceEncoder(seq_len, arch(vocab_sz, **config), pad_idx=pad_idx)
     model = SequentialRNN(encoder, PoolingLinearClassifier(layers, ps))
     return model if init is None else model.apply(init)
