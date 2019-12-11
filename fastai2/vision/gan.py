@@ -165,7 +165,8 @@ class GANTrainer(Callback):
         "Clamp the weights with `self.clip` if it's not None, set the correct input/target."
         if self.training and self.clip is not None:
             for p in self.critic.parameters(): p.data.clamp_(-self.clip, self.clip)
-        if not self.gen_mode: (self.learn.xb,self.learn.yb) = (self.yb,self.xb)
+        if not self.gen_mode:
+            (self.learn.xb,self.learn.yb) = (self.yb,self.xb)
 
     def after_batch(self):
         "Record `last_loss` in the proper list."
