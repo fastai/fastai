@@ -72,9 +72,16 @@ class LMDataLoader(TfmdDL):
         return LMTensorText(txt[:-1]),txt[1:]
 
 #Cell
+@patch
+def truncate(self:Str, n):
+    words = self.split(' ')[:n]
+    return Str(' '.join(words))
+
+#Cell
 @typedispatch
-def show_batch(x: TensorText, y, samples, ctxs=None, max_n=10, **kwargs):
+def show_batch(x: TensorText, y, samples, ctxs=None, max_n=10, trunc_at=150, **kwargs):
     if ctxs is None: ctxs = get_empty_df(min(len(samples), max_n))
+    samples = L((s[0].truncate(trunc_at),*s[1:]) for s in samples)
     ctxs = show_batch[object](x, y, samples, max_n=max_n, ctxs=ctxs, **kwargs)
     display_df(pd.DataFrame(ctxs))
     return ctxs

@@ -125,6 +125,7 @@ def show_results(x: LMTensorText, y, samples, outs, ctxs=None, max_n=10, **kwarg
 @typedispatch
 def show_results(x: TensorText, y, samples, outs, ctxs=None, max_n=10, **kwargs):
     if ctxs is None: ctxs = get_empty_df(min(len(samples), max_n))
+    samples = L((s[0].truncate(trunc_at),*s[1:]) for s in samples)
     ctxs = show_results[object](x, y, samples, outs, ctxs=ctxs, max_n=max_n, **kwargs)
     display_df(pd.DataFrame(ctxs))
     return ctxs
@@ -133,6 +134,7 @@ def show_results(x: TensorText, y, samples, outs, ctxs=None, max_n=10, **kwargs)
 @typedispatch
 def plot_top_losses(x: TensorText, y:TensorCategory, samples, outs, raws, losses, **kwargs):
     rows = get_empty_df(len(samples))
+    samples = L((s[0].truncate(trunc_at),*s[1:]) for s in samples)
     for i,l in enumerate(['input', 'target']):
         rows = [b.show(ctx=c, label=l, **kwargs) for b,c in zip(samples.itemgot(i),rows)]
     outs = L(o + (Float(r.max().item()), Float(l.item())) for o,r,l in zip(outs, raws, losses))
