@@ -194,5 +194,17 @@
   "https://s3.amazonaws.com/fast-ai-imageclas/imagewoof2-320.tgz": [
     328288506,
     "e24c62362b2594f2d1f3ce5f9e7ee18d"
+  ],
+  "https://s3.amazonaws.com/fast-ai-imageclas/imagewang-160.tgz": [
+    191498213,
+    "dab9b1d97b95574ac64122a19bc74ca1"
+  ],
+  "https://s3.amazonaws.com/fast-ai-imageclas/imagewang-320.tgz": [
+    669826647,
+    "fff8ac034d60e14fcf7789845e625263"
+  ],
+  "https://s3.amazonaws.com/fast-ai-imageclas/imagewang.tgz": [
+    2900347689,
+    "2b7776bac0fc95db72ac8a3b091a3e30"
   ]
 }

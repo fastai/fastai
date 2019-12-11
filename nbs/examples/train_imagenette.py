@@ -46,6 +46,8 @@ def main(
         fp16:  Param("Use mixed precision training", int)=0,
         pool:  Param("Pooling method", str)='AvgPool',
         dump:  Param("Print model; don't train", int)=0,
+        runs:  Param("Number of times to repeat training", int)=1,
+        meta:  Param("Metadata (ignored)", str)='',
         ):
     "Distributed training of Imagenette."
 
@@ -60,14 +62,16 @@ def main(
     if not gpu: print(f'lr: {lr}; size: {size}; sqrmom: {sqrmom}; mom: {mom}; eps: {eps}')
 
     m,act_fn,pool = [globals()[o] for o in (arch,act_fn,pool)]
-    learn = (Learner(dbunch, m(c_out=10, act_cls=act_fn, sa=sa, sym=sym, pool=pool), opt_func=opt_func,
-             metrics=[accuracy,top_k_accuracy], loss_func=LabelSmoothingCrossEntropy()))
-    if dump: print(learn.model); exit()
-    if fp16: learn = learn.to_fp16()
-    cbs = MixUp(mixup) if mixup else []
-    #n_gpu = torch.cuda.device_count()
-    #if gpu is None and n_gpu: learn.to_parallel()
-    if num_distrib()>1: learn.to_distributed(gpu) # Requires `-m fastai.launch`
 
-    learn.fit_flat_cos(epochs, lr, wd=1e-2, cbs=cbs)
+    for run in range(runs):
+        print(f'Run: {run}')
+        learn = Learner(dbunch, m(c_out=10, act_cls=act_fn, sa=sa, sym=sym, pool=pool), opt_func=opt_func, \
+                metrics=[accuracy,top_k_accuracy], loss_func=LabelSmoothingCrossEntropy())
+        if dump: print(learn.model); exit()
+        if fp16: learn = learn.to_fp16()
+        cbs = MixUp(mixup) if mixup else []
+        #n_gpu = torch.cuda.device_count()
+        #if gpu is None and n_gpu: learn.to_parallel()
+        if num_distrib()>1: learn.to_distributed(gpu) # Requires `-m fastai.launch`
+        learn.fit_flat_cos(epochs, lr, wd=1e-2, cbs=cbs)
 
