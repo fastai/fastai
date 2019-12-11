@@ -80,6 +80,9 @@ class URLs():
     IMAGEWOOF           = f'{S3_IMAGE}imagewoof2.tgz'
     IMAGEWOOF_160       = f'{S3_IMAGE}imagewoof2-160.tgz'
     IMAGEWOOF_320       = f'{S3_IMAGE}imagewoof2-320.tgz'
+    IMAGEWANG           = f'{S3_IMAGE}imagewang.tgz'
+    IMAGEWANG_160       = f'{S3_IMAGE}imagewang-160.tgz'
+    IMAGEWANG_320       = f'{S3_IMAGE}imagewang-320.tgz'
 
     # kaggle competitions download dogs-vs-cats -p {DOGS.absolute()}
     DOGS = f'{URL}dogscats.tgz'
