@@ -99,7 +99,7 @@ summary: "Functions and transforms to help gather text data in a `DataSource`"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="TensorText" class="doc_header"><code>class</code> <code>TensorText</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/data.py#L22" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>TensorText</code>(<strong><code>x</code></strong>, <strong>**<code>kwargs</code></strong>) :: <a href="/torch.core.html#TensorBase"><code>TensorBase</code></a></p>
+<h3 id="TensorText" class="doc_header"><code>class</code> <code>TensorText</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/data.py#L22" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>TensorText</code>(<strong><code>x</code></strong>, <strong>**<code>kwargs</code></strong>) :: <a href="torch.core.html#TensorBase"><code>TensorBase</code></a></p>
 </blockquote>
 
 </div>
@@ -119,7 +119,7 @@ summary: "Functions and transforms to help gather text data in a `DataSource`"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="LMTensorText" class="doc_header"><code>class</code> <code>LMTensorText</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/data.py#L23" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>LMTensorText</code>(<strong><code>x</code></strong>, <strong>**<code>kwargs</code></strong>) :: <a href="/text.data.html#TensorText"><code>TensorText</code></a></p>
+<h3 id="LMTensorText" class="doc_header"><code>class</code> <code>LMTensorText</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/data.py#L23" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>LMTensorText</code>(<strong><code>x</code></strong>, <strong>**<code>kwargs</code></strong>) :: <a href="text.data.html#TensorText"><code>TensorText</code></a></p>
 </blockquote>
 
 </div>
@@ -208,6 +208,35 @@ summary: "Functions and transforms to help gather text data in a `DataSource`"
 
 </div>
 <div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">int</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>1</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
 
 </div>
 <div class="cell border-box-sizing code_cell rendered">
@@ -219,9 +248,9 @@ summary: "Functions and transforms to help gather text data in a `DataSource`"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="LMDataLoader" class="doc_header"><code>class</code> <code>LMDataLoader</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/data.py#L45" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>LMDataLoader</code>(<strong><code>dataset</code></strong>, <strong><code>lens</code></strong>=<em><code>None</code></em>, <strong><code>cache</code></strong>=<em><code>2</code></em>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>seq_len</code></strong>=<em><code>72</code></em>, <strong><code>num_workers</code></strong>=<em><code>0</code></em>, <strong><code>shuffle</code></strong>=<em><code>False</code></em>, <strong><code>pin_memory</code></strong>=<em><code>False</code></em>, <strong><code>timeout</code></strong>=<em><code>0</code></em>, <strong><code>drop_last</code></strong>=<em><code>False</code></em>, <strong><code>indexed</code></strong>=<em><code>None</code></em>, <strong><code>n</code></strong>=<em><code>None</code></em>, <strong><code>wif</code></strong>=<em><code>None</code></em>, <strong><code>before_iter</code></strong>=<em><code>None</code></em>, <strong><code>after_item</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_iter</code></strong>=<em><code>None</code></em>, <strong><code>create_batches</code></strong>=<em><code>None</code></em>, <strong><code>create_item</code></strong>=<em><code>None</code></em>, <strong><code>create_batch</code></strong>=<em><code>None</code></em>, <strong><code>retain</code></strong>=<em><code>None</code></em>) :: <a href="/data.core.html#TfmdDL"><code>TfmdDL</code></a></p>
+<h3 id="LMDataLoader" class="doc_header"><code>class</code> <code>LMDataLoader</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/data.py#L45" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>LMDataLoader</code>(<strong><code>dataset</code></strong>, <strong><code>lens</code></strong>=<em><code>None</code></em>, <strong><code>cache</code></strong>=<em><code>2</code></em>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>seq_len</code></strong>=<em><code>72</code></em>, <strong><code>num_workers</code></strong>=<em><code>0</code></em>, <strong><code>shuffle</code></strong>=<em><code>False</code></em>, <strong><code>pin_memory</code></strong>=<em><code>False</code></em>, <strong><code>timeout</code></strong>=<em><code>0</code></em>, <strong><code>drop_last</code></strong>=<em><code>False</code></em>, <strong><code>indexed</code></strong>=<em><code>None</code></em>, <strong><code>n</code></strong>=<em><code>None</code></em>, <strong><code>wif</code></strong>=<em><code>None</code></em>, <strong><code>before_iter</code></strong>=<em><code>None</code></em>, <strong><code>after_item</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_iter</code></strong>=<em><code>None</code></em>, <strong><code>create_batches</code></strong>=<em><code>None</code></em>, <strong><code>create_item</code></strong>=<em><code>None</code></em>, <strong><code>create_batch</code></strong>=<em><code>None</code></em>, <strong><code>retain</code></strong>=<em><code>None</code></em>) :: <a href="data.core.html#TfmdDL"><code>TfmdDL</code></a></p>
 </blockquote>
-<p>Transformed <a href="/data.load.html#DataLoader"><code>DataLoader</code></a></p>
+<p>Transformed <a href="data.load.html#DataLoader"><code>DataLoader</code></a></p>
 
 </div>
 
@@ -476,13 +505,15 @@ summary: "Functions and transforms to help gather text data in a `DataSource`"
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>xxbos xxmaj before xxmaj sunrise has many remarkable things going on , almost too many to fit into one review like this , but it &#39;s suffice to say that it &#39;s one of the most xxunk character studies of the nineties , maybe even in all of contemporary cinema , to be xxunk not about love , per - say , so much as it &#39;s about a human connection . xxmaj how does one fall in love at first sight ? xxmaj no one does , at least that &#39;s deep down the xxunk that xxmaj linklater wants to show with his film . xxmaj and * yet * there is the possibility of as intense a connection , of a bond that can form in those that are young and with many ideas that can be expressed xxunk and with a xxunk of cynicism and is somehow very xxunk and true at the same time . xxmaj linklater here gives us the story of xxmaj celine and xxmaj jessie , a xxmaj french girl and an xxmaj american boy who get off the same train heading to xxmaj vienna , and on the way there start to talking about things , at first xxunk , then personal ( jessie seeing death for the first time in his great grandfather ) . xxmaj jessie xxunk xxmaj celine to go along with him on a night out on the &#39; town &#39; , in xxmaj vienna , until his plane the next morning . 
+<pre>xxbos xxmaj the ghost of the xxmaj vietnam war has haunted the xxmaj american xxunk for thirty years now . xxmaj if not because of the fact that xxunk of thousands of xxmaj american soldiers went xxup mia in xxmaj vietnam , or the manner in which those who returned were treated , then because it was the first war that xxmaj america could be said to have lost . xxmaj many men came home from the war a shadow of their former xxunk , and the original xxmaj first xxmaj blood managed to provide a small insight into their problems as they attempted to xxunk back into the world , as the saying goes . xxmaj first xxmaj blood xxmaj part xxup ii , on the other hand , is little more than a fist - xxunk mess that goes to illustrate how sore xxmaj america can be , both in victory and defeat . xxmaj xxunk puts in another xxunk performance as the titular xxmaj special xxmaj forces commando , while xxmaj richard xxmaj xxunk attempts to hold up the serious actor xxunk . xxmaj where it all comes xxunk is in the script , which did n&#39;t do any better when it was called xxmaj missing xxmaj in xxmaj action and starred xxmaj xxunk xxmaj xxunk . xxmaj what little semblance of logic there was in the original is now gone , as the filmmakers decide to paint a big s on xxmaj rambo &#39;s massive chest . 
 
- xxmaj before xxmaj sunrise gives xxmaj jessie and xxmaj celine , in the midst of the gorgeous xxmaj vienna scenery and xxunk to go on and on about subjects that have a lot of importance , and in a sense is about the act of having conversations , of what it &#39;s like to watch people having one leading into another and another . xxmaj here it &#39;s often about relationships and xxunk , as xxmaj jessie and xxmaj celine tell stories sometimes somewhat xxunk , or seemingly so , and another that may tell a lot about their essential qualities . xxmaj we hear xxunk of xxunk for other loves , or what were n&#39;t really loves , of being part of a family or part of an upbringing that may or may not inform how you &#39;ll love your life , of what it means to believe or not believe in some religious form , or just to have some connection to any faith and the soul ( i loved the bit about the xxunk in the church ) , and sometimes laced with cynicism or xxunk . xxmaj jessie may be more responsible for that last part , but what &#39;s fascinating about the film is that it &#39;s never exactly cynical itself , just commenting upon cynicism that lays in the concerns of men and women at that age of their lives . 
+ xxmaj the film picks up a little while after the end of xxmaj first xxmaj blood . xxmaj the film , that is - the novel did n&#39;t allow for the possibility of sequels . xxmaj in this mediocre follow - up , xxmaj rambo has been put to work at what appears to be some sort of open - air mine . xxmaj as he is breaking rocks and working up a sweat , a prison guard pulls him away to go and have a xxunk with xxmaj colonel xxmaj xxunk , who xxunk him that his government is willing to offer him an early release if he goes on a xxunk mission . xxmaj rambo , never one to back down from a hard day &#39;s violent work , accepts , and is promptly xxunk off to a xxunk base in what appears to be xxmaj cambodia or xxmaj thailand ( i forget which ) . xxmaj from there , he is xxunk to seek out a camp where xxmaj american xxunk are supposedly being held , and photograph them . xxmaj his mission quite clearly xxunk that he is not to make any attempt to secure their release . xxmaj rambo being xxmaj rambo , however , has other ideas in spite of their possible political xxunk . 
 
- xxmaj meanwhile , it &#39;s always great to see xxmaj ethan xxmaj hawke and xxmaj julie xxmaj xxunk in these roles , where they &#39;re not xxunk annoying in that 90s generation - x mode , but are the kinds of people where if not in the central xxunk of the film , which is n&#39;t a bad one at all but a necessary one , one might think to find walking along the streets of a city somewhere . xxmaj the xxunk is that of an old romantic picture ala xxmaj brief xxmaj encounter , only here xxunk is expressed in the central characters either between each other , where sweet xxunk are actually acceptable ( &#34; i have to tell you a secret &#34; , xxmaj jessie says , and then xxunk in for a kiss , ho - ho ) , or in the little moments that pop up with other people along the way . i loved the scene with the xxunk , where it &#39;s very cinematic a thing to suddenly find a random romantic bit player in the midst of a romantic picture with such beautiful words at his xxunk , or with the palm reader and how the reactions from xxmaj jessie and xxmaj celine are that we might share , but really are seeing them do it first - hand . xxmaj all the while xxmaj hawke and xxmaj xxunk xxunk the roles xxunk we can see how xxunk are being formed already for their adult xxunk as it may lead off into the future … 
+ xxmaj of course , things go somewhat awry when it turns out that the people xxunk xxmaj rambo &#39;s work have more interest in making sure no xxmaj american xxunk are found . xxmaj it is the age - old conspiracy theory , and makes no apologies for xxunk the plight of many an xxmaj american family that was left without a son during the ten years that the official xxmaj vietnam war had been xxunk for . xxmaj of course , with the xxmaj xxunk that was xxunk in xxmaj american society during the 1980s , they could not help but work in a plot xxunk about the xxmaj xxunk army being in bed with what appears to be a single xxunk of xxmaj russians . xxmaj together , the two xxunk attempt to xxunk what information they can from xxmaj rambo , but it xxunk upon them in an xxunk of bullets , xxunk , rockets , and destruction . xxmaj about the only thing missing is the moment when xxmaj rambo xxunk from a xxunk - like xxunk and xxunk himself invincible . 
 
- xxmaj featuring splendid cinematography and a script with an ear for natural wit and a true sense of what it means to have a moment of happiness , however self - contained , as it may lead into something more . xxmaj who &#39;s to say you ca n&#39;t suddenly be attached to someone , if only for less than 24 hours , and be that much more attached than a married couple ? xxmaj this is perhaps xxmaj linklater &#39;s xxunk , but there &#39;s more to it than just that . xxmaj it &#39;s a very xxunk film , and one that will have me calling back to it repeatedly . xxmaj one scene especially , which is both cheesy and brilliant is when the two of them are talking &#39; on the phone &#39; in front of each other xxunk their xxunk might go to the other &#39;s friend . xxup a+
+ xxmaj to be honest , xxmaj first xxmaj blood xxmaj part xxup ii is a well - photographed , and well - choreographed , action spectacle . xxmaj the hand - to - hand combat with the larger xxmaj russian commander is one of the few battles in the film that has any dramatic tension whatsoever . xxmaj the rest is simply a case of the lead actor and the director building a fantasy for xxmaj americans to xxunk their fist to . xxmaj fortunately , this xxunk of xxmaj america xxunk xxunk action films soon died down when more xxunk and intelligent war films such as xxmaj xxunk began doing the xxunk . xxmaj some of the kills shown here are quite creative , despite all the problems . xxmaj the xxmaj xxunk commander meets an end that many an action film villain would xxunk . xxmaj the xxmaj russian commander bites it in a manner that is as spectacular as it is ridiculous . xxmaj only in a 1980s action film would one see a xxup law being used from inside a helicopter . xxmaj sure , there have been action film clichés rooted in xxunk of fact , but never this ridiculous before . 
+
+ i gave xxmaj rambo : xxmaj first xxmaj blood xxmaj part xxup ii a one out of ten . xxmaj it is so bad it is ridiculous , and so ridiculous that it is often funny . xxmaj one does n&#39;t even need to have served in the military to know how stupid some of the action sequences are . xxmaj the only risk it takes is in trying to make a stupid political statement with what is a heartbreaking subject for those directly involved . xxmaj keep the tongue xxunk in the cheek , and it might be watchable .
 </pre>
 </div>
 </div>
@@ -534,33 +565,33 @@ summary: "Functions and transforms to help gather text data in a `DataSource`"
   <tbody>
     <tr>
       <th>0</th>
-      <td>xxbos a police officer ( robert xxmaj xxunk ) in a crime ridden city has his wife attacked and young son killed after she xxunk to stand up to a thug at a xxunk station . xxmaj after the murderers get off xxunk - free thanks to a corrupt judge and he himself is xxunk for 30 days for contempt of court , he decides to take matters into his own hands</td>
-      <td>a police officer ( robert xxmaj xxunk ) in a crime ridden city has his wife attacked and young son killed after she xxunk to stand up to a thug at a xxunk station . xxmaj after the murderers get off xxunk - free thanks to a corrupt judge and he himself is xxunk for 30 days for contempt of court , he decides to take matters into his own hands by</td>
+      <td>xxbos a very cute movie with a great background provided by the city of xxmaj xxunk and xxmaj xxunk xxmaj park . xxmaj as a baseball fan and light movie addict , it hit a xxunk for me . xxmaj plenty of laughs and plenty of authentic baseball scenes with real xxunk and real references to past xxmaj xxunk failures . xxmaj and how enjoyable was it to watch a movie with</td>
+      <td>a very cute movie with a great background provided by the city of xxmaj xxunk and xxmaj xxunk xxmaj park . xxmaj as a baseball fan and light movie addict , it hit a xxunk for me . xxmaj plenty of laughs and plenty of authentic baseball scenes with real xxunk and real references to past xxmaj xxunk failures . xxmaj and how enjoyable was it to watch a movie with a</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>the visuals in this movie are not inspiring , the dialog is worse , the musical numbers destroy this movie .. i xxunk for xxup guitar xxup brothers , but that was immediately xxunk out by something completely unnecessary , and irrelevant . xxmaj it attempted to be deep and meaningful i think , but its just pretentious xxunk nonsense . xxmaj freshman film students without a camera could craft something more</td>
-      <td>visuals in this movie are not inspiring , the dialog is worse , the musical numbers destroy this movie .. i xxunk for xxup guitar xxup brothers , but that was immediately xxunk out by something completely unnecessary , and irrelevant . xxmaj it attempted to be deep and meaningful i think , but its just pretentious xxunk nonsense . xxmaj freshman film students without a camera could craft something more interesting</td>
+      <td>, leaving the original series to its ' classic ' status . xxbos xxmaj there is n't a whole lot going on in this story -- just two men xxunk very different ways of handling memories of xxmaj vietnam . xxmaj but what it lacks in premise , it more than makes up for in acting and realism . xxmaj it 's a quiet film about the bonds of friendship and shared</td>
+      <td>leaving the original series to its ' classic ' status . xxbos xxmaj there is n't a whole lot going on in this story -- just two men xxunk very different ways of handling memories of xxmaj vietnam . xxmaj but what it lacks in premise , it more than makes up for in acting and realism . xxmaj it 's a quiet film about the bonds of friendship and shared experience</td>
     </tr>
     <tr>
       <th>2</th>
-      <td>own . xxmaj it 's funny because these are schools that want racial xxunk , equality etc . and i can honestly say , that it 's there . xxmaj but the thing is when class lets out , or when they 're just hanging out waiting for class , they ( students ) seem to just hang around with people of their own race or ethnicity . xxmaj is that bad</td>
-      <td>. xxmaj it 's funny because these are schools that want racial xxunk , equality etc . and i can honestly say , that it 's there . xxmaj but the thing is when class lets out , or when they 're just hanging out waiting for class , they ( students ) seem to just hang around with people of their own race or ethnicity . xxmaj is that bad ?</td>
+      <td>in the movie comes early on , when several villains plant an explosive device in an agents car . xxmaj for some reason , even though the device is clearly stated as being " remote xxunk " the bad guys decide to chase her down on their xxunk as she drives away . xxmaj this chase carries on . all the while with the bad guys doing ludicrous and completely pointless bike</td>
+      <td>the movie comes early on , when several villains plant an explosive device in an agents car . xxmaj for some reason , even though the device is clearly stated as being " remote xxunk " the bad guys decide to chase her down on their xxunk as she drives away . xxmaj this chase carries on . all the while with the bad guys doing ludicrous and completely pointless bike stunts</td>
     </tr>
     <tr>
       <th>3</th>
-      <td>xxmaj it also xxunk xxmaj ben the opportunity to pick up , and pick on , the very xxunk xxunk of the archives , xxmaj abigail xxmaj chase ( diane xxmaj xxunk ) . xxmaj she thinks xxmaj ben is clearly a xxunk  at least at the beginning . xxmaj but true to action / romance form , xxmaj xxunk 's xxunk xxunk xxunk than you can say , " is</td>
-      <td>it also xxunk xxmaj ben the opportunity to pick up , and pick on , the very xxunk xxunk of the archives , xxmaj abigail xxmaj chase ( diane xxmaj xxunk ) . xxmaj she thinks xxmaj ben is clearly a xxunk  at least at the beginning . xxmaj but true to action / romance form , xxmaj xxunk 's xxunk xxunk xxunk than you can say , " is that</td>
+      <td>feeling like they 'd have to see this lame attempt at movie - making on their account . xxmaj the movie overall is bad enough to be funny , and that 's about the best thing i can say for it . xxbos i saw this movie with some xxmaj indian friends on xxmaj christmas xxmaj day . xxmaj the quick summary of this movie is xxup must xxup avoid . xxup</td>
+      <td>like they 'd have to see this lame attempt at movie - making on their account . xxmaj the movie overall is bad enough to be funny , and that 's about the best thing i can say for it . xxbos i saw this movie with some xxmaj indian friends on xxmaj christmas xxmaj day . xxmaj the quick summary of this movie is xxup must xxup avoid . xxup xxunk</td>
     </tr>
     <tr>
       <th>4</th>
-      <td>and was xxunk , his voice was xxunk , his face was getting xxunk with xxunk , though he still could pull it off , he looked like he was fifty at the age of forty . xxmaj this was because he was suffering many minor xxunk before his big one that ended his career . xxmaj be he still managed to pull it off in his last ones ! \n\n xxmaj</td>
-      <td>was xxunk , his voice was xxunk , his face was getting xxunk with xxunk , though he still could pull it off , he looked like he was fifty at the age of forty . xxmaj this was because he was suffering many minor xxunk before his big one that ended his career . xxmaj be he still managed to pull it off in his last ones ! \n\n xxmaj if</td>
+      <td>, predictable , gross and sometimes disturbing . xxmaj there are heavy similarities to , even stabs , at xxmaj astro xxmaj boy . xxmaj allow me to explain ( dub names for the young ) : xxmaj xxunk / xxmaj astro , xxmaj xxunk / xxmaj xxunk , xxmaj xxunk / xxmaj shadow , xxmaj xxunk / xxmaj xxunk , xxmaj tommy / xxmaj xxunk , xxmaj xxunk / xxunk ,</td>
+      <td>predictable , gross and sometimes disturbing . xxmaj there are heavy similarities to , even stabs , at xxmaj astro xxmaj boy . xxmaj allow me to explain ( dub names for the young ) : xxmaj xxunk / xxmaj astro , xxmaj xxunk / xxmaj xxunk , xxmaj xxunk / xxmaj shadow , xxmaj xxunk / xxmaj xxunk , xxmaj tommy / xxmaj xxunk , xxmaj xxunk / xxunk , xxmaj</td>
     </tr>
     <tr>
       <th>5</th>
-      <td>production xxunk , and xxunk their responsibility to the workers under them . xxmaj in working towards this goal , they each have to take a page from the others ' book . xxmaj kazuhiro 's family becoming more " xxunk " is an obvious example . xxmaj also note that xxmaj stevenson thinks it 's odd when xxmaj kazuhiro explains how he had to make a public apology to his workers</td>
-      <td>xxunk , and xxunk their responsibility to the workers under them . xxmaj in working towards this goal , they each have to take a page from the others ' book . xxmaj kazuhiro 's family becoming more " xxunk " is an obvious example . xxmaj also note that xxmaj stevenson thinks it 's odd when xxmaj kazuhiro explains how he had to make a public apology to his workers for</td>
+      <td>air is filled with xxunk of flying frozen flesh , one of which drops on mckenna 's head . ( he brushes it off when he 's done . ) mckenna then takes the frozen head outside to a small fire he 's built . xxmaj he sits the head on the ground , xxunk next to it , takes out some xxunk of a woman he 's just killed , and</td>
+      <td>is filled with xxunk of flying frozen flesh , one of which drops on mckenna 's head . ( he brushes it off when he 's done . ) mckenna then takes the frozen head outside to a small fire he 's built . xxmaj he sits the head on the ground , xxunk next to it , takes out some xxunk of a woman he 's just killed , and shows</td>
     </tr>
   </tbody>
 </table>
@@ -617,7 +648,7 @@ summary: "Functions and transforms to help gather text data in a `DataSource`"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="pad_input" class="doc_header"><code>pad_input</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/data.py#L85" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>pad_input</code>(<strong><code>samples</code></strong>, <strong><code>pad_idx</code></strong>=<em><code>1</code></em>, <strong><code>pad_fields</code></strong>=<em><code>0</code></em>, <strong><code>pad_first</code></strong>=<em><code>False</code></em>, <strong><code>backwards</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="pad_input" class="doc_header"><code>pad_input</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/data.py#L88" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>pad_input</code>(<strong><code>samples</code></strong>, <strong><code>pad_idx</code></strong>=<em><code>1</code></em>, <strong><code>pad_fields</code></strong>=<em><code>0</code></em>, <strong><code>pad_first</code></strong>=<em><code>False</code></em>, <strong><code>backwards</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 <p>Function that collect samples and adds padding. Flips token order if needed</p>
 
@@ -663,9 +694,9 @@ summary: "Functions and transforms to help gather text data in a `DataSource`"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="SortedDL" class="doc_header"><code>class</code> <code>SortedDL</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/data.py#L104" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>SortedDL</code>(<strong><code>dataset</code></strong>, <strong><code>sort_func</code></strong>=<em><code>None</code></em>, <strong><code>res</code></strong>=<em><code>None</code></em>, <strong><code>bs</code></strong>=<em><code>16</code></em>, <strong><code>shuffle</code></strong>=<em><code>False</code></em>, <strong><code>num_workers</code></strong>=<em><code>None</code></em>, <strong><code>pin_memory</code></strong>=<em><code>False</code></em>, <strong><code>timeout</code></strong>=<em><code>0</code></em>, <strong><code>drop_last</code></strong>=<em><code>False</code></em>, <strong><code>indexed</code></strong>=<em><code>None</code></em>, <strong><code>n</code></strong>=<em><code>None</code></em>, <strong><code>wif</code></strong>=<em><code>None</code></em>, <strong><code>before_iter</code></strong>=<em><code>None</code></em>, <strong><code>after_item</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_iter</code></strong>=<em><code>None</code></em>, <strong><code>create_batches</code></strong>=<em><code>None</code></em>, <strong><code>create_item</code></strong>=<em><code>None</code></em>, <strong><code>create_batch</code></strong>=<em><code>None</code></em>, <strong><code>retain</code></strong>=<em><code>None</code></em>) :: <a href="/data.core.html#TfmdDL"><code>TfmdDL</code></a></p>
+<h3 id="SortedDL" class="doc_header"><code>class</code> <code>SortedDL</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/data.py#L107" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>SortedDL</code>(<strong><code>dataset</code></strong>, <strong><code>sort_func</code></strong>=<em><code>None</code></em>, <strong><code>res</code></strong>=<em><code>None</code></em>, <strong><code>bs</code></strong>=<em><code>16</code></em>, <strong><code>shuffle</code></strong>=<em><code>False</code></em>, <strong><code>num_workers</code></strong>=<em><code>None</code></em>, <strong><code>pin_memory</code></strong>=<em><code>False</code></em>, <strong><code>timeout</code></strong>=<em><code>0</code></em>, <strong><code>drop_last</code></strong>=<em><code>False</code></em>, <strong><code>indexed</code></strong>=<em><code>None</code></em>, <strong><code>n</code></strong>=<em><code>None</code></em>, <strong><code>wif</code></strong>=<em><code>None</code></em>, <strong><code>before_iter</code></strong>=<em><code>None</code></em>, <strong><code>after_item</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_iter</code></strong>=<em><code>None</code></em>, <strong><code>create_batches</code></strong>=<em><code>None</code></em>, <strong><code>create_item</code></strong>=<em><code>None</code></em>, <strong><code>create_batch</code></strong>=<em><code>None</code></em>, <strong><code>retain</code></strong>=<em><code>None</code></em>) :: <a href="data.core.html#TfmdDL"><code>TfmdDL</code></a></p>
 </blockquote>
-<p>Transformed <a href="/data.load.html#DataLoader"><code>DataLoader</code></a></p>
+<p>Transformed <a href="data.load.html#DataLoader"><code>DataLoader</code></a></p>
 
 </div>
 
@@ -793,7 +824,7 @@ summary: "Functions and transforms to help gather text data in a `DataSource`"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="TextBlock" class="doc_header"><code>TextBlock</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/data.py#L132" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>TextBlock</code>(<strong><code>vocab</code></strong>=<em><code>None</code></em>, <strong><code>is_lm</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="TextBlock" class="doc_header"><code>TextBlock</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/data.py#L135" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>TextBlock</code>(<strong><code>vocab</code></strong>=<em><code>None</code></em>, <strong><code>is_lm</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 
 </div>
@@ -816,9 +847,9 @@ summary: "Functions and transforms to help gather text data in a `DataSource`"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="TextDataBunch" class="doc_header"><code>class</code> <code>TextDataBunch</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/data.py#L137" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>TextDataBunch</code>(<strong>*<code>dls</code></strong>, <strong><code>path</code></strong>=<em><code>'.'</code></em>) :: <a href="/data.core.html#DataBunch"><code>DataBunch</code></a></p>
+<h3 id="TextDataBunch" class="doc_header"><code>class</code> <code>TextDataBunch</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/data.py#L140" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>TextDataBunch</code>(<strong>*<code>dls</code></strong>, <strong><code>path</code></strong>=<em><code>'.'</code></em>) :: <a href="data.core.html#DataBunch"><code>DataBunch</code></a></p>
 </blockquote>
-<p>Basic wrapper around several <a href="/data.load.html#DataLoader"><code>DataLoader</code></a>s.</p>
+<p>Basic wrapper around several <a href="data.load.html#DataLoader"><code>DataLoader</code></a>s.</p>
 
 </div>
 

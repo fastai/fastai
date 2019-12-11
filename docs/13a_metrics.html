@@ -65,7 +65,7 @@ summary: "Definition of the metrics that can be used in training models"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="flatten_check" class="doc_header"><code>flatten_check</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L610" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>flatten_check</code>(<strong><code>inp</code></strong>, <strong><code>targ</code></strong>)</p>
+<h4 id="flatten_check" class="doc_header"><code>flatten_check</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L639" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>flatten_check</code>(<strong><code>inp</code></strong>, <strong><code>targ</code></strong>)</p>
 </blockquote>
 <p>Check that <code>out</code> and <code>targ</code> have the same number of elements and flatten them.</p>
 
@@ -107,7 +107,7 @@ summary: "Definition of the metrics that can be used in training models"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="AccumMetric" class="doc_header"><code>class</code> <code>AccumMetric</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L19" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>AccumMetric</code>(<strong><code>func</code></strong>, <strong><code>dim_argmax</code></strong>=<em><code>None</code></em>, <strong><code>sigmoid</code></strong>=<em><code>False</code></em>, <strong><code>thresh</code></strong>=<em><code>None</code></em>, <strong><code>to_np</code></strong>=<em><code>False</code></em>, <strong><code>invert_arg</code></strong>=<em><code>False</code></em>, <strong><code>flatten</code></strong>=<em><code>True</code></em>, <strong>**<code>kwargs</code></strong>) :: <a href="/learner.html#Metric"><code>Metric</code></a></p>
+<h3 id="AccumMetric" class="doc_header"><code>class</code> <code>AccumMetric</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L20" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>AccumMetric</code>(<strong><code>func</code></strong>, <strong><code>dim_argmax</code></strong>=<em><code>None</code></em>, <strong><code>sigmoid</code></strong>=<em><code>False</code></em>, <strong><code>thresh</code></strong>=<em><code>None</code></em>, <strong><code>to_np</code></strong>=<em><code>False</code></em>, <strong><code>invert_arg</code></strong>=<em><code>False</code></em>, <strong><code>flatten</code></strong>=<em><code>True</code></em>, <strong>**<code>kwargs</code></strong>) :: <a href="learner.html#Metric"><code>Metric</code></a></p>
 </blockquote>
 <p>Stores predictions and targets on CPU in accumulate to perform final calculations with <code>func</code>.</p>
 
@@ -121,10 +121,10 @@ summary: "Definition of the metrics that can be used in training models"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><code>func</code> is only applied to the accumulated predictions/targets when the <code>value</code> attribute is asked for (so at the end of a validation/trianing phase, in use with <a href="/learner.html#Learner"><code>Learner</code></a> and its <a href="/learner.html#Recorder"><code>Recorder</code></a>).The signature of <code>func</code> should be <code>inp,targ</code> (where <code>inp</code> are the predictions of the model and <code>targ</code> the corresponding labels).</p>
-<p>For classification problems with single label, predictions need to be transformed with a sofmax then an argmax before being compared to the targets. Since a softmax doesn't change the order of the numbers, we can just apply the argmax. Pass along <code>dim_argmax</code> to have this done by <a href="/metrics.html#AccumMetric"><code>AccumMetric</code></a> (usually -1 will work pretty well).</p>
-<p>For classification problems with multiple labels, or if your targets are onehot-encoded, predictions may need to pass through a sigmoid (if it wasn't included in your model) then be compared to a given threshold (to decide between 0 and 1), this is done by <a href="/metrics.html#AccumMetric"><code>AccumMetric</code></a> if you pass <code>sigmoid=True</code> and/or a value for <code>thresh</code>.</p>
-<p>If you want to use a metric function sklearn.metrics, you will need to convert predictions and labels to numpy arrays with <code>to_np=True</code>. Also, scikit-learn metrics adopt the convention <code>y_true</code>, <code>y_preds</code> which is the opposite from us, so you will need to pass <code>invert_arg=True</code> to make <a href="/metrics.html#AccumMetric"><code>AccumMetric</code></a> do the inversion for you.</p>
+<p><code>func</code> is only applied to the accumulated predictions/targets when the <code>value</code> attribute is asked for (so at the end of a validation/trianing phase, in use with <a href="learner.html#Learner"><code>Learner</code></a> and its <a href="learner.html#Recorder"><code>Recorder</code></a>).The signature of <code>func</code> should be <code>inp,targ</code> (where <code>inp</code> are the predictions of the model and <code>targ</code> the corresponding labels).</p>
+<p>For classification problems with single label, predictions need to be transformed with a sofmax then an argmax before being compared to the targets. Since a softmax doesn't change the order of the numbers, we can just apply the argmax. Pass along <code>dim_argmax</code> to have this done by <a href="metrics.html#AccumMetric"><code>AccumMetric</code></a> (usually -1 will work pretty well).</p>
+<p>For classification problems with multiple labels, or if your targets are onehot-encoded, predictions may need to pass through a sigmoid (if it wasn't included in your model) then be compared to a given threshold (to decide between 0 and 1), this is done by <a href="metrics.html#AccumMetric"><code>AccumMetric</code></a> if you pass <code>sigmoid=True</code> and/or a value for <code>thresh</code>.</p>
+<p>If you want to use a metric function sklearn.metrics, you will need to convert predictions and labels to numpy arrays with <code>to_np=True</code>. Also, scikit-learn metrics adopt the convention <code>y_true</code>, <code>y_preds</code> which is the opposite from us, so you will need to pass <code>invert_arg=True</code> to make <a href="metrics.html#AccumMetric"><code>AccumMetric</code></a> do the inversion for you.</p>
 
 </div>
 </div>
@@ -223,7 +223,7 @@ summary: "Definition of the metrics that can be used in training models"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="skm_to_fastai" class="doc_header"><code>skm_to_fastai</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L49" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>skm_to_fastai</code>(<strong><code>func</code></strong>, <strong><code>is_class</code></strong>=<em><code>True</code></em>, <strong><code>thresh</code></strong>=<em><code>None</code></em>, <strong><code>axis</code></strong>=<em><code>-1</code></em>, <strong><code>sigmoid</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="skm_to_fastai" class="doc_header"><code>skm_to_fastai</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L50" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>skm_to_fastai</code>(<strong><code>func</code></strong>, <strong><code>is_class</code></strong>=<em><code>True</code></em>, <strong><code>thresh</code></strong>=<em><code>None</code></em>, <strong><code>axis</code></strong>=<em><code>-1</code></em>, <strong><code>sigmoid</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Convert <code>func</code> from sklearn.metrics to a fastai metric</p>
 
@@ -308,7 +308,7 @@ summary: "Definition of the metrics that can be used in training models"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="optim_metric" class="doc_header"><code>optim_metric</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L57" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>optim_metric</code>(<strong><code>f</code></strong>, <strong><code>argname</code></strong>, <strong><code>bounds</code></strong>, <strong><code>tol</code></strong>=<em><code>0.01</code></em>, <strong><code>do_neg</code></strong>=<em><code>True</code></em>, <strong><code>get_x</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="optim_metric" class="doc_header"><code>optim_metric</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L58" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>optim_metric</code>(<strong><code>f</code></strong>, <strong><code>argname</code></strong>, <strong><code>bounds</code></strong>, <strong><code>tol</code></strong>=<em><code>0.01</code></em>, <strong><code>do_neg</code></strong>=<em><code>True</code></em>, <strong><code>get_x</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 <p>Replace metric <code>f</code> with a version that optimizes argument <code>argname</code></p>
 
@@ -345,7 +345,7 @@ summary: "Definition of the metrics that can be used in training models"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="accuracy" class="doc_header"><code>accuracy</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L72" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>accuracy</code>(<strong><code>inp</code></strong>, <strong><code>targ</code></strong>, <strong><code>axis</code></strong>=<em><code>-1</code></em>)</p>
+<h4 id="accuracy" class="doc_header"><code>accuracy</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L73" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>accuracy</code>(<strong><code>inp</code></strong>, <strong><code>targ</code></strong>, <strong><code>axis</code></strong>=<em><code>-1</code></em>)</p>
 </blockquote>
 <p>Compute accuracy with <code>targ</code> when <code>pred</code> is bs * n_classes</p>
 
@@ -405,9 +405,9 @@ summary: "Definition of the metrics that can be used in training models"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="error_rate" class="doc_header"><code>error_rate</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L78" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>error_rate</code>(<strong><code>inp</code></strong>, <strong><code>targ</code></strong>, <strong><code>axis</code></strong>=<em><code>-1</code></em>)</p>
+<h4 id="error_rate" class="doc_header"><code>error_rate</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L79" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>error_rate</code>(<strong><code>inp</code></strong>, <strong><code>targ</code></strong>, <strong><code>axis</code></strong>=<em><code>-1</code></em>)</p>
 </blockquote>
-<p>1 - <a href="/metrics.html#accuracy"><code>accuracy</code></a></p>
+<p>1 - <a href="metrics.html#accuracy"><code>accuracy</code></a></p>
 
 </div>
 
@@ -447,7 +447,7 @@ summary: "Definition of the metrics that can be used in training models"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="top_k_accuracy" class="doc_header"><code>top_k_accuracy</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L83" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>top_k_accuracy</code>(<strong><code>inp</code></strong>, <strong><code>targ</code></strong>, <strong><code>k</code></strong>=<em><code>5</code></em>, <strong><code>axis</code></strong>=<em><code>-1</code></em>)</p>
+<h4 id="top_k_accuracy" class="doc_header"><code>top_k_accuracy</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L84" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>top_k_accuracy</code>(<strong><code>inp</code></strong>, <strong><code>targ</code></strong>, <strong><code>k</code></strong>=<em><code>5</code></em>, <strong><code>axis</code></strong>=<em><code>-1</code></em>)</p>
 </blockquote>
 <p>Computes the Top-k accuracy (<code>targ</code> is in the top <code>k</code> predictions of <code>inp</code>)</p>
 
@@ -487,7 +487,7 @@ summary: "Definition of the metrics that can be used in training models"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="APScore" class="doc_header"><code>APScore</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L90" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>APScore</code>(<strong><code>axis</code></strong>=<em><code>-1</code></em>, <strong><code>average</code></strong>=<em><code>'macro'</code></em>, <strong><code>pos_label</code></strong>=<em><code>1</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="APScore" class="doc_header"><code>APScore</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L91" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>APScore</code>(<strong><code>axis</code></strong>=<em><code>-1</code></em>, <strong><code>average</code></strong>=<em><code>'macro'</code></em>, <strong><code>pos_label</code></strong>=<em><code>1</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Average Precision for single-label classification problems</p>
 
@@ -518,7 +518,7 @@ summary: "Definition of the metrics that can be used in training models"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="BalancedAccuracy" class="doc_header"><code>BalancedAccuracy</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L96" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>BalancedAccuracy</code>(<strong><code>axis</code></strong>=<em><code>-1</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>, <strong><code>adjusted</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="BalancedAccuracy" class="doc_header"><code>BalancedAccuracy</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L97" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>BalancedAccuracy</code>(<strong><code>axis</code></strong>=<em><code>-1</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>, <strong><code>adjusted</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 <p>Balanced Accuracy for single-label binary classification problems</p>
 
@@ -549,7 +549,7 @@ summary: "Definition of the metrics that can be used in training models"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="BrierScore" class="doc_header"><code>BrierScore</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L102" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>BrierScore</code>(<strong><code>axis</code></strong>=<em><code>-1</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>, <strong><code>pos_label</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="BrierScore" class="doc_header"><code>BrierScore</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L103" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>BrierScore</code>(<strong><code>axis</code></strong>=<em><code>-1</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>, <strong><code>pos_label</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Brier score for single-label classification problems</p>
 
@@ -580,7 +580,7 @@ summary: "Definition of the metrics that can be used in training models"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="CohenKappa" class="doc_header"><code>CohenKappa</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L108" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>CohenKappa</code>(<strong><code>axis</code></strong>=<em><code>-1</code></em>, <strong><code>labels</code></strong>=<em><code>None</code></em>, <strong><code>weights</code></strong>=<em><code>None</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="CohenKappa" class="doc_header"><code>CohenKappa</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L109" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>CohenKappa</code>(<strong><code>axis</code></strong>=<em><code>-1</code></em>, <strong><code>labels</code></strong>=<em><code>None</code></em>, <strong><code>weights</code></strong>=<em><code>None</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Cohen kappa for single-label classification problems</p>
 
@@ -611,7 +611,7 @@ summary: "Definition of the metrics that can be used in training models"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="F1Score" class="doc_header"><code>F1Score</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L114" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>F1Score</code>(<strong><code>axis</code></strong>=<em><code>-1</code></em>, <strong><code>labels</code></strong>=<em><code>None</code></em>, <strong><code>pos_label</code></strong>=<em><code>1</code></em>, <strong><code>average</code></strong>=<em><code>'binary'</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="F1Score" class="doc_header"><code>F1Score</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L115" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>F1Score</code>(<strong><code>axis</code></strong>=<em><code>-1</code></em>, <strong><code>labels</code></strong>=<em><code>None</code></em>, <strong><code>pos_label</code></strong>=<em><code>1</code></em>, <strong><code>average</code></strong>=<em><code>'binary'</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>F1 score for single-label classification problems</p>
 
@@ -642,7 +642,7 @@ summary: "Definition of the metrics that can be used in training models"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="FBeta" class="doc_header"><code>FBeta</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L120" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>FBeta</code>(<strong><code>beta</code></strong>, <strong><code>axis</code></strong>=<em><code>-1</code></em>, <strong><code>labels</code></strong>=<em><code>None</code></em>, <strong><code>pos_label</code></strong>=<em><code>1</code></em>, <strong><code>average</code></strong>=<em><code>'binary'</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="FBeta" class="doc_header"><code>FBeta</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L121" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>FBeta</code>(<strong><code>beta</code></strong>, <strong><code>axis</code></strong>=<em><code>-1</code></em>, <strong><code>labels</code></strong>=<em><code>None</code></em>, <strong><code>pos_label</code></strong>=<em><code>1</code></em>, <strong><code>average</code></strong>=<em><code>'binary'</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>FBeta score with <code>beta</code> for single-label classification problems</p>
 
@@ -673,7 +673,7 @@ summary: "Definition of the metrics that can be used in training models"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="HammingLoss" class="doc_header"><code>HammingLoss</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L126" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>HammingLoss</code>(<strong><code>axis</code></strong>=<em><code>-1</code></em>, <strong><code>labels</code></strong>=<em><code>None</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="HammingLoss" class="doc_header"><code>HammingLoss</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L127" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>HammingLoss</code>(<strong><code>axis</code></strong>=<em><code>-1</code></em>, <strong><code>labels</code></strong>=<em><code>None</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Cohen kappa for single-label classification problems</p>
 
@@ -704,7 +704,7 @@ summary: "Definition of the metrics that can be used in training models"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Jaccard" class="doc_header"><code>Jaccard</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L132" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Jaccard</code>(<strong><code>axis</code></strong>=<em><code>-1</code></em>, <strong><code>labels</code></strong>=<em><code>None</code></em>, <strong><code>pos_label</code></strong>=<em><code>1</code></em>, <strong><code>average</code></strong>=<em><code>'binary'</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="Jaccard" class="doc_header"><code>Jaccard</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L133" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Jaccard</code>(<strong><code>axis</code></strong>=<em><code>-1</code></em>, <strong><code>labels</code></strong>=<em><code>None</code></em>, <strong><code>pos_label</code></strong>=<em><code>1</code></em>, <strong><code>average</code></strong>=<em><code>'binary'</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Jaccard score for single-label classification problems</p>
 
@@ -735,7 +735,7 @@ summary: "Definition of the metrics that can be used in training models"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="MatthewsCorrCoef" class="doc_header"><code>MatthewsCorrCoef</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L138" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>MatthewsCorrCoef</code>(<strong><code>axis</code></strong>=<em><code>-1</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="MatthewsCorrCoef" class="doc_header"><code>MatthewsCorrCoef</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L139" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>MatthewsCorrCoef</code>(<strong><code>axis</code></strong>=<em><code>-1</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Matthews correlation coefficient for single-label binary classification problems</p>
 
@@ -766,7 +766,7 @@ summary: "Definition of the metrics that can be used in training models"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Precision" class="doc_header"><code>Precision</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L143" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Precision</code>(<strong><code>axis</code></strong>=<em><code>-1</code></em>, <strong><code>labels</code></strong>=<em><code>None</code></em>, <strong><code>pos_label</code></strong>=<em><code>1</code></em>, <strong><code>average</code></strong>=<em><code>'binary'</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="Precision" class="doc_header"><code>Precision</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L144" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Precision</code>(<strong><code>axis</code></strong>=<em><code>-1</code></em>, <strong><code>labels</code></strong>=<em><code>None</code></em>, <strong><code>pos_label</code></strong>=<em><code>1</code></em>, <strong><code>average</code></strong>=<em><code>'binary'</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Precision for single-label classification problems</p>
 
@@ -797,7 +797,7 @@ summary: "Definition of the metrics that can be used in training models"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Recall" class="doc_header"><code>Recall</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L149" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Recall</code>(<strong><code>axis</code></strong>=<em><code>-1</code></em>, <strong><code>labels</code></strong>=<em><code>None</code></em>, <strong><code>pos_label</code></strong>=<em><code>1</code></em>, <strong><code>average</code></strong>=<em><code>'binary'</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="Recall" class="doc_header"><code>Recall</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L150" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Recall</code>(<strong><code>axis</code></strong>=<em><code>-1</code></em>, <strong><code>labels</code></strong>=<em><code>None</code></em>, <strong><code>pos_label</code></strong>=<em><code>1</code></em>, <strong><code>average</code></strong>=<em><code>'binary'</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Recall for single-label classification problems</p>
 
@@ -828,7 +828,7 @@ summary: "Definition of the metrics that can be used in training models"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="RocAuc" class="doc_header"><code>RocAuc</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L155" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>RocAuc</code>(<strong><code>axis</code></strong>=<em><code>-1</code></em>, <strong><code>average</code></strong>=<em><code>'macro'</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>, <strong><code>max_fpr</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="RocAuc" class="doc_header"><code>RocAuc</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L156" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>RocAuc</code>(<strong><code>axis</code></strong>=<em><code>-1</code></em>, <strong><code>average</code></strong>=<em><code>'macro'</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>, <strong><code>max_fpr</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Area Under the Receiver Operating Characteristic Curve for single-label binary classification problems</p>
 
@@ -859,7 +859,7 @@ summary: "Definition of the metrics that can be used in training models"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="Perplexity" class="doc_header"><code>class</code> <code>Perplexity</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L161" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>Perplexity</code>() :: <a href="/learner.html#AvgLoss"><code>AvgLoss</code></a></p>
+<h3 id="Perplexity" class="doc_header"><code>class</code> <code>Perplexity</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L162" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>Perplexity</code>() :: <a href="learner.html#AvgLoss"><code>AvgLoss</code></a></p>
 </blockquote>
 <p>Perplexity (exponential of cross-entropy loss) for Language Models</p>
 
@@ -911,7 +911,7 @@ summary: "Definition of the metrics that can be used in training models"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="accuracy_multi" class="doc_header"><code>accuracy_multi</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L171" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>accuracy_multi</code>(<strong><code>inp</code></strong>, <strong><code>targ</code></strong>, <strong><code>thresh</code></strong>=<em><code>0.5</code></em>, <strong><code>sigmoid</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="accuracy_multi" class="doc_header"><code>accuracy_multi</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L172" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>accuracy_multi</code>(<strong><code>inp</code></strong>, <strong><code>targ</code></strong>, <strong><code>thresh</code></strong>=<em><code>0.5</code></em>, <strong><code>sigmoid</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 <p>Compute accuracy when <code>inp</code> and <code>targ</code> are the same size.</p>
 
@@ -985,7 +985,7 @@ summary: "Definition of the metrics that can be used in training models"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="APScoreMulti" class="doc_header"><code>APScoreMulti</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L178" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>APScoreMulti</code>(<strong><code>thresh</code></strong>=<em><code>0.5</code></em>, <strong><code>sigmoid</code></strong>=<em><code>True</code></em>, <strong><code>average</code></strong>=<em><code>'macro'</code></em>, <strong><code>pos_label</code></strong>=<em><code>1</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="APScoreMulti" class="doc_header"><code>APScoreMulti</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L179" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>APScoreMulti</code>(<strong><code>thresh</code></strong>=<em><code>0.5</code></em>, <strong><code>sigmoid</code></strong>=<em><code>True</code></em>, <strong><code>average</code></strong>=<em><code>'macro'</code></em>, <strong><code>pos_label</code></strong>=<em><code>1</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Average Precision for multi-label classification problems</p>
 
@@ -1016,7 +1016,7 @@ summary: "Definition of the metrics that can be used in training models"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="BrierScoreMulti" class="doc_header"><code>BrierScoreMulti</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L184" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>BrierScoreMulti</code>(<strong><code>thresh</code></strong>=<em><code>0.5</code></em>, <strong><code>sigmoid</code></strong>=<em><code>True</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>, <strong><code>pos_label</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="BrierScoreMulti" class="doc_header"><code>BrierScoreMulti</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L185" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>BrierScoreMulti</code>(<strong><code>thresh</code></strong>=<em><code>0.5</code></em>, <strong><code>sigmoid</code></strong>=<em><code>True</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>, <strong><code>pos_label</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Brier score for multi-label classification problems</p>
 
@@ -1047,7 +1047,7 @@ summary: "Definition of the metrics that can be used in training models"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="F1ScoreMulti" class="doc_header"><code>F1ScoreMulti</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L190" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>F1ScoreMulti</code>(<strong><code>thresh</code></strong>=<em><code>0.5</code></em>, <strong><code>sigmoid</code></strong>=<em><code>True</code></em>, <strong><code>labels</code></strong>=<em><code>None</code></em>, <strong><code>pos_label</code></strong>=<em><code>1</code></em>, <strong><code>average</code></strong>=<em><code>'macro'</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="F1ScoreMulti" class="doc_header"><code>F1ScoreMulti</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L191" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>F1ScoreMulti</code>(<strong><code>thresh</code></strong>=<em><code>0.5</code></em>, <strong><code>sigmoid</code></strong>=<em><code>True</code></em>, <strong><code>labels</code></strong>=<em><code>None</code></em>, <strong><code>pos_label</code></strong>=<em><code>1</code></em>, <strong><code>average</code></strong>=<em><code>'macro'</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>F1 score for multi-label classification problems</p>
 
@@ -1078,7 +1078,7 @@ summary: "Definition of the metrics that can be used in training models"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="FBetaMulti" class="doc_header"><code>FBetaMulti</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L196" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>FBetaMulti</code>(<strong><code>beta</code></strong>, <strong><code>thresh</code></strong>=<em><code>0.5</code></em>, <strong><code>sigmoid</code></strong>=<em><code>True</code></em>, <strong><code>labels</code></strong>=<em><code>None</code></em>, <strong><code>pos_label</code></strong>=<em><code>1</code></em>, <strong><code>average</code></strong>=<em><code>'macro'</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="FBetaMulti" class="doc_header"><code>FBetaMulti</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L197" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>FBetaMulti</code>(<strong><code>beta</code></strong>, <strong><code>thresh</code></strong>=<em><code>0.5</code></em>, <strong><code>sigmoid</code></strong>=<em><code>True</code></em>, <strong><code>labels</code></strong>=<em><code>None</code></em>, <strong><code>pos_label</code></strong>=<em><code>1</code></em>, <strong><code>average</code></strong>=<em><code>'macro'</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>FBeta score with <code>beta</code> for multi-label classification problems</p>
 
@@ -1109,7 +1109,7 @@ summary: "Definition of the metrics that can be used in training models"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="HammingLossMulti" class="doc_header"><code>HammingLossMulti</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L202" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>HammingLossMulti</code>(<strong><code>thresh</code></strong>=<em><code>0.5</code></em>, <strong><code>sigmoid</code></strong>=<em><code>True</code></em>, <strong><code>labels</code></strong>=<em><code>None</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="HammingLossMulti" class="doc_header"><code>HammingLossMulti</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L203" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>HammingLossMulti</code>(<strong><code>thresh</code></strong>=<em><code>0.5</code></em>, <strong><code>sigmoid</code></strong>=<em><code>True</code></em>, <strong><code>labels</code></strong>=<em><code>None</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Cohen kappa for multi-label classification problems</p>
 
@@ -1140,7 +1140,7 @@ summary: "Definition of the metrics that can be used in training models"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="JaccardMulti" class="doc_header"><code>JaccardMulti</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L208" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>JaccardMulti</code>(<strong><code>thresh</code></strong>=<em><code>0.5</code></em>, <strong><code>sigmoid</code></strong>=<em><code>True</code></em>, <strong><code>labels</code></strong>=<em><code>None</code></em>, <strong><code>pos_label</code></strong>=<em><code>1</code></em>, <strong><code>average</code></strong>=<em><code>'macro'</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="JaccardMulti" class="doc_header"><code>JaccardMulti</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L209" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>JaccardMulti</code>(<strong><code>thresh</code></strong>=<em><code>0.5</code></em>, <strong><code>sigmoid</code></strong>=<em><code>True</code></em>, <strong><code>labels</code></strong>=<em><code>None</code></em>, <strong><code>pos_label</code></strong>=<em><code>1</code></em>, <strong><code>average</code></strong>=<em><code>'macro'</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Jaccard score for multi-label classification problems</p>
 
@@ -1171,7 +1171,7 @@ summary: "Definition of the metrics that can be used in training models"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="MatthewsCorrCoefMulti" class="doc_header"><code>MatthewsCorrCoefMulti</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L214" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>MatthewsCorrCoefMulti</code>(<strong><code>thresh</code></strong>=<em><code>0.5</code></em>, <strong><code>sigmoid</code></strong>=<em><code>True</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="MatthewsCorrCoefMulti" class="doc_header"><code>MatthewsCorrCoefMulti</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L215" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>MatthewsCorrCoefMulti</code>(<strong><code>thresh</code></strong>=<em><code>0.5</code></em>, <strong><code>sigmoid</code></strong>=<em><code>True</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Matthews correlation coefficient for multi-label classification problems</p>
 
@@ -1202,7 +1202,7 @@ summary: "Definition of the metrics that can be used in training models"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="PrecisionMulti" class="doc_header"><code>PrecisionMulti</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L219" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>PrecisionMulti</code>(<strong><code>thresh</code></strong>=<em><code>0.5</code></em>, <strong><code>sigmoid</code></strong>=<em><code>True</code></em>, <strong><code>labels</code></strong>=<em><code>None</code></em>, <strong><code>pos_label</code></strong>=<em><code>1</code></em>, <strong><code>average</code></strong>=<em><code>'macro'</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="PrecisionMulti" class="doc_header"><code>PrecisionMulti</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L220" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>PrecisionMulti</code>(<strong><code>thresh</code></strong>=<em><code>0.5</code></em>, <strong><code>sigmoid</code></strong>=<em><code>True</code></em>, <strong><code>labels</code></strong>=<em><code>None</code></em>, <strong><code>pos_label</code></strong>=<em><code>1</code></em>, <strong><code>average</code></strong>=<em><code>'macro'</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Precision for multi-label classification problems</p>
 
@@ -1233,7 +1233,7 @@ summary: "Definition of the metrics that can be used in training models"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="RecallMulti" class="doc_header"><code>RecallMulti</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L225" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>RecallMulti</code>(<strong><code>thresh</code></strong>=<em><code>0.5</code></em>, <strong><code>sigmoid</code></strong>=<em><code>True</code></em>, <strong><code>labels</code></strong>=<em><code>None</code></em>, <strong><code>pos_label</code></strong>=<em><code>1</code></em>, <strong><code>average</code></strong>=<em><code>'macro'</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="RecallMulti" class="doc_header"><code>RecallMulti</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L226" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>RecallMulti</code>(<strong><code>thresh</code></strong>=<em><code>0.5</code></em>, <strong><code>sigmoid</code></strong>=<em><code>True</code></em>, <strong><code>labels</code></strong>=<em><code>None</code></em>, <strong><code>pos_label</code></strong>=<em><code>1</code></em>, <strong><code>average</code></strong>=<em><code>'macro'</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Recall for multi-label classification problems</p>
 
@@ -1264,7 +1264,7 @@ summary: "Definition of the metrics that can be used in training models"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="RocAucMulti" class="doc_header"><code>RocAucMulti</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L231" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>RocAucMulti</code>(<strong><code>thresh</code></strong>=<em><code>0.5</code></em>, <strong><code>sigmoid</code></strong>=<em><code>True</code></em>, <strong><code>average</code></strong>=<em><code>'macro'</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>, <strong><code>max_fpr</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="RocAucMulti" class="doc_header"><code>RocAucMulti</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L232" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>RocAucMulti</code>(<strong><code>thresh</code></strong>=<em><code>0.5</code></em>, <strong><code>sigmoid</code></strong>=<em><code>True</code></em>, <strong><code>average</code></strong>=<em><code>'macro'</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>, <strong><code>max_fpr</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Area Under the Receiver Operating Characteristic Curve for multi-label binary classification problems</p>
 
@@ -1301,7 +1301,7 @@ summary: "Definition of the metrics that can be used in training models"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="mse" class="doc_header"><code>mse</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L237" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>mse</code>(<strong><code>inp</code></strong>, <strong><code>targ</code></strong>)</p>
+<h4 id="mse" class="doc_header"><code>mse</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L238" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>mse</code>(<strong><code>inp</code></strong>, <strong><code>targ</code></strong>)</p>
 </blockquote>
 <p>Mean squared error between <code>inp</code> and <code>targ</code>.</p>
 
@@ -1375,7 +1375,7 @@ summary: "Definition of the metrics that can be used in training models"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="mae" class="doc_header"><code>mae</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L247" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>mae</code>(<strong><code>inp</code></strong>, <strong><code>targ</code></strong>)</p>
+<h4 id="mae" class="doc_header"><code>mae</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L248" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>mae</code>(<strong><code>inp</code></strong>, <strong><code>targ</code></strong>)</p>
 </blockquote>
 <p>Mean absolute error between <code>inp</code> and <code>targ</code>.</p>
 
@@ -1413,7 +1413,7 @@ summary: "Definition of the metrics that can be used in training models"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="msle" class="doc_header"><code>msle</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L253" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>msle</code>(<strong><code>inp</code></strong>, <strong><code>targ</code></strong>)</p>
+<h4 id="msle" class="doc_header"><code>msle</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L254" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>msle</code>(<strong><code>inp</code></strong>, <strong><code>targ</code></strong>)</p>
 </blockquote>
 <p>Mean squared logarithmic error between <code>inp</code> and <code>targ</code>.</p>
 
@@ -1488,7 +1488,7 @@ summary: "Definition of the metrics that can be used in training models"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ExplainedVariance" class="doc_header"><code>ExplainedVariance</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L266" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ExplainedVariance</code>(<strong><code>sample_weight</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="ExplainedVariance" class="doc_header"><code>ExplainedVariance</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L267" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ExplainedVariance</code>(<strong><code>sample_weight</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Explained variance betzeen predictions and targets</p>
 
@@ -1519,7 +1519,7 @@ summary: "Definition of the metrics that can be used in training models"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="R2Score" class="doc_header"><code>R2Score</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L271" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>R2Score</code>(<strong><code>sample_weight</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="R2Score" class="doc_header"><code>R2Score</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L272" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>R2Score</code>(<strong><code>sample_weight</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>R2 score betzeen predictions and targets</p>
 
@@ -1556,7 +1556,7 @@ summary: "Definition of the metrics that can be used in training models"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="foreground_acc" class="doc_header"><code>foreground_acc</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L276" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>foreground_acc</code>(<strong><code>inp</code></strong>, <strong><code>targ</code></strong>, <strong><code>bkg_idx</code></strong>=<em><code>0</code></em>, <strong><code>axis</code></strong>=<em><code>1</code></em>)</p>
+<h4 id="foreground_acc" class="doc_header"><code>foreground_acc</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L277" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>foreground_acc</code>(<strong><code>inp</code></strong>, <strong><code>targ</code></strong>, <strong><code>bkg_idx</code></strong>=<em><code>0</code></em>, <strong><code>axis</code></strong>=<em><code>1</code></em>)</p>
 </blockquote>
 <p>Computes non-background accuracy for multiclass segmentation</p>
 
@@ -1597,7 +1597,7 @@ summary: "Definition of the metrics that can be used in training models"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="Dice" class="doc_header"><code>class</code> <code>Dice</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L283" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>Dice</code>(<strong><code>axis</code></strong>=<em><code>1</code></em>) :: <a href="/learner.html#Metric"><code>Metric</code></a></p>
+<h3 id="Dice" class="doc_header"><code>class</code> <code>Dice</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L284" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>Dice</code>(<strong><code>axis</code></strong>=<em><code>1</code></em>) :: <a href="learner.html#Metric"><code>Metric</code></a></p>
 </blockquote>
 <p>Dice coefficient metric for binary target in segmentation</p>
 
@@ -1639,7 +1639,7 @@ summary: "Definition of the metrics that can be used in training models"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="JaccardCoeff" class="doc_header"><code>class</code> <code>JaccardCoeff</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L296" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>JaccardCoeff</code>(<strong><code>axis</code></strong>=<em><code>1</code></em>) :: <a href="/metrics.html#Dice"><code>Dice</code></a></p>
+<h3 id="JaccardCoeff" class="doc_header"><code>class</code> <code>JaccardCoeff</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L297" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>JaccardCoeff</code>(<strong><code>axis</code></strong>=<em><code>1</code></em>) :: <a href="metrics.html#Dice"><code>Dice</code></a></p>
 </blockquote>
 <p>Implemetation of the jaccard coefficient that is lighter in RAM</p>
 
@@ -1665,6 +1665,101 @@ summary: "Definition of the metrics that can be used in training models"
 </pre></div>
 
     </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h3 id="LossMetric" class="doc_header"><code>class</code> <code>LossMetric</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L303" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>LossMetric</code>(<strong><code>attr</code></strong>, <strong><code>nm</code></strong>=<em><code>None</code></em>) :: <a href="learner.html#AvgMetric"><code>AvgMetric</code></a></p>
+</blockquote>
+<p>Create a metric from <code>loss_func.attr</code> named <code>nm</code></p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="LossMetrics" class="doc_header"><code>LossMetrics</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L315" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>LossMetrics</code>(<strong><code>attrs</code></strong>, <strong><code>nms</code></strong>=<em><code>None</code></em>)</p>
+</blockquote>
+<p>List of <a href="metrics.html#LossMetric"><code>LossMetric</code></a> for each of <code>attrs</code> and <code>nms</code></p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">CombineL1L2</span><span class="p">(</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">out</span><span class="p">,</span> <span class="n">targ</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">l1</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">l1_loss</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">targ</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">l2</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">mse_loss</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">targ</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">l1</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">l2</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span> <span class="o">=</span> <span class="n">synth_learner</span><span class="p">(</span><span class="n">metrics</span><span class="o">=</span><span class="n">LossMetrics</span><span class="p">(</span><span class="s1">&#39;l1,l2&#39;</span><span class="p">))</span>
+<span class="n">learn</span><span class="o">.</span><span class="n">loss_func</span> <span class="o">=</span> <span class="n">CombineL1L2</span><span class="p">()</span>
+<span class="n">learn</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>(#6) [0,9.092127799987793,6.151558876037598,1.6884403228759766,4.463118553161621,00:00]
+(#6) [1,7.704292297363281,3.927469253540039,1.292926549911499,2.63454270362854,00:00]
+</pre>
+</div>
+</div>
+
 </div>
 </div>
 

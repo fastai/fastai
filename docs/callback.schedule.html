@@ -494,7 +494,7 @@ summary: "Callback and helper functions to schedule any hyper-parameter"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ParamScheduler" class="doc_header"><code>class</code> <code>ParamScheduler</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/schedule.py#L58" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ParamScheduler</code>(<strong><code>scheds</code></strong>) :: <a href="/learner.html#Callback"><code>Callback</code></a></p>
+<h2 id="ParamScheduler" class="doc_header"><code>class</code> <code>ParamScheduler</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/schedule.py#L58" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ParamScheduler</code>(<strong><code>scheds</code></strong>) :: <a href="learner.html#Callback"><code>Callback</code></a></p>
 </blockquote>
 <p>Schedule hyper-parameters according to <code>scheds</code></p>
 
@@ -901,7 +901,7 @@ summary: "Callback and helper functions to schedule any hyper-parameter"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>This schedule was introduced by Ilya Loshchilov et al. in <a href="https://arxiv.org/abs/1608.03983">SGDR: Stochastic Gradient Descent with Warm Restarts</a>. It consists of <code>n_cycles</code> that are cosine annealings from <code>lr_max</code> (defaults to the <a href="/learner.html#Learner"><code>Learner</code></a> lr) to 0, with a length of <code>cycle_len * cycle_mult**i</code> for the <code>i</code>-th cycle (first one is <code>cycle_len</code>-long, then we multiply the length by <code>cycle_mult</code> at each epoch). You can optionally pass additional <code>cbs</code> and <code>reset_opt</code>.</p>
+<p>This schedule was introduced by Ilya Loshchilov et al. in <a href="https://arxiv.org/abs/1608.03983">SGDR: Stochastic Gradient Descent with Warm Restarts</a>. It consists of <code>n_cycles</code> that are cosine annealings from <code>lr_max</code> (defaults to the <a href="learner.html#Learner"><code>Learner</code></a> lr) to 0, with a length of <code>cycle_len * cycle_mult**i</code> for the <code>i</code>-th cycle (first one is <code>cycle_len</code>-long, then we multiply the length by <code>cycle_mult</code> at each epoch). You can optionally pass additional <code>cbs</code> and <code>reset_opt</code>.</p>
 
 </div>
 </div>
@@ -959,7 +959,7 @@ summary: "Callback and helper functions to schedule any hyper-parameter"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="LRFinder" class="doc_header"><code>class</code> <code>LRFinder</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/schedule.py#L133" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LRFinder</code>(<strong><code>start_lr</code></strong>=<em><code>1e-07</code></em>, <strong><code>end_lr</code></strong>=<em><code>10</code></em>, <strong><code>num_it</code></strong>=<em><code>100</code></em>, <strong><code>stop_div</code></strong>=<em><code>True</code></em>) :: <a href="/callback.schedule.html#ParamScheduler"><code>ParamScheduler</code></a></p>
+<h2 id="LRFinder" class="doc_header"><code>class</code> <code>LRFinder</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/schedule.py#L133" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LRFinder</code>(<strong><code>start_lr</code></strong>=<em><code>1e-07</code></em>, <strong><code>end_lr</code></strong>=<em><code>10</code></em>, <strong><code>num_it</code></strong>=<em><code>100</code></em>, <strong><code>stop_div</code></strong>=<em><code>True</code></em>) :: <a href="callback.schedule.html#ParamScheduler"><code>ParamScheduler</code></a></p>
 </blockquote>
 <p>Training with exponentially growing learning rate</p>
 

@@ -62,7 +62,7 @@ summary: "Using `DataSource`, `Pipeline`, `TfmdList` and `Transform`"
 <li><code>Transform</code></li>
 <li><code>Pipeline</code> to composes transforms</li>
 </ul>
-<p>(We won't look at <a href="/data.core.html#TfmdList"><code>TfmdList</code></a> or <a href="/data.core.html#DataSource"><code>DataSource</code></a> in this initial overview since they require a full dataset. Have a look at the second half of the page for examples of those.)</p>
+<p>(We won't look at <a href="data.core.html#TfmdList"><code>TfmdList</code></a> or <a href="data.core.html#DataSource"><code>DataSource</code></a> in this initial overview since they require a full dataset. Have a look at the second half of the page for examples of those.)</p>
 
 </div>
 </div>
@@ -263,7 +263,7 @@ summary: "Using `DataSource`, `Pipeline`, `TfmdList` and `Transform`"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>We use <code>decode</code> to reverse transforms for display. Reversing the <a href="/data.transforms.html#Categorize"><code>Categorize</code></a> transform result in a class name we can display:</p>
+<p>We use <code>decode</code> to reverse transforms for display. Reversing the <a href="data.transforms.html#Categorize"><code>Categorize</code></a> transform result in a class name we can display:</p>
 
 </div>
 </div>
@@ -382,7 +382,7 @@ summary: "Using `DataSource`, `Pipeline`, `TfmdList` and `Transform`"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The show method works behind the scenes with types. Transforms will make sure the type of an element they receive is preserved. Here <a href="/vision.core.html#PILImage.create"><code>PILImage.create</code></a> returns a <a href="/vision.core.html#PILImage"><code>PILImage</code></a>, which knows how to show itself. <code>tconv</code> converts it to a <a href="/torch.core.html#TensorImage"><code>TensorImage</code></a>, which also knows how to show itself.</p>
+<p>The show method works behind the scenes with types. Transforms will make sure the type of an element they receive is preserved. Here <a href="vision.core.html#PILImage.create"><code>PILImage.create</code></a> returns a <a href="vision.core.html#PILImage"><code>PILImage</code></a>, which knows how to show itself. <code>tconv</code> converts it to a <a href="torch.core.html#TensorImage"><code>TensorImage</code></a>, which also knows how to show itself.</p>
 
 </div>
 </div>
@@ -697,8 +697,8 @@ summary: "Using `DataSource`, `Pipeline`, `TfmdList` and `Transform`"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Note that <a href="/tabular.core.html#decodes"><code>decodes</code></a> is intended to operate on the return value of <a href="/tabular.core.html#encodes"><code>encodes</code></a>. In the case above, <a href="/tabular.core.html#decodes"><code>decodes</code></a> takes in a tuple consisting of a Tensor representing the image and an integer being the class idx and returns an instance of <code>TitledImage</code>.</p>
-<p>It's important to give the type that can show itself to fully decoded elements because when in a <code>Pipeline</code>, we stop decoding as soon as we can find a <a href="/medical.imaging.html#show"><code>show</code></a> method.</p>
+<p>Note that <a href="tabular.core.html#decodes"><code>decodes</code></a> is intended to operate on the return value of <a href="tabular.core.html#encodes"><code>encodes</code></a>. In the case above, <a href="tabular.core.html#decodes"><code>decodes</code></a> takes in a tuple consisting of a Tensor representing the image and an integer being the class idx and returns an instance of <code>TitledImage</code>.</p>
+<p>It's important to give the type that can show itself to fully decoded elements because when in a <code>Pipeline</code>, we stop decoding as soon as we can find a <a href="medical.imaging.html#show"><code>show</code></a> method.</p>
 
 </div>
 </div>
@@ -976,13 +976,13 @@ summary: "Using `DataSource`, `Pipeline`, `TfmdList` and `Transform`"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Using-DataSource">Using <a href="/data.core.html#DataSource"><code>DataSource</code></a><a class="anchor-link" href="#Using-DataSource">&#182;</a></h2>
+<h2 id="Using-DataSource">Using <a href="data.core.html#DataSource"><code>DataSource</code></a><a class="anchor-link" href="#Using-DataSource">&#182;</a></h2>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a href="/data.core.html#DataSource"><code>DataSource</code></a> applies a list of list of transforms (or list of <code>Pipeline</code>s) lazily to items of a collection, creating one output per list of transforms/<code>Pipeline</code>. This makes it easier for us to separate out steps of a process, so that we can re-use them and modify the process more easily. For instance, we could add data augmentation, data normalization, etc. Here we separate out the steps of the basic pets process.</p>
+<p><a href="data.core.html#DataSource"><code>DataSource</code></a> applies a list of list of transforms (or list of <code>Pipeline</code>s) lazily to items of a collection, creating one output per list of transforms/<code>Pipeline</code>. This makes it easier for us to separate out steps of a process, so that we can re-use them and modify the process more easily. For instance, we could add data augmentation, data normalization, etc. Here we separate out the steps of the basic pets process.</p>
 
 </div>
 </div>
@@ -1116,7 +1116,7 @@ summary: "Using `DataSource`, `Pipeline`, `TfmdList` and `Transform`"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The types being properly propagated and dispatched, we can do the same thing with <code>ImageResizer</code>, <code>ImageToByteTensor</code>, <a href="/data.transforms.html#IntToFloatTensor"><code>IntToFloatTensor</code></a> being passed as tranforms over the tuple. This is done in <a href="/data.core.html#TfmdDL"><code>TfmdDL</code></a> by passing them to <code>after_item</code>. They won't do anything to the category but will only be applied to the inputs.</p>
+<p>The types being properly propagated and dispatched, we can do the same thing with <code>ImageResizer</code>, <code>ImageToByteTensor</code>, <a href="data.transforms.html#IntToFloatTensor"><code>IntToFloatTensor</code></a> being passed as tranforms over the tuple. This is done in <a href="data.core.html#TfmdDL"><code>TfmdDL</code></a> by passing them to <code>after_item</code>. They won't do anything to the category but will only be applied to the inputs.</p>
 
 </div>
 </div>
@@ -1285,7 +1285,7 @@ summary: "Using `DataSource`, `Pipeline`, `TfmdList` and `Transform`"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>We can decode an element for display purposes, either passing a tuple to <code>decode</code> or by passing an index to <a href="/data.core.html#decode_at"><code>decode_at</code></a>.</p>
+<p>We can decode an element for display purposes, either passing a tuple to <code>decode</code> or by passing an index to <a href="data.core.html#decode_at"><code>decode_at</code></a>.</p>
 
 </div>
 </div>
@@ -1375,7 +1375,7 @@ summary: "Using `DataSource`, `Pipeline`, `TfmdList` and `Transform`"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>We can use this to feed a <a href="/data.load.html#DataLoader"><code>DataLoader</code></a> and view a batch. It's faster to convert to float on GPU, so we'll do it as a DataLoader transform, after CUDA in <code>after_batch</code>.</p>
+<p>We can use this to feed a <a href="data.load.html#DataLoader"><code>DataLoader</code></a> and view a batch. It's faster to convert to float on GPU, so we'll do it as a DataLoader transform, after CUDA in <code>after_batch</code>.</p>
 
 </div>
 </div>
@@ -1682,7 +1682,7 @@ summary: "Using `DataSource`, `Pipeline`, `TfmdList` and `Transform`"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>We can create a dataloader that takes those files and applies the same transforms as the validation set with <a href="/data.core.html#test_dl"><code>test_dl</code></a>.</p>
+<p>We can create a dataloader that takes those files and applies the same transforms as the validation set with <a href="data.core.html#test_dl"><code>test_dl</code></a>.</p>
 
 </div>
 </div>
