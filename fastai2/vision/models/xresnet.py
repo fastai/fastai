@@ -33,11 +33,10 @@ class XResNet(nn.Sequential):
         blocks = [self._make_layer(ni=block_szs[i], nf=block_szs[i+1], blocks=l,
                                    stride=1 if i==0 else 2, sa=sa and i==len(layers)-4, **kwargs)
                   for i,l in enumerate(layers)]
-        drop = [] if p is None else [nn.Dropout(p)]
         super().__init__(
             *stem, nn.MaxPool2d(kernel_size=3, stride=2, padding=1),
             *blocks,
-            nn.AdaptiveAvgPool2d(1), Flatten(), *drop,
+            nn.AdaptiveAvgPool2d(1), Flatten(), nn.Dropout(p),
             nn.Linear(block_szs[-1]*expansion, c_out),
         )
         init_cnn(self)

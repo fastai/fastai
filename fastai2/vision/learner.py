@@ -83,7 +83,7 @@ def _vgg_split(m:nn.Module): return L(m[0][0][:22], m[0][0][22:], m[1:]).map(par
 def _alexnet_split(m:nn.Module): return L(m[0][0][:6], m[0][0][6:], m[1:]).map(params)
 
 _default_meta    = {'cut':None, 'split':default_split}
-_xresnet_meta    = {'cut':-3, 'split':_xresnet_split }
+_xresnet_meta    = {'cut':-4, 'split':_xresnet_split }
 _resnet_meta     = {'cut':-2, 'split':_resnet_split }
 _squeezenet_meta = {'cut':-1, 'split': _squeezenet_split}
 _densenet_meta   = {'cut':-1, 'split':_densenet_split}
