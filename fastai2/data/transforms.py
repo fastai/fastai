@@ -2,9 +2,9 @@
 
 __all__ = ['get_files', 'FileGetter', 'image_extensions', 'get_image_files', 'ImageGetter', 'get_text_files',
            'RandomSplitter', 'IndexSplitter', 'GrandparentSplitter', 'FuncSplitter', 'MaskSplitter', 'FileSplitter',
-           'parent_label', 'RegexLabeller', 'ColReader', 'CategoryMap', 'Categorize', 'Category', 'MultiCategorize',
-           'MultiCategory', 'OneHotEncode', 'EncodedMultiCategorize', 'get_c', 'ToTensor', 'Cuda', 'IntToFloatTensor',
-           'broadcast_vec', 'Normalize']
+           'ColSplitter', 'parent_label', 'RegexLabeller', 'ColReader', 'CategoryMap', 'Categorize', 'Category',
+           'MultiCategorize', 'MultiCategory', 'OneHotEncode', 'EncodedMultiCategorize', 'get_c', 'ToTensor', 'Cuda',
+           'IntToFloatTensor', 'broadcast_vec', 'Normalize']
 
 #Cell
 from ..torch_basics import *
@@ -111,6 +111,15 @@ def FileSplitter(fname):
     valid = Path(fname).read().split('\n')
     def _func(x): return x.name in valid
     def _inner(o, **kwargs): return FuncSplitter(_func)(o)
+    return _inner
+
+#Cell
+def ColSplitter(col='is_valid'):
+    "Split `items` (supposed to be a dataframe) by value in `col`"
+    def _inner(o, **kwargs):
+        assert isinstance(o, pd.DataFrame), "ColSplitter only works when your items are a pandas DataFrame"
+        valid_idx = o[col].values
+        return IndexSplitter(mask2idxs(valid_idx))(o)
     return _inner
 
 #Cell
