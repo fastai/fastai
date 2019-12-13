@@ -68,9 +68,9 @@ def xresnet34_deeper(pretrained=False, **kwargs): return _xresnet(pretrained, 1,
 def xresnet50_deeper(pretrained=False, **kwargs): return _xresnet(pretrained, 4, [3,4,6,3,1,1,1,1], **kwargs)
 
 #Cell
-se_kwargs1 = dict(groups=1 , reduction=16, p=None)
-se_kwargs2 = dict(groups=32, reduction=16, p=None)
-se_kwargs3 = dict(groups=32, reduction=0,  p=None)
+se_kwargs1 = dict(groups=1 , reduction=16)
+se_kwargs2 = dict(groups=32, reduction=16)
+se_kwargs3 = dict(groups=32, reduction=0)
 g0 = [2,2,2,2]
 g1 = [3,4,6,3]
 g2 = [3,4,23,3]
