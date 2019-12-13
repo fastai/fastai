@@ -128,6 +128,7 @@ class Tabular(CollBase, GetAttr, FilteredBase):
     def targ(self): return self.items[self.y_names]
     def all_col_names (self): return self.cat_names + self.cont_names + self.y_names
     def n_subsets(self): return 2
+    def new_empty(self): return self.new(self.items[:1])
 
 properties(Tabular,'loc','iloc','targ','all_col_names','n_subsets')
 
