@@ -7,6 +7,9 @@ fastai2: $(SRC)
 	nbdev_build_lib
 	touch fastai2
 
+docs_serve: docs
+	cd docs && bundle exec jekyll serve
+
 docs: $(SRC)
 	nbdev_build_docs
 	touch docs
