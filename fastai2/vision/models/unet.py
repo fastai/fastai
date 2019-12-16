@@ -26,7 +26,8 @@ class UnetBlock(Module):
         ni = up_in_c//2 + x_in_c
         nf = ni if final_div else ni//2
         self.conv1 = ConvLayer(ni, nf, act_cls=act_cls, norm_type=norm_type, **kwargs)
-        self.conv2 = ConvLayer(nf, nf, act_cls=act_cls, norm_type=norm_type, xtra=SelfAttention(nf) if self_attention else None, **kwargs)
+        self.conv2 = ConvLayer(nf, nf, act_cls=act_cls, norm_type=norm_type,
+                               xtra=SelfAttention(nf) if self_attention else None, **kwargs)
         self.relu = act_cls()
         apply_init(nn.Sequential(self.conv1, self.conv2), init)
 

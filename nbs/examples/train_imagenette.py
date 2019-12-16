@@ -20,36 +20,36 @@ def get_dbunch(size, woof, bs, sh=0., workers=None):
                        splitter=GrandparentSplitter(valid_name='val'),
                        get_items=get_image_files, get_y=parent_label)
     item_tfms=[RandomResizedCrop(size, min_scale=0.35), FlipItem(0.5)]
-    batch_tfms=RandomErasing(p=0.9, max_count=3, sh=sh) if sh else None
+    batch_tfms=RandomErasing(p=0.3, max_count=3, sh=sh) if sh else None
     return dblock.databunch(source, path=source, bs=bs, num_workers=workers,
                             item_tfms=item_tfms, batch_tfms=batch_tfms)
 
 @call_parse
 def main(
-        gpu:   Param("GPU to run on", int)=None,
-        woof:  Param("Use imagewoof (otherwise imagenette)", int)=0,
-        lr:    Param("Learning rate", float)=1e-2,
-        size:  Param("Size (px: 128,192,256)", int)=128,
-        sqrmom:Param("sqr_mom", float)=0.99,
-        mom:   Param("Momentum", float)=0.9,
-        eps:   Param("epsilon", float)=1e-6,
-        epochs:Param("Number of epochs", int)=5,
-        bs:    Param("Batch size", int)=64,
-        mixup: Param("Mixup", float)=0.,
-        opt:   Param("Optimizer (adam,rms,sgd,ranger)", str)='ranger',
-        arch:  Param("Architecture", str)='xresnet50',
-        sh:    Param("Random erase max proportion", float)=0.,
-        sa:    Param("Self-attention", int)=0,
-        sym:   Param("Symmetry for self-attention", int)=0,
-        beta:  Param("SAdam softplus beta", float)=0.,
-        act_fn:Param("Activation function", str)='MishJit',
-        fp16:  Param("Use mixed precision training", int)=0,
-        pool:  Param("Pooling method", str)='AvgPool',
-        dump:  Param("Print model; don't train", int)=0,
-        runs:  Param("Number of times to repeat training", int)=1,
-        meta:  Param("Metadata (ignored)", str)='',
-        ):
-    "Distributed training of Imagenette."
+    gpu:   Param("GPU to run on", int)=None,
+    woof:  Param("Use imagewoof (otherwise imagenette)", int)=0,
+    lr:    Param("Learning rate", float)=1e-2,
+    size:  Param("Size (px: 128,192,256)", int)=128,
+    sqrmom:Param("sqr_mom", float)=0.99,
+    mom:   Param("Momentum", float)=0.9,
+    eps:   Param("epsilon", float)=1e-6,
+    epochs:Param("Number of epochs", int)=5,
+    bs:    Param("Batch size", int)=64,
+    mixup: Param("Mixup", float)=0.,
+    opt:   Param("Optimizer (adam,rms,sgd,ranger)", str)='ranger',
+    arch:  Param("Architecture", str)='xresnet50',
+    sh:    Param("Random erase max proportion", float)=0.,
+    sa:    Param("Self-attention", int)=0,
+    sym:   Param("Symmetry for self-attention", int)=0,
+    beta:  Param("SAdam softplus beta", float)=0.,
+    act_fn:Param("Activation function", str)='MishJit',
+    fp16:  Param("Use mixed precision training", int)=0,
+    pool:  Param("Pooling method", str)='AvgPool',
+    dump:  Param("Print model; don't train", int)=0,
+    runs:  Param("Number of times to repeat training", int)=1,
+    meta:  Param("Metadata (ignored)", str)=''
+):
+    "Training of Imagenette."
 
     #gpu = setup_distrib(gpu)
     if gpu is not None: torch.cuda.set_device(gpu)
@@ -59,7 +59,7 @@ def main(
     elif opt=='ranger': opt_func = partial(ranger, mom=mom, sqr_mom=sqrmom, eps=eps, beta=beta)
 
     dbunch = get_dbunch(size, woof, bs, sh=sh)
-    if not gpu: print(f'lr: {lr}; size: {size}; sqrmom: {sqrmom}; mom: {mom}; eps: {eps}')
+    if not gpu: print(f'epochs: {epochs}; lr: {lr}; size: {size}; sqrmom: {sqrmom}; mom: {mom}; eps: {eps}')
 
     m,act_fn,pool = [globals()[o] for o in (arch,act_fn,pool)]
 

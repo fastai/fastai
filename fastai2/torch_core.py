@@ -18,7 +18,8 @@ from .torch_imports import *
 #Cell
 if torch.cuda.is_available():
     if torch.cuda.current_device()==0:
-        torch.cuda.set_device(int(os.environ.get('DEFAULT_GPU') or 0))
+        def_gpu = int(os.environ.get('DEFAULT_GPU') or 0)
+        if torch.cuda.device_count()>=def_gpu: torch.cuda.set_device(def_gpu)
     torch.backends.cudnn.benchmark = True
 
 #Cell
