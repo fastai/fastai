@@ -10,14 +10,19 @@ from .data.all import *
 from .optimizer import *
 
 #Cell
+_inner_loop = "begin_batch after_pred after_loss after_backward after_step after_cancel_batch after_batch".split()
+
+#Cell
 class Callback(GetAttr):
     "Basic class handling tweaks of the training loop by changing a `Learner` in various events"
-    _default,learn,run = 'learn',None,True
+    _default,learn,run,run_train,run_valid = 'learn',None,True,True,True
     def __repr__(self): return type(self).__name__
 
     def __call__(self, event_name):
         "Call `self.{event_name}` if it's defined"
-        if self.run: getattr(self, event_name, noop)()
+        _run = (event_name not in _inner_loop or (self.run_train and getattr(self, 'training', True)) or
+               (self.run_valid and not getattr(self, 'training', False)))
+        if self.run and _run: getattr(self, event_name, noop)()
 
     @property
     def name(self):
@@ -27,6 +32,7 @@ class Callback(GetAttr):
 #Cell
 class TrainEvalCallback(Callback):
     "`Callback` that tracks the number of iterations done and properly sets training/eval mode"
+    run_valid = False
     def begin_fit(self):
         "Set the iter and epoch counters to 0, put the model and the right device"
         self.learn.train_iter,self.learn.pct_train = 0,0.
@@ -34,7 +40,6 @@ class TrainEvalCallback(Callback):
 
     def after_batch(self):
         "Update the iter counter (in training mode)"
-        if not self.training: return
         self.learn.pct_train += 1./(self.n_iter*self.n_epoch)
         self.learn.train_iter += 1
 

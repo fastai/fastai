@@ -57,21 +57,17 @@ def combined_cos(pct, start, middle, end):
 @docs
 class ParamScheduler(Callback):
     "Schedule hyper-parameters according to `scheds`"
-    run_after=TrainEvalCallback
+    run_after,run_valid = TrainEvalCallback,False
 
     def __init__(self, scheds): self.scheds = scheds
     def begin_fit(self): self.hps = {p:[] for p in self.scheds.keys()}
+    def begin_batch(self): self._update_val(self.pct_train)
 
     def _update_val(self, pct):
         for n,f in self.scheds.items(): self.opt.set_hyper(n, f(pct))
 
-    def begin_batch(self):
-        if not self.training: return
-        self._update_val(self.pct_train)
-
     def after_batch(self):
-        if self.training:
-            for p in self.scheds.keys(): self.hps[p].append(self.opt.hypers[-1][p])
+        for p in self.scheds.keys(): self.hps[p].append(self.opt.hypers[-1][p])
 
     def after_fit(self):
         if hasattr(self.learn, 'recorder'): self.recorder.hps = self.hps

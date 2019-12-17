@@ -15,7 +15,7 @@ def reduce_loss(loss, reduction='mean'):
 
 #Cell
 class MixUp(Callback):
-    run_after=[Normalize, Cuda]
+    run_after,run_valid = [Normalize, Cuda],False
     def __init__(self, alpha=0.4): self.distrib = Beta(tensor(alpha), tensor(alpha))
     def begin_fit(self):
         self.stack_y = getattr(self.learn.loss_func, 'y_int', False)
@@ -25,7 +25,6 @@ class MixUp(Callback):
         if self.stack_y: self.learn.loss_func = self.old_lf
 
     def begin_batch(self):
-        if not self.training: return
         lam = self.distrib.sample((self.y.size(0),)).squeeze().to(self.x.device)
         lam = torch.stack([lam, 1-lam], 1)
         self.lam = lam.max(1)[0]
