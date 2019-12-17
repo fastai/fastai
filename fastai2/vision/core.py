@@ -210,7 +210,7 @@ class PointScaler(Transform):
     def decodes(self, x:(PILBase,TensorImageBase)): return self._grab_sz(x)
 
     def encodes(self, x:TensorPoint): return _scale_pnts(x, self._get_sz(x), self.do_scale, self.y_first)
-    def decodes(self, x:TensorPoint): return _unscale_pnts(x.view(x.size(0), -1, 2), self._get_sz(x))
+    def decodes(self, x:TensorPoint): return _unscale_pnts(x.view(-1, 2), self._get_sz(x))
 
 #Cell
 class BBoxLabeler(Transform):
