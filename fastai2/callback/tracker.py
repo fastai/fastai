@@ -87,7 +87,7 @@ class SaveModelCallback(TrackerCallback):
             super().after_epoch()
             if self.new_best: self._save(f'{self.fname}')
 
-    def on_train_end(self, **kwargs):
+    def after_fit(self, **kwargs):
         "Load the best model."
         if not self.every_epoch: self.learn.load(f'{self.fname}')
 
