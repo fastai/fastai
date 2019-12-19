@@ -102,16 +102,18 @@ class TfmdDL(DataLoader):
 class DataBunch(GetAttr):
     "Basic wrapper around several `DataLoader`s."
     _default='train_dl'
-
-    def __init__(self, *dls, path='.'): self.dls,self.path = dls,Path(path)
+    def __init__(self, *dls, path='.', device=None): self.dls,self.path = dls,Path(path)
     def __getitem__(self, i): return self.dls[i]
-
     def new_empty(self):
         dls = [dl.new(dl.dataset.new_empty()) for dl in self.dls]
         return type(self)(*dls)
 
     train_dl,valid_dl = add_props(lambda i,x: x[i])
     train_ds,valid_ds = add_props(lambda i,x: x[i].dataset)
+
+    def cuda(self, device=None):
+        for dl in self.dls: dl.device = default_device() if device is None else device
+        return self
 
     @classmethod
     @delegates(TfmdDL.__init__)
@@ -123,6 +125,7 @@ class DataBunch(GetAttr):
                valid_dl="Validation `DataLoader`",
                train_ds="Training `Dataset`",
                valid_ds="Validation `Dataset`",
+               cuda="Use `device` (defaults to `default_device()`)",
                new_empty="Create a new empty version of `self` with the same transforms",
                from_dblock="Create a databunch from a given `dblock`")
 

@@ -122,7 +122,7 @@ _loop = ['Start Fit', 'begin_fit', 'Start Epoch Loop', 'begin_epoch', 'Start Tra
          'after_cancel_fit', 'after_fit']
 
 #Cell
-defaults.lr = slice(3e-3)
+defaults.lr = 1e-3
 defaults.wd = 1e-2
 defaults.callbacks = [TrainEvalCallback]
 

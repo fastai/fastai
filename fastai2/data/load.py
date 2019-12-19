@@ -61,16 +61,18 @@ class DataLoader(GetAttr):
     _noop_methods = 'wif before_iter after_item before_batch after_batch after_iter'.split()
     for o in _noop_methods:
         exec(f"def {o}(self, x=None, *args, **kwargs): return x")
-    _methods = _noop_methods + 'create_batches create_item create_batch retain'.split()
+    _methods = _noop_methods + 'create_batches create_item create_batch retain \
+        get_idxs sample shuffle_fn do_batch create_batch'.split()
     _default = 'dataset'
-    def __init__(self, dataset=None, bs=None, num_workers=0, pin_memory=False, timeout=0,
-                 shuffle=False, drop_last=False, indexed=None, n=None, **kwargs):
+    def __init__(self, dataset=None, bs=None, num_workers=0, pin_memory=False, timeout=0, batch_size=None,
+                 shuffle=False, drop_last=False, indexed=None, n=None, device=None, **kwargs):
+        if batch_size is not None: bs = batch_size # PyTorch compatibility
         assert not (bs is None and drop_last)
         if indexed is None: indexed = dataset is not None and hasattr(dataset,'__getitem__')
         if n is None:
             try: n = len(dataset)
             except TypeError: pass
-        store_attr(self, 'dataset,bs,shuffle,drop_last,indexed,n,pin_memory,timeout')
+        store_attr(self, 'dataset,bs,shuffle,drop_last,indexed,n,pin_memory,timeout,device')
         self.rng,self.nw,self.offs = random.Random(),1,0
         self.fake_l = _FakeLoader(self, pin_memory, num_workers, timeout)
 
@@ -92,7 +94,9 @@ class DataLoader(GetAttr):
     def __iter__(self):
         self.randomize()
         self.before_iter()
-        for b in _loaders[self.fake_l.num_workers==0](self.fake_l): yield self.after_batch(b)
+        for b in _loaders[self.fake_l.num_workers==0](self.fake_l):
+            if self.device is not None: b = to_device(b, self.device)
+            yield self.after_batch(b)
         self.after_iter()
         if hasattr(self, 'it'): delattr(self, 'it')
 
