@@ -29,7 +29,7 @@ class Darknet(Module):
         "create darknet with `nf` and `num_blocks` layers"
         layers = [conv_bn_lrelu(3, nf, ks=3, stride=1)]
         for i,nb in enumerate(num_blocks):
-            layers += self.make_group_layer(nf, nb, stride=2-(i==1))
+            layers += self.make_group_layer(nf, nb, stride=2)
             nf *= 2
         layers += [nn.AdaptiveAvgPool2d(1), Flatten(), nn.Linear(nf, num_classes)]
         self.layers = nn.Sequential(*layers)
