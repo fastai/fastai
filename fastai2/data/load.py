@@ -109,7 +109,7 @@ class DataLoader(GetAttr):
         if dataset is None: dataset = self.dataset
         if cls is None: cls = type(self)
         cur_kwargs = dict(dataset=dataset, num_workers=self.fake_l.num_workers, pin_memory=self.pin_memory, timeout=self.timeout,
-                          bs=self.bs, shuffle=self.shuffle, drop_last=self.drop_last, indexed=self.indexed)
+                          bs=self.bs, shuffle=self.shuffle, drop_last=self.drop_last, indexed=self.indexed, device=self.device)
         for n in self._methods: cur_kwargs[n] = getattr(self, n)
         return cls(**merge(cur_kwargs, kwargs))
 
