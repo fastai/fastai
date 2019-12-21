@@ -38,11 +38,10 @@ class TfmdDL(DataLoader):
             kwargs[nm] = Pipeline(kwargs.get(nm,None), as_item=(nm=='before_batch'))
         super().__init__(dataset, bs=bs, shuffle=shuffle, num_workers=num_workers, **kwargs)
         for nm in _batch_tfms: kwargs[nm].setup(self)
-        if self.device is None: self._one_pass()
 
     def _one_pass(self):
         its = self.after_batch(self.do_batch([self.do_item(0)]))
-        if self.device is None: self.device = find_device(its)
+        self._device = find_device(its)
         self._n_inp = 1 if not isinstance(its, (list,tuple)) or len(its)==1 else len(its)-1
         self._retain_dl = partial(retain_types, typs=mapped(type,its))
 
@@ -86,6 +85,14 @@ class TfmdDL(DataLoader):
         res = (x,x1,None,None) if its is None else (x, y, its, outs.itemgot(slice(self.n_inp,None)))
         if not show: return res
         show_results(*res, ctxs=ctxs, max_n=max_n, **kwargs)
+
+    @property
+    def device(self):
+        if not getattr(self, '_device', None): self._one_pass()
+        return self._device
+
+    @device.setter
+    def device(self, v): self._device = v
 
     @property
     def n_inp(self):

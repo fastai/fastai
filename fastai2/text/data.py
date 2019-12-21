@@ -44,7 +44,6 @@ class Numericalize(Transform):
 @delegates()
 class LMDataLoader(TfmdDL):
     def __init__(self, dataset, lens=None, cache=2, bs=64, seq_len=72, num_workers=0, **kwargs):
-        super().__init__(dataset=dataset, bs=bs, num_workers=num_workers, **kwargs)
         self.items = ReindexCollection([(o[0] if isinstance(o, tuple) else o)
                                           for o in dataset], cache=cache)
         self.seq_len = seq_len
@@ -52,11 +51,12 @@ class LMDataLoader(TfmdDL):
         self.lens = ReindexCollection(lens, idxs=self.items.idxs)
         # The "-1" is to allow for final label, we throw away the end that's less than bs
         corpus = round_multiple(sum(lens)-1, bs, round_down=True)
-        self.bl = corpus//bs #bl for batch length
+        self.bl = corpus//bs #bl stands for batch length
         self.n_batches = self.bl//(seq_len) + int(self.bl%seq_len!=0)
         self.last_len = self.bl - (self.n_batches-1)*seq_len
-        self.n = self.n_batches*bs
         self.make_chunks()
+        super().__init__(dataset=dataset, bs=bs, num_workers=num_workers, **kwargs)
+        self.n = self.n_batches*bs
 
     def make_chunks(self): self.chunks = Chunks(self.items, self.lens)
     def shuffle_fn(self,idxs):
