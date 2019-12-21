@@ -200,6 +200,8 @@ def download_url(url:str, dest:str, overwrite:bool=False, pbar:ProgressBar=None,
 
     s = requests.Session()
     s.mount('http://',requests.adapters.HTTPAdapter(max_retries=retries))
+    # additional line to identify as a firefox browser, see #2438
+    s.headers.update({'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:71.0) Gecko/20100101 Firefox/71.0'}) 
     u = s.get(url, stream=True, timeout=timeout)
     try: file_size = int(u.headers["Content-Length"])
     except: show_progress = False
