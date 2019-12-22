@@ -126,7 +126,7 @@ class DataLoader(GetAttr):
     def create_batch(self, b): return (fa_collate,fa_convert)[self.prebatched](b)
     def do_batch(self, b): return self.retain(self.create_batch(self.before_batch(b)), b)
     def one_batch(self):
-        if self.n < self.bs: raise ValueError(f'Batch size is {self.bs} but dataset only contains {self.n} items')
+        if self.n == 0: raise ValueError(f'Dataset does not contain any items')
         with self.fake_l.no_multiproc(): res = first(self)
         if hasattr(self, 'it'): delattr(self, 'it')
         return res
