@@ -1,6 +1,7 @@
 ---
 
 title: Model hooks
+
 keywords: fastai
 sidebar: home_sidebar
 
@@ -216,7 +217,7 @@ summary: "Callback and helper function to add hooks in models"
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="Hook.hook_fn" class="doc_header"><code>Hook.hook_fn</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/hook.py#L19" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Hook.hook_fn</code>(<strong><code>module</code></strong>, <strong><code>input</code></strong>, <strong><code>output</code></strong>)</p>
 </blockquote>
-<p>Applies <code>hook_func</code> to <code>module</code>, <code>input</code>, <code>output</code>.</p>
+<p>Applies <code>hook_func</code> to <a href="layers.html#module"><code>module</code></a>, <code>input</code>, <code>output</code>.</p>
 
 </div>
 
@@ -360,7 +361,7 @@ summary: "Callback and helper function to add hooks in models"
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="hook_output" class="doc_header"><code>hook_output</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/hook.py#L40" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>hook_output</code>(<strong><code>module</code></strong>, <strong><code>detach</code></strong>=<em><code>True</code></em>, <strong><code>cpu</code></strong>=<em><code>False</code></em>, <strong><code>grad</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
-<p>Return a <a href="callback.hook.html#Hook"><code>Hook</code></a> that stores activations of <code>module</code> in <code>self.stored</code></p>
+<p>Return a <a href="callback.hook.html#Hook"><code>Hook</code></a> that stores activations of <a href="layers.html#module"><code>module</code></a> in <code>self.stored</code></p>
 
 </div>
 
@@ -372,7 +373,7 @@ summary: "Callback and helper function to add hooks in models"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The activations stored are the gradients if <code>grad=True</code>, otherwise the output of <code>module</code>. If <code>detach=True</code> they are detached from their history, and if <code>cpu=True</code>, they're put on the CPU.</p>
+<p>The activations stored are the gradients if <code>grad=True</code>, otherwise the output of <a href="layers.html#module"><code>module</code></a>. If <code>detach=True</code> they are detached from their history, and if <code>cpu=True</code>, they're put on the CPU.</p>
 
 </div>
 </div>

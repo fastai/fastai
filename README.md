@@ -18,6 +18,7 @@
 You can get all the necessary dependencies by simply installing fastai v1: `conda install -c fastai -c pytorch fastai`. Or alternatively you can automatically install the dependencies into a new environment:
 
 ```bash
+git clone https://github.com/fastai/fastai2
 cd fastai2
 conda env create -f environment.yml
 source activate fastai2

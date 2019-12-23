@@ -1,6 +1,7 @@
 ---
 
 title: Layers
+
 keywords: fastai
 sidebar: home_sidebar
 
@@ -29,7 +30,7 @@ summary: "Custom fastai layers and basic functions to grab them."
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">nbdev.showdoc</span> <span class="kn">import</span> <span class="o">*</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">nbdev.showdoc</span> <span class="k">import</span> <span class="o">*</span>
 </pre></div>
 
     </div>
@@ -134,7 +135,7 @@ summary: "Custom fastai layers and basic functions to grab them."
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">_add2</span><span class="p">(</span><span class="n">x</span><span class="p">):</span> <span class="k">return</span> <span class="n">x</span><span class="o">+</span><span class="mi">2</span>
-<span class="n">tst</span> <span class="o">=</span> <span class="n">Lambda</span><span class="p">(</span><span class="n">_f</span><span class="p">)</span>
+<span class="n">tst</span> <span class="o">=</span> <span class="n">Lambda</span><span class="p">(</span><span class="n">_add2</span><span class="p">)</span>
 <span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">20</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">tst</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">x</span><span class="o">+</span><span class="mi">2</span><span class="p">)</span>
 <span class="n">tst2</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">pickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">tst</span><span class="p">))</span>
@@ -154,7 +155,7 @@ summary: "Custom fastai layers and basic functions to grab them."
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>func: _f</pre>
+<pre>func: _add2</pre>
 </div>
 
 </div>
@@ -1158,10 +1159,10 @@ summary: "Custom fastai layers and basic functions to grab them."
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>tensor([[0.5202, 0.6840, 0.5298, 1.4648, 0.4183],
-        [1.7444, 1.2426, 0.0903, 0.7532, 1.0736],
-        [0.5342, 0.7091, 1.2167, 0.4756, 1.1456],
-        [0.6524, 0.2775, 1.5085, 0.2739, 0.7720]])</pre>
+<pre>tensor([[1.7192, 0.7985, 1.2386, 0.2642, 1.3247],
+        [0.4878, 1.2070, 0.7573, 0.1293, 0.1671],
+        [1.2599, 1.5770, 1.3197, 0.4662, 0.5259],
+        [1.5233, 0.8510, 0.5286, 0.3354, 0.5520]])</pre>
 </div>
 
 </div>
@@ -2413,7 +2414,7 @@ extending torch.autograd.</p>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">TstModule</span><span class="p">(</span><span class="n">Module</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">lin</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">1</span><span class="p">)),</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">lin</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">1</span><span class="p">)),</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span>
 
 <span class="n">tst</span> <span class="o">=</span> <span class="n">TstModule</span><span class="p">()</span>
 <span class="n">children</span> <span class="o">=</span> <span class="n">children_and_parameters</span><span class="p">(</span><span class="n">tst</span><span class="p">)</span>

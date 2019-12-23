@@ -1,6 +1,7 @@
 ---
 
 title: Transfer learning in text
+
 keywords: fastai
 sidebar: home_sidebar
 
@@ -26,9 +27,9 @@ summary: "How to fine-tune a language model and train a classifier"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">fastai2.basics</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">fastai2.text.all</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">fastai2.callback.all</span> <span class="kn">import</span> <span class="o">*</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">fastai2.basics</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">fastai2.text.all</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">fastai2.callback.all</span> <span class="k">import</span> <span class="o">*</span>
 </pre></div>
 
     </div>
@@ -41,7 +42,7 @@ summary: "How to fine-tune a language model and train a classifier"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">nbdev.showdoc</span> <span class="kn">import</span> <span class="o">*</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">nbdev.showdoc</span> <span class="k">import</span> <span class="o">*</span>
 </pre></div>
 
     </div>
@@ -172,7 +173,7 @@ summary: "How to fine-tune a language model and train a classifier"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dbunch</span><span class="o">.</span><span class="n">show_batch</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dbunch</span><span class="o">.</span><span class="n">show_batch</span><span class="p">(</span><span class="n">max_n</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -197,48 +198,13 @@ summary: "How to fine-tune a language model and train a classifier"
   <tbody>
     <tr>
       <th>0</th>
-      <td>xxbos xxmaj the line is funnier in xxmaj england , where , away from xxmaj vixen ! 's native xxmaj america , the word " xxunk " has a whole new meaning . xxmaj sadly , it 's the only laugh you 'll get in this terrible sex comedy that is neither sexy nor funny . \n\n xxmaj oddly xxunk with painted - on xxunk , xxmaj xxunk xxmaj gavin ( acting</td>
-      <td>xxmaj the line is funnier in xxmaj england , where , away from xxmaj vixen ! 's native xxmaj america , the word " xxunk " has a whole new meaning . xxmaj sadly , it 's the only laugh you 'll get in this terrible sex comedy that is neither sexy nor funny . \n\n xxmaj oddly xxunk with painted - on xxunk , xxmaj xxunk xxmaj gavin ( acting ability</td>
+      <td>xxbos i saw this movie once as a kid on the late - late show and fell in love with it . \n\n xxmaj it took 30 + years , but i recently did find it on xxup dvd - it was n't cheap , either - in a catalog that xxunk in war movies . xxmaj we watched it last night for the first time . xxmaj the audio was good</td>
+      <td>i saw this movie once as a kid on the late - late show and fell in love with it . \n\n xxmaj it took 30 + years , but i recently did find it on xxup dvd - it was n't cheap , either - in a catalog that xxunk in war movies . xxmaj we watched it last night for the first time . xxmaj the audio was good ,</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>character , but the rest of his hard - xxunk xxunk want the hit - man dead . xxmaj like most crime thrillers in the 1960s and 1970s , " big xxmaj guns " xxunk to the cinematic morality that crime does not pay . xxmaj interestingly , the one man who has nothing to do with the murder of the wife and son of the hero survives while another xxunk the</td>
-      <td>, but the rest of his hard - xxunk xxunk want the hit - man dead . xxmaj like most crime thrillers in the 1960s and 1970s , " big xxmaj guns " xxunk to the cinematic morality that crime does not pay . xxmaj interestingly , the one man who has nothing to do with the murder of the wife and son of the hero survives while another xxunk the hero</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>but xxunk xxmaj mr . xxmaj burton forgets that his xxunk have working brains . xxmaj the over the top xxunk of xxmaj xxunk xxmaj xxunk xxmaj carter 's chimp , the xxunk of the humans ' xxunk , the ease of their escape , their extraordinary skills of xxunk ( this is an astronaut and a group of human xxunk suddenly riding full xxunk ) , the massive and immediate human</td>
-      <td>xxunk xxmaj mr . xxmaj burton forgets that his xxunk have working brains . xxmaj the over the top xxunk of xxmaj xxunk xxmaj xxunk xxmaj carter 's chimp , the xxunk of the humans ' xxunk , the ease of their escape , their extraordinary skills of xxunk ( this is an astronaut and a group of human xxunk suddenly riding full xxunk ) , the massive and immediate human xxunk</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>ingredients : it is just as poorly acted as their other efforts , we can watch xxmaj bo xxunk or xxunk for wet xxmaj t - shirt xxunk quite frequently , the story is just laughably idiotic , and the film takes itself much too seriously . xxmaj and then : xxmaj xxunk xxmaj xxunk in xxmaj africa ? \n\n xxmaj but it has a few things going for it . xxmaj</td>
-      <td>: it is just as poorly acted as their other efforts , we can watch xxmaj bo xxunk or xxunk for wet xxmaj t - shirt xxunk quite frequently , the story is just laughably idiotic , and the film takes itself much too seriously . xxmaj and then : xxmaj xxunk xxmaj xxunk in xxmaj africa ? \n\n xxmaj but it has a few things going for it . xxmaj bo</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>married to director xxmaj michael xxmaj xxunk . \n\n xxmaj but for me , the most memorable and weird aspect of the film is the seemingly gay subplot -- sort of like a xxup xxunk xxup mountain from the 1930s ( and we thought this was a xxup new idea ) . xxmaj gary xxmaj cooper 's character was raised by two men who hate women and do everything they can through</td>
-      <td>to director xxmaj michael xxmaj xxunk . \n\n xxmaj but for me , the most memorable and weird aspect of the film is the seemingly gay subplot -- sort of like a xxup xxunk xxup mountain from the 1930s ( and we thought this was a xxup new idea ) . xxmaj gary xxmaj cooper 's character was raised by two men who hate women and do everything they can through much</td>
-    </tr>
-    <tr>
-      <th>5</th>
-      <td>males and xxunk some of their body parts , was probably the most xxunk serial killer of our generation . xxmaj however , the real sick individuals are the filmmakers of this awful spectacle who should have had their heads examined before deciding to xxunk this awful ` xxunk ' project . xxmaj this is not an easy film to xxunk , even though xxmaj jeffrey would have easily xxunk it with</td>
-      <td>and xxunk some of their body parts , was probably the most xxunk serial killer of our generation . xxmaj however , the real sick individuals are the filmmakers of this awful spectacle who should have had their heads examined before deciding to xxunk this awful ` xxunk ' project . xxmaj this is not an easy film to xxunk , even though xxmaj jeffrey would have easily xxunk it with some</td>
-    </tr>
-    <tr>
-      <th>6</th>
-      <td>xxmaj grandfather who 's the only semi - likable character in this whole mess . xxmaj do n't waste your money , or time . xxmaj in fact here 's a word of advice , xxmaj if xxmaj troma puts it out on xxup dvd , but does xxup not make it themselves , in all likelihood it 's crap . \n\n xxmaj troma xxup dvd extras : commentary with xxmaj omar</td>
-      <td>grandfather who 's the only semi - likable character in this whole mess . xxmaj do n't waste your money , or time . xxmaj in fact here 's a word of advice , xxmaj if xxmaj troma puts it out on xxup dvd , but does xxup not make it themselves , in all likelihood it 's crap . \n\n xxmaj troma xxup dvd extras : commentary with xxmaj omar and</td>
-    </tr>
-    <tr>
-      <th>7</th>
-      <td>and xxunk tragic . xxmaj not for kids . xxmaj not for those with thin skins or who lack xxunk . xxmaj thought - provoking . xxmaj at once literal , xxunk , and surreal in disturbing ways . xxmaj the xxunk comedy i can recall . \n\n xxmaj and very possibly the most wonderful thing i will ever see . xxbos xxmaj this movies is the best movie to watch for</td>
-      <td>xxunk tragic . xxmaj not for kids . xxmaj not for those with thin skins or who lack xxunk . xxmaj thought - provoking . xxmaj at once literal , xxunk , and surreal in disturbing ways . xxmaj the xxunk comedy i can recall . \n\n xxmaj and very possibly the most wonderful thing i will ever see . xxbos xxmaj this movies is the best movie to watch for comic</td>
-    </tr>
-    <tr>
-      <th>8</th>
-      <td>movie , since i like zombies and horror movies in general . xxmaj but i did not think it would be such a piece of sh!t like it was . xxmaj the only zombie in the movie is at the beginning and he gets ran over by a god damn car xxrep 3 ! xxmaj the movie looks to be written by a porn director and filled by porn actors , i</td>
-      <td>, since i like zombies and horror movies in general . xxmaj but i did not think it would be such a piece of sh!t like it was . xxmaj the only zombie in the movie is at the beginning and he gets ran over by a god damn car xxrep 3 ! xxmaj the movie looks to be written by a porn director and filled by porn actors , i would</td>
+      <td>least they can be . xxmaj they have made some good films and had some incredibly funny performances along the way . xxmaj but in here , not only does the premise xxunk all logic , not only is the acting terrible , not only is the entire movie offensive from start to finish , not only is the direction as amateurish as you can find , but they actually want you</td>
+      <td>they can be . xxmaj they have made some good films and had some incredibly funny performances along the way . xxmaj but in here , not only does the premise xxunk all logic , not only is the acting terrible , not only is the entire movie offensive from start to finish , not only is the direction as amateurish as you can find , but they actually want you to</td>
     </tr>
   </tbody>
 </table>
@@ -304,11 +270,11 @@ summary: "How to fine-tune a language model and train a classifier"
   <tbody>
     <tr>
       <td>0</td>
-      <td>4.450261</td>
-      <td>4.002472</td>
-      <td>0.273968</td>
-      <td>54.733280</td>
-      <td>00:15</td>
+      <td>4.426387</td>
+      <td>4.004548</td>
+      <td>0.275322</td>
+      <td>54.847004</td>
+      <td>00:14</td>
     </tr>
   </tbody>
 </table>
@@ -354,35 +320,35 @@ summary: "How to fine-tune a language model and train a classifier"
   <tbody>
     <tr>
       <td>0</td>
-      <td>4.380655</td>
-      <td>4.388360</td>
-      <td>0.237928</td>
-      <td>80.508240</td>
-      <td>00:19</td>
+      <td>4.373950</td>
+      <td>4.376214</td>
+      <td>0.240014</td>
+      <td>79.536301</td>
+      <td>00:16</td>
     </tr>
     <tr>
       <td>1</td>
-      <td>4.286285</td>
-      <td>4.307310</td>
-      <td>0.248634</td>
-      <td>74.240486</td>
-      <td>00:17</td>
+      <td>4.298529</td>
+      <td>4.310582</td>
+      <td>0.250852</td>
+      <td>74.483803</td>
+      <td>00:16</td>
     </tr>
     <tr>
       <td>2</td>
-      <td>3.900547</td>
-      <td>4.226243</td>
-      <td>0.261510</td>
-      <td>68.459518</td>
-      <td>00:17</td>
+      <td>3.891712</td>
+      <td>4.226720</td>
+      <td>0.259793</td>
+      <td>68.492233</td>
+      <td>00:16</td>
     </tr>
     <tr>
       <td>3</td>
-      <td>3.377858</td>
-      <td>4.264581</td>
-      <td>0.262330</td>
-      <td>71.135124</td>
-      <td>00:17</td>
+      <td>3.400854</td>
+      <td>4.267030</td>
+      <td>0.260507</td>
+      <td>71.309547</td>
+      <td>00:16</td>
     </tr>
   </tbody>
 </table>
@@ -441,63 +407,63 @@ summary: "How to fine-tune a language model and train a classifier"
   <tbody>
     <tr>
       <th>0</th>
-      <td>xxbos xxmaj this is n't one of xxmaj arbuckle 's or xxmaj keaton 's better films , that 's for sure . xxmaj fatty 's wife is tired of all his heavy drinking , so she takes him to a xxunk where a psychiatrist ( keaton ) claims to have a guaranteed cure ! xxmaj well , once there , xxmaj arbuckle accidentally eats a xxunk and is taken to surgery .</td>
-      <td>xxmaj this is n't one of xxmaj arbuckle 's or xxmaj keaton 's better films , that 's for sure . xxmaj fatty 's wife is tired of all his heavy drinking , so she takes him to a xxunk where a psychiatrist ( keaton ) claims to have a guaranteed cure ! xxmaj well , once there , xxmaj arbuckle accidentally eats a xxunk and is taken to surgery . xxmaj</td>
-      <td>xxmaj this is a a of those hollywood 's better xxmaj keaton 's better films , but 's what me , xxmaj the xxmaj wife , a of his the xxunk drinking , but he 's a to the xxunk xxunk he man ( robert ) is that be a xxunk cure . xxmaj the , he he , he jigsaw is xxunk a xxunk and turns thrown to the . xxmaj</td>
+      <td>xxbos xxmaj bill xxmaj paxton , of xxmaj aliens , xxmaj near xxmaj dark , and xxmaj xxunk fame , surprises me with his debut as director for xxmaj xxunk . xxmaj he hits on all xxunk , but there is one implausibility near the end that involves the xxup fbi agent ( powers xxmaj booth ) which xxunk a point from this otherwise chilling and thought provoking thriller . xxmaj other</td>
+      <td>xxmaj bill xxmaj paxton , of xxmaj aliens , xxmaj near xxmaj dark , and xxmaj xxunk fame , surprises me with his debut as director for xxmaj xxunk . xxmaj he hits on all xxunk , but there is one implausibility near the end that involves the xxup fbi agent ( powers xxmaj booth ) which xxunk a point from this otherwise chilling and thought provoking thriller . xxmaj other than</td>
+      <td>xxmaj this xxmaj paxton is xxmaj course xxunk , xxmaj xxunk xxmaj dark , and xxmaj xxunk xxmaj , are in with a xxunk . xxmaj and xxmaj xxunk xxmaj xxmaj the is the a the , and the is no thing in the end that is a two fbi agent ( powers xxmaj boothe ) who is his xxunk in the film xxunk and xxunk - thriller . xxmaj the than</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>references to xxmaj asimov 's xxmaj laws of xxmaj xxunk , but they are an xxunk to the xxup cgi and action scenes . \n\n xxmaj smith is likable , as he is in most of his films , but honestly , the story is n't that good . you figure it out long before these genius characters do . xxbos xxmaj my husband and i bought the xxmaj old xxmaj school</td>
-      <td>to xxmaj asimov 's xxmaj laws of xxmaj xxunk , but they are an xxunk to the xxup cgi and action scenes . \n\n xxmaj smith is likable , as he is in most of his films , but honestly , the story is n't that good . you figure it out long before these genius characters do . xxbos xxmaj my husband and i bought the xxmaj old xxmaj school xxmaj</td>
-      <td>to the xxunk 's " xxunk of xxmaj xxunk . and this did not xxunk of the xxunk xxunk . the scenes . xxmaj xxmaj the 's a as but he is a a of his films , but he , he movie is not that good . xxmaj can out out . ago you two xxunk will n't xxmaj xxmaj this wife and i bought this xxup xxunk xxmaj school xxmaj</td>
+      <td>'ll find out why they could become annoying ( http : / / xxunk / xxunk ) . xxmaj the main villain i guess is bad luck , fate , hand of xxmaj god ( no xxunk intended ) , or just plain xxmaj xxunk xxmaj xxunk ( billy xxmaj xxunk ) . xxmaj combine all of the above and what do you get ? ! xxmaj oh yes ! xxmaj we</td>
+      <td>find out why they could become annoying ( http : / / xxunk / xxunk ) . xxmaj the main villain i guess is bad luck , fate , hand of xxmaj god ( no xxunk intended ) , or just plain xxmaj xxunk xxmaj xxunk ( billy xxmaj xxunk ) . xxmaj combine all of the above and what do you get ? ! xxmaj oh yes ! xxmaj we get</td>
+      <td>be out that xxmaj were n't xxunk . xxunk : / / / / xxunk ) . xxmaj the plot character is would is xxmaj guy , and , and - xxmaj god , the one ) ) , or just a bad xxunk xxmaj xxunk ( xxunk xxmaj xxunk ) . xxmaj the all of the xxunk , the is you want ? xxmaj xxmaj the , , xxmaj the 're</td>
     </tr>
     <tr>
       <th>2</th>
-      <td>is the central philosophy of post modern capitalism : your xxunk is the most important thing . you must place yourself in the center , and no one else but you is the matter . this is the philosophy the film stands for , and that 's just it 's first sin . \n\n xxmaj if you disagree with me on the political side , xxmaj i 'm sure you will agree</td>
-      <td>the central philosophy of post modern capitalism : your xxunk is the most important thing . you must place yourself in the center , and no one else but you is the matter . this is the philosophy the film stands for , and that 's just it 's first sin . \n\n xxmaj if you disagree with me on the political side , xxmaj i 'm sure you will agree that</td>
-      <td>n't only xxunk of the modern capitalism . xxmaj xxunk are xxunk only important thing of xxmaj can see your in a woods of and you one will . you can n't only of xxmaj is a only of movie has for . and it 's what a 's not rate . xxmaj xxmaj the you want with the , the xxmaj side , you i 'm not you will be with</td>
+      <td>bernie xxmaj xxunk . xxmaj alfred develops a sort of " xxunk love " for xxmaj bernie while our young xxmaj zeon pilot also falls for xxmaj christina . \n\n " war in the xxmaj pocket " proves that you do not need a sweeping epic tale about special individuals to make for a good war story . xxmaj there are no xxunk xxunk pilots or large scale fleet battles to be</td>
+      <td>xxmaj xxunk . xxmaj alfred develops a sort of " xxunk love " for xxmaj bernie while our young xxmaj zeon pilot also falls for xxmaj christina . \n\n " war in the xxmaj pocket " proves that you do not need a sweeping epic tale about special individuals to make for a good war story . xxmaj there are no xxunk xxunk pilots or large scale fleet battles to be seen</td>
+      <td>xxmaj xxunk ( xxmaj he is a xxunk of xxunk xxunk " " for xxmaj bernie . his two xxmaj xxunk pilot is falls in xxmaj bernie . xxmaj xxmaj the " the xxmaj gold " is that the can n't know to lot xxunk story about the xxunk . create a a good war story . xxmaj the is some real in in , xxunk xxunk xxunk battles , be seen</td>
     </tr>
     <tr>
       <th>3</th>
-      <td>could had been a fine or even classic xxmaj b - movie , but here it is just a bad attempt at film - making . \n\n xxmaj director xxmaj philip xxup j. xxmaj jones tells the tale of xxmaj james xxmaj bishop ( matt xxmaj xxunk ) , a young xxunk resident , who just got his dream job at xxmaj st . xxmaj andrew xxmaj mental xxmaj hospital ; but</td>
-      <td>had been a fine or even classic xxmaj b - movie , but here it is just a bad attempt at film - making . \n\n xxmaj director xxmaj philip xxup j. xxmaj jones tells the tale of xxmaj james xxmaj bishop ( matt xxmaj xxunk ) , a young xxunk resident , who just got his dream job at xxmaj st . xxmaj andrew xxmaj mental xxmaj hospital ; but the</td>
-      <td>n't been a bit xxunk even xxunk movie hollywood - movie . but it 's was n't a xxunk movie at xxunk - making . xxmaj xxmaj the xxmaj xxunk xxmaj j. xxmaj xxunk is the story of a louis xxmaj xxunk ( james xxmaj damon ) , a professional man who who who is has his name job in a xxunk . xxmaj xxunk xxmaj hospital xxmaj hospital . he he</td>
+      <td>xxmaj it is 100 % visual xxunk : he gets his kicks by making the actors strip in the buff and look at their xxunk . xxmaj and if he does this in front of the audience , he might eve get a hard - on ! xxmaj did you know that , on the set of " xxunk xxmaj xxunk " , he used to xxunk poor xxmaj coca xxmaj xxunk</td>
+      <td>it is 100 % visual xxunk : he gets his kicks by making the actors strip in the buff and look at their xxunk . xxmaj and if he does this in front of the audience , he might eve get a hard - on ! xxmaj did you know that , on the set of " xxunk xxmaj xxunk " , he used to xxunk poor xxmaj coca xxmaj xxunk ,</td>
+      <td>xxunk 's a % xxunk xxunk , xxmaj is his xxunk in making a movie look in the middle and xxunk at the xxunk . xxmaj the the you 's n't , the of the camera , he is be be a xxunk - to - xxmaj he n't really that he he the other of the xxunk xxmaj xxunk " , he 's to be his xxmaj xxunk xxmaj xxunk ,</td>
     </tr>
     <tr>
       <th>4</th>
-      <td>it has on the kid caught in between . xxmaj as a child of divorced parents i was totally relating to events in the film . xxmaj also - a really cool zombie twist which i thought was xxup very xxup original . xxmaj i 'm tired of the same old stuff in movies . a very realistic portrait of a broken family and the effect it has on the kid caught</td>
-      <td>has on the kid caught in between . xxmaj as a child of divorced parents i was totally relating to events in the film . xxmaj also - a really cool zombie twist which i thought was xxup very xxup original . xxmaj i 'm tired of the same old stuff in movies . a very realistic portrait of a broken family and the effect it has on the kid caught in</td>
-      <td>'s been the whole 's in the . xxmaj the a whole of xxmaj parents , was xxunk relating to the in the movie . xxmaj the , the very good scene twist which was thought was a very xxup original . xxmaj the 'm sure of the old old stuff and movies like xxmaj lot good portrait of a young family and the xxunk it has on the kid . in</td>
+      <td>and good nature . xxmaj not to mention amusing , xxunk dialogue . xxmaj after xxmaj adeline has taken steps to save xxmaj fanfan from hanging , she meets the king in his private quarters . " give me your pretty little hand , " he says . " but my heart xxunk to xxmaj fanfan , " says xxmaj adeline . " who asks for your heart ? " says the</td>
+      <td>good nature . xxmaj not to mention amusing , xxunk dialogue . xxmaj after xxmaj adeline has taken steps to save xxmaj fanfan from hanging , she meets the king in his private quarters . " give me your pretty little hand , " he says . " but my heart xxunk to xxmaj fanfan , " says xxmaj adeline . " who asks for your heart ? " says the king</td>
+      <td>the . . xxmaj the only mention the acting xxunk , , xxmaj the all xxunk 's died her to save her fanfan from xxunk , she is xxmaj king 's the mouth quarters . xxmaj we me a heart little head " " says says " " you i friend xxunk ! xxmaj fanfan ! " says xxmaj adeline . xxmaj i knows for me heart ? " xxmaj xxmaj king</td>
     </tr>
     <tr>
       <th>5</th>
-      <td>" scene and had to stop . xxmaj we could n't take it anymore . xxmaj this film is an xxup xxunk for xxmaj xxunk xxmaj xxunk . \n\n xxmaj if you are a fan of xxmaj office xxmaj space … … do n't waste your time with this turd . 0 / 10 xxbos xxmaj what i think xxmaj i 'll probably like best about the new xxmaj star xxmaj wars</td>
-      <td>scene and had to stop . xxmaj we could n't take it anymore . xxmaj this film is an xxup xxunk for xxmaj xxunk xxmaj xxunk . \n\n xxmaj if you are a fan of xxmaj office xxmaj space … … do n't waste your time with this turd . 0 / 10 xxbos xxmaj what i think xxmaj i 'll probably like best about the new xxmaj star xxmaj wars film</td>
-      <td>xxunk " the a be " " it were n't help it to . " it is is a xxunk ok movie a xxunk xxmaj xxunk . xxmaj xxmaj the you want looking fan of xxmaj xxunk xxmaj space , xxmaj xxmaj n't bother your money . this movie . xxbos / 10 xxbos xxmaj this i think of i 'm say be is about this movie xxmaj star xxmaj wars movie</td>
+      <td>. \n\n xxmaj no , this film is n't terrible . xxmaj other than the laughable screenplay , it is n't poor . xxmaj the actors are all experienced and perform well here . xxmaj xxunk xxmaj xxunk , who plays xxmaj sajani , was part of wonderful xxmaj indian drama xxmaj water . xxmaj even director xxmaj sivan has an impressive xxunk . xxmaj he recently xxunk xxmaj the xxmaj terrorist</td>
+      <td>\n\n xxmaj no , this film is n't terrible . xxmaj other than the laughable screenplay , it is n't poor . xxmaj the actors are all experienced and perform well here . xxmaj xxunk xxmaj xxunk , who plays xxmaj sajani , was part of wonderful xxmaj indian drama xxmaj water . xxmaj even director xxmaj sivan has an impressive xxunk . xxmaj he recently xxunk xxmaj the xxmaj terrorist ,</td>
+      <td>xxmaj xxmaj the , no movie is not a . xxmaj it than that fact acting , it 's a even . xxmaj the acting are not very with very well . . xxmaj the xxmaj xxunk is xxmaj plays xxmaj xxunk , is a of the xxmaj xxunk history . xxunk . xxmaj the though xxmaj xxunk 's been amazing cast . xxmaj he is made the the xxmaj xxunk ,</td>
     </tr>
     <tr>
       <th>6</th>
-      <td>of the film is to show what kids of that moment in time were doing , what mattered to them . xxmaj it shows that teenagers in general are good , all that mattered to these everyday kids was music , dancing and friendship . xxmaj having watched the xxup dvd recently i was xxunk surprised how well it had stood the test of time ! xxmaj the clothes did n't look</td>
-      <td>the film is to show what kids of that moment in time were doing , what mattered to them . xxmaj it shows that teenagers in general are good , all that mattered to these everyday kids was music , dancing and friendship . xxmaj having watched the xxup dvd recently i was xxunk surprised how well it had stood the test of time ! xxmaj the clothes did n't look dated</td>
-      <td>the xxunk 's xxunk be how happens are the day are the are doing . and is to them . xxmaj the 's that the are the are not , and of is to the kids kids is the , music , music . xxmaj the read this film dvd i i was xxunk to that much it was been for test of time . xxmaj the film and n't make like</td>
+      <td>xxunk . xxmaj this is the movie in a xxunk . xxmaj then there is the bad acting and insipid dialogue . i actually have a lot of patience when it comes to b movies . xxmaj this one is xxunk . xxmaj by the way , a more xxunk title would be xxmaj revolt of the xxmaj hypnotized . xxbos xxmaj if somebody wants to make a really , xxup really</td>
+      <td>. xxmaj this is the movie in a xxunk . xxmaj then there is the bad acting and insipid dialogue . i actually have a lot of patience when it comes to b movies . xxmaj this one is xxunk . xxmaj by the way , a more xxunk title would be xxmaj revolt of the xxmaj hypnotized . xxbos xxmaj if somebody wants to make a really , xxup really bad</td>
+      <td>xxmaj xxmaj the is a only 's which xxunk , xxmaj it , is a xxunk acting , the dialogue . xxmaj think liked to lot of time to i comes to xxmaj movies . xxmaj the is is a . xxmaj it the way , it movie realistic , is be a xxunk of the xxmaj hypnotized . xxmaj xxmaj this you has to see a movie good good tv good</td>
     </tr>
     <tr>
       <th>7</th>
-      <td>. xxmaj there is xxunk and xxunk on both sides , and also the hope for change in the younger generation . \n\n xxmaj there is redemption of a sort , in the end , when xxmaj xxunk has to make a hard choice between a man who has ruined her life , but also truly loved her , and her family which has xxunk her , then later come looking for</td>
-      <td>xxmaj there is xxunk and xxunk on both sides , and also the hope for change in the younger generation . \n\n xxmaj there is redemption of a sort , in the end , when xxmaj xxunk has to make a hard choice between a man who has ruined her life , but also truly loved her , and her family which has xxunk her , then later come looking for her</td>
-      <td>xxmaj the are a xxunk xxunk in the sides . and the the xxunk for xxunk . the world generation . xxmaj xxmaj the is a of love xxunk of but fact end , where xxmaj xxunk xxmaj a xxunk a xxunk time with a man who has never her life and but she has xxunk her . and she mother is has never her and and her xxunk to for her</td>
+      <td>, one might hope that at least the critical " facts " that the story turns on might be based on actual events . xxmaj reagan was shot and the other characters were real people . xxmaj the movie got that right . xxmaj from there on , xxunk on facts rapidly xxunk . i had never heard of this movie before seeing it . xxmaj having been a xxup tv reporter</td>
+      <td>one might hope that at least the critical " facts " that the story turns on might be based on actual events . xxmaj reagan was shot and the other characters were real people . xxmaj the movie got that right . xxmaj from there on , xxunk on facts rapidly xxunk . i had never heard of this movie before seeing it . xxmaj having been a xxup tv reporter at</td>
+      <td>and of not that the least the xxunk xxunk xxunk " are this film is into are be a on the events . xxmaj the 's n't and was xxunk characters were xxunk . . xxmaj the film was a much . xxmaj the the , , the the the , xxunk . xxmaj was to heard of the movie before i it . xxmaj the read xxunk fan tv fan ,</td>
     </tr>
     <tr>
       <th>8</th>
-      <td>the deep freeze . mckenna had killed xxmaj wendt by biting a xxunk out of his neck . xxmaj now he feels he must destroy the evidence of his involvement in xxmaj wendt 's xxunk . ( what are the cops going to do , measure his bite xxunk ? ) mckenna xxunk xxmaj wendt 's head and neck from the freezer bag it 's in , takes an ax , and</td>
-      <td>deep freeze . mckenna had killed xxmaj wendt by biting a xxunk out of his neck . xxmaj now he feels he must destroy the evidence of his involvement in xxmaj wendt 's xxunk . ( what are the cops going to do , measure his bite xxunk ? ) mckenna xxunk xxmaj wendt 's head and neck from the freezer bag it 's in , takes an ax , and begins</td>
-      <td>xxmaj xxunk . xxmaj is a the dr by xxunk a xxunk over of his neck and xxmaj he he 's he 's have the xxunk of his xxunk in his jigsaw 's death . xxmaj he 's the victims going to do ) and his xxunk on ? ) xxmaj is his wendt 's head to legs in the head . . 's in . and a xxunk and and then</td>
+      <td>looking and young , and so he gives xxmaj jackman nothing to say or do . xxmaj like xxmaj johansson , he is used merely for his good looks . xxmaj this is a shame , because , as xxmaj jackman has shown in any number of productions , from " oklahoma " to " x xxmaj men , " he xxup can act . \n\n xxmaj here 's the big plot</td>
+      <td>and young , and so he gives xxmaj jackman nothing to say or do . xxmaj like xxmaj johansson , he is used merely for his good looks . xxmaj this is a shame , because , as xxmaj jackman has shown in any number of productions , from " oklahoma " to " x xxmaj men , " he xxup can act . \n\n xxmaj here 's the big plot twist</td>
+      <td>for looking people xxunk the on 's us xxunk a to do about do . xxmaj the xxmaj xxunk , he 's a to to his xxunk acting . xxmaj he is a very , because he as a jackman is done , his other of movies , he the xxunk " to " xxunk xxmaj men " " he 's is not as xxmaj xxmaj the , a only - twist</td>
     </tr>
     <tr>
       <th>9</th>
-      <td>with my family , watching over my own father , xxunk in the xxup xxunk before he passed . \n\n xxmaj the episode begins with xxmaj tony in an alternate reality : he is a salesman who 's identity has been mistaken for that of a man named xxmaj kevin xxmaj xxunk . \n\n xxmaj by the time ten minutes had gone by , i knew either xxmaj tony was xxunk ,</td>
-      <td>my family , watching over my own father , xxunk in the xxup xxunk before he passed . \n\n xxmaj the episode begins with xxmaj tony in an alternate reality : he is a salesman who 's identity has been mistaken for that of a man named xxmaj kevin xxmaj xxunk . \n\n xxmaj by the time ten minutes had gone by , i knew either xxmaj tony was xxunk , or</td>
-      <td>xxmaj xxunk and i it the home father , i , the xxup u.s . he xxunk . xxmaj xxmaj the story is with xxmaj tony and a xxunk reality , he is xxunk xxunk who has been is been xxunk for a of his man who xxmaj xxunk xxmaj xxunk . xxmaj xxmaj the the time of minutes are gone , , i was that the tony xxmaj making or or</td>
+      <td>probably the worst movie i have ever seen . xxmaj here are the things that immediately jump out at me : 1 . xxmaj the woods were more like hills in xxmaj los xxmaj angeles with a couple trees and xxunk . xxmaj not scary whatsoever . xxmaj news flash , if you are filming in the xxmaj southern xxmaj california area , big bear is only an hour away . xxmaj</td>
+      <td>the worst movie i have ever seen . xxmaj here are the things that immediately jump out at me : 1 . xxmaj the woods were more like hills in xxmaj los xxmaj angeles with a couple trees and xxunk . xxmaj not scary whatsoever . xxmaj news flash , if you are filming in the xxmaj southern xxmaj california area , big bear is only an hour away . xxmaj they</td>
+      <td>not best movie i have ever seen . xxmaj the 's the things that are happen out of the . xxmaj . xxmaj the acting are xxunk like a in xxmaj xxunk xxmaj angeles . a couple of , xxunk . xxmaj the only . . xxmaj the xxunk , but you 're looking in the woods xxunk xxmaj california area , you xxunk is just a hour away . xxmaj the</td>
     </tr>
   </tbody>
 </table>
@@ -576,7 +542,7 @@ summary: "How to fine-tune a language model and train a classifier"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dbunch</span><span class="o">.</span><span class="n">show_batch</span><span class="p">(</span><span class="n">max_n</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dbunch</span><span class="o">.</span><span class="n">show_batch</span><span class="p">(</span><span class="n">max_n</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">trunc_at</span><span class="o">=</span><span class="mi">60</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -601,12 +567,12 @@ summary: "How to fine-tune a language model and train a classifier"
   <tbody>
     <tr>
       <th>0</th>
-      <td>xxbos xxmaj raising xxmaj victor xxmaj vargas : a xxmaj review \n\n xxmaj you know , xxmaj raising xxmaj victor xxmaj vargas is like sticking your hands into a big , xxunk bowl of xxunk . xxmaj it 's warm and gooey , but you 're not sure if it feels right . xxmaj try as i might , no matter how warm and gooey xxmaj raising xxmaj victor xxmaj vargas became i was always aware that something did n't quite feel right . xxmaj victor xxmaj vargas suffers from a certain xxunk on the director 's part . xxmaj apparently , the director thought that the ethnic backdrop of a xxmaj latino family on the lower east side , and an xxunk storyline would make the film critic proof . xxmaj he was right , but it did n't fool me . xxmaj raising xxmaj victor xxmaj vargas is</td>
+      <td>xxbos xxmaj raising xxmaj victor xxmaj vargas : a xxmaj review \n\n xxmaj you know , xxmaj raising xxmaj victor xxmaj vargas is like sticking your hands into a big , xxunk bowl of xxunk . xxmaj it 's warm and gooey , but you 're not sure if it feels right . xxmaj try as i might , no</td>
       <td>negative</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>xxbos xxup the xxup shop xxup around xxup the xxup corner is one of the xxunk and most feel - good romantic comedies ever made . xxmaj there 's just no getting around that , and it 's hard to actually put one 's feeling for this film into words . xxmaj it 's not one of those films that tries too hard , nor does it come up with the xxunk possible scenarios to get the two protagonists together in the end . xxmaj in fact , all its charm is xxunk , contained within the characters and the setting and the plot … which is highly believable to xxunk . xxmaj it 's easy to think that such a love story , as beautiful as any other ever told , * could * happen to you … a feeling you do n't often get from other romantic comedies</td>
+      <td>xxbos xxup the xxup shop xxup around xxup the xxup corner is one of the xxunk and most feel - good romantic comedies ever made . xxmaj there 's just no getting around that , and it 's hard to actually put one 's feeling for this film into words . xxmaj it 's not one of those films that</td>
       <td>positive</td>
     </tr>
   </tbody>
@@ -711,31 +677,31 @@ summary: "How to fine-tune a language model and train a classifier"
   <tbody>
     <tr>
       <td>0</td>
-      <td>0.627347</td>
-      <td>0.444851</td>
-      <td>0.840000</td>
+      <td>0.720599</td>
+      <td>0.496283</td>
+      <td>0.765000</td>
       <td>00:10</td>
     </tr>
     <tr>
       <td>1</td>
-      <td>0.564891</td>
-      <td>0.410152</td>
-      <td>0.825000</td>
-      <td>00:11</td>
+      <td>0.580163</td>
+      <td>0.465498</td>
+      <td>0.790000</td>
+      <td>00:10</td>
     </tr>
     <tr>
       <td>2</td>
-      <td>0.472728</td>
-      <td>0.367973</td>
-      <td>0.860000</td>
-      <td>00:10</td>
+      <td>0.502125</td>
+      <td>0.460327</td>
+      <td>0.760000</td>
+      <td>00:09</td>
     </tr>
     <tr>
       <td>3</td>
-      <td>0.429697</td>
-      <td>0.361784</td>
-      <td>0.845000</td>
-      <td>00:10</td>
+      <td>0.461802</td>
+      <td>0.448796</td>
+      <td>0.765000</td>
+      <td>00:11</td>
     </tr>
   </tbody>
 </table>
@@ -781,59 +747,59 @@ summary: "How to fine-tune a language model and train a classifier"
   <tbody>
     <tr>
       <td>0</td>
-      <td>0.382893</td>
-      <td>0.351107</td>
-      <td>0.850000</td>
-      <td>00:17</td>
+      <td>0.411823</td>
+      <td>0.399018</td>
+      <td>0.810000</td>
+      <td>00:15</td>
     </tr>
     <tr>
       <td>1</td>
-      <td>0.396118</td>
-      <td>0.360789</td>
-      <td>0.845000</td>
-      <td>00:18</td>
-    </tr>
-    <tr>
-      <td>2</td>
-      <td>0.324209</td>
-      <td>0.432927</td>
-      <td>0.790000</td>
+      <td>0.397232</td>
+      <td>0.416813</td>
+      <td>0.815000</td>
       <td>00:16</td>
     </tr>
     <tr>
+      <td>2</td>
+      <td>0.373783</td>
+      <td>0.486226</td>
+      <td>0.785000</td>
+      <td>00:17</td>
+    </tr>
+    <tr>
       <td>3</td>
-      <td>0.287399</td>
-      <td>0.371246</td>
-      <td>0.815000</td>
-      <td>00:20</td>
+      <td>0.315111</td>
+      <td>0.422542</td>
+      <td>0.825000</td>
+      <td>00:19</td>
     </tr>
     <tr>
       <td>4</td>
-      <td>0.254755</td>
-      <td>0.375270</td>
-      <td>0.835000</td>
+      <td>0.282453</td>
+      <td>0.421409</td>
+      <td>0.830000</td>
       <td>00:19</td>
     </tr>
     <tr>
       <td>5</td>
-      <td>0.238167</td>
-      <td>0.375107</td>
-      <td>0.850000</td>
+      <td>0.251479</td>
+      <td>0.422410</td>
+      <td>0.820000</td>
       <td>00:16</td>
     </tr>
     <tr>
       <td>6</td>
-      <td>0.220819</td>
-      <td>0.405301</td>
-      <td>0.825000</td>
+      <td>0.245852</td>
+      <td>0.444412</td>
+      <td>0.810000</td>
       <td>00:16</td>
     </tr>
     <tr>
       <td>7</td>
-      <td>0.215843</td>
-      <td>0.400871</td>
-      <td>0.835000</td>
-      <td>00:17</td>
+      <td>0.221122</td>
+      <td>0.416276</td>
+      <td>0.820000</td>
+      <td>00:18</td>
     </tr>
   </tbody>
 </table>
@@ -850,7 +816,7 @@ summary: "How to fine-tune a language model and train a classifier"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span><span class="o">.</span><span class="n">show_results</span><span class="p">(</span><span class="n">max_n</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span><span class="o">.</span><span class="n">show_results</span><span class="p">(</span><span class="n">max_n</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">trunc_at</span><span class="o">=</span><span class="mi">60</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -885,33 +851,15 @@ summary: "How to fine-tune a language model and train a classifier"
   <tbody>
     <tr>
       <th>0</th>
-      <td>xxbos xxmaj raising xxmaj victor xxmaj vargas : a xxmaj review \n\n xxmaj you know , xxmaj raising xxmaj victor xxmaj vargas is like sticking your hands into a big , xxunk bowl of xxunk . xxmaj it 's warm and gooey , but you 're not sure if it feels right . xxmaj try as i might , no matter how warm and gooey xxmaj raising xxmaj victor xxmaj vargas became i was always aware that something did n't quite feel right . xxmaj victor xxmaj vargas suffers from a certain xxunk on the director 's part . xxmaj apparently , the director thought that the ethnic backdrop of a xxmaj latino family on the lower east side , and an xxunk storyline would make the film critic proof . xxmaj he was right , but it did n't fool me . xxmaj raising xxmaj victor xxmaj vargas is</td>
-      <td>negative</td>
-      <td>negative</td>
+      <td>xxbos xxup the xxup shop xxup around xxup the xxup corner is one of the xxunk and most feel - good romantic comedies ever made . xxmaj there 's just no getting around that , and it 's hard to actually put one 's feeling for this film into words . xxmaj it 's not one of those films that</td>
+      <td>positive</td>
+      <td>positive</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>xxbos xxup the xxup shop xxup around xxup the xxup corner is one of the xxunk and most feel - good romantic comedies ever made . xxmaj there 's just no getting around that , and it 's hard to actually put one 's feeling for this film into words . xxmaj it 's not one of those films that tries too hard , nor does it come up with the xxunk possible scenarios to get the two protagonists together in the end . xxmaj in fact , all its charm is xxunk , contained within the characters and the setting and the plot … which is highly believable to xxunk . xxmaj it 's easy to think that such a love story , as beautiful as any other ever told , * could * happen to you … a feeling you do n't often get from other romantic comedies</td>
-      <td>positive</td>
-      <td>positive</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>xxbos xxmaj now that xxmaj che(2008 ) has finished its relatively short xxmaj australian cinema run ( extremely limited xxunk screen in xxmaj xxunk , after xxunk ) , i can xxunk join both xxunk of " at xxmaj the xxmaj movies " in taking xxmaj steven xxmaj soderbergh to task . \n\n xxmaj it 's usually satisfying to watch a film director change his style / subject , but xxmaj soderbergh 's most recent stinker , xxmaj the xxmaj girlfriend xxmaj xxunk ) , was also missing a story , so narrative ( and editing ? ) seem to suddenly be xxmaj soderbergh 's main challenge . xxmaj strange , after xxunk years in the business . xxmaj he was probably never much good at narrative , just xxunk it well inside " edgy " projects . \n\n xxmaj none of this excuses him this present , almost diabolical</td>
+      <td>xxbos xxmaj now that xxmaj che(2008 ) has finished its relatively short xxmaj australian cinema run ( extremely limited xxunk screen in xxmaj xxunk , after xxunk ) , i can xxunk join both xxunk of " at xxmaj the xxmaj movies " in taking xxmaj steven xxmaj soderbergh to task . \n\n xxmaj it 's usually satisfying to watch</td>
       <td>negative</td>
       <td>negative</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>xxbos xxmaj this film sat on my xxmaj xxunk for weeks before i watched it . i xxunk a self - indulgent xxunk flick about relationships gone bad . i was wrong ; this was an xxunk xxunk into the screwed - up xxunk of xxmaj new xxmaj xxunk . \n\n xxmaj the format is the same as xxmaj max xxmaj xxunk ' " la xxmaj xxunk , " based on a play by xxmaj arthur xxmaj xxunk , who is given an " inspired by " credit . xxmaj it starts from one person , a prostitute , standing on a street corner in xxmaj brooklyn . xxmaj she is picked up by a home contractor , who has sex with her on the hood of a car , but ca n't come . xxmaj he refuses to pay her . xxmaj when he 's off xxunk , she</td>
-      <td>positive</td>
-      <td>positive</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>xxbos xxmaj many neglect that this is n't just a classic due to the fact that it 's the first 3d game , or even the first xxunk - up . xxmaj it 's also one of the first xxunk games , one of the xxunk definitely the first ) truly claustrophobic games , and just a pretty well - xxunk gaming experience in general . xxmaj with graphics that are terribly dated today , the game xxunk you into the role of xxunk even * think * xxmaj i 'm going to attempt spelling his last name ! ) , an xxmaj american xxup xxunk . caught in an underground bunker . xxmaj you fight and search your way through xxunk in order to achieve different xxunk for the six xxunk , let 's face it , most of them are just an excuse to hand you a weapon</td>
-      <td>positive</td>
-      <td>positive</td>
     </tr>
   </tbody>
 </table>
@@ -928,7 +876,7 @@ summary: "How to fine-tune a language model and train a classifier"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">fastai2.interpret</span> <span class="kn">import</span> <span class="o">*</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">fastai2.interpret</span> <span class="k">import</span> <span class="o">*</span>
 </pre></div>
 
     </div>
