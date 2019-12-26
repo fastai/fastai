@@ -459,8 +459,11 @@ class SPProcessor(PreProcessor):
 
     def process(self, ds):
         ds.items = _join_texts(ds.items, self.mark_fields, self.include_bos, self.include_eos)
-        ds.items = [apply_rules(t, pre_rules=self.pre_rules, post_rules=self.post_rules) 
-                    for t in progress_bar(ds.items, leave=False)]
+        if len (ds.items) > 0: ds.items = [apply_rules(t, pre_rules=self.pre_rules, post_rules=self.post_rules) 
+                                           for t in progress_bar(ds.items, leave=False)]
+        else: ds.items =  [apply_rules(t, pre_rules=self.pre_rules, post_rules=self.post_rules) 
+                           for t in ds.items]
+        
         if self.sp_model is None or self.sp_vocab is None:
             cache_dir = self.train_func(ds.items, ds.path)
             self.sp_model,self.sp_vocab = cache_dir/'spm.model',cache_dir/'spm.vocab'
