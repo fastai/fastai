@@ -3,8 +3,6 @@
 __all__ = ['TabularCollab', 'CollabDataBunch', 'EmbeddingDotBias', 'EmbeddingNN', 'collab_learner']
 
 # Cell
-from .basics import *
-from .data.all import *
 from .tabular.all import *
 
 # Cell
