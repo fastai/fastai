@@ -1,6 +1,7 @@
 ---
 
 title: Data block
+
 keywords: fastai
 sidebar: home_sidebar
 
@@ -198,7 +199,7 @@ summary: "High level API to quickly get your data in a `DataBunch`"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="DataBlock.databunch" class="doc_header"><code>DataBlock.databunch</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/block.py#L81" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>DataBlock.databunch</code>(<strong><code>source</code></strong>, <strong><code>path</code></strong>=<em><code>'.'</code></em>, <strong><code>type_tfms</code></strong>=<em><code>None</code></em>, <strong><code>item_tfms</code></strong>=<em><code>None</code></em>, <strong><code>batch_tfms</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="DataBlock.databunch" class="doc_header"><code>DataBlock.databunch</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/block.py#L81" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>DataBlock.databunch</code>(<strong><code>source</code></strong>, <strong><code>path</code></strong>=<em><code>'.'</code></em>, <strong><code>type_tfms</code></strong>=<em><code>None</code></em>, <strong><code>item_tfms</code></strong>=<em><code>None</code></em>, <strong><code>batch_tfms</code></strong>=<em><code>None</code></em>, <strong><code>bs</code></strong>=<em><code>16</code></em>, <strong><code>shuffle</code></strong>=<em><code>False</code></em>, <strong><code>num_workers</code></strong>=<em><code>None</code></em>, <strong><code>pin_memory</code></strong>=<em><code>False</code></em>, <strong><code>timeout</code></strong>=<em><code>0</code></em>, <strong><code>batch_size</code></strong>=<em><code>None</code></em>, <strong><code>drop_last</code></strong>=<em><code>False</code></em>, <strong><code>indexed</code></strong>=<em><code>None</code></em>, <strong><code>n</code></strong>=<em><code>None</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>wif</code></strong>=<em><code>None</code></em>, <strong><code>before_iter</code></strong>=<em><code>None</code></em>, <strong><code>after_item</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_iter</code></strong>=<em><code>None</code></em>, <strong><code>create_batches</code></strong>=<em><code>None</code></em>, <strong><code>create_item</code></strong>=<em><code>None</code></em>, <strong><code>create_batch</code></strong>=<em><code>None</code></em>, <strong><code>retain</code></strong>=<em><code>None</code></em>, <strong><code>get_idxs</code></strong>=<em><code>None</code></em>, <strong><code>sample</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_fn</code></strong>=<em><code>None</code></em>, <strong><code>do_batch</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Create a <a href="data.core.html#DataBunch"><code>DataBunch</code></a> from <code>source</code> with <code>item_tfms</code> and <code>batch_tfms</code></p>
 

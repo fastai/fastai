@@ -1,6 +1,7 @@
 ---
 
 title: Tutorial - Using `fastai.data` low-level APIs
+
 keywords: fastai
 sidebar: home_sidebar
 
@@ -59,8 +60,8 @@ summary: "Using `DataSource`, `Pipeline`, `TfmdList` and `Transform`"
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>In the second half of this page we'll look at complete examples of loading and using datasets using the <code>fastai.data</code> low-level APIs. But first, let's look at simple examples of the following applied to a single filename:</p>
 <ul>
-<li><code>Transform</code></li>
-<li><code>Pipeline</code> to composes transforms</li>
+<li><a href="https://fastcore.fast.ai/transform.html#Transform"><code>Transform</code></a></li>
+<li><a href="https://fastcore.fast.ai/transform.html#Pipeline"><code>Pipeline</code></a> to composes transforms</li>
 </ul>
 <p>(We won't look at <a href="data.core.html#TfmdList"><code>TfmdList</code></a> or <a href="data.core.html#DataSource"><code>DataSource</code></a> in this initial overview since they require a full dataset. Have a look at the second half of the page for examples of those.)</p>
 
@@ -114,7 +115,7 @@ summary: "Using `DataSource`, `Pipeline`, `TfmdList` and `Transform`"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>We'll look at each <code>Transform</code> needed in turn. Here's how we can open an image file:</p>
+<p>We'll look at each <a href="https://fastcore.fast.ai/transform.html#Transform"><code>Transform</code></a> needed in turn. Here's how we can open an image file:</p>
 
 </div>
 </div>
@@ -306,7 +307,7 @@ summary: "Using `DataSource`, `Pipeline`, `TfmdList` and `Transform`"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>We can compose our image steps using <code>Pipeline</code>:</p>
+<p>We can compose our image steps using <a href="https://fastcore.fast.ai/transform.html#Pipeline"><code>Pipeline</code></a>:</p>
 
 </div>
 </div>
@@ -344,7 +345,7 @@ summary: "Using `DataSource`, `Pipeline`, `TfmdList` and `Transform`"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>A <code>Pipeline</code> can decode and show an item.</p>
+<p>A <a href="https://fastcore.fast.ai/transform.html#Pipeline"><code>Pipeline</code></a> can decode and show an item.</p>
 
 </div>
 </div>
@@ -425,7 +426,7 @@ summary: "Using `DataSource`, `Pipeline`, `TfmdList` and `Transform`"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Loading-the-Pets-dataset-using-only-Transform">Loading the Pets dataset using only <code>Transform</code><a class="anchor-link" href="#Loading-the-Pets-dataset-using-only-Transform">&#182;</a></h2>
+<h2 id="Loading-the-Pets-dataset-using-only-Transform">Loading the Pets dataset using only <a href="https://fastcore.fast.ai/transform.html#Transform"><code>Transform</code></a><a class="anchor-link" href="#Loading-the-Pets-dataset-using-only-Transform">&#182;</a></h2>
 </div>
 </div>
 </div>
@@ -495,7 +496,7 @@ summary: "Using `DataSource`, `Pipeline`, `TfmdList` and `Transform`"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Before we can create a <code>Transform</code>, we need a type that knows how to show itself. Here we define a <code>TitledImage</code>:</p>
+<p>Before we can create a <a href="https://fastcore.fast.ai/transform.html#Transform"><code>Transform</code></a>, we need a type that knows how to show itself. Here we define a <code>TitledImage</code>:</p>
 
 </div>
 </div>
@@ -666,7 +667,7 @@ summary: "Using `DataSource`, `Pipeline`, `TfmdList` and `Transform`"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>We can now create a <code>Transform</code> that converts from an index to our <code>x</code> and <code>y</code> for modeling.</p>
+<p>We can now create a <a href="https://fastcore.fast.ai/transform.html#Transform"><code>Transform</code></a> that converts from an index to our <code>x</code> and <code>y</code> for modeling.</p>
 
 </div>
 </div>
@@ -698,7 +699,7 @@ summary: "Using `DataSource`, `Pipeline`, `TfmdList` and `Transform`"
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Note that <a href="tabular.core.html#decodes"><code>decodes</code></a> is intended to operate on the return value of <a href="tabular.core.html#encodes"><code>encodes</code></a>. In the case above, <a href="tabular.core.html#decodes"><code>decodes</code></a> takes in a tuple consisting of a Tensor representing the image and an integer being the class idx and returns an instance of <code>TitledImage</code>.</p>
-<p>It's important to give the type that can show itself to fully decoded elements because when in a <code>Pipeline</code>, we stop decoding as soon as we can find a <a href="medical.imaging.html#show"><code>show</code></a> method.</p>
+<p>It's important to give the type that can show itself to fully decoded elements because when in a <a href="https://fastcore.fast.ai/transform.html#Pipeline"><code>Pipeline</code></a>, we stop decoding as soon as we can find a <a href="medical.imaging.html#show"><code>show</code></a> method.</p>
 
 </div>
 </div>
@@ -780,13 +781,13 @@ summary: "Using `DataSource`, `Pipeline`, `TfmdList` and `Transform`"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Using-Pipeline-to-create-Siamese-model-dataset">Using <code>Pipeline</code> to create Siamese model dataset<a class="anchor-link" href="#Using-Pipeline-to-create-Siamese-model-dataset">&#182;</a></h2>
+<h2 id="Using-Pipeline-to-create-Siamese-model-dataset">Using <a href="https://fastcore.fast.ai/transform.html#Pipeline"><code>Pipeline</code></a> to create Siamese model dataset<a class="anchor-link" href="#Using-Pipeline-to-create-Siamese-model-dataset">&#182;</a></h2>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>A <em>Siamese</em> model needs a dataset with two images as input, and a boolean output that is <code>True</code> if the two images are the "same" (e.g. are pictures of the same breed of pet). Custom structures like this are often easiest to create using your own <code>Pipeline</code>, which makes no assumptions about the structure of your input or output data.</p>
+<p>A <em>Siamese</em> model needs a dataset with two images as input, and a boolean output that is <code>True</code> if the two images are the "same" (e.g. are pictures of the same breed of pet). Custom structures like this are often easiest to create using your own <a href="https://fastcore.fast.ai/transform.html#Pipeline"><code>Pipeline</code></a>, which makes no assumptions about the structure of your input or output data.</p>
 <p>We'll be creating a dataset that returns two images and a boolean. So let's first define a showable type for a tuple with those things:</p>
 
 </div>
@@ -880,7 +881,7 @@ summary: "Using `DataSource`, `Pipeline`, `TfmdList` and `Transform`"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Then the <code>Pipeline</code> will compose our two transforms, and create the <code>SiameseImage</code>.</p>
+<p>Then the <a href="https://fastcore.fast.ai/transform.html#Pipeline"><code>Pipeline</code></a> will compose our two transforms, and create the <code>SiameseImage</code>.</p>
 
 </div>
 </div>
@@ -982,7 +983,7 @@ summary: "Using `DataSource`, `Pipeline`, `TfmdList` and `Transform`"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a href="data.core.html#DataSource"><code>DataSource</code></a> applies a list of list of transforms (or list of <code>Pipeline</code>s) lazily to items of a collection, creating one output per list of transforms/<code>Pipeline</code>. This makes it easier for us to separate out steps of a process, so that we can re-use them and modify the process more easily. For instance, we could add data augmentation, data normalization, etc. Here we separate out the steps of the basic pets process.</p>
+<p><a href="data.core.html#DataSource"><code>DataSource</code></a> applies a list of list of transforms (or list of <a href="https://fastcore.fast.ai/transform.html#Pipeline"><code>Pipeline</code></a>s) lazily to items of a collection, creating one output per list of transforms/<a href="https://fastcore.fast.ai/transform.html#Pipeline"><code>Pipeline</code></a>. This makes it easier for us to separate out steps of a process, so that we can re-use them and modify the process more easily. For instance, we could add data augmentation, data normalization, etc. Here we separate out the steps of the basic pets process.</p>
 
 </div>
 </div>
