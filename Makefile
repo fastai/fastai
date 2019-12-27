@@ -1,5 +1,4 @@
-SRC := $(wildcard nbs/*.ipynb)
-DIST := python setup.py sdist bdist_wheel
+SRC = $(wildcard nbs/*.ipynb)
 
 all: fastai2 docs
 
@@ -17,18 +16,15 @@ docs: $(SRC)
 test:
 	nbdev_test_nbs
 
-release: bump clean
-	$(DIST)
-	twine upload --repository pypi dist/*
+release: pypi
+	nbdev_bump_version
 
 pypi: dist
 	twine upload --repository pypi dist/*
 
-bump:
-	nbdev_bump_version
-
 dist: clean
-	$(DIST)
+	python setup.py sdist bdist_wheel
 
 clean:
 	rm -rf dist
+
