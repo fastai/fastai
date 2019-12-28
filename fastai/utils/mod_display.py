@@ -1,6 +1,7 @@
 " Utils for modifying what is displayed in notebooks and command line"
 import fastai
 import fastprogress
+from fastprogress.fastprogress import force_console_behavior
 
 from ..basic_train import *
 from ..core import *
@@ -15,7 +16,7 @@ class progress_disabled_ctx():
     def __enter__(self):
         #silence progress bar
         fastprogress.fastprogress.NO_BAR = True
-        fastai.basic_train.master_bar,fastai.basic_train.progress_bar = fastprogress.force_console_behavior()
+        fastai.basic_train.master_bar,fastai.basic_train.progress_bar = force_console_behavior()
         self.orig_callback_fns = copy(self.learn.callback_fns)
         rec_name = [x for x in self.learn.callback_fns if hasattr(x, 'func') and x.func == Recorder]
         if len(rec_name):

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 "Utility functions to help deal with user environment"
 
 from ..imports.torch import *
