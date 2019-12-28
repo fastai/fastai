@@ -63,7 +63,7 @@ class TextClassificationInterpretation(ClassificationInterpretation):
         cl[0][class_id].backward()
         attn = emb.grad.squeeze().abs().sum(dim=-1)
         attn /= attn.max()
-        tokens = self.data.single_ds.reconstruct(ids[0])
+        tokens = self.data.single_ds.reconstruct(ids[0].cpu())
         return tokens, attn
 
     def html_intrinsic_attention(self, text:str, class_id:int=None, **kwargs)->str:

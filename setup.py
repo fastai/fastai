@@ -95,7 +95,7 @@ dep_groups = {
     'core':   to_list("""
         bottleneck           # performance-improvement for numpy
         dataclasses ; python_version<'3.7'
-        fastprogress>=0.1.19
+        fastprogress>=0.2.1
         beautifulsoup4
         matplotlib
         numexpr              # performance-improvement for numpy

@@ -51,7 +51,7 @@ requirements:
   run:
     - dataclasses
     - beautifulsoup4
-    - fastprogress >=0.1.19
+    - fastprogress >=0.2.1
     - matplotlib
     - numpy >=1.15
     - pandas
