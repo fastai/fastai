@@ -208,8 +208,9 @@ def download_url(url:str, dest:str, overwrite:bool=False, pbar:ProgressBar=None,
 
     with open(dest, 'wb') as f:
         nbytes = 0
-        if show_progress: pbar = progress_bar(range(file_size), auto_update=False, leave=False, parent=pbar)
+        if show_progress: pbar = progress_bar(range(file_size), leave=False, parent=pbar)
         try:
+            if show_progress: pbar.update(0)
             for chunk in u.iter_content(chunk_size=chunk_size):
                 nbytes += len(chunk)
                 if show_progress: pbar.update(nbytes)
