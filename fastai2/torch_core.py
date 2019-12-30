@@ -31,10 +31,13 @@ def subplots(nrows=1, ncols=1, figsize=None, imsize=4, **kwargs):
     return fig,ax
 
 # Cell
+def _fig_bounds(x):
+    r = x//32
+    return min(5, max(1,r))
+
+# Cell
 def show_image(im, ax=None, figsize=None, title=None, ctx=None, **kwargs):
     "Show a PIL or PyTorch image on `ax`."
-    ax = ifnone(ax,ctx)
-    if ax is None: _,ax = plt.subplots(figsize=figsize)
     # Handle pytorch axis order
     if hasattrs(im, ('data','cpu','permute')):
         im = im.data.cpu()
@@ -42,6 +45,10 @@ def show_image(im, ax=None, figsize=None, title=None, ctx=None, **kwargs):
     elif not isinstance(im,np.ndarray): im=array(im)
     # Handle 1-channel images
     if im.shape[-1]==1: im=im[...,0]
+
+    ax = ifnone(ax,ctx)
+    if figsize is None: figsize = (_fig_bounds(im.shape[0]), _fig_bounds(im.shape[1]))
+    if ax is None: _,ax = plt.subplots(figsize=figsize)
     ax.imshow(im, **kwargs)
     if title is not None: ax.set_title(title)
     ax.axis('off')
