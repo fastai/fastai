@@ -125,6 +125,18 @@ def fit_sgdr(self:Learner, n_cycles, cycle_len, lr_max=None, cycle_mult=2, cbs=N
     self.fit(n_epoch, cbs=ParamScheduler(scheds)+L(cbs), reset_opt=reset_opt, wd=wd)
 
 # Cell
+@delegates(Learner.fit_one_cycle)
+@patch
+def fine_tune(self:Learner, epochs, base_lr=3e-3, freeze_epochs=1, lr_mult=2.6, pct_start=0.3, div=5.0, **kwargs):
+    "Fine tune with `freeze` for `freeze_epochs` then with `unfreeze` from `epochs` using discriminative LR"
+    if self.opt is None: self.create_opt()
+    lr = slice(base_lr/(lr_mult**len(self.opt.param_groups)), base_lr)
+    self.freeze()
+    self.fit_one_cycle(freeze_epochs, lr, pct_start=0.99, **kwargs)
+    self.unfreeze()
+    self.fit_one_cycle(epochs, lr, pct_start=pct_start, div=div, **kwargs)
+
+# Cell
 @docs
 class LRFinder(ParamScheduler):
     "Training with exponentially growing learning rate"
