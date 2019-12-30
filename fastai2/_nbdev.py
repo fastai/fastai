@@ -745,13 +745,5 @@ doc_url = "http:/dev.fast.ai/"
 git_url = "https://github.com/fastai/fastai2/tree/master/"
 
 def custom_doc_links(name): 
-    from nbdev.sync import source_nb
-    import importlib
-    _packages = ["fastcore", "nbdev"]
-    _urls = [f"https://{p}.fast.ai/" for p in _packages]
-    for p,l in zip(_packages, _urls):
-        mod = importlib.import_module(f"{p}._nbdev")
-        try_pack = source_nb(name, is_name=True, mod=mod)
-        if try_pack:
-            page = '.'.join(try_pack.split('_')[1:]).replace('.ipynb', '.html')
-            return f'{l}{page}#{name}'
+    from nbdev.showdoc import try_external_doc_link
+    return try_external_doc_link(name, ['fastcore', 'nbdev'])
