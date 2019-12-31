@@ -22,9 +22,10 @@ class CSVLogger(LearnerCallback):
 
     def on_train_begin(self, **kwargs: Any) -> None:
         "Prepare file with metric names."
-        self.path.parent.mkdir(parents=True, exist_ok=True)      
+        self.path.parent.mkdir(parents=True, exist_ok=True)  
+        add_header = not self.path.exists() or not self.append
         self.file = self.path.open('a') if self.append else self.path.open('w')
-        self.file.write(','.join(self.learn.recorder.names[:(None if self.add_time else -1)]) + '\n')
+        if add_header: self.file.write(','.join(self.learn.recorder.names[:(None if self.add_time else -1)]) + '\n')
     
     def on_epoch_begin(self, **kwargs:Any)->None:
         if self.add_time: self.start_epoch = time()

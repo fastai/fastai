@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 "`gen_doc.nbdoc` generates notebook documentation from module functions and links to correct places"
 
 import inspect,importlib,enum,os,re,nbconvert
@@ -126,7 +127,7 @@ def show_doc(elt, doc_string:bool=True, full_name:str=None, arg_comments:dict=No
 def md2html(md):
     if nbconvert.__version__ < '5.5.0': return HTMLExporter().markdown2html(md)
     else: return HTMLExporter().markdown2html(defaultdict(lambda: defaultdict(dict)), md)
-    
+
 def doc(elt):
     "Show `show_doc` info in preview window along with link to full docs."
     global use_relative_links
