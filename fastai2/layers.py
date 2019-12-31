@@ -483,8 +483,7 @@ class ResBlock(nn.Module):
                    ConvLayer(ni,  nh1, 1, **k0),
                    ConvLayer(nh1, nh2, 3, stride=stride, groups=nh1 if dw else groups, **k0),
                    ConvLayer(nh2,  nf, 1, groups=g2, **k1)]
-        self.convs = nn.Sequential(*layers)
-        convpath = [self.convs]
+        convpath = [nn.Sequential(*layers)]
         if reduction: convpath.append(SEModule(nf, reduction=reduction, act_cls=act_cls))
         if sa: convpath.append(SimpleSelfAttention(nf,ks=1,sym=sym))
         self.convpath = nn.Sequential(*convpath)
