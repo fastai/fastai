@@ -1212,8 +1212,8 @@ summary: "The data block API"
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>ItemList (1 items)
-/home/sgugger/.fastai/data/mnist_tiny/labels.csv
+<pre>ItemList (3 items)
+/home/sgugger/.fastai/data/mnist_tiny/history.csv,/home/sgugger/.fastai/data/mnist_tiny/cleaned.csv,/home/sgugger/.fastai/data/mnist_tiny/labels.csv
 Path: /home/sgugger/.fastai/data/mnist_tiny</pre>
 </div>
 
@@ -3709,7 +3709,7 @@ Test: None</pre>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>To use this function, you need a boolean column <code>is_valid</code>. If <code>is_valid[index] = True</code>, then that example is put in the validation set and if <code>is_valid[index] = False</code> the example is put in the training set.</p>
+<p>To use this function, you need a boolean column (default to the third column of the dataframe). The examples put in the validation set correspond to the indices with <code>True</code> value in that column.</p>
 
 </div>
 </div>
