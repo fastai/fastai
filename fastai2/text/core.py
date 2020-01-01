@@ -173,7 +173,7 @@ def _join_texts(df, mark_fields=False):
 
 # Cell
 def tokenize_df(df, text_cols, n_workers=defaults.cpus, rules=None, mark_fields=None,
-                tok_func=SpacyTokenizer, **tok_kwargs):
+                tok_func=SpacyTokenizer, res_col_name="text", **tok_kwargs):
     "Tokenize texts in `df[text_cols]` in parallel using `n_workers`"
     text_cols = L(text_cols)
     #mark_fields defaults to False if there is one column of texts, True if there are multiple
@@ -185,7 +185,7 @@ def tokenize_df(df, text_cols, n_workers=defaults.cpus, rules=None, mark_fields=
 
     other_cols = df.columns[~df.columns.isin(text_cols)]
     res = df[other_cols].copy()
-    res['text'] = outputs
+    res[res_col_name] = outputs
     return res,Counter(outputs.concat())
 
 # Cell
