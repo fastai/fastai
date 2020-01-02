@@ -60,13 +60,17 @@ class ImageDataBunch(DataBunch):
 
     @classmethod
     @delegates(DataBunch.from_dblock)
-    def from_df(cls, df, path='.', valid_pct=0.2, seed=None, fn_col=0, folder=None, suff='', label_col=1, label_delim=None, y_block=None, **kwargs):
+    def from_df(cls, df, path='.', valid_pct=0.2, seed=None, fn_col=0, folder=None, suff='', label_col=1, label_delim=None,
+                y_block=None, valid_col=None, **kwargs):
         pref = f'{Path(path) if folder is None else Path(path)/folder}{os.path.sep}'
-        if y_block is None: y_block = MultiCategoryBlock if is_listy(label_col) and len(label_col) > 1 else CategoryBlock
+        if y_block is None:
+            is_multi = (is_listy(label_col) and len(label_col) > 1) or label_delim is not None
+            y_block = MultiCategoryBlock if is_multi else CategoryBlock
+        splitter = RandomSplitter(valid_pct, seed=seed) if valid_col is None else ColSplitter(valid_col)
         dblock = DataBlock(blocks=(ImageBlock, y_block),
                            get_x=ColReader(fn_col, pref=pref, suff=suff),
                            get_y=ColReader(label_col, label_delim=label_delim),
-                           splitter=RandomSplitter(valid_pct, seed=seed))
+                           splitter=splitter)
         return cls.from_dblock(dblock, df, path=path, **kwargs)
 
     @classmethod
