@@ -365,6 +365,16 @@ def __init__(self:pd.DataFrame, data=None, index=None, columns=None, dtype=None,
     self._old_init(data, index=index, columns=columns, dtype=dtype, copy=copy)
 
 # Cell
+@patch
+def split_arr(df:pd.DataFrame, from_col):
+    "Split col `from_col` (containing arrays) in `DataFrame` `df` into separate colums"
+    col = df[from_col]
+    n = len(col.iloc[0])
+    cols = [f'{from_col}{o}' for o in range(n)]
+    df[cols] = pd.DataFrame(df[from_col].values.tolist())
+    df.drop(columns=from_col, inplace=True)
+
+# Cell
 def one_param(m):
     "First parameter in `m`"
     return first(m.parameters())
