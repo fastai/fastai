@@ -161,14 +161,15 @@ class TextDataBunch(DataBunch):
     @classmethod
     @delegates(DataBunch.from_dblock)
     def from_df(cls, df, path='.', valid_pct=0.2, seed=None, text_col=0, label_col=1, label_delim=None, y_block=None,
-                text_vocab=None, is_lm=False, **kwargs):
+                text_vocab=None, is_lm=False, valid_col=None, **kwargs):
         if y_block is None and not is_lm: y_block = MultiCategoryBlock if is_listy(label_col) and len(label_col) > 1 else CategoryBlock
         if is_lm: y_block = []
         if not isinstance(y_block, list): y_block = [y_block]
+        splitter = RandomSplitter(valid_pct, seed=seed) if valid_col is None else ColSplitter(valid_col)
         dblock = DataBlock(blocks=(TextBlock(text_vocab, is_lm), *y_block),
                            get_x=ColReader(text_col),
                            get_y=None if is_lm else ColReader(label_col, label_delim=label_delim),
-                           splitter=RandomSplitter(valid_pct, seed=seed))
+                           splitter=splitter)
         return cls.from_dblock(dblock, df, path=path, **kwargs)
 
     @classmethod
