@@ -130,11 +130,10 @@ def fit_sgdr(self:Learner, n_cycles, cycle_len, lr_max=None, cycle_mult=2, cbs=N
 def fine_tune(self:Learner, epochs, base_lr=3e-3, freeze_epochs=1, lr_mult=100,
               pct_start=0.3, div=5.0, **kwargs):
     "Fine tune with `freeze` for `freeze_epochs` then with `unfreeze` from `epochs` using discriminative LR"
-    lr = slice(base_lr/lr_mult, base_lr)
     self.freeze()
-    self.fit_one_cycle(freeze_epochs, lr, pct_start=0.99, **kwargs)
+    self.fit_one_cycle(freeze_epochs, slice(base_lr), pct_start=0.99, **kwargs)
     self.unfreeze()
-    self.fit_one_cycle(epochs, lr, pct_start=pct_start, div=div, **kwargs)
+    self.fit_one_cycle(epochs, slice(base_lr/lr_mult, base_lr), pct_start=pct_start, div=div, **kwargs)
 
 # Cell
 @docs

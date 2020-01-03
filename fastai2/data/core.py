@@ -32,7 +32,7 @@ _batch_tfms = ('after_item','before_batch','after_batch')
 @delegates()
 class TfmdDL(DataLoader):
     "Transformed `DataLoader`"
-    def __init__(self, dataset, bs=16, shuffle=False, num_workers=None, **kwargs):
+    def __init__(self, dataset, bs=64, shuffle=False, num_workers=None, **kwargs):
         if num_workers is None: num_workers = min(16, defaults.cpus)
         for nm in _batch_tfms:
             kwargs[nm] = Pipeline(kwargs.get(nm,None), as_item=(nm=='before_batch'))
@@ -146,7 +146,7 @@ class FilteredBase:
     def _new(self, items, **kwargs): return super()._new(items, splits=self.splits, **kwargs)
     def subset(self): raise NotImplemented
 
-    def databunch(self, bs=16, val_bs=None, shuffle_train=True, n=None, path='.', dl_type=None, dl_kwargs=None, **kwargs):
+    def databunch(self, bs=64, val_bs=None, shuffle_train=True, n=None, path='.', dl_type=None, dl_kwargs=None, **kwargs):
         if dl_kwargs is None: dl_kwargs = [{}] * self.n_subsets
         ns = self.n_subsets-1
         bss = ([None]*(ns+1) if bs is None

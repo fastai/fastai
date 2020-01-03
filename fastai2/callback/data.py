@@ -27,6 +27,6 @@ class WeightedDL(TfmdDL):
 # Cell
 @patch
 @delegates(DataSource.databunch)
-def weighted_databunch(self:DataSource, wgts, bs=16, **kwargs):
+def weighted_databunch(self:DataSource, wgts, bs=64, **kwargs):
     xtra_kwargs = [{}] * (self.n_subsets-1)
     return self.databunch(bs=bs, dl_type=WeightedDL, dl_kwargs=({'wgts':wgts}, *xtra_kwargs), **kwargs)
