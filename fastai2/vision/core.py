@@ -69,6 +69,7 @@ class PILBase(Image.Image, metaclass=BypassNewMeta):
         "Open an `Image` from path `fn`"
         if isinstance(fn,Tensor): fn = fn.numpy()
         if isinstance(fn,ndarray): return cls(Image.fromarray(fn))
+        if isinstance(fn,bytes): fn = io.BytesIO(fn)
         return cls(load_image(fn, **merge(cls._open_args, kwargs)))
 
     def show(self, ctx=None, **kwargs):
