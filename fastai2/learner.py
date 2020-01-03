@@ -320,7 +320,7 @@ class Learner():
                 if with_decoded: res.insert(pred_i+2, getattr(self.loss_func, 'decodes', noop)(res[pred_i]))
             return tuple(res)
 
-    def predict(self, item, rm_type_tfms=0):
+    def predict(self, item, rm_type_tfms=None):
         dl = test_dl(self.dbunch, [item], rm_type_tfms=rm_type_tfms)
         inp,preds,_,dec_preds = self.get_preds(dl=dl, with_input=True, with_decoded=True)
         i = getattr(self.dbunch, 'n_inp', -1)

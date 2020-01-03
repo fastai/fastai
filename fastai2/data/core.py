@@ -164,15 +164,17 @@ FilteredBase.train,FilteredBase.valid = add_props(lambda i,x: x.subset(i))
 class TfmdList(FilteredBase, L, GetAttr):
     "A `Pipeline` of `tfms` applied to a collection of `items`"
     _default='tfms'
-    def __init__(self, items, tfms, use_list=None, do_setup=True, as_item=True, split_idx=None, train_setup=True, splits=None):
+    def __init__(self, items, tfms, use_list=None, do_setup=True, as_item=True, split_idx=None, train_setup=True,
+                 splits=None, types=None):
         super().__init__(items, use_list=use_list)
         self.splits = L([slice(None),[]] if splits is None else splits).map(mask2idxs)
         if isinstance(tfms,TfmdList): tfms = tfms.tfms
         if isinstance(tfms,Pipeline): do_setup=False
         self.tfms = Pipeline(tfms, as_item=as_item, split_idx=split_idx)
+        self.types = types
         if do_setup: self.setup(train_setup=train_setup)
 
-    def _new(self, items, **kwargs): return super()._new(items, tfms=self.tfms, do_setup=False, **kwargs)
+    def _new(self, items, **kwargs): return super()._new(items, tfms=self.tfms, do_setup=False, types=self.types, **kwargs)
     def subset(self, i): return self._new(self._get(self.splits[i]), split_idx=i)
     def _after_item(self, o): return self.tfms(o)
     def __repr__(self): return f"{self.__class__.__name__}: {self.items}\ntfms - {self.tfms.fs}"
@@ -180,8 +182,27 @@ class TfmdList(FilteredBase, L, GetAttr):
     def show(self, o, **kwargs): return self.tfms.show(o, **kwargs)
     def decode(self, o, **kwargs): return self.tfms.decode(o, **kwargs)
     def __call__(self, o, **kwargs): return self.tfms.__call__(o, **kwargs)
-    def setup(self, train_setup=True): self.tfms.setup(getattr(self,'train',self) if train_setup else self)
     def overlapping_splits(self): return L(Counter(self.splits.concat()).values()).filter(gt(1))
+
+    def setup(self, train_setup=True):
+        self.tfms.setup(getattr(self,'train',self) if train_setup else self)
+        if len(self) != 0:
+            x,self.types = super().__getitem__(0),[]
+            for f in self.tfms.fs:
+                self.types.append(type(x))
+                x = f(x)
+            self.types.append(type(x))
+
+    def infer_idx(self, x):
+        idx = 0
+        for t in self.types:
+            if isinstance(x, t): break
+            idx += 1
+        assert idx < len(self.types), f"Expected an input of type in {self.types} but got {type(x)}"
+        return idx
+
+    def infer(self, x):
+        return compose_tfms(x, tfms=self.tfms.fs[self.infer_idx(x):], split_idx=self.split_idx)
 
     def __getitem__(self, idx):
         res = super().__getitem__(idx)
@@ -257,16 +278,17 @@ class DataSource(FilteredBase):
     )
 
 # Cell
-def test_set(dsrc, test_items, rm_tfms=0):
+def test_set(dsrc, test_items, rm_tfms=None):
     "Create a test set from `test_items` using validation transforms of `dsrc`"
     test_tls = [tl._new(test_items, split_idx=1) for tl in dsrc.tls[:dsrc.n_inp]]
-    rm_tfms = tuplify(rm_tfms, match=test_tls)
+    if rm_tfms is None: rm_tfms = [tl.infer_idx(test_items[0]) for tl in test_tls]
+    else:               rm_tfms = tuplify(rm_tfms, match=test_tls)
     for i,j in enumerate(rm_tfms): test_tls[i].tfms.fs = test_tls[i].tfms.fs[j:]
     return DataSource(tls=test_tls)
 
 # Cell
 @delegates(TfmdDL.__init__)
-def test_dl(dbunch, test_items, rm_type_tfms=0, **kwargs):
+def test_dl(dbunch, test_items, rm_type_tfms=None, **kwargs):
     "Create a test dataloader from `test_items` using validation transforms of `dbunch`"
     test_ds = test_set(dbunch.valid_ds, test_items, rm_tfms=rm_type_tfms) if isinstance(dbunch.valid_ds, DataSource) else test_items
     return dbunch.valid_dl.new(test_ds, **kwargs)
