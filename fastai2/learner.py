@@ -58,8 +58,8 @@ class TrainEvalCallback(Callback):
 #TODO: save_targs and save_preds only handle preds/targets that have one tensor, not tuples of tensors.
 class GatherPredsCallback(Callback):
     "`Callback` that saves the predictions and targets, optionally `with_loss`"
-    def __init__(self, with_input=False, with_loss=False, save_preds=None, save_targs=None):
-        store_attr(self, "with_input,with_loss,save_preds,save_targs")
+    def __init__(self, with_input=False, with_loss=False, save_preds=None, save_targs=None, concat_dim=0):
+        store_attr(self, "with_input,with_loss,save_preds,save_targs,concat_dim")
 
     def begin_batch(self):
         if self.with_input: self.inputs.append((to_detach(self.xb)))
@@ -84,9 +84,9 @@ class GatherPredsCallback(Callback):
 
     def after_fit(self):
         "Concatenate all recorded tensors"
-        if self.with_input:     self.inputs  = detuplify(to_concat(self.inputs))
-        if not self.save_preds: self.preds   = detuplify(to_concat(self.preds))
-        if not self.save_targs: self.targets = detuplify(to_concat(self.targets))
+        if self.with_input:     self.inputs  = detuplify(to_concat(self.inputs, dim=self.concat_dim))
+        if not self.save_preds: self.preds   = detuplify(to_concat(self.preds, dim=self.concat_dim))
+        if not self.save_targs: self.targets = detuplify(to_concat(self.targets, dim=self.concat_dim))
         if self.with_loss:      self.losses  = to_concat(self.losses)
 
     def all_tensors(self):
@@ -320,7 +320,7 @@ class Learner():
                 if with_decoded: res.insert(pred_i+2, getattr(self.loss_func, 'decodes', noop)(res[pred_i]))
             return tuple(res)
 
-    def predict(self, item, rm_type_tfms=0):
+    def predict(self, item, rm_type_tfms=None):
         dl = test_dl(self.dbunch, [item], rm_type_tfms=rm_type_tfms)
         inp,preds,_,dec_preds = self.get_preds(dl=dl, with_input=True, with_decoded=True)
         i = getattr(self.dbunch, 'n_inp', -1)

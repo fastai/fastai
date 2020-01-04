@@ -5,7 +5,7 @@ __all__ = ['progress_bar', 'master_bar', 'subplots', 'show_image', 'show_titled_
            'apply', 'maybe_gather', 'to_detach', 'to_half', 'to_float', 'default_device', 'to_device', 'to_cpu',
            'to_np', 'to_concat', 'TensorBase', 'TensorCategory', 'TensorMultiCategory', 'TensorImageBase',
            'TensorImage', 'TensorImageBW', 'TensorMask', 'concat', 'Chunks', 'show_title', 'ShowTitle', 'TitledInt',
-           'TitledFloat', 'TitledStr', 'TupleTitled', 'get_empty_df', 'display_df', 'one_param', 'item_find',
+           'TitledFloat', 'TitledStr', 'TitledTuple', 'get_empty_df', 'display_df', 'one_param', 'item_find',
            'find_device', 'find_bs', 'Module', 'get_model', 'one_hot', 'one_hot_decode', 'params', 'trainable_params',
            'norm_types', 'bn_bias_params', 'batch_to_samples', 'logit', 'num_distrib', 'rank_distrib',
            'distrib_barrier', 'make_cross_image', 'show_image_batch', 'requires_grad', 'init_default', 'cond_init',
@@ -375,17 +375,36 @@ def show_title(o, ax=None, ctx=None, label=None, color='black', **kwargs):
 class ShowTitle:
     "Base class that adds a simple `show`"
     _show_args = {'label': 'text'}
-    def show(self, ctx=None, **kwargs): return show_title(str(self), ctx=ctx, **merge(self._show_args, kwargs))
+    def show(self, ctx=None, **kwargs):
+        "Show self"
+        return show_title(str(self), ctx=ctx, **merge(self._show_args, kwargs))
 
-class TitledInt(Int, ShowTitle): pass
-class TitledFloat(Float, ShowTitle): pass
-class TitledStr(Str, ShowTitle): pass
-add_docs(TitledInt, "An `int` with `show`"); add_docs(TitledStr, "An `str` with `show`"); add_docs(TitledFloat, "An `float` with `show`")
+class TitledInt(Int, ShowTitle):
+    _show_args = {'label': 'text'}
+    def show(self, ctx=None, **kwargs):
+        "Show self"
+        return show_title(str(self), ctx=ctx, **merge(self._show_args, kwargs))
 
-# Cell
-class TupleTitled(Tuple, ShowTitle):
-    "A `Tuple` with `show`"
-    pass
+class TitledFloat(Float, ShowTitle):
+    _show_args = {'label': 'text'}
+    def show(self, ctx=None, **kwargs):
+        "Show self"
+        return show_title(str(self), ctx=ctx, **merge(self._show_args, kwargs))
+
+class TitledStr(Str, ShowTitle):
+    _show_args = {'label': 'text'}
+    def show(self, ctx=None, **kwargs):
+        "Show self"
+        return show_title(str(self), ctx=ctx, **merge(self._show_args, kwargs))
+
+class TitledTuple(Tuple, ShowTitle):
+    _show_args = {'label': 'text'}
+    def show(self, ctx=None, **kwargs):
+        "Show self"
+        return show_title(str(self), ctx=ctx, **merge(self._show_args, kwargs))
+
+add_docs(TitledInt, "An `int` with `show`"); add_docs(TitledStr, "An `str` with `show`");
+add_docs(TitledFloat, "A `float` with `show`"); add_docs(TitledTuple, "A `Tuple` with `show`")
 
 # Cell
 if not hasattr(pd.DataFrame,'_old_init'): pd.DataFrame._old_init = pd.DataFrame.__init__
