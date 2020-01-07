@@ -22,9 +22,10 @@ class TabularLearner(Learner):
 
 # Cell
 @delegates(Learner.__init__)
-def tabular_learner(dbunch, layers, emb_szs=None, config=None, **kwargs):
+def tabular_learner(dbunch, layers=None, emb_szs=None, config=None, **kwargs):
     "Get a `Learner` using `data`, with `metrics`, including a `TabularModel` created using the remaining params."
     if config is None: config = tabular_config()
+    if layers is None: layers = [200,100]
     to = dbunch.train_ds
     emb_szs = get_emb_sz(dbunch.train_ds, {} if emb_szs is None else emb_szs)
     model = TabularModel(emb_szs, len(dbunch.cont_names), get_c(dbunch), layers, **config)

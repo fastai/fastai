@@ -129,7 +129,7 @@ def unet_config(**kwargs):
 @delegates(Learner.__init__)
 def unet_learner(dbunch, arch, loss_func=None, pretrained=True, cut=None, splitter=None, config=None, **kwargs):
     "Build a unet learner from `dbunch` and `arch`"
-    if config is None: config = {}
+    if config is None: config = unet_config()
     meta = model_meta.get(arch, _default_meta)
     body = create_body(arch, pretrained, ifnone(cut, meta['cut']))
     size = dbunch.one_batch()[0].shape[-2:]
