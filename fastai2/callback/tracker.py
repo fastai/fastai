@@ -31,7 +31,7 @@ class TrackerCallback(Callback):
     run_after=Recorder
 
     def __init__(self, monitor='valid_loss', comp=None, min_delta=0.):
-        if comp is None: comp = np.less if 'loss' or 'error' in monitor else np.greater
+        if comp is None: comp = np.less if 'loss' in monitor or 'error' in monitor else np.greater
         if comp == np.less: min_delta *= -1
         self.monitor,self.comp,self.min_delta = monitor,comp,min_delta
 
