@@ -4,11 +4,11 @@ __all__ = ['module', 'Identity', 'Lambda', 'PartialLambda', 'Flatten', 'View', '
            'sigmoid_range', 'SigmoidRange', 'AdaptiveConcatPool2d', 'PoolType', 'adaptive_pool', 'PoolFlatten',
            'NormType', 'BatchNorm', 'InstanceNorm', 'BatchNorm1dFlat', 'LinBnDrop', 'init_default', 'ConvLayer',
            'AdaptiveAvgPool', 'MaxPool', 'AvgPool', 'BaseLoss', 'CrossEntropyLossFlat', 'BCEWithLogitsLossFlat',
-           'BCELossFlat', 'MSELossFlat', 'LabelSmoothingCrossEntropy', 'trunc_normal_', 'Embedding', 'SelfAttention',
-           'PooledSelfAttention2d', 'SimpleSelfAttention', 'icnr_init', 'PixelShuffle_ICNR', 'SequentialEx',
-           'MergeLayer', 'Cat', 'SimpleCNN', 'ProdLayer', 'inplace_relu', 'SEModule', 'ResBlock', 'SEBlock',
-           'SEResNeXtBlock', 'SeparableBlock', 'swish', 'Swish', 'MishJitAutoFn', 'mish', 'MishJit', 'ParameterModule',
-           'children_and_parameters', 'flatten_model', 'NoneReduce', 'in_channels']
+           'BCELossFlat', 'MSELossFlat', 'L1LossFlat', 'LabelSmoothingCrossEntropy', 'trunc_normal_', 'Embedding',
+           'SelfAttention', 'PooledSelfAttention2d', 'SimpleSelfAttention', 'icnr_init', 'PixelShuffle_ICNR',
+           'SequentialEx', 'MergeLayer', 'Cat', 'SimpleCNN', 'ProdLayer', 'inplace_relu', 'SEModule', 'ResBlock',
+           'SEBlock', 'SEResNeXtBlock', 'SeparableBlock', 'swish', 'Swish', 'MishJitAutoFn', 'mish', 'MishJit',
+           'ParameterModule', 'children_and_parameters', 'flatten_model', 'NoneReduce', 'in_channels']
 
 # Cell
 from .imports import *
@@ -275,6 +275,11 @@ def BCELossFlat(*args, axis=-1, floatify=True, **kwargs):
 def MSELossFlat(*args, axis=-1, floatify=True, **kwargs):
     "Same as `nn.MSELoss`, but flattens input and target."
     return BaseLoss(nn.MSELoss, *args, axis=axis, floatify=floatify, is_2d=False, **kwargs)
+
+# Cell
+def L1LossFlat(*args, axis=-1, floatify=True, **kwargs):
+    "Same as `nn.MSELoss`, but flattens input and target."
+    return BaseLoss(nn.L1Loss, *args, axis=axis, floatify=floatify, is_2d=False, **kwargs)
 
 # Cell
 class LabelSmoothingCrossEntropy(Module):
