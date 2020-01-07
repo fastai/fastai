@@ -29,7 +29,7 @@ class Numericalize(Transform):
         self.vocab,self.min_freq,self.max_vocab,self.sep = vocab,min_freq,max_vocab,sep
         self.o2i = None if vocab is None else defaultdict(int, {v:k for k,v in enumerate(vocab)})
 
-    def setup(self, dsrc):
+    def setups(self, dsrc):
         if dsrc is None: return
         if self.vocab is None:
             count = Counter(p for o in dsrc for p in o)
