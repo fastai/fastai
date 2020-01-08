@@ -40,12 +40,14 @@ class Numericalize(Transform):
     def decodes(self, o): return TitledStr(self.sep.join([self.vocab[o_] for o_ in o if self.vocab[o_] != PAD]))
 
 # Cell
+def _maybe_first(o): return o[0] if isinstance(o, tuple) else o
+
+# Cell
 #TODO: add backward
 @delegates()
 class LMDataLoader(TfmdDL):
     def __init__(self, dataset, lens=None, cache=2, bs=64, seq_len=72, num_workers=0, **kwargs):
-        self.items = ReindexCollection([(o[0] if isinstance(o, tuple) else o)
-                                          for o in dataset], cache=cache)
+        self.items = ReindexCollection(dataset, cache=cache, tfm=_maybe_first)
         self.seq_len = seq_len
         if lens is None: lens = [len(o) for o in self.items]
         self.lens = ReindexCollection(lens, idxs=self.items.idxs)
