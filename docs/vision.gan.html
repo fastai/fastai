@@ -76,7 +76,7 @@ summary: "Basic support for [Generative Adversial Networks](https://arxiv.org/ab
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="GANModule" class="doc_header"><code>class</code> <code>GANModule</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/gan.py#L13" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>GANModule</code>(<strong><code>generator</code></strong>=<em><code>None</code></em>, <strong><code>critic</code></strong>=<em><code>None</code></em>, <strong><code>gen_mode</code></strong>=<em><code>False</code></em>) :: <a href="torch.core.html#Module"><code>Module</code></a></p>
+<h3 id="GANModule" class="doc_header"><code>class</code> <code>GANModule</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/gan.py#L13" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>GANModule</code>(<strong><code>generator</code></strong>=<em><code>None</code></em>, <strong><code>critic</code></strong>=<em><code>None</code></em>, <strong><code>gen_mode</code></strong>=<em><code>False</code></em>) :: <a href="/torch_core#Module"><code>Module</code></a></p>
 </blockquote>
 <p>Wrapper around a <code>generator</code> and a <code>critic</code> to create a GAN.</p>
 
@@ -159,7 +159,7 @@ summary: "Basic support for [Generative Adversial Networks](https://arxiv.org/ab
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="AddChannels" class="doc_header"><code>class</code> <code>AddChannels</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/gan.py#L42" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>AddChannels</code>(<strong><code>n_dim</code></strong>) :: <a href="torch.core.html#Module"><code>Module</code></a></p>
+<h3 id="AddChannels" class="doc_header"><code>class</code> <code>AddChannels</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/gan.py#L42" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>AddChannels</code>(<strong><code>n_dim</code></strong>) :: <a href="/torch_core#Module"><code>Module</code></a></p>
 </blockquote>
 <p>Add <code>n_dim</code> channels at the end of the input.</p>
 
@@ -285,7 +285,7 @@ summary: "Basic support for [Generative Adversial Networks](https://arxiv.org/ab
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="GANLoss" class="doc_header"><code>class</code> <code>GANLoss</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/gan.py#L96" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>GANLoss</code>(<strong><code>gen_loss_func</code></strong>, <strong><code>crit_loss_func</code></strong>, <strong><code>gan_model</code></strong>) :: <a href="vision.gan.html#GANModule"><code>GANModule</code></a></p>
+<h3 id="GANLoss" class="doc_header"><code>class</code> <code>GANLoss</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/gan.py#L96" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>GANLoss</code>(<strong><code>gen_loss_func</code></strong>, <strong><code>crit_loss_func</code></strong>, <strong><code>gan_model</code></strong>) :: <a href="/vision.gan#GANModule"><code>GANModule</code></a></p>
 </blockquote>
 <p>Wrapper around <code>crit_loss_func</code> and <code>gen_loss_func</code></p>
 
@@ -323,7 +323,7 @@ summary: "Basic support for [Generative Adversial Networks](https://arxiv.org/ab
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="AdaptiveLoss" class="doc_header"><code>class</code> <code>AdaptiveLoss</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/gan.py#L116" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>AdaptiveLoss</code>(<strong><code>crit</code></strong>) :: <a href="torch.core.html#Module"><code>Module</code></a></p>
+<h3 id="AdaptiveLoss" class="doc_header"><code>class</code> <code>AdaptiveLoss</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/gan.py#L116" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>AdaptiveLoss</code>(<strong><code>crit</code></strong>) :: <a href="/torch_core#Module"><code>Module</code></a></p>
 </blockquote>
 <p>Expand the <code>target</code> to match the <code>output</code> size before applying <code>crit</code>.</p>
 
@@ -400,7 +400,7 @@ summary: "Basic support for [Generative Adversial Networks](https://arxiv.org/ab
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="GANTrainer" class="doc_header"><code>class</code> <code>GANTrainer</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/gan.py#L133" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>GANTrainer</code>(<strong><code>switch_eval</code></strong>=<em><code>False</code></em>, <strong><code>clip</code></strong>=<em><code>None</code></em>, <strong><code>beta</code></strong>=<em><code>0.98</code></em>, <strong><code>gen_first</code></strong>=<em><code>False</code></em>, <strong><code>show_img</code></strong>=<em><code>True</code></em>) :: <a href="learner.html#Callback"><code>Callback</code></a></p>
+<h3 id="GANTrainer" class="doc_header"><code>class</code> <code>GANTrainer</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/gan.py#L133" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>GANTrainer</code>(<strong><code>switch_eval</code></strong>=<em><code>False</code></em>, <strong><code>clip</code></strong>=<em><code>None</code></em>, <strong><code>beta</code></strong>=<em><code>0.98</code></em>, <strong><code>gen_first</code></strong>=<em><code>False</code></em>, <strong><code>show_img</code></strong>=<em><code>True</code></em>) :: <a href="/learner#Callback"><code>Callback</code></a></p>
 </blockquote>
 <p>Handles GAN Training.</p>
 
@@ -431,7 +431,7 @@ summary: "Basic support for [Generative Adversial Networks](https://arxiv.org/ab
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="FixedGANSwitcher" class="doc_header"><code>class</code> <code>FixedGANSwitcher</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/gan.py#L207" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>FixedGANSwitcher</code>(<strong><code>n_crit</code></strong>=<em><code>1</code></em>, <strong><code>n_gen</code></strong>=<em><code>1</code></em>) :: <a href="learner.html#Callback"><code>Callback</code></a></p>
+<h3 id="FixedGANSwitcher" class="doc_header"><code>class</code> <code>FixedGANSwitcher</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/gan.py#L207" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>FixedGANSwitcher</code>(<strong><code>n_crit</code></strong>=<em><code>1</code></em>, <strong><code>n_gen</code></strong>=<em><code>1</code></em>) :: <a href="/learner#Callback"><code>Callback</code></a></p>
 </blockquote>
 <p>Switcher to do <code>n_crit</code> iterations of the critic then <code>n_gen</code> iterations of the generator.</p>
 
@@ -455,7 +455,7 @@ summary: "Basic support for [Generative Adversial Networks](https://arxiv.org/ab
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="AdaptiveGANSwitcher" class="doc_header"><code>class</code> <code>AdaptiveGANSwitcher</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/gan.py#L228" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>AdaptiveGANSwitcher</code>(<strong><code>gen_thresh</code></strong>=<em><code>None</code></em>, <strong><code>critic_thresh</code></strong>=<em><code>None</code></em>) :: <a href="learner.html#Callback"><code>Callback</code></a></p>
+<h3 id="AdaptiveGANSwitcher" class="doc_header"><code>class</code> <code>AdaptiveGANSwitcher</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/gan.py#L228" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>AdaptiveGANSwitcher</code>(<strong><code>gen_thresh</code></strong>=<em><code>None</code></em>, <strong><code>critic_thresh</code></strong>=<em><code>None</code></em>) :: <a href="/learner#Callback"><code>Callback</code></a></p>
 </blockquote>
 <p>Switcher that goes back to generator/critic when the loss goes below <code>gen_thresh</code>/<code>crit_thresh</code>.</p>
 
@@ -479,9 +479,9 @@ summary: "Basic support for [Generative Adversial Networks](https://arxiv.org/ab
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="GANDiscriminativeLR" class="doc_header"><code>class</code> <code>GANDiscriminativeLR</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/gan.py#L243" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>GANDiscriminativeLR</code>(<strong><code>mult_lr</code></strong>=<em><code>5.0</code></em>) :: <a href="learner.html#Callback"><code>Callback</code></a></p>
+<h3 id="GANDiscriminativeLR" class="doc_header"><code>class</code> <code>GANDiscriminativeLR</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/gan.py#L243" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>GANDiscriminativeLR</code>(<strong><code>mult_lr</code></strong>=<em><code>5.0</code></em>) :: <a href="/learner#Callback"><code>Callback</code></a></p>
 </blockquote>
-<p><a href="learner.html#Callback"><code>Callback</code></a> that handles multiplying the learning rate by <code>mult_lr</code> for the critic.</p>
+<p><a href="/learner#Callback"><code>Callback</code></a> that handles multiplying the learning rate by <code>mult_lr</code> for the critic.</p>
 
 </div>
 
@@ -509,7 +509,7 @@ summary: "Basic support for [Generative Adversial Networks](https://arxiv.org/ab
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="InvisibleTensor" class="doc_header"><code>class</code> <code>InvisibleTensor</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/gan.py#L257" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>InvisibleTensor</code>(<strong><code>x</code></strong>, <strong>**<code>kwargs</code></strong>) :: <a href="torch.core.html#TensorBase"><code>TensorBase</code></a></p>
+<h3 id="InvisibleTensor" class="doc_header"><code>class</code> <code>InvisibleTensor</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/gan.py#L257" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>InvisibleTensor</code>(<strong><code>x</code></strong>, <strong>**<code>kwargs</code></strong>) :: <a href="/torch_core#TensorBase"><code>TensorBase</code></a></p>
 </blockquote>
 
 </div>
@@ -682,9 +682,9 @@ summary: "Basic support for [Generative Adversial Networks](https://arxiv.org/ab
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="GANLearner" class="doc_header"><code>class</code> <code>GANLearner</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/gan.py#L298" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>GANLearner</code>(<strong><code>dbunch</code></strong>, <strong><code>generator</code></strong>, <strong><code>critic</code></strong>, <strong><code>gen_loss_func</code></strong>, <strong><code>crit_loss_func</code></strong>, <strong><code>switcher</code></strong>=<em><code>None</code></em>, <strong><code>gen_first</code></strong>=<em><code>False</code></em>, <strong><code>switch_eval</code></strong>=<em><code>True</code></em>, <strong><code>show_img</code></strong>=<em><code>True</code></em>, <strong><code>clip</code></strong>=<em><code>None</code></em>, <strong><code>cbs</code></strong>=<em><code>None</code></em>, <strong><code>metrics</code></strong>=<em><code>None</code></em>, <strong><code>loss_func</code></strong>=<em><code>None</code></em>, <strong><code>opt_func</code></strong>=<em><code>'Adam'</code></em>, <strong><code>lr</code></strong>=<em><code>0.001</code></em>, <strong><code>splitter</code></strong>=<em><code>'trainable_params'</code></em>, <strong><code>cb_funcs</code></strong>=<em><code>None</code></em>, <strong><code>path</code></strong>=<em><code>None</code></em>, <strong><code>model_dir</code></strong>=<em><code>'models'</code></em>, <strong><code>wd_bn_bias</code></strong>=<em><code>False</code></em>, <strong><code>train_bn</code></strong>=<em><code>True</code></em>) :: <a href="learner.html#Learner"><code>Learner</code></a></p>
+<h3 id="GANLearner" class="doc_header"><code>class</code> <code>GANLearner</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/gan.py#L298" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>GANLearner</code>(<strong><code>dbunch</code></strong>, <strong><code>generator</code></strong>, <strong><code>critic</code></strong>, <strong><code>gen_loss_func</code></strong>, <strong><code>crit_loss_func</code></strong>, <strong><code>switcher</code></strong>=<em><code>None</code></em>, <strong><code>gen_first</code></strong>=<em><code>False</code></em>, <strong><code>switch_eval</code></strong>=<em><code>True</code></em>, <strong><code>show_img</code></strong>=<em><code>True</code></em>, <strong><code>clip</code></strong>=<em><code>None</code></em>, <strong><code>cbs</code></strong>=<em><code>None</code></em>, <strong><code>metrics</code></strong>=<em><code>None</code></em>, <strong><code>loss_func</code></strong>=<em><code>None</code></em>, <strong><code>opt_func</code></strong>=<em><code>'Adam'</code></em>, <strong><code>lr</code></strong>=<em><code>0.001</code></em>, <strong><code>splitter</code></strong>=<em><code>'trainable_params'</code></em>, <strong><code>cb_funcs</code></strong>=<em><code>None</code></em>, <strong><code>path</code></strong>=<em><code>None</code></em>, <strong><code>model_dir</code></strong>=<em><code>'models'</code></em>, <strong><code>wd_bn_bias</code></strong>=<em><code>False</code></em>, <strong><code>train_bn</code></strong>=<em><code>True</code></em>) :: <a href="/learner#Learner"><code>Learner</code></a></p>
 </blockquote>
-<p>A <a href="learner.html#Learner"><code>Learner</code></a> suitable for GANs.</p>
+<p>A <a href="/learner#Learner"><code>Learner</code></a> suitable for GANs.</p>
 
 </div>
 

@@ -24,7 +24,7 @@ conda env create -f environment.yml
 source activate fastai2
 ```
 
-Then, you can install fastai v2 with pip: `pip install git+https://github.com/fastai/fastai2`. 
+Then, you can install fastai v2 with pip: `pip install fastai2`. 
 
 Or you can use an editable install (which is probably the best approach at the moment, since fastai v2 is under heavy development):
 ``` 

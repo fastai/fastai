@@ -108,7 +108,7 @@ summary: "How to fine-tune a language model and train a classifier"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Then we put it in a <a href="data.core.html#DataSource"><code>DataSource</code></a>. For a language model, we don't have targets, so there is only one transform to numericalize the texts. Note that <a href="text.core.html#tokenize_df"><code>tokenize_df</code></a> returns the count of the words in the corpus to make it easy to create a vocabulary.</p>
+<p>Then we put it in a <a href="/data.core#DataSource"><code>DataSource</code></a>. For a language model, we don't have targets, so there is only one transform to numericalize the texts. Note that <a href="/text.core#tokenize_df"><code>tokenize_df</code></a> returns the count of the words in the corpus to make it easy to create a vocabulary.</p>
 
 </div>
 </div>
@@ -130,7 +130,7 @@ summary: "How to fine-tune a language model and train a classifier"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Then we use that <a href="data.core.html#DataSource"><code>DataSource</code></a> to create a <a href="data.core.html#DataBunch"><code>DataBunch</code></a>. Here the class of <a href="data.core.html#TfmdDL"><code>TfmdDL</code></a> we need to use is <a href="text.data.html#LMDataLoader"><code>LMDataLoader</code></a> which will concatenate all the texts in a source (with a shuffle at each epoch for the training set), split it in <code>bs</code> chunks then read continuously through it.</p>
+<p>Then we use that <a href="/data.core#DataSource"><code>DataSource</code></a> to create a <a href="/data.core#DataBunch"><code>DataBunch</code></a>. Here the class of <a href="/data.core#TfmdDL"><code>TfmdDL</code></a> we need to use is <a href="/text.data#LMDataLoader"><code>LMDataLoader</code></a> which will concatenate all the texts in a source (with a shuffle at each epoch for the training set), split it in <code>bs</code> chunks then read continuously through it.</p>
 
 </div>
 </div>
@@ -198,13 +198,13 @@ summary: "How to fine-tune a language model and train a classifier"
   <tbody>
     <tr>
       <th>0</th>
-      <td>xxbos i saw this movie once as a kid on the late - late show and fell in love with it . \n\n xxmaj it took 30 + years , but i recently did find it on xxup dvd - it was n't cheap , either - in a catalog that xxunk in war movies . xxmaj we watched it last night for the first time . xxmaj the audio was good</td>
-      <td>i saw this movie once as a kid on the late - late show and fell in love with it . \n\n xxmaj it took 30 + years , but i recently did find it on xxup dvd - it was n't cheap , either - in a catalog that xxunk in war movies . xxmaj we watched it last night for the first time . xxmaj the audio was good ,</td>
+      <td>xxbos i hope whoever xxunk these losers on their accents was fired . xxmaj the only high points are a few of the supporting characters , 3 of 5 of my xxunk were killed off by the end of the season ( and one of them was a cat , to put that into perspective ) . \n\n xxmaj the whole storyline is centered around sex , and nothing else . xxmaj</td>
+      <td>i hope whoever xxunk these losers on their accents was fired . xxmaj the only high points are a few of the supporting characters , 3 of 5 of my xxunk were killed off by the end of the season ( and one of them was a cat , to put that into perspective ) . \n\n xxmaj the whole storyline is centered around sex , and nothing else . xxmaj sex</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>least they can be . xxmaj they have made some good films and had some incredibly funny performances along the way . xxmaj but in here , not only does the premise xxunk all logic , not only is the acting terrible , not only is the entire movie offensive from start to finish , not only is the direction as amateurish as you can find , but they actually want you</td>
-      <td>they can be . xxmaj they have made some good films and had some incredibly funny performances along the way . xxmaj but in here , not only does the premise xxunk all logic , not only is the acting terrible , not only is the entire movie offensive from start to finish , not only is the direction as amateurish as you can find , but they actually want you to</td>
+      <td>through the xxunk mirror blew me away . xxmaj if you liked " race xxup with xxup the xxup devil " you will love this movie xxbos xxmaj this film is about a man 's life going wrong . xxmaj his business is failing , and he can not xxunk his wife despite multiple attempts . \n\n xxmaj the plot is complete chaos . xxmaj it simply does not make sense .</td>
+      <td>the xxunk mirror blew me away . xxmaj if you liked " race xxup with xxup the xxup devil " you will love this movie xxbos xxmaj this film is about a man 's life going wrong . xxmaj his business is failing , and he can not xxunk his wife despite multiple attempts . \n\n xxmaj the plot is complete chaos . xxmaj it simply does not make sense . xxmaj</td>
     </tr>
   </tbody>
 </table>
@@ -218,7 +218,7 @@ summary: "How to fine-tune a language model and train a classifier"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Then we have a convenience method to directly grab a <a href="learner.html#Learner"><code>Learner</code></a> from it, using the <a href="text.models.awdlstm.html#AWD_LSTM"><code>AWD_LSTM</code></a> architecture.</p>
+<p>Then we have a convenience method to directly grab a <a href="/learner#Learner"><code>Learner</code></a> from it, using the <a href="/text.models.awdlstm#AWD_LSTM"><code>AWD_LSTM</code></a> architecture.</p>
 
 </div>
 </div>
@@ -270,11 +270,11 @@ summary: "How to fine-tune a language model and train a classifier"
   <tbody>
     <tr>
       <td>0</td>
-      <td>4.426387</td>
-      <td>4.004548</td>
-      <td>0.275322</td>
-      <td>54.847004</td>
-      <td>00:14</td>
+      <td>4.544207</td>
+      <td>4.076524</td>
+      <td>0.266717</td>
+      <td>58.940224</td>
+      <td>00:05</td>
     </tr>
   </tbody>
 </table>
@@ -519,7 +519,7 @@ summary: "How to fine-tune a language model and train a classifier"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>We opnce again use a subclass of <a href="data.core.html#TfmdDL"><code>TfmdDL</code></a> for the dataloaders, since we want to sort the texts (sortish for the training set) by order of lengths. We also use <code>pad_collate</code> to create batches form texts of different lengths.</p>
+<p>We opnce again use a subclass of <a href="/data.core#TfmdDL"><code>TfmdDL</code></a> for the dataloaders, since we want to sort the texts (sortish for the training set) by order of lengths. We also use <code>pad_collate</code> to create batches form texts of different lengths.</p>
 
 </div>
 </div>
@@ -587,7 +587,7 @@ summary: "How to fine-tune a language model and train a classifier"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Or with a factory method of <a href="text.data.html#TextDataBunch"><code>TextDataBunch</code></a>:</p>
+<p>Or with a factory method of <a href="/text.data#TextDataBunch"><code>TextDataBunch</code></a>:</p>
 
 </div>
 </div>
@@ -607,7 +607,7 @@ summary: "How to fine-tune a language model and train a classifier"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Then we once again have a convenience function to create a classifier from this <a href="data.core.html#DataBunch"><code>DataBunch</code></a> with the <a href="text.models.awdlstm.html#AWD_LSTM"><code>AWD_LSTM</code></a> architecture.</p>
+<p>Then we once again have a convenience function to create a classifier from this <a href="/data.core#DataBunch"><code>DataBunch</code></a> with the <a href="/text.models.awdlstm#AWD_LSTM"><code>AWD_LSTM</code></a> architecture.</p>
 
 </div>
 </div>

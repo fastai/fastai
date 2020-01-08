@@ -91,9 +91,9 @@ summary: "Basic class for handling the training loop"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Callback" class="doc_header"><code>class</code> <code>Callback</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/learner.py#L16" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Callback</code>() :: <a href="http:/fastcore.fast.ai/foundation#GetAttr"><code>GetAttr</code></a></p>
+<h2 id="Callback" class="doc_header"><code>class</code> <code>Callback</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/learner.py#L16" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Callback</code>() :: <code>GetAttr</code></p>
 </blockquote>
-<p>Basic class handling tweaks of the training loop by changing a <a href="learner.html#Learner"><code>Learner</code></a> in various events</p>
+<p>Basic class handling tweaks of the training loop by changing a <a href="/learner#Learner"><code>Learner</code></a> in various events</p>
 
 </div>
 
@@ -105,7 +105,7 @@ summary: "Basic class for handling the training loop"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The training loop is defined in <a href="learner.html#Learner"><code>Learner</code></a> a bit below and consists in a minimal set of instructions: looping through the data we:</p>
+<p>The training loop is defined in <a href="/learner#Learner"><code>Learner</code></a> a bit below and consists in a minimal set of instructions: looping through the data we:</p>
 <ul>
 <li>compute the output of the model from the input</li>
 <li>calculate a loss between this output and the desired target</li>
@@ -113,7 +113,7 @@ summary: "Basic class for handling the training loop"
 <li>update the parameters accordingly</li>
 <li>zero all the gradients</li>
 </ul>
-<p>Any tweak of this training loop is defined in a <a href="learner.html#Callback"><code>Callback</code></a> to avoid over-complicating the code of the training loop, and to make it easy to mix and match different techniques (since they'll be defined in different callbacks). A callback can implement actions on the following events:</p>
+<p>Any tweak of this training loop is defined in a <a href="/learner#Callback"><code>Callback</code></a> to avoid over-complicating the code of the training loop, and to make it easy to mix and match different techniques (since they'll be defined in different callbacks). A callback can implement actions on the following events:</p>
 <ul>
 <li><code>begin_fit</code>: called before doing anything, ideal for initial setup.</li>
 <li><code>begin_epoch</code>: called at the beginning of each epoch, useful for any behavior you need to reset at each epoch.</li>
@@ -279,7 +279,7 @@ summary: "Basic class for handling the training loop"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Callback.name" class="doc_header"><code>Callback.name</code><a href="" class="source_link" style="float:right">[source]</a></h4><p>Name of the <a href="learner.html#Callback"><code>Callback</code></a>, camel-cased and with '<em>Callback</em>' removed</p>
+<h4 id="Callback.name" class="doc_header"><code>Callback.name</code><a href="" class="source_link" style="float:right">[source]</a></h4><p>Name of the <a href="/learner#Callback"><code>Callback</code></a>, camel-cased and with '<em>Callback</em>' removed</p>
 
 </div>
 
@@ -316,9 +316,9 @@ summary: "Basic class for handling the training loop"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="TrainEvalCallback" class="doc_header"><code>class</code> <code>TrainEvalCallback</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/learner.py#L33" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>TrainEvalCallback</code>() :: <a href="learner.html#Callback"><code>Callback</code></a></p>
+<h3 id="TrainEvalCallback" class="doc_header"><code>class</code> <code>TrainEvalCallback</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/learner.py#L33" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>TrainEvalCallback</code>() :: <a href="/learner#Callback"><code>Callback</code></a></p>
 </blockquote>
-<p><a href="learner.html#Callback"><code>Callback</code></a> that tracks the number of iterations done and properly sets training/eval mode</p>
+<p><a href="/learner#Callback"><code>Callback</code></a> that tracks the number of iterations done and properly sets training/eval mode</p>
 
 </div>
 
@@ -330,7 +330,7 @@ summary: "Basic class for handling the training loop"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>This <a href="learner.html#Callback"><code>Callback</code></a> is automatically added in every <a href="learner.html#Learner"><code>Learner</code></a> at initialization.</p>
+<p>This <a href="/learner#Callback"><code>Callback</code></a> is automatically added in every <a href="/learner#Learner"><code>Learner</code></a> at initialization.</p>
 
 </div>
 </div>
@@ -431,9 +431,9 @@ summary: "Basic class for handling the training loop"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="GatherPredsCallback" class="doc_header"><code>class</code> <code>GatherPredsCallback</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/learner.py#L59" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>GatherPredsCallback</code>(<strong><code>with_input</code></strong>=<em><code>False</code></em>, <strong><code>with_loss</code></strong>=<em><code>False</code></em>, <strong><code>save_preds</code></strong>=<em><code>None</code></em>, <strong><code>save_targs</code></strong>=<em><code>None</code></em>) :: <a href="learner.html#Callback"><code>Callback</code></a></p>
+<h3 id="GatherPredsCallback" class="doc_header"><code>class</code> <code>GatherPredsCallback</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/learner.py#L59" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>GatherPredsCallback</code>(<strong><code>with_input</code></strong>=<em><code>False</code></em>, <strong><code>with_loss</code></strong>=<em><code>False</code></em>, <strong><code>save_preds</code></strong>=<em><code>None</code></em>, <strong><code>save_targs</code></strong>=<em><code>None</code></em>, <strong><code>concat_dim</code></strong>=<em><code>0</code></em>) :: <a href="/learner#Callback"><code>Callback</code></a></p>
 </blockquote>
-<p><a href="learner.html#Callback"><code>Callback</code></a> that saves the predictions and targets, optionally <code>with_loss</code></p>
+<p><a href="/learner#Callback"><code>Callback</code></a> that saves the predictions and targets, optionally <code>with_loss</code></p>
 
 </div>
 
@@ -733,7 +733,7 @@ summary: "Basic class for handling the training loop"
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="mk_metric" class="doc_header"><code>mk_metric</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/learner.py#L142" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>mk_metric</code>(<strong><code>m</code></strong>)</p>
 </blockquote>
-<p>Convert <code>m</code> to an <a href="learner.html#AvgMetric"><code>AvgMetric</code></a>, unless it's already a <a href="learner.html#Metric"><code>Metric</code></a></p>
+<p>Convert <code>m</code> to an <a href="/learner#AvgMetric"><code>AvgMetric</code></a>, unless it's already a <a href="/learner#Metric"><code>Metric</code></a></p>
 
 </div>
 
@@ -826,9 +826,9 @@ summary: "Basic class for handling the training loop"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><code>opt_func</code> will be used to create an optimizer when <a href="learner.html#Learner.fit"><code>Learner.fit</code></a> is called, with <code>lr</code> as a learning rate. <code>splitter</code> is a function taht takes <code>self.model</code> and returns a list of parameter groups (or just one parameter group if there are no different parameter groups). The default is <a href="torch.core.html#trainable_params"><code>trainable_params</code></a>, which returns all trainable parameters of the model.</p>
-<p><code>cbs</code> is one or a list of <a href="learner.html#Callback"><code>Callback</code></a>s  to pass to the <a href="learner.html#Learner"><code>Learner</code></a>, and <code>cb_funcs</code> is one or a list of functions returning a <a href="learner.html#Callback"><code>Callback</code></a> that will be called at init. Each <a href="learner.html#Callback"><code>Callback</code></a> is registered as an attribute of <a href="learner.html#Learner"><code>Learner</code></a> (with camel case). At creation, all the callbacks in <a href="callback.progress.html#defaults.callbacks"><code>defaults.callbacks</code></a> (<a href="learner.html#TrainEvalCallback"><code>TrainEvalCallback</code></a> and <a href="learner.html#Recorder"><code>Recorder</code></a>) are associated to the <a href="learner.html#Learner"><code>Learner</code></a>.</p>
-<p><a href="metrics.html"><code>metrics</code></a> is an optional list of metrics, that can be either functions or <a href="learner.html#Metric"><code>Metric</code></a>s (see below).</p>
+<p><code>opt_func</code> will be used to create an optimizer when <a href="/learner#Learner.fit"><code>Learner.fit</code></a> is called, with <code>lr</code> as a learning rate. <code>splitter</code> is a function taht takes <code>self.model</code> and returns a list of parameter groups (or just one parameter group if there are no different parameter groups). The default is <a href="/torch_core#trainable_params"><code>trainable_params</code></a>, which returns all trainable parameters of the model.</p>
+<p><code>cbs</code> is one or a list of <a href="/learner#Callback"><code>Callback</code></a>s  to pass to the <a href="/learner#Learner"><code>Learner</code></a>, and <code>cb_funcs</code> is one or a list of functions returning a <a href="/learner#Callback"><code>Callback</code></a> that will be called at init. Each <a href="/learner#Callback"><code>Callback</code></a> is registered as an attribute of <a href="/learner#Learner"><code>Learner</code></a> (with camel case). At creation, all the callbacks in <a href="/callback.progress#defaults.callbacks"><code>defaults.callbacks</code></a> (<a href="/learner#TrainEvalCallback"><code>TrainEvalCallback</code></a> and <a href="/learner#Recorder"><code>Recorder</code></a>) are associated to the <a href="/learner#Learner"><code>Learner</code></a>.</p>
+<p><a href="/metrics"><code>metrics</code></a> is an optional list of metrics, that can be either functions or <a href="/learner#Metric"><code>Metric</code></a>s (see below).</p>
 
 </div>
 </div>
@@ -934,7 +934,7 @@ summary: "Basic class for handling the training loop"
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>device(type=&#39;cuda&#39;, index=5)</pre>
+<pre>device(type=&#39;cuda&#39;, index=0)</pre>
 </div>
 
 </div>
@@ -966,7 +966,7 @@ summary: "Basic class for handling the training loop"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>This is an internal method called by <a href="learner.html#Learner.fit"><code>Learner.fit</code></a>. If passed, <code>i</code> is the index of this iteration in the epoch. In training method, this does a full training step on the batch (compute predictions, loss, gradients, update the model parameters and zero the gradients). In validation mode, it stops at the loss computation.</p>
+<p>This is an internal method called by <a href="/learner#Learner.fit"><code>Learner.fit</code></a>. If passed, <code>i</code> is the index of this iteration in the epoch. In training method, this does a full training step on the batch (compute predictions, loss, gradients, update the model parameters and zero the gradients). In validation mode, it stops at the loss computation.</p>
 
 </div>
 </div>
@@ -983,7 +983,7 @@ summary: "Basic class for handling the training loop"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="VerboseCallback" class="doc_header"><code>class</code> <code>VerboseCallback</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/learner.py#L393" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>VerboseCallback</code>() :: <a href="learner.html#Callback"><code>Callback</code></a></p>
+<h2 id="VerboseCallback" class="doc_header"><code>class</code> <code>VerboseCallback</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/learner.py#L393" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>VerboseCallback</code>() :: <a href="/learner#Callback"><code>Callback</code></a></p>
 </blockquote>
 <p>Callback that prints the name of each event called</p>
 
@@ -1149,7 +1149,7 @@ summary: "Basic class for handling the training loop"
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="Learner.add_cb" class="doc_header"><code>Learner.add_cb</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/learner.py#L201" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.add_cb</code>(<strong><code>cb</code></strong>)</p>
 </blockquote>
-<p>Add <code>cb</code> to the list of <a href="learner.html#Callback"><code>Callback</code></a> and register <code>self</code> as their learner</p>
+<p>Add <code>cb</code> to the list of <a href="/learner#Callback"><code>Callback</code></a> and register <code>self</code> as their learner</p>
 
 </div>
 
@@ -1187,7 +1187,7 @@ summary: "Basic class for handling the training loop"
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="Learner.add_cbs" class="doc_header"><code>Learner.add_cbs</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/learner.py#L199" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.add_cbs</code>(<strong><code>cbs</code></strong>)</p>
 </blockquote>
-<p>Add <code>cbs</code> to the list of <a href="learner.html#Callback"><code>Callback</code></a> and register <code>self</code> as their learner</p>
+<p>Add <code>cbs</code> to the list of <a href="/learner#Callback"><code>Callback</code></a> and register <code>self</code> as their learner</p>
 
 </div>
 
@@ -1222,7 +1222,7 @@ summary: "Basic class for handling the training loop"
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="Learner.remove_cb" class="doc_header"><code>Learner.remove_cb</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/learner.py#L209" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.remove_cb</code>(<strong><code>cb</code></strong>)</p>
 </blockquote>
-<p>Add <code>cb</code> from the list of <a href="learner.html#Callback"><code>Callback</code></a> and deregister <code>self</code> as their learner</p>
+<p>Add <code>cb</code> from the list of <a href="/learner#Callback"><code>Callback</code></a> and deregister <code>self</code> as their learner</p>
 
 </div>
 
@@ -1260,7 +1260,7 @@ summary: "Basic class for handling the training loop"
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="Learner.remove_cbs" class="doc_header"><code>Learner.remove_cbs</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/learner.py#L200" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.remove_cbs</code>(<strong><code>cbs</code></strong>)</p>
 </blockquote>
-<p>Remove <code>cbs</code> from the list of <a href="learner.html#Callback"><code>Callback</code></a> and deregister <code>self</code> as their learner</p>
+<p>Remove <code>cbs</code> from the list of <a href="/learner#Callback"><code>Callback</code></a> and deregister <code>self</code> as their learner</p>
 
 </div>
 
@@ -1287,15 +1287,15 @@ summary: "Basic class for handling the training loop"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>When writing a callback, the following attributes of <a href="learner.html#Learner"><code>Learner</code></a> are available:</p>
+<p>When writing a callback, the following attributes of <a href="/learner#Learner"><code>Learner</code></a> are available:</p>
 <ul>
 <li><code>model</code>: the model used for training/validation</li>
-<li><a href="data.html"><code>data</code></a>: the underlying <a href="data.core.html#DataBunch"><code>DataBunch</code></a></li>
+<li><a href="/data"><code>data</code></a>: the underlying <a href="/data.core#DataBunch"><code>DataBunch</code></a></li>
 <li><code>loss_func</code>: the loss function used</li>
 <li><code>opt</code>: the optimizer used to udpate the model parameters</li>
 <li><code>opt_func</code>: the function used to create the optimizer</li>
-<li><code>cbs</code>: the list containing all <a href="learner.html#Callback"><code>Callback</code></a>s</li>
-<li><code>dl</code>: current <a href="data.load.html#DataLoader"><code>DataLoader</code></a> used for iteration</li>
+<li><code>cbs</code>: the list containing all <a href="/learner#Callback"><code>Callback</code></a>s</li>
+<li><code>dl</code>: current <a href="/data.load#DataLoader"><code>DataLoader</code></a> used for iteration</li>
 <li><code>x</code>/<code>xb</code>: last input drawn from <code>self.dl</code> (potentially modified by callbacks). <code>xb</code> is always a tuple (potentially with one element) and <code>x</code> is detuplified. You can only assign to <code>xb</code>.</li>
 <li><code>y</code>/<code>yb</code>: last target drawn from <code>self.dl</code> (potentially modified by callbacks). <code>yb</code> is always a tuple (potentially with one element) and <code>y</code> is detuplified. You can only assign to <code>yb</code>.</li>
 <li><code>pred</code>: last predictions from <code>self.model</code> (potentially modified by callbacks)</li>
@@ -1305,13 +1305,13 @@ summary: "Basic class for handling the training loop"
 <li><code>epoch</code>: the current epoch index (from 0 to <code>n_epoch-1</code>)</li>
 <li><code>iter</code>: the current iteration index in <code>self.dl</code> (from 0 to <code>n_iter-1</code>)</li>
 </ul>
-<p>The following attributes are added by <a href="learner.html#TrainEvalCallback"><code>TrainEvalCallback</code></a> and should be available unless you went out of your way to remove that callback:</p>
+<p>The following attributes are added by <a href="/learner#TrainEvalCallback"><code>TrainEvalCallback</code></a> and should be available unless you went out of your way to remove that callback:</p>
 <ul>
 <li><code>train_iter</code>: the number of training iterations done since the beginning of this training</li>
 <li><code>pct_train</code>: from 0. to 1., the percentage of training iterations completed</li>
 <li><code>training</code>:  flag to indicate if we're in training mode or not</li>
 </ul>
-<p>The following attribute is added by <a href="learner.html#Recorder"><code>Recorder</code></a> and should be available unless you went out of your way to remove that callback:</p>
+<p>The following attribute is added by <a href="/learner#Recorder"><code>Recorder</code></a> and should be available unless you went out of your way to remove that callback:</p>
 <ul>
 <li><code>smooth_loss</code>: an exponentially-averaged version of the training loss</li>
 </ul>
@@ -1351,7 +1351,7 @@ summary: "Basic class for handling the training loop"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Metrics can be simple averages (like accuracy) but sometimes their computation is a little bit more complex and can't be averaged over batches (like precision or recall), which is why we need a special class for them. For simple functions that can be computed as averages over batches, we can use the class <a href="learner.html#AvgMetric"><code>AvgMetric</code></a>, otherwise you'll need to implement the following methods.
+<p>Metrics can be simple averages (like accuracy) but sometimes their computation is a little bit more complex and can't be averaged over batches (like precision or recall), which is why we need a special class for them. For simple functions that can be computed as averages over batches, we can use the class <a href="/learner#AvgMetric"><code>AvgMetric</code></a>, otherwise you'll need to implement the following methods.
 {% include note.html content="If your <code>Metric</code> has state depending on tensors, don't forget to store it on the CPU to avoid any potential memory leaks." %}</p>
 
 </div>
@@ -1427,7 +1427,7 @@ summary: "Basic class for handling the training loop"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Metric.name" class="doc_header"><code>Metric.name</code><a href="" class="source_link" style="float:right">[source]</a></h4><p>Name of the <a href="learner.html#Metric"><code>Metric</code></a>, camel-cased and with Metric removed</p>
+<h4 id="Metric.name" class="doc_header"><code>Metric.name</code><a href="" class="source_link" style="float:right">[source]</a></h4><p>Name of the <a href="/learner#Metric"><code>Metric</code></a>, camel-cased and with Metric removed</p>
 
 </div>
 
@@ -1452,7 +1452,7 @@ summary: "Basic class for handling the training loop"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="AvgMetric" class="doc_header"><code>class</code> <code>AvgMetric</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/learner.py#L426" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>AvgMetric</code>(<strong><code>func</code></strong>) :: <a href="learner.html#Metric"><code>Metric</code></a></p>
+<h3 id="AvgMetric" class="doc_header"><code>class</code> <code>AvgMetric</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/learner.py#L426" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>AvgMetric</code>(<strong><code>func</code></strong>) :: <a href="/learner#Metric"><code>Metric</code></a></p>
 </blockquote>
 <p>Average the values of <code>func</code> taking into account potential different batch sizes</p>
 
@@ -1496,7 +1496,7 @@ summary: "Basic class for handling the training loop"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="AvgLoss" class="doc_header"><code>class</code> <code>AvgLoss</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/learner.py#L440" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>AvgLoss</code>() :: <a href="learner.html#Metric"><code>Metric</code></a></p>
+<h3 id="AvgLoss" class="doc_header"><code>class</code> <code>AvgLoss</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/learner.py#L440" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>AvgLoss</code>() :: <a href="/learner#Metric"><code>Metric</code></a></p>
 </blockquote>
 <p>Average the losses taking into account potential different batch sizes</p>
 
@@ -1539,7 +1539,7 @@ summary: "Basic class for handling the training loop"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="AvgSmoothLoss" class="doc_header"><code>class</code> <code>AvgSmoothLoss</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/learner.py#L453" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>AvgSmoothLoss</code>(<strong><code>beta</code></strong>=<em><code>0.98</code></em>) :: <a href="learner.html#Metric"><code>Metric</code></a></p>
+<h3 id="AvgSmoothLoss" class="doc_header"><code>class</code> <code>AvgSmoothLoss</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/learner.py#L453" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>AvgSmoothLoss</code>(<strong><code>beta</code></strong>=<em><code>0.98</code></em>) :: <a href="/learner#Metric"><code>Metric</code></a></p>
 </blockquote>
 <p>Smooth average of the losses (exponentially weighted with <code>beta</code>)</p>
 
@@ -1587,7 +1587,7 @@ summary: "Basic class for handling the training loop"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Recorder" class="doc_header"><code>class</code> <code>Recorder</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/learner.py#L471" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Recorder</code>(<strong><code>add_time</code></strong>=<em><code>True</code></em>, <strong><code>train_metrics</code></strong>=<em><code>False</code></em>, <strong><code>valid_metrics</code></strong>=<em><code>True</code></em>, <strong><code>beta</code></strong>=<em><code>0.98</code></em>) :: <a href="learner.html#Callback"><code>Callback</code></a></p>
+<h2 id="Recorder" class="doc_header"><code>class</code> <code>Recorder</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/learner.py#L471" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Recorder</code>(<strong><code>add_time</code></strong>=<em><code>True</code></em>, <strong><code>train_metrics</code></strong>=<em><code>False</code></em>, <strong><code>valid_metrics</code></strong>=<em><code>True</code></em>, <strong><code>beta</code></strong>=<em><code>0.98</code></em>) :: <a href="/learner#Callback"><code>Callback</code></a></p>
 </blockquote>
 <p>Callback that registers statistics (lr, loss and metrics) during training</p>
 
@@ -1604,7 +1604,7 @@ summary: "Basic class for handling the training loop"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>By default, metrics are computed on the validation set only, although that can be changed with <code>training_metrics=True</code>. <code>beta</code> is the weight used to compute the exponentially weighted average of the losses (which gives the <code>smooth_loss</code> attribute to <a href="learner.html#Learner"><code>Learner</code></a>).</p>
+<p>By default, metrics are computed on the validation set only, although that can be changed with <code>training_metrics=True</code>. <code>beta</code> is the weight used to compute the exponentially weighted average of the losses (which gives the <code>smooth_loss</code> attribute to <a href="/learner#Learner"><code>Learner</code></a>).</p>
 
 </div>
 </div>
@@ -1876,7 +1876,7 @@ summary: "Basic class for handling the training loop"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Learner.get_preds" class="doc_header"><code>Learner.get_preds</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/learner.py#L304" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.get_preds</code>(<strong><code>ds_idx</code></strong>=<em><code>1</code></em>, <strong><code>dl</code></strong>=<em><code>None</code></em>, <strong><code>with_input</code></strong>=<em><code>False</code></em>, <strong><code>with_decoded</code></strong>=<em><code>False</code></em>, <strong><code>with_loss</code></strong>=<em><code>False</code></em>, <strong><code>act</code></strong>=<em><code>None</code></em>, <strong><code>save_preds</code></strong>=<em><code>None</code></em>, <strong><code>save_targs</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="Learner.get_preds" class="doc_header"><code>Learner.get_preds</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/learner.py#L304" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.get_preds</code>(<strong><code>ds_idx</code></strong>=<em><code>1</code></em>, <strong><code>dl</code></strong>=<em><code>None</code></em>, <strong><code>with_input</code></strong>=<em><code>False</code></em>, <strong><code>with_decoded</code></strong>=<em><code>False</code></em>, <strong><code>with_loss</code></strong>=<em><code>False</code></em>, <strong><code>act</code></strong>=<em><code>None</code></em>, <strong><code>save_preds</code></strong>=<em><code>None</code></em>, <strong><code>save_targs</code></strong>=<em><code>None</code></em>, <strong><code>concat_dim</code></strong>=<em><code>0</code></em>)</p>
 </blockquote>
 <p>Get the predictions and targets on the <code>ds_idx</code>-th dbunchset or <code>dl</code>, optionally <code>with_input</code> and <code>with_loss</code></p>
 
@@ -1890,7 +1890,7 @@ summary: "Basic class for handling the training loop"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Depending on the <code>loss_func</code> attribute of <a href="learner.html#Learner"><code>Learner</code></a>, an activation function will be picked automatically so that the predictions make sense. For instance if the loss is a case of cross-entropy, a softmax will be applied, or if the loss is binary cross entropy with logits, a sigmoid will be applied. If you want to make sure a certain activation function is applied, you can pass it with <code>act</code>.</p>
+<p>Depending on the <code>loss_func</code> attribute of <a href="/learner#Learner"><code>Learner</code></a>, an activation function will be picked automatically so that the predictions make sense. For instance if the loss is a case of cross-entropy, a softmax will be applied, or if the loss is binary cross entropy with logits, a sigmoid will be applied. If you want to make sure a certain activation function is applied, you can pass it with <code>act</code>.</p>
 
 </div>
 </div>
@@ -1948,7 +1948,7 @@ summary: "Basic class for handling the training loop"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Learner.predict" class="doc_header"><code>Learner.predict</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/learner.py#L323" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.predict</code>(<strong><code>item</code></strong>, <strong><code>rm_type_tfms</code></strong>=<em><code>0</code></em>)</p>
+<h4 id="Learner.predict" class="doc_header"><code>Learner.predict</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/learner.py#L323" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.predict</code>(<strong><code>item</code></strong>, <strong><code>rm_type_tfms</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Return the prediction on <code>item</code>, fully decoded, loss function decoded and probabilities</p>
 
@@ -1965,8 +1965,8 @@ summary: "Basic class for handling the training loop"
 <p>It returns a tuple of three elements with, in reverse order,</p>
 <ul>
 <li>the prediction from the model, potentially passed through the activation of the loss function (if it has one)</li>
-<li>the decoded prediction, using the poential <a href="tabular.core.html#decodes"><code>decodes</code></a> method from it</li>
-<li>the fully decoded prediction, using the transforms used to buil the <a href="data.core.html#DataSource"><code>DataSource</code></a>/<a href="data.core.html#DataBunch"><code>DataBunch</code></a></li>
+<li>the decoded prediction, using the poential <a href="/tabular.core#decodes"><code>decodes</code></a> method from it</li>
+<li>the fully decoded prediction, using the transforms used to buil the <a href="/data.core#DataSource"><code>DataSource</code></a>/<a href="/data.core#DataBunch"><code>DataBunch</code></a></li>
 </ul>
 
 </div>
@@ -2078,7 +2078,7 @@ summary: "Basic class for handling the training loop"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Exporting-a-Learner">Exporting a <a href="learner.html#Learner"><code>Learner</code></a><a class="anchor-link" href="#Exporting-a-Learner">&#182;</a></h2>
+<h2 id="Exporting-a-Learner">Exporting a <a href="/learner#Learner"><code>Learner</code></a><a class="anchor-link" href="#Exporting-a-Learner">&#182;</a></h2>
 </div>
 </div>
 </div>

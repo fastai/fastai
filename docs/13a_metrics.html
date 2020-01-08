@@ -66,7 +66,7 @@ summary: "Definition of the metrics that can be used in training models"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="flatten_check" class="doc_header"><code>flatten_check</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L640" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>flatten_check</code>(<strong><code>inp</code></strong>, <strong><code>targ</code></strong>)</p>
+<h4 id="flatten_check" class="doc_header"><code>flatten_check</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L720" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>flatten_check</code>(<strong><code>inp</code></strong>, <strong><code>targ</code></strong>)</p>
 </blockquote>
 <p>Check that <code>out</code> and <code>targ</code> have the same number of elements and flatten them.</p>
 
@@ -108,7 +108,7 @@ summary: "Definition of the metrics that can be used in training models"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="AccumMetric" class="doc_header"><code>class</code> <code>AccumMetric</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L20" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>AccumMetric</code>(<strong><code>func</code></strong>, <strong><code>dim_argmax</code></strong>=<em><code>None</code></em>, <strong><code>sigmoid</code></strong>=<em><code>False</code></em>, <strong><code>thresh</code></strong>=<em><code>None</code></em>, <strong><code>to_np</code></strong>=<em><code>False</code></em>, <strong><code>invert_arg</code></strong>=<em><code>False</code></em>, <strong><code>flatten</code></strong>=<em><code>True</code></em>, <strong>**<code>kwargs</code></strong>) :: <a href="learner.html#Metric"><code>Metric</code></a></p>
+<h3 id="AccumMetric" class="doc_header"><code>class</code> <code>AccumMetric</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L20" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>AccumMetric</code>(<strong><code>func</code></strong>, <strong><code>dim_argmax</code></strong>=<em><code>None</code></em>, <strong><code>sigmoid</code></strong>=<em><code>False</code></em>, <strong><code>thresh</code></strong>=<em><code>None</code></em>, <strong><code>to_np</code></strong>=<em><code>False</code></em>, <strong><code>invert_arg</code></strong>=<em><code>False</code></em>, <strong><code>flatten</code></strong>=<em><code>True</code></em>, <strong>**<code>kwargs</code></strong>) :: <a href="/learner#Metric"><code>Metric</code></a></p>
 </blockquote>
 <p>Stores predictions and targets on CPU in accumulate to perform final calculations with <code>func</code>.</p>
 
@@ -122,10 +122,10 @@ summary: "Definition of the metrics that can be used in training models"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><code>func</code> is only applied to the accumulated predictions/targets when the <code>value</code> attribute is asked for (so at the end of a validation/trianing phase, in use with <a href="learner.html#Learner"><code>Learner</code></a> and its <a href="learner.html#Recorder"><code>Recorder</code></a>).The signature of <code>func</code> should be <code>inp,targ</code> (where <code>inp</code> are the predictions of the model and <code>targ</code> the corresponding labels).</p>
-<p>For classification problems with single label, predictions need to be transformed with a sofmax then an argmax before being compared to the targets. Since a softmax doesn't change the order of the numbers, we can just apply the argmax. Pass along <code>dim_argmax</code> to have this done by <a href="metrics.html#AccumMetric"><code>AccumMetric</code></a> (usually -1 will work pretty well).</p>
-<p>For classification problems with multiple labels, or if your targets are onehot-encoded, predictions may need to pass through a sigmoid (if it wasn't included in your model) then be compared to a given threshold (to decide between 0 and 1), this is done by <a href="metrics.html#AccumMetric"><code>AccumMetric</code></a> if you pass <code>sigmoid=True</code> and/or a value for <code>thresh</code>.</p>
-<p>If you want to use a metric function sklearn.metrics, you will need to convert predictions and labels to numpy arrays with <code>to_np=True</code>. Also, scikit-learn metrics adopt the convention <code>y_true</code>, <code>y_preds</code> which is the opposite from us, so you will need to pass <code>invert_arg=True</code> to make <a href="metrics.html#AccumMetric"><code>AccumMetric</code></a> do the inversion for you.</p>
+<p><code>func</code> is only applied to the accumulated predictions/targets when the <code>value</code> attribute is asked for (so at the end of a validation/trianing phase, in use with <a href="/learner#Learner"><code>Learner</code></a> and its <a href="/learner#Recorder"><code>Recorder</code></a>).The signature of <code>func</code> should be <code>inp,targ</code> (where <code>inp</code> are the predictions of the model and <code>targ</code> the corresponding labels).</p>
+<p>For classification problems with single label, predictions need to be transformed with a sofmax then an argmax before being compared to the targets. Since a softmax doesn't change the order of the numbers, we can just apply the argmax. Pass along <code>dim_argmax</code> to have this done by <a href="/13a_metrics#AccumMetric"><code>AccumMetric</code></a> (usually -1 will work pretty well).</p>
+<p>For classification problems with multiple labels, or if your targets are onehot-encoded, predictions may need to pass through a sigmoid (if it wasn't included in your model) then be compared to a given threshold (to decide between 0 and 1), this is done by <a href="/13a_metrics#AccumMetric"><code>AccumMetric</code></a> if you pass <code>sigmoid=True</code> and/or a value for <code>thresh</code>.</p>
+<p>If you want to use a metric function sklearn.metrics, you will need to convert predictions and labels to numpy arrays with <code>to_np=True</code>. Also, scikit-learn metrics adopt the convention <code>y_true</code>, <code>y_preds</code> which is the opposite from us, so you will need to pass <code>invert_arg=True</code> to make <a href="/13a_metrics#AccumMetric"><code>AccumMetric</code></a> do the inversion for you.</p>
 
 </div>
 </div>
@@ -408,7 +408,7 @@ summary: "Definition of the metrics that can be used in training models"
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="error_rate" class="doc_header"><code>error_rate</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L79" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>error_rate</code>(<strong><code>inp</code></strong>, <strong><code>targ</code></strong>, <strong><code>axis</code></strong>=<em><code>-1</code></em>)</p>
 </blockquote>
-<p>1 - <a href="metrics.html#accuracy"><code>accuracy</code></a></p>
+<p>1 - <a href="/13a_metrics#accuracy"><code>accuracy</code></a></p>
 
 </div>
 
@@ -860,7 +860,7 @@ summary: "Definition of the metrics that can be used in training models"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="Perplexity" class="doc_header"><code>class</code> <code>Perplexity</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L162" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>Perplexity</code>() :: <a href="learner.html#AvgLoss"><code>AvgLoss</code></a></p>
+<h3 id="Perplexity" class="doc_header"><code>class</code> <code>Perplexity</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L162" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>Perplexity</code>() :: <a href="/learner#AvgLoss"><code>AvgLoss</code></a></p>
 </blockquote>
 <p>Perplexity (exponential of cross-entropy loss) for Language Models</p>
 
@@ -1598,7 +1598,7 @@ summary: "Definition of the metrics that can be used in training models"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="Dice" class="doc_header"><code>class</code> <code>Dice</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L284" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>Dice</code>(<strong><code>axis</code></strong>=<em><code>1</code></em>) :: <a href="learner.html#Metric"><code>Metric</code></a></p>
+<h3 id="Dice" class="doc_header"><code>class</code> <code>Dice</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L284" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>Dice</code>(<strong><code>axis</code></strong>=<em><code>1</code></em>) :: <a href="/learner#Metric"><code>Metric</code></a></p>
 </blockquote>
 <p>Dice coefficient metric for binary target in segmentation</p>
 
@@ -1640,7 +1640,7 @@ summary: "Definition of the metrics that can be used in training models"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="JaccardCoeff" class="doc_header"><code>class</code> <code>JaccardCoeff</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L297" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>JaccardCoeff</code>(<strong><code>axis</code></strong>=<em><code>1</code></em>) :: <a href="metrics.html#Dice"><code>Dice</code></a></p>
+<h3 id="JaccardCoeff" class="doc_header"><code>class</code> <code>JaccardCoeff</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L297" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>JaccardCoeff</code>(<strong><code>axis</code></strong>=<em><code>1</code></em>) :: <a href="/13a_metrics#Dice"><code>Dice</code></a></p>
 </blockquote>
 <p>Implemetation of the jaccard coefficient that is lighter in RAM</p>
 
@@ -1682,7 +1682,7 @@ summary: "Definition of the metrics that can be used in training models"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="LossMetric" class="doc_header"><code>class</code> <code>LossMetric</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L303" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>LossMetric</code>(<strong><code>attr</code></strong>, <strong><code>nm</code></strong>=<em><code>None</code></em>) :: <a href="learner.html#AvgMetric"><code>AvgMetric</code></a></p>
+<h3 id="LossMetric" class="doc_header"><code>class</code> <code>LossMetric</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L303" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>LossMetric</code>(<strong><code>attr</code></strong>, <strong><code>nm</code></strong>=<em><code>None</code></em>) :: <a href="/learner#AvgMetric"><code>AvgMetric</code></a></p>
 </blockquote>
 <p>Create a metric from <code>loss_func.attr</code> named <code>nm</code></p>
 
@@ -1708,7 +1708,7 @@ summary: "Definition of the metrics that can be used in training models"
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="LossMetrics" class="doc_header"><code>LossMetrics</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/metrics.py#L315" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>LossMetrics</code>(<strong><code>attrs</code></strong>, <strong><code>nms</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
-<p>List of <a href="metrics.html#LossMetric"><code>LossMetric</code></a> for each of <code>attrs</code> and <code>nms</code></p>
+<p>List of <a href="/13a_metrics#LossMetric"><code>LossMetric</code></a> for each of <code>attrs</code> and <code>nms</code></p>
 
 </div>
 

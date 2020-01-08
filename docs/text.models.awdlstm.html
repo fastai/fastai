@@ -46,7 +46,7 @@ summary: "AWD LSTM from [Smerity et al.](https://arxiv.org/pdf/1708.02182.pdf) "
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>On top of the pytorch or the fastai <a href="layers.html"><code>layers</code></a>, the language models use some custom layers specific to NLP.</p>
+<p>On top of the pytorch or the fastai <a href="/layers"><code>layers</code></a>, the language models use some custom layers specific to NLP.</p>
 
 </div>
 </div>
@@ -102,7 +102,7 @@ summary: "AWD LSTM from [Smerity et al.](https://arxiv.org/pdf/1708.02182.pdf) "
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="RNNDropout" class="doc_header"><code>class</code> <code>RNNDropout</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/models/awdlstm.py#L17" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>RNNDropout</code>(<strong><code>p</code></strong>=<em><code>0.5</code></em>) :: <a href="torch.core.html#Module"><code>Module</code></a></p>
+<h3 id="RNNDropout" class="doc_header"><code>class</code> <code>RNNDropout</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/models/awdlstm.py#L17" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>RNNDropout</code>(<strong><code>p</code></strong>=<em><code>0.5</code></em>) :: <a href="/torch_core#Module"><code>Module</code></a></p>
 </blockquote>
 <p>Dropout with probability <code>p</code> that is consistent on the seq_len dimension.</p>
 
@@ -148,7 +148,7 @@ summary: "AWD LSTM from [Smerity et al.](https://arxiv.org/pdf/1708.02182.pdf) "
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="WeightDropout" class="doc_header"><code>class</code> <code>WeightDropout</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/models/awdlstm.py#L29" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>WeightDropout</code>(<strong><code>module</code></strong>, <strong><code>weight_p</code></strong>, <strong><code>layer_names</code></strong>=<em><code>'weight_hh_l0'</code></em>) :: <a href="torch.core.html#Module"><code>Module</code></a></p>
+<h3 id="WeightDropout" class="doc_header"><code>class</code> <code>WeightDropout</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/models/awdlstm.py#L29" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>WeightDropout</code>(<strong><code>module</code></strong>, <strong><code>weight_p</code></strong>, <strong><code>layer_names</code></strong>=<em><code>'weight_hh_l0'</code></em>) :: <a href="/torch_core#Module"><code>Module</code></a></p>
 </blockquote>
 <p>A module that warps another layer in which some weights will be replaced by 0 during training.</p>
 
@@ -193,7 +193,7 @@ summary: "AWD LSTM from [Smerity et al.](https://arxiv.org/pdf/1708.02182.pdf) "
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="EmbeddingDropout" class="doc_header"><code>class</code> <code>EmbeddingDropout</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/models/awdlstm.py#L60" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>EmbeddingDropout</code>(<strong><code>emb</code></strong>, <strong><code>embed_p</code></strong>) :: <a href="torch.core.html#Module"><code>Module</code></a></p>
+<h3 id="EmbeddingDropout" class="doc_header"><code>class</code> <code>EmbeddingDropout</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/models/awdlstm.py#L60" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>EmbeddingDropout</code>(<strong><code>emb</code></strong>, <strong><code>embed_p</code></strong>) :: <a href="/torch_core#Module"><code>Module</code></a></p>
 </blockquote>
 <p>Apply dropout with probabily <code>embed_p</code> to an embedding layer <code>emb</code>.</p>
 
@@ -238,7 +238,7 @@ summary: "AWD LSTM from [Smerity et al.](https://arxiv.org/pdf/1708.02182.pdf) "
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="AWD_LSTM" class="doc_header"><code>class</code> <code>AWD_LSTM</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/models/awdlstm.py#L80" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>AWD_LSTM</code>(<strong><code>vocab_sz</code></strong>, <strong><code>emb_sz</code></strong>, <strong><code>n_hid</code></strong>, <strong><code>n_layers</code></strong>, <strong><code>pad_token</code></strong>=<em><code>1</code></em>, <strong><code>hidden_p</code></strong>=<em><code>0.2</code></em>, <strong><code>input_p</code></strong>=<em><code>0.6</code></em>, <strong><code>embed_p</code></strong>=<em><code>0.1</code></em>, <strong><code>weight_p</code></strong>=<em><code>0.5</code></em>, <strong><code>bidir</code></strong>=<em><code>False</code></em>, <strong><code>packed</code></strong>=<em><code>False</code></em>) :: <a href="torch.core.html#Module"><code>Module</code></a></p>
+<h3 id="AWD_LSTM" class="doc_header"><code>class</code> <code>AWD_LSTM</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/models/awdlstm.py#L80" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>AWD_LSTM</code>(<strong><code>vocab_sz</code></strong>, <strong><code>emb_sz</code></strong>, <strong><code>n_hid</code></strong>, <strong><code>n_layers</code></strong>, <strong><code>pad_token</code></strong>=<em><code>1</code></em>, <strong><code>hidden_p</code></strong>=<em><code>0.2</code></em>, <strong><code>input_p</code></strong>=<em><code>0.6</code></em>, <strong><code>embed_p</code></strong>=<em><code>0.1</code></em>, <strong><code>weight_p</code></strong>=<em><code>0.5</code></em>, <strong><code>bidir</code></strong>=<em><code>False</code></em>, <strong><code>packed</code></strong>=<em><code>False</code></em>) :: <a href="/torch_core#Module"><code>Module</code></a></p>
 </blockquote>
 <p>AWD-LSTM inspired by <a href="https://arxiv.org/abs/1708.02182">https://arxiv.org/abs/1708.02182</a></p>
 
@@ -254,10 +254,10 @@ summary: "AWD LSTM from [Smerity et al.](https://arxiv.org/pdf/1708.02182.pdf) "
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>This is the core of an AWD-LSTM model, with embeddings from <code>vocab_sz</code> and <code>emb_sz</code>, <code>n_layers</code> LSTMs potentialy <code>bidir</code> stacked, the first one going from <code>emb_sz</code> to <code>n_hid</code>, the last one from <code>n_hid</code> to <code>emb_sz</code> and all the inner ones from <code>n_hid</code> to <code>n_hid</code>. <code>pad_token</code> is passed to the PyTorch embedding layer. The dropouts are applied as such:</p>
 <ul>
-<li>the embeddings are wrapped in <a href="text.models.awdlstm.html#EmbeddingDropout"><code>EmbeddingDropout</code></a> of probability <code>embed_p</code>;</li>
-<li>the result of thise embedding layer goes through an <a href="text.models.awdlstm.html#RNNDropout"><code>RNNDropout</code></a> of probability <code>input_p</code>;</li>
-<li>each LSTM has <a href="text.models.awdlstm.html#WeightDropout"><code>WeightDropout</code></a> applied with probability <code>weight_p</code>;</li>
-<li>between two of the inner LSTM, an <a href="text.models.awdlstm.html#RNNDropout"><code>RNNDropout</code></a> is applied with probabilith <code>hidden_p</code>.</li>
+<li>the embeddings are wrapped in <a href="/text.models.awdlstm#EmbeddingDropout"><code>EmbeddingDropout</code></a> of probability <code>embed_p</code>;</li>
+<li>the result of thise embedding layer goes through an <a href="/text.models.awdlstm#RNNDropout"><code>RNNDropout</code></a> of probability <code>input_p</code>;</li>
+<li>each LSTM has <a href="/text.models.awdlstm#WeightDropout"><code>WeightDropout</code></a> applied with probability <code>weight_p</code>;</li>
+<li>between two of the inner LSTM, an <a href="/text.models.awdlstm#RNNDropout"><code>RNNDropout</code></a> is applied with probabilith <code>hidden_p</code>.</li>
 </ul>
 <p>THe module returns two lists: the raw outputs (without being applied the dropout of <code>hidden_p</code>) of each inner LSTM and the list of outputs with dropout. Since there is no dropout applied on the last output, those two lists have the same last element, which is the output that should be fed to a decoder (in the case of a language model).</p>
 
@@ -399,7 +399,7 @@ summary: "AWD LSTM from [Smerity et al.](https://arxiv.org/pdf/1708.02182.pdf) "
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="AWD_QRNN" class="doc_header"><code>class</code> <code>AWD_QRNN</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/models/awdlstm.py#L165" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>AWD_QRNN</code>(<strong><code>vocab_sz</code></strong>, <strong><code>emb_sz</code></strong>, <strong><code>n_hid</code></strong>, <strong><code>n_layers</code></strong>, <strong><code>pad_token</code></strong>=<em><code>1</code></em>, <strong><code>hidden_p</code></strong>=<em><code>0.2</code></em>, <strong><code>input_p</code></strong>=<em><code>0.6</code></em>, <strong><code>embed_p</code></strong>=<em><code>0.1</code></em>, <strong><code>weight_p</code></strong>=<em><code>0.5</code></em>, <strong><code>bidir</code></strong>=<em><code>False</code></em>, <strong><code>packed</code></strong>=<em><code>False</code></em>) :: <a href="text.models.awdlstm.html#AWD_LSTM"><code>AWD_LSTM</code></a></p>
+<h3 id="AWD_QRNN" class="doc_header"><code>class</code> <code>AWD_QRNN</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/models/awdlstm.py#L165" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>AWD_QRNN</code>(<strong><code>vocab_sz</code></strong>, <strong><code>emb_sz</code></strong>, <strong><code>n_hid</code></strong>, <strong><code>n_layers</code></strong>, <strong><code>pad_token</code></strong>=<em><code>1</code></em>, <strong><code>hidden_p</code></strong>=<em><code>0.2</code></em>, <strong><code>input_p</code></strong>=<em><code>0.6</code></em>, <strong><code>embed_p</code></strong>=<em><code>0.1</code></em>, <strong><code>weight_p</code></strong>=<em><code>0.5</code></em>, <strong><code>bidir</code></strong>=<em><code>False</code></em>, <strong><code>packed</code></strong>=<em><code>False</code></em>) :: <a href="/text.models.awdlstm#AWD_LSTM"><code>AWD_LSTM</code></a></p>
 </blockquote>
 <p>Same as an AWD-LSTM, but using QRNNs instead of LSTMs</p>
 

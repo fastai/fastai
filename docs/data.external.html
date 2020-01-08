@@ -267,7 +267,7 @@ summary: "Helper functions to download the fastai datasets"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>If <code>fname</code> is None, it will default to the archive folder you have in your config file (or data, model if you specify a different <code>c_key</code>) followed by the last part of the url: for instance <a href="data.external.html#URLs.MNIST_SAMPLE"><code>URLs.MNIST_SAMPLE</code></a> is <code>http://files.fast.ai/data/examples/mnist_sample.tgz</code> and the default value for <code>fname</code> will be <code>~/.fastai/archive/mnist_sample.tgz</code>.</p>
+<p>If <code>fname</code> is None, it will default to the archive folder you have in your config file (or data, model if you specify a different <code>c_key</code>) followed by the last part of the url: for instance <a href="/data.external#URLs.MNIST_SAMPLE"><code>URLs.MNIST_SAMPLE</code></a> is <code>http://files.fast.ai/data/examples/mnist_sample.tgz</code> and the default value for <code>fname</code> will be <code>~/.fastai/archive/mnist_sample.tgz</code>.</p>
 <p>If <code>force_download=True</code>, the file is alwayd downloaded. Otherwise, it's only when the file doesn't exists that the download is triggered.</p>
 
 </div>
@@ -358,7 +358,7 @@ summary: "Helper functions to download the fastai datasets"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a href="data.external.html#tar_extract"><code>tar_extract</code></a> is used by default in <a href="data.external.html#untar_data"><code>untar_data</code></a> to decompress the downloaded file.</p>
+<p><a href="/data.external#tar_extract"><code>tar_extract</code></a> is used by default in <a href="/data.external#untar_data"><code>untar_data</code></a> to decompress the downloaded file.</p>
 
 </div>
 </div>
@@ -389,16 +389,16 @@ summary: "Helper functions to download the fastai datasets"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a href="data.external.html#untar_data"><code>untar_data</code></a> is a convenience function for the fastai datasets, intended to work with the urls in <a href="data.external.html#URLs"><code>URLs</code></a>. You can use it with another url only if it ends with <code>.tgz</code> (otherwise the function can download it but not decompress it). For other extensions, you should use <a href="data.external.html#download_data"><code>download_data</code></a> then the necessary decompress function.</p>
-<p>If <code>fname</code> is specified, the data will be downloaded to that destination, otherwise it will default to the archive path in your config file (default <code>~/.fastai/archive/</code>) followed by the last part of your url. For instance <a href="data.external.html#URLs.MNIST_SAMPLE"><code>URLs.MNIST_SAMPLE</code></a> is <code>http://files.fast.ai/data/examples/mnist_sample.tgz</code> and the default value for <code>fname</code> will be <code>~/.fastai/archive/mnist_sample.tgz</code>.</p>
-<p>If <code>dest</code> is specified, the data will be decompressed to that folder. Otherwise, it will default to the data path (or model/archive if you specify a different <code>c_key</code>) in your config file (default <code>~/.fastai/data/</code>) followed by the last part of your url without extension. For instance <a href="data.external.html#URLs.MNIST_SAMPLE"><code>URLs.MNIST_SAMPLE</code></a> is <code>http://files.fast.ai/data/examples/mnist_sample.tgz</code> and the default value for <code>dest</code> will be <code>~/.fastai/data/mnist_sample</code>.</p>
+<p><a href="/data.external#untar_data"><code>untar_data</code></a> is a convenience function for the fastai datasets, intended to work with the urls in <a href="/data.external#URLs"><code>URLs</code></a>. You can use it with another url only if it ends with <code>.tgz</code> (otherwise the function can download it but not decompress it). For other extensions, you should use <a href="/data.external#download_data"><code>download_data</code></a> then the necessary decompress function.</p>
+<p>If <code>fname</code> is specified, the data will be downloaded to that destination, otherwise it will default to the archive path in your config file (default <code>~/.fastai/archive/</code>) followed by the last part of your url. For instance <a href="/data.external#URLs.MNIST_SAMPLE"><code>URLs.MNIST_SAMPLE</code></a> is <code>http://files.fast.ai/data/examples/mnist_sample.tgz</code> and the default value for <code>fname</code> will be <code>~/.fastai/archive/mnist_sample.tgz</code>.</p>
+<p>If <code>dest</code> is specified, the data will be decompressed to that folder. Otherwise, it will default to the data path (or model/archive if you specify a different <code>c_key</code>) in your config file (default <code>~/.fastai/data/</code>) followed by the last part of your url without extension. For instance <a href="/data.external#URLs.MNIST_SAMPLE"><code>URLs.MNIST_SAMPLE</code></a> is <code>http://files.fast.ai/data/examples/mnist_sample.tgz</code> and the default value for <code>dest</code> will be <code>~/.fastai/data/mnist_sample</code>.</p>
 <p><code>force_download=True</code> will retrigger a download, otherwise the behavior is to:</p>
 <ul>
 <li>not do anything when <code>dest</code> exists</li>
 <li>otherwise decompress <code>fname</code> to <code>dest</code> if <code>fname</code> exists</li>
 <li>otherwise download then decompress <code>fname</code> to <code>dest</code></li>
 </ul>
-<p>You can pass any function that takes <code>fname</code> and <code>dest</code> arguments as <code>extract_func</code>. By default, <a href="data.external.html#tar_extract"><code>tar_extract</code></a> is used, which extracts the file using <code>tarfile</code>.</p>
+<p>You can pass any function that takes <code>fname</code> and <code>dest</code> arguments as <code>extract_func</code>. By default, <a href="/data.external#tar_extract"><code>tar_extract</code></a> is used, which extracts the file using <code>tarfile</code>.</p>
 
 </div>
 </div>

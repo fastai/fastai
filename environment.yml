@@ -4,6 +4,7 @@ channels:
 - pytorch
 - defaults
 dependencies:
+- packaging
 - jupyter
 - pytorch>=1.2.0
 - torchvision

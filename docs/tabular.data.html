@@ -37,9 +37,9 @@ summary: "summary"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TabularDataBunch" class="doc_header"><code>class</code> <code>TabularDataBunch</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/tabular/data.py#L11" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TabularDataBunch</code>(<strong>*<code>dls</code></strong>, <strong><code>path</code></strong>=<em><code>'.'</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>) :: <a href="data.core.html#DataBunch"><code>DataBunch</code></a></p>
+<h2 id="TabularDataBunch" class="doc_header"><code>class</code> <code>TabularDataBunch</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/tabular/data.py#L11" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TabularDataBunch</code>(<strong>*<code>dls</code></strong>, <strong><code>path</code></strong>=<em><code>'.'</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>) :: <a href="/data.core#DataBunch"><code>DataBunch</code></a></p>
 </blockquote>
-<p>Basic wrapper around several <a href="data.load.html#DataLoader"><code>DataLoader</code></a>s.</p>
+<p>Basic wrapper around several <a href="/data.load#DataLoader"><code>DataLoader</code></a>s.</p>
 
 </div>
 
@@ -108,7 +108,7 @@ summary: "summary"
   </thead>
   <tbody>
     <tr>
-      <td>0</td>
+      <th>0</th>
       <td>49</td>
       <td>Private</td>
       <td>101320</td>
@@ -126,7 +126,7 @@ summary: "summary"
       <td>&gt;=50k</td>
     </tr>
     <tr>
-      <td>1</td>
+      <th>1</th>
       <td>44</td>
       <td>Private</td>
       <td>236746</td>
@@ -144,7 +144,7 @@ summary: "summary"
       <td>&gt;=50k</td>
     </tr>
     <tr>
-      <td>2</td>
+      <th>2</th>
       <td>38</td>
       <td>Private</td>
       <td>96185</td>
@@ -162,7 +162,7 @@ summary: "summary"
       <td>&lt;50k</td>
     </tr>
     <tr>
-      <td>3</td>
+      <th>3</th>
       <td>38</td>
       <td>Self-emp-inc</td>
       <td>112847</td>
@@ -180,7 +180,7 @@ summary: "summary"
       <td>&gt;=50k</td>
     </tr>
     <tr>
-      <td>4</td>
+      <th>4</th>
       <td>42</td>
       <td>Self-emp-not-inc</td>
       <td>82297</td>
@@ -278,23 +278,71 @@ summary: "summary"
     <tr>
       <th>0</th>
       <td>Private</td>
-      <td>Bachelors</td>
+      <td>HS-grad</td>
       <td>Married-civ-spouse</td>
-      <td>Craft-repair</td>
-      <td>Other-relative</td>
+      <td>Farming-fishing</td>
+      <td>Husband</td>
       <td>White</td>
       <td>False</td>
       <td>False</td>
       <td>False</td>
-      <td>55.0</td>
-      <td>381964.995823</td>
-      <td>13.0</td>
+      <td>64.0</td>
+      <td>59829.001597</td>
+      <td>9.0</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
       <th>1</th>
+      <td>Local-gov</td>
+      <td>Bachelors</td>
+      <td>Divorced</td>
+      <td>Prof-specialty</td>
+      <td>Unmarried</td>
+      <td>White</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>46.0</td>
+      <td>183168.000003</td>
+      <td>13.0</td>
+      <td>&lt;50k</td>
+    </tr>
+    <tr>
+      <th>2</th>
       <td>Private</td>
-      <td>Some-college</td>
+      <td>HS-grad</td>
+      <td>Married-civ-spouse</td>
+      <td>Handlers-cleaners</td>
+      <td>Own-child</td>
+      <td>White</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>24.0</td>
+      <td>236696.000448</td>
+      <td>9.0</td>
+      <td>&lt;50k</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>?</td>
+      <td>HS-grad</td>
+      <td>Married-civ-spouse</td>
+      <td>#na#</td>
+      <td>Husband</td>
+      <td>White</td>
+      <td>False</td>
+      <td>False</td>
+      <td>True</td>
+      <td>60.0</td>
+      <td>174072.999635</td>
+      <td>10.0</td>
+      <td>&lt;50k</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Private</td>
+      <td>HS-grad</td>
       <td>Married-civ-spouse</td>
       <td>Machine-op-inspct</td>
       <td>Husband</td>
@@ -302,137 +350,89 @@ summary: "summary"
       <td>False</td>
       <td>False</td>
       <td>False</td>
-      <td>47.0</td>
-      <td>84725.998154</td>
-      <td>10.0</td>
-      <td>&lt;50k</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>Private</td>
-      <td>Masters</td>
-      <td>Never-married</td>
-      <td>Prof-specialty</td>
-      <td>Own-child</td>
-      <td>White</td>
-      <td>False</td>
-      <td>False</td>
-      <td>False</td>
-      <td>28.0</td>
-      <td>190524.999991</td>
-      <td>14.0</td>
-      <td>&lt;50k</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>?</td>
-      <td>Some-college</td>
-      <td>Never-married</td>
-      <td>?</td>
-      <td>Unmarried</td>
-      <td>White</td>
-      <td>False</td>
-      <td>False</td>
-      <td>False</td>
-      <td>32.0</td>
-      <td>143699.000112</td>
-      <td>10.0</td>
-      <td>&lt;50k</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>Private</td>
-      <td>Some-college</td>
-      <td>Never-married</td>
-      <td>Adm-clerical</td>
-      <td>Not-in-family</td>
-      <td>White</td>
-      <td>False</td>
-      <td>False</td>
-      <td>False</td>
-      <td>27.0</td>
-      <td>347513.002736</td>
-      <td>10.0</td>
+      <td>33.0</td>
+      <td>250781.998605</td>
+      <td>9.0</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
       <th>5</th>
-      <td>Private</td>
-      <td>Assoc-acdm</td>
+      <td>Self-emp-inc</td>
+      <td>Masters</td>
       <td>Married-civ-spouse</td>
-      <td>Exec-managerial</td>
-      <td>Husband</td>
+      <td>Prof-specialty</td>
+      <td>Wife</td>
       <td>White</td>
       <td>False</td>
       <td>False</td>
       <td>False</td>
-      <td>46.0</td>
-      <td>181362.999862</td>
-      <td>12.0</td>
+      <td>39.0</td>
+      <td>202937.000573</td>
+      <td>14.0</td>
       <td>&gt;=50k</td>
     </tr>
     <tr>
       <th>6</th>
       <td>?</td>
-      <td>Bachelors</td>
+      <td>Some-college</td>
       <td>Never-married</td>
       <td>?</td>
-      <td>Not-in-family</td>
+      <td>Own-child</td>
       <td>White</td>
       <td>False</td>
       <td>False</td>
       <td>False</td>
-      <td>24.0</td>
-      <td>175068.999385</td>
-      <td>13.0</td>
+      <td>20.0</td>
+      <td>150084.001095</td>
+      <td>10.0</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
       <th>7</th>
       <td>Private</td>
-      <td>HS-grad</td>
+      <td>Bachelors</td>
       <td>Married-civ-spouse</td>
-      <td>Farming-fishing</td>
+      <td>Prof-specialty</td>
       <td>Husband</td>
-      <td>Other</td>
+      <td>White</td>
       <td>False</td>
       <td>False</td>
       <td>False</td>
-      <td>44.0</td>
-      <td>291567.997815</td>
-      <td>9.0</td>
+      <td>56.0</td>
+      <td>155449.001141</td>
+      <td>13.0</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
       <th>8</th>
-      <td>State-gov</td>
-      <td>Some-college</td>
-      <td>Divorced</td>
-      <td>Adm-clerical</td>
-      <td>Unmarried</td>
+      <td>?</td>
+      <td>Bachelors</td>
+      <td>Married-civ-spouse</td>
+      <td>?</td>
+      <td>Wife</td>
       <td>White</td>
       <td>False</td>
       <td>False</td>
       <td>False</td>
-      <td>51.0</td>
-      <td>94174.000722</td>
-      <td>10.0</td>
+      <td>30.0</td>
+      <td>101696.998392</td>
+      <td>13.0</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
       <th>9</th>
-      <td>Self-emp-not-inc</td>
-      <td>Some-college</td>
+      <td>Private</td>
+      <td>HS-grad</td>
       <td>Married-civ-spouse</td>
-      <td>Farming-fishing</td>
+      <td>Handlers-cleaners</td>
       <td>Husband</td>
       <td>White</td>
       <td>False</td>
       <td>False</td>
       <td>False</td>
-      <td>37.0</td>
-      <td>36988.999962</td>
-      <td>10.0</td>
+      <td>63.0</td>
+      <td>246841.000879</td>
+      <td>9.0</td>
       <td>&lt;50k</td>
     </tr>
   </tbody>

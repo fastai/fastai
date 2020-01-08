@@ -66,7 +66,7 @@ summary: "Integration with [wandb](https://www.wandb.com/) "
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="WandbCallback" class="doc_header"><code>class</code> <code>WandbCallback</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/wandb.py#L14" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>WandbCallback</code>(<strong><code>log</code></strong>=<em><code>'gradients'</code></em>, <strong><code>log_preds</code></strong>=<em><code>True</code></em>, <strong><code>valid_dl</code></strong>=<em><code>None</code></em>, <strong><code>n_preds</code></strong>=<em><code>36</code></em>, <strong><code>seed</code></strong>=<em><code>12345</code></em>) :: <a href="learner.html#Callback"><code>Callback</code></a></p>
+<h2 id="WandbCallback" class="doc_header"><code>class</code> <code>WandbCallback</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/wandb.py#L14" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>WandbCallback</code>(<strong><code>log</code></strong>=<em><code>'gradients'</code></em>, <strong><code>log_preds</code></strong>=<em><code>True</code></em>, <strong><code>valid_dl</code></strong>=<em><code>None</code></em>, <strong><code>n_preds</code></strong>=<em><code>36</code></em>, <strong><code>seed</code></strong>=<em><code>12345</code></em>) :: <a href="/learner#Callback"><code>Callback</code></a></p>
 </blockquote>
 <p>Saves model topology, losses &amp; metrics</p>
 
@@ -81,18 +81,18 @@ summary: "Integration with [wandb](https://www.wandb.com/) "
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Optionally logs weights and or gradients depending on <code>log</code> (can be "gradients", "parameters", "all" or None), sample predictions if <code>log_preds=True</code> that will come from <code>valid_dl</code> or a random sample pf the validation set (determined by <code>seed</code>). <code>n_preds</code> are logged in this case.</p>
-<p>If used in combination with <a href="callback.tracker.html#SaveModelCallback"><code>SaveModelCallback</code></a>, the best model is saved as well.</p>
+<p>If used in combination with <a href="/callback.tracker#SaveModelCallback"><code>SaveModelCallback</code></a>, the best model is saved as well.</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Example-of-use:">Example of use:<a class="anchor-link" href="#Example-of-use:">&#182;</a></h2><p>Once your have defined your <a href="learner.html#Learner"><code>Learner</code></a>, before you call to <code>fit</code> or <code>fit_one_cycle</code>, you need to initialize wandb:</p>
+<h2 id="Example-of-use:">Example of use:<a class="anchor-link" href="#Example-of-use:">&#182;</a></h2><p>Once your have defined your <a href="/learner#Learner"><code>Learner</code></a>, before you call to <code>fit</code> or <code>fit_one_cycle</code>, you need to initialize wandb:</p>
 
 <pre><code>import wandb
 wandb.init(project=PROJECT_NAME, entity=USER_NAME)</code></pre>
-<p>(replace <code>PROJECT_NAME</code> and <code>USER_NAME</code>). Then you add the callback in your call to fit, potentially with <a href="callback.tracker.html#SaveModelCallback"><code>SaveModelCallback</code></a> if you want to save the best model:</p>
+<p>(replace <code>PROJECT_NAME</code> and <code>USER_NAME</code>). Then you add the callback in your call to fit, potentially with <a href="/callback.tracker#SaveModelCallback"><code>SaveModelCallback</code></a> if you want to save the best model:</p>
 
 <pre><code>from fastai2.callback.wandb import *
 

@@ -126,7 +126,7 @@ summary: "All the functions necessary to build `Learner` suitable for transfer l
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><code>cut</code> can either be an integer, in which case we cut the model at the coresponding layer, or a function, in which case, this funciton returns <code>cut(model)</code>. It defaults to <code>cnn_config(arch)['cut']</code> if <code>arch</code> is in <a href="vision.learner.html#cnn_config"><code>cnn_config</code></a>, otherwise to the first layer that contains some pooling.</p>
+<p><code>cut</code> can either be an integer, in which case we cut the model at the coresponding layer, or a function, in which case, this funciton returns <code>cut(model)</code>. It defaults to <code>cnn_config(arch)['cut']</code> if <code>arch</code> is in <a href="/vision.learner#cnn_config"><code>cnn_config</code></a>, otherwise to the first layer that contains some pooling.</p>
 
 </div>
 </div>
@@ -279,7 +279,7 @@ summary: "All the functions necessary to build `Learner` suitable for transfer l
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="cnn_config" class="doc_header"><code>cnn_config</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/learner.py#L69" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>cnn_config</code>(<strong><code>lin_ftrs</code></strong>=<em><code>None</code></em>, <strong><code>ps</code></strong>=<em><code>0.5</code></em>, <strong><code>custom_head</code></strong>=<em><code>None</code></em>, <strong><code>bn_final</code></strong>=<em><code>False</code></em>, <strong><code>concat_pool</code></strong>=<em><code>True</code></em>, <strong><code>init</code></strong>=<em><code>'kaiming_normal_'</code></em>)</p>
 </blockquote>
-<p>Convenienc function to easily create a config for <a href="vision.learner.html#create_cnn_model"><code>create_cnn_model</code></a></p>
+<p>Convenienc function to easily create a config for <a href="/vision.learner#create_cnn_model"><code>create_cnn_model</code></a></p>
 
 </div>
 
@@ -337,7 +337,7 @@ summary: "All the functions necessary to build `Learner` suitable for transfer l
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="default_split" class="doc_header"><code>default_split</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/learner.py#L75" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>default_split</code>(<strong><code>m</code></strong>:<a href="torch.core.html#Module"><code>Module</code></a>)</p>
+<h4 id="default_split" class="doc_header"><code>default_split</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/learner.py#L75" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>default_split</code>(<strong><code>m</code></strong>:<a href="/torch_core#Module"><code>Module</code></a>)</p>
 </blockquote>
 
 </div>
@@ -356,7 +356,7 @@ summary: "All the functions necessary to build `Learner` suitable for transfer l
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Learner-convenience-functions"><a href="learner.html#Learner"><code>Learner</code></a> convenience functions<a class="anchor-link" href="#Learner-convenience-functions">&#182;</a></h2>
+<h2 id="Learner-convenience-functions"><a href="/learner#Learner"><code>Learner</code></a> convenience functions<a class="anchor-link" href="#Learner-convenience-functions">&#182;</a></h2>
 </div>
 </div>
 </div>
@@ -386,7 +386,7 @@ summary: "All the functions necessary to build `Learner` suitable for transfer l
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The model is built from <code>arch</code> using the number of final activation inferred from <code>dbunch</code> by <a href="data.transforms.html#get_c"><code>get_c</code></a>. It might be <code>pretrained</code> and the architecture is cut and split using the default metadata of the model architecture (this can be customized by passing a <code>cut</code> or a <code>splitter</code>). To customize the model creation, use <a href="vision.learner.html#cnn_config"><code>cnn_config</code></a> and pass the result to the <code>config</code> argument.</p>
+<p>The model is built from <code>arch</code> using the number of final activation inferred from <code>dbunch</code> by <a href="/data.transforms#get_c"><code>get_c</code></a>. It might be <code>pretrained</code> and the architecture is cut and split using the default metadata of the model architecture (this can be customized by passing a <code>cut</code> or a <code>splitter</code>). To customize the model creation, use <a href="/vision.learner#cnn_config"><code>cnn_config</code></a> and pass the result to the <code>config</code> argument.</p>
 
 </div>
 </div>
@@ -418,7 +418,7 @@ summary: "All the functions necessary to build `Learner` suitable for transfer l
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="unet_config" class="doc_header"><code>unet_config</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/learner.py#L123" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>unet_config</code>(<strong><code>blur</code></strong>=<em><code>False</code></em>, <strong><code>blur_final</code></strong>=<em><code>True</code></em>, <strong><code>self_attention</code></strong>=<em><code>False</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>, <strong><code>last_cross</code></strong>=<em><code>True</code></em>, <strong><code>bottle</code></strong>=<em><code>False</code></em>, <strong><code>act_cls</code></strong>=<em><code>'ReLU'</code></em>, <strong><code>init</code></strong>=<em><code>'kaiming_normal_'</code></em>, <strong><code>norm_type</code></strong>=<em><code>NormType.Batch</code></em>)</p>
 </blockquote>
-<p>Convenience function to easily create a config for <a href="vision.models.unet.html#DynamicUnet"><code>DynamicUnet</code></a></p>
+<p>Convenience function to easily create a config for <a href="/15a_vision.models.unet#DynamicUnet"><code>DynamicUnet</code></a></p>
 
 </div>
 
@@ -508,7 +508,7 @@ summary: "All the functions necessary to build `Learner` suitable for transfer l
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span> <span class="o">=</span> <span class="n">unet_learner</span><span class="p">(</span><span class="n">dbunch</span><span class="p">,</span> <span class="n">models</span><span class="o">.</span><span class="n">resnet34</span><span class="p">,</span> <span class="n">loss_func</span><span class="o">=</span><span class="n">CrossEntropyLossFlat</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">config</span><span class="o">=</span><span class="n">unet_config</span><span class="p">())</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span> <span class="o">=</span> <span class="n">unet_learner</span><span class="p">(</span><span class="n">dbunch</span><span class="p">,</span> <span class="n">models</span><span class="o">.</span><span class="n">resnet34</span><span class="p">,</span> <span class="n">loss_func</span><span class="o">=</span><span class="n">CrossEntropyLossFlat</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
 </pre></div>
 
     </div>

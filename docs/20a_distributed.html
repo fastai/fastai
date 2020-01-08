@@ -73,9 +73,9 @@ summary: "Callbacks and helper functions to train in parallel or use distributed
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ParallelTrainer" class="doc_header"><code>class</code> <code>ParallelTrainer</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/distributed.py#L17" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ParallelTrainer</code>(<strong><code>device_ids</code></strong>) :: <a href="learner.html#Callback"><code>Callback</code></a></p>
+<h2 id="ParallelTrainer" class="doc_header"><code>class</code> <code>ParallelTrainer</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/distributed.py#L17" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ParallelTrainer</code>(<strong><code>device_ids</code></strong>) :: <a href="/learner#Callback"><code>Callback</code></a></p>
 </blockquote>
-<p>Basic class handling tweaks of the training loop by changing a <a href="learner.html#Learner"><code>Learner</code></a> in various events</p>
+<p>Basic class handling tweaks of the training loop by changing a <a href="/learner#Learner"><code>Learner</code></a> in various events</p>
 
 </div>
 
@@ -192,9 +192,9 @@ summary: "Callbacks and helper functions to train in parallel or use distributed
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="DistributedDL" class="doc_header"><code>class</code> <code>DistributedDL</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/distributed.py#L45" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>DistributedDL</code>(<strong><code>dataset</code></strong>, <strong><code>rank</code></strong>, <strong><code>world_size</code></strong>, <strong><code>bs</code></strong>=<em><code>16</code></em>, <strong><code>shuffle</code></strong>=<em><code>False</code></em>, <strong><code>num_workers</code></strong>=<em><code>None</code></em>, <strong><code>pin_memory</code></strong>=<em><code>False</code></em>, <strong><code>timeout</code></strong>=<em><code>0</code></em>, <strong><code>batch_size</code></strong>=<em><code>None</code></em>, <strong><code>drop_last</code></strong>=<em><code>False</code></em>, <strong><code>indexed</code></strong>=<em><code>None</code></em>, <strong><code>n</code></strong>=<em><code>None</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>wif</code></strong>=<em><code>None</code></em>, <strong><code>before_iter</code></strong>=<em><code>None</code></em>, <strong><code>after_item</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_iter</code></strong>=<em><code>None</code></em>, <strong><code>create_batches</code></strong>=<em><code>None</code></em>, <strong><code>create_item</code></strong>=<em><code>None</code></em>, <strong><code>create_batch</code></strong>=<em><code>None</code></em>, <strong><code>retain</code></strong>=<em><code>None</code></em>, <strong><code>get_idxs</code></strong>=<em><code>None</code></em>, <strong><code>sample</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_fn</code></strong>=<em><code>None</code></em>, <strong><code>do_batch</code></strong>=<em><code>None</code></em>) :: <a href="data.core.html#TfmdDL"><code>TfmdDL</code></a></p>
+<h2 id="DistributedDL" class="doc_header"><code>class</code> <code>DistributedDL</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/distributed.py#L45" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>DistributedDL</code>(<strong><code>dataset</code></strong>, <strong><code>rank</code></strong>, <strong><code>world_size</code></strong>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>shuffle</code></strong>=<em><code>False</code></em>, <strong><code>num_workers</code></strong>=<em><code>None</code></em>, <strong><code>pin_memory</code></strong>=<em><code>False</code></em>, <strong><code>timeout</code></strong>=<em><code>0</code></em>, <strong><code>batch_size</code></strong>=<em><code>None</code></em>, <strong><code>drop_last</code></strong>=<em><code>False</code></em>, <strong><code>indexed</code></strong>=<em><code>None</code></em>, <strong><code>n</code></strong>=<em><code>None</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>wif</code></strong>=<em><code>None</code></em>, <strong><code>before_iter</code></strong>=<em><code>None</code></em>, <strong><code>after_item</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_iter</code></strong>=<em><code>None</code></em>, <strong><code>create_batches</code></strong>=<em><code>None</code></em>, <strong><code>create_item</code></strong>=<em><code>None</code></em>, <strong><code>create_batch</code></strong>=<em><code>None</code></em>, <strong><code>retain</code></strong>=<em><code>None</code></em>, <strong><code>get_idxs</code></strong>=<em><code>None</code></em>, <strong><code>sample</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_fn</code></strong>=<em><code>None</code></em>, <strong><code>do_batch</code></strong>=<em><code>None</code></em>) :: <a href="/data.core#TfmdDL"><code>TfmdDL</code></a></p>
 </blockquote>
-<p>Transformed <a href="data.load.html#DataLoader"><code>DataLoader</code></a></p>
+<p>Transformed <a href="/data.load#DataLoader"><code>DataLoader</code></a></p>
 
 </div>
 
@@ -252,9 +252,9 @@ summary: "Callbacks and helper functions to train in parallel or use distributed
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="DistributedTrainer" class="doc_header"><code>class</code> <code>DistributedTrainer</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/distributed.py#L86" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>DistributedTrainer</code>(<strong><code>cuda_id</code></strong>=<em><code>0</code></em>) :: <a href="learner.html#Callback"><code>Callback</code></a></p>
+<h2 id="DistributedTrainer" class="doc_header"><code>class</code> <code>DistributedTrainer</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/distributed.py#L86" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>DistributedTrainer</code>(<strong><code>cuda_id</code></strong>=<em><code>0</code></em>) :: <a href="/learner#Callback"><code>Callback</code></a></p>
 </blockquote>
-<p>Basic class handling tweaks of the training loop by changing a <a href="learner.html#Learner"><code>Learner</code></a> in various events</p>
+<p>Basic class handling tweaks of the training loop by changing a <a href="/learner#Learner"><code>Learner</code></a> in various events</p>
 
 </div>
 
