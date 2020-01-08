@@ -177,8 +177,9 @@ from contextlib import ExitStack
 # Cell
 class Learner():
     def __init__(self, dbunch, model, loss_func=None, opt_func=Adam, lr=defaults.lr, splitter=trainable_params, cbs=None,
-                 cb_funcs=None, metrics=None, path=None, model_dir='models', wd_bn_bias=False, train_bn=True):
-        store_attr(self, "dbunch,model,opt_func,lr,splitter,model_dir,wd_bn_bias,train_bn,metrics")
+                 cb_funcs=None, metrics=None, path=None, model_dir='models', wd=defaults.wd, wd_bn_bias=False, train_bn=True,
+                 moms=(0.95,0.85,0.95)):
+        store_attr(self, "dbunch,model,opt_func,lr,splitter,model_dir,wd,wd_bn_bias,train_bn,metrics,moms")
         self.training,self.create_mbar,self.logger,self.opt,self.cbs = False,True,print,None,L()
         #TODO: infer loss_func from data
         if loss_func is None:
@@ -275,10 +276,10 @@ class Learner():
         finally:
             dl,*_ = change_attrs(dl, names, old, has);       self('after_validate')
 
-    def fit(self, n_epoch, lr=None, wd=defaults.wd, cbs=None, reset_opt=False):
+    def fit(self, n_epoch, lr=None, wd=None, cbs=None, reset_opt=False):
         with self.added_cbs(cbs):
             if reset_opt or not self.opt: self.create_opt()
-            self.opt.set_hypers(wd=wd, lr=self.lr if lr is None else lr)
+            self.opt.set_hypers(wd=self.wd if wd is None else wd, lr=self.lr if lr is None else lr)
 
             try:
                 self._do_begin_fit(n_epoch)
