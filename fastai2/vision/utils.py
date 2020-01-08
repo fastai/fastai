@@ -16,7 +16,7 @@ def _download_image_inner(dest, inp, timeout=4):
     except Exception as e: f"Couldn't download {url}."
 
 # Cell
-def download_images(url_file, dest, max_pics=1000, n_workers=8, timeout=4):
+def download_images(dest, url_file=None, urls=None, max_pics=1000, n_workers=8, timeout=4):
     "Download images listed in text file `url_file` to path `dest`, at most `max_pics`"
     urls = url_file.read().strip().split("\n")[:max_pics]
     dest = Path(dest)
