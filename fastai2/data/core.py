@@ -185,7 +185,7 @@ class TfmdList(FilteredBase, L, GetAttr):
     def overlapping_splits(self): return L(Counter(self.splits.concat()).values()).filter(gt(1))
 
     def setup(self, train_setup=True):
-        self.tfms.setup(getattr(self,'train',self) if train_setup else self)
+        self.tfms.setup(self, train_setup)
         if len(self) != 0:
             x,self.types = super().__getitem__(0),[]
             for f in self.tfms.fs:

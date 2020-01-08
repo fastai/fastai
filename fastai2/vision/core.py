@@ -202,7 +202,7 @@ class PointScaler(Transform):
         assert sz is not None or self.sz is not None, "Size could not be inferred, pass it in the init of your TensorPoint with `img_size=...`"
         return self.sz if sz is None else sz
 
-    def setup(self, dl):
+    def setups(self, dl):
         its = dl.do_item(0)
         for t in its:
             if isinstance(t, TensorPoint): self.c = t.numel()
@@ -215,7 +215,7 @@ class PointScaler(Transform):
 
 # Cell
 class BBoxLabeler(Transform):
-    def setup(self, dl): self.vocab = dl.vocab
+    def setups(self, dl): self.vocab = dl.vocab
     def before_call(self): self.bbox,self.lbls = None,None
 
     def decode (self, x, **kwargs):

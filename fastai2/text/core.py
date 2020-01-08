@@ -3,8 +3,8 @@
 __all__ = ['UNK', 'PAD', 'BOS', 'EOS', 'FLD', 'TK_REP', 'TK_WREP', 'TK_UP', 'TK_MAJ', 'spec_add_spaces',
            'rm_useless_spaces', 'replace_rep', 'replace_wrep', 'fix_html', 'replace_all_caps', 'replace_maj',
            'lowercase', 'replace_space', 'BaseTokenizer', 'SpacyTokenizer', 'TokenizeBatch', 'tokenize1',
-           'parallel_tokenize', 'fn_counter_pkl', 'tokenize_folder', 'read_tokenized_file', 'tokenize_df',
-           'tokenize_csv', 'load_tokenized_csv', 'eu_langs', 'SentencePieceTokenizer']
+           'parallel_tokenize', 'fn_counter_pkl', 'tokenize_folder', 'read_tokenized_file', 'tokenize_files',
+           'tokenize_df', 'tokenize_csv', 'load_tokenized_csv', 'eu_langs', 'SentencePieceTokenizer']
 
 # Cell
 from ..torch_basics import *
@@ -162,6 +162,22 @@ def tokenize_folder(path, extensions=None, folders=None, output_dir=None, n_work
 
 # Cell
 def read_tokenized_file(f): return L(f.read().split(' '))
+
+# Cell
+def tokenize_files(files, output_dir, output_names=None, n_workers=defaults.cpus, rules=None, tok_func=SpacyTokenizer,
+                   encoding='utf8', **tok_kwargs):
+    "Tokenize text `files` in parallel using `n_workers`"
+    if output_names is None: output_names = L(f'{i}.txt' for i in range_of(files))
+    output_dir = Path(output_dir)
+    rules = partial(Path.read, encoding=encoding) + L(ifnone(rules, defaults.text_proc_rules.copy()))
+
+    counter = (output_dir/fn_counter_pkl).load() if (output_dir/fn_counter_pkl).exists() else Counter()
+    for i,tok in parallel_tokenize(files, tok_func, rules, as_gen=True, n_workers=n_workers, **tok_kwargs):
+        out = output_dir/output_names[i]
+        out.write(' '.join(tok))
+        counter.update(tok)
+
+    (output_dir/fn_counter_pkl).save(counter)
 
 # Cell
 def _join_texts(df, mark_fields=False):

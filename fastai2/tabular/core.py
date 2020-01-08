@@ -153,8 +153,8 @@ _add_prop(Tabular, 'all_col')
 # Cell
 class TabularProc(InplaceTransform):
     "Base class to write a non-lazy tabular processor for dataframes"
-    def setup(self, items=None):
-        super().setup(getattr(items,'train',items))
+    def setup(self, items=None, train_setup=False): #TODO: properly deal with train_setup
+        super().setup(getattr(items,'train',items), train_setup=False)
         # Procs are called as soon as data is available
         return self(items.items if isinstance(items,DataSource) else items)
 
