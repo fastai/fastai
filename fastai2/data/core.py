@@ -189,16 +189,20 @@ class TfmdList(FilteredBase, L, GetAttr):
         if len(self) != 0:
             x,self.types = super().__getitem__(0),[]
             for f in self.tfms.fs:
-                self.types.append(type(x))
+                self.types.append(getattr(f, 'input_types', type(x)))
                 x = f(x)
             self.types.append(type(x))
+        types = L(t if is_listy(t) else [t] for t in self.types).concat().unique()
+        self.pretty_types = '\n'.join([f'  - {t}' for t in types])
 
     def infer_idx(self, x):
         idx = 0
         for t in self.types:
             if isinstance(x, t): break
             idx += 1
-        assert idx < len(self.types), f"Expected an input of type in {self.types} but got {type(x)}"
+        types = L(t if is_listy(t) else [t] for t in self.types).concat().unique()
+        pretty_types = '\n'.join([f'  - {t}' for t in types])
+        assert idx < len(self.types), f"Expected an input of type in \n{pretty_types}\n but got {type(x)}"
         return idx
 
     def infer(self, x):
