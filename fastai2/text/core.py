@@ -4,7 +4,8 @@ __all__ = ['UNK', 'PAD', 'BOS', 'EOS', 'FLD', 'TK_REP', 'TK_WREP', 'TK_UP', 'TK_
            'rm_useless_spaces', 'replace_rep', 'replace_wrep', 'fix_html', 'replace_all_caps', 'replace_maj',
            'lowercase', 'replace_space', 'BaseTokenizer', 'SpacyTokenizer', 'TokenizeBatch', 'tokenize1',
            'parallel_tokenize', 'fn_counter_pkl', 'tokenize_folder', 'read_tokenized_file', 'tokenize_files',
-           'tokenize_df', 'tokenize_csv', 'load_tokenized_csv', 'eu_langs', 'SentencePieceTokenizer']
+           'tokenize_df', 'tokenize_csv', 'load_tokenized_csv', 'get_tokenizer', 'Tokenizer', 'eu_langs',
+           'SentencePieceTokenizer']
 
 # Cell
 from ..torch_basics import *
@@ -191,7 +192,7 @@ def _join_texts(df, mark_fields=False):
 def tokenize_df(df, text_cols, n_workers=defaults.cpus, rules=None, mark_fields=None,
                 tok_func=SpacyTokenizer, res_col_name="text", **tok_kwargs):
     "Tokenize texts in `df[text_cols]` in parallel using `n_workers`"
-    text_cols = L(text_cols)
+    text_cols = L(df.columns[c] if isinstance(c, int) else c for c in L(text_cols))
     #mark_fields defaults to False if there is one column of texts, True if there are multiple
     if mark_fields is None: mark_fields = len(text_cols)>1
     rules = L(ifnone(rules, defaults.text_proc_rules.copy()))
@@ -229,6 +230,51 @@ def load_tokenized_csv(fname):
     for txt_col in out.columns[1:-1]:
         out[txt_col] = out[txt_col].str.split(' ')
     return out,fname.with_suffix('.pkl').load()
+
+# Cell
+def get_tokenizer(tok_func=SpacyTokenizer, **kwargs):
+    sign = inspect.signature(tok_func)
+    for k in kwargs.keys():
+        if k not in sign: kwargs.pop(k)
+    return tok_func(**kwargs)
+
+# Cell
+class Tokenizer(Transform):
+    input_types = (str, list, L, tuple, Path)
+    def __init__(self, tokenizer, rules=None, counter=None, mode=None):
+        store_attr(self, 'tokenizer,counter,mode')
+        self.rules = defaults.text_proc_rules if rules is None else rules
+
+    @classmethod
+    @delegates(tokenize_df, keep=True)
+    def from_df(cls, text_cols, tok_func=SpacyTokenizer, **kwargs):
+        res = cls(get_tokenizer(tok_func, **kwargs), mode='df')
+        res.text_cols,res.kwargs,res.train_setup = text_cols,merge({'tok_func': tok_func}, kwargs),False
+        return res
+
+    @classmethod
+    @delegates(tokenize_folder, keep=True)
+    def from_folder(cls, path, tok_func=SpacyTokenizer, **kwargs):
+        output_dir = Path(ifnone(kwargs.get('output_dir'), path.parent/f'{path.name}_tok'))
+        if not output_dir.exists(): tokenize_folder(path, **kwargs)
+        res = cls(get_tokenizer(tok_func, **kwargs), counter=(output_dir/fn_counter_pkl).load(), mode='folder')
+        res.path,res.output_dir = path,output_dir
+        return res
+
+    def setups(self, dsrc):
+        if not self.mode == 'df' or not isinstance(dsrc.items, pd.DataFrame): return
+        dsrc.items,count = tokenize_df(dsrc.items, self.text_cols, **self.kwargs)
+        if self.counter is None: self.counter = count
+        return dsrc
+
+    def encodes(self, o:Path):
+        if self.mode=='folder' and str(o).startswith(str(self.path)):
+            tok = self.output_dir/o.relative_to(self.path)
+            return L(tok.read().split(' '))
+        else: return self._tokenize1(o.read())
+
+    def encodes(self, o:str): return self._tokenize1(o)
+    def _tokenize1(self, o): return first(self.tokenizer([compose(*self.rules)(o)]))
 
 # Cell
 eu_langs = ["bg", "cs", "da", "de", "el", "en", "es", "et", "fi", "fr", "ga", "hr", "hu",

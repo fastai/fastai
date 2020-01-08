@@ -32,7 +32,7 @@ class Numericalize(Transform):
     def setups(self, dsrc):
         if dsrc is None: return
         if self.vocab is None:
-            count = Counter(p for o in dsrc for p in o)
+            count = dsrc.counter if hasattr(dsrc, 'counter') else Counter(p for o in dsrc for p in o)
             self.vocab = make_vocab(count, min_freq=self.min_freq, max_vocab=self.max_vocab)
             self.o2i = defaultdict(int, {v:k for k,v in enumerate(self.vocab) if v != 'xxfake'})
 
@@ -139,19 +139,33 @@ class SortedDL(TfmdDL):
         return iter(sort_idx)
 
 # Cell
-def TextBlock(vocab=None, is_lm=False):
-    return TransformBlock(type_tfms=Numericalize(vocab), dl_type=LMDataLoader if is_lm else SortedDL,
-                          dbunch_kwargs={} if is_lm else {'before_batch': pad_input})
+class TextBlock(TransformBlock):
+    def __init__(self, tok_tfm, vocab=None, is_lm=False):
+        return super().__init__(type_tfms=[tok_tfm, Numericalize(vocab)],
+                                dl_type=LMDataLoader if is_lm else SortedDL,
+                                dbunch_kwargs={} if is_lm else {'before_batch': pad_input})
+
+    @classmethod
+    @delegates(Tokenizer.from_df, keep=True)
+    def from_df(cls, text_cols, vocab=None, is_lm=False, **kwargs):
+        return cls(Tokenizer.from_df(text_cols, **kwargs), vocab=vocab, is_lm=is_lm)
+
+    @classmethod
+    @delegates(Tokenizer.from_folder, keep=True)
+    def from_folder(cls, path, vocab=None, is_lm=False, **kwargs):
+        return cls(Tokenizer.from_folder(path, **kwargs), vocab=vocab, is_lm=is_lm)
 
 # Cell
 class TextDataBunch(DataBunch):
     @classmethod
     @delegates(DataBunch.from_dblock)
-    def from_folder(cls, path, train='train', valid='valid', valid_pct=None, seed=None, vocab=None, text_vocab=None, is_lm=False, **kwargs):
+    def from_folder(cls, path, train='train', valid='valid', valid_pct=None, seed=None, vocab=None, text_vocab=None, is_lm=False,
+                    tok_tfm=None, **kwargs):
         "Create from imagenet style dataset in `path` with `train`,`valid`,`test` subfolders (or provide `valid_pct`)."
         splitter = GrandparentSplitter(train_name=train, valid_name=valid) if valid_pct is None else RandomSplitter(valid_pct, seed=seed)
-        y_block = [] if is_lm else [CategoryBlock(vocab=vocab)]
-        dblock = DataBlock(blocks=(TextBlock(text_vocab, is_lm), *y_block),
+        blocks = [TextBlock.from_folder(path, text_vocab, is_lm) if tok_tfm is None else TextBlock(tok_tfm, text_vocab, is_lm)]
+        if not is_lm: blocks.append(CategoryBlock(vocab=vocab))
+        dblock = DataBlock(blocks=blocks,
                            get_items=get_text_files,
                            splitter=splitter,
                            get_x=read_file,
@@ -161,12 +175,13 @@ class TextDataBunch(DataBunch):
     @classmethod
     @delegates(DataBunch.from_dblock)
     def from_df(cls, df, path='.', valid_pct=0.2, seed=None, text_col=0, label_col=1, label_delim=None, y_block=None,
-                text_vocab=None, is_lm=False, valid_col=None, **kwargs):
-        if y_block is None and not is_lm: y_block = MultiCategoryBlock if is_listy(label_col) and len(label_col) > 1 else CategoryBlock
-        if is_lm: y_block = []
-        if not isinstance(y_block, list): y_block = [y_block]
+                text_vocab=None, is_lm=False, valid_col=None, tok_tfm=None, **kwargs):
+        blocks = [TextBlock.from_df(text_col, text_vocab, is_lm) if tok_tfm is None else TextBlock(tok_tfm, text_vocab, is_lm)]
+        if y_block is None and not is_lm:
+            blocks.append(MultiCategoryBlock if is_listy(label_col) and len(label_col) > 1 else CategoryBlock)
+        if y_block is not None and not is_lm: blocks += (y_block if is_listy(y_block) else [y_block])
         splitter = RandomSplitter(valid_pct, seed=seed) if valid_col is None else ColSplitter(valid_col)
-        dblock = DataBlock(blocks=(TextBlock(text_vocab, is_lm), *y_block),
+        dblock = DataBlock(blocks=blocks,
                            get_x=ColReader(text_col),
                            get_y=None if is_lm else ColReader(label_col, label_delim=label_delim),
                            splitter=splitter)
