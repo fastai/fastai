@@ -165,10 +165,10 @@ class TextDataBunch(DataBunch):
         splitter = GrandparentSplitter(train_name=train, valid_name=valid) if valid_pct is None else RandomSplitter(valid_pct, seed=seed)
         blocks = [TextBlock.from_folder(path, text_vocab, is_lm) if tok_tfm is None else TextBlock(tok_tfm, text_vocab, is_lm)]
         if not is_lm: blocks.append(CategoryBlock(vocab=vocab))
+        get_items = partial(get_text_files, folders=[train,valid]) if valid_pct is None else get_text_files
         dblock = DataBlock(blocks=blocks,
-                           get_items=get_text_files,
+                           get_items=get_items,
                            splitter=splitter,
-                           get_x=read_file,
                            get_y=None if is_lm else parent_label)
         return cls.from_dblock(dblock, path, path=path, **kwargs)
 
