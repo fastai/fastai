@@ -43,6 +43,22 @@ def reshape(x: Image.Image, h, w, resample=0):
 
 # Cell
 @patch
+def to_bytes_format(im:Image.Image, format='png'):
+    "Convert to bytes, default to PNG format"
+    arr = io.BytesIO()
+    im.save(arr, format=format)
+    return arr.getvalue()
+
+# Cell
+@patch
+def to_thumb(self:Image.Image, h,w):
+    "Same as `thumbnail`, but uses a copy"
+    im = self.copy()
+    im.thumbnail((w,h))
+    return im
+
+# Cell
+@patch
 def resize_max(x: Image.Image, resample=0, max_px=None, max_h=None, max_w=None):
     "`resize` `x` to `max_px`, or `max_h`, or `max_w`"
     h,w = x.shape

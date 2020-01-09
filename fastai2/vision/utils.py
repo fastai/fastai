@@ -32,47 +32,16 @@ def resize_to(img, targ_sz, use_min=False):
     return int(w*ratio),int(h*ratio)
 
 # Cell
-@delegates(Image.Image.save)
-def verify_image(file, delete=True, max_size=None, dest=None, n_channels=3, interp=Image.BILINEAR, ext=None, img_format=None, resume=False, **kwargs):
-    "Check if the image in `file` exists, maybe resize it and copy it in `dest`."
+def verify_image(fn):
+    "Confirm that `fn` can be opened"
     try:
-        # deal with partially broken images as indicated by PIL warnings
-        with warnings.catch_warnings():
-            warnings.filterwarnings('error')
-            try: Image.open(file)
-            except Warning as w:
-                if "Possibly corrupt EXIF data" in str(w):
-                    if delete: # green light to modify files
-                        print(f"{file}: Removing corrupt EXIF data")
-                        warnings.simplefilter("ignore")
-                        PIL.Image.open(file).save(file)
-                    else: print(f"{file}: Corrupt EXIF data, pass `delete=True` to remove it")
-                else: warnings.warn(w)
-
-        img = Image.open(file)
-        imgarr = np.array(img)
-        img_channels = 1 if len(imgarr.shape) == 2 else imgarr.shape[2]
-        if (max_size is not None and (img.height > max_size or img.width > max_size)) or img_channels != n_channels:
-            assert dest is not None, "You should provide `dest` Path to save resized image"
-            dest_fname = Path(dest)/file.name
-            if ext is not None: dest_fname=dest_fname.with_suffix(ext)
-            if resume and os.path.isfile(dest_fname): return
-            if max_size is not None:
-                new_sz = resize_to(img, max_size)
-                img = img.resize(new_sz, resample=interp)
-            if n_channels == 3: img = img.convert("RGB")
-            img.save(dest_fname, img_format, **kwargs)
-    except Exception as e:
-        print(f'{e}')
-        if delete: file.unlink()
+        im = Image.open(fn)
+        im.draft(im.mode, (32,32))
+        im.load()
+        return True
+    except: return False
 
 # Cell
-@delegates(verify_image)
-def verify_images(path, max_workers=4, recurse=False, dest='.', **kwargs):
-    "Check if the images in `path` aren't broken, maybe resize them and copy it in `dest`."
-    path = Path(path)
-    dest = path/Path(dest)
-    os.makedirs(dest, exist_ok=True)
-    files = get_image_files(path, recurse=recurse)
-    func = partial(verify_image, dest=dest, **kwargs)
-    parallel(func, files, max_workers=max_workers)
+def verify_images(fns):
+    "Find images in `fns` that can't be opened"
+    return L(fns[i] for i,o in enumerate(parallel(verify_image, fns)) if not o)
