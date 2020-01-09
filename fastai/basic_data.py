@@ -123,7 +123,7 @@ class DataBunch():
     def __setstate__(self,data:Any): self.__dict__.update(data)
 
     def dl(self, ds_type:DatasetType=DatasetType.Valid)->DeviceDataLoader:
-        "Returns appropriate `Dataset` for validation, training, or test (`ds_type`)."
+        "Returns an appropriate `DataLoader` with a dataset for validation, training, or test (`ds_type`)."
         #TODO: refactor
         return (self.train_dl if ds_type == DatasetType.Train else
                 self.test_dl if ds_type == DatasetType.Test else
