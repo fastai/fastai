@@ -81,7 +81,7 @@ class PILBase(Image.Image, metaclass=BypassNewMeta):
     _show_args = {'cmap':'viridis'}
     _open_args = {'mode': 'RGB'}
     @classmethod
-    def create(cls, fn:(Path,str), **kwargs)->None:
+    def create(cls, fn:(Path,str,Tensor,ndarray,bytes), **kwargs)->None:
         "Open an `Image` from path `fn`"
         if isinstance(fn,Tensor): fn = fn.numpy()
         if isinstance(fn,ndarray): return cls(Image.fromarray(fn))
