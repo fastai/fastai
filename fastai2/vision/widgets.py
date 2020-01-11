@@ -20,21 +20,18 @@ def _open_thumb(fn, h, w): return Image.open(fn).to_thumb(h, w).convert('RGBA')
 class ImagesCleaner:
     "A widget that displays all images in `fns` along with a `Dropdown`"
     def __init__(self, opts=(), height=128, width=256, max_n=30):
+        opts = ('<Keep>', '<Delete>')+tuple(opts)
         store_attr(self, 'opts,height,width,max_n')
-        box_layout = dict(width='100%', height='', overflow='scroll hidden', flex_flow='row', display='flex')
-        self.widget = Box(children=[], layout=box_layout)
+        self.widget = carousel(width='70%')
 
     def set_fns(self, fns):
         self.fns = L(fns)[:self.max_n]
-        img_layout = dict(height=f'{self.height}px', object_fit='contain')
         ims = parallel(_open_thumb, self.fns, h=self.height, w=self.width, progress=False,
                        n_workers=min(len(self.fns)//10,defaults.cpus))
-        self.widget.children = [VBox([
-            widgets.Image(value=im.to_bytes_format(), layout=img_layout),
-            Dropdown(options=('<Keep>', '<Delete>')+tuple(self.opts), layout={'width': 'max-content'})
-        ], layout={'min_width':f'{max(im.width,self.height)}px'}) for im in ims]
+        self.widget.children = [VBox([widget(im, height=f'{self.height}px'), Dropdown(
+            options=self.opts, layout={'width': 'max-content'})]) for im in ims]
 
-    def _ipython_display_(self): display(self.widget)
+    def _ipython_display_(self): display.display(self.widget)
     def values(self): return L(self.widget.children).itemgot(1).attrgot('value')
     def delete(self): return self.values().argwhere(eq('<Delete>'))
     def change(self):
