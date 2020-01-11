@@ -8,8 +8,8 @@ __all__ = ['progress_bar', 'master_bar', 'subplots', 'show_image', 'show_titled_
            'TitledFloat', 'TitledStr', 'TitledTuple', 'get_empty_df', 'display_df', 'one_param', 'item_find',
            'find_device', 'find_bs', 'Module', 'get_model', 'one_hot', 'one_hot_decode', 'params', 'trainable_params',
            'norm_types', 'bn_bias_params', 'batch_to_samples', 'logit', 'num_distrib', 'rank_distrib',
-           'distrib_barrier', 'make_cross_image', 'show_image_batch', 'requires_grad', 'init_default', 'cond_init',
-           'apply_leaf', 'apply_init', 'set_num_threads', 'ProcessPoolExecutor', 'parallel', 'run_procs',
+           'distrib_barrier', 'to_image', 'make_cross_image', 'show_image_batch', 'requires_grad', 'init_default',
+           'cond_init', 'apply_leaf', 'apply_init', 'set_num_threads', 'ProcessPoolExecutor', 'parallel', 'run_procs',
            'parallel_gen', 'script_use_ctx', 'script_save_ctx', 'script_fwd', 'script_bwd', 'grad_module',
            'flatten_check']
 
@@ -565,6 +565,13 @@ def save_array(p:Path, o, complib='lz4', lvl=3):
 def load_array(p:Path):
     "Save numpy array to a `pytables` file"
     with tables.open_file(p, 'r') as f: return f.root.data.read()
+
+# Cell
+def to_image(x):
+    if isinstance(x,Image.Image): return x
+    if isinstance(x,Tensor): x = to_np(x.permute((1,2,0)))
+    if x.dtype==np.float32: x = (x*255).astype(np.uint8)
+    return Image.fromarray(x, mode=['RGB','CMYK'][x.shape[0]==4])
 
 # Cell
 def make_cross_image(bw=True):

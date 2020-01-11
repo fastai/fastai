@@ -749,11 +749,12 @@ def setup_aug_tfms(tfms):
     return res + others
 
 # Cell
-def aug_transforms(do_flip=True, flip_vert=False, max_rotate=10., max_zoom=1.1, max_lighting=0.2,
+def aug_transforms(mult=1.0, do_flip=True, flip_vert=False, max_rotate=10., max_zoom=1.1, max_lighting=0.2,
                    max_warp=0.2, p_affine=0.75, p_lighting=0.75, xtra_tfms=None,
                    size=None, mode='bilinear', pad_mode=PadMode.Reflection, batch=False):
     "Utility func to easily create a list of flip, rotate, zoom, warp, lighting transforms."
     res,tkw = [],dict(size=size, mode=mode, pad_mode=pad_mode, batch=batch)
+    max_rotate,max_lighting,max_warp = array([max_rotate,max_lighting,max_warp])*mult
     if do_flip: res.append(Dihedral(p=0.5, **tkw) if flip_vert else Flip(p=0.5, **tkw))
     if max_warp:   res.append(Warp(magnitude=max_warp, p=p_affine, **tkw))
     if max_rotate: res.append(Rotate(max_deg=max_rotate, p=p_affine, **tkw))
