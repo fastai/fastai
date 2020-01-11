@@ -70,6 +70,7 @@ class ShowGraphCallback(Callback):
     run_after=ProgressCallback
 
     def begin_fit(self):
+        self.run = not hasattr(self.learn, 'lr_finder') and not hasattr(self, "gather_preds")
         self.nb_batches = []
         assert hasattr(self.learn, 'progress')
 
