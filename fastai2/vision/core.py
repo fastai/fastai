@@ -51,8 +51,9 @@ def to_bytes_format(im:Image.Image, format='png'):
 
 # Cell
 @patch
-def to_thumb(self:Image.Image, h,w):
+def to_thumb(self:Image.Image, h, w=None):
     "Same as `thumbnail`, but uses a copy"
+    if w is None: w=h
     im = self.copy()
     im.thumbnail((w,h))
     return im
