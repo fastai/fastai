@@ -187,7 +187,8 @@ class TfmdList(FilteredBase, L, GetAttr):
     def setup(self, train_setup=True):
         self.tfms.setup(self, train_setup)
         if len(self) != 0:
-            x,self.types = super().__getitem__(0),[]
+            x = super().__getitem__(0) if self.splits is None else super().__getitem__(self.splits[0])[0]
+            self.types = []
             for f in self.tfms.fs:
                 self.types.append(getattr(f, 'input_types', type(x)))
                 x = f(x)
