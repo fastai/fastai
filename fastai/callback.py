@@ -264,7 +264,7 @@ class CallbackHandler():
         names = [(met.name if hasattr(met, 'name') else camel2snake(met.__class__.__name__)) for met in self.metrics]
         self('train_begin', metrics_names=names)
         if self.state_dict['epoch'] != 0:
-            self.state_dict['pbar'].first_bar.total -= self.state_dict['epoch']
+            self.state_dict['pbar'].main_bar.total -= self.state_dict['epoch']
             for cb in self.callbacks: cb.jump_to_epoch(self.state_dict['epoch'])
 
     def on_epoch_begin(self)->None:
