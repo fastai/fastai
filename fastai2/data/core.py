@@ -43,12 +43,19 @@ class TfmdDL(DataLoader):
         its = self.after_batch(self.do_batch([self.do_item(0)]))
         self._device = find_device(its)
         self._n_inp = 1 if not isinstance(its, (list,tuple)) or len(its)==1 else len(its)-1
-        self._retain_dl = partial(retain_types, typs=mapped(type,its))
+        self._types = mapped(type,its)
 
     def _retain_dl(self,b):
-        self._one_pass()
-        # we just replaced ourselves, so this is *not* recursive! :)
-        return self._retain_dl(b)
+        if not getattr(self, '_types', None): self._one_pass()
+        return retain_types(b, typs=self._types)
+
+    @delegates(DataLoader.new)
+    def new(self, dataset=None, cls=None, **kwargs):
+        res = super().new(dataset, cls, **kwargs)
+        if not hasattr(self, '_n_inp') or not hasattr(self, '_types') or not hasattr(self, '_device'):
+            self._one_pass()
+        res._n_inp,res._types,res._device = self._n_inp,self._types,self._device
+        return res
 
     def before_iter(self):
         super().before_iter()
@@ -263,7 +270,7 @@ class DataSource(FilteredBase):
         return ctx
 
     def new_empty(self):
-        tls = [tl._new(self.items[:1], split_idx=tl.split_idx) for tl in self.tls]
+        tls = [tl._new([], split_idx=tl.split_idx) for tl in self.tls]
         return type(self)(tls=tls, n_inp=self.n_inp)
 
     @contextmanager
