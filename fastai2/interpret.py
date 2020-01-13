@@ -55,7 +55,7 @@ class ClassificationInterpretation(Interpretation):
     def confusion_matrix(self):
         "Confusion matrix as an `np.ndarray`."
         x = torch.arange(0, len(self.vocab))
-        cm = ((self.decoded==x[:,None]) & (self.targs==x[:,None,None])).sum(2)
+        cm = ((self.decoded==x[:,None]) & (self.targs.squeeze()==x[:,None,None])).sum(2)
         return to_np(cm)
 
     def plot_confusion_matrix(self, normalize=False, title='Confusion matrix', cmap="Blues", norm_dec=2,
