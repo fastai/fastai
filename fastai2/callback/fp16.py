@@ -89,12 +89,7 @@ class MixedPrecision(Callback):
         if self.dynamic: self.count = 0
 
     def begin_batch(self): self.learn.xb = to_half(self.xb)
-
-    def after_pred(self):
-        if isinstance(self.learn.pred, list):
-            self.learn.pred = [o.float() for o in self.learn.pred]
-        else: self.learn.pred = self.pred.float()
-
+    def after_pred(self): self.learn.pred = to_float(self.pred)
     def after_loss(self):
         if self.training: self.learn.loss *= self.loss_scale
 
