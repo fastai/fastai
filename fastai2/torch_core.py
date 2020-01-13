@@ -192,7 +192,8 @@ def default_device(use_cuda=-1):
 # Cell
 def to_device(b, device=None):
     "Recursively put `b` on `device`."
-    if device is None: device=default_device()
+    if defaults.use_cuda==False: device='cpu'
+    elif device is None: device=default_device()
     def _inner(o): return o.to(device, non_blocking=True) if isinstance(o,Tensor) else o
     return apply(_inner, b)
 

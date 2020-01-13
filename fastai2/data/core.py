@@ -88,6 +88,7 @@ class TfmdDL(DataLoader):
 
     @property
     def device(self):
+        if defaults.use_cuda==False: return 'cpu'
         if not getattr(self, '_device', None): self._one_pass()
         return self._device
 
