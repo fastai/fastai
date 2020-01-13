@@ -146,9 +146,9 @@ def layer_info(learn):
     def _track(m, i, o):
         return (m.__class__.__name__,)+total_params(m)+(apply(lambda x:x.shape, o),)
     layers = [m for m in flatten_model(learn.model)]
-    xb,*_ = learn.dbunch.train_dl.one_batch()
+    xb = learn.dbunch.train_dl.one_batch()[:learn.dbunch.train_dl.n_inp]
     with Hooks(layers, _track) as h:
-        _ = learn.model.eval()(apply(lambda o:o[:1], xb))
+        _ = learn.model.eval()(apply(lambda o:o[:1], *xb))
         return xb,h.stored
 
 # Cell
