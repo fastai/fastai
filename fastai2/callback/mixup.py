@@ -15,7 +15,7 @@ def reduce_loss(loss, reduction='mean'):
 
 # Cell
 class MixUp(Callback):
-    run_after,run_valid = [Normalize, Cuda],False
+    run_after,run_valid = [Normalize],False
     def __init__(self, alpha=0.4): self.distrib = Beta(tensor(alpha), tensor(alpha))
     def begin_fit(self):
         self.stack_y = getattr(self.learn.loss_func, 'y_int', False)
