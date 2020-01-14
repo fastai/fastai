@@ -28,10 +28,10 @@ def get_data(bs, sl):
     vocab = make_vocab(count)
     train_ds = TfmdList(train, tfms=Numericalize(vocab), as_item=False, wrap_l=False)
     valid_ds = TfmdList(valid, tfms=Numericalize(vocab), as_item=False, wrap_l=False)
-    train_dl = TfmdDL(train_ds, bs=bs, sampler=LM_Sampler(train), tfms=Cuda(), num_workers=8)
-    valid_dl = TfmdDL(valid_ds, bs=bs, sampler=LM_Sampler(valid), tfms=Cuda(), num_workers=8)
+    train_dl = TfmdDL(train_ds, bs=bs, sampler=LM_Sampler(train), num_workers=8)
+    valid_dl = TfmdDL(valid_ds, bs=bs, sampler=LM_Sampler(valid), num_workers=8)
     return DataBunch(train_dl, valid_dl),vocab
-   
+
 @call_parse
 def main(gpu:Param("GPU to run on", int)=6,
          bs:Param("Batch size", int)=104,
@@ -47,4 +47,4 @@ def main(gpu:Param("GPU to run on", int)=6,
     else : cb_funcs = [partial(MixedPrecision, clip=0.1), partial(RNNTrainer, alpha=3, beta=2)]
     learn = Learner(model, dbch, loss_func=CrossEntropyLossFlat(), opt_func=opt_func, cb_funcs=cb_funcs, metrics=[accuracy, Perplexity()])
     learn.fit_one_cycle(90, 5e-3, moms=(0.8,0.7,0.8), div=10)
-    
+

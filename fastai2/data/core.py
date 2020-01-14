@@ -125,8 +125,11 @@ class DataBunch(GetAttr):
         for dl in self.dls: dl.device = d
         self._device = d
 
-    def cuda(self, device=None): self.device = default_device() if device is None else device
-    def cpu(self): self.cuda(device=torch.device('cpu'))
+    def cuda(self, device=None):
+        self.device = default_device() if device is None else device
+        return self
+
+    def cpu(self): return self.cuda(device=torch.device('cpu'))
 
     @classmethod
     @delegates(TfmdDL.__init__)
