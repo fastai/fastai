@@ -157,9 +157,9 @@ summary: "Some utils function to quickly download a bunch of images, check them 
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="verify_image" class="doc_header"><code>verify_image</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/utils.py#L35" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>verify_image</code>(<strong><code>file</code></strong>, <strong><code>delete</code></strong>=<em><code>True</code></em>, <strong><code>max_size</code></strong>=<em><code>None</code></em>, <strong><code>dest</code></strong>=<em><code>None</code></em>, <strong><code>n_channels</code></strong>=<em><code>3</code></em>, <strong><code>interp</code></strong>=<em><code>2</code></em>, <strong><code>ext</code></strong>=<em><code>None</code></em>, <strong><code>img_format</code></strong>=<em><code>None</code></em>, <strong><code>resume</code></strong>=<em><code>False</code></em>, <strong><code>format</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="verify_image" class="doc_header"><code>verify_image</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/utils.py#L35" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>verify_image</code>(<strong><code>fn</code></strong>)</p>
 </blockquote>
-<p>Check if the image in <code>file</code> exists, maybe resize it and copy it in <code>dest</code>.</p>
+<p>Confirm that <code>fn</code> can be opened</p>
 
 </div>
 
@@ -181,9 +181,9 @@ summary: "Some utils function to quickly download a bunch of images, check them 
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="verify_images" class="doc_header"><code>verify_images</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/utils.py#L70" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>verify_images</code>(<strong><code>path</code></strong>, <strong><code>max_workers</code></strong>=<em><code>4</code></em>, <strong><code>recurse</code></strong>=<em><code>False</code></em>, <strong><code>dest</code></strong>=<em><code>'.'</code></em>, <strong><code>delete</code></strong>=<em><code>True</code></em>, <strong><code>max_size</code></strong>=<em><code>None</code></em>, <strong><code>n_channels</code></strong>=<em><code>3</code></em>, <strong><code>interp</code></strong>=<em><code>2</code></em>, <strong><code>ext</code></strong>=<em><code>None</code></em>, <strong><code>img_format</code></strong>=<em><code>None</code></em>, <strong><code>resume</code></strong>=<em><code>False</code></em>, <strong><code>format</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="verify_images" class="doc_header"><code>verify_images</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/utils.py#L45" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>verify_images</code>(<strong><code>fns</code></strong>)</p>
 </blockquote>
-<p>Check if the images in <code>path</code> aren't broken, maybe resize them and copy it in <code>dest</code>.</p>
+<p>Find images in <code>fns</code> that can't be opened</p>
 
 </div>
 
