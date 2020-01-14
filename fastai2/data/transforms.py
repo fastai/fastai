@@ -3,7 +3,7 @@
 __all__ = ['get_files', 'FileGetter', 'image_extensions', 'get_image_files', 'ImageGetter', 'get_text_files',
            'RandomSplitter', 'IndexSplitter', 'GrandparentSplitter', 'FuncSplitter', 'MaskSplitter', 'FileSplitter',
            'ColSplitter', 'parent_label', 'RegexLabeller', 'ColReader', 'CategoryMap', 'Categorize', 'Category',
-           'MultiCategorize', 'MultiCategory', 'OneHotEncode', 'EncodedMultiCategorize', 'get_c', 'ToTensor', 'Cuda',
+           'MultiCategorize', 'MultiCategory', 'OneHotEncode', 'EncodedMultiCategorize', 'get_c', 'ToTensor',
            'IntToFloatTensor', 'broadcast_vec', 'Normalize']
 
 # Cell
@@ -241,24 +241,12 @@ def get_c(dbunch):
 # Cell
 class ToTensor(Transform):
     "Convert item to appropriate tensor class"
-    order = 15
-
-# Cell
-@docs
-class Cuda(Transform):
-    "Move batch to `device` (defaults to `default_device()`)"
-    def __init__(self,device=None):
-        self.device=default_device() if device is None else device
-        super().__init__(split_idx=None, as_item=False)
-    def encodes(self, b): return to_device(b, self.device)
-    def decodes(self, b): return to_cpu(b)
-
-    _docs=dict(encodes="Move batch to `device`", decodes="Return batch to CPU")
+    order = 5
 
 # Cell
 class IntToFloatTensor(Transform):
     "Transform image to float tensor, optionally dividing by 255 (e.g. for images)."
-    order = 20 #Need to run after CUDA if on the GPU
+    order = 10 #Need to run after PIL transforms on the GPU
     def __init__(self, div=255., div_mask=1, split_idx=None, as_item=True):
         super().__init__(split_idx=split_idx,as_item=as_item)
         self.div,self.div_mask = div,div_mask
