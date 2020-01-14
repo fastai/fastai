@@ -1352,7 +1352,7 @@ summary: "Basic class for handling the training loop"
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Metrics can be simple averages (like accuracy) but sometimes their computation is a little bit more complex and can't be averaged over batches (like precision or recall), which is why we need a special class for them. For simple functions that can be computed as averages over batches, we can use the class <a href="/learner#AvgMetric"><code>AvgMetric</code></a>, otherwise you'll need to implement the following methods.
-{% include note.html content='If your <code>Metric</code> has state depending on tensors, don't forget to store it on the CPU to avoid any potential memory leaks.' %}</p>
+{% include note.html content='If your <code>Metric</code> has state depending on tensors, don&#8217;t forget to store it on the CPU to avoid any potential memory leaks.' %}</p>
 
 </div>
 </div>
@@ -1897,7 +1897,7 @@ summary: "Basic class for handling the training loop"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>{% include note.html content='If you want to use the option <code>with_loss=True</code> on a custom loss function, make sure you have implemented a <code>reduction</code> attribute that supports 'none' ' %}</p>
+<p>{% include note.html content='If you want to use the option <code>with_loss=True</code> on a custom loss function, make sure you have implemented a <code>reduction</code> attribute that supports &#8217;none&#8217; ' %}</p>
 
 </div>
 </div>

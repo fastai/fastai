@@ -795,7 +795,7 @@ directly.</p>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Points are expected to come as an array/tensor of shape <code>(n,2)</code> or as a list of lists with two elements. Unless you change the defaults in <a href="/vision.core#PointScaler"><code>PointScaler</code></a> (see later on), coordinates should go from 0 to width/height, with the first one being the column index (so from 0 to width) and the second one being the row index (so from 0 to height).
-{% include note.html content='This is differnt from the usual indeixing convention for arrays in numpy or in PyTorch, but it's the way points are expected by matplotlib or the internal functions in PyTorch like <code>F.grid_sample</code>.' %}</p>
+{% include note.html content='This is differnt from the usual indeixing convention for arrays in numpy or in PyTorch, but it&#8217;s the way points are expected by matplotlib or the internal functions in PyTorch like <code>F.grid_sample</code>.' %}</p>
 
 </div>
 </div>
@@ -1241,7 +1241,7 @@ directly.</p>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>To work with data augmentation, and in particular the <code>grid_sample</code> method, points need to be represented with coordinates going from -1 to 1 (-1 being top or left, 1 bottom or right), which will be done unless you pass <code>do_scale=False</code>. We also need to make sure they are following our convention of points being x,y coordinates, so pass along <code>y_first=True</code> if you have your data in an y,x format to add a flip.
-{% include note.html content='This transform automatically grabs the sizes of the images it sees before a <code>TensorPoint</code> object and embeds it in them. For this to work, those images need to be before any points in the order of your final tuple. If you don't have such images, you need to embed the size of the corresponding image when creating a <code>TensorPoint</code> by passing it with <code>sz=...</code>.' %}</p>
+{% include note.html content='This transform automatically grabs the sizes of the images it sees before a <code>TensorPoint</code> object and embeds it in them. For this to work, those images need to be before any points in the order of your final tuple. If you don&#8217;t have such images, you need to embed the size of the corresponding image when creating a <code>TensorPoint</code> by passing it with <code>sz=...</code>.' %}</p>
 
 </div>
 </div>
