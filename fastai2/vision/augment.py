@@ -189,7 +189,7 @@ mk_class('ResizeMethod', **{o:o.lower() for o in ['Squish', 'Crop', 'Pad']},
 @delegates()
 class Resize(RandTransform):
     split_idx = None
-    mode,mode_mask,order,final_size = Image.BILINEAR,Image.NEAREST,10,None
+    mode,mode_mask,order,final_size = Image.BILINEAR,Image.NEAREST,1,None
     "Resize image to `size` using `method`"
     def __init__(self, size, method=ResizeMethod.Squish, pad_mode=PadMode.Reflection,
                  resamples=(Image.BILINEAR, Image.NEAREST), **kwargs):
