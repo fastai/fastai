@@ -74,16 +74,13 @@ class EmbeddingDropout(Module):
                            self.emb.norm_type, self.emb.scale_grad_by_freq, self.emb.sparse)
 
 # Cell
-from torch.nn.utils.rnn import pack_padded_sequence, pad_packed_sequence
-
-# Cell
 class AWD_LSTM(Module):
     "AWD-LSTM inspired by https://arxiv.org/abs/1708.02182"
     initrange=0.1
 
     def __init__(self, vocab_sz, emb_sz, n_hid, n_layers, pad_token=1, hidden_p=0.2, input_p=0.6, embed_p=0.1,
-                 weight_p=0.5, bidir=False, packed=False):
-        store_attr(self, 'emb_sz,n_hid,n_layers,pad_token,packed')
+                 weight_p=0.5, bidir=False):
+        store_attr(self, 'emb_sz,n_hid,n_layers,pad_token')
         self.bs = 1
         self.n_dir = 2 if bidir else 1
         self.encoder = nn.Embedding(vocab_sz, emb_sz, padding_idx=pad_token)
@@ -93,26 +90,26 @@ class AWD_LSTM(Module):
         self.encoder.weight.data.uniform_(-self.initrange, self.initrange)
         self.input_dp = RNNDropout(input_p)
         self.hidden_dps = nn.ModuleList([RNNDropout(hidden_p) for l in range(n_layers)])
+        self.reset()
 
     def forward(self, inp, from_embeds=False):
         bs,sl = inp.shape[:2] if from_embeds else inp.shape
-        if bs!=self.bs:
-            self.bs=bs
-            self.reset()
-        if self.packed: inp,lens = self._pack_sequence(inp, sl)
+        if bs!=self.bs: self._change_hidden(bs)
 
         raw_output = self.input_dp(inp if from_embeds else self.encoder_dp(inp))
         new_hidden,raw_outputs,outputs = [],[],[]
         for l, (rnn,hid_dp) in enumerate(zip(self.rnns, self.hidden_dps)):
-            if self.packed: raw_output = pack_padded_sequence(raw_output, lens, batch_first=True)
             raw_output, new_h = rnn(raw_output, self.hidden[l])
-            if self.packed: raw_output = pad_packed_sequence(raw_output, batch_first=True)[0]
             new_hidden.append(new_h)
             raw_outputs.append(raw_output)
             if l != self.n_layers - 1: raw_output = hid_dp(raw_output)
             outputs.append(raw_output)
         self.hidden = to_detach(new_hidden, cpu=False, gather=False)
         return raw_outputs, outputs
+
+    def _change_hidden(self, bs):
+        self.hidden = [self._change_one_hidden(l, bs) for l in range(self.n_layers)]
+        self.bs = bs
 
     def _one_rnn(self, n_in, n_out, bidir, weight_p, l):
         "Return one of the inner rnn"
@@ -124,19 +121,17 @@ class AWD_LSTM(Module):
         nh = (self.n_hid if l != self.n_layers - 1 else self.emb_sz) // self.n_dir
         return (one_param(self).new_zeros(self.n_dir, self.bs, nh), one_param(self).new_zeros(self.n_dir, self.bs, nh))
 
+    def _change_one_hidden(self, l, bs):
+        if self.bs < bs:
+            nh = (self.n_hid if l != self.n_layers - 1 else self.emb_sz) // self.n_dir
+            return tuple(torch.cat([h, h.new_zeros(self.n_dir, bs-self.bs, nh)], dim=1) for h in self.hidden[l])
+        if self.bs > bs: return (self.hidden[l][0][:,:bs], self.hidden[l][1][:,:bs])
+        return self.hidden[l]
+
     def reset(self):
         "Reset the hidden states"
         [r.reset() for r in self.rnns if hasattr(r, 'reset')]
         self.hidden = [self._one_hidden(l) for l in range(self.n_layers)]
-
-    def _pack_sequence(self, inp, sl):
-        mask = (inp == self.pad_token)
-        lens = sl - mask.long().sum(1)
-        n_empty = (lens == 0).sum()
-        if n_empty > 0:
-            inp,lens = inp[:-n_empty],lens[:-n_empty]
-            self.hidden = [(h[0][:,:inp.size(0)], h[1][:,:inp.size(0)]) for h in self.hidden]
-        return (inp,lens)
 
 # Cell
 def awd_lstm_lm_split(model):
@@ -146,7 +141,7 @@ def awd_lstm_lm_split(model):
     return groups.map(params)
 
 # Cell
-awd_lstm_lm_config = dict(emb_sz=400, n_hid=1152, n_layers=3, pad_token=1, bidir=False, output_p=0.1, packed=False,
+awd_lstm_lm_config = dict(emb_sz=400, n_hid=1152, n_layers=3, pad_token=1, bidir=False, output_p=0.1,
                           hidden_p=0.15, input_p=0.25, embed_p=0.02, weight_p=0.2, tie_weights=True, out_bias=True)
 
 # Cell
@@ -159,7 +154,7 @@ def awd_lstm_clas_split(model):
 
 # Cell
 awd_lstm_clas_config = dict(emb_sz=400, n_hid=1152, n_layers=3, pad_token=1, bidir=False, output_p=0.4,
-                            hidden_p=0.3, input_p=0.4, embed_p=0.05, weight_p=0.5, packed=True)
+                            hidden_p=0.3, input_p=0.4, embed_p=0.05, weight_p=0.5)
 
 # Cell
 class AWD_QRNN(AWD_LSTM):
@@ -174,6 +169,13 @@ class AWD_QRNN(AWD_LSTM):
         "Return one hidden state"
         nh = (self.n_hid if l != self.n_layers - 1 else self.emb_sz) // self.n_dir
         return one_param(self).new_zeros(self.n_dir, self.bs, nh)
+
+    def _change_one_hidden(self, l, bs):
+        if self.bs < bs:
+            nh = (self.n_hid if l != self.n_layers - 1 else self.emb_sz) // self.n_dir
+            return torch.cat([self.hidden[l], self.hidden[l].new_zeros(self.n_dir, bs-self.bs, nh)], dim=1)
+        if self.bs > bs: return self.hidden[l][:bs]
+        return self.hidden[l]
 
 # Cell
 awd_qrnn_lm_config = dict(emb_sz=400, n_hid=1552, n_layers=4, pad_token=1, bidir=False, output_p=0.1,

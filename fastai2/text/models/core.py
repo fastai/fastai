@@ -61,61 +61,77 @@ def get_language_model(arch, vocab_sz, config=None, drop_mult=1.):
     return model if init is None else model.apply(init)
 
 # Cell
-def _pad_tensor(t, bs, val=0.):
-    if t.size(0) < bs: return torch.cat([t, val + t.new_zeros(bs-t.size(0), *t.shape[1:])])
+def _pad_tensor(t, bs):
+    if t.size(0) < bs: return torch.cat([t, t.new_zeros(bs-t.size(0), *t.shape[1:])])
     return t
 
 # Cell
 class SentenceEncoder(Module):
     "Create an encoder over `module` that can process a full sentence."
-    def __init__(self, bptt, module, pad_idx=1): store_attr(self, 'bptt,module,pad_idx')
+    def __init__(self, bptt, module, pad_idx=1, max_len=None): store_attr(self, 'bptt,module,pad_idx,max_len')
 
-    def _concat(self, arrs, bs):
-        return [torch.cat([_pad_tensor(l[si],bs) for l in arrs], dim=1) for si in range(len(arrs[0]))]
+    def _concat(self, ts, bs):
+        return torch.cat()
+        bs,sl = ts[0].shape[0],sum([t.shape[1] for t in ts])
+        res = ts[0].new_zeros(bs, sl, *ts[0].shape[2:])
+        ts,xtra = (ts[:sz],ts[sz]) if len(ts) > sz else (ts,None)
+        for i,j in enumerate(idxs):
+            c = torch.cat([t[i] for t in ts[j:] if t.shape[0] > i] + [t[i] for t in ts[:j] if t.shape[0] > i] +
+                          ([] if xtra is None or xtra.shape[0] <= i else [xtra[i]]))
+            res[i,:c.shape[0]] = c
+        return res
 
     def reset(self): getattr(self.module, 'reset', noop)()
 
     def forward(self, input):
         bs,sl = input.size()
         self.reset()
-        raw_outputs,outputs,masks = [],[],[]
+        mask = input == self.pad_idx
+        raws,outs,masks = [],[],[]
         for i in range(0, sl, self.bptt):
-            r,o = self.module(input[:,i: min(i+self.bptt, sl)])
-            masks.append(input[:,i: min(i+self.bptt, sl)] == self.pad_idx)
-            raw_outputs.append(r)
-            outputs.append(o)
-        return self._concat(raw_outputs, bs),self._concat(outputs, bs),torch.cat(masks,dim=1)
+            #Note: this expects that sequence really begins on a round multiple of bptt
+            real_bs = (input[:,i] != self.pad_idx).long().sum()
+            r,o = self.module(input[:real_bs,i: min(i+self.bptt, sl)])
+            if self.max_len is None or sl-i <= self.max_len:
+                raws.append(r)
+                outs.append(o)
+                masks.append(mask[:,i: min(i+self.bptt, sl)])
+        raws = [torch.cat([_pad_tensor(r[i], bs) for r in raws], dim=1) for i in range(len(raws[0]))]
+        outs = [torch.cat([_pad_tensor(o[i], bs) for o in outs], dim=1) for i in range(len(outs[0]))]
+        mask = torch.cat(masks, dim=1)
+        return raws,outs,mask
 
 # Cell
-def masked_concat_pool(outputs, mask):
+def masked_concat_pool(outputs, mask, bptt):
     "Pool `MultiBatchEncoder` outputs into one vector [last_hidden, max_pool, avg_pool]"
     output = outputs[-1]
-    lens = output.size(1) - mask.long().sum(dim=1)
+    lens = output.shape[1] - mask.long().sum(dim=1)
+    last_lens = mask[:,-bptt:].long().sum(dim=1)
     avg_pool = output.masked_fill(mask[:, :, None], 0).sum(dim=1)
     avg_pool.div_(lens.type(avg_pool.dtype)[:,None])
     max_pool = output.masked_fill(mask[:,:,None], -float('inf')).max(dim=1)[0]
-    x = torch.cat([output[torch.arange(0, output.size(0)),lens-1], max_pool, avg_pool], 1) #Concat pooling.
+    x = torch.cat([output[torch.arange(0, output.size(0)),-last_lens-1], max_pool, avg_pool], 1) #Concat pooling.
     return x
 
 # Cell
 class PoolingLinearClassifier(Module):
     "Create a linear classifier with pooling"
-    def __init__(self, dims, ps):
-        mod_layers = []
+    def __init__(self, dims, ps, bptt):
         if len(ps) != len(dims)-1: raise ValueError("Number of layers and dropout values do not match.")
         acts = [nn.ReLU(inplace=True)] * (len(dims) - 2) + [None]
         layers = [LinBnDrop(i, o, p=p, act=a) for i,o,p,a in zip(dims[:-1], dims[1:], ps, acts)]
         self.layers = nn.Sequential(*layers)
+        self.bptt = bptt
 
     def forward(self, input):
         raw,out,mask = input
-        x = masked_concat_pool(out, mask)
+        x = masked_concat_pool(out, mask, self.bptt)
         x = self.layers(x)
         return x, raw, out
 
 # Cell
 def get_text_classifier(arch, vocab_sz, n_class, seq_len=72, config=None, drop_mult=1., lin_ftrs=None,
-                        ps=None, pad_idx=1):
+                        ps=None, pad_idx=1, max_len=72*20):
     "Create a text classifier from `arch` and its `config`, maybe `pretrained`"
     meta = _model_meta[arch]
     config = ifnone(config, meta['config_clas']).copy()
@@ -126,6 +142,6 @@ def get_text_classifier(arch, vocab_sz, n_class, seq_len=72, config=None, drop_m
     layers = [config[meta['hid_name']] * 3] + lin_ftrs + [n_class]
     ps = [config.pop('output_p')] + ps
     init = config.pop('init') if 'init' in config else None
-    encoder = SentenceEncoder(seq_len, arch(vocab_sz, **config), pad_idx=pad_idx)
-    model = SequentialRNN(encoder, PoolingLinearClassifier(layers, ps))
+    encoder = SentenceEncoder(seq_len, arch(vocab_sz, **config), pad_idx=pad_idx, max_len=max_len)
+    model = SequentialRNN(encoder, PoolingLinearClassifier(layers, ps, bptt=seq_len))
     return model if init is None else model.apply(init)
