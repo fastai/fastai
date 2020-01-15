@@ -202,9 +202,7 @@ class BasicImageWidget(ABC):
         pass
 
 def data_deleter(path:PathOrStr, dataset:LabelLists, del_idx:Collection[int]):
-    """
-    Delete the data you want by index.Save changes in path as 'cleaned.csv'.
-    """
+    "Delete the data you want by index.Save changes in path as 'cleaned.csv'."
     csv_dict = {dataset.x.items[i]: dataset.y[i] for i in range(len(dataset))}
     for del_path in dataset.x.items[del_idx]:
         del csv_dict[del_path]
