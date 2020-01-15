@@ -103,13 +103,13 @@ class Tabular(CollBase, GetAttr, FilteredBase):
     "A `DataFrame` wrapper that knows which cols are cont/cat/y, and returns rows in `__getitem__`"
     _default,with_cont='procs',True
     def __init__(self, df, procs=None, cat_names=None, cont_names=None, y_names=None, block_y=CategoryBlock, splits=None,
-                 do_setup=True):
+                 do_setup=True, device=None):
         if splits is None: splits=[range_of(df)]
         df = df.iloc[sum(splits, [])].copy()
         self.databunch = delegates(self._dl_type.__init__)(self.databunch)
         super().__init__(df)
 
-        self.y_names = L(y_names)
+        self.y_names,self.device = L(y_names),device
         if block_y is not None:
             if callable(block_y): block_y = block_y()
             procs = L(procs) + block_y.type_tfms
@@ -119,7 +119,7 @@ class Tabular(CollBase, GetAttr, FilteredBase):
 
     def subset(self, i): return self.new(self.items[slice(0,self.split) if i==0 else slice(self.split,len(self))])
     def copy(self): self.items = self.items.copy(); return self
-    def new(self, df): return type(self)(df, do_setup=False, block_y=None, **attrdict(self, 'procs','cat_names','cont_names','y_names'))
+    def new(self, df): return type(self)(df, do_setup=False, block_y=None, **attrdict(self, 'procs','cat_names','cont_names','y_names', 'device'))
     def show(self, max_n=10, **kwargs): display_df(self.all_cols[:max_n])
     def setup(self): self.procs.setup(self)
     def process(self): self.procs(self)
@@ -128,7 +128,10 @@ class Tabular(CollBase, GetAttr, FilteredBase):
     def targ(self): return self.items[self.y_names]
     def all_col_names (self): return self.cat_names + self.cont_names + self.y_names
     def n_subsets(self): return 2
-    def new_empty(self): return self.new(self.items[:1])
+    def new_empty(self): return self.new(pd.DataFrame({}, columns=self.items.columns))
+    def to_device(self, d=None):
+        self.device = d
+        return self
 
 properties(Tabular,'loc','iloc','targ','all_col_names','n_subsets')
 
@@ -250,12 +253,13 @@ def _maybe_expand(o): return o[:,None] if o.ndim==1 else o
 
 # Cell
 class ReadTabBatch(ItemTransform):
-    order = -1 #run before cuda
     def __init__(self, to): self.to = to
-    # TODO: use float for cont targ
+
     def encodes(self, to):
-        if not to.with_cont: return tensor(to.cats).long(), tensor(to.targ)
-        return tensor(to.cats).long(),tensor(to.conts).float(), tensor(to.targ)
+        if not to.with_cont: res = tensor(to.cats).long(), tensor(to.targ)
+        else: res = (tensor(to.cats).long(),tensor(to.conts).float(), tensor(to.targ))
+        if to.device is not None: res = to_device(res, to.device)
+        return res
 
     def decodes(self, o):
         o = [_maybe_expand(o_) for o_ in to_np(o) if o_.size != 0]

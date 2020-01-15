@@ -43,7 +43,7 @@ summary: "Tools to quickly get the data and train models suitable for collaborat
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TabularCollab" class="doc_header"><code>class</code> <code>TabularCollab</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/collab.py#L9" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TabularCollab</code>(<strong><code>df</code></strong>, <strong><code>procs</code></strong>=<em><code>None</code></em>, <strong><code>cat_names</code></strong>=<em><code>None</code></em>, <strong><code>cont_names</code></strong>=<em><code>None</code></em>, <strong><code>y_names</code></strong>=<em><code>None</code></em>, <strong><code>block_y</code></strong>=<em><code>'CategoryBlock'</code></em>, <strong><code>splits</code></strong>=<em><code>None</code></em>, <strong><code>do_setup</code></strong>=<em><code>True</code></em>) :: <a href="/tabular.core#TabularPandas"><code>TabularPandas</code></a></p>
+<h2 id="TabularCollab" class="doc_header"><code>class</code> <code>TabularCollab</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/collab.py#L9" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TabularCollab</code>(<strong><code>df</code></strong>, <strong><code>procs</code></strong>=<em><code>None</code></em>, <strong><code>cat_names</code></strong>=<em><code>None</code></em>, <strong><code>cont_names</code></strong>=<em><code>None</code></em>, <strong><code>y_names</code></strong>=<em><code>None</code></em>, <strong><code>block_y</code></strong>=<em><code>'CategoryBlock'</code></em>, <strong><code>splits</code></strong>=<em><code>None</code></em>, <strong><code>do_setup</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>) :: <a href="/tabular.core#TabularPandas"><code>TabularPandas</code></a></p>
 </blockquote>
 <p>A <code>DataFrame</code> wrapper that knows which cols are cont/cat/y, and returns rows in <code>__getitem__</code></p>
 
@@ -126,35 +126,35 @@ summary: "Tools to quickly get the data and train models suitable for collaborat
   </thead>
   <tbody>
     <tr>
-      <th>0</th>
+      <td>0</td>
       <td>73</td>
       <td>1097</td>
       <td>4.0</td>
       <td>1255504951</td>
     </tr>
     <tr>
-      <th>1</th>
+      <td>1</td>
       <td>561</td>
       <td>924</td>
       <td>3.5</td>
       <td>1172695223</td>
     </tr>
     <tr>
-      <th>2</th>
+      <td>2</td>
       <td>157</td>
       <td>260</td>
       <td>3.5</td>
       <td>1291598691</td>
     </tr>
     <tr>
-      <th>3</th>
+      <td>3</td>
       <td>358</td>
       <td>1210</td>
       <td>5.0</td>
       <td>957481884</td>
     </tr>
     <tr>
-      <th>4</th>
+      <td>4</td>
       <td>130</td>
       <td>316</td>
       <td>2.0</td>
@@ -163,6 +163,36 @@ summary: "Tools to quickly get the data and train models suitable for collaborat
   </tbody>
 </table>
 </div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">to</span> <span class="o">=</span> <span class="n">CollabDataBunch</span><span class="o">.</span><span class="n">from_df</span><span class="p">(</span><span class="n">ratings</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="mi">64</span><span class="p">)</span>
+<span class="n">to</span><span class="o">.</span><span class="n">device</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>device(type=&#39;cuda&#39;, index=0)</pre>
 </div>
 
 </div>
@@ -203,63 +233,63 @@ summary: "Tools to quickly get the data and train models suitable for collaborat
   <tbody>
     <tr>
       <th>0</th>
-      <td>596</td>
-      <td>318</td>
-      <td>5.0</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>384</td>
-      <td>589</td>
-      <td>5.0</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>292</td>
-      <td>377</td>
-      <td>4.0</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>30</td>
+      <td>242</td>
       <td>1198</td>
       <td>5.0</td>
     </tr>
     <tr>
+      <th>1</th>
+      <td>78</td>
+      <td>356</td>
+      <td>5.0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>587</td>
+      <td>608</td>
+      <td>4.0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>387</td>
+      <td>1704</td>
+      <td>5.0</td>
+    </tr>
+    <tr>
       <th>4</th>
-      <td>311</td>
-      <td>480</td>
-      <td>4.5</td>
+      <td>111</td>
+      <td>587</td>
+      <td>1.5</td>
     </tr>
     <tr>
       <th>5</th>
-      <td>475</td>
-      <td>4963</td>
-      <td>4.0</td>
+      <td>262</td>
+      <td>2716</td>
+      <td>2.5</td>
     </tr>
     <tr>
       <th>6</th>
-      <td>17</td>
-      <td>377</td>
-      <td>0.5</td>
-    </tr>
-    <tr>
-      <th>7</th>
-      <td>313</td>
-      <td>1</td>
+      <td>294</td>
+      <td>380</td>
       <td>4.0</td>
     </tr>
     <tr>
+      <th>7</th>
+      <td>134</td>
+      <td>586</td>
+      <td>2.5</td>
+    </tr>
+    <tr>
       <th>8</th>
-      <td>665</td>
-      <td>736</td>
-      <td>3.0</td>
+      <td>544</td>
+      <td>1136</td>
+      <td>5.0</td>
     </tr>
     <tr>
       <th>9</th>
-      <td>111</td>
-      <td>1291</td>
-      <td>5.0</td>
+      <td>165</td>
+      <td>608</td>
+      <td>3.0</td>
     </tr>
   </tbody>
 </table>
@@ -402,7 +432,7 @@ summary: "Tools to quickly get the data and train models suitable for collaborat
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="collab_learner" class="doc_header"><code>collab_learner</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/collab.py#L89" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>collab_learner</code>(<strong><code>dbunch</code></strong>, <strong><code>n_factors</code></strong>=<em><code>50</code></em>, <strong><code>use_nn</code></strong>=<em><code>False</code></em>, <strong><code>emb_szs</code></strong>=<em><code>None</code></em>, <strong><code>layers</code></strong>=<em><code>None</code></em>, <strong><code>config</code></strong>=<em><code>None</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>, <strong><code>loss_func</code></strong>=<em><code>None</code></em>, <strong><code>opt_func</code></strong>=<em><code>'Adam'</code></em>, <strong><code>lr</code></strong>=<em><code>0.001</code></em>, <strong><code>splitter</code></strong>=<em><code>'trainable_params'</code></em>, <strong><code>cbs</code></strong>=<em><code>None</code></em>, <strong><code>cb_funcs</code></strong>=<em><code>None</code></em>, <strong><code>metrics</code></strong>=<em><code>None</code></em>, <strong><code>path</code></strong>=<em><code>None</code></em>, <strong><code>model_dir</code></strong>=<em><code>'models'</code></em>, <strong><code>wd_bn_bias</code></strong>=<em><code>False</code></em>, <strong><code>train_bn</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="collab_learner" class="doc_header"><code>collab_learner</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/collab.py#L89" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>collab_learner</code>(<strong><code>dbunch</code></strong>, <strong><code>n_factors</code></strong>=<em><code>50</code></em>, <strong><code>use_nn</code></strong>=<em><code>False</code></em>, <strong><code>emb_szs</code></strong>=<em><code>None</code></em>, <strong><code>layers</code></strong>=<em><code>None</code></em>, <strong><code>config</code></strong>=<em><code>None</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>, <strong><code>loss_func</code></strong>=<em><code>None</code></em>, <strong><code>opt_func</code></strong>=<em><code>'Adam'</code></em>, <strong><code>lr</code></strong>=<em><code>0.001</code></em>, <strong><code>splitter</code></strong>=<em><code>'trainable_params'</code></em>, <strong><code>cbs</code></strong>=<em><code>None</code></em>, <strong><code>cb_funcs</code></strong>=<em><code>None</code></em>, <strong><code>metrics</code></strong>=<em><code>None</code></em>, <strong><code>path</code></strong>=<em><code>None</code></em>, <strong><code>model_dir</code></strong>=<em><code>'models'</code></em>, <strong><code>wd</code></strong>=<em><code>0.01</code></em>, <strong><code>wd_bn_bias</code></strong>=<em><code>False</code></em>, <strong><code>train_bn</code></strong>=<em><code>True</code></em>, <strong><code>moms</code></strong>=<em><code>(0.95, 0.85, 0.95)</code></em>)</p>
 </blockquote>
 <p>Create a Learner for collaborative filtering on <a href="/data"><code>data</code></a>.</p>
 
@@ -458,8 +488,8 @@ summary: "Tools to quickly get the data and train models suitable for collaborat
   <tbody>
     <tr>
       <td>0</td>
-      <td>2.539030</td>
-      <td>2.463610</td>
+      <td>2.557128</td>
+      <td>2.495771</td>
       <td>00:00</td>
     </tr>
   </tbody>

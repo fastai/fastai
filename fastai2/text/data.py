@@ -127,7 +127,7 @@ class SortedDL(TfmdDL):
 
     def shuffle_fn(self,idxs):
         idxs = np.random.permutation(len(self.dataset))
-        idx_max = np.extract(idxs==self.idx_max, idxs)[0]
+        idx_max = np.where(idxs==self.idx_max)[0][0]
         idxs[0],idxs[idx_max] = idxs[idx_max],idxs[0]
         sz = self.bs*50
         chunks = [idxs[i:i+sz] for i in range(0, len(idxs), sz)]

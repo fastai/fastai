@@ -824,7 +824,7 @@ summary: "Custom fastai layers and basic functions to grab them."
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="init_default" class="doc_header"><code>init_default</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L598" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>init_default</code>(<strong><code>m</code></strong>, <strong><code>func</code></strong>=<em><code>'kaiming_normal_'</code></em>)</p>
+<h4 id="init_default" class="doc_header"><code>init_default</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L606" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>init_default</code>(<strong><code>m</code></strong>, <strong><code>func</code></strong>=<em><code>'kaiming_normal_'</code></em>)</p>
 </blockquote>
 <p>Initialize <code>m</code> weights with <code>func</code> and set <code>bias</code> to 0.</p>
 
@@ -1762,7 +1762,7 @@ summary: "Custom fastai layers and basic functions to grab them."
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>ICNR init was introduced in <a href="https://arxiv.org/abs/1707.02937">this article</a>. It suggests to initialize the convolution that will be used in PixelShuffle so that each of the <code>r**2</code> channels get the same weight (so that in the picture above, the 9 colors in a 3 by 3 window are initially the same).
-{% include note.html content="This is done on the first dimension because PyTorch stores the weights of a convolutional layer in this format: <code>ch_out x ch_in x ks x ks</code>. " %}</p>
+{% include note.html content='This is done on the first dimension because PyTorch stores the weights of a convolutional layer in this format: <code>ch_out x ch_in x ks x ks</code>. ' %}</p>
 
 </div>
 </div>

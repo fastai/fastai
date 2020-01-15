@@ -257,6 +257,54 @@ summary: "Basic image opening/processing functionality"
 
 </div>
 <div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="Image.to_bytes_format" class="doc_header"><code>Image.to_bytes_format</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/core.py#L45" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Image.to_bytes_format</code>(<strong><code>im</code></strong>:<code>Image</code>, <strong><code>format</code></strong>=<em><code>'png'</code></em>)</p>
+</blockquote>
+<p>Convert to bytes, default to PNG format</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="Image.to_thumb" class="doc_header"><code>Image.to_thumb</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/core.py#L53" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Image.to_thumb</code>(<strong><code>h</code></strong>, <strong><code>w</code></strong>=<em><code>None</code></em>)</p>
+</blockquote>
+<p>Same as <code>thumbnail</code>, but uses a copy</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
 <div class="inner_cell">
@@ -264,7 +312,7 @@ summary: "Basic image opening/processing functionality"
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">test_eq</span><span class="p">(</span><span class="n">im</span><span class="o">.</span><span class="n">resize_max</span><span class="p">(</span><span class="n">max_px</span><span class="o">=</span><span class="mi">20</span><span class="o">*</span><span class="mi">30</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="mi">20</span><span class="p">,</span><span class="mi">30</span><span class="p">))</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">im</span><span class="o">.</span><span class="n">resize_max</span><span class="p">(</span><span class="n">max_px</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span><span class="o">.</span><span class="n">n_px</span><span class="p">,</span> <span class="mi">294</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">im</span><span class="o">.</span><span class="n">resize_max</span><span class="p">(</span><span class="n">max_px</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">max_h</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">max_w</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">15</span><span class="p">))</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">im</span><span class="o">.</span><span class="n">resize_max</span><span class="p">(</span><span class="n">max_px</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">max_h</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span> <span class="n">max_w</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">15</span><span class="p">))</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">im</span><span class="o">.</span><span class="n">resize_max</span><span class="p">(</span><span class="n">max_h</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span> <span class="n">max_w</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">15</span><span class="p">))</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">im</span><span class="o">.</span><span class="n">resize_max</span><span class="p">(</span><span class="n">max_px</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">max_h</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">max_w</span><span class="o">=</span><span class="mi">25</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">15</span><span class="p">))</span>
 </pre></div>
 
@@ -282,7 +330,7 @@ summary: "Basic image opening/processing functionality"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Image.resize_max" class="doc_header"><code>Image.resize_max</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/core.py#L45" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Image.resize_max</code>(<strong><code>x</code></strong>:<code>Image</code>, <strong><code>resample</code></strong>=<em><code>0</code></em>, <strong><code>max_px</code></strong>=<em><code>None</code></em>, <strong><code>max_h</code></strong>=<em><code>None</code></em>, <strong><code>max_w</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="Image.resize_max" class="doc_header"><code>Image.resize_max</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/core.py#L62" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Image.resize_max</code>(<strong><code>x</code></strong>:<code>Image</code>, <strong><code>resample</code></strong>=<em><code>0</code></em>, <strong><code>max_px</code></strong>=<em><code>None</code></em>, <strong><code>max_h</code></strong>=<em><code>None</code></em>, <strong><code>max_w</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p><code>resize</code> <code>x</code> to <code>max_px</code>, or <code>max_h</code>, or <code>max_w</code></p>
 
@@ -290,19 +338,6 @@ summary: "Basic image opening/processing functionality"
 
 </div>
 
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#TODO function to resize_max all images in a path (optionally recursively) and save them somewhere (same relative dirs if recursive)</span>
-</pre></div>
-
-    </div>
 </div>
 </div>
 
@@ -345,7 +380,7 @@ summary: "Basic image opening/processing functionality"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="load_image" class="doc_header"><code>load_image</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/core.py#L55" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>load_image</code>(<strong><code>fn</code></strong>, <strong><code>mode</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="load_image" class="doc_header"><code>load_image</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/core.py#L72" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>load_image</code>(<strong><code>fn</code></strong>, <strong><code>mode</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Open and load a <code>PIL.Image</code> and convert to <code>mode</code></p>
 
@@ -369,7 +404,7 @@ summary: "Basic image opening/processing functionality"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="PILBase" class="doc_header"><code>class</code> <code>PILBase</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/core.py#L63" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>PILBase</code>() :: <code>Image</code></p>
+<h3 id="PILBase" class="doc_header"><code>class</code> <code>PILBase</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/core.py#L80" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>PILBase</code>() :: <code>Image</code></p>
 </blockquote>
 <p>This class represents an image object.  To create
 :py:class:<code>~PIL.Image.Image</code> objects, use the appropriate factory
@@ -401,7 +436,7 @@ directly.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="PILImage" class="doc_header"><code>class</code> <code>PILImage</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/core.py#L80" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>PILImage</code>() :: <a href="/vision.core#PILBase"><code>PILBase</code></a></p>
+<h3 id="PILImage" class="doc_header"><code>class</code> <code>PILImage</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/core.py#L97" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>PILImage</code>() :: <a href="/vision.core#PILBase"><code>PILBase</code></a></p>
 </blockquote>
 <p>This class represents an image object.  To create
 :py:class:<code>~PIL.Image.Image</code> objects, use the appropriate factory
@@ -433,7 +468,7 @@ directly.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="PILImageBW" class="doc_header"><code>class</code> <code>PILImageBW</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/core.py#L83" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>PILImageBW</code>() :: <a href="/vision.core#PILImage"><code>PILImage</code></a></p>
+<h3 id="PILImageBW" class="doc_header"><code>class</code> <code>PILImageBW</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/core.py#L100" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>PILImageBW</code>() :: <a href="/vision.core#PILImage"><code>PILImage</code></a></p>
 </blockquote>
 <p>This class represents an image object.  To create
 :py:class:<code>~PIL.Image.Image</code> objects, use the appropriate factory
@@ -555,7 +590,7 @@ directly.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="PILMask" class="doc_header"><code>class</code> <code>PILMask</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/core.py#L86" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>PILMask</code>() :: <a href="/vision.core#PILBase"><code>PILBase</code></a></p>
+<h3 id="PILMask" class="doc_header"><code>class</code> <code>PILMask</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/core.py#L103" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>PILMask</code>() :: <a href="/vision.core#PILBase"><code>PILBase</code></a></p>
 </blockquote>
 <p>This class represents an image object.  To create
 :py:class:<code>~PIL.Image.Image</code> objects, use the appropriate factory
@@ -742,7 +777,7 @@ directly.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="TensorPoint" class="doc_header"><code>class</code> <code>TensorPoint</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/core.py#L94" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>TensorPoint</code>(<strong><code>x</code></strong>, <strong>**<code>kwargs</code></strong>) :: <a href="/torch_core#TensorBase"><code>TensorBase</code></a></p>
+<h3 id="TensorPoint" class="doc_header"><code>class</code> <code>TensorPoint</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/core.py#L111" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>TensorPoint</code>(<strong><code>x</code></strong>, <strong>**<code>kwargs</code></strong>) :: <a href="/torch_core#TensorBase"><code>TensorBase</code></a></p>
 </blockquote>
 <p>Basic type for points in an image</p>
 
@@ -760,7 +795,7 @@ directly.</p>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Points are expected to come as an array/tensor of shape <code>(n,2)</code> or as a list of lists with two elements. Unless you change the defaults in <a href="/vision.core#PointScaler"><code>PointScaler</code></a> (see later on), coordinates should go from 0 to width/height, with the first one being the column index (so from 0 to width) and the second one being the row index (so from 0 to height).
-{% include note.html content="This is differnt from the usual indeixing convention for arrays in numpy or in PyTorch, but it's the way points are expected by matplotlib or the internal functions in PyTorch like <code>F.grid_sample</code>." %}</p>
+{% include note.html content='This is differnt from the usual indeixing convention for arrays in numpy or in PyTorch, but it&#8217;s the way points are expected by matplotlib or the internal functions in PyTorch like <code>F.grid_sample</code>.' %}</p>
 
 </div>
 </div>
@@ -833,7 +868,7 @@ directly.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_annotations" class="doc_header"><code>get_annotations</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/core.py#L115" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_annotations</code>(<strong><code>fname</code></strong>, <strong><code>prefix</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="get_annotations" class="doc_header"><code>get_annotations</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/core.py#L132" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_annotations</code>(<strong><code>fname</code></strong>, <strong><code>prefix</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Open a COCO style json in <code>fname</code> and returns the lists of filenames (with maybe <code>prefix</code>) and labelled bboxes.</p>
 
@@ -860,7 +895,7 @@ directly.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="TensorBBox" class="doc_header"><code>class</code> <code>TensorBBox</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/core.py#L145" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>TensorBBox</code>(<strong><code>x</code></strong>, <strong>**<code>kwargs</code></strong>) :: <a href="/vision.core#TensorPoint"><code>TensorPoint</code></a></p>
+<h3 id="TensorBBox" class="doc_header"><code>class</code> <code>TensorBBox</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/core.py#L162" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>TensorBBox</code>(<strong><code>x</code></strong>, <strong>**<code>kwargs</code></strong>) :: <a href="/vision.core#TensorPoint"><code>TensorPoint</code></a></p>
 </blockquote>
 <p>Basic type for a tensor of bounding boxes in an image</p>
 
@@ -875,7 +910,7 @@ directly.</p>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Bounding boxes are expected to come as tuple with an array/tensor of shape <code>(n,4)</code> or as a list of lists with four elements adn a list of corresponding labels. Unless you change the defaults in <code>BBoxScaler</code> (see later on), coordinates for each bounding box should go from 0 to height/width, with the following convetion: top, left, bottom, right.
-{% include note.html content="We use the same convention as for points with y axis being before x." %}</p>
+{% include note.html content='We use the same convention as for points with y axis being before x.' %}</p>
 
 </div>
 </div>
@@ -892,7 +927,7 @@ directly.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="LabeledBBox" class="doc_header"><code>class</code> <code>LabeledBBox</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/core.py#L156" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>LabeledBBox</code>(<strong><code>x</code></strong>=<em><code>None</code></em>, <strong>*<code>rest</code></strong>) :: <code>Tuple</code></p>
+<h3 id="LabeledBBox" class="doc_header"><code>class</code> <code>LabeledBBox</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/core.py#L173" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>LabeledBBox</code>(<strong><code>x</code></strong>=<em><code>None</code></em>, <strong>*<code>rest</code></strong>) :: <code>Tuple</code></p>
 </blockquote>
 <p>Basic type for a list of bounding boxes in an image</p>
 
@@ -979,7 +1014,7 @@ directly.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="image2tensor" class="doc_header"><code>image2tensor</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/core.py#L166" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>image2tensor</code>(<strong><code>img</code></strong>)</p>
+<h4 id="image2tensor" class="doc_header"><code>image2tensor</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/core.py#L183" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>image2tensor</code>(<strong><code>img</code></strong>)</p>
 </blockquote>
 <p>Transform image to byte tensor in <code>c*h*w</code> dim order.</p>
 
@@ -1006,7 +1041,7 @@ directly.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="encodes" class="doc_header"><code>encodes</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/core.py#L239" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>encodes</code>(<strong><code>x</code></strong>:<a href="/vision.core#TensorBBox"><code>TensorBBox</code></a>)</p>
+<h4 id="encodes" class="doc_header"><code>encodes</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/core.py#L256" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>encodes</code>(<strong><code>x</code></strong>:<a href="/vision.core#TensorBBox"><code>TensorBBox</code></a>)</p>
 </blockquote>
 
 </div>
@@ -1026,7 +1061,7 @@ directly.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="encodes" class="doc_header"><code>encodes</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/core.py#L239" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>encodes</code>(<strong><code>x</code></strong>:<a href="/vision.core#TensorBBox"><code>TensorBBox</code></a>)</p>
+<h4 id="encodes" class="doc_header"><code>encodes</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/core.py#L256" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>encodes</code>(<strong><code>x</code></strong>:<a href="/vision.core#TensorBBox"><code>TensorBBox</code></a>)</p>
 </blockquote>
 
 </div>
@@ -1171,7 +1206,7 @@ directly.</p>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>To work with data augmentation, and in particular the <code>grid_sample</code> method, points need to be represented with coordinates going from -1 to 1 (-1 being top or left, 1 bottom or right), which will be done unless you pass <code>do_scale=False</code>. We also need to make sure they are following our convention of points being x,y coordinates, so pass along <code>y_first=True</code> if you have your data in an y,x format to add a flip.
-{% include warning.html content="This transform needs to run on the tuple level, before any transform that changes the image size." %}</p>
+{% include warning.html content='This transform needs to run on the tuple level, before any transform that changes the image size.' %}</p>
 
 </div>
 </div>
@@ -1191,7 +1226,7 @@ directly.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="PointScaler" class="doc_header"><code>class</code> <code>PointScaler</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/core.py#L192" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>PointScaler</code>(<strong><code>do_scale</code></strong>=<em><code>True</code></em>, <strong><code>y_first</code></strong>=<em><code>False</code></em>) :: <code>Transform</code></p>
+<h3 id="PointScaler" class="doc_header"><code>class</code> <code>PointScaler</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/core.py#L209" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>PointScaler</code>(<strong><code>do_scale</code></strong>=<em><code>True</code></em>, <strong><code>y_first</code></strong>=<em><code>False</code></em>) :: <code>Transform</code></p>
 </blockquote>
 <p>Scale a tensor representing points</p>
 
@@ -1206,7 +1241,7 @@ directly.</p>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>To work with data augmentation, and in particular the <code>grid_sample</code> method, points need to be represented with coordinates going from -1 to 1 (-1 being top or left, 1 bottom or right), which will be done unless you pass <code>do_scale=False</code>. We also need to make sure they are following our convention of points being x,y coordinates, so pass along <code>y_first=True</code> if you have your data in an y,x format to add a flip.
-{% include note.html content="This transform automatically grabs the sizes of the images it sees before a <code>TensorPoint</code> object and embeds it in them. For this to work, those images need to be before any points in the order of your final tuple. If you don't have such images, you need to embed the size of the corresponding image when creating a <code>TensorPoint</code> by passing it with <code>sz=...</code>." %}</p>
+{% include note.html content='This transform automatically grabs the sizes of the images it sees before a <code>TensorPoint</code> object and embeds it in them. For this to work, those images need to be before any points in the order of your final tuple. If you don&#8217;t have such images, you need to embed the size of the corresponding image when creating a <code>TensorPoint</code> by passing it with <code>sz=...</code>.' %}</p>
 
 </div>
 </div>
@@ -1307,7 +1342,7 @@ directly.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="BBoxLabeler" class="doc_header"><code>class</code> <code>BBoxLabeler</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/core.py#L217" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>BBoxLabeler</code>(<strong><code>enc</code></strong>=<em><code>None</code></em>, <strong><code>dec</code></strong>=<em><code>None</code></em>, <strong><code>split_idx</code></strong>=<em><code>None</code></em>, <strong><code>as_item</code></strong>=<em><code>False</code></em>, <strong><code>order</code></strong>=<em><code>None</code></em>) :: <code>Transform</code></p>
+<h3 id="BBoxLabeler" class="doc_header"><code>class</code> <code>BBoxLabeler</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/core.py#L234" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>BBoxLabeler</code>(<strong><code>enc</code></strong>=<em><code>None</code></em>, <strong><code>dec</code></strong>=<em><code>None</code></em>, <strong><code>split_idx</code></strong>=<em><code>None</code></em>, <strong><code>as_item</code></strong>=<em><code>False</code></em>, <strong><code>order</code></strong>=<em><code>None</code></em>) :: <code>Transform</code></p>
 </blockquote>
 <p>Delegates (<code>__call__</code>,<code>decode</code>,<code>setup</code>) to (<a href="/tabular.core#encodes"><code>encodes</code></a>,<a href="/tabular.core#decodes"><code>decodes</code></a>,<a href="/tabular.core#setups"><code>setups</code></a>) if <code>split_idx</code> matches</p>
 
@@ -1331,7 +1366,7 @@ directly.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="decodes" class="doc_header"><code>decodes</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/core.py#L244" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>decodes</code>(<strong><code>x</code></strong>:<a href="/vision.core#TensorBBox"><code>TensorBBox</code></a>)</p>
+<h4 id="decodes" class="doc_header"><code>decodes</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/core.py#L261" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>decodes</code>(<strong><code>x</code></strong>:<a href="/vision.core#TensorBBox"><code>TensorBBox</code></a>)</p>
 </blockquote>
 
 </div>
@@ -1354,7 +1389,7 @@ directly.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="encodes" class="doc_header"><code>encodes</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/core.py#L239" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>encodes</code>(<strong><code>x</code></strong>:<a href="/vision.core#TensorBBox"><code>TensorBBox</code></a>)</p>
+<h4 id="encodes" class="doc_header"><code>encodes</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/core.py#L256" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>encodes</code>(<strong><code>x</code></strong>:<a href="/vision.core#TensorBBox"><code>TensorBBox</code></a>)</p>
 </blockquote>
 
 </div>
@@ -1374,7 +1409,7 @@ directly.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="decodes" class="doc_header"><code>decodes</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/core.py#L244" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>decodes</code>(<strong><code>x</code></strong>:<a href="/vision.core#TensorBBox"><code>TensorBBox</code></a>)</p>
+<h4 id="decodes" class="doc_header"><code>decodes</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/core.py#L261" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>decodes</code>(<strong><code>x</code></strong>:<a href="/vision.core#TensorBBox"><code>TensorBBox</code></a>)</p>
 </blockquote>
 
 </div>

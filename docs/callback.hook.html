@@ -89,13 +89,13 @@ summary: "Callback and helper function to add hooks in models"
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Linear(in_features=5, out_features=3, bias=True) (tensor([[ 1.4951,  1.7656, -0.5355, -0.2474,  0.3580],
-        [-0.2894, -0.6051,  1.4923,  0.1633,  0.9183],
-        [-0.7646,  0.7403,  0.5765,  2.0092,  1.4024],
-        [ 0.4015,  0.4395,  0.8375, -0.1856,  1.2120]]),) tensor([[-1.0850, -0.2806, -0.5106],
-        [ 0.1999, -0.3671,  0.3462],
-        [-0.3856, -0.5253, -0.7007],
-        [-0.4914, -0.2735,  0.0575]], grad_fn=&lt;AddmmBackward&gt;)
+<pre>Linear(in_features=5, out_features=3, bias=True) (tensor([[-0.6178, -2.7084, -0.1510,  1.6092, -1.0761],
+        [ 1.0335, -0.2600,  0.4191, -0.7061,  0.0794],
+        [ 1.8817,  0.1194, -1.2327, -0.3341, -0.5828],
+        [-0.4282,  1.1357, -2.0451, -1.4824,  1.2822]]),) tensor([[-0.0425, -0.5375,  0.1463],
+        [-0.4995, -0.0239,  0.0564],
+        [-0.4383, -0.1765,  0.3047],
+        [ 0.4291, -0.5219,  1.7191]], grad_fn=&lt;AddmmBackward&gt;)
 </pre>
 </div>
 </div>
@@ -136,14 +136,14 @@ summary: "Callback and helper function to add hooks in models"
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Linear(in_features=5, out_features=3, bias=True) (tensor([-0.0179, -0.1746, -0.1393]), None, tensor([[ 0.0268, -0.0730,  0.0006],
-        [-0.0979,  0.1925, -0.0643],
-        [ 0.0749, -0.1563,  0.0469],
-        [ 0.1802, -0.4722,  0.0314],
-        [ 0.1125, -0.1426,  0.1256]])) (tensor([[-0.0549,  0.0656, -0.0556],
-        [ 0.0467, -0.1501, -0.0219],
-        [ 0.0326, -0.1142,  0.0065],
-        [-0.0423,  0.0242, -0.0683]]),)
+<pre>Linear(in_features=5, out_features=3, bias=True) (tensor([-0.3470,  0.1353,  0.0062]), None, tensor([[-0.1635, -0.0722, -0.1723],
+        [ 0.1879, -0.1248, -0.0710],
+        [-0.4034,  0.0769, -0.0982],
+        [-0.1715,  0.2760,  0.2703],
+        [ 0.0072,  0.4434,  0.5813]])) (tensor([[-0.1197, -0.0633, -0.1370],
+        [-0.0864,  0.0263, -0.0151],
+        [-0.1046,  0.0342, -0.0068],
+        [-0.0363,  0.1381,  0.1651]]),)
 </pre>
 </div>
 </div>
@@ -250,7 +250,7 @@ summary: "Callback and helper function to add hooks in models"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>{% include note.html content="It's important to properly remove your hooks for your model when you're done to avoid them being called again next time your model is applied to some inputs, and to free the memory that go with their state." %}</p>
+<p>{% include note.html content='It&#8217;s important to properly remove your hooks for your model when you&#8217;re done to avoid them being called again next time your model is applied to some inputs, and to free the memory that go with their state.' %}</p>
 
 </div>
 </div>
@@ -859,7 +859,7 @@ summary: "Callback and helper function to add hooks in models"
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>(#4) [0,13.962559700012207,14.374628067016602,00:00]
+<pre>(#4) [0,16.230527877807617,17.368654251098633,&#39;00:00&#39;]
 </pre>
 </div>
 </div>
@@ -895,7 +895,7 @@ summary: "Callback and helper function to add hooks in models"
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>(#4) [0,4.285731315612793,5.3234782218933105,00:00]
+<pre>(#4) [0,12.341708183288574,12.009857177734375,&#39;00:00&#39;]
 </pre>
 </div>
 </div>
@@ -1104,7 +1104,7 @@ summary: "Callback and helper function to add hooks in models"
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>Sequential (Input shape: 16 x 1)
+<pre>Sequential (Input shape: [&#39;16 x 1&#39;])
 ================================================================
 Layer (type)         Output Shape         Param #    Trainable 
 ================================================================
@@ -1121,7 +1121,7 @@ Total params: 251
 Total trainable params: 151
 Total non-trainable params: 100
 
-Optimizer used: functools.partial(&lt;function SGD at 0x7f26a19004d0&gt;, mom=0.9)
+Optimizer used: functools.partial(&lt;function SGD at 0x7fa2f0c1cb90&gt;, mom=0.9)
 Loss function: FlattenedLoss of MSELoss()
 
 Model unfrozen
@@ -1225,7 +1225,7 @@ Callbacks:
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>(#4) [0,8.692988395690918,8.480352401733398,00:00]
+<pre>(#4) [0,8.027312278747559,9.211742401123047,&#39;00:00&#39;]
 </pre>
 </div>
 </div>
@@ -1254,7 +1254,7 @@ Callbacks:
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>(#3) [(#1) [{&#39;mean&#39;: 1.2145525217056274, &#39;std&#39;: 0.13840354979038239, &#39;percent_null&#39;: 0.0}],(#1) [{&#39;mean&#39;: 1.2145525217056274, &#39;std&#39;: 0.13840354979038239, &#39;percent_null&#39;: 0.0}],(#1) [{&#39;mean&#39;: 1.2145525217056274, &#39;std&#39;: 0.13840354979038239, &#39;percent_null&#39;: 0.0}]]</pre>
+<pre>(#3) [(#1) [{&#39;mean&#39;: 0.229204460978508, &#39;std&#39;: 0.38159218430519104, &#39;percent_null&#39;: 0.25}],(#1) [{&#39;mean&#39;: 0.229204460978508, &#39;std&#39;: 0.38159218430519104, &#39;percent_null&#39;: 0.25}],(#1) [{&#39;mean&#39;: 0.229204460978508, &#39;std&#39;: 0.38159218430519104, &#39;percent_null&#39;: 0.25}]]</pre>
 </div>
 
 </div>

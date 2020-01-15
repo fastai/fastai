@@ -27,9 +27,7 @@ summary: "How to fine-tune a language model and train a classifier"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">fastai2.basics</span> <span class="k">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">fastai2.text.all</span> <span class="k">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">fastai2.callback.all</span> <span class="k">import</span> <span class="o">*</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">fastai2.text.all</span> <span class="k">import</span> <span class="o">*</span>
 </pre></div>
 
     </div>
@@ -83,7 +81,28 @@ summary: "How to fine-tune a language model and train a classifier"
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">path</span> <span class="o">=</span> <span class="n">untar_data</span><span class="p">(</span><span class="n">URLs</span><span class="o">.</span><span class="n">IMDB_SAMPLE</span><span class="p">)</span>
 <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">path</span><span class="o">/</span><span class="s1">&#39;texts.csv&#39;</span><span class="p">)</span>
-<span class="n">df_tok</span><span class="p">,</span><span class="n">count</span> <span class="o">=</span> <span class="n">tokenize_df</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s1">&#39;text&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Then we put it in a <a href="/data.core#DataSource"><code>DataSource</code></a>. For a language model, we don't have targets, so there is only one transform to numericalize the texts.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">splits</span> <span class="o">=</span> <span class="n">ColSplitter</span><span class="p">()(</span><span class="n">df</span><span class="p">)</span>
+<span class="n">tfms</span> <span class="o">=</span> <span class="p">[</span><span class="n">attrgetter</span><span class="p">(</span><span class="s2">&quot;text&quot;</span><span class="p">),</span> <span class="n">Tokenizer</span><span class="o">.</span><span class="n">from_df</span><span class="p">(</span><span class="s2">&quot;text&quot;</span><span class="p">),</span> <span class="n">Numericalize</span><span class="p">()]</span>
+<span class="n">dsrc</span> <span class="o">=</span> <span class="n">DataSource</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="p">[</span><span class="n">tfms</span><span class="p">],</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">,</span> <span class="n">dl_type</span><span class="o">=</span><span class="n">LMDataLoader</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -108,28 +127,6 @@ summary: "How to fine-tune a language model and train a classifier"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Then we put it in a <a href="/data.core#DataSource"><code>DataSource</code></a>. For a language model, we don't have targets, so there is only one transform to numericalize the texts. Note that <a href="/text.core#tokenize_df"><code>tokenize_df</code></a> returns the count of the words in the corpus to make it easy to create a vocabulary.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">splits</span> <span class="o">=</span> <span class="n">ColSplitter</span><span class="p">()(</span><span class="n">df_tok</span><span class="p">)</span>
-<span class="n">vocab</span> <span class="o">=</span> <span class="n">make_vocab</span><span class="p">(</span><span class="n">count</span><span class="p">)</span>
-<span class="n">dsrc</span> <span class="o">=</span> <span class="n">DataSource</span><span class="p">(</span><span class="n">df_tok</span><span class="p">,</span> <span class="p">[[</span><span class="n">attrgetter</span><span class="p">(</span><span class="s2">&quot;text&quot;</span><span class="p">),</span> <span class="n">Numericalize</span><span class="p">(</span><span class="n">vocab</span><span class="p">)]],</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">,</span> <span class="n">dl_type</span><span class="o">=</span><span class="n">LMDataLoader</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
 <p>Then we use that <a href="/data.core#DataSource"><code>DataSource</code></a> to create a <a href="/data.core#DataBunch"><code>DataBunch</code></a>. Here the class of <a href="/data.core#TfmdDL"><code>TfmdDL</code></a> we need to use is <a href="/text.data#LMDataLoader"><code>LMDataLoader</code></a> which will concatenate all the texts in a source (with a shuffle at each epoch for the training set), split it in <code>bs</code> chunks then read continuously through it.</p>
 
 </div>
@@ -140,7 +137,7 @@ summary: "How to fine-tune a language model and train a classifier"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dbunch</span> <span class="o">=</span> <span class="n">dsrc</span><span class="o">.</span><span class="n">databunch</span><span class="p">(</span><span class="n">bs</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">seq_len</span><span class="o">=</span><span class="mi">72</span><span class="p">,</span> <span class="n">after_batch</span><span class="o">=</span><span class="n">Cuda</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dbunch</span> <span class="o">=</span> <span class="n">dsrc</span><span class="o">.</span><span class="n">databunch</span><span class="p">(</span><span class="n">bs</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">seq_len</span><span class="o">=</span><span class="mi">72</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -160,10 +157,25 @@ summary: "How to fine-tune a language model and train a classifier"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dbunch</span> <span class="o">=</span> <span class="n">TextDataBunch</span><span class="o">.</span><span class="n">from_df</span><span class="p">(</span><span class="n">df_tok</span><span class="p">,</span> <span class="n">text_col</span><span class="o">=</span><span class="s2">&quot;text&quot;</span><span class="p">,</span> <span class="n">text_vocab</span><span class="o">=</span><span class="n">vocab</span><span class="p">,</span> <span class="n">is_lm</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dbunch</span> <span class="o">=</span> <span class="n">TextDataBunch</span><span class="o">.</span><span class="n">from_df</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">text_col</span><span class="o">=</span><span class="s1">&#39;text&#39;</span><span class="p">,</span> <span class="n">is_lm</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">valid_col</span><span class="o">=</span><span class="s1">&#39;is_valid&#39;</span><span class="p">)</span>
 </pre></div>
 
     </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea ">
+
+</div>
+
+</div>
+
 </div>
 </div>
 
@@ -198,13 +210,13 @@ summary: "How to fine-tune a language model and train a classifier"
   <tbody>
     <tr>
       <th>0</th>
-      <td>xxbos i hope whoever xxunk these losers on their accents was fired . xxmaj the only high points are a few of the supporting characters , 3 of 5 of my xxunk were killed off by the end of the season ( and one of them was a cat , to put that into perspective ) . \n\n xxmaj the whole storyline is centered around sex , and nothing else . xxmaj</td>
-      <td>i hope whoever xxunk these losers on their accents was fired . xxmaj the only high points are a few of the supporting characters , 3 of 5 of my xxunk were killed off by the end of the season ( and one of them was a cat , to put that into perspective ) . \n\n xxmaj the whole storyline is centered around sex , and nothing else . xxmaj sex</td>
+      <td>xxbos xxmaj this is a extremely well - made film . xxmaj the acting , script and camera - work are all first - rate . xxmaj the music is good , too , though it is mostly early in the film , when things are still relatively xxunk . xxmaj there are no really xxunk in the cast , though several faces will be familiar . xxmaj the entire cast does</td>
+      <td>xxmaj this is a extremely well - made film . xxmaj the acting , script and camera - work are all first - rate . xxmaj the music is good , too , though it is mostly early in the film , when things are still relatively xxunk . xxmaj there are no really xxunk in the cast , though several faces will be familiar . xxmaj the entire cast does an</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>through the xxunk mirror blew me away . xxmaj if you liked " race xxup with xxup the xxup devil " you will love this movie xxbos xxmaj this film is about a man 's life going wrong . xxmaj his business is failing , and he can not xxunk his wife despite multiple attempts . \n\n xxmaj the plot is complete chaos . xxmaj it simply does not make sense .</td>
-      <td>the xxunk mirror blew me away . xxmaj if you liked " race xxup with xxup the xxup devil " you will love this movie xxbos xxmaj this film is about a man 's life going wrong . xxmaj his business is failing , and he can not xxunk his wife despite multiple attempts . \n\n xxmaj the plot is complete chaos . xxmaj it simply does not make sense . xxmaj</td>
+      <td>. xxmaj before i go further , it seems only fair that i point out the following so a reader can see if xxmaj i 'm xxunk or not . xxmaj i 'm trying to be objective , for the record . \n\n i tend to enjoy xxmaj maher 's xxup xxunk show now and then , though i rarely think he 's the source of the humor . i do n't</td>
+      <td>xxmaj before i go further , it seems only fair that i point out the following so a reader can see if xxmaj i 'm xxunk or not . xxmaj i 'm trying to be objective , for the record . \n\n i tend to enjoy xxmaj maher 's xxup xxunk show now and then , though i rarely think he 's the source of the humor . i do n't really</td>
     </tr>
   </tbody>
 </table>
@@ -242,7 +254,7 @@ summary: "How to fine-tune a language model and train a classifier"
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span><span class="o">.</span><span class="n">freeze</span><span class="p">()</span>
-<span class="n">learn</span><span class="o">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mf">1e-2</span><span class="p">,</span> <span class="n">moms</span><span class="o">=</span><span class="p">(</span><span class="mf">0.8</span><span class="p">,</span><span class="mf">0.7</span><span class="p">,</span><span class="mf">0.8</span><span class="p">))</span>
+<span class="n">learn</span><span class="o">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mf">1e-2</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -270,11 +282,11 @@ summary: "How to fine-tune a language model and train a classifier"
   <tbody>
     <tr>
       <td>0</td>
-      <td>4.544207</td>
-      <td>4.076524</td>
-      <td>0.266717</td>
-      <td>58.940224</td>
-      <td>00:05</td>
+      <td>4.537915</td>
+      <td>4.057219</td>
+      <td>0.274963</td>
+      <td>57.813309</td>
+      <td>00:09</td>
     </tr>
   </tbody>
 </table>
@@ -292,7 +304,7 @@ summary: "How to fine-tune a language model and train a classifier"
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span><span class="o">.</span><span class="n">unfreeze</span><span class="p">()</span>
-<span class="n">learn</span><span class="o">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mf">1e-2</span><span class="p">,</span> <span class="n">moms</span><span class="o">=</span><span class="p">(</span><span class="mf">0.8</span><span class="p">,</span><span class="mf">0.7</span><span class="p">,</span><span class="mf">0.8</span><span class="p">))</span>
+<span class="n">learn</span><span class="o">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mf">1e-2</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -320,35 +332,35 @@ summary: "How to fine-tune a language model and train a classifier"
   <tbody>
     <tr>
       <td>0</td>
-      <td>4.373950</td>
-      <td>4.376214</td>
-      <td>0.240014</td>
-      <td>79.536301</td>
-      <td>00:16</td>
+      <td>4.315029</td>
+      <td>4.153787</td>
+      <td>0.261169</td>
+      <td>63.674690</td>
+      <td>00:11</td>
     </tr>
     <tr>
       <td>1</td>
-      <td>4.298529</td>
-      <td>4.310582</td>
-      <td>0.250852</td>
-      <td>74.483803</td>
-      <td>00:16</td>
+      <td>4.140304</td>
+      <td>4.086970</td>
+      <td>0.268618</td>
+      <td>59.559143</td>
+      <td>00:11</td>
     </tr>
     <tr>
       <td>2</td>
-      <td>3.891712</td>
-      <td>4.226720</td>
-      <td>0.259793</td>
-      <td>68.492233</td>
-      <td>00:16</td>
+      <td>3.815153</td>
+      <td>4.053044</td>
+      <td>0.273681</td>
+      <td>57.572433</td>
+      <td>00:11</td>
     </tr>
     <tr>
       <td>3</td>
-      <td>3.400854</td>
-      <td>4.267030</td>
-      <td>0.260507</td>
-      <td>71.309547</td>
-      <td>00:16</td>
+      <td>3.428173</td>
+      <td>4.084964</td>
+      <td>0.272838</td>
+      <td>59.439785</td>
+      <td>00:10</td>
     </tr>
   </tbody>
 </table>
@@ -407,63 +419,63 @@ summary: "How to fine-tune a language model and train a classifier"
   <tbody>
     <tr>
       <th>0</th>
-      <td>xxbos xxmaj bill xxmaj paxton , of xxmaj aliens , xxmaj near xxmaj dark , and xxmaj xxunk fame , surprises me with his debut as director for xxmaj xxunk . xxmaj he hits on all xxunk , but there is one implausibility near the end that involves the xxup fbi agent ( powers xxmaj booth ) which xxunk a point from this otherwise chilling and thought provoking thriller . xxmaj other</td>
-      <td>xxmaj bill xxmaj paxton , of xxmaj aliens , xxmaj near xxmaj dark , and xxmaj xxunk fame , surprises me with his debut as director for xxmaj xxunk . xxmaj he hits on all xxunk , but there is one implausibility near the end that involves the xxup fbi agent ( powers xxmaj booth ) which xxunk a point from this otherwise chilling and thought provoking thriller . xxmaj other than</td>
-      <td>xxmaj this xxmaj paxton is xxmaj course xxunk , xxmaj xxunk xxmaj dark , and xxmaj xxunk xxmaj , are in with a xxunk . xxmaj and xxmaj xxunk xxmaj xxmaj the is the a the , and the is no thing in the end that is a two fbi agent ( powers xxmaj boothe ) who is his xxunk in the film xxunk and xxunk - thriller . xxmaj the than</td>
+      <td>xxbos i found myself very caught up in this movie , at least at the beginning , and any credit i give to this movie , is xxmaj xxunk xxmaj xxunk , she was fantastic ! ! xxmaj but that s where it ends . i seem to be very good at xxunk out who the killer is , and i like it when a movie is able to completely xxunk me</td>
+      <td>i found myself very caught up in this movie , at least at the beginning , and any credit i give to this movie , is xxmaj xxunk xxmaj xxunk , she was fantastic ! ! xxmaj but that s where it ends . i seem to be very good at xxunk out who the killer is , and i like it when a movie is able to completely xxunk me ,</td>
+      <td>xxmaj was this watching excited up in this movie . and least at the beginning , but i bit i had to the movie is is that xxunk xxmaj xxunk . the was the . xxmaj xxmaj the i 's not it was ! xxmaj think to be a disappointed at watching out the i movie was , but i think to . i movie is shot to make xxunk the .</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>'ll find out why they could become annoying ( http : / / xxunk / xxunk ) . xxmaj the main villain i guess is bad luck , fate , hand of xxmaj god ( no xxunk intended ) , or just plain xxmaj xxunk xxmaj xxunk ( billy xxmaj xxunk ) . xxmaj combine all of the above and what do you get ? ! xxmaj oh yes ! xxmaj we</td>
-      <td>find out why they could become annoying ( http : / / xxunk / xxunk ) . xxmaj the main villain i guess is bad luck , fate , hand of xxmaj god ( no xxunk intended ) , or just plain xxmaj xxunk xxmaj xxunk ( billy xxmaj xxunk ) . xxmaj combine all of the above and what do you get ? ! xxmaj oh yes ! xxmaj we get</td>
-      <td>be out that xxmaj were n't xxunk . xxunk : / / / / xxunk ) . xxmaj the plot character is would is xxmaj guy , and , and - xxmaj god , the one ) ) , or just a bad xxunk xxmaj xxunk ( xxunk xxmaj xxunk ) . xxmaj the all of the xxunk , the is you want ? xxmaj xxmaj the , , xxmaj the 're</td>
+      <td>logic , not only is the acting terrible , not only is the entire movie offensive from start to finish , not only is the direction as amateurish as you can find , but they actually want you to pay to see this film . xxmaj maybe if it was free … n xxrep 3 a h , it would still be a waste of time . \n\n xxmaj usually xxmaj i</td>
+      <td>, not only is the acting terrible , not only is the entire movie offensive from start to finish , not only is the direction as amateurish as you can find , but they actually want you to pay to see this film . xxmaj maybe if it was free … n xxrep 3 a h , it would still be a waste of time . \n\n xxmaj usually xxmaj i 'd</td>
+      <td>, and only is the film as , but only is the acting movie just , start to finish , but only is the acting and xxunk as it can find , but also also have to to see for see this movie . xxmaj it it you was a , i xxrep 3 o xxunk xxrep it would have be a little of time . xxbos xxmaj the i i 'm</td>
     </tr>
     <tr>
       <th>2</th>
-      <td>bernie xxmaj xxunk . xxmaj alfred develops a sort of " xxunk love " for xxmaj bernie while our young xxmaj zeon pilot also falls for xxmaj christina . \n\n " war in the xxmaj pocket " proves that you do not need a sweeping epic tale about special individuals to make for a good war story . xxmaj there are no xxunk xxunk pilots or large scale fleet battles to be</td>
-      <td>xxmaj xxunk . xxmaj alfred develops a sort of " xxunk love " for xxmaj bernie while our young xxmaj zeon pilot also falls for xxmaj christina . \n\n " war in the xxmaj pocket " proves that you do not need a sweeping epic tale about special individuals to make for a good war story . xxmaj there are no xxunk xxunk pilots or large scale fleet battles to be seen</td>
-      <td>xxmaj xxunk ( xxmaj he is a xxunk of xxunk xxunk " " for xxmaj bernie . his two xxmaj xxunk pilot is falls in xxmaj bernie . xxmaj xxmaj the " the xxmaj gold " is that the can n't know to lot xxunk story about the xxunk . create a a good war story . xxmaj the is some real in in , xxunk xxunk xxunk battles , be seen</td>
+      <td>was xxunk , cliché , or just plain stupid . xxmaj for instance the name of the camp is " camp blood " ( lame ) , the name of the clown is " the killer clown " ( lame ) . xxmaj what is a clown doing in a forest anyway ? xxmaj was that the only mask they could find ? 3 . xxmaj the last but certainly the least</td>
+      <td>xxunk , cliché , or just plain stupid . xxmaj for instance the name of the camp is " camp blood " ( lame ) , the name of the clown is " the killer clown " ( lame ) . xxmaj what is a clown doing in a forest anyway ? xxmaj was that the only mask they could find ? 3 . xxmaj the last but certainly the least was</td>
+      <td>a by and - and not plain stupid . xxmaj the me , xxunk of the film is " xxunk " " . xxunk ) . but word of the film is " the xxmaj " " ( xxunk ) . xxmaj the makes the joke doing in a car is ? xxmaj and that the name thing you could make ? xxmaj . xxmaj the xxunk scene xxunk the worst was</td>
     </tr>
     <tr>
       <th>3</th>
-      <td>xxmaj it is 100 % visual xxunk : he gets his kicks by making the actors strip in the buff and look at their xxunk . xxmaj and if he does this in front of the audience , he might eve get a hard - on ! xxmaj did you know that , on the set of " xxunk xxmaj xxunk " , he used to xxunk poor xxmaj coca xxmaj xxunk</td>
-      <td>it is 100 % visual xxunk : he gets his kicks by making the actors strip in the buff and look at their xxunk . xxmaj and if he does this in front of the audience , he might eve get a hard - on ! xxmaj did you know that , on the set of " xxunk xxmaj xxunk " , he used to xxunk poor xxmaj coca xxmaj xxunk ,</td>
-      <td>xxunk 's a % xxunk xxunk , xxmaj is his xxunk in making a movie look in the middle and xxunk at the xxunk . xxmaj the the you 's n't , the of the camera , he is be be a xxunk - to - xxmaj he n't really that he he the other of the xxunk xxmaj xxunk " , he 's to be his xxmaj xxunk xxmaj xxunk ,</td>
+      <td>wife 's teeth and cut out her tongue with no xxunk ? xxmaj overall awesome flick , but not for everyone . xxbos xxmaj red xxmaj rock xxmaj west is one of those rare films that keeps you guessing the entire time as to what will happen next . xxmaj nicolas xxmaj cage is mistaken for a contract killer as he enters a small town trying to find work . xxmaj dennis</td>
+      <td>'s teeth and cut out her tongue with no xxunk ? xxmaj overall awesome flick , but not for everyone . xxbos xxmaj red xxmaj rock xxmaj west is one of those rare films that keeps you guessing the entire time as to what will happen next . xxmaj nicolas xxmaj cage is mistaken for a contract killer as he enters a small town trying to find work . xxmaj dennis xxmaj</td>
+      <td>and daughter , her out her hair . a xxunk . xxmaj the , movie . but it as me . xxmaj xxmaj this xxmaj rock xxmaj west is a of the films films that you you interested . entire time . you what is happen next . xxmaj the xxmaj cage is xxmaj for a xxunk agent as a has a xxunk town . to find out . xxmaj he xxmaj</td>
     </tr>
     <tr>
       <th>4</th>
-      <td>and good nature . xxmaj not to mention amusing , xxunk dialogue . xxmaj after xxmaj adeline has taken steps to save xxmaj fanfan from hanging , she meets the king in his private quarters . " give me your pretty little hand , " he says . " but my heart xxunk to xxmaj fanfan , " says xxmaj adeline . " who asks for your heart ? " says the</td>
-      <td>good nature . xxmaj not to mention amusing , xxunk dialogue . xxmaj after xxmaj adeline has taken steps to save xxmaj fanfan from hanging , she meets the king in his private quarters . " give me your pretty little hand , " he says . " but my heart xxunk to xxmaj fanfan , " says xxmaj adeline . " who asks for your heart ? " says the king</td>
-      <td>the . . xxmaj the only mention the acting xxunk , , xxmaj the all xxunk 's died her to save her fanfan from xxunk , she is xxmaj king 's the mouth quarters . xxmaj we me a heart little head " " says says " " you i friend xxunk ! xxmaj fanfan ! " says xxmaj adeline . xxmaj i knows for me heart ? " xxmaj xxmaj king</td>
+      <td>are not allowed to attend soccer xxunk , so the nation 's armed forces have been xxunk to save any women who try to enter from themselves . xxmaj some ( teen ? ) girls try to crash the party by dressing as boys , but are caught . xxmaj the movie is mostly set at this holding pen where the girls are xxunk by soldiers , xxunk some xxunk punishment (</td>
+      <td>not allowed to attend soccer xxunk , so the nation 's armed forces have been xxunk to save any women who try to enter from themselves . xxmaj some ( teen ? ) girls try to crash the party by dressing as boys , but are caught . xxmaj the movie is mostly set at this holding pen where the girls are xxunk by soldiers , xxunk some xxunk punishment ( although</td>
+      <td>not the to xxunk the xxunk . but they girls is armed forces have been xxunk to xxunk the women who are to live the their . xxmaj the of including ) ) girls are to xxunk the country by xxunk as boys . but they xxunk and xxmaj the girls is so shot in the xxunk place , a girls are xxunk and a , and and xxunk xxunk . and</td>
     </tr>
     <tr>
       <th>5</th>
-      <td>. \n\n xxmaj no , this film is n't terrible . xxmaj other than the laughable screenplay , it is n't poor . xxmaj the actors are all experienced and perform well here . xxmaj xxunk xxmaj xxunk , who plays xxmaj sajani , was part of wonderful xxmaj indian drama xxmaj water . xxmaj even director xxmaj sivan has an impressive xxunk . xxmaj he recently xxunk xxmaj the xxmaj terrorist</td>
-      <td>\n\n xxmaj no , this film is n't terrible . xxmaj other than the laughable screenplay , it is n't poor . xxmaj the actors are all experienced and perform well here . xxmaj xxunk xxmaj xxunk , who plays xxmaj sajani , was part of wonderful xxmaj indian drama xxmaj water . xxmaj even director xxmaj sivan has an impressive xxunk . xxmaj he recently xxunk xxmaj the xxmaj terrorist ,</td>
-      <td>xxmaj xxmaj the , no movie is not a . xxmaj it than that fact acting , it 's a even . xxmaj the acting are not very with very well . . xxmaj the xxmaj xxunk is xxmaj plays xxmaj xxunk , is a of the xxmaj xxunk history . xxunk . xxmaj the though xxmaj xxunk 's been amazing cast . xxmaj he is made the the xxmaj xxunk ,</td>
+      <td>good . xxmaj it 's my personal favorite of all the " christmas xxmaj carol " movies because every aspect of this production are of the highest quality . xxmaj yes , there are some minor on screen xxunk with two of the ghosts that visit xxmaj scrooge , but there is n't a movie in existence that does n't have at least a couple of mistakes . \n\n xxmaj scott turns</td>
+      <td>. xxmaj it 's my personal favorite of all the " christmas xxmaj carol " movies because every aspect of this production are of the highest quality . xxmaj yes , there are some minor on screen xxunk with two of the ghosts that visit xxmaj scrooge , but there is n't a movie in existence that does n't have at least a couple of mistakes . \n\n xxmaj scott turns in</td>
+      <td>, xxmaj the 's a favorite favorite . all the xxmaj xxunk xxmaj carol " movies . it aspect of the film is the the same quality . xxmaj the , this are a good moments screen xxunk , the of the best , are the xxunk . but this are no a lot in the that is n't have a least a lot of laughs . xxmaj xxmaj the xxmaj in</td>
     </tr>
     <tr>
       <th>6</th>
-      <td>xxunk . xxmaj this is the movie in a xxunk . xxmaj then there is the bad acting and insipid dialogue . i actually have a lot of patience when it comes to b movies . xxmaj this one is xxunk . xxmaj by the way , a more xxunk title would be xxmaj revolt of the xxmaj hypnotized . xxbos xxmaj if somebody wants to make a really , xxup really</td>
-      <td>. xxmaj this is the movie in a xxunk . xxmaj then there is the bad acting and insipid dialogue . i actually have a lot of patience when it comes to b movies . xxmaj this one is xxunk . xxmaj by the way , a more xxunk title would be xxmaj revolt of the xxmaj hypnotized . xxbos xxmaj if somebody wants to make a really , xxup really bad</td>
-      <td>xxmaj xxmaj the is a only 's which xxunk , xxmaj it , is a xxunk acting , the dialogue . xxmaj think liked to lot of time to i comes to xxmaj movies . xxmaj the is is a . xxmaj it the way , it movie realistic , is be a xxunk of the xxmaj hypnotized . xxmaj xxmaj this you has to see a movie good good tv good</td>
+      <td>" la xxmaj xxunk xxmaj xxunk " with the original soundtrack " xxunk " as an alternative language , since despite searching i could not find a wholly xxmaj english xxunk was however xxunk to see another performance by xxmaj ella xxmaj raines after being impressed with her performance as a heroine in " impact " playing a sole female xxunk xxunk xxmaj ella performs another heroic role believing in the innocence</td>
+      <td>la xxmaj xxunk xxmaj xxunk " with the original soundtrack " xxunk " as an alternative language , since despite searching i could not find a wholly xxmaj english xxunk was however xxunk to see another performance by xxmaj ella xxmaj raines after being impressed with her performance as a heroine in " impact " playing a sole female xxunk xxunk xxmaj ella performs another heroic role believing in the innocence of</td>
+      <td>xxunk xxmaj xxunk " xxunk " ( xxmaj xxmaj " . xxunk xxmaj . well xxunk song . and it the for would n't find any new original english - in actually xxunk . the xxmaj of by xxmaj xxunk xxmaj raines in being xxunk with her performance . a xxunk . " xxunk " . a xxunk female xxunk . . xxunk xxmaj a xxunk role in in the xxunk of</td>
     </tr>
     <tr>
       <th>7</th>
-      <td>, one might hope that at least the critical " facts " that the story turns on might be based on actual events . xxmaj reagan was shot and the other characters were real people . xxmaj the movie got that right . xxmaj from there on , xxunk on facts rapidly xxunk . i had never heard of this movie before seeing it . xxmaj having been a xxup tv reporter</td>
-      <td>one might hope that at least the critical " facts " that the story turns on might be based on actual events . xxmaj reagan was shot and the other characters were real people . xxmaj the movie got that right . xxmaj from there on , xxunk on facts rapidly xxunk . i had never heard of this movie before seeing it . xxmaj having been a xxup tv reporter at</td>
-      <td>and of not that the least the xxunk xxunk xxunk " are this film is into are be a on the events . xxmaj the 's n't and was xxunk characters were xxunk . . xxmaj the film was a much . xxmaj the the , , the the the , xxunk . xxmaj was to heard of the movie before i it . xxmaj the read xxunk fan tv fan ,</td>
+      <td>i mentioned before , quite dated and very simple . xxmaj the least detailed of basically any 3d game released by a professional team of creators . xxmaj if you can get over that , xxunk some would suggest that this simplicity only adds to the effect the game has on you ) , then you 've got one heck of a good shooter / xxunk game . xxmaj the game play</td>
+      <td>mentioned before , quite dated and very simple . xxmaj the least detailed of basically any 3d game released by a professional team of creators . xxmaj if you can get over that , xxunk some would suggest that this simplicity only adds to the effect the game has on you ) , then you 've got one heck of a good shooter / xxunk game . xxmaj the game play consists</td>
+      <td>was was . but recently and very little . xxmaj the acting interesting is the any movie game is by xxup professional team of xxunk . xxmaj the you are find a the , you you of be that you is is xxunk to the quality it game has on you . . but you will got to of of a xxunk game / xxunk game . xxmaj it game is is</td>
     </tr>
     <tr>
       <th>8</th>
-      <td>looking and young , and so he gives xxmaj jackman nothing to say or do . xxmaj like xxmaj johansson , he is used merely for his good looks . xxmaj this is a shame , because , as xxmaj jackman has shown in any number of productions , from " oklahoma " to " x xxmaj men , " he xxup can act . \n\n xxmaj here 's the big plot</td>
-      <td>and young , and so he gives xxmaj jackman nothing to say or do . xxmaj like xxmaj johansson , he is used merely for his good looks . xxmaj this is a shame , because , as xxmaj jackman has shown in any number of productions , from " oklahoma " to " x xxmaj men , " he xxup can act . \n\n xxmaj here 's the big plot twist</td>
-      <td>for looking people xxunk the on 's us xxunk a to do about do . xxmaj the xxmaj xxunk , he 's a to to his xxunk acting . xxmaj he is a very , because he as a jackman is done , his other of movies , he the xxunk " to " xxunk xxmaj men " " he 's is not as xxmaj xxmaj the , a only - twist</td>
+      <td>more likely that the xxmaj british simply saw the xxunk between the xxunk and were clever enough to exploit them to their own ends . \n\n xxmaj the result is that there is much cruelty and inhumanity in the situation and this is very unpleasant to remember and to see on the screen . xxmaj but it is never painted as a black - and - white case . xxmaj there is</td>
+      <td>likely that the xxmaj british simply saw the xxunk between the xxunk and were clever enough to exploit them to their own ends . \n\n xxmaj the result is that there is much cruelty and inhumanity in the situation and this is very unpleasant to remember and to see on the screen . xxmaj but it is never painted as a black - and - white case . xxmaj there is xxunk</td>
+      <td>than . the film xxunk would had the film of the xxmaj and the xxunk enough to keep them . xxunk own side . xxmaj xxmaj the xxmaj is a the is a more and violence in the film . the is a well . watch . to be . the screen . xxmaj the it is a a as a black - and - white film . xxmaj the are a</td>
     </tr>
     <tr>
       <th>9</th>
-      <td>probably the worst movie i have ever seen . xxmaj here are the things that immediately jump out at me : 1 . xxmaj the woods were more like hills in xxmaj los xxmaj angeles with a couple trees and xxunk . xxmaj not scary whatsoever . xxmaj news flash , if you are filming in the xxmaj southern xxmaj california area , big bear is only an hour away . xxmaj</td>
-      <td>the worst movie i have ever seen . xxmaj here are the things that immediately jump out at me : 1 . xxmaj the woods were more like hills in xxmaj los xxmaj angeles with a couple trees and xxunk . xxmaj not scary whatsoever . xxmaj news flash , if you are filming in the xxmaj southern xxmaj california area , big bear is only an hour away . xxmaj they</td>
-      <td>not best movie i have ever seen . xxmaj the 's the things that are happen out of the . xxmaj . xxmaj the acting are xxunk like a in xxmaj xxunk xxmaj angeles . a couple of , xxunk . xxmaj the only . . xxmaj the xxunk , but you 're looking in the woods xxunk xxmaj california area , you xxunk is just a hour away . xxmaj the</td>
+      <td>, as if improvised by bored actors , popping out of nothingness into nothingness . \n\n xxmaj modern art has finally succeeded in xxunk the thing without being the thing , so that what we behold is the idea of the idea , empty as a shell , but not even a shell , merely the idea of a shell . xxmaj could one ask for a better definition of xxunk ?</td>
+      <td>as if improvised by bored actors , popping out of nothingness into nothingness . \n\n xxmaj modern art has finally succeeded in xxunk the thing without being the thing , so that what we behold is the idea of the idea , empty as a shell , but not even a shell , merely the idea of a shell . xxmaj could one ask for a better definition of xxunk ? xxbos</td>
+      <td>and a it by xxmaj actors , they out of the . a . xxmaj xxmaj the xxmaj has been been in xxunk the xxunk with resorting a least that but it it is see is a xxunk of a xxunk of which and a whole . and it as a xxunk . and a xxunk of a xxunk . xxmaj the n't xxunk for a xxunk time of xxunk , xxmaj</td>
     </tr>
   </tbody>
 </table>
@@ -496,7 +508,7 @@ summary: "How to fine-tune a language model and train a classifier"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>For classification, we need to use two set of transforms: one to numericalize the texts and the other to encode the labels as categories.</p>
+<p>For classification, we need to use two set of transforms: one to numericalize the texts and the other to encode the labels as categories. Note that we have to use the same vocabulary as the one used in fine-tuning the language model.</p>
 
 </div>
 </div>
@@ -506,10 +518,57 @@ summary: "How to fine-tune a language model and train a classifier"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">splits</span> <span class="o">=</span> <span class="n">ColSplitter</span><span class="p">()(</span><span class="n">df_tok</span><span class="p">)</span>
-<span class="n">dsrc</span> <span class="o">=</span> <span class="n">DataSource</span><span class="p">(</span><span class="n">df_tok</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">,</span> <span class="n">tfms</span><span class="o">=</span><span class="p">[</span>
-    <span class="p">[</span><span class="n">attrgetter</span><span class="p">(</span><span class="s2">&quot;text&quot;</span><span class="p">),</span> <span class="n">Numericalize</span><span class="p">(</span><span class="n">vocab</span><span class="p">)],</span>
-    <span class="p">[</span><span class="n">attrgetter</span><span class="p">(</span><span class="s2">&quot;label&quot;</span><span class="p">),</span> <span class="n">Categorize</span><span class="p">()]],</span> <span class="n">dl_type</span><span class="o">=</span><span class="n">SortedDL</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">lm_vocab</span> <span class="o">=</span> <span class="n">dbunch</span><span class="o">.</span><span class="n">vocab</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">splits</span> <span class="o">=</span> <span class="n">ColSplitter</span><span class="p">()(</span><span class="n">df</span><span class="p">)</span>
+<span class="n">x_tfms</span> <span class="o">=</span> <span class="p">[</span><span class="n">attrgetter</span><span class="p">(</span><span class="s2">&quot;text&quot;</span><span class="p">),</span> <span class="n">Tokenizer</span><span class="o">.</span><span class="n">from_df</span><span class="p">(</span><span class="s2">&quot;text&quot;</span><span class="p">),</span> <span class="n">Numericalize</span><span class="p">(</span><span class="n">vocab</span><span class="o">=</span><span class="n">lm_vocab</span><span class="p">)]</span>
+<span class="n">dsrc</span> <span class="o">=</span> <span class="n">DataSource</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">,</span> <span class="n">tfms</span><span class="o">=</span><span class="p">[</span><span class="n">x_tfms</span><span class="p">,</span> <span class="p">[</span><span class="n">attrgetter</span><span class="p">(</span><span class="s2">&quot;label&quot;</span><span class="p">),</span> <span class="n">Categorize</span><span class="p">()]],</span> <span class="n">dl_type</span><span class="o">=</span><span class="n">SortedDL</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea ">
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We once again use a subclass of <a href="/data.core#TfmdDL"><code>TfmdDL</code></a> for the dataloaders, since we want to sort the texts (sortish for the training set) by order of lengths. We also use <code>pad_collate</code> to create batches form texts of different lengths.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dbunch</span> <span class="o">=</span> <span class="n">dsrc</span><span class="o">.</span><span class="n">databunch</span><span class="p">(</span><span class="n">before_batch</span><span class="o">=</span><span class="n">pad_input</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -519,7 +578,7 @@ summary: "How to fine-tune a language model and train a classifier"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>We opnce again use a subclass of <a href="/data.core#TfmdDL"><code>TfmdDL</code></a> for the dataloaders, since we want to sort the texts (sortish for the training set) by order of lengths. We also use <code>pad_collate</code> to create batches form texts of different lengths.</p>
+<p>And there is a factory method, once again:</p>
 
 </div>
 </div>
@@ -529,10 +588,25 @@ summary: "How to fine-tune a language model and train a classifier"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dbunch</span> <span class="o">=</span> <span class="n">dsrc</span><span class="o">.</span><span class="n">databunch</span><span class="p">(</span><span class="n">before_batch</span><span class="o">=</span><span class="n">pad_input</span><span class="p">,</span> <span class="n">after_batch</span><span class="o">=</span><span class="n">Cuda</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dbunch</span> <span class="o">=</span> <span class="n">TextDataBunch</span><span class="o">.</span><span class="n">from_df</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">text_col</span><span class="o">=</span><span class="s2">&quot;text&quot;</span><span class="p">,</span> <span class="n">text_vocab</span><span class="o">=</span><span class="n">lm_vocab</span><span class="p">,</span> <span class="n">label_col</span><span class="o">=</span><span class="s1">&#39;label&#39;</span><span class="p">,</span> <span class="n">valid_col</span><span class="o">=</span><span class="s1">&#39;is_valid&#39;</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="mi">32</span><span class="p">)</span>
 </pre></div>
 
     </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea ">
+
+</div>
+
+</div>
+
 </div>
 </div>
 
@@ -587,26 +661,6 @@ summary: "How to fine-tune a language model and train a classifier"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Or with a factory method of <a href="/text.data#TextDataBunch"><code>TextDataBunch</code></a>:</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dbunch</span> <span class="o">=</span> <span class="n">TextDataBunch</span><span class="o">.</span><span class="n">from_df</span><span class="p">(</span><span class="n">df_tok</span><span class="p">,</span> <span class="n">text_col</span><span class="o">=</span><span class="s2">&quot;text&quot;</span><span class="p">,</span> <span class="n">text_vocab</span><span class="o">=</span><span class="n">vocab</span><span class="p">,</span> <span class="n">label_col</span><span class="o">=</span><span class="s1">&#39;label&#39;</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
 <p>Then we once again have a convenience function to create a classifier from this <a href="/data.core#DataBunch"><code>DataBunch</code></a> with the <a href="/text.models.awdlstm#AWD_LSTM"><code>AWD_LSTM</code></a> architecture.</p>
 
 </div>
@@ -617,7 +671,7 @@ summary: "How to fine-tune a language model and train a classifier"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span> <span class="o">=</span> <span class="n">text_classifier_learner</span><span class="p">(</span><span class="n">dbunch</span><span class="p">,</span> <span class="n">AWD_LSTM</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="n">accuracy</span><span class="p">],</span> <span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">,</span> <span class="n">opt_func</span><span class="o">=</span><span class="n">Adam</span><span class="p">,</span> <span class="n">drop_mult</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span> <span class="o">=</span> <span class="n">text_classifier_learner</span><span class="p">(</span><span class="n">dbunch</span><span class="p">,</span> <span class="n">AWD_LSTM</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="n">accuracy</span><span class="p">],</span> <span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">,</span><span class="n">drop_mult</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -650,7 +704,7 @@ summary: "How to fine-tune a language model and train a classifier"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span><span class="o">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">moms</span><span class="o">=</span><span class="p">(</span><span class="mf">0.8</span><span class="p">,</span><span class="mf">0.7</span><span class="p">,</span><span class="mf">0.8</span><span class="p">))</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span><span class="o">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -677,31 +731,31 @@ summary: "How to fine-tune a language model and train a classifier"
   <tbody>
     <tr>
       <td>0</td>
-      <td>0.720599</td>
-      <td>0.496283</td>
-      <td>0.765000</td>
-      <td>00:10</td>
+      <td>0.727597</td>
+      <td>0.584302</td>
+      <td>0.745000</td>
+      <td>00:05</td>
     </tr>
     <tr>
       <td>1</td>
-      <td>0.580163</td>
-      <td>0.465498</td>
-      <td>0.790000</td>
-      <td>00:10</td>
+      <td>0.606741</td>
+      <td>0.504984</td>
+      <td>0.745000</td>
+      <td>00:05</td>
     </tr>
     <tr>
       <td>2</td>
-      <td>0.502125</td>
-      <td>0.460327</td>
-      <td>0.760000</td>
-      <td>00:09</td>
+      <td>0.530358</td>
+      <td>0.477460</td>
+      <td>0.765000</td>
+      <td>00:05</td>
     </tr>
     <tr>
       <td>3</td>
-      <td>0.461802</td>
-      <td>0.448796</td>
-      <td>0.765000</td>
-      <td>00:11</td>
+      <td>0.476057</td>
+      <td>0.470573</td>
+      <td>0.745000</td>
+      <td>00:05</td>
     </tr>
   </tbody>
 </table>
@@ -720,93 +774,10 @@ summary: "How to fine-tune a language model and train a classifier"
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span><span class="o">.</span><span class="n">unfreeze</span><span class="p">()</span>
 <span class="n">learn</span><span class="o">.</span><span class="n">opt</span> <span class="o">=</span> <span class="n">learn</span><span class="o">.</span><span class="n">create_opt</span><span class="p">()</span>
-<span class="n">learn</span><span class="o">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="nb">slice</span><span class="p">(</span><span class="mf">1e-5</span><span class="p">,</span><span class="mf">1e-3</span><span class="p">),</span> <span class="n">moms</span><span class="o">=</span><span class="p">(</span><span class="mf">0.8</span><span class="p">,</span><span class="mf">0.7</span><span class="p">,</span><span class="mf">0.8</span><span class="p">))</span>
+<span class="n">learn</span><span class="o">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="nb">slice</span><span class="p">(</span><span class="mf">1e-5</span><span class="p">,</span><span class="mf">1e-3</span><span class="p">))</span>
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_html rendered_html output_subarea ">
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: left;">
-      <th>epoch</th>
-      <th>train_loss</th>
-      <th>valid_loss</th>
-      <th>accuracy</th>
-      <th>time</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>0</td>
-      <td>0.411823</td>
-      <td>0.399018</td>
-      <td>0.810000</td>
-      <td>00:15</td>
-    </tr>
-    <tr>
-      <td>1</td>
-      <td>0.397232</td>
-      <td>0.416813</td>
-      <td>0.815000</td>
-      <td>00:16</td>
-    </tr>
-    <tr>
-      <td>2</td>
-      <td>0.373783</td>
-      <td>0.486226</td>
-      <td>0.785000</td>
-      <td>00:17</td>
-    </tr>
-    <tr>
-      <td>3</td>
-      <td>0.315111</td>
-      <td>0.422542</td>
-      <td>0.825000</td>
-      <td>00:19</td>
-    </tr>
-    <tr>
-      <td>4</td>
-      <td>0.282453</td>
-      <td>0.421409</td>
-      <td>0.830000</td>
-      <td>00:19</td>
-    </tr>
-    <tr>
-      <td>5</td>
-      <td>0.251479</td>
-      <td>0.422410</td>
-      <td>0.820000</td>
-      <td>00:16</td>
-    </tr>
-    <tr>
-      <td>6</td>
-      <td>0.245852</td>
-      <td>0.444412</td>
-      <td>0.810000</td>
-      <td>00:16</td>
-    </tr>
-    <tr>
-      <td>7</td>
-      <td>0.221122</td>
-      <td>0.416276</td>
-      <td>0.820000</td>
-      <td>00:18</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-</div>
-
 </div>
 </div>
 
@@ -823,50 +794,16 @@ summary: "How to fine-tune a language model and train a classifier"
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_html rendered_html output_subarea ">
-
 </div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
 
-</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="s2">&quot;This was a good movie&quot;</span><span class="p">)</span>
+</pre></div>
 
-<div class="output_area">
-
-
-<div class="output_html rendered_html output_subarea ">
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>text</th>
-      <th>category</th>
-      <th>category_</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>xxbos xxup the xxup shop xxup around xxup the xxup corner is one of the xxunk and most feel - good romantic comedies ever made . xxmaj there 's just no getting around that , and it 's hard to actually put one 's feeling for this film into words . xxmaj it 's not one of those films that</td>
-      <td>positive</td>
-      <td>positive</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>xxbos xxmaj now that xxmaj che(2008 ) has finished its relatively short xxmaj australian cinema run ( extremely limited xxunk screen in xxmaj xxunk , after xxunk ) , i can xxunk join both xxunk of " at xxmaj the xxmaj movies " in taking xxmaj steven xxmaj soderbergh to task . \n\n xxmaj it 's usually satisfying to watch</td>
-      <td>negative</td>
-      <td>negative</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-</div>
-
+    </div>
 </div>
 </div>
 
@@ -896,21 +833,6 @@ summary: "How to fine-tune a language model and train a classifier"
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_html rendered_html output_subarea ">
-
-</div>
-
-</div>
-
-</div>
-</div>
-
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
@@ -921,82 +843,6 @@ summary: "How to fine-tune a language model and train a classifier"
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_html rendered_html output_subarea ">
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>input</th>
-      <th>target</th>
-      <th>predicted</th>
-      <th>probability</th>
-      <th>loss</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>xxbos xxmaj over xxmaj her xxmaj dead xxmaj body was a nice little xxunk was decent and entertaining , while still being pretty xxunk were a few cliché 's , but i found most stuff xxunk first i did n't think it was going to be good at all , when it started xxunk you can get past the first 20 minutes though , the movie starts getting more xxunk film was n't burst out in laughter hilarious , and was n't xxup oh xxup my xxup xxunk xxunk was just a movie that you can sit down and enjoy for how enjoyable it xxunk do n't see how this movie was xxunk rating is just a bit too xxunk could 've dealt with a xxunk a xxunk , giving this movie a 1 is xxunk was pretty good , and there was nothing horrible enough about it to give</td>
-      <td>positive</td>
-      <td>negative</td>
-      <td>0.9911274313926697</td>
-      <td>4.724791526794434</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>xxbos xxmaj not sure if it was right or wrong , but i read thru the other comments before watching the xxunk have to say i disagree with most of the negative comments or problems people have had with it . \n\n xxmaj as a first time " lone xxmaj wolf " director / producer , i like to see things that i can xxunk to , not necessarily from the pro 's , but by people just getting their feet wet like me . \n\n xxmaj if indeed this is also from a first - xxunk , as i read , i applaud the xxunk job then in that respect ! xxmaj there were some comments about the xxunk thought it was quite nice for the xxunk say it kind of xxunk along for a while , but i found that created tension xxunk being xxunk of it ,</td>
-      <td>positive</td>
-      <td>negative</td>
-      <td>0.989062488079071</td>
-      <td>4.515562057495117</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>xxbos xxmaj of life in ( some ) colleges . xxmaj of course there were artistic xxunk taken , but some of what you saw in this film go on in some colleges . \n\n i went to colleges in xxmaj southern xxmaj california where the xxunk pretty much hang around with their own . xxmaj it 's funny because these are schools that want racial xxunk , equality etc . and i can honestly say , that it 's there . xxmaj but the thing is when class lets out , or when they 're just hanging out waiting for class , they ( students ) seem to just hang around with people of their own race or ethnicity . xxmaj is that bad ? xxmaj not really . xxmaj everyone needs a feeling of belonging . xxmaj but like the school paper of one of the schools i</td>
-      <td>positive</td>
-      <td>negative</td>
-      <td>0.9781860709190369</td>
-      <td>3.8252058029174805</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>xxbos i ca nt help it but i seem to like films that are meant to be scary and are just plain bad . i have personally listed it in my own top 10 worst movies right under creatures of the xxunk xxmaj watch this film and have a laugh just do n't expect to see any academy awards for acting . xxmaj more chance of understanding the film its self . xxmaj in all honesty though i have seen much worse than this . xxmaj plus some xxunk xxunk round the desert xxunk the same people out that just died is that unbelievable that its got to be original . i think its one of those love or hate movies . you can make up your own mind yes its awful but it pulls it off somehow that s why i love it</td>
-      <td>negative</td>
-      <td>positive</td>
-      <td>0.9513773322105408</td>
-      <td>3.0236663818359375</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>xxbos xxmaj like xxmaj tarzan the xxmaj ape xxmaj man ( 1932 ) , only more so . xxmaj there 's more of everything , more animals , more varied xxmaj african tribes , and scenes in which the thought must be , if this was good with three or four lions , forty would be better . xxmaj tarzan xxunk with xxunk the crocodile machine xxunk in the water like a rolling pin , around and around , jaws xxunk . xxmaj tarzan can kill it with his xxunk knife if the xxunk xxunk would hold still . xxmaj tarzan kills lions and xxunk and a xxunk xxunk number of animals . xxmaj his friends are real xxunk , people wearing larger ape costumes , and xxunk . xxmaj in fact , they use xxmaj indian xxunk more friendly and xxunk than xxmaj african xxunk costume ears attached to</td>
-      <td>positive</td>
-      <td>negative</td>
-      <td>0.9405072331428528</td>
-      <td>2.821899890899658</td>
-    </tr>
-    <tr>
-      <th>5</th>
-      <td>xxbos xxmaj this is yet another bad movie that you should probably avoid watching . xxmaj the plot could be a lot " xxunk " than it actually is and would be better made as a blockbuster type movie . \n\n xxmaj the acting leaves something to be desired , though you can not quite place your finger on what it is . \n\n xxmaj this is one of those that you watch on late night xxup tv , perhaps on xxup usa , simply because you can not get to sleep . xxmaj watch it if you want but do not expect too much from it .</td>
-      <td>negative</td>
-      <td>positive</td>
-      <td>0.9324377179145813</td>
-      <td>2.6947054862976074</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-</div>
-
 </div>
 </div>
 

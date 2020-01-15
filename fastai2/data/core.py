@@ -40,8 +40,9 @@ class TfmdDL(DataLoader):
         for nm in _batch_tfms: kwargs[nm].setup(self)
 
     def _one_pass(self):
-        its = self.after_batch(self.do_batch([self.do_item(0)]))
-        self._device = find_device(its)
+        b = self.do_batch([self.do_item(0)])
+        if self.device is not None: b = to_device(b, self.device)
+        its = self.after_batch(b)
         self._n_inp = 1 if not isinstance(its, (list,tuple)) or len(its)==1 else len(its)-1
         self._types = mapped(type,its)
 
@@ -52,9 +53,9 @@ class TfmdDL(DataLoader):
     @delegates(DataLoader.new)
     def new(self, dataset=None, cls=None, **kwargs):
         res = super().new(dataset, cls, **kwargs)
-        if not hasattr(self, '_n_inp') or not hasattr(self, '_types') or not hasattr(self, '_device'):
+        if not hasattr(self, '_n_inp') or not hasattr(self, '_types'):
             self._one_pass()
-        res._n_inp,res._types,res._device = self._n_inp,self._types,self._device
+        res._n_inp,res._types = self._n_inp,self._types
         return res
 
     def before_iter(self):
@@ -64,7 +65,7 @@ class TfmdDL(DataLoader):
             f = getattr(self,nm)
             if isinstance(f,Pipeline): f.split_idx=split_idx
 
-    def decode(self, b): return self.before_batch.decode(self.after_batch.decode(self._retain_dl(b)))
+    def decode(self, b): return self.before_batch.decode(to_cpu(self.after_batch.decode(self._retain_dl(b))))
     def decode_batch(self, b, max_n=9, full=True): return self._decode_batch(self.decode(b), max_n, full)
 
     def _decode_batch(self, b, max_n=9, full=True):
@@ -94,15 +95,6 @@ class TfmdDL(DataLoader):
         show_results(*res, ctxs=ctxs, max_n=max_n, **kwargs)
 
     @property
-    def device(self):
-        if defaults.use_cuda==False: return 'cpu'
-        if not getattr(self, '_device', None): self._one_pass()
-        return self._device
-
-    @device.setter
-    def device(self, v): self._device = v
-
-    @property
     def n_inp(self):
         if hasattr(self.dataset, 'n_inp'): return self.dataset.n_inp
         if not hasattr(self, '_n_inp'): self._one_pass()
@@ -113,7 +105,10 @@ class TfmdDL(DataLoader):
 class DataBunch(GetAttr):
     "Basic wrapper around several `DataLoader`s."
     _default='train_dl'
-    def __init__(self, *dls, path='.', device=None): self.dls,self.path = dls,Path(path)
+    def __init__(self, *dls, path='.', device=None):
+        self.dls,self.path = dls,Path(path)
+        self.device = device
+
     def __getitem__(self, i): return self.dls[i]
     def new_empty(self):
         dls = [dl.new(dl.dataset.new_empty()) for dl in self.dls]
@@ -122,9 +117,19 @@ class DataBunch(GetAttr):
     train_dl,valid_dl = add_props(lambda i,x: x[i])
     train_ds,valid_ds = add_props(lambda i,x: x[i].dataset)
 
+    @property
+    def device(self): return self._device
+
+    @device.setter
+    def device(self, d):
+        for dl in self.dls: dl.device = d
+        self._device = d
+
     def cuda(self, device=None):
-        for dl in self.dls: dl.device = default_device() if device is None else device
+        self.device = default_device() if device is None else device
         return self
+
+    def cpu(self): return self.cuda(device=torch.device('cpu'))
 
     @classmethod
     @delegates(TfmdDL.__init__)
@@ -137,6 +142,7 @@ class DataBunch(GetAttr):
                train_ds="Training `Dataset`",
                valid_ds="Validation `Dataset`",
                cuda="Use `device` (defaults to `default_device()`)",
+               cpu="Use the cpu",
                new_empty="Create a new empty version of `self` with the same transforms",
                from_dblock="Create a databunch from a given `dblock`")
 
@@ -154,7 +160,9 @@ class FilteredBase:
     def _new(self, items, **kwargs): return super()._new(items, splits=self.splits, **kwargs)
     def subset(self): raise NotImplemented
 
-    def databunch(self, bs=64, val_bs=None, shuffle_train=True, n=None, path='.', dl_type=None, dl_kwargs=None, **kwargs):
+    def databunch(self, bs=64, val_bs=None, shuffle_train=True, n=None, path='.', dl_type=None, dl_kwargs=None, device=None,
+                  **kwargs):
+        if device is None: device=default_device()
         if dl_kwargs is None: dl_kwargs = [{}] * self.n_subsets
         ns = self.n_subsets-1
         bss = ([None]*(ns+1) if bs is None
@@ -164,7 +172,7 @@ class FilteredBase:
         if dl_type is None: dl_type = self._dl_type
         dls = [dl_type(self.subset(i), bs=b, shuffle=s, drop_last=s, n=n if i==0 else None, **kwargs, **dk)
                for i,(b,s,dk) in enumerate(zip(bss,shuffles,dl_kwargs))]
-        return DataBunch(*dls, path=path)
+        return DataBunch(*dls, path=path, device=device)
 
 FilteredBase.train,FilteredBase.valid = add_props(lambda i,x: x.subset(i))
 

@@ -15,7 +15,7 @@ class TransformBlock():
     def __init__(self, type_tfms=None, item_tfms=None, batch_tfms=None, dl_type=None, dbunch_kwargs=None):
         self.type_tfms  =            L(type_tfms)
         self.item_tfms  = ToTensor + L(item_tfms)
-        self.batch_tfms = Cuda     + L(batch_tfms)
+        self.batch_tfms =            L(batch_tfms)
         self.dl_type,self.dbunch_kwargs = dl_type,({} if dbunch_kwargs is None else dbunch_kwargs)
 
 # Cell

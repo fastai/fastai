@@ -28,7 +28,6 @@ Then, you can install fastai v2 with pip: `pip install fastai2`.
 
 Or you can use an editable install (which is probably the best approach at the moment, since fastai v2 is under heavy development):
 ``` 
-pip install packaging
 git clone https://github.com/fastai/fastai2
 cd fastai2
 pip install -e .[dev]

@@ -145,7 +145,7 @@ def _get_sz(x):
 @delegates()
 class CropPad(Transform):
     "Center crop or pad an image to `size`"
-    order=5
+    order=0
     def __init__(self, size, pad_mode=PadMode.Zeros, **kwargs):
         super().__init__(**kwargs)
         self.size,self.pad_mode = _process_sz(size),pad_mode
@@ -160,7 +160,7 @@ class CropPad(Transform):
 class RandomCrop(RandTransform):
     "Randomly crop an image to `size`"
     split_idx = None
-    order = 6
+    order = 1
     def __init__(self, size, **kwargs):
         super().__init__(**kwargs)
         self.size = _process_sz(size)
@@ -189,7 +189,7 @@ mk_class('ResizeMethod', **{o:o.lower() for o in ['Squish', 'Crop', 'Pad']},
 @delegates()
 class Resize(RandTransform):
     split_idx = None
-    mode,mode_mask,order,final_size = Image.BILINEAR,Image.NEAREST,10,None
+    mode,mode_mask,order,final_size = Image.BILINEAR,Image.NEAREST,1,None
     "Resize image to `size` using `method`"
     def __init__(self, size, method=ResizeMethod.Squish, pad_mode=PadMode.Reflection,
                  resamples=(Image.BILINEAR, Image.NEAREST), **kwargs):

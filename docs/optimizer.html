@@ -112,7 +112,7 @@ summary: "Define the general fastai optimizer and the variants"
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><a href="/torch_core#params"><code>params</code></a> will be used to create the <code>param_groups</code> of the optimizer. If it's a collection (or a generator) of parameters, it will be a <code>L</code> containing one <code>L</code> with all the parameters. To define multiple parameter groups <a href="/torch_core#params"><code>params</code></a> should be passed as a collection (or a generator) of <code>L</code>s.
-{% include note.html content="In PyTorch, <code>model.parameters()</code> returns a generator with all the parameters, that you can directly pass to <code>Optimizer</code>." %}</p>
+{% include note.html content='In PyTorch, <code>model.parameters()</code> returns a generator with all the parameters, that you can directly pass to <code>Optimizer</code>.' %}</p>
 
 </div>
 </div>
@@ -354,7 +354,7 @@ summary: "Define the general fastai optimizer and the variants"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>{% include warning.html content="Weight decay and L2 regularization is the same thing for basic SGD, but for more complex optimizers, they are very different." %}</p>
+<p>{% include warning.html content='Weight decay and L2 regularization is the same thing for basic SGD, but for more complex optimizers, they are very different.' %}</p>
 
 </div>
 </div>
@@ -1257,7 +1257,7 @@ That state can then be used by any stepper.  The best example is a momentum calc
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Adam was introduced by Diederik P. Kingma and Jimmy Ba in <a href="https://arxiv.org/abs/1412.6980">Adam: A Method for Stochastic Optimization</a>. For consistency accross optimizers, we renamed <code>beta1</code> and <code>beta2</code> in the paper to <code>mom</code> and  <code>sqr_mom</code>. Note that our defaults also differ from the paper (0.99 for <code>sqr_mom</code> or <code>beta2</code>, 1e-5 for <code>eps</code>). Those values seem to be better from our experiments in a wide range of situations.</p>
 <p>Optional weight decay of <code>wd</code> is applied, as true weight decay (decay the weights directly) if <code>decouple_wd=True</code> else as L2 regularization (add the decay to the gradients).
-{% include note.html content="Don't forget that <code>eps</code> is an hyper-parameter you can change. Some models won't train without a very high <code>eps</code> like 0.1 (intuitively, the higher <code>eps</code> is, the closer we are to normal SGD). The usual default of 1e-8 is often too extreme in the sense we don't manage to get as good results as with SGD. " %}</p>
+{% include note.html content='Don&#8217;t forget that <code>eps</code> is an hyper-parameter you can change. Some models won&#8217;t train without a very high <code>eps</code> like 0.1 (intuitively, the higher <code>eps</code> is, the closer we are to normal SGD). The usual default of 1e-8 is often too extreme in the sense we don&#8217;t manage to get as good results as with SGD. ' %}</p>
 
 </div>
 </div>
