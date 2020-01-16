@@ -140,3 +140,10 @@ class MixedPrecision(Callback):
 def to_fp16(self:Learner, **kwargs):
     self.add_cbs([ModelToHalf(), MixedPrecision(**kwargs)])
     return self
+
+# Cell
+@patch
+def to_fp32(self: Learner):
+    if hasattr(self, 'model_to_half'):   self.remove_cb(self.model_to_half)
+    if hasattr(self, 'mixed_precision'): self.remove_cb(self.mixed_precision)
+    return self

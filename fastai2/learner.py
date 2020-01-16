@@ -3,7 +3,7 @@
 __all__ = ['CancelFitException', 'CancelEpochException', 'CancelTrainException', 'CancelValidException',
            'CancelBatchException', 'Callback', 'TrainEvalCallback', 'GatherPredsCallback', 'event', 'replacing_yield',
            'mk_metric', 'save_model', 'load_model', 'Learner', 'VerboseCallback', 'Metric', 'AvgMetric', 'AvgLoss',
-           'AvgSmoothLoss', 'Recorder']
+           'AvgSmoothLoss', 'Recorder', 'load_learner']
 
 # Cell
 from .data.all import *
@@ -583,6 +583,14 @@ def export(self:Learner, fname='export.pkl'):
     self.create_opt()
     self.opt.load_state_dict(state)
     self.dbunch = old_dbunch
+
+# Cell
+def load_learner(fname, cpu=True):
+    "Load a `Learner` object in `fname`, optionally putting it on the `cpu`"
+    res = torch.load(fname, map_location='cpu' if cpu else None)
+    if hasattr(res, 'to_fp32'): res = res.to_fp32()
+    if cpu: res.dbunch.cpu()
+    return res
 
 # Cell
 @patch

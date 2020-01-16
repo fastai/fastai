@@ -112,7 +112,7 @@ class DataBunch(GetAttr):
     def __getitem__(self, i): return self.dls[i]
     def new_empty(self):
         dls = [dl.new(dl.dataset.new_empty()) for dl in self.dls]
-        return type(self)(*dls)
+        return type(self)(*dls, path=self.path, device=self.device)
 
     train_dl,valid_dl = add_props(lambda i,x: x[i])
     train_ds,valid_ds = add_props(lambda i,x: x[i].dataset)
