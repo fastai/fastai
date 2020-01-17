@@ -301,7 +301,13 @@ class TensorImage(TensorImageBase): pass
 class TensorImageBW(TensorImage): _show_args = ArrayImageBW._show_args
 
 # Cell
-class TensorMask(TensorImageBase): _show_args = ArrayMask._show_args
+class TensorMask(TensorImageBase):
+    _show_args = ArrayMask._show_args
+
+    def show(self, ctx=None, **kwargs):
+        codes = self.get_meta('codes')
+        if codes is not None: kwargs = merge({'vmin': 1, 'vmax': len(codes)}, kwargs)
+        return super().show(ctx=ctx, **kwargs)
 
 # Cell
 @patch

@@ -98,11 +98,10 @@ class SegmentationDataBunch(DataBunch):
     @delegates(DataBunch.from_dblock)
     def from_label_func(cls, path, fnames, label_func, valid_pct=0.2, seed=None, codes=None, **kwargs):
         "Create from list of `fnames` in `path`s with `label_func`."
-        dblock = DataBlock(blocks=(ImageBlock, ImageBlock(cls=PILMask)),
+        dblock = DataBlock(blocks=(ImageBlock, MaskBlock(codes=codes)),
                            splitter=RandomSplitter(valid_pct, seed=seed),
                            get_y=label_func)
         res = cls.from_dblock(dblock, fnames, path=path, **kwargs)
-        if codes is not None: res.vocab = codes
         return res
 
 # Cell
@@ -153,7 +152,8 @@ def bb_pad(samples, pad_idx=0):
 def ImageBlock(cls=PILImage): return TransformBlock(type_tfms=cls.create, batch_tfms=IntToFloatTensor)
 
 # Cell
-MaskBlock = TransformBlock(type_tfms=PILMask.create, batch_tfms=IntToFloatTensor)
+def MaskBlock(codes=None):
+    return TransformBlock(type_tfms=PILMask.create, item_tfms=AddMaskCodes(codes=codes), batch_tfms=IntToFloatTensor)
 
 # Cell
 PointBlock = TransformBlock(type_tfms=TensorPoint.create, item_tfms=PointScaler)
