@@ -174,11 +174,12 @@ def check_perf():
     except: print("Can't check")
 
     # Pillow-SIMD check
-    print("\n*** Pillow-SIMD status")
-    if re.search(r'\.post\d+', Image.PILLOW_VERSION):
-        print(f"✔ Running Pillow-SIMD {Image.PILLOW_VERSION}")
-    else:
-        print(f"✘ Running Pillow {Image.PILLOW_VERSION}; It's recommended you install Pillow-SIMD to speed up image resizing and other operations. See https://docs.fast.ai/performance.html#pillow-simd")
+    #TODO: same as above
+    #print("\n*** Pillow-SIMD status")
+    #if re.search(r'\.post\d+', Image.PILLOW_VERSION):
+    #    print(f"✔ Running Pillow-SIMD {Image.PILLOW_VERSION}")
+    #else:
+    #    print(f"✘ Running Pillow {Image.PILLOW_VERSION}; It's recommended you install Pillow-SIMD to speed up image resizing and other operations. See https://docs.fast.ai/performance.html#pillow-simd")
 
     # CUDA version check
     # compatibility table: k: min nvidia ver is required for v: cuda ver
