@@ -158,17 +158,20 @@ def check_perf():
 
     # libjpeg_turbo check
     print("\n*** libjpeg-turbo status")
-    if version.parse(Image.PILLOW_VERSION) >= version.parse("5.3.9"):
-        if features.check_feature('libjpeg_turbo'):
-            print("✔ libjpeg-turbo is on")
+    #TODO: do some workarounf for later versions of Pillow
+    try:
+        if version.parse(Image.PILLOW_VERSION) >= version.parse("5.3.9"):
+            if features.check_feature('libjpeg_turbo'):
+                print("✔ libjpeg-turbo is on")
+            else:
+                print("✘ libjpeg-turbo is not on. It's recommended you install libjpeg-turbo to speed up JPEG decoding. See https://docs.fast.ai/performance.html#libjpeg-turbo")
         else:
-            print("✘ libjpeg-turbo is not on. It's recommended you install libjpeg-turbo to speed up JPEG decoding. See https://docs.fast.ai/performance.html#libjpeg-turbo")
-    else:
-        print(f"❓ libjpeg-turbo's status can't be derived - need Pillow(-SIMD)? >= 5.4.0 to tell, current version {Image.PILLOW_VERSION}")
-        # XXX: remove this check/note once Pillow and Pillow-SIMD 5.4.0 is available
-        pillow_ver_5_4_is_avail = pypi_module_version_is_available("Pillow", "5.4.0")
-        if pillow_ver_5_4_is_avail == False:
-            print("5.4.0 is not yet available, other than the dev version on github, which can be installed via pip from git+https://github.com/python-pillow/Pillow. See https://docs.fast.ai/performance.html#libjpeg-turbo")
+            print(f"❓ libjpeg-turbo's status can't be derived - need Pillow(-SIMD)? >= 5.4.0 to tell, current version {Image.PILLOW_VERSION}")
+            # XXX: remove this check/note once Pillow and Pillow-SIMD 5.4.0 is available
+            pillow_ver_5_4_is_avail = pypi_module_version_is_available("Pillow", "5.4.0")
+            if pillow_ver_5_4_is_avail == False:
+                print("5.4.0 is not yet available, other than the dev version on github, which can be installed via pip from git+https://github.com/python-pillow/Pillow. See https://docs.fast.ai/performance.html#libjpeg-turbo")
+    except: print("Can't check")
 
     # Pillow-SIMD check
     print("\n*** Pillow-SIMD status")
