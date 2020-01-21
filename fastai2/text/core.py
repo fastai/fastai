@@ -192,7 +192,7 @@ def _join_texts(df, mark_fields=False):
 def tokenize_df(df, text_cols, n_workers=defaults.cpus, rules=None, mark_fields=None,
                 tok_func=SpacyTokenizer, res_col_name="text", **tok_kwargs):
     "Tokenize texts in `df[text_cols]` in parallel using `n_workers`"
-    text_cols = L(df.columns[c] if isinstance(c, int) else c for c in L(text_cols))
+    text_cols = [df.columns[c] if isinstance(c, int) else c for c in L(text_cols)]
     #mark_fields defaults to False if there is one column of texts, True if there are multiple
     if mark_fields is None: mark_fields = len(text_cols)>1
     rules = L(ifnone(rules, defaults.text_proc_rules.copy()))
