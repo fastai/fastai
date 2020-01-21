@@ -43,12 +43,27 @@ class Numericalize(Transform):
 def _maybe_first(o): return o[0] if isinstance(o, tuple) else o
 
 # Cell
+def _get_tokenizer(ds):
+    tok = getattr(ds, 'tokenizer', None)
+    if isinstance(tok, Tokenizer): return tok
+    if isinstance(tok, (list,L)):
+        for t in tok:
+            if isinstance(t, Tokenizer): return t
+
+# Cell
+def _get_lengths(ds):
+    tok = _get_tokenizer(ds)
+    if tok is None: return
+    return tok.get_lengths(ds.items)
+
+# Cell
 #TODO: add backward
 @delegates()
 class LMDataLoader(TfmdDL):
     def __init__(self, dataset, lens=None, cache=2, bs=64, seq_len=72, num_workers=0, **kwargs):
         self.items = ReindexCollection(dataset, cache=cache, tfm=_maybe_first)
         self.seq_len = seq_len
+        if lens is None: lens = _get_lengths(dataset)
         if lens is None: lens = [len(o) for o in self.items]
         self.lens = ReindexCollection(lens, idxs=self.items.idxs)
         # The "-1" is to allow for final label, we throw away the end that's less than bs
@@ -128,6 +143,7 @@ class SortedDL(TfmdDL):
     def __init__(self, dataset, sort_func=None, res=None, **kwargs):
         super().__init__(dataset, **kwargs)
         self.sort_func = _default_sort if sort_func is None else sort_func
+        if res is None and self.sort_func == _default_sort: res = _get_lengths(dataset)
         self.res = [self.sort_func(self.do_item(i)) for i in range_of(self.dataset)] if res is None else res
         self.idx_max = np.argmax(self.res)
 

@@ -3,9 +3,9 @@
 __all__ = ['UNK', 'PAD', 'BOS', 'EOS', 'FLD', 'TK_REP', 'TK_WREP', 'TK_UP', 'TK_MAJ', 'spec_add_spaces',
            'rm_useless_spaces', 'replace_rep', 'replace_wrep', 'fix_html', 'replace_all_caps', 'replace_maj',
            'lowercase', 'replace_space', 'BaseTokenizer', 'SpacyTokenizer', 'TokenizeBatch', 'tokenize1',
-           'parallel_tokenize', 'fn_counter_pkl', 'tokenize_folder', 'read_tokenized_file', 'tokenize_files',
-           'tokenize_df', 'tokenize_csv', 'load_tokenized_csv', 'get_tokenizer', 'Tokenizer', 'eu_langs',
-           'SentencePieceTokenizer']
+           'parallel_tokenize', 'fn_counter_pkl', 'fn_lengths_pkl', 'tokenize_folder', 'read_tokenized_file',
+           'tokenize_files', 'tokenize_df', 'tokenize_csv', 'load_tokenized_csv', 'get_tokenizer', 'Tokenizer',
+           'eu_langs', 'SentencePieceTokenizer']
 
 # Cell
 from ..torch_basics import *
@@ -143,6 +143,7 @@ def parallel_tokenize(items, tok_func, rules, as_gen=False, n_workers=defaults.c
 
 # Cell
 fn_counter_pkl = 'counter.pkl'
+fn_lengths_pkl = 'lengths.pkl'
 
 # Cell
 def tokenize_folder(path, extensions=None, folders=None, output_dir=None, n_workers=defaults.cpus,
@@ -153,12 +154,14 @@ def tokenize_folder(path, extensions=None, folders=None, output_dir=None, n_work
     output_dir = Path(ifnone(output_dir, path.parent/f'{path.name}_tok'))
     rules = partial(Path.read, encoding=encoding) + L(ifnone(rules, defaults.text_proc_rules.copy()))
 
-    counter = Counter()
+    lengths,counter = {},Counter()
     for i,tok in parallel_tokenize(fnames, tok_func, rules, as_gen=True, n_workers=n_workers, **tok_kwargs):
         out = output_dir/fnames[i].relative_to(path)
         out.write(' '.join(tok))
+        lengths[str(fnames[i].relative_to(path))] = len(tok)
         counter.update(tok)
 
+    (output_dir/fn_lengths_pkl).save(lengths)
     (output_dir/fn_counter_pkl).save(counter)
 
 # Cell
@@ -172,12 +175,15 @@ def tokenize_files(files, output_dir, output_names=None, n_workers=defaults.cpus
     output_dir = Path(output_dir)
     rules = partial(Path.read, encoding=encoding) + L(ifnone(rules, defaults.text_proc_rules.copy()))
 
+    lengths = (output_dir/fn_lengths_pkl).load() if (output_dir/fn_lengths_pkl).exists() else {}
     counter = (output_dir/fn_counter_pkl).load() if (output_dir/fn_counter_pkl).exists() else Counter()
     for i,tok in parallel_tokenize(files, tok_func, rules, as_gen=True, n_workers=n_workers, **tok_kwargs):
         out = output_dir/output_names[i]
         out.write(' '.join(tok))
+        lengths[output_names[i]] = len(tok)
         counter.update(tok)
 
+    (output_dir/fn_lengths_pkl).save(lengths)
     (output_dir/fn_counter_pkl).save(counter)
 
 # Cell
@@ -203,6 +209,7 @@ def tokenize_df(df, text_cols, n_workers=defaults.cpus, rules=None, mark_fields=
     other_cols = df.columns[~df.columns.isin(text_cols)]
     res = df[other_cols].copy()
     res[res_col_name] = outputs
+    res[f'{res_col_name}_length'] = [len(o) for o in outputs]
     return res,Counter(outputs.concat())
 
 # Cell
@@ -241,8 +248,8 @@ def get_tokenizer(tok_func=SpacyTokenizer, **kwargs):
 # Cell
 class Tokenizer(Transform):
     input_types = (str, list, L, tuple, Path)
-    def __init__(self, tokenizer, rules=None, counter=None, mode=None):
-        store_attr(self, 'tokenizer,counter,mode')
+    def __init__(self, tokenizer, rules=None, counter=None, lengths=None, mode=None):
+        store_attr(self, 'tokenizer,counter,lengths,mode')
         self.rules = defaults.text_proc_rules if rules is None else rules
 
     @classmethod
@@ -258,7 +265,8 @@ class Tokenizer(Transform):
         path = Path(path)
         output_dir = Path(ifnone(kwargs.get('output_dir'), path.parent/f'{path.name}_tok'))
         if not output_dir.exists(): tokenize_folder(path, **kwargs)
-        res = cls(get_tokenizer(tok_func, **kwargs), counter=(output_dir/fn_counter_pkl).load(), mode='folder')
+        res = cls(get_tokenizer(tok_func, **kwargs), counter=(output_dir/fn_counter_pkl).load(),
+                  lengths=(output_dir/fn_lengths_pkl).load(), mode='folder')
         res.path,res.output_dir = path,output_dir
         return res
 
@@ -277,6 +285,11 @@ class Tokenizer(Transform):
     def encodes(self, o:str): return self._tokenize1(o)
     def _tokenize1(self, o): return first(self.tokenizer([compose(*self.rules)(o)]))
 
+    def get_lengths(self, items):
+        if self.lengths is None: return None
+        if self.mode == 'folder': return [self.lengths[str(Path(i).relative_to(self.path))] for i in items]
+        if self.mode == 'df': return items['text_length'].values
+
 # Cell
 eu_langs = ["bg", "cs", "da", "de", "el", "en", "es", "et", "fi", "fr", "ga", "hr", "hu",
             "it","lt","lv","mt","nl","pl","pt","ro","sk","sl","sv"] # all European langs
@@ -292,7 +305,7 @@ class SentencePieceTokenizer():#TODO: pass the special tokens symbol to sp
         self.sp_model,self.cache_dir = sp_model,Path(cache_dir)
         self.vocab_sz,self.max_vocab_sz,self.model_type = vocab_sz,max_vocab_sz,model_type
         self.char_coverage = ifnone(char_coverage, 0.99999 if lang in eu_langs else 0.9998)
-        self.special_toks = ifnone(special_toks, defaults.text_spec_tok)
+        self.special_toks = ifnone(special_toks, defaults.text_spec_todsrc.tokenizer[1].lengthsk)
         if sp_model is None: self.tok = None
         else:
             self.tok = SentencePieceProcessor()
