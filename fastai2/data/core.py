@@ -312,5 +312,5 @@ def test_set(dsrc, test_items, rm_tfms=None):
 @patch
 def test_dl(self:DataBunch, test_items, rm_type_tfms=None, **kwargs):
     "Create a test dataloader from `test_items` using validation transforms of `dbunch`"
-    test_ds = test_set(self.valid_ds, test_items, rm_tfms=rm_type_tfms) if isinstance(dbunch.valid_ds, DataSource) else test_items
+    test_ds = test_set(self.valid_ds, test_items, rm_tfms=rm_type_tfms) if isinstance(self.valid_ds, DataSource) else test_items
     return self.valid_dl.new(test_ds, **kwargs)
