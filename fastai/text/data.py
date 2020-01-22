@@ -426,8 +426,6 @@ def train_sentencepiece(texts:Collection[str], path:PathOrStr, pre_rules: ListRu
     raw_text_path = cache_dir / 'all_text.out'
     with open(raw_text_path, 'w', encoding=enc) as f: f.write("\n".join(texts))
     spec_tokens = ['\u2581'+s for s in defaults.text_spec_tok]
-    cache_dir = cache_dir/'spm'
-    os.makedirs(cache_dir, exist_ok=True)
     SentencePieceTrainer.Train(" ".join([
         f"--input={raw_text_path} --max_sentence_length={max_sentence_len}",
         f"--character_coverage={ifnone(char_coverage, 0.99999 if lang in full_char_coverage_langs else 0.9998)}",
