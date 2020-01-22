@@ -25,3 +25,9 @@ class TabularDataBunch(DataBunch):
                 valid_idx=None, **kwargs):
         return cls.from_df(pd.read_csv(csv), path, procs, cat_names=cat_names, cont_names=cont_names, y_names=y_names,
                            block_y=block_y, valid_idx=valid_idx, **kwargs)
+
+    @delegates(TabDataLoader.__init__)
+    def test_dl(self, test_items, rm_type_tfms=None, **kwargs):
+        to = self.train_ds.new(test_items)
+        to.process()
+        return self.valid_dl.new(to, **kwargs)
