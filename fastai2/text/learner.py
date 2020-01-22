@@ -170,7 +170,7 @@ def text_classifier_learner(dbunch, arch, seq_len=72, config=None, pretrained=Tr
     model = get_text_classifier(arch, len(vocab), get_c(dbunch), seq_len=seq_len, config=config,
                                 drop_mult=drop_mult, lin_ftrs=lin_ftrs, ps=ps, max_len=max_len)
     meta = _model_meta[arch]
-    learn = TextLearner(dbunch, model, loss_func=CrossEntropyLossFlat(), splitter=meta['split_clas'], **kwargs)
+    learn = TextLearner(dbunch, model, splitter=meta['split_clas'], **kwargs)
     if pretrained:
         if 'url' not in meta:
             warn("There are no pretrained weights for that architecture yet!")
