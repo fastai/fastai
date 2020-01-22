@@ -149,7 +149,7 @@ class DataBunch(GetAttr):
 # Cell
 class FilteredBase:
     "Base class for lists with subsets"
-    _dl_type = TfmdDL
+    _dl_type,_dbunch_type = TfmdDL,DataBunch
     def __init__(self, *args, dl_type=None, **kwargs):
         if dl_type is not None: self._dl_type = dl_type
         self.databunch = delegates(self._dl_type.__init__)(self.databunch)
@@ -172,7 +172,7 @@ class FilteredBase:
         if dl_type is None: dl_type = self._dl_type
         dls = [dl_type(self.subset(i), bs=b, shuffle=s, drop_last=s, n=n if i==0 else None, **kwargs, **dk)
                for i,(b,s,dk) in enumerate(zip(bss,shuffles,dl_kwargs))]
-        return DataBunch(*dls, path=path, device=device)
+        return self._dbunch_type(*dls, path=path, device=device)
 
 FilteredBase.train,FilteredBase.valid = add_props(lambda i,x: x.subset(i))
 

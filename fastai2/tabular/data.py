@@ -31,3 +31,5 @@ class TabularDataBunch(DataBunch):
         to = self.train_ds.new(test_items)
         to.process()
         return self.valid_dl.new(to, **kwargs)
+
+Tabular._dbunch_type = TabularDataBunch
