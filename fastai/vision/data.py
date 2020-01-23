@@ -445,7 +445,7 @@ def _db_pre_transform(self, train_tfm:List[Callable], valid_tfm:List[Callable]):
     self.valid_ds.x.after_open = compose(valid_tfm)
     return self
 
-def _presize(self, size:int, val_xtra_size:int=32, scale:Tuple[float]=(0.08, 1.0), ratio:Tuple[float]=(0.75, 4./3.),
+def _presize(self, size:int, val_xtra_size:int=32, scale:Tuple[float]=(0.8, 1.0), ratio:Tuple[float]=(0.75, 4./3.),
              interpolation:int=2):
     "Resize images to `size` using `RandomResizedCrop`, passing along `kwargs` to train transform"
     return self.pre_transform(
