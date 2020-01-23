@@ -110,7 +110,7 @@ def create_cnn(data, base_arch, **kwargs):
     return cnn_learner(data, base_arch, **kwargs)
 
 def unet_learner(data:DataBunch, arch:Callable, pretrained:bool=True, blur_final:bool=True,
-                 norm_type:Optional[NormType]=NormType, split_on:Optional[SplitFuncOrIdxList]=None, blur:bool=False,
+                 norm_type:Optional[NormType]=None, split_on:Optional[SplitFuncOrIdxList]=None, blur:bool=False,
                  self_attention:bool=False, y_range:Optional[Tuple[float,float]]=None, last_cross:bool=True,
                  bottle:bool=False, cut:Union[int,Callable]=None, **learn_kwargs:Any)->Learner:
     "Build Unet learner from `data` and `arch`."
