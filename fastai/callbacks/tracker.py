@@ -101,7 +101,7 @@ class SaveModelCallback(TrackerCallback):
 
     def on_train_end(self, **kwargs):
         "Load the best model."
-        if self.every=="improvement":
+        if self.every=="improvement" and os.path.isfile(self.path/self.model_dir/f'{self.name}.pth'):
             self.learn.load(f'{self.name}', purge=False)
 
 class ReduceLROnPlateauCallback(TrackerCallback):
