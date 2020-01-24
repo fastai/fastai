@@ -4,7 +4,7 @@ title: Tabular with rapids
 keywords: fastai
 sidebar: home_sidebar
 
-summary: "Basic functions to preprocess tabular data before assembling it in a [`DataBunch`](/data.core.html#DataBunch) on the GPU."
+summary: "Basic functions to preprocess tabular data before assembling it in a [`DataLoaders`](/data.core.html#DataLoaders) on the GPU."
 ---
 <!--
 
@@ -636,7 +636,7 @@ Wall time: 798 ms
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">splits</span> <span class="o">=</span> <span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">splits</span><span class="p">[</span><span class="mi">0</span><span class="p">]))),</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">splits</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="mi">10000</span><span class="p">))]</span>
-<span class="n">dsrc</span> <span class="o">=</span> <span class="n">DataSource</span><span class="p">(</span><span class="n">to</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">,</span> <span class="n">tfms</span><span class="o">=</span><span class="p">[</span><span class="kc">None</span><span class="p">])</span>
+<span class="n">dsrc</span> <span class="o">=</span> <span class="n">Datasets</span><span class="p">(</span><span class="n">to</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">,</span> <span class="n">tfms</span><span class="o">=</span><span class="p">[</span><span class="kc">None</span><span class="p">])</span>
 <span class="n">dl</span> <span class="o">=</span> <span class="n">TabDataLoader</span><span class="p">(</span><span class="n">to</span><span class="o">.</span><span class="n">valid</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 </pre></div>
 

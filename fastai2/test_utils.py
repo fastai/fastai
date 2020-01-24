@@ -20,7 +20,7 @@ def synth_dbunch(a=2, b=3, bs=16, n_train=10, n_valid=2, cuda=False):
     device = default_device() if cuda else None
     train_dl = TfmdDL(train_ds, bs=bs, shuffle=True, num_workers=0)
     valid_dl = TfmdDL(valid_ds, bs=bs, num_workers=0)
-    return DataBunch(train_dl, valid_dl, device=device)
+    return DataLoaders(train_dl, valid_dl, device=device)
 
 # Cell
 class RegModel(Module):

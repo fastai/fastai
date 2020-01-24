@@ -18,9 +18,9 @@ def using_attr(f, attr):
     return partial(_using_attr, f, attr)
 
 # Cell
-class ImageDataBunch(DataBunch):
+class ImageDataBunch(DataLoaders):
     @classmethod
-    @delegates(DataBunch.from_dblock)
+    @delegates(DataLoaders.from_dblock)
     def from_folder(cls, path, train='train', valid='valid', valid_pct=None, seed=None, vocab=None, **kwargs):
         "Create from imagenet style dataset in `path` with `train`,`valid`,`test` subfolders (or provide `valid_pct`)."
         splitter = GrandparentSplitter(train_name=train, valid_name=valid) if valid_pct is None else RandomSplitter(valid_pct, seed=seed)
@@ -31,7 +31,7 @@ class ImageDataBunch(DataBunch):
         return cls.from_dblock(dblock, path, path=path, **kwargs)
 
     @classmethod
-    @delegates(DataBunch.from_dblock)
+    @delegates(DataLoaders.from_dblock)
     def from_path_func(cls, path, fnames, label_func, valid_pct=0.2, seed=None, **kwargs):
         "Create from list of `fnames` in `path`s with `label_func`."
         dblock = DataBlock(blocks=(ImageBlock, CategoryBlock),
@@ -40,26 +40,26 @@ class ImageDataBunch(DataBunch):
         return cls.from_dblock(dblock, fnames, path=path, **kwargs)
 
     @classmethod
-    @delegates(DataBunch.from_dblock)
+    @delegates(DataLoaders.from_dblock)
     def from_name_func(cls, path, fnames, label_func, valid_pct=0.2, seed=None, **kwargs):
         "Create from name attrs in list of `fnames` in `path`s with `label_func`"
         f = using_attr(label_func, 'name')
         return cls.from_path_func(path, fnames, f, valid_pct=valid_pct, seed=seed, **kwargs)
 
     @classmethod
-    @delegates(DataBunch.from_dblock)
+    @delegates(DataLoaders.from_dblock)
     def from_path_re(cls, path, fnames, pat, **kwargs):
         "Create from list of `fnames` in `path`s with re expression `pat`."
         return cls.from_path_func(path, fnames, RegexLabeller(pat), **kwargs)
 
     @classmethod
-    @delegates(DataBunch.from_dblock)
+    @delegates(DataLoaders.from_dblock)
     def from_name_re(cls, path, fnames, pat, **kwargs):
         "Create from name attrs in list of `fnames` in `path`s with re expression `pat`."
         return cls.from_name_func(path, fnames, RegexLabeller(pat), **kwargs)
 
     @classmethod
-    @delegates(DataBunch.from_dblock)
+    @delegates(DataLoaders.from_dblock)
     def from_df(cls, df, path='.', valid_pct=0.2, seed=None, fn_col=0, folder=None, suff='', label_col=1, label_delim=None,
                 y_block=None, valid_col=None, **kwargs):
         pref = f'{Path(path) if folder is None else Path(path)/folder}{os.path.sep}'
@@ -79,7 +79,7 @@ class ImageDataBunch(DataBunch):
         return cls.from_df(df, path=path, **kwargs)
 
     @classmethod
-    @delegates(DataBunch.from_dblock)
+    @delegates(DataLoaders.from_dblock)
     def from_lists(cls, path, fnames, labels, valid_pct=0.2, seed:int=None, y_block=None, **kwargs):
         "Create from list of `fnames` in `path`."
         if y_block is None:
@@ -93,9 +93,9 @@ ImageDataBunch.from_csv = delegates(to=ImageDataBunch.from_df)(ImageDataBunch.fr
 ImageDataBunch.from_path_re = delegates(to=ImageDataBunch.from_path_func)(ImageDataBunch.from_path_re)
 
 # Cell
-class SegmentationDataBunch(DataBunch):
+class SegmentationDataBunch(DataLoaders):
     @classmethod
-    @delegates(DataBunch.from_dblock)
+    @delegates(DataLoaders.from_dblock)
     def from_label_func(cls, path, fnames, label_func, valid_pct=0.2, seed=None, codes=None, **kwargs):
         "Create from list of `fnames` in `path`s with `label_func`."
         dblock = DataBlock(blocks=(ImageBlock, MaskBlock(codes=codes)),

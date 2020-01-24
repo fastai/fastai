@@ -64,7 +64,7 @@ summary: "Fine-tuning a pretrained model on the pets dataset."
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>We use the data block API to get our data in a <a href="/data.core#DataBunch"><code>DataBunch</code></a>. Here our inputs are images and our targets categories. The images are all in a folder, so we use <a href="/data.transforms#get_image_files"><code>get_image_files</code></a> to collect them all, a <a href="/data.transforms#RandomSplitter"><code>RandomSplitter</code></a> to split between training and validation, then we get the label from the filenames with a regex labeller.</p>
+<p>We use the data block API to get our data in a <a href="/data.core#DataLoaders"><code>DataLoaders</code></a>. Here our inputs are images and our targets categories. The images are all in a folder, so we use <a href="/data.transforms#get_image_files"><code>get_image_files</code></a> to collect them all, a <a href="/data.transforms#RandomSplitter"><code>RandomSplitter</code></a> to split between training and validation, then we get the label from the filenames with a regex labeller.</p>
 
 </div>
 </div>
@@ -87,7 +87,7 @@ summary: "Fine-tuning a pretrained model on the pets dataset."
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The pets object by itself is empty: it only containes the functions that will help us gather the data. We have to call its <code>datasource</code> or <code>databunch</code> method to get a <a href="/data.core#DataSource"><code>DataSource</code></a> or a <a href="/data.core#DataBunch"><code>DataBunch</code></a>. The first thing we need to pass to either of those functions is the source, here the folder where all the images are. Then we specify some dataset transforms (a random resized crop to 300 by 300) and some dataloader transforms (basic data augmentation on the GPU and normalization using the imagenet statistics).</p>
+<p>The pets object by itself is empty: it only containes the functions that will help us gather the data. We have to call its <code>datasets</code> or <code>dataloaders</code> method to get a <a href="/data.core#Datasets"><code>Datasets</code></a> or a <a href="/data.core#DataLoaders"><code>DataLoaders</code></a>. The first thing we need to pass to either of those functions is the source, here the folder where all the images are. Then we specify some dataset transforms (a random resized crop to 300 by 300) and some dataloader transforms (basic data augmentation on the GPU and normalization using the imagenet statistics).</p>
 
 </div>
 </div>
@@ -97,7 +97,7 @@ summary: "Fine-tuning a pretrained model on the pets dataset."
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dbunch</span> <span class="o">=</span> <span class="n">pets</span><span class="o">.</span><span class="n">databunch</span><span class="p">(</span><span class="n">untar_data</span><span class="p">(</span><span class="n">URLs</span><span class="o">.</span><span class="n">PETS</span><span class="p">)</span><span class="o">/</span><span class="s2">&quot;images&quot;</span><span class="p">,</span> <span class="n">item_tfms</span><span class="o">=</span><span class="n">RandomResizedCrop</span><span class="p">(</span><span class="mi">460</span><span class="p">,</span> <span class="n">min_scale</span><span class="o">=</span><span class="mf">0.75</span><span class="p">),</span> <span class="n">bs</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dbunch</span> <span class="o">=</span> <span class="n">pets</span><span class="o">.</span><span class="n">dataloaders</span><span class="p">(</span><span class="n">untar_data</span><span class="p">(</span><span class="n">URLs</span><span class="o">.</span><span class="n">PETS</span><span class="p">)</span><span class="o">/</span><span class="s2">&quot;images&quot;</span><span class="p">,</span> <span class="n">item_tfms</span><span class="o">=</span><span class="n">RandomResizedCrop</span><span class="p">(</span><span class="mi">460</span><span class="p">,</span> <span class="n">min_scale</span><span class="o">=</span><span class="mf">0.75</span><span class="p">),</span> <span class="n">bs</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span>
                         <span class="n">batch_tfms</span><span class="o">=</span><span class="p">[</span><span class="o">*</span><span class="n">aug_transforms</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">299</span><span class="p">,</span> <span class="n">max_warp</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">Normalize</span><span class="o">.</span><span class="n">from_stats</span><span class="p">(</span><span class="o">*</span><span class="n">imagenet_stats</span><span class="p">)])</span>
 </pre></div>
 
@@ -248,7 +248,7 @@ summary: "Fine-tuning a pretrained model on the pets dataset."
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Then we can call <a href="/vision.learner#cnn_learner"><code>cnn_learner</code></a> to build a <a href="/learner#Learner"><code>Learner</code></a> from our <a href="/data.core#DataBunch"><code>DataBunch</code></a>. Since we are using a pretrained model, it comes automatically frozen, which means only the head is going to be trained.</p>
+<p>Then we can call <a href="/vision.learner#cnn_learner"><code>cnn_learner</code></a> to build a <a href="/learner#Learner"><code>Learner</code></a> from our <a href="/data.core#DataLoaders"><code>DataLoaders</code></a>. Since we are using a pretrained model, it comes automatically frozen, which means only the head is going to be trained.</p>
 
 </div>
 </div>
@@ -631,7 +631,7 @@ summary: "Fine-tuning a pretrained model on the pets dataset."
                    <span class="n">splitter</span><span class="o">=</span><span class="n">RandomSplitter</span><span class="p">(),</span>
                    <span class="n">get_y</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">))</span>
 
-<span class="n">dbunch</span> <span class="o">=</span> <span class="n">planet</span><span class="o">.</span><span class="n">databunch</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+<span class="n">dbunch</span> <span class="o">=</span> <span class="n">planet</span><span class="o">.</span><span class="n">dataloaders</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
          <span class="n">batch_tfms</span><span class="o">=</span><span class="n">aug_transforms</span><span class="p">(</span><span class="n">flip_vert</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">max_lighting</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">max_zoom</span><span class="o">=</span><span class="mf">1.05</span><span class="p">,</span> <span class="n">max_warp</span><span class="o">=</span><span class="mf">0.</span><span class="p">))</span>
 <span class="n">dbunch</span><span class="o">.</span><span class="n">show_batch</span><span class="p">(</span><span class="n">max_n</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">9</span><span class="p">))</span>
 </pre></div>
@@ -1011,7 +1011,7 @@ summary: "Fine-tuning a pretrained model on the pets dataset."
                    <span class="n">splitter</span><span class="o">=</span><span class="n">RandomSplitter</span><span class="p">(),</span>
                    <span class="n">get_y</span><span class="o">=</span><span class="k">lambda</span> <span class="n">o</span><span class="p">:</span> <span class="n">path</span><span class="o">/</span><span class="s1">&#39;labels&#39;</span><span class="o">/</span><span class="n">f</span><span class="s1">&#39;</span><span class="si">{o.stem}</span><span class="s1">_P</span><span class="si">{o.suffix}</span><span class="s1">&#39;</span><span class="p">)</span>
 
-<span class="n">dbunch</span> <span class="o">=</span> <span class="n">camvid</span><span class="o">.</span><span class="n">databunch</span><span class="p">(</span><span class="n">path</span><span class="o">/</span><span class="s2">&quot;images&quot;</span><span class="p">,</span> <span class="n">batch_tfms</span><span class="o">=</span><span class="n">aug_transforms</span><span class="p">())</span>
+<span class="n">dbunch</span> <span class="o">=</span> <span class="n">camvid</span><span class="o">.</span><span class="n">dataloaders</span><span class="p">(</span><span class="n">path</span><span class="o">/</span><span class="s2">&quot;images&quot;</span><span class="p">,</span> <span class="n">batch_tfms</span><span class="o">=</span><span class="n">aug_transforms</span><span class="p">())</span>
 <span class="n">dbunch</span><span class="o">.</span><span class="n">show_batch</span><span class="p">(</span><span class="n">max_n</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
 </pre></div>
 
@@ -1209,7 +1209,7 @@ summary: "Fine-tuning a pretrained model on the pets dataset."
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dbunch</span> <span class="o">=</span> <span class="n">biwi</span><span class="o">.</span><span class="n">databunch</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">batch_tfms</span><span class="o">=</span><span class="p">[</span><span class="o">*</span><span class="n">aug_transforms</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">120</span><span class="p">,</span><span class="mi">160</span><span class="p">)),</span> <span class="n">Normalize</span><span class="o">.</span><span class="n">from_stats</span><span class="p">(</span><span class="o">*</span><span class="n">imagenet_stats</span><span class="p">)])</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dbunch</span> <span class="o">=</span> <span class="n">biwi</span><span class="o">.</span><span class="n">dataloaders</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">batch_tfms</span><span class="o">=</span><span class="p">[</span><span class="o">*</span><span class="n">aug_transforms</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">120</span><span class="p">,</span><span class="mi">160</span><span class="p">)),</span> <span class="n">Normalize</span><span class="o">.</span><span class="n">from_stats</span><span class="p">(</span><span class="o">*</span><span class="n">imagenet_stats</span><span class="p">)])</span>
 <span class="n">dbunch</span><span class="o">.</span><span class="n">show_batch</span><span class="p">(</span><span class="n">max_n</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
 </pre></div>
 

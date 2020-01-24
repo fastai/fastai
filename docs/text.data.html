@@ -5,7 +5,7 @@ title: Text data
 keywords: fastai
 sidebar: home_sidebar
 
-summary: "Functions and transforms to help gather text data in a `DataSource`"
+summary: "Functions and transforms to help gather text data in a `Datasets`"
 ---
 <!--
 
@@ -401,7 +401,7 @@ summary: "Functions and transforms to help gather text data in a `DataSource`"
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">splits</span> <span class="o">=</span> <span class="n">ColSplitter</span><span class="p">()(</span><span class="n">df</span><span class="p">)</span>
 <span class="n">tfms</span> <span class="o">=</span> <span class="p">[</span><span class="n">attrgetter</span><span class="p">(</span><span class="s1">&#39;text&#39;</span><span class="p">),</span> <span class="n">Tokenizer</span><span class="o">.</span><span class="n">from_df</span><span class="p">(</span><span class="s1">&#39;text&#39;</span><span class="p">),</span> <span class="n">Numericalize</span><span class="p">()]</span>
-<span class="n">dsrc</span> <span class="o">=</span> <span class="n">DataSource</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="p">[</span><span class="n">tfms</span><span class="p">],</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">,</span> <span class="n">dl_type</span><span class="o">=</span><span class="n">LMDataLoader</span><span class="p">)</span>
+<span class="n">dsrc</span> <span class="o">=</span> <span class="n">Datasets</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="p">[</span><span class="n">tfms</span><span class="p">],</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">,</span> <span class="n">dl_type</span><span class="o">=</span><span class="n">LMDataLoader</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -429,7 +429,7 @@ summary: "Functions and transforms to help gather text data in a `DataSource`"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dbunch</span> <span class="o">=</span> <span class="n">dsrc</span><span class="o">.</span><span class="n">databunch</span><span class="p">(</span><span class="n">bs</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">seq_len</span><span class="o">=</span><span class="mi">72</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dbunch</span> <span class="o">=</span> <span class="n">dsrc</span><span class="o">.</span><span class="n">dataloaders</span><span class="p">(</span><span class="n">bs</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">seq_len</span><span class="o">=</span><span class="mi">72</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -649,8 +649,8 @@ summary: "Functions and transforms to help gather text data in a `DataSource`"
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">splits</span> <span class="o">=</span> <span class="n">RandomSplitter</span><span class="p">()(</span><span class="n">range_of</span><span class="p">(</span><span class="n">df</span><span class="p">))</span>
-<span class="n">dsrc</span> <span class="o">=</span> <span class="n">DataSource</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">,</span> <span class="n">tfms</span><span class="o">=</span><span class="p">[</span><span class="n">tfms</span><span class="p">,</span> <span class="p">[</span><span class="n">attrgetter</span><span class="p">(</span><span class="s2">&quot;label&quot;</span><span class="p">),</span> <span class="n">Categorize</span><span class="p">()]],</span> <span class="n">dl_type</span><span class="o">=</span><span class="n">SortedDL</span><span class="p">)</span>
-<span class="n">dbch</span> <span class="o">=</span> <span class="n">dsrc</span><span class="o">.</span><span class="n">databunch</span><span class="p">(</span><span class="n">before_batch</span><span class="o">=</span><span class="n">pad_input</span><span class="p">)</span>
+<span class="n">dsrc</span> <span class="o">=</span> <span class="n">Datasets</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">,</span> <span class="n">tfms</span><span class="o">=</span><span class="p">[</span><span class="n">tfms</span><span class="p">,</span> <span class="p">[</span><span class="n">attrgetter</span><span class="p">(</span><span class="s2">&quot;label&quot;</span><span class="p">),</span> <span class="n">Categorize</span><span class="p">()]],</span> <span class="n">dl_type</span><span class="o">=</span><span class="n">SortedDL</span><span class="p">)</span>
+<span class="n">dbch</span> <span class="o">=</span> <span class="n">dsrc</span><span class="o">.</span><span class="n">dataloaders</span><span class="p">(</span><span class="n">before_batch</span><span class="o">=</span><span class="n">pad_input</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -763,7 +763,7 @@ summary: "Functions and transforms to help gather text data in a `DataSource`"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="TextDataBunch" class="doc_header"><code>class</code> <code>TextDataBunch</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/data.py#L161" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>TextDataBunch</code>(<strong>*<code>dls</code></strong>, <strong><code>path</code></strong>=<em><code>'.'</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>) :: <a href="/data.core#DataBunch"><code>DataBunch</code></a></p>
+<h3 id="TextDataBunch" class="doc_header"><code>class</code> <code>TextDataBunch</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/data.py#L161" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>TextDataBunch</code>(<strong>*<code>dls</code></strong>, <strong><code>path</code></strong>=<em><code>'.'</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>) :: <a href="/data.core#DataLoaders"><code>DataLoaders</code></a></p>
 </blockquote>
 <p>Basic wrapper around several <a href="/data.load#DataLoader"><code>DataLoader</code></a>s.</p>
 

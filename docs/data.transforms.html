@@ -983,7 +983,7 @@ errors defaults to 'strict'.</p>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">cat</span> <span class="o">=</span> <span class="n">Categorize</span><span class="p">()</span>
-<span class="n">tds</span> <span class="o">=</span> <span class="n">DataSource</span><span class="p">([</span><span class="s1">&#39;cat&#39;</span><span class="p">,</span> <span class="s1">&#39;dog&#39;</span><span class="p">,</span> <span class="s1">&#39;cat&#39;</span><span class="p">],</span> <span class="n">tfms</span><span class="o">=</span><span class="p">[</span><span class="n">cat</span><span class="p">])</span>
+<span class="n">tds</span> <span class="o">=</span> <span class="n">Datasets</span><span class="p">([</span><span class="s1">&#39;cat&#39;</span><span class="p">,</span> <span class="s1">&#39;dog&#39;</span><span class="p">,</span> <span class="s1">&#39;cat&#39;</span><span class="p">],</span> <span class="n">tfms</span><span class="o">=</span><span class="p">[</span><span class="n">cat</span><span class="p">])</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">cat</span><span class="o">.</span><span class="n">vocab</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;cat&#39;</span><span class="p">,</span> <span class="s1">&#39;dog&#39;</span><span class="p">])</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">cat</span><span class="p">(</span><span class="s1">&#39;cat&#39;</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">cat</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="s1">&#39;dog&#39;</span><span class="p">)</span>
@@ -1001,7 +1001,7 @@ errors defaults to 'strict'.</p>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">cat</span> <span class="o">=</span> <span class="n">Categorize</span><span class="p">(</span><span class="n">add_na</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">tds</span> <span class="o">=</span> <span class="n">DataSource</span><span class="p">([</span><span class="s1">&#39;cat&#39;</span><span class="p">,</span> <span class="s1">&#39;dog&#39;</span><span class="p">,</span> <span class="s1">&#39;cat&#39;</span><span class="p">],</span> <span class="n">tfms</span><span class="o">=</span><span class="p">[</span><span class="n">cat</span><span class="p">])</span>
+<span class="n">tds</span> <span class="o">=</span> <span class="n">Datasets</span><span class="p">([</span><span class="s1">&#39;cat&#39;</span><span class="p">,</span> <span class="s1">&#39;dog&#39;</span><span class="p">,</span> <span class="s1">&#39;cat&#39;</span><span class="p">],</span> <span class="n">tfms</span><span class="o">=</span><span class="p">[</span><span class="n">cat</span><span class="p">])</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">cat</span><span class="o">.</span><span class="n">vocab</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;#na#&#39;</span><span class="p">,</span> <span class="s1">&#39;cat&#39;</span><span class="p">,</span> <span class="s1">&#39;dog&#39;</span><span class="p">])</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">cat</span><span class="p">(</span><span class="s1">&#39;cat&#39;</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">cat</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="s1">&#39;dog&#39;</span><span class="p">)</span>
@@ -1067,7 +1067,7 @@ errors defaults to 'strict'.</p>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">cat</span> <span class="o">=</span> <span class="n">MultiCategorize</span><span class="p">()</span>
-<span class="n">tds</span> <span class="o">=</span> <span class="n">DataSource</span><span class="p">([[</span><span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">],</span> <span class="p">[]],</span> <span class="n">tfms</span><span class="o">=</span><span class="p">[</span><span class="n">cat</span><span class="p">])</span>
+<span class="n">tds</span> <span class="o">=</span> <span class="n">Datasets</span><span class="p">([[</span><span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">],</span> <span class="p">[]],</span> <span class="n">tfms</span><span class="o">=</span><span class="p">[</span><span class="n">cat</span><span class="p">])</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">tds</span><span class="p">[</span><span class="mi">3</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">tensor</span><span class="p">([]))</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">cat</span><span class="o">.</span><span class="n">vocab</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">])</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">cat</span><span class="p">([</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">]),</span> <span class="n">tensor</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">]))</span>
@@ -1133,7 +1133,7 @@ errors defaults to 'strict'.</p>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">tds</span> <span class="o">=</span> <span class="n">DataSource</span><span class="p">([[</span><span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">],</span> <span class="p">[]],</span> <span class="p">[[</span><span class="n">MultiCategorize</span><span class="p">(),</span> <span class="n">OneHotEncode</span><span class="p">()]])</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">tds</span> <span class="o">=</span> <span class="n">Datasets</span><span class="p">([[</span><span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">],</span> <span class="p">[]],</span> <span class="p">[[</span><span class="n">MultiCategorize</span><span class="p">(),</span> <span class="n">OneHotEncode</span><span class="p">()]])</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">tds</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="n">tensor</span><span class="p">([</span><span class="mf">1.</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])])</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">tds</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="n">tensor</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])])</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">tds</span><span class="o">.</span><span class="n">decode</span><span class="p">([</span><span class="n">tensor</span><span class="p">([</span><span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">])]),</span> <span class="p">[[</span><span class="s1">&#39;b&#39;</span><span class="p">,</span><span class="s1">&#39;c&#39;</span><span class="p">]])</span>
@@ -1217,7 +1217,7 @@ errors defaults to 'strict'.</p>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Let's show how to use those functions to grab the mnist dataset in a <a href="/data.core#DataSource"><code>DataSource</code></a>. First we grab all the images.</p>
+<p>Let's show how to use those functions to grab the mnist dataset in a <a href="/data.core#Datasets"><code>Datasets</code></a>. First we grab all the images.</p>
 
 </div>
 </div>
@@ -1294,7 +1294,7 @@ errors defaults to 'strict'.</p>
 
 <span class="n">tfms</span> <span class="o">=</span> <span class="p">[[</span><span class="n">open_img</span><span class="p">,</span> <span class="n">img2tensor</span><span class="p">],</span>
         <span class="p">[</span><span class="n">parent_label</span><span class="p">,</span> <span class="n">Categorize</span><span class="p">()]]</span>
-<span class="n">train_ds</span> <span class="o">=</span> <span class="n">DataSource</span><span class="p">(</span><span class="n">train</span><span class="p">,</span> <span class="n">tfms</span><span class="p">)</span>
+<span class="n">train_ds</span> <span class="o">=</span> <span class="n">Datasets</span><span class="p">(</span><span class="n">train</span><span class="p">,</span> <span class="n">tfms</span><span class="p">)</span>
 </pre></div>
 
     </div>

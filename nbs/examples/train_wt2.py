@@ -26,11 +26,11 @@ def get_data(bs, sl):
     valid = LM_Dataset(read_file(path/'valid.txt'), bs=bs, seq_len=sl)
     count = Counter([p for t in train.ds for p in t])
     vocab = make_vocab(count)
-    train_ds = TfmdList(train, tfms=Numericalize(vocab), as_item=False, wrap_l=False)
-    valid_ds = TfmdList(valid, tfms=Numericalize(vocab), as_item=False, wrap_l=False)
+    train_ds = TfmdLists(train, tfms=Numericalize(vocab), as_item=False, wrap_l=False)
+    valid_ds = TfmdLists(valid, tfms=Numericalize(vocab), as_item=False, wrap_l=False)
     train_dl = TfmdDL(train_ds, bs=bs, sampler=LM_Sampler(train), num_workers=8)
     valid_dl = TfmdDL(valid_ds, bs=bs, sampler=LM_Sampler(valid), num_workers=8)
-    return DataBunch(train_dl, valid_dl),vocab
+    return DataLoaders(train_dl, valid_dl),vocab
 
 @call_parse
 def main(gpu:Param("GPU to run on", int)=6,

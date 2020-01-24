@@ -21,7 +21,7 @@ def get_dbunch(size, woof, bs, sh=0., workers=None):
                        get_items=get_image_files, get_y=parent_label)
     item_tfms=[RandomResizedCrop(size, min_scale=0.35), FlipItem(0.5)]
     batch_tfms=RandomErasing(p=0.3, max_count=3, sh=sh) if sh else None
-    return dblock.databunch(source, path=source, bs=bs, num_workers=workers,
+    return dblock.dataloaders(source, path=source, bs=bs, num_workers=workers,
                             item_tfms=item_tfms, batch_tfms=batch_tfms)
 
 @call_parse

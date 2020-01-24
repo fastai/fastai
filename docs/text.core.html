@@ -5,7 +5,7 @@ title: Text core
 keywords: fastai
 sidebar: home_sidebar
 
-summary: "Basic function to preprocess text before assembling it in a `DataBunch`."
+summary: "Basic function to preprocess text before assembling it in a `DataLoaders`."
 ---
 <!--
 
@@ -989,10 +989,10 @@ summary: "Basic function to preprocess text before assembling it in a `DataBunch
     <span class="n">path</span><span class="p">,</span><span class="n">df</span><span class="p">,</span><span class="n">csv_fname</span> <span class="o">=</span> <span class="n">_prepare_texts</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">tmp_d</span><span class="p">))</span>
     <span class="n">items</span> <span class="o">=</span> <span class="n">get_text_files</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
     <span class="n">splits</span> <span class="o">=</span> <span class="n">RandomSplitter</span><span class="p">()(</span><span class="n">items</span><span class="p">)</span>
-    <span class="n">dsrc</span> <span class="o">=</span> <span class="n">DataSource</span><span class="p">(</span><span class="n">items</span><span class="p">,</span> <span class="p">[</span><span class="n">Tokenizer</span><span class="o">.</span><span class="n">from_folder</span><span class="p">(</span><span class="n">path</span><span class="p">)],</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">)</span>
+    <span class="n">dsrc</span> <span class="o">=</span> <span class="n">Datasets</span><span class="p">(</span><span class="n">items</span><span class="p">,</span> <span class="p">[</span><span class="n">Tokenizer</span><span class="o">.</span><span class="n">from_folder</span><span class="p">(</span><span class="n">path</span><span class="p">)],</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">dsrc</span><span class="o">.</span><span class="n">train</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
     
-    <span class="n">dsrc</span> <span class="o">=</span> <span class="n">DataSource</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="p">[[</span><span class="n">attrgetter</span><span class="p">(</span><span class="s1">&#39;text&#39;</span><span class="p">),</span> <span class="n">Tokenizer</span><span class="o">.</span><span class="n">from_df</span><span class="p">(</span><span class="s1">&#39;text&#39;</span><span class="p">)]],</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">)</span>
+    <span class="n">dsrc</span> <span class="o">=</span> <span class="n">Datasets</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="p">[[</span><span class="n">attrgetter</span><span class="p">(</span><span class="s1">&#39;text&#39;</span><span class="p">),</span> <span class="n">Tokenizer</span><span class="o">.</span><span class="n">from_df</span><span class="p">(</span><span class="s1">&#39;text&#39;</span><span class="p">)]],</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">dsrc</span><span class="o">.</span><span class="n">train</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 </pre></div>
 

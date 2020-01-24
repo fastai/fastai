@@ -158,7 +158,7 @@ summary: "Integration with [tensorboard](https://www.tensorflow.org/tensorboard)
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#dbunch = pets.databunch(untar_data(URLs.PETS)/&quot;images&quot;, item_tfms=RandomResizedCrop(460, min_scale=0.75), bs=32,</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#dbunch = pets.dataloaders(untar_data(URLs.PETS)/&quot;images&quot;, item_tfms=RandomResizedCrop(460, min_scale=0.75), bs=32,</span>
 <span class="c1">#                        batch_tfms=[*aug_transforms(size=299, max_warp=0), Normalize.from_stats(*imagenet_stats)])</span>
 </pre></div>
 

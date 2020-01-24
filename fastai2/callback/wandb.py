@@ -45,7 +45,7 @@ class WandbCallback(Callback):
 
             items = [self.dbunch.valid_ds.items[i] for i in idxs]
             test_tls = [tl._new(items, split_idx=1) for tl in self.dbunch.valid_ds.tls]
-            self.valid_dl = self.dbunch.valid_dl.new(DataSource(tls=test_tls), bs=self.n_preds)
+            self.valid_dl = self.dbunch.valid_dl.new(Datasets(tls=test_tls), bs=self.n_preds)
 
     def after_batch(self):
         "Log hyper-parameters and training loss"

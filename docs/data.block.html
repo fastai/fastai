@@ -5,7 +5,7 @@ title: Data block
 keywords: fastai
 sidebar: home_sidebar
 
-summary: "High level API to quickly get your data in a `DataBunch`"
+summary: "High level API to quickly get your data in a `DataLoaders`"
 ---
 <!--
 
@@ -151,7 +151,7 @@ summary: "High level API to quickly get your data in a `DataBunch`"
 <div class="output_markdown rendered_html output_subarea ">
 <h2 id="DataBlock" class="doc_header"><code>class</code> <code>DataBlock</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/block.py#L45" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>DataBlock</code>(<strong><code>blocks</code></strong>=<em><code>None</code></em>, <strong><code>dl_type</code></strong>=<em><code>None</code></em>, <strong><code>getters</code></strong>=<em><code>None</code></em>, <strong><code>n_inp</code></strong>=<em><code>None</code></em>, <strong><code>get_items</code></strong>=<em><code>None</code></em>, <strong><code>splitter</code></strong>=<em><code>None</code></em>, <strong><code>get_y</code></strong>=<em><code>None</code></em>, <strong><code>get_x</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
-<p>Generic container to quickly build <a href="/data.core#DataSource"><code>DataSource</code></a> and <a href="/data.core#DataBunch"><code>DataBunch</code></a></p>
+<p>Generic container to quickly build <a href="/data.core#Datasets"><code>Datasets</code></a> and <a href="/data.core#DataLoaders"><code>DataLoaders</code></a></p>
 
 </div>
 
@@ -164,7 +164,7 @@ summary: "High level API to quickly get your data in a `DataBunch`"
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>To build a <a href="/data.block#DataBlock"><code>DataBlock</code></a> you need to give the library four things: the types of your input/labels then at least two functions: <code>get_items</code> and <code>splitter</code>. You may also need to include <code>get_x</code> and <code>get_y</code> or a more generic list of <code>getters</code> that are applied to the results of <code>get_items</code>.</p>
-<p>Once those are provided, you automatically get a <a href="/data.core#DataSource"><code>DataSource</code></a> or a <a href="/data.core#DataBunch"><code>DataBunch</code></a>:</p>
+<p>Once those are provided, you automatically get a <a href="/data.core#Datasets"><code>Datasets</code></a> or a <a href="/data.core#DataLoaders"><code>DataLoaders</code></a>:</p>
 
 </div>
 </div>
@@ -178,7 +178,7 @@ summary: "High level API to quickly get your data in a `DataBunch`"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="DataBlock.datasource" class="doc_header"><code>DataBlock.datasource</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/block.py#L65" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>DataBlock.datasource</code>(<strong><code>source</code></strong>, <strong><code>type_tfms</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="DataBlock.datasets" class="doc_header"><code>DataBlock.datasets</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/block.py#L65" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>DataBlock.datasets</code>(<strong><code>source</code></strong>, <strong><code>type_tfms</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Create a <code>Datasource</code> from <code>source</code> with <code>type_tfms</code></p>
 
@@ -199,9 +199,9 @@ summary: "High level API to quickly get your data in a `DataBunch`"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="DataBlock.databunch" class="doc_header"><code>DataBlock.databunch</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/block.py#L81" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>DataBlock.databunch</code>(<strong><code>source</code></strong>, <strong><code>path</code></strong>=<em><code>'.'</code></em>, <strong><code>type_tfms</code></strong>=<em><code>None</code></em>, <strong><code>item_tfms</code></strong>=<em><code>None</code></em>, <strong><code>batch_tfms</code></strong>=<em><code>None</code></em>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>shuffle</code></strong>=<em><code>False</code></em>, <strong><code>num_workers</code></strong>=<em><code>None</code></em>, <strong><code>pin_memory</code></strong>=<em><code>False</code></em>, <strong><code>timeout</code></strong>=<em><code>0</code></em>, <strong><code>batch_size</code></strong>=<em><code>None</code></em>, <strong><code>drop_last</code></strong>=<em><code>False</code></em>, <strong><code>indexed</code></strong>=<em><code>None</code></em>, <strong><code>n</code></strong>=<em><code>None</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>wif</code></strong>=<em><code>None</code></em>, <strong><code>before_iter</code></strong>=<em><code>None</code></em>, <strong><code>after_item</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_iter</code></strong>=<em><code>None</code></em>, <strong><code>create_batches</code></strong>=<em><code>None</code></em>, <strong><code>create_item</code></strong>=<em><code>None</code></em>, <strong><code>create_batch</code></strong>=<em><code>None</code></em>, <strong><code>retain</code></strong>=<em><code>None</code></em>, <strong><code>get_idxs</code></strong>=<em><code>None</code></em>, <strong><code>sample</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_fn</code></strong>=<em><code>None</code></em>, <strong><code>do_batch</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="DataBlock.dataloaders" class="doc_header"><code>DataBlock.dataloaders</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/block.py#L81" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>DataBlock.dataloaders</code>(<strong><code>source</code></strong>, <strong><code>path</code></strong>=<em><code>'.'</code></em>, <strong><code>type_tfms</code></strong>=<em><code>None</code></em>, <strong><code>item_tfms</code></strong>=<em><code>None</code></em>, <strong><code>batch_tfms</code></strong>=<em><code>None</code></em>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>shuffle</code></strong>=<em><code>False</code></em>, <strong><code>num_workers</code></strong>=<em><code>None</code></em>, <strong><code>pin_memory</code></strong>=<em><code>False</code></em>, <strong><code>timeout</code></strong>=<em><code>0</code></em>, <strong><code>batch_size</code></strong>=<em><code>None</code></em>, <strong><code>drop_last</code></strong>=<em><code>False</code></em>, <strong><code>indexed</code></strong>=<em><code>None</code></em>, <strong><code>n</code></strong>=<em><code>None</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>wif</code></strong>=<em><code>None</code></em>, <strong><code>before_iter</code></strong>=<em><code>None</code></em>, <strong><code>after_item</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_iter</code></strong>=<em><code>None</code></em>, <strong><code>create_batches</code></strong>=<em><code>None</code></em>, <strong><code>create_item</code></strong>=<em><code>None</code></em>, <strong><code>create_batch</code></strong>=<em><code>None</code></em>, <strong><code>retain</code></strong>=<em><code>None</code></em>, <strong><code>get_idxs</code></strong>=<em><code>None</code></em>, <strong><code>sample</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_fn</code></strong>=<em><code>None</code></em>, <strong><code>do_batch</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
-<p>Create a <a href="/data.core#DataBunch"><code>DataBunch</code></a> from <code>source</code> with <code>item_tfms</code> and <code>batch_tfms</code></p>
+<p>Create a <a href="/data.core#DataLoaders"><code>DataLoaders</code></a> from <code>source</code> with <code>item_tfms</code> and <code>batch_tfms</code></p>
 
 </div>
 
@@ -258,10 +258,10 @@ summary: "High level API to quickly get your data in a `DataBunch`"
 <p>Each type comes with default transforms that will be applied</p>
 <ul>
 <li>at the base level to create items in a tuple (usually input,target) from the base elements (like filenames)</li>
-<li>at the item level of the datasource</li>
+<li>at the item level of the datasets</li>
 <li>at the batch level</li>
 </ul>
-<p>They are called respectively type transforms, item transforms, batch transforms. In the case of MNIST, the type transforms are the method to create a <a href="/vision.core#PILImageBW"><code>PILImageBW</code></a> (for the input) and the <a href="/data.transforms#Categorize"><code>Categorize</code></a> transform (for the target), the item transform is <a href="/data.transforms#ToTensor"><code>ToTensor</code></a> and the batch transforms are <code>Cuda</code> and <a href="/data.transforms#IntToFloatTensor"><code>IntToFloatTensor</code></a>. You can add any other transforms by passing them in <a href="/data.block#DataBlock.datasource"><code>DataBlock.datasource</code></a> or <a href="/data.block#DataBlock.databunch"><code>DataBlock.databunch</code></a>.</p>
+<p>They are called respectively type transforms, item transforms, batch transforms. In the case of MNIST, the type transforms are the method to create a <a href="/vision.core#PILImageBW"><code>PILImageBW</code></a> (for the input) and the <a href="/data.transforms#Categorize"><code>Categorize</code></a> transform (for the target), the item transform is <a href="/data.transforms#ToTensor"><code>ToTensor</code></a> and the batch transforms are <code>Cuda</code> and <a href="/data.transforms#IntToFloatTensor"><code>IntToFloatTensor</code></a>. You can add any other transforms by passing them in <a href="/data.block#DataBlock.datasets"><code>DataBlock.datasets</code></a> or <a href="/data.block#DataBlock.dataloaders"><code>DataBlock.dataloaders</code></a>.</p>
 
 </div>
 </div>
@@ -287,7 +287,7 @@ summary: "High level API to quickly get your data in a `DataBunch`"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dsrc</span> <span class="o">=</span> <span class="n">MNIST</span><span class="p">()</span><span class="o">.</span><span class="n">datasource</span><span class="p">(</span><span class="n">untar_data</span><span class="p">(</span><span class="n">URLs</span><span class="o">.</span><span class="n">MNIST_TINY</span><span class="p">))</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dsrc</span> <span class="o">=</span> <span class="n">MNIST</span><span class="p">()</span><span class="o">.</span><span class="n">datasets</span><span class="p">(</span><span class="n">untar_data</span><span class="p">(</span><span class="n">URLs</span><span class="o">.</span><span class="n">MNIST_TINY</span><span class="p">))</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">dsrc</span><span class="o">.</span><span class="n">vocab</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;3&#39;</span><span class="p">,</span> <span class="s1">&#39;7&#39;</span><span class="p">])</span>
 <span class="n">x</span><span class="p">,</span><span class="n">y</span> <span class="o">=</span> <span class="n">dsrc</span><span class="o">.</span><span class="n">train</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">size</span><span class="p">,(</span><span class="mi">28</span><span class="p">,</span><span class="mi">28</span><span class="p">))</span>

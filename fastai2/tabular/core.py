@@ -106,7 +106,7 @@ class Tabular(CollBase, GetAttr, FilteredBase):
                  do_setup=True, device=None):
         if splits is None: splits=[range_of(df)]
         df = df.iloc[sum(splits, [])].copy()
-        self.databunch = delegates(self._dl_type.__init__)(self.databunch)
+        self.dataloaders = delegates(self._dl_type.__init__)(self.dataloaders)
         super().__init__(df)
 
         self.y_names,self.device = L(y_names),device
@@ -159,7 +159,7 @@ class TabularProc(InplaceTransform):
     def setup(self, items=None, train_setup=False): #TODO: properly deal with train_setup
         super().setup(getattr(items,'train',items), train_setup=False)
         # Procs are called as soon as data is available
-        return self(items.items if isinstance(items,DataSource) else items)
+        return self(items.items if isinstance(items,Datasets) else items)
 
 # Cell
 def _apply_cats (voc, add, c):

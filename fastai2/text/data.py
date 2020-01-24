@@ -185,9 +185,9 @@ class TextBlock(TransformBlock):
         return cls(Tokenizer.from_folder(path, **kwargs), vocab=vocab, is_lm=is_lm, seq_len=seq_len)
 
 # Cell
-class TextDataBunch(DataBunch):
+class TextDataBunch(DataLoaders):
     @classmethod
-    @delegates(DataBunch.from_dblock)
+    @delegates(DataLoaders.from_dblock)
     def from_folder(cls, path, train='train', valid='valid', valid_pct=None, seed=None, vocab=None, text_vocab=None, is_lm=False,
                     tok_tfm=None, seq_len=72, **kwargs):
         "Create from imagenet style dataset in `path` with `train`,`valid`,`test` subfolders (or provide `valid_pct`)."
@@ -202,7 +202,7 @@ class TextDataBunch(DataBunch):
         return cls.from_dblock(dblock, path, path=path, seq_len=seq_len, **kwargs)
 
     @classmethod
-    @delegates(DataBunch.from_dblock)
+    @delegates(DataLoaders.from_dblock)
     def from_df(cls, df, path='.', valid_pct=0.2, seed=None, text_col=0, label_col=1, label_delim=None, y_block=None,
                 text_vocab=None, is_lm=False, valid_col=None, tok_tfm=None, seq_len=72, **kwargs):
         blocks = [TextBlock.from_df(text_col, text_vocab, is_lm, seq_len) if tok_tfm is None else TextBlock(tok_tfm, text_vocab, is_lm, seq_len)]

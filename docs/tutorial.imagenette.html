@@ -58,13 +58,13 @@ summary: "Regular training with square images and rectangular training"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Loading-the-data-with-DataSource">Loading the data with <a href="/data.core#DataSource"><code>DataSource</code></a><a class="anchor-link" href="#Loading-the-data-with-DataSource">&#182;</a></h3>
+<h3 id="Loading-the-data-with-Datasets">Loading the data with <a href="/data.core#Datasets"><code>Datasets</code></a><a class="anchor-link" href="#Loading-the-data-with-Datasets">&#182;</a></h3>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>To load the data with the medium-level API <a href="/data.core#DataSource"><code>DataSource</code></a>, we need to gather all the images and define some way to split them between training and validation sets.</p>
+<p>To load the data with the medium-level API <a href="/data.core#Datasets"><code>Datasets</code></a>, we need to gather all the images and define some way to split them between training and validation sets.</p>
 
 </div>
 </div>
@@ -132,7 +132,7 @@ summary: "Regular training with square images and rectangular training"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>We can then pass all of this information to <a href="/data.core#DataSource"><code>DataSource</code></a>.</p>
+<p>We can then pass all of this information to <a href="/data.core#Datasets"><code>Datasets</code></a>.</p>
 
 </div>
 </div>
@@ -142,7 +142,7 @@ summary: "Regular training with square images and rectangular training"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dsrc</span> <span class="o">=</span> <span class="n">DataSource</span><span class="p">(</span><span class="n">items</span><span class="p">,</span> <span class="n">tfms</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="n">split_idx</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dsrc</span> <span class="o">=</span> <span class="n">Datasets</span><span class="p">(</span><span class="n">items</span><span class="p">,</span> <span class="n">tfms</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="n">split_idx</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -152,7 +152,7 @@ summary: "Regular training with square images and rectangular training"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>To convert our <a href="/data.core#DataSource"><code>DataSource</code></a> to a <a href="/data.core#DataBunch"><code>DataBunch</code></a>, we need to indicate the transforms we want to use at the batch level, here putting on the GPU with <code>Cuda</code>, converting the tensors of bytes to float then normalizing using the traditional imagenet statistics.</p>
+<p>To convert our <a href="/data.core#Datasets"><code>Datasets</code></a> to a <a href="/data.core#DataLoaders"><code>DataLoaders</code></a>, we need to indicate the transforms we want to use at the batch level, here putting on the GPU with <code>Cuda</code>, converting the tensors of bytes to float then normalizing using the traditional imagenet statistics.</p>
 
 </div>
 </div>
@@ -163,7 +163,7 @@ summary: "Regular training with square images and rectangular training"
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">batch_tfms</span> <span class="o">=</span> <span class="p">[</span><span class="n">IntToFloatTensor</span><span class="p">,</span> <span class="n">Normalize</span><span class="o">.</span><span class="n">from_stats</span><span class="p">(</span><span class="o">*</span><span class="n">imagenet_stats</span><span class="p">)]</span>
-<span class="n">dbch</span> <span class="o">=</span> <span class="n">dsrc</span><span class="o">.</span><span class="n">databunch</span><span class="p">(</span><span class="n">after_item</span><span class="o">=</span><span class="n">item_img_tfms</span><span class="p">,</span> <span class="n">after_batch</span><span class="o">=</span><span class="n">batch_tfms</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">dbch</span> <span class="o">=</span> <span class="n">dsrc</span><span class="o">.</span><span class="n">dataloaders</span><span class="p">(</span><span class="n">after_item</span><span class="o">=</span><span class="n">item_img_tfms</span><span class="p">,</span> <span class="n">after_batch</span><span class="o">=</span><span class="n">batch_tfms</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -262,7 +262,7 @@ summary: "Regular training with square images and rectangular training"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>We can then directly call the <code>databunch</code> method when specifying a source (where the items are) and the non-default dataset and dataloader transforms. To check which transforms are included by default (inferred from the types passed), we can check (and potentially modify) the attributes <code>default_type_tfms</code>, <code>default_item_tfms</code> and <code>default_batch_tfms</code> of the <code>imagenette</code> object.</p>
+<p>We can then directly call the <code>dataloaders</code> method when specifying a source (where the items are) and the non-default dataset and dataloader transforms. To check which transforms are included by default (inferred from the types passed), we can check (and potentially modify) the attributes <code>default_type_tfms</code>, <code>default_item_tfms</code> and <code>default_batch_tfms</code> of the <code>imagenette</code> object.</p>
 
 </div>
 </div>
@@ -312,7 +312,7 @@ summary: "Regular training with square images and rectangular training"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dbch</span> <span class="o">=</span> <span class="n">imagenette</span><span class="o">.</span><span class="n">databunch</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">item_tfms</span><span class="o">=</span><span class="n">item_img_tfms</span><span class="p">,</span> <span class="n">batch_tfms</span><span class="o">=</span><span class="n">Normalize</span><span class="o">.</span><span class="n">from_stats</span><span class="p">(</span><span class="o">*</span><span class="n">imagenet_stats</span><span class="p">))</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dbch</span> <span class="o">=</span> <span class="n">imagenette</span><span class="o">.</span><span class="n">dataloaders</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">item_tfms</span><span class="o">=</span><span class="n">item_img_tfms</span><span class="p">,</span> <span class="n">batch_tfms</span><span class="o">=</span><span class="n">Normalize</span><span class="o">.</span><span class="n">from_stats</span><span class="p">(</span><span class="o">*</span><span class="n">imagenet_stats</span><span class="p">))</span>
 </pre></div>
 
     </div>
@@ -573,7 +573,7 @@ summary: "Regular training with square images and rectangular training"
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#img_tfms = [FlipItem(0.5)]</span>
 <span class="c1">#tfms = [PILImage.create, [parent_label, Categorize()]]</span>
-<span class="c1">#dsrc = DataSource(items, tfms, splits=split_idx, item_tfms=img_tfms)</span>
+<span class="c1">#dsrc = Datasets(items, tfms, splits=split_idx, item_tfms=img_tfms)</span>
 
 <span class="c1">#tfms = [Cuda(), IntToFloatTensor(), Normalize(*imagenet_stats)]</span>
 <span class="c1">#bs = 64</span>
@@ -612,7 +612,7 @@ summary: "Regular training with square images and rectangular training"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Then we create a <a href="/data.core#DataBunch"><code>DataBunch</code></a> with those two dataloaders.</p>
+<p>Then we create a <a href="/data.core#DataLoaders"><code>DataLoaders</code></a> with those two dataloaders.</p>
 
 </div>
 </div>
@@ -622,9 +622,9 @@ summary: "Regular training with square images and rectangular training"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#dbch1 = imagenette.databunch(source, bs=64, num_workers=8, item_tfms=item_img_tfms, batch_tfms=Normalize(*imagenet_stats))</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#dbch1 = imagenette.dataloaders(source, bs=64, num_workers=8, item_tfms=item_img_tfms, batch_tfms=Normalize(*imagenet_stats))</span>
 
-<span class="c1">#dbch = DataBunch(train_dl, valid_dl)</span>
+<span class="c1">#dbch = DataLoaders(train_dl, valid_dl)</span>
 <span class="c1">#dbch.show_batch(max_n=9)</span>
 </pre></div>
 

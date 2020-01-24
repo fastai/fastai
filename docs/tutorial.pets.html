@@ -5,7 +5,7 @@ title: Tutorial - Using `fastai.data` low-level APIs
 keywords: fastai
 sidebar: home_sidebar
 
-summary: "Using `DataSource`, `Pipeline`, `TfmdList` and `Transform`"
+summary: "Using `Datasets`, `Pipeline`, `TfmdLists` and `Transform`"
 ---
 <!--
 
@@ -63,7 +63,7 @@ summary: "Using `DataSource`, `Pipeline`, `TfmdList` and `Transform`"
 <li><code>Transform</code></li>
 <li><code>Pipeline</code> to composes transforms</li>
 </ul>
-<p>(We won't look at <a href="/data.core#TfmdList"><code>TfmdList</code></a> or <a href="/data.core#DataSource"><code>DataSource</code></a> in this initial overview since they require a full dataset. Have a look at the second half of the page for examples of those.)</p>
+<p>(We won't look at <a href="/data.core#TfmdLists"><code>TfmdLists</code></a> or <a href="/data.core#Datasets"><code>Datasets</code></a> in this initial overview since they require a full dataset. Have a look at the second half of the page for examples of those.)</p>
 
 </div>
 </div>
@@ -977,13 +977,13 @@ summary: "Using `DataSource`, `Pipeline`, `TfmdList` and `Transform`"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Using-DataSource">Using <a href="/data.core#DataSource"><code>DataSource</code></a><a class="anchor-link" href="#Using-DataSource">&#182;</a></h2>
+<h2 id="Using-Datasets">Using <a href="/data.core#Datasets"><code>Datasets</code></a><a class="anchor-link" href="#Using-Datasets">&#182;</a></h2>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a href="/data.core#DataSource"><code>DataSource</code></a> applies a list of list of transforms (or list of <code>Pipeline</code>s) lazily to items of a collection, creating one output per list of transforms/<code>Pipeline</code>. This makes it easier for us to separate out steps of a process, so that we can re-use them and modify the process more easily. For instance, we could add data augmentation, data normalization, etc. Here we separate out the steps of the basic pets process.</p>
+<p><a href="/data.core#Datasets"><code>Datasets</code></a> applies a list of list of transforms (or list of <code>Pipeline</code>s) lazily to items of a collection, creating one output per list of transforms/<code>Pipeline</code>. This makes it easier for us to separate out steps of a process, so that we can re-use them and modify the process more easily. For instance, we could add data augmentation, data normalization, etc. Here we separate out the steps of the basic pets process.</p>
 
 </div>
 </div>
@@ -1016,7 +1016,7 @@ summary: "Using `DataSource`, `Pipeline`, `TfmdList` and `Transform`"
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">tfms</span> <span class="o">=</span> <span class="p">[[</span><span class="n">PILImage</span><span class="o">.</span><span class="n">create</span><span class="p">,</span> <span class="n">ImageResizer</span><span class="p">(</span><span class="mi">128</span><span class="p">),</span> <span class="n">ToTensor</span><span class="p">(),</span> <span class="n">IntToFloatTensor</span><span class="p">()],</span>
         <span class="p">[</span><span class="n">labeller</span><span class="p">,</span> <span class="n">Categorize</span><span class="p">()]]</span>
-<span class="n">dsrc</span> <span class="o">=</span> <span class="n">DataSource</span><span class="p">(</span><span class="n">items</span><span class="p">,</span> <span class="n">tfms</span><span class="p">)</span>
+<span class="n">dsrc</span> <span class="o">=</span> <span class="n">Datasets</span><span class="p">(</span><span class="n">items</span><span class="p">,</span> <span class="n">tfms</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -1128,7 +1128,7 @@ summary: "Using `DataSource`, `Pipeline`, `TfmdList` and `Transform`"
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">tfms</span> <span class="o">=</span> <span class="p">[[</span><span class="n">PILImage</span><span class="o">.</span><span class="n">create</span><span class="p">],</span> <span class="p">[</span><span class="n">labeller</span><span class="p">,</span> <span class="n">Categorize</span><span class="p">()]]</span>
-<span class="n">dsrc</span> <span class="o">=</span> <span class="n">DataSource</span><span class="p">(</span><span class="n">items</span><span class="p">,</span> <span class="n">tfms</span><span class="p">)</span>
+<span class="n">dsrc</span> <span class="o">=</span> <span class="n">Datasets</span><span class="p">(</span><span class="n">items</span><span class="p">,</span> <span class="n">tfms</span><span class="p">)</span>
 <span class="n">tdl</span> <span class="o">=</span> <span class="n">TfmdDL</span><span class="p">(</span><span class="n">dsrc</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">after_item</span><span class="o">=</span><span class="p">[</span><span class="n">ImageResizer</span><span class="p">(</span><span class="mi">128</span><span class="p">),</span> <span class="n">ToTensor</span><span class="p">(),</span> <span class="n">IntToFloatTensor</span><span class="p">()])</span>
 </pre></div>
 
@@ -1217,7 +1217,7 @@ summary: "Using `DataSource`, `Pipeline`, `TfmdList` and `Transform`"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">pets</span> <span class="o">=</span> <span class="n">DataSource</span><span class="p">(</span><span class="n">items</span><span class="p">,</span> <span class="n">tfms</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="n">split_idx</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">pets</span> <span class="o">=</span> <span class="n">Datasets</span><span class="p">(</span><span class="n">items</span><span class="p">,</span> <span class="n">tfms</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="n">split_idx</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -1454,7 +1454,7 @@ summary: "Using `DataSource`, `Pipeline`, `TfmdList` and `Transform`"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dbch</span> <span class="o">=</span> <span class="n">pets</span><span class="o">.</span><span class="n">databunch</span><span class="p">(</span><span class="n">bs</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span> <span class="n">after_item</span><span class="o">=</span><span class="n">item_img_tfms</span><span class="p">,</span> <span class="n">after_batch</span><span class="o">=</span><span class="n">batch_tfms</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dbch</span> <span class="o">=</span> <span class="n">pets</span><span class="o">.</span><span class="n">dataloaders</span><span class="p">(</span><span class="n">bs</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span> <span class="n">after_item</span><span class="o">=</span><span class="n">item_img_tfms</span><span class="p">,</span> <span class="n">after_batch</span><span class="o">=</span><span class="n">batch_tfms</span><span class="p">)</span>
 <span class="n">dbch</span><span class="o">.</span><span class="n">train_dl</span><span class="o">.</span><span class="n">show_batch</span><span class="p">()</span>
 </pre></div>
 
@@ -1546,7 +1546,7 @@ summary: "Using `DataSource`, `Pipeline`, `TfmdList` and `Transform`"
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">tfms</span> <span class="o">=</span> <span class="p">[[</span><span class="n">PILImage</span><span class="o">.</span><span class="n">create</span><span class="p">],</span> <span class="p">[</span><span class="n">cv_label</span><span class="p">,</span> <span class="n">PILMask</span><span class="o">.</span><span class="n">create</span><span class="p">]]</span>
-<span class="n">camvid</span> <span class="o">=</span> <span class="n">DataSource</span><span class="p">(</span><span class="n">cv_items</span><span class="p">,</span> <span class="n">tfms</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="n">cv_split</span><span class="p">)</span>
+<span class="n">camvid</span> <span class="o">=</span> <span class="n">Datasets</span><span class="p">(</span><span class="n">cv_items</span><span class="p">,</span> <span class="n">tfms</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="n">cv_split</span><span class="p">)</span>
 <span class="n">trn_dl</span> <span class="o">=</span> <span class="n">TfmdDL</span><span class="p">(</span><span class="n">camvid</span><span class="o">.</span><span class="n">train</span><span class="p">,</span>  <span class="n">bs</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">after_item</span><span class="o">=</span><span class="n">item_img_tfms</span><span class="p">,</span> <span class="n">after_batch</span><span class="o">=</span><span class="n">batch_tfms</span><span class="p">)</span>
 </pre></div>
 
@@ -1604,7 +1604,7 @@ summary: "Using `DataSource`, `Pipeline`, `TfmdList` and `Transform`"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dbch</span> <span class="o">=</span> <span class="n">pets</span><span class="o">.</span><span class="n">databunch</span><span class="p">(</span><span class="n">bs</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span> <span class="n">after_item</span><span class="o">=</span><span class="n">item_img_tfms</span><span class="p">,</span> <span class="n">after_batch</span><span class="o">=</span><span class="n">batch_tfms</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dbch</span> <span class="o">=</span> <span class="n">pets</span><span class="o">.</span><span class="n">dataloaders</span><span class="p">(</span><span class="n">bs</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span> <span class="n">after_item</span><span class="o">=</span><span class="n">item_img_tfms</span><span class="p">,</span> <span class="n">after_batch</span><span class="o">=</span><span class="n">batch_tfms</span><span class="p">)</span>
 <span class="n">dbch</span><span class="o">.</span><span class="n">train_dl</span><span class="o">.</span><span class="n">show_batch</span><span class="p">()</span>
 </pre></div>
 

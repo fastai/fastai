@@ -71,7 +71,7 @@ summary: "Examples for computer vision, NLP, and tabular"
                   <span class="n">splitter</span><span class="o">=</span><span class="n">GrandparentSplitter</span><span class="p">(),</span>
                   <span class="n">get_y</span><span class="o">=</span><span class="n">parent_label</span><span class="p">)</span>
 
-<span class="n">dbunch</span> <span class="o">=</span> <span class="n">mnist</span><span class="o">.</span><span class="n">databunch</span><span class="p">(</span><span class="n">untar_data</span><span class="p">(</span><span class="n">URLs</span><span class="o">.</span><span class="n">MNIST_TINY</span><span class="p">))</span>
+<span class="n">dbunch</span> <span class="o">=</span> <span class="n">mnist</span><span class="o">.</span><span class="n">dataloaders</span><span class="p">(</span><span class="n">untar_data</span><span class="p">(</span><span class="n">URLs</span><span class="o">.</span><span class="n">MNIST_TINY</span><span class="p">))</span>
 <span class="n">dbunch</span><span class="o">.</span><span class="n">show_batch</span><span class="p">(</span><span class="n">max_n</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">4</span><span class="p">))</span>
 </pre></div>
 
@@ -114,7 +114,7 @@ summary: "Examples for computer vision, NLP, and tabular"
                  <span class="n">splitter</span><span class="o">=</span><span class="n">RandomSplitter</span><span class="p">(),</span>
                  <span class="n">get_y</span><span class="o">=</span><span class="n">RegexLabeller</span><span class="p">(</span><span class="n">pat</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;/([^/]+)_\d+.jpg$&#39;</span><span class="p">))</span>
 
-<span class="n">dbunch</span> <span class="o">=</span> <span class="n">pets</span><span class="o">.</span><span class="n">databunch</span><span class="p">(</span><span class="n">untar_data</span><span class="p">(</span><span class="n">URLs</span><span class="o">.</span><span class="n">PETS</span><span class="p">)</span><span class="o">/</span><span class="s2">&quot;images&quot;</span><span class="p">,</span> <span class="n">item_tfms</span><span class="o">=</span><span class="n">Resize</span><span class="p">(</span><span class="mi">128</span><span class="p">),</span>
+<span class="n">dbunch</span> <span class="o">=</span> <span class="n">pets</span><span class="o">.</span><span class="n">dataloaders</span><span class="p">(</span><span class="n">untar_data</span><span class="p">(</span><span class="n">URLs</span><span class="o">.</span><span class="n">PETS</span><span class="p">)</span><span class="o">/</span><span class="s2">&quot;images&quot;</span><span class="p">,</span> <span class="n">item_tfms</span><span class="o">=</span><span class="n">Resize</span><span class="p">(</span><span class="mi">128</span><span class="p">),</span>
                         <span class="n">batch_tfms</span><span class="o">=</span><span class="n">aug_transforms</span><span class="p">())</span>
 </pre></div>
 
@@ -162,7 +162,7 @@ summary: "Examples for computer vision, NLP, and tabular"
                  <span class="n">splitter</span><span class="o">=</span><span class="n">RandomSplitter</span><span class="p">(),</span>
                  <span class="n">get_y</span><span class="o">=</span><span class="n">RegexLabeller</span><span class="p">(</span><span class="n">pat</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;/([^/]+)_\d+.jpg$&#39;</span><span class="p">))</span>
 
-<span class="n">dbunch</span> <span class="o">=</span> <span class="n">pets</span><span class="o">.</span><span class="n">databunch</span><span class="p">(</span><span class="n">untar_data</span><span class="p">(</span><span class="n">URLs</span><span class="o">.</span><span class="n">PETS</span><span class="p">)</span><span class="o">/</span><span class="s2">&quot;images&quot;</span><span class="p">,</span> <span class="n">item_tfms</span><span class="o">=</span><span class="n">Resize</span><span class="p">(</span><span class="mi">128</span><span class="p">),</span>
+<span class="n">dbunch</span> <span class="o">=</span> <span class="n">pets</span><span class="o">.</span><span class="n">dataloaders</span><span class="p">(</span><span class="n">untar_data</span><span class="p">(</span><span class="n">URLs</span><span class="o">.</span><span class="n">PETS</span><span class="p">)</span><span class="o">/</span><span class="s2">&quot;images&quot;</span><span class="p">,</span> <span class="n">item_tfms</span><span class="o">=</span><span class="n">Resize</span><span class="p">(</span><span class="mi">128</span><span class="p">),</span>
                         <span class="n">batch_tfms</span><span class="o">=</span><span class="n">aug_transforms</span><span class="p">())</span>
 <span class="n">dbunch</span><span class="o">.</span><span class="n">show_batch</span><span class="p">(</span><span class="n">max_n</span><span class="o">=</span><span class="mi">9</span><span class="p">)</span>
 </pre></div>
@@ -247,7 +247,7 @@ summary: "Examples for computer vision, NLP, and tabular"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dbunch</span> <span class="o">=</span> <span class="n">planet</span><span class="o">.</span><span class="n">databunch</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dbunch</span> <span class="o">=</span> <span class="n">planet</span><span class="o">.</span><span class="n">dataloaders</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
          <span class="n">batch_tfms</span><span class="o">=</span><span class="n">aug_transforms</span><span class="p">(</span><span class="n">flip_vert</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">max_lighting</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">max_zoom</span><span class="o">=</span><span class="mf">1.05</span><span class="p">,</span> <span class="n">max_warp</span><span class="o">=</span><span class="mf">0.</span><span class="p">))</span>
 <span class="n">dbunch</span><span class="o">.</span><span class="n">show_batch</span><span class="p">(</span><span class="n">max_n</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">9</span><span class="p">))</span>
 </pre></div>
@@ -298,7 +298,7 @@ summary: "Examples for computer vision, NLP, and tabular"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dbunch</span> <span class="o">=</span> <span class="n">planet</span><span class="o">.</span><span class="n">databunch</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">batch_tfms</span><span class="o">=</span><span class="n">aug_transforms</span><span class="p">(</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dbunch</span> <span class="o">=</span> <span class="n">planet</span><span class="o">.</span><span class="n">dataloaders</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">batch_tfms</span><span class="o">=</span><span class="n">aug_transforms</span><span class="p">(</span>
     <span class="n">flip_vert</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">max_lighting</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">max_zoom</span><span class="o">=</span><span class="mf">1.05</span><span class="p">,</span> <span class="n">max_warp</span><span class="o">=</span><span class="mf">0.</span><span class="p">))</span>
 <span class="n">dbunch</span><span class="o">.</span><span class="n">show_batch</span><span class="p">(</span><span class="n">max_n</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">9</span><span class="p">))</span>
 </pre></div>
@@ -349,7 +349,7 @@ summary: "Examples for computer vision, NLP, and tabular"
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">planet</span> <span class="o">=</span> <span class="n">PlanetDataBlock</span><span class="p">()</span>
-<span class="n">dbunch</span> <span class="o">=</span> <span class="n">planet</span><span class="o">.</span><span class="n">databunch</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">batch_tfms</span><span class="o">=</span><span class="n">aug_transforms</span><span class="p">(</span><span class="n">flip_vert</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+<span class="n">dbunch</span> <span class="o">=</span> <span class="n">planet</span><span class="o">.</span><span class="n">dataloaders</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">batch_tfms</span><span class="o">=</span><span class="n">aug_transforms</span><span class="p">(</span><span class="n">flip_vert</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
 <span class="n">dbunch</span><span class="o">.</span><span class="n">show_batch</span><span class="p">(</span><span class="n">max_n</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">9</span><span class="p">))</span>
 </pre></div>
 
@@ -397,7 +397,7 @@ summary: "Examples for computer vision, NLP, and tabular"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dbunch</span> <span class="o">=</span> <span class="n">planet</span><span class="o">.</span><span class="n">databunch</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">batch_tfms</span><span class="o">=</span><span class="n">aug_transforms</span><span class="p">(</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dbunch</span> <span class="o">=</span> <span class="n">planet</span><span class="o">.</span><span class="n">dataloaders</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">batch_tfms</span><span class="o">=</span><span class="n">aug_transforms</span><span class="p">(</span>
     <span class="n">flip_vert</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">max_lighting</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">max_zoom</span><span class="o">=</span><span class="mf">1.05</span><span class="p">,</span> <span class="n">max_warp</span><span class="o">=</span><span class="mf">0.</span><span class="p">))</span>
 <span class="n">dbunch</span><span class="o">.</span><span class="n">show_batch</span><span class="p">(</span><span class="n">max_n</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">9</span><span class="p">))</span>
 </pre></div>
@@ -447,7 +447,7 @@ summary: "Examples for computer vision, NLP, and tabular"
     <span class="n">splitter</span><span class="o">=</span><span class="n">RandomSplitter</span><span class="p">(),</span>
     <span class="n">get_y</span><span class="o">=</span><span class="k">lambda</span> <span class="n">o</span><span class="p">:</span> <span class="n">untar_data</span><span class="p">(</span><span class="n">URLs</span><span class="o">.</span><span class="n">CAMVID_TINY</span><span class="p">)</span><span class="o">/</span><span class="s1">&#39;labels&#39;</span><span class="o">/</span><span class="n">f</span><span class="s1">&#39;</span><span class="si">{o.stem}</span><span class="s1">_P</span><span class="si">{o.suffix}</span><span class="s1">&#39;</span><span class="p">)</span>
 
-<span class="n">dbunch</span> <span class="o">=</span> <span class="n">camvid</span><span class="o">.</span><span class="n">databunch</span><span class="p">(</span><span class="n">untar_data</span><span class="p">(</span><span class="n">URLs</span><span class="o">.</span><span class="n">CAMVID_TINY</span><span class="p">)</span><span class="o">/</span><span class="s2">&quot;images&quot;</span><span class="p">,</span>
+<span class="n">dbunch</span> <span class="o">=</span> <span class="n">camvid</span><span class="o">.</span><span class="n">dataloaders</span><span class="p">(</span><span class="n">untar_data</span><span class="p">(</span><span class="n">URLs</span><span class="o">.</span><span class="n">CAMVID_TINY</span><span class="p">)</span><span class="o">/</span><span class="s2">&quot;images&quot;</span><span class="p">,</span>
                           <span class="n">batch_tfms</span><span class="o">=</span><span class="n">aug_transforms</span><span class="p">())</span>
 <span class="n">dbunch</span><span class="o">.</span><span class="n">show_batch</span><span class="p">(</span><span class="n">max_n</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
 </pre></div>
@@ -494,7 +494,7 @@ summary: "Examples for computer vision, NLP, and tabular"
                  <span class="n">splitter</span><span class="o">=</span><span class="n">RandomSplitter</span><span class="p">(),</span>
                  <span class="n">get_y</span><span class="o">=</span><span class="k">lambda</span> <span class="n">o</span><span class="p">:</span><span class="n">fn2ctr</span><span class="p">[</span><span class="n">o</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
 
-<span class="n">dbunch</span> <span class="o">=</span> <span class="n">biwi</span><span class="o">.</span><span class="n">databunch</span><span class="p">(</span><span class="n">biwi_source</span><span class="p">,</span> <span class="n">batch_tfms</span><span class="o">=</span><span class="n">aug_transforms</span><span class="p">())</span>
+<span class="n">dbunch</span> <span class="o">=</span> <span class="n">biwi</span><span class="o">.</span><span class="n">dataloaders</span><span class="p">(</span><span class="n">biwi_source</span><span class="p">,</span> <span class="n">batch_tfms</span><span class="o">=</span><span class="n">aug_transforms</span><span class="p">())</span>
 <span class="n">dbunch</span><span class="o">.</span><span class="n">show_batch</span><span class="p">(</span><span class="n">max_n</span><span class="o">=</span><span class="mi">9</span><span class="p">)</span>
 </pre></div>
 
@@ -563,7 +563,7 @@ summary: "Examples for computer vision, NLP, and tabular"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dbunch</span> <span class="o">=</span> <span class="n">coco</span><span class="o">.</span><span class="n">databunch</span><span class="p">(</span><span class="n">coco_source</span><span class="p">,</span> <span class="n">item_tfms</span><span class="o">=</span><span class="n">Resize</span><span class="p">(</span><span class="mi">128</span><span class="p">),</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dbunch</span> <span class="o">=</span> <span class="n">coco</span><span class="o">.</span><span class="n">dataloaders</span><span class="p">(</span><span class="n">coco_source</span><span class="p">,</span> <span class="n">item_tfms</span><span class="o">=</span><span class="n">Resize</span><span class="p">(</span><span class="mi">128</span><span class="p">),</span>
                         <span class="n">batch_tfms</span><span class="o">=</span><span class="n">aug_transforms</span><span class="p">())</span>
 <span class="n">dbunch</span><span class="o">.</span><span class="n">show_batch</span><span class="p">(</span><span class="n">max_n</span><span class="o">=</span><span class="mi">9</span><span class="p">)</span>
 </pre></div>
@@ -644,7 +644,7 @@ summary: "Examples for computer vision, NLP, and tabular"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dbunch</span> <span class="o">=</span> <span class="n">imdb_lm</span><span class="o">.</span><span class="n">databunch</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">seq_len</span><span class="o">=</span><span class="mi">72</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dbunch</span> <span class="o">=</span> <span class="n">imdb_lm</span><span class="o">.</span><span class="n">dataloaders</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">seq_len</span><span class="o">=</span><span class="mi">72</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -762,7 +762,7 @@ summary: "Examples for computer vision, NLP, and tabular"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dbunch</span> <span class="o">=</span> <span class="n">imdb_clas</span><span class="o">.</span><span class="n">databunch</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">seq_len</span><span class="o">=</span><span class="mi">72</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dbunch</span> <span class="o">=</span> <span class="n">imdb_clas</span><span class="o">.</span><span class="n">dataloaders</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">seq_len</span><span class="o">=</span><span class="mi">72</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -900,7 +900,7 @@ summary: "Examples for computer vision, NLP, and tabular"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dbch</span> <span class="o">=</span> <span class="n">to</span><span class="o">.</span><span class="n">databunch</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dbch</span> <span class="o">=</span> <span class="n">to</span><span class="o">.</span><span class="n">dataloaders</span><span class="p">()</span>
 <span class="n">dbch</span><span class="o">.</span><span class="n">show_batch</span><span class="p">()</span>
 </pre></div>
 

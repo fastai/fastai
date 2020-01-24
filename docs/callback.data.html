@@ -116,7 +116,7 @@ summary: "Callbacks which work with a learner's data"
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">n</span> <span class="o">=</span> <span class="mi">160</span>
-<span class="n">dsrc</span> <span class="o">=</span> <span class="n">DataSource</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">())</span>
+<span class="n">dsrc</span> <span class="o">=</span> <span class="n">Datasets</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">())</span>
 <span class="n">dbch</span> <span class="o">=</span> <span class="n">dsrc</span><span class="o">.</span><span class="n">weighted_databunch</span><span class="p">(</span><span class="n">wgts</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">),</span> <span class="n">bs</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
 <span class="n">learn</span> <span class="o">=</span> <span class="n">synth_learner</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">dbch</span><span class="p">,</span> <span class="n">cb_funcs</span><span class="o">=</span><span class="n">CollectDataCallback</span><span class="p">)</span>
 </pre></div>

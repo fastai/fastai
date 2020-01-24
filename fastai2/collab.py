@@ -10,24 +10,24 @@ class TabularCollab(TabularPandas):
     with_cont=False
 
 # Cell
-class CollabDataBunch(DataBunch):
-    "Base `DataBunch` for collaborative filtering."
-    @delegates(DataBunch.from_dblock)
+class CollabDataBunch(DataLoaders):
+    "Base `DataLoaders` for collaborative filtering."
+    @delegates(DataLoaders.from_dblock)
     @classmethod
     def from_df(cls, ratings, valid_pct=0.2, user_name=None, item_name=None, rating_name=None, seed=None, path='.', **kwargs):
-        "Create a `DataBunch` suitable for collaborative filtering from `ratings`."
+        "Create a `DataLoaders` suitable for collaborative filtering from `ratings`."
         user_name   = ifnone(user_name,  ratings.columns[0])
         item_name   = ifnone(item_name,  ratings.columns[1])
         rating_name = ifnone(rating_name,ratings.columns[2])
         cat_names = [user_name,item_name]
         splits = RandomSplitter(valid_pct=valid_pct, seed=seed)(range_of(ratings))
         to = TabularCollab(ratings, [Categorify], cat_names, y_names=[rating_name], block_y=TransformBlock(), splits=splits)
-        return to.databunch(path=path, **kwargs)
+        return to.dataloaders(path=path, **kwargs)
 
-    @delegates(DataBunch.from_dblock)
+    @delegates(DataLoaders.from_dblock)
     @classmethod
     def from_csv(cls, csv, valid_pct=0.2, user_name=None, item_name=None, rating_name=None, seed=None, path='.', **kwargs):
-        "Create a `DataBunch` suitable for collaborative filtering from `csv`."
+        "Create a `DataLoaders` suitable for collaborative filtering from `csv`."
         return cls.from_df(pd.read_csv(csv), valid_pct, user_name, item_name, rating_name, seed=None, path='.', **kwargs)
 
 # Cell

@@ -64,7 +64,7 @@ summary: "Basic class for handling the training loop"
     <span class="n">device</span> <span class="o">=</span> <span class="n">default_device</span><span class="p">()</span> <span class="k">if</span> <span class="n">cuda</span> <span class="k">else</span> <span class="kc">None</span>
     <span class="n">train_dl</span> <span class="o">=</span> <span class="n">TfmdDL</span><span class="p">(</span><span class="n">train_ds</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="n">bs</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
     <span class="n">valid_dl</span> <span class="o">=</span> <span class="n">TfmdDL</span><span class="p">(</span><span class="n">valid_ds</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="n">bs</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">DataBunch</span><span class="p">(</span><span class="n">train_dl</span><span class="p">,</span> <span class="n">valid_dl</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">DataLoaders</span><span class="p">(</span><span class="n">train_dl</span><span class="p">,</span> <span class="n">valid_dl</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
 
 <span class="k">class</span> <span class="nc">RegModel</span><span class="p">(</span><span class="n">Module</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">1</span><span class="p">)),</span><span class="n">nn</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
@@ -1290,7 +1290,7 @@ summary: "Basic class for handling the training loop"
 <p>When writing a callback, the following attributes of <a href="/learner#Learner"><code>Learner</code></a> are available:</p>
 <ul>
 <li><code>model</code>: the model used for training/validation</li>
-<li><a href="/data"><code>data</code></a>: the underlying <a href="/data.core#DataBunch"><code>DataBunch</code></a></li>
+<li><a href="/data"><code>data</code></a>: the underlying <a href="/data.core#DataLoaders"><code>DataLoaders</code></a></li>
 <li><code>loss_func</code>: the loss function used</li>
 <li><code>opt</code>: the optimizer used to udpate the model parameters</li>
 <li><code>opt_func</code>: the function used to create the optimizer</li>
@@ -1966,7 +1966,7 @@ summary: "Basic class for handling the training loop"
 <ul>
 <li>the prediction from the model, potentially passed through the activation of the loss function (if it has one)</li>
 <li>the decoded prediction, using the poential <a href="/tabular.core#decodes"><code>decodes</code></a> method from it</li>
-<li>the fully decoded prediction, using the transforms used to buil the <a href="/data.core#DataSource"><code>DataSource</code></a>/<a href="/data.core#DataBunch"><code>DataBunch</code></a></li>
+<li>the fully decoded prediction, using the transforms used to buil the <a href="/data.core#Datasets"><code>Datasets</code></a>/<a href="/data.core#DataLoaders"><code>DataLoaders</code></a></li>
 </ul>
 
 </div>
@@ -1988,8 +1988,8 @@ summary: "Basic class for handling the training loop"
     <span class="k">def</span> <span class="nf">decodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span> <span class="k">return</span> <span class="n">x</span><span class="o">-</span><span class="mi">1</span>
     
 <span class="n">learn</span> <span class="o">=</span> <span class="n">synth_learner</span><span class="p">(</span><span class="n">n_train</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
-<span class="n">dl</span> <span class="o">=</span> <span class="n">TfmdDL</span><span class="p">(</span><span class="n">DataSource</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">50</span><span class="p">),</span> <span class="n">tfms</span> <span class="o">=</span> <span class="p">[</span><span class="n">L</span><span class="p">(),</span> <span class="p">[</span><span class="n">_Add1</span><span class="p">()]]))</span>
-<span class="n">learn</span><span class="o">.</span><span class="n">dbunch</span> <span class="o">=</span> <span class="n">DataBunch</span><span class="p">(</span><span class="n">dl</span><span class="p">,</span> <span class="n">dl</span><span class="p">)</span>
+<span class="n">dl</span> <span class="o">=</span> <span class="n">TfmdDL</span><span class="p">(</span><span class="n">Datasets</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">50</span><span class="p">),</span> <span class="n">tfms</span> <span class="o">=</span> <span class="p">[</span><span class="n">L</span><span class="p">(),</span> <span class="p">[</span><span class="n">_Add1</span><span class="p">()]]))</span>
+<span class="n">learn</span><span class="o">.</span><span class="n">dbunch</span> <span class="o">=</span> <span class="n">DataLoaders</span><span class="p">(</span><span class="n">dl</span><span class="p">,</span> <span class="n">dl</span><span class="p">)</span>
 <span class="n">learn</span><span class="o">.</span><span class="n">loss_func</span> <span class="o">=</span> <span class="n">_FakeLossFunc</span><span class="p">()</span>
 
 <span class="n">inp</span> <span class="o">=</span> <span class="n">tensor</span><span class="p">([</span><span class="mf">2.</span><span class="p">])</span>

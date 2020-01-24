@@ -43,7 +43,7 @@ def _merge_tfms(*tfms):
 @docs
 @funcs_kwargs
 class DataBlock():
-    "Generic container to quickly build `DataSource` and `DataBunch`"
+    "Generic container to quickly build `Datasets` and `DataLoaders`"
     get_x=get_items=splitter=get_y = None
     dl_type = TfmdDL
     _methods = 'get_items splitter get_y get_x'.split()
@@ -56,13 +56,13 @@ class DataBlock():
         for t in blocks:
             if getattr(t, 'dl_type', None) is not None: self.dl_type = t.dl_type
         if dl_type is not None: self.dl_type = dl_type
-        self.databunch = delegates(self.dl_type.__init__)(self.databunch)
+        self.dataloaders = delegates(self.dl_type.__init__)(self.dataloaders)
         self.dbunch_kwargs = merge(*blocks.attrgot('dbunch_kwargs', {}))
         self.n_inp,self.getters = n_inp,L(getters)
         if getters is not None: assert self.get_x is None and self.get_y is None
         assert not kwargs
 
-    def datasource(self, source, type_tfms=None):
+    def datasets(self, source, type_tfms=None):
         self.source = source
         items = (self.get_items or noop)(source)
         if isinstance(items,tuple):
@@ -76,14 +76,14 @@ class DataBlock():
         if type_tfms is None: type_tfms = [L() for t in self.default_type_tfms]
         type_tfms = L([self.default_type_tfms, type_tfms, labellers]).map_zip(
             lambda tt,tfm,l: L(l) + _merge_tfms(tt, tfm))
-        return DataSource(items, tfms=type_tfms, splits=splits, dl_type=self.dl_type, n_inp=self.n_inp)
+        return Datasets(items, tfms=type_tfms, splits=splits, dl_type=self.dl_type, n_inp=self.n_inp)
 
-    def databunch(self, source, path='.', type_tfms=None, item_tfms=None, batch_tfms=None, **kwargs):
-        dsrc = self.datasource(source, type_tfms=type_tfms)
+    def dataloaders(self, source, path='.', type_tfms=None, item_tfms=None, batch_tfms=None, **kwargs):
+        dsrc = self.datasets(source, type_tfms=type_tfms)
         item_tfms  = _merge_tfms(self.default_item_tfms,  item_tfms)
         batch_tfms = _merge_tfms(self.default_batch_tfms, batch_tfms)
         kwargs = {**self.dbunch_kwargs, **kwargs}
-        return dsrc.databunch(path=path, after_item=item_tfms, after_batch=batch_tfms, **kwargs)
+        return dsrc.dataloaders(path=path, after_item=item_tfms, after_batch=batch_tfms, **kwargs)
 
-    _docs = dict(datasource="Create a `Datasource` from `source` with `type_tfms`",
-                 databunch="Create a `DataBunch` from `source` with `item_tfms` and `batch_tfms`")
+    _docs = dict(datasets="Create a `Datasource` from `source` with `type_tfms`",
+                 dataloaders="Create a `DataLoaders` from `source` with `item_tfms` and `batch_tfms`")
