@@ -120,12 +120,12 @@
     "024b0d2203ebb0cd1fc64b27cf8af18e"
   ],
   "https://s3.amazonaws.com/fast-ai-imagelocal/pascal_2007.tgz": [
-    1636130334,
-    "a70574e9bc592bd3b253f5bf46ce12e3"
+    1637796771,
+    "433b4706eb7c42bd74e7f784e3fdf244"
   ],
   "https://s3.amazonaws.com/fast-ai-imagelocal/pascal_2012.tgz": [
-    2611715776,
-    "2ae7897038383836f86ce58f66b09e31"
+    2618908000,
+    "d90e29e54a4c76c0c6fba8355dcbaca5"
   ],
   "https://s3.amazonaws.com/fast-ai-imageclas/oxford-iiit-pet.tgz": [
     811706944,
