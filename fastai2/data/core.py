@@ -164,10 +164,10 @@ class FilteredBase:
                   **kwargs):
         if device is None: device=default_device()
         if dl_kwargs is None: dl_kwargs = [{}] * self.n_subsets
-        ns = self.n_subsets-1
-        bss = ([None]*(ns+1) if bs is None
-               else [bs] + [3*bs//2]*ns if val_bs is None
-               else [bs] + [val_bs]*ns)
+        ns = self.n_subsets
+        bss = ([None]*ns if bs is None
+               else [bs]*ns if val_bs is None
+               else [bs] + [val_bs]*(ns-1))
         shuffles = [shuffle_train] + [False]*ns
         if dl_type is None: dl_type = self._dl_type
         dls = [dl_type(self.subset(i), bs=b, shuffle=s, drop_last=s, n=n if i==0 else None, **kwargs, **dk)
