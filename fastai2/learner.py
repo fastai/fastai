@@ -266,7 +266,7 @@ class Learner():
         finally:                                             self('after_train')
 
     def _do_epoch_validate(self, ds_idx=1, dl=None):
-        if dl is None: dl = self.dbunch.dls[ds_idx]
+        if dl is None: dl = self.dbunch[ds_idx]
         names = ['shuffle', 'drop_last']
         try:
             dl,old,has = change_attrs(dl, names, [False,False])
@@ -295,7 +295,7 @@ class Learner():
             finally:                               self('after_fit')
 
     def validate(self, ds_idx=1, dl=None, cbs=None):
-        if dl is None: dl = self.dbunch.dls[ds_idx]
+        if dl is None: dl = self.dbunch[ds_idx]
         with self.added_cbs(cbs), self.no_logging(), self.no_mbar():
             self(_before_epoch)
             self._do_epoch_validate(ds_idx, dl)
@@ -329,7 +329,7 @@ class Learner():
         return detuplify(full_dec),dec_preds[0],preds[0]
 
     def show_results(self, ds_idx=0, dl=None, max_n=10, **kwargs):
-        if dl is None: dl = self.dbunch.dls[ds_idx]
+        if dl is None: dl = self.dbunch[ds_idx]
         b = dl.one_batch()
         _,_,preds = self.get_preds(dl=[b], with_decoded=True)
         self.dbunch.show_results(b, preds, max_n=max_n, **kwargs)
@@ -596,7 +596,7 @@ def load_learner(fname, cpu=True):
 @patch
 def tta(self:Learner, ds_idx=1, dl=None, n=4, item_tfms=None, batch_tfms=None, beta=0.25):
     "Return predictions on the `ds_idx` dataset or `dl` using Test Time Augmentation"
-    if dl is None: dl = self.dbunch.dls[ds_idx]
+    if dl is None: dl = self.dbunch[ds_idx]
     if item_tfms is not None or batch_tfms is not None: dl = dl.new(after_item=item_tfms, after_batch=batch_tfms)
     with dl.dataset.set_split_idx(0), self.no_mbar():
         if hasattr(self,'progress'): self.progress.mbar = master_bar(list(range(n)))
