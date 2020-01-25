@@ -260,7 +260,7 @@ class Learner():
 
     def _do_epoch_train(self):
         try:
-            self.dl = self.dls.train_dl;                  self('begin_train')
+            self.dl = self.dls.train;                  self('begin_train')
             self.all_batches()
         except CancelTrainException:                         self('after_cancel_train')
         finally:                                             self('after_train')

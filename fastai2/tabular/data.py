@@ -30,6 +30,6 @@ class TabularDataLoaders(DataLoaders):
     def test_dl(self, test_items, rm_type_tfms=None, **kwargs):
         to = self.train_ds.new(test_items)
         to.process()
-        return self.valid_dl.new(to, **kwargs)
+        return self.valid.new(to, **kwargs)
 
 Tabular._dbunch_type = TabularDataLoaders
