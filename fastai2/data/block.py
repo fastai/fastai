@@ -47,10 +47,10 @@ def _zip(x): return L(x).zip()
 class DataBlock():
     "Generic container to quickly build `Datasets` and `DataLoaders`"
     get_x=get_items=splitter=get_y = None
-    dl_type = TfmdDL
+    blocks,dl_type = (TransformBlock,TransformBlock),TfmdDL
     _methods = 'get_items splitter get_y get_x'.split()
     def __init__(self, blocks=None, dl_type=None, getters=None, n_inp=None, item_tfms=None, batch_tfms=None, **kwargs):
-        blocks = L((TransformBlock,TransformBlock) if blocks is None else blocks)
+        blocks = L(self.blocks if blocks is None else blocks)
         blocks = L(b() if callable(b) else b for b in blocks)
         self.type_tfms = blocks.attrgot('type_tfms', L())
         self.default_item_tfms  = _merge_tfms(*blocks.attrgot('item_tfms',  L()))
