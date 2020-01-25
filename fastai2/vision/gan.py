@@ -297,7 +297,7 @@ def _tk_diff(real_pred, fake_pred): return real_pred.mean() - fake_pred.mean()
 @delegates()
 class GANLearner(Learner):
     "A `Learner` suitable for GANs."
-    def __init__(self, dbunch, generator, critic, gen_loss_func, crit_loss_func, switcher=None, gen_first=False,
+    def __init__(self, dls, generator, critic, gen_loss_func, crit_loss_func, switcher=None, gen_first=False,
                  switch_eval=True, show_img=True, clip=None, cbs=None, metrics=None, **kwargs):
         gan = GANModule(generator, critic)
         loss_func = GANLoss(gen_loss_func, crit_loss_func, gan)
@@ -305,18 +305,18 @@ class GANLearner(Learner):
         trainer = GANTrainer(clip=clip, switch_eval=switch_eval, show_img=show_img)
         cbs = L(cbs) + L(trainer, switcher)
         metrics = L(metrics) + L(*LossMetrics('gen_loss,crit_loss'))
-        super().__init__(dbunch, gan, loss_func=loss_func, cbs=cbs, metrics=metrics, **kwargs)
+        super().__init__(dls, gan, loss_func=loss_func, cbs=cbs, metrics=metrics, **kwargs)
 
     @classmethod
     def from_learners(cls, gen_learn, crit_learn, switcher=None, weights_gen=None, **kwargs):
         "Create a GAN from `learn_gen` and `learn_crit`."
         losses = gan_loss_from_func(gen_learn.loss_func, crit_learn.loss_func, weights_gen=weights_gen)
-        return cls(gen_learn.dbunch, gen_learn.model, crit_learn.model, *losses, switcher=switcher, **kwargs)
+        return cls(gen_learn.dls, gen_learn.model, crit_learn.model, *losses, switcher=switcher, **kwargs)
 
     @classmethod
-    def wgan(cls, dbunch, generator, critic, switcher=None, clip=0.01, switch_eval=False, **kwargs):
+    def wgan(cls, dls, generator, critic, switcher=None, clip=0.01, switch_eval=False, **kwargs):
         "Create a WGAN from `data`, `generator` and `critic`."
-        return cls(dbunch, generator, critic, _tk_mean, _tk_diff, switcher=switcher, clip=clip, switch_eval=switch_eval, **kwargs)
+        return cls(dls, generator, critic, _tk_mean, _tk_diff, switcher=switcher, clip=clip, switch_eval=switch_eval, **kwargs)
 
 GANLearner.from_learners = delegates(to=GANLearner.__init__)(GANLearner.from_learners)
 GANLearner.wgan = delegates(to=GANLearner.__init__)(GANLearner.wgan)

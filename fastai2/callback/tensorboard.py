@@ -22,7 +22,7 @@ class TensorBoardCallback(Callback):
         if self.trace_model:
             if hasattr(self.learn, 'mixed_precision'):
                 raise Exception("Can't trace model in mixed precision, pass `trace_model=False` or don't use FP16.")
-            b = self.dbunch.one_batch()
+            b = self.dls.one_batch()
             self.learn._split(b)
             self.writer.add_graph(self.model, *self.xb)
 
@@ -35,11 +35,11 @@ class TensorBoardCallback(Callback):
         for n,v in zip(self.recorder.metric_names[2:-1], self.recorder.log[2:-1]):
             self.writer.add_scalar(n, v, self.train_iter)
         if self.log_preds:
-            b = self.dbunch.valid_dl.one_batch()
+            b = self.dls.valid_dl.one_batch()
             self.learn.one_batch(0, b)
             preds = getattr(self.loss_func, 'activation', noop)(self.pred)
             out = getattr(self.loss_func, 'decodes', noop)(preds)
-            x,y,its,outs = self.dbunch.valid_dl.show_results(b, out, show=False, max_n=self.n_preds)
+            x,y,its,outs = self.dls.valid_dl.show_results(b, out, show=False, max_n=self.n_preds)
             tensorboard_log(x, y, its, outs, self.writer, self.train_iter)
 
     def after_fit(self): self.writer.close()

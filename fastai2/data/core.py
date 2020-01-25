@@ -311,6 +311,6 @@ def test_set(dsrc, test_items, rm_tfms=None):
 @delegates(TfmdDL.__init__)
 @patch
 def test_dl(self:DataLoaders, test_items, rm_type_tfms=None, **kwargs):
-    "Create a test dataloader from `test_items` using validation transforms of `dbunch`"
+    "Create a test dataloader from `test_items` using validation transforms of `dls`"
     test_ds = test_set(self.valid_ds, test_items, rm_tfms=rm_type_tfms) if isinstance(self.valid_ds, Datasets) else test_items
     return self.valid_dl.new(test_ds, **kwargs)

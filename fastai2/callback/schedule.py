@@ -191,7 +191,7 @@ def plot_lr_find(self:Recorder, skip_end=5):
 @patch
 def lr_find(self:Learner, start_lr=1e-7, end_lr=10, num_it=100, stop_div=True, show_plot=True):
     "Launch a mock training to find a good learning rate"
-    n_epoch = num_it//len(self.dbunch.train_dl) + 1
+    n_epoch = num_it//len(self.dls.train_dl) + 1
     cb=LRFinder(start_lr=start_lr, end_lr=end_lr, num_it=num_it, stop_div=stop_div)
     with self.no_logging(): self.fit(n_epoch, cbs=cb)
     if show_plot: self.recorder.plot_lr_find()

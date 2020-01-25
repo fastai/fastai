@@ -110,12 +110,12 @@ model_meta = {
 
 # Cell
 @delegates(Learner.__init__)
-def cnn_learner(dbunch, arch, loss_func=None, pretrained=True, cut=None, splitter=None, config=None, **kwargs):
+def cnn_learner(dls, arch, loss_func=None, pretrained=True, cut=None, splitter=None, config=None, **kwargs):
     "Build a convnet style learner"
     if config is None: config = {}
     meta = model_meta.get(arch, _default_meta)
-    model = create_cnn_model(arch, get_c(dbunch), ifnone(cut, meta['cut']), pretrained, **config)
-    learn = Learner(dbunch, model, loss_func=loss_func, splitter=ifnone(splitter, meta['split']), **kwargs)
+    model = create_cnn_model(arch, get_c(dls), ifnone(cut, meta['cut']), pretrained, **config)
+    learn = Learner(dls, model, loss_func=loss_func, splitter=ifnone(splitter, meta['split']), **kwargs)
     if pretrained: learn.freeze()
     return learn
 
@@ -127,14 +127,14 @@ def unet_config(**kwargs):
 
 # Cell
 @delegates(Learner.__init__)
-def unet_learner(dbunch, arch, loss_func=None, pretrained=True, cut=None, splitter=None, config=None, **kwargs):
-    "Build a unet learner from `dbunch` and `arch`"
+def unet_learner(dls, arch, loss_func=None, pretrained=True, cut=None, splitter=None, config=None, **kwargs):
+    "Build a unet learner from `dls` and `arch`"
     if config is None: config = unet_config()
     meta = model_meta.get(arch, _default_meta)
     body = create_body(arch, pretrained, ifnone(cut, meta['cut']))
-    size = dbunch.one_batch()[0].shape[-2:]
-    model = models.unet.DynamicUnet(body, get_c(dbunch), size, **config)
-    learn = Learner(dbunch, model, loss_func=loss_func, splitter=ifnone(splitter, meta['split']), **kwargs)
+    size = dls.one_batch()[0].shape[-2:]
+    model = models.unet.DynamicUnet(body, get_c(dls), size, **config)
+    learn = Learner(dls, model, loss_func=loss_func, splitter=ifnone(splitter, meta['split']), **kwargs)
     if pretrained: learn.freeze()
     return learn
 

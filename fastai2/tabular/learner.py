@@ -11,25 +11,25 @@ from .model import *
 class TabularLearner(Learner):
     "`Learner` for tabular data"
     def predict(self, row):
-        tst_to = self.dbunch.valid_ds.new(pd.DataFrame(row).T)
+        tst_to = self.dls.valid_ds.new(pd.DataFrame(row).T)
         tst_to.process()
-        dl = self.dbunch.valid_dl.new(tst_to)
+        dl = self.dls.valid_dl.new(tst_to)
         inp,preds,_,dec_preds = self.get_preds(dl=dl, with_input=True, with_decoded=True)
-        i = getattr(self.dbunch, 'n_inp', -1)
+        i = getattr(self.dls, 'n_inp', -1)
         b = (*tuplify(inp),*tuplify(dec_preds))
-        full_dec = self.dbunch.decode((*tuplify(inp),*tuplify(dec_preds)))
+        full_dec = self.dls.decode((*tuplify(inp),*tuplify(dec_preds)))
         return full_dec,dec_preds[0],preds[0]
 
 # Cell
 @delegates(Learner.__init__)
-def tabular_learner(dbunch, layers=None, emb_szs=None, config=None, **kwargs):
+def tabular_learner(dls, layers=None, emb_szs=None, config=None, **kwargs):
     "Get a `Learner` using `data`, with `metrics`, including a `TabularModel` created using the remaining params."
     if config is None: config = tabular_config()
     if layers is None: layers = [200,100]
-    to = dbunch.train_ds
-    emb_szs = get_emb_sz(dbunch.train_ds, {} if emb_szs is None else emb_szs)
-    model = TabularModel(emb_szs, len(dbunch.cont_names), get_c(dbunch), layers, **config)
-    return TabularLearner(dbunch, model, **kwargs)
+    to = dls.train_ds
+    emb_szs = get_emb_sz(dls.train_ds, {} if emb_szs is None else emb_szs)
+    model = TabularModel(emb_szs, len(dls.cont_names), get_c(dls), layers, **config)
+    return TabularLearner(dls, model, **kwargs)
 
 # Cell
 @typedispatch

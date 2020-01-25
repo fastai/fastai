@@ -61,7 +61,7 @@ class ImagesCleaner:
 
 # Cell
 def _get_iw_info(learn, ds_idx=0):
-    dl = learn.dbunch[ds_idx].new(shuffle=False, drop_last=False)
+    dl = learn.dls[ds_idx].new(shuffle=False, drop_last=False)
     inp,probs,targs,preds,losses = learn.get_preds(dl=dl, with_input=True, with_loss=True, with_decoded=True)
     inp,targs = L(zip(*dl.decode_batch((inp,targs), max_n=9999)))
     return L([dl.dataset.items,targs,losses]).zip()
@@ -71,7 +71,7 @@ def _get_iw_info(learn, ds_idx=0):
 class ImageClassifierCleaner(GetAttr):
     "A widget that provides an `ImagesCleaner` with a CNN `Learner`"
     def __init__(self, learn, **kwargs):
-        vocab = learn.dbunch.vocab
+        vocab = learn.dls.vocab
         self.default = self.iw = ImagesCleaner(vocab, **kwargs)
         self.dd_cats = Dropdown(options=vocab)
         self.dd_ds   = Dropdown(options=('Train','Valid'))

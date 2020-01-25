@@ -87,13 +87,13 @@ class EmbeddingNN(TabularModel):
 
 # Cell
 @delegates(Learner.__init__)
-def collab_learner(dbunch, n_factors=50, use_nn=False, emb_szs=None, layers=None, config=None, y_range=None, loss_func=None, **kwargs):
+def collab_learner(dls, n_factors=50, use_nn=False, emb_szs=None, layers=None, config=None, y_range=None, loss_func=None, **kwargs):
     "Create a Learner for collaborative filtering on `data`."
-    emb_szs = get_emb_sz(dbunch, ifnone(emb_szs, {}))
+    emb_szs = get_emb_sz(dls, ifnone(emb_szs, {}))
     if loss_func is None: loss_func = MSELossFlat()
     if config is None: config = tabular_config()
     if y_range is not None: config['y_range'] = y_range
     if layers is None: layers = [n_factors]
     if use_nn: model = EmbeddingNN(emb_szs=emb_szs, layers=layers, **config)
-    else:      model = EmbeddingDotBias.from_classes(n_factors, dbunch.classes, y_range=y_range)
-    return Learner(dbunch, model, loss_func=loss_func, **kwargs)
+    else:      model = EmbeddingDotBias.from_classes(n_factors, dls.classes, y_range=y_range)
+    return Learner(dls, model, loss_func=loss_func, **kwargs)

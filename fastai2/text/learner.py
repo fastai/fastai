@@ -32,8 +32,8 @@ def match_embeds(old_wgts, old_vocab, new_vocab):
     return old_wgts
 
 # Cell
-def _get_text_vocab(dbunch):
-    vocab = dbunch.vocab
+def _get_text_vocab(dls):
+    vocab = dls.vocab
     if isinstance(vocab, L): vocab = vocab[0]
     return vocab
 
@@ -48,8 +48,8 @@ def load_ignore_keys(model, wgts):
 @delegates(Learner.__init__)
 class TextLearner(Learner):
     "Basic class for a `Learner` in NLP."
-    def __init__(self, model, dbunch, loss_func, alpha=2., beta=1., moms=(0.8,0.7,0.8), **kwargs):
-        super().__init__(model, dbunch, loss_func, moms=moms, **kwargs)
+    def __init__(self, model, dls, loss_func, alpha=2., beta=1., moms=(0.8,0.7,0.8), **kwargs):
+        super().__init__(model, dls, loss_func, moms=moms, **kwargs)
         self.add_cb(RNNTrainer(alpha=alpha, beta=beta))
 
     def save_encoder(self, file):
@@ -62,7 +62,7 @@ class TextLearner(Learner):
     def load_encoder(self, file, device=None):
         "Load the encoder `name` from the model directory."
         encoder = get_model(self.model)[0]
-        if device is None: device = self.dbunch.device
+        if device is None: device = self.dls.device
         if hasattr(encoder, 'module'): encoder = encoder.module
         distrib_barrier()
         encoder.load_state_dict(torch.load(join_path_file(file,self.path/self.model_dir, ext='.pth'), map_location=device))
@@ -72,7 +72,7 @@ class TextLearner(Learner):
     def load_pretrained(self, wgts_fname, vocab_fname, model=None):
         "Load a pretrained model and adapt it to the data vocabulary."
         old_vocab = Path(vocab_fname).load()
-        new_vocab = _get_text_vocab(self.dbunch)
+        new_vocab = _get_text_vocab(self.dls)
         wgts = torch.load(wgts_fname, map_location = lambda storage,loc: storage)
         if 'model' in wgts: wgts = wgts['model'] #Just in case the pretrained model was saved with an optimizer
         wgts = match_embeds(wgts, old_vocab, new_vocab)
@@ -109,9 +109,9 @@ class LMLearner(TextLearner):
         "Return `text` and the `n_words` that come after"
         self.model.reset()
         tokens = tokenize1(text, **kwargs)
-        tfm = self.dbunch.train_ds.numericalize
-        idxs = tfm(tokens).to(self.dbunch.device)
-        if no_unk: unk_idx = self.dbunch.vocab.index(UNK)
+        tfm = self.dls.train_ds.numericalize
+        idxs = tfm(tokens).to(self.dls.device)
+        if no_unk: unk_idx = self.dls.vocab.index(UNK)
         for _ in (range(n_words) if no_bar else progress_bar(range(n_words), leave=False)):
             with self.no_bar(): preds,_ = self.get_preds(dl=[(idxs[None],)])
             res = preds[0][-1]
@@ -134,19 +134,19 @@ class LMLearner(TextLearner):
 from .models.core import _model_meta
 
 # Cell
-def _get_text_vocab(dbunch):
-    vocab = dbunch.vocab
+def _get_text_vocab(dls):
+    vocab = dls.vocab
     if isinstance(vocab, L): vocab = vocab[0]
     return vocab
 
 # Cell
 @delegates(Learner.__init__)
-def language_model_learner(dbunch, arch, config=None, drop_mult=1., pretrained=True, pretrained_fnames=None, **kwargs):
+def language_model_learner(dls, arch, config=None, drop_mult=1., pretrained=True, pretrained_fnames=None, **kwargs):
     "Create a `Learner` with a language model from `data` and `arch`."
-    vocab = _get_text_vocab(dbunch)
+    vocab = _get_text_vocab(dls)
     model = get_language_model(arch, len(vocab), config=config, drop_mult=drop_mult)
     meta = _model_meta[arch]
-    learn = LMLearner(dbunch, model, loss_func=CrossEntropyLossFlat(), splitter=meta['split_lm'], **kwargs)
+    learn = LMLearner(dls, model, loss_func=CrossEntropyLossFlat(), splitter=meta['split_lm'], **kwargs)
     #TODO: add backard
     #url = 'url_bwd' if data.backwards else 'url'
     if pretrained or pretrained_fnames:
@@ -163,14 +163,14 @@ def language_model_learner(dbunch, arch, config=None, drop_mult=1., pretrained=T
 
 # Cell
 @delegates(Learner.__init__)
-def text_classifier_learner(dbunch, arch, seq_len=72, config=None, pretrained=True, drop_mult=0.5,
+def text_classifier_learner(dls, arch, seq_len=72, config=None, pretrained=True, drop_mult=0.5,
                             lin_ftrs=None, ps=None, max_len=72*20, **kwargs):
     "Create a `Learner` with a text classifier from `data` and `arch`."
-    vocab = _get_text_vocab(dbunch)
-    model = get_text_classifier(arch, len(vocab), get_c(dbunch), seq_len=seq_len, config=config,
+    vocab = _get_text_vocab(dls)
+    model = get_text_classifier(arch, len(vocab), get_c(dls), seq_len=seq_len, config=config,
                                 drop_mult=drop_mult, lin_ftrs=lin_ftrs, ps=ps, max_len=max_len)
     meta = _model_meta[arch]
-    learn = TextLearner(dbunch, model, splitter=meta['split_clas'], **kwargs)
+    learn = TextLearner(dls, model, splitter=meta['split_clas'], **kwargs)
     if pretrained:
         if 'url' not in meta:
             warn("There are no pretrained weights for that architecture yet!")

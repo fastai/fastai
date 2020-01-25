@@ -36,7 +36,7 @@ class TrainEvalCallback(Callback):
     def begin_fit(self):
         "Set the iter and epoch counters to 0, put the model and the right device"
         self.learn.train_iter,self.learn.pct_train = 0,0.
-        self.model.to(self.dbunch.device)
+        self.model.to(self.dls.device)
 
     def after_batch(self):
         "Update the iter counter (in training mode)"
@@ -176,20 +176,20 @@ from contextlib import ExitStack
 
 # Cell
 class Learner():
-    def __init__(self, dbunch, model, loss_func=None, opt_func=Adam, lr=defaults.lr, splitter=trainable_params, cbs=None,
+    def __init__(self, dls, model, loss_func=None, opt_func=Adam, lr=defaults.lr, splitter=trainable_params, cbs=None,
                  cb_funcs=None, metrics=None, path=None, model_dir='models', wd=defaults.wd, wd_bn_bias=False, train_bn=True,
                  moms=(0.95,0.85,0.95)):
-        store_attr(self, "dbunch,model,opt_func,lr,splitter,model_dir,wd,wd_bn_bias,train_bn,metrics,moms")
+        store_attr(self, "dls,model,opt_func,lr,splitter,model_dir,wd,wd_bn_bias,train_bn,metrics,moms")
         self.training,self.create_mbar,self.logger,self.opt,self.cbs = False,True,print,None,L()
         #TODO: infer loss_func from data
         if loss_func is None:
-            loss_func = getattr(dbunch.train_ds, 'loss_func', None)
+            loss_func = getattr(dls.train_ds, 'loss_func', None)
             assert loss_func is not None, "Could not infer loss function from the data, please pass a loss function."
         self.loss_func = loss_func
-        self.path = path if path is not None else getattr(dbunch, 'path', Path('.'))
+        self.path = path if path is not None else getattr(dls, 'path', Path('.'))
         self.add_cbs(cbf() for cbf in L(defaults.callbacks)+L(cb_funcs))
         self.add_cbs(cbs)
-        self.model.to(self.dbunch.device)
+        self.model.to(self.dls.device)
         self.epoch,self.n_epoch,self.loss = 0,1,tensor(0.)
 
     @property
@@ -234,7 +234,7 @@ class Learner():
             for p in self._bn_bias_state(False): p['force_train'] = True
 
     def _split(self, b):
-        i = getattr(self.dbunch, 'n_inp', 1 if len(b)==1 else len(b)-1)
+        i = getattr(self.dls, 'n_inp', 1 if len(b)==1 else len(b)-1)
         self.xb,self.yb = b[:i],b[i:]
 
     def all_batches(self):
@@ -260,13 +260,13 @@ class Learner():
 
     def _do_epoch_train(self):
         try:
-            self.dl = self.dbunch.train_dl;                  self('begin_train')
+            self.dl = self.dls.train_dl;                  self('begin_train')
             self.all_batches()
         except CancelTrainException:                         self('after_cancel_train')
         finally:                                             self('after_train')
 
     def _do_epoch_validate(self, ds_idx=1, dl=None):
-        if dl is None: dl = self.dbunch[ds_idx]
+        if dl is None: dl = self.dls[ds_idx]
         names = ['shuffle', 'drop_last']
         try:
             dl,old,has = change_attrs(dl, names, [False,False])
@@ -295,7 +295,7 @@ class Learner():
             finally:                               self('after_fit')
 
     def validate(self, ds_idx=1, dl=None, cbs=None):
-        if dl is None: dl = self.dbunch[ds_idx]
+        if dl is None: dl = self.dls[ds_idx]
         with self.added_cbs(cbs), self.no_logging(), self.no_mbar():
             self(_before_epoch)
             self._do_epoch_validate(ds_idx, dl)
@@ -322,17 +322,17 @@ class Learner():
             return tuple(res)
 
     def predict(self, item, rm_type_tfms=None):
-        dl = self.dbunch.test_dl([item], rm_type_tfms=rm_type_tfms)
+        dl = self.dls.test_dl([item], rm_type_tfms=rm_type_tfms)
         inp,preds,_,dec_preds = self.get_preds(dl=dl, with_input=True, with_decoded=True)
-        i = getattr(self.dbunch, 'n_inp', -1)
-        full_dec = self.dbunch.decode_batch((*tuplify(inp),*tuplify(dec_preds)))[0][i:]
+        i = getattr(self.dls, 'n_inp', -1)
+        full_dec = self.dls.decode_batch((*tuplify(inp),*tuplify(dec_preds)))[0][i:]
         return detuplify(full_dec),dec_preds[0],preds[0]
 
     def show_results(self, ds_idx=0, dl=None, max_n=10, **kwargs):
-        if dl is None: dl = self.dbunch[ds_idx]
+        if dl is None: dl = self.dls[ds_idx]
         b = dl.one_batch()
         _,_,preds = self.get_preds(dl=[b], with_decoded=True)
-        self.dbunch.show_results(b, preds, max_n=max_n, **kwargs)
+        self.dls.show_results(b, preds, max_n=max_n, **kwargs)
 
     def show_training_loop(self):
         indent = 0
@@ -357,7 +357,7 @@ class Learner():
         save_model(file, self.model, getattr(self,'opt',None), with_opt)
 
     def load(self, file, with_opt=None, device=None, strict=True):
-        if device is None: device = self.dbunch.device
+        if device is None: device = self.dls.device
         if self.opt is None: self.create_opt()
         distrib_barrier()
         file = join_path_file(file, self.path/self.model_dir, ext='.pth')
@@ -367,7 +367,7 @@ class Learner():
 Learner.x,Learner.y = add_props(lambda i,x: detuplify((x.xb,x.yb)[i]))
 
 # Cell
-add_docs(Learner, "Group together a `model`, some `dbunch` and a `loss_func` to handle training",
+add_docs(Learner, "Group together a `model`, some `dls` and a `loss_func` to handle training",
     add_cbs="Add `cbs` to the list of `Callback` and register `self` as their learner",
     add_cb="Add `cb` to the list of `Callback` and register `self` as their learner",
     remove_cbs="Remove `cbs` from the list of `Callback` and deregister `self` as their learner",
@@ -572,8 +572,8 @@ add_docs(Learner,
 def export(self:Learner, fname='export.pkl'):
     "Export the content of `self` without the items and the optimizer state for inference"
     if rank_distrib(): return # don't export if slave proc
-    old_dbunch = self.dbunch
-    self.dbunch = self.dbunch.new_empty()
+    old_dbunch = self.dls
+    self.dls = self.dls.new_empty()
     state = self.opt.state_dict()
     self.opt = None
     with warnings.catch_warnings():
@@ -582,21 +582,21 @@ def export(self:Learner, fname='export.pkl'):
         torch.save(self, self.path/fname)
     self.create_opt()
     self.opt.load_state_dict(state)
-    self.dbunch = old_dbunch
+    self.dls = old_dbunch
 
 # Cell
 def load_learner(fname, cpu=True):
     "Load a `Learner` object in `fname`, optionally putting it on the `cpu`"
     res = torch.load(fname, map_location='cpu' if cpu else None)
     if hasattr(res, 'to_fp32'): res = res.to_fp32()
-    if cpu: res.dbunch.cpu()
+    if cpu: res.dls.cpu()
     return res
 
 # Cell
 @patch
 def tta(self:Learner, ds_idx=1, dl=None, n=4, item_tfms=None, batch_tfms=None, beta=0.25):
     "Return predictions on the `ds_idx` dataset or `dl` using Test Time Augmentation"
-    if dl is None: dl = self.dbunch[ds_idx]
+    if dl is None: dl = self.dls[ds_idx]
     if item_tfms is not None or batch_tfms is not None: dl = dl.new(after_item=item_tfms, after_batch=batch_tfms)
     with dl.dataset.set_split_idx(0), self.no_mbar():
         if hasattr(self,'progress'): self.progress.mbar = master_bar(list(range(n)))

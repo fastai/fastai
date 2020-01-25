@@ -40,12 +40,12 @@ class WandbCallback(Callback):
         if self.log_preds and not self.valid_dl:
             #Initializes the batch watched
             wandbRandom = random.Random(self.seed)  # For repeatability
-            self.n_preds = min(self.n_preds, len(self.dbunch.valid_ds))
-            idxs = wandbRandom.sample(range(len(self.dbunch.valid_ds)), self.n_preds)
+            self.n_preds = min(self.n_preds, len(self.dls.valid_ds))
+            idxs = wandbRandom.sample(range(len(self.dls.valid_ds)), self.n_preds)
 
-            items = [self.dbunch.valid_ds.items[i] for i in idxs]
-            test_tls = [tl._new(items, split_idx=1) for tl in self.dbunch.valid_ds.tls]
-            self.valid_dl = self.dbunch.valid_dl.new(Datasets(tls=test_tls), bs=self.n_preds)
+            items = [self.dls.valid_ds.items[i] for i in idxs]
+            test_tls = [tl._new(items, split_idx=1) for tl in self.dls.valid_ds.tls]
+            self.valid_dl = self.dls.valid_dl.new(Datasets(tls=test_tls), bs=self.n_preds)
 
     def after_batch(self):
         "Log hyper-parameters and training loss"
