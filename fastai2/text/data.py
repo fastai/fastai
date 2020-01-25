@@ -172,7 +172,7 @@ class TextBlock(TransformBlock):
     def __init__(self, tok_tfm, vocab=None, is_lm=False, seq_len=72):
         return super().__init__(type_tfms=[tok_tfm, Numericalize(vocab)],
                                 dl_type=LMDataLoader if is_lm else SortedDL,
-                                dbunch_kwargs={} if is_lm else {'before_batch': partial(pad_input_chunk, seq_len=seq_len)})
+                                dls_kwargs={} if is_lm else {'before_batch': partial(pad_input_chunk, seq_len=seq_len)})
 
     @classmethod
     @delegates(Tokenizer.from_df, keep=True)

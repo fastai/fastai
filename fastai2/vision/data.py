@@ -157,10 +157,10 @@ def MaskBlock(codes=None):
 
 # Cell
 PointBlock = TransformBlock(type_tfms=TensorPoint.create, item_tfms=PointScaler)
-BBoxBlock  = TransformBlock(type_tfms=TensorBBox.create,  item_tfms=PointScaler, dbunch_kwargs = {'before_batch': bb_pad})
+BBoxBlock  = TransformBlock(type_tfms=TensorBBox.create,  item_tfms=PointScaler, dls_kwargs = {'before_batch': bb_pad})
 
 # Cell
-BBoxBlock = TransformBlock(type_tfms=TensorBBox.create, item_tfms=PointScaler, dbunch_kwargs = {'before_batch': bb_pad})
+BBoxBlock = TransformBlock(type_tfms=TensorBBox.create, item_tfms=PointScaler, dls_kwargs = {'before_batch': bb_pad})
 
 # Cell
 def BBoxLblBlock(vocab=None, add_na=True):
