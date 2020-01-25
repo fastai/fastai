@@ -177,8 +177,8 @@ class Categorize(Transform):
         self.add_na = add_na
         self.vocab = None if vocab is None else CategoryMap(vocab, add_na=add_na)
 
-    def setups(self, dsrc):
-        if self.vocab is None and dsrc is not None: self.vocab = CategoryMap(dsrc, add_na=self.add_na)
+    def setups(self, dsets):
+        if self.vocab is None and dsets is not None: self.vocab = CategoryMap(dsets, add_na=self.add_na)
         self.c = len(self.vocab)
 
     def encodes(self, o): return TensorCategory(self.vocab.o2i[o])
@@ -195,11 +195,11 @@ class MultiCategorize(Categorize):
         self.add_na = add_na
         self.vocab = None if vocab is None else CategoryMap(vocab, add_na=add_na)
 
-    def setups(self, dsrc):
-        if not dsrc: return
+    def setups(self, dsets):
+        if not dsets: return
         if self.vocab is None:
             vals = set()
-            for b in dsrc: vals = vals.union(set(b))
+            for b in dsets: vals = vals.union(set(b))
             self.vocab = CategoryMap(list(vals), add_na=self.add_na)
 
     def encodes(self, o): return TensorMultiCategory([self.vocab.o2i[o_] for o_ in o])
@@ -216,8 +216,8 @@ class OneHotEncode(Transform):
     order=2
     def __init__(self, c=None): self.c = c
 
-    def setups(self, dsrc):
-        if self.c is None: self.c = len(L(getattr(dsrc, 'vocab', None)))
+    def setups(self, dsets):
+        if self.c is None: self.c = len(L(getattr(dsets, 'vocab', None)))
         if not self.c: warn("Couldn't infer the number of classes, please pass a value for `c` at init")
 
     def encodes(self, o): return TensorMultiCategory(one_hot(o, self.c).float())

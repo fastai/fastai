@@ -200,7 +200,7 @@ def decodes(self, to:Tabular):
 class NormalizeTab(TabularProc):
     "Normalize the continuous variables."
     order = 2
-    def setups(self, dsrc): self.means,self.stds = dsrc.conts.mean(),dsrc.conts.std(ddof=0)+1e-7
+    def setups(self, dsets): self.means,self.stds = dsets.conts.mean(),dsets.conts.std(ddof=0)+1e-7
     def encodes(self, to): to.conts = (to.conts-self.means) / self.stds
     def decodes(self, to): to.conts = (to.conts*self.stds ) + self.means
 
@@ -234,9 +234,9 @@ class FillMissing(TabularProc):
         if fill_vals is None: fill_vals = defaultdict(int)
         store_attr(self, 'fill_strategy,add_col,fill_vals')
 
-    def setups(self, dsrc):
-        self.na_dict = {n:self.fill_strategy(dsrc[n], self.fill_vals[n])
-                        for n in pd.isnull(dsrc.conts).any().keys()}
+    def setups(self, dsets):
+        self.na_dict = {n:self.fill_strategy(dsets[n], self.fill_vals[n])
+                        for n in pd.isnull(dsets.conts).any().keys()}
 
     def encodes(self, to):
         missing = pd.isnull(to.conts)

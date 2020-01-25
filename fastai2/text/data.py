@@ -29,10 +29,10 @@ class Numericalize(Transform):
         self.vocab,self.min_freq,self.max_vocab,self.sep = vocab,min_freq,max_vocab,sep
         self.o2i = None if vocab is None else defaultdict(int, {v:k for k,v in enumerate(vocab)})
 
-    def setups(self, dsrc):
-        if dsrc is None: return
+    def setups(self, dsets):
+        if dsets is None: return
         if self.vocab is None:
-            count = dsrc.counter if hasattr(dsrc, 'counter') else Counter(p for o in dsrc for p in o)
+            count = dsets.counter if hasattr(dsets, 'counter') else Counter(p for o in dsets for p in o)
             self.vocab = make_vocab(count, min_freq=self.min_freq, max_vocab=self.max_vocab)
             self.o2i = defaultdict(int, {v:k for k,v in enumerate(self.vocab) if v != 'xxfake'})
 

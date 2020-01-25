@@ -79,11 +79,11 @@ class DataBlock():
         return Datasets(items, tfms=type_tfms, splits=splits, dl_type=self.dl_type, n_inp=self.n_inp)
 
     def dataloaders(self, source, path='.', type_tfms=None, item_tfms=None, batch_tfms=None, **kwargs):
-        dsrc = self.datasets(source, type_tfms=type_tfms)
+        dsets = self.datasets(source, type_tfms=type_tfms)
         item_tfms  = _merge_tfms(self.default_item_tfms,  item_tfms)
         batch_tfms = _merge_tfms(self.default_batch_tfms, batch_tfms)
         kwargs = {**self.dbunch_kwargs, **kwargs}
-        return dsrc.dataloaders(path=path, after_item=item_tfms, after_batch=batch_tfms, **kwargs)
+        return dsets.dataloaders(path=path, after_item=item_tfms, after_batch=batch_tfms, **kwargs)
 
     _docs = dict(datasets="Create a `Datasource` from `source` with `type_tfms`",
                  dataloaders="Create a `DataLoaders` from `source` with `item_tfms` and `batch_tfms`")

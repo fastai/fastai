@@ -270,11 +270,11 @@ class Tokenizer(Transform):
         res.path,res.output_dir = path,output_dir
         return res
 
-    def setups(self, dsrc):
-        if not self.mode == 'df' or not isinstance(dsrc.items, pd.DataFrame): return
-        dsrc.items,count = tokenize_df(dsrc.items, self.text_cols, **self.kwargs)
+    def setups(self, dsets):
+        if not self.mode == 'df' or not isinstance(dsets.items, pd.DataFrame): return
+        dsets.items,count = tokenize_df(dsets.items, self.text_cols, **self.kwargs)
         if self.counter is None: self.counter = count
-        return dsrc
+        return dsets
 
     def encodes(self, o:Path):
         if self.mode=='folder' and str(o).startswith(str(self.path)):
