@@ -105,14 +105,14 @@ class TfmdDL(DataLoader):
 class DataLoaders(GetAttr):
     "Basic wrapper around several `DataLoader`s."
     _default='train_dl'
-    def __init__(self, *dls, path='.', device=None):
-        self.dls,self.path = dls,Path(path)
+    def __init__(self, *loaders, path='.', device=None):
+        self.loaders,self.path = loaders,Path(path)
         self.device = device
 
-    def __getitem__(self, i): return self.dls[i]
+    def __getitem__(self, i): return self.loaders[i]
     def new_empty(self):
-        dls = [dl.new(dl.dataset.new_empty()) for dl in self.dls]
-        return type(self)(*dls, path=self.path, device=self.device)
+        loaders = [dl.new(dl.dataset.new_empty()) for dl in self.loaders]
+        return type(self)(*loaders, path=self.path, device=self.device)
 
     train_dl,valid_dl = add_props(lambda i,x: x[i])
     train_ds,valid_ds = add_props(lambda i,x: x[i].dataset)
@@ -122,7 +122,7 @@ class DataLoaders(GetAttr):
 
     @device.setter
     def device(self, d):
-        for dl in self.dls: dl.device = d
+        for dl in self.loaders: dl.device = d
         self._device = d
 
     def cuda(self, device=None):
@@ -170,9 +170,9 @@ class FilteredBase:
                else [bs] + [val_bs]*(ns-1))
         shuffles = [shuffle_train] + [False]*ns
         if dl_type is None: dl_type = self._dl_type
-        dls = [dl_type(self.subset(i), bs=b, shuffle=s, drop_last=s, n=n if i==0 else None, **kwargs, **dk)
+        loaders = [dl_type(self.subset(i), bs=b, shuffle=s, drop_last=s, n=n if i==0 else None, **kwargs, **dk)
                for i,(b,s,dk) in enumerate(zip(bss,shuffles,dl_kwargs))]
-        return self._dbunch_type(*dls, path=path, device=device)
+        return self._dbunch_type(*loaders, path=path, device=device)
 
 FilteredBase.train,FilteredBase.valid = add_props(lambda i,x: x.subset(i))
 
@@ -314,4 +314,3 @@ def test_dl(self:DataLoaders, test_items, rm_type_tfms=None, **kwargs):
     "Create a test dataloader from `test_items` using validation transforms of `dbunch`"
     test_ds = test_set(self.valid_ds, test_items, rm_tfms=rm_type_tfms) if isinstance(self.valid_ds, Datasets) else test_items
     return self.valid_dl.new(test_ds, **kwargs)
-

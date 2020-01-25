@@ -89,22 +89,22 @@ class DistributedTrainer(Callback):
 
     def begin_fit(self):
         self.learn.model = DistributedDataParallel(self.model, device_ids=[self.cuda_id], output_device=self.cuda_id)
-        self.old_dls = [dl for dl in self.dbunch.dls]
-        self.learn.dbunch.dls = [self._wrap_dl(dl) for dl in self.dbunch.dls]
+        self.old_dls = list(self.dbunch)
+        self.learn.dbunch.loaders = [self._wrap_dl(dl) for dl in self.dbunch]
         if rank_distrib() > 0: self.learn.logger=noop
 
     def _wrap_dl(self, dl):
         return dl if isinstance(dl, DistributedDL) else DistributedDL.from_dl(dl, rank_distrib(), num_distrib())
 
     def begin_epoch(self):
-        for dl in self.dbunch.dls: dl.set_epoch(self.epoch)
+        for dl in self.dbunch: dl.set_epoch(self.epoch)
 
     def begin_train(self):    self.dl = self._wrap_dl(self.dl)
     def begin_validate(self): self.dl = self._wrap_dl(self.dl)
 
     def after_fit(self):
         self.learn.model = self.learn.model.module
-        self.learn.dbunch.dls = self.old_dls
+        self.learn.dbunch.loaders = self.old_dls
 
 # Cell
 @patch

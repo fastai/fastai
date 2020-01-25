@@ -75,7 +75,6 @@ def add_elapsed_times(df, field_names, date_field, base_field):
     work_df.drop(field_names,1,inplace=True)
     return df.merge(work_df, 'left', [date_field, base_field])
 
-
 # Cell
 def cont_cat_split(df, max_card=20, dep_var=None):
     "Helper function that returns column names of cont and cat variables from given `df`."
