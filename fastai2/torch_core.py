@@ -4,14 +4,14 @@ __all__ = ['progress_bar', 'master_bar', 'subplots', 'show_image', 'show_titled_
            'ArrayImageBase', 'ArrayImage', 'ArrayImageBW', 'ArrayMask', 'tensor', 'set_seed', 'unsqueeze', 'unsqueeze_',
            'apply', 'maybe_gather', 'to_detach', 'to_half', 'to_float', 'default_device', 'to_device', 'to_cpu',
            'to_np', 'to_concat', 'TensorBase', 'TensorCategory', 'TensorMultiCategory', 'TensorImageBase',
-           'TensorImage', 'TensorImageBW', 'TensorMask', 'concat', 'Chunks', 'show_title', 'ShowTitle', 'TitledInt',
-           'TitledFloat', 'TitledStr', 'TitledTuple', 'get_empty_df', 'display_df', 'one_param', 'item_find',
-           'find_device', 'find_bs', 'Module', 'get_model', 'one_hot', 'one_hot_decode', 'params', 'trainable_params',
-           'norm_types', 'bn_bias_params', 'batch_to_samples', 'logit', 'num_distrib', 'rank_distrib',
-           'distrib_barrier', 'to_image', 'make_cross_image', 'show_image_batch', 'requires_grad', 'init_default',
-           'cond_init', 'apply_leaf', 'apply_init', 'set_num_threads', 'ProcessPoolExecutor', 'parallel', 'run_procs',
-           'parallel_gen', 'script_use_ctx', 'script_save_ctx', 'script_fwd', 'script_bwd', 'grad_module',
-           'flatten_check']
+           'TensorImage', 'TensorImageBW', 'TensorMask', 'TitledTensorScalar', 'concat', 'Chunks', 'show_title',
+           'ShowTitle', 'TitledInt', 'TitledFloat', 'TitledStr', 'TitledTuple', 'get_empty_df', 'display_df',
+           'one_param', 'item_find', 'find_device', 'find_bs', 'Module', 'get_model', 'one_hot', 'one_hot_decode',
+           'params', 'trainable_params', 'norm_types', 'bn_bias_params', 'batch_to_samples', 'logit', 'num_distrib',
+           'rank_distrib', 'distrib_barrier', 'to_image', 'make_cross_image', 'show_image_batch', 'requires_grad',
+           'init_default', 'cond_init', 'apply_leaf', 'apply_init', 'set_num_threads', 'ProcessPoolExecutor',
+           'parallel', 'run_procs', 'parallel_gen', 'script_use_ctx', 'script_save_ctx', 'script_fwd', 'script_bwd',
+           'grad_module', 'flatten_check']
 
 # Cell
 from .imports import *
@@ -308,6 +308,11 @@ class TensorMask(TensorImageBase):
         codes = self.get_meta('codes')
         if codes is not None: kwargs = merge({'vmin': 1, 'vmax': len(codes)}, kwargs)
         return super().show(ctx=ctx, **kwargs)
+
+# Cell
+class TitledTensorScalar(TensorBase):
+    "A tensor containing a scalar that has a `show` method"
+    def show(self, **kwargs): show_title(self.item(), **kwargs)
 
 # Cell
 @patch
