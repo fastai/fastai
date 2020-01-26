@@ -80,17 +80,22 @@ class DataBlock():
         get_items = _zip if get_items is None else compose(get_items, _zip)
         return cls(blocks=blocks, getters=getters, get_items=get_items, **kwargs)
 
-    def datasets(self, source):
-        self.source = source
-        items = (self.get_items or noop)(source)
+    def datasets(self, source, verbose=False):
+        self.source = source                     ; pv(f"Collecting items from {source}", verbose)
+        items = (self.get_items or noop)(source) ; pv(f"Found {len(items)} items", verbose)
         splits = (self.splitter or noop)(items)
-        return Datasets(items, tfms=self._combine_type_tfms(), splits=splits, dl_type=self.dl_type, n_inp=self.n_inp)
+        pv(f"{len(splits)} datasets of sizes {','.join([str(len(s)) for s in splits])}", verbose)
+        return Datasets(items, tfms=self._combine_type_tfms(), splits=splits, dl_type=self.dl_type, n_inp=self.n_inp, verbose=verbose)
 
-    def dataloaders(self, source, path='.', **kwargs):
+    def dataloaders(self, source, path='.', verbose=False, **kwargs):
         dsets = self.datasets(source)
-        kwargs = {**self.dls_kwargs, **kwargs}
+        kwargs = {**self.dls_kwargs, **kwargs, 'verbose': verbose}
         return dsets.dataloaders(path=path, after_item=self.item_tfms, after_batch=self.batch_tfms, **kwargs)
 
     _docs = dict(new="Create a new `DataBlock` with other `item_tfms` and `batch_tfms`",
                  datasets="Create a `Datasets` object from `source`",
                  dataloaders="Create a `DataLoaders` object from `source`")
+
+# Cell
+def _pretty_print(tfms):
+    return ' -> '.join([mk_transform(f).name for f in tfms if f != noop])

@@ -77,3 +77,6 @@ def equals(a,b):
            operator.eq)
     return cmp(a,b)
 
+
+def pv(text, verbose):
+    if verbose: print(text)

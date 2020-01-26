@@ -32,12 +32,14 @@ _batch_tfms = ('after_item','before_batch','after_batch')
 @delegates()
 class TfmdDL(DataLoader):
     "Transformed `DataLoader`"
-    def __init__(self, dataset, bs=64, shuffle=False, num_workers=None, **kwargs):
+    def __init__(self, dataset, bs=64, shuffle=False, num_workers=None, verbose=False, do_setup=True, **kwargs):
         if num_workers is None: num_workers = min(16, defaults.cpus)
-        for nm in _batch_tfms:
-            kwargs[nm] = Pipeline(kwargs.get(nm,None), as_item=(nm=='before_batch'))
+        for nm in _batch_tfms: kwargs[nm] = Pipeline(kwargs.get(nm,None), as_item=(nm=='before_batch'))
         super().__init__(dataset, bs=bs, shuffle=shuffle, num_workers=num_workers, **kwargs)
-        for nm in _batch_tfms: kwargs[nm].setup(self)
+        if do_setup:
+            for nm in _batch_tfms:
+                pv(f"Setting up {nm}: {kwargs[nm]}", verbose)
+                kwargs[nm].setup(self)
 
     def _one_pass(self):
         b = self.do_batch([self.do_item(0)])
@@ -52,7 +54,7 @@ class TfmdDL(DataLoader):
 
     @delegates(DataLoader.new)
     def new(self, dataset=None, cls=None, **kwargs):
-        res = super().new(dataset, cls, **kwargs)
+        res = super().new(dataset, cls, do_setup=False, **kwargs)
         if not hasattr(self, '_n_inp') or not hasattr(self, '_types'):
             self._one_pass()
         res._n_inp,res._types = self._n_inp,self._types
@@ -163,16 +165,13 @@ class FilteredBase:
     def dataloaders(self, bs=64, val_bs=None, shuffle_train=True, n=None, path='.', dl_type=None, dl_kwargs=None, device=None,
                   **kwargs):
         if device is None: device=default_device()
-        if dl_kwargs is None: dl_kwargs = [{}] * self.n_subsets
-        ns = self.n_subsets
-        bss = ([None]*ns if bs is None
-               else [bs]*ns if val_bs is None
-               else [bs] + [val_bs]*(ns-1))
-        shuffles = [shuffle_train] + [False]*ns
+        if dl_kwargs is None: dl_kwargs = {}
         if dl_type is None: dl_type = self._dl_type
-        loaders = [dl_type(self.subset(i), bs=b, shuffle=s, drop_last=s, n=n if i==0 else None, **kwargs, **dk)
-               for i,(b,s,dk) in enumerate(zip(bss,shuffles,dl_kwargs))]
-        return self._dbunch_type(*loaders, path=path, device=device)
+        dl = dl_type(self.subset(0), bs=bs, shuffle=shuffle_train, drop_last=shuffle_train, n=n,
+                     **merge(kwargs, dl_kwargs))
+        dls = [dl] + [dl.new(self.subset(i), bs=(bs if val_bs is None else val_bs), shuffle=False, drop_last=False, n=None)
+                      for i in range(1, self.n_subsets)]
+        return self._dbunch_type(*dls, path=path, device=device)
 
 FilteredBase.train,FilteredBase.valid = add_props(lambda i,x: x.subset(i))
 
@@ -181,14 +180,16 @@ class TfmdLists(FilteredBase, L, GetAttr):
     "A `Pipeline` of `tfms` applied to a collection of `items`"
     _default='tfms'
     def __init__(self, items, tfms, use_list=None, do_setup=True, as_item=True, split_idx=None, train_setup=True,
-                 splits=None, types=None):
+                 splits=None, types=None, verbose=False):
         super().__init__(items, use_list=use_list)
         self.splits = L([slice(None),[]] if splits is None else splits).map(mask2idxs)
         if isinstance(tfms,TfmdLists): tfms = tfms.tfms
         if isinstance(tfms,Pipeline): do_setup=False
         self.tfms = Pipeline(tfms, as_item=as_item, split_idx=split_idx)
         self.types = types
-        if do_setup: self.setup(train_setup=train_setup)
+        if do_setup:
+            pv(f"Setting up {self.tfms}", verbose)
+            self.setup(train_setup=train_setup)
 
     def _new(self, items, **kwargs): return super()._new(items, tfms=self.tfms, do_setup=False, types=self.types, **kwargs)
     def subset(self, i): return self._new(self._get(self.splits[i]), split_idx=i)
