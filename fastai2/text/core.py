@@ -305,7 +305,7 @@ class SentencePieceTokenizer():#TODO: pass the special tokens symbol to sp
         self.sp_model,self.cache_dir = sp_model,Path(cache_dir)
         self.vocab_sz,self.max_vocab_sz,self.model_type = vocab_sz,max_vocab_sz,model_type
         self.char_coverage = ifnone(char_coverage, 0.99999 if lang in eu_langs else 0.9998)
-        self.special_toks = ifnone(special_toks, defaults.text_spec_todsrc.tokenizer[1].lengthsk)
+        self.special_toks = ifnone(special_toks, defaults.text_spec_tok)
         if sp_model is None: self.tok = None
         else:
             self.tok = SentencePieceProcessor()

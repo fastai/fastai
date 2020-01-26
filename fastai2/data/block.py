@@ -67,6 +67,8 @@ class DataBlock():
         assert not kwargs
         self.new(item_tfms, batch_tfms)
 
+    def _combine_type_tfms(self): return L([self.getters, self.type_tfms]).map_zip(lambda g,tt: L(g) + tt)
+
     def new(self, item_tfms=None, batch_tfms=None):
         self.item_tfms  = _merge_tfms(self.default_item_tfms,  item_tfms)
         self.batch_tfms = _merge_tfms(self.default_batch_tfms, batch_tfms)
@@ -82,8 +84,7 @@ class DataBlock():
         self.source = source
         items = (self.get_items or noop)(source)
         splits = (self.splitter or noop)(items)
-        type_tfms = L([self.type_tfms, self.getters]).map_zip(lambda tt,g: L(g) + tt)
-        return Datasets(items, tfms=type_tfms, splits=splits, dl_type=self.dl_type, n_inp=self.n_inp)
+        return Datasets(items, tfms=self._combine_type_tfms(), splits=splits, dl_type=self.dl_type, n_inp=self.n_inp)
 
     def dataloaders(self, source, path='.', **kwargs):
         dsets = self.datasets(source)
