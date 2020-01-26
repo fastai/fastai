@@ -97,5 +97,52 @@ class DataBlock():
                  dataloaders="Create a `DataLoaders` object from `source`")
 
 # Cell
-def _pretty_print(tfms):
-    return ' -> '.join([mk_transform(f).name for f in tfms if f != noop])
+def _apply_pipeline(p, x):
+    print(f"  {p}\n    starting from\n      {x}")
+    for f in p.fs:
+        name = f.name
+        try:
+            x = f(x)
+            if name != "noop": print(f"    applying {name} gives\n      {str(x)}")
+        except Exception as e:
+            print(f"    applying {name} failed.")
+            raise e
+    return x
+
+# Cell
+@patch
+def summary(self: DataBlock, source, bs=4, **kwargs):
+    print(f"Setting-up type transforms pipelines")
+    dsets = self.datasets(source, verbose=True)
+    print("\nBuilding one sample")
+    for tl in dsets.train.tls: _apply_pipeline(tl.tfms, dsets.train.items[0])
+    print(f"\nFinal sample: {dsets.train[0]}\n\n")
+
+    dls = self.dataloaders(source, verbose=True)
+    print("\nBuilding one batch")
+    if len([f for f in dls.train.before_batch.fs if f.name != 'noop'])!=0:
+        print("Applying item_tfms to the first sample:")
+        s = [_apply_pipeline(dls.train.after_item, dsets.train[0])]
+        print(f"\nAdding the next {bs-1} samples")
+        s += [dls.train.after_item(dsets.train[i]) for i in range(1, bs)]
+    else:
+        print("No item_tfms to apply")
+        s = [dls.train.after_item(dsets.train[i]) for i in range(bs)]
+
+    if len([f for f in dls.train.before_batch.fs if f.name != 'noop'])!=0:
+        print("\nApplying before_batch to the list of samples")
+        s = _apply_pipeline(dls.train.before_batch, s)
+    else: print("\nNo before_batch transform to apply")
+
+    print("\nCollating items in a batch")
+    try:
+        b = dls.train.create_batch(s)
+        b = retain_types(b, s[0] if is_listy(s) else s)
+    except Exception as e:
+        print("It's not possible to collate your items in a batch, make sure all parts of your samples are tensors of the same size")
+        raise e
+
+    if len([f for f in dls.train.after_batch.fs if f.name != 'noop'])!=0:
+        print("\nApplying batch_tfms to the batch built")
+        b = _apply_pipeline(dls.train.after_batch, b)
+    else: print("\nNo batch_tfms to apply")

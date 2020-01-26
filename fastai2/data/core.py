@@ -165,12 +165,12 @@ class FilteredBase:
     def dataloaders(self, bs=64, val_bs=None, shuffle_train=True, n=None, path='.', dl_type=None, dl_kwargs=None, device=None,
                   **kwargs):
         if device is None: device=default_device()
-        if dl_kwargs is None: dl_kwargs = {}
+        if dl_kwargs is None: dl_kwargs = [{}] * self.n_subsets
         if dl_type is None: dl_type = self._dl_type
-        dl = dl_type(self.subset(0), bs=bs, shuffle=shuffle_train, drop_last=shuffle_train, n=n,
-                     **merge(kwargs, dl_kwargs))
-        dls = [dl] + [dl.new(self.subset(i), bs=(bs if val_bs is None else val_bs), shuffle=False, drop_last=False, n=None)
-                      for i in range(1, self.n_subsets)]
+        dl = dl_type(self.subset(0), bs=bs, shuffle=shuffle_train, drop_last=shuffle_train, n=n, device=device,
+                     **merge(kwargs, dl_kwargs[0]))
+        dls = [dl] + [dl.new(self.subset(i), bs=(bs if val_bs is None else val_bs), shuffle=False, drop_last=False,
+                             n=None, **dl_kwargs[i]) for i in range(1, self.n_subsets)]
         return self._dbunch_type(*dls, path=path, device=device)
 
 FilteredBase.train,FilteredBase.valid = add_props(lambda i,x: x.subset(i))
