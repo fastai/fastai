@@ -104,7 +104,7 @@ class TfmdDL(DataLoader):
 @docs
 class DataLoaders(GetAttr):
     "Basic wrapper around several `DataLoader`s."
-    _default='train_dl'
+    _default='train'
     def __init__(self, *loaders, path='.', device=None):
         self.loaders,self.path = loaders,Path(path)
         self.device = device
@@ -114,7 +114,7 @@ class DataLoaders(GetAttr):
         loaders = [dl.new(dl.dataset.new_empty()) for dl in self.loaders]
         return type(self)(*loaders, path=self.path, device=self.device)
 
-    train_dl,valid_dl = add_props(lambda i,x: x[i])
+    train   ,valid    = add_props(lambda i,x: x[i])
     train_ds,valid_ds = add_props(lambda i,x: x[i].dataset)
 
     @property
@@ -137,8 +137,8 @@ class DataLoaders(GetAttr):
         return dblock.dataloaders(source, path=path, type_tfms=type_tfms, item_tfms=item_tfms, batch_tfms=batch_tfms, **kwargs)
 
     _docs=dict(__getitem__="Retrieve `DataLoader` at `i` (`0` is training, `1` is validation)",
-               train_dl="Training `DataLoader`",
-               valid_dl="Validation `DataLoader`",
+               train="Training `DataLoader`",
+               valid="Validation `DataLoader`",
                train_ds="Training `Dataset`",
                valid_ds="Validation `Dataset`",
                cuda="Use `device` (defaults to `default_device()`)",
@@ -313,4 +313,4 @@ def test_set(dsets, test_items, rm_tfms=None):
 def test_dl(self:DataLoaders, test_items, rm_type_tfms=None, **kwargs):
     "Create a test dataloader from `test_items` using validation transforms of `dls`"
     test_ds = test_set(self.valid_ds, test_items, rm_tfms=rm_type_tfms) if isinstance(self.valid_ds, Datasets) else test_items
-    return self.valid_dl.new(test_ds, **kwargs)
+    return self.valid.new(test_ds, **kwargs)

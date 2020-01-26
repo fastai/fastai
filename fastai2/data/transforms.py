@@ -234,8 +234,8 @@ class EncodedMultiCategorize(Categorize):
 # Cell
 def get_c(dls):
     if getattr(dls, 'c', False): return dls.c
-    if getattr(dls.train_dl.after_item, 'c', False): return dls.train_dl.after_item.c
-    if getattr(dls.train_dl.after_batch, 'c', False): return dls.train_dl.after_batch.c
+    if getattr(dls.train.after_item, 'c', False): return dls.train.after_item.c
+    if getattr(dls.train.after_batch, 'c', False): return dls.train.after_batch.c
     vocab = getattr(dls, 'vocab', [])
     if len(vocab) > 0 and is_listy(vocab[-1]): vocab = vocab[-1]
     return len(vocab)
