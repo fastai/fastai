@@ -97,13 +97,21 @@ class DataBlock():
                  dataloaders="Create a `DataLoaders` object from `source`")
 
 # Cell
+def _short_repr(x):
+    if isinstance(x, tuple): return f'({", ".join([_short_repr(y) for y in x])})'
+    if isinstance(x, list): return f'[{", ".join([_short_repr(y) for y in x])}]'
+    if not isinstance(x, Tensor): return str(x)
+    if x.numel() <= 20 and x.ndim <=1: return str(x)
+    return f'{x.__class__.__name__} of size {"x".join([str(d) for d in x.shape])}'
+
+# Cell
 def _apply_pipeline(p, x):
-    print(f"  {p}\n    starting from\n      {x}")
+    print(f"  {p}\n    starting from\n      {_short_repr(x)}")
     for f in p.fs:
         name = f.name
         try:
             x = f(x)
-            if name != "noop": print(f"    applying {name} gives\n      {str(x)}")
+            if name != "noop": print(f"    applying {name} gives\n      {_short_repr(x)}")
         except Exception as e:
             print(f"    applying {name} failed.")
             raise e
@@ -120,7 +128,7 @@ def summary(self: DataBlock, source, bs=4, **kwargs):
 
     dls = self.dataloaders(source, verbose=True)
     print("\nBuilding one batch")
-    if len([f for f in dls.train.before_batch.fs if f.name != 'noop'])!=0:
+    if len([f for f in dls.train.after_item.fs if f.name != 'noop'])!=0:
         print("Applying item_tfms to the first sample:")
         s = [_apply_pipeline(dls.train.after_item, dsets.train[0])]
         print(f"\nAdding the next {bs-1} samples")
