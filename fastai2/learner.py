@@ -328,8 +328,8 @@ class Learner():
         full_dec = self.dls.decode_batch((*tuplify(inp),*tuplify(dec_preds)))[0][i:]
         return detuplify(full_dec),dec_preds[0],preds[0]
 
-    def show_results(self, ds_idx=0, dl=None, max_n=10, **kwargs):
-        if dl is None: dl = self.dls[ds_idx]
+    def show_results(self, ds_idx=1, dl=None, max_n=9, shuffle=True, **kwargs):
+        if dl is None: dl = self.dls[ds_idx].new(shuffle=shuffle)
         b = dl.one_batch()
         _,_,preds = self.get_preds(dl=[b], with_decoded=True)
         self.dls.show_results(b, preds, max_n=max_n, **kwargs)
