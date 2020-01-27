@@ -191,7 +191,7 @@ class Resize(RandTransform):
     split_idx = None
     mode,mode_mask,order,final_size = Image.BILINEAR,Image.NEAREST,1,None
     "Resize image to `size` using `method`"
-    def __init__(self, size, method=ResizeMethod.Squish, pad_mode=PadMode.Reflection,
+    def __init__(self, size, method=ResizeMethod.Crop, pad_mode=PadMode.Reflection,
                  resamples=(Image.BILINEAR, Image.NEAREST), **kwargs):
         super().__init__(**kwargs)
         self.size,self.pad_mode,self.method = _process_sz(size),pad_mode,method
@@ -751,9 +751,9 @@ def setup_aug_tfms(tfms):
 # Cell
 def aug_transforms(mult=1.0, do_flip=True, flip_vert=False, max_rotate=10., max_zoom=1.1, max_lighting=0.2,
                    max_warp=0.2, p_affine=0.75, p_lighting=0.75, xtra_tfms=None,
-                   size=None, mode='bilinear', pad_mode=PadMode.Reflection, batch=False):
+                   size=None, mode='bilinear', pad_mode=PadMode.Reflection, batch=False, min_scale=1.):
     "Utility func to easily create a list of flip, rotate, zoom, warp, lighting transforms."
-    res,tkw = [],dict(size=size, mode=mode, pad_mode=pad_mode, batch=batch)
+    res,tkw = [],dict(size=size if min_scale==1. else None, mode=mode, pad_mode=pad_mode, batch=batch)
     max_rotate,max_lighting,max_warp = array([max_rotate,max_lighting,max_warp])*mult
     if do_flip: res.append(Dihedral(p=0.5, **tkw) if flip_vert else Flip(p=0.5, **tkw))
     if max_warp:   res.append(Warp(magnitude=max_warp, p=p_affine, **tkw))
@@ -762,4 +762,5 @@ def aug_transforms(mult=1.0, do_flip=True, flip_vert=False, max_rotate=10., max_
     if max_lighting:
         res.append(Brightness(max_lighting=max_lighting, p=p_lighting, batch=batch))
         res.append(Contrast(max_lighting=max_lighting, p=p_lighting, batch=batch))
+    if min_scale!=1.: xtra_tfms = RandomResizedCropGPU(size, min_scale=min_scale, ratio=(1,1)) + L(xtra_tfms)
     return setup_aug_tfms(res + L(xtra_tfms))
