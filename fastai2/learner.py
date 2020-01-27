@@ -594,7 +594,7 @@ def load_learner(fname, cpu=True):
 
 # Cell
 @patch
-def tta(self:Learner, ds_idx=1, dl=None, n=4, item_tfms=None, batch_tfms=None, beta=0.25):
+def tta(self:Learner, ds_idx=1, dl=None, n=4, item_tfms=None, batch_tfms=None, beta=0.25, use_max=False):
     "Return predictions on the `ds_idx` dataset or `dl` using Test Time Augmentation"
     if dl is None: dl = self.dls[ds_idx]
     if item_tfms is not None or batch_tfms is not None: dl = dl.new(after_item=item_tfms, after_batch=batch_tfms)
@@ -603,10 +603,11 @@ def tta(self:Learner, ds_idx=1, dl=None, n=4, item_tfms=None, batch_tfms=None, b
         aug_preds = []
         for i in self.progress.mbar if hasattr(self,'progress') else range(n):
             self.epoch = i #To keep track of progress on mbar since the progress callback will use self.epoch
-#             aug_preds.append(self.get_preds(dl=dl)[0][None])
             aug_preds.append(self.get_preds(ds_idx)[0][None])
-    aug_preds = torch.cat(aug_preds).mean(0)
+    aug_preds = torch.cat(aug_preds)
+    aug_preds = aug_preds.max(0)[0] if use_max else aug_preds.mean(0)
     self.epoch = n
     with dl.dataset.set_split_idx(1): preds,targs = self.get_preds(ds_idx)
+    if use_max: return torch.stack([preds, aug_preds], 0).max(0)[0]
     preds = (aug_preds,preds) if beta is None else torch.lerp(aug_preds, preds, beta)
     return preds,targs
