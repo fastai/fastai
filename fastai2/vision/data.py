@@ -21,33 +21,36 @@ def using_attr(f, attr):
 class ImageDataLoaders(DataLoaders):
     @classmethod
     @delegates(DataLoaders.from_dblock)
-    def from_folder(cls, path, train='train', valid='valid', valid_pct=None, seed=None, vocab=None, **kwargs):
+    def from_folder(cls, path, train='train', valid='valid', valid_pct=None, seed=None, vocab=None, item_tfms=None,
+                    batch_tfms=None, **kwargs):
         "Create from imagenet style dataset in `path` with `train`,`valid`,`test` subfolders (or provide `valid_pct`)."
         splitter = GrandparentSplitter(train_name=train, valid_name=valid) if valid_pct is None else RandomSplitter(valid_pct, seed=seed)
         dblock = DataBlock(blocks=(ImageBlock, CategoryBlock(vocab=vocab)),
                            get_items=get_image_files,
                            splitter=splitter,
-                           get_y=parent_label)
+                           get_y=parent_label,
+                           item_tfms=item_tfms,
+                           batch_tfms=batch_tfms)
         return cls.from_dblock(dblock, path, path=path, **kwargs)
 
     @classmethod
     @delegates(DataLoaders.from_dblock)
-    def from_path_func(cls, path, fnames, label_func, valid_pct=0.2, seed=None, **kwargs):
+    def from_path_func(cls, path, fnames, label_func, valid_pct=0.2, seed=None, item_tfms=None, batch_tfms=None, **kwargs):
         "Create from list of `fnames` in `path`s with `label_func`."
         dblock = DataBlock(blocks=(ImageBlock, CategoryBlock),
                            splitter=RandomSplitter(valid_pct, seed=seed),
-                           get_y=label_func)
+                           get_y=label_func,
+                           item_tfms=item_tfms,
+                           batch_tfms=batch_tfms)
         return cls.from_dblock(dblock, fnames, path=path, **kwargs)
 
     @classmethod
-    @delegates(DataLoaders.from_dblock)
-    def from_name_func(cls, path, fnames, label_func, valid_pct=0.2, seed=None, **kwargs):
+    def from_name_func(cls, path, fnames, label_func, **kwargs):
         "Create from name attrs in list of `fnames` in `path`s with `label_func`"
         f = using_attr(label_func, 'name')
-        return cls.from_path_func(path, fnames, f, valid_pct=valid_pct, seed=seed, **kwargs)
+        return cls.from_path_func(path, fnames, f, **kwargs)
 
     @classmethod
-    @delegates(DataLoaders.from_dblock)
     def from_path_re(cls, path, fnames, pat, **kwargs):
         "Create from list of `fnames` in `path`s with re expression `pat`."
         return cls.from_path_func(path, fnames, RegexLabeller(pat), **kwargs)
@@ -61,7 +64,7 @@ class ImageDataLoaders(DataLoaders):
     @classmethod
     @delegates(DataLoaders.from_dblock)
     def from_df(cls, df, path='.', valid_pct=0.2, seed=None, fn_col=0, folder=None, suff='', label_col=1, label_delim=None,
-                y_block=None, valid_col=None, **kwargs):
+                y_block=None, valid_col=None, item_tfms=None, batch_tfms=None, **kwargs):
         pref = f'{Path(path) if folder is None else Path(path)/folder}{os.path.sep}'
         if y_block is None:
             is_multi = (is_listy(label_col) and len(label_col) > 1) or label_delim is not None
@@ -70,7 +73,9 @@ class ImageDataLoaders(DataLoaders):
         dblock = DataBlock(blocks=(ImageBlock, y_block),
                            get_x=ColReader(fn_col, pref=pref, suff=suff),
                            get_y=ColReader(label_col, label_delim=label_delim),
-                           splitter=splitter)
+                           splitter=splitter,
+                           item_tfms=item_tfms,
+                           batch_tfms=batch_tfms)
         return cls.from_dblock(dblock, df, path=path, **kwargs)
 
     @classmethod
@@ -80,27 +85,34 @@ class ImageDataLoaders(DataLoaders):
 
     @classmethod
     @delegates(DataLoaders.from_dblock)
-    def from_lists(cls, path, fnames, labels, valid_pct=0.2, seed:int=None, y_block=None, **kwargs):
+    def from_lists(cls, path, fnames, labels, valid_pct=0.2, seed:int=None, y_block=None, item_tfms=None, batch_tfms=None,
+                   **kwargs):
         "Create from list of `fnames` in `path`."
         if y_block is None:
             y_block = MultiCategoryBlock if is_listy(labels[0]) and len(labels[0]) > 1 else (
                 TransformBlock if isinstance(labels[0], float) else CategoryBlock)
         dblock = DataBlock(blocks=(ImageBlock, y_block),
-                           splitter=RandomSplitter(valid_pct, seed=seed))
+                           splitter=RandomSplitter(valid_pct, seed=seed),
+                           item_tfms=item_tfms,
+                           batch_tfms=batch_tfms)
         return cls.from_dblock(dblock, (fnames, labels), path=path, **kwargs)
 
 ImageDataLoaders.from_csv = delegates(to=ImageDataLoaders.from_df)(ImageDataLoaders.from_csv)
+ImageDataLoaders.from_name_func = delegates(to=ImageDataLoaders.from_path_func)(ImageDataLoaders.from_name_func)
 ImageDataLoaders.from_path_re = delegates(to=ImageDataLoaders.from_path_func)(ImageDataLoaders.from_path_re)
+ImageDataLoaders.from_name_re = delegates(to=ImageDataLoaders.from_name_func)(ImageDataLoaders.from_name_re)
 
 # Cell
 class SegmentationDataLoaders(DataLoaders):
     @classmethod
     @delegates(DataLoaders.from_dblock)
-    def from_label_func(cls, path, fnames, label_func, valid_pct=0.2, seed=None, codes=None, **kwargs):
+    def from_label_func(cls, path, fnames, label_func, valid_pct=0.2, seed=None, codes=None, item_tfms=None, batch_tfms=None, **kwargs):
         "Create from list of `fnames` in `path`s with `label_func`."
         dblock = DataBlock(blocks=(ImageBlock, MaskBlock(codes=codes)),
                            splitter=RandomSplitter(valid_pct, seed=seed),
-                           get_y=label_func)
+                           get_y=label_func,
+                           item_tfms=item_tfms,
+                           batch_tfms=batch_tfms)
         res = cls.from_dblock(dblock, fnames, path=path, **kwargs)
         return res
 

@@ -134,9 +134,8 @@ class DataLoaders(GetAttr):
     def cpu(self): return self.cuda(device=torch.device('cpu'))
 
     @classmethod
-    @delegates(TfmdDL.__init__)
-    def from_dblock(cls, dblock, source, path='.', type_tfms=None, item_tfms=None, batch_tfms=None, **kwargs):
-        return dblock.dataloaders(source, path=path, type_tfms=type_tfms, item_tfms=item_tfms, batch_tfms=batch_tfms, **kwargs)
+    def from_dblock(cls, dblock, source, path='.',  bs=64, val_bs=None, shuffle_train=True, device=None, **kwargs):
+        return dblock.dataloaders(source, path=path, bs=bs, val_bs=val_bs, shuffle_train=shuffle_train, device=device, **kwargs)
 
     _docs=dict(__getitem__="Retrieve `DataLoader` at `i` (`0` is training, `1` is validation)",
                train="Training `DataLoader`",
