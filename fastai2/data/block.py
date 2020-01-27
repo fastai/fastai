@@ -118,6 +118,19 @@ def _apply_pipeline(p, x):
     return x
 
 # Cell
+from .load import _collate_types
+
+def _find_fail_collate(s):
+    s = L(*s)
+    for x in s[0]:
+        if not isinstance(x, _collate_types): return f"{type(x).__name__} is not collatable"
+    for i in range_of(s[0]):
+        try: _ = default_collate(s.itemgot(i))
+        except:
+            shapes = [getattr(o[i], 'shape', None) for o in s]
+            return f"Could not collate the {i}-th members of your tuples because got the following shapes\n{','.join([str(s) for s in shapes])}"
+
+# Cell
 @patch
 def summary(self: DataBlock, source, bs=4, **kwargs):
     print(f"Setting-up type transforms pipelines")
@@ -147,7 +160,9 @@ def summary(self: DataBlock, source, bs=4, **kwargs):
         b = dls.train.create_batch(s)
         b = retain_types(b, s[0] if is_listy(s) else s)
     except Exception as e:
-        print("It's not possible to collate your items in a batch, make sure all parts of your samples are tensors of the same size")
+        print("Error! It's not possible to collate your items in a batch")
+        why = _find_fail_collate(s)
+        print("Make sure all parts of your samples are tensors of the same size" if why is None else why)
         raise e
 
     if len([f for f in dls.train.after_batch.fs if f.name != 'noop'])!=0:
