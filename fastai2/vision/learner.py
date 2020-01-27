@@ -34,9 +34,9 @@ def create_body(arch, pretrained=True, cut=None):
     else:                           raise NamedError("cut must be either integer or a function")
 
 # Cell
-def create_head(nf, nc, lin_ftrs=None, ps=0.5, concat_pool=True, bn_final=False, lin_first=False):
-    "Model head that takes `nf` features, runs through `lin_ftrs`, and out `nc` classes."
-    lin_ftrs = [nf, 512, nc] if lin_ftrs is None else [nf] + lin_ftrs + [nc]
+def create_head(nf, n_out, lin_ftrs=None, ps=0.5, concat_pool=True, bn_final=False, lin_first=False, y_range=None):
+    "Model head that takes `nf` features, runs through `lin_ftrs`, and out `n_out` classes."
+    lin_ftrs = [nf, 512, n_out] if lin_ftrs is None else [nf] + lin_ftrs + [n_out]
     ps = L(ps)
     if len(ps) == 1: ps = [ps[0]/2] * (len(lin_ftrs)-2) + ps
     actns = [nn.ReLU(inplace=True)] * (len(lin_ftrs)-2) + [None]
@@ -45,21 +45,22 @@ def create_head(nf, nc, lin_ftrs=None, ps=0.5, concat_pool=True, bn_final=False,
     if lin_first: layers.append(nn.Dropout(ps.pop(0)))
     for ni,no,p,actn in zip(lin_ftrs[:-1], lin_ftrs[1:], ps, actns):
         layers += LinBnDrop(ni, no, bn=True, p=p, act=actn, lin_first=lin_first)
-    if lin_first: layers.append(nn.Linear(lin_ftrs[-2], nc))
+    if lin_first: layers.append(nn.Linear(lin_ftrs[-2], n_out))
     if bn_final: layers.append(nn.BatchNorm1d(lin_ftrs[-1], momentum=0.01))
+    if y_range is not None: layers.append(SigmoidRange(*y_range))
     return nn.Sequential(*layers)
 
 # Cell
 from ..callback.hook import num_features_model
 
 # Cell
-def create_cnn_model(arch, nc, cut, pretrained, lin_ftrs=None, ps=0.5, custom_head=None,
-                     bn_final=False, concat_pool=True, init=nn.init.kaiming_normal_):
+def create_cnn_model(arch, n_out, cut, pretrained, lin_ftrs=None, ps=0.5, custom_head=None,
+                     bn_final=False, concat_pool=True, y_range=None, init=nn.init.kaiming_normal_):
     "Create custom convnet architecture using `base_arch`"
     body = create_body(arch, pretrained, cut)
     if custom_head is None:
         nf = num_features_model(nn.Sequential(*body.children())) * (2 if concat_pool else 1)
-        head = create_head(nf, nc, lin_ftrs, ps=ps, concat_pool=concat_pool, bn_final=bn_final)
+        head = create_head(nf, n_out, lin_ftrs, ps=ps, concat_pool=concat_pool, bn_final=bn_final, y_range=y_range)
     else: head = custom_head
     model = nn.Sequential(body, head)
     if init is not None: apply_init(model[1], init)
@@ -68,7 +69,7 @@ def create_cnn_model(arch, nc, cut, pretrained, lin_ftrs=None, ps=0.5, custom_he
 # Cell
 @delegates(create_cnn_model)
 def cnn_config(**kwargs):
-    "Convenienc function to easily create a config for `create_cnn_model`"
+    "Convenience function to easily create a config for `create_cnn_model`"
     return kwargs
 
 # Cell
@@ -110,11 +111,14 @@ model_meta = {
 
 # Cell
 @delegates(Learner.__init__)
-def cnn_learner(dls, arch, loss_func=None, pretrained=True, cut=None, splitter=None, config=None, **kwargs):
+def cnn_learner(dls, arch, loss_func=None, pretrained=True, cut=None, splitter=None,
+                y_range=None, config=None, n_out=None, **kwargs):
     "Build a convnet style learner"
     if config is None: config = {}
     meta = model_meta.get(arch, _default_meta)
-    model = create_cnn_model(arch, get_c(dls), ifnone(cut, meta['cut']), pretrained, **config)
+    if n_out is None: n_out = get_c(dls)
+    assert n_out, "`n_out` is not defined, and could not be infered from data, set `dls.c` or pass `n_out`"
+    model = create_cnn_model(arch, n_out, ifnone(cut, meta['cut']), pretrained, y_range=y_range, **config)
     learn = Learner(dls, model, loss_func=loss_func, splitter=ifnone(splitter, meta['split']), **kwargs)
     if pretrained: learn.freeze()
     return learn
