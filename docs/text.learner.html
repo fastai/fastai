@@ -71,7 +71,7 @@ summary: "Easy access of language models and ULMFiT"
 <li>a <a href="/text.models.html#TransformerXL"><code>TransformerXL</code></a> (<a href="https://arxiv.org/abs/1901.02860">Dai et al.</a>)</li>
 </ul>
 <p>They each have a default config for language modelling that is in <code>{lower_case_class_name}\_lm\_config</code> if you want to change the default parameter. At this stage, only the AWD LSTM and Tranformer support <code>pretrained=True</code> but we hope to add more pretrained models soon. <code>drop_mult</code> is applied to all the dropouts weights of the <code>config</code>, <code>learn_kwargs</code> are passed to the <a href="/basic_train.html#Learner"><code>Learner</code></a> initialization.</p>
-<p>If your <a href="/text.data.html#text.data"><code>data</code></a> is backward, the pretrained model downloaded will also be a backard one (only available for <a href="/text.models.awd_lstm.html#AWD_LSTM"><code>AWD_LSTM</code></a>).</p>
+<p>If your <a href="/text.data.html#text.data"><code>data</code></a> is backward, the pretrained model downloaded will also be a backward one (only available for <a href="/text.models.awd_lstm.html#AWD_LSTM"><code>AWD_LSTM</code></a>).</p>
 
 </div>
 </div>
@@ -137,7 +137,7 @@ summary: "Easy access of language models and ULMFiT"
 <li>a layer that concatenates the final outputs of the RNN with the maximum and average of all the intermediate outputs (on the sequence length dimension),</li>
 <li>blocks of (<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.BatchNorm1d"><code>nn.BatchNorm1d</code></a>, <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Dropout"><code>nn.Dropout</code></a>, <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Linear"><code>nn.Linear</code></a>, <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.ReLU"><code>nn.ReLU</code></a>) layers.</li>
 </ul>
-<p>The blocks are defined by the <code>lin_ftrs</code> and <code>drops</code> arguments. Specifically, the first block will have a number of inputs inferred from the backbone arch and the last one will have a number of outputs equal to data.c (which contains the number of classes of the data) and the intermediate blocks have a number of inputs/outputs determined by <code>lin_ftrs</code> (of course a block has a number of inputs equal to the number of outputs of the previous block). The dropouts all have a the same value ps if you pass a float, or the corresponding values if you pass a list. Default is to have an intermediate hidden size of 50 (which makes two blocks model_activation -&gt; 50 -&gt; n_classes) with a dropout of 0.1.</p>
+<p>The blocks are defined by the <code>lin_ftrs</code> and <code>drops</code> arguments. Specifically, the first block will have a number of inputs inferred from the backbone arch and the last one will have a number of outputs equal to data.c (which contains the number of classes of the data) and the intermediate blocks have a number of inputs/outputs determined by <code>lin_ftrs</code> (of course a block has a number of inputs equal to the number of outputs of the previous block). The dropouts all have the same value ps if you pass a float, or the corresponding values if you pass a list. Default is to have an intermediate hidden size of 50 (which makes two blocks model_activation -&gt; 50 -&gt; n_classes) with a dropout of 0.1.</p>
 
 </div>
 </div>
@@ -208,7 +208,7 @@ summary: "Easy access of language models and ULMFiT"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>If <code>ordered=True</code>, returns the predictions in the order of the dataset, otherwise they will be ordered by the sampler (from the longest text to the shortest). The other arguments are passed <a href="/basic_train.html#Learner.get_preds"><code>Learner.get_preds</code></a>.</p>
+<p>If <code>ordered=True</code>, returns the predictions in the order of the dataset, otherwise they will be ordered by the sampler (from the longest text to the shortest). The other arguments are passed to <a href="/basic_train.html#Learner.get_preds"><code>Learner.get_preds</code></a>.</p>
 
 </div>
 </div>
