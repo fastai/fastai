@@ -80,17 +80,69 @@ class DataBlock():
         get_items = _zip if get_items is None else compose(get_items, _zip)
         return cls(blocks=blocks, getters=getters, get_items=get_items, **kwargs)
 
-    def datasets(self, source):
-        self.source = source
-        items = (self.get_items or noop)(source)
+    def datasets(self, source, verbose=False):
+        self.source = source                     ; pv(f"Collecting items from {source}", verbose)
+        items = (self.get_items or noop)(source) ; pv(f"Found {len(items)} items", verbose)
         splits = (self.splitter or noop)(items)
-        return Datasets(items, tfms=self._combine_type_tfms(), splits=splits, dl_type=self.dl_type, n_inp=self.n_inp)
+        pv(f"{len(splits)} datasets of sizes {','.join([str(len(s)) for s in splits])}", verbose)
+        return Datasets(items, tfms=self._combine_type_tfms(), splits=splits, dl_type=self.dl_type, n_inp=self.n_inp, verbose=verbose)
 
-    def dataloaders(self, source, path='.', **kwargs):
+    def dataloaders(self, source, path='.', verbose=False, **kwargs):
         dsets = self.datasets(source)
-        kwargs = {**self.dls_kwargs, **kwargs}
+        kwargs = {**self.dls_kwargs, **kwargs, 'verbose': verbose}
         return dsets.dataloaders(path=path, after_item=self.item_tfms, after_batch=self.batch_tfms, **kwargs)
 
     _docs = dict(new="Create a new `DataBlock` with other `item_tfms` and `batch_tfms`",
                  datasets="Create a `Datasets` object from `source`",
                  dataloaders="Create a `DataLoaders` object from `source`")
+
+# Cell
+def _apply_pipeline(p, x):
+    print(f"  {p}\n    starting from\n      {x}")
+    for f in p.fs:
+        name = f.name
+        try:
+            x = f(x)
+            if name != "noop": print(f"    applying {name} gives\n      {str(x)}")
+        except Exception as e:
+            print(f"    applying {name} failed.")
+            raise e
+    return x
+
+# Cell
+@patch
+def summary(self: DataBlock, source, bs=4, **kwargs):
+    print(f"Setting-up type transforms pipelines")
+    dsets = self.datasets(source, verbose=True)
+    print("\nBuilding one sample")
+    for tl in dsets.train.tls: _apply_pipeline(tl.tfms, dsets.train.items[0])
+    print(f"\nFinal sample: {dsets.train[0]}\n\n")
+
+    dls = self.dataloaders(source, verbose=True)
+    print("\nBuilding one batch")
+    if len([f for f in dls.train.before_batch.fs if f.name != 'noop'])!=0:
+        print("Applying item_tfms to the first sample:")
+        s = [_apply_pipeline(dls.train.after_item, dsets.train[0])]
+        print(f"\nAdding the next {bs-1} samples")
+        s += [dls.train.after_item(dsets.train[i]) for i in range(1, bs)]
+    else:
+        print("No item_tfms to apply")
+        s = [dls.train.after_item(dsets.train[i]) for i in range(bs)]
+
+    if len([f for f in dls.train.before_batch.fs if f.name != 'noop'])!=0:
+        print("\nApplying before_batch to the list of samples")
+        s = _apply_pipeline(dls.train.before_batch, s)
+    else: print("\nNo before_batch transform to apply")
+
+    print("\nCollating items in a batch")
+    try:
+        b = dls.train.create_batch(s)
+        b = retain_types(b, s[0] if is_listy(s) else s)
+    except Exception as e:
+        print("It's not possible to collate your items in a batch, make sure all parts of your samples are tensors of the same size")
+        raise e
+
+    if len([f for f in dls.train.after_batch.fs if f.name != 'noop'])!=0:
+        print("\nApplying batch_tfms to the batch built")
+        b = _apply_pipeline(dls.train.after_batch, b)
+    else: print("\nNo batch_tfms to apply")

@@ -258,6 +258,9 @@ class TensorBase(Tensor):
         res = self[i]
         return res.as_subclass(type(self)) if isinstance(res,Tensor) else res
 
+    def __repr__(self):
+        return re.sub('tensor', self.__class__.__name__, super().__repr__())
+
 # Cell
 def _patch_tb():
     if getattr(TensorBase,'_patched',False): return
@@ -272,7 +275,7 @@ def _patch_tb():
 
     t = tensor([1])
     skips = 'as_subclass __getitem__ __class__ __deepcopy__ __delattr__ __dir__ __doc__ __getattribute__ __hash__ __init__ \
-        __init_subclass__ __new__ __reduce__ __reduce_ex__ __module__ __setstate__'.split()
+        __init_subclass__ __new__ __reduce__ __reduce_ex__ __repr__ __module__ __setstate__'.split()
 
     for fn in dir(t):
         if fn in skips: continue
