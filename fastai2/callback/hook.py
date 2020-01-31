@@ -148,7 +148,7 @@ def layer_info(learn):
     layers = [m for m in flatten_model(learn.model)]
     xb = learn.dls.train.one_batch()[:learn.dls.train.n_inp]
     with Hooks(layers, _track) as h:
-        _ = learn.model.eval()(apply(lambda o:o[:1], *xb))
+        _ = learn.model.eval()(*apply(lambda o:o[:1], xb))
         return xb,h.stored
 
 # Cell
