@@ -127,7 +127,9 @@ class Tabular(CollBase, GetAttr, FilteredBase):
 
     def subset(self, i): return self.new(self.items[slice(0,self.split) if i==0 else slice(self.split,len(self))])
     def copy(self): self.items = self.items.copy(); return self
-    def show(self, max_n=10, **kwargs): display_df(self.procs.decode(self.new(self.all_cols[:max_n])).items)
+    def decode(self): return self.procs.decode(self)
+    def decode_row(self, row): return self.new(pd.DataFrame(row).T).decode().items.iloc[0]
+    def show(self, max_n=10, **kwargs): display_df(self.new(self.all_cols[:max_n]).decode().items)
     def setup(self): self.procs.setup(self)
     def process(self): self.procs(self)
     def loc(self): return self.items.loc
