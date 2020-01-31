@@ -111,6 +111,7 @@ class Tabular(CollBase, GetAttr, FilteredBase):
 
         self.y_names,self.device = L(y_names),device
         if block_y is None and self.y_names:
+            # Make ys categorical if they're not numeric
             ys = df[self.y_names]
             if len(ys.select_dtypes(include='number').columns)!=len(ys.columns): block_y = CategoryBlock()
         if block_y is not None:
@@ -126,7 +127,7 @@ class Tabular(CollBase, GetAttr, FilteredBase):
 
     def subset(self, i): return self.new(self.items[slice(0,self.split) if i==0 else slice(self.split,len(self))])
     def copy(self): self.items = self.items.copy(); return self
-    def show(self, max_n=10, **kwargs): display_df(self.all_cols[:max_n])
+    def show(self, max_n=10, **kwargs): display_df(self.procs.decode(self.new(self.all_cols[:max_n])).items)
     def setup(self): self.procs.setup(self)
     def process(self): self.procs(self)
     def loc(self): return self.items.loc
@@ -275,7 +276,6 @@ class ReadTabBatch(ItemTransform):
         vals = np.concatenate(o, axis=1)
         df = pd.DataFrame(vals, columns=self.to.all_col_names)
         to = self.to.new(df)
-        to = self.to.procs.decode(to)
         return to
 
 # Cell
