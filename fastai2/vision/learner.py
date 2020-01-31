@@ -22,9 +22,37 @@ def has_pool_type(m):
     return False
 
 # Cell
-def create_body(arch, pretrained=True, cut=None):
+def _get_first_layer(m):
+    "Access first layer of a model"
+    c,p,n = m,None,None  # child, parent, name
+    for n in next(m.named_parameters())[0].split('.')[:-1]:
+        p,c=c,getattr(c,n)
+    return c,p,n
+
+# Cell
+def create_body(arch, n_in=3, pretrained=True, cut=None):
     "Cut off the body of a typically pretrained `arch` as determined by `cut`"
     model = arch(pretrained=pretrained)
+    if n_in != 3:
+        # change first layer
+        first_layer, parent, name = _get_first_layer(model)
+        assert isinstance(first_layer, nn.Conv2d), f'Change of input channels only supported with Conv2d, found {first_layer.__class__.__name__}'
+        params = {attr:getattr(first_layer, attr) for attr in 'out_channels kernel_size stride padding dilation groups padding_mode'.split()}
+        params['bias'] = getattr(first_layer, 'bias') is not None
+        params['in_channels'] = n_in
+        new_layer = nn.Conv2d(**params)
+        if pretrained:
+            if n_in==1:
+                # we take the sum
+                new_layer.weight.data = first_layer.weight.data.sum(dim=1, keepdim=True)
+            elif n_in==2:
+                # we take first 2 channels + 50%
+                new_layer.weight.data = first_layer.weight.data[:,:2] * 1.5
+            else:
+                # keep 3 channels weights and set others to null
+                new_layer.weight.data[:,:3] = first_layer.weight.data
+                new_layer.weight.data[:,3:].zero_()
+        setattr(parent, name, new_layer)
     #cut = ifnone(cut, cnn_config(arch)['cut'])
     if cut is None:
         ll = list(enumerate(model.children()))
@@ -54,10 +82,10 @@ def create_head(nf, n_out, lin_ftrs=None, ps=0.5, concat_pool=True, bn_final=Fal
 from ..callback.hook import num_features_model
 
 # Cell
-def create_cnn_model(arch, n_out, cut, pretrained, lin_ftrs=None, ps=0.5, custom_head=None,
+def create_cnn_model(arch, n_out, cut, pretrained, n_in=3, lin_ftrs=None, ps=0.5, custom_head=None,
                      bn_final=False, concat_pool=True, y_range=None, init=nn.init.kaiming_normal_):
     "Create custom convnet architecture using `base_arch`"
-    body = create_body(arch, pretrained, cut)
+    body = create_body(arch, n_in, pretrained, cut)
     if custom_head is None:
         nf = num_features_model(nn.Sequential(*body.children())) * (2 if concat_pool else 1)
         head = create_head(nf, n_out, lin_ftrs, ps=ps, concat_pool=concat_pool, bn_final=bn_final, y_range=y_range)
@@ -112,13 +140,13 @@ model_meta = {
 # Cell
 @delegates(Learner.__init__)
 def cnn_learner(dls, arch, loss_func=None, pretrained=True, cut=None, splitter=None,
-                y_range=None, config=None, n_out=None, **kwargs):
+                y_range=None, config=None, n_in=3, n_out=None, **kwargs):
     "Build a convnet style learner"
     if config is None: config = {}
     meta = model_meta.get(arch, _default_meta)
     if n_out is None: n_out = get_c(dls)
     assert n_out, "`n_out` is not defined, and could not be infered from data, set `dls.c` or pass `n_out`"
-    model = create_cnn_model(arch, n_out, ifnone(cut, meta['cut']), pretrained, y_range=y_range, **config)
+    model = create_cnn_model(arch, n_out, ifnone(cut, meta['cut']), pretrained, n_in=n_in, y_range=y_range, **config)
     learn = Learner(dls, model, loss_func=loss_func, splitter=ifnone(splitter, meta['split']), **kwargs)
     if pretrained: learn.freeze()
     return learn
@@ -131,11 +159,11 @@ def unet_config(**kwargs):
 
 # Cell
 @delegates(Learner.__init__)
-def unet_learner(dls, arch, loss_func=None, pretrained=True, cut=None, splitter=None, config=None, n_out=None, **kwargs):
+def unet_learner(dls, arch, loss_func=None, pretrained=True, cut=None, splitter=None, config=None, n_in=3, n_out=None, **kwargs):
     "Build a unet learner from `dls` and `arch`"
     if config is None: config = unet_config()
     meta = model_meta.get(arch, _default_meta)
-    body = create_body(arch, pretrained, ifnone(cut, meta['cut']))
+    body = create_body(arch, n_in, pretrained, ifnone(cut, meta['cut']))
     size = dls.one_batch()[0].shape[-2:]
     if n_out is None: n_out = get_c(dls)
     assert n_out, "`n_out` is not defined, and could not be infered from data, set `dls.c` or pass `n_out`"
