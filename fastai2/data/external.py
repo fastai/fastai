@@ -123,7 +123,7 @@ class URLs():
     WT103_FWD          = f'{S3_MODEL}wt103-fwd.tgz'
     WT103_BWD          = f'{S3_MODEL}wt103-bwd.tgz'
 
-    def path(url, c_key='archive'):
+    def path(url='.', c_key='archive'):
         fname = url.split('/')[-1]
         local_path = URLs.LOCAL_PATH/('models' if c_key=='models' else 'data')/fname
         if local_path.exists(): return local_path
@@ -189,8 +189,9 @@ def _add_check(url, fname):
     json.dump(checks, open(Path(__file__).parent/'checks.txt', 'w'), indent=2)
 
 # Cell
-def file_extract(fname, dest='.'):
+def file_extract(fname, dest=None):
     "Extract `fname` to `dest` using `tarfile` or `zipfile"
+    if dest is None: dest = Path(fname).parent
     fname = str(fname)
     if   fname.endswith('gz'):  tarfile.open(fname, 'r:gz').extractall(dest)
     elif fname.endswith('zip'): zipfile.ZipFile(fname     ).extractall(dest)
