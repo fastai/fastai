@@ -81,7 +81,8 @@ def cont_cat_split(df, max_card=20, dep_var=None):
     cont_names, cat_names = [], []
     for label in df:
         if label == dep_var: continue
-        if df[label].dtype == int and df[label].unique().shape[0] > max_card or df[label].dtype == float: cont_names.append(label)
+        if df[label].dtype == int and df[label].unique().shape[0] > max_card or df[label].dtype == float:
+            cont_names.append(label)
         else: cat_names.append(label)
     return cont_names, cat_names
 
@@ -101,7 +102,7 @@ class _TabIloc:
 class Tabular(CollBase, GetAttr, FilteredBase):
     "A `DataFrame` wrapper that knows which cols are cont/cat/y, and returns rows in `__getitem__`"
     _default,with_cont='procs',True
-    def __init__(self, df, procs=None, cat_names=None, cont_names=None, y_names=None, block_y=CategoryBlock, splits=None,
+    def __init__(self, df, procs=None, cat_names=None, cont_names=None, y_names=None, block_y=None, splits=None,
                  do_setup=True, device=None):
         if splits is None: splits=[range_of(df)]
         df = df.iloc[sum(splits, [])].copy()
@@ -109,6 +110,9 @@ class Tabular(CollBase, GetAttr, FilteredBase):
         super().__init__(df)
 
         self.y_names,self.device = L(y_names),device
+        if block_y is None and self.y_names:
+            ys = df[self.y_names]
+            if len(ys.select_dtypes(include='number').columns)!=len(ys.columns): block_y = CategoryBlock()
         if block_y is not None:
             if callable(block_y): block_y = block_y()
             procs = L(procs) + block_y.type_tfms
@@ -116,23 +120,28 @@ class Tabular(CollBase, GetAttr, FilteredBase):
         self.split = len(splits[0])
         if do_setup: self.setup()
 
+    def new(self, df):
+        return type(self)(df, do_setup=False, block_y=TransformBlock(),
+                          **attrdict(self, 'procs','cat_names','cont_names','y_names', 'device'))
+
     def subset(self, i): return self.new(self.items[slice(0,self.split) if i==0 else slice(self.split,len(self))])
     def copy(self): self.items = self.items.copy(); return self
-    def new(self, df): return type(self)(df, do_setup=False, block_y=None, **attrdict(self, 'procs','cat_names','cont_names','y_names', 'device'))
     def show(self, max_n=10, **kwargs): display_df(self.all_cols[:max_n])
     def setup(self): self.procs.setup(self)
     def process(self): self.procs(self)
     def loc(self): return self.items.loc
     def iloc(self): return _TabIloc(self)
     def targ(self): return self.items[self.y_names]
-    def all_col_names (self): return self.cat_names + self.cont_names + self.y_names
+    def x_names (self): return self.cat_names + self.cont_names
+    def all_col_names (self): return self.x_names + self.y_names
     def n_subsets(self): return 2
+    def y(self): return self[self.y_names[0]]
     def new_empty(self): return self.new(pd.DataFrame({}, columns=self.items.columns))
     def to_device(self, d=None):
         self.device = d
         return self
 
-properties(Tabular,'loc','iloc','targ','all_col_names','n_subsets')
+properties(Tabular,'loc','iloc','targ','all_col_names','n_subsets','x_names','y')
 
 # Cell
 class TabularPandas(Tabular):
@@ -150,6 +159,7 @@ def _add_prop(cls, nm):
 _add_prop(Tabular, 'cat')
 _add_prop(Tabular, 'cont')
 _add_prop(Tabular, 'y')
+_add_prop(Tabular, 'x')
 _add_prop(Tabular, 'all_col')
 
 # Cell
