@@ -266,7 +266,7 @@ class Learner():
         finally:                                             self('after_train')
 
     def _do_epoch_validate(self, ds_idx=1, dl=None):
-        if dl is None: dl = self.dls[ds_idx]
+        if dl is None: dl = self.dls[ds_idx].new(shuffled=False, drop_last=False)
         names = ['shuffle', 'drop_last']
         try:
             dl,old,has = change_attrs(dl, names, [False,False])
