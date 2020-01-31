@@ -52,6 +52,8 @@ def create_body(arch, n_in=3, pretrained=True, cut=None):
                 # keep 3 channels weights and set others to null
                 new_layer.weight.data[:,:3] = first_layer.weight.data
                 new_layer.weight.data[:,3:].zero_()
+            if first_layer.bias is not None:
+                new_layer.bias.data = first_layer.bias.data
         setattr(parent, name, new_layer)
     #cut = ifnone(cut, cnn_config(arch)['cut'])
     if cut is None:
