@@ -30,31 +30,40 @@ def _get_first_layer(m):
     return c,p,n
 
 # Cell
+def _load_pretrained_weights(new_layer, previous_layer):
+    "Load pretrained weights based on number of input channels"
+    n_in = getattr(new_layer, 'in_channels')
+    if n_in==1:
+        # we take the sum
+        new_layer.weight.data = previous_layer.weight.data.sum(dim=1, keepdim=True)
+    elif n_in==2:
+        # we take first 2 channels + 50%
+        new_layer.weight.data = previous_layer.weight.data[:,:2] * 1.5
+    else:
+        # keep 3 channels weights and set others to null
+        new_layer.weight.data[:,:3] = previous_layer.weight.data
+        new_layer.weight.data[:,3:].zero_()
+
+# Cell
+def _update_first_layer(model, n_in, pretrained):
+    "Change first layer based on number of input channels"
+    if n_in == 3: return
+    first_layer, parent, name = _get_first_layer(model)
+    assert isinstance(first_layer, nn.Conv2d), f'Change of input channels only supported with Conv2d, found {first_layer.__class__.__name__}'
+    assert getattr(first_layer, 'in_channels') == 3, f'Unexpected number of input channels, found {getattr(first_layer, "in_channels")} while expecting 3'
+    params = {attr:getattr(first_layer, attr) for attr in 'out_channels kernel_size stride padding dilation groups padding_mode'.split()}
+    params['bias'] = getattr(first_layer, 'bias') is not None
+    params['in_channels'] = n_in
+    new_layer = nn.Conv2d(**params)
+    if pretrained:
+        _load_pretrained_weights(new_layer, first_layer)
+    setattr(parent, name, new_layer)
+
+# Cell
 def create_body(arch, n_in=3, pretrained=True, cut=None):
     "Cut off the body of a typically pretrained `arch` as determined by `cut`"
     model = arch(pretrained=pretrained)
-    if n_in != 3:
-        # change first layer
-        first_layer, parent, name = _get_first_layer(model)
-        assert isinstance(first_layer, nn.Conv2d), f'Change of input channels only supported with Conv2d, found {first_layer.__class__.__name__}'
-        params = {attr:getattr(first_layer, attr) for attr in 'out_channels kernel_size stride padding dilation groups padding_mode'.split()}
-        params['bias'] = getattr(first_layer, 'bias') is not None
-        params['in_channels'] = n_in
-        new_layer = nn.Conv2d(**params)
-        if pretrained:
-            if n_in==1:
-                # we take the sum
-                new_layer.weight.data = first_layer.weight.data.sum(dim=1, keepdim=True)
-            elif n_in==2:
-                # we take first 2 channels + 50%
-                new_layer.weight.data = first_layer.weight.data[:,:2] * 1.5
-            else:
-                # keep 3 channels weights and set others to null
-                new_layer.weight.data[:,:3] = first_layer.weight.data
-                new_layer.weight.data[:,3:].zero_()
-            if first_layer.bias is not None:
-                new_layer.bias.data = first_layer.bias.data
-        setattr(parent, name, new_layer)
+    _update_first_layer(model, n_in, pretrained)
     #cut = ifnone(cut, cnn_config(arch)['cut'])
     if cut is None:
         ll = list(enumerate(model.children()))
