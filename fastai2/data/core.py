@@ -60,6 +60,7 @@ class TfmdDL(DataLoader):
                 self._one_pass()
                 res._n_inp,res._types = self._n_inp,self._types
             except: print("Could not do one pass in your dataloader, there is something wrong in it")
+        else: res._n_inp,res._types = self._n_inp,self._types
         return res
 
     def before_iter(self):
