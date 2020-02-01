@@ -265,7 +265,7 @@ class IntToFloatTensor(Transform):
 
     def encodes(self, o:TensorImage): return o.float().div_(self.div)
     def encodes(self, o:TensorMask ): return o.div_(self.div_mask).long()
-    def decodes(self, o:TensorImage): return o.clamp(0., 1.) if self.div else o
+    def decodes(self, o:TensorImage): return ((o.clamp(0., 1.) * self.div).long()) if self.div else o
 
 # Cell
 def broadcast_vec(dim, ndim, *t, cuda=True):
