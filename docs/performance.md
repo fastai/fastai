@@ -134,8 +134,8 @@ Here are the detailed instructions, with an optional `TIFF` support:
 #### How to check whether you're running `Pillow` or `Pillow-SIMD`?
 
 ```
-python -c "from PIL import Image; print(Image.PILLOW_VERSION)"
-3.2.0.post3
+python -c "from PIL import Image; print(Image.__version__)"
+7.0.0.post3
 ```
 According to the author, if `PILLOW_VERSION` has a postfix, it is `Pillow-SIMD`. (Assuming that `Pillow` will never make a `.postX` release).
 
