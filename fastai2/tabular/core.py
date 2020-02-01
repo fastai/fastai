@@ -114,6 +114,7 @@ class Tabular(CollBase, GetAttr, FilteredBase):
             # Make ys categorical if they're not numeric
             ys = df[self.y_names]
             if len(ys.select_dtypes(include='number').columns)!=len(ys.columns): block_y = CategoryBlock()
+            else: block_y = RegressionBlock()
         if block_y is not None and do_setup:
             if callable(block_y): block_y = block_y()
             procs = L(procs) + block_y.type_tfms
