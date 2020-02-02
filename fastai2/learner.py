@@ -24,6 +24,11 @@ class Callback(GetAttr):
                (self.run_valid and not getattr(self, 'training', False)))
         if self.run and _run: getattr(self, event_name, noop)()
 
+    def __setattr__(self, name, value):
+        if hasattr(self.learn,name):
+            warn(f"You are setting an attribute ({name}) that also exists in the learner. Please be advised that you're not setting it in the learner but in the callback. Use `self.learn.{name}` if you would like to change it in the learner.")
+        super().__setattr__(name, value)
+
     @property
     def name(self):
         "Name of the `Callback`, camel-cased and with '*Callback*' removed"
