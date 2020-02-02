@@ -93,9 +93,7 @@ class SaveModelCallback(TrackerCallback):
         "Compare the value monitored to its best score and maybe save the model."
         if self.every=="epoch": self.learn.save(f'{self.name}_{epoch}')
         else: #every="improvement"
-            current = self.get_monitor_value()
-            if isinstance(current, torch.Tensor):
-                current = current.cpu()
+            current = self.get_monitor_value().cpu()
             if current is not None and self.operator(current, self.best):
                 print(f'Better model found at epoch {epoch} with {self.monitor} value: {current}.')
                 self.best = current
