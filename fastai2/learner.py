@@ -24,6 +24,11 @@ class Callback(GetAttr):
                (self.run_valid and not getattr(self, 'training', False)))
         if self.run and _run: getattr(self, event_name, noop)()
 
+    def __setattr__(self, name, value):
+        if hasattr(self.learn,name):
+            warn(f"You are setting an attribute ({name}) that also exists in the learner. Please be advised that you're not setting it in the learner but in the callback. Use `self.learn.{name}` if you would like to change it in the learner.")
+        super().__setattr__(name, value)
+
     @property
     def name(self):
         "Name of the `Callback`, camel-cased and with '*Callback*' removed"
@@ -266,7 +271,7 @@ class Learner():
         finally:                                             self('after_train')
 
     def _do_epoch_validate(self, ds_idx=1, dl=None):
-        if dl is None: dl = self.dls[ds_idx]
+        if dl is None: dl = self.dls[ds_idx].new(shuffled=False, drop_last=False)
         names = ['shuffle', 'drop_last']
         try:
             dl,old,has = change_attrs(dl, names, [False,False])

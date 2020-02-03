@@ -90,7 +90,7 @@ class ImageDataLoaders(DataLoaders):
         "Create from list of `fnames` in `path`."
         if y_block is None:
             y_block = MultiCategoryBlock if is_listy(labels[0]) and len(labels[0]) > 1 else (
-                TransformBlock if isinstance(labels[0], float) else CategoryBlock)
+                RegressionBlock if isinstance(labels[0], float) else CategoryBlock)
         dblock = DataBlock(blocks=(ImageBlock, y_block),
                            splitter=RandomSplitter(valid_pct, seed=seed),
                            item_tfms=item_tfms,
