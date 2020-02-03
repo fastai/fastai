@@ -69,7 +69,7 @@ class DataBlock():
         if self.get_y: self.getters[1] = self.get_y
         self.n_inp = n_inp
 
-        assert not kwargs
+        if kwargs: raise TypeError(f'invalid keyword arguments: {", ".join(kwargs.keys())}')
         self.new(item_tfms, batch_tfms)
 
     def _combine_type_tfms(self): return L([self.getters, self.type_tfms]).map_zip(lambda g,tt: L(g) + tt)
