@@ -7,7 +7,13 @@ from ..script import *
 from .pynvml_gate import *
 import fastprogress, subprocess, platform
 
-__all__ = ['show_install', 'check_perf']
+__all__ = ['show_install', 'check_perf', 'pillow_version']
+
+def pillow_version():
+    import PIL
+    try: return PIL.Image.PILLOW_VERSION
+    except: return PIL.Image.__version__
+
 
 def get_env(name):
     "Return env var value if it's defined and not an empty string, or return Unknown"
@@ -159,27 +165,26 @@ def check_perf():
     # libjpeg_turbo check
     print("\n*** libjpeg-turbo status")
     #TODO: do some workarounf for later versions of Pillow
-    try:
-        if version.parse(Image.PILLOW_VERSION) >= version.parse("5.3.9"):
-            if features.check_feature('libjpeg_turbo'):
-                print("✔ libjpeg-turbo is on")
-            else:
-                print("✘ libjpeg-turbo is not on. It's recommended you install libjpeg-turbo to speed up JPEG decoding. See https://docs.fast.ai/performance.html#libjpeg-turbo")
+    pil_version = pillow_version()
+    if version.parse(pil_version) >= version.parse("5.3.9"):
+        if features.check_feature('libjpeg_turbo'):
+            print("✔ libjpeg-turbo is on")
         else:
-            print(f"❓ libjpeg-turbo's status can't be derived - need Pillow(-SIMD)? >= 5.4.0 to tell, current version {Image.PILLOW_VERSION}")
-            # XXX: remove this check/note once Pillow and Pillow-SIMD 5.4.0 is available
-            pillow_ver_5_4_is_avail = pypi_module_version_is_available("Pillow", "5.4.0")
-            if pillow_ver_5_4_is_avail == False:
-                print("5.4.0 is not yet available, other than the dev version on github, which can be installed via pip from git+https://github.com/python-pillow/Pillow. See https://docs.fast.ai/performance.html#libjpeg-turbo")
-    except: print("Can't check")
+            print("✘ libjpeg-turbo is not on. It's recommended you install libjpeg-turbo to speed up JPEG decoding. See https://docs.fast.ai/performance.html#libjpeg-turbo")
+    else:
+        print(f"❓ libjpeg-turbo's status can't be derived - need Pillow(-SIMD)? >= 5.4.0 to tell, current version {Image.PILLOW_VERSION}")
+        # XXX: remove this check/note once Pillow and Pillow-SIMD 5.4.0 is available
+        pillow_ver_5_4_is_avail = pypi_module_version_is_available("Pillow", "5.4.0")
+        if pillow_ver_5_4_is_avail == False:
+            print("5.4.0 is not yet available, other than the dev version on github, which can be installed via pip from git+https://github.com/python-pillow/Pillow. See https://docs.fast.ai/performance.html#libjpeg-turbo")
 
     # Pillow-SIMD check
     #TODO: same as above
-    #print("\n*** Pillow-SIMD status")
-    #if re.search(r'\.post\d+', Image.PILLOW_VERSION):
-    #    print(f"✔ Running Pillow-SIMD {Image.PILLOW_VERSION}")
-    #else:
-    #    print(f"✘ Running Pillow {Image.PILLOW_VERSION}; It's recommended you install Pillow-SIMD to speed up image resizing and other operations. See https://docs.fast.ai/performance.html#pillow-simd")
+    print("\n*** Pillow-SIMD status")
+    if re.search(r'\.post\d+', pil_version):
+        print(f"✔ Running Pillow-SIMD {pil_version}")
+    else:
+        print(f"✘ Running Pillow {pil_version}; It's recommended you install Pillow-SIMD to speed up image resizing and other operations. See https://docs.fast.ai/performance.html#pillow-simd")
 
     # CUDA version check
     # compatibility table: k: min nvidia ver is required for v: cuda ver
