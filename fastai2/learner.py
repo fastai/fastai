@@ -271,7 +271,7 @@ class Learner():
         finally:                                             self('after_train')
 
     def _do_epoch_validate(self, ds_idx=1, dl=None):
-        if dl is None: dl = self.dls[ds_idx].new(shuffled=False, drop_last=False)
+        if dl is None: dl = self.dls[ds_idx]
         names = ['shuffle', 'drop_last']
         try:
             dl,old,has = change_attrs(dl, names, [False,False])
@@ -309,6 +309,7 @@ class Learner():
 
     @delegates(GatherPredsCallback.__init__)
     def get_preds(self, ds_idx=1, dl=None, with_input=False, with_decoded=False, with_loss=False, act=None, **kwargs):
+        if dl is None: dl = self.dls[ds_idx].new(shuffled=False, drop_last=False)
         cb = GatherPredsCallback(with_input=with_input, with_loss=with_loss, **kwargs)
         #with self.no_logging(), self.added_cbs(cb), self.loss_not_reduced(), self.no_mbar():
         ctx_mgrs = [self.no_logging(), self.added_cbs(cb), self.no_mbar()]
@@ -316,7 +317,7 @@ class Learner():
         with ExitStack() as stack:
             for mgr in ctx_mgrs: stack.enter_context(mgr)
             self(_before_epoch)
-            self._do_epoch_validate(ds_idx, dl)
+            self._do_epoch_validate(dl=dl)
             self(_after_epoch)
             if act is None: act = getattr(self.loss_func, 'activation', noop)
             res = cb.all_tensors()
