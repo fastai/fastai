@@ -134,7 +134,7 @@ Here are the detailed instructions, with an optional `TIFF` support:
 #### How to check whether you're running `Pillow` or `Pillow-SIMD`?
 
 ```
-python -c "from PIL import Image; print(Image.PILLOW_VERSION)"
+python -c "from fastai.utils.collect_env import pillow_version; print(pillow_version())"
 3.2.0.post3
 ```
 According to the author, if `PILLOW_VERSION` has a postfix, it is `Pillow-SIMD`. (Assuming that `Pillow` will never make a `.postX` release).
