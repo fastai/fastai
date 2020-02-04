@@ -137,6 +137,14 @@ class DataLoaders(GetAttr):
     def cpu(self): return self.cuda(device=torch.device('cpu'))
 
     @classmethod
+    def from_dsets(cls, *ds, path='.',  bs=64, device=None, dl_type=TfmdDL, **kwargs):
+        default = (True,) + (False,) * (len(ds)-1)
+        defaults = {'shuffle': default, 'drop_last': default}
+        kwargs = merge(defaults, {k: tuplify(v, match=ds) for k,v in kwargs.items()})
+        kwargs = [{k: v[i] for k,v in kwargs.items()} for i in range_of(ds)]
+        return cls(*[dl_type(d, **k) for d,k in zip(ds, kwargs)], path=path, device=device)
+
+    @classmethod
     def from_dblock(cls, dblock, source, path='.',  bs=64, val_bs=None, shuffle_train=True, device=None, **kwargs):
         return dblock.dataloaders(source, path=path, bs=bs, val_bs=val_bs, shuffle_train=shuffle_train, device=device, **kwargs)
 
