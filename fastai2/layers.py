@@ -2,12 +2,13 @@
 
 __all__ = ['module', 'Identity', 'Lambda', 'PartialLambda', 'Flatten', 'View', 'ResizeBatch', 'Debugger',
            'sigmoid_range', 'SigmoidRange', 'AdaptiveConcatPool2d', 'PoolType', 'adaptive_pool', 'PoolFlatten',
-           'NormType', 'BatchNorm', 'InstanceNorm', 'BatchNorm1dFlat', 'LinBnDrop', 'init_default', 'ConvLayer',
+           'NormType', 'BatchNorm', 'InstanceNorm', 'BatchNorm1dFlat', 'LinBnDrop', 'sigmoid', 'sigmoid_',
+           'vleaky_relu', 'init_linear', 'linear', 'conv2d', 'conv2d', 'conv2d', 'init_default', 'ConvLayer',
            'AdaptiveAvgPool', 'MaxPool', 'AvgPool', 'BaseLoss', 'CrossEntropyLossFlat', 'BCEWithLogitsLossFlat',
            'BCELossFlat', 'MSELossFlat', 'L1LossFlat', 'LabelSmoothingCrossEntropy', 'trunc_normal_', 'Embedding',
            'SelfAttention', 'PooledSelfAttention2d', 'SimpleSelfAttention', 'icnr_init', 'PixelShuffle_ICNR',
-           'SequentialEx', 'MergeLayer', 'Cat', 'SimpleCNN', 'ProdLayer', 'inplace_relu', 'SEModule', 'ResBlock',
-           'SEBlock', 'SEResNeXtBlock', 'SeparableBlock', 'swish', 'Swish', 'MishJitAutoFn', 'mish', 'MishJit',
+           'sequential', 'SequentialEx', 'MergeLayer', 'Cat', 'SimpleCNN', 'ProdLayer', 'inplace_relu', 'SEModule',
+           'ResBlock', 'SEBlock', 'SEResNeXtBlock', 'SeparableBlock', 'swish', 'Swish', 'MishJitAutoFn', 'mish', 'Mish',
            'ParameterModule', 'children_and_parameters', 'flatten_model', 'NoneReduce', 'in_channels']
 
 # Cell
@@ -162,6 +163,74 @@ class LinBnDrop(nn.Sequential):
         if act is not None: lin.append(act)
         layers = lin+layers if lin_first else layers+lin
         super().__init__(*layers)
+
+# Cell
+def sigmoid(input, eps=1e-7):
+    "Same as `torch.sigmoid`, plus clamping to `(eps,1-eps)"
+    return input.sigmoid().clamp(eps,1-eps)
+
+# Cell
+def sigmoid_(input, eps=1e-7):
+    "Same as `torch.sigmoid_`, plus clamping to `(eps,1-eps)"
+    return input.sigmoid_().clamp_(eps,1-eps)
+
+# Cell
+from torch.nn.init import kaiming_uniform_,uniform_,xavier_uniform_,normal_
+
+# Cell
+def vleaky_relu(input, inplace=True):
+    "`F.leaky_relu` with 0.3 slope"
+    return F.leaky_relu(input, negative_slope=0.3, inplace=inplace)
+
+# Cell
+for o in F.relu,nn.ReLU,F.relu6,nn.ReLU6,F.leaky_relu,nn.LeakyReLU:
+    o.__default_init__ = kaiming_uniform_
+
+# Cell
+for o in F.sigmoid,nn.Sigmoid,F.tanh,nn.Tanh,sigmoid,sigmoid_:
+    o.__default_init__ = xavier_uniform_
+
+# Cell
+def init_linear(m, act_func, bias_std=0.01):
+    if hasattr(m,'bias'): normal_(m.bias, 0, bias_std)
+    if act_func in (F.relu_,F.leaky_relu_): init = kaiming_uniform_
+    else: init = getattr(act_func.__class__, '__default_init__', None)
+    if init is None: init = getattr(act_func, '__default_init__', None)
+    if init is not None: init(m.weight)
+
+# Cell
+def _act_func(m, act_func, init):
+    if init=='auto': init_linear(m, act_func)
+    elif init: init(m.weight)
+    if act_func: m = sequential(m, act_func)
+    return m
+
+# Cell
+def linear(in_features, out_features, bias=True, act_func=None, init='auto'):
+    "Linear layer followed by optional activation, with optional auto-init"
+    res = nn.Linear(in_features, out_features, bias=bias)
+    return _act_func(res, act_func, init)
+
+# Cell
+@delegates(nn.Conv1d)
+def conv2d(in_channels, out_channels, kernel_size, act_func=None, init='auto', **kwargs):
+    "Linear layer followed by optional activation, with optional auto-init"
+    res = nn.Conv1d(in_channels, out_channels, kernel_size, **kwargs)
+    return _act_func(res, act_func, init)
+
+# Cell
+@delegates(nn.Conv2d)
+def conv2d(in_channels, out_channels, kernel_size, act_func=None, init='auto', **kwargs):
+    "Linear layer followed by optional activation, with optional auto-init"
+    res = nn.Conv2d(in_channels, out_channels, kernel_size, **kwargs)
+    return _act_func(res, act_func, init)
+
+# Cell
+@delegates(nn.Conv3d)
+def conv2d(in_channels, out_channels, kernel_size, act_func=None, init='auto', **kwargs):
+    "Linear layer followed by optional activation, with optional auto-init"
+    res = nn.Conv3d(in_channels, out_channels, kernel_size, **kwargs)
+    return _act_func(res, act_func, init)
 
 # Cell
 def init_default(m, func=nn.init.kaiming_normal_):
@@ -406,9 +475,25 @@ class PixelShuffle_ICNR(nn.Sequential):
         super().__init__(*layers)
 
 # Cell
+def sequential(*args):
+    "Create an `nn.Sequential`, wrapping items with `Lambda` if needed"
+    if len(args) != 1 or not isinstance(args[0], OrderedDict):
+        args = list(args)
+        for i,o in enumerate(args):
+            if not isinstance(o,nn.Module): args[i] = Lambda(o)
+    return nn.Sequential(*args)
+
+# Cell
 class SequentialEx(Module):
     "Like `nn.Sequential`, but with ModuleList semantics, and can access module input"
-    def __init__(self, *layers): self.layers = nn.ModuleList(layers)
+    def __init__(self, *layers):
+        self.layers = layers
+        if len(layers) == 1 and isinstance(args[0], OrderedDict):
+            for key, module in args[0].items():
+                if isinstance(module, nn.Module): self.add_module(key, module)
+        else:
+            for idx, module in enumerate(layers):
+                if isinstance(module, nn.Module): self.add_module(str(idx), module)
 
     def forward(self, x):
         res = x
@@ -566,8 +651,11 @@ class MishJitAutoFn(torch.autograd.Function):
 def mish(x): return MishJitAutoFn.apply(x)
 
 # Cell
-class MishJit(Module):
+class Mish(Module):
     def forward(self, x): return MishJitAutoFn.apply(x)
+
+# Cell
+for o in swish,Swish,mish,Mish: o.__default_init__ = kaiming_uniform_
 
 # Cell
 class ParameterModule(Module):
