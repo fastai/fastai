@@ -3,7 +3,7 @@
 __all__ = ['module', 'Identity', 'Lambda', 'PartialLambda', 'Flatten', 'View', 'ResizeBatch', 'Debugger',
            'sigmoid_range', 'SigmoidRange', 'AdaptiveConcatPool2d', 'PoolType', 'adaptive_pool', 'PoolFlatten',
            'NormType', 'BatchNorm', 'InstanceNorm', 'BatchNorm1dFlat', 'LinBnDrop', 'sigmoid', 'sigmoid_',
-           'vleaky_relu', 'init_linear', 'linear', 'conv2d', 'conv2d', 'conv2d', 'init_default', 'ConvLayer',
+           'vleaky_relu', 'init_linear', 'linear', 'conv1d', 'conv2d', 'conv3d', 'init_default', 'ConvLayer',
            'AdaptiveAvgPool', 'MaxPool', 'AvgPool', 'BaseLoss', 'CrossEntropyLossFlat', 'BCEWithLogitsLossFlat',
            'BCELossFlat', 'MSELossFlat', 'L1LossFlat', 'LabelSmoothingCrossEntropy', 'trunc_normal_', 'Embedding',
            'SelfAttention', 'PooledSelfAttention2d', 'SimpleSelfAttention', 'icnr_init', 'PixelShuffle_ICNR',
@@ -213,22 +213,22 @@ def linear(in_features, out_features, bias=True, act_func=None, init='auto'):
 
 # Cell
 @delegates(nn.Conv1d)
-def conv2d(in_channels, out_channels, kernel_size, act_func=None, init='auto', **kwargs):
-    "Linear layer followed by optional activation, with optional auto-init"
+def conv1d(in_channels, out_channels, kernel_size, act_func=None, init='auto', **kwargs):
+    "Convolutional layer followed by optional activation, with optional auto-init"
     res = nn.Conv1d(in_channels, out_channels, kernel_size, **kwargs)
     return _act_func(res, act_func, init)
 
 # Cell
 @delegates(nn.Conv2d)
 def conv2d(in_channels, out_channels, kernel_size, act_func=None, init='auto', **kwargs):
-    "Linear layer followed by optional activation, with optional auto-init"
+    "Convolutional layer followed by optional activation, with optional auto-init"
     res = nn.Conv2d(in_channels, out_channels, kernel_size, **kwargs)
     return _act_func(res, act_func, init)
 
 # Cell
 @delegates(nn.Conv3d)
-def conv2d(in_channels, out_channels, kernel_size, act_func=None, init='auto', **kwargs):
-    "Linear layer followed by optional activation, with optional auto-init"
+def conv3d(in_channels, out_channels, kernel_size, act_func=None, init='auto', **kwargs):
+    "Convolutional layer followed by optional activation, with optional auto-init"
     res = nn.Conv3d(in_channels, out_channels, kernel_size, **kwargs)
     return _act_func(res, act_func, init)
 
