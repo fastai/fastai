@@ -486,14 +486,7 @@ def sequential(*args):
 # Cell
 class SequentialEx(Module):
     "Like `nn.Sequential`, but with ModuleList semantics, and can access module input"
-    def __init__(self, *layers):
-        self.layers = layers
-        if len(layers) == 1 and isinstance(args[0], OrderedDict):
-            for key, module in args[0].items():
-                if isinstance(module, nn.Module): self.add_module(key, module)
-        else:
-            for idx, module in enumerate(layers):
-                if isinstance(module, nn.Module): self.add_module(str(idx), module)
+    def __init__(self, *layers): self.layers = nn.ModuleList(layers)
 
     def forward(self, x):
         res = x

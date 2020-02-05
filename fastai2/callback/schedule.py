@@ -189,9 +189,15 @@ def plot_lr_find(self:Recorder, skip_end=5):
 
 # Cell
 @patch
-def lr_find(self:Learner, start_lr=1e-7, end_lr=10, num_it=100, stop_div=True, show_plot=True):
+def lr_find(self:Learner, start_lr=1e-7, end_lr=10, num_it=100, stop_div=True, show_plot=True, suggestions=True):
     "Launch a mock training to find a good learning rate"
     n_epoch = num_it//len(self.dls.train) + 1
     cb=LRFinder(start_lr=start_lr, end_lr=end_lr, num_it=num_it, stop_div=stop_div)
     with self.no_logging(): self.fit(n_epoch, cbs=cb)
     if show_plot: self.recorder.plot_lr_find()
+    if suggestions:
+        lrs,losses = tensor(self.recorder.lrs),tensor(self.recorder.losses)
+        min_lr = lrs[losses.argmin()].item()
+        grads = (losses[1:]-losses[:-1]) / (lrs[1:].log()-lrs[:-1].log())
+        max_grad = lrs[grads.argmin()].item()
+        print(f"Suggested values: {min_lr/10:.2e} (minimum lr/10) or {max_grad:.2e} (steepest point of the curve)")
