@@ -123,12 +123,12 @@ def _vgg_split(m:nn.Module): return L(m[0][0][:22], m[0][0][22:], m[1:]).map(par
 def _alexnet_split(m:nn.Module): return L(m[0][0][:6], m[0][0][6:], m[1:]).map(params)
 
 _default_meta    = {'cut':None, 'split':default_split}
-_xresnet_meta    = {'cut':-4, 'split':_xresnet_split }
-_resnet_meta     = {'cut':-2, 'split':_resnet_split }
-_squeezenet_meta = {'cut':-1, 'split': _squeezenet_split}
-_densenet_meta   = {'cut':-1, 'split':_densenet_split}
-_vgg_meta        = {'cut':-2, 'split':_vgg_split}
-_alexnet_meta    = {'cut':-2, 'split':_alexnet_split}
+_xresnet_meta    = {'cut':-4, 'split':_xresnet_split, 'stats':imagenet_stats}
+_resnet_meta     = {'cut':-2, 'split':_resnet_split, 'stats':imagenet_stats}
+_squeezenet_meta = {'cut':-1, 'split': _squeezenet_split, 'stats':imagenet_stats}
+_densenet_meta   = {'cut':-1, 'split':_densenet_split, 'stats':imagenet_stats}
+_vgg_meta        = {'cut':-2, 'split':_vgg_split, 'stats':imagenet_stats}
+_alexnet_meta    = {'cut':-2, 'split':_alexnet_split, 'stats':imagenet_stats}
 
 # Cell
 model_meta = {
@@ -149,14 +149,24 @@ model_meta = {
     models.alexnet:{**_alexnet_meta}}
 
 # Cell
+def _add_norm(dls, meta, pretrained):
+    if not pretrained: return
+    after_batch = dls.after_batch
+    if first(o for o in after_batch.fs if isinstance(o,Normalize)): return
+    stats = meta.get('stats')
+    if stats is None: return
+    after_batch.add(Normalize.from_stats(*stats))
+
+# Cell
 @delegates(Learner.__init__)
 def cnn_learner(dls, arch, loss_func=None, pretrained=True, cut=None, splitter=None,
-                y_range=None, config=None, n_in=3, n_out=None, **kwargs):
+                y_range=None, config=None, n_in=3, n_out=None, normalize=True, **kwargs):
     "Build a convnet style learner"
     if config is None: config = {}
     meta = model_meta.get(arch, _default_meta)
     if n_out is None: n_out = get_c(dls)
     assert n_out, "`n_out` is not defined, and could not be infered from data, set `dls.c` or pass `n_out`"
+    if normalize: _add_norm(dls, meta, pretrained)
     model = create_cnn_model(arch, n_out, ifnone(cut, meta['cut']), pretrained, n_in=n_in, y_range=y_range, **config)
     learn = Learner(dls, model, loss_func=loss_func, splitter=ifnone(splitter, meta['split']), **kwargs)
     if pretrained: learn.freeze()
