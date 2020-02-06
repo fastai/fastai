@@ -88,7 +88,7 @@ class DataBlock():
     def datasets(self, source, verbose=False):
         self.source = source                     ; pv(f"Collecting items from {source}", verbose)
         items = (self.get_items or noop)(source) ; pv(f"Found {len(items)} items", verbose)
-        splits = (self.splitter or noop)(items)
+        splits = (self.splitter or RandomSplitter())(items)
         pv(f"{len(splits)} datasets of sizes {','.join([str(len(s)) for s in splits])}", verbose)
         return Datasets(items, tfms=self._combine_type_tfms(), splits=splits, dl_type=self.dl_type, n_inp=self.n_inp, verbose=verbose)
 

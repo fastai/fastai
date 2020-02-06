@@ -202,4 +202,4 @@ def lr_find(self:Learner, start_lr=1e-7, end_lr=10, num_it=100, stop_div=True, s
         lr_min = lrs[losses.argmin()].item()
         grads = (losses[1:]-losses[:-1]) / (lrs[1:].log()-lrs[:-1].log())
         lr_steep = lrs[grads.argmin()].item()
-        return lr_min,lr_steep
+        return lr_min/10.,lr_steep
