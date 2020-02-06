@@ -3,13 +3,13 @@
 __all__ = ['module', 'Identity', 'Lambda', 'PartialLambda', 'Flatten', 'View', 'ResizeBatch', 'Debugger',
            'sigmoid_range', 'SigmoidRange', 'AdaptiveConcatPool2d', 'PoolType', 'adaptive_pool', 'PoolFlatten',
            'NormType', 'BatchNorm', 'InstanceNorm', 'BatchNorm1dFlat', 'LinBnDrop', 'sigmoid', 'sigmoid_',
-           'vleaky_relu', 'init_default', 'init_linear', 'ConvLayer', 'linear', 'conv1d', 'conv2d', 'conv3d',
-           'AdaptiveAvgPool', 'MaxPool', 'AvgPool', 'BaseLoss', 'CrossEntropyLossFlat', 'BCEWithLogitsLossFlat',
-           'BCELossFlat', 'MSELossFlat', 'L1LossFlat', 'LabelSmoothingCrossEntropy', 'trunc_normal_', 'Embedding',
-           'SelfAttention', 'PooledSelfAttention2d', 'SimpleSelfAttention', 'icnr_init', 'PixelShuffle_ICNR',
-           'sequential', 'SequentialEx', 'MergeLayer', 'Cat', 'SimpleCNN', 'ProdLayer', 'inplace_relu', 'SEModule',
-           'ResBlock', 'SEBlock', 'SEResNeXtBlock', 'SeparableBlock', 'swish', 'Swish', 'MishJitAutoFn', 'mish', 'Mish',
-           'ParameterModule', 'children_and_parameters', 'flatten_model', 'NoneReduce', 'in_channels']
+           'vleaky_relu', 'init_default', 'init_linear', 'ConvLayer', 'AdaptiveAvgPool', 'MaxPool', 'AvgPool',
+           'BaseLoss', 'CrossEntropyLossFlat', 'BCEWithLogitsLossFlat', 'BCELossFlat', 'MSELossFlat', 'L1LossFlat',
+           'LabelSmoothingCrossEntropy', 'trunc_normal_', 'Embedding', 'SelfAttention', 'PooledSelfAttention2d',
+           'SimpleSelfAttention', 'icnr_init', 'PixelShuffle_ICNR', 'sequential', 'SequentialEx', 'MergeLayer', 'Cat',
+           'SimpleCNN', 'ProdLayer', 'inplace_relu', 'SEModule', 'ResBlock', 'SEBlock', 'SEResNeXtBlock',
+           'SeparableBlock', 'swish', 'Swish', 'MishJitAutoFn', 'mish', 'Mish', 'ParameterModule',
+           'children_and_parameters', 'flatten_model', 'NoneReduce', 'in_channels']
 
 # Cell
 from .imports import *
@@ -240,33 +240,6 @@ class ConvLayer(nn.Sequential):
         layers += act_bn
         if xtra: layers.append(xtra)
         super().__init__(*layers)
-
-# Cell
-def linear(in_features, out_features, bias=True, act_cls=None, init='auto'):
-    "Linear layer followed by optional activation, with optional auto-init"
-    res = nn.Linear(in_features, out_features, bias=bias)
-    if act_cls: act_cls = act_cls()
-    init_linear(res, act_cls, init=init)
-    if act_cls: res = nn.Sequential(res, act_cls)
-    return res
-
-# Cell
-@delegates(ConvLayer)
-def conv1d(ni, nf, ks, stride=1, ndim=1, norm_type=None, **kwargs):
-    "Convolutional layer followed by optional activation, with optional auto-init"
-    return ConvLayer(ni, nf, ks, stride=stride, ndim=ndim, norm_type=norm_type, **kwargs)
-
-# Cell
-@delegates(ConvLayer)
-def conv2d(ni, nf, ks, stride=1, ndim=2, norm_type=None, **kwargs):
-    "Convolutional layer followed by optional activation, with optional auto-init"
-    return ConvLayer(ni, nf, ks, stride=stride, ndim=ndim, norm_type=norm_type, **kwargs)
-
-# Cell
-@delegates(ConvLayer)
-def conv3d(ni, nf, ks, stride=1, ndim=3, norm_type=None, **kwargs):
-    "Convolutional layer followed by optional activation, with optional auto-init"
-    return ConvLayer(ni, nf, ks, stride=stride, ndim=ndim, norm_type=norm_type, **kwargs)
 
 # Cell
 def AdaptiveAvgPool(sz=1, ndim=2):
