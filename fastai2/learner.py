@@ -23,7 +23,7 @@ class Callback(GetAttr):
         _run = (event_name not in _inner_loop or (self.run_train and getattr(self, 'training', True)) or
                (self.run_valid and not getattr(self, 'training', False)))
         if self.run and _run: getattr(self, event_name, noop)()
-        if event=='after_fit': self.run=True #Reset self.run to True at each end of fit
+        if event_name=='after_fit': self.run=True #Reset self.run to True at each end of fit
 
     def __setattr__(self, name, value):
         if hasattr(self.learn,name):
@@ -183,7 +183,7 @@ from contextlib import ExitStack
 # Cell
 class Learner():
     def __init__(self, dls, model, loss_func=None, opt_func=Adam, lr=defaults.lr, splitter=trainable_params, cbs=None,
-                 cb_funcs=None, metrics=None, path=None, model_dir='models', wd=defaults.wd, wd_bn_bias=False, train_bn=True,
+                 metrics=None, path=None, model_dir='models', wd=defaults.wd, wd_bn_bias=False, train_bn=True,
                  moms=(0.95,0.85,0.95)):
         store_attr(self, "dls,model,opt_func,lr,splitter,model_dir,wd,wd_bn_bias,train_bn,metrics,moms")
         self.training,self.create_mbar,self.logger,self.opt,self.cbs = False,True,print,None,L()
@@ -193,8 +193,7 @@ class Learner():
             assert loss_func is not None, "Could not infer loss function from the data, please pass a loss function."
         self.loss_func = loss_func
         self.path = path if path is not None else getattr(dls, 'path', Path('.'))
-        self.add_cbs(cbf() for cbf in L(defaults.callbacks)+L(cb_funcs))
-        self.add_cbs(cbs)
+        self.add_cbs([(cb() if isinstance(cb, type) else cb) for cb in L(defaults.callbacks)+L(cbs)])
         self.model.to(self.dls.device)
         self.epoch,self.n_epoch,self.loss = 0,1,tensor(0.)
 
@@ -224,7 +223,7 @@ class Learner():
         yield
         self.remove_cbs(cbs)
 
-    def ordered_cbs(self, cb_func:str): return [cb for cb in sort_by_run(self.cbs) if hasattr(cb, cb_func)]
+    def ordered_cbs(self, cb_func): return [cb for cb in sort_by_run(self.cbs) if hasattr(cb, cb_func)]
 
     def __call__(self, event_name): L(event_name).map(self._call_one)
     def _call_one(self, event_name):
@@ -266,7 +265,7 @@ class Learner():
 
     def _do_epoch_train(self):
         try:
-            self.dl = self.dls.train;                  self('begin_train')
+            self.dl = self.dls.train;                        self('begin_train')
             self.all_batches()
         except CancelTrainException:                         self('after_cancel_train')
         finally:                                             self('after_train')
