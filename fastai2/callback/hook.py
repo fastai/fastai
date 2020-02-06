@@ -154,7 +154,7 @@ def layer_info(learn):
 # Cell
 def _print_shapes(o, bs):
     if isinstance(o, torch.Size): return ' x '.join([str(bs)] + [str(t) for t in o[1:]])
-    else: return [_print_shapes(x, bs) for x in o]
+    else: return str([_print_shapes(x, bs) for x in o])
 
 # Cell
 @patch
@@ -173,7 +173,7 @@ def summary(self:Learner):
         if sz is None: continue
         ps += np
         if trn: trn_ps += np
-        res += f"{typ:<20} {_print_shapes(sz, bs):<20} {np:<10,} {str(trn):<10}\n"
+        res += f"{typ:<20} {_print_shapes(sz, bs)[:19]:<20} {np:<10,} {str(trn):<10}\n"
         res += "_" * n + "\n"
     res += f"\nTotal params: {ps:,}\n"
     res += f"Total trainable params: {trn_ps:,}\n"
