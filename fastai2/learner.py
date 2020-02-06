@@ -23,6 +23,7 @@ class Callback(GetAttr):
         _run = (event_name not in _inner_loop or (self.run_train and getattr(self, 'training', True)) or
                (self.run_valid and not getattr(self, 'training', False)))
         if self.run and _run: getattr(self, event_name, noop)()
+        if event=='after_fit': self.run=True #Reset self.run to True at each end of fit
 
     def __setattr__(self, name, value):
         if hasattr(self.learn,name):
