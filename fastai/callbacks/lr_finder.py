@@ -12,6 +12,7 @@ class LRFinder(LearnerCallback):
         super().__init__(learn)
         self.data,self.stop_div = learn.data,stop_div
         self.sched = Scheduler((start_lr, end_lr), num_it, annealing_exp)
+        self.batch_num = 0
 
     def on_train_begin(self, pbar, **kwargs:Any)->None:
         "Initialize optimizer and learner hyperparameters."
@@ -24,11 +25,16 @@ class LRFinder(LearnerCallback):
 
     def on_batch_end(self, iteration:int, smooth_loss:TensorOrNumber, **kwargs:Any)->None:
         "Determine if loss has runaway and we should stop."
+        self.batch_num += 1
         if iteration==0 or smooth_loss < self.best_loss: self.best_loss = smooth_loss
         self.opt.lr = self.sched.step()
         if self.sched.is_done or (self.stop_div and (smooth_loss > 4*self.best_loss or torch.isnan(smooth_loss))):
             #We use the smoothed loss to decide on the stopping since it's less shaky.
-            return {'stop_epoch': True, 'stop_training': True}
+            if not self.stop: self.stop = self.batch_num
+            if num_distrib() <= 1: return { 'stop_epoch': True, 'stop_training' : True }
+    
+    def on_epoch_end(self, **kwargs:Any)->None:
+        if self.stop: return { 'stop_training' : True }
 
     def on_train_end(self, **kwargs:Any)->None:
         "Cleanup learn model weights disturbed during LRFinder exploration."
@@ -36,4 +42,6 @@ class LRFinder(LearnerCallback):
         if hasattr(self.learn.model, 'reset'): self.learn.model.reset()
         for cb in self.callbacks:
             if hasattr(cb, 'reset'): cb.reset()
-        print('LR Finder is complete, type {learner_name}.recorder.plot() to see the graph.')
+        print(f'LR Finder is complete, type {{learner_name}}.recorder.plot() to see the graph.', flush=True)
+        if self.batch_num - self.stop > 10:
+            print(f"Best loss at batch #{self.stop}/{self.batch_num}, may consider .plot(skip_end={self.batch_num-self.stop+3})")

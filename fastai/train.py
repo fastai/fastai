@@ -30,28 +30,15 @@ def fit_fc(learn:Learner, tot_epochs:int=1, lr:float=defaults.lr,  moms:Tuple[fl
     callbacks.append(FlatCosAnnealScheduler(learn, lr, moms=moms, start_pct=start_pct, tot_epochs=tot_epochs))
     learn.fit(tot_epochs, max_lr, wd=wd, callbacks=callbacks)
 
-from contextlib import contextmanager
-@contextmanager
-def suspend_distributed(learn:Learner):
-    ws = num_distrib()
-    try:
-        if ws > 0: learn.suspend_distrib()
-        yield learn
-    finally:
-        if ws > 0: learn.resume_distrib(ws)
-
 def lr_find(learn:Learner, start_lr:Floats=1e-7, end_lr:Floats=10, num_it:int=100, stop_div:bool=True, wd:float=None):
     "Explore lr from `start_lr` to `end_lr` over `num_it` iterations in `learn`. If `stop_div`, stops when loss diverges."
-    if rank_distrib(): return # Do not run lr_find in slave proc
-
-    with suspend_distributed(learn) as learn:
-        start_lr = learn.lr_range(start_lr)
-        start_lr = np.array(start_lr) if is_listy(start_lr) else start_lr
-        end_lr = learn.lr_range(end_lr)
-        end_lr = np.array(end_lr) if is_listy(end_lr) else end_lr
-        cb = LRFinder(learn, start_lr, end_lr, num_it, stop_div)
-        epochs = int(np.ceil(num_it/len(learn.data.train_dl)))
-        learn.fit(epochs, start_lr, callbacks=[cb], wd=wd)
+    start_lr = learn.lr_range(start_lr)
+    start_lr = np.array(start_lr) if is_listy(start_lr) else start_lr
+    end_lr = learn.lr_range(end_lr)
+    end_lr = np.array(end_lr) if is_listy(end_lr) else end_lr
+    cb = LRFinder(learn, start_lr, end_lr, num_it, stop_div)
+    epochs = int(np.ceil(num_it/len(learn.data.train_dl))) * (num_distrib() or 1)
+    learn.fit(epochs, start_lr, callbacks=[cb], wd=wd)
 
 def to_fp16(learn:Learner, loss_scale:float=None, max_noskip:int=1000, dynamic:bool=True, clip:float=None,
             flat_master:bool=False, max_scale:float=2**24, loss_fp32:bool=True)->Learner:

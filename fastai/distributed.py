@@ -74,20 +74,8 @@ def _learner_distributed(learn:Learner, cuda_id:int, cache_dir:PathOrStr='tmp'):
     learn.callbacks.append(DistributedRecorder(learn, cuda_id, cache_dir))
     return learn
 
-def _learner_suspend_distrib(learn:Learner):
-    learn.callbacks = list(filter(lambda x: type(x) not in {DistributedTrainer, DistributedRecorder}, learn.callbacks))
-    os.environ['WORLD_SIZE'] = str(0)
-    return learn
-
-def _learner_resume_distrib(learn:Learner, ws:int):
-    os.environ['WORLD_SIZE'] = str(ws)
-    learn.to_distributed(torch.cuda.current_device())
-    return learn
-
 Learner.to_distributed = _learner_distributed
 Learner.to_parallel = _learner_parallel
-Learner.suspend_distrib = _learner_suspend_distrib
-Learner.resume_distrib = _learner_resume_distrib
 
 def read_metrics(cache_path:PathOrStr, n_gpus:int, reduce:bool=True):
     losses,metrics = [],[]
