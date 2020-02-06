@@ -200,11 +200,33 @@ class ActivationStats(HookCallback):
 
     def hook(self, m, i, o):
         o = o.float()
-        res = {'mean': o.mean().item(), 'std': o.std().item(), 'percent_null': (o<=0.05).long().sum().item()/o.numel()}
+        res = {'mean': o.mean().item(), 'std': o.std().item(),
+               'near_zero': (o<=0.05).long().sum().item()/o.numel()}
         if self.with_hist: res['hist'] = o.histc(40,0,10)
         return res
 
     def after_batch(self):
         "Take the stored results and puts it in `self.stats`"
-        if self.training and (self.every is None or self.train_iter%self.every != 0): self.stats.append(self.hooks.stored)
+        if self.training and (self.every is None or self.train_iter%self.every != 0):
+            self.stats.append(self.hooks.stored)
         super().after_batch()
+
+    def layer_stats(self, idx):
+        lstats = self.stats.itemgot(idx)
+        return L(lstats.itemgot(o) for o in ('mean','std','near_zero'))
+
+    def hist(self, idx):
+        res = self.stats.itemgot(idx).itemgot('hist')
+        return torch.stack(tuple(res)).t().float().log1p()
+
+    def plot_hist(self, idx, figsize=(10,5), ax=None):
+        res = self.hist(idx)
+        if ax is None: ax = subplots(figsize=figsize)[1][0]
+        ax.imshow(res, origin='lower')
+        ax.axis('off')
+
+    def plot_layer_stats(self, idx):
+        _,axs = subplots(1, 3, figsize=(12,3))
+        for o,ax,title in zip(self.layer_stats(idx),axs,('mean','std','% near zero')):
+            ax.plot(o)
+            ax.set_title(title)

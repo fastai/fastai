@@ -41,7 +41,7 @@ def main(
     sa:    Param("Self-attention", int)=0,
     sym:   Param("Symmetry for self-attention", int)=0,
     beta:  Param("SAdam softplus beta", float)=0.,
-    act_fn:Param("Activation function", str)='MishJit',
+    act_fn:Param("Activation function", str)='Mish',
     fp16:  Param("Use mixed precision training", int)=0,
     pool:  Param("Pooling method", str)='AvgPool',
     dump:  Param("Print model; don't train", int)=0,
