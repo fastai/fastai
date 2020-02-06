@@ -180,7 +180,8 @@ def unet_config(**kwargs):
 
 # Cell
 @delegates(Learner.__init__)
-def unet_learner(dls, arch, loss_func=None, pretrained=True, cut=None, splitter=None, config=None, n_in=3, n_out=None, **kwargs):
+def unet_learner(dls, arch, loss_func=None, pretrained=True, cut=None, splitter=None, config=None, n_in=3, n_out=None,
+                 normalize=True, **kwargs):
     "Build a unet learner from `dls` and `arch`"
     if config is None: config = unet_config()
     meta = model_meta.get(arch, _default_meta)
@@ -188,6 +189,7 @@ def unet_learner(dls, arch, loss_func=None, pretrained=True, cut=None, splitter=
     size = dls.one_batch()[0].shape[-2:]
     if n_out is None: n_out = get_c(dls)
     assert n_out, "`n_out` is not defined, and could not be infered from data, set `dls.c` or pass `n_out`"
+    if normalize: _add_norm(dls, meta, pretrained)
     model = models.unet.DynamicUnet(body, n_out, size, **config)
     learn = Learner(dls, model, loss_func=loss_func, splitter=ifnone(splitter, meta['split']), **kwargs)
     if pretrained: learn.freeze()
