@@ -207,7 +207,7 @@ class ActivationStats(HookCallback):
 
     def after_batch(self):
         "Take the stored results and puts it in `self.stats`"
-        if self.training and (self.every is None or self.train_iter%self.every != 0):
+        if self.training and (self.every is None or self.train_iter%self.every == 0):
             self.stats.append(self.hooks.stored)
         super().after_batch()
 
