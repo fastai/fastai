@@ -198,7 +198,7 @@ def lr_find(self:Learner, start_lr=1e-7, end_lr=10, num_it=100, stop_div=True, s
     with self.no_logging(): self.fit(n_epoch, cbs=cb)
     if show_plot: self.recorder.plot_lr_find()
     if suggestions:
-        lrs,losses = tensor(self.recorder.lrs[5:]),tensor(self.recorder.losses[5:])
+        lrs,losses = tensor(self.recorder.lrs[5:-5]),tensor(self.recorder.losses[5:-5])
         lr_min = lrs[losses.argmin()].item()
         grads = (losses[1:]-losses[:-1]) / (lrs[1:].log()-lrs[:-1].log())
         lr_steep = lrs[grads.argmin()].item()
