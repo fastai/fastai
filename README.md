@@ -9,7 +9,6 @@
 -->
 
 # Welcome to fastai v2
-
 > NB: This is still in early development. Use v1 unless you want to contribute to the next version of fastai
 
 
@@ -30,7 +29,7 @@ Or you can use an editable install (which is probably the best approach at the m
 ``` 
 git clone https://github.com/fastai/fastai2
 cd fastai2
-pip install -e .[dev]
+pip install -e ".[dev]"
 ``` 
 You should also use an editable install of [`fastcore`](https://github.com/fastai/fastcore) to go with it.
 
