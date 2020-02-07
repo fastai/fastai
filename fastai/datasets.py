@@ -187,16 +187,17 @@ def url2path(url, data=True, ext:str='.tgz'):
     "Change `url` to a path."
     name = url2name(url)
     return datapath4file(name, ext=ext, archive=False) if data else modelpath4file(name, ext=ext)
+
 def _url2tgz(url, data=True, ext:str='.tgz'):
     return datapath4file(f'{url2name(url)}{ext}', ext=ext) if data else modelpath4file(f'{url2name(url)}{ext}', ext=ext)
 
-def modelpath4file(filename, ext:str='.tgz'):
+def modelpath4file(filename:str, ext:str='.tgz'):
     "Return model path to `filename`, checking locally first then in the config file."
     local_path = URLs.LOCAL_PATH/'models'/filename
     if local_path.exists() or local_path.with_suffix(ext).exists(): return local_path
     else: return Config.model_path()/filename
 
-def datapath4file(filename, ext:str='.tgz', archive=True):
+def datapath4file(filename:str, ext:str='.tgz', archive=True):
     "Return data path to `filename`, checking locally first then in the config file."
     local_path = URLs.LOCAL_PATH/'data'/filename
     if local_path.exists() or local_path.with_suffix(ext).exists(): return local_path

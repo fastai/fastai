@@ -363,8 +363,8 @@ dtypes of model parameters after model2half:
 <span class="n">b2</span> <span class="o">=</span> <span class="n">np2model_tensor</span><span class="p">(</span><span class="n">a2</span><span class="p">)</span> <span class="c1"># Maps to torch.float32</span>
 <span class="n">b3</span> <span class="o">=</span> <span class="n">np2model_tensor</span><span class="p">(</span><span class="n">a3</span><span class="p">)</span> <span class="c1"># Maps to torch.float32</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Datatype of as&#39;: </span><span class="si">{a1.dtype}</span><span class="s2">, </span><span class="si">{a2.dtype}</span><span class="s2">, </span><span class="si">{a3.dtype}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Datatype of bs&#39;: </span><span class="si">{b1.dtype}</span><span class="s2">, </span><span class="si">{b2.dtype}</span><span class="s2">, </span><span class="si">{b3.dtype}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Datatype of as&#39;: </span><span class="si">{a1.dtype}</span><span class="s2">, </span><span class="si">{a2.dtype}</span><span class="s2">, </span><span class="si">{a3.dtype}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Datatype of bs&#39;: </span><span class="si">{b1.dtype}</span><span class="s2">, </span><span class="si">{b2.dtype}</span><span class="s2">, </span><span class="si">{b3.dtype}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -655,8 +655,8 @@ Id of tensors in c:
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Default example examined</span>
 
-<span class="kn">from</span> <span class="nn">fastai</span> <span class="k">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">fastai.vision</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">fastai</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">fastai.vision</span> <span class="kn">import</span> <span class="o">*</span>
 
 <span class="n">path</span> <span class="o">=</span> <span class="n">untar_data</span><span class="p">(</span><span class="n">URLs</span><span class="o">.</span><span class="n">MNIST_SAMPLE</span><span class="p">)</span>
 <span class="n">data</span> <span class="o">=</span> <span class="n">ImageDataBunch</span><span class="o">.</span><span class="n">from_folder</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
@@ -1557,7 +1557,7 @@ dtype of bs: 	torch.int64	torch.int32	torch.int16	torch.float16	torch.float16	to
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">_T</span><span class="p">(</span><span class="n">Module</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">f</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">f</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">x</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 
 <span class="n">t</span> <span class="o">=</span> <span class="n">_T</span><span class="p">()</span>

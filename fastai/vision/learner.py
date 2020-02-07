@@ -19,13 +19,15 @@ def _squeezenet_split(m:nn.Module): return (m[0][0][5], m[0][0][8], m[1])
 def _densenet_split(m:nn.Module): return (m[0][0][7],m[1])
 def _vgg_split(m:nn.Module): return (m[0][0][22],m[1])
 def _alexnet_split(m:nn.Module): return (m[0][0][6],m[1])
+def _mobilenetv2_split(m:nn.Module): return (m[0][0][10],m[1])
 
-_default_meta    = {'cut':None, 'split':_default_split}
-_resnet_meta     = {'cut':-2, 'split':_resnet_split }
-_squeezenet_meta = {'cut':-1, 'split': _squeezenet_split}
-_densenet_meta   = {'cut':-1, 'split':_densenet_split}
-_vgg_meta        = {'cut':-1, 'split':_vgg_split}
-_alexnet_meta    = {'cut':-1, 'split':_alexnet_split}
+_default_meta     = {'cut':None, 'split':_default_split}
+_resnet_meta      = {'cut':-2, 'split':_resnet_split }
+_squeezenet_meta  = {'cut':-1, 'split': _squeezenet_split}
+_densenet_meta    = {'cut':-1, 'split':_densenet_split}
+_vgg_meta         = {'cut':-1, 'split':_vgg_split}
+_alexnet_meta     = {'cut':-1, 'split':_alexnet_split}
+_mobilenetv2_meta = {'cut':-1, 'split':_mobilenetv2_split}
 
 model_meta = {
     models.resnet18 :{**_resnet_meta}, models.resnet34: {**_resnet_meta},
@@ -38,7 +40,8 @@ model_meta = {
     models.densenet121:{**_densenet_meta}, models.densenet169:{**_densenet_meta},
     models.densenet201:{**_densenet_meta}, models.densenet161:{**_densenet_meta},
     models.vgg11_bn:{**_vgg_meta}, models.vgg13_bn:{**_vgg_meta}, models.vgg16_bn:{**_vgg_meta}, models.vgg19_bn:{**_vgg_meta},
-    models.alexnet:{**_alexnet_meta}}
+    models.alexnet:{**_alexnet_meta},
+    models.mobilenet_v2:{**_mobilenetv2_meta}}
 
 def cnn_config(arch):
     "Get the metadata associated with `arch`."
@@ -107,7 +110,7 @@ def create_cnn(data, base_arch, **kwargs):
     return cnn_learner(data, base_arch, **kwargs)
 
 def unet_learner(data:DataBunch, arch:Callable, pretrained:bool=True, blur_final:bool=True,
-                 norm_type:Optional[NormType]=NormType, split_on:Optional[SplitFuncOrIdxList]=None, blur:bool=False,
+                 norm_type:Optional[NormType]=None, split_on:Optional[SplitFuncOrIdxList]=None, blur:bool=False,
                  self_attention:bool=False, y_range:Optional[Tuple[float,float]]=None, last_cross:bool=True,
                  bottle:bool=False, cut:Union[int,Callable]=None, **learn_kwargs:Any)->Learner:
     "Build Unet learner from `data` and `arch`."
@@ -140,10 +143,10 @@ def _cl_int_gradcam(self, idx, ds_type:DatasetType=DatasetType.Valid, heatmap_th
     im,cl = self.learn.data.dl(ds_type).dataset[idx]
     cl = int(cl)
     xb,_ = self.data.one_item(im, detach=False, denorm=False) #put into a minibatch of batch size = 1
-    with hook_output(m[0]) as hook_a: 
+    with hook_output(m[0]) as hook_a:
         with hook_output(m[0], grad=True) as hook_g:
             preds = m(xb)
-            preds[0,int(cl)].backward() 
+            preds[0,int(cl)].backward()
     acts  = hook_a.stored[0].cpu() #activation maps
     if (acts.shape[-1]*acts.shape[-2]) >= heatmap_thresh:
         grad = hook_g.stored[0][0].cpu()
@@ -160,7 +163,7 @@ def _cl_int_gradcam(self, idx, ds_type:DatasetType=DatasetType.Valid, heatmap_th
 
 ClassificationInterpretation.GradCAM =_cl_int_gradcam
 
-def _cl_int_plot_top_losses(self, k, largest=True, figsize=(12,12), heatmap:bool=False, heatmap_thresh:int=16, 
+def _cl_int_plot_top_losses(self, k, largest=True, figsize=(12,12), heatmap:bool=False, heatmap_thresh:int=16,
                             alpha:float=0.6, cmap:str="magma", show_text:bool=True,
                             return_fig:bool=None)->Optional[plt.Figure]:
     "Show images in `top_losses` along with their prediction, actual, loss, and probability of actual class."
@@ -183,7 +186,7 @@ def _cl_int_plot_top_losses(self, k, largest=True, figsize=(12,12), heatmap:bool
                 sz = list(im.shape[-2:])
                 axes.flat[i].imshow(mult, alpha=alpha, extent=(0,*sz[::-1],0), interpolation='bilinear', cmap=cmap)
     if ifnone(return_fig, defaults.return_fig): return fig
-    
+
 def _cl_int_plot_multi_top_losses(self, samples:int=3, figsize:Tuple[int,int]=(8,8), save_misclassified:bool=False):
     "Show images in `top_losses` along with their prediction, actual, loss, and probability of predicted class in a multilabeled dataset."
     if samples >20:
@@ -229,7 +232,7 @@ def _cl_int_plot_multi_top_losses(self, samples:int=3, figsize:Tuple[int,int]=(8
 ClassificationInterpretation.from_learner          = _cl_int_from_learner
 ClassificationInterpretation.plot_top_losses       = _cl_int_plot_top_losses
 ClassificationInterpretation.plot_multi_top_losses = _cl_int_plot_multi_top_losses
- 
+
 
 def _learner_interpret(learn:Learner, ds_type:DatasetType=DatasetType.Valid, tta=False):
     "Create a `ClassificationInterpretation` object from `learner` on `ds_type` with `tta`."

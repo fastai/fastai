@@ -1056,7 +1056,7 @@ learn = cnn_learner(data, model, metrics=[error_rate, kappa])</code></pre>
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">AverageMetric</span><span class="p">(</span><span class="n">Callback</span><span class="p">):</span>
     <span class="s2">&quot;Wrap a `func` in a callback for metrics computation.&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">):</span>
         <span class="c1"># If it&#39;s a partial, use func.func</span>
         <span class="n">name</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">func</span><span class="p">,</span><span class="s1">&#39;func&#39;</span><span class="p">,</span><span class="n">func</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">func</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">func</span><span class="p">,</span> <span class="n">name</span>
@@ -1136,7 +1136,7 @@ learn = cnn_learner(data, model, metrics=[error_rate, kappa])</code></pre>
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">tracemalloc</span>
 <span class="k">class</span> <span class="nc">TraceMallocMetric</span><span class="p">(</span><span class="n">Callback</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;peak RAM&quot;</span>
 
@@ -1193,7 +1193,7 @@ epoch   train_loss  valid_loss  accuracy    peak RAM
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">tracemalloc</span>
 <span class="k">class</span> <span class="nc">TraceMallocMultiColMetric</span><span class="p">(</span><span class="n">LearnerCallback</span><span class="p">):</span>
     <span class="n">_order</span><span class="o">=-</span><span class="mi">20</span> <span class="c1"># Needs to run before the recorder</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">learn</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">learn</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">learn</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">train_max</span> <span class="o">=</span> <span class="mi">0</span>
 

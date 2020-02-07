@@ -195,7 +195,7 @@ summary: "`Learner` support for computer vision"
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">codes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">camvid</span><span class="o">/</span><span class="s1">&#39;codes.txt&#39;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
-<span class="n">get_y_fn</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">path_lbl</span><span class="o">/</span><span class="n">f</span><span class="s1">&#39;</span><span class="si">{x.stem}</span><span class="s1">_P</span><span class="si">{x.suffix}</span><span class="s1">&#39;</span>
+<span class="n">get_y_fn</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">path_lbl</span><span class="o">/</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{x.stem}</span><span class="s1">_P</span><span class="si">{x.suffix}</span><span class="s1">&#39;</span>
 </pre></div>
 
     </div>
@@ -685,7 +685,7 @@ summary: "`Learner` support for computer vision"
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">i</span> <span class="o">=</span> <span class="n">top_idxs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-<span class="n">df</span> <span class="o">=</span> <span class="n">interp</span><span class="o">.</span><span class="n">_plot_intersect_cm</span><span class="p">(</span><span class="n">single_img_cm</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">f</span><span class="s2">&quot;Ratio of Intersection given True Label, Image:</span><span class="si">{i}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">interp</span><span class="o">.</span><span class="n">_plot_intersect_cm</span><span class="p">(</span><span class="n">single_img_cm</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="sa">f</span><span class="s2">&quot;Ratio of Intersection given True Label, Image:</span><span class="si">{i}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 
     </div>

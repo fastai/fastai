@@ -13,7 +13,7 @@ from ..layers import *
 from ipywidgets import widgets, Layout
 from IPython.display import clear_output, display
 
-__all__ = ['DatasetFormatter', 'ImageCleaner', 'PredictionsCorrector']
+__all__ = ['DatasetFormatter', 'ImageCleaner', 'PredictionsCorrector', 'data_deleter']
 
 class DatasetFormatter():
     "Returns a dataset with the appropriate format and file indices to be displayed."
@@ -200,6 +200,20 @@ class BasicImageWidget(ABC):
     def render(self, batch:Tuple[ImgData]):
         "Override in a subclass to render the widgets for a batch of images."
         pass
+
+def data_deleter(path:PathOrStr, dataset:LabelLists, del_idx:Collection[int]):
+    "Delete the data you want by index.Save changes in path as 'cleaned.csv'."
+    csv_dict = {dataset.x.items[i]: dataset.y[i] for i in range(len(dataset))}
+    for del_path in dataset.x.items[del_idx]:
+        del csv_dict[del_path]
+    csv_path = Path(path) / 'cleaned.csv'
+    with open(csv_path, 'w') as f:
+        csv_writer = csv.writer(f)
+        csv_writer.writerow(['name', 'label'])
+        for pair in csv_dict.items():
+            pair = [os.path.relpath(pair[0], path), pair[1]]
+            csv_writer.writerow(pair)
+    return csv_path
 
 class ImageCleaner(BasicImageWidget):
     "Displays images for relabeling or deletion and saves changes in `path` as 'cleaned.csv'."

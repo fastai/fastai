@@ -126,6 +126,7 @@ class ItemList():
         """Create an `ItemList` in `path` from the filenames that have a suffix in `extensions`.
         `recurse` determines if we search subfolders."""
         path = Path(path)
+        assert path.is_dir() and path.exists(), f"{path} is not a valid directory."
         return cls(get_files(path, extensions, recurse=recurse, exclude=exclude, include=include, presort=presort), 
                    path=path, processor=processor, **kwargs)
 
@@ -260,7 +261,9 @@ class ItemList():
         if label_cls is not None:               return label_cls
         if self.label_cls is not None:          return self.label_cls
         if label_delim is not None:             return MultiCategoryList
-        it = index_row(labels,0)
+        try: it = index_row(labels,0)
+        except: raise Exception("""Can't infer the type of your targets. 
+It's either because your data source is empty or because your labelling function raised an error.""")
         if isinstance(it, (float, np.float32)): return FloatList
         if isinstance(try_int(it), (str, Integral)):  return CategoryList
         if isinstance(it, Collection):          return MultiCategoryList

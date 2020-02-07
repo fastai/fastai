@@ -2394,7 +2394,7 @@ Categories (2, int64): [1 &lt; 2]</pre>
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">_T</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">PrePostInitMeta</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__pre_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="bp">self</span><span class="o">.</span><span class="n">a</span>  <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="o">==</span><span class="mi">0</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>      <span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span> <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="o">==</span><span class="mi">1</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>      <span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span> <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="o">==</span><span class="mi">1</span>
     <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span> <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="o">==</span><span class="mi">2</span>
 
 <span class="n">t</span> <span class="o">=</span> <span class="n">_T</span><span class="p">()</span>
@@ -3553,11 +3553,11 @@ Index: 3, Value: 6
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">Any</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span>
-    <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">i</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">i</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
  
 <span class="n">some_other_data</span> <span class="o">=</span> <span class="n">Any</span><span class="p">(</span><span class="s1">&#39;nice&#39;</span><span class="p">)</span>

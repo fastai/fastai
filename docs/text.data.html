@@ -448,7 +448,7 @@ summary: "Basic dataset for NLP tasks and helper functions to create a DataBunch
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Since it comes in the form of csv files, we will use the corresponding <code>text_data</code> method. Here is an overview of what your file you should look like:</p>
+<p>Since it comes in the form of csv files, we will use the corresponding <code>text_data</code> method. Here is an overview of what your file should look like:</p>
 
 </div>
 </div>
@@ -733,7 +733,7 @@ summary: "Basic dataset for NLP tasks and helper functions to create a DataBunch
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="TextList.show_xyzs" class="doc_header"><code>show_xyzs</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/data.py#L363" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#TextList-show_xyzs-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>show_xyzs</code>(<strong><code>xs</code></strong>, <strong><code>ys</code></strong>, <strong><code>zs</code></strong>, <strong><code>max_len</code></strong>:<code>int</code>=<strong><em><code>70</code></em></strong>)</p>
+<h4 id="TextList.show_xyzs" class="doc_header"><code>show_xyzs</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/data.py#L364" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#TextList-show_xyzs-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>show_xyzs</code>(<strong><code>xs</code></strong>, <strong><code>ys</code></strong>, <strong><code>zs</code></strong>, <strong><code>max_len</code></strong>:<code>int</code>=<strong><em><code>70</code></em></strong>)</p>
 </blockquote>
 <div class="collapse" id="TextList-show_xyzs-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#TextList-show_xyzs-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>show_xyzs</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Show <code>xs</code> (inputs), <code>ys</code> (targets) and <code>zs</code> (predictions). <code>max_len</code> is the maximum number of tokens displayed.</p>
 
@@ -1307,10 +1307,10 @@ summary: "Basic dataset for NLP tasks and helper functions to create a DataBunch
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>LanguageModelPreLoader is an internal class uses for training a language model. It takes the sentences passed as a jagged array of numericalised sentences in <code>dataset</code> and returns contiguous batches to the pytorch dataloader with batch size <code>bs</code> and a sequence length <code>bptt</code>.</p>
+<p>LanguageModelPreLoader is an internal class used for training a language model. It takes the sentences passed as a jagged array of numericalised sentences in <code>dataset</code> and returns contiguous batches to the pytorch dataloader with batch size <code>bs</code> and a sequence length <code>bptt</code>.</p>
 <ul>
 <li><code>lengths</code> can be provided for the jagged training data else lengths is calculated internally </li>
-<li><code>backwards=True</code> will reverses the sentences. </li>
+<li><code>backwards=True</code> will reverse the sentences. </li>
 <li><code>shuffle=True</code>, will shuffle the order of the sentences, at the start of each epoch - except the first</li>
 </ul>
 <p>The following description is usefull for understanding the implementation of <a href="/text.data.html#LanguageModelPreLoader"><code>LanguageModelPreLoader</code></a>:</p>

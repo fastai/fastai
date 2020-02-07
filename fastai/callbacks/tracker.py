@@ -93,7 +93,7 @@ class SaveModelCallback(TrackerCallback):
         "Compare the value monitored to its best score and maybe save the model."
         if self.every=="epoch": self.learn.save(f'{self.name}_{epoch}')
         else: #every="improvement"
-            current = self.get_monitor_value()
+            current = self.get_monitor_value().cpu()
             if current is not None and self.operator(current, self.best):
                 print(f'Better model found at epoch {epoch} with {self.monitor} value: {current}.')
                 self.best = current
@@ -101,7 +101,7 @@ class SaveModelCallback(TrackerCallback):
 
     def on_train_end(self, **kwargs):
         "Load the best model."
-        if self.every=="improvement":
+        if self.every=="improvement" and os.path.isfile(self.path/self.model_dir/f'{self.name}.pth'):
             self.learn.load(f'{self.name}', purge=False)
 
 class ReduceLROnPlateauCallback(TrackerCallback):
