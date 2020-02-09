@@ -93,6 +93,8 @@ class PILBase(Image.Image, metaclass=BypassNewMeta):
         "Show image using `merge(self._show_args, kwargs)`"
         return show_image(self, ctx=ctx, **merge(self._show_args, kwargs))
 
+    def __repr__(self): return f'{self.__class__.__name__} mode={self.mode} size={"x".join([str(d) for d in self.size])}'
+
 # Cell
 class PILImage(PILBase): pass
 
