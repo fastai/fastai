@@ -219,7 +219,8 @@ class ActivationStats(HookCallback):
         res = self.stats.itemgot(idx).itemgot('hist')
         return torch.stack(tuple(res)).t().float().log1p()
 
-    def plot_hist(self, idx, figsize=(10,5), ax=None):
+    def color_dim(self, idx, figsize=(10,5), ax=None):
+        "The 'colorful dimension' plot"
         res = self.hist(idx)
         if ax is None: ax = subplots(figsize=figsize)[1][0]
         ax.imshow(res, origin='lower')
