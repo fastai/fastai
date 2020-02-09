@@ -11,7 +11,7 @@ from .core import *
 class TabularDataLoaders(DataLoaders):
     @classmethod
     @delegates(Tabular.dataloaders)
-    def from_df(cls, df, path='.', procs=None, cat_names=None, cont_names=None, y_names=None, block_y=CategoryBlock,
+    def from_df(cls, df, path='.', procs=None, cat_names=None, cont_names=None, y_names=None, block_y=None,
                 valid_idx=None, **kwargs):
         if cat_names is None: cat_names = []
         if cont_names is None: cont_names = list(set(df)-set(cat_names)-set(y_names))
@@ -21,7 +21,7 @@ class TabularDataLoaders(DataLoaders):
 
     @classmethod
     @delegates(Tabular.dataloaders)
-    def from_csv(cls, csv, path='.', procs=None, cat_names=None, cont_names=None, y_names=None, block_y=CategoryBlock,
+    def from_csv(cls, csv, path='.', procs=None, cat_names=None, cont_names=None, y_names=None, block_y=None,
                 valid_idx=None, **kwargs):
         return cls.from_df(pd.read_csv(csv), path, procs, cat_names=cat_names, cont_names=cont_names, y_names=y_names,
                            block_y=block_y, valid_idx=valid_idx, **kwargs)

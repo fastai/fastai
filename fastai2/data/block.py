@@ -141,7 +141,8 @@ def summary(self: DataBlock, source, bs=4, **kwargs):
     print(f"Setting-up type transforms pipelines")
     dsets = self.datasets(source, verbose=True)
     print("\nBuilding one sample")
-    for tl in dsets.train.tls: _apply_pipeline(tl.tfms, dsets.train.items[0])
+    for tl in dsets.train.tls:
+        _apply_pipeline(tl.tfms, getattr(dsets.train.items,'iloc',dsets.train.items)[0])
     print(f"\nFinal sample: {dsets.train[0]}\n\n")
 
     dls = self.dataloaders(source, verbose=True)

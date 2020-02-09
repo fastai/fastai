@@ -48,8 +48,8 @@ def load_ignore_keys(model, wgts):
 @delegates(Learner.__init__)
 class TextLearner(Learner):
     "Basic class for a `Learner` in NLP."
-    def __init__(self, model, dls, loss_func, alpha=2., beta=1., moms=(0.8,0.7,0.8), **kwargs):
-        super().__init__(model, dls, loss_func, moms=moms, **kwargs)
+    def __init__(self, model, dls, alpha=2., beta=1., moms=(0.8,0.7,0.8), **kwargs):
+        super().__init__(model, dls, moms=moms, **kwargs)
         self.add_cbs([ModelReseter(), RNNRegularizer(alpha=alpha, beta=beta)])
 
     def save_encoder(self, file):
