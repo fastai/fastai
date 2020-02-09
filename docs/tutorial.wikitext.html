@@ -18,7 +18,8 @@ summary: "Training a Language Model on WT2"
 -->
 
 <div class="container" id="notebook-container">
-    
+    {% raw %}
+        
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
@@ -27,9 +28,9 @@ summary: "Training a Language Model on WT2"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">fastai2.basics</span> <span class="k">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">fastai2.callback.all</span> <span class="k">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">fastai2.text.all</span> <span class="k">import</span> <span class="o">*</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">fastai2.basics</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">fastai2.callback.all</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">fastai2.text.all</span> <span class="kn">import</span> <span class="o">*</span>
 </pre></div>
 
     </div>
@@ -133,23 +134,23 @@ summary: "Training a Language Model on WT2"
   </thead>
   <tbody>
     <tr>
-      <td>0</td>
+      <th>0</th>
       <td>\n = 2013 – 14 York City F.C. season = \n \n The 2013 – 14 season was the &lt;unk&gt; season of competitive association football and 77th season in the Football League played by York City Football Club , a professional football club based in York , North Yorkshire , England . Their 17th @-@ place finish in 2012 – 13 meant it was their second consecutive season in League Two . The season ran from 1 July 2013 to 30 June 2014 . \n Nigel Worthington , starting his first full season as York manager , made eight permanent summer signings . By the turn of the year York were only above the relegation z...</td>
     </tr>
     <tr>
-      <td>1</td>
+      <th>1</th>
       <td>\n = Big Boy ( song ) = \n \n " Big Boy " &lt;unk&gt; " I 'm A Big Boy Now " was the first single ever recorded by the Jackson 5 , which was released by Steeltown Records in January 1968 . The group played instruments on many of their Steeltown compositions , including " Big Boy " . The song was neither a critical nor commercial success , but the Jackson family were delighted with the outcome nonetheless . \n The Jackson 5 would release a second single with Steeltown Records before moving to Motown Records . The group 's recordings at Steeltown Records were thought to be lost , but they were re...</td>
     </tr>
     <tr>
-      <td>2</td>
+      <th>2</th>
       <td>\n = The Remix ( Lady Gaga album ) = \n \n The Remix is a remix album by American recording artist Lady Gaga . Released in Japan on March 3 , 2010 , it contains remixes of the songs from her first studio album , The Fame ( 2008 ) , and her third extended play , The Fame Monster ( 2009 ) . A revised version of the track list was prepared for release in additional markets , beginning with Mexico on May 3 , 2010 . A number of recording artists have produced the songs , including Pet Shop Boys , Passion Pit and The Sound of Arrows . The remixed versions feature both uptempo and &lt;unk&gt; composit...</td>
     </tr>
     <tr>
-      <td>3</td>
+      <th>3</th>
       <td>\n = New Year 's Eve ( Up All Night ) = \n \n " New Year 's Eve " is the twelfth episode of the first season of the American comedy television series Up All Night . The episode originally aired on NBC in the United States on January 12 , 2012 . It was written by Erica &lt;unk&gt; and was directed by Beth McCarthy @-@ Miller . The episode also featured a guest appearance from Jason Lee as Chris and Reagan 's neighbor and Ava 's boyfriend , Kevin . \n During Reagan ( Christina Applegate ) and Chris 's ( Will &lt;unk&gt; ) first New Year 's Eve game night , Reagan 's competitiveness comes out causing Ch...</td>
     </tr>
     <tr>
-      <td>4</td>
+      <th>4</th>
       <td>\n = Geopyxis carbonaria = \n \n Geopyxis carbonaria is a species of fungus in the genus Geopyxis , family &lt;unk&gt; . First described to science in 1805 , and given its current name in 1889 , the species is commonly known as the charcoal loving elf @-@ cup , dwarf &lt;unk&gt; cup , &lt;unk&gt; &lt;unk&gt; cup , or pixie cup . The small , &lt;unk&gt; @-@ shaped fruitbodies of the fungus are reddish @-@ brown with a whitish fringe and measure up to 2 cm ( 0 @.@ 8 in ) across . They have a short , tapered stalk . Fruitbodies are commonly found on soil where brush has recently been burned , sometimes in great numbers ....</td>
     </tr>
   </tbody>
@@ -177,7 +178,7 @@ summary: "Training a Language Model on WT2"
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">splits</span> <span class="o">=</span> <span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">range_of</span><span class="p">(</span><span class="n">df_train</span><span class="p">)),</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">df_train</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">df_all</span><span class="p">)))]</span>
 <span class="n">tfms</span> <span class="o">=</span> <span class="p">[</span><span class="n">attrgetter</span><span class="p">(</span><span class="s2">&quot;text&quot;</span><span class="p">),</span> <span class="n">Tokenizer</span><span class="o">.</span><span class="n">from_df</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">Numericalize</span><span class="p">()]</span>
-<span class="n">dsrc</span> <span class="o">=</span> <span class="n">Datasets</span><span class="p">(</span><span class="n">df_all</span><span class="p">,</span> <span class="p">[</span><span class="n">tfms</span><span class="p">],</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">,</span> <span class="n">dl_type</span><span class="o">=</span><span class="n">LMDataLoader</span><span class="p">)</span>
+<span class="n">dsets</span> <span class="o">=</span> <span class="n">Datasets</span><span class="p">(</span><span class="n">df_all</span><span class="p">,</span> <span class="p">[</span><span class="n">tfms</span><span class="p">],</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">,</span> <span class="n">dl_type</span><span class="o">=</span><span class="n">LMDataLoader</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -206,7 +207,7 @@ summary: "Training a Language Model on WT2"
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">bs</span><span class="p">,</span><span class="n">sl</span> <span class="o">=</span> <span class="mi">104</span><span class="p">,</span><span class="mi">72</span>
-<span class="n">dbch</span> <span class="o">=</span> <span class="n">dsrc</span><span class="o">.</span><span class="n">dataloaders</span><span class="p">(</span><span class="n">bs</span><span class="o">=</span><span class="n">bs</span><span class="p">,</span> <span class="n">seq_len</span><span class="o">=</span><span class="n">sl</span><span class="p">)</span>
+<span class="n">dls</span> <span class="o">=</span> <span class="n">dsets</span><span class="o">.</span><span class="n">dataloaders</span><span class="p">(</span><span class="n">bs</span><span class="o">=</span><span class="n">bs</span><span class="p">,</span> <span class="n">seq_len</span><span class="o">=</span><span class="n">sl</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -219,7 +220,7 @@ summary: "Training a Language Model on WT2"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dbch</span><span class="o">.</span><span class="n">show_batch</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dls</span><span class="o">.</span><span class="n">show_batch</span><span class="p">()</span>
 </pre></div>
 
     </div>
@@ -244,48 +245,48 @@ summary: "Training a Language Model on WT2"
   <tbody>
     <tr>
       <th>0</th>
-      <td>xxbos = xxmaj ernie xxmaj cooksey = \n▁\n▁ xxmaj ernest xxmaj george xxmaj cooksey ( 11 xxmaj june 1980 – 3 xxmaj july 2008 ) was an xxmaj english footballer , who was described as a utility player . xxmaj he could play as a left - sided defender and midfielder as well as in a central - midfield role . xxmaj he started as a trainee with xxmaj colchester xxmaj united</td>
-      <td>= xxmaj ernie xxmaj cooksey = \n▁\n▁ xxmaj ernest xxmaj george xxmaj cooksey ( 11 xxmaj june 1980 – 3 xxmaj july 2008 ) was an xxmaj english footballer , who was described as a utility player . xxmaj he could play as a left - sided defender and midfielder as well as in a central - midfield role . xxmaj he started as a trainee with xxmaj colchester xxmaj united ,</td>
+      <td>xxbos = xxmaj laborintus xxup ii ( 2012 recording ) = \n▁\n▁ xxmaj laborintus xxup ii is a 2012 album by xxmaj belgian orchestra xxmaj ictus xxmaj ensemble , vocal group xxmaj nederlands xxmaj kamerkoor and xxmaj american vocalist xxmaj mike xxmaj patton . xxmaj it is a recording of the 1965 work of the same name by xxmaj italian composer xxmaj luciano xxmaj berio , which featured lyrics taken from fellow</td>
+      <td>= xxmaj laborintus xxup ii ( 2012 recording ) = \n▁\n▁ xxmaj laborintus xxup ii is a 2012 album by xxmaj belgian orchestra xxmaj ictus xxmaj ensemble , vocal group xxmaj nederlands xxmaj kamerkoor and xxmaj american vocalist xxmaj mike xxmaj patton . xxmaj it is a recording of the 1965 work of the same name by xxmaj italian composer xxmaj luciano xxmaj berio , which featured lyrics taken from fellow xxmaj</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>planet , the probes discovered its magnetosphere and its largely fluid interior . xxmaj the xxmaj voyager 1 and xxmaj voyager 2 probes visited the planet in 1979 , and studied its moons and the ring system , discovering the volcanic activity of xxmaj io and the presence of water ice on the surface of xxmaj europa . xxmaj ulysses further studied xxmaj jupiter 's magnetosphere in 1992 and then again in</td>
-      <td>, the probes discovered its magnetosphere and its largely fluid interior . xxmaj the xxmaj voyager 1 and xxmaj voyager 2 probes visited the planet in 1979 , and studied its moons and the ring system , discovering the volcanic activity of xxmaj io and the presence of water ice on the surface of xxmaj europa . xxmaj ulysses further studied xxmaj jupiter 's magnetosphere in 1992 and then again in 2</td>
+      <td>xxmaj hot 100 , and 22 on the r &amp; b / hip - hop xxmaj singles chart . xxmaj it also reached number six on the xxmaj adult xxmaj contemporary chart , while reaching a peak of 39 on the xxmaj adult xxmaj pop xxmaj songs chart . xxmaj in xxmaj canada , the song debuted at number 98 on the xxup rpm xxmaj singles chart , on the xxmaj july</td>
+      <td>hot 100 , and 22 on the r &amp; b / hip - hop xxmaj singles chart . xxmaj it also reached number six on the xxmaj adult xxmaj contemporary chart , while reaching a peak of 39 on the xxmaj adult xxmaj pop xxmaj songs chart . xxmaj in xxmaj canada , the song debuted at number 98 on the xxup rpm xxmaj singles chart , on the xxmaj july 22</td>
     </tr>
     <tr>
       <th>2</th>
-      <td>hotel xxmaj administration , and the xxmaj american xxmaj institute of xxmaj wine &amp; xxmaj food . xxmaj in 1993 , xxmaj robert xxmaj mondavi bought and donated the land for xxmaj copia for $ 1.2 million ( $ xxunk million today ) , followed by a lead gift of $ 20 million ( $ xxunk million today ) . xxmaj mondavi chose the downtown xxmaj napa location with urging from his</td>
-      <td>xxmaj administration , and the xxmaj american xxmaj institute of xxmaj wine &amp; xxmaj food . xxmaj in 1993 , xxmaj robert xxmaj mondavi bought and donated the land for xxmaj copia for $ 1.2 million ( $ xxunk million today ) , followed by a lead gift of $ 20 million ( $ xxunk million today ) . xxmaj mondavi chose the downtown xxmaj napa location with urging from his wife</td>
+      <td>a blacksmith shop . \n▁\n▁ = = = xxmaj establishment = = = \n▁\n▁ xxmaj the dates of the earliest church can not be verified , but a church building may have been constructed at the site of xxmaj old xxmaj pine xxmaj church as early as around 1814 , and possibly as early as 1792 . \n▁ xxmaj on xxmaj september 24 , 1838 , xxmaj william xxunk and his wife</td>
+      <td>blacksmith shop . \n▁\n▁ = = = xxmaj establishment = = = \n▁\n▁ xxmaj the dates of the earliest church can not be verified , but a church building may have been constructed at the site of xxmaj old xxmaj pine xxmaj church as early as around 1814 , and possibly as early as 1792 . \n▁ xxmaj on xxmaj september 24 , 1838 , xxmaj william xxunk and his wife ,</td>
     </tr>
     <tr>
       <th>3</th>
-      <td>xxmaj war xxup i. xxmaj birkin soon fits into the slow - paced life of the remote village , and over the course of the summer uncovering the painting begins to lose his trauma - induced xxunk and xxunk . \n▁ xxmaj in particular , he forms a close friendship with archaeologist xxmaj james xxmaj moon ( xxmaj kenneth xxmaj branagh ) , another veteran , who like xxmaj birkin has been</td>
-      <td>war xxup i. xxmaj birkin soon fits into the slow - paced life of the remote village , and over the course of the summer uncovering the painting begins to lose his trauma - induced xxunk and xxunk . \n▁ xxmaj in particular , he forms a close friendship with archaeologist xxmaj james xxmaj moon ( xxmaj kenneth xxmaj branagh ) , another veteran , who like xxmaj birkin has been emotionally</td>
+      <td>featured xxunk ' xxmaj dirty # # # # # # # in the remix for " xxmaj fantasy . " xxmaj they feared the sudden change was completely left field for her music , and worried it would jeopardize the album 's success . xxmaj in an interview with xxmaj entertainment xxmaj weekly , xxmaj carey openly spoke of her issues with xxmaj columbia : " xxmaj everybody was like '</td>
+      <td>xxunk ' xxmaj dirty # # # # # # # in the remix for " xxmaj fantasy . " xxmaj they feared the sudden change was completely left field for her music , and worried it would jeopardize the album 's success . xxmaj in an interview with xxmaj entertainment xxmaj weekly , xxmaj carey openly spoke of her issues with xxmaj columbia : " xxmaj everybody was like ' xxmaj</td>
     </tr>
     <tr>
       <th>4</th>
-      <td>xxmaj leader of the xxmaj nation . " \n▁\n▁ = = xxmaj death and aftermath = = \n▁\n▁\n▁ = = = xxmaj death = = = \n▁\n▁ xxmaj although xxmaj perón had undergone a xxunk performed by the xxmaj american surgeon xxmaj george xxup t. xxmaj pack , the cancer had xxunk and returned rapidly . xxmaj she was the first xxmaj argentine to undergo chemotherapy ( a novel treatment at that</td>
-      <td>leader of the xxmaj nation . " \n▁\n▁ = = xxmaj death and aftermath = = \n▁\n▁\n▁ = = = xxmaj death = = = \n▁\n▁ xxmaj although xxmaj perón had undergone a xxunk performed by the xxmaj american surgeon xxmaj george xxup t. xxmaj pack , the cancer had xxunk and returned rapidly . xxmaj she was the first xxmaj argentine to undergo chemotherapy ( a novel treatment at that time</td>
+      <td>. xxmaj on the right - hand wall , an altar dedicated to the xxmaj virgin of the xxmaj confidence is decorated with numerous churrigueresque figurines xxunk away in niches , columns and top pieces . \n▁\n▁ = = = = xxmaj chapel of the xxmaj holy xxmaj angels and xxunk = = = = \n▁\n▁ xxmaj the xxmaj chapel of the xxmaj holy xxmaj angels and xxunk ( xxmaj spanish :</td>
+      <td>xxmaj on the right - hand wall , an altar dedicated to the xxmaj virgin of the xxmaj confidence is decorated with numerous churrigueresque figurines xxunk away in niches , columns and top pieces . \n▁\n▁ = = = = xxmaj chapel of the xxmaj holy xxmaj angels and xxunk = = = = \n▁\n▁ xxmaj the xxmaj chapel of the xxmaj holy xxmaj angels and xxunk ( xxmaj spanish : xxmaj</td>
     </tr>
     <tr>
       <th>5</th>
-      <td>1940s the company bought xxmaj grand xxunk xxmaj bellevue in ålesund , and later operated xxunk xxmaj tourist xxmaj hotel for a short period . xxmaj in 1952 , xxmaj oslo xxmaj municipality 's xxmaj viking xxmaj hotel was completed , and xxmaj spisevognselskapet was selected as the operator . xxmaj it remained the hotel 's operator until 1976 when the government sold it to xxunk , which outbid xxmaj spisevognselskapet by</td>
-      <td>the company bought xxmaj grand xxunk xxmaj bellevue in ålesund , and later operated xxunk xxmaj tourist xxmaj hotel for a short period . xxmaj in 1952 , xxmaj oslo xxmaj municipality 's xxmaj viking xxmaj hotel was completed , and xxmaj spisevognselskapet was selected as the operator . xxmaj it remained the hotel 's operator until 1976 when the government sold it to xxunk , which outbid xxmaj spisevognselskapet by several</td>
+      <td>plot to assassinate him and sent into exile . xxmaj in the novel , the xxmaj general remembers that he had once appointed xxmaj santander to govern xxmaj colombia because he believed him to be an effective and brave soldier . xxmaj he formerly regarded xxmaj santander as " his other self , and perhaps his better self " , but by the time of the events in xxmaj the xxmaj general</td>
+      <td>to assassinate him and sent into exile . xxmaj in the novel , the xxmaj general remembers that he had once appointed xxmaj santander to govern xxmaj colombia because he believed him to be an effective and brave soldier . xxmaj he formerly regarded xxmaj santander as " his other self , and perhaps his better self " , but by the time of the events in xxmaj the xxmaj general in</td>
     </tr>
     <tr>
       <th>6</th>
-      <td>conviction , whether the prosecutor improperly attempted to reduce jurors ' sense of responsibility by telling them that a guilty verdict would be subsequently xxunk and subject to appeal ; and \n▁ in relation to post - conviction review hearings in 1995 – 6 , whether the presiding judge , who had also presided at the trial , demonstrated unacceptable bias in his conduct . \n▁ xxmaj the xxmaj third xxmaj circuit</td>
-      <td>, whether the prosecutor improperly attempted to reduce jurors ' sense of responsibility by telling them that a guilty verdict would be subsequently xxunk and subject to appeal ; and \n▁ in relation to post - conviction review hearings in 1995 – 6 , whether the presiding judge , who had also presided at the trial , demonstrated unacceptable bias in his conduct . \n▁ xxmaj the xxmaj third xxmaj circuit xxmaj</td>
+      <td>- xxunk . \n▁ xxwrep 3 xxunk describes the condition : \n▁ xxmaj strange is the madness of those into whom demon foxes enter . xxmaj sometimes they run naked shouting through the streets . xxmaj sometimes they lie down and xxunk at the mouth , and xxunk as a fox xxunk . xxmaj and on some part of the body of the possessed a moving xxunk appears under the skin ,</td>
+      <td>xxunk . \n▁ xxwrep 3 xxunk describes the condition : \n▁ xxmaj strange is the madness of those into whom demon foxes enter . xxmaj sometimes they run naked shouting through the streets . xxmaj sometimes they lie down and xxunk at the mouth , and xxunk as a fox xxunk . xxmaj and on some part of the body of the possessed a moving xxunk appears under the skin , which</td>
     </tr>
     <tr>
       <th>7</th>
-      <td>the colonists many rights , including the rights to taxation without representation . xxmaj however , upon learning of the constitution , xxmaj james xxup ii declared it void . \n▁ xxmaj when the xxmaj duke of xxmaj york became xxmaj king xxmaj james xxup ii of xxmaj england , xxmaj new xxmaj york became a royal province . xxmaj in xxmaj may 1688 the province briefly became part of the xxmaj</td>
-      <td>colonists many rights , including the rights to taxation without representation . xxmaj however , upon learning of the constitution , xxmaj james xxup ii declared it void . \n▁ xxmaj when the xxmaj duke of xxmaj york became xxmaj king xxmaj james xxup ii of xxmaj england , xxmaj new xxmaj york became a royal province . xxmaj in xxmaj may 1688 the province briefly became part of the xxmaj dominion</td>
+      <td>different as well , and was now one - piece and striped . \n▁\n▁ = = xxmaj return = = \n▁\n▁ xxmaj from her introduction to until 1967 , xxmaj midge was marketed as xxmaj barbie 's original best friend , but no dolls were sold for about 20 years until 1988 , when xxmaj california xxmaj dream xxmaj midge was sold as part of a beach line , which used the</td>
+      <td>as well , and was now one - piece and striped . \n▁\n▁ = = xxmaj return = = \n▁\n▁ xxmaj from her introduction to until 1967 , xxmaj midge was marketed as xxmaj barbie 's original best friend , but no dolls were sold for about 20 years until 1988 , when xxmaj california xxmaj dream xxmaj midge was sold as part of a beach line , which used the "</td>
     </tr>
     <tr>
       <th>8</th>
-      <td>zweig xxunk the roots of xxmaj marge 's fear : the moment she realized her father was not a pilot , but an apron - wearing flight attendant , a job that was mostly reserved for women at the time . xxmaj her shame is eased when xxmaj zweig assures her that male flight attendants are now very common and that her father could be considered a pioneer . xxmaj marge also</td>
-      <td>xxunk the roots of xxmaj marge 's fear : the moment she realized her father was not a pilot , but an apron - wearing flight attendant , a job that was mostly reserved for women at the time . xxmaj her shame is eased when xxmaj zweig assures her that male flight attendants are now very common and that her father could be considered a pioneer . xxmaj marge also brings</td>
+      <td>xxup ii 's world . xxmaj each of the four stages — wasteland , caves , dungeon , and inner xxunk — is a series of interconnected rooms , populated by monsters , traps , and items . xxmaj the game displays one room at a time in a flick - screen manner : as the protagonist leaves a room , the screen is updated to display the next . xxmaj the</td>
+      <td>ii 's world . xxmaj each of the four stages — wasteland , caves , dungeon , and inner xxunk — is a series of interconnected rooms , populated by monsters , traps , and items . xxmaj the game displays one room at a time in a flick - screen manner : as the protagonist leaves a room , the screen is updated to display the next . xxmaj the connections</td>
     </tr>
   </tbody>
 </table>
@@ -310,7 +311,7 @@ summary: "Training a Language Model on WT2"
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">config</span> <span class="o">=</span> <span class="n">awd_lstm_lm_config</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 <span class="n">config</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;input_p&#39;</span><span class="p">:</span> <span class="mf">0.6</span><span class="p">,</span> <span class="s1">&#39;output_p&#39;</span><span class="p">:</span> <span class="mf">0.4</span><span class="p">,</span> <span class="s1">&#39;weight_p&#39;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span> <span class="s1">&#39;embed_p&#39;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span> <span class="s1">&#39;hidden_p&#39;</span><span class="p">:</span> <span class="mf">0.2</span><span class="p">})</span>
-<span class="n">model</span> <span class="o">=</span> <span class="n">get_language_model</span><span class="p">(</span><span class="n">AWD_LSTM</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">dbch</span><span class="o">.</span><span class="n">vocab</span><span class="p">),</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">get_language_model</span><span class="p">(</span><span class="n">AWD_LSTM</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">dls</span><span class="o">.</span><span class="n">vocab</span><span class="p">),</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -324,7 +325,7 @@ summary: "Training a Language Model on WT2"
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">opt_func</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">Adam</span><span class="p">,</span> <span class="n">wd</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mf">1e-7</span><span class="p">)</span>
-<span class="n">cb_funcs</span> <span class="o">=</span> <span class="p">[</span><span class="n">partial</span><span class="p">(</span><span class="n">MixedPrecision</span><span class="p">,</span> <span class="n">clip</span><span class="o">=</span><span class="mf">0.1</span><span class="p">),</span> <span class="n">partial</span><span class="p">(</span><span class="n">RNNTrainer</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mi">1</span><span class="p">)]</span>
+<span class="n">cbs</span> <span class="o">=</span> <span class="p">[</span><span class="n">MixedPrecision</span><span class="p">(</span><span class="n">clip</span><span class="o">=</span><span class="mf">0.1</span><span class="p">),</span> <span class="n">ModelReseter</span><span class="p">,</span> <span class="n">RNNRegularizer</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mi">1</span><span class="p">)]</span>
 </pre></div>
 
     </div>
@@ -337,7 +338,7 @@ summary: "Training a Language Model on WT2"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span> <span class="o">=</span> <span class="n">Learner</span><span class="p">(</span><span class="n">dbch</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">loss_func</span><span class="o">=</span><span class="n">CrossEntropyLossFlat</span><span class="p">(),</span> <span class="n">opt_func</span><span class="o">=</span><span class="n">opt_func</span><span class="p">,</span> <span class="n">cb_funcs</span><span class="o">=</span><span class="n">cb_funcs</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="n">accuracy</span><span class="p">,</span> <span class="n">Perplexity</span><span class="p">()])</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span> <span class="o">=</span> <span class="n">Learner</span><span class="p">(</span><span class="n">dls</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">loss_func</span><span class="o">=</span><span class="n">CrossEntropyLossFlat</span><span class="p">(),</span> <span class="n">opt_func</span><span class="o">=</span><span class="n">opt_func</span><span class="p">,</span> <span class="n">cbs</span><span class="o">=</span><span class="n">cbs</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="n">accuracy</span><span class="p">,</span> <span class="n">Perplexity</span><span class="p">()])</span>
 </pre></div>
 
     </div>
@@ -378,11 +379,11 @@ summary: "Training a Language Model on WT2"
   <tbody>
     <tr>
       <td>0</td>
-      <td>5.616480</td>
-      <td>5.124578</td>
-      <td>0.232986</td>
-      <td>168.103271</td>
-      <td>02:28</td>
+      <td>5.541026</td>
+      <td>5.053756</td>
+      <td>0.241910</td>
+      <td>156.609619</td>
+      <td>02:27</td>
     </tr>
   </tbody>
 </table>
@@ -414,6 +415,7 @@ summary: "Training a Language Model on WT2"
 </div>
 
 </div>
+    {% endraw %}
 </div>
  
 

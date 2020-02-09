@@ -18,7 +18,8 @@ summary: "summary"
 -->
 
 <div class="container" id="notebook-container">
-    
+    {% raw %}
+        
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
@@ -37,7 +38,7 @@ summary: "summary"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TabularDataBunch" class="doc_header"><code>class</code> <code>TabularDataBunch</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/tabular/data.py#L11" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TabularDataBunch</code>(<strong>*<code>dls</code></strong>, <strong><code>path</code></strong>=<em><code>'.'</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>) :: <a href="/data.core#DataLoaders"><code>DataLoaders</code></a></p>
+<h2 id="TabularDataLoaders" class="doc_header"><code>class</code> <code>TabularDataLoaders</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/tabular/data.py#L11" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TabularDataLoaders</code>(<strong>*<code>loaders</code></strong>, <strong><code>path</code></strong>=<em><code>'.'</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>) :: <a href="/data.core#DataLoaders"><code>DataLoaders</code></a></p>
 </blockquote>
 <p>Basic wrapper around several <a href="/data.load#DataLoader"><code>DataLoader</code></a>s.</p>
 
@@ -108,7 +109,7 @@ summary: "summary"
   </thead>
   <tbody>
     <tr>
-      <td>0</td>
+      <th>0</th>
       <td>49</td>
       <td>Private</td>
       <td>101320</td>
@@ -126,7 +127,7 @@ summary: "summary"
       <td>&gt;=50k</td>
     </tr>
     <tr>
-      <td>1</td>
+      <th>1</th>
       <td>44</td>
       <td>Private</td>
       <td>236746</td>
@@ -144,7 +145,7 @@ summary: "summary"
       <td>&gt;=50k</td>
     </tr>
     <tr>
-      <td>2</td>
+      <th>2</th>
       <td>38</td>
       <td>Private</td>
       <td>96185</td>
@@ -162,7 +163,7 @@ summary: "summary"
       <td>&lt;50k</td>
     </tr>
     <tr>
-      <td>3</td>
+      <th>3</th>
       <td>38</td>
       <td>Self-emp-inc</td>
       <td>112847</td>
@@ -180,7 +181,7 @@ summary: "summary"
       <td>&gt;=50k</td>
     </tr>
     <tr>
-      <td>4</td>
+      <th>4</th>
       <td>42</td>
       <td>Self-emp-not-inc</td>
       <td>82297</td>
@@ -228,7 +229,8 @@ summary: "summary"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dbunch</span> <span class="o">=</span> <span class="n">TabularDataBunch</span><span class="o">.</span><span class="n">from_df</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">procs</span><span class="p">,</span> <span class="n">cat_names</span><span class="p">,</span> <span class="n">cont_names</span><span class="p">,</span> <span class="n">y_names</span><span class="o">=</span><span class="s2">&quot;salary&quot;</span><span class="p">,</span> <span class="n">valid_idx</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">800</span><span class="p">,</span><span class="mi">1000</span><span class="p">)),</span> <span class="n">bs</span><span class="o">=</span><span class="mi">64</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dls</span> <span class="o">=</span> <span class="n">TabularDataLoaders</span><span class="o">.</span><span class="n">from_df</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">procs</span><span class="p">,</span> <span class="n">cat_names</span><span class="p">,</span> <span class="n">cont_names</span><span class="p">,</span> <span class="n">y_names</span><span class="o">=</span><span class="s2">&quot;salary&quot;</span><span class="p">,</span>
+                                 <span class="n">valid_idx</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">800</span><span class="p">,</span><span class="mi">1000</span><span class="p">)),</span> <span class="n">bs</span><span class="o">=</span><span class="mi">64</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -241,7 +243,7 @@ summary: "summary"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dbunch</span><span class="o">.</span><span class="n">show_batch</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dls</span><span class="o">.</span><span class="n">show_batch</span><span class="p">()</span>
 </pre></div>
 
     </div>
@@ -277,163 +279,163 @@ summary: "summary"
   <tbody>
     <tr>
       <th>0</th>
-      <td>Private</td>
-      <td>Bachelors</td>
-      <td>Never-married</td>
-      <td>Exec-managerial</td>
-      <td>Not-in-family</td>
-      <td>White</td>
-      <td>False</td>
-      <td>False</td>
-      <td>False</td>
-      <td>45.000000</td>
-      <td>51743.994861</td>
-      <td>13.0</td>
-      <td>&lt;50k</td>
+      <td>5.0</td>
+      <td>12.0</td>
+      <td>3.0</td>
+      <td>2.0</td>
+      <td>1.0</td>
+      <td>5.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>-0.629445</td>
+      <td>0.891663</td>
+      <td>-0.422361</td>
+      <td>0.0</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>Private</td>
-      <td>HS-grad</td>
-      <td>Married-civ-spouse</td>
-      <td>Adm-clerical</td>
-      <td>Husband</td>
-      <td>White</td>
-      <td>False</td>
-      <td>False</td>
-      <td>False</td>
-      <td>33.000000</td>
-      <td>138666.999051</td>
-      <td>9.0</td>
-      <td>&gt;=50k</td>
+      <td>5.0</td>
+      <td>10.0</td>
+      <td>3.0</td>
+      <td>5.0</td>
+      <td>1.0</td>
+      <td>5.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>-0.336244</td>
+      <td>-0.722357</td>
+      <td>1.142247</td>
+      <td>0.0</td>
     </tr>
     <tr>
       <th>2</th>
-      <td>Private</td>
-      <td>Some-college</td>
-      <td>Divorced</td>
-      <td>Adm-clerical</td>
-      <td>Not-in-family</td>
-      <td>White</td>
-      <td>False</td>
-      <td>False</td>
-      <td>False</td>
-      <td>80.999999</td>
-      <td>364098.996965</td>
-      <td>10.0</td>
-      <td>&lt;50k</td>
+      <td>5.0</td>
+      <td>12.0</td>
+      <td>3.0</td>
+      <td>2.0</td>
+      <td>6.0</td>
+      <td>5.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>-0.409544</td>
+      <td>0.689451</td>
+      <td>-0.422361</td>
+      <td>1.0</td>
     </tr>
     <tr>
       <th>3</th>
-      <td>Private</td>
-      <td>Masters</td>
-      <td>Married-civ-spouse</td>
-      <td>Prof-specialty</td>
-      <td>Husband</td>
-      <td>White</td>
-      <td>False</td>
-      <td>False</td>
-      <td>False</td>
-      <td>48.000000</td>
-      <td>254290.996970</td>
-      <td>14.0</td>
-      <td>&gt;=50k</td>
+      <td>5.0</td>
+      <td>8.0</td>
+      <td>3.0</td>
+      <td>5.0</td>
+      <td>1.0</td>
+      <td>5.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>0.983160</td>
+      <td>-0.132790</td>
+      <td>0.751095</td>
+      <td>1.0</td>
     </tr>
     <tr>
       <th>4</th>
-      <td>Self-emp-inc</td>
-      <td>Bachelors</td>
-      <td>Married-civ-spouse</td>
-      <td>Exec-managerial</td>
-      <td>Husband</td>
-      <td>White</td>
-      <td>False</td>
-      <td>False</td>
-      <td>False</td>
-      <td>39.000000</td>
-      <td>283338.000083</td>
-      <td>13.0</td>
-      <td>&gt;=50k</td>
+      <td>5.0</td>
+      <td>16.0</td>
+      <td>3.0</td>
+      <td>4.0</td>
+      <td>1.0</td>
+      <td>5.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>0.470058</td>
+      <td>1.345576</td>
+      <td>-0.031209</td>
+      <td>1.0</td>
     </tr>
     <tr>
       <th>5</th>
-      <td>Private</td>
-      <td>Some-college</td>
-      <td>Married-civ-spouse</td>
-      <td>Craft-repair</td>
-      <td>Husband</td>
-      <td>White</td>
-      <td>False</td>
-      <td>False</td>
-      <td>False</td>
-      <td>48.000000</td>
-      <td>189461.999988</td>
-      <td>10.0</td>
-      <td>&gt;=50k</td>
+      <td>2.0</td>
+      <td>11.0</td>
+      <td>1.0</td>
+      <td>5.0</td>
+      <td>2.0</td>
+      <td>5.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.789463</td>
+      <td>-1.427261</td>
+      <td>2.315703</td>
+      <td>1.0</td>
     </tr>
     <tr>
       <th>6</th>
-      <td>Private</td>
-      <td>Some-college</td>
-      <td>Never-married</td>
-      <td>Protective-serv</td>
-      <td>Own-child</td>
-      <td>White</td>
-      <td>False</td>
-      <td>False</td>
-      <td>False</td>
-      <td>21.000000</td>
-      <td>307370.997917</td>
-      <td>10.0</td>
-      <td>&lt;50k</td>
+      <td>5.0</td>
+      <td>12.0</td>
+      <td>5.0</td>
+      <td>7.0</td>
+      <td>2.0</td>
+      <td>5.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>-0.409544</td>
+      <td>-0.424473</td>
+      <td>-0.422361</td>
+      <td>0.0</td>
     </tr>
     <tr>
       <th>7</th>
-      <td>?</td>
-      <td>7th-8th</td>
-      <td>Married-civ-spouse</td>
-      <td>#na#</td>
-      <td>Husband</td>
-      <td>White</td>
-      <td>False</td>
-      <td>False</td>
-      <td>False</td>
-      <td>53.000000</td>
-      <td>29231.004094</td>
-      <td>4.0</td>
-      <td>&lt;50k</td>
+      <td>5.0</td>
+      <td>10.0</td>
+      <td>3.0</td>
+      <td>5.0</td>
+      <td>1.0</td>
+      <td>5.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>0.250158</td>
+      <td>-0.152567</td>
+      <td>1.142247</td>
+      <td>1.0</td>
     </tr>
     <tr>
       <th>8</th>
-      <td>Private</td>
-      <td>Some-college</td>
-      <td>Never-married</td>
-      <td>Sales</td>
-      <td>Own-child</td>
-      <td>Asian-Pac-Islander</td>
-      <td>False</td>
-      <td>False</td>
-      <td>False</td>
-      <td>23.000000</td>
-      <td>169103.999528</td>
-      <td>10.0</td>
-      <td>&lt;50k</td>
+      <td>5.0</td>
+      <td>9.0</td>
+      <td>1.0</td>
+      <td>5.0</td>
+      <td>2.0</td>
+      <td>5.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>-0.776046</td>
+      <td>-0.662978</td>
+      <td>0.359943</td>
+      <td>1.0</td>
     </tr>
     <tr>
       <th>9</th>
-      <td>Private</td>
-      <td>HS-grad</td>
-      <td>Never-married</td>
-      <td>Craft-repair</td>
-      <td>Own-child</td>
-      <td>White</td>
-      <td>False</td>
-      <td>False</td>
-      <td>False</td>
-      <td>32.000000</td>
-      <td>385958.997022</td>
-      <td>9.0</td>
-      <td>&lt;50k</td>
+      <td>5.0</td>
+      <td>5.0</td>
+      <td>5.0</td>
+      <td>8.0</td>
+      <td>2.0</td>
+      <td>5.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>0.763259</td>
+      <td>-1.031590</td>
+      <td>-2.769273</td>
+      <td>0.0</td>
     </tr>
   </tbody>
 </table>
@@ -445,6 +447,36 @@ summary: "summary"
 </div>
 
 </div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dls</span><span class="o">.</span><span class="n">train_ds</span><span class="o">.</span><span class="n">procs</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>Pipeline: Pipeline</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
 </div>
  
 

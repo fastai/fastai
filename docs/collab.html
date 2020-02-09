@@ -18,7 +18,8 @@ summary: "Tools to quickly get the data and train models suitable for collaborat
 -->
 
 <div class="container" id="notebook-container">
-    
+    {% raw %}
+        
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
@@ -43,7 +44,7 @@ summary: "Tools to quickly get the data and train models suitable for collaborat
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TabularCollab" class="doc_header"><code>class</code> <code>TabularCollab</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/collab.py#L9" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TabularCollab</code>(<strong><code>df</code></strong>, <strong><code>procs</code></strong>=<em><code>None</code></em>, <strong><code>cat_names</code></strong>=<em><code>None</code></em>, <strong><code>cont_names</code></strong>=<em><code>None</code></em>, <strong><code>y_names</code></strong>=<em><code>None</code></em>, <strong><code>block_y</code></strong>=<em><code>'CategoryBlock'</code></em>, <strong><code>splits</code></strong>=<em><code>None</code></em>, <strong><code>do_setup</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>) :: <a href="/tabular.core#TabularPandas"><code>TabularPandas</code></a></p>
+<h2 id="TabularCollab" class="doc_header"><code>class</code> <code>TabularCollab</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/collab.py#L9" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TabularCollab</code>(<strong><code>df</code></strong>, <strong><code>procs</code></strong>=<em><code>None</code></em>, <strong><code>cat_names</code></strong>=<em><code>None</code></em>, <strong><code>cont_names</code></strong>=<em><code>None</code></em>, <strong><code>y_names</code></strong>=<em><code>None</code></em>, <strong><code>block_y</code></strong>=<em><code>None</code></em>, <strong><code>splits</code></strong>=<em><code>None</code></em>, <strong><code>do_setup</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>) :: <a href="/tabular.core#TabularPandas"><code>TabularPandas</code></a></p>
 </blockquote>
 <p>A <code>DataFrame</code> wrapper that knows which cols are cont/cat/y, and returns rows in <code>__getitem__</code></p>
 
@@ -67,7 +68,7 @@ summary: "Tools to quickly get the data and train models suitable for collaborat
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="CollabDataBunch" class="doc_header"><code>class</code> <code>CollabDataBunch</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/collab.py#L13" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>CollabDataBunch</code>(<strong>*<code>dls</code></strong>, <strong><code>path</code></strong>=<em><code>'.'</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>) :: <a href="/data.core#DataLoaders"><code>DataLoaders</code></a></p>
+<h2 id="CollabDataLoaders" class="doc_header"><code>class</code> <code>CollabDataLoaders</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/collab.py#L13" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>CollabDataLoaders</code>(<strong>*<code>loaders</code></strong>, <strong><code>path</code></strong>=<em><code>'.'</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>) :: <a href="/data.core#DataLoaders"><code>DataLoaders</code></a></p>
 </blockquote>
 <p>Base <a href="/data.core#DataLoaders"><code>DataLoaders</code></a> for collaborative filtering.</p>
 
@@ -176,7 +177,7 @@ summary: "Tools to quickly get the data and train models suitable for collaborat
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">to</span> <span class="o">=</span> <span class="n">CollabDataBunch</span><span class="o">.</span><span class="n">from_df</span><span class="p">(</span><span class="n">ratings</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="mi">64</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">to</span> <span class="o">=</span> <span class="n">CollabDataLoaders</span><span class="o">.</span><span class="n">from_df</span><span class="p">(</span><span class="n">ratings</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="mi">64</span><span class="p">)</span>
 <span class="n">to</span><span class="o">.</span><span class="n">device</span>
 </pre></div>
 
@@ -206,8 +207,8 @@ summary: "Tools to quickly get the data and train models suitable for collaborat
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dbunch</span> <span class="o">=</span> <span class="n">CollabDataBunch</span><span class="o">.</span><span class="n">from_df</span><span class="p">(</span><span class="n">ratings</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="mi">64</span><span class="p">)</span>
-<span class="n">dbunch</span><span class="o">.</span><span class="n">show_batch</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dls</span> <span class="o">=</span> <span class="n">CollabDataLoaders</span><span class="o">.</span><span class="n">from_df</span><span class="p">(</span><span class="n">ratings</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="mi">64</span><span class="p">)</span>
+<span class="n">dls</span><span class="o">.</span><span class="n">show_batch</span><span class="p">()</span>
 </pre></div>
 
     </div>
@@ -306,7 +307,7 @@ summary: "Tools to quickly get the data and train models suitable for collaborat
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">x</span><span class="p">,</span><span class="n">y</span> <span class="o">=</span> <span class="n">dbunch</span><span class="o">.</span><span class="n">one_batch</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">x</span><span class="p">,</span><span class="n">y</span> <span class="o">=</span> <span class="n">dls</span><span class="o">.</span><span class="n">one_batch</span><span class="p">()</span>
 </pre></div>
 
     </div>
@@ -349,7 +350,7 @@ summary: "Tools to quickly get the data and train models suitable for collaborat
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">EmbeddingDotBias</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">dbunch</span><span class="o">.</span><span class="n">classes</span><span class="p">[</span><span class="s1">&#39;userId&#39;</span><span class="p">]),</span> <span class="nb">len</span><span class="p">(</span><span class="n">dbunch</span><span class="o">.</span><span class="n">classes</span><span class="p">[</span><span class="s1">&#39;movieId&#39;</span><span class="p">]),</span> <span class="n">y_range</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span><span class="o">.</span><span class="n">cuda</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">EmbeddingDotBias</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">dls</span><span class="o">.</span><span class="n">classes</span><span class="p">[</span><span class="s1">&#39;userId&#39;</span><span class="p">]),</span> <span class="nb">len</span><span class="p">(</span><span class="n">dls</span><span class="o">.</span><span class="n">classes</span><span class="p">[</span><span class="s1">&#39;movieId&#39;</span><span class="p">]),</span> <span class="n">y_range</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span><span class="o">.</span><span class="n">cuda</span><span class="p">()</span>
 <span class="n">out</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 <span class="k">assert</span> <span class="p">(</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">out</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span> <span class="ow">and</span> <span class="p">(</span><span class="n">out</span> <span class="o">&lt;=</span> <span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
 </pre></div>
@@ -364,7 +365,7 @@ summary: "Tools to quickly get the data and train models suitable for collaborat
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">EmbeddingDotBias</span><span class="o">.</span><span class="n">from_classes</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="n">dbunch</span><span class="o">.</span><span class="n">classes</span><span class="p">,</span> <span class="s1">&#39;userId&#39;</span><span class="p">,</span> <span class="s1">&#39;movieId&#39;</span><span class="p">,</span> <span class="n">y_range</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span><span class="o">.</span><span class="n">cuda</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">EmbeddingDotBias</span><span class="o">.</span><span class="n">from_classes</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="n">dls</span><span class="o">.</span><span class="n">classes</span><span class="p">,</span> <span class="s1">&#39;userId&#39;</span><span class="p">,</span> <span class="s1">&#39;movieId&#39;</span><span class="p">,</span> <span class="n">y_range</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span><span class="o">.</span><span class="n">cuda</span><span class="p">()</span>
 <span class="n">out</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 <span class="k">assert</span> <span class="p">(</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">out</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span> <span class="ow">and</span> <span class="p">(</span><span class="n">out</span> <span class="o">&lt;=</span> <span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
 </pre></div>
@@ -403,7 +404,7 @@ summary: "Tools to quickly get the data and train models suitable for collaborat
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">emb_szs</span> <span class="o">=</span> <span class="n">get_emb_sz</span><span class="p">(</span><span class="n">dbunch</span><span class="o">.</span><span class="n">train_ds</span><span class="p">,</span> <span class="p">{})</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">emb_szs</span> <span class="o">=</span> <span class="n">get_emb_sz</span><span class="p">(</span><span class="n">dls</span><span class="o">.</span><span class="n">train_ds</span><span class="p">,</span> <span class="p">{})</span>
 <span class="n">model</span> <span class="o">=</span> <span class="n">EmbeddingNN</span><span class="p">(</span><span class="n">emb_szs</span><span class="p">,</span> <span class="p">[</span><span class="mi">50</span><span class="p">],</span> <span class="n">y_range</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span><span class="o">.</span><span class="n">cuda</span><span class="p">()</span>
 <span class="n">out</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 <span class="k">assert</span> <span class="p">(</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">out</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span> <span class="ow">and</span> <span class="p">(</span><span class="n">out</span> <span class="o">&lt;=</span> <span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
@@ -432,7 +433,7 @@ summary: "Tools to quickly get the data and train models suitable for collaborat
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="collab_learner" class="doc_header"><code>collab_learner</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/collab.py#L89" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>collab_learner</code>(<strong><code>dbunch</code></strong>, <strong><code>n_factors</code></strong>=<em><code>50</code></em>, <strong><code>use_nn</code></strong>=<em><code>False</code></em>, <strong><code>emb_szs</code></strong>=<em><code>None</code></em>, <strong><code>layers</code></strong>=<em><code>None</code></em>, <strong><code>config</code></strong>=<em><code>None</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>, <strong><code>loss_func</code></strong>=<em><code>None</code></em>, <strong><code>opt_func</code></strong>=<em><code>'Adam'</code></em>, <strong><code>lr</code></strong>=<em><code>0.001</code></em>, <strong><code>splitter</code></strong>=<em><code>'trainable_params'</code></em>, <strong><code>cbs</code></strong>=<em><code>None</code></em>, <strong><code>cb_funcs</code></strong>=<em><code>None</code></em>, <strong><code>metrics</code></strong>=<em><code>None</code></em>, <strong><code>path</code></strong>=<em><code>None</code></em>, <strong><code>model_dir</code></strong>=<em><code>'models'</code></em>, <strong><code>wd</code></strong>=<em><code>0.01</code></em>, <strong><code>wd_bn_bias</code></strong>=<em><code>False</code></em>, <strong><code>train_bn</code></strong>=<em><code>True</code></em>, <strong><code>moms</code></strong>=<em><code>(0.95, 0.85, 0.95)</code></em>)</p>
+<h4 id="collab_learner" class="doc_header"><code>collab_learner</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/collab.py#L89" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>collab_learner</code>(<strong><code>dls</code></strong>, <strong><code>n_factors</code></strong>=<em><code>50</code></em>, <strong><code>use_nn</code></strong>=<em><code>False</code></em>, <strong><code>emb_szs</code></strong>=<em><code>None</code></em>, <strong><code>layers</code></strong>=<em><code>None</code></em>, <strong><code>config</code></strong>=<em><code>None</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>, <strong><code>loss_func</code></strong>=<em><code>None</code></em>, <strong><code>opt_func</code></strong>=<em><code>'Adam'</code></em>, <strong><code>lr</code></strong>=<em><code>0.001</code></em>, <strong><code>splitter</code></strong>=<em><code>'trainable_params'</code></em>, <strong><code>cbs</code></strong>=<em><code>None</code></em>, <strong><code>metrics</code></strong>=<em><code>None</code></em>, <strong><code>path</code></strong>=<em><code>None</code></em>, <strong><code>model_dir</code></strong>=<em><code>'models'</code></em>, <strong><code>wd</code></strong>=<em><code>0.01</code></em>, <strong><code>wd_bn_bias</code></strong>=<em><code>False</code></em>, <strong><code>train_bn</code></strong>=<em><code>True</code></em>, <strong><code>moms</code></strong>=<em><code>(0.95, 0.85, 0.95)</code></em>)</p>
 </blockquote>
 <p>Create a Learner for collaborative filtering on <a href="/data"><code>data</code></a>.</p>
 
@@ -449,7 +450,7 @@ summary: "Tools to quickly get the data and train models suitable for collaborat
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span> <span class="o">=</span> <span class="n">collab_learner</span><span class="p">(</span><span class="n">dbunch</span><span class="p">,</span> <span class="n">y_range</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span> <span class="o">=</span> <span class="n">collab_learner</span><span class="p">(</span><span class="n">dls</span><span class="p">,</span> <span class="n">y_range</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span>
 </pre></div>
 
     </div>
@@ -502,6 +503,7 @@ summary: "Tools to quickly get the data and train models suitable for collaborat
 </div>
 
 </div>
+    {% endraw %}
 </div>
  
 
