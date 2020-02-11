@@ -259,7 +259,7 @@ class RandomResizedCrop(RandTransform):
 # Cell
 class RatioResize(Transform):
     'Resizes the biggest dimension of an image to `max_sz` maintaining the aspect ratio'
-    def __init__(self, max_sz:int, resamples=(Image.BILINEAR, Image.NEAREST)):
+    def __init__(self, max_sz, resamples=(Image.BILINEAR, Image.NEAREST)):
         self.max_sz,self.resamples = max_sz,resamples
 
     def encodes(self, x:(Image.Image,TensorBBox,TensorPoint)):
