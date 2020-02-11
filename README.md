@@ -23,6 +23,11 @@ pip install -e ".[dev]"
 ``` 
 You should also use an editable install of [`fastcore`](https://github.com/fastai/fastcore) to go with it.
 
+If you want to browse the notebooks and build the library from them you will need nbdev:
+``` 
+pip install nbdev
+``` 
+
 To use `fastai2.medical.imaging` you'll also need to:
 
 ```bash

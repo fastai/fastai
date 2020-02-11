@@ -805,7 +805,7 @@ summary: "Callback and helper functions to schedule any hyper-parameter"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Learner.fit_flat_cos" class="doc_header"><code>Learner.fit_flat_cos</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/schedule.py#L106" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.fit_flat_cos</code>(<strong><code>n_epoch</code></strong>, <strong><code>lr</code></strong>=<em><code>None</code></em>, <strong><code>div_final</code></strong>=<em><code>100000.0</code></em>, <strong><code>pct_start</code></strong>=<em><code>0.75</code></em>, <strong><code>wd</code></strong>=<em><code>0.01</code></em>, <strong><code>cbs</code></strong>=<em><code>None</code></em>, <strong><code>reset_opt</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="Learner.fit_flat_cos" class="doc_header"><code>Learner.fit_flat_cos</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/schedule.py#L105" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.fit_flat_cos</code>(<strong><code>n_epoch</code></strong>, <strong><code>lr</code></strong>=<em><code>None</code></em>, <strong><code>div_final</code></strong>=<em><code>100000.0</code></em>, <strong><code>pct_start</code></strong>=<em><code>0.75</code></em>, <strong><code>wd</code></strong>=<em><code>0.01</code></em>, <strong><code>cbs</code></strong>=<em><code>None</code></em>, <strong><code>reset_opt</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 <p>Fit <code>self.model</code> for <code>n_epoch</code> at flat <code>lr</code> before a cosine annealing.</p>
 
@@ -889,7 +889,7 @@ summary: "Callback and helper functions to schedule any hyper-parameter"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Learner.fit_sgdr" class="doc_header"><code>Learner.fit_sgdr</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/schedule.py#L117" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.fit_sgdr</code>(<strong><code>n_cycles</code></strong>, <strong><code>cycle_len</code></strong>, <strong><code>lr_max</code></strong>=<em><code>None</code></em>, <strong><code>cycle_mult</code></strong>=<em><code>2</code></em>, <strong><code>cbs</code></strong>=<em><code>None</code></em>, <strong><code>reset_opt</code></strong>=<em><code>False</code></em>, <strong><code>wd</code></strong>=<em><code>0.01</code></em>)</p>
+<h4 id="Learner.fit_sgdr" class="doc_header"><code>Learner.fit_sgdr</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/schedule.py#L116" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.fit_sgdr</code>(<strong><code>n_cycles</code></strong>, <strong><code>cycle_len</code></strong>, <strong><code>lr_max</code></strong>=<em><code>None</code></em>, <strong><code>cycle_mult</code></strong>=<em><code>2</code></em>, <strong><code>cbs</code></strong>=<em><code>None</code></em>, <strong><code>reset_opt</code></strong>=<em><code>False</code></em>, <strong><code>wd</code></strong>=<em><code>0.01</code></em>)</p>
 </blockquote>
 <p>Fit <code>self.model</code> for <code>n_cycles</code> of <code>cycle_len</code> using SGDR.</p>
 
@@ -961,7 +961,7 @@ summary: "Callback and helper functions to schedule any hyper-parameter"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Learner.fine_tune" class="doc_header"><code>Learner.fine_tune</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/schedule.py#L130" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.fine_tune</code>(<strong><code>epochs</code></strong>, <strong><code>base_lr</code></strong>=<em><code>0.001</code></em>, <strong><code>freeze_epochs</code></strong>=<em><code>1</code></em>, <strong><code>lr_mult</code></strong>=<em><code>100</code></em>, <strong><code>pct_start</code></strong>=<em><code>0.3</code></em>, <strong><code>div</code></strong>=<em><code>5.0</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="Learner.fine_tune" class="doc_header"><code>Learner.fine_tune</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/schedule.py#L129" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.fine_tune</code>(<strong><code>epochs</code></strong>, <strong><code>base_lr</code></strong>=<em><code>0.001</code></em>, <strong><code>freeze_epochs</code></strong>=<em><code>1</code></em>, <strong><code>lr_mult</code></strong>=<em><code>100</code></em>, <strong><code>pct_start</code></strong>=<em><code>0.3</code></em>, <strong><code>div</code></strong>=<em><code>5.0</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Fine tune with <code>freeze</code> for <code>freeze_epochs</code> then with <code>unfreeze</code> from <code>epochs</code> using discriminative LR</p>
 
@@ -985,7 +985,7 @@ summary: "Callback and helper functions to schedule any hyper-parameter"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="LRFinder" class="doc_header"><code>class</code> <code>LRFinder</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/schedule.py#L142" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LRFinder</code>(<strong><code>start_lr</code></strong>=<em><code>1e-07</code></em>, <strong><code>end_lr</code></strong>=<em><code>10</code></em>, <strong><code>num_it</code></strong>=<em><code>100</code></em>, <strong><code>stop_div</code></strong>=<em><code>True</code></em>) :: <a href="/callback.schedule#ParamScheduler"><code>ParamScheduler</code></a></p>
+<h2 id="LRFinder" class="doc_header"><code>class</code> <code>LRFinder</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/schedule.py#L141" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LRFinder</code>(<strong><code>start_lr</code></strong>=<em><code>1e-07</code></em>, <strong><code>end_lr</code></strong>=<em><code>10</code></em>, <strong><code>num_it</code></strong>=<em><code>100</code></em>, <strong><code>stop_div</code></strong>=<em><code>True</code></em>) :: <a href="/callback.schedule#ParamScheduler"><code>ParamScheduler</code></a></p>
 </blockquote>
 <p>Training with exponentially growing learning rate</p>
 
@@ -1035,7 +1035,7 @@ summary: "Callback and helper functions to schedule any hyper-parameter"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="LRFinder.begin_fit" class="doc_header"><code>LRFinder.begin_fit</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/schedule.py#L152" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>LRFinder.begin_fit</code>()</p>
+<h4 id="LRFinder.begin_fit" class="doc_header"><code>LRFinder.begin_fit</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/schedule.py#L151" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>LRFinder.begin_fit</code>()</p>
 </blockquote>
 <p>Initialize container for hyper-parameters and save the model</p>
 
@@ -1056,7 +1056,7 @@ summary: "Callback and helper functions to schedule any hyper-parameter"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="LRFinder.begin_batch" class="doc_header"><code>LRFinder.begin_batch</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/schedule.py#L157" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>LRFinder.begin_batch</code>()</p>
+<h4 id="LRFinder.begin_batch" class="doc_header"><code>LRFinder.begin_batch</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/schedule.py#L156" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>LRFinder.begin_batch</code>()</p>
 </blockquote>
 <p>Set the proper hyper-parameters in the optimizer</p>
 
@@ -1077,7 +1077,7 @@ summary: "Callback and helper functions to schedule any hyper-parameter"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="LRFinder.after_batch" class="doc_header"><code>LRFinder.after_batch</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/schedule.py#L160" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>LRFinder.after_batch</code>()</p>
+<h4 id="LRFinder.after_batch" class="doc_header"><code>LRFinder.after_batch</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/schedule.py#L159" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>LRFinder.after_batch</code>()</p>
 </blockquote>
 <p>Record hyper-parameters of this batch and potentially stop training</p>
 
@@ -1098,7 +1098,7 @@ summary: "Callback and helper functions to schedule any hyper-parameter"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="LRFinder.begin_validate" class="doc_header"><code>LRFinder.begin_validate</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/schedule.py#L166" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>LRFinder.begin_validate</code>()</p>
+<h4 id="LRFinder.begin_validate" class="doc_header"><code>LRFinder.begin_validate</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/schedule.py#L165" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>LRFinder.begin_validate</code>()</p>
 </blockquote>
 <p>Skip the validation part of training</p>
 
@@ -1122,7 +1122,7 @@ summary: "Callback and helper functions to schedule any hyper-parameter"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Recorder.plot_lr_find" class="doc_header"><code>Recorder.plot_lr_find</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/schedule.py#L181" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Recorder.plot_lr_find</code>(<strong><code>skip_end</code></strong>=<em><code>5</code></em>)</p>
+<h4 id="Recorder.plot_lr_find" class="doc_header"><code>Recorder.plot_lr_find</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/schedule.py#L180" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Recorder.plot_lr_find</code>(<strong><code>skip_end</code></strong>=<em><code>5</code></em>)</p>
 </blockquote>
 <p>Plot the result of an LR Finder test (won't work if you didn't do <code>learn.lr_find()</code> before)</p>
 
@@ -1146,7 +1146,7 @@ summary: "Callback and helper functions to schedule any hyper-parameter"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Learner.lr_find" class="doc_header"><code>Learner.lr_find</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/schedule.py#L193" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.lr_find</code>(<strong><code>start_lr</code></strong>=<em><code>1e-07</code></em>, <strong><code>end_lr</code></strong>=<em><code>10</code></em>, <strong><code>num_it</code></strong>=<em><code>100</code></em>, <strong><code>stop_div</code></strong>=<em><code>True</code></em>, <strong><code>show_plot</code></strong>=<em><code>True</code></em>, <strong><code>suggestions</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="Learner.lr_find" class="doc_header"><code>Learner.lr_find</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/schedule.py#L192" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.lr_find</code>(<strong><code>start_lr</code></strong>=<em><code>1e-07</code></em>, <strong><code>end_lr</code></strong>=<em><code>10</code></em>, <strong><code>num_it</code></strong>=<em><code>100</code></em>, <strong><code>stop_div</code></strong>=<em><code>True</code></em>, <strong><code>show_plot</code></strong>=<em><code>True</code></em>, <strong><code>suggestions</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 <p>Launch a mock training to find a good learning rate, return lr_min, lr_steep if <code>suggestions</code> is True</p>
 
