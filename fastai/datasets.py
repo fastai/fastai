@@ -71,6 +71,7 @@ class URLs():
     LSUN_BEDROOMS      = f'{S3_IMAGE}bedroom'
     PASCAL_2007        = f'{S3_IMAGELOC}pascal_2007'
     PASCAL_2012        = f'{S3_IMAGELOC}pascal_2012'
+    SKIN_LESION        = f'{S3_IMAGELOC}skin-lesion'
 
     #Pretrained models
     OPENAI_TRANSFORMER = f'{S3_MODEL}transformer'
@@ -115,6 +116,7 @@ _checks = {
     URLs.PETS:(811706944, 'e4db5c768afd933bb91f5f594d7417a4'),
     URLs.PLANET_SAMPLE:(15523994, '8bfb174b3162f07fbde09b54555bdb00'),
     URLs.PLANET_TINY:(997569, '490873c5683454d4b2611fb1f00a68a9'),
+    URLs.SKIN_LESION:(6601110169, '3324b8993d541bea49df798a64fe41a3'),
     URLs.SOGOU_NEWS:(384269937, '950f1366d33be52f5b944f8a8b680902'),
     URLs.WIKITEXT:(190200704, '2dd8cf8693b3d27e9c8f0a7df054b2c7'),
     URLs.WIKITEXT_TINY:(4070055, '2a82d47a7b85c8b6a8e068dc4c1d37e7'),
