@@ -142,14 +142,14 @@ def total_params(m):
     return params, (False if len(trains)==0 else trains[0])
 
 # Cell
-def layer_info(model: nn.Module, *sample_inputs):
-    "sample_inputs: sample_inputs of your model, only support batch first inputs"
+def layer_info(model, *xb):
+    "Return layer infos of `model` on `xb` (only support batch first inputs)"
     def _track(m, i, o):
         return (m.__class__.__name__,)+total_params(m)+(apply(lambda x:x.shape, o),)
     layers = [m for m in flatten_model(model)]
     with Hooks(layers, _track) as h:
-        _ = model.eval()(*apply(lambda o:o[:1], sample_inputs))
-        return sample_inputs,h.stored
+        _ = model.eval()(*apply(lambda o:o[:1], xb))
+        return xb,h.stored
 
 # Cell
 def _print_shapes(o, bs):
@@ -158,13 +158,11 @@ def _print_shapes(o, bs):
 
 # Cell
 @patch
-def summary(self: nn.Module, *sample_inputs):
-    ''' Print a summary of the model
-        sample_inputs: sample inputs of your model, only support batch first inputs
-    '''
-    sample_inputs,infos = layer_info(self, *sample_inputs)
-    n,bs = 64,find_bs(sample_inputs)
-    inp_sz = _print_shapes(apply(lambda x:x.shape, sample_inputs), bs)
+def summary(self:nn.Module, *xb):
+    "Print a summary of `self` using `xb`"
+    sample_inputs,infos = layer_info(self, *xb)
+    n,bs = 64,find_bs(xb)
+    inp_sz = _print_shapes(apply(lambda x:x.shape, xb), bs)
     res = f"{self.__class__.__name__} (Input shape: {inp_sz})\n"
     res += "=" * n + "\n"
     res += f"{'Layer (type)':<20} {'Output Shape':<20} {'Param #':<10} {'Trainable':<10}\n"
