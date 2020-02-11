@@ -36,6 +36,9 @@ from typing import Any, AnyStr, Callable, Collection, Dict, Hashable, Iterator, 
 from typing import Sequence, Tuple, TypeVar, Union
 from types import SimpleNamespace
 
+def pd_max_colwidth(): return None if pd.__version__ >= "1.0.0" else -1
+
+
 def try_import(module):
     "Try to import `module`. Returns module's object on success, None on failure"
     try: return importlib.import_module(module)

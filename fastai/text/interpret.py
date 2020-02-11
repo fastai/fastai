@@ -95,5 +95,5 @@ class TextClassificationInterpretation(ClassificationInterpretation):
         items = np.array(items)
         names = ['Text', 'Prediction', 'Actual', 'Loss', 'Probability']
         df = pd.DataFrame({n:items[:,i] for i,n in enumerate(names)}, columns=names)
-        with pd.option_context('display.max_colwidth', -1):
+        with pd.option_context('display.max_colwidth', pd_max_colwidth()):
             display(HTML(df.to_html(index=False)))

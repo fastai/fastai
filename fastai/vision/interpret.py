@@ -92,7 +92,7 @@ class SegmentationInterpretation(Interpretation):
         
         df = (pd.DataFrame([self.data.classes, cm.diagonal()], index=['label', 'score'])
             .T.sort_values('score', ascending=False))
-        with pd.option_context('display.max_colwidth', -1):
+        with pd.option_context('display.max_colwidth', pd_max_colwidth()):
             display(HTML(df.to_html(index=False)))
         return df
 
@@ -103,4 +103,4 @@ class ObjectDetectionInterpretation(Interpretation):
     def __init__(self, learn:Learner, preds:Tensor, y_true:Tensor, losses:Tensor, ds_type:DatasetType=DatasetType.Valid):
         raise NotImplementedError
         super(ObjectDetectionInterpretation, self).__init__(learn,preds,y_true,losses,ds_type)
-        
+
