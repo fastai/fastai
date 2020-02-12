@@ -60,7 +60,8 @@ class DataBlock():
         self.type_tfms = blocks.attrgot('type_tfms', L())
         self.default_item_tfms  = _merge_tfms(*blocks.attrgot('item_tfms',  L()))
         self.default_batch_tfms = _merge_tfms(*blocks.attrgot('batch_tfms', L()))
-        for t in blocks: self.dl_type = getattr(t, 'dl_type', self.dl_type)
+        for b in blocks:
+            if getattr(b, 'dl_type', None) is not None: self.dl_type = b.dl_type
         self.dataloaders = delegates(self.dl_type.__init__)(self.dataloaders)
         self.dls_kwargs = merge(*blocks.attrgot('dls_kwargs', {}))
 
@@ -142,7 +143,7 @@ def summary(self: DataBlock, source, bs=4, **kwargs):
     dsets = self.datasets(source, verbose=True)
     print("\nBuilding one sample")
     for tl in dsets.train.tls:
-        _apply_pipeline(tl.tfms, getattr(dsets.train.items,'iloc',dsets.train.items)[0])
+        _apply_pipeline(tl.tfms, get_first(dsets.train.items))
     print(f"\nFinal sample: {dsets.train[0]}\n\n")
 
     dls = self.dataloaders(source, verbose=True)

@@ -88,6 +88,11 @@ class LMDataLoader(TfmdDL):
         txt = self.chunks[st : st+sl+1]
         return LMTensorText(txt[:-1]),txt[1:]
 
+    @delegates(TfmdDL.new)
+    def new(self, dataset=None, seq_len=72, **kwargs):
+        lens = self.lens.coll if dataset is None else None
+        return super().new(dataset=dataset, lens=lens, seq_len=seq_len, **kwargs)
+
 # Cell
 @patch
 def truncate(self:TitledStr, n):
@@ -166,6 +171,11 @@ class SortedDL(TfmdDL):
         sort_idx = np.concatenate(np.random.permutation(batches[1:-1])) if len(batches) > 2 else np.array([],dtype=np.int)
         sort_idx = np.concatenate((batches[0], sort_idx) if len(batches)==1 else (batches[0], sort_idx, batches[-1]))
         return iter(sort_idx)
+
+    @delegates(TfmdDL.new)
+    def new(self, dataset=None, **kwargs):
+        res = self.res if dataset is None else None
+        return super().new(dataset=dataset, res=res, **kwargs)
 
 # Cell
 class TextBlock(TransformBlock):

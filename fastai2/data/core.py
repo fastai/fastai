@@ -313,7 +313,7 @@ class Datasets(FilteredBase):
 def test_set(dsets, test_items, rm_tfms=None):
     "Create a test set from `test_items` using validation transforms of `dsets`"
     test_tls = [tl._new(test_items, split_idx=1) for tl in dsets.tls[:dsets.n_inp]]
-    if rm_tfms is None: rm_tfms = [tl.infer_idx(test_items[0]) for tl in test_tls]
+    if rm_tfms is None: rm_tfms = [tl.infer_idx(get_first(test_items)) for tl in test_tls]
     else:               rm_tfms = tuplify(rm_tfms, match=test_tls)
     for i,j in enumerate(rm_tfms): test_tls[i].tfms.fs = test_tls[i].tfms.fs[j:]
     return Datasets(tls=test_tls)

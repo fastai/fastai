@@ -44,6 +44,9 @@ conda env create -f environment.yml
 cd fastai2
 pip install -e ".[dev]"</code></pre>
 <p>You should also use an editable install of <code>fastcore</code> to go with it.</p>
+<p>If you want to browse the notebooks and build the library from them you will need nbdev:</p>
+
+<pre><code>pip install nbdev</code></pre>
 <p>To use <code>fastai2.medical.imaging</code> you'll also need to:</p>
 <div class="highlight"><pre><span></span>conda install pyarrow
 pip install pydicom kornia opencv-python scikit-image

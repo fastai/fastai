@@ -96,16 +96,14 @@ class AWD_LSTM(Module):
         bs,sl = inp.shape[:2] if from_embeds else inp.shape
         if bs!=self.bs: self._change_hidden(bs)
 
-        raw_output = self.input_dp(inp if from_embeds else self.encoder_dp(inp))
-        new_hidden,raw_outputs,outputs = [],[],[]
+        output = self.input_dp(inp if from_embeds else self.encoder_dp(inp))
+        new_hidden = []
         for l, (rnn,hid_dp) in enumerate(zip(self.rnns, self.hidden_dps)):
-            raw_output, new_h = rnn(raw_output, self.hidden[l])
+            output, new_h = rnn(output, self.hidden[l])
             new_hidden.append(new_h)
-            raw_outputs.append(raw_output)
-            if l != self.n_layers - 1: raw_output = hid_dp(raw_output)
-            outputs.append(raw_output)
+            if l != self.n_layers - 1: output = hid_dp(output)
         self.hidden = to_detach(new_hidden, cpu=False, gather=False)
-        return raw_outputs, outputs
+        return output
 
     def _change_hidden(self, bs):
         self.hidden = [self._change_one_hidden(l, bs) for l in range(self.n_layers)]

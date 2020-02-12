@@ -195,6 +195,7 @@ class Learner():
         self.path = path if path is not None else getattr(dls, 'path', Path('.'))
         self.add_cbs([(cb() if isinstance(cb, type) else cb) for cb in L(defaults.callbacks)+L(cbs)])
         self.model.to(self.dls.device)
+        if hasattr(self.model, 'reset'): self.model.reset()
         self.epoch,self.n_epoch,self.loss = 0,1,tensor(0.)
 
     @property

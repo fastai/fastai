@@ -142,13 +142,13 @@ def total_params(m):
     return params, (False if len(trains)==0 else trains[0])
 
 # Cell
-def layer_info(learn):
+def layer_info(model, *xb):
+    "Return layer infos of `model` on `xb` (only support batch first inputs)"
     def _track(m, i, o):
         return (m.__class__.__name__,)+total_params(m)+(apply(lambda x:x.shape, o),)
-    layers = [m for m in flatten_model(learn.model)]
-    xb = learn.dls.train.one_batch()[:learn.dls.train.n_inp]
+    layers = [m for m in flatten_model(model)]
     with Hooks(layers, _track) as h:
-        _ = learn.model.eval()(*apply(lambda o:o[:1], xb))
+        _ = model.eval()(*apply(lambda o:o[:1], xb))
         return xb,h.stored
 
 # Cell
@@ -158,12 +158,12 @@ def _print_shapes(o, bs):
 
 # Cell
 @patch
-def summary(self:Learner):
-    "Print a summary of the model, optimizer and loss function."
-    xb,infos = layer_info(self)
+def summary(self:nn.Module, *xb):
+    "Print a summary of `self` using `xb`"
+    sample_inputs,infos = layer_info(self, *xb)
     n,bs = 64,find_bs(xb)
     inp_sz = _print_shapes(apply(lambda x:x.shape, xb), bs)
-    res = f"{self.model.__class__.__name__} (Input shape: {inp_sz})\n"
+    res = f"{self.__class__.__name__} (Input shape: {inp_sz})\n"
     res += "=" * n + "\n"
     res += f"{'Layer (type)':<20} {'Output Shape':<20} {'Param #':<10} {'Trainable':<10}\n"
     res += "=" * n + "\n"
@@ -178,6 +178,14 @@ def summary(self:Learner):
     res += f"\nTotal params: {ps:,}\n"
     res += f"Total trainable params: {trn_ps:,}\n"
     res += f"Total non-trainable params: {ps - trn_ps:,}\n\n"
+    return PrettyString(res)
+
+# Cell
+@patch
+def summary(self:Learner):
+    "Print a summary of the model, optimizer and loss function."
+    xb = self.dls.train.one_batch()[:self.dls.train.n_inp]
+    res = self.model.summary(*xb)
     res += f"Optimizer used: {self.opt_func}\nLoss function: {self.loss_func}\n\n"
     if self.opt is not None:
         res += f"Model " + ("unfrozen\n\n" if self.opt.frozen_idx==0 else f"frozen up to parameter group number {self.opt.frozen_idx}\n\n")

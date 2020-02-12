@@ -24,14 +24,15 @@ class RNNRegularizer(Callback):
     def __init__(self, alpha=0., beta=0.): self.alpha,self.beta = alpha,beta
 
     def after_pred(self):
-        self.raw_out,self.out = self.pred[1],self.pred[2]
+        self.raw_out = self.pred[1][-1] if is_listy(self.pred[1]) else self.pred[1]
+        self.out     = self.pred[2][-1] if is_listy(self.pred[2]) else self.pred[2]
         self.learn.pred = self.pred[0]
 
     def after_loss(self):
         if not self.training: return
-        if self.alpha != 0.:  self.learn.loss += self.alpha * self.out[-1].float().pow(2).mean()
+        if self.alpha != 0.:  self.learn.loss += self.alpha * self.out.float().pow(2).mean()
         if self.beta != 0.:
-            h = self.raw_out[-1]
+            h = self.raw_out
             if len(h)>1: self.learn.loss += self.beta * (h[:,1:] - h[:,:-1]).float().pow(2).mean()
 
     _docs = dict(after_pred="Save the raw and dropped-out outputs and only keep the true output for loss computation",

@@ -97,7 +97,6 @@ def plot_sched(self:Recorder, keys=None, figsize=None):
     figsize = figsize or (6*cols,4*rows)
     _, axs = plt.subplots(rows, cols, figsize=figsize)
     axs = axs.flatten() if len(keys) > 1 else L(axs)
-    keys = self.hps.keys() if keys is None else L(keys)
     for p,ax in zip(keys, axs):
         ax.plot(self.hps[p])
         ax.set_ylabel(p)

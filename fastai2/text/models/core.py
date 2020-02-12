@@ -35,9 +35,8 @@ class LinearDecoder(Module):
         if tie_encoder: self.decoder.weight = tie_encoder.weight
 
     def forward(self, input):
-        raw_outputs, outputs = input
-        decoded = self.decoder(self.output_dp(outputs[-1]))
-        return decoded, raw_outputs, outputs
+        dp_inp = self.output_dp(input)
+        return self.decoder(dp_inp), input, dp_inp
 
 # Cell
 class SequentialRNN(nn.Sequential):
@@ -87,24 +86,21 @@ class SentenceEncoder(Module):
         bs,sl = input.size()
         self.reset()
         mask = input == self.pad_idx
-        raws,outs,masks = [],[],[]
+        outs,masks = [],[]
         for i in range(0, sl, self.bptt):
             #Note: this expects that sequence really begins on a round multiple of bptt
             real_bs = (input[:,i] != self.pad_idx).long().sum()
-            r,o = self.module(input[:real_bs,i: min(i+self.bptt, sl)])
+            o = self.module(input[:real_bs,i: min(i+self.bptt, sl)])
             if self.max_len is None or sl-i <= self.max_len:
-                raws.append(r)
                 outs.append(o)
                 masks.append(mask[:,i: min(i+self.bptt, sl)])
-        raws = [torch.cat([_pad_tensor(r[i], bs) for r in raws], dim=1) for i in range(len(raws[0]))]
-        outs = [torch.cat([_pad_tensor(o[i], bs) for o in outs], dim=1) for i in range(len(outs[0]))]
+        outs = torch.cat([_pad_tensor(o, bs) for o in outs], dim=1)
         mask = torch.cat(masks, dim=1)
-        return raws,outs,mask
+        return outs,mask
 
 # Cell
-def masked_concat_pool(outputs, mask, bptt):
+def masked_concat_pool(output, mask, bptt):
     "Pool `MultiBatchEncoder` outputs into one vector [last_hidden, max_pool, avg_pool]"
-    output = outputs[-1]
     lens = output.shape[1] - mask.long().sum(dim=1)
     last_lens = mask[:,-bptt:].long().sum(dim=1)
     avg_pool = output.masked_fill(mask[:, :, None], 0).sum(dim=1)
@@ -124,10 +120,10 @@ class PoolingLinearClassifier(Module):
         self.bptt = bptt
 
     def forward(self, input):
-        raw,out,mask = input
+        out,mask = input
         x = masked_concat_pool(out, mask, self.bptt)
         x = self.layers(x)
-        return x, raw, out
+        return x, out, out
 
 # Cell
 def get_text_classifier(arch, vocab_sz, n_class, seq_len=72, config=None, drop_mult=1., lin_ftrs=None,
