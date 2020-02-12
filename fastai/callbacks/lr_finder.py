@@ -28,12 +28,20 @@ class LRFinder(LearnerCallback):
         self.opt.lr = self.sched.step()
         if self.sched.is_done or (self.stop_div and (smooth_loss > 4*self.best_loss or torch.isnan(smooth_loss))):
             #We use the smoothed loss to decide on the stopping since it's less shaky.
-            return {'stop_epoch': True, 'stop_training': True}
+            if not self.stop:
+                self.stop = iteration
+            if num_distrib() <= 1: return { 'stop_epoch': True, 'stop_training' : True }
+    
+    def on_epoch_end(self, **kwargs:Any)->None:
+        if self.stop: return { 'stop_training' : True }
 
-    def on_train_end(self, **kwargs:Any)->None:
+    def on_train_end(self, epoch:int, num_batch:int, **kwargs:Any)->None:
         "Cleanup learn model weights disturbed during LRFinder exploration."
         self.learn.load('tmp', purge=False)
         if hasattr(self.learn.model, 'reset'): self.learn.model.reset()
         for cb in self.callbacks:
             if hasattr(cb, 'reset'): cb.reset()
         print('LR Finder is complete, type {learner_name}.recorder.plot() to see the graph.')
+        total_batches = epoch * num_batch
+        if total_batches - self.stop > 10:
+            print(f"Best loss at batch #{self.stop}/{total_batches}, may consider .plot(skip_end={total_batches-self.stop+3})")

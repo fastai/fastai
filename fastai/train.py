@@ -37,7 +37,7 @@ def lr_find(learn:Learner, start_lr:Floats=1e-7, end_lr:Floats=10, num_it:int=10
     end_lr = learn.lr_range(end_lr)
     end_lr = np.array(end_lr) if is_listy(end_lr) else end_lr
     cb = LRFinder(learn, start_lr, end_lr, num_it, stop_div)
-    epochs = int(np.ceil(num_it/len(learn.data.train_dl)))
+    epochs = int(np.ceil(num_it/len(learn.data.train_dl))) * (num_distrib() or 1)
     learn.fit(epochs, start_lr, callbacks=[cb], wd=wd)
 
 def to_fp16(learn:Learner, loss_scale:float=None, max_noskip:int=1000, dynamic:bool=True, clip:float=None,
