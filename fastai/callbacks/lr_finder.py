@@ -41,7 +41,7 @@ class LRFinder(LearnerCallback):
         if hasattr(self.learn.model, 'reset'): self.learn.model.reset()
         for cb in self.callbacks:
             if hasattr(cb, 'reset'): cb.reset()
-        print(f'LR Finder is complete, type {{learner_name}}.recorder.plot() to see the graph.')
+        print('LR Finder is complete, type {learner_name}.recorder.plot() to see the graph.')
         total_batches = epoch * num_batch
         if total_batches - self.stop > 10:
             print(f"Best loss at batch #{self.stop}/{total_batches}, may consider .plot(skip_end={total_batches-self.stop+3})")
