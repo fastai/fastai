@@ -65,7 +65,7 @@ class LMDataLoader(TfmdDL):
         self.seq_len = seq_len
         if lens is None: lens = _get_lengths(dataset)
         if lens is None: lens = [len(o) for o in self.items]
-        self.lens = ReindexCollection(lens, idxs=self.items.idxs)
+        self.lens = lens if isinstance(lens, ReindexCollection) else ReindexCollection(lens, idxs=self.items.idxs)
         # The "-1" is to allow for final label, we throw away the end that's less than bs
         corpus = round_multiple(sum(lens)-1, bs, round_down=True)
         self.bl = corpus//bs #bl stands for batch length
@@ -87,6 +87,11 @@ class LMDataLoader(TfmdDL):
         st = (seq%self.bs)*self.bl + (seq//self.bs)*self.seq_len
         txt = self.chunks[st : st+sl+1]
         return LMTensorText(txt[:-1]),txt[1:]
+
+    @delegates(TfmdDL.new)
+    def new(self, dataset=None, seq_len=72, **kwargs):
+        lens = self.lens if dataset is None else None
+        return super().new(dataset=dataset, lens=lens, seq_len=seq_len, **kwargs)
 
 # Cell
 @patch
@@ -166,6 +171,11 @@ class SortedDL(TfmdDL):
         sort_idx = np.concatenate(np.random.permutation(batches[1:-1])) if len(batches) > 2 else np.array([],dtype=np.int)
         sort_idx = np.concatenate((batches[0], sort_idx) if len(batches)==1 else (batches[0], sort_idx, batches[-1]))
         return iter(sort_idx)
+
+    @delegates(TfmdDL.new)
+    def new(self, dataset=None, **kwargs):
+        res = self.res if dataset is None else None
+        return super().new(dataset=dataset, res=res, **kwargs)
 
 # Cell
 class TextBlock(TransformBlock):
