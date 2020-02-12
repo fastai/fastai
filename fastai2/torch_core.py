@@ -6,12 +6,12 @@ __all__ = ['progress_bar', 'master_bar', 'subplots', 'show_image', 'show_titled_
            'to_np', 'to_concat', 'TensorBase', 'TensorCategory', 'TensorMultiCategory', 'TensorImageBase',
            'TensorImage', 'TensorImageBW', 'TensorMask', 'TitledTensorScalar', 'concat', 'Chunks', 'show_title',
            'ShowTitle', 'TitledInt', 'TitledFloat', 'TitledStr', 'TitledTuple', 'get_empty_df', 'display_df',
-           'one_param', 'item_find', 'find_device', 'find_bs', 'Module', 'get_model', 'one_hot', 'one_hot_decode',
-           'params', 'trainable_params', 'norm_types', 'bn_bias_params', 'batch_to_samples', 'logit', 'num_distrib',
-           'rank_distrib', 'distrib_barrier', 'to_image', 'make_cross_image', 'show_image_batch', 'requires_grad',
-           'init_default', 'cond_init', 'apply_leaf', 'apply_init', 'set_num_threads', 'ProcessPoolExecutor',
-           'parallel', 'run_procs', 'parallel_gen', 'script_use_ctx', 'script_save_ctx', 'script_fwd', 'script_bwd',
-           'grad_module', 'flatten_check']
+           'get_first', 'one_param', 'item_find', 'find_device', 'find_bs', 'Module', 'get_model', 'one_hot',
+           'one_hot_decode', 'params', 'trainable_params', 'norm_types', 'bn_bias_params', 'batch_to_samples', 'logit',
+           'num_distrib', 'rank_distrib', 'distrib_barrier', 'to_image', 'make_cross_image', 'show_image_batch',
+           'requires_grad', 'init_default', 'cond_init', 'apply_leaf', 'apply_init', 'set_num_threads',
+           'ProcessPoolExecutor', 'parallel', 'run_procs', 'parallel_gen', 'script_use_ctx', 'script_save_ctx',
+           'script_fwd', 'script_bwd', 'grad_module', 'flatten_check']
 
 # Cell
 from .imports import *
@@ -442,6 +442,11 @@ def display_df(df):
     try: from IPython.display import display, HTML
     except: return print(df)
     display(HTML(df.to_html()))
+
+# Cell
+def get_first(c):
+    "Get the first element of c, even if c is a dataframe"
+    return getattr(c, 'iloc', c)[0]
 
 # Cell
 def one_param(m):
