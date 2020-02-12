@@ -328,12 +328,14 @@ class Learner():
                 if with_decoded: res.insert(pred_i+2, getattr(self.loss_func, 'decodes', noop)(res[pred_i]))
             return tuple(res)
 
-    def predict(self, item, rm_type_tfms=None):
-        dl = self.dls.test_dl([item], rm_type_tfms=rm_type_tfms)
-        inp,preds,_,dec_preds = self.get_preds(dl=dl, with_input=True, with_decoded=True)
-        i = getattr(self.dls, 'n_inp', -1)
-        full_dec = self.dls.decode_batch((*tuplify(inp),*tuplify(dec_preds)))[0][i:]
-        return detuplify(full_dec),dec_preds[0],preds[0]
+    def predict(learn, item, rm_type_tfms=None, with_input=False):
+        dl = learn.dls.test_dl([item], rm_type_tfms=rm_type_tfms)
+        inp,preds,_,dec_preds = learn.get_preds(dl=dl, with_input=True, with_decoded=True)
+        i = getattr(learn.dls, 'n_inp', -1) - 1
+        dec_inp, full_dec = map(detuplify, learn.dls.decode_batch((*tuplify(inp),*tuplify(dec_preds)))[0][i:])
+        res = full_dec,dec_preds[0],preds[0]
+        if with_input: res = (dec_inp,) + res
+        return res
 
     def show_results(self, ds_idx=1, dl=None, max_n=9, shuffle=True, **kwargs):
         if dl is None: dl = self.dls[ds_idx].new(shuffle=shuffle)
