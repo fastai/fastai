@@ -65,7 +65,7 @@ class LMDataLoader(TfmdDL):
         self.seq_len = seq_len
         if lens is None: lens = _get_lengths(dataset)
         if lens is None: lens = [len(o) for o in self.items]
-        self.lens = lens if isinstance(lens, ReindexCollection) else ReindexCollection(lens, idxs=self.items.idxs)
+        self.lens = ReindexCollection(lens, idxs=self.items.idxs)
         # The "-1" is to allow for final label, we throw away the end that's less than bs
         corpus = round_multiple(sum(lens)-1, bs, round_down=True)
         self.bl = corpus//bs #bl stands for batch length
@@ -90,7 +90,7 @@ class LMDataLoader(TfmdDL):
 
     @delegates(TfmdDL.new)
     def new(self, dataset=None, seq_len=72, **kwargs):
-        lens = self.lens if dataset is None else None
+        lens = self.lens.coll if dataset is None else None
         return super().new(dataset=dataset, lens=lens, seq_len=seq_len, **kwargs)
 
 # Cell
