@@ -59,7 +59,6 @@ class Optimizer(_BaseOptimizer):
         self.cbs,self.state,self.train_bn = L(cbs),defaultdict(dict),train_bn
         defaults = merge(*self.cbs.attrgot('defaults'), defaults)
         self.param_groups = L(L(p) for p in params) if isinstance(params[0], (L,list)) else L([params])
-        #self.step_func = compose(*steppers)
         self.hypers = L({} for _ in range_of(self.param_groups))
         self.set_hypers(**defaults)
         self.frozen_idx = 0
