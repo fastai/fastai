@@ -328,11 +328,11 @@ class Learner():
                 if with_decoded: res.insert(pred_i+2, getattr(self.loss_func, 'decodes', noop)(res[pred_i]))
             return tuple(res)
 
-    def predict(learn, item, rm_type_tfms=None, with_input=False):
-        dl = learn.dls.test_dl([item], rm_type_tfms=rm_type_tfms)
-        inp,preds,_,dec_preds = learn.get_preds(dl=dl, with_input=True, with_decoded=True)
-        dec = learn.dls.decode_batch((*tuplify(inp),*tuplify(dec_preds)))[0]
-        i = getattr(learn.dls, 'n_inp', -1)
+    def predict(self, item, rm_type_tfms=None, with_input=False):
+        dl = self.dls.test_dl([item], rm_type_tfms=rm_type_tfms)
+        inp,preds,_,dec_preds = self.get_preds(dl=dl, with_input=True, with_decoded=True)
+        dec = self.dls.decode_batch((*tuplify(inp),*tuplify(dec_preds)))[0]
+        i = getattr(self.dls, 'n_inp', -1)
         dec_inp,dec_targ = map(detuplify, [dec[:i],dec[i:]])
         res = dec_targ,dec_preds[0],preds[0]
         if with_input: res = (dec_inp,) + res
