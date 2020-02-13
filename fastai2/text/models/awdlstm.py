@@ -172,7 +172,7 @@ class AWD_QRNN(AWD_LSTM):
         if self.bs < bs:
             nh = (self.n_hid if l != self.n_layers - 1 else self.emb_sz) // self.n_dir
             return torch.cat([self.hidden[l], self.hidden[l].new_zeros(self.n_dir, bs-self.bs, nh)], dim=1)
-        if self.bs > bs: return self.hidden[l][:bs]
+        if self.bs > bs: return self.hidden[l][:, :bs]
         return self.hidden[l]
 
 # Cell
