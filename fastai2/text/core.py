@@ -240,8 +240,8 @@ def load_tokenized_csv(fname):
 
 # Cell
 def get_tokenizer(tok_func=SpacyTokenizer, **kwargs):
-    sign = inspect.signature(tok_func)
-    for k in kwargs.keys():
+    sign = str(inspect.signature(tok_func))
+    for k in list(kwargs.keys()):
         if k not in sign: kwargs.pop(k)
     return tok_func(**kwargs)
 
