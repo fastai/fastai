@@ -31,14 +31,13 @@ class NeptuneCallback(Callback):
             self.neptune_exp.set_property('n_epoch', str(self.learn.n_epoch))
             self.neptune_exp.set_property('model_class', str(type(self.learn.model)))
         except:
-            print('Did not log all properties. Check properties in the {}.'.format(neptune.get_experiment()))
+            print(f'Did not log all properties. Check properties in the {neptune.get_experiment()}.')
 
         try:
-            with tempfile.TemporaryDirectory(dir='.') as d:
-                _file_name = os.path.join(d, 'model_summary.txt')
-                with open(_file_name, 'w') as f:
-                    f.write(repr(self.learn.model))
-                self.neptune_exp.log_artifact(_file_name, 'model_summary.txt')
+            with tempfile.NamedTemporaryFile(mode='w') as f:
+                with open(f.name, 'w') as g:
+                    g.write(repr(self.learn.model))
+                self.neptune_exp.log_artifact(f.name, 'model_summary.txt')
         except:
             print('Did not log model summary. Check if your model is PyTorch model.')
 
@@ -51,23 +50,24 @@ class NeptuneCallback(Callback):
         self.neptune_exp.set_property('n_iter', str(self.learn.n_iter))
         if self.learn.training:
             self.neptune_exp.log_metric('batch__smooth_loss', self.learn.smooth_loss)
+            self.neptune_exp.log_metric('batch__loss', self.learn.loss)
             self.neptune_exp.log_metric('batch__train_iter', self.learn.train_iter)
             for i, h in enumerate(self.learn.opt.hypers):
                 for k, v in h.items():
-                    self.neptune_exp.log_metric('batch__opt.hypers.{}'.format(k), v)
+                    self.neptune_exp.log_metric(f'batch__opt.hypers.{k}', v)
 
     def after_epoch(self):
         # log metrics
         for n, v in zip(self.learn.recorder.metric_names, self.learn.recorder.log):
             if n not in ['epoch', 'time']:
-                self.neptune_exp.log_metric('epoch__{}'.format(n), v)
+                self.neptune_exp.log_metric(f'epoch__{n}', v)
             if n == 'time':
-                self.neptune_exp.log_text('epoch__{}'.format(n), str(v))
+                self.neptune_exp.log_text(f'epoch__{n}', str(v))
 
         # log model weights
         if self.log_model_weights and hasattr(self.learn, 'save_model'):
             if self.learn.save_model.every_epoch:
-                _file = join_path_file('{}_{}'.format(self.learn.save_model.fname, self.learn.save_model.epoch),
+                _file = join_path_file(f'{self.learn.save_model.fname}_{self.learn.save_model.epoch}',
                                        self.learn.path / self.learn.model_dir,
                                        ext='.pth')
             else:
