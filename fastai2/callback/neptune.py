@@ -3,8 +3,7 @@
 __all__ = ['NeptuneCallback']
 
 # Cell
-import os
-import uuid
+import tempfile
 from ..basics import *
 from ..learner import Callback
 
@@ -13,12 +12,9 @@ import neptune
 
 # Cell
 class NeptuneCallback(Callback):
-    "Log losses, metrics, model weights"
-    def __init__(self, save_model=True, log_preds=True, n_preds=15):
-        self.neptune_save_model = save_model
-        self.log_preds = log_preds
-        self.n_preds = n_preds
-        self.model_summary_name = 'model_summary_{}.txt'.format(str(uuid.uuid1())[:8])
+    "Log losses, metrics, model weights, model architecture summary to neptune"
+    def __init__(self, log_model_weights=True):
+        self.log_model_weights = log_model_weights
         self.neptune_exp = None
 
         if neptune.project is None:
@@ -38,18 +34,20 @@ class NeptuneCallback(Callback):
             print('Did not log all properties. Check properties in the {}.'.format(neptune.get_experiment()))
 
         try:
-            with open(self.model_summary_name, 'w') as f:
-                f.write(repr(self.learn.model))
-            self.neptune_exp.log_artifact(self.model_summary_name, 'model_summary.txt')
-            os.remove(self.model_summary_name)
+            with tempfile.TemporaryDirectory(dir='.') as d:
+                _file_name = os.path.join(d, 'model_summary.txt')
+                with open(_file_name, 'w') as f:
+                    f.write(repr(self.learn.model))
+                self.neptune_exp.log_artifact(_file_name, 'model_summary.txt')
         except:
             print('Did not log model summary. Check if your model is PyTorch model.')
 
-        if self.neptune_save_model and not hasattr(self.learn, 'save_model'):
+        if self.log_model_weights and not hasattr(self.learn, 'save_model'):
             print('Unable to log model to Neptune.\n',
                   'Use "SaveModelCallback" to save model checkpoints that will be logged to Neptune.')
 
     def after_batch(self):
+        # log loss and opt.hypers
         self.neptune_exp.set_property('n_iter', str(self.learn.n_iter))
         if self.learn.training:
             self.neptune_exp.log_metric('batch__smooth_loss', self.learn.smooth_loss)
@@ -67,7 +65,7 @@ class NeptuneCallback(Callback):
                 self.neptune_exp.log_text('epoch__{}'.format(n), str(v))
 
         # log model weights
-        if self.neptune_save_model and hasattr(self.learn, 'save_model'):
+        if self.log_model_weights and hasattr(self.learn, 'save_model'):
             if self.learn.save_model.every_epoch:
                 _file = join_path_file('{}_{}'.format(self.learn.save_model.fname, self.learn.save_model.epoch),
                                        self.learn.path / self.learn.model_dir,
