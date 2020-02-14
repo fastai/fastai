@@ -6,12 +6,12 @@ __all__ = ['progress_bar', 'master_bar', 'subplots', 'show_image', 'show_titled_
            'to_np', 'to_concat', 'TensorBase', 'TensorCategory', 'TensorMultiCategory', 'TensorImageBase',
            'TensorImage', 'TensorImageBW', 'TensorMask', 'TitledTensorScalar', 'concat', 'Chunks', 'show_title',
            'ShowTitle', 'TitledInt', 'TitledFloat', 'TitledStr', 'TitledTuple', 'get_empty_df', 'display_df',
-           'one_param', 'item_find', 'find_device', 'find_bs', 'Module', 'get_model', 'one_hot', 'one_hot_decode',
-           'params', 'trainable_params', 'norm_types', 'bn_bias_params', 'batch_to_samples', 'logit', 'num_distrib',
-           'rank_distrib', 'distrib_barrier', 'to_image', 'make_cross_image', 'show_image_batch', 'requires_grad',
-           'init_default', 'cond_init', 'apply_leaf', 'apply_init', 'set_num_threads', 'ProcessPoolExecutor',
-           'parallel', 'run_procs', 'parallel_gen', 'script_use_ctx', 'script_save_ctx', 'script_fwd', 'script_bwd',
-           'grad_module', 'flatten_check']
+           'get_first', 'one_param', 'item_find', 'find_device', 'find_bs', 'Module', 'get_model', 'one_hot',
+           'one_hot_decode', 'params', 'trainable_params', 'norm_types', 'bn_bias_params', 'batch_to_samples', 'logit',
+           'num_distrib', 'rank_distrib', 'distrib_barrier', 'base_doc', 'doc', 'to_image', 'make_cross_image',
+           'show_image_batch', 'requires_grad', 'init_default', 'cond_init', 'apply_leaf', 'apply_init',
+           'set_num_threads', 'ProcessPoolExecutor', 'parallel', 'run_procs', 'parallel_gen', 'script_use_ctx',
+           'script_save_ctx', 'script_fwd', 'script_bwd', 'grad_module', 'flatten_check']
 
 # Cell
 from .imports import *
@@ -444,6 +444,11 @@ def display_df(df):
     display(HTML(df.to_html()))
 
 # Cell
+def get_first(c):
+    "Get the first element of c, even if c is a dataframe"
+    return getattr(c, 'iloc', c)[0]
+
+# Cell
 def one_param(m):
     "First parameter in `m`"
     return first(m.parameters())
@@ -580,6 +585,21 @@ def save_array(p:Path, o, complib='lz4', lvl=3):
 def load_array(p:Path):
     "Save numpy array to a `pytables` file"
     with tables.open_file(p, 'r') as f: return f.root.data.read()
+
+# Cell
+def base_doc(elt):
+    "Print a base documentation of `elt`"
+    name = getattr(elt, '__qualname__', getattr(elt, '__name__', ''))
+    print(f'{name}{inspect.signature(elt)}\n{inspect.getdoc(elt)}\n')
+    print('To get a prettier result with hyperlinks to source code and documentation, install nbdev: pip install nbdev')
+
+# Cell
+def doc(elt):
+    "Try to use doc form nbdev and fall back to `base_doc`"
+    try:
+        from nbdev.showdoc import doc
+        doc(elt)
+    except: base_doc(elt)
 
 # Cell
 def to_image(x):

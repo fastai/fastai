@@ -3,8 +3,8 @@
 __all__ = ['get_files', 'FileGetter', 'image_extensions', 'get_image_files', 'ImageGetter', 'get_text_files',
            'RandomSplitter', 'IndexSplitter', 'GrandparentSplitter', 'FuncSplitter', 'MaskSplitter', 'FileSplitter',
            'ColSplitter', 'parent_label', 'RegexLabeller', 'ColReader', 'CategoryMap', 'Categorize', 'Category',
-           'MultiCategorize', 'MultiCategory', 'OneHotEncode', 'EncodedMultiCategorize', 'get_c', 'ToTensor',
-           'IntToFloatTensor', 'broadcast_vec', 'Normalize']
+           'MultiCategorize', 'MultiCategory', 'OneHotEncode', 'EncodedMultiCategorize', 'RegressionSetup', 'get_c',
+           'ToTensor', 'IntToFloatTensor', 'broadcast_vec', 'Normalize']
 
 # Cell
 from ..torch_basics import *
@@ -232,6 +232,16 @@ class EncodedMultiCategorize(Categorize):
     def decodes(self, o): return MultiCategory (one_hot_decode(o, self.vocab))
 
 # Cell
+class RegressionSetup(Transform):
+    "Transform that floatifies targets"
+    def __init__(self, c=None): self.c = c
+    def encodes(self, o): return tensor(o).float()
+    def setups(self, dsets):
+        if self.c is not None: return
+        try: self.c = len(dsets[0]) if hasattr(dsets[0], '__len__') else 1
+        except: self.c = 0
+
+# Cell
 def get_c(dls):
     if getattr(dls, 'c', False): return dls.c
     if getattr(getattr(dls.train, 'after_item', None), 'c', False): return dls.train.after_item.c
@@ -255,7 +265,7 @@ class IntToFloatTensor(Transform):
 
     def encodes(self, o:TensorImage): return o.float().div_(self.div)
     def encodes(self, o:TensorMask ): return o.div_(self.div_mask).long()
-    def decodes(self, o:TensorImage): return o.clamp(0., 1.) if self.div else o
+    def decodes(self, o:TensorImage): return ((o.clamp(0., 1.) * self.div).long()) if self.div else o
 
 # Cell
 def broadcast_vec(dim, ndim, *t, cuda=True):

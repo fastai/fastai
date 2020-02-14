@@ -23,6 +23,12 @@ class Callback(GetAttr):
         _run = (event_name not in _inner_loop or (self.run_train and getattr(self, 'training', True)) or
                (self.run_valid and not getattr(self, 'training', False)))
         if self.run and _run: getattr(self, event_name, noop)()
+        if event_name=='after_fit': self.run=True #Reset self.run to True at each end of fit
+
+    def __setattr__(self, name, value):
+        if hasattr(self.learn,name):
+            warn(f"You are setting an attribute ({name}) that also exists in the learner. Please be advised that you're not setting it in the learner but in the callback. Use `self.learn.{name}` if you would like to change it in the learner.")
+        super().__setattr__(name, value)
 
     @property
     def name(self):
@@ -177,7 +183,7 @@ from contextlib import ExitStack
 # Cell
 class Learner():
     def __init__(self, dls, model, loss_func=None, opt_func=Adam, lr=defaults.lr, splitter=trainable_params, cbs=None,
-                 cb_funcs=None, metrics=None, path=None, model_dir='models', wd=defaults.wd, wd_bn_bias=False, train_bn=True,
+                 metrics=None, path=None, model_dir='models', wd=defaults.wd, wd_bn_bias=False, train_bn=True,
                  moms=(0.95,0.85,0.95)):
         store_attr(self, "dls,model,opt_func,lr,splitter,model_dir,wd,wd_bn_bias,train_bn,metrics,moms")
         self.training,self.create_mbar,self.logger,self.opt,self.cbs = False,True,print,None,L()
@@ -187,9 +193,9 @@ class Learner():
             assert loss_func is not None, "Could not infer loss function from the data, please pass a loss function."
         self.loss_func = loss_func
         self.path = path if path is not None else getattr(dls, 'path', Path('.'))
-        self.add_cbs(cbf() for cbf in L(defaults.callbacks)+L(cb_funcs))
-        self.add_cbs(cbs)
+        self.add_cbs([(cb() if isinstance(cb, type) else cb) for cb in L(defaults.callbacks)+L(cbs)])
         self.model.to(self.dls.device)
+        if hasattr(self.model, 'reset'): self.model.reset()
         self.epoch,self.n_epoch,self.loss = 0,1,tensor(0.)
 
     @property
@@ -218,7 +224,7 @@ class Learner():
         yield
         self.remove_cbs(cbs)
 
-    def ordered_cbs(self, cb_func:str): return [cb for cb in sort_by_run(self.cbs) if hasattr(cb, cb_func)]
+    def ordered_cbs(self, cb_func): return [cb for cb in sort_by_run(self.cbs) if hasattr(cb, cb_func)]
 
     def __call__(self, event_name): L(event_name).map(self._call_one)
     def _call_one(self, event_name):
@@ -260,7 +266,7 @@ class Learner():
 
     def _do_epoch_train(self):
         try:
-            self.dl = self.dls.train;                  self('begin_train')
+            self.dl = self.dls.train;                        self('begin_train')
             self.all_batches()
         except CancelTrainException:                         self('after_cancel_train')
         finally:                                             self('after_train')
@@ -304,6 +310,7 @@ class Learner():
 
     @delegates(GatherPredsCallback.__init__)
     def get_preds(self, ds_idx=1, dl=None, with_input=False, with_decoded=False, with_loss=False, act=None, **kwargs):
+        if dl is None: dl = self.dls[ds_idx].new(shuffled=False, drop_last=False)
         cb = GatherPredsCallback(with_input=with_input, with_loss=with_loss, **kwargs)
         #with self.no_logging(), self.added_cbs(cb), self.loss_not_reduced(), self.no_mbar():
         ctx_mgrs = [self.no_logging(), self.added_cbs(cb), self.no_mbar()]
@@ -311,7 +318,7 @@ class Learner():
         with ExitStack() as stack:
             for mgr in ctx_mgrs: stack.enter_context(mgr)
             self(_before_epoch)
-            self._do_epoch_validate(ds_idx, dl)
+            self._do_epoch_validate(dl=dl)
             self(_after_epoch)
             if act is None: act = getattr(self.loss_func, 'activation', noop)
             res = cb.all_tensors()
@@ -321,12 +328,15 @@ class Learner():
                 if with_decoded: res.insert(pred_i+2, getattr(self.loss_func, 'decodes', noop)(res[pred_i]))
             return tuple(res)
 
-    def predict(self, item, rm_type_tfms=None):
+    def predict(self, item, rm_type_tfms=None, with_input=False):
         dl = self.dls.test_dl([item], rm_type_tfms=rm_type_tfms)
         inp,preds,_,dec_preds = self.get_preds(dl=dl, with_input=True, with_decoded=True)
+        dec = self.dls.decode_batch((*tuplify(inp),*tuplify(dec_preds)))[0]
         i = getattr(self.dls, 'n_inp', -1)
-        full_dec = self.dls.decode_batch((*tuplify(inp),*tuplify(dec_preds)))[0][i:]
-        return detuplify(full_dec),dec_preds[0],preds[0]
+        dec_inp,dec_targ = map(detuplify, [dec[:i],dec[i:]])
+        res = dec_targ,dec_preds[0],preds[0]
+        if with_input: res = (dec_inp,) + res
+        return res
 
     def show_results(self, ds_idx=1, dl=None, max_n=9, shuffle=True, **kwargs):
         if dl is None: dl = self.dls[ds_idx].new(shuffle=shuffle)
@@ -608,6 +618,6 @@ def tta(self:Learner, ds_idx=1, dl=None, n=4, item_tfms=None, batch_tfms=None, b
     aug_preds = aug_preds.max(0)[0] if use_max else aug_preds.mean(0)
     self.epoch = n
     with dl.dataset.set_split_idx(1): preds,targs = self.get_preds(ds_idx)
-    if use_max: return torch.stack([preds, aug_preds], 0).max(0)[0]
+    if use_max: return torch.stack([preds, aug_preds], 0).max(0)[0],targs
     preds = (aug_preds,preds) if beta is None else torch.lerp(aug_preds, preds, beta)
     return preds,targs

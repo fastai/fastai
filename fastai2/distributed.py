@@ -78,7 +78,7 @@ class DistributedDL(TfmdDL):
     @classmethod
     def from_dl(cls, dl, rank, world_size, **kwargs):
         cur_kwargs = dict(num_workers=dl.fake_l.num_workers, pin_memory=dl.pin_memory, timeout=dl.timeout,
-                          bs=dl.bs, shuffle=dl.shuffle, drop_last=dl.drop_last, indexed=dl.indexed)
+                          bs=dl.bs, shuffle=dl.shuffle, drop_last=dl.drop_last, indexed=dl.indexed, device=dl.device)
         cur_kwargs.update({n: getattr(dl, n) for n in cls._methods if n not in "get_idxs sample shuffle_fn create_item".split()})
         return cls(dl.dataset, rank, world_size, **merge(cur_kwargs, kwargs))
 
@@ -99,8 +99,8 @@ class DistributedTrainer(Callback):
     def begin_epoch(self):
         for dl in self.dls: dl.set_epoch(self.epoch)
 
-    def begin_train(self):    self.dl = self._wrap_dl(self.dl)
-    def begin_validate(self): self.dl = self._wrap_dl(self.dl)
+    def begin_train(self):    self.learn.dl = self._wrap_dl(self.learn.dl)
+    def begin_validate(self): self.learn.dl = self._wrap_dl(self.learn.dl)
 
     def after_fit(self):
         self.learn.model = self.learn.model.module

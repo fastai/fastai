@@ -142,28 +142,28 @@ def total_params(m):
     return params, (False if len(trains)==0 else trains[0])
 
 # Cell
-def layer_info(learn):
+def layer_info(model, *xb):
+    "Return layer infos of `model` on `xb` (only support batch first inputs)"
     def _track(m, i, o):
         return (m.__class__.__name__,)+total_params(m)+(apply(lambda x:x.shape, o),)
-    layers = [m for m in flatten_model(learn.model)]
-    xb = learn.dls.train.one_batch()[:learn.dls.train.n_inp]
+    layers = [m for m in flatten_model(model)]
     with Hooks(layers, _track) as h:
-        _ = learn.model.eval()(apply(lambda o:o[:1], *xb))
+        _ = model.eval()(*apply(lambda o:o[:1], xb))
         return xb,h.stored
 
 # Cell
 def _print_shapes(o, bs):
     if isinstance(o, torch.Size): return ' x '.join([str(bs)] + [str(t) for t in o[1:]])
-    else: return [_print_shapes(x, bs) for x in o]
+    else: return str([_print_shapes(x, bs) for x in o])
 
 # Cell
 @patch
-def summary(self:Learner):
-    "Print a summary of the model, optimizer and loss function."
-    xb,infos = layer_info(self)
+def summary(self:nn.Module, *xb):
+    "Print a summary of `self` using `xb`"
+    sample_inputs,infos = layer_info(self, *xb)
     n,bs = 64,find_bs(xb)
     inp_sz = _print_shapes(apply(lambda x:x.shape, xb), bs)
-    res = f"{self.model.__class__.__name__} (Input shape: {inp_sz})\n"
+    res = f"{self.__class__.__name__} (Input shape: {inp_sz})\n"
     res += "=" * n + "\n"
     res += f"{'Layer (type)':<20} {'Output Shape':<20} {'Param #':<10} {'Trainable':<10}\n"
     res += "=" * n + "\n"
@@ -173,11 +173,19 @@ def summary(self:Learner):
         if sz is None: continue
         ps += np
         if trn: trn_ps += np
-        res += f"{typ:<20} {_print_shapes(sz, bs):<20} {np:<10,} {str(trn):<10}\n"
+        res += f"{typ:<20} {_print_shapes(sz, bs)[:19]:<20} {np:<10,} {str(trn):<10}\n"
         res += "_" * n + "\n"
     res += f"\nTotal params: {ps:,}\n"
     res += f"Total trainable params: {trn_ps:,}\n"
     res += f"Total non-trainable params: {ps - trn_ps:,}\n\n"
+    return PrettyString(res)
+
+# Cell
+@patch
+def summary(self:Learner):
+    "Print a summary of the model, optimizer and loss function."
+    xb = self.dls.train.one_batch()[:self.dls.train.n_inp]
+    res = self.model.summary(*xb)
     res += f"Optimizer used: {self.opt_func}\nLoss function: {self.loss_func}\n\n"
     if self.opt is not None:
         res += f"Model " + ("unfrozen\n\n" if self.opt.frozen_idx==0 else f"frozen up to parameter group number {self.opt.frozen_idx}\n\n")
@@ -200,11 +208,34 @@ class ActivationStats(HookCallback):
 
     def hook(self, m, i, o):
         o = o.float()
-        res = {'mean': o.mean().item(), 'std': o.std().item(), 'percent_null': (o<=0.05).long().sum().item()/o.numel()}
+        res = {'mean': o.mean().item(), 'std': o.std().item(),
+               'near_zero': (o<=0.05).long().sum().item()/o.numel()}
         if self.with_hist: res['hist'] = o.histc(40,0,10)
         return res
 
     def after_batch(self):
         "Take the stored results and puts it in `self.stats`"
-        if self.training and (self.every is None or self.train_iter%self.every != 0): self.stats.append(self.hooks.stored)
+        if self.training and (self.every is None or self.train_iter%self.every == 0):
+            self.stats.append(self.hooks.stored)
         super().after_batch()
+
+    def layer_stats(self, idx):
+        lstats = self.stats.itemgot(idx)
+        return L(lstats.itemgot(o) for o in ('mean','std','near_zero'))
+
+    def hist(self, idx):
+        res = self.stats.itemgot(idx).itemgot('hist')
+        return torch.stack(tuple(res)).t().float().log1p()
+
+    def color_dim(self, idx, figsize=(10,5), ax=None):
+        "The 'colorful dimension' plot"
+        res = self.hist(idx)
+        if ax is None: ax = subplots(figsize=figsize)[1][0]
+        ax.imshow(res, origin='lower')
+        ax.axis('off')
+
+    def plot_layer_stats(self, idx):
+        _,axs = subplots(1, 3, figsize=(12,3))
+        for o,ax,title in zip(self.layer_stats(idx),axs,('mean','std','% near zero')):
+            ax.plot(o)
+            ax.set_title(title)

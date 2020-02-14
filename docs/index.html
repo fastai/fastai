@@ -18,9 +18,17 @@ summary: "NB: This is still in early development. Use v1 unless you want to cont
 -->
 
 <div class="container" id="notebook-container">
-    
+    {% raw %}
+        
 <div class="cell border-box-sizing code_cell rendered">
 
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>To learn more about the library, read our introduction in the <a href="https://arxiv.org/abs/2002.04688">paper</a> presenting it.</p>
+
+</div>
+</div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -41,8 +49,11 @@ conda env create -f environment.yml
 
 <pre><code>git clone https://github.com/fastai/fastai2
 cd fastai2
-pip install -e .[dev]</code></pre>
+pip install -e ".[dev]"</code></pre>
 <p>You should also use an editable install of <code>fastcore</code> to go with it.</p>
+<p>If you want to browse the notebooks and build the library from them you will need nbdev:</p>
+
+<pre><code>pip install nbdev</code></pre>
 <p>To use <code>fastai2.medical.imaging</code> you'll also need to:</p>
 <div class="highlight"><pre><span></span>conda install pyarrow
 pip install pydicom kornia opencv-python scikit-image
@@ -87,6 +98,7 @@ pip install pydicom kornia opencv-python scikit-image
 </div>
 </div>
 </div>
+    {% endraw %}
 </div>
  
 

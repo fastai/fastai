@@ -60,6 +60,7 @@ class TfmdDL(DataLoader):
                 self._one_pass()
                 res._n_inp,res._types = self._n_inp,self._types
             except: print("Could not do one pass in your dataloader, there is something wrong in it")
+        else: res._n_inp,res._types = self._n_inp,self._types
         return res
 
     def before_iter(self):
@@ -134,6 +135,14 @@ class DataLoaders(GetAttr):
         return self
 
     def cpu(self): return self.cuda(device=torch.device('cpu'))
+
+    @classmethod
+    def from_dsets(cls, *ds, path='.',  bs=64, device=None, dl_type=TfmdDL, **kwargs):
+        default = (True,) + (False,) * (len(ds)-1)
+        defaults = {'shuffle': default, 'drop_last': default}
+        kwargs = merge(defaults, {k: tuplify(v, match=ds) for k,v in kwargs.items()})
+        kwargs = [{k: v[i] for k,v in kwargs.items()} for i in range_of(ds)]
+        return cls(*[dl_type(d, **k) for d,k in zip(ds, kwargs)], path=path, device=device)
 
     @classmethod
     def from_dblock(cls, dblock, source, path='.',  bs=64, val_bs=None, shuffle_train=True, device=None, **kwargs):
@@ -304,7 +313,7 @@ class Datasets(FilteredBase):
 def test_set(dsets, test_items, rm_tfms=None):
     "Create a test set from `test_items` using validation transforms of `dsets`"
     test_tls = [tl._new(test_items, split_idx=1) for tl in dsets.tls[:dsets.n_inp]]
-    if rm_tfms is None: rm_tfms = [tl.infer_idx(test_items[0]) for tl in test_tls]
+    if rm_tfms is None: rm_tfms = [tl.infer_idx(get_first(test_items)) for tl in test_tls]
     else:               rm_tfms = tuplify(rm_tfms, match=test_tls)
     for i,j in enumerate(rm_tfms): test_tls[i].tfms.fs = test_tls[i].tfms.fs[j:]
     return Datasets(tls=test_tls)

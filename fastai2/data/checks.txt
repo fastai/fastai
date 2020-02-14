@@ -206,5 +206,9 @@
   "https://s3.amazonaws.com/fast-ai-imageclas/imagewang.tgz": [
     2900347689,
     "2b7776bac0fc95db72ac8a3b091a3e30"
+  ],
+  "http://files.grouplens.org/datasets/movielens/ml-100k.zip": [
+    4924029,
+    "39f6af2d7ea4e117f8838e4a302fec70"
   ]
 }

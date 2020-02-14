@@ -91,12 +91,13 @@ def fit_one_cycle(self:Learner, n_epoch, lr_max=None, div=25., div_final=1e5, pc
 
 # Cell
 @patch
-def plot_sched(self:Recorder, figsize=None):
-    rows,cols = (len(self.hps)+1)//2, min(2, len(self.hps))
+def plot_sched(self:Recorder, keys=None, figsize=None):
+    keys = self.hps.keys() if keys is None else L(keys)
+    rows,cols = (len(keys)+1)//2, min(2, len(keys))
     figsize = figsize or (6*cols,4*rows)
     _, axs = plt.subplots(rows, cols, figsize=figsize)
-    axs = axs.flatten() if len(self.hps) > 1 else L(axs)
-    for p,ax in zip(self.hps.keys(), axs):
+    axs = axs.flatten() if len(keys) > 1 else L(axs)
+    for p,ax in zip(keys, axs):
         ax.plot(self.hps[p])
         ax.set_ylabel(p)
 
@@ -189,9 +190,15 @@ def plot_lr_find(self:Recorder, skip_end=5):
 
 # Cell
 @patch
-def lr_find(self:Learner, start_lr=1e-7, end_lr=10, num_it=100, stop_div=True, show_plot=True):
-    "Launch a mock training to find a good learning rate"
+def lr_find(self:Learner, start_lr=1e-7, end_lr=10, num_it=100, stop_div=True, show_plot=True, suggestions=True):
+    "Launch a mock training to find a good learning rate, return lr_min, lr_steep if `suggestions` is True"
     n_epoch = num_it//len(self.dls.train) + 1
     cb=LRFinder(start_lr=start_lr, end_lr=end_lr, num_it=num_it, stop_div=stop_div)
     with self.no_logging(): self.fit(n_epoch, cbs=cb)
     if show_plot: self.recorder.plot_lr_find()
+    if suggestions:
+        lrs,losses = tensor(self.recorder.lrs[5:-5]),tensor(self.recorder.losses[5:-5])
+        lr_min = lrs[losses.argmin()].item()
+        grads = (losses[1:]-losses[:-1]) / (lrs[1:].log()-lrs[:-1].log())
+        lr_steep = lrs[grads.argmin()].item()
+        return lr_min/10.,lr_steep

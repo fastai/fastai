@@ -96,16 +96,14 @@ class AWD_LSTM(Module):
         bs,sl = inp.shape[:2] if from_embeds else inp.shape
         if bs!=self.bs: self._change_hidden(bs)
 
-        raw_output = self.input_dp(inp if from_embeds else self.encoder_dp(inp))
-        new_hidden,raw_outputs,outputs = [],[],[]
+        output = self.input_dp(inp if from_embeds else self.encoder_dp(inp))
+        new_hidden = []
         for l, (rnn,hid_dp) in enumerate(zip(self.rnns, self.hidden_dps)):
-            raw_output, new_h = rnn(raw_output, self.hidden[l])
+            output, new_h = rnn(output, self.hidden[l])
             new_hidden.append(new_h)
-            raw_outputs.append(raw_output)
-            if l != self.n_layers - 1: raw_output = hid_dp(raw_output)
-            outputs.append(raw_output)
+            if l != self.n_layers - 1: output = hid_dp(output)
         self.hidden = to_detach(new_hidden, cpu=False, gather=False)
-        return raw_outputs, outputs
+        return output
 
     def _change_hidden(self, bs):
         self.hidden = [self._change_one_hidden(l, bs) for l in range(self.n_layers)]
@@ -161,7 +159,7 @@ class AWD_QRNN(AWD_LSTM):
     "Same as an AWD-LSTM, but using QRNNs instead of LSTMs"
     def _one_rnn(self, n_in, n_out, bidir, weight_p, l):
         from .qrnn import QRNN
-        rnn = QRNN(n_in, n_out, 1, save_prev_x=True, zoneout=0, window=2 if l == 0 else 1, output_gate=True, bidirectional=bidir)
+        rnn = QRNN(n_in, n_out, 1, save_prev_x=(not bidir), zoneout=0, window=2 if l == 0 else 1, output_gate=True, bidirectional=bidir)
         rnn.layers[0].linear = WeightDropout(rnn.layers[0].linear, weight_p, layer_names='weight')
         return rnn
 
@@ -174,7 +172,7 @@ class AWD_QRNN(AWD_LSTM):
         if self.bs < bs:
             nh = (self.n_hid if l != self.n_layers - 1 else self.emb_sz) // self.n_dir
             return torch.cat([self.hidden[l], self.hidden[l].new_zeros(self.n_dir, bs-self.bs, nh)], dim=1)
-        if self.bs > bs: return self.hidden[l][:bs]
+        if self.bs > bs: return self.hidden[l][:, :bs]
         return self.hidden[l]
 
 # Cell

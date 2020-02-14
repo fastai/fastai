@@ -2,13 +2,14 @@
 
 __all__ = ['module', 'Identity', 'Lambda', 'PartialLambda', 'Flatten', 'View', 'ResizeBatch', 'Debugger',
            'sigmoid_range', 'SigmoidRange', 'AdaptiveConcatPool2d', 'PoolType', 'adaptive_pool', 'PoolFlatten',
-           'NormType', 'BatchNorm', 'InstanceNorm', 'BatchNorm1dFlat', 'LinBnDrop', 'init_default', 'ConvLayer',
-           'AdaptiveAvgPool', 'MaxPool', 'AvgPool', 'BaseLoss', 'CrossEntropyLossFlat', 'BCEWithLogitsLossFlat',
-           'BCELossFlat', 'MSELossFlat', 'L1LossFlat', 'LabelSmoothingCrossEntropy', 'trunc_normal_', 'Embedding',
-           'SelfAttention', 'PooledSelfAttention2d', 'SimpleSelfAttention', 'icnr_init', 'PixelShuffle_ICNR',
-           'SequentialEx', 'MergeLayer', 'Cat', 'SimpleCNN', 'ProdLayer', 'inplace_relu', 'SEModule', 'ResBlock',
-           'SEBlock', 'SEResNeXtBlock', 'SeparableBlock', 'swish', 'Swish', 'MishJitAutoFn', 'mish', 'MishJit',
-           'ParameterModule', 'children_and_parameters', 'flatten_model', 'NoneReduce', 'in_channels']
+           'NormType', 'BatchNorm', 'InstanceNorm', 'BatchNorm1dFlat', 'LinBnDrop', 'sigmoid', 'sigmoid_',
+           'vleaky_relu', 'init_default', 'init_linear', 'ConvLayer', 'AdaptiveAvgPool', 'MaxPool', 'AvgPool',
+           'BaseLoss', 'CrossEntropyLossFlat', 'BCEWithLogitsLossFlat', 'BCELossFlat', 'MSELossFlat', 'L1LossFlat',
+           'LabelSmoothingCrossEntropy', 'trunc_normal_', 'Embedding', 'SelfAttention', 'PooledSelfAttention2d',
+           'SimpleSelfAttention', 'icnr_init', 'PixelShuffle_ICNR', 'sequential', 'SequentialEx', 'MergeLayer', 'Cat',
+           'SimpleCNN', 'ProdLayer', 'inplace_relu', 'SEModule', 'ResBlock', 'SEBlock', 'SEResNeXtBlock',
+           'SeparableBlock', 'swish', 'Swish', 'MishJitAutoFn', 'mish', 'Mish', 'ParameterModule',
+           'children_and_parameters', 'flatten_model', 'NoneReduce', 'in_channels']
 
 # Cell
 from .imports import *
@@ -164,12 +165,47 @@ class LinBnDrop(nn.Sequential):
         super().__init__(*layers)
 
 # Cell
+def sigmoid(input, eps=1e-7):
+    "Same as `torch.sigmoid`, plus clamping to `(eps,1-eps)"
+    return input.sigmoid().clamp(eps,1-eps)
+
+# Cell
+def sigmoid_(input, eps=1e-7):
+    "Same as `torch.sigmoid_`, plus clamping to `(eps,1-eps)"
+    return input.sigmoid_().clamp_(eps,1-eps)
+
+# Cell
+from torch.nn.init import kaiming_uniform_,uniform_,xavier_uniform_,normal_
+
+# Cell
+def vleaky_relu(input, inplace=True):
+    "`F.leaky_relu` with 0.3 slope"
+    return F.leaky_relu(input, negative_slope=0.3, inplace=inplace)
+
+# Cell
+for o in F.relu,nn.ReLU,F.relu6,nn.ReLU6,F.leaky_relu,nn.LeakyReLU:
+    o.__default_init__ = kaiming_uniform_
+
+# Cell
+for o in F.sigmoid,nn.Sigmoid,F.tanh,nn.Tanh,sigmoid,sigmoid_:
+    o.__default_init__ = xavier_uniform_
+
+# Cell
 def init_default(m, func=nn.init.kaiming_normal_):
     "Initialize `m` weights with `func` and set `bias` to 0."
     if func and hasattr(m, 'weight'): func(m.weight)
     with torch.no_grad():
         if getattr(m, 'bias', None) is not None: m.bias.fill_(0.)
     return m
+
+# Cell
+def init_linear(m, act_func=None, init='auto', bias_std=0.01):
+    if getattr(m,'bias',None) is not None and bias_std is not None: normal_(m.bias, 0, bias_std)
+    if init=='auto':
+        if act_func in (F.relu_,F.leaky_relu_): init = kaiming_uniform_
+        else: init = getattr(act_func.__class__, '__default_init__', None)
+        if init is None: init = getattr(act_func, '__default_init__', None)
+    if init is not None: init(m.weight)
 
 # Cell
 def _conv_func(ndim=2, transpose=False):
@@ -184,18 +220,20 @@ defaults.activation=nn.ReLU
 class ConvLayer(nn.Sequential):
     "Create a sequence of convolutional (`ni` to `nf`), ReLU (if `use_activ`) and `norm_type` layers."
     def __init__(self, ni, nf, ks=3, stride=1, padding=None, bias=None, ndim=2, norm_type=NormType.Batch, bn_1st=True,
-                 act_cls=defaults.activation, transpose=False, init=nn.init.kaiming_normal_, xtra=None, **kwargs):
+                 act_cls=defaults.activation, transpose=False, init='auto', xtra=None, bias_std=0.01, **kwargs):
         if padding is None: padding = ((ks-1)//2 if not transpose else 0)
         bn = norm_type in (NormType.Batch, NormType.BatchZero)
         inn = norm_type in (NormType.Instance, NormType.InstanceZero)
         if bias is None: bias = not (bn or inn)
         conv_func = _conv_func(ndim, transpose=transpose)
-        conv = init_default(conv_func(ni, nf, kernel_size=ks, bias=bias, stride=stride, padding=padding, **kwargs), init)
+        conv = conv_func(ni, nf, kernel_size=ks, bias=bias, stride=stride, padding=padding, **kwargs)
+        act = None if act_cls is None else act_cls()
+        init_linear(conv, act, init=init, bias_std=bias_std)
         if   norm_type==NormType.Weight:   conv = weight_norm(conv)
         elif norm_type==NormType.Spectral: conv = spectral_norm(conv)
         layers = [conv]
         act_bn = []
-        if act_cls is not None: act_bn.append(act_cls())
+        if act is not None: act_bn.append(act)
         if bn: act_bn.append(BatchNorm(nf, norm_type=norm_type, ndim=ndim))
         if inn: act_bn.append(InstanceNorm(nf, norm_type=norm_type, ndim=ndim))
         if bn_1st: act_bn.reverse()
@@ -399,11 +437,20 @@ class PixelShuffle_ICNR(nn.Sequential):
     def __init__(self, ni, nf=None, scale=2, blur=False, norm_type=NormType.Weight, act_cls=defaults.activation):
         super().__init__()
         nf = ifnone(nf, ni)
-        layers = [ConvLayer(ni, nf*(scale**2), ks=1, norm_type=norm_type, act_cls=act_cls),
+        layers = [ConvLayer(ni, nf*(scale**2), ks=1, norm_type=norm_type, act_cls=act_cls, bias_std=0),
                   nn.PixelShuffle(scale)]
         layers[0][0].weight.data.copy_(icnr_init(layers[0][0].weight.data))
         if blur: layers += [nn.ReplicationPad2d((1,0,1,0)), nn.AvgPool2d(2, stride=1)]
         super().__init__(*layers)
+
+# Cell
+def sequential(*args):
+    "Create an `nn.Sequential`, wrapping items with `Lambda` if needed"
+    if len(args) != 1 or not isinstance(args[0], OrderedDict):
+        args = list(args)
+        for i,o in enumerate(args):
+            if not isinstance(o,nn.Module): args[i] = Lambda(o)
+    return nn.Sequential(*args)
 
 # Cell
 class SequentialEx(Module):
@@ -472,7 +519,7 @@ class ResBlock(nn.Module):
     "Resnet block from `ni` to `nh` with `stride`"
     @delegates(ConvLayer.__init__)
     def __init__(self, expansion, ni, nf, stride=1, groups=1, reduction=None, nh1=None, nh2=None, dw=False, g2=1,
-                 sa=False, sym=False, norm_type=NormType.Batch, act_cls=defaults.activation, ndim=2,
+                 sa=False, sym=False, norm_type=NormType.Batch, act_cls=defaults.activation, ndim=2, ks=3,
                  pool=AvgPool, pool_first=True, **kwargs):
         super().__init__()
         norm2 = (NormType.BatchZero if norm_type==NormType.Batch else
@@ -482,11 +529,11 @@ class ResBlock(nn.Module):
         nf,ni = nf*expansion,ni*expansion
         k0 = dict(norm_type=norm_type, act_cls=act_cls, ndim=ndim, **kwargs)
         k1 = dict(norm_type=norm2, act_cls=None, ndim=ndim, **kwargs)
-        convpath  = [ConvLayer(ni,  nh2, 3, stride=stride, groups=ni if dw else groups, **k0),
-                     ConvLayer(nh2,  nf, 3, groups=g2, **k1)
+        convpath  = [ConvLayer(ni,  nh2, ks, stride=stride, groups=ni if dw else groups, **k0),
+                     ConvLayer(nh2,  nf, ks, groups=g2, **k1)
         ] if expansion == 1 else [
                      ConvLayer(ni,  nh1, 1, **k0),
-                     ConvLayer(nh1, nh2, 3, stride=stride, groups=nh1 if dw else groups, **k0),
+                     ConvLayer(nh1, nh2, ks, stride=stride, groups=nh1 if dw else groups, **k0),
                      ConvLayer(nh2,  nf, 1, groups=g2, **k1)]
         if reduction: convpath.append(SEModule(nf, reduction=reduction, act_cls=act_cls))
         if sa: convpath.append(SimpleSelfAttention(nf,ks=1,sym=sym))
@@ -566,8 +613,11 @@ class MishJitAutoFn(torch.autograd.Function):
 def mish(x): return MishJitAutoFn.apply(x)
 
 # Cell
-class MishJit(Module):
+class Mish(Module):
     def forward(self, x): return MishJitAutoFn.apply(x)
+
+# Cell
+for o in swish,Swish,mish,Mish: o.__default_init__ = kaiming_uniform_
 
 # Cell
 class ParameterModule(Module):

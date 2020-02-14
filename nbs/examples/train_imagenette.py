@@ -16,11 +16,13 @@ def get_dls(size, woof, bs, sh=0., workers=None):
     else        : path = URLs.IMAGEWOOF     if woof else URLs.IMAGENETTE
     source = untar_data(path)
     if workers is None: workers = min(8, num_cpus())
+    batch_tfms = [Normalize.from_stats(*imagenet_stats)]
+    if sh: batch_tfms.append(RandomErasing(p=0.3, max_count=3, sh=sh))
     dblock = DataBlock(blocks=(ImageBlock, CategoryBlock),
                        splitter=GrandparentSplitter(valid_name='val'),
                        get_items=get_image_files, get_y=parent_label,
                        item_tfms=[RandomResizedCrop(size, min_scale=0.35), FlipItem(0.5)],
-                       batch_tfms=RandomErasing(p=0.3, max_count=3, sh=sh) if sh else None)
+                       batch_tfms=batch_tfms)
     return dblock.dataloaders(source, path=source, bs=bs, num_workers=workers)
 
 @call_parse
@@ -41,7 +43,7 @@ def main(
     sa:    Param("Self-attention", int)=0,
     sym:   Param("Symmetry for self-attention", int)=0,
     beta:  Param("SAdam softplus beta", float)=0.,
-    act_fn:Param("Activation function", str)='MishJit',
+    act_fn:Param("Activation function", str)='Mish',
     fp16:  Param("Use mixed precision training", int)=0,
     pool:  Param("Pooling method", str)='AvgPool',
     dump:  Param("Print model; don't train", int)=0,

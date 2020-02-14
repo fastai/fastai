@@ -43,8 +43,8 @@ def main(gpu:Param("GPU to run on", int)=6,
     else:    config.update({'input_p': 0.6, 'output_p': 0.4, 'weight_p': 0.5, 'embed_p': 0.1, 'hidden_p': 0.2})
     model = get_language_model((AWD_QRNN if qrnn else AWD_LSTM), len(vocab), config=config) 
     opt_func = partial(Adam, wd=0.1, eps=1e-7)
-    if qrnn: cb_funcs = [partial(MixedPrecision, clip=0.1), partial(RNNTrainer, alpha=2, beta=1)]
-    else : cb_funcs = [partial(MixedPrecision, clip=0.1), partial(RNNTrainer, alpha=3, beta=2)]
-    learn = Learner(model, dbch, loss_func=CrossEntropyLossFlat(), opt_func=opt_func, cb_funcs=cb_funcs, metrics=[accuracy, Perplexity()])
+    (alpha,beta) = (2,1) if qrnn else (3,2)
+    cbs = [MixedPrecision(clip=0.1), ModelReseter, RNNRegularizer(alpha, beta)]
+    learn = Learner(model, dbch, loss_func=CrossEntropyLossFlat(), opt_func=opt_func, cbs=cbs, metrics=[accuracy, Perplexity()])
     learn.fit_one_cycle(90, 5e-3, moms=(0.8,0.7,0.8), div=10)
 

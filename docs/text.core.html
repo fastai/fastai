@@ -18,7 +18,8 @@ summary: "Basic function to preprocess text before assembling it in a `DataLoade
 -->
 
 <div class="container" id="notebook-container">
-    
+    {% raw %}
+        
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
@@ -30,7 +31,7 @@ summary: "Basic function to preprocess text before assembling it in a `DataLoade
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">nbdev.showdoc</span> <span class="k">import</span> <span class="o">*</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">nbdev.showdoc</span> <span class="kn">import</span> <span class="o">*</span>
 </pre></div>
 
     </div>
@@ -173,7 +174,7 @@ summary: "Basic function to preprocess text before assembling it in a `DataLoade
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">test_eq</span><span class="p">(</span><span class="n">replace_rep</span><span class="p">(</span><span class="s1">&#39;aa&#39;</span><span class="p">),</span> <span class="s1">&#39;aa&#39;</span><span class="p">)</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">replace_rep</span><span class="p">(</span><span class="s1">&#39;aaaa&#39;</span><span class="p">),</span> <span class="n">f</span><span class="s1">&#39; </span><span class="si">{TK_REP}</span><span class="s1"> 4 a &#39;</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">replace_rep</span><span class="p">(</span><span class="s1">&#39;aaaa&#39;</span><span class="p">),</span> <span class="sa">f</span><span class="s1">&#39; </span><span class="si">{TK_REP}</span><span class="s1"> 4 a &#39;</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -221,11 +222,11 @@ summary: "Basic function to preprocess text before assembling it in a `DataLoade
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">test_eq</span><span class="p">(</span><span class="n">replace_wrep</span><span class="p">(</span><span class="s1">&#39;ah ah&#39;</span><span class="p">),</span> <span class="s1">&#39;ah ah&#39;</span><span class="p">)</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">replace_wrep</span><span class="p">(</span><span class="s1">&#39;ah ah ah&#39;</span><span class="p">),</span> <span class="n">f</span><span class="s1">&#39; </span><span class="si">{TK_WREP}</span><span class="s1"> 3 ah &#39;</span><span class="p">)</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">replace_wrep</span><span class="p">(</span><span class="s1">&#39;ah ah   ah  ah&#39;</span><span class="p">),</span> <span class="n">f</span><span class="s1">&#39; </span><span class="si">{TK_WREP}</span><span class="s1"> 4 ah &#39;</span><span class="p">)</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">replace_wrep</span><span class="p">(</span><span class="s1">&#39;ah ah ah ah &#39;</span><span class="p">),</span> <span class="n">f</span><span class="s1">&#39; </span><span class="si">{TK_WREP}</span><span class="s1"> 4 ah  &#39;</span><span class="p">)</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">replace_wrep</span><span class="p">(</span><span class="s1">&#39;ah ah ah ah.&#39;</span><span class="p">),</span> <span class="n">f</span><span class="s1">&#39; </span><span class="si">{TK_WREP}</span><span class="s1"> 4 ah .&#39;</span><span class="p">)</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">replace_wrep</span><span class="p">(</span><span class="s1">&#39;ah ah ahi&#39;</span><span class="p">),</span> <span class="n">f</span><span class="s1">&#39;ah ah ahi&#39;</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">replace_wrep</span><span class="p">(</span><span class="s1">&#39;ah ah ah&#39;</span><span class="p">),</span> <span class="sa">f</span><span class="s1">&#39; </span><span class="si">{TK_WREP}</span><span class="s1"> 3 ah &#39;</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">replace_wrep</span><span class="p">(</span><span class="s1">&#39;ah ah   ah  ah&#39;</span><span class="p">),</span> <span class="sa">f</span><span class="s1">&#39; </span><span class="si">{TK_WREP}</span><span class="s1"> 4 ah &#39;</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">replace_wrep</span><span class="p">(</span><span class="s1">&#39;ah ah ah ah &#39;</span><span class="p">),</span> <span class="sa">f</span><span class="s1">&#39; </span><span class="si">{TK_WREP}</span><span class="s1"> 4 ah  &#39;</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">replace_wrep</span><span class="p">(</span><span class="s1">&#39;ah ah ah ah.&#39;</span><span class="p">),</span> <span class="sa">f</span><span class="s1">&#39; </span><span class="si">{TK_WREP}</span><span class="s1"> 4 ah .&#39;</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">replace_wrep</span><span class="p">(</span><span class="s1">&#39;ah ah ahi&#39;</span><span class="p">),</span> <span class="sa">f</span><span class="s1">&#39;ah ah ahi&#39;</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -265,7 +266,7 @@ summary: "Basic function to preprocess text before assembling it in a `DataLoade
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">test_eq</span><span class="p">(</span><span class="n">fix_html</span><span class="p">(</span><span class="s1">&#39;#39;bli#146;&#39;</span><span class="p">),</span> <span class="s2">&quot;&#39;bli&#39;&quot;</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">fix_html</span><span class="p">(</span><span class="s1">&#39;Sarah amp; Duck...&#39;</span><span class="p">),</span> <span class="s1">&#39;Sarah &amp; Duck …&#39;</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">fix_html</span><span class="p">(</span><span class="s1">&#39;a nbsp; #36;&#39;</span><span class="p">),</span> <span class="s1">&#39;a   $&#39;</span><span class="p">)</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">fix_html</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">&quot; &lt;unk&gt;&#39;</span><span class="p">),</span> <span class="n">f</span><span class="s1">&#39;&quot; </span><span class="si">{UNK}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">fix_html</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">&quot; &lt;unk&gt;&#39;</span><span class="p">),</span> <span class="sa">f</span><span class="s1">&#39;&quot; </span><span class="si">{UNK}</span><span class="s1">&#39;</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">fix_html</span><span class="p">(</span><span class="s1">&#39;quot;  @.@  @-@ &#39;</span><span class="p">),</span> <span class="s2">&quot;&#39; .-&quot;</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">fix_html</span><span class="p">(</span><span class="s1">&#39;&lt;br /&gt;text</span><span class="se">\\</span><span class="s1">n&#39;</span><span class="p">),</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">text</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
 </pre></div>
@@ -307,7 +308,7 @@ summary: "Basic function to preprocess text before assembling it in a `DataLoade
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">test_eq</span><span class="p">(</span><span class="n">replace_all_caps</span><span class="p">(</span><span class="s2">&quot;I&#39;M SHOUTING&quot;</span><span class="p">),</span> <span class="n">f</span><span class="s2">&quot;</span><span class="si">{TK_UP}</span><span class="s2"> i&#39;m </span><span class="si">{TK_UP}</span><span class="s2"> shouting&quot;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">test_eq</span><span class="p">(</span><span class="n">replace_all_caps</span><span class="p">(</span><span class="s2">&quot;I&#39;M SHOUTING&quot;</span><span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{TK_UP}</span><span class="s2"> i&#39;m </span><span class="si">{TK_UP}</span><span class="s2"> shouting&quot;</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">replace_all_caps</span><span class="p">(</span><span class="s2">&quot;I&#39;m speaking normally&quot;</span><span class="p">),</span> <span class="s2">&quot;I&#39;m speaking normally&quot;</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">replace_all_caps</span><span class="p">(</span><span class="s2">&quot;I am speaking normally&quot;</span><span class="p">),</span> <span class="s2">&quot;i am speaking normally&quot;</span><span class="p">)</span>
 </pre></div>
@@ -349,7 +350,7 @@ summary: "Basic function to preprocess text before assembling it in a `DataLoade
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">test_eq</span><span class="p">(</span><span class="n">replace_maj</span><span class="p">(</span><span class="s2">&quot;Jeremy Howard&quot;</span><span class="p">),</span> <span class="n">f</span><span class="s1">&#39;</span><span class="si">{TK_MAJ}</span><span class="s1"> jeremy </span><span class="si">{TK_MAJ}</span><span class="s1"> howard&#39;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">test_eq</span><span class="p">(</span><span class="n">replace_maj</span><span class="p">(</span><span class="s2">&quot;Jeremy Howard&quot;</span><span class="p">),</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{TK_MAJ}</span><span class="s1"> jeremy </span><span class="si">{TK_MAJ}</span><span class="s1"> howard&#39;</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">replace_maj</span><span class="p">(</span><span class="s2">&quot;I don&#39;t think there is any maj here&quot;</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;i don&#39;t think there is any maj here&quot;</span><span class="p">),)</span>
 </pre></div>
 
@@ -655,7 +656,7 @@ summary: "Basic function to preprocess text before assembling it in a `DataLoade
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="tokenize_folder" class="doc_header"><code>tokenize_folder</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L148" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>tokenize_folder</code>(<strong><code>path</code></strong>, <strong><code>extensions</code></strong>=<em><code>None</code></em>, <strong><code>folders</code></strong>=<em><code>None</code></em>, <strong><code>output_dir</code></strong>=<em><code>None</code></em>, <strong><code>n_workers</code></strong>=<em><code>56</code></em>, <strong><code>rules</code></strong>=<em><code>None</code></em>, <strong><code>tok_func</code></strong>=<em><code>'SpacyTokenizer'</code></em>, <strong><code>encoding</code></strong>=<em><code>'utf8'</code></em>, <strong>**<code>tok_kwargs</code></strong>)</p>
+<h4 id="tokenize_folder" class="doc_header"><code>tokenize_folder</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L149" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>tokenize_folder</code>(<strong><code>path</code></strong>, <strong><code>extensions</code></strong>=<em><code>None</code></em>, <strong><code>folders</code></strong>=<em><code>None</code></em>, <strong><code>output_dir</code></strong>=<em><code>None</code></em>, <strong><code>n_workers</code></strong>=<em><code>56</code></em>, <strong><code>rules</code></strong>=<em><code>None</code></em>, <strong><code>tok_func</code></strong>=<em><code>'SpacyTokenizer'</code></em>, <strong><code>encoding</code></strong>=<em><code>'utf8'</code></em>, <strong>**<code>tok_kwargs</code></strong>)</p>
 </blockquote>
 <p>Tokenize text files in <code>path</code> in parallel using <code>n_workers</code></p>
 
@@ -679,7 +680,7 @@ summary: "Basic function to preprocess text before assembling it in a `DataLoade
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="read_tokenized_file" class="doc_header"><code>read_tokenized_file</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L165" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>read_tokenized_file</code>(<strong><code>f</code></strong>)</p>
+<h4 id="read_tokenized_file" class="doc_header"><code>read_tokenized_file</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L168" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>read_tokenized_file</code>(<strong><code>f</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -710,7 +711,7 @@ summary: "Basic function to preprocess text before assembling it in a `DataLoade
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="tokenize_files" class="doc_header"><code>tokenize_files</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L168" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>tokenize_files</code>(<strong><code>files</code></strong>, <strong><code>output_dir</code></strong>, <strong><code>output_names</code></strong>=<em><code>None</code></em>, <strong><code>n_workers</code></strong>=<em><code>56</code></em>, <strong><code>rules</code></strong>=<em><code>None</code></em>, <strong><code>tok_func</code></strong>=<em><code>'SpacyTokenizer'</code></em>, <strong><code>encoding</code></strong>=<em><code>'utf8'</code></em>, <strong>**<code>tok_kwargs</code></strong>)</p>
+<h4 id="tokenize_files" class="doc_header"><code>tokenize_files</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L171" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>tokenize_files</code>(<strong><code>files</code></strong>, <strong><code>output_dir</code></strong>, <strong><code>output_names</code></strong>=<em><code>None</code></em>, <strong><code>n_workers</code></strong>=<em><code>56</code></em>, <strong><code>rules</code></strong>=<em><code>None</code></em>, <strong><code>tok_func</code></strong>=<em><code>'SpacyTokenizer'</code></em>, <strong><code>encoding</code></strong>=<em><code>'utf8'</code></em>, <strong>**<code>tok_kwargs</code></strong>)</p>
 </blockquote>
 <p>Tokenize text <code>files</code> in parallel using <code>n_workers</code></p>
 
@@ -743,7 +744,7 @@ summary: "Basic function to preprocess text before assembling it in a `DataLoade
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="tokenize_df" class="doc_header"><code>tokenize_df</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L192" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>tokenize_df</code>(<strong><code>df</code></strong>, <strong><code>text_cols</code></strong>, <strong><code>n_workers</code></strong>=<em><code>56</code></em>, <strong><code>rules</code></strong>=<em><code>None</code></em>, <strong><code>mark_fields</code></strong>=<em><code>None</code></em>, <strong><code>tok_func</code></strong>=<em><code>'SpacyTokenizer'</code></em>, <strong><code>res_col_name</code></strong>=<em><code>'text'</code></em>, <strong>**<code>tok_kwargs</code></strong>)</p>
+<h4 id="tokenize_df" class="doc_header"><code>tokenize_df</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L198" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>tokenize_df</code>(<strong><code>df</code></strong>, <strong><code>text_cols</code></strong>, <strong><code>n_workers</code></strong>=<em><code>56</code></em>, <strong><code>rules</code></strong>=<em><code>None</code></em>, <strong><code>mark_fields</code></strong>=<em><code>None</code></em>, <strong><code>tok_func</code></strong>=<em><code>'SpacyTokenizer'</code></em>, <strong><code>res_col_name</code></strong>=<em><code>'text'</code></em>, <strong>**<code>tok_kwargs</code></strong>)</p>
 </blockquote>
 <p>Tokenize texts in <code>df[text_cols]</code> in parallel using <code>n_workers</code></p>
 
@@ -775,7 +776,7 @@ summary: "Basic function to preprocess text before assembling it in a `DataLoade
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="tokenize_csv" class="doc_header"><code>tokenize_csv</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L209" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>tokenize_csv</code>(<strong><code>fname</code></strong>, <strong><code>text_cols</code></strong>, <strong><code>outname</code></strong>=<em><code>None</code></em>, <strong><code>n_workers</code></strong>=<em><code>4</code></em>, <strong><code>rules</code></strong>=<em><code>None</code></em>, <strong><code>mark_fields</code></strong>=<em><code>None</code></em>, <strong><code>tok_func</code></strong>=<em><code>'SpacyTokenizer'</code></em>, <strong><code>header</code></strong>=<em><code>'infer'</code></em>, <strong><code>chunksize</code></strong>=<em><code>50000</code></em>, <strong>**<code>tok_kwargs</code></strong>)</p>
+<h4 id="tokenize_csv" class="doc_header"><code>tokenize_csv</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L216" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>tokenize_csv</code>(<strong><code>fname</code></strong>, <strong><code>text_cols</code></strong>, <strong><code>outname</code></strong>=<em><code>None</code></em>, <strong><code>n_workers</code></strong>=<em><code>4</code></em>, <strong><code>rules</code></strong>=<em><code>None</code></em>, <strong><code>mark_fields</code></strong>=<em><code>None</code></em>, <strong><code>tok_func</code></strong>=<em><code>'SpacyTokenizer'</code></em>, <strong><code>header</code></strong>=<em><code>'infer'</code></em>, <strong><code>chunksize</code></strong>=<em><code>50000</code></em>, <strong>**<code>tok_kwargs</code></strong>)</p>
 </blockquote>
 <p>Tokenize texts in the <code>text_cols</code> of the csv <code>fname</code> in parallel using <code>n_workers</code></p>
 
@@ -799,7 +800,7 @@ summary: "Basic function to preprocess text before assembling it in a `DataLoade
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="load_tokenized_csv" class="doc_header"><code>load_tokenized_csv</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L226" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>load_tokenized_csv</code>(<strong><code>fname</code></strong>)</p>
+<h4 id="load_tokenized_csv" class="doc_header"><code>load_tokenized_csv</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L233" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>load_tokenized_csv</code>(<strong><code>fname</code></strong>)</p>
 </blockquote>
 <p>Utility function to quickly load a tokenized csv ans the corresponding counter</p>
 
@@ -832,9 +833,9 @@ summary: "Basic function to preprocess text before assembling it in a `DataLoade
     <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">]:</span> 
         <span class="p">(</span><span class="n">path</span><span class="o">/</span><span class="n">d</span><span class="p">)</span><span class="o">.</span><span class="n">mkdir</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="o">/</span><span class="n">d</span><span class="o">/</span><span class="n">f</span><span class="s1">&#39;text</span><span class="si">{i}</span><span class="s1">.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span> <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;This is an example of text </span><span class="si">{d}</span><span class="s2"> </span><span class="si">{i}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="o">/</span><span class="n">d</span><span class="o">/</span><span class="sa">f</span><span class="s1">&#39;text</span><span class="si">{i}</span><span class="s1">.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span> <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;This is an example of text </span><span class="si">{d}</span><span class="s2"> </span><span class="si">{i}</span><span class="s2">&quot;</span><span class="p">)</span>
     
-    <span class="n">texts</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span><span class="s2">&quot;This is an example of text </span><span class="si">{d}</span><span class="s2"> </span><span class="si">{i}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">]]</span>
+    <span class="n">texts</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;This is an example of text </span><span class="si">{d}</span><span class="s2"> </span><span class="si">{i}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">]]</span>
     <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;text&#39;</span><span class="p">:</span> <span class="n">texts</span><span class="p">,</span> <span class="s1">&#39;label&#39;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">15</span><span class="p">))},</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">,</span> <span class="s1">&#39;label&#39;</span><span class="p">])</span>
     <span class="n">csv_fname</span> <span class="o">=</span> <span class="n">tmp_d</span><span class="o">/</span><span class="s1">&#39;input.csv&#39;</span>
     <span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">csv_fname</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -859,7 +860,7 @@ summary: "Basic function to preprocess text before assembling it in a `DataLoade
     <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">]:</span> 
         <span class="n">p</span> <span class="o">=</span> <span class="n">outp</span><span class="o">/</span><span class="n">d</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
-            <span class="n">test_eq</span><span class="p">((</span><span class="n">p</span><span class="o">/</span><span class="n">f</span><span class="s1">&#39;text</span><span class="si">{i}</span><span class="s1">.txt&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">(),</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span>
+            <span class="n">test_eq</span><span class="p">((</span><span class="n">p</span><span class="o">/</span><span class="sa">f</span><span class="s1">&#39;text</span><span class="si">{i}</span><span class="s1">.txt&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">(),</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span>
                 <span class="n">BOS</span><span class="p">,</span> <span class="n">TK_MAJ</span><span class="p">,</span> <span class="s1">&#39;this&#39;</span><span class="p">,</span> <span class="s1">&#39;is&#39;</span><span class="p">,</span> <span class="s1">&#39;an&#39;</span><span class="p">,</span> <span class="s1">&#39;example&#39;</span><span class="p">,</span> <span class="s1">&#39;of&#39;</span><span class="p">,</span> <span class="s1">&#39;text&#39;</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="p">]))</span>
     <span class="n">cnt_a</span> <span class="o">=</span> <span class="p">(</span><span class="n">outp</span><span class="o">/</span><span class="n">fn_counter_pkl</span><span class="p">)</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
     <span class="n">test_eq</span><span class="p">(</span><span class="n">cnt_a</span><span class="p">[</span><span class="s1">&#39;this&#39;</span><span class="p">],</span> <span class="mi">15</span><span class="p">)</span>
@@ -870,14 +871,14 @@ summary: "Basic function to preprocess text before assembling it in a `DataLoade
     <span class="n">files</span> <span class="o">=</span> <span class="n">get_text_files</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
     <span class="n">tokenize_files</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="n">path</span><span class="o">/</span><span class="s1">&#39;d&#39;</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">f</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">files</span><span class="p">):</span> 
-        <span class="n">test_eq</span><span class="p">((</span><span class="n">path</span><span class="o">/</span><span class="s1">&#39;d&#39;</span><span class="o">/</span><span class="n">f</span><span class="s1">&#39;</span><span class="si">{i}</span><span class="s1">.txt&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">(),</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span>
+        <span class="n">test_eq</span><span class="p">((</span><span class="n">path</span><span class="o">/</span><span class="s1">&#39;d&#39;</span><span class="o">/</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{i}</span><span class="s1">.txt&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">(),</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span>
                 <span class="n">BOS</span><span class="p">,</span> <span class="n">TK_MAJ</span><span class="p">,</span> <span class="s1">&#39;this&#39;</span><span class="p">,</span> <span class="s1">&#39;is&#39;</span><span class="p">,</span> <span class="s1">&#39;an&#39;</span><span class="p">,</span> <span class="s1">&#39;example&#39;</span><span class="p">,</span> <span class="s1">&#39;of&#39;</span><span class="p">,</span> <span class="s1">&#39;text&#39;</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">[</span><span class="mi">4</span><span class="p">]]))</span>
     
     <span class="c1">#Tokenize as a dataframe</span>
     <span class="n">out</span><span class="p">,</span><span class="n">cnt_b</span> <span class="o">=</span> <span class="n">tokenize_df</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">text_cols</span><span class="o">=</span><span class="s1">&#39;text&#39;</span><span class="p">)</span>
-    <span class="n">test_eq</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">out</span><span class="o">.</span><span class="n">columns</span><span class="p">),</span> <span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">,</span> <span class="s1">&#39;text&#39;</span><span class="p">])</span>
+    <span class="n">test_eq</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">out</span><span class="o">.</span><span class="n">columns</span><span class="p">),</span> <span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">,</span> <span class="s1">&#39;text&#39;</span><span class="p">,</span> <span class="s1">&#39;text_length&#39;</span><span class="p">])</span>
     <span class="n">test_eq</span><span class="p">(</span><span class="n">out</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
-    <span class="n">test_eq</span><span class="p">(</span><span class="n">out</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">],</span> <span class="p">[(</span><span class="n">outp</span><span class="o">/</span><span class="n">d</span><span class="o">/</span><span class="n">f</span><span class="s1">&#39;text</span><span class="si">{i}</span><span class="s1">.txt&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">]])</span>
+    <span class="n">test_eq</span><span class="p">(</span><span class="n">out</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">],</span> <span class="p">[(</span><span class="n">outp</span><span class="o">/</span><span class="n">d</span><span class="o">/</span><span class="sa">f</span><span class="s1">&#39;text</span><span class="si">{i}</span><span class="s1">.txt&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">]])</span>
     <span class="n">test_eq</span><span class="p">(</span><span class="n">cnt_a</span><span class="p">,</span> <span class="n">cnt_b</span><span class="p">)</span>
     
     <span class="c1">#Tokenize as a csv </span>
@@ -945,7 +946,7 @@ summary: "Basic function to preprocess text before assembling it in a `DataLoade
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_tokenizer" class="doc_header"><code>get_tokenizer</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L235" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_tokenizer</code>(<strong><code>tok_func</code></strong>=<em><code>'SpacyTokenizer'</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="get_tokenizer" class="doc_header"><code>get_tokenizer</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L242" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_tokenizer</code>(<strong><code>tok_func</code></strong>=<em><code>'SpacyTokenizer'</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -968,7 +969,7 @@ summary: "Basic function to preprocess text before assembling it in a `DataLoade
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="Tokenizer" class="doc_header"><code>class</code> <code>Tokenizer</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L242" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>Tokenizer</code>(<strong><code>tokenizer</code></strong>, <strong><code>rules</code></strong>=<em><code>None</code></em>, <strong><code>counter</code></strong>=<em><code>None</code></em>, <strong><code>mode</code></strong>=<em><code>None</code></em>) :: <code>Transform</code></p>
+<h3 id="Tokenizer" class="doc_header"><code>class</code> <code>Tokenizer</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L249" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>Tokenizer</code>(<strong><code>tokenizer</code></strong>, <strong><code>rules</code></strong>=<em><code>None</code></em>, <strong><code>counter</code></strong>=<em><code>None</code></em>, <strong><code>lengths</code></strong>=<em><code>None</code></em>, <strong><code>mode</code></strong>=<em><code>None</code></em>) :: <code>Transform</code></p>
 </blockquote>
 <p>Delegates (<code>__call__</code>,<code>decode</code>,<code>setup</code>) to (<a href="/tabular.core#encodes"><code>encodes</code></a>,<a href="/tabular.core#decodes"><code>decodes</code></a>,<a href="/tabular.core#setups"><code>setups</code></a>) if <code>split_idx</code> matches</p>
 
@@ -989,11 +990,11 @@ summary: "Basic function to preprocess text before assembling it in a `DataLoade
     <span class="n">path</span><span class="p">,</span><span class="n">df</span><span class="p">,</span><span class="n">csv_fname</span> <span class="o">=</span> <span class="n">_prepare_texts</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">tmp_d</span><span class="p">))</span>
     <span class="n">items</span> <span class="o">=</span> <span class="n">get_text_files</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
     <span class="n">splits</span> <span class="o">=</span> <span class="n">RandomSplitter</span><span class="p">()(</span><span class="n">items</span><span class="p">)</span>
-    <span class="n">dsrc</span> <span class="o">=</span> <span class="n">Datasets</span><span class="p">(</span><span class="n">items</span><span class="p">,</span> <span class="p">[</span><span class="n">Tokenizer</span><span class="o">.</span><span class="n">from_folder</span><span class="p">(</span><span class="n">path</span><span class="p">)],</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">dsrc</span><span class="o">.</span><span class="n">train</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">dsets</span> <span class="o">=</span> <span class="n">Datasets</span><span class="p">(</span><span class="n">items</span><span class="p">,</span> <span class="p">[</span><span class="n">Tokenizer</span><span class="o">.</span><span class="n">from_folder</span><span class="p">(</span><span class="n">path</span><span class="p">)],</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">dsets</span><span class="o">.</span><span class="n">train</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
     
-    <span class="n">dsrc</span> <span class="o">=</span> <span class="n">Datasets</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="p">[[</span><span class="n">attrgetter</span><span class="p">(</span><span class="s1">&#39;text&#39;</span><span class="p">),</span> <span class="n">Tokenizer</span><span class="o">.</span><span class="n">from_df</span><span class="p">(</span><span class="s1">&#39;text&#39;</span><span class="p">)]],</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">dsrc</span><span class="o">.</span><span class="n">train</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">dsets</span> <span class="o">=</span> <span class="n">Datasets</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="p">[[</span><span class="n">attrgetter</span><span class="p">(</span><span class="s1">&#39;text&#39;</span><span class="p">),</span> <span class="n">Tokenizer</span><span class="o">.</span><span class="n">from_df</span><span class="p">(</span><span class="s1">&#39;text&#39;</span><span class="p">)]],</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">dsets</span><span class="o">.</span><span class="n">train</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 </pre></div>
 
     </div>
@@ -1015,7 +1016,7 @@ summary: "Basic function to preprocess text before assembling it in a `DataLoade
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>((#10) [&#39;xxbos&#39;,&#39;xxmaj&#39;,&#39;this&#39;,&#39;is&#39;,&#39;an&#39;,&#39;example&#39;,&#39;of&#39;,&#39;text&#39;,&#39;a&#39;,&#39;2&#39;],)
+<pre>((#10) [&#39;xxbos&#39;,&#39;xxmaj&#39;,&#39;this&#39;,&#39;is&#39;,&#39;an&#39;,&#39;example&#39;,&#39;of&#39;,&#39;text&#39;,&#39;c&#39;,&#39;0&#39;],)
 </pre>
 </div>
 </div>
@@ -1032,7 +1033,7 @@ summary: "Basic function to preprocess text before assembling it in a `DataLoade
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>((&#39;xxbos&#39;, &#39;xxmaj&#39;, &#39;this&#39;, &#39;is&#39;, &#39;an&#39;, &#39;example&#39;, &#39;of&#39;, &#39;text&#39;, &#39;a&#39;, &#39;2&#39;),)
+<pre>((&#39;xxbos&#39;, &#39;xxmaj&#39;, &#39;this&#39;, &#39;is&#39;, &#39;an&#39;, &#39;example&#39;, &#39;of&#39;, &#39;text&#39;, &#39;b&#39;, &#39;3&#39;),)
 </pre>
 </div>
 </div>
@@ -1046,7 +1047,7 @@ summary: "Basic function to preprocess text before assembling it in a `DataLoade
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">tst</span> <span class="o">=</span> <span class="n">test_set</span><span class="p">(</span><span class="n">dsrc</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;This is a test&#39;</span><span class="p">,</span> <span class="s1">&#39;this is another test&#39;</span><span class="p">])</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">tst</span> <span class="o">=</span> <span class="n">test_set</span><span class="p">(</span><span class="n">dsets</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;This is a test&#39;</span><span class="p">,</span> <span class="s1">&#39;this is another test&#39;</span><span class="p">])</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">tst</span><span class="p">,</span> <span class="p">[([</span><span class="s1">&#39;xxbos&#39;</span><span class="p">,</span> <span class="s1">&#39;xxmaj&#39;</span><span class="p">,</span> <span class="s1">&#39;this&#39;</span><span class="p">,</span><span class="s1">&#39;is&#39;</span><span class="p">,</span><span class="s1">&#39;a&#39;</span><span class="p">,</span><span class="s1">&#39;test&#39;</span><span class="p">],),</span> 
               <span class="p">([</span><span class="s1">&#39;xxbos&#39;</span><span class="p">,</span><span class="s1">&#39;this&#39;</span><span class="p">,</span><span class="s1">&#39;is&#39;</span><span class="p">,</span><span class="s1">&#39;another&#39;</span><span class="p">,</span><span class="s1">&#39;test&#39;</span><span class="p">],)])</span>
 </pre></div>
@@ -1077,7 +1078,7 @@ summary: "Basic function to preprocess text before assembling it in a `DataLoade
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="SentencePieceTokenizer" class="doc_header"><code>class</code> <code>SentencePieceTokenizer</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L284" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>SentencePieceTokenizer</code>(<strong><code>lang</code></strong>=<em><code>'en'</code></em>, <strong><code>special_toks</code></strong>=<em><code>None</code></em>, <strong><code>sp_model</code></strong>=<em><code>None</code></em>, <strong><code>vocab_sz</code></strong>=<em><code>None</code></em>, <strong><code>max_vocab_sz</code></strong>=<em><code>30000</code></em>, <strong><code>model_type</code></strong>=<em><code>'unigram'</code></em>, <strong><code>char_coverage</code></strong>=<em><code>None</code></em>, <strong><code>cache_dir</code></strong>=<em><code>'tmp'</code></em>)</p>
+<h3 id="SentencePieceTokenizer" class="doc_header"><code>class</code> <code>SentencePieceTokenizer</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L298" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>SentencePieceTokenizer</code>(<strong><code>lang</code></strong>=<em><code>'en'</code></em>, <strong><code>special_toks</code></strong>=<em><code>None</code></em>, <strong><code>sp_model</code></strong>=<em><code>None</code></em>, <strong><code>vocab_sz</code></strong>=<em><code>None</code></em>, <strong><code>max_vocab_sz</code></strong>=<em><code>30000</code></em>, <strong><code>model_type</code></strong>=<em><code>'unigram'</code></em>, <strong><code>char_coverage</code></strong>=<em><code>None</code></em>, <strong><code>cache_dir</code></strong>=<em><code>'tmp'</code></em>)</p>
 </blockquote>
 <p>Spacy tokenizer for <code>lang</code></p>
 
@@ -1094,7 +1095,7 @@ summary: "Basic function to preprocess text before assembling it in a `DataLoade
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">texts</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span><span class="s2">&quot;This is an example of text </span><span class="si">{i}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)]</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">texts</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;This is an example of text </span><span class="si">{i}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)]</span>
 <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;text&#39;</span><span class="p">:</span> <span class="n">texts</span><span class="p">,</span> <span class="s1">&#39;label&#39;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">))},</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">,</span> <span class="s1">&#39;label&#39;</span><span class="p">])</span>
 </pre></div>
 
@@ -1117,6 +1118,7 @@ summary: "Basic function to preprocess text before assembling it in a `DataLoade
 </div>
 
 </div>
+    {% endraw %}
 </div>
  
 

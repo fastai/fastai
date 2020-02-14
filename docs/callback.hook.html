@@ -18,7 +18,8 @@ summary: "Callback and helper function to add hooks in models"
 -->
 
 <div class="container" id="notebook-container">
-    
+    {% raw %}
+        
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
@@ -30,7 +31,7 @@ summary: "Callback and helper function to add hooks in models"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">nbdev.showdoc</span> <span class="k">import</span> <span class="o">*</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">nbdev.showdoc</span> <span class="kn">import</span> <span class="o">*</span>
 </pre></div>
 
     </div>
@@ -43,7 +44,7 @@ summary: "Callback and helper function to add hooks in models"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">fastai2.test_utils</span> <span class="k">import</span> <span class="o">*</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">fastai2.test_utils</span> <span class="kn">import</span> <span class="o">*</span>
 </pre></div>
 
     </div>
@@ -89,13 +90,13 @@ summary: "Callback and helper function to add hooks in models"
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Linear(in_features=5, out_features=3, bias=True) (tensor([[-0.6178, -2.7084, -0.1510,  1.6092, -1.0761],
-        [ 1.0335, -0.2600,  0.4191, -0.7061,  0.0794],
-        [ 1.8817,  0.1194, -1.2327, -0.3341, -0.5828],
-        [-0.4282,  1.1357, -2.0451, -1.4824,  1.2822]]),) tensor([[-0.0425, -0.5375,  0.1463],
-        [-0.4995, -0.0239,  0.0564],
-        [-0.4383, -0.1765,  0.3047],
-        [ 0.4291, -0.5219,  1.7191]], grad_fn=&lt;AddmmBackward&gt;)
+<pre>Linear(in_features=5, out_features=3, bias=True) (tensor([[-0.6042,  0.4547, -0.9114,  0.5092,  1.9404],
+        [-0.6118, -1.5053,  1.2949,  0.4388,  0.4543],
+        [-1.2485, -1.2279,  0.2239, -1.0819,  0.4343],
+        [-0.9140, -0.6590, -0.5770,  1.3149,  1.6912]]),) tensor([[-1.1556,  1.1864, -0.0710],
+        [-0.0022,  0.1698,  0.5380],
+        [ 0.3193,  0.9947,  0.2038],
+        [-1.2464,  0.6548,  0.5106]], grad_fn=&lt;AddmmBackward&gt;)
 </pre>
 </div>
 </div>
@@ -136,14 +137,14 @@ summary: "Callback and helper function to add hooks in models"
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Linear(in_features=5, out_features=3, bias=True) (tensor([-0.3470,  0.1353,  0.0062]), None, tensor([[-0.1635, -0.0722, -0.1723],
-        [ 0.1879, -0.1248, -0.0710],
-        [-0.4034,  0.0769, -0.0982],
-        [-0.1715,  0.2760,  0.2703],
-        [ 0.0072,  0.4434,  0.5813]])) (tensor([[-0.1197, -0.0633, -0.1370],
-        [-0.0864,  0.0263, -0.0151],
-        [-0.1046,  0.0342, -0.0068],
-        [-0.0363,  0.1381,  0.1651]]),)
+<pre>Linear(in_features=5, out_features=3, bias=True) (tensor([ 0.3297, -0.0381, -0.0866]), None, tensor([[ 0.1297, -0.0159, -0.0952],
+        [ 0.1346, -0.0104, -0.0445],
+        [-0.2819, -0.0349,  0.2128],
+        [-0.3038, -0.2348,  0.2890],
+        [-0.3632,  0.1116,  0.1180]])) (tensor([[ 0.1194,  0.1110, -0.0802],
+        [-0.0172, -0.0306,  0.0643],
+        [ 0.2129, -0.0302, -0.1131],
+        [ 0.0146, -0.0884,  0.0423]]),)
 </pre>
 </div>
 </div>
@@ -264,7 +265,7 @@ summary: "Callback and helper function to add hooks in models"
 <span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
 <span class="n">y</span> <span class="o">=</span> <span class="n">tst_model</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 <span class="n">hook</span> <span class="o">=</span> <span class="n">Hook</span><span class="p">(</span><span class="n">tst_model</span><span class="p">,</span> <span class="n">example_forward_hook</span><span class="p">)</span>
-<span class="n">test_stdout</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">tst_model</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">f</span><span class="s2">&quot;</span><span class="si">{tst_model}</span><span class="s2"> (</span><span class="si">{x}</span><span class="s2">,) {y.detach()}&quot;</span><span class="p">)</span>
+<span class="n">test_stdout</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">tst_model</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{tst_model}</span><span class="s2"> (</span><span class="si">{x}</span><span class="s2">,) {y.detach()}&quot;</span><span class="p">)</span>
 <span class="n">hook</span><span class="o">.</span><span class="n">remove</span><span class="p">()</span>
 <span class="n">test_stdout</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">tst_model</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
 </pre></div>
@@ -338,7 +339,7 @@ summary: "Callback and helper function to add hooks in models"
 <span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
 <span class="n">y</span> <span class="o">=</span> <span class="n">tst_model</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 <span class="k">with</span> <span class="n">Hook</span><span class="p">(</span><span class="n">tst_model</span><span class="p">,</span> <span class="n">example_forward_hook</span><span class="p">)</span> <span class="k">as</span> <span class="n">h</span><span class="p">:</span>
-    <span class="n">test_stdout</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">tst_model</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">f</span><span class="s2">&quot;</span><span class="si">{tst_model}</span><span class="s2"> (</span><span class="si">{x}</span><span class="s2">,) {y.detach()}&quot;</span><span class="p">)</span>
+    <span class="n">test_stdout</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">tst_model</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{tst_model}</span><span class="s2"> (</span><span class="si">{x}</span><span class="s2">,) {y.detach()}&quot;</span><span class="p">)</span>
 <span class="n">test_stdout</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">tst_model</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
 </pre></div>
 
@@ -859,7 +860,7 @@ summary: "Callback and helper function to add hooks in models"
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>(#4) [0,16.230527877807617,17.368654251098633,&#39;00:00&#39;]
+<pre>(#4) [0,18.969200134277344,12.052532196044922,&#39;00:00&#39;]
 </pre>
 </div>
 </div>
@@ -874,7 +875,7 @@ summary: "Callback and helper function to add hooks in models"
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">TstCallback</span><span class="p">(</span><span class="n">HookCallback</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">modules</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">remove_end</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">detach</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cpu</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">modules</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">remove_end</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">detach</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cpu</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">modules</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">remove_end</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">detach</span><span class="p">,</span> <span class="n">cpu</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">hook</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">o</span><span class="p">):</span> <span class="k">return</span> <span class="n">o</span>
     <span class="k">def</span> <span class="nf">after_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -895,7 +896,7 @@ summary: "Callback and helper function to add hooks in models"
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>(#4) [0,12.341708183288574,12.009857177734375,&#39;00:00&#39;]
+<pre>(#4) [0,9.656743049621582,13.194965362548828,&#39;00:00&#39;]
 </pre>
 </div>
 </div>
@@ -1008,8 +1009,9 @@ summary: "Callback and helper function to add hooks in models"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="layer_info" class="doc_header"><code>layer_info</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/hook.py#L145" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>layer_info</code>(<strong><code>learn</code></strong>)</p>
+<h4 id="layer_info" class="doc_header"><code>layer_info</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/hook.py#L145" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>layer_info</code>(<strong><code>model</code></strong>, <strong>*<code>xb</code></strong>)</p>
 </blockquote>
+<p>Return layer infos of <code>model</code> on <code>xb</code> (only support batch first inputs)</p>
 
 </div>
 
@@ -1025,8 +1027,13 @@ summary: "Callback and helper function to add hooks in models"
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">m</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">50</span><span class="p">),</span> <span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">(),</span> <span class="n">nn</span><span class="o">.</span><span class="n">BatchNorm1d</span><span class="p">(</span><span class="mi">50</span><span class="p">),</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
-<span class="n">learn</span> <span class="o">=</span> <span class="n">synth_learner</span><span class="p">()</span>
-<span class="n">learn</span><span class="o">.</span><span class="n">model</span><span class="o">=</span><span class="n">m</span>
+<span class="n">sample_input</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">((</span><span class="mi">16</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">layer_info</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">sample_input</span><span class="p">)[</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s1">&#39;Linear&#39;</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">50</span><span class="p">]),</span>
+    <span class="p">(</span><span class="s1">&#39;ReLU&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">50</span><span class="p">]),</span>
+    <span class="p">(</span><span class="s1">&#39;BatchNorm1d&#39;</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">50</span><span class="p">]),</span>
+    <span class="p">(</span><span class="s1">&#39;Linear&#39;</span><span class="p">,</span> <span class="mi">51</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="p">])</span>
 </pre></div>
 
     </div>
@@ -1039,8 +1046,20 @@ summary: "Callback and helper function to add hooks in models"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">test_eq</span><span class="p">(</span><span class="n">layer_info</span><span class="p">(</span><span class="n">learn</span><span class="p">)[</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span>
-    <span class="p">(</span><span class="s1">&#39;Linear&#39;</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">50</span><span class="p">]),</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Test for multiple inputs model</span>
+<span class="k">class</span> <span class="nc">_2InpModel</span><span class="p">(</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">seq</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">50</span><span class="p">),</span> <span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">(),</span> <span class="n">nn</span><span class="o">.</span><span class="n">BatchNorm1d</span><span class="p">(</span><span class="mi">50</span><span class="p">),</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">inps</span><span class="p">):</span>
+        <span class="n">outputs</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">inps</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">seq</span><span class="p">(</span><span class="n">outputs</span><span class="p">)</span>
+
+
+<span class="n">m</span> <span class="o">=</span> <span class="n">_2InpModel</span><span class="p">()</span>
+<span class="n">sample_inputs</span> <span class="o">=</span> <span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">layer_info</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="o">*</span><span class="n">sample_inputs</span><span class="p">)[</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s1">&#39;Linear&#39;</span><span class="p">,</span> <span class="mi">150</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">50</span><span class="p">]),</span>
     <span class="p">(</span><span class="s1">&#39;ReLU&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">50</span><span class="p">]),</span>
     <span class="p">(</span><span class="s1">&#39;BatchNorm1d&#39;</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">50</span><span class="p">]),</span>
     <span class="p">(</span><span class="s1">&#39;Linear&#39;</span><span class="p">,</span> <span class="mi">51</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
@@ -1067,7 +1086,79 @@ summary: "Callback and helper function to add hooks in models"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Learner.summary" class="doc_header"><code>Learner.summary</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/hook.py#L160" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.summary</code>()</p>
+<h4 id="Module.summary" class="doc_header"><code>Module.summary</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/hook.py#L160" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Module.summary</code>(<strong>*<code>xb</code></strong>)</p>
+</blockquote>
+<p>Print a summary of <code>self</code> using <code>xb</code></p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">m</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">50</span><span class="p">),</span> <span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">(),</span> <span class="n">nn</span><span class="o">.</span><span class="n">BatchNorm1d</span><span class="p">(</span><span class="mi">50</span><span class="p">),</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">m</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">parameters</span><span class="p">():</span> <span class="n">p</span><span class="o">.</span><span class="n">requires_grad_</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">sample_input</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">((</span><span class="mi">16</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="n">m</span><span class="o">.</span><span class="n">summary</span><span class="p">(</span><span class="n">sample_input</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>Sequential (Input shape: [&#39;16 x 1&#39;])
+================================================================
+Layer (type)         Output Shape         Param #    Trainable 
+================================================================
+Linear               16 x 50              100        False     
+________________________________________________________________
+ReLU                 16 x 50              0          False     
+________________________________________________________________
+BatchNorm1d          16 x 50              100        True      
+________________________________________________________________
+Linear               16 x 1               51         True      
+________________________________________________________________
+
+Total params: 251
+Total trainable params: 151
+Total non-trainable params: 100
+</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="Learner.summary" class="doc_header"><code>Learner.summary</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/hook.py#L184" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.summary</code>()</p>
 </blockquote>
 <p>Print a summary of the model, optimizer and loss function.</p>
 
@@ -1121,10 +1212,64 @@ Total params: 251
 Total trainable params: 151
 Total non-trainable params: 100
 
-Optimizer used: functools.partial(&lt;function SGD at 0x7fa2f0c1cb90&gt;, mom=0.9)
+Optimizer used: functools.partial(&lt;function SGD at 0x7f5a508c0b90&gt;, mom=0.9)
 Loss function: FlattenedLoss of MSELoss()
 
 Model unfrozen
+
+Callbacks:
+  - TrainEvalCallback
+  - Recorder</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Test for multiple output</span>
+<span class="k">class</span> <span class="nc">_NOutModel</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x1</span><span class="p">):</span>
+        <span class="n">seq_len</span><span class="p">,</span> <span class="n">bs</span><span class="p">,</span> <span class="n">hid_size</span> <span class="o">=</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">256</span>
+        <span class="n">num_layer</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">((</span><span class="n">seq_len</span><span class="p">,</span> <span class="n">bs</span><span class="p">,</span> <span class="n">hid_size</span><span class="p">)),</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">((</span><span class="n">num_layer</span><span class="p">,</span> <span class="n">bs</span><span class="p">,</span> <span class="n">hid_size</span><span class="p">))</span>
+<span class="n">m</span> <span class="o">=</span> <span class="n">_NOutModel</span><span class="p">()</span>
+<span class="n">learn</span> <span class="o">=</span> <span class="n">synth_learner</span><span class="p">()</span>
+<span class="n">learn</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">m</span>
+<span class="n">learn</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span> <span class="c1"># Output Shape should be (50, 16, 256), (1, 16, 256)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>_NOutModel (Input shape: [&#39;16 x 1&#39;])
+================================================================
+Layer (type)         Output Shape         Param #    Trainable 
+================================================================
+_NOutModel           [&#39;16 x 16 x 256&#39;, &#39;  0          False     
+________________________________________________________________
+
+Total params: 0
+Total trainable params: 0
+Total non-trainable params: 0
+
+Optimizer used: functools.partial(&lt;function SGD at 0x7f5a508c0b90&gt;, mom=0.9)
+Loss function: FlattenedLoss of MSELoss()
 
 Callbacks:
   - TrainEvalCallback
@@ -1159,25 +1304,48 @@ Callbacks:
 <span class="k">class</span> <span class="nc">ActivationStats</span><span class="p">(</span><span class="n">HookCallback</span><span class="p">):</span>
     <span class="s2">&quot;Callback that record the mean and std of activations.&quot;</span>
     <span class="n">run_before</span><span class="o">=</span><span class="n">TrainEvalCallback</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">with_hist</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">with_hist</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">with_hist</span> <span class="o">=</span> <span class="n">with_hist</span>
-        
+
     <span class="k">def</span> <span class="nf">begin_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="s2">&quot;Initialize stats.&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">begin_fit</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">stats</span> <span class="o">=</span> <span class="n">L</span><span class="p">()</span>
-        
-    <span class="k">def</span> <span class="nf">hook</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">o</span><span class="p">):</span> 
+
+    <span class="k">def</span> <span class="nf">hook</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">o</span><span class="p">):</span>
         <span class="n">o</span> <span class="o">=</span> <span class="n">o</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
-        <span class="n">res</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;mean&#39;</span><span class="p">:</span> <span class="n">o</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">(),</span> <span class="s1">&#39;std&#39;</span><span class="p">:</span> <span class="n">o</span><span class="o">.</span><span class="n">std</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">(),</span> <span class="s1">&#39;percent_null&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">o</span><span class="o">&lt;=</span><span class="mf">0.05</span><span class="p">)</span><span class="o">.</span><span class="n">long</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">()</span><span class="o">/</span><span class="n">o</span><span class="o">.</span><span class="n">numel</span><span class="p">()}</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;mean&#39;</span><span class="p">:</span> <span class="n">o</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">(),</span> <span class="s1">&#39;std&#39;</span><span class="p">:</span> <span class="n">o</span><span class="o">.</span><span class="n">std</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">(),</span>
+               <span class="s1">&#39;near_zero&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">o</span><span class="o">&lt;=</span><span class="mf">0.05</span><span class="p">)</span><span class="o">.</span><span class="n">long</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">()</span><span class="o">/</span><span class="n">o</span><span class="o">.</span><span class="n">numel</span><span class="p">()}</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">with_hist</span><span class="p">:</span> <span class="n">res</span><span class="p">[</span><span class="s1">&#39;hist&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">o</span><span class="o">.</span><span class="n">histc</span><span class="p">(</span><span class="mi">40</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">res</span>
-    
+
     <span class="k">def</span> <span class="nf">after_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="s2">&quot;Take the stored results and puts it in `self.stats`&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">training</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">every</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_iter</span><span class="o">%</span><span class="k">self</span>.every != 0): self.stats.append(self.hooks.stored)
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">training</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">every</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_iter</span><span class="o">%</span><span class="k">self</span>.every == 0):
+            <span class="bp">self</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hooks</span><span class="o">.</span><span class="n">stored</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">after_batch</span><span class="p">()</span>
+        
+    <span class="k">def</span> <span class="nf">layer_stats</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">):</span>
+        <span class="n">lstats</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">itemgot</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">L</span><span class="p">(</span><span class="n">lstats</span><span class="o">.</span><span class="n">itemgot</span><span class="p">(</span><span class="n">o</span><span class="p">)</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span><span class="s1">&#39;std&#39;</span><span class="p">,</span><span class="s1">&#39;near_zero&#39;</span><span class="p">))</span>
+    
+    <span class="k">def</span> <span class="nf">hist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">):</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">itemgot</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span><span class="o">.</span><span class="n">itemgot</span><span class="p">(</span><span class="s1">&#39;hist&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">res</span><span class="p">))</span><span class="o">.</span><span class="n">t</span><span class="p">()</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">log1p</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">color_dim</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="s2">&quot;The &#39;colorful dimension&#39; plot&quot;</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="n">figsize</span><span class="p">)[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">plot_layer_stats</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">):</span>
+        <span class="n">_</span><span class="p">,</span><span class="n">axs</span> <span class="o">=</span> <span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">o</span><span class="p">,</span><span class="n">ax</span><span class="p">,</span><span class="n">title</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layer_stats</span><span class="p">(</span><span class="n">idx</span><span class="p">),</span><span class="n">axs</span><span class="p">,(</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span><span class="s1">&#39;std&#39;</span><span class="p">,</span><span class="s1">&#39;% near zero&#39;</span><span class="p">)):</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">o</span><span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -1194,7 +1362,7 @@ Callbacks:
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ActivationStats" class="doc_header"><code>class</code> <code>ActivationStats</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/hook.py#L189" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ActivationStats</code>(<strong><code>with_hist</code></strong>=<em><code>False</code></em>, <strong><code>modules</code></strong>=<em><code>None</code></em>, <strong><code>every</code></strong>=<em><code>None</code></em>, <strong><code>remove_end</code></strong>=<em><code>True</code></em>, <strong><code>is_forward</code></strong>=<em><code>True</code></em>, <strong><code>detach</code></strong>=<em><code>True</code></em>, <strong><code>cpu</code></strong>=<em><code>True</code></em>, <strong><code>hook</code></strong>=<em><code>None</code></em>) :: <a href="/callback.hook#HookCallback"><code>HookCallback</code></a></p>
+<h2 id="ActivationStats" class="doc_header"><code>class</code> <code>ActivationStats</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/hook.py#L197" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ActivationStats</code>(<strong><code>with_hist</code></strong>=<em><code>False</code></em>, <strong><code>modules</code></strong>=<em><code>None</code></em>, <strong><code>every</code></strong>=<em><code>None</code></em>, <strong><code>remove_end</code></strong>=<em><code>True</code></em>, <strong><code>is_forward</code></strong>=<em><code>True</code></em>, <strong><code>detach</code></strong>=<em><code>True</code></em>, <strong><code>cpu</code></strong>=<em><code>True</code></em>, <strong><code>hook</code></strong>=<em><code>None</code></em>) :: <a href="/callback.hook#HookCallback"><code>HookCallback</code></a></p>
 </blockquote>
 <p>Callback that record the mean and std of activations.</p>
 
@@ -1225,7 +1393,7 @@ Callbacks:
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>(#4) [0,8.027312278747559,9.211742401123047,&#39;00:00&#39;]
+<pre>(#4) [0,15.51450252532959,19.089649200439453,&#39;00:00&#39;]
 </pre>
 </div>
 </div>
@@ -1254,7 +1422,7 @@ Callbacks:
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>(#3) [(#1) [{&#39;mean&#39;: 0.229204460978508, &#39;std&#39;: 0.38159218430519104, &#39;percent_null&#39;: 0.25}],(#1) [{&#39;mean&#39;: 0.229204460978508, &#39;std&#39;: 0.38159218430519104, &#39;percent_null&#39;: 0.25}],(#1) [{&#39;mean&#39;: 0.229204460978508, &#39;std&#39;: 0.38159218430519104, &#39;percent_null&#39;: 0.25}]]</pre>
+<pre>(#2) [(#1) [{&#39;mean&#39;: 0.2957606315612793, &#39;std&#39;: 0.6046382784843445, &#39;near_zero&#39;: 0.375}],(#1) [{&#39;mean&#39;: 0.08696205914020538, &#39;std&#39;: 0.46177494525909424, &#39;near_zero&#39;: 0.4375}]]</pre>
 </div>
 
 </div>
@@ -1270,6 +1438,50 @@ Callbacks:
 </div>
 </div>
 </div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">math</span>
+
+<span class="k">def</span> <span class="nf">test_every</span><span class="p">(</span><span class="n">n_tr</span><span class="p">,</span> <span class="n">every</span><span class="p">):</span>
+    <span class="s2">&quot;create a learner, fit, then check number of stats collected&quot;</span>
+    <span class="n">learn</span> <span class="o">=</span> <span class="n">synth_learner</span><span class="p">(</span><span class="n">n_trn</span><span class="o">=</span><span class="n">n_tr</span><span class="p">,</span> <span class="n">cbs</span><span class="o">=</span><span class="n">ActivationStats</span><span class="p">(</span><span class="n">every</span><span class="o">=</span><span class="n">every</span><span class="p">))</span>
+    <span class="n">learn</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">expected_stats_len</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">n_tr</span> <span class="o">/</span> <span class="n">every</span><span class="p">)</span>
+    <span class="n">test_eq</span><span class="p">(</span><span class="n">expected_stats_len</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">learn</span><span class="o">.</span><span class="n">activation_stats</span><span class="o">.</span><span class="n">stats</span><span class="p">))</span>
+    
+<span class="k">for</span> <span class="n">n_tr</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">11</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">13</span><span class="p">]:</span>
+    <span class="n">test_every</span><span class="p">(</span><span class="n">n_tr</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+    <span class="n">test_every</span><span class="p">(</span><span class="n">n_tr</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>(#4) [0,13.773916244506836,10.790084838867188,&#39;00:00&#39;]
+(#4) [0,11.327720642089844,10.009943008422852,&#39;00:00&#39;]
+(#4) [0,7.467780113220215,5.522648334503174,&#39;00:00&#39;]
+(#4) [0,26.6921443939209,23.27324676513672,&#39;00:00&#39;]
+(#4) [0,17.20162010192871,11.952783584594727,&#39;00:00&#39;]
+(#4) [0,24.15806770324707,16.266334533691406,&#39;00:00&#39;]
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
 </div>
  
 

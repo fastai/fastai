@@ -119,7 +119,15 @@ class QRNNLayer(Module):
     def _get_source(self, inp):
         if self.window == 1: return inp
         dim = (1 if self.batch_first else 0)
-        inp_shift = [torch.zeros_like(inp[:,:1] if self.batch_first else inp[:1]) if self.prevX is None else self.prevX]
+        if self.batch_first:
+            prev = torch.zeros_like(inp[:,:1]) if self.prevX is None else self.prevX
+            if prev.shape[0] < inp.shape[0]: prev = torch.cat([prev, torch.zeros_like(inp[prev.shape[0]:, :1])], dim=0)
+            if prev.shape[0] > inp.shape[0]: prev= prev[:inp.shape[0]]
+        else:
+            prev = torch.zeros_like(inp[:1]) if self.prevX is None else self.prevX
+            if prev.shape[1] < inp.shape[1]: prev = torch.cat([prev, torch.zeros_like(inp[:1, prev.shape[0]:])], dim=1)
+            if prev.shape[1] > inp.shape[1]: prev= prev[:,:inp.shape[1]]
+        inp_shift = [prev]
         if self.backward: inp_shift.insert(0,inp[:,1:] if self.batch_first else inp[1:])
         else:             inp_shift.append(inp[:,:-1] if self.batch_first else inp[:-1])
         inp_shift = torch.cat(inp_shift, dim)

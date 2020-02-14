@@ -22,9 +22,48 @@ def has_pool_type(m):
     return False
 
 # Cell
-def create_body(arch, pretrained=True, cut=None):
+def _get_first_layer(m):
+    "Access first layer of a model"
+    c,p,n = m,None,None  # child, parent, name
+    for n in next(m.named_parameters())[0].split('.')[:-1]:
+        p,c=c,getattr(c,n)
+    return c,p,n
+
+# Cell
+def _load_pretrained_weights(new_layer, previous_layer):
+    "Load pretrained weights based on number of input channels"
+    n_in = getattr(new_layer, 'in_channels')
+    if n_in==1:
+        # we take the sum
+        new_layer.weight.data = previous_layer.weight.data.sum(dim=1, keepdim=True)
+    elif n_in==2:
+        # we take first 2 channels + 50%
+        new_layer.weight.data = previous_layer.weight.data[:,:2] * 1.5
+    else:
+        # keep 3 channels weights and set others to null
+        new_layer.weight.data[:,:3] = previous_layer.weight.data
+        new_layer.weight.data[:,3:].zero_()
+
+# Cell
+def _update_first_layer(model, n_in, pretrained):
+    "Change first layer based on number of input channels"
+    if n_in == 3: return
+    first_layer, parent, name = _get_first_layer(model)
+    assert isinstance(first_layer, nn.Conv2d), f'Change of input channels only supported with Conv2d, found {first_layer.__class__.__name__}'
+    assert getattr(first_layer, 'in_channels') == 3, f'Unexpected number of input channels, found {getattr(first_layer, "in_channels")} while expecting 3'
+    params = {attr:getattr(first_layer, attr) for attr in 'out_channels kernel_size stride padding dilation groups padding_mode'.split()}
+    params['bias'] = getattr(first_layer, 'bias') is not None
+    params['in_channels'] = n_in
+    new_layer = nn.Conv2d(**params)
+    if pretrained:
+        _load_pretrained_weights(new_layer, first_layer)
+    setattr(parent, name, new_layer)
+
+# Cell
+def create_body(arch, n_in=3, pretrained=True, cut=None):
     "Cut off the body of a typically pretrained `arch` as determined by `cut`"
     model = arch(pretrained=pretrained)
+    _update_first_layer(model, n_in, pretrained)
     #cut = ifnone(cut, cnn_config(arch)['cut'])
     if cut is None:
         ll = list(enumerate(model.children()))
@@ -54,10 +93,10 @@ def create_head(nf, n_out, lin_ftrs=None, ps=0.5, concat_pool=True, bn_final=Fal
 from ..callback.hook import num_features_model
 
 # Cell
-def create_cnn_model(arch, n_out, cut, pretrained, lin_ftrs=None, ps=0.5, custom_head=None,
+def create_cnn_model(arch, n_out, cut, pretrained, n_in=3, lin_ftrs=None, ps=0.5, custom_head=None,
                      bn_final=False, concat_pool=True, y_range=None, init=nn.init.kaiming_normal_):
     "Create custom convnet architecture using `base_arch`"
-    body = create_body(arch, pretrained, cut)
+    body = create_body(arch, n_in, pretrained, cut)
     if custom_head is None:
         nf = num_features_model(nn.Sequential(*body.children())) * (2 if concat_pool else 1)
         head = create_head(nf, n_out, lin_ftrs, ps=ps, concat_pool=concat_pool, bn_final=bn_final, y_range=y_range)
@@ -84,12 +123,12 @@ def _vgg_split(m:nn.Module): return L(m[0][0][:22], m[0][0][22:], m[1:]).map(par
 def _alexnet_split(m:nn.Module): return L(m[0][0][:6], m[0][0][6:], m[1:]).map(params)
 
 _default_meta    = {'cut':None, 'split':default_split}
-_xresnet_meta    = {'cut':-4, 'split':_xresnet_split }
-_resnet_meta     = {'cut':-2, 'split':_resnet_split }
-_squeezenet_meta = {'cut':-1, 'split': _squeezenet_split}
-_densenet_meta   = {'cut':-1, 'split':_densenet_split}
-_vgg_meta        = {'cut':-2, 'split':_vgg_split}
-_alexnet_meta    = {'cut':-2, 'split':_alexnet_split}
+_xresnet_meta    = {'cut':-4, 'split':_xresnet_split, 'stats':imagenet_stats}
+_resnet_meta     = {'cut':-2, 'split':_resnet_split, 'stats':imagenet_stats}
+_squeezenet_meta = {'cut':-1, 'split': _squeezenet_split, 'stats':imagenet_stats}
+_densenet_meta   = {'cut':-1, 'split':_densenet_split, 'stats':imagenet_stats}
+_vgg_meta        = {'cut':-2, 'split':_vgg_split, 'stats':imagenet_stats}
+_alexnet_meta    = {'cut':-2, 'split':_alexnet_split, 'stats':imagenet_stats}
 
 # Cell
 model_meta = {
@@ -110,15 +149,25 @@ model_meta = {
     models.alexnet:{**_alexnet_meta}}
 
 # Cell
+def _add_norm(dls, meta, pretrained):
+    if not pretrained: return
+    after_batch = dls.after_batch
+    if first(o for o in after_batch.fs if isinstance(o,Normalize)): return
+    stats = meta.get('stats')
+    if stats is None: return
+    after_batch.add(Normalize.from_stats(*stats))
+
+# Cell
 @delegates(Learner.__init__)
 def cnn_learner(dls, arch, loss_func=None, pretrained=True, cut=None, splitter=None,
-                y_range=None, config=None, n_out=None, **kwargs):
+                y_range=None, config=None, n_in=3, n_out=None, normalize=True, **kwargs):
     "Build a convnet style learner"
     if config is None: config = {}
     meta = model_meta.get(arch, _default_meta)
     if n_out is None: n_out = get_c(dls)
     assert n_out, "`n_out` is not defined, and could not be infered from data, set `dls.c` or pass `n_out`"
-    model = create_cnn_model(arch, n_out, ifnone(cut, meta['cut']), pretrained, y_range=y_range, **config)
+    if normalize: _add_norm(dls, meta, pretrained)
+    model = create_cnn_model(arch, n_out, ifnone(cut, meta['cut']), pretrained, n_in=n_in, y_range=y_range, **config)
     learn = Learner(dls, model, loss_func=loss_func, splitter=ifnone(splitter, meta['split']), **kwargs)
     if pretrained: learn.freeze()
     return learn
@@ -131,14 +180,16 @@ def unet_config(**kwargs):
 
 # Cell
 @delegates(Learner.__init__)
-def unet_learner(dls, arch, loss_func=None, pretrained=True, cut=None, splitter=None, config=None, n_out=None, **kwargs):
+def unet_learner(dls, arch, loss_func=None, pretrained=True, cut=None, splitter=None, config=None, n_in=3, n_out=None,
+                 normalize=True, **kwargs):
     "Build a unet learner from `dls` and `arch`"
     if config is None: config = unet_config()
     meta = model_meta.get(arch, _default_meta)
-    body = create_body(arch, pretrained, ifnone(cut, meta['cut']))
+    body = create_body(arch, n_in, pretrained, ifnone(cut, meta['cut']))
     size = dls.one_batch()[0].shape[-2:]
     if n_out is None: n_out = get_c(dls)
     assert n_out, "`n_out` is not defined, and could not be infered from data, set `dls.c` or pass `n_out`"
+    if normalize: _add_norm(dls, meta, pretrained)
     model = models.unet.DynamicUnet(body, n_out, size, **config)
     learn = Learner(dls, model, loss_func=loss_func, splitter=ifnone(splitter, meta['split']), **kwargs)
     if pretrained: learn.freeze()

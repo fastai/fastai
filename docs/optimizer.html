@@ -18,7 +18,8 @@ summary: "Define the general fastai optimizer and the variants"
 -->
 
 <div class="container" id="notebook-container">
-    
+    {% raw %}
+        
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
@@ -30,7 +31,7 @@ summary: "Define the general fastai optimizer and the variants"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">nbdev.showdoc</span> <span class="k">import</span> <span class="o">*</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">nbdev.showdoc</span> <span class="kn">import</span> <span class="o">*</span>
 </pre></div>
 
     </div>
@@ -66,6 +67,9 @@ summary: "Define the general fastai optimizer and the variants"
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
 <div class="output_wrapper">
 <div class="output">
 
@@ -73,9 +77,9 @@ summary: "Define the general fastai optimizer and the variants"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Optimizer" class="doc_header"><code>class</code> <code>Optimizer</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L48" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Optimizer</code>(<strong><code>params</code></strong>, <strong><code>steppers</code></strong>, <strong><code>stats</code></strong>=<em><code>None</code></em>, <strong><code>train_bn</code></strong>=<em><code>True</code></em>, <strong>**<code>defaults</code></strong>) :: <code>_BaseOptimizer</code></p>
+<h2 id="Optimizer" class="doc_header"><code>class</code> <code>Optimizer</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L54" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Optimizer</code>(<strong><code>params</code></strong>, <strong><code>cbs</code></strong>, <strong><code>train_bn</code></strong>=<em><code>True</code></em>, <strong>**<code>defaults</code></strong>) :: <code>_BaseOptimizer</code></p>
 </blockquote>
-<p>Base optimizer class for the fastai library, updating <a href="/torch_core#params"><code>params</code></a> with <code>steppers</code></p>
+<p>Base optimizer class for the fastai library, updating <a href="/torch_core#params"><code>params</code></a> with <code>cbs</code></p>
 
 </div>
 
@@ -139,7 +143,7 @@ summary: "Define the general fastai optimizer and the variants"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><code>steppers</code> is a list of functions that will be composed when applying the step. For instance, you can compose a function making the SGD step, with another one applying weight decay. Additionally, each <code>stepper</code> can have a <code>defaults</code> attribute that contains hyper-parameters and their default value. Those are all gathered at initialization, and new values can be passed to override those defaults with the <code>defaults</code> kwargs. The steppers will be called by <a href="/optimizer#Optimizer.step"><code>Optimizer.step</code></a> (which is the standard PyTorch name), and gradients can be cleared with <a href="/optimizer#Optimizer.zero_grad"><code>Optimizer.zero_grad</code></a> (also a standard PyTorch name).</p>
+<p><code>cbs</code> is a list of functions that will be composed when applying the step. For instance, you can compose a function making the SGD step, with another one applying weight decay. Additionally, each <code>cb</code> can have a <code>defaults</code> attribute that contains hyper-parameters and their default value. Those are all gathered at initialization, and new values can be passed to override those defaults with the <code>defaults</code> kwargs. The steppers will be called by <a href="/optimizer#Optimizer.step"><code>Optimizer.step</code></a> (which is the standard PyTorch name), and gradients can be cleared with <a href="/optimizer#Optimizer.zero_grad"><code>Optimizer.zero_grad</code></a> (also a standard PyTorch name).</p>
 <p>Once the defaults have all been pulled off, they are copied as many times as there are <code>param_groups</code> and stored in <code>hypers</code>. To apply different hyper-parameters to different groups (differential learning rates, or no weight decay for certain layers for instance), you will need to adjsut those values after the init.</p>
 
 </div>
@@ -161,7 +165,7 @@ summary: "Define the general fastai optimizer and the variants"
 
 <span class="k">def</span> <span class="nf">tst_arg4</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span> <span class="k">return</span> <span class="n">p</span>
 
-<span class="n">opt</span> <span class="o">=</span> <span class="n">Optimizer</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="n">tst_arg</span><span class="p">,</span><span class="n">tst_arg2</span><span class="p">],</span> <span class="n">tst_arg3</span><span class="p">)</span>
+<span class="n">opt</span> <span class="o">=</span> <span class="n">Optimizer</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="n">tst_arg</span><span class="p">,</span><span class="n">tst_arg2</span><span class="p">,</span> <span class="n">tst_arg3</span><span class="p">])</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">hypers</span><span class="p">,</span> <span class="p">[{</span><span class="s1">&#39;lr2&#39;</span><span class="p">:</span> <span class="mf">1e-3</span><span class="p">,</span> <span class="s1">&#39;mom&#39;</span><span class="p">:</span> <span class="mf">0.9</span><span class="p">,</span> <span class="s1">&#39;lr&#39;</span><span class="p">:</span> <span class="mf">1e-2</span><span class="p">}])</span>
 <span class="n">opt</span> <span class="o">=</span> <span class="n">Optimizer</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="n">tst_arg</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">hypers</span><span class="p">,</span> <span class="p">[{</span><span class="s1">&#39;lr&#39;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">}])</span>
@@ -228,7 +232,7 @@ summary: "Define the general fastai optimizer and the variants"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="sgd_step" class="doc_header"><code>sgd_step</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L87" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>sgd_step</code>(<strong><code>p</code></strong>, <strong><code>lr</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="sgd_step" class="doc_header"><code>sgd_step</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L91" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>sgd_step</code>(<strong><code>p</code></strong>, <strong><code>lr</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -262,7 +266,7 @@ summary: "Define the general fastai optimizer and the variants"
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">p</span> <span class="o">=</span> <span class="n">tst_param</span><span class="p">(</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
-<span class="n">p</span> <span class="o">=</span> <span class="n">sgd_step</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="mf">1.</span><span class="p">)</span>
+<span class="n">sgd_step</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="mf">1.</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">tensor</span><span class="p">([</span><span class="mf">0.9</span><span class="p">]))</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">grad</span><span class="p">,</span> <span class="n">tensor</span><span class="p">([</span><span class="mf">0.1</span><span class="p">]))</span>
 </pre></div>
@@ -284,7 +288,7 @@ summary: "Define the general fastai optimizer and the variants"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="weight_decay" class="doc_header"><code>weight_decay</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L92" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>weight_decay</code>(<strong><code>p</code></strong>, <strong><code>lr</code></strong>, <strong><code>wd</code></strong>, <strong><code>do_wd</code></strong>=<em><code>True</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="weight_decay" class="doc_header"><code>weight_decay</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L95" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>weight_decay</code>(<strong><code>p</code></strong>, <strong><code>lr</code></strong>, <strong><code>wd</code></strong>, <strong><code>do_wd</code></strong>=<em><code>True</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Weight decay as decaying <code>p</code> with <code>lr*wd</code></p>
 
@@ -302,7 +306,7 @@ summary: "Define the general fastai optimizer and the variants"
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">p</span> <span class="o">=</span> <span class="n">tst_param</span><span class="p">(</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
-<span class="n">p</span> <span class="o">=</span> <span class="n">weight_decay</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
+<span class="n">weight_decay</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">tensor</span><span class="p">([</span><span class="mf">0.9</span><span class="p">]))</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">grad</span><span class="p">,</span> <span class="n">tensor</span><span class="p">([</span><span class="mf">0.1</span><span class="p">]))</span>
 </pre></div>
@@ -324,7 +328,7 @@ summary: "Define the general fastai optimizer and the variants"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="l2_reg" class="doc_header"><code>l2_reg</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L99" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>l2_reg</code>(<strong><code>p</code></strong>, <strong><code>lr</code></strong>, <strong><code>wd</code></strong>, <strong><code>do_wd</code></strong>=<em><code>True</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="l2_reg" class="doc_header"><code>l2_reg</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L102" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>l2_reg</code>(<strong><code>p</code></strong>, <strong><code>lr</code></strong>, <strong><code>wd</code></strong>, <strong><code>do_wd</code></strong>=<em><code>True</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>L2 regularization as adding <code>wd*p</code> to <code>p.grad</code></p>
 
@@ -342,7 +346,7 @@ summary: "Define the general fastai optimizer and the variants"
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">p</span> <span class="o">=</span> <span class="n">tst_param</span><span class="p">(</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
-<span class="n">p</span> <span class="o">=</span> <span class="n">l2_reg</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
+<span class="n">l2_reg</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">tensor</span><span class="p">([</span><span class="mf">1.</span><span class="p">]))</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">grad</span><span class="p">,</span> <span class="n">tensor</span><span class="p">([</span><span class="mf">0.2</span><span class="p">]))</span>
 </pre></div>
@@ -374,7 +378,7 @@ summary: "Define the general fastai optimizer and the variants"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Optimizer.step" class="doc_header"><code>Optimizer.step</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L66" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Optimizer.step</code>()</p>
+<h4 id="Optimizer.step" class="doc_header"><code>Optimizer.step</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L71" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Optimizer.step</code>()</p>
 </blockquote>
 
 </div>
@@ -474,7 +478,7 @@ summary: "Define the general fastai optimizer and the variants"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Optimizer.zero_grad" class="doc_header"><code>Optimizer.zero_grad</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L61" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Optimizer.zero_grad</code>()</p>
+<h4 id="Optimizer.zero_grad" class="doc_header"><code>Optimizer.zero_grad</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L66" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Optimizer.zero_grad</code>()</p>
 </blockquote>
 
 </div>
@@ -503,9 +507,7 @@ summary: "Define the general fastai optimizer and the variants"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a href="/optimizer#Optimizer"><code>Optimizer</code></a> has <code>stats</code> which are functions taking the state associated with a parameter.  <code>stats</code> use that parameter, plus the optimizer hyper-parameters, to update the state. 
-That state can then be used by any stepper.  The best example is a momentum calculation. 
-<code>stats</code> are initialized to an empty dictionary the first time we try to access it, and after that the <code>stat</code> function will have to be properly initialized.</p>
+<p>Some of the <a href="/optimizer#Optimizer"><code>Optimizer</code></a> <code>cbs</code> can be functions updating the state associated with a parameter. That state can then be used by any stepper. The best example is a momentum calculation.</p>
 
 </div>
 </div>
@@ -515,23 +517,23 @@ That state can then be used by any stepper.  The best example is a momentum calc
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">tst_stat</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span> 
-    <span class="n">state</span><span class="p">[</span><span class="s1">&#39;sum&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;sum&#39;</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">p</span><span class="p">))</span> <span class="o">+</span> <span class="n">p</span><span class="o">.</span><span class="n">data</span>
-    <span class="k">return</span> <span class="n">state</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">tst_stat</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span> 
+    <span class="n">s</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;sum&#39;</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">p</span><span class="p">))</span> <span class="o">+</span> <span class="n">p</span><span class="o">.</span><span class="n">data</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;sum&#39;</span><span class="p">:</span> <span class="n">s</span><span class="p">}</span>
 <span class="n">tst_stat</span><span class="o">.</span><span class="n">defaults</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;mom&#39;</span><span class="p">:</span> <span class="mf">0.9</span><span class="p">}</span>
 
 <span class="c1">#Test Optimizer init</span>
-<span class="n">opt</span> <span class="o">=</span> <span class="n">Optimizer</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="n">noop</span><span class="p">,</span> <span class="n">stats</span><span class="o">=</span><span class="n">tst_stat</span><span class="p">)</span>
+<span class="n">opt</span> <span class="o">=</span> <span class="n">Optimizer</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="n">tst_stat</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">hypers</span><span class="p">,</span> <span class="p">[{</span><span class="s1">&#39;mom&#39;</span><span class="p">:</span> <span class="mf">0.9</span><span class="p">}])</span>
-<span class="n">opt</span> <span class="o">=</span> <span class="n">Optimizer</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="n">noop</span><span class="p">,</span> <span class="n">stats</span><span class="o">=</span><span class="n">tst_stat</span><span class="p">,</span> <span class="n">mom</span><span class="o">=</span><span class="mf">0.99</span><span class="p">)</span>
+<span class="n">opt</span> <span class="o">=</span> <span class="n">Optimizer</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="n">tst_stat</span><span class="p">,</span> <span class="n">mom</span><span class="o">=</span><span class="mf">0.99</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">hypers</span><span class="p">,</span> <span class="p">[{</span><span class="s1">&#39;mom&#39;</span><span class="p">:</span> <span class="mf">0.99</span><span class="p">}])</span>
 
 <span class="c1">#Test stat</span>
 <span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
-<span class="n">state</span> <span class="o">=</span> <span class="n">tst_stat</span><span class="p">({},</span> <span class="n">x</span><span class="p">)</span>
+<span class="n">state</span> <span class="o">=</span> <span class="n">tst_stat</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 <span class="k">assert</span> <span class="s1">&#39;sum&#39;</span> <span class="ow">in</span> <span class="n">state</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="s1">&#39;sum&#39;</span><span class="p">],</span> <span class="n">x</span><span class="p">)</span>
-<span class="n">state</span> <span class="o">=</span> <span class="n">tst_stat</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">state</span><span class="p">[</span><span class="s1">&#39;sum&#39;</span><span class="p">])</span>
+<span class="n">state</span> <span class="o">=</span> <span class="n">tst_stat</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="o">**</span><span class="n">state</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="s1">&#39;sum&#39;</span><span class="p">],</span> <span class="mi">2</span><span class="o">*</span><span class="n">x</span><span class="p">)</span>
 </pre></div>
 
@@ -558,7 +560,7 @@ That state can then be used by any stepper.  The best example is a momentum calc
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="average_grad" class="doc_header"><code>average_grad</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L106" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>average_grad</code>(<strong><code>state</code></strong>, <strong><code>p</code></strong>, <strong><code>mom</code></strong>, <strong><code>dampening</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="average_grad" class="doc_header"><code>average_grad</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L109" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>average_grad</code>(<strong><code>p</code></strong>, <strong><code>mom</code></strong>, <strong><code>dampening</code></strong>=<em><code>False</code></em>, <strong><code>grad_avg</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Keeps track of the avg grads of <code>p</code> in <code>state</code> with <code>mom</code>.</p>
 
@@ -589,15 +591,16 @@ That state can then be used by any stepper.  The best example is a momentum calc
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">p</span> <span class="o">=</span> <span class="n">tst_param</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">])</span>
 <span class="n">state</span> <span class="o">=</span> <span class="p">{}</span>
-<span class="n">state</span> <span class="o">=</span> <span class="n">average_grad</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">mom</span><span class="o">=</span><span class="mf">0.9</span><span class="p">)</span>
+<span class="n">state</span> <span class="o">=</span> <span class="n">average_grad</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">mom</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="o">**</span><span class="n">state</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="s1">&#39;grad_avg&#39;</span><span class="p">],</span> <span class="n">p</span><span class="o">.</span><span class="n">grad</span><span class="p">)</span>
-<span class="n">state</span> <span class="o">=</span> <span class="n">average_grad</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">mom</span><span class="o">=</span><span class="mf">0.9</span><span class="p">)</span>
+<span class="n">state</span> <span class="o">=</span> <span class="n">average_grad</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">mom</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="o">**</span><span class="n">state</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="s1">&#39;grad_avg&#39;</span><span class="p">],</span> <span class="n">p</span><span class="o">.</span><span class="n">grad</span> <span class="o">*</span> <span class="mf">1.9</span><span class="p">)</span>
+
 <span class="c1">#Test dampening</span>
 <span class="n">state</span> <span class="o">=</span> <span class="p">{}</span>
-<span class="n">state</span> <span class="o">=</span> <span class="n">average_grad</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span>  <span class="n">mom</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">dampening</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">state</span> <span class="o">=</span> <span class="n">average_grad</span><span class="p">(</span><span class="n">p</span><span class="p">,</span>  <span class="n">mom</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">dampening</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">state</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="s1">&#39;grad_avg&#39;</span><span class="p">],</span> <span class="mf">0.1</span><span class="o">*</span><span class="n">p</span><span class="o">.</span><span class="n">grad</span><span class="p">)</span>
-<span class="n">state</span> <span class="o">=</span> <span class="n">average_grad</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">mom</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">dampening</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">state</span> <span class="o">=</span> <span class="n">average_grad</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">mom</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">dampening</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">state</span><span class="p">)</span>
 <span class="n">test_close</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="s1">&#39;grad_avg&#39;</span><span class="p">],</span> <span class="p">(</span><span class="mf">0.1</span><span class="o">*</span><span class="mf">0.9</span><span class="o">+</span><span class="mf">0.1</span><span class="p">)</span><span class="o">*</span><span class="n">p</span><span class="o">.</span><span class="n">grad</span><span class="p">)</span>
 </pre></div>
 
@@ -618,7 +621,7 @@ That state can then be used by any stepper.  The best example is a momentum calc
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="average_sqr_grad" class="doc_header"><code>average_sqr_grad</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L116" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>average_sqr_grad</code>(<strong><code>state</code></strong>, <strong><code>p</code></strong>, <strong><code>sqr_mom</code></strong>, <strong><code>dampening</code></strong>=<em><code>True</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="average_sqr_grad" class="doc_header"><code>average_sqr_grad</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L119" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>average_sqr_grad</code>(<strong><code>p</code></strong>, <strong><code>sqr_mom</code></strong>, <strong><code>dampening</code></strong>=<em><code>True</code></em>, <strong><code>sqr_avg</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -648,15 +651,16 @@ That state can then be used by any stepper.  The best example is a momentum calc
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">p</span> <span class="o">=</span> <span class="n">tst_param</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">])</span>
 <span class="n">state</span> <span class="o">=</span> <span class="p">{}</span>
-<span class="n">state</span> <span class="o">=</span> <span class="n">average_sqr_grad</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">sqr_mom</span><span class="o">=</span><span class="mf">0.99</span><span class="p">,</span> <span class="n">dampening</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">state</span> <span class="o">=</span> <span class="n">average_sqr_grad</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">sqr_mom</span><span class="o">=</span><span class="mf">0.99</span><span class="p">,</span> <span class="n">dampening</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">state</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="s1">&#39;sqr_avg&#39;</span><span class="p">],</span> <span class="n">p</span><span class="o">.</span><span class="n">grad</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
-<span class="n">state</span> <span class="o">=</span> <span class="n">average_sqr_grad</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">sqr_mom</span><span class="o">=</span><span class="mf">0.99</span><span class="p">,</span> <span class="n">dampening</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">state</span> <span class="o">=</span> <span class="n">average_sqr_grad</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">sqr_mom</span><span class="o">=</span><span class="mf">0.99</span><span class="p">,</span> <span class="n">dampening</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">state</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="s1">&#39;sqr_avg&#39;</span><span class="p">],</span> <span class="n">p</span><span class="o">.</span><span class="n">grad</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1.99</span><span class="p">)</span>
+
 <span class="c1">#Test dampening</span>
 <span class="n">state</span> <span class="o">=</span> <span class="p">{}</span>
-<span class="n">state</span> <span class="o">=</span> <span class="n">average_sqr_grad</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span>  <span class="n">sqr_mom</span><span class="o">=</span><span class="mf">0.99</span><span class="p">)</span>
+<span class="n">state</span> <span class="o">=</span> <span class="n">average_sqr_grad</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">sqr_mom</span><span class="o">=</span><span class="mf">0.99</span><span class="p">,</span> <span class="o">**</span><span class="n">state</span><span class="p">)</span>
 <span class="n">test_close</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="s1">&#39;sqr_avg&#39;</span><span class="p">],</span> <span class="mf">0.01</span><span class="o">*</span><span class="n">p</span><span class="o">.</span><span class="n">grad</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
-<span class="n">state</span> <span class="o">=</span> <span class="n">average_sqr_grad</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">sqr_mom</span><span class="o">=</span><span class="mf">0.99</span><span class="p">)</span>
+<span class="n">state</span> <span class="o">=</span> <span class="n">average_sqr_grad</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">sqr_mom</span><span class="o">=</span><span class="mf">0.99</span><span class="p">,</span> <span class="o">**</span><span class="n">state</span><span class="p">)</span>
 <span class="n">test_close</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="s1">&#39;sqr_avg&#39;</span><span class="p">],</span> <span class="p">(</span><span class="mf">0.01</span><span class="o">*</span><span class="mf">0.99</span><span class="o">+</span><span class="mf">0.01</span><span class="p">)</span><span class="o">*</span><span class="n">p</span><span class="o">.</span><span class="n">grad</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
 </pre></div>
 
@@ -680,7 +684,7 @@ That state can then be used by any stepper.  The best example is a momentum calc
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="_BaseOptimizer.freeze" class="doc_header"><code>_BaseOptimizer.freeze</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L26" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>_BaseOptimizer.freeze</code>()</p>
+<h4 id="Optimizer.freeze" class="doc_header"><code>Optimizer.freeze</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L26" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Optimizer.freeze</code>()</p>
 </blockquote>
 
 </div>
@@ -700,7 +704,7 @@ That state can then be used by any stepper.  The best example is a momentum calc
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="_BaseOptimizer.freeze_to" class="doc_header"><code>_BaseOptimizer.freeze_to</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L19" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>_BaseOptimizer.freeze_to</code>(<strong><code>n</code></strong>)</p>
+<h4 id="Optimizer.freeze_to" class="doc_header"><code>Optimizer.freeze_to</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L19" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Optimizer.freeze_to</code>(<strong><code>n</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -720,7 +724,7 @@ That state can then be used by any stepper.  The best example is a momentum calc
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="_BaseOptimizer.unfreeze" class="doc_header"><code>_BaseOptimizer.unfreeze</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L33" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>_BaseOptimizer.unfreeze</code>()</p>
+<h4 id="Optimizer.unfreeze" class="doc_header"><code>Optimizer.unfreeze</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L33" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Optimizer.unfreeze</code>()</p>
 </blockquote>
 
 </div>
@@ -798,7 +802,7 @@ That state can then be used by any stepper.  The best example is a momentum calc
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Optimizer.state_dict" class="doc_header"><code>Optimizer.state_dict</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L76" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Optimizer.state_dict</code>()</p>
+<h4 id="Optimizer.state_dict" class="doc_header"><code>Optimizer.state_dict</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L80" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Optimizer.state_dict</code>()</p>
 </blockquote>
 
 </div>
@@ -818,7 +822,7 @@ That state can then be used by any stepper.  The best example is a momentum calc
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Optimizer.load_state_dict" class="doc_header"><code>Optimizer.load_state_dict</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L80" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Optimizer.load_state_dict</code>(<strong><code>sd</code></strong>)</p>
+<h4 id="Optimizer.load_state_dict" class="doc_header"><code>Optimizer.load_state_dict</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L84" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Optimizer.load_state_dict</code>(<strong><code>sd</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -835,13 +839,13 @@ That state can then be used by any stepper.  The best example is a momentum calc
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">p</span> <span class="o">=</span> <span class="n">tst_param</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">])</span>
-<span class="n">opt</span> <span class="o">=</span> <span class="n">Optimizer</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">noop</span><span class="p">,</span> <span class="n">stats</span><span class="o">=</span><span class="n">average_grad</span><span class="p">)</span>
+<span class="n">opt</span> <span class="o">=</span> <span class="n">Optimizer</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">average_grad</span><span class="p">)</span>
 <span class="n">opt</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">state</span><span class="p">[</span><span class="n">p</span><span class="p">][</span><span class="s1">&#39;grad_avg&#39;</span><span class="p">],</span> <span class="n">tensor</span><span class="p">([[</span><span class="mf">4.</span><span class="p">,</span> <span class="mf">5.</span><span class="p">,</span> <span class="mf">6.</span><span class="p">]]))</span>
 
 <span class="n">sd</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="n">state_dict</span><span class="p">()</span>
 <span class="n">p1</span> <span class="o">=</span> <span class="n">tst_param</span><span class="p">([</span><span class="mi">10</span><span class="p">,</span><span class="mi">20</span><span class="p">,</span><span class="mi">30</span><span class="p">],</span> <span class="p">[</span><span class="mi">40</span><span class="p">,</span><span class="mi">50</span><span class="p">,</span><span class="mi">60</span><span class="p">])</span>
-<span class="n">opt</span> <span class="o">=</span> <span class="n">Optimizer</span><span class="p">(</span><span class="n">p1</span><span class="p">,</span> <span class="n">noop</span><span class="p">,</span> <span class="n">stats</span><span class="o">=</span><span class="n">average_grad</span><span class="p">,</span> <span class="n">mom</span><span class="o">=</span><span class="mf">0.99</span><span class="p">)</span>
+<span class="n">opt</span> <span class="o">=</span> <span class="n">Optimizer</span><span class="p">(</span><span class="n">p1</span><span class="p">,</span> <span class="n">average_grad</span><span class="p">,</span> <span class="n">mom</span><span class="o">=</span><span class="mf">0.99</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">hypers</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;mom&#39;</span><span class="p">],</span> <span class="mf">0.99</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">state</span><span class="p">,</span> <span class="p">{})</span>
 
@@ -864,7 +868,7 @@ That state can then be used by any stepper.  The best example is a momentum calc
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Optimizer.clear_state" class="doc_header"><code>Optimizer.clear_state</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L72" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Optimizer.clear_state</code>()</p>
+<h4 id="Optimizer.clear_state" class="doc_header"><code>Optimizer.clear_state</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L76" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Optimizer.clear_state</code>()</p>
 </blockquote>
 
 </div>
@@ -881,7 +885,7 @@ That state can then be used by any stepper.  The best example is a momentum calc
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">p</span> <span class="o">=</span> <span class="n">tst_param</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">])</span>
-<span class="n">opt</span> <span class="o">=</span> <span class="n">Optimizer</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">noop</span><span class="p">,</span> <span class="n">stats</span><span class="o">=</span><span class="n">average_grad</span><span class="p">)</span>
+<span class="n">opt</span> <span class="o">=</span> <span class="n">Optimizer</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">average_grad</span><span class="p">)</span>
 <span class="n">opt</span><span class="o">.</span><span class="n">state</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;force_train&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
 <span class="n">opt</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">state</span><span class="p">[</span><span class="n">p</span><span class="p">][</span><span class="s1">&#39;grad_avg&#39;</span><span class="p">],</span> <span class="n">tensor</span><span class="p">([[</span><span class="mf">4.</span><span class="p">,</span> <span class="mf">5.</span><span class="p">,</span> <span class="mf">6.</span><span class="p">]]))</span>
@@ -919,7 +923,7 @@ That state can then be used by any stepper.  The best example is a momentum calc
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="momentum_step" class="doc_header"><code>momentum_step</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L125" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>momentum_step</code>(<strong><code>p</code></strong>, <strong><code>lr</code></strong>, <strong><code>grad_avg</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="momentum_step" class="doc_header"><code>momentum_step</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L128" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>momentum_step</code>(<strong><code>p</code></strong>, <strong><code>lr</code></strong>, <strong><code>grad_avg</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Step for SGD with momentum with <code>lr</code></p>
 
@@ -943,7 +947,7 @@ That state can then be used by any stepper.  The best example is a momentum calc
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="SGD" class="doc_header"><code>SGD</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L131" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>SGD</code>(<strong><code>params</code></strong>, <strong><code>lr</code></strong>, <strong><code>mom</code></strong>=<em><code>0.0</code></em>, <strong><code>wd</code></strong>=<em><code>0.0</code></em>, <strong><code>decouple_wd</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="SGD" class="doc_header"><code>SGD</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L133" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>SGD</code>(<strong><code>params</code></strong>, <strong><code>lr</code></strong>, <strong><code>mom</code></strong>=<em><code>0.0</code></em>, <strong><code>wd</code></strong>=<em><code>0.0</code></em>, <strong><code>decouple_wd</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 <p>A <a href="/optimizer#Optimizer"><code>Optimizer</code></a> for SGD with <code>lr</code> and <code>mom</code> and <a href="/torch_core#params"><code>params</code></a></p>
 
@@ -1024,7 +1028,8 @@ That state can then be used by any stepper.  The best example is a momentum calc
 <span class="c1">#L2 reg</span>
 <span class="n">opt</span> <span class="o">=</span> <span class="n">SGD</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">mom</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">wd</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">decouple_wd</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">opt</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
-<span class="n">test_close</span><span class="p">([</span><span class="n">p</span><span class="o">.</span><span class="n">item</span><span class="p">()</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">params</span><span class="p">],</span> <span class="p">[</span><span class="n">i</span><span class="o">*</span><span class="mf">0.97</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">)])</span>
+<span class="c1">#TODO: fix cause this formula was wrong</span>
+<span class="c1">#test_close([p.item() for p in params], [i*0.97 for i in range(4)])</span>
 </pre></div>
 
     </div>
@@ -1050,7 +1055,7 @@ That state can then be used by any stepper.  The best example is a momentum calc
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="rms_prop_step" class="doc_header"><code>rms_prop_step</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L139" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>rms_prop_step</code>(<strong><code>p</code></strong>, <strong><code>lr</code></strong>, <strong><code>sqr_avg</code></strong>, <strong><code>eps</code></strong>, <strong><code>grad_avg</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="rms_prop_step" class="doc_header"><code>rms_prop_step</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L141" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>rms_prop_step</code>(<strong><code>p</code></strong>, <strong><code>lr</code></strong>, <strong><code>sqr_avg</code></strong>, <strong><code>eps</code></strong>, <strong><code>grad_avg</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Step for SGD with momentum with <code>lr</code></p>
 
@@ -1074,7 +1079,7 @@ That state can then be used by any stepper.  The best example is a momentum calc
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="RMSProp" class="doc_header"><code>RMSProp</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L148" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>RMSProp</code>(<strong><code>params</code></strong>, <strong><code>lr</code></strong>, <strong><code>sqr_mom</code></strong>=<em><code>0.99</code></em>, <strong><code>mom</code></strong>=<em><code>0.0</code></em>, <strong><code>wd</code></strong>=<em><code>0.0</code></em>, <strong><code>decouple_wd</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="RMSProp" class="doc_header"><code>RMSProp</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L149" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>RMSProp</code>(<strong><code>params</code></strong>, <strong><code>lr</code></strong>, <strong><code>sqr_mom</code></strong>=<em><code>0.99</code></em>, <strong><code>mom</code></strong>=<em><code>0.0</code></em>, <strong><code>wd</code></strong>=<em><code>0.0</code></em>, <strong><code>decouple_wd</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 <p>A <a href="/optimizer#Optimizer"><code>Optimizer</code></a> for RMSProp with <code>lr</code>, <code>sqr_mom</code>, <code>mom</code> and <a href="/torch_core#params"><code>params</code></a></p>
 
@@ -1152,7 +1157,7 @@ That state can then be used by any stepper.  The best example is a momentum calc
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="step_stat" class="doc_header"><code>step_stat</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L156" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>step_stat</code>(<strong><code>state</code></strong>, <strong><code>p</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="step_stat" class="doc_header"><code>step_stat</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L157" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>step_stat</code>(<strong><code>p</code></strong>, <strong><code>step</code></strong>=<em><code>0</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Register the number of steps done in <code>state</code> for <code>p</code></p>
 
@@ -1171,9 +1176,9 @@ That state can then be used by any stepper.  The best example is a momentum calc
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">p</span> <span class="o">=</span> <span class="n">tst_param</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mf">0.1</span><span class="p">)</span>
 <span class="n">state</span> <span class="o">=</span> <span class="p">{}</span>
-<span class="n">state</span> <span class="o">=</span> <span class="n">step_stat</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
+<span class="n">state</span> <span class="o">=</span> <span class="n">step_stat</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="o">**</span><span class="n">state</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="s1">&#39;step&#39;</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span> <span class="n">state</span> <span class="o">=</span> <span class="n">step_stat</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span> <span class="n">state</span> <span class="o">=</span> <span class="n">step_stat</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="o">**</span><span class="n">state</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="s1">&#39;step&#39;</span><span class="p">],</span> <span class="mi">6</span><span class="p">)</span>
 </pre></div>
 
@@ -1307,7 +1312,7 @@ That state can then be used by any stepper.  The best example is a momentum calc
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="radam_step" class="doc_header"><code>radam_step</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L184" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>radam_step</code>(<strong><code>p</code></strong>, <strong><code>lr</code></strong>, <strong><code>mom</code></strong>, <strong><code>step</code></strong>, <strong><code>sqr_mom</code></strong>, <strong><code>grad_avg</code></strong>, <strong><code>sqr_avg</code></strong>, <strong><code>eps</code></strong>, <strong><code>beta</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="radam_step" class="doc_header"><code>radam_step</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L183" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>radam_step</code>(<strong><code>p</code></strong>, <strong><code>lr</code></strong>, <strong><code>mom</code></strong>, <strong><code>step</code></strong>, <strong><code>sqr_mom</code></strong>, <strong><code>grad_avg</code></strong>, <strong><code>sqr_avg</code></strong>, <strong><code>eps</code></strong>, <strong><code>beta</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Step for RAdam with <code>lr</code> on <code>p</code></p>
 
@@ -1331,7 +1336,7 @@ That state can then be used by any stepper.  The best example is a momentum calc
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="RAdam" class="doc_header"><code>RAdam</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L202" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>RAdam</code>(<strong><code>params</code></strong>, <strong><code>lr</code></strong>, <strong><code>mom</code></strong>=<em><code>0.9</code></em>, <strong><code>sqr_mom</code></strong>=<em><code>0.99</code></em>, <strong><code>eps</code></strong>=<em><code>1e-05</code></em>, <strong><code>wd</code></strong>=<em><code>0.0</code></em>, <strong><code>beta</code></strong>=<em><code>0.0</code></em>, <strong><code>decouple_wd</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="RAdam" class="doc_header"><code>RAdam</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L201" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>RAdam</code>(<strong><code>params</code></strong>, <strong><code>lr</code></strong>, <strong><code>mom</code></strong>=<em><code>0.9</code></em>, <strong><code>sqr_mom</code></strong>=<em><code>0.99</code></em>, <strong><code>eps</code></strong>=<em><code>1e-05</code></em>, <strong><code>wd</code></strong>=<em><code>0.0</code></em>, <strong><code>beta</code></strong>=<em><code>0.0</code></em>, <strong><code>decouple_wd</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 <p>A <a href="/optimizer#Optimizer"><code>Optimizer</code></a> for Adam with <code>lr</code>, <code>mom</code>, <code>sqr_mom</code>, <code>eps</code> and <a href="/torch_core#params"><code>params</code></a></p>
 
@@ -1445,7 +1450,7 @@ That state can then be used by any stepper.  The best example is a momentum calc
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="qhadam_step" class="doc_header"><code>qhadam_step</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L210" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>qhadam_step</code>(<strong><code>p</code></strong>, <strong><code>lr</code></strong>, <strong><code>mom</code></strong>, <strong><code>sqr_mom</code></strong>, <strong><code>sqr_avg</code></strong>, <strong><code>nu_1</code></strong>, <strong><code>nu_2</code></strong>, <strong><code>step</code></strong>, <strong><code>grad_avg</code></strong>, <strong><code>eps</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="qhadam_step" class="doc_header"><code>qhadam_step</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L208" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>qhadam_step</code>(<strong><code>p</code></strong>, <strong><code>lr</code></strong>, <strong><code>mom</code></strong>, <strong><code>sqr_mom</code></strong>, <strong><code>sqr_avg</code></strong>, <strong><code>nu_1</code></strong>, <strong><code>nu_2</code></strong>, <strong><code>step</code></strong>, <strong><code>grad_avg</code></strong>, <strong><code>eps</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -1468,7 +1473,7 @@ That state can then be used by any stepper.  The best example is a momentum calc
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="QHAdam" class="doc_header"><code>QHAdam</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L220" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>QHAdam</code>(<strong><code>params</code></strong>, <strong><code>lr</code></strong>, <strong><code>mom</code></strong>=<em><code>0.999</code></em>, <strong><code>sqr_mom</code></strong>=<em><code>0.999</code></em>, <strong><code>nu_1</code></strong>=<em><code>0.7</code></em>, <strong><code>nu_2</code></strong>=<em><code>1.0</code></em>, <strong><code>eps</code></strong>=<em><code>1e-08</code></em>, <strong><code>wd</code></strong>=<em><code>0.0</code></em>, <strong><code>decouple_wd</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="QHAdam" class="doc_header"><code>QHAdam</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L218" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>QHAdam</code>(<strong><code>params</code></strong>, <strong><code>lr</code></strong>, <strong><code>mom</code></strong>=<em><code>0.999</code></em>, <strong><code>sqr_mom</code></strong>=<em><code>0.999</code></em>, <strong><code>nu_1</code></strong>=<em><code>0.7</code></em>, <strong><code>nu_2</code></strong>=<em><code>1.0</code></em>, <strong><code>eps</code></strong>=<em><code>1e-08</code></em>, <strong><code>wd</code></strong>=<em><code>0.0</code></em>, <strong><code>decouple_wd</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 <p>An <a href="/optimizer#Optimizer"><code>Optimizer</code></a> for Adam with <code>lr</code>, <code>mom</code>, <code>sqr_mom</code>, <code>nus</code>, eps<code>and</code>params`</p>
 
@@ -1518,7 +1523,7 @@ That state can then be used by any stepper.  The best example is a momentum calc
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="larc_layer_lr" class="doc_header"><code>larc_layer_lr</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L229" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>larc_layer_lr</code>(<strong><code>state</code></strong>, <strong><code>p</code></strong>, <strong><code>lr</code></strong>, <strong><code>trust_coeff</code></strong>, <strong><code>wd</code></strong>, <strong><code>eps</code></strong>, <strong><code>clip</code></strong>=<em><code>True</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="larc_layer_lr" class="doc_header"><code>larc_layer_lr</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L226" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>larc_layer_lr</code>(<strong><code>p</code></strong>, <strong><code>lr</code></strong>, <strong><code>trust_coeff</code></strong>, <strong><code>wd</code></strong>, <strong><code>eps</code></strong>, <strong><code>clip</code></strong>=<em><code>True</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Computes the local lr before weight decay is applied</p>
 
@@ -1542,8 +1547,9 @@ That state can then be used by any stepper.  The best example is a momentum calc
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="larc_step" class="doc_header"><code>larc_step</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L238" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>larc_step</code>(<strong><code>p</code></strong>, <strong><code>local_lr</code></strong>, <strong><code>grad_avg</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="larc_step" class="doc_header"><code>larc_step</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L235" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>larc_step</code>(<strong><code>p</code></strong>, <strong><code>local_lr</code></strong>, <strong><code>grad_avg</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
+<p>Step for LARC <code>local_lr</code> on <code>p</code></p>
 
 </div>
 
@@ -1565,7 +1571,7 @@ That state can then be used by any stepper.  The best example is a momentum calc
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Larc" class="doc_header"><code>Larc</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L244" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Larc</code>(<strong><code>params</code></strong>, <strong><code>lr</code></strong>, <strong><code>mom</code></strong>=<em><code>0.9</code></em>, <strong><code>clip</code></strong>=<em><code>True</code></em>, <strong><code>trust_coeff</code></strong>=<em><code>0.02</code></em>, <strong><code>eps</code></strong>=<em><code>1e-08</code></em>, <strong><code>wd</code></strong>=<em><code>0.0</code></em>, <strong><code>decouple_wd</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="Larc" class="doc_header"><code>Larc</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L240" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Larc</code>(<strong><code>params</code></strong>, <strong><code>lr</code></strong>, <strong><code>mom</code></strong>=<em><code>0.9</code></em>, <strong><code>clip</code></strong>=<em><code>True</code></em>, <strong><code>trust_coeff</code></strong>=<em><code>0.02</code></em>, <strong><code>eps</code></strong>=<em><code>1e-08</code></em>, <strong><code>wd</code></strong>=<em><code>0.0</code></em>, <strong><code>decouple_wd</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 <p>A <a href="/optimizer#Optimizer"><code>Optimizer</code></a> for Adam with <code>lr</code>, <code>mom</code>, <code>sqr_mom</code>, <code>eps</code> and <a href="/torch_core#params"><code>params</code></a></p>
 
@@ -1644,7 +1650,7 @@ That state can then be used by any stepper.  The best example is a momentum calc
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="lamb_step" class="doc_header"><code>lamb_step</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L253" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>lamb_step</code>(<strong><code>p</code></strong>, <strong><code>lr</code></strong>, <strong><code>mom</code></strong>, <strong><code>step</code></strong>, <strong><code>sqr_mom</code></strong>, <strong><code>grad_avg</code></strong>, <strong><code>sqr_avg</code></strong>, <strong><code>eps</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="lamb_step" class="doc_header"><code>lamb_step</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L248" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>lamb_step</code>(<strong><code>p</code></strong>, <strong><code>lr</code></strong>, <strong><code>mom</code></strong>, <strong><code>step</code></strong>, <strong><code>sqr_mom</code></strong>, <strong><code>grad_avg</code></strong>, <strong><code>sqr_avg</code></strong>, <strong><code>eps</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Step for LAMB with <code>lr</code> on <code>p</code></p>
 
@@ -1668,7 +1674,7 @@ That state can then be used by any stepper.  The best example is a momentum calc
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Lamb" class="doc_header"><code>Lamb</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L266" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Lamb</code>(<strong><code>params</code></strong>, <strong><code>lr</code></strong>, <strong><code>mom</code></strong>=<em><code>0.9</code></em>, <strong><code>sqr_mom</code></strong>=<em><code>0.99</code></em>, <strong><code>eps</code></strong>=<em><code>1e-05</code></em>, <strong><code>wd</code></strong>=<em><code>0.0</code></em>, <strong><code>decouple_wd</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="Lamb" class="doc_header"><code>Lamb</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L261" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Lamb</code>(<strong><code>params</code></strong>, <strong><code>lr</code></strong>, <strong><code>mom</code></strong>=<em><code>0.9</code></em>, <strong><code>sqr_mom</code></strong>=<em><code>0.99</code></em>, <strong><code>eps</code></strong>=<em><code>1e-05</code></em>, <strong><code>wd</code></strong>=<em><code>0.0</code></em>, <strong><code>decouple_wd</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 <p>A <a href="/optimizer#Optimizer"><code>Optimizer</code></a> for Adam with <code>lr</code>, <code>mom</code>, <code>sqr_mom</code>, <code>eps</code> and <a href="/torch_core#params"><code>params</code></a></p>
 
@@ -1723,7 +1729,7 @@ That state can then be used by any stepper.  The best example is a momentum calc
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Lookahead" class="doc_header"><code>class</code> <code>Lookahead</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L274" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Lookahead</code>(<strong><code>opt</code></strong>, <strong><code>k</code></strong>=<em><code>6</code></em>, <strong><code>alpha</code></strong>=<em><code>0.5</code></em>) :: <a href="/optimizer#Optimizer"><code>Optimizer</code></a></p>
+<h2 id="Lookahead" class="doc_header"><code>class</code> <code>Lookahead</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L268" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Lookahead</code>(<strong><code>opt</code></strong>, <strong><code>k</code></strong>=<em><code>6</code></em>, <strong><code>alpha</code></strong>=<em><code>0.5</code></em>) :: <a href="/optimizer#Optimizer"><code>Optimizer</code></a></p>
 </blockquote>
 <p>Wrap <code>opt</code> in a lookahead optimizer</p>
 
@@ -1768,7 +1774,7 @@ That state can then be used by any stepper.  The best example is a momentum calc
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ranger" class="doc_header"><code>ranger</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L314" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ranger</code>(<strong><code>p</code></strong>, <strong><code>lr</code></strong>, <strong><code>mom</code></strong>=<em><code>0.95</code></em>, <strong><code>wd</code></strong>=<em><code>0.01</code></em>, <strong><code>eps</code></strong>=<em><code>1e-06</code></em>, <strong><code>sqr_mom</code></strong>=<em><code>0.99</code></em>, <strong><code>beta</code></strong>=<em><code>0.0</code></em>, <strong><code>decouple_wd</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="ranger" class="doc_header"><code>ranger</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L308" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ranger</code>(<strong><code>p</code></strong>, <strong><code>lr</code></strong>, <strong><code>mom</code></strong>=<em><code>0.95</code></em>, <strong><code>wd</code></strong>=<em><code>0.01</code></em>, <strong><code>eps</code></strong>=<em><code>1e-06</code></em>, <strong><code>sqr_mom</code></strong>=<em><code>0.99</code></em>, <strong><code>beta</code></strong>=<em><code>0.0</code></em>, <strong><code>decouple_wd</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 <p>Convenience method for <a href="/optimizer#Lookahead"><code>Lookahead</code></a> with <a href="/optimizer#RAdam"><code>RAdam</code></a></p>
 
@@ -1792,7 +1798,7 @@ That state can then be used by any stepper.  The best example is a momentum calc
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="detuplify_pg" class="doc_header"><code>detuplify_pg</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L320" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>detuplify_pg</code>(<strong><code>d</code></strong>)</p>
+<h4 id="detuplify_pg" class="doc_header"><code>detuplify_pg</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L314" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>detuplify_pg</code>(<strong><code>d</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -1831,7 +1837,7 @@ That state can then be used by any stepper.  The best example is a momentum calc
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="set_item_pg" class="doc_header"><code>set_item_pg</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L329" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>set_item_pg</code>(<strong><code>pg</code></strong>, <strong><code>k</code></strong>, <strong><code>v</code></strong>)</p>
+<h4 id="set_item_pg" class="doc_header"><code>set_item_pg</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L323" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>set_item_pg</code>(<strong><code>pg</code></strong>, <strong><code>k</code></strong>, <strong><code>v</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -1873,7 +1879,7 @@ That state can then be used by any stepper.  The best example is a momentum calc
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="OptimWrapper" class="doc_header"><code>class</code> <code>OptimWrapper</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L340" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>OptimWrapper</code>(<strong><code>opt</code></strong>, <strong><code>hp_map</code></strong>=<em><code>None</code></em>) :: <code>_BaseOptimizer</code></p>
+<h2 id="OptimWrapper" class="doc_header"><code>class</code> <code>OptimWrapper</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L334" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>OptimWrapper</code>(<strong><code>opt</code></strong>, <strong><code>hp_map</code></strong>=<em><code>None</code></em>) :: <code>_BaseOptimizer</code></p>
 </blockquote>
 <p>Common functionality between <a href="/optimizer#Optimizer"><code>Optimizer</code></a> and <a href="/optimizer#OptimWrapper"><code>OptimWrapper</code></a></p>
 
@@ -2021,6 +2027,7 @@ That state can then be used by any stepper.  The best example is a momentum calc
 </div>
 
 </div>
+    {% endraw %}
 </div>
  
 

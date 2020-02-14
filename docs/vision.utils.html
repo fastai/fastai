@@ -18,11 +18,54 @@ summary: "Some utils function to quickly download a bunch of images, check them 
 -->
 
 <div class="container" id="notebook-container">
-    
+    {% raw %}
+        
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
 <div class="cell border-box-sizing code_cell rendered">
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">path</span> <span class="o">=</span> <span class="n">untar_data</span><span class="p">(</span><span class="n">URLs</span><span class="o">.</span><span class="n">IMAGENETTE</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">path</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>Path(&#39;/home/jhoward/.fastai/data/imagenette2&#39;)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
 
 </div>
 <div class="cell border-box-sizing code_cell rendered">
@@ -77,10 +120,10 @@ summary: "Some utils function to quickly download a bunch of images, check them 
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">with</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">TemporaryDirectory</span><span class="p">()</span> <span class="k">as</span> <span class="n">d</span><span class="p">:</span>
     <span class="n">d</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
     <span class="n">url_file</span> <span class="o">=</span> <span class="n">d</span><span class="o">/</span><span class="s1">&#39;urls.txt&#39;</span>
-    <span class="n">url_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">f</span><span class="s2">&quot;https://www.fast.ai/images/</span><span class="si">{n}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="s2">&quot;jh-head thomas.JPG sg-head&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">()]))</span>
+    <span class="n">url_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s2">&quot;https://www.fast.ai/images/</span><span class="si">{n}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="s2">&quot;jh-head thomas.JPG sg-head&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">()]))</span>
     <span class="n">download_images</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">url_file</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">]:</span> <span class="k">assert</span> <span class="p">(</span><span class="n">d</span><span class="o">/</span><span class="n">f</span><span class="s1">&#39;0000000</span><span class="si">{i}</span><span class="s1">.jpg&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">is_file</span><span class="p">()</span>
-    <span class="k">assert</span> <span class="p">(</span><span class="n">d</span><span class="o">/</span><span class="n">f</span><span class="s1">&#39;00000001.JPG&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">is_file</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">]:</span> <span class="k">assert</span> <span class="p">(</span><span class="n">d</span><span class="o">/</span><span class="sa">f</span><span class="s1">&#39;0000000</span><span class="si">{i}</span><span class="s1">.jpg&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">is_file</span><span class="p">()</span>
+    <span class="k">assert</span> <span class="p">(</span><span class="n">d</span><span class="o">/</span><span class="sa">f</span><span class="s1">&#39;00000001.JPG&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">is_file</span><span class="p">()</span>
 </pre></div>
 
     </div>
@@ -133,7 +176,7 @@ summary: "Some utils function to quickly download a bunch of images, check them 
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">_FakeImg</span><span class="p">():</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="o">=</span><span class="n">size</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="o">=</span><span class="n">size</span>
 <span class="n">img</span> <span class="o">=</span> <span class="n">_FakeImg</span><span class="p">((</span><span class="mi">200</span><span class="p">,</span><span class="mi">500</span><span class="p">))</span>
 
 <span class="n">test_eq</span><span class="p">(</span><span class="n">resize_to</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="mi">400</span><span class="p">),</span> <span class="p">[</span><span class="mi">160</span><span class="p">,</span><span class="mi">400</span><span class="p">])</span>
@@ -193,6 +236,7 @@ summary: "Some utils function to quickly download a bunch of images, check them 
 </div>
 
 </div>
+    {% endraw %}
 </div>
  
 

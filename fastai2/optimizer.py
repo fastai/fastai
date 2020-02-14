@@ -45,15 +45,20 @@ class _BaseOptimizer():
         self._set_hyper(k, v)
 
 # Cell
+def _update(state, new=None):
+    if new is None: return state
+    if isinstance(new, dict): state.update(new)
+    return state
+
+# Cell
 class Optimizer(_BaseOptimizer):
-    "Base optimizer class for the fastai library, updating `params` with `steppers`"
+    "Base optimizer class for the fastai library, updating `params` with `cbs`"
     _keep_on_clear = ['force_train', 'do_wd']
-    def __init__(self, params, steppers, stats=None, train_bn=True, **defaults):
+    def __init__(self, params, cbs, train_bn=True, **defaults):
         params = L(params)
-        self.steppers,self.stats,self.state,self.train_bn = L(steppers),L(stats),defaultdict(dict),train_bn
-        defaults = merge(*self.stats.attrgot('defaults'), *self.steppers.attrgot('defaults'), defaults)
+        self.cbs,self.state,self.train_bn = L(cbs),defaultdict(dict),train_bn
+        defaults = merge(*self.cbs.attrgot('defaults'), defaults)
         self.param_groups = L(L(p) for p in params) if isinstance(params[0], (L,list)) else L([params])
-        #self.step_func = compose(*steppers)
         self.hypers = L({} for _ in range_of(self.param_groups))
         self.set_hypers(**defaults)
         self.frozen_idx = 0
@@ -65,8 +70,7 @@ class Optimizer(_BaseOptimizer):
 
     def step(self):
         for p,pg,state,hyper in self.all_params(with_grad=True):
-            for stat in self.stats:    state = stat(state, p, **hyper)
-            for step in self.steppers: step(p, **{**state, **hyper})
+            for cb in self.cbs: state = _update(state, cb(p, **{**state, **hyper}))
             self.state[p] = state
 
     def clear_state(self):
@@ -86,38 +90,37 @@ class Optimizer(_BaseOptimizer):
 # Cell
 def sgd_step(p, lr, **kwargs):
     p.data.add_(-lr, p.grad.data)
-    return p
 
 # Cell
 def weight_decay(p, lr, wd, do_wd=True, **kwargs):
     "Weight decay as decaying `p` with `lr*wd`"
     if do_wd and wd!=0: p.data.mul_(1 - lr*wd)
-    return p
+
 weight_decay.defaults = dict(wd=0.)
 
 # Cell
 def l2_reg(p, lr, wd, do_wd=True, **kwargs):
     "L2 regularization as adding `wd*p` to `p.grad`"
     if do_wd and wd!=0: p.grad.data.add_(wd, p.data)
-    return p
+
 l2_reg.defaults = dict(wd=0.)
 
 # Cell
-def average_grad(state, p, mom, dampening=False, **kwargs):
+def average_grad(p, mom, dampening=False, grad_avg=None, **kwargs):
     "Keeps track of the avg grads of `p` in `state` with `mom`."
-    if 'grad_avg' not in state: state['grad_avg'] = torch.zeros_like(p.grad.data)
+    if grad_avg is None: grad_avg = torch.zeros_like(p.grad.data)
     damp = 1-mom if dampening else 1.
-    state['grad_avg'].mul_(mom).add_(damp, p.grad.data)
-    return state
+    grad_avg.mul_(mom).add_(damp, p.grad.data)
+    return {'grad_avg': grad_avg}
 
 average_grad.defaults = dict(mom=0.9)
 
 # Cell
-def average_sqr_grad(state, p, sqr_mom, dampening=True, **kwargs):
-    if 'sqr_avg' not in state: state['sqr_avg'] = torch.zeros_like(p.grad.data)
+def average_sqr_grad(p, sqr_mom, dampening=True, sqr_avg=None, **kwargs):
+    if sqr_avg is None: sqr_avg = torch.zeros_like(p.grad.data)
     damp = 1-sqr_mom if dampening else 1.
-    state['sqr_avg'].mul_(sqr_mom).addcmul_(damp, p.grad.data, p.grad.data)
-    return state
+    sqr_avg.mul_(sqr_mom).addcmul_(damp, p.grad.data, p.grad.data)
+    return {'sqr_avg': sqr_avg}
 
 average_sqr_grad.defaults = dict(sqr_mom=0.99)
 
@@ -125,39 +128,36 @@ average_sqr_grad.defaults = dict(sqr_mom=0.99)
 def momentum_step(p, lr, grad_avg, **kwargs):
     "Step for SGD with momentum with `lr`"
     p.data.add_(-lr, grad_avg)
-    return p
 
 # Cell
 def SGD(params, lr, mom=0., wd=0., decouple_wd=True):
     "A `Optimizer` for SGD with `lr` and `mom` and `params`"
-    steppers = [weight_decay] if decouple_wd else [l2_reg]
-    steppers.append(sgd_step if mom==0 else momentum_step)
-    if mom == 0.: return Optimizer(params, steppers, lr=lr, wd=wd)
-    else: return Optimizer(params, steppers, stats=average_grad, lr=lr, mom=mom, wd=wd)
+    cbs = [weight_decay] if decouple_wd else [l2_reg]
+    if mom != 0: cbs.append(average_grad)
+    cbs.append(sgd_step if mom==0 else momentum_step)
+    return Optimizer(params, cbs, lr=lr, mom=mom, wd=wd)
 
 # Cell
 def rms_prop_step(p, lr, sqr_avg, eps, grad_avg=None, **kwargs):
     "Step for SGD with momentum with `lr`"
     denom = sqr_avg.sqrt().add_(eps)
     p.data.addcdiv_(-lr, (grad_avg if grad_avg is not None else p.grad), denom)
-    return p
 
 rms_prop_step.defaults = dict(eps=1e-8)
 
 # Cell
 def RMSProp(params, lr, sqr_mom=0.99, mom=0., wd=0., decouple_wd=True):
     "A `Optimizer` for RMSProp with `lr`, `sqr_mom`, `mom` and `params`"
-    steppers = [weight_decay] if decouple_wd else [l2_reg]
-    steppers.append(rms_prop_step)
-    stats = [average_sqr_grad] if mom==0. else [average_grad, average_sqr_grad]
-    return Optimizer(params, steppers, stats=stats, lr=lr, mom=mom, sqr_mom=sqr_mom, wd=wd)
+    cbs = [weight_decay] if decouple_wd else [l2_reg]
+    cbs += ([average_sqr_grad] if mom==0. else [average_grad, average_sqr_grad])
+    cbs.append(rms_prop_step)
+    return Optimizer(params, cbs, lr=lr, mom=mom, sqr_mom=sqr_mom, wd=wd)
 
 # Cell
-def step_stat(state, p, **kwargs):
+def step_stat(p, step=0, **kwargs):
     "Register the number of steps done in `state` for `p`"
-    if 'step' not in state: state['step'] = 0
-    state['step'] += 1
-    return state
+    step += 1
+    return {'step' : step}
 
 # Cell
 def debias(mom, damp, step): return damp * (1 - mom**step) / (1-mom)
@@ -175,10 +175,9 @@ adam_step._defaults = dict(eps=1e-5)
 # Cell
 def Adam(params, lr, mom=0.9, sqr_mom=0.99, eps=1e-5, wd=0., decouple_wd=True):
     "A `Optimizer` for Adam with `lr`, `mom`, `sqr_mom`, `eps` and `params`"
-    steppers = [weight_decay] if decouple_wd else [l2_reg]
-    steppers.append(adam_step)
-    stats = [partial(average_grad, dampening=True), average_sqr_grad, step_stat]
-    return Optimizer(params, steppers, stats=stats, lr=lr, mom=mom, sqr_mom=sqr_mom, eps=eps, wd=wd)
+    cbs = [weight_decay] if decouple_wd else [l2_reg]
+    cbs += [partial(average_grad, dampening=True), average_sqr_grad, step_stat, adam_step]
+    return Optimizer(params, cbs, lr=lr, mom=mom, sqr_mom=sqr_mom, eps=eps, wd=wd)
 
 # Cell
 def radam_step(p, lr, mom, step, sqr_mom, grad_avg, sqr_avg, eps, beta, **kwargs):
@@ -201,10 +200,9 @@ radam_step._defaults = dict(eps=1e-5)
 # Cell
 def RAdam(params, lr, mom=0.9, sqr_mom=0.99, eps=1e-5, wd=0., beta=0., decouple_wd=True):
     "A `Optimizer` for Adam with `lr`, `mom`, `sqr_mom`, `eps` and `params`"
-    steppers = [weight_decay] if decouple_wd else [l2_reg]
-    steppers.append(radam_step)
-    stats = [partial(average_grad, dampening=True), average_sqr_grad, step_stat]
-    return Optimizer(params, steppers, stats=stats, lr=lr, mom=mom, sqr_mom=sqr_mom, eps=eps, wd=wd, beta=beta)
+    cbs = [weight_decay] if decouple_wd else [l2_reg]
+    cbs = [partial(average_grad, dampening=True), average_sqr_grad, step_stat, radam_step]
+    return Optimizer(params, cbs, lr=lr, mom=mom, sqr_mom=sqr_mom, eps=eps, wd=wd, beta=beta)
 
 # Cell
 def qhadam_step(p, lr, mom, sqr_mom, sqr_avg, nu_1, nu_2, step, grad_avg, eps, **kwargs):
@@ -219,35 +217,32 @@ qhadam_step._defaults = dict(eps=1e-8)
 # Cell
 def QHAdam(params, lr, mom=0.999, sqr_mom=0.999, nu_1=0.7, nu_2 = 1.0, eps=1e-8, wd=0., decouple_wd=True):
     "An `Optimizer` for Adam with `lr`, `mom`, `sqr_mom`, `nus`, eps` and `params`"
-    steppers = [weight_decay] if decouple_wd else [l2_reg]
-    steppers.append(qhadam_step)
-    stats = [partial(average_grad, dampening=True), partial(average_sqr_grad, dampening=True), step_stat]
-    return Optimizer(params, steppers, stats=stats, lr=lr, nu_1=nu_1, nu_2=nu_2 ,
+    cbs = [weight_decay] if decouple_wd else [l2_reg]
+    cbs += [partial(average_grad, dampening=True), partial(average_sqr_grad, dampening=True), step_stat, qhadam_step]
+    return Optimizer(params, cbs, lr=lr, nu_1=nu_1, nu_2=nu_2 ,
                      mom=mom, sqr_mom=sqr_mom, eps=eps, wd=wd)
 
 # Cell
-def larc_layer_lr(state, p, lr, trust_coeff, wd, eps, clip=True, **kwargs):
+def larc_layer_lr(p, lr, trust_coeff, wd, eps, clip=True, **kwargs):
     "Computes the local lr before weight decay is applied"
     p_norm,g_norm = torch.norm(p.data),torch.norm(p.grad.data)
     local_lr = lr*trust_coeff * (p_norm) / (g_norm + p_norm * wd + eps)
-    state['local_lr'] = min(lr, local_lr) if clip else local_lr
-    return state
+    return {'local_lr': min(lr, local_lr) if clip else local_lr}
+
 larc_layer_lr.defaults = dict(trust_coeff=0.02, wd=0., eps=1e-8)
 
 # Cell
 def larc_step(p, local_lr, grad_avg=None, **kwargs):
-    p.data.add_(-local_lr, p.grad.data if grad_avg is None else grad_avg)
     "Step for LARC `local_lr` on `p`"
-    return p
+    p.data.add_(-local_lr, p.grad.data if grad_avg is None else grad_avg)
 
 # Cell
 def Larc(params, lr, mom=0.9, clip=True, trust_coeff=0.02, eps=1e-8, wd=0., decouple_wd=True):
     "A `Optimizer` for Adam with `lr`, `mom`, `sqr_mom`, `eps` and `params`"
-    steppers = [weight_decay] if decouple_wd else [l2_reg]
-    steppers.append(larc_step)
-    stats = [] if mom==0. else [average_grad]
-    stats.append(partial(larc_layer_lr, clip=clip))
-    return Optimizer(params, steppers, stats=stats, lr=lr, mom=mom, trust_coeff=trust_coeff, eps=eps, wd=wd)
+    cbs = [weight_decay] if decouple_wd else [l2_reg]
+    if mom!=0.: cbs.append(average_grad)
+    cbs += [partial(larc_layer_lr, clip=clip), larc_step]
+    return Optimizer(params, cbs, lr=lr, mom=mom, trust_coeff=trust_coeff, eps=eps, wd=wd)
 
 # Cell
 def lamb_step(p, lr, mom, step, sqr_mom, grad_avg, sqr_avg, eps, **kwargs):
@@ -259,16 +254,15 @@ def lamb_step(p, lr, mom, step, sqr_mom, grad_avg, sqr_avg, eps, **kwargs):
     r2 = step.pow(2).mean().sqrt()
     q = 1 if r1 == 0 or r2 == 0 else min(r1/r2,10)
     p.data.add_(-lr * q, step)
-    return p
+
 lamb_step._defaults = dict(eps=1e-6, wd=0.)
 
 # Cell
 def Lamb(params, lr, mom=0.9, sqr_mom=0.99, eps=1e-5, wd=0., decouple_wd=True):
     "A `Optimizer` for Adam with `lr`, `mom`, `sqr_mom`, `eps` and `params`"
-    steppers = [weight_decay] if decouple_wd else [l2_reg]
-    steppers.append(lamb_step)
-    stats = [partial(average_grad, dampening=True), average_sqr_grad, step_stat]
-    return Optimizer(params, steppers, stats=stats, lr=lr, mom=mom, sqr_mom=sqr_mom, eps=eps, wd=wd)
+    cbs = [weight_decay] if decouple_wd else [l2_reg]
+    cbs += [partial(average_grad, dampening=True), average_sqr_grad, step_stat, lamb_step]
+    return Optimizer(params, cbs, lr=lr, mom=mom, sqr_mom=sqr_mom, eps=eps, wd=wd)
 
 # Cell
 class Lookahead(Optimizer, GetAttr):
