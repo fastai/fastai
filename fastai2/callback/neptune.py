@@ -22,8 +22,8 @@ class NeptuneCallback(Callback):
         self.neptune_exp = None
 
         if neptune.project is None:
-            raise ValueError('You did not initialize project in neptune.\
-                              Please invoke `neptune.init("USERNAME/PROJECT_NAME")` before this callback.')
+            raise ValueError('You did not initialize project in neptune.\n',
+                             'Please invoke `neptune.init("USERNAME/PROJECT_NAME")` before this callback.')
 
     def begin_fit(self):
         try:
@@ -46,8 +46,8 @@ class NeptuneCallback(Callback):
             print('Did not log model summary. Check if your model is PyTorch model.')
 
         if self.neptune_save_model and not hasattr(self.learn, 'save_model'):
-            print('Unable to log model to Neptune.\
-                   Use "SaveModelCallback" to save model checkpoints that will be logged to Neptune.')
+            print('Unable to log model to Neptune.\n',
+                  'Use "SaveModelCallback" to save model checkpoints that will be logged to Neptune.')
 
     def after_batch(self):
         self.neptune_exp.set_property('n_iter', str(self.learn.n_iter))
