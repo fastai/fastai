@@ -3,6 +3,8 @@
 __all__ = ['NeptuneCallback']
 
 # Cell
+import os
+import uuid
 from ..basics import *
 from ..learner import Callback
 
@@ -16,6 +18,7 @@ class NeptuneCallback(Callback):
         self.neptune_save_model = save_model
         self.log_preds = log_preds
         self.n_preds = n_preds
+        self.model_summary_name = 'model_summary_{}.txt'.format(str(uuid.uuid1())[:8])
         self.neptune_exp = None
 
         if neptune.project is None:
@@ -33,6 +36,14 @@ class NeptuneCallback(Callback):
             self.neptune_exp.set_property('model_class', str(type(self.learn.model)))
         except:
             print('Did not log all properties. Check properties in the {}.'.format(neptune.get_experiment()))
+
+        try:
+            with open(self.model_summary_name, 'w') as f:
+                f.write(repr(self.learn.model))
+            self.neptune_exp.log_artifact(self.model_summary_name, 'model_summary.txt')
+            os.remove(self.model_summary_name)
+        except:
+            print('Did not log model summary. Check if your model is PyTorch model.')
 
         if self.neptune_save_model and not hasattr(self.learn, 'save_model'):
             print('Unable to log model to Neptune.\
@@ -54,9 +65,6 @@ class NeptuneCallback(Callback):
                 self.neptune_exp.log_metric('epoch__{}'.format(n), v)
             if n == 'time':
                 self.neptune_exp.log_text('epoch__{}'.format(n), str(v))
-
-        # log preds
-
 
         # log model weights
         if self.neptune_save_model and hasattr(self.learn, 'save_model'):
