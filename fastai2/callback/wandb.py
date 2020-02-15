@@ -42,10 +42,8 @@ class WandbCallback(Callback):
             wandbRandom = random.Random(self.seed)  # For repeatability
             self.n_preds = min(self.n_preds, len(self.dls.valid_ds))
             idxs = wandbRandom.sample(range(len(self.dls.valid_ds)), self.n_preds)
-
-            items = [self.dls.valid_ds.items[i] for i in idxs]
-            test_tls = [tl._new(items, split_idx=1) for tl in self.dls.valid_ds.tls]
-            self.valid_dl = self.dls.valid.new(Datasets(tls=test_tls), bs=self.n_preds)
+            test_items = [self.dls.valid_ds.items[i] for i in idxs]
+            self.valid_dl = self.dls.test_dl(test_items)
 
     def after_batch(self):
         "Log hyper-parameters and training loss"
