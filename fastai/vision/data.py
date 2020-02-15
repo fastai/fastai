@@ -191,7 +191,7 @@ def _download_image_inner(dest, url, i, timeout=4):
 
 def download_images(urls:Union[Path, str], dest:PathOrStr, max_pics:int=1000, max_workers:int=8, timeout=4):
     "Download images listed in text file `urls` to path `dest`, at most `max_pics`"
-    urls = open(urls).read().strip().split("\n")[:max_pics]
+    urls = list(filter(None, open(urls).read().strip().split("\n")))[:max_pics]       
     dest = Path(dest)
     dest.mkdir(exist_ok=True)
     parallel(partial(_download_image_inner, dest, timeout=timeout), urls, max_workers=max_workers)
