@@ -136,7 +136,7 @@ def pad_input_chunk(samples, pad_idx=1, pad_first=True, seq_len=72):
         l = max_len - x.shape[0]
         pad_chunk = x.new_zeros((l//seq_len) * seq_len) + pad_idx
         pad_res   = x.new_zeros(l % seq_len) + pad_idx
-        x1 = torch.cat([pad_chunk, x, pad_res]) if pad_first else torch.cat([pad_res, x, pad_chunk])
+        x1 = torch.cat([pad_chunk, x, pad_res]) if pad_first else torch.cat([x, pad_res, pad_chunk])
         return retain_type(x1, x)
     return [(_f(s[0]), *s[1:]) for s in samples]
 
