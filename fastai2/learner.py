@@ -3,7 +3,7 @@
 __all__ = ['CancelFitException', 'CancelEpochException', 'CancelTrainException', 'CancelValidException',
            'CancelBatchException', 'Callback', 'TrainEvalCallback', 'GatherPredsCallback', 'event', 'replacing_yield',
            'mk_metric', 'save_model', 'load_model', 'Learner', 'VerboseCallback', 'Metric', 'AvgMetric', 'AvgLoss',
-           'AvgSmoothLoss', 'Recorder', 'load_learner']
+           'AvgSmoothLoss', 'Recorder', 'FetchPreds', 'load_learner']
 
 # Cell
 from .data.all import *
@@ -187,7 +187,6 @@ class Learner():
                  moms=(0.95,0.85,0.95)):
         store_attr(self, "dls,model,opt_func,lr,splitter,model_dir,wd,wd_bn_bias,train_bn,metrics,moms")
         self.training,self.create_mbar,self.logger,self.opt,self.cbs = False,True,print,None,L()
-        #TODO: infer loss_func from data
         if loss_func is None:
             loss_func = getattr(dls.train_ds, 'loss_func', None)
             assert loss_func is not None, "Could not infer loss function from the data, please pass a loss function."
@@ -309,7 +308,8 @@ class Learner():
         return self.recorder.values[-1]
 
     @delegates(GatherPredsCallback.__init__)
-    def get_preds(self, ds_idx=1, dl=None, with_input=False, with_decoded=False, with_loss=False, act=None, **kwargs):
+    def get_preds(self, ds_idx=1, dl=None, with_input=False, with_decoded=False, with_loss=False, act=None,
+                  inner=False, **kwargs):
         if dl is None: dl = self.dls[ds_idx].new(shuffled=False, drop_last=False)
         cb = GatherPredsCallback(with_input=with_input, with_loss=with_loss, **kwargs)
         #with self.no_logging(), self.added_cbs(cb), self.loss_not_reduced(), self.no_mbar():
@@ -317,9 +317,9 @@ class Learner():
         if with_loss: ctx_mgrs.append(self.loss_not_reduced())
         with ExitStack() as stack:
             for mgr in ctx_mgrs: stack.enter_context(mgr)
-            self(_before_epoch)
+            self(event.begin_epoch if inner else _before_epoch)
             self._do_epoch_validate(dl=dl)
-            self(_after_epoch)
+            self(event.after_epoch if inner else _after_epoch)
             if act is None: act = getattr(self.loss_func, 'activation', noop)
             res = cb.all_tensors()
             pred_i = 1 if with_input else 0
@@ -560,6 +560,16 @@ add_docs(Recorder,
 defaults.callbacks = [TrainEvalCallback, Recorder]
 
 # Cell
+class FetchPreds(Callback):
+    "A callback to fetch predictions during the training loop"
+    def __init__(self, ds_idx=1, dl=None): store_attr(self, 'ds_idx,dl')
+    def after_validate(self):
+        learn,rec = self.learn,self.learn.recorder
+        learn.remove_cbs([self,rec])
+        self.preds = learn.get_preds(ds_idx=self.ds_idx, dl=self.dl, inner=True)
+        learn.add_cbs([self, rec])
+
+# Cell
 @patch
 def freeze_to(self:Learner, n):
     if self.opt is None: self.create_opt()
@@ -613,11 +623,11 @@ def tta(self:Learner, ds_idx=1, dl=None, n=4, item_tfms=None, batch_tfms=None, b
         aug_preds = []
         for i in self.progress.mbar if hasattr(self,'progress') else range(n):
             self.epoch = i #To keep track of progress on mbar since the progress callback will use self.epoch
-            aug_preds.append(self.get_preds(ds_idx)[0][None])
+            aug_preds.append(self.get_preds(ds_idx, inner=True)[0][None])
     aug_preds = torch.cat(aug_preds)
     aug_preds = aug_preds.max(0)[0] if use_max else aug_preds.mean(0)
     self.epoch = n
-    with dl.dataset.set_split_idx(1): preds,targs = self.get_preds(ds_idx)
+    with dl.dataset.set_split_idx(1): preds,targs = self.get_preds(ds_idx, inner=True)
     if use_max: return torch.stack([preds, aug_preds], 0).max(0)[0],targs
     preds = (aug_preds,preds) if beta is None else torch.lerp(aug_preds, preds, beta)
     return preds,targs
