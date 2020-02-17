@@ -274,8 +274,7 @@ def _init_mat(x):
     return mat.unsqueeze(0).expand(x.size(0), 3, 3).contiguous()
 
 # Cell
-warnings.filterwarnings("ignore", category=UserWarning, module="torch.nn.functional")
-def _grid_sample(x, coords, mode='bilinear', padding_mode='reflection'):
+def _grid_sample(x, coords, mode='bilinear', padding_mode='reflection', align_corners=None):
     "Resample pixels in `coords` from `x` by `mode`, with `padding_mode` in ('reflection','border','zeros')."
     #coords = coords.permute(0, 3, 1, 2).contiguous().permute(0, 2, 3, 1) # optimize layout for grid_sample
     if mode=='bilinear': # hack to get smoother downwards resampling
@@ -287,31 +286,31 @@ def _grid_sample(x, coords, mode='bilinear', padding_mode='reflection'):
         # If we're resizing up by >200%, and we're zooming less than that, interpolate first
         if d>1 and d>z:
             x = F.interpolate(x, scale_factor=1/d, mode='area')
-    with warnings.catch_warnings():
-        #To avoid the warning that come from grid_sample.
-        warnings.simplefilter("ignore")
-        return F.grid_sample(x, coords, mode=mode, padding_mode=padding_mode)
+    return F.grid_sample(x, coords, mode=mode, padding_mode=padding_mode, align_corners=align_corners)
 
 # Cell
 @patch
-def affine_coord(x: TensorImage, mat=None, coord_tfm=None, sz=None, mode='bilinear', pad_mode=PadMode.Reflection):
+def affine_coord(x: TensorImage, mat=None, coord_tfm=None, sz=None, mode='bilinear',
+                 pad_mode=PadMode.Reflection, align_corners=True):
     if mat is None and coord_tfm is None and sz is None: return x
     size = tuple(x.shape[-2:]) if sz is None else (sz,sz) if isinstance(sz,int) else tuple(sz)
     if mat is None: mat = _init_mat(x)[:,:2]
-    coords = F.affine_grid(mat, x.shape[:2] + size)
+    coords = F.affine_grid(mat, x.shape[:2] + size, align_corners=align_corners)
     if coord_tfm is not None: coords = coord_tfm(coords)
-    return TensorImage(_grid_sample(x, coords, mode=mode, padding_mode=pad_mode))
+    return TensorImage(_grid_sample(x, coords, mode=mode, padding_mode=pad_mode, align_corners=align_corners))
 
 @patch
-def affine_coord(x: TensorMask, mat=None, coord_tfm=None, sz=None, mode='nearest', pad_mode=PadMode.Reflection):
+def affine_coord(x: TensorMask, mat=None, coord_tfm=None, sz=None, mode='nearest',
+                 pad_mode=PadMode.Reflection, align_corners=True):
     add_dim = (x.ndim==3)
     if add_dim: x = x[:,None]
-    res = TensorImage.affine_coord(x.float(), mat, coord_tfm, sz, mode, pad_mode).long()
+    res = TensorImage.affine_coord(x.float(), mat, coord_tfm, sz, mode, pad_mode, align_corners).long()
     if add_dim: res = res[:,0]
     return TensorMask(res)
 
 @patch
-def affine_coord(x: TensorPoint, mat=None, coord_tfm=None, sz=None, mode='nearest', pad_mode=PadMode.Zeros):
+def affine_coord(x: TensorPoint, mat=None, coord_tfm=None, sz=None, mode='nearest',
+                 pad_mode=PadMode.Zeros, align_corners=True):
     #assert pad_mode==PadMode.Zeros, "Only zero padding is supported for `TensorPoint` and `TensorBBox`"
     if sz is None: sz = x.get_meta('img_size')
     if coord_tfm is not None: x = coord_tfm(x, invert=True)
@@ -319,7 +318,8 @@ def affine_coord(x: TensorPoint, mat=None, coord_tfm=None, sz=None, mode='neares
     return TensorPoint(x, sz=sz)
 
 @patch
-def affine_coord(x: TensorBBox, mat=None, coord_tfm=None, sz=None, mode='nearest', pad_mode=PadMode.Zeros):
+def affine_coord(x: TensorBBox, mat=None, coord_tfm=None, sz=None, mode='nearest',
+                 pad_mode=PadMode.Zeros, align_corners=True):
     if mat is None and coord_tfm is None: return x
     if sz is None: sz = x.get_meta('img_size')
     bs,n = x.shape[:2]
@@ -341,9 +341,10 @@ def _prepare_mat(x, mat):
 class AffineCoordTfm(RandTransform):
     "Combine and apply affine and coord transforms"
     order,split_idx = 30,None
-    def __init__(self, aff_fs=None, coord_fs=None, size=None, mode='bilinear', pad_mode=PadMode.Reflection, mode_mask='nearest'):
+    def __init__(self, aff_fs=None, coord_fs=None, size=None, mode='bilinear', pad_mode=PadMode.Reflection,
+                 mode_mask='nearest', align_corners=None):
         self.aff_fs,self.coord_fs = L(aff_fs),L(coord_fs)
-        store_attr(self, 'size,mode,pad_mode,mode_mask')
+        store_attr(self, 'size,mode,pad_mode,mode_mask,align_corners')
         self.cp_size = None if size is None else (size,size) if isinstance(size, int) else tuple(size)
 
     def before_call(self, b, split_idx):
@@ -367,7 +368,7 @@ class AffineCoordTfm(RandTransform):
 
     def _encode(self, x, mode, reverse=False):
         coord_func = None if len(self.coord_fs)==0 or self.split_idx else partial(compose_tfms, tfms=self.coord_fs, reverse=reverse)
-        return x.affine_coord(self.mat, coord_func, sz=self.size, mode=mode, pad_mode=self.pad_mode)
+        return x.affine_coord(self.mat, coord_func, sz=self.size, mode=mode, pad_mode=self.pad_mode, align_corners=self.align_corners)
 
     def encodes(self, x:TensorImage): return self._encode(x, self.mode)
     def encodes(self, x:TensorMask):  return self._encode(x, self.mode_mask)
@@ -451,15 +452,15 @@ def _get_default(x, mode=None, pad_mode=None):
 # Cell
 @patch
 def flip_batch(x: (TensorImage,TensorMask,TensorPoint,TensorBBox), p=0.5, draw=None, size=None,
-               mode=None, pad_mode=None, batch=False):
+               mode=None, pad_mode=None, align_corners=True, batch=False):
     x0,mode,pad_mode = _get_default(x, mode, pad_mode)
     mat=flip_mat(x0, p=p, draw=draw, batch=batch)
-    return x.affine_coord(mat=mat[:,:2], sz=size, mode=mode, pad_mode=pad_mode)
+    return x.affine_coord(mat=mat[:,:2], sz=size, mode=mode, pad_mode=pad_mode, align_corners=align_corners)
 
 # Cell
-def Flip(p=0.5, draw=None, size=None, mode='bilinear', pad_mode=PadMode.Reflection, batch=False):
+def Flip(p=0.5, draw=None, size=None, mode='bilinear', pad_mode=PadMode.Reflection, align_corners=True, batch=False):
     "Randomly flip a batch of images with a probability `p`"
-    return AffineCoordTfm(aff_fs=partial(flip_mat, p=p, draw=draw, batch=batch), size=size, mode=mode, pad_mode=pad_mode)
+    return AffineCoordTfm(aff_fs=partial(flip_mat, p=p, draw=draw, batch=batch), size=size, mode=mode, pad_mode=pad_mode, align_corners=align_corners)
 
 # Cell
 class DeterministicDraw():
@@ -472,9 +473,9 @@ class DeterministicDraw():
         return x.new_zeros(x.size(0)) + self.vals[self.count%len(self.vals)]
 
 # Cell
-def DeterministicFlip(size=None, mode='bilinear', pad_mode=PadMode.Reflection):
+def DeterministicFlip(size=None, mode='bilinear', pad_mode=PadMode.Reflection, align_corners=True):
     "Flip the batch every other call"
-    return Flip(p=1., draw=DeterministicDraw([0,1]))
+    return Flip(p=1., draw=DeterministicDraw([0,1]), mode=mode, pad_mode=pad_mode, align_corners=align_corners)
 
 # Cell
 def dihedral_mat(x, p=0.5, draw=None, batch=False):
@@ -492,21 +493,21 @@ def dihedral_mat(x, p=0.5, draw=None, batch=False):
 # Cell
 @patch
 def dihedral_batch(x: (TensorImage,TensorMask,TensorPoint,TensorBBox), p=0.5, draw=None, size=None,
-                   mode=None, pad_mode=None, batch=False):
+                   mode=None, pad_mode=None, batch=False, align_corners=True):
     x0,mode,pad_mode = _get_default(x, mode, pad_mode)
     mat = _prepare_mat(x, dihedral_mat(x0, p=p, draw=draw, batch=batch))
-    return x.affine_coord(mat=mat, sz=size, mode=mode, pad_mode=pad_mode)
+    return x.affine_coord(mat=mat, sz=size, mode=mode, pad_mode=pad_mode, align_corners=align_corners)
 
 # Cell
-def Dihedral(p=0.5, draw=None, size=None, mode='bilinear', pad_mode=PadMode.Reflection, batch=False):
+def Dihedral(p=0.5, draw=None, size=None, mode='bilinear', pad_mode=PadMode.Reflection, align_corners=None, batch=False):
     "Apply a random dihedral transformation to a batch of images with a probability `p`"
     f = partial(dihedral_mat, p=p, draw=draw, batch=batch)
-    return AffineCoordTfm(aff_fs=f, size=size, mode=mode, pad_mode=pad_mode)
+    return AffineCoordTfm(aff_fs=f, size=size, mode=mode, pad_mode=pad_mode, align_corners=align_corners)
 
 # Cell
-def DeterministicDihedral(size=None, mode='bilinear', pad_mode=PadMode.Reflection):
+def DeterministicDihedral(size=None, mode='bilinear', pad_mode=PadMode.Reflection, align_corners=None):
     "Flip the batch every other call"
-    return Dihedral(p=1., draw=DeterministicDraw(list(range(8))))
+    return Dihedral(p=1., draw=DeterministicDraw(list(range(8))), pad_mode=pad_mode, align_corners=align_corners)
 
 # Cell
 def rotate_mat(x, max_deg=10, p=0.5, draw=None, batch=False):
@@ -520,16 +521,16 @@ def rotate_mat(x, max_deg=10, p=0.5, draw=None, batch=False):
 # Cell
 @delegates(rotate_mat)
 @patch
-def rotate(x: (TensorImage,TensorMask,TensorPoint,TensorBBox), size=None, mode=None, pad_mode=None, **kwargs):
+def rotate(x: (TensorImage,TensorMask,TensorPoint,TensorBBox), size=None, mode=None, pad_mode=None, align_corners=True, **kwargs):
     x0,mode,pad_mode = _get_default(x, mode, pad_mode)
     mat = _prepare_mat(x, rotate_mat(x0, **kwargs))
-    return x.affine_coord(mat=mat, sz=size, mode=mode, pad_mode=pad_mode)
+    return x.affine_coord(mat=mat, sz=size, mode=mode, pad_mode=pad_mode, align_corners=align_corners)
 
 # Cell
-def Rotate(max_deg=10, p=0.5, draw=None, size=None, mode='bilinear', pad_mode=PadMode.Reflection, batch=False):
+def Rotate(max_deg=10, p=0.5, draw=None, size=None, mode='bilinear', pad_mode=PadMode.Reflection, align_corners=True, batch=False):
     "Apply a random rotation of at most `max_deg` with probability `p` to a batch of images"
     return AffineCoordTfm(partial(rotate_mat, max_deg=max_deg, p=p, draw=draw, batch=batch),
-                          size=size, mode=mode, pad_mode=pad_mode)
+                          size=size, mode=mode, pad_mode=pad_mode, align_corners=align_corners)
 
 # Cell
 def zoom_mat(x, max_zoom=1.1, p=0.5, draw=None, draw_x=None, draw_y=None, batch=False):
@@ -550,16 +551,17 @@ def zoom_mat(x, max_zoom=1.1, p=0.5, draw=None, draw_x=None, draw_y=None, batch=
 # Cell
 @delegates(zoom_mat)
 @patch
-def zoom(x: (TensorImage,TensorMask,TensorPoint,TensorBBox), size=None, mode='bilinear', pad_mode=PadMode.Reflection, **kwargs):
+def zoom(x: (TensorImage,TensorMask,TensorPoint,TensorBBox), size=None, mode='bilinear', pad_mode=PadMode.Reflection,
+         align_corners=True, **kwargs):
     x0,mode,pad_mode = _get_default(x, mode, pad_mode)
-    return x.affine_coord(mat=zoom_mat(x0, **kwargs)[:,:2], sz=size, mode=mode, pad_mode=pad_mode)
+    return x.affine_coord(mat=zoom_mat(x0, **kwargs)[:,:2], sz=size, mode=mode, pad_mode=pad_mode, align_corners=align_corners)
 
 # Cell
 def Zoom(max_zoom=1.1, p=0.5, draw=None, draw_x=None, draw_y=None, size=None, mode='bilinear',
-         pad_mode=PadMode.Reflection, batch=False):
+         pad_mode=PadMode.Reflection, batch=False, align_corners=True):
     "Apply a random zoom of at most `max_zoom` with probability `p` to a batch of images"
     return AffineCoordTfm(partial(zoom_mat, max_zoom=max_zoom, p=p, draw=draw, draw_x=draw_x, draw_y=draw_y, batch=batch),
-                          size=size, mode=mode, pad_mode=pad_mode)
+                          size=size, mode=mode, pad_mode=pad_mode, align_corners=align_corners)
 
 # Cell
 def find_coeffs(p1, p2):
@@ -612,18 +614,18 @@ class _WarpCoord():
 @delegates(_WarpCoord.__init__)
 @patch
 def warp(x:(TensorImage,TensorMask,TensorPoint,TensorBBox), size=None, mode='bilinear',
-         pad_mode=PadMode.Reflection, **kwargs):
+         pad_mode=PadMode.Reflection, align_corners=True, **kwargs):
     x0,mode,pad_mode = _get_default(x, mode, pad_mode)
     coord_tfm = _WarpCoord(**kwargs)
     coord_tfm.before_call(x0)
-    return x.affine_coord(coord_tfm=coord_tfm, sz=size, mode=mode, pad_mode=pad_mode)
+    return x.affine_coord(coord_tfm=coord_tfm, sz=size, mode=mode, pad_mode=pad_mode, align_corners=align_corners)
 
 # Cell
 def Warp(magnitude=0.2, p=0.5, draw_x=None, draw_y=None,size=None, mode='bilinear',
-         pad_mode=PadMode.Reflection, batch=False):
+         pad_mode=PadMode.Reflection, batch=False, align_corners=True):
     "Apply perspective warping with `magnitude` and `p` on a batch of matrices"
     return AffineCoordTfm(coord_fs=_WarpCoord(magnitude=magnitude, p=p, draw_x=draw_x, draw_y=draw_y, batch=batch),
-                          size=size, mode=mode, pad_mode=pad_mode)
+                          size=size, mode=mode, pad_mode=pad_mode, align_corners=align_corners)
 
 # Cell
 @patch
@@ -762,10 +764,10 @@ def setup_aug_tfms(tfms):
 
 # Cell
 def aug_transforms(mult=1.0, do_flip=True, flip_vert=False, max_rotate=10., max_zoom=1.1, max_lighting=0.2,
-                   max_warp=0.2, p_affine=0.75, p_lighting=0.75, xtra_tfms=None,
-                   size=None, mode='bilinear', pad_mode=PadMode.Reflection, batch=False, min_scale=1.):
+                   max_warp=0.2, p_affine=0.75, p_lighting=0.75, xtra_tfms=None, size=None,
+                   mode='bilinear', pad_mode=PadMode.Reflection, align_corners=True, batch=False, min_scale=1.):
     "Utility func to easily create a list of flip, rotate, zoom, warp, lighting transforms."
-    res,tkw = [],dict(size=size if min_scale==1. else None, mode=mode, pad_mode=pad_mode, batch=batch)
+    res,tkw = [],dict(size=size if min_scale==1. else None, mode=mode, pad_mode=pad_mode, batch=batch, align_corners=align_corners)
     max_rotate,max_lighting,max_warp = array([max_rotate,max_lighting,max_warp])*mult
     if do_flip: res.append(Dihedral(p=0.5, **tkw) if flip_vert else Flip(p=0.5, **tkw))
     if max_warp:   res.append(Warp(magnitude=max_warp, p=p_affine, **tkw))
