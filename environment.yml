@@ -6,7 +6,7 @@ channels:
 dependencies:
 - jupyter
 - pytorch>=1.2.0
-- torchvision
+- torchvision>=0.5
 - matplotlib
 - pandas
 - requests
