@@ -562,11 +562,13 @@ defaults.callbacks = [TrainEvalCallback, Recorder]
 # Cell
 class FetchPreds(Callback):
     "A callback to fetch predictions during the training loop"
-    def __init__(self, ds_idx=1, dl=None): store_attr(self, 'ds_idx,dl')
+    def __init__(self, ds_idx=1, dl=None, with_input=False, with_decoded=False):
+        store_attr(self, 'ds_idx,dl,with_input,with_decoded')
     def after_validate(self):
         learn,rec = self.learn,self.learn.recorder
         learn.remove_cbs([self,rec])
-        self.preds = learn.get_preds(ds_idx=self.ds_idx, dl=self.dl, inner=True)
+        self.preds = learn.get_preds(ds_idx=self.ds_idx, dl=self.dl,
+            with_input=self.with_input, with_decoded=self.decoded, inner=True)
         learn.add_cbs([self, rec])
 
 # Cell
