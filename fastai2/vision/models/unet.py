@@ -54,7 +54,7 @@ class DynamicUnet(SequentialEx):
     "Create a U-Net from a given architecture."
     def __init__(self, encoder, n_classes, img_size, blur=False, blur_final=True, self_attention=False,
                  y_range=None, last_cross=True, bottle=False, act_cls=defaults.activation,
-                 init=nn.init.kaiming_normal_, norm_type=NormType.Batch, **kwargs):
+                 init=nn.init.kaiming_normal_, norm_type=None, **kwargs):
         imsize = img_size
         sizes = model_sizes(encoder, size=imsize)
         sz_chg_idxs = list(reversed(_get_sz_change_idxs(sizes)))
