@@ -14,6 +14,9 @@ def _mod2page(mod):
     return f'{name}.html'
 
 # Cell
+import importlib
+
+# Cell
 def pytorch_doc_link(name):
     if name.startswith('F'): name = 'torch.nn.functional' + name[1:]
     if not name.startswith('torch.'): name = 'torch.' + name
