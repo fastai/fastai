@@ -34,7 +34,7 @@ class TfmdDL(DataLoader):
     "Transformed `DataLoader`"
     def __init__(self, dataset, bs=64, shuffle=False, num_workers=None, verbose=False, do_setup=True, **kwargs):
         if num_workers is None: num_workers = min(16, defaults.cpus)
-        for nm in _batch_tfms: kwargs[nm] = Pipeline(kwargs.get(nm,None), as_item=(nm=='before_batch'))
+        for nm in _batch_tfms: kwargs[nm] = Pipeline(kwargs.get(nm,None))
         super().__init__(dataset, bs=bs, shuffle=shuffle, num_workers=num_workers, **kwargs)
         if do_setup:
             for nm in _batch_tfms:
@@ -189,13 +189,13 @@ FilteredBase.train,FilteredBase.valid = add_props(lambda i,x: x.subset(i))
 class TfmdLists(FilteredBase, L, GetAttr):
     "A `Pipeline` of `tfms` applied to a collection of `items`"
     _default='tfms'
-    def __init__(self, items, tfms, use_list=None, do_setup=True, as_item=True, split_idx=None, train_setup=True,
+    def __init__(self, items, tfms, use_list=None, do_setup=True, split_idx=None, train_setup=True,
                  splits=None, types=None, verbose=False):
         super().__init__(items, use_list=use_list)
         self.splits = L([slice(None),[]] if splits is None else splits).map(mask2idxs)
         if isinstance(tfms,TfmdLists): tfms = tfms.tfms
         if isinstance(tfms,Pipeline): do_setup=False
-        self.tfms = Pipeline(tfms, as_item=as_item, split_idx=split_idx)
+        self.tfms = Pipeline(tfms, split_idx=split_idx)
         self.types = types
         if do_setup:
             pv(f"Setting up {self.tfms}", verbose)

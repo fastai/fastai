@@ -118,7 +118,7 @@ class Tabular(CollBase, GetAttr, FilteredBase):
         if block_y is not None and do_setup:
             if callable(block_y): block_y = block_y()
             procs = L(procs) + block_y.type_tfms
-        self.cat_names,self.cont_names,self.procs = L(cat_names),L(cont_names),Pipeline(procs, as_item=True)
+        self.cat_names,self.cont_names,self.procs = L(cat_names),L(cont_names),Pipeline(procs)
         self.split = len(splits[0])
         if do_setup: self.setup()
 

@@ -259,10 +259,7 @@ class ToTensor(Transform):
 class IntToFloatTensor(Transform):
     "Transform image to float tensor, optionally dividing by 255 (e.g. for images)."
     order = 10 #Need to run after PIL transforms on the GPU
-    def __init__(self, div=255., div_mask=1, split_idx=None, as_item=True):
-        super().__init__(split_idx=split_idx,as_item=as_item)
-        self.div,self.div_mask = div,div_mask
-
+    def __init__(self, div=255., div_mask=1): store_attr(self, 'div,div_mask')
     def encodes(self, o:TensorImage): return o.float().div_(self.div)
     def encodes(self, o:TensorMask ): return o.div_(self.div_mask).long()
     def decodes(self, o:TensorImage): return ((o.clamp(0., 1.) * self.div).long()) if self.div else o
