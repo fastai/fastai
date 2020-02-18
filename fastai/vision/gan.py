@@ -75,7 +75,7 @@ class GANTrainer(LearnerCallback):
                  show_img:bool=True):
         super().__init__(learn)
         self.switch_eval,self.clip,self.beta,self.gen_first,self.show_img = switch_eval,clip,beta,gen_first,show_img
-        self.generator,self.critic = self.model.generator,self.model.critic
+        self.generator,self.critic,self.switch_model = self.model.generator,self.model.critic,self.model.switch
 
     def _set_trainable(self):
         train_model = self.generator if     self.gen_mode else self.critic
@@ -150,7 +150,7 @@ class GANTrainer(LearnerCallback):
         self.gen_mode = (not self.gen_mode) if gen_mode is None else gen_mode
         self.opt.opt = self.opt_gen.opt if self.gen_mode else self.opt_critic.opt
         self._set_trainable()
-        self.model.switch(gen_mode)
+        self.switch_model(gen_mode)
         self.loss_func.switch(gen_mode)
 
 class FixedGANSwitcher(LearnerCallback):
