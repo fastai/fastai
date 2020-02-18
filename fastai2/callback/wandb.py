@@ -45,6 +45,8 @@ class WandbCallback(Callback):
             idxs = wandbRandom.sample(range(len(self.dls.valid_ds)), self.n_preds)
             test_items = [self.dls.valid_ds.items[i] for i in idxs]
             self.valid_dl = self.dls.test_dl(test_items)
+
+        if self.valid_dl:
             self.learn.add_cb(FetchPreds(dl=self.valid_dl, with_input=True, with_decoded=True))
 
     def after_batch(self):
