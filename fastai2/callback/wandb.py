@@ -70,7 +70,7 @@ class WandbCallback(Callback):
 
     def after_fit(self):
         self.run = True
-        if self.log_preds: self.remove_cv
+        if self.log_preds: self.remove_cb(self.learn.fetch_preds)
         wandb.log({}) #To trigger one last synch
 
 # Cell
