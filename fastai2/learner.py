@@ -568,7 +568,7 @@ class FetchPreds(Callback):
         learn,rec = self.learn,self.learn.recorder
         learn.remove_cbs([self,rec])
         self.preds = learn.get_preds(ds_idx=self.ds_idx, dl=self.dl,
-            with_input=self.with_input, with_decoded=self.decoded, inner=True)
+            with_input=self.with_input, with_decoded=self.with_decoded, inner=True)
         learn.add_cbs([self, rec])
 
 # Cell
