@@ -6,7 +6,7 @@
     "Vision tutorial": "/tutorial.transfer_learning",
     "Pets tutorial": "/tutorial.pets",
     "Imagenette tutorial": "/tutorial.imagenette",
-    "Data block examples": "/databloc.examples",
+    "Data block examples": "/datablock_examples",
     "UlMFiT tutorial": "/tutorial.ulmfit",
     "Wikitext tutorial": "/tutorial.wikitext"
   },
