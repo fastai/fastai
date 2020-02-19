@@ -3,7 +3,7 @@ from .basic_train import Learner,LearnerCallback
 from torch.nn.parallel import DistributedDataParallel, DataParallel
 from torch.utils.data.distributed import DistributedSampler
 
-from fastai.text import TextLMDataBunch
+from fastai.text import TextLMDataBunch, TextClasDataBunch
 
 __all__ = ['DistributedRecorder', 'DistributedTrainer', 'read_metrics', 'setup_distrib']
 
@@ -31,7 +31,8 @@ class DistributedTrainer(LearnerCallback):
     def on_train_begin(self, **kwargs):
         self.learn.model = DistributedDataParallel(self.model, device_ids=[self.cuda_id], output_device=self.cuda_id)
         shuffle = self.data.train_dl.init_kwargs['shuffle'] if hasattr(self.data.train_dl, 'init_kwargs') else True
-        self.old_train_dl,self.data.train_dl,self.train_sampler = self._change_dl(self.data.train_dl, shuffle)
+        shuffle_train = True if isinstance(self.data, TextClasDataBunch) else shuffle
+        self.old_train_dl,self.data.train_dl,self.train_sampler = self._change_dl(self.data.train_dl, shuffle_train)
         if hasattr(self.data, 'valid_dl') and self.data.valid_dl is not None:
             self.old_valid_dl,self.data.valid_dl,self.valid_sampler = self._change_dl(self.data.valid_dl, shuffle)
         self.rank = rank_distrib()
