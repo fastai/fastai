@@ -1,6 +1,6 @@
 "Cleaning and feature engineering functions for structured data"
 from ..torch_core import *
-from pandas.api.types import is_numeric_dtype
+from pandas.api.types import is_numeric_dtype, is_string_dtype
 from datetime import date, datetime
 import calendar
 
@@ -111,6 +111,33 @@ def cont_cat_split(df, max_card=20, dep_var=None)->Tuple[List,List]:
         if df[label].dtype == int and df[label].unique().shape[0] > max_card or df[label].dtype == float: cont_names.append(label)
         else: cat_names.append(label)
     return cont_names, cat_names
+
+def train_cats(df):
+    """Change any columns of strings in a panda's dataframe to a column of
+    categorical values. This applies the changes inplace.
+    Parameters:
+    -----------
+    df: A pandas dataframe. Any columns of strings will be changed to
+        categorical values.
+    Examples:
+    ---------
+    >>> df = pd.DataFrame({'col1' : [1, 2, 3], 'col2' : ['a', 'b', 'a']})
+    >>> df
+       col1 col2
+    0     1    a
+    1     2    b
+    2     3    a
+    note the type of col2 is string
+    >>> train_cats(df)
+    >>> df
+       col1 col2
+    0     1    a
+    1     2    b
+    2     3    a
+    now the type of col2 is category
+    """
+    for n,c in df.items():
+        if is_string_dtype(c): df[n] = c.astype('category').cat.as_ordered()
         
 @dataclass
 class TabularProc():
