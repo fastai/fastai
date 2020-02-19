@@ -150,7 +150,7 @@ class SortedDL(TfmdDL):
         self.sort_func = _default_sort if sort_func is None else sort_func
         if res is None and self.sort_func == _default_sort: res = _get_lengths(dataset)
         self.res = [self.sort_func(self.do_item(i)) for i in range_of(self.dataset)] if res is None else res
-        self.idx_max = np.argmax(self.res)
+        if len(self.res) > 0: self.idx_max = np.argmax(self.res)
 
     def get_idxs(self):
         idxs = super().get_idxs()
