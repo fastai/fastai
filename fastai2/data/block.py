@@ -83,7 +83,7 @@ class DataBlock():
 
     @classmethod
     def from_columns(cls, blocks=None, getters=None, get_items=None, **kwargs):
-        if getters is None: getters = L(ItemTransform(itemgetter(i)) for i in range(2 if blocks is None else len(L(blocks))))
+        if getters is None: getters = L(ItemGetter(i) for i in range(2 if blocks is None else len(L(blocks))))
         get_items = _zip if get_items is None else compose(get_items, _zip)
         return cls(blocks=blocks, getters=getters, get_items=get_items, **kwargs)
 
