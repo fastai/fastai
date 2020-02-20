@@ -98,7 +98,7 @@ summary: "Core functionality for gathering data"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>A <a href="/data.core#TfmdDL"><code>TfmdDL</code></a> is a <a href="/data.load#DataLoader"><code>DataLoader</code></a> that creates <code>Pipeline</code> from a list of <code>Transform</code>s for the callbacks <code>after_item</code>, <code>before_batch</code> and <code>after_batch</code>. As a result, it can decode or show a processed <code>batch</code>.</p>
+<p>A <a href="/data.core#TfmdDL"><code>TfmdDL</code></a> is a <a href="/data.load#DataLoader"><code>DataLoader</code></a> that creates <a href="https://fastcore.fast.ai/transform#Pipeline"><code>Pipeline</code></a> from a list of <a href="https://fastcore.fast.ai/transform#Transform"><code>Transform</code></a>s for the callbacks <code>after_item</code>, <code>before_batch</code> and <code>after_batch</code>. As a result, it can decode or show a processed <code>batch</code>.</p>
 
 </div>
 </div>
@@ -366,7 +366,7 @@ summary: "Core functionality for gathering data"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="DataLoaders" class="doc_header"><code>class</code> <code>DataLoaders</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/core.py#L110" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>DataLoaders</code>(<strong>*<code>loaders</code></strong>, <strong><code>path</code></strong>=<em><code>'.'</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>) :: <code>GetAttr</code></p>
+<h2 id="DataLoaders" class="doc_header"><code>class</code> <code>DataLoaders</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/core.py#L110" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>DataLoaders</code>(<strong>*<code>loaders</code></strong>, <strong><code>path</code></strong>=<em><code>'.'</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>) :: <a href="https://fastcore.fast.ai/foundation#GetAttr"><code>GetAttr</code></a></p>
 </blockquote>
 <p>Basic wrapper around several <a href="/data.load#DataLoader"><code>DataLoader</code></a>s.</p>
 
@@ -549,9 +549,9 @@ summary: "Core functionality for gathering data"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TfmdLists" class="doc_header"><code>class</code> <code>TfmdLists</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/core.py#L189" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TfmdLists</code>(<strong><code>items</code></strong>, <strong><code>tfms</code></strong>, <strong><code>use_list</code></strong>=<em><code>None</code></em>, <strong><code>do_setup</code></strong>=<em><code>True</code></em>, <strong><code>as_item</code></strong>=<em><code>True</code></em>, <strong><code>split_idx</code></strong>=<em><code>None</code></em>, <strong><code>train_setup</code></strong>=<em><code>True</code></em>, <strong><code>splits</code></strong>=<em><code>None</code></em>, <strong><code>types</code></strong>=<em><code>None</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>) :: <a href="/data.core#FilteredBase"><code>FilteredBase</code></a></p>
+<h2 id="TfmdLists" class="doc_header"><code>class</code> <code>TfmdLists</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/core.py#L189" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TfmdLists</code>(<strong><code>items</code></strong>, <strong><code>tfms</code></strong>, <strong><code>use_list</code></strong>=<em><code>None</code></em>, <strong><code>do_setup</code></strong>=<em><code>True</code></em>, <strong><code>split_idx</code></strong>=<em><code>None</code></em>, <strong><code>train_setup</code></strong>=<em><code>True</code></em>, <strong><code>splits</code></strong>=<em><code>None</code></em>, <strong><code>types</code></strong>=<em><code>None</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>) :: <a href="/data.core#FilteredBase"><code>FilteredBase</code></a></p>
 </blockquote>
-<p>A <code>Pipeline</code> of <code>tfms</code> applied to a collection of <code>items</code></p>
+<p>A <a href="https://fastcore.fast.ai/transform#Pipeline"><code>Pipeline</code></a> of <code>tfms</code> applied to a collection of <code>items</code></p>
 
 </div>
 
@@ -654,7 +654,7 @@ summary: "Core functionality for gathering data"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>A <a href="/data.core#TfmdLists"><code>TfmdLists</code></a> combines a collection of object with a <code>Pipeline</code>. <code>tfms</code> can either be a <code>Pipeline</code> or a list of transforms, in which case, it will wrap them in a <code>Pipeline</code>. <code>use_list</code> is passed along to <code>L</code> with the <code>items</code>, <code>as_item</code> and <code>split_idx</code> are passed to each transform of the <code>Pipeline</code>. <code>do_setup</code> indicates if the <code>Pipeline.setup</code> method should be called during initialization.</p>
+<p>A <a href="/data.core#TfmdLists"><code>TfmdLists</code></a> combines a collection of object with a <a href="https://fastcore.fast.ai/transform#Pipeline"><code>Pipeline</code></a>. <code>tfms</code> can either be a <a href="https://fastcore.fast.ai/transform#Pipeline"><code>Pipeline</code></a> or a list of transforms, in which case, it will wrap them in a <a href="https://fastcore.fast.ai/transform#Pipeline"><code>Pipeline</code></a>. <code>use_list</code> is passed along to <a href="https://fastcore.fast.ai/foundation#L"><code>L</code></a> with the <code>items</code> and <code>split_idx</code> are passed to each transform of the <a href="https://fastcore.fast.ai/transform#Pipeline"><code>Pipeline</code></a>. <code>do_setup</code> indicates if the <a href="https://fastcore.fast.ai/transform#Pipeline.setup"><code>Pipeline.setup</code></a> method should be called during initialization.</p>
 
 </div>
 </div>
@@ -706,7 +706,7 @@ summary: "Core functionality for gathering data"
 
 <div class="output_text output_subarea output_execute_result">
 <pre>TfmdLists: [1.0, 2.0, 3.0]
-tfms - (#2) [_neg: True (object,object) -&gt; _neg (object,object) -&gt; _neg,_IntFloatTfm: True (object,object) -&gt; encodes (object,object) -&gt; decodes]</pre>
+tfms - (#2) [_neg: (object,object) -&gt; _neg (object,object) -&gt; _neg,_IntFloatTfm: (object,object) -&gt; encodes (object,object) -&gt; decodes]</pre>
 </div>
 
 </div>
@@ -767,7 +767,9 @@ tfms - (#2) [_neg: True (object,object) -&gt; _neg (object,object) -&gt; _neg,_I
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">m</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="k">def</span> <span class="nf">encodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">o</span><span class="p">):</span> <span class="k">return</span> <span class="n">o</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">m</span>
     <span class="k">def</span> <span class="nf">decodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">o</span><span class="p">):</span> <span class="k">return</span> <span class="n">o</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">m</span>
-    <span class="k">def</span> <span class="nf">setups</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">items</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">m</span> <span class="o">=</span> <span class="n">tensor</span><span class="p">(</span><span class="n">items</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">setups</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">items</span><span class="p">):</span> 
+        <span class="nb">print</span><span class="p">(</span><span class="n">items</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">m</span> <span class="o">=</span> <span class="n">tensor</span><span class="p">(</span><span class="n">items</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
 
 <span class="c1"># test for setup, which updates `self.m`</span>
 <span class="n">tl</span> <span class="o">=</span> <span class="n">TfmdLists</span><span class="p">(</span><span class="n">items</span><span class="p">,</span> <span class="n">_B</span><span class="p">())</span>
@@ -775,6 +777,21 @@ tfms - (#2) [_neg: True (object,object) -&gt; _neg (object,object) -&gt; _neg,_I
 </pre></div>
 
     </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>TfmdLists: [1.0, 2.0, 3.0]
+tfms - (#0) []
+</pre>
+</div>
+</div>
+
 </div>
 </div>
 
@@ -981,7 +998,7 @@ tfms - (#2) [_neg: True (object,object) -&gt; _neg (object,object) -&gt; _neg,_I
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Datasets" class="doc_header"><code>class</code> <code>Datasets</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/core.py#L257" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Datasets</code>(<strong><code>items</code></strong>=<em><code>None</code></em>, <strong><code>tfms</code></strong>=<em><code>None</code></em>, <strong><code>tls</code></strong>=<em><code>None</code></em>, <strong><code>n_inp</code></strong>=<em><code>None</code></em>, <strong><code>dl_type</code></strong>=<em><code>None</code></em>, <strong><code>use_list</code></strong>=<em><code>None</code></em>, <strong><code>do_setup</code></strong>=<em><code>True</code></em>, <strong><code>as_item</code></strong>=<em><code>True</code></em>, <strong><code>split_idx</code></strong>=<em><code>None</code></em>, <strong><code>train_setup</code></strong>=<em><code>True</code></em>, <strong><code>splits</code></strong>=<em><code>None</code></em>, <strong><code>types</code></strong>=<em><code>None</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>) :: <a href="/data.core#FilteredBase"><code>FilteredBase</code></a></p>
+<h2 id="Datasets" class="doc_header"><code>class</code> <code>Datasets</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/core.py#L257" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Datasets</code>(<strong><code>items</code></strong>=<em><code>None</code></em>, <strong><code>tfms</code></strong>=<em><code>None</code></em>, <strong><code>tls</code></strong>=<em><code>None</code></em>, <strong><code>n_inp</code></strong>=<em><code>None</code></em>, <strong><code>dl_type</code></strong>=<em><code>None</code></em>, <strong><code>use_list</code></strong>=<em><code>None</code></em>, <strong><code>do_setup</code></strong>=<em><code>True</code></em>, <strong><code>split_idx</code></strong>=<em><code>None</code></em>, <strong><code>train_setup</code></strong>=<em><code>True</code></em>, <strong><code>splits</code></strong>=<em><code>None</code></em>, <strong><code>types</code></strong>=<em><code>None</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>) :: <a href="/data.core#FilteredBase"><code>FilteredBase</code></a></p>
 </blockquote>
 <p>A dataset that creates a tuple from each <code>tfms</code>, passed thru <code>item_tfms</code></p>
 
@@ -995,7 +1012,7 @@ tfms - (#2) [_neg: True (object,object) -&gt; _neg (object,object) -&gt; _neg,_I
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>A <a href="/data.core#Datasets"><code>Datasets</code></a> creates a tuple from <code>items</code> (typically input,target) by applying to them each list of <code>Transform</code> (or <code>Pipeline</code>) in <code>tfms</code>. Note that if <code>tfms</code> contains only one list of <code>tfms</code>, the items given by <a href="/data.core#Datasets"><code>Datasets</code></a> will be tuples of one element.</p>
+<p>A <a href="/data.core#Datasets"><code>Datasets</code></a> creates a tuple from <code>items</code> (typically input,target) by applying to them each list of <a href="https://fastcore.fast.ai/transform#Transform"><code>Transform</code></a> (or <a href="https://fastcore.fast.ai/transform#Pipeline"><code>Pipeline</code></a>) in <code>tfms</code>. Note that if <code>tfms</code> contains only one list of <code>tfms</code>, the items given by <a href="/data.core#Datasets"><code>Datasets</code></a> will be tuples of one element.</p>
 <p><code>n_inp</code> is the number of elements in the tuples that should be considered part of the input and will default to 1 if <code>tfms</code> consists of one set of transforms, <code>len(tfms)-1</code> otherwise. In most cases, the number of elements in the tuples spit out by <a href="/data.core#Datasets"><code>Datasets</code></a> will be 2 (for input,target) but it can happen that there is 3 (Siamese networks or tabular data) in which case we need to be able to determine when the inputs end and the targets begin.</p>
 
 </div>
@@ -1604,7 +1621,7 @@ tfms - (#2) [_neg: True (object,object) -&gt; _neg (object,object) -&gt; _neg,_I
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="DataLoaders.test_dl" class="doc_header"><code>DataLoaders.test_dl</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/core.py#L322" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>DataLoaders.test_dl</code>(<strong><code>test_items</code></strong>, <strong><code>rm_type_tfms</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="DataLoaders.test_dl" class="doc_header"><code>DataLoaders.test_dl</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/core.py#L329" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>DataLoaders.test_dl</code>(<strong><code>test_items</code></strong>, <strong><code>rm_type_tfms</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Create a test dataloader from <code>test_items</code> using validation transforms of <code>dls</code></p>
 

@@ -254,25 +254,25 @@ class Tokenizer(Transform):
 
     @classmethod
     @delegates(tokenize_df, keep=True)
-    def from_df(cls, text_cols, tok_func=SpacyTokenizer, **kwargs):
-        res = cls(get_tokenizer(tok_func, **kwargs), mode='df')
+    def from_df(cls, text_cols, tok_func=SpacyTokenizer, rules=None, **kwargs):
+        res = cls(get_tokenizer(tok_func, **kwargs), rules=rules, mode='df')
         res.text_cols,res.kwargs,res.train_setup = text_cols,merge({'tok_func': tok_func}, kwargs),False
         return res
 
     @classmethod
     @delegates(tokenize_folder, keep=True)
-    def from_folder(cls, path, tok_func=SpacyTokenizer, **kwargs):
+    def from_folder(cls, path, tok_func=SpacyTokenizer, rules=None, **kwargs):
         path = Path(path)
         output_dir = Path(ifnone(kwargs.get('output_dir'), path.parent/f'{path.name}_tok'))
-        if not output_dir.exists(): tokenize_folder(path, **kwargs)
+        if not output_dir.exists(): tokenize_folder(path, rules=rules, **kwargs)
         res = cls(get_tokenizer(tok_func, **kwargs), counter=(output_dir/fn_counter_pkl).load(),
-                  lengths=(output_dir/fn_lengths_pkl).load(), mode='folder')
+                  lengths=(output_dir/fn_lengths_pkl).load(), rules=rules, mode='folder')
         res.path,res.output_dir = path,output_dir
         return res
 
     def setups(self, dsets):
         if not self.mode == 'df' or not isinstance(dsets.items, pd.DataFrame): return
-        dsets.items,count = tokenize_df(dsets.items, self.text_cols, **self.kwargs)
+        dsets.items,count = tokenize_df(dsets.items, self.text_cols, rules=self.rules, **self.kwargs)
         if self.counter is None: self.counter = count
         return dsets
 

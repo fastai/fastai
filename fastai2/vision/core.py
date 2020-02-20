@@ -191,7 +191,7 @@ class TensorBBox(TensorPoint):
         return ctx
 
 # Cell
-class LabeledBBox(Tuple):
+class LabeledBBox(L):
     "Basic type for a list of bounding boxes in an image"
     def show(self, ctx=None, **kwargs):
         for b,l in zip(self.bbox, self.lbl):

@@ -62,6 +62,7 @@ class DataBlock():
         self.default_batch_tfms = _merge_tfms(*blocks.attrgot('batch_tfms', L()))
         for b in blocks:
             if getattr(b, 'dl_type', None) is not None: self.dl_type = b.dl_type
+        if dl_type is not None: self.dl_type = dl_type
         self.dataloaders = delegates(self.dl_type.__init__)(self.dataloaders)
         self.dls_kwargs = merge(*blocks.attrgot('dls_kwargs', {}))
 
@@ -82,7 +83,7 @@ class DataBlock():
 
     @classmethod
     def from_columns(cls, blocks=None, getters=None, get_items=None, **kwargs):
-        if getters is None: getters = L(itemgetter(i) for i in range(2 if blocks is None else len(L(blocks))))
+        if getters is None: getters = L(ItemGetter(i) for i in range(2 if blocks is None else len(L(blocks))))
         get_items = _zip if get_items is None else compose(get_items, _zip)
         return cls(blocks=blocks, getters=getters, get_items=get_items, **kwargs)
 

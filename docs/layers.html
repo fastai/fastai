@@ -46,6 +46,35 @@ summary: "Custom fastai layers and basic functions to grab them."
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">basic_repr</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&lt;function fastcore.utils.basic_repr(flds=None)&gt;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
 
 </div>
 <div class="cell border-box-sizing code_cell rendered">
@@ -906,7 +935,7 @@ summary: "Custom fastai layers and basic functions to grab them."
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="init_default" class="doc_header"><code>init_default</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L620" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>init_default</code>(<strong><code>m</code></strong>, <strong><code>func</code></strong>=<em><code>'kaiming_normal_'</code></em>)</p>
+<h4 id="init_default" class="doc_header"><code>init_default</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L640" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>init_default</code>(<strong><code>m</code></strong>, <strong><code>func</code></strong>=<em><code>'kaiming_normal_'</code></em>)</p>
 </blockquote>
 <p>Initialize <code>m</code> weights with <code>func</code> and set <code>bias</code> to 0.</p>
 
@@ -2455,7 +2484,7 @@ summary: "Custom fastai layers and basic functions to grab them."
 <h3 id="MishJitAutoFn" class="doc_header"><code>class</code> <code>MishJitAutoFn</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/layers.py#L601" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>MishJitAutoFn</code>() :: <code>Function</code></p>
 </blockquote>
 <p>Records operation history and defines formulas for differentiating ops.</p>
-<p>Every operation performed on :class:<code>Tensor</code> s creates a new function
+<p>Every operation performed on :class:<a href="https://pytorch.org/docs/stable/tensors.html"><code>Tensor</code></a> s creates a new function
 object, that performs the computation, and records that it happened.
 The history is retained in the form of a DAG of functions, with edges
 denoting data dependencies (<code>input &lt;- output</code>). Then, when backward is

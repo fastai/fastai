@@ -34,7 +34,7 @@ class TfmdDL(DataLoader):
     "Transformed `DataLoader`"
     def __init__(self, dataset, bs=64, shuffle=False, num_workers=None, verbose=False, do_setup=True, **kwargs):
         if num_workers is None: num_workers = min(16, defaults.cpus)
-        for nm in _batch_tfms: kwargs[nm] = Pipeline(kwargs.get(nm,None), as_item=(nm=='before_batch'))
+        for nm in _batch_tfms: kwargs[nm] = Pipeline(kwargs.get(nm,None))
         super().__init__(dataset, bs=bs, shuffle=shuffle, num_workers=num_workers, **kwargs)
         if do_setup:
             for nm in _batch_tfms:
@@ -189,13 +189,13 @@ FilteredBase.train,FilteredBase.valid = add_props(lambda i,x: x.subset(i))
 class TfmdLists(FilteredBase, L, GetAttr):
     "A `Pipeline` of `tfms` applied to a collection of `items`"
     _default='tfms'
-    def __init__(self, items, tfms, use_list=None, do_setup=True, as_item=True, split_idx=None, train_setup=True,
+    def __init__(self, items, tfms, use_list=None, do_setup=True, split_idx=None, train_setup=True,
                  splits=None, types=None, verbose=False):
         super().__init__(items, use_list=use_list)
         self.splits = L([slice(None),[]] if splits is None else splits).map(mask2idxs)
         if isinstance(tfms,TfmdLists): tfms = tfms.tfms
         if isinstance(tfms,Pipeline): do_setup=False
-        self.tfms = Pipeline(tfms, as_item=as_item, split_idx=split_idx)
+        self.tfms = Pipeline(tfms, split_idx=split_idx)
         self.types = types
         if do_setup:
             pv(f"Setting up {self.tfms}", verbose)
@@ -310,10 +310,11 @@ class Datasets(FilteredBase):
     )
 
 # Cell
-def test_set(dsets, test_items, rm_tfms=None):
+def test_set(dsets, test_items, rm_tfms=None, with_labels=False):
     "Create a test set from `test_items` using validation transforms of `dsets`"
     if isinstance(dsets, Datasets):
-        test_tls = [tl._new(test_items, split_idx=1) for tl in dsets.tls[:dsets.n_inp]]
+        tls = dsets.tls if with_labels else dsets.tls[:dsets.n_inp]
+        test_tls = [tl._new(test_items, split_idx=1) for tl in tls]
         if rm_tfms is None: rm_tfms = [tl.infer_idx(get_first(test_items)) for tl in test_tls]
         else:               rm_tfms = tuplify(rm_tfms, match=test_tls)
         for i,j in enumerate(rm_tfms): test_tls[i].tfms.fs = test_tls[i].tfms.fs[j:]
@@ -328,8 +329,8 @@ def test_set(dsets, test_items, rm_tfms=None):
 # Cell
 @delegates(TfmdDL.__init__)
 @patch
-def test_dl(self:DataLoaders, test_items, rm_type_tfms=None, **kwargs):
+def test_dl(self:DataLoaders, test_items, rm_type_tfms=None, with_labels=False, **kwargs):
     "Create a test dataloader from `test_items` using validation transforms of `dls`"
-    test_ds = test_set(self.valid_ds, test_items, rm_tfms=rm_type_tfms
+    test_ds = test_set(self.valid_ds, test_items, rm_tfms=rm_type_tfms, with_labels=with_labels
                       ) if isinstance(self.valid_ds, (Datasets, TfmdLists)) else test_items
     return self.valid.new(test_ds, **kwargs)

@@ -118,7 +118,7 @@ class Tabular(CollBase, GetAttr, FilteredBase):
         if block_y is not None and do_setup:
             if callable(block_y): block_y = block_y()
             procs = L(procs) + block_y.type_tfms
-        self.cat_names,self.cont_names,self.procs = L(cat_names),L(cont_names),Pipeline(procs, as_item=True)
+        self.cat_names,self.cont_names,self.procs = L(cat_names),L(cont_names),Pipeline(procs)
         self.split = len(splits[0])
         if do_setup: self.setup()
 
@@ -137,7 +137,6 @@ class Tabular(CollBase, GetAttr, FilteredBase):
     def iloc(self): return _TabIloc(self)
     def targ(self): return self.items[self.y_names]
     def x_names (self): return self.cat_names + self.cont_names
-    def all_col_names (self): return self.x_names + self.y_names
     def n_subsets(self): return 2
     def y(self): return self[self.y_names[0]]
     def new_empty(self): return self.new(pd.DataFrame({}, columns=self.items.columns))
@@ -145,11 +144,17 @@ class Tabular(CollBase, GetAttr, FilteredBase):
         self.device = d
         return self
 
+    def all_col_names (self):
+        ys = [n for n in self.y_names if n in self.items.columns]
+        return self.x_names + self.y_names if len(ys) == len(self.y_names) else self.x_names
+
 properties(Tabular,'loc','iloc','targ','all_col_names','n_subsets','x_names','y')
 
 # Cell
 class TabularPandas(Tabular):
-    def transform(self, cols, f): self[cols] = self[cols].transform(f)
+    def transform(self, cols, f, all_col=True):
+        if not all_col: cols = [c for c in cols if c in self.items.columns]
+        if len(cols) > 0: self[cols] = self[cols].transform(f)
 
 # Cell
 def _add_prop(cls, nm):
@@ -202,12 +207,12 @@ def setups(self, to:Tabular):
 
 @Categorize
 def encodes(self, to:Tabular):
-    to.transform(to.y_names, partial(_apply_cats, {n: self.vocab for n in to.y_names}, 0))
+    to.transform(to.y_names, partial(_apply_cats, {n: self.vocab for n in to.y_names}, 0), all_col=False)
     return to
 
 @Categorize
 def decodes(self, to:Tabular):
-    to.transform(to.y_names, partial(_decode_cats, {n: self.vocab for n in to.y_names}))
+    to.transform(to.y_names, partial(_decode_cats, {n: self.vocab for n in to.y_names}), all_col=False)
     return to
 
 # Cell
@@ -269,15 +274,18 @@ class ReadTabBatch(ItemTransform):
     def __init__(self, to): self.to = to
 
     def encodes(self, to):
-        if not to.with_cont: res = tensor(to.cats).long(), tensor(to.targ)
-        else: res = (tensor(to.cats).long(),tensor(to.conts).float(), tensor(to.targ))
+        if not to.with_cont: res = (tensor(to.cats).long(),)
+        else: res = (tensor(to.cats).long(),tensor(to.conts).float())
+        ys = [n for n in to.y_names if n in to.items.columns]
+        if len(ys) == len(to.y_names): res = res + (tensor(to.targ),)
         if to.device is not None: res = to_device(res, to.device)
         return res
 
     def decodes(self, o):
         o = [_maybe_expand(o_) for o_ in to_np(o) if o_.size != 0]
         vals = np.concatenate(o, axis=1)
-        df = pd.DataFrame(vals, columns=self.to.all_col_names)
+        try: df = pd.DataFrame(vals, columns=self.to.all_col_names)
+        except: df = pd.DataFrame(vals, columns=self.to.x_names)
         to = self.to.new(df)
         return to
 
