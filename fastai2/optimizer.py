@@ -173,7 +173,7 @@ def adam_step(p, lr, mom, step, sqr_mom, grad_avg, sqr_avg, eps, **kwargs):
 adam_step._defaults = dict(eps=1e-5)
 
 # Cell
-def Adam(params, lr, mom=0.9, sqr_mom=0.99, eps=1e-5, wd=0., decouple_wd=True):
+def Adam(params, lr, mom=0.9, sqr_mom=0.99, eps=1e-5, wd=0.01, decouple_wd=True):
     "A `Optimizer` for Adam with `lr`, `mom`, `sqr_mom`, `eps` and `params`"
     cbs = [weight_decay] if decouple_wd else [l2_reg]
     cbs += [partial(average_grad, dampening=True), average_sqr_grad, step_stat, adam_step]

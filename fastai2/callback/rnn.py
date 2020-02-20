@@ -3,9 +3,7 @@
 __all__ = ['ModelReseter', 'RNNRegularizer']
 
 # Cell
-from ..data.all import *
-from ..optimizer import *
-from ..learner import *
+from ..basics import *
 
 # Cell
 @docs

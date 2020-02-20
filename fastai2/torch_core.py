@@ -758,7 +758,7 @@ def grad_module(cls):
         def forward(self, *args, **kwargs): return cls.apply(*args, **kwargs)
     return _c
 
-# Comes from 13a_metrics.ipynb, cell
+# Comes from 13b_metrics.ipynb, cell
 def flatten_check(inp, targ):
     "Check that `out` and `targ` have the same number of elements and flatten them."
     inp,targ = inp.contiguous().view(-1),targ.contiguous().view(-1)
