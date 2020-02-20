@@ -255,7 +255,7 @@ class Tokenizer(Transform):
     @classmethod
     @delegates(tokenize_df, keep=True)
     def from_df(cls, text_cols, tok_func=SpacyTokenizer, rules=None, **kwargs):
-        res = cls(get_tokenizer(tok_func, rules=rules, **kwargs), mode='df')
+        res = cls(get_tokenizer(tok_func, **kwargs), rules=rules, mode='df')
         res.text_cols,res.kwargs,res.train_setup = text_cols,merge({'tok_func': tok_func}, kwargs),False
         return res
 
