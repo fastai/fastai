@@ -287,8 +287,13 @@ class Tokenizer(Transform):
 
     def get_lengths(self, items):
         if self.lengths is None: return None
-        if self.mode == 'folder': return [self.lengths[str(Path(i).relative_to(self.path))] for i in items]
-        if self.mode == 'df': return items['text_length'].values
+        if self.mode == 'df':
+            if isinstance(items, pd.DataFrame) and 'text_lengths' in items.columns: return items['text_length'].values
+        if self.mode == 'folder':
+            try:
+                res = [self.lengths[str(Path(i).relative_to(self.path))] for i in items]
+                if len(res) == len(items): return res
+            except: return None
 
 # Cell
 eu_langs = ["bg", "cs", "da", "de", "el", "en", "es", "et", "fi", "fr", "ga", "hr", "hu",
