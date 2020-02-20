@@ -226,12 +226,12 @@ loading order and optional automatic batching (collation) and memory pinning.</p
              to multiprocessing in PyTorch.</p>
 <p>.. note:: <code>len(dataloader)</code> heuristic is based on the length of the sampler used.
           When :attr:<code>dataset</code> is an :class:<code>~torch.utils.data.IterableDataset</code>,
-          an infinite sampler is used, whose :meth:<code>__len__</code> is not
-          implemented, because the actual length depends on both the
-          iterable as well as multi-process loading configurations. So one
-          should not query this method unless they work with a map-style
-          dataset. See <code>Dataset Types</code>_ for more details on these two types
-          of datasets.</p>
+          <code>len(dataset)</code> (if implemented) is returned instead, regardless
+          of multi-process loading configurations, because PyTorch trust
+          user :attr:<code>dataset</code> code in correctly handling multi-process
+          loading to avoid duplicate data. See <code>Dataset Types</code><em> for more
+          details on these two types of datasets and how
+          :class:<code>~torch.utils.data.IterableDataset</code> interacts with <code>Multi-process data loading</code></em>.</p>
 
 </div>
 
@@ -273,7 +273,7 @@ loading order and optional automatic batching (collation) and memory pinning.</p
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>(#0) []</pre>
+<pre>(#6) [0.14786435518384977,0.2650330681194001,0.6431452951690536,0.09458671548019948,0.8696155162247328,0.29837767606261467]</pre>
 </div>
 
 </div>
@@ -302,7 +302,7 @@ loading order and optional automatic batching (collation) and memory pinning.</p
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>(#1) [4]</pre>
+<pre>(#0) []</pre>
 </div>
 
 </div>
@@ -332,7 +332,7 @@ loading order and optional automatic batching (collation) and memory pinning.</p
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>(#9) [4,4,4,4,4,4,4,4,4]</pre>
+<pre>(#28) [4,4,4,4,4,4,4,4,4,4...]</pre>
 </div>
 
 </div>
@@ -382,7 +382,7 @@ loading order and optional automatic batching (collation) and memory pinning.</p
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>(#26) [0.23688707909390738,0.6333334705554325,0.6485924823697974,0.28623522404967117,0.42726669910772974,0.19798998280241475,0.4822826831702295,0.7698170119796222,0.15370893856465362,0.45616784710166003...]</pre>
+<pre>(#48) [0.3975703088063097,0.9300043261284903,0.21348763857582242,0.414557522602783,0.10987859373433917,0.8210019528840916,0.3265409454362096,0.37081412769534416,0.3355937609498155,0.8700538355944498...]</pre>
 </div>
 
 </div>
@@ -509,12 +509,12 @@ loading order and optional automatic batching (collation) and memory pinning.</p
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>CPU times: user 4.98 ms, sys: 596 µs, total: 5.58 ms
-Wall time: 310 ms
-CPU times: user 8.3 ms, sys: 24.8 ms, total: 33.1 ms
-Wall time: 160 ms
-CPU times: user 17.4 ms, sys: 30.2 ms, total: 47.6 ms
-Wall time: 127 ms
+<pre>CPU times: user 3.83 ms, sys: 0 ns, total: 3.83 ms
+Wall time: 223 ms
+CPU times: user 6.58 ms, sys: 15.6 ms, total: 22.2 ms
+Wall time: 183 ms
+CPU times: user 13.5 ms, sys: 21.5 ms, total: 35 ms
+Wall time: 126 ms
 </pre>
 </div>
 </div>
@@ -554,8 +554,8 @@ Wall time: 127 ms
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>CPU times: user 25.9 ms, sys: 17.9 ms, total: 43.9 ms
-Wall time: 113 ms
+<pre>CPU times: user 7.89 ms, sys: 26.9 ms, total: 34.8 ms
+Wall time: 89.4 ms
 </pre>
 </div>
 </div>

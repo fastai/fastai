@@ -90,13 +90,13 @@ summary: "Callback and helper function to add hooks in models"
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Linear(in_features=5, out_features=3, bias=True) (tensor([[-0.6042,  0.4547, -0.9114,  0.5092,  1.9404],
-        [-0.6118, -1.5053,  1.2949,  0.4388,  0.4543],
-        [-1.2485, -1.2279,  0.2239, -1.0819,  0.4343],
-        [-0.9140, -0.6590, -0.5770,  1.3149,  1.6912]]),) tensor([[-1.1556,  1.1864, -0.0710],
-        [-0.0022,  0.1698,  0.5380],
-        [ 0.3193,  0.9947,  0.2038],
-        [-1.2464,  0.6548,  0.5106]], grad_fn=&lt;AddmmBackward&gt;)
+<pre>Linear(in_features=5, out_features=3, bias=True) (tensor([[-2.0659,  0.0029, -0.9297, -1.6083, -1.7315],
+        [-1.6195, -1.5001, -0.8875, -0.3388, -0.3652],
+        [ 0.2002,  0.2435,  1.2172,  0.8630,  1.2036],
+        [ 0.6391,  1.2876, -1.9677,  0.1012, -0.4137]]),) tensor([[-0.1301,  0.0155,  0.2497],
+        [ 0.2340, -0.3740, -0.4380],
+        [-0.3792, -0.4760, -0.1643],
+        [ 0.4125,  0.9391, -1.2156]], grad_fn=&lt;AddmmBackward&gt;)
 </pre>
 </div>
 </div>
@@ -137,14 +137,14 @@ summary: "Callback and helper function to add hooks in models"
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Linear(in_features=5, out_features=3, bias=True) (tensor([ 0.3297, -0.0381, -0.0866]), None, tensor([[ 0.1297, -0.0159, -0.0952],
-        [ 0.1346, -0.0104, -0.0445],
-        [-0.2819, -0.0349,  0.2128],
-        [-0.3038, -0.2348,  0.2890],
-        [-0.3632,  0.1116,  0.1180]])) (tensor([[ 0.1194,  0.1110, -0.0802],
-        [-0.0172, -0.0306,  0.0643],
-        [ 0.2129, -0.0302, -0.1131],
-        [ 0.0146, -0.0884,  0.0423]]),)
+<pre>Linear(in_features=5, out_features=3, bias=True) (tensor([-0.0889, -0.1311, -0.3239]), None, tensor([[-0.1187,  0.2066, -0.1778],
+        [-0.0607,  0.3248, -0.0937],
+        [ 0.0405, -0.0819,  0.1595],
+        [ 0.0120, -0.1240,  0.0143],
+        [-0.0533, -0.2217, -0.2708]])) (tensor([[-0.0366,  0.0250, -0.1122],
+        [-0.0503, -0.0623, -0.1142],
+        [ 0.0212, -0.1468, -0.0359],
+        [-0.0231,  0.0530, -0.0617]]),)
 </pre>
 </div>
 </div>
@@ -860,7 +860,7 @@ summary: "Callback and helper function to add hooks in models"
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>(#4) [0,18.969200134277344,12.052532196044922,&#39;00:00&#39;]
+<pre>(#4) [0,17.76603126525879,23.31198501586914,&#39;00:00&#39;]
 </pre>
 </div>
 </div>
@@ -896,7 +896,7 @@ summary: "Callback and helper function to add hooks in models"
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>(#4) [0,9.656743049621582,13.194965362548828,&#39;00:00&#39;]
+<pre>(#4) [0,3.439974069595337,2.1897826194763184,&#39;00:00&#39;]
 </pre>
 </div>
 </div>
@@ -1212,7 +1212,7 @@ Total params: 251
 Total trainable params: 151
 Total non-trainable params: 100
 
-Optimizer used: functools.partial(&lt;function SGD at 0x7f5a508c0b90&gt;, mom=0.9)
+Optimizer used: functools.partial(&lt;function SGD at 0x7f6dd8ae4f80&gt;, mom=0.9)
 Loss function: FlattenedLoss of MSELoss()
 
 Model unfrozen
@@ -1268,7 +1268,7 @@ Total params: 0
 Total trainable params: 0
 Total non-trainable params: 0
 
-Optimizer used: functools.partial(&lt;function SGD at 0x7f5a508c0b90&gt;, mom=0.9)
+Optimizer used: functools.partial(&lt;function SGD at 0x7f6dd8ae4f80&gt;, mom=0.9)
 Loss function: FlattenedLoss of MSELoss()
 
 Callbacks:
@@ -1393,7 +1393,7 @@ Callbacks:
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>(#4) [0,15.51450252532959,19.089649200439453,&#39;00:00&#39;]
+<pre>(#4) [0,15.9533109664917,16.78474998474121,&#39;00:00&#39;]
 </pre>
 </div>
 </div>
@@ -1422,7 +1422,7 @@ Callbacks:
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>(#2) [(#1) [{&#39;mean&#39;: 0.2957606315612793, &#39;std&#39;: 0.6046382784843445, &#39;near_zero&#39;: 0.375}],(#1) [{&#39;mean&#39;: 0.08696205914020538, &#39;std&#39;: 0.46177494525909424, &#39;near_zero&#39;: 0.4375}]]</pre>
+<pre>(#2) [(#1) [{&#39;mean&#39;: 0.7498316168785095, &#39;std&#39;: 1.0590876340866089, &#39;near_zero&#39;: 0.375}],(#1) [{&#39;mean&#39;: 0.6023440361022949, &#39;std&#39;: 0.915452241897583, &#39;near_zero&#39;: 0.1875}]]</pre>
 </div>
 
 </div>
@@ -1467,12 +1467,12 @@ Callbacks:
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>(#4) [0,13.773916244506836,10.790084838867188,&#39;00:00&#39;]
-(#4) [0,11.327720642089844,10.009943008422852,&#39;00:00&#39;]
-(#4) [0,7.467780113220215,5.522648334503174,&#39;00:00&#39;]
-(#4) [0,26.6921443939209,23.27324676513672,&#39;00:00&#39;]
-(#4) [0,17.20162010192871,11.952783584594727,&#39;00:00&#39;]
-(#4) [0,24.15806770324707,16.266334533691406,&#39;00:00&#39;]
+<pre>(#4) [0,12.596071243286133,10.469954490661621,&#39;00:00&#39;]
+(#4) [0,31.34967803955078,23.612323760986328,&#39;00:00&#39;]
+(#4) [0,14.076311111450195,11.747014999389648,&#39;00:00&#39;]
+(#4) [0,16.8385066986084,9.499192237854004,&#39;00:00&#39;]
+(#4) [0,18.776268005371094,14.976844787597656,&#39;00:00&#39;]
+(#4) [0,11.286646842956543,8.42125415802002,&#39;00:00&#39;]
 </pre>
 </div>
 </div>
