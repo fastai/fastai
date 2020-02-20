@@ -81,10 +81,11 @@ def RandomSplitter(valid_pct=0.2, seed=None, **kwargs):
     return _inner
 
 # Cell
-def TrainTestSplitter(test_size=0.2, random_state=None, **kwargs):
-    "Split items into random train and test subsets using sklearn train_test_split utility."
+def TrainTestSplitter(test_size=0.2, random_state=None, stratify=None, **kwargs):
+    "Split ‘items‘ into random train and test subsets using sklearn train_test_split utility."
+    "Has option to do it in a stratified fashion (split uniformely according to the ‘labels‘ distribution)"
     def _inner(o, **kwargs):
-        train, valid = train_test_split(range(len(o)), test_size=test_size, random_state=random_state, **kwargs)
+        train, valid = train_test_split(range(len(o)), test_size=test_size, random_state=random_state, stratify=stratify, **kwargs)
         return L(train), L(valid)
     return _inner
 
