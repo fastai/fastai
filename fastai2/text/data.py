@@ -179,8 +179,9 @@ class SortedDL(TfmdDL):
 
 # Cell
 class TextBlock(TransformBlock):
-    def __init__(self, tok_tfm, vocab=None, is_lm=False, seq_len=72):
-        return super().__init__(type_tfms=[tok_tfm, Numericalize(vocab)],
+    @delegates(Numericalize.__init__)
+    def __init__(self, tok_tfm, vocab=None, is_lm=False, seq_len=72, **kwargs):
+        return super().__init__(type_tfms=[tok_tfm, Numericalize(vocab, **kwargs)],
                                 dl_type=LMDataLoader if is_lm else SortedDL,
                                 dls_kwargs={} if is_lm else {'before_batch': partial(pad_input_chunk, seq_len=seq_len)})
 
