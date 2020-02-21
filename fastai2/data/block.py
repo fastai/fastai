@@ -175,5 +175,6 @@ def summary(self: DataBlock, source, bs=4, **kwargs):
 
     if len([f for f in dls.train.after_batch.fs if f.name != 'noop'])!=0:
         print("\nApplying batch_tfms to the batch built")
+        b = to_device(b, dls.device)
         b = _apply_pipeline(dls.train.after_batch, b)
     else: print("\nNo batch_tfms to apply")
