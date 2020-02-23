@@ -43,7 +43,7 @@ class TabularModel(Module):
         if y_range is not None: _layers.append(SigmoidRange(*y_range))
         self.layers = nn.Sequential(*_layers)
 
-    def forward(self, x_cat, x_cont):
+    def forward(self, x_cat, x_cont=None):
         if self.n_emb != 0:
             x = [e(x_cat[:,i]) for i,e in enumerate(self.embeds)]
             x = torch.cat(x, 1)
