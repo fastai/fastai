@@ -6,6 +6,7 @@ keywords: fastai
 sidebar: home_sidebar
 
 summary: "Callback and helper functions to schedule any hyper-parameter"
+description: "Callback and helper functions to schedule any hyper-parameter"
 ---
 <!--
 
@@ -496,7 +497,7 @@ summary: "Callback and helper functions to schedule any hyper-parameter"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ParamScheduler" class="doc_header"><code>class</code> <code>ParamScheduler</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/schedule.py#L58" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ParamScheduler</code>(<strong><code>scheds</code></strong>) :: <a href="/learner#Callback"><code>Callback</code></a></p>
+<h2 id="ParamScheduler" class="doc_header"><code>class</code> <code>ParamScheduler</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/schedule.py#L58" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ParamScheduler</code>(<strong><code>scheds</code></strong>) :: <a href="/callback_core#Callback"><code>Callback</code></a></p>
 </blockquote>
 <p>Schedule hyper-parameters according to <code>scheds</code></p>
 
@@ -642,7 +643,7 @@ summary: "Callback and helper functions to schedule any hyper-parameter"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Learner.fit_one_cycle" class="doc_header"><code>Learner.fit_one_cycle</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/schedule.py#L81" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.fit_one_cycle</code>(<strong><code>n_epoch</code></strong>, <strong><code>lr_max</code></strong>=<em><code>None</code></em>, <strong><code>div</code></strong>=<em><code>25.0</code></em>, <strong><code>div_final</code></strong>=<em><code>100000.0</code></em>, <strong><code>pct_start</code></strong>=<em><code>0.25</code></em>, <strong><code>wd</code></strong>=<em><code>0.01</code></em>, <strong><code>moms</code></strong>=<em><code>None</code></em>, <strong><code>cbs</code></strong>=<em><code>None</code></em>, <strong><code>reset_opt</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="Learner.fit_one_cycle" class="doc_header"><code>Learner.fit_one_cycle</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/schedule.py#L81" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.fit_one_cycle</code>(<strong><code>n_epoch</code></strong>, <strong><code>lr_max</code></strong>=<em><code>None</code></em>, <strong><code>div</code></strong>=<em><code>25.0</code></em>, <strong><code>div_final</code></strong>=<em><code>100000.0</code></em>, <strong><code>pct_start</code></strong>=<em><code>0.25</code></em>, <strong><code>wd</code></strong>=<em><code>None</code></em>, <strong><code>moms</code></strong>=<em><code>None</code></em>, <strong><code>cbs</code></strong>=<em><code>None</code></em>, <strong><code>reset_opt</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 <p>Fit <code>self.model</code> for <code>n_epoch</code> using the 1cycle policy.</p>
 
@@ -805,7 +806,7 @@ summary: "Callback and helper functions to schedule any hyper-parameter"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Learner.fit_flat_cos" class="doc_header"><code>Learner.fit_flat_cos</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/schedule.py#L105" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.fit_flat_cos</code>(<strong><code>n_epoch</code></strong>, <strong><code>lr</code></strong>=<em><code>None</code></em>, <strong><code>div_final</code></strong>=<em><code>100000.0</code></em>, <strong><code>pct_start</code></strong>=<em><code>0.75</code></em>, <strong><code>wd</code></strong>=<em><code>0.01</code></em>, <strong><code>cbs</code></strong>=<em><code>None</code></em>, <strong><code>reset_opt</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="Learner.fit_flat_cos" class="doc_header"><code>Learner.fit_flat_cos</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/schedule.py#L105" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.fit_flat_cos</code>(<strong><code>n_epoch</code></strong>, <strong><code>lr</code></strong>=<em><code>None</code></em>, <strong><code>div_final</code></strong>=<em><code>100000.0</code></em>, <strong><code>pct_start</code></strong>=<em><code>0.75</code></em>, <strong><code>wd</code></strong>=<em><code>None</code></em>, <strong><code>cbs</code></strong>=<em><code>None</code></em>, <strong><code>reset_opt</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 <p>Fit <code>self.model</code> for <code>n_epoch</code> at flat <code>lr</code> before a cosine annealing.</p>
 
@@ -889,7 +890,7 @@ summary: "Callback and helper functions to schedule any hyper-parameter"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Learner.fit_sgdr" class="doc_header"><code>Learner.fit_sgdr</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/schedule.py#L116" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.fit_sgdr</code>(<strong><code>n_cycles</code></strong>, <strong><code>cycle_len</code></strong>, <strong><code>lr_max</code></strong>=<em><code>None</code></em>, <strong><code>cycle_mult</code></strong>=<em><code>2</code></em>, <strong><code>cbs</code></strong>=<em><code>None</code></em>, <strong><code>reset_opt</code></strong>=<em><code>False</code></em>, <strong><code>wd</code></strong>=<em><code>0.01</code></em>)</p>
+<h4 id="Learner.fit_sgdr" class="doc_header"><code>Learner.fit_sgdr</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/schedule.py#L116" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.fit_sgdr</code>(<strong><code>n_cycles</code></strong>, <strong><code>cycle_len</code></strong>, <strong><code>lr_max</code></strong>=<em><code>None</code></em>, <strong><code>cycle_mult</code></strong>=<em><code>2</code></em>, <strong><code>cbs</code></strong>=<em><code>None</code></em>, <strong><code>reset_opt</code></strong>=<em><code>False</code></em>, <strong><code>wd</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Fit <code>self.model</code> for <code>n_cycles</code> of <code>cycle_len</code> using SGDR.</p>
 
@@ -903,7 +904,7 @@ summary: "Callback and helper functions to schedule any hyper-parameter"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>This schedule was introduced by Ilya Loshchilov et al. in <a href="https://arxiv.org/abs/1608.03983">SGDR: Stochastic Gradient Descent with Warm Restarts</a>. It consists of <code>n_cycles</code> that are cosine annealings from <code>lr_max</code> (defaults to the <a href="/learner#Learner"><code>Learner</code></a> lr) to 0, with a length of <code>cycle_len * cycle_mult**i</code> for the <code>i</code>-th cycle (first one is <code>cycle_len</code>-long, then we multiply the length by <code>cycle_mult</code> at each epoch). You can optionally pass additional <code>cbs</code> and <code>reset_opt</code>.</p>
+<p>This schedule was introduced by Ilya Loshchilov et al. in <a href="https://arxiv.org/abs/1608.03983">SGDR: Stochastic Gradient Descent with Warm Restarts</a>. It consists of <code>n_cycles</code> that are cosine annealings from <code>lr_max</code> (defaults to the <a href="/13a_learner#Learner"><code>Learner</code></a> lr) to 0, with a length of <code>cycle_len * cycle_mult**i</code> for the <code>i</code>-th cycle (first one is <code>cycle_len</code>-long, then we multiply the length by <code>cycle_mult</code> at each epoch). You can optionally pass additional <code>cbs</code> and <code>reset_opt</code>.</p>
 
 </div>
 </div>

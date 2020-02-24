@@ -6,6 +6,7 @@ keywords: fastai
 sidebar: home_sidebar
 
 summary: "Basic function to preprocess tabular data before assembling it in a `DataLoaders`."
+description: "Basic function to preprocess tabular data before assembling it in a `DataLoaders`."
 ---
 <!--
 
@@ -1368,49 +1369,49 @@ summary: "Basic function to preprocess tabular data before assembling it in a `D
   <tbody>
     <tr>
       <th>0</th>
-      <td>Self-emp-not-inc</td>
-      <td>HS-grad</td>
-      <td>Married-civ-spouse</td>
+      <td>Private</td>
+      <td>12th</td>
+      <td>Never-married</td>
       <td>Sales</td>
-      <td>Wife</td>
-      <td>White</td>
+      <td>Not-in-family</td>
+      <td>Black</td>
       <td>False</td>
       <td>False</td>
       <td>False</td>
-      <td>48.000000</td>
-      <td>28790.995282</td>
-      <td>9.0</td>
+      <td>28.000000</td>
+      <td>408472.998401</td>
+      <td>8.0</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>Self-emp-not-inc</td>
+      <td>Private</td>
       <td>HS-grad</td>
-      <td>Married-civ-spouse</td>
-      <td>Exec-managerial</td>
-      <td>Husband</td>
-      <td>White</td>
+      <td>Divorced</td>
+      <td>Tech-support</td>
+      <td>Unmarried</td>
+      <td>Black</td>
       <td>False</td>
       <td>False</td>
       <td>False</td>
-      <td>50.000000</td>
-      <td>172281.000095</td>
+      <td>43.000000</td>
+      <td>191765.000018</td>
       <td>9.0</td>
-      <td>&gt;=50k</td>
+      <td>&lt;50k</td>
     </tr>
     <tr>
       <th>2</th>
       <td>Private</td>
       <td>HS-grad</td>
       <td>Married-civ-spouse</td>
-      <td>Other-service</td>
+      <td>Handlers-cleaners</td>
       <td>Husband</td>
-      <td>White</td>
+      <td>Black</td>
       <td>False</td>
       <td>False</td>
       <td>False</td>
-      <td>40.000000</td>
-      <td>193994.999980</td>
+      <td>44.000000</td>
+      <td>261496.999376</td>
       <td>9.0</td>
       <td>&lt;50k</td>
     </tr>
@@ -1425,95 +1426,15 @@ summary: "Basic function to preprocess tabular data before assembling it in a `D
       <td>False</td>
       <td>False</td>
       <td>False</td>
-      <td>23.999999</td>
-      <td>418404.993176</td>
+      <td>30.000000</td>
+      <td>236769.999974</td>
       <td>9.0</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
       <th>4</th>
       <td>Private</td>
-      <td>Some-college</td>
-      <td>Married-civ-spouse</td>
-      <td>Handlers-cleaners</td>
-      <td>Husband</td>
-      <td>Black</td>
-      <td>False</td>
-      <td>False</td>
-      <td>False</td>
-      <td>53.999999</td>
-      <td>163893.998720</td>
-      <td>10.0</td>
-      <td>&lt;50k</td>
-    </tr>
-    <tr>
-      <th>5</th>
-      <td>Private</td>
-      <td>HS-grad</td>
-      <td>Married-civ-spouse</td>
-      <td>Craft-repair</td>
-      <td>Husband</td>
-      <td>White</td>
-      <td>False</td>
-      <td>False</td>
-      <td>False</td>
-      <td>37.000000</td>
-      <td>126675.001998</td>
-      <td>9.0</td>
-      <td>&lt;50k</td>
-    </tr>
-    <tr>
-      <th>6</th>
-      <td>Private</td>
-      <td>HS-grad</td>
-      <td>Separated</td>
-      <td>Craft-repair</td>
-      <td>Unmarried</td>
-      <td>Black</td>
-      <td>False</td>
-      <td>False</td>
-      <td>False</td>
-      <td>48.000000</td>
-      <td>149210.001176</td>
-      <td>9.0</td>
-      <td>&lt;50k</td>
-    </tr>
-    <tr>
-      <th>7</th>
-      <td>Self-emp-not-inc</td>
-      <td>HS-grad</td>
-      <td>Separated</td>
-      <td>Craft-repair</td>
-      <td>Unmarried</td>
-      <td>White</td>
-      <td>False</td>
-      <td>False</td>
-      <td>False</td>
-      <td>33.000000</td>
-      <td>361816.998600</td>
-      <td>9.0</td>
-      <td>&lt;50k</td>
-    </tr>
-    <tr>
-      <th>8</th>
-      <td>Private</td>
-      <td>11th</td>
-      <td>Never-married</td>
-      <td>Other-service</td>
-      <td>Unmarried</td>
-      <td>Black</td>
-      <td>False</td>
-      <td>False</td>
-      <td>False</td>
-      <td>32.000000</td>
-      <td>316769.001331</td>
-      <td>7.0</td>
-      <td>&lt;50k</td>
-    </tr>
-    <tr>
-      <th>9</th>
-      <td>Private</td>
-      <td>Masters</td>
+      <td>Bachelors</td>
       <td>Married-civ-spouse</td>
       <td>Exec-managerial</td>
       <td>Husband</td>
@@ -1521,10 +1442,90 @@ summary: "Basic function to preprocess tabular data before assembling it in a `D
       <td>False</td>
       <td>False</td>
       <td>False</td>
-      <td>46.000000</td>
-      <td>268022.000474</td>
-      <td>14.0</td>
+      <td>42.000000</td>
+      <td>118946.997672</td>
+      <td>13.0</td>
       <td>&gt;=50k</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>Private</td>
+      <td>Some-college</td>
+      <td>Never-married</td>
+      <td>Other-service</td>
+      <td>Not-in-family</td>
+      <td>White</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>27.000000</td>
+      <td>198286.000047</td>
+      <td>10.0</td>
+      <td>&lt;50k</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>Self-emp-not-inc</td>
+      <td>Bachelors</td>
+      <td>Divorced</td>
+      <td>Prof-specialty</td>
+      <td>Not-in-family</td>
+      <td>White</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>50.000000</td>
+      <td>240611.998749</td>
+      <td>13.0</td>
+      <td>&lt;50k</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>Private</td>
+      <td>HS-grad</td>
+      <td>Married-civ-spouse</td>
+      <td>Machine-op-inspct</td>
+      <td>Husband</td>
+      <td>White</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>38.000000</td>
+      <td>239754.999657</td>
+      <td>9.0</td>
+      <td>&lt;50k</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>Private</td>
+      <td>5th-6th</td>
+      <td>Married-civ-spouse</td>
+      <td>Handlers-cleaners</td>
+      <td>Husband</td>
+      <td>White</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>50.000000</td>
+      <td>128377.998653</td>
+      <td>3.0</td>
+      <td>&lt;50k</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>Private</td>
+      <td>Some-college</td>
+      <td>Never-married</td>
+      <td>Other-service</td>
+      <td>Not-in-family</td>
+      <td>White</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>20.999999</td>
+      <td>322144.001504</td>
+      <td>10.0</td>
+      <td>&lt;50k</td>
     </tr>
   </tbody>
 </table>
@@ -1576,103 +1577,135 @@ summary: "Basic function to preprocess tabular data before assembling it in a `D
   </thead>
   <tbody>
     <tr>
-      <th>1102</th>
-      <td>Private</td>
-      <td>HS-grad</td>
-      <td>Married-civ-spouse</td>
-      <td>Sales</td>
-      <td>Husband</td>
+      <th>7323</th>
+      <td>State-gov</td>
+      <td>Some-college</td>
+      <td>Divorced</td>
+      <td>Adm-clerical</td>
+      <td>Own-child</td>
       <td>White</td>
       <td>False</td>
       <td>False</td>
       <td>False</td>
-      <td>48.0</td>
-      <td>336540.0</td>
-      <td>9.0</td>
+      <td>49.0</td>
+      <td>206577.0</td>
+      <td>10.0</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
-      <th>1400</th>
+      <th>2534</th>
       <td>Private</td>
-      <td>Assoc-voc</td>
+      <td>11th</td>
+      <td>Never-married</td>
+      <td>Other-service</td>
+      <td>Own-child</td>
+      <td>White</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>18.0</td>
+      <td>338632.0</td>
+      <td>7.0</td>
+      <td>&lt;50k</td>
+    </tr>
+    <tr>
+      <th>549</th>
+      <td>Private</td>
+      <td>Bachelors</td>
       <td>Married-civ-spouse</td>
-      <td>Exec-managerial</td>
+      <td>#na#</td>
       <td>Wife</td>
       <td>White</td>
       <td>False</td>
       <td>False</td>
       <td>False</td>
-      <td>26.0</td>
-      <td>282142.0</td>
-      <td>11.0</td>
+      <td>41.0</td>
+      <td>112181.0</td>
+      <td>13.0</td>
+      <td>&gt;=50k</td>
+    </tr>
+    <tr>
+      <th>618</th>
+      <td>Private</td>
+      <td>Some-college</td>
+      <td>Divorced</td>
+      <td>Adm-clerical</td>
+      <td>Not-in-family</td>
+      <td>Asian-Pac-Islander</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>49.0</td>
+      <td>72333.0</td>
+      <td>10.0</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
-      <th>9481</th>
+      <th>6098</th>
       <td>Private</td>
-      <td>Some-college</td>
+      <td>Masters</td>
       <td>Married-civ-spouse</td>
-      <td>Sales</td>
+      <td>Exec-managerial</td>
       <td>Husband</td>
       <td>White</td>
       <td>False</td>
       <td>False</td>
       <td>False</td>
-      <td>51.0</td>
-      <td>178054.0</td>
+      <td>53.0</td>
+      <td>110977.0</td>
+      <td>14.0</td>
+      <td>&gt;=50k</td>
+    </tr>
+    <tr>
+      <th>6000</th>
+      <td>Federal-gov</td>
+      <td>Some-college</td>
+      <td>Married-civ-spouse</td>
+      <td>Tech-support</td>
+      <td>Husband</td>
+      <td>White</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>27.0</td>
+      <td>276776.0</td>
       <td>10.0</td>
       <td>&gt;=50k</td>
     </tr>
     <tr>
-      <th>2213</th>
-      <td>Private</td>
-      <td>Some-college</td>
-      <td>Never-married</td>
-      <td>Craft-repair</td>
-      <td>Unmarried</td>
-      <td>Amer-Indian-Eskimo</td>
+      <th>1096</th>
+      <td>Self-emp-not-inc</td>
+      <td>Bachelors</td>
+      <td>Divorced</td>
+      <td>Exec-managerial</td>
+      <td>Not-in-family</td>
+      <td>White</td>
       <td>False</td>
       <td>False</td>
       <td>False</td>
-      <td>24.0</td>
-      <td>259351.0</td>
-      <td>10.0</td>
+      <td>54.0</td>
+      <td>154785.0</td>
+      <td>13.0</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
-      <th>9542</th>
+      <th>7744</th>
       <td>Private</td>
-      <td>HS-grad</td>
-      <td>Married-civ-spouse</td>
+      <td>9th</td>
+      <td>Separated</td>
       <td>Machine-op-inspct</td>
-      <td>Husband</td>
-      <td>Black</td>
-      <td>False</td>
-      <td>False</td>
-      <td>False</td>
-      <td>34.0</td>
-      <td>231238.0</td>
-      <td>9.0</td>
-      <td>&lt;50k</td>
-    </tr>
-    <tr>
-      <th>7621</th>
-      <td>Private</td>
-      <td>HS-grad</td>
-      <td>Married-civ-spouse</td>
-      <td>Sales</td>
-      <td>Husband</td>
+      <td>Unmarried</td>
       <td>White</td>
       <td>False</td>
       <td>False</td>
       <td>False</td>
-      <td>33.0</td>
-      <td>315143.0</td>
-      <td>9.0</td>
-      <td>&gt;=50k</td>
+      <td>59.0</td>
+      <td>230899.0</td>
+      <td>5.0</td>
+      <td>&lt;50k</td>
     </tr>
     <tr>
-      <th>1913</th>
+      <th>6134</th>
       <td>Private</td>
       <td>Bachelors</td>
       <td>Married-civ-spouse</td>
@@ -1682,57 +1715,25 @@ summary: "Basic function to preprocess tabular data before assembling it in a `D
       <td>False</td>
       <td>False</td>
       <td>False</td>
-      <td>40.0</td>
-      <td>88909.0</td>
+      <td>35.0</td>
+      <td>36214.0</td>
       <td>13.0</td>
       <td>&gt;=50k</td>
     </tr>
     <tr>
-      <th>8822</th>
+      <th>3206</th>
       <td>Private</td>
-      <td>HS-grad</td>
-      <td>Married-civ-spouse</td>
-      <td>Craft-repair</td>
-      <td>Husband</td>
+      <td>12th</td>
+      <td>Never-married</td>
+      <td>Transport-moving</td>
+      <td>Unmarried</td>
       <td>White</td>
       <td>False</td>
       <td>False</td>
       <td>False</td>
-      <td>33.0</td>
-      <td>143653.0</td>
-      <td>9.0</td>
-      <td>&lt;50k</td>
-    </tr>
-    <tr>
-      <th>9986</th>
-      <td>Private</td>
-      <td>Bachelors</td>
-      <td>Married-civ-spouse</td>
-      <td>Prof-specialty</td>
-      <td>Husband</td>
-      <td>White</td>
-      <td>False</td>
-      <td>False</td>
-      <td>False</td>
-      <td>34.0</td>
-      <td>244147.0</td>
-      <td>13.0</td>
-      <td>&gt;=50k</td>
-    </tr>
-    <tr>
-      <th>5829</th>
-      <td>Self-emp-not-inc</td>
-      <td>HS-grad</td>
-      <td>Married-civ-spouse</td>
-      <td>Craft-repair</td>
-      <td>Husband</td>
-      <td>White</td>
-      <td>False</td>
-      <td>False</td>
-      <td>False</td>
-      <td>30.0</td>
-      <td>173854.0</td>
-      <td>9.0</td>
+      <td>22.0</td>
+      <td>64520.0</td>
+      <td>8.0</td>
       <td>&lt;50k</td>
     </tr>
   </tbody>
@@ -1766,25 +1767,25 @@ summary: "Basic function to preprocess tabular data before assembling it in a `D
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>age                                  48
-workclass                       Private
-fnlwgt                           336540
-education                       HS-grad
-education-num                         9
-marital-status       Married-civ-spouse
-occupation                        Sales
-relationship                    Husband
-race                              White
-sex                                Male
-capital-gain                          0
-capital-loss                          0
-hours-per-week                       40
-native-country            United-States
-salary                             &lt;50k
-age_na                            False
-fnlwgt_na                         False
-education-num_na                  False
-Name: 1102, dtype: object</pre>
+<pre>age                             49
+workclass                State-gov
+fnlwgt                      206577
+education             Some-college
+education-num                   10
+marital-status            Divorced
+occupation            Adm-clerical
+relationship             Own-child
+race                         White
+sex                           Male
+capital-gain                     0
+capital-loss                     0
+hours-per-week                  40
+native-country       United-States
+salary                        &lt;50k
+age_na                       False
+fnlwgt_na                    False
+education-num_na             False
+Name: 7323, dtype: object</pre>
 </div>
 
 </div>
@@ -1854,11 +1855,11 @@ Name: 1102, dtype: object</pre>
   <tbody>
     <tr>
       <th>10000</th>
-      <td>0.465819</td>
+      <td>0.459122</td>
       <td>5</td>
-      <td>1.327224</td>
+      <td>1.363463</td>
       <td>10</td>
-      <td>1.173293</td>
+      <td>1.172252</td>
       <td>3</td>
       <td>2</td>
       <td>1</td>
@@ -1874,11 +1875,11 @@ Name: 1102, dtype: object</pre>
     </tr>
     <tr>
       <th>10001</th>
-      <td>-0.931435</td>
+      <td>-0.929526</td>
       <td>5</td>
-      <td>1.241045</td>
+      <td>1.275136</td>
       <td>12</td>
-      <td>-0.438027</td>
+      <td>-0.421429</td>
       <td>3</td>
       <td>15</td>
       <td>1</td>
@@ -1894,11 +1895,11 @@ Name: 1102, dtype: object</pre>
     </tr>
     <tr>
       <th>10002</th>
-      <td>1.054136</td>
+      <td>1.043815</td>
       <td>5</td>
-      <td>0.149059</td>
+      <td>0.155938</td>
       <td>2</td>
-      <td>-1.243687</td>
+      <td>-1.218269</td>
       <td>1</td>
       <td>9</td>
       <td>2</td>
@@ -1914,11 +1915,11 @@ Name: 1102, dtype: object</pre>
     </tr>
     <tr>
       <th>10003</th>
-      <td>0.539359</td>
+      <td>0.532208</td>
       <td>5</td>
-      <td>-0.279846</td>
+      <td>-0.283655</td>
       <td>12</td>
-      <td>-0.438027</td>
+      <td>-0.421429</td>
       <td>7</td>
       <td>2</td>
       <td>5</td>
@@ -1934,11 +1935,11 @@ Name: 1102, dtype: object</pre>
     </tr>
     <tr>
       <th>10004</th>
-      <td>0.759978</td>
+      <td>0.751469</td>
       <td>6</td>
-      <td>1.428764</td>
+      <td>1.467533</td>
       <td>9</td>
-      <td>0.367633</td>
+      <td>0.375411</td>
       <td>3</td>
       <td>5</td>
       <td>1</td>
@@ -2014,7 +2015,7 @@ Name: 1102, dtype: object</pre>
       <td>False</td>
       <td>False</td>
       <td>45.000000</td>
-      <td>338105.000100</td>
+      <td>338104.995130</td>
       <td>13.0</td>
     </tr>
     <tr>
@@ -2029,7 +2030,7 @@ Name: 1102, dtype: object</pre>
       <td>False</td>
       <td>False</td>
       <td>26.000000</td>
-      <td>328663.001269</td>
+      <td>328662.996647</td>
       <td>9.0</td>
     </tr>
     <tr>
@@ -2044,7 +2045,7 @@ Name: 1102, dtype: object</pre>
       <td>False</td>
       <td>False</td>
       <td>53.000000</td>
-      <td>209022.000531</td>
+      <td>209021.999365</td>
       <td>7.0</td>
     </tr>
     <tr>
@@ -2059,7 +2060,7 @@ Name: 1102, dtype: object</pre>
       <td>False</td>
       <td>False</td>
       <td>46.000000</td>
-      <td>162029.999327</td>
+      <td>162029.999283</td>
       <td>9.0</td>
     </tr>
     <tr>
@@ -2074,7 +2075,7 @@ Name: 1102, dtype: object</pre>
       <td>False</td>
       <td>False</td>
       <td>49.000000</td>
-      <td>349230.000373</td>
+      <td>349230.006370</td>
       <td>11.0</td>
     </tr>
     <tr>
@@ -2089,7 +2090,7 @@ Name: 1102, dtype: object</pre>
       <td>False</td>
       <td>False</td>
       <td>34.000000</td>
-      <td>124827.002208</td>
+      <td>124826.997206</td>
       <td>10.0</td>
     </tr>
     <tr>
@@ -2104,7 +2105,7 @@ Name: 1102, dtype: object</pre>
       <td>False</td>
       <td>False</td>
       <td>53.000000</td>
-      <td>290639.998405</td>
+      <td>290640.002134</td>
       <td>10.0</td>
     </tr>
     <tr>
@@ -2118,8 +2119,8 @@ Name: 1102, dtype: object</pre>
       <td>False</td>
       <td>False</td>
       <td>False</td>
-      <td>19.000000</td>
-      <td>106273.001243</td>
+      <td>19.000001</td>
+      <td>106273.001742</td>
       <td>10.0</td>
     </tr>
     <tr>
@@ -2133,8 +2134,8 @@ Name: 1102, dtype: object</pre>
       <td>False</td>
       <td>False</td>
       <td>False</td>
-      <td>71.999999</td>
-      <td>53683.999535</td>
+      <td>71.999998</td>
+      <td>53683.995043</td>
       <td>10.0</td>
     </tr>
     <tr>
@@ -2149,7 +2150,7 @@ Name: 1102, dtype: object</pre>
       <td>False</td>
       <td>False</td>
       <td>20.000001</td>
-      <td>505979.998933</td>
+      <td>505980.006083</td>
       <td>10.0</td>
     </tr>
   </tbody>
@@ -2464,8 +2465,8 @@ Name: 1102, dtype: object</pre>
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>CPU times: user 148 ms, sys: 0 ns, total: 148 ms
-Wall time: 146 ms
+<pre>CPU times: user 150 ms, sys: 43 µs, total: 150 ms
+Wall time: 149 ms
 </pre>
 </div>
 </div>
@@ -2518,72 +2519,72 @@ Wall time: 146 ms
   <tbody>
     <tr>
       <th>0</th>
-      <td>State-gov</td>
-      <td>10th</td>
-      <td>Never-married</td>
-      <td>Other-service</td>
-      <td>Own-child</td>
-      <td>Black</td>
-      <td>False</td>
-      <td>False</td>
-      <td>False</td>
-      <td>29.0</td>
-      <td>271011.998858</td>
-      <td>6.0</td>
-      <td>False</td>
-      <td>False</td>
-      <td>False</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>Private</td>
+      <td>?</td>
       <td>Some-college</td>
       <td>Never-married</td>
-      <td>Prof-specialty</td>
-      <td>Not-in-family</td>
+      <td>?</td>
+      <td>Own-child</td>
       <td>White</td>
       <td>False</td>
       <td>False</td>
       <td>False</td>
-      <td>34.0</td>
-      <td>467107.993478</td>
+      <td>22.000000</td>
+      <td>211967.999761</td>
       <td>10.0</td>
+      <td>False</td>
+      <td>False</td>
       <td>True</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>State-gov</td>
+      <td>HS-grad</td>
+      <td>Married-civ-spouse</td>
+      <td>Transport-moving</td>
+      <td>Husband</td>
+      <td>White</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>46.000000</td>
+      <td>29696.003974</td>
+      <td>9.0</td>
+      <td>False</td>
       <td>True</td>
       <td>True</td>
     </tr>
     <tr>
       <th>2</th>
       <td>Private</td>
-      <td>HS-grad</td>
+      <td>10th</td>
       <td>Married-civ-spouse</td>
-      <td>Exec-managerial</td>
-      <td>Wife</td>
-      <td>White</td>
+      <td>Handlers-cleaners</td>
+      <td>Husband</td>
+      <td>Black</td>
       <td>False</td>
-      <td>False</td>
-      <td>False</td>
-      <td>42.0</td>
-      <td>185601.999950</td>
-      <td>9.0</td>
-      <td>True</td>
       <td>False</td>
       <td>True</td>
+      <td>43.000000</td>
+      <td>143582.999508</td>
+      <td>10.0</td>
+      <td>False</td>
+      <td>True</td>
+      <td>False</td>
     </tr>
     <tr>
       <th>3</th>
-      <td>Self-emp-not-inc</td>
-      <td>Masters</td>
-      <td>Never-married</td>
-      <td>Farming-fishing</td>
-      <td>Not-in-family</td>
+      <td>Private</td>
+      <td>HS-grad</td>
+      <td>Married-civ-spouse</td>
+      <td>Craft-repair</td>
+      <td>Husband</td>
       <td>White</td>
       <td>False</td>
       <td>False</td>
       <td>False</td>
-      <td>57.0</td>
-      <td>135134.000458</td>
-      <td>14.0</td>
+      <td>28.000000</td>
+      <td>274964.000829</td>
+      <td>9.0</td>
       <td>False</td>
       <td>True</td>
       <td>True</td>
@@ -2591,35 +2592,35 @@ Wall time: 146 ms
     <tr>
       <th>4</th>
       <td>Private</td>
-      <td>Some-college</td>
-      <td>Never-married</td>
-      <td>Other-service</td>
-      <td>Not-in-family</td>
+      <td>HS-grad</td>
+      <td>Married-civ-spouse</td>
+      <td>Machine-op-inspct</td>
+      <td>Husband</td>
       <td>White</td>
       <td>False</td>
       <td>False</td>
       <td>False</td>
-      <td>31.0</td>
-      <td>192900.000047</td>
-      <td>10.0</td>
+      <td>61.000000</td>
+      <td>125154.998677</td>
+      <td>9.0</td>
       <td>False</td>
       <td>True</td>
       <td>True</td>
     </tr>
     <tr>
       <th>5</th>
-      <td>Private</td>
-      <td>HS-grad</td>
-      <td>Never-married</td>
+      <td>Federal-gov</td>
+      <td>Bachelors</td>
+      <td>Separated</td>
       <td>Other-service</td>
-      <td>Own-child</td>
+      <td>Unmarried</td>
       <td>White</td>
       <td>False</td>
       <td>False</td>
       <td>False</td>
-      <td>22.0</td>
-      <td>34747.000747</td>
-      <td>9.0</td>
+      <td>55.000000</td>
+      <td>174532.999808</td>
+      <td>13.0</td>
       <td>False</td>
       <td>False</td>
       <td>True</td>
@@ -2627,53 +2628,53 @@ Wall time: 146 ms
     <tr>
       <th>6</th>
       <td>Private</td>
-      <td>HS-grad</td>
-      <td>Never-married</td>
+      <td>Assoc-acdm</td>
+      <td>Married-civ-spouse</td>
       <td>Adm-clerical</td>
-      <td>Other-relative</td>
+      <td>Wife</td>
       <td>White</td>
       <td>False</td>
       <td>False</td>
       <td>False</td>
-      <td>32.0</td>
-      <td>168980.999728</td>
-      <td>9.0</td>
-      <td>False</td>
+      <td>39.000000</td>
+      <td>203203.999919</td>
+      <td>12.0</td>
+      <td>True</td>
       <td>False</td>
       <td>True</td>
     </tr>
     <tr>
       <th>7</th>
+      <td>Local-gov</td>
+      <td>Bachelors</td>
+      <td>Married-civ-spouse</td>
+      <td>Craft-repair</td>
+      <td>Husband</td>
+      <td>Asian-Pac-Islander</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>38.000000</td>
+      <td>227154.000747</td>
+      <td>13.0</td>
+      <td>False</td>
+      <td>True</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>8</th>
       <td>Private</td>
       <td>HS-grad</td>
       <td>Married-civ-spouse</td>
-      <td>#na#</td>
+      <td>Craft-repair</td>
       <td>Husband</td>
       <td>White</td>
       <td>False</td>
       <td>False</td>
       <td>False</td>
-      <td>32.0</td>
-      <td>202951.999732</td>
+      <td>37.000000</td>
+      <td>31022.996001</td>
       <td>9.0</td>
-      <td>False</td>
-      <td>True</td>
-      <td>True</td>
-    </tr>
-    <tr>
-      <th>8</th>
-      <td>Private</td>
-      <td>Assoc-voc</td>
-      <td>Never-married</td>
-      <td>Craft-repair</td>
-      <td>Own-child</td>
-      <td>White</td>
-      <td>False</td>
-      <td>False</td>
-      <td>False</td>
-      <td>22.0</td>
-      <td>157145.001137</td>
-      <td>11.0</td>
       <td>False</td>
       <td>True</td>
       <td>True</td>
@@ -2681,18 +2682,18 @@ Wall time: 146 ms
     <tr>
       <th>9</th>
       <td>Private</td>
-      <td>Bachelors</td>
-      <td>Married-civ-spouse</td>
-      <td>Adm-clerical</td>
-      <td>Husband</td>
+      <td>10th</td>
+      <td>Never-married</td>
+      <td>Other-service</td>
+      <td>Own-child</td>
       <td>White</td>
       <td>False</td>
       <td>False</td>
       <td>False</td>
-      <td>48.0</td>
-      <td>155663.998502</td>
-      <td>13.0</td>
-      <td>True</td>
+      <td>17.000001</td>
+      <td>25051.000293</td>
+      <td>6.0</td>
+      <td>False</td>
       <td>True</td>
       <td>True</td>
     </tr>

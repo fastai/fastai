@@ -6,6 +6,7 @@ keywords: fastai
 sidebar: home_sidebar
 
 summary: "Custom fastai layers and basic functions to grab them."
+description: "Custom fastai layers and basic functions to grab them."
 ---
 <!--
 
@@ -1301,7 +1302,7 @@ summary: "Custom fastai layers and basic functions to grab them."
 <p>The following class if the base class to warp a loss function it provides several added functionality:</p>
 <ul>
 <li>it flattens the tensors before trying to take the losses since it's more convenient (with a potential tranpose to put <code>axis</code> at the end)</li>
-<li>it has a potential <code>activation</code> method that tells the library if there is an activation fused in the loss (useful for inference and methods such as <a href="/learner#Learner.get_preds"><code>Learner.get_preds</code></a> or <a href="/learner#Learner.predict"><code>Learner.predict</code></a>)</li>
+<li>it has a potential <code>activation</code> method that tells the library if there is an activation fused in the loss (useful for inference and methods such as <a href="/13a_learner#Learner.get_preds"><code>Learner.get_preds</code></a> or <a href="/13a_learner#Learner.predict"><code>Learner.predict</code></a>)</li>
 <li>it has a potential <a href="/tabular.core#decodes"><code>decodes</code></a> method that is used on predictions in inference (for instance, an argmax in classification)</li>
 </ul>
 
@@ -1622,9 +1623,9 @@ summary: "Custom fastai layers and basic functions to grab them."
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>On top of the formula we define:</p>
 <ul>
-<li>a <code>reduction</code> attribute, that will be used when we call <a href="/learner#Learner.get_preds"><code>Learner.get_preds</code></a></li>
-<li>an <code>activation</code> function that represents the activation fused in the loss (since we use cross entropy behind the scenes). It will be applied to the output of the model when calling <a href="/learner#Learner.get_preds"><code>Learner.get_preds</code></a> or <a href="/learner#Learner.predict"><code>Learner.predict</code></a></li>
-<li>a <a href="/tabular.core#decodes"><code>decodes</code></a> function that converts the output of the model to a format similar to the target (here indices). This is used in <a href="/learner#Learner.predict"><code>Learner.predict</code></a> and <a href="/learner#Learner.show_results"><code>Learner.show_results</code></a> to decode the predictions </li>
+<li>a <code>reduction</code> attribute, that will be used when we call <a href="/13a_learner#Learner.get_preds"><code>Learner.get_preds</code></a></li>
+<li>an <code>activation</code> function that represents the activation fused in the loss (since we use cross entropy behind the scenes). It will be applied to the output of the model when calling <a href="/13a_learner#Learner.get_preds"><code>Learner.get_preds</code></a> or <a href="/13a_learner#Learner.predict"><code>Learner.predict</code></a></li>
+<li>a <a href="/tabular.core#decodes"><code>decodes</code></a> function that converts the output of the model to a format similar to the target (here indices). This is used in <a href="/13a_learner#Learner.predict"><code>Learner.predict</code></a> and <a href="/13a_learner#Learner.show_results"><code>Learner.show_results</code></a> to decode the predictions </li>
 </ul>
 
 </div>
