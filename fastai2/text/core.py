@@ -340,13 +340,17 @@ class SentencePieceTokenizer():#TODO: pass the special tokens symbol to sp
         raw_text_path.unlink()
         return self.cache_dir/'spm.model'
 
-    def setup(self, items, rules):
+    def setup(self, items, rules=None):
+        from sentencepiece import SentencePieceProcessor
+        if rules is None: rules = []
         if self.tok is not None: return {'sp_model': self.sp_model}
         raw_text_path = self.cache_dir/'texts.out'
         with open(raw_text_path, 'w') as f:
             for t in progress_bar(maps(*rules, items), total=len(items), leave=False):
                 f.write(f'{t}\n')
-        return {'sp_model': self.train(raw_text_path)}
+        sp_model = self.train(raw_text_path)
+        self.tok = SentencePieceProcessor()
+        self.tok.Load(str(sp_model))
 
     def __call__(self, items):
         for t in items: yield self.tok.EncodeAsPieces(t)
