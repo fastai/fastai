@@ -10,7 +10,7 @@ import fastprogress, subprocess, platform
 __all__ = ['show_install', 'check_perf', 'pillow_version']
 
 def pillow_version():
-    import PIL
+    import PIL.Image
     try: return PIL.Image.PILLOW_VERSION
     except: return PIL.Image.__version__
 
