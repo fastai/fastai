@@ -11,9 +11,8 @@ __all__ = ['show_install', 'check_perf', 'pillow_version']
 
 def pillow_version():
     import PIL.Image
-    try: return PIL.Image.PILLOW_VERSION
-    except: return PIL.Image.__version__
-
+    try:    return PIL.Image.__version__    # PIL >= 7
+    except: return PIL.Image.PILLOW_VERSION # PIL <  7
 
 def get_env(name):
     "Return env var value if it's defined and not an empty string, or return Unknown"
