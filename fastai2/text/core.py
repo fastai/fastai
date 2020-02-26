@@ -2,10 +2,10 @@
 
 __all__ = ['UNK', 'PAD', 'BOS', 'EOS', 'FLD', 'TK_REP', 'TK_WREP', 'TK_UP', 'TK_MAJ', 'spec_add_spaces',
            'rm_useless_spaces', 'replace_rep', 'replace_wrep', 'fix_html', 'replace_all_caps', 'replace_maj',
-           'lowercase', 'replace_space', 'BaseTokenizer', 'SpacyTokenizer', 'TokenizeBatch', 'tokenize1',
-           'parallel_tokenize', 'fn_counter_pkl', 'fn_lengths_pkl', 'tokenize_folder', 'read_tokenized_file',
-           'tokenize_files', 'tokenize_df', 'tokenize_csv', 'load_tokenized_csv', 'get_tokenizer', 'Tokenizer',
-           'eu_langs', 'SentencePieceTokenizer']
+           'lowercase', 'replace_space', 'BaseTokenizer', 'SpacyTokenizer', 'WordTokenizer', 'TokenizeBatch',
+           'tokenize1', 'parallel_tokenize', 'fn_counter_pkl', 'fn_lengths_pkl', 'tokenize_folder',
+           'read_tokenized_file', 'tokenize_files', 'tokenize_df', 'tokenize_csv', 'load_tokenized_csv',
+           'get_tokenizer', 'Tokenizer', 'eu_langs', 'SentencePieceTokenizer', 'SubwordTokenizer']
 
 # Cell
 from ..torch_basics import *
@@ -117,6 +117,9 @@ class SpacyTokenizer():
 
     def __call__(self, items):
         return (L(doc).attrgot('text') for doc in self.pipe(items, batch_size=self.buf_sz))
+
+# Cell
+WordTokenizer = SpacyTokenizer
 
 # Cell
 class TokenizeBatch:
@@ -354,3 +357,6 @@ class SentencePieceTokenizer():#TODO: pass the special tokens symbol to sp
 
     def __call__(self, items):
         for t in items: yield self.tok.EncodeAsPieces(t)
+
+# Cell
+SubwordTokenizer = SentencePieceTokenizer
