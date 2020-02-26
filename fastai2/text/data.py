@@ -187,13 +187,15 @@ class TextBlock(TransformBlock):
 
     @classmethod
     @delegates(Tokenizer.from_df, keep=True)
-    def from_df(cls, text_cols, vocab=None, is_lm=False, seq_len=72, **kwargs):
-        return cls(Tokenizer.from_df(text_cols, **kwargs), vocab=vocab, is_lm=is_lm, seq_len=seq_len)
+    def from_df(cls, text_cols, vocab=None, is_lm=False, seq_len=72, min_freq=3, max_vocab=60000, **kwargs):
+        return cls(Tokenizer.from_df(text_cols, **kwargs), vocab=vocab, is_lm=is_lm, seq_len=seq_len,
+                   min_freq=min_freq, max_vocab=max_vocab)
 
     @classmethod
     @delegates(Tokenizer.from_folder, keep=True)
-    def from_folder(cls, path, vocab=None, is_lm=False, seq_len=72, **kwargs):
-        return cls(Tokenizer.from_folder(path, **kwargs), vocab=vocab, is_lm=is_lm, seq_len=seq_len)
+    def from_folder(cls, path, vocab=None, is_lm=False, seq_len=72, min_freq=3, max_vocab=60000, **kwargs):
+        return cls(Tokenizer.from_folder(path, **kwargs), vocab=vocab, is_lm=is_lm, seq_len=seq_len,
+                   min_freq=min_freq, max_vocab=max_vocab)
 
 # Cell
 class TextDataLoaders(DataLoaders):
