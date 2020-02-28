@@ -254,13 +254,15 @@ class FillMissing(TabularProc):
         store_attr(self, 'fill_strategy,add_col,fill_vals')
 
     def setups(self, dsets):
+        missing = pd.isnull(dsets.conts).any()
         self.na_dict = {n:self.fill_strategy(dsets[n], self.fill_vals[n])
-                        for n in pd.isnull(dsets.conts).any().keys()}
+                        for n in missing[missing].keys()}
 
     def encodes(self, to):
         missing = pd.isnull(to.conts)
-        for n in missing.any().keys():
+        for n in missing.any()[missing.any()].keys():
             assert n in self.na_dict, f"nan values in `{n}` but not in setup training set"
+        for n in self.na_dict.keys():
             to[n].fillna(self.na_dict[n], inplace=True)
             if self.add_col:
                 to.loc[:,n+'_na'] = missing[n]
