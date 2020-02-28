@@ -33,8 +33,7 @@ class TabularModel(Module):
         if not is_listy(ps): ps = [ps]*len(layers)
         self.embeds = nn.ModuleList([Embedding(ni, nf) for ni,nf in emb_szs])
         self.emb_drop = nn.Dropout(embed_p)
-        self.bn_cont = None
-        if bn_cont: self.bn_cont = nn.BatchNorm1d(n_cont)
+        self.bn_cont = nn.BatchNorm1d(n_cont) if bn_cont else None
         n_emb = sum(e.embedding_dim for e in self.embeds)
         self.n_emb,self.n_cont = n_emb,n_cont
         sizes = [n_emb + n_cont] + layers + [out_sz]
