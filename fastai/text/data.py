@@ -415,6 +415,8 @@ def get_default_size(texts, max_vocab_sz):
 full_char_coverage_langs = ["bg", "cs", "da", "de", "el", "en", "es", "et", "fi", "fr", "ga", "hr", "hu",
                        "it","lt","lv","mt","nl","pl","pt","ro","sk","sl","sv"] # all European langs
 
+quotemark = '\"'
+
 def train_sentencepiece(texts:Collection[str], path:PathOrStr, pre_rules: ListRules=None, post_rules:ListRules=None, 
     vocab_sz:int=None, max_vocab_sz:int=30000, model_type:str='unigram', max_sentence_len:int=20480, lang='en',
     char_coverage=None, tmp_dir='tmp', enc='utf8'):
@@ -427,11 +429,11 @@ def train_sentencepiece(texts:Collection[str], path:PathOrStr, pre_rules: ListRu
     with open(raw_text_path, 'w', encoding=enc) as f: f.write("\n".join(texts))
     spec_tokens = ['\u2581'+s for s in defaults.text_spec_tok]
     SentencePieceTrainer.Train(" ".join([
-        f"--input={raw_text_path} --max_sentence_length={max_sentence_len}",
+        f"--input={quotemark}{raw_text_path}{quotemark} --max_sentence_length={max_sentence_len}",
         f"--character_coverage={ifnone(char_coverage, 0.99999 if lang in full_char_coverage_langs else 0.9998)}",
         f"--unk_id={len(defaults.text_spec_tok)} --pad_id=-1 --bos_id=-1 --eos_id=-1",
         f"--user_defined_symbols={','.join(spec_tokens)}",
-        f"--model_prefix={cache_dir/'spm'} --vocab_size={vocab_sz} --model_type={model_type}"]))
+        f"--model_prefix={quotemark}{cache_dir/'spm'}{quotemark} --vocab_size={vocab_sz} --model_type={model_type}"]))
     raw_text_path.unlink()
     return cache_dir
 
