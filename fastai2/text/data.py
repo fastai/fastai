@@ -25,8 +25,8 @@ class LMTensorText(TensorText): pass
 # Cell
 class Numericalize(Transform):
     "Reversible transform of tokenized texts to numericalized ids"
-    def __init__(self, vocab=None, min_freq=3, max_vocab=60000, sep=' '):
-        self.vocab,self.min_freq,self.max_vocab,self.sep = vocab,min_freq,max_vocab,sep
+    def __init__(self, vocab=None, min_freq=3, max_vocab=60000):
+        store_attr(self, 'vocab,min_freq,max_vocab')
         self.o2i = None if vocab is None else defaultdict(int, {v:k for k,v in enumerate(vocab)})
 
     def setups(self, dsets):
@@ -37,7 +37,7 @@ class Numericalize(Transform):
             self.o2i = defaultdict(int, {v:k for k,v in enumerate(self.vocab) if v != 'xxfake'})
 
     def encodes(self, o): return TensorText(tensor([self.o2i  [o_] for o_ in o]))
-    def decodes(self, o): return TitledStr(self.sep.join([self.vocab[o_] for o_ in o if self.vocab[o_] != PAD]))
+    def decodes(self, o): return L(self.vocab[o_] for o_ in o if self.vocab[o_] != PAD)
 
 # Cell
 def _maybe_first(o): return o[0] if isinstance(o, tuple) else o
