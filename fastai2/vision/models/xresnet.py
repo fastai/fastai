@@ -30,9 +30,8 @@ class XResNet(nn.Sequential):
 
         block_szs = [int(o*widen) for o in [64,128,256,512] +[256]*(len(layers)-4)]
         block_szs = [64//expansion] + block_szs
-        blocks = [self._make_layer(ni=block_szs[i], nf=block_szs[i+1], blocks=l,
-                                   stride=1 if i==0 else 2, sa=sa and i==len(layers)-4, **kwargs)
-                  for i,l in enumerate(layers)]
+        blocks    = self._make_blocks(layers, block_szs, sa, **kwargs)
+
         super().__init__(
             *stem, nn.MaxPool2d(kernel_size=3, stride=2, padding=1),
             *blocks,
@@ -40,6 +39,11 @@ class XResNet(nn.Sequential):
             nn.Linear(block_szs[-1]*expansion, c_out),
         )
         init_cnn(self)
+
+    def _make_blocks(self, layers, block_szs, sa, **kwargs):
+        return [self._make_layer(ni=block_szs[i], nf=block_szs[i+1], blocks=l,
+                                 stride=1 if i==0 else 2, sa=sa and i==len(layers)-4, **kwargs)
+                for i,l in enumerate(layers)]
 
     def _make_layer(self, ni, nf, blocks, stride, sa, **kwargs):
         return nn.Sequential(
