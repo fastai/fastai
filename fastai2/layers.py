@@ -100,20 +100,18 @@ def SigmoidRange(self, x):
     return sigmoid_range(x, self.low, self.high)
 
 # Cell
-class AdaptiveConcatPool1d(nn.Module):
+class AdaptiveConcatPool1d(Module):
     "Layer that concats `AdaptiveAvgPool1d` and `AdaptiveMaxPool1d`"
     def __init__(self, size=None):
-        super().__init__()
         self.size = size or 1
         self.ap = nn.AdaptiveAvgPool1d(self.size)
         self.mp = nn.AdaptiveMaxPool1d(self.size)
     def forward(self, x): return torch.cat([self.mp(x), self.ap(x)], 1)
 
 # Cell
-class AdaptiveConcatPool2d(nn.Module):
+class AdaptiveConcatPool2d(Module):
     "Layer that concats `AdaptiveAvgPool2d` and `AdaptiveMaxPool2d`"
     def __init__(self, size=None):
-        super().__init__()
         self.size = size or 1
         self.ap = nn.AdaptiveAvgPool2d(self.size)
         self.mp = nn.AdaptiveMaxPool2d(self.size)
@@ -360,10 +358,9 @@ class Embedding(nn.Embedding):
         trunc_normal_(self.weight.data, std=0.01)
 
 # Cell
-class SelfAttention(nn.Module):
+class SelfAttention(Module):
     "Self attention layer for `n_channels`."
     def __init__(self, n_channels):
-        super().__init__()
         self.query,self.key,self.value = [self._conv(n_channels, c) for c in (n_channels//8,n_channels//8,n_channels)]
         self.gamma = nn.Parameter(tensor([0.]))
 
@@ -380,10 +377,9 @@ class SelfAttention(nn.Module):
         return o.view(*size).contiguous()
 
 # Cell
-class PooledSelfAttention2d(nn.Module):
+class PooledSelfAttention2d(Module):
     "Pooled self attention layer for 2d."
     def __init__(self, n_channels):
-        super().__init__()
         self.n_channels = n_channels
         self.query,self.key,self.value = [self._conv(n_channels, c) for c in (n_channels//8,n_channels//8,n_channels//2)]
         self.out   = self._conv(n_channels//2, n_channels)
@@ -525,13 +521,12 @@ def SEModule(ch, reduction, act_cls=defaults.activation):
                         ProdLayer())
 
 # Cell
-class ResBlock(nn.Module):
+class ResBlock(Module):
     "Resnet block from `ni` to `nh` with `stride`"
     @delegates(ConvLayer.__init__)
     def __init__(self, expansion, ni, nf, stride=1, groups=1, reduction=None, nh1=None, nh2=None, dw=False, g2=1,
                  sa=False, sym=False, norm_type=NormType.Batch, act_cls=defaults.activation, ndim=2, ks=3,
                  pool=AvgPool, pool_first=True, **kwargs):
-        super().__init__()
         norm2 = (NormType.BatchZero if norm_type==NormType.Batch else
                  NormType.InstanceZero if norm_type==NormType.Instance else norm_type)
         if nh2 is None: nh2 = nf
