@@ -251,15 +251,16 @@ def get_tokenizer(tok_func=SpacyTokenizer, **kwargs):
 # Cell
 class Tokenizer(Transform):
     input_types = (str, list, L, tuple, Path)
-    def __init__(self, tokenizer, rules=None, counter=None, lengths=None, mode=None):
-        store_attr(self, 'tokenizer,counter,lengths,mode')
+    def __init__(self, tokenizer, rules=None, counter=None, lengths=None, mode=None, sep=' '):
+        store_attr(self, 'tokenizer,counter,lengths,mode,sep')
         self.rules = defaults.text_proc_rules if rules is None else rules
 
     @classmethod
     @delegates(tokenize_df, keep=True)
-    def from_df(cls, text_cols, tok_func=SpacyTokenizer, rules=None, **kwargs):
+    def from_df(cls, text_cols, tok_func=SpacyTokenizer, rules=None, sep=' ', **kwargs):
         res = cls(get_tokenizer(tok_func, **kwargs), rules=rules, mode='df')
-        res.text_cols,res.kwargs,res.train_setup = text_cols,merge({'tok_func': tok_func}, kwargs),False
+        res.kwargs,res.train_setup = merge({'tok_func': tok_func}, kwargs),False
+        res.text_cols,res.sep = text_cols,sep
         return res
 
     @classmethod
@@ -297,6 +298,8 @@ class Tokenizer(Transform):
                 res = [self.lengths[str(Path(i).relative_to(self.path))] for i in items]
                 if len(res) == len(items): return res
             except: return None
+
+    def decodes(self, o): return TitledStr(self.sep.join(o))
 
 # Cell
 eu_langs = ["bg", "cs", "da", "de", "el", "en", "es", "et", "fi", "fr", "ga", "hr", "hu",
