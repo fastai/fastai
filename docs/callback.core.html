@@ -6,7 +6,6 @@ keywords: fastai
 sidebar: home_sidebar
 
 summary: "Basic callbacks for Learner"
-description: "Basic callbacks for Learner"
 ---
 <!--
 
@@ -80,7 +79,7 @@ description: "Basic callbacks for Learner"
 <li>update the parameters accordingly</li>
 <li>zero all the gradients</li>
 </ul>
-<p>Any tweak of this training loop is defined in a <a href="/callback_core#Callback"><code>Callback</code></a> to avoid over-complicating the code of the training loop, and to make it easy to mix and match different techniques (since they'll be defined in different callbacks). A callback can implement actions on the following events:</p>
+<p>Any tweak of this training loop is defined in a <a href="/callback.core#Callback"><code>Callback</code></a> to avoid over-complicating the code of the training loop, and to make it easy to mix and match different techniques (since they'll be defined in different callbacks). A callback can implement actions on the following events:</p>
 <ul>
 <li><code>begin_fit</code>: called before doing anything, ideal for initial setup.</li>
 <li><code>begin_epoch</code>: called at the beginning of each epoch, useful for any behavior you need to reset at each epoch.</li>
@@ -146,7 +145,7 @@ description: "Basic callbacks for Learner"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="GetAttr.__getattr__" class="doc_header"><code>GetAttr.__getattr__</code><a href="https://github.com/fastai/fastcore/tree/master/fastcore/foundation.py#L219" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>GetAttr.__getattr__</code>(<strong><code>k</code></strong>)</p>
+<h4 id="GetAttr.__getattr__" class="doc_header"><code>GetAttr.__getattr__</code><a href="https://github.com/fastai/fastcore/tree/master/fastcore/foundation.py#L217" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>GetAttr.__getattr__</code>(<strong><code>k</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -290,7 +289,7 @@ description: "Basic callbacks for Learner"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Callback.name" class="doc_header"><code>Callback.name</code><a href="" class="source_link" style="float:right">[source]</a></h4><p>Name of the <a href="/callback_core#Callback"><code>Callback</code></a>, camel-cased and with '<em>Callback</em>' removed</p>
+<h4 id="Callback.name" class="doc_header"><code>Callback.name</code><a href="" class="source_link" style="float:right">[source]</a></h4><p>Name of the <a href="/callback.core#Callback"><code>Callback</code></a>, camel-cased and with '<em>Callback</em>' removed</p>
 
 </div>
 
@@ -327,9 +326,9 @@ description: "Basic callbacks for Learner"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="TrainEvalCallback" class="doc_header"><code>class</code> <code>TrainEvalCallback</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/core.py#L37" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>TrainEvalCallback</code>() :: <a href="/callback_core#Callback"><code>Callback</code></a></p>
+<h3 id="TrainEvalCallback" class="doc_header"><code>class</code> <code>TrainEvalCallback</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/core.py#L37" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>TrainEvalCallback</code>() :: <a href="/callback.core#Callback"><code>Callback</code></a></p>
 </blockquote>
-<p><a href="/callback_core#Callback"><code>Callback</code></a> that tracks the number of iterations done and properly sets training/eval mode</p>
+<p><a href="/callback.core#Callback"><code>Callback</code></a> that tracks the number of iterations done and properly sets training/eval mode</p>
 
 </div>
 
@@ -341,7 +340,7 @@ description: "Basic callbacks for Learner"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>This <a href="/callback_core#Callback"><code>Callback</code></a> is automatically added in every <a href="/13a_learner#Learner"><code>Learner</code></a> at initialization.</p>
+<p>This <a href="/callback.core#Callback"><code>Callback</code></a> is automatically added in every <a href="/13a_learner#Learner"><code>Learner</code></a> at initialization.</p>
 
 </div>
 </div>
@@ -445,9 +444,9 @@ description: "Basic callbacks for Learner"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="GatherPredsCallback" class="doc_header"><code>class</code> <code>GatherPredsCallback</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/core.py#L66" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>GatherPredsCallback</code>(<strong><code>with_input</code></strong>=<em><code>False</code></em>, <strong><code>with_loss</code></strong>=<em><code>False</code></em>, <strong><code>save_preds</code></strong>=<em><code>None</code></em>, <strong><code>save_targs</code></strong>=<em><code>None</code></em>, <strong><code>concat_dim</code></strong>=<em><code>0</code></em>) :: <a href="/callback_core#Callback"><code>Callback</code></a></p>
+<h3 id="GatherPredsCallback" class="doc_header"><code>class</code> <code>GatherPredsCallback</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/core.py#L66" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>GatherPredsCallback</code>(<strong><code>with_input</code></strong>=<em><code>False</code></em>, <strong><code>with_loss</code></strong>=<em><code>False</code></em>, <strong><code>save_preds</code></strong>=<em><code>None</code></em>, <strong><code>save_targs</code></strong>=<em><code>None</code></em>, <strong><code>concat_dim</code></strong>=<em><code>0</code></em>) :: <a href="/callback.core#Callback"><code>Callback</code></a></p>
 </blockquote>
-<p><a href="/callback_core#Callback"><code>Callback</code></a> that saves the predictions and targets, optionally <code>with_loss</code></p>
+<p><a href="/callback.core#Callback"><code>Callback</code></a> that saves the predictions and targets, optionally <code>with_loss</code></p>
 
 </div>
 
