@@ -101,7 +101,7 @@ def SigmoidRange(self, x):
 
 # Cell
 class AdaptiveConcatPool1d(nn.Module):
-    "Layer that concats `AdaptiveAvgPool2d` and `AdaptiveMaxPool2d`"
+    "Layer that concats `AdaptiveAvgPool1d` and `AdaptiveMaxPool1d`"
     def __init__(self, size=None):
         super().__init__()
         self.size = size or 1
