@@ -120,12 +120,3 @@ _events = L.split('begin_fit begin_epoch begin_train begin_batch after_pred afte
 
 mk_class('event', **_events.map_dict(),
          doc="All possible events as attributes to get tab-completion and typo-proofing")
-
-# Cell
-_loop = ['Start Fit', 'begin_fit', 'Start Epoch Loop', 'begin_epoch', 'Start Train', 'begin_train',
-         'Start Batch Loop', 'begin_batch', 'after_pred', 'after_loss', 'after_backward',
-         'after_step', 'after_cancel_batch', 'after_batch','End Batch Loop','End Train',
-         'after_cancel_train', 'after_train', 'Start Valid', 'begin_validate','Start Batch Loop',
-         '**CBs same as train batch**', 'End Batch Loop', 'End Valid', 'after_cancel_validate',
-         'after_validate', 'End Epoch Loop', 'after_cancel_epoch', 'after_epoch', 'End Fit',
-         'after_cancel_fit', 'after_fit']
