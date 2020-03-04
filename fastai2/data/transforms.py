@@ -2,9 +2,10 @@
 
 __all__ = ['get_files', 'FileGetter', 'image_extensions', 'get_image_files', 'ImageGetter', 'get_text_files',
            'ItemGetter', 'RandomSplitter', 'TrainTestSplitter', 'IndexSplitter', 'GrandparentSplitter', 'FuncSplitter',
-           'MaskSplitter', 'FileSplitter', 'ColSplitter', 'parent_label', 'RegexLabeller', 'ColReader', 'CategoryMap',
-           'Categorize', 'Category', 'MultiCategorize', 'MultiCategory', 'OneHotEncode', 'EncodedMultiCategorize',
-           'RegressionSetup', 'get_c', 'ToTensor', 'IntToFloatTensor', 'broadcast_vec', 'Normalize']
+           'MaskSplitter', 'FileSplitter', 'ColSplitter', 'RandomSubsetSplitter', 'parent_label', 'RegexLabeller',
+           'ColReader', 'CategoryMap', 'Categorize', 'Category', 'MultiCategorize', 'MultiCategory', 'OneHotEncode',
+           'EncodedMultiCategorize', 'RegressionSetup', 'get_c', 'ToTensor', 'IntToFloatTensor', 'broadcast_vec',
+           'Normalize']
 
 # Cell
 from ..torch_basics import *
@@ -136,6 +137,20 @@ def ColSplitter(col='is_valid'):
         assert isinstance(o, pd.DataFrame), "ColSplitter only works when your items are a pandas DataFrame"
         valid_idx = o[col].values
         return IndexSplitter(mask2idxs(valid_idx))(o)
+    return _inner
+
+# Cell
+def RandomSubsetSplitter(train_sz, valid_sz, seed=None):
+    "Take randoms subsets of `splits` with `train_sz` and `valid_sz`"
+    assert 0 < train_sz < 1
+    assert 0 < valid_sz < 1
+    assert train_sz + valid_sz <= 1.
+
+    def _inner(o, **kwargs):
+        if seed is not None: torch.manual_seed(seed)
+        train_len,valid_len = int(len(o)*train_sz),int(len(o)*valid_sz)
+        idxs = L(int(i) for i in torch.randperm(len(o)))
+        return idxs[:train_len],idxs[train_len:train_len+valid_len]
     return _inner
 
 # Cell
