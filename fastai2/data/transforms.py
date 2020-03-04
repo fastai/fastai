@@ -184,7 +184,9 @@ class ColReader():
         if self.label_delim is None: return f'{self.pref}{o}{self.suff}'
         else: return o.split(self.label_delim) if len(o)>0 else []
 
-    def __call__(self, o, **kwargs): return detuplify(tuple(self._do_one(o, c) for c in self.cols))
+    def __call__(self, o, **kwargs):
+        if len(self.cols) == 1: return self._do_one(o, self.cols[0])
+        return L(self._do_one(o, c) for c in self.cols)
 
 # Cell
 class CategoryMap(CollBase):
@@ -259,7 +261,7 @@ class EncodedMultiCategorize(Categorize):
     "Transform of one-hot encoded multi-category that decodes with `vocab`"
     loss_func,order=BCEWithLogitsLossFlat(),1
     def __init__(self, vocab): self.vocab,self.c = vocab,len(vocab)
-    def encodes(self, o): return TensorCategory(tensor(o).float())
+    def encodes(self, o): return TensorMultiCategory(tensor(o).float())
     def decodes(self, o): return MultiCategory (one_hot_decode(o, self.vocab))
 
 # Cell
