@@ -6,7 +6,6 @@ keywords: fastai
 sidebar: home_sidebar
 
 summary: "Basic image opening/processing functionality"
-description: "Basic image opening/processing functionality"
 ---
 <!--
 
@@ -1006,7 +1005,7 @@ directly.</p>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Bounding boxes are expected to come as tuple with an array/tensor of shape <code>(n,4)</code> or as a list of lists with four elements and a list of corresponding labels. Unless you change the defaults in <code>BBoxScaler</code> (see later on), coordinates for each bounding box should go from 0 to width/height, with the following convention: x1, y1, x2, y2 where (x1,y1) is your top-left corner and (x2,y2) is your bottom-right corner.
+<p>Bounding boxes are expected to come as tuple with an array/tensor of shape <code>(n,4)</code> or as a list of lists with four elements and a list of corresponding labels. Unless you change the defaults in <a href="/vision.core#PointScaler"><code>PointScaler</code></a> (see later on), coordinates for each bounding box should go from 0 to width/height, with the following convention: x1, y1, x2, y2 where (x1,y1) is your top-left corner and (x2,y2) is your bottom-right corner.
 {% include note.html content='We use the same convention as for points with x going from 0 to width and y going from 0 to height.' %}</p>
 
 </div>
@@ -1094,7 +1093,7 @@ directly.</p>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Unless specifically metioned, all the following transforms can be used as single-item transforms (in one of the list in the <code>tfms</code> you pass to a <code>TfmdDS</code> or a <code>Datasource</code>) or tuple transform (in the <code>tuple_tfms</code> you pass to a <code>TfmdDS</code> or a <code>Datasource</code>). The safest way that will work accross applications is to always use them as <code>tuple_tfms</code>. For instance, if you have points or bounding boxes as targets and use <a href="/vision.augment#Resize"><code>Resize</code></a> as a single-item transform, when you get to <a href="/vision.core#PointScaler"><code>PointScaler</code></a> or <code>BBoxScaler</code> (which are tuple transforms) you won't have the correct size of the image to properly scale your points.</p>
+<p>Unless specifically mentioned, all the following transforms can be used as single-item transforms (in one of the list in the <code>tfms</code> you pass to a <code>TfmdDS</code> or a <code>Datasource</code>) or tuple transforms (in the <code>tuple_tfms</code> you pass to a <code>TfmdDS</code> or a <code>Datasource</code>). The safest way that will work across applications is to always use them as <code>tuple_tfms</code>. For instance, if you have points or bounding boxes as targets and use <a href="/vision.augment#Resize"><code>Resize</code></a> as a single-item transform, when you get to <a href="/vision.core#PointScaler"><code>PointScaler</code></a> (which is a tuple transform) you won't have the correct size of the image to properly scale your points.</p>
 
 </div>
 </div>
@@ -1415,7 +1414,7 @@ directly.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="BBoxLabeler" class="doc_header"><code>class</code> <code>BBoxLabeler</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/core.py#L248" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>BBoxLabeler</code>(<strong><code>enc</code></strong>=<em><code>None</code></em>, <strong><code>dec</code></strong>=<em><code>None</code></em>, <strong><code>split_idx</code></strong>=<em><code>None</code></em>, <strong><code>order</code></strong>=<em><code>None</code></em>) :: <a href="https://fastcore.fast.ai/transform#Transform"><code>Transform</code></a></p>
+<h3 id="BBoxLabeler" class="doc_header"><code>class</code> <code>BBoxLabeler</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/core.py#L248" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>BBoxLabeler</code>(<strong><code>enc</code></strong>=<em><code>None</code></em>, <strong><code>dec</code></strong>=<em><code>None</code></em>, <strong><code>split_idx</code></strong>=<em><code>None</code></em>, <strong><code>as_item</code></strong>=<em><code>False</code></em>, <strong><code>order</code></strong>=<em><code>None</code></em>) :: <a href="https://fastcore.fast.ai/transform#Transform"><code>Transform</code></a></p>
 </blockquote>
 <p>Delegates (<code>__call__</code>,<code>decode</code>,<code>setup</code>) to (<a href="/tabular.core#encodes"><code>encodes</code></a>,<a href="/tabular.core#decodes"><code>decodes</code></a>,<a href="/tabular.core#setups"><code>setups</code></a>) if <code>split_idx</code> matches</p>
 

@@ -6,7 +6,6 @@ keywords: fastai
 sidebar: home_sidebar
 
 summary: "Functions and transforms to help gather text data in a `Datasets`"
-description: "Functions and transforms to help gather text data in a `Datasets`"
 ---
 <!--
 
@@ -145,7 +144,7 @@ description: "Functions and transforms to help gather text data in a `Datasets`"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="Numericalize" class="doc_header"><code>class</code> <code>Numericalize</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/data.py#L26" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>Numericalize</code>(<strong><code>vocab</code></strong>=<em><code>None</code></em>, <strong><code>min_freq</code></strong>=<em><code>3</code></em>, <strong><code>max_vocab</code></strong>=<em><code>60000</code></em>, <strong><code>sep</code></strong>=<em><code>' '</code></em>) :: <a href="https://fastcore.fast.ai/transform#Transform"><code>Transform</code></a></p>
+<h3 id="Numericalize" class="doc_header"><code>class</code> <code>Numericalize</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/data.py#L26" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>Numericalize</code>(<strong><code>vocab</code></strong>=<em><code>None</code></em>, <strong><code>min_freq</code></strong>=<em><code>3</code></em>, <strong><code>max_vocab</code></strong>=<em><code>60000</code></em>) :: <a href="https://fastcore.fast.ai/transform#Transform"><code>Transform</code></a></p>
 </blockquote>
 <p>Reversible transform of tokenized texts to numericalized ids</p>
 
@@ -162,12 +161,12 @@ description: "Functions and transforms to help gather text data in a `Datasets`"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">num</span> <span class="o">=</span> <span class="n">Numericalize</span><span class="p">(</span><span class="n">min_freq</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
-<span class="n">num</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span><span class="n">L</span><span class="p">(</span><span class="s1">&#39;This is an example of text&#39;</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span> <span class="s1">&#39;this is another text&#39;</span><span class="o">.</span><span class="n">split</span><span class="p">()))</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">start</span> <span class="o">=</span> <span class="s1">&#39;This is an example of text&#39;</span>
+<span class="n">num</span> <span class="o">=</span> <span class="n">Numericalize</span><span class="p">(</span><span class="n">min_freq</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">num</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span><span class="n">L</span><span class="p">(</span><span class="n">start</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span> <span class="s1">&#39;this is another text&#39;</span><span class="o">.</span><span class="n">split</span><span class="p">()))</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="nb">set</span><span class="p">([</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">num</span><span class="o">.</span><span class="n">vocab</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">x</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;xxfake&#39;</span><span class="p">)]),</span> 
         <span class="nb">set</span><span class="p">(</span><span class="n">defaults</span><span class="o">.</span><span class="n">text_spec_tok</span> <span class="o">+</span> <span class="s1">&#39;This is an example of text this another&#39;</span><span class="o">.</span><span class="n">split</span><span class="p">()))</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">num</span><span class="o">.</span><span class="n">vocab</span><span class="p">)</span><span class="o">%</span><span class="k">8</span>, 0)
-<span class="n">start</span> <span class="o">=</span> <span class="s1">&#39;This is an example of text&#39;</span>
 <span class="n">t</span> <span class="o">=</span> <span class="n">num</span><span class="p">(</span><span class="n">start</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
 </pre></div>
 
@@ -182,7 +181,7 @@ description: "Functions and transforms to help gather text data in a `Datasets`"
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">test_eq</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">tensor</span><span class="p">([</span><span class="mi">11</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">10</span><span class="p">]))</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">num</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">t</span><span class="p">),</span> <span class="n">start</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">num</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">t</span><span class="p">),</span> <span class="n">start</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
 </pre></div>
 
     </div>
@@ -195,14 +194,14 @@ description: "Functions and transforms to help gather text data in a `Datasets`"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">num</span> <span class="o">=</span> <span class="n">Numericalize</span><span class="p">(</span><span class="n">min_freq</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">num</span> <span class="o">=</span> <span class="n">Numericalize</span><span class="p">(</span><span class="n">min_freq</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 <span class="n">num</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span><span class="n">L</span><span class="p">(</span><span class="s1">&#39;This is an example of text&#39;</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span> <span class="s1">&#39;this is another text&#39;</span><span class="o">.</span><span class="n">split</span><span class="p">()))</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="nb">set</span><span class="p">([</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">num</span><span class="o">.</span><span class="n">vocab</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">x</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;xxfake&#39;</span><span class="p">)]),</span> 
         <span class="nb">set</span><span class="p">(</span><span class="n">defaults</span><span class="o">.</span><span class="n">text_spec_tok</span> <span class="o">+</span> <span class="s1">&#39;is text&#39;</span><span class="o">.</span><span class="n">split</span><span class="p">()))</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">num</span><span class="o">.</span><span class="n">vocab</span><span class="p">)</span><span class="o">%</span><span class="k">8</span>, 0)
 <span class="n">t</span> <span class="o">=</span> <span class="n">num</span><span class="p">(</span><span class="n">start</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">tensor</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">]))</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">num</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">t</span><span class="p">),</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{UNK}</span><span class="s1"> is </span><span class="si">{UNK}</span><span class="s1"> </span><span class="si">{UNK}</span><span class="s1"> </span><span class="si">{UNK}</span><span class="s1"> text&#39;</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">num</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">t</span><span class="p">),</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{UNK}</span><span class="s1"> is </span><span class="si">{UNK}</span><span class="s1"> </span><span class="si">{UNK}</span><span class="s1"> </span><span class="si">{UNK}</span><span class="s1"> text&#39;</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
 </pre></div>
 
     </div>
@@ -504,33 +503,33 @@ description: "Functions and transforms to help gather text data in a `Datasets`"
   <tbody>
     <tr>
       <th>0</th>
-      <td>xxbos " look , i know this may suck right now , but pain is xxunk , film is forever . xxmaj whatever you do right now is burned into celluloid for all time and for thousands of years to come . "  xxmaj robert xxmaj de xxmaj niro \n\n xxmaj this was initially a film for xxmaj steven xxmaj spielberg , the director hiring several screenwriters to xxunk the screenplay</td>
-      <td>" look , i know this may suck right now , but pain is xxunk , film is forever . xxmaj whatever you do right now is burned into celluloid for all time and for thousands of years to come . "  xxmaj robert xxmaj de xxmaj niro \n\n xxmaj this was initially a film for xxmaj steven xxmaj spielberg , the director hiring several screenwriters to xxunk the screenplay so</td>
+      <td>xxbos a xxunk - remembered melodrama  thanks xxunk to xxmaj xxunk xxmaj colman 's fine xxmaj oscar - winning central performance  about an xxunk - treated theme : the nature of acting and how it can xxunk one 's perception of reality . xxmaj in this case , we have a well - known xxunk tackling xxmaj shakespeare 's " othello " , so that the film 's last third</td>
+      <td>a xxunk - remembered melodrama  thanks xxunk to xxmaj xxunk xxmaj colman 's fine xxmaj oscar - winning central performance  about an xxunk - treated theme : the nature of acting and how it can xxunk one 's perception of reality . xxmaj in this case , we have a well - known xxunk tackling xxmaj shakespeare 's " othello " , so that the film 's last third delves</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>to kill another human being , as xxmaj hitchcock had demonstrated in xxmaj torn xxmaj xxunk . xxmaj but that scene leads to no place of any importance . \n\n xxmaj some people might enjoy this , especially those young enough to think that pain and death are things that happen only in movies . xxmaj some xxunk stuff on screen here . xxbos xxmaj well , what can i say .</td>
-      <td>kill another human being , as xxmaj hitchcock had demonstrated in xxmaj torn xxmaj xxunk . xxmaj but that scene leads to no place of any importance . \n\n xxmaj some people might enjoy this , especially those young enough to think that pain and death are things that happen only in movies . xxmaj some xxunk stuff on screen here . xxbos xxmaj well , what can i say . \n\n</td>
+      <td>went on their own to xxunk down and catch the killer instead of calling the police , with a xxunk that xxmaj oz had , instead ? \n\n xxmaj beth 's boyfriend , who loses his head over her , in the movie xxmaj hank xxmaj ford , xxmaj joseph xxmaj lawrence , is also very unconvincing as well as the two girls at the beach xxunk together with with xxmaj beth</td>
+      <td>on their own to xxunk down and catch the killer instead of calling the police , with a xxunk that xxmaj oz had , instead ? \n\n xxmaj beth 's boyfriend , who loses his head over her , in the movie xxmaj hank xxmaj ford , xxmaj joseph xxmaj lawrence , is also very unconvincing as well as the two girls at the beach xxunk together with with xxmaj beth xxmaj</td>
     </tr>
     <tr>
       <th>2</th>
-      <td>of the most striking xxunk women xxunk ; her acting xxunk her beauty . ( the love scenes between these two xxunk better than words how little the age difference matters to them ! ) xxmaj each of the supporting characters is sharply drawn and excellently portrayed as well . xxmaj the mix of xxunk dialog and passionate excess makes this a delightful xxunk . xxmaj as xxmaj russell xxmaj baker notes</td>
-      <td>the most striking xxunk women xxunk ; her acting xxunk her beauty . ( the love scenes between these two xxunk better than words how little the age difference matters to them ! ) xxmaj each of the supporting characters is sharply drawn and excellently portrayed as well . xxmaj the mix of xxunk dialog and passionate excess makes this a delightful xxunk . xxmaj as xxmaj russell xxmaj baker notes in</td>
+      <td>happy , there should be no reason a parent should hold that back on a child . xxmaj typically , if a child loves to paint or draw , you will immediately see the xxunk of their future style . xxmaj you will begin to see their true form in these very primitive xxunk . xxmaj well , this concept of children 's xxunk is how i felt about xxmaj fuqua 's</td>
+      <td>, there should be no reason a parent should hold that back on a child . xxmaj typically , if a child loves to paint or draw , you will immediately see the xxunk of their future style . xxmaj you will begin to see their true form in these very primitive xxunk . xxmaj well , this concept of children 's xxunk is how i felt about xxmaj fuqua 's xxunk</td>
     </tr>
     <tr>
       <th>3</th>
-      <td>came out and having served in xxmaj xxunk he had great admiration for the man . xxmaj the disappointing thing about this film is that it only concentrate on a short period of the man 's life - interestingly enough the man 's entire life would have made such an epic bio - xxunk that it is staggering to imagine the cost for production . \n\n xxmaj some posters xxunk to the</td>
-      <td>out and having served in xxmaj xxunk he had great admiration for the man . xxmaj the disappointing thing about this film is that it only concentrate on a short period of the man 's life - interestingly enough the man 's entire life would have made such an epic bio - xxunk that it is staggering to imagine the cost for production . \n\n xxmaj some posters xxunk to the flawed</td>
+      <td>short filming time , this movie is far from cheesy . xxmaj ryan pays respect to a situation he has never xxunk and attempts to xxunk into the human xxunk . xxmaj with an amazing up and coming actress , xxmaj xxunk , adds the necessary xxunk to the dialogue and overall feel for the film and xxmaj christensen helps to balance out the " doom and xxunk " feeling this movie</td>
+      <td>filming time , this movie is far from cheesy . xxmaj ryan pays respect to a situation he has never xxunk and attempts to xxunk into the human xxunk . xxmaj with an amazing up and coming actress , xxmaj xxunk , adds the necessary xxunk to the dialogue and overall feel for the film and xxmaj christensen helps to balance out the " doom and xxunk " feeling this movie may</td>
     </tr>
     <tr>
       <th>4</th>
-      <td>the xxmaj blob is one of those films that probably sounds good on paper &amp; is well known as being a ' classic ' but is in actual fact a huge disappointment when finally seen . xxmaj this is one case when the remake xxmaj the xxmaj blob ( xxunk ) is definitely better than the original . xxmaj the original xxmaj blob is slow &amp; boring &amp; the remake is n't</td>
-      <td>xxmaj blob is one of those films that probably sounds good on paper &amp; is well known as being a ' classic ' but is in actual fact a huge disappointment when finally seen . xxmaj this is one case when the remake xxmaj the xxmaj blob ( xxunk ) is definitely better than the original . xxmaj the original xxmaj blob is slow &amp; boring &amp; the remake is n't ,</td>
+      <td>, seems more suitable to a light drama than a comedy . \n\n xxmaj jack xxmaj xxunk , who played similar roles throughout his career , has more xxunk handled very similar material . xxmaj in a fairly typical supporting role xxmaj xxunk xxmaj xxunk delivers a respectable performance . xxmaj in a slightly different role as an old west relic , xxmaj harry xxmaj xxunk , is very good . xxmaj</td>
+      <td>seems more suitable to a light drama than a comedy . \n\n xxmaj jack xxmaj xxunk , who played similar roles throughout his career , has more xxunk handled very similar material . xxmaj in a fairly typical supporting role xxmaj xxunk xxmaj xxunk delivers a respectable performance . xxmaj in a slightly different role as an old west relic , xxmaj harry xxmaj xxunk , is very good . xxmaj but</td>
     </tr>
     <tr>
       <th>5</th>
-      <td>rocks ! \n\n xxmaj now if you still have n't gotten it . xxmaj i 'm being xxunk . 1 / 10 xxbos i grew up xxmaj baptist and i know the story this movie is trying to tell , although i no longer believe the story . xxmaj i 'll give the movie kudos for being as good as the average xxmaj lifetime xxmaj movie of the xxmaj week . xxmaj</td>
-      <td>! \n\n xxmaj now if you still have n't gotten it . xxmaj i 'm being xxunk . 1 / 10 xxbos i grew up xxmaj baptist and i know the story this movie is trying to tell , although i no longer believe the story . xxmaj i 'll give the movie kudos for being as good as the average xxmaj lifetime xxmaj movie of the xxmaj week . xxmaj mildly</td>
+      <td>to some xxunk on her face while xxunk heard in the background indicate her friends may be getting killed . xxmaj another girl xxunk hilariously dumb lines like " do n't go out there , she 'll get you , if she gets you she 'll kill you and if she kill 's you you 're dead " . \n\n xxmaj it was an xxunk from xxmaj xxunk magazine and xxmaj xxunk</td>
+      <td>some xxunk on her face while xxunk heard in the background indicate her friends may be getting killed . xxmaj another girl xxunk hilariously dumb lines like " do n't go out there , she 'll get you , if she gets you she 'll kill you and if she kill 's you you 're dead " . \n\n xxmaj it was an xxunk from xxmaj xxunk magazine and xxmaj xxunk listed</td>
     </tr>
   </tbody>
 </table>
@@ -781,13 +780,13 @@ description: "Functions and transforms to help gather text data in a `Datasets`"
   <tbody>
     <tr>
       <th>0</th>
-      <td>xxbos xxup the xxup shop xxup around xxup the xxup corner is one of the xxunk and most feel - good romantic comedies ever made . xxmaj there 's just no getting around that , and it 's hard to actually put one 's feeling for this film into words . xxmaj it 's not one of those films that tries too hard , nor does it come up with the xxunk possible scenarios to get the two protagonists together in the end . xxmaj in fact , all its charm is xxunk , contained within the characters and the setting and the plot … which is highly believable to xxunk . xxmaj it 's easy to think that such a love story , as beautiful as any other ever told , * could * happen to you … a feeling you do n't often get from other romantic comedies</td>
-      <td>positive</td>
+      <td>xxbos xxmaj raising xxmaj victor xxmaj vargas : a xxmaj review \n\n xxmaj you know , xxmaj raising xxmaj victor xxmaj vargas is like sticking your hands into a big , xxunk bowl of xxunk . xxmaj it 's warm and gooey , but you 're not sure if it feels right . xxmaj try as i might , no matter how warm and gooey xxmaj raising xxmaj victor xxmaj vargas became i was always aware that something did n't quite feel right . xxmaj victor xxmaj vargas suffers from a certain xxunk on the director 's part . xxmaj apparently , the director thought that the ethnic backdrop of a xxmaj latino family on the lower east side , and an xxunk storyline would make the film critic proof . xxmaj he was right , but it did n't fool me . xxmaj raising xxmaj victor xxmaj vargas is</td>
+      <td>negative</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>xxbos xxmaj now that xxmaj che(2008 ) has finished its relatively short xxmaj australian cinema run ( extremely limited xxunk screen in xxmaj xxunk , after xxunk ) , i can xxunk join both xxunk of " at xxmaj the xxmaj movies " in taking xxmaj steven xxmaj soderbergh to task . \n\n xxmaj it 's usually satisfying to watch a film director change his style / subject , but xxmaj soderbergh 's most recent stinker , xxmaj the xxmaj girlfriend xxmaj xxunk ) , was also missing a story , so narrative ( and editing ? ) seem to suddenly be xxmaj soderbergh 's main challenge . xxmaj strange , after xxunk years in the business . xxmaj he was probably never much good at narrative , just xxunk it well inside " edgy " projects . \n\n xxmaj none of this excuses him this present , almost diabolical</td>
-      <td>negative</td>
+      <td>xxbos xxup the xxup shop xxup around xxup the xxup corner is one of the xxunk and most feel - good romantic comedies ever made . xxmaj there 's just no getting around that , and it 's hard to actually put one 's feeling for this film into words . xxmaj it 's not one of those films that tries too hard , nor does it come up with the xxunk possible scenarios to get the two protagonists together in the end . xxmaj in fact , all its charm is xxunk , contained within the characters and the setting and the plot … which is highly believable to xxunk . xxmaj it 's easy to think that such a love story , as beautiful as any other ever told , * could * happen to you … a feeling you do n't often get from other romantic comedies</td>
+      <td>positive</td>
     </tr>
   </tbody>
 </table>
@@ -817,7 +816,7 @@ description: "Functions and transforms to help gather text data in a `Datasets`"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="TextBlock" class="doc_header"><code>class</code> <code>TextBlock</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/data.py#L181" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>TextBlock</code>(<strong><code>tok_tfm</code></strong>, <strong><code>vocab</code></strong>=<em><code>None</code></em>, <strong><code>is_lm</code></strong>=<em><code>False</code></em>, <strong><code>seq_len</code></strong>=<em><code>72</code></em>, <strong><code>min_freq</code></strong>=<em><code>3</code></em>, <strong><code>max_vocab</code></strong>=<em><code>60000</code></em>, <strong><code>sep</code></strong>=<em><code>' '</code></em>) :: <a href="/data.block#TransformBlock"><code>TransformBlock</code></a></p>
+<h3 id="TextBlock" class="doc_header"><code>class</code> <code>TextBlock</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/data.py#L181" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>TextBlock</code>(<strong><code>tok_tfm</code></strong>, <strong><code>vocab</code></strong>=<em><code>None</code></em>, <strong><code>is_lm</code></strong>=<em><code>False</code></em>, <strong><code>seq_len</code></strong>=<em><code>72</code></em>, <strong><code>min_freq</code></strong>=<em><code>3</code></em>, <strong><code>max_vocab</code></strong>=<em><code>60000</code></em>) :: <a href="/data.block#TransformBlock"><code>TransformBlock</code></a></p>
 </blockquote>
 <p>A basic wrapper that links defaults transforms for the data block API</p>
 
@@ -841,7 +840,7 @@ description: "Functions and transforms to help gather text data in a `Datasets`"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="TextDataLoaders" class="doc_header"><code>class</code> <code>TextDataLoaders</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/data.py#L199" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>TextDataLoaders</code>(<strong>*<code>loaders</code></strong>, <strong><code>path</code></strong>=<em><code>'.'</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>) :: <a href="/data.core#DataLoaders"><code>DataLoaders</code></a></p>
+<h3 id="TextDataLoaders" class="doc_header"><code>class</code> <code>TextDataLoaders</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/data.py#L201" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>TextDataLoaders</code>(<strong>*<code>loaders</code></strong>, <strong><code>path</code></strong>=<em><code>'.'</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>) :: <a href="/data.core#DataLoaders"><code>DataLoaders</code></a></p>
 </blockquote>
 <p>Basic wrapper around several <a href="/data.load#DataLoader"><code>DataLoader</code></a>s.</p>
 

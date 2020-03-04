@@ -6,7 +6,6 @@ keywords: fastai
 sidebar: home_sidebar
 
 summary: "Basic class for handling the training loop"
-description: "Basic class for handling the training loop"
 ---
 <!--
 
@@ -25,6 +24,19 @@ description: "Basic class for handling the training loop"
 
 </div>
 <div class="cell border-box-sizing code_cell rendered">
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">doc</span><span class="p">(</span><span class="n">fa_collate</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
 
 </div>
 <div class="cell border-box-sizing code_cell rendered">
@@ -216,7 +228,7 @@ description: "Basic class for handling the training loop"
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><code>opt_func</code> will be used to create an optimizer when <a href="/13a_learner#Learner.fit"><code>Learner.fit</code></a> is called, with <code>lr</code> as a learning rate. <code>splitter</code> is a function taht takes <code>self.model</code> and returns a list of parameter groups (or just one parameter group if there are no different parameter groups). The default is <a href="/torch_core#trainable_params"><code>trainable_params</code></a>, which returns all trainable parameters of the model.</p>
-<p><code>cbs</code> is one or a list of <a href="/callback_core#Callback"><code>Callback</code></a>s  to pass to the <a href="/13a_learner#Learner"><code>Learner</code></a>. Each <a href="/callback_core#Callback"><code>Callback</code></a> is registered as an attribute of <a href="/13a_learner#Learner"><code>Learner</code></a> (with camel case). At creation, all the callbacks in <a href="/callback.progress#defaults.callbacks"><code>defaults.callbacks</code></a> (<a href="/callback_core#TrainEvalCallback"><code>TrainEvalCallback</code></a> and <a href="/13a_learner#Recorder"><code>Recorder</code></a>) are associated to the <a href="/13a_learner#Learner"><code>Learner</code></a>.</p>
+<p><code>cbs</code> is one or a list of <a href="/callback.core#Callback"><code>Callback</code></a>s  to pass to the <a href="/13a_learner#Learner"><code>Learner</code></a>. Each <a href="/callback.core#Callback"><code>Callback</code></a> is registered as an attribute of <a href="/13a_learner#Learner"><code>Learner</code></a> (with camel case). At creation, all the callbacks in <a href="/callback.progress#defaults.callbacks"><code>defaults.callbacks</code></a> (<a href="/callback.core#TrainEvalCallback"><code>TrainEvalCallback</code></a> and <a href="/13a_learner#Recorder"><code>Recorder</code></a>) are associated to the <a href="/13a_learner#Learner"><code>Learner</code></a>.</p>
 <p><a href="/metrics"><code>metrics</code></a> is an optional list of metrics, that can be either functions or <a href="/13a_learner#Metric"><code>Metric</code></a>s (see below).</p>
 
 </div>
@@ -346,7 +358,7 @@ description: "Basic class for handling the training loop"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="VerboseCallback" class="doc_header"><code>class</code> <code>VerboseCallback</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/learner.py#L286" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>VerboseCallback</code>() :: <a href="/callback_core#Callback"><code>Callback</code></a></p>
+<h2 id="VerboseCallback" class="doc_header"><code>class</code> <code>VerboseCallback</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/learner.py#L286" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>VerboseCallback</code>() :: <a href="/callback.core#Callback"><code>Callback</code></a></p>
 </blockquote>
 <p>Callback that prints the name of each event called</p>
 
@@ -512,7 +524,7 @@ description: "Basic class for handling the training loop"
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="Learner.add_cb" class="doc_header"><code>Learner.add_cb</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/learner.py#L87" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.add_cb</code>(<strong><code>cb</code></strong>)</p>
 </blockquote>
-<p>Add <code>cb</code> to the list of <a href="/callback_core#Callback"><code>Callback</code></a> and register <code>self</code> as their learner</p>
+<p>Add <code>cb</code> to the list of <a href="/callback.core#Callback"><code>Callback</code></a> and register <code>self</code> as their learner</p>
 
 </div>
 
@@ -550,7 +562,7 @@ description: "Basic class for handling the training loop"
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="Learner.add_cbs" class="doc_header"><code>Learner.add_cbs</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/learner.py#L85" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.add_cbs</code>(<strong><code>cbs</code></strong>)</p>
 </blockquote>
-<p>Add <code>cbs</code> to the list of <a href="/callback_core#Callback"><code>Callback</code></a> and register <code>self</code> as their learner</p>
+<p>Add <code>cbs</code> to the list of <a href="/callback.core#Callback"><code>Callback</code></a> and register <code>self</code> as their learner</p>
 
 </div>
 
@@ -585,7 +597,7 @@ description: "Basic class for handling the training loop"
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="Learner.remove_cb" class="doc_header"><code>Learner.remove_cb</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/learner.py#L95" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.remove_cb</code>(<strong><code>cb</code></strong>)</p>
 </blockquote>
-<p>Add <code>cb</code> from the list of <a href="/callback_core#Callback"><code>Callback</code></a> and deregister <code>self</code> as their learner</p>
+<p>Add <code>cb</code> from the list of <a href="/callback.core#Callback"><code>Callback</code></a> and deregister <code>self</code> as their learner</p>
 
 </div>
 
@@ -623,7 +635,7 @@ description: "Basic class for handling the training loop"
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="Learner.remove_cbs" class="doc_header"><code>Learner.remove_cbs</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/learner.py#L86" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.remove_cbs</code>(<strong><code>cbs</code></strong>)</p>
 </blockquote>
-<p>Remove <code>cbs</code> from the list of <a href="/callback_core#Callback"><code>Callback</code></a> and deregister <code>self</code> as their learner</p>
+<p>Remove <code>cbs</code> from the list of <a href="/callback.core#Callback"><code>Callback</code></a> and deregister <code>self</code> as their learner</p>
 
 </div>
 
@@ -657,7 +669,7 @@ description: "Basic class for handling the training loop"
 <li><code>loss_func</code>: the loss function used</li>
 <li><code>opt</code>: the optimizer used to udpate the model parameters</li>
 <li><code>opt_func</code>: the function used to create the optimizer</li>
-<li><code>cbs</code>: the list containing all <a href="/callback_core#Callback"><code>Callback</code></a>s</li>
+<li><code>cbs</code>: the list containing all <a href="/callback.core#Callback"><code>Callback</code></a>s</li>
 <li><code>dl</code>: current <a href="/data.load#DataLoader"><code>DataLoader</code></a> used for iteration</li>
 <li><code>x</code>/<code>xb</code>: last input drawn from <code>self.dl</code> (potentially modified by callbacks). <code>xb</code> is always a tuple (potentially with one element) and <code>x</code> is detuplified. You can only assign to <code>xb</code>.</li>
 <li><code>y</code>/<code>yb</code>: last target drawn from <code>self.dl</code> (potentially modified by callbacks). <code>yb</code> is always a tuple (potentially with one element) and <code>y</code> is detuplified. You can only assign to <code>yb</code>.</li>
@@ -668,7 +680,7 @@ description: "Basic class for handling the training loop"
 <li><code>epoch</code>: the current epoch index (from 0 to <code>n_epoch-1</code>)</li>
 <li><code>iter</code>: the current iteration index in <code>self.dl</code> (from 0 to <code>n_iter-1</code>)</li>
 </ul>
-<p>The following attributes are added by <a href="/callback_core#TrainEvalCallback"><code>TrainEvalCallback</code></a> and should be available unless you went out of your way to remove that callback:</p>
+<p>The following attributes are added by <a href="/callback.core#TrainEvalCallback"><code>TrainEvalCallback</code></a> and should be available unless you went out of your way to remove that callback:</p>
 <ul>
 <li><code>train_iter</code>: the number of training iterations done since the beginning of this training</li>
 <li><code>pct_train</code>: from 0. to 1., the percentage of training iterations completed</li>
@@ -950,7 +962,7 @@ description: "Basic class for handling the training loop"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Recorder" class="doc_header"><code>class</code> <code>Recorder</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/learner.py#L364" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Recorder</code>(<strong><code>add_time</code></strong>=<em><code>True</code></em>, <strong><code>train_metrics</code></strong>=<em><code>False</code></em>, <strong><code>valid_metrics</code></strong>=<em><code>True</code></em>, <strong><code>beta</code></strong>=<em><code>0.98</code></em>) :: <a href="/callback_core#Callback"><code>Callback</code></a></p>
+<h2 id="Recorder" class="doc_header"><code>class</code> <code>Recorder</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/learner.py#L364" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Recorder</code>(<strong><code>add_time</code></strong>=<em><code>True</code></em>, <strong><code>train_metrics</code></strong>=<em><code>False</code></em>, <strong><code>valid_metrics</code></strong>=<em><code>True</code></em>, <strong><code>beta</code></strong>=<em><code>0.98</code></em>) :: <a href="/callback.core#Callback"><code>Callback</code></a></p>
 </blockquote>
 <p>Callback that registers statistics (lr, loss and metrics) during training</p>
 
@@ -1139,7 +1151,7 @@ description: "Basic class for handling the training loop"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="FetchPreds" class="doc_header"><code>class</code> <code>FetchPreds</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/learner.py#L446" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FetchPreds</code>(<strong><code>ds_idx</code></strong>=<em><code>1</code></em>, <strong><code>dl</code></strong>=<em><code>None</code></em>, <strong><code>with_input</code></strong>=<em><code>False</code></em>, <strong><code>with_decoded</code></strong>=<em><code>False</code></em>) :: <a href="/callback_core#Callback"><code>Callback</code></a></p>
+<h2 id="FetchPreds" class="doc_header"><code>class</code> <code>FetchPreds</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/learner.py#L446" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FetchPreds</code>(<strong><code>ds_idx</code></strong>=<em><code>1</code></em>, <strong><code>dl</code></strong>=<em><code>None</code></em>, <strong><code>with_input</code></strong>=<em><code>False</code></em>, <strong><code>with_decoded</code></strong>=<em><code>False</code></em>) :: <a href="/callback.core#Callback"><code>Callback</code></a></p>
 </blockquote>
 <p>A callback to fetch predictions during the training loop</p>
 

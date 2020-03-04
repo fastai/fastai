@@ -6,7 +6,6 @@ keywords: fastai
 sidebar: home_sidebar
 
 summary: "Callback and utility functions to allow mixed precision training "
-description: "Callback and utility functions to allow mixed precision training "
 ---
 <!--
 
@@ -99,7 +98,7 @@ so need a mechanism to get this dynamic loss scale larger if it's safe to do so.
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Before going in the main <a href="/callback_core#Callback"><code>Callback</code></a> we will need some helper functions. We use the ones from the <a href="https://github.com/NVIDIA/apex">APEX library</a>.</p>
+<p>Before going in the main <a href="/callback.core#Callback"><code>Callback</code></a> we will need some helper functions. We use the ones from the <a href="https://github.com/NVIDIA/apex">APEX library</a>.</p>
 
 </div>
 </div>
@@ -379,7 +378,7 @@ so need a mechanism to get this dynamic loss scale larger if it's safe to do so.
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ModelToHalf" class="doc_header"><code>class</code> <code>ModelToHalf</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/fp16.py#L64" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ModelToHalf</code>() :: <a href="/callback_core#Callback"><code>Callback</code></a></p>
+<h2 id="ModelToHalf" class="doc_header"><code>class</code> <code>ModelToHalf</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/fp16.py#L64" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ModelToHalf</code>() :: <a href="/callback.core#Callback"><code>Callback</code></a></p>
 </blockquote>
 <p>Use with MixedPrecision callback (but it needs to run at the very beginning)</p>
 
@@ -403,7 +402,7 @@ so need a mechanism to get this dynamic loss scale larger if it's safe to do so.
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="MixedPrecision" class="doc_header"><code>class</code> <code>MixedPrecision</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/fp16.py#L72" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MixedPrecision</code>(<strong><code>loss_scale</code></strong>=<em><code>512</code></em>, <strong><code>flat_master</code></strong>=<em><code>False</code></em>, <strong><code>dynamic</code></strong>=<em><code>True</code></em>, <strong><code>max_loss_scale</code></strong>=<em><code>16777216.0</code></em>, <strong><code>div_factor</code></strong>=<em><code>2.0</code></em>, <strong><code>scale_wait</code></strong>=<em><code>500</code></em>, <strong><code>clip</code></strong>=<em><code>None</code></em>) :: <a href="/callback_core#Callback"><code>Callback</code></a></p>
+<h2 id="MixedPrecision" class="doc_header"><code>class</code> <code>MixedPrecision</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/fp16.py#L72" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MixedPrecision</code>(<strong><code>loss_scale</code></strong>=<em><code>512</code></em>, <strong><code>flat_master</code></strong>=<em><code>False</code></em>, <strong><code>dynamic</code></strong>=<em><code>True</code></em>, <strong><code>max_loss_scale</code></strong>=<em><code>16777216.0</code></em>, <strong><code>div_factor</code></strong>=<em><code>2.0</code></em>, <strong><code>scale_wait</code></strong>=<em><code>500</code></em>, <strong><code>clip</code></strong>=<em><code>None</code></em>) :: <a href="/callback.core#Callback"><code>Callback</code></a></p>
 </blockquote>
 <p>Run training in mixed precision</p>
 
@@ -477,20 +476,20 @@ so need a mechanism to get this dynamic loss scale larger if it's safe to do so.
   <tbody>
     <tr>
       <td>0</td>
-      <td>7.284351</td>
-      <td>7.269815</td>
+      <td>18.546440</td>
+      <td>18.863026</td>
       <td>00:00</td>
     </tr>
     <tr>
       <td>1</td>
-      <td>7.190895</td>
-      <td>6.930596</td>
+      <td>18.422367</td>
+      <td>18.424599</td>
       <td>00:00</td>
     </tr>
     <tr>
       <td>2</td>
-      <td>7.030607</td>
-      <td>6.557140</td>
+      <td>18.185823</td>
+      <td>17.866203</td>
       <td>00:00</td>
     </tr>
   </tbody>
