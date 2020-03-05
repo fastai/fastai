@@ -123,7 +123,7 @@ class AWD_LSTM(Module):
         if self.bs < bs:
             nh = (self.n_hid if l != self.n_layers - 1 else self.emb_sz) // self.n_dir
             return tuple(torch.cat([h, h.new_zeros(self.n_dir, bs-self.bs, nh)], dim=1) for h in self.hidden[l])
-        if self.bs > bs: return (self.hidden[l][0][:,:bs], self.hidden[l][1][:,:bs])
+        if self.bs > bs: return (self.hidden[l][0][:,:bs].contiguous(), self.hidden[l][1][:,:bs].contiguous())
         return self.hidden[l]
 
     def reset(self):

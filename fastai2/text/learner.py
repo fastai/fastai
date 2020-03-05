@@ -125,7 +125,8 @@ class LMLearner(TextLearner):
             idxs = torch.cat([idxs, idxs.new([idx])])
 
         tokens = [tfm.vocab[i] for i in idxs if tfm.vocab[i] not in [BOS, PAD]]
-        return tfm.sep.join(decoder(tokens))
+        sep = self.dls.train_ds.tokenize
+        return sep.join(decoder(tokens))
 
     @delegates(Learner.get_preds)
     def get_preds(self, concat_dim=1, **kwargs): return super().get_preds(concat_dim=1, **kwargs)
