@@ -89,7 +89,7 @@ class GatherPredsCallback(Callback):
             loss = self.loss if self.loss.numel() == bs else self.loss.view(bs,-1).mean(1)
             self.losses.append(to_detach(loss))
 
-    def after_fit(self):
+    def after_validate(self):
         "Concatenate all recorded tensors"
         if self.with_input:     self.inputs  = detuplify(to_concat(self.inputs, dim=self.concat_dim))
         if not self.save_preds: self.preds   = detuplify(to_concat(self.preds, dim=self.concat_dim))

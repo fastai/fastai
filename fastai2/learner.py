@@ -112,6 +112,12 @@ class Learner():
         yield
         self.remove_cbs(cbs)
 
+    @contextmanager
+    def removed_cbs(self, cbs):
+        self.remove_cbs(cbs)
+        yield self
+        self.add_cbs(cbs)
+
     def ordered_cbs(self, cb_func): return [cb for cb in sort_by_run(self.cbs) if hasattr(cb, cb_func)]
 
     def __call__(self, event_name): L(event_name).map(self._call_one)
@@ -274,6 +280,7 @@ add_docs(Learner, "Group together a `model`, some `dls` and a `loss_func` to han
     remove_cbs="Remove `cbs` from the list of `Callback` and deregister `self` as their learner",
     remove_cb="Add `cb` from the list of `Callback` and deregister `self` as their learner",
     added_cbs="Context manage that temporarily adds `cbs`",
+    removed_cbs="Context manage that temporarily removes `cbs`",
     ordered_cbs="Return a list of `Callback` for one step `cb_func` in the training loop",
     create_opt="Create an optimizer with `lr`",
     one_batch="Train or evaluate `self.model` on batch `(xb,yb)`",
@@ -454,14 +461,14 @@ defaults.callbacks = [TrainEvalCallback, Recorder]
 # Cell
 class FetchPreds(Callback):
     "A callback to fetch predictions during the training loop"
-    def __init__(self, ds_idx=1, dl=None, with_input=False, with_decoded=False):
+    def __init__(self, ds_idx=1, dl=None, with_input=False, with_decoded=False, cbs=None):
+        self.cbs = L(cbs)
         store_attr(self, 'ds_idx,dl,with_input,with_decoded')
+
     def after_validate(self):
-        learn,rec = self.learn,self.learn.recorder
-        learn.remove_cbs([self,rec])
-        self.preds = learn.get_preds(ds_idx=self.ds_idx, dl=self.dl,
-            with_input=self.with_input, with_decoded=self.with_decoded, inner=True)
-        learn.add_cbs([self, rec])
+        with self.learn.removed_cbs(L(self, self.learn.recorder) + self.cbs) as learn:
+            self.preds = learn.get_preds(ds_idx=self.ds_idx, dl=self.dl,
+                with_input=self.with_input, with_decoded=self.with_decoded, inner=True)
 
 # Cell
 @patch
