@@ -99,7 +99,9 @@ def IndexSplitter(valid_idx):
     return _inner
 
 # Cell
-def _grandparent_idxs(items, name): return mask2idxs(Path(o).parent.parent.name == name for o in items)
+def _grandparent_idxs(items, name):
+    def _inner(items, name): return mask2idxs(Path(o).parent.parent.name == name for o in items)
+    return [i for n in L(name) for i in _inner(items,n)]
 
 # Cell
 def GrandparentSplitter(train_name='train', valid_name='valid'):
