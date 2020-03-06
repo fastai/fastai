@@ -68,18 +68,6 @@ def _pad_tensor(t, bs):
 class SentenceEncoder(Module):
     "Create an encoder over `module` that can process a full sentence."
     def __init__(self, bptt, module, pad_idx=1, max_len=None): store_attr(self, 'bptt,module,pad_idx,max_len')
-
-    def _concat(self, ts, bs):
-        return torch.cat()
-        bs,sl = ts[0].shape[0],sum([t.shape[1] for t in ts])
-        res = ts[0].new_zeros(bs, sl, *ts[0].shape[2:])
-        ts,xtra = (ts[:sz],ts[sz]) if len(ts) > sz else (ts,None)
-        for i,j in enumerate(idxs):
-            c = torch.cat([t[i] for t in ts[j:] if t.shape[0] > i] + [t[i] for t in ts[:j] if t.shape[0] > i] +
-                          ([] if xtra is None or xtra.shape[0] <= i else [xtra[i]]))
-            res[i,:c.shape[0]] = c
-        return res
-
     def reset(self): getattr(self.module, 'reset', noop)()
 
     def forward(self, input):
