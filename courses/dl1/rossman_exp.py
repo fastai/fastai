@@ -9,7 +9,8 @@ samp_size = 100000
 import math, keras, datetime, pandas as pd, numpy as np, keras.backend as K
 import matplotlib.pyplot as plt, xgboost, operator, random, pickle, os
 from sklearn_pandas import DataFrameMapper
-from sklearn.preprocessing import LabelEncoder, Imputer, StandardScaler
+from sklearn.impute import SimpleImputer
+from sklearn.preprocessing import LabelEncoder, StandardScaler
 from keras.models import Model
 from keras.layers import merge, Input
 from keras.layers.core import Dense, Activation, Reshape, Flatten, Dropout
