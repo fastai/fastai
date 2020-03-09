@@ -231,8 +231,8 @@ def RecallMulti(thresh=0.5, sigmoid=True, labels=None, pos_label=1, average='mac
 # Cell
 def RocAucMulti(thresh=0.5, sigmoid=True, average='macro', sample_weight=None, max_fpr=None):
     "Area Under the Receiver Operating Characteristic Curve for multi-label binary classification problems"
-    return skm_to_fastai(skm.recall_score, thresh=thresh, sigmoid=sigmoid, flatten=False,
-                         laverage=average, sample_weight=sample_weight, max_fpr=max_fpr)
+    return skm_to_fastai(skm.roc_auc_score, thresh=thresh, sigmoid=sigmoid, flatten=False,
+                         average=average, sample_weight=sample_weight, max_fpr=max_fpr)
 
 # Cell
 def mse(inp,targ):
