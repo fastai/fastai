@@ -311,7 +311,7 @@ def broadcast_vec(dim, ndim, *t, cuda=True):
 @docs
 class Normalize(Transform):
     "Normalize/denorm batch of `TensorImage`"
-    order=99
+    parameters,order=L('mean', 'std'),99
     def __init__(self, mean=None, std=None, axes=(0,2,3)): self.mean,self.std,self.axes = mean,std,axes
 
     @classmethod

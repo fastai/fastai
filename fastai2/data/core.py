@@ -108,8 +108,7 @@ class TfmdDL(DataLoader):
     def to(self, device):
         self.device = device
         for tfm in self.after_batch.fs:
-            for a in dir(tfm):
-                if isinstance(getattr(tfm, a, None), Tensor): setattr(tfm, a, getattr(tfm, a).to(device))
+            for a in L(getattr(tfm, 'parameters', None)): setattr(tfm, a, getattr(tfm, a).to(device))
         return self
 
 # Cell
