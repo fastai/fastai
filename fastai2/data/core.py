@@ -105,6 +105,13 @@ class TfmdDL(DataLoader):
         if not hasattr(self, '_n_inp'): self._one_pass()
         return self._n_inp
 
+    def to(self, device):
+        self.device = device
+        for tfm in self.after_batch.fs:
+            for a in dir(tfm):
+                if isinstance(getattr(tfm, a, None), Tensor): setattr(tfm, a, getattr(tfm, a).to(device))
+        return self
+
 # Cell
 @docs
 class DataLoaders(GetAttr):
@@ -127,14 +134,15 @@ class DataLoaders(GetAttr):
 
     @device.setter
     def device(self, d):
-        for dl in self.loaders: dl.device = d
+        for dl in self.loaders: dl.to(d)
         self._device = d
 
-    def cuda(self, device=None):
-        self.device = default_device() if device is None else device
+    def to(self, device):
+        self.device = device
         return self
 
-    def cpu(self): return self.cuda(device=torch.device('cpu'))
+    def cuda(self): return self.to(device=default_device())
+    def cpu(self):  return self.to(device=torch.device('cpu'))
 
     @classmethod
     def from_dsets(cls, *ds, path='.',  bs=64, device=None, dl_type=TfmdDL, **kwargs):
@@ -153,7 +161,8 @@ class DataLoaders(GetAttr):
                valid="Validation `DataLoader`",
                train_ds="Training `Dataset`",
                valid_ds="Validation `Dataset`",
-               cuda="Use `device` (defaults to `default_device()`)",
+               to="Use `device`",
+               cuda="Use the gpu if available",
                cpu="Use the cpu",
                new_empty="Create a new empty version of `self` with the same transforms",
                from_dblock="Create a dataloaders from a given `dblock`")
