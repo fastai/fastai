@@ -210,6 +210,7 @@ class TfmdLists(FilteredBase, L, GetAttr):
     def decode(self, o, **kwargs): return self.tfms.decode(o, **kwargs)
     def __call__(self, o, **kwargs): return self.tfms.__call__(o, **kwargs)
     def overlapping_splits(self): return L(Counter(self.splits.concat()).values()).filter(gt(1))
+    def new_empty(self): return self._new([])
 
     def setup(self, train_setup=True):
         self.tfms.setup(self, train_setup)
@@ -274,6 +275,7 @@ class Datasets(FilteredBase):
     def subset(self, i): return type(self)(tls=L(tl.subset(i) for tl in self.tls), n_inp=self.n_inp)
     def _new(self, items, *args, **kwargs): return super()._new(items, tfms=self.tfms, do_setup=False, **kwargs)
     def overlapping_splits(self): return self.tls[0].overlapping_splits()
+    def new_empty(self): return type(self)(tls=[tl.new_empty() for tl in self.tls], n_inp=self.n_inp)
     @property
     def splits(self): return self.tls[0].splits
     @property
@@ -287,10 +289,6 @@ class Datasets(FilteredBase):
     def show(self, o, ctx=None, **kwargs):
         for o_,tl in zip(o,self.tls): ctx = tl.show(o_, ctx=ctx, **kwargs)
         return ctx
-
-    def new_empty(self):
-        tls = [tl._new([], split_idx=tl.split_idx) for tl in self.tls]
-        return type(self)(tls=tls, n_inp=self.n_inp)
 
     @contextmanager
     def set_split_idx(self, i):
