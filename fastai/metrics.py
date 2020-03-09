@@ -155,10 +155,8 @@ class ConfusionMatrix(Callback):
         targs = last_target.cpu()
         if self.n_classes == 0:
             self.n_classes = last_output.shape[-1]
-            self.x = torch.arange(0, self.n_classes)
-        cm = ((preds==self.x[:, None]) & (targs==self.x[:, None, None])).sum(dim=2, dtype=torch.float32)
-        if self.cm is None: self.cm =  cm
-        else:               self.cm += cm
+        if self.cm is None: self.cm = torch.zeros((n_classes, n_classes))
+        self.cm[targs, preds] += 1
 
     def on_epoch_end(self, **kwargs):
         self.metric = self.cm
