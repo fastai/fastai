@@ -71,9 +71,9 @@
     "Tabular Core": "/tabular.core",
     "Tabular Data": "/tabular.data",
     "Tabular Learner": "/tabular.learner",
-    "Tabular Model": "/tabular.model"
+    "Tabular Model": "/tabular.model",
+    "Collab": "/collab"
   },
-  "Collab": "/collab",
   "Medical": {
     "Medical imagery": "/medical.imaging",
     "Medical text": "/medical.text"

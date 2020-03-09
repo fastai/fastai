@@ -177,11 +177,11 @@ entries:
     - output: web,pdf
       title: Tabular Model
       url: /tabular.model
+    - output: web,pdf
+      title: Collab
+      url: /collab
     output: web
     title: Tabular
-  - output: web,pdf
-    title: Collab
-    url: /collab
   - folderitems:
     - output: web,pdf
       title: Medical imagery
