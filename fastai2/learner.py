@@ -2,8 +2,8 @@
 
 __all__ = ['CancelFitException', 'CancelEpochException', 'CancelTrainException', 'CancelValidException',
            'CancelBatchException', 'replacing_yield', 'mk_metric', 'save_model', 'load_model', 'Learner',
-           'VerboseCallback', 'Metric', 'AvgMetric', 'AvgLoss', 'AvgSmoothLoss', 'Recorder', 'FetchPreds',
-           'load_learner']
+           'VerboseCallback', 'Metric', 'AvgMetric', 'AvgLoss', 'AvgSmoothLoss', 'ValueMetric', 'Recorder',
+           'FetchPreds', 'load_learner']
 
 # Cell
 from .data.all import *
@@ -368,6 +368,17 @@ class AvgSmoothLoss(Metric):
         self.val = torch.lerp(to_detach(learn.loss.mean(), gather=False), self.val, self.beta)
     @property
     def value(self): return self.val/(1-self.beta**self.count)
+
+# Cell
+class ValueMetric(Metric):
+    "Use to include a pre-calculated metric value (e.g., a metric calculated in a `Callback` and returned in `func`)"
+    def __init__(self, func, metric_name=None): store_attr(self, 'func, metric_name')
+
+    @property
+    def value(self): return self.func()
+
+    @property
+    def name(self): return self.metric_name if self.metric_name else self.func.__name__
 
 # Cell
 from fastprogress.fastprogress import format_time
