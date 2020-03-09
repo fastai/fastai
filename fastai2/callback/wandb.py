@@ -13,8 +13,7 @@ import wandb
 # Cell
 class WandbCallback(Callback):
     "Saves model topology, losses & metrics"
-    run_after=FetchPreds
-    toward_end = True
+    toward_end,remove_on_fetch,run_after = True,True,FetchPreds
     # Record if watch has been called previously (even in another instance)
     _wandb_watch_called = False
 
@@ -47,7 +46,7 @@ class WandbCallback(Callback):
             self.valid_dl = self.dls.test_dl(test_items, with_labels=True)
 
         if self.valid_dl:
-            self.learn.add_cb(FetchPreds(dl=self.valid_dl, with_input=True, with_decoded=True, cbs=self))
+            self.learn.add_cb(FetchPreds(dl=self.valid_dl, with_input=True, with_decoded=True))
 
     def after_batch(self):
         "Log hyper-parameters and training loss"

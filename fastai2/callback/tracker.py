@@ -28,7 +28,7 @@ class TerminateOnNaNCallback(Callback):
 # Cell
 class TrackerCallback(Callback):
     "A `Callback` that keeps track of the best value in `monitor`."
-    run_after=Recorder
+    remove_on_fetch,run_after = True,Recorder
 
     def __init__(self, monitor='valid_loss', comp=None, min_delta=0.):
         if comp is None: comp = np.less if 'loss' in monitor or 'error' in monitor else np.greater

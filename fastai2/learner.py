@@ -390,7 +390,7 @@ def _maybe_item(t):
 # Cell
 class Recorder(Callback):
     "Callback that registers statistics (lr, loss and metrics) during training"
-    run_after = TrainEvalCallback
+    remove_on_fetch,run_after = True,TrainEvalCallback
 
     def __init__(self, add_time=True, train_metrics=False, valid_metrics=True, beta=0.98):
         store_attr(self, 'add_time,train_metrics,valid_metrics')
@@ -472,12 +472,14 @@ defaults.callbacks = [TrainEvalCallback, Recorder]
 # Cell
 class FetchPreds(Callback):
     "A callback to fetch predictions during the training loop"
+    remove_on_fetch = True
     def __init__(self, ds_idx=1, dl=None, with_input=False, with_decoded=False, cbs=None):
         self.cbs = L(cbs)
         store_attr(self, 'ds_idx,dl,with_input,with_decoded')
 
     def after_validate(self):
-        with self.learn.removed_cbs(L(self, self.learn.recorder) + self.cbs) as learn:
+        to_rm = L(cb for cb in self.learn.cbs if getattr(cb, 'remove_on_fetch', False))
+        with self.learn.removed_cbs(to_rm + self.cbs) as learn:
             self.preds = learn.get_preds(ds_idx=self.ds_idx, dl=self.dl,
                 with_input=self.with_input, with_decoded=self.with_decoded, inner=True)
 
