@@ -53,7 +53,7 @@ description: "Callbacks which work with a learner's data"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="CollectDataCallback" class="doc_header"><code>class</code> <code>CollectDataCallback</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/data.py#L9" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>CollectDataCallback</code>() :: <a href="/callback_core#Callback"><code>Callback</code></a></p>
+<h2 id="CollectDataCallback" class="doc_header"><code>class</code> <code>CollectDataCallback</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/data.py#L9" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>CollectDataCallback</code>() :: <a href="/callback.core#Callback"><code>Callback</code></a></p>
 </blockquote>
 <p>Collect all batches, along with <code>pred</code> and <code>loss</code>, into <code>self.data</code>. Mainly for testing</p>
 
@@ -142,29 +142,79 @@ description: "Callbacks which work with a learner's data"
 </div>
 </div>
 
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
 <div class="output_wrapper">
 <div class="output">
 
 <div class="output_area">
 
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>(#4) [0,nan,None,&#39;00:00&#39;]
-</pre>
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="PartialDL" class="doc_header"><code>class</code> <code>PartialDL</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/data.py#L36" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PartialDL</code>(<strong><code>dataset</code></strong>=<em><code>None</code></em>, <strong><code>bs</code></strong>=<em><code>None</code></em>, <strong><code>partial_n</code></strong>=<em><code>None</code></em>, <strong><code>shuffle</code></strong>=<em><code>False</code></em>, <strong><code>num_workers</code></strong>=<em><code>None</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>, <strong><code>do_setup</code></strong>=<em><code>True</code></em>, <strong><code>pin_memory</code></strong>=<em><code>False</code></em>, <strong><code>timeout</code></strong>=<em><code>0</code></em>, <strong><code>batch_size</code></strong>=<em><code>None</code></em>, <strong><code>drop_last</code></strong>=<em><code>False</code></em>, <strong><code>indexed</code></strong>=<em><code>None</code></em>, <strong><code>n</code></strong>=<em><code>None</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>wif</code></strong>=<em><code>None</code></em>, <strong><code>before_iter</code></strong>=<em><code>None</code></em>, <strong><code>after_item</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_iter</code></strong>=<em><code>None</code></em>, <strong><code>create_batches</code></strong>=<em><code>None</code></em>, <strong><code>create_item</code></strong>=<em><code>None</code></em>, <strong><code>create_batch</code></strong>=<em><code>None</code></em>, <strong><code>retain</code></strong>=<em><code>None</code></em>, <strong><code>get_idxs</code></strong>=<em><code>None</code></em>, <strong><code>sample</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_fn</code></strong>=<em><code>None</code></em>, <strong><code>do_batch</code></strong>=<em><code>None</code></em>) :: <a href="/data.core#TfmdDL"><code>TfmdDL</code></a></p>
+</blockquote>
+<p>Select randomly partial quantity of data at each epoch</p>
+
+</div>
+
+</div>
+
 </div>
 </div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
 
 <div class="output_area">
 
 
-
-<div class="output_png output_subarea ">
-<img src="data:image/png;base64,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
-"
->
-</div>
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="partial_dataloaders" class="doc_header"><code>partial_dataloaders</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/data.py#L51" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>partial_dataloaders</code>(<strong><code>partial_n</code></strong>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>val_bs</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_train</code></strong>=<em><code>True</code></em>, <strong><code>n</code></strong>=<em><code>None</code></em>, <strong><code>path</code></strong>=<em><code>'.'</code></em>, <strong><code>dl_type</code></strong>=<em><code>None</code></em>, <strong><code>dl_kwargs</code></strong>=<em><code>None</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>)</p>
+</blockquote>
+<p>Create a partial dataloader <a href="/14a_callback.data#PartialDL"><code>PartialDL</code></a> for the training set</p>
 
 </div>
 
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dls</span> <span class="o">=</span> <span class="n">dsets</span><span class="o">.</span><span class="n">partial_dataloaders</span><span class="p">(</span><span class="n">partial_n</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">dls</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">==</span><span class="mi">2</span>
+<span class="k">for</span> <span class="n">batch</span> <span class="ow">in</span> <span class="n">dls</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">batch</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">==</span><span class="mi">16</span>
+</pre></div>
+
+    </div>
 </div>
 </div>
 

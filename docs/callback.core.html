@@ -6,6 +6,7 @@ keywords: fastai
 sidebar: home_sidebar
 
 summary: "Basic callbacks for Learner"
+description: "Basic callbacks for Learner"
 ---
 <!--
 
@@ -145,7 +146,7 @@ summary: "Basic callbacks for Learner"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="GetAttr.__getattr__" class="doc_header"><code>GetAttr.__getattr__</code><a href="https://github.com/fastai/fastcore/tree/master/fastcore/foundation.py#L217" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>GetAttr.__getattr__</code>(<strong><code>k</code></strong>)</p>
+<h4 id="GetAttr.__getattr__" class="doc_header"><code>GetAttr.__getattr__</code><a href="https://github.com/fastai/fastcore/tree/master/fastcore/foundation.py#L219" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>GetAttr.__getattr__</code>(<strong><code>k</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -244,7 +245,7 @@ summary: "Basic callbacks for Learner"
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stderr output_text">
-<pre>/home/jhoward/anaconda3/lib/python3.7/site-packages/ipykernel_launcher.py:16: UserWarning: You are setting an attribute (a) that also exists in the learner. Please be advised that you&#39;re not setting it in the learner but in the callback. Use `self.learn.a` if you would like to change it in the learner.
+<pre>/home/sgugger/anaconda3/lib/python3.7/site-packages/ipykernel_launcher.py:16: UserWarning: You are setting an attribute (a) that also exists in the learner. Please be advised that you&#39;re not setting it in the learner but in the callback. Use `self.learn.a` if you would like to change it in the learner.
   app.launch_new_instance()
 </pre>
 </div>
@@ -507,7 +508,7 @@ summary: "Basic callbacks for Learner"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="GatherPredsCallback.after_fit" class="doc_header"><code>GatherPredsCallback.after_fit</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/core.py#L92" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>GatherPredsCallback.after_fit</code>()</p>
+<h4 id="GatherPredsCallback.after_validate" class="doc_header"><code>GatherPredsCallback.after_validate</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/core.py#L92" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>GatherPredsCallback.after_validate</code>()</p>
 </blockquote>
 <p>Concatenate all recorded tensors</p>
 
@@ -521,7 +522,7 @@ summary: "Basic callbacks for Learner"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Callbacks-control-flow">Callbacks control flow<a class="anchor-link" href="#Callbacks-control-flow">&#182;</a></h2>
+<h2 id="Callbacks-control-flow">Callbacks control flow<a class="anchor-link" href="#Callbacks-control-flow"> </a></h2>
 </div>
 </div>
 </div>
@@ -701,9 +702,6 @@ summary: "Basic callbacks for Learner"
 
 </div>
 </div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-
 </div>
     {% endraw %}
 </div>

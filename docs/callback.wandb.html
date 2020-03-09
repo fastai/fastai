@@ -6,6 +6,7 @@ keywords: fastai
 sidebar: home_sidebar
 
 summary: "Integration with [wandb](https://www.wandb.com/) "
+description: "Integration with [wandb](https://www.wandb.com/) "
 ---
 <!--
 
@@ -67,7 +68,7 @@ summary: "Integration with [wandb](https://www.wandb.com/) "
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="WandbCallback" class="doc_header"><code>class</code> <code>WandbCallback</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/wandb.py#L14" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>WandbCallback</code>(<strong><code>log</code></strong>=<em><code>'gradients'</code></em>, <strong><code>log_preds</code></strong>=<em><code>True</code></em>, <strong><code>valid_dl</code></strong>=<em><code>None</code></em>, <strong><code>n_preds</code></strong>=<em><code>36</code></em>, <strong><code>seed</code></strong>=<em><code>12345</code></em>) :: <a href="/learner#Callback"><code>Callback</code></a></p>
+<h2 id="WandbCallback" class="doc_header"><code>class</code> <code>WandbCallback</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/wandb.py#L14" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>WandbCallback</code>(<strong><code>log</code></strong>=<em><code>'gradients'</code></em>, <strong><code>log_preds</code></strong>=<em><code>True</code></em>, <strong><code>valid_dl</code></strong>=<em><code>None</code></em>, <strong><code>n_preds</code></strong>=<em><code>36</code></em>, <strong><code>seed</code></strong>=<em><code>12345</code></em>) :: <a href="/callback.core#Callback"><code>Callback</code></a></p>
 </blockquote>
 <p>Saves model topology, losses &amp; metrics</p>
 
@@ -89,7 +90,7 @@ summary: "Integration with [wandb](https://www.wandb.com/) "
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Example-of-use:">Example of use:<a class="anchor-link" href="#Example-of-use:">&#182;</a></h2><p>Once your have defined your <a href="/learner#Learner"><code>Learner</code></a>, before you call to <code>fit</code> or <code>fit_one_cycle</code>, you need to initialize wandb:</p>
+<h2 id="Example-of-use:">Example of use:<a class="anchor-link" href="#Example-of-use:"> </a></h2><p>Once your have defined your <a href="/13a_learner#Learner"><code>Learner</code></a>, before you call to <code>fit</code> or <code>fit_one_cycle</code>, you need to initialize wandb:</p>
 
 <pre><code>import wandb
 wandb.init(project=PROJECT_NAME, entity=USER_NAME)</code></pre>
@@ -113,72 +114,6 @@ learn = learner(..., cbs=WandbCallback())</code></pre>
 
 </div>
 <div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h4 id="(TensorText,TensorMultiCategory) -> wandb_process
-(TensorText,TensorCategory) -> wandb_process
-(TensorImage,TensorMultiCategory) -> wandb_process
-(TensorImage,TensorCategory) -> wandb_process
-(TensorImage,object) -> wandb_process" class="doc_header"><code>(TensorText,TensorMultiCategory) -> wandb_process
-(TensorText,TensorCategory) -> wandb_process
-(TensorImage,TensorMultiCategory) -> wandb_process
-(TensorImage,TensorCategory) -> wandb_process
-(TensorImage,object) -> wandb_process</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/wandb.py#L108" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>(TensorText,TensorMultiCategory) -> wandb_process
-(TensorText,TensorCategory) -> wandb_process
-(TensorImage,TensorMultiCategory) -> wandb_process
-(TensorImage,TensorCategory) -> wandb_process
-(TensorImage,object) -> wandb_process</code>()</p>
-</blockquote>
-<p>Dictionary-like object; <code>__getitem__</code> matches keys of types using <code>issubclass</code></p>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h4 id="(TensorText,TensorMultiCategory) -> wandb_process
-(TensorText,TensorCategory) -> wandb_process
-(TensorImage,TensorMultiCategory) -> wandb_process
-(TensorImage,TensorCategory) -> wandb_process
-(TensorImage,object) -> wandb_process" class="doc_header"><code>(TensorText,TensorMultiCategory) -> wandb_process
-(TensorText,TensorCategory) -> wandb_process
-(TensorImage,TensorMultiCategory) -> wandb_process
-(TensorImage,TensorCategory) -> wandb_process
-(TensorImage,object) -> wandb_process</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/wandb.py#L108" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>(TensorText,TensorMultiCategory) -> wandb_process
-(TensorText,TensorCategory) -> wandb_process
-(TensorImage,TensorMultiCategory) -> wandb_process
-(TensorImage,TensorCategory) -> wandb_process
-(TensorImage,object) -> wandb_process</code>()</p>
-</blockquote>
-<p>Dictionary-like object; <code>__getitem__</code> matches keys of types using <code>issubclass</code></p>
-
-</div>
-
-</div>
-
-</div>
-</div>
 
 </div>
 <div class="cell border-box-sizing code_cell rendered">

@@ -6,6 +6,7 @@ keywords: fastai
 sidebar: home_sidebar
 
 summary: "Basic function to preprocess text before assembling it in a `DataLoaders`."
+description: "Basic function to preprocess text before assembling it in a `DataLoaders`."
 ---
 <!--
 
@@ -44,7 +45,7 @@ summary: "Basic function to preprocess text before assembling it in a `DataLoade
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Preprocessing-rules">Preprocessing rules<a class="anchor-link" href="#Preprocessing-rules">&#182;</a></h2>
+<h2 id="Preprocessing-rules">Preprocessing rules<a class="anchor-link" href="#Preprocessing-rules"> </a></h2>
 </div>
 </div>
 </div>
@@ -412,7 +413,7 @@ summary: "Basic function to preprocess text before assembling it in a `DataLoade
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Tokenizing">Tokenizing<a class="anchor-link" href="#Tokenizing">&#182;</a></h2>
+<h2 id="Tokenizing">Tokenizing<a class="anchor-link" href="#Tokenizing"> </a></h2>
 </div>
 </div>
 </div>
@@ -619,7 +620,7 @@ summary: "Basic function to preprocess text before assembling it in a `DataLoade
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="parallel_tokenize" class="doc_header"><code>parallel_tokenize</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L141" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>parallel_tokenize</code>(<strong><code>items</code></strong>, <strong><code>tok_func</code></strong>, <strong><code>rules</code></strong>, <strong><code>as_gen</code></strong>=<em><code>False</code></em>, <strong><code>n_workers</code></strong>=<em><code>20</code></em>, <strong>**<code>tok_kwargs</code></strong>)</p>
+<h4 id="parallel_tokenize" class="doc_header"><code>parallel_tokenize</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L141" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>parallel_tokenize</code>(<strong><code>items</code></strong>, <strong><code>tok_func</code></strong>, <strong><code>rules</code></strong>, <strong><code>as_gen</code></strong>=<em><code>False</code></em>, <strong><code>n_workers</code></strong>=<em><code>56</code></em>, <strong>**<code>tok_kwargs</code></strong>)</p>
 </blockquote>
 <p>Calls a potential setup on <code>tok_func</code> before launching <a href="/text.core#TokenizeBatch"><code>TokenizeBatch</code></a> in parallel</p>
 
@@ -633,7 +634,7 @@ summary: "Basic function to preprocess text before assembling it in a `DataLoade
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Tokenize-texts-in-files">Tokenize texts in files<a class="anchor-link" href="#Tokenize-texts-in-files">&#182;</a></h3>
+<h3 id="Tokenize-texts-in-files">Tokenize texts in files<a class="anchor-link" href="#Tokenize-texts-in-files"> </a></h3>
 </div>
 </div>
 </div>
@@ -659,7 +660,7 @@ summary: "Basic function to preprocess text before assembling it in a `DataLoade
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="tokenize_folder" class="doc_header"><code>tokenize_folder</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L152" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>tokenize_folder</code>(<strong><code>path</code></strong>, <strong><code>extensions</code></strong>=<em><code>None</code></em>, <strong><code>folders</code></strong>=<em><code>None</code></em>, <strong><code>output_dir</code></strong>=<em><code>None</code></em>, <strong><code>n_workers</code></strong>=<em><code>20</code></em>, <strong><code>rules</code></strong>=<em><code>None</code></em>, <strong><code>tok_func</code></strong>=<em><code>'SpacyTokenizer'</code></em>, <strong><code>encoding</code></strong>=<em><code>'utf8'</code></em>, <strong>**<code>tok_kwargs</code></strong>)</p>
+<h4 id="tokenize_folder" class="doc_header"><code>tokenize_folder</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L152" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>tokenize_folder</code>(<strong><code>path</code></strong>, <strong><code>extensions</code></strong>=<em><code>None</code></em>, <strong><code>folders</code></strong>=<em><code>None</code></em>, <strong><code>output_dir</code></strong>=<em><code>None</code></em>, <strong><code>n_workers</code></strong>=<em><code>56</code></em>, <strong><code>rules</code></strong>=<em><code>None</code></em>, <strong><code>tok_func</code></strong>=<em><code>'SpacyTokenizer'</code></em>, <strong><code>encoding</code></strong>=<em><code>'utf8'</code></em>, <strong>**<code>tok_kwargs</code></strong>)</p>
 </blockquote>
 <p>Tokenize text files in <code>path</code> in parallel using <code>n_workers</code></p>
 
@@ -714,7 +715,7 @@ summary: "Basic function to preprocess text before assembling it in a `DataLoade
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="tokenize_files" class="doc_header"><code>tokenize_files</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L174" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>tokenize_files</code>(<strong><code>files</code></strong>, <strong><code>output_dir</code></strong>, <strong><code>output_names</code></strong>=<em><code>None</code></em>, <strong><code>n_workers</code></strong>=<em><code>20</code></em>, <strong><code>rules</code></strong>=<em><code>None</code></em>, <strong><code>tok_func</code></strong>=<em><code>'SpacyTokenizer'</code></em>, <strong><code>encoding</code></strong>=<em><code>'utf8'</code></em>, <strong>**<code>tok_kwargs</code></strong>)</p>
+<h4 id="tokenize_files" class="doc_header"><code>tokenize_files</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L174" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>tokenize_files</code>(<strong><code>files</code></strong>, <strong><code>output_dir</code></strong>, <strong><code>output_names</code></strong>=<em><code>None</code></em>, <strong><code>n_workers</code></strong>=<em><code>56</code></em>, <strong><code>rules</code></strong>=<em><code>None</code></em>, <strong><code>tok_func</code></strong>=<em><code>'SpacyTokenizer'</code></em>, <strong><code>encoding</code></strong>=<em><code>'utf8'</code></em>, <strong>**<code>tok_kwargs</code></strong>)</p>
 </blockquote>
 <p>Tokenize text <code>files</code> in parallel using <code>n_workers</code></p>
 
@@ -728,7 +729,7 @@ summary: "Basic function to preprocess text before assembling it in a `DataLoade
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Tokenize-texts-in-a-dataframe">Tokenize texts in a dataframe<a class="anchor-link" href="#Tokenize-texts-in-a-dataframe">&#182;</a></h3>
+<h3 id="Tokenize-texts-in-a-dataframe">Tokenize texts in a dataframe<a class="anchor-link" href="#Tokenize-texts-in-a-dataframe"> </a></h3>
 </div>
 </div>
 </div>
@@ -747,7 +748,7 @@ summary: "Basic function to preprocess text before assembling it in a `DataLoade
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="tokenize_df" class="doc_header"><code>tokenize_df</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L201" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>tokenize_df</code>(<strong><code>df</code></strong>, <strong><code>text_cols</code></strong>, <strong><code>n_workers</code></strong>=<em><code>20</code></em>, <strong><code>rules</code></strong>=<em><code>None</code></em>, <strong><code>mark_fields</code></strong>=<em><code>None</code></em>, <strong><code>tok_func</code></strong>=<em><code>'SpacyTokenizer'</code></em>, <strong><code>res_col_name</code></strong>=<em><code>'text'</code></em>, <strong>**<code>tok_kwargs</code></strong>)</p>
+<h4 id="tokenize_df" class="doc_header"><code>tokenize_df</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L201" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>tokenize_df</code>(<strong><code>df</code></strong>, <strong><code>text_cols</code></strong>, <strong><code>n_workers</code></strong>=<em><code>56</code></em>, <strong><code>rules</code></strong>=<em><code>None</code></em>, <strong><code>mark_fields</code></strong>=<em><code>None</code></em>, <strong><code>tok_func</code></strong>=<em><code>'SpacyTokenizer'</code></em>, <strong><code>res_col_name</code></strong>=<em><code>'text'</code></em>, <strong>**<code>tok_kwargs</code></strong>)</p>
 </blockquote>
 <p>Tokenize texts in <code>df[text_cols]</code> in parallel using <code>n_workers</code></p>
 
@@ -1062,7 +1063,7 @@ summary: "Basic function to preprocess text before assembling it in a `DataLoade
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Sentencepiece">Sentencepiece<a class="anchor-link" href="#Sentencepiece">&#182;</a></h2>
+<h2 id="Sentencepiece">Sentencepiece<a class="anchor-link" href="#Sentencepiece"> </a></h2>
 </div>
 </div>
 </div>

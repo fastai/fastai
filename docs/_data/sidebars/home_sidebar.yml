@@ -23,7 +23,7 @@ entries:
       url: /tutorial.imagenette
     - output: web,pdf
       title: Data block examples
-      url: /databloc.examples
+      url: /datablock_examples
     - output: web,pdf
       title: UlMFiT tutorial
       url: /tutorial.ulmfit
@@ -42,9 +42,18 @@ entries:
     - output: web,pdf
       title: Metrics
       url: /metrics
+    - output: web,pdf
+      title: Interpretation
+      url: /interpret
+    - output: web,pdf
+      title: Distributed
+      url: /distributed
       subfolders:
       - output: web
         subfolderitems:
+        - output: web,pdf
+          title: Core
+          url: /callback.core
         - output: web,pdf
           title: Schedulers
           url: /callback.schedule
@@ -63,6 +72,9 @@ entries:
         - output: web,pdf
           title: RNN
           url: /callback.rnn
+        - output: web,pdf
+          title: Data
+          url: /callback.data
         - output: web,pdf
           title: Progress
           url: /callback.progress
@@ -98,20 +110,32 @@ entries:
     title: Core
   - folderitems:
     - output: web,pdf
-      title: Vision Core
-      url: /vision.core
-    - output: web,pdf
       title: Vision Learner
       url: /vision.learner
     - output: web,pdf
       title: Vision Data Augmentation
       url: /vision.augment
+    - output: web,pdf
+      title: Vision Data
+      url: /vision.data
+    - output: web,pdf
+      title: Vision Core
+      url: /vision.core
+    - output: web,pdf
+      title: Vision Utils
+      url: /vision.utils
+    - output: web,pdf
+      title: Vision Widgets
+      url: /vision.widgets
       subfolders:
       - output: web
         subfolderitems:
         - output: web,pdf
           title: XResnet
           url: /vision.models.xresnet
+        - output: web,pdf
+          title: Unet
+          url: /vision.models.unet
         title: Models
     output: web
     title: Vision
@@ -145,13 +169,19 @@ entries:
       title: Tabular Core
       url: /tabular.core
     - output: web,pdf
+      title: Tabular Data
+      url: /tabular.data
+    - output: web,pdf
+      title: Tabular Learner
+      url: /tabular.learner
+    - output: web,pdf
       title: Tabular Model
       url: /tabular.model
-    - output: web,pdf
-      title: RapidsAI
-      url: /tabular.rapids
     output: web
     title: Tabular
+  - output: web,pdf
+    title: Collab
+    url: /collab
   - folderitems:
     - output: web,pdf
       title: Medical imagery
