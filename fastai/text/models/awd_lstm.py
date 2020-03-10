@@ -97,6 +97,8 @@ class AWD_LSTM(Module):
             self.rnns = [WeightDropout(rnn, weight_p) for rnn in self.rnns]
         self.rnns = nn.ModuleList(self.rnns)
         self.encoder.weight.data.uniform_(-self.initrange, self.initrange)
+        if self.encoder.padding_idx is not None:
+                self.encoder.weight.data[self.encoder.padding_idx] = 0.
         self.input_dp = RNNDropout(input_p)
         self.hidden_dps = nn.ModuleList([RNNDropout(hidden_p) for l in range(n_layers)])
 
