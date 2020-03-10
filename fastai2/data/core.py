@@ -117,7 +117,7 @@ class DataLoaders(GetAttr):
     "Basic wrapper around several `DataLoader`s."
     _default='train'
     def __init__(self, *loaders, path='.', device=None):
-        self.loaders,self.path = loaders,Path(path)
+        self.loaders,self.path = L(*loaders),Path(path)
         self.device = device
 
     def __getitem__(self, i): return self.loaders[i]
@@ -125,7 +125,8 @@ class DataLoaders(GetAttr):
         loaders = [dl.new(dl.dataset.new_empty()) for dl in self.loaders]
         return type(self)(*loaders, path=self.path, device=self.device)
 
-    train   ,valid    = add_props(lambda i,x: x[i])
+    def _set(i, self, v): self.loaders[i] = v
+    train   ,valid    = add_props(lambda i,x: x[i], _set)
     train_ds,valid_ds = add_props(lambda i,x: x[i].dataset)
 
     @property
@@ -147,6 +148,8 @@ class DataLoaders(GetAttr):
     def from_dsets(cls, *ds, path='.',  bs=64, device=None, dl_type=TfmdDL, **kwargs):
         default = (True,) + (False,) * (len(ds)-1)
         defaults = {'shuffle': default, 'drop_last': default}
+        for nm in _batch_tfms:
+            if nm in kwargs: kwargs[nm] = Pipeline(kwargs[nm])
         kwargs = merge(defaults, {k: tuplify(v, match=ds) for k,v in kwargs.items()})
         kwargs = [{k: v[i] for k,v in kwargs.items()} for i in range_of(ds)]
         return cls(*[dl_type(d, **k) for d,k in zip(ds, kwargs)], path=path, device=device)
