@@ -46,7 +46,7 @@ class TfmdDL(DataLoader):
         if self.device is not None: b = to_device(b, self.device)
         its = self.after_batch(b)
         self._n_inp = 1 if not isinstance(its, (list,tuple)) or len(its)==1 else len(its)-1
-        self._types = mapped(type,its)
+        self._types = explode_types(its)
 
     def _retain_dl(self,b):
         if not getattr(self, '_types', None): self._one_pass()
