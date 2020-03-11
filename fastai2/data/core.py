@@ -93,7 +93,7 @@ class TfmdDL(DataLoader):
 
     def show_results(self, b, out, max_n=9, ctxs=None, show=True, **kwargs):
         x,y,its = self.show_batch(b, max_n=max_n, show=False)
-        b_out = b[:self.n_inp] + (tuple(out) if is_listy(out) else (out,))
+        b_out = type(b)(b[:self.n_inp] + (tuple(out) if is_listy(out) else (out,)))
         x1,y1,outs = self.show_batch(b_out, max_n=max_n, show=False)
         res = (x,x1,None,None) if its is None else (x, y, its, outs.itemgot(slice(self.n_inp,None)))
         if not show: return res

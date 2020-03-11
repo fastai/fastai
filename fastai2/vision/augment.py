@@ -348,7 +348,7 @@ class AffineCoordTfm(RandTransform):
         self.cp_size = None if size is None else (size,size) if isinstance(size, int) else tuple(size)
 
     def before_call(self, b, split_idx):
-        if isinstance(b, tuple): b = b[0]
+        while isinstance(b, tuple): b = b[0]
         self.split_idx = split_idx
         self.do,self.mat = True,self._get_affine_mat(b)
         for t in self.coord_fs: t.before_call(b)
