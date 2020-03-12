@@ -3,12 +3,8 @@
     "Overview": "/"
   },
   "Tutorials": {
-    "": {
-      "Beginners": {
-        "Vision tutorial": "/tutorial.transfer_learning",
-        "Text tutorial": "/tutorial.ulmfit"
-      }
-    },
+    "Vision tutorial": "/tutorial.transfer_learning",
+    "Text tutorial": "/tutorial.ulmfit",
     "": {
       "Intermediate": {
         "Data block examples": "/datablock_examples",

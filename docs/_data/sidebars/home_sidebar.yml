@@ -12,6 +12,12 @@ entries:
     output: web
     title: Getting started
   - folderitems:
+    - output: web,pdf
+      title: Vision tutorial
+      url: /tutorial.transfer_learning
+    - output: web,pdf
+      title: Text tutorial
+      url: /tutorial.ulmfit
       subfolders:
       - output: web
         subfolderitems:
