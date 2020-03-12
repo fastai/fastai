@@ -56,7 +56,7 @@ description: "summary"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="DataLoader">DataLoader<a class="anchor-link" href="#DataLoader">&#182;</a></h2>
+<h2 id="DataLoader">DataLoader<a class="anchor-link" href="#DataLoader"> </a></h2>
 </div>
 </div>
 </div>
@@ -274,7 +274,7 @@ loading order and optional automatic batching (collation) and memory pinning.</p
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>(#6) [0.14786435518384977,0.2650330681194001,0.6431452951690536,0.09458671548019948,0.8696155162247328,0.29837767606261467]</pre>
+<pre>(#12) [0.2029181718165155,0.9363630463376765,0.6015850190373964,0.8951892866269898,0.022101597007143647,0.8795107556157348,0.7400142255000822,0.7064151212089262,0.031416108259866515,0.6090825864020659...]</pre>
 </div>
 
 </div>
@@ -333,7 +333,7 @@ loading order and optional automatic batching (collation) and memory pinning.</p
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>(#28) [4,4,4,4,4,4,4,4,4,4...]</pre>
+<pre>(#23) [4,4,4,4,4,4,4,4,4,4...]</pre>
 </div>
 
 </div>
@@ -383,7 +383,7 @@ loading order and optional automatic batching (collation) and memory pinning.</p
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>(#48) [0.3975703088063097,0.9300043261284903,0.21348763857582242,0.414557522602783,0.10987859373433917,0.8210019528840916,0.3265409454362096,0.37081412769534416,0.3355937609498155,0.8700538355944498...]</pre>
+<pre>(#36) [0.9053344272362951,0.7001863599621895,0.6035029862609306,0.6453813239894789,0.8012882587705233,0.4233633306146043,0.36652522550234645,0.41309064324237743,0.9386269784872716,0.5258497703552616...]</pre>
 </div>
 
 </div>
@@ -444,7 +444,7 @@ loading order and optional automatic batching (collation) and memory pinning.</p
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">twoepochs</span><span class="p">(</span><span class="n">d</span><span class="p">):</span> <span class="k">return</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">o</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">d</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">twoepochs</span><span class="p">(</span><span class="n">d</span><span class="p">):</span> <span class="k">return</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">o</span><span class="p">))</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">d</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -510,12 +510,12 @@ loading order and optional automatic batching (collation) and memory pinning.</p
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>CPU times: user 3.83 ms, sys: 0 ns, total: 3.83 ms
-Wall time: 223 ms
-CPU times: user 6.58 ms, sys: 15.6 ms, total: 22.2 ms
-Wall time: 183 ms
-CPU times: user 13.5 ms, sys: 21.5 ms, total: 35 ms
-Wall time: 126 ms
+<pre>CPU times: user 5.12 ms, sys: 710 µs, total: 5.83 ms
+Wall time: 239 ms
+CPU times: user 18.5 ms, sys: 13.5 ms, total: 32 ms
+Wall time: 166 ms
+CPU times: user 14.1 ms, sys: 31.4 ms, total: 45.5 ms
+Wall time: 132 ms
 </pre>
 </div>
 </div>
@@ -555,8 +555,8 @@ Wall time: 126 ms
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>CPU times: user 7.89 ms, sys: 26.9 ms, total: 34.8 ms
-Wall time: 89.4 ms
+<pre>CPU times: user 27.7 ms, sys: 18 ms, total: 45.7 ms
+Wall time: 98.8 ms
 </pre>
 </div>
 </div>
