@@ -13,6 +13,7 @@ class TabularLearner(Learner):
     def predict(self, row):
         tst_to = self.dls.valid_ds.new(pd.DataFrame(row).T)
         tst_to.process()
+        tst_to.conts = tst_to.conts.astype(np.float32)
         dl = self.dls.valid.new(tst_to)
         inp,preds,_,dec_preds = self.get_preds(dl=dl, with_input=True, with_decoded=True)
         i = getattr(self.dls, 'n_inp', -1)
