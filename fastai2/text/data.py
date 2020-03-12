@@ -103,15 +103,16 @@ def truncate(self:TitledStr, n):
 @typedispatch
 def show_batch(x: TensorText, y, samples, ctxs=None, max_n=10, trunc_at=150, **kwargs):
     if ctxs is None: ctxs = get_empty_df(min(len(samples), max_n))
-    samples = L((s[0].truncate(trunc_at),*s[1:]) for s in samples)
+    if trunc_at is not None: samples = L((s[0].truncate(trunc_at),*s[1:]) for s in samples)
     ctxs = show_batch[object](x, y, samples, max_n=max_n, ctxs=ctxs, **kwargs)
     display_df(pd.DataFrame(ctxs))
     return ctxs
 
 # Cell
 @typedispatch
-def show_batch(x: LMTensorText, y, samples, ctxs=None, max_n=10, **kwargs):
-    return show_batch[TensorText](x, None, samples, ctxs=ctxs, max_n=max_n, **kwargs)
+def show_batch(x: LMTensorText, y, samples, ctxs=None, max_n=10, trunc_at=150, **kwargs):
+    samples = L((s[0].truncate(trunc_at), s[1].truncate(trunc_at)) for s in samples)
+    return show_batch[TensorText](x, None, samples, ctxs=ctxs, max_n=max_n, trunc_at=None, **kwargs)
 
 # Cell
 def pad_input(samples, pad_idx=1, pad_fields=0, pad_first=False, backwards=False):
