@@ -6,13 +6,13 @@
     "Overview": "/tutorial",
     "": {
       "Beginners": {
-        "Vision tutorial": "/tutorial.transfer_learning",
+        "Vision tutorial": "/tutorial.vision",
         "Text tutorial": "/tutorial.ulmfit"
       }
     },
     "empty1": {
       "Intermediate": {
-        "Data block examples": "/datablock_examples",
+        "Data block examples": "/tutorial.datablock",
         "Imagenette tutorial": "/tutorial.imagenette",
         "Pets tutorial": "/tutorial.pets",
         "UlMFiT tutorial": "/tutorial.ulmfit"

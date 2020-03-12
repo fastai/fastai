@@ -20,7 +20,7 @@ entries:
         subfolderitems:
         - output: web,pdf
           title: Vision tutorial
-          url: /tutorial.transfer_learning
+          url: /tutorial.vision
         - output: web,pdf
           title: Text tutorial
           url: /tutorial.ulmfit
@@ -29,7 +29,7 @@ entries:
         subfolderitems:
         - output: web,pdf
           title: Data block examples
-          url: /datablock_examples
+          url: /tutorial.datablock
         - output: web,pdf
           title: Imagenette tutorial
           url: /tutorial.imagenette
