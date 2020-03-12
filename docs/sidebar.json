@@ -3,9 +3,14 @@
     "Overview": "/"
   },
   "Tutorials": {
-    "Vision tutorial": "/tutorial.transfer_learning",
-    "Text tutorial": "/tutorial.ulmfit",
+    "Overview": "/tutorial",
     "": {
+      "Beginners": {
+        "Vision tutorial": "/tutorial.transfer_learning",
+        "Text tutorial": "/tutorial.ulmfit"
+      }
+    },
+    "empty1": {
       "Intermediate": {
         "Data block examples": "/datablock_examples",
         "Imagenette tutorial": "/tutorial.imagenette",
@@ -13,7 +18,7 @@
         "UlMFiT tutorial": "/tutorial.ulmfit"
       }
     },
-    "empty1": {
+    "empty2": {
       "Advanced": {
         "Siamese tutorial": "/tutorial.siamese"
       }
