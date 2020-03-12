@@ -3,13 +3,25 @@
     "Overview": "/"
   },
   "Tutorials": {
-    "Vision tutorial": "/tutorial.transfer_learning",
-    "Pets tutorial": "/tutorial.pets",
-    "Imagenette tutorial": "/tutorial.imagenette",
-    "Siamese tutorial": "/tutorial.siamese",
-    "Data block examples": "/datablock_examples",
-    "UlMFiT tutorial": "/tutorial.ulmfit",
-    "Wikitext tutorial": "/tutorial.wikitext"
+    "": {
+      "Beginners": {
+        "Vision tutorial": "/tutorial.transfer_learning",
+        "Text tutorial": "/tutorial.ulmfit"
+      }
+    },
+    "": {
+      "Intermediate": {
+        "Data block examples": "/datablock_examples",
+        "Imagenette tutorial": "/tutorial.imagenette",
+        "Pets tutorial": "/tutorial.pets",
+        "UlMFiT tutorial": "/tutorial.ulmfit"
+      }
+    },
+    "": {
+      "Advanced": {
+        "Siamese tutorial": "/tutorial.siamese"
+      }
+    }
   },
   "Training": {
     "Training loop": "/learner",

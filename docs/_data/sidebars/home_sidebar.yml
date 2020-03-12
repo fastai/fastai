@@ -12,27 +12,13 @@ entries:
     output: web
     title: Getting started
   - folderitems:
-    - output: web,pdf
-      title: Vision tutorial
-      url: /tutorial.transfer_learning
-    - output: web,pdf
-      title: Pets tutorial
-      url: /tutorial.pets
-    - output: web,pdf
-      title: Imagenette tutorial
-      url: /tutorial.imagenette
-    - output: web,pdf
-      title: Siamese tutorial
-      url: /tutorial.siamese
-    - output: web,pdf
-      title: Data block examples
-      url: /datablock_examples
-    - output: web,pdf
-      title: UlMFiT tutorial
-      url: /tutorial.ulmfit
-    - output: web,pdf
-      title: Wikitext tutorial
-      url: /tutorial.wikitext
+      subfolders:
+      - output: web
+        subfolderitems:
+        - output: web,pdf
+          title: Siamese tutorial
+          url: /tutorial.siamese
+        title: Advanced
     output: web
     title: Tutorials
   - folderitems:
