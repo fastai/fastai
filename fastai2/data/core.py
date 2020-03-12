@@ -117,7 +117,7 @@ class DataLoaders(GetAttr):
     "Basic wrapper around several `DataLoader`s."
     _default='train'
     def __init__(self, *loaders, path='.', device=None):
-        self.loaders,self.path = L(*loaders),Path(path)
+        self.loaders,self.path = list(loaders),Path(path)
         self.device = device
 
     def __getitem__(self, i): return self.loaders[i]
