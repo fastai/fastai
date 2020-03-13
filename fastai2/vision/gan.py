@@ -242,16 +242,17 @@ class AdaptiveGANSwitcher(Callback):
 # Cell
 class GANDiscriminativeLR(Callback):
     "`Callback` that handles multiplying the learning rate by `mult_lr` for the critic."
+    run_after = GANTrainer
     def __init__(self, mult_lr=5.): self.mult_lr = mult_lr
 
     def begin_batch(self):
         "Multiply the current lr if necessary."
         if not self.learn.gan_trainer.gen_mode and self.training:
-            self.learn.opt.set_hyper('lr', learn.opt.hypers[0]['lr']*self.mult_lr)
+            self.learn.opt.set_hyper('lr', self.learn.opt.hypers[0]['lr']*self.mult_lr)
 
     def after_batch(self):
         "Put the LR back to its value if necessary."
-        if not self.learn.gan_trainer.gen_mode: self.learn.opt.set_hyper('lr', learn.opt.hypers[0]['lr']/self.mult_lr)
+        if not self.learn.gan_trainer.gen_mode: self.learn.opt.set_hyper('lr', self.learn.opt.hypers[0]['lr']/self.mult_lr)
 
 # Cell
 class InvisibleTensor(TensorBase):
