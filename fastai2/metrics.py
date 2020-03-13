@@ -107,7 +107,7 @@ def BrierScore(axis=-1, sample_weight=None, pos_label=None):
 # Cell
 def CohenKappa(axis=-1, labels=None, weights=None, sample_weight=None):
     "Cohen kappa for single-label classification problems"
-    return skm_to_fastai(skm.cohen_kappa_score, axis=axis,
+    return skm_to_fastai(skm.cohen_kappa_score, axis=axis, labels=labels, weights=weights
                          sample_weight=sample_weight, pos_label=pos_label)
 
 # Cell
@@ -131,7 +131,7 @@ def HammingLoss(axis=-1, labels=None, sample_weight=None):
 # Cell
 def Jaccard(axis=-1, labels=None, pos_label=1, average='binary', sample_weight=None):
     "Jaccard score for single-label classification problems"
-    return skm_to_fastai(skm.jaccard_similarity_score, axis=axis,
+    return skm_to_fastai(skm.jaccard_score, axis=axis,
                          labels=labels, pos_label=pos_label, average=average, sample_weight=sample_weight)
 
 # Cell
@@ -202,7 +202,7 @@ def HammingLossMulti(thresh=0.5, sigmoid=True, labels=None, sample_weight=None):
 # Cell
 def JaccardMulti(thresh=0.5, sigmoid=True, labels=None, pos_label=1, average='macro', sample_weight=None):
     "Jaccard score for multi-label classification problems"
-    return skm_to_fastai(skm.jaccard_similarity_score, thresh=thresh, sigmoid=sigmoid, flatten=False,
+    return skm_to_fastai(skm.jaccard_score, thresh=thresh, sigmoid=sigmoid, flatten=False,
                          labels=labels, pos_label=pos_label, average=average, sample_weight=sample_weight)
 
 # Cell
