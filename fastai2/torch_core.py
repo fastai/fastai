@@ -211,7 +211,7 @@ def to_np(x):
 def to_concat(xs, dim=0):
     "Concat the element in `xs` (recursively if they are tuples/lists of tensors)"
     if is_listy(xs[0]): return type(xs[0])([to_concat([x[i] for x in xs], dim=dim) for i in range_of(xs[0])])
-    if isinstance(xs[0],dict):  return {k: to_concat([x[k] for x in xs], dim=dim) for k in xs.keys()}
+    if isinstance(xs[0],dict):  return {k: to_concat([x[k] for x in xs], dim=dim) for k in xs[0].keys()}
     #We may receives xs that are not concatenatable (inputs of a text classifier for instance),
     #   in this case we return a big list
     try:    return retain_type(torch.cat(xs, dim=dim), xs[0])
