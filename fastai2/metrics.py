@@ -107,7 +107,7 @@ def BrierScore(axis=-1, sample_weight=None, pos_label=None):
 # Cell
 def CohenKappa(axis=-1, labels=None, weights=None, sample_weight=None):
     "Cohen kappa for single-label classification problems"
-    return skm_to_fastai(skm.cohen_kappa_score, axis=axis, labels=labels, weights=weights
+    return skm_to_fastai(skm.cohen_kappa_score, axis=axis, labels=labels, weights=weights,
                          sample_weight=sample_weight, pos_label=pos_label)
 
 # Cell
