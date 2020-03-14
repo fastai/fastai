@@ -95,6 +95,7 @@ dependencies:
 - bcolz
 - prompt_toolkit
 #- pytest
+- graphviz
 - pip:
   - torchvision==0.1.9
   - opencv-python
