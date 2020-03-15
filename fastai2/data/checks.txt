@@ -210,5 +210,9 @@
   "http://files.grouplens.org/datasets/movielens/ml-100k.zip": [
     4924029,
     "39f6af2d7ea4e117f8838e4a302fec70"
+  ],
+  "http://files.vedavimedical.com/siim_small.tgz": [
+    33277183,
+    "bb55c5ba9aa9eb9dcac9e0f29581b52c"
   ]
 }

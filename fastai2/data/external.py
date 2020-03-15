@@ -119,6 +119,9 @@ class URLs():
     PASCAL_2007        = f'{S3_IMAGELOC}pascal_2007.tgz'
     PASCAL_2012        = f'{S3_IMAGELOC}pascal_2012.tgz'
 
+    # Medical Imaging datasets
+    SIIM_SMALL     = 'http://files.vedavimedical.com/siim_small.tgz'
+
     #Pretrained models
     OPENAI_TRANSFORMER = f'{S3_MODEL}transformer.tgz'
     WT103_FWD          = f'{S3_MODEL}wt103-fwd.tgz'
