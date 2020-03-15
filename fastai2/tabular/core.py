@@ -104,7 +104,7 @@ class Tabular(CollBase, GetAttr, FilteredBase):
     _default,with_cont='procs',True
     def __init__(self, df, procs=None, cat_names=None, cont_names=None, y_names=None, block_y=None, splits=None,
                  do_setup=True, device=None, inplace=False, reduce_memory=True):
-        if inplace and splits is not None and pd.options.mode.chained_assignment is not 'None':
+        if inplace and splits is not None and pd.options.mode.chained_assignment is not None:
             warn("Using inplace with splits will trigger a pandas error. Set `pd.options.mode.chained_assignment=None` to avoid it.")
         if not inplace: df = df.copy()
         if splits is not None: df = df.iloc[sum(splits, [])]
