@@ -126,7 +126,7 @@ class Tabular(CollBase, GetAttr, FilteredBase):
         if do_setup: self.setup()
 
     def new(self, df):
-        return type(self)(df, do_setup=False, block_y=TransformBlock(),
+        return type(self)(df, do_setup=False, reduce_memory=False, block_y=TransformBlock(),
                           **attrdict(self, 'procs','cat_names','cont_names','y_names', 'device'))
 
     def subset(self, i): return self.new(self.items[slice(0,self.split) if i==0 else slice(self.split,len(self))])
