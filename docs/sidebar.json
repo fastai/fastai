@@ -7,7 +7,7 @@
     "": {
       "Beginners": {
         "Vision tutorial": "/tutorial.vision",
-        "Text tutorial": "/tutorial.ulmfit"
+        "Text tutorial": "/tutorial.text"
       }
     },
     "empty1": {
@@ -15,7 +15,7 @@
         "Data block examples": "/tutorial.datablock",
         "Imagenette tutorial": "/tutorial.imagenette",
         "Pets tutorial": "/tutorial.pets",
-        "UlMFiT tutorial": "/tutorial.ulmfit"
+        "Wikitext tutorial": "/tutorial.wikitext"
       }
     },
     "empty2": {
