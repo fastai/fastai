@@ -26,8 +26,8 @@ if torch.cuda.is_available():
 
 # Cell
 @delegates(plt.subplots, keep=True)
-def subplots(nrows=1, ncols=1, figsize=None, imsize=4, **kwargs):
-    if figsize is None: figsize=(imsize*ncols,imsize*nrows)
+def subplots(nrows=1, ncols=1, figsize=None, imsize=3, add_vert=0, **kwargs):
+    if figsize is None: figsize=(ncols*imsize, nrows*imsize+add_vert)
     fig,ax = plt.subplots(nrows, ncols, figsize=figsize, **kwargs)
     if nrows*ncols==1: ax = array([ax])
     return fig,ax
