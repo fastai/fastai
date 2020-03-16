@@ -42,14 +42,14 @@ description: "Integration with [neptune.ai](https://www.neptune.ai)."
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Registration">Registration<a class="anchor-link" href="#Registration">&#182;</a></h2><ol>
+<h2 id="Registration">Registration<a class="anchor-link" href="#Registration"> </a></h2><ol>
 <li>Create <strong>free</strong> account: <a href="https://neptune.ai/register">neptune.ai/register</a>.</li>
 <li>Export API token to the environment variable (more help <a href="https://docs.neptune.ai/python-api/tutorials/get-started.html#copy-api-token">here</a>). In your terminal run:</li>
 </ol>
 
 <pre><code>export NEPTUNE_API_TOKEN='YOUR_LONG_API_TOKEN'</code></pre>
 <p>or append the command above to your <code>~/.bashrc</code> or <code>~/.bash_profile</code> files (<strong>recommended</strong>). More help is <a href="https://docs.neptune.ai/python-api/tutorials/get-started.html#copy-api-token">here</a>.</p>
-<h2 id="Installation">Installation<a class="anchor-link" href="#Installation">&#182;</a></h2><ol>
+<h2 id="Installation">Installation<a class="anchor-link" href="#Installation"> </a></h2><ol>
 <li>You need to install neptune-client. In your terminal run:</li>
 </ol>
 
@@ -68,7 +68,7 @@ description: "Integration with [neptune.ai](https://www.neptune.ai)."
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="How-to-use?">How to use?<a class="anchor-link" href="#How-to-use?">&#182;</a></h2><p>Key is to call <code>neptune.init()</code> before you create <code>Learner()</code> and call <code>neptune_create_experiment()</code>, before you fit the model.</p>
+<h2 id="How-to-use?">How to use?<a class="anchor-link" href="#How-to-use?"> </a></h2><p>Key is to call <code>neptune.init()</code> before you create <code>Learner()</code> and call <code>neptune_create_experiment()</code>, before you fit the model.</p>
 <p>Use <a href="/callback.neptune#NeptuneCallback"><code>NeptuneCallback</code></a> in your <a href="/13a_learner#Learner"><code>Learner</code></a>, like this:</p>
 
 <pre><code>from fastai2.callback.neptune import NeptuneCallback
@@ -100,7 +100,7 @@ learn.fit_one_cycle(1)</code></pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="NeptuneCallback" class="doc_header"><code>class</code> <code>NeptuneCallback</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/neptune.py#L14" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>NeptuneCallback</code>(<strong><code>log_model_weights</code></strong>=<em><code>True</code></em>, <strong><code>keep_experiment_running</code></strong>=<em><code>False</code></em>) :: <a href="/callback_core#Callback"><code>Callback</code></a></p>
+<h2 id="NeptuneCallback" class="doc_header"><code>class</code> <code>NeptuneCallback</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/neptune.py#L14" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>NeptuneCallback</code>(<strong><code>log_model_weights</code></strong>=<em><code>True</code></em>, <strong><code>keep_experiment_running</code></strong>=<em><code>False</code></em>) :: <a href="/callback.core#Callback"><code>Callback</code></a></p>
 </blockquote>
 <p>Log losses, metrics, model weights, model architecture summary to neptune</p>
 

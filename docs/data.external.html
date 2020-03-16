@@ -150,7 +150,7 @@ description: "Helper functions to download the fastai datasets"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="download_url" class="doc_header"><code>download_url</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/external.py#L134" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>download_url</code>(<strong><code>url</code></strong>, <strong><code>dest</code></strong>, <strong><code>overwrite</code></strong>=<em><code>False</code></em>, <strong><code>pbar</code></strong>=<em><code>None</code></em>, <strong><code>show_progress</code></strong>=<em><code>True</code></em>, <strong><code>chunk_size</code></strong>=<em><code>1048576</code></em>, <strong><code>timeout</code></strong>=<em><code>4</code></em>, <strong><code>retries</code></strong>=<em><code>5</code></em>)</p>
+<h4 id="download_url" class="doc_header"><code>download_url</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/external.py#L137" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>download_url</code>(<strong><code>url</code></strong>, <strong><code>dest</code></strong>, <strong><code>overwrite</code></strong>=<em><code>False</code></em>, <strong><code>pbar</code></strong>=<em><code>None</code></em>, <strong><code>show_progress</code></strong>=<em><code>True</code></em>, <strong><code>chunk_size</code></strong>=<em><code>1048576</code></em>, <strong><code>timeout</code></strong>=<em><code>4</code></em>, <strong><code>retries</code></strong>=<em><code>5</code></em>)</p>
 </blockquote>
 <p>Download <code>url</code> to <code>dest</code> unless it exists and not <code>overwrite</code></p>
 
@@ -255,7 +255,7 @@ description: "Helper functions to download the fastai datasets"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="download_data" class="doc_header"><code>download_data</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/external.py#L168" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>download_data</code>(<strong><code>url</code></strong>, <strong><code>fname</code></strong>=<em><code>None</code></em>, <strong><code>c_key</code></strong>=<em><code>'archive'</code></em>, <strong><code>force_download</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="download_data" class="doc_header"><code>download_data</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/external.py#L171" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>download_data</code>(<strong><code>url</code></strong>, <strong><code>fname</code></strong>=<em><code>None</code></em>, <strong><code>c_key</code></strong>=<em><code>'archive'</code></em>, <strong><code>force_download</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 <p>Download <code>url</code> to <code>fname</code>.</p>
 
@@ -346,7 +346,7 @@ description: "Helper functions to download the fastai datasets"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="file_extract" class="doc_header"><code>file_extract</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/external.py#L193" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>file_extract</code>(<strong><code>fname</code></strong>, <strong><code>dest</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="file_extract" class="doc_header"><code>file_extract</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/external.py#L196" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>file_extract</code>(<strong><code>fname</code></strong>, <strong><code>dest</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Extract <code>fname</code> to <code>dest</code> using <code>tarfile</code> or `zipfile</p>
 
@@ -377,7 +377,7 @@ description: "Helper functions to download the fastai datasets"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="untar_data" class="doc_header"><code>untar_data</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/external.py#L202" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>untar_data</code>(<strong><code>url</code></strong>, <strong><code>fname</code></strong>=<em><code>None</code></em>, <strong><code>dest</code></strong>=<em><code>None</code></em>, <strong><code>c_key</code></strong>=<em><code>'data'</code></em>, <strong><code>force_download</code></strong>=<em><code>False</code></em>, <strong><code>extract_func</code></strong>=<em><code>'file_extract'</code></em>)</p>
+<h4 id="untar_data" class="doc_header"><code>untar_data</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/external.py#L205" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>untar_data</code>(<strong><code>url</code></strong>, <strong><code>fname</code></strong>=<em><code>None</code></em>, <strong><code>dest</code></strong>=<em><code>None</code></em>, <strong><code>c_key</code></strong>=<em><code>'data'</code></em>, <strong><code>force_download</code></strong>=<em><code>False</code></em>, <strong><code>extract_func</code></strong>=<em><code>'file_extract'</code></em>)</p>
 </blockquote>
 <p>Download <code>url</code> to <code>fname</code> if <code>dest</code> doesn't exist, and un-tgz to folder <code>dest</code>.</p>
 

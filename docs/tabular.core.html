@@ -411,7 +411,7 @@ description: "Basic function to preprocess tabular data before assembling it in 
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Tabular" class="doc_header"><code>class</code> <code>Tabular</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/tabular/core.py#L102" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Tabular</code>(<strong><code>df</code></strong>, <strong><code>procs</code></strong>=<em><code>None</code></em>, <strong><code>cat_names</code></strong>=<em><code>None</code></em>, <strong><code>cont_names</code></strong>=<em><code>None</code></em>, <strong><code>y_names</code></strong>=<em><code>None</code></em>, <strong><code>block_y</code></strong>=<em><code>None</code></em>, <strong><code>splits</code></strong>=<em><code>None</code></em>, <strong><code>do_setup</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>inplace</code></strong>=<em><code>False</code></em>) :: <a href="https://fastcore.fast.ai/foundation#CollBase"><code>CollBase</code></a></p>
+<h2 id="Tabular" class="doc_header"><code>class</code> <code>Tabular</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/tabular/core.py#L102" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Tabular</code>(<strong><code>df</code></strong>, <strong><code>procs</code></strong>=<em><code>None</code></em>, <strong><code>cat_names</code></strong>=<em><code>None</code></em>, <strong><code>cont_names</code></strong>=<em><code>None</code></em>, <strong><code>y_names</code></strong>=<em><code>None</code></em>, <strong><code>block_y</code></strong>=<em><code>None</code></em>, <strong><code>splits</code></strong>=<em><code>None</code></em>, <strong><code>do_setup</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>inplace</code></strong>=<em><code>False</code></em>, <strong><code>reduce_memory</code></strong>=<em><code>True</code></em>) :: <a href="https://fastcore.fast.ai/foundation#CollBase"><code>CollBase</code></a></p>
 </blockquote>
 <p>A <code>DataFrame</code> wrapper that knows which cols are cont/cat/y, and returns rows in <code>__getitem__</code></p>
 
@@ -435,7 +435,7 @@ description: "Basic function to preprocess tabular data before assembling it in 
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TabularPandas" class="doc_header"><code>class</code> <code>TabularPandas</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/tabular/core.py#L156" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TabularPandas</code>(<strong><code>df</code></strong>, <strong><code>procs</code></strong>=<em><code>None</code></em>, <strong><code>cat_names</code></strong>=<em><code>None</code></em>, <strong><code>cont_names</code></strong>=<em><code>None</code></em>, <strong><code>y_names</code></strong>=<em><code>None</code></em>, <strong><code>block_y</code></strong>=<em><code>None</code></em>, <strong><code>splits</code></strong>=<em><code>None</code></em>, <strong><code>do_setup</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>inplace</code></strong>=<em><code>False</code></em>) :: <a href="/tabular.core#Tabular"><code>Tabular</code></a></p>
+<h2 id="TabularPandas" class="doc_header"><code>class</code> <code>TabularPandas</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/tabular/core.py#L159" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TabularPandas</code>(<strong><code>df</code></strong>, <strong><code>procs</code></strong>=<em><code>None</code></em>, <strong><code>cat_names</code></strong>=<em><code>None</code></em>, <strong><code>cont_names</code></strong>=<em><code>None</code></em>, <strong><code>y_names</code></strong>=<em><code>None</code></em>, <strong><code>block_y</code></strong>=<em><code>None</code></em>, <strong><code>splits</code></strong>=<em><code>None</code></em>, <strong><code>do_setup</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>inplace</code></strong>=<em><code>False</code></em>, <strong><code>reduce_memory</code></strong>=<em><code>True</code></em>) :: <a href="/tabular.core#Tabular"><code>Tabular</code></a></p>
 </blockquote>
 <p>A <code>DataFrame</code> wrapper that knows which cols are cont/cat/y, and returns rows in <code>__getitem__</code></p>
 
@@ -479,7 +479,7 @@ description: "Basic function to preprocess tabular data before assembling it in 
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TabularProc" class="doc_header"><code>class</code> <code>TabularProc</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/tabular/core.py#L177" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TabularProc</code>(<strong><code>enc</code></strong>=<em><code>None</code></em>, <strong><code>dec</code></strong>=<em><code>None</code></em>, <strong><code>split_idx</code></strong>=<em><code>None</code></em>, <strong><code>order</code></strong>=<em><code>None</code></em>) :: <a href="https://fastcore.fast.ai/transform#InplaceTransform"><code>InplaceTransform</code></a></p>
+<h2 id="TabularProc" class="doc_header"><code>class</code> <code>TabularProc</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/tabular/core.py#L180" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TabularProc</code>(<strong><code>enc</code></strong>=<em><code>None</code></em>, <strong><code>dec</code></strong>=<em><code>None</code></em>, <strong><code>split_idx</code></strong>=<em><code>None</code></em>, <strong><code>order</code></strong>=<em><code>None</code></em>) :: <a href="https://fastcore.fast.ai/transform#InplaceTransform"><code>InplaceTransform</code></a></p>
 </blockquote>
 <p>Base class to write a non-lazy tabular processor for dataframes</p>
 
@@ -509,7 +509,7 @@ description: "Basic function to preprocess tabular data before assembling it in 
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="setups" class="doc_header"><code>setups</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/tabular/core.py#L323" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>setups</code>(<strong><code>to</code></strong>:<a href="/tabular.core#Tabular"><code>Tabular</code></a>)</p>
+<h4 id="setups" class="doc_header"><code>setups</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/tabular/core.py#L326" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>setups</code>(<strong><code>to</code></strong>:<a href="/tabular.core#Tabular"><code>Tabular</code></a>)</p>
 </blockquote>
 
 </div>
@@ -529,7 +529,7 @@ description: "Basic function to preprocess tabular data before assembling it in 
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="encodes" class="doc_header"><code>encodes</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/tabular/core.py#L329" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>encodes</code>(<strong><code>to</code></strong>:<a href="/tabular.core#Tabular"><code>Tabular</code></a>)</p>
+<h4 id="encodes" class="doc_header"><code>encodes</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/tabular/core.py#L332" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>encodes</code>(<strong><code>to</code></strong>:<a href="/tabular.core#Tabular"><code>Tabular</code></a>)</p>
 </blockquote>
 
 </div>
@@ -549,7 +549,7 @@ description: "Basic function to preprocess tabular data before assembling it in 
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="decodes" class="doc_header"><code>decodes</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/tabular/core.py#L317" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>decodes</code>(<strong><code>to</code></strong>:<a href="/tabular.core#Tabular"><code>Tabular</code></a>)</p>
+<h4 id="decodes" class="doc_header"><code>decodes</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/tabular/core.py#L320" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>decodes</code>(<strong><code>to</code></strong>:<a href="/tabular.core#Tabular"><code>Tabular</code></a>)</p>
 </blockquote>
 
 </div>
@@ -569,7 +569,7 @@ description: "Basic function to preprocess tabular data before assembling it in 
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="Categorify" class="doc_header"><code>class</code> <code>Categorify</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/tabular/core.py#L192" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>Categorify</code>(<strong><code>enc</code></strong>=<em><code>None</code></em>, <strong><code>dec</code></strong>=<em><code>None</code></em>, <strong><code>split_idx</code></strong>=<em><code>None</code></em>, <strong><code>order</code></strong>=<em><code>None</code></em>) :: <a href="/tabular.core#TabularProc"><code>TabularProc</code></a></p>
+<h3 id="Categorify" class="doc_header"><code>class</code> <code>Categorify</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/tabular/core.py#L195" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>Categorify</code>(<strong><code>enc</code></strong>=<em><code>None</code></em>, <strong><code>dec</code></strong>=<em><code>None</code></em>, <strong><code>split_idx</code></strong>=<em><code>None</code></em>, <strong><code>order</code></strong>=<em><code>None</code></em>) :: <a href="/tabular.core#TabularProc"><code>TabularProc</code></a></p>
 </blockquote>
 <p>Transform the categorical variables to that type.</p>
 
@@ -748,7 +748,7 @@ description: "Basic function to preprocess tabular data before assembling it in 
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="NormalizeTab" class="doc_header"><code>class</code> <code>NormalizeTab</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/tabular/core.py#L221" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>NormalizeTab</code>(<strong><code>enc</code></strong>=<em><code>None</code></em>, <strong><code>dec</code></strong>=<em><code>None</code></em>, <strong><code>split_idx</code></strong>=<em><code>None</code></em>, <strong><code>order</code></strong>=<em><code>None</code></em>) :: <a href="/tabular.core#TabularProc"><code>TabularProc</code></a></p>
+<h2 id="NormalizeTab" class="doc_header"><code>class</code> <code>NormalizeTab</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/tabular/core.py#L224" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>NormalizeTab</code>(<strong><code>enc</code></strong>=<em><code>None</code></em>, <strong><code>dec</code></strong>=<em><code>None</code></em>, <strong><code>split_idx</code></strong>=<em><code>None</code></em>, <strong><code>order</code></strong>=<em><code>None</code></em>) :: <a href="/tabular.core#TabularProc"><code>TabularProc</code></a></p>
 </blockquote>
 <p>Normalize the continuous variables.</p>
 
@@ -772,7 +772,7 @@ description: "Basic function to preprocess tabular data before assembling it in 
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="setups" class="doc_header"><code>setups</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/tabular/core.py#L323" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>setups</code>(<strong><code>to</code></strong>:<a href="/tabular.core#Tabular"><code>Tabular</code></a>)</p>
+<h4 id="setups" class="doc_header"><code>setups</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/tabular/core.py#L326" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>setups</code>(<strong><code>to</code></strong>:<a href="/tabular.core#Tabular"><code>Tabular</code></a>)</p>
 </blockquote>
 
 </div>
@@ -792,7 +792,7 @@ description: "Basic function to preprocess tabular data before assembling it in 
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="encodes" class="doc_header"><code>encodes</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/tabular/core.py#L329" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>encodes</code>(<strong><code>to</code></strong>:<a href="/tabular.core#Tabular"><code>Tabular</code></a>)</p>
+<h4 id="encodes" class="doc_header"><code>encodes</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/tabular/core.py#L332" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>encodes</code>(<strong><code>to</code></strong>:<a href="/tabular.core#Tabular"><code>Tabular</code></a>)</p>
 </blockquote>
 
 </div>
@@ -812,7 +812,7 @@ description: "Basic function to preprocess tabular data before assembling it in 
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="decodes" class="doc_header"><code>decodes</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/tabular/core.py#L317" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>decodes</code>(<strong><code>to</code></strong>:<a href="/tabular.core#Tabular"><code>Tabular</code></a>)</p>
+<h4 id="decodes" class="doc_header"><code>decodes</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/tabular/core.py#L320" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>decodes</code>(<strong><code>to</code></strong>:<a href="/tabular.core#Tabular"><code>Tabular</code></a>)</p>
 </blockquote>
 
 </div>
@@ -893,7 +893,7 @@ description: "Basic function to preprocess tabular data before assembling it in 
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="FillStrategy" class="doc_header"><code>class</code> <code>FillStrategy</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/tabular/core.py#L245" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FillStrategy</code>()</p>
+<h2 id="FillStrategy" class="doc_header"><code>class</code> <code>FillStrategy</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/tabular/core.py#L248" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FillStrategy</code>()</p>
 </blockquote>
 <p>Namespace containing the various filling strategies.</p>
 
@@ -917,7 +917,7 @@ description: "Basic function to preprocess tabular data before assembling it in 
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="FillMissing" class="doc_header"><code>class</code> <code>FillMissing</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/tabular/core.py#L252" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>FillMissing</code>(<strong><code>fill_strategy</code></strong>=<em><code>'median'</code></em>, <strong><code>add_col</code></strong>=<em><code>True</code></em>, <strong><code>fill_vals</code></strong>=<em><code>None</code></em>) :: <a href="/tabular.core#TabularProc"><code>TabularProc</code></a></p>
+<h3 id="FillMissing" class="doc_header"><code>class</code> <code>FillMissing</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/tabular/core.py#L255" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>FillMissing</code>(<strong><code>fill_strategy</code></strong>=<em><code>'median'</code></em>, <strong><code>add_col</code></strong>=<em><code>True</code></em>, <strong><code>fill_vals</code></strong>=<em><code>None</code></em>) :: <a href="/tabular.core#TabularProc"><code>TabularProc</code></a></p>
 </blockquote>
 <p>Fill the missing values in continuous columns.</p>
 
@@ -1081,7 +1081,7 @@ description: "Basic function to preprocess tabular data before assembling it in 
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ReadTabBatch" class="doc_header"><code>class</code> <code>ReadTabBatch</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/tabular/core.py#L277" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ReadTabBatch</code>(<strong><code>to</code></strong>) :: <a href="https://fastcore.fast.ai/transform#ItemTransform"><code>ItemTransform</code></a></p>
+<h2 id="ReadTabBatch" class="doc_header"><code>class</code> <code>ReadTabBatch</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/tabular/core.py#L280" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ReadTabBatch</code>(<strong><code>to</code></strong>) :: <a href="https://fastcore.fast.ai/transform#ItemTransform"><code>ItemTransform</code></a></p>
 </blockquote>
 <p>A transform that always take tuples as items</p>
 
@@ -1122,7 +1122,7 @@ description: "Basic function to preprocess tabular data before assembling it in 
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TabDataLoader" class="doc_header"><code>class</code> <code>TabDataLoader</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/tabular/core.py#L303" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TabDataLoader</code>(<strong><code>dataset</code></strong>, <strong><code>bs</code></strong>=<em><code>16</code></em>, <strong><code>shuffle</code></strong>=<em><code>False</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>num_workers</code></strong>=<em><code>0</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>, <strong><code>do_setup</code></strong>=<em><code>True</code></em>, <strong><code>pin_memory</code></strong>=<em><code>False</code></em>, <strong><code>timeout</code></strong>=<em><code>0</code></em>, <strong><code>batch_size</code></strong>=<em><code>None</code></em>, <strong><code>drop_last</code></strong>=<em><code>False</code></em>, <strong><code>indexed</code></strong>=<em><code>None</code></em>, <strong><code>n</code></strong>=<em><code>None</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>wif</code></strong>=<em><code>None</code></em>, <strong><code>before_iter</code></strong>=<em><code>None</code></em>, <strong><code>after_item</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_iter</code></strong>=<em><code>None</code></em>, <strong><code>create_batches</code></strong>=<em><code>None</code></em>, <strong><code>create_item</code></strong>=<em><code>None</code></em>, <strong><code>create_batch</code></strong>=<em><code>None</code></em>, <strong><code>retain</code></strong>=<em><code>None</code></em>, <strong><code>get_idxs</code></strong>=<em><code>None</code></em>, <strong><code>sample</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_fn</code></strong>=<em><code>None</code></em>, <strong><code>do_batch</code></strong>=<em><code>None</code></em>) :: <a href="/data.core#TfmdDL"><code>TfmdDL</code></a></p>
+<h2 id="TabDataLoader" class="doc_header"><code>class</code> <code>TabDataLoader</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/tabular/core.py#L306" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TabDataLoader</code>(<strong><code>dataset</code></strong>, <strong><code>bs</code></strong>=<em><code>16</code></em>, <strong><code>shuffle</code></strong>=<em><code>False</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>num_workers</code></strong>=<em><code>0</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>, <strong><code>do_setup</code></strong>=<em><code>True</code></em>, <strong><code>pin_memory</code></strong>=<em><code>False</code></em>, <strong><code>timeout</code></strong>=<em><code>0</code></em>, <strong><code>batch_size</code></strong>=<em><code>None</code></em>, <strong><code>drop_last</code></strong>=<em><code>False</code></em>, <strong><code>indexed</code></strong>=<em><code>None</code></em>, <strong><code>n</code></strong>=<em><code>None</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>wif</code></strong>=<em><code>None</code></em>, <strong><code>before_iter</code></strong>=<em><code>None</code></em>, <strong><code>after_item</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_iter</code></strong>=<em><code>None</code></em>, <strong><code>create_batches</code></strong>=<em><code>None</code></em>, <strong><code>create_item</code></strong>=<em><code>None</code></em>, <strong><code>create_batch</code></strong>=<em><code>None</code></em>, <strong><code>retain</code></strong>=<em><code>None</code></em>, <strong><code>get_idxs</code></strong>=<em><code>None</code></em>, <strong><code>sample</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_fn</code></strong>=<em><code>None</code></em>, <strong><code>do_batch</code></strong>=<em><code>None</code></em>) :: <a href="/data.core#TfmdDL"><code>TfmdDL</code></a></p>
 </blockquote>
 <p>Transformed <a href="/data.load#DataLoader"><code>DataLoader</code></a></p>
 
@@ -2321,7 +2321,7 @@ Name: 6120, dtype: object</pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="encodes" class="doc_header"><code>encodes</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/tabular/core.py#L329" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>encodes</code>(<strong><code>to</code></strong>:<a href="/tabular.core#Tabular"><code>Tabular</code></a>)</p>
+<h4 id="encodes" class="doc_header"><code>encodes</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/tabular/core.py#L332" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>encodes</code>(<strong><code>to</code></strong>:<a href="/tabular.core#Tabular"><code>Tabular</code></a>)</p>
 </blockquote>
 
 </div>
@@ -2341,7 +2341,7 @@ Name: 6120, dtype: object</pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="decodes" class="doc_header"><code>decodes</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/tabular/core.py#L317" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>decodes</code>(<strong><code>to</code></strong>:<a href="/tabular.core#Tabular"><code>Tabular</code></a>)</p>
+<h4 id="decodes" class="doc_header"><code>decodes</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/tabular/core.py#L320" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>decodes</code>(<strong><code>to</code></strong>:<a href="/tabular.core#Tabular"><code>Tabular</code></a>)</p>
 </blockquote>
 
 </div>
@@ -2925,7 +2925,7 @@ Wall time: 47.1 ms
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="setups" class="doc_header"><code>setups</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/tabular/core.py#L323" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>setups</code>(<strong><code>to</code></strong>:<a href="/tabular.core#Tabular"><code>Tabular</code></a>)</p>
+<h4 id="setups" class="doc_header"><code>setups</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/tabular/core.py#L326" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>setups</code>(<strong><code>to</code></strong>:<a href="/tabular.core#Tabular"><code>Tabular</code></a>)</p>
 </blockquote>
 
 </div>
@@ -2945,7 +2945,7 @@ Wall time: 47.1 ms
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="encodes" class="doc_header"><code>encodes</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/tabular/core.py#L329" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>encodes</code>(<strong><code>to</code></strong>:<a href="/tabular.core#Tabular"><code>Tabular</code></a>)</p>
+<h4 id="encodes" class="doc_header"><code>encodes</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/tabular/core.py#L332" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>encodes</code>(<strong><code>to</code></strong>:<a href="/tabular.core#Tabular"><code>Tabular</code></a>)</p>
 </blockquote>
 
 </div>
