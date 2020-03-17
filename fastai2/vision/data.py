@@ -21,23 +21,8 @@ def get_grid(n, nrows=None, ncols=None, add_vert=0, figsize=None, double=False, 
     return (fig,axs) if return_fig else axs
 
 # Cell
-@typedispatch
-def show_batch(x:TensorImage, y, samples, ctxs=None, max_n=10, nrows=None, ncols=None, figsize=None, **kwargs):
-    if ctxs is None: ctxs = get_grid(min(len(samples), max_n), nrows=nrows, ncols=ncols, figsize=figsize)
-    ctxs = show_batch[object](x, y, samples, ctxs=ctxs, max_n=max_n, **kwargs)
-    return ctxs
-
-# Cell
-@typedispatch
-def show_batch(x:TensorImage, y:TensorImage, samples, ctxs=None, max_n=10, nrows=None, ncols=None, figsize=None, **kwargs):
-    if ctxs is None: ctxs = get_grid(min(len(samples), max_n), nrows=nrows, ncols=ncols, add_vert=1, figsize=figsize, double=True)
-    for i in range(2):
-        ctxs[i::2] = [b.show(ctx=c, **kwargs) for b,c,_ in zip(samples.itemgot(i),ctxs[i::2],range(max_n))]
-    return ctxs
-
-# Cell
 def clip_remove_empty(bbox, label):
-    "Clip bounding boxes with image border and label background the empty ones."
+    "Clip bounding boxes with image border and label background the empty ones"
     bbox = torch.clamp(bbox, -1, 1)
     empty = ((bbox[...,2] - bbox[...,0])*(bbox[...,3] - bbox[...,1]) < 0.)
     return (bbox[~empty], label[~empty])
@@ -52,6 +37,21 @@ def bb_pad(samples, pad_idx=0):
         lbl  = torch.cat([lbl, lbl .new_zeros(max_len-lbl .shape[0])+pad_idx])
         return img,bbox,lbl
     return [_f(*s) for s in samples]
+
+# Cell
+@typedispatch
+def show_batch(x:TensorImage, y, samples, ctxs=None, max_n=10, nrows=None, ncols=None, figsize=None, **kwargs):
+    if ctxs is None: ctxs = get_grid(min(len(samples), max_n), nrows=nrows, ncols=ncols, figsize=figsize)
+    ctxs = show_batch[object](x, y, samples, ctxs=ctxs, max_n=max_n, **kwargs)
+    return ctxs
+
+# Cell
+@typedispatch
+def show_batch(x:TensorImage, y:TensorImage, samples, ctxs=None, max_n=10, nrows=None, ncols=None, figsize=None, **kwargs):
+    if ctxs is None: ctxs = get_grid(min(len(samples), max_n), nrows=nrows, ncols=ncols, add_vert=1, figsize=figsize, double=True)
+    for i in range(2):
+        ctxs[i::2] = [b.show(ctx=c, **kwargs) for b,c,_ in zip(samples.itemgot(i),ctxs[i::2],range(max_n))]
+    return ctxs
 
 # Cell
 def ImageBlock(cls=PILImage):
@@ -82,7 +82,7 @@ class ImageDataLoaders(DataLoaders):
     @delegates(DataLoaders.from_dblock)
     def from_folder(cls, path, train='train', valid='valid', valid_pct=None, seed=None, vocab=None, item_tfms=None,
                     batch_tfms=None, **kwargs):
-        "Create from imagenet style dataset in `path` with `train`,`valid`,`test` subfolders (or provide `valid_pct`)"
+        "Create from imagenet style dataset in `path` with `train` and `valid` subfolders (or provide `valid_pct`)"
         splitter = GrandparentSplitter(train_name=train, valid_name=valid) if valid_pct is None else RandomSplitter(valid_pct, seed=seed)
         dblock = DataBlock(blocks=(ImageBlock, CategoryBlock(vocab=vocab)),
                            get_items=get_image_files,

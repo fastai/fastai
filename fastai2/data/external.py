@@ -30,15 +30,18 @@ class Config:
     def load_config(self):
         with open(self.config_file, 'r') as f:
             config = yaml.safe_load(f)
-            if 'version' in config and config['version'] == 1: return config
-        self.create_config()
+            if 'version' in config and config['version'] == 2: return config
+            elif 'version' in config: self.create_config(config)
+            else: self.create_config()
         return self.load_config()
 
-    def create_config(self):
+    def create_config(self, cfg=None):
         config = {'data_path':    str(self.config_path/'data'),
                   'archive_path': str(self.config_path/'archive'),
+                  'storage_path': str(self.config_path/'data'),
                   'model_path':   str(self.config_path/'models'),
-                  'version':      1}
+                  'version':      2}
+        if cfg is not None: config = merge(config, cfg)
         self.save_file(config)
 
     def save(self): self.save_file(self.d)
@@ -120,7 +123,8 @@ class URLs():
     PASCAL_2012        = f'{S3_IMAGELOC}pascal_2012.tgz'
 
     # Medical Imaging datasets
-    SIIM_SMALL     = 'http://files.vedavimedical.com/siim_small.tgz'
+    SKIN_LESION        = f'{S3_IMAGELOC}skin_lesion.tgz'
+    SIIM_SMALL         = f'{S3_IMAGELOC}siim_small.tgz'
 
     #Pretrained models
     OPENAI_TRANSFORMER = f'{S3_MODEL}transformer.tgz'
@@ -202,6 +206,12 @@ def file_extract(fname, dest=None):
     else: raise Exception(f'Unrecognized archive: {fname}')
 
 # Cell
+def _try_from_storage(dest, storage):
+    if not storage.exists(): return
+    os.makedirs(dest, exist_ok=True)
+    for f in storage.glob('*'): os.symlink(f, dest/f.name)
+
+# Cell
 def untar_data(url, fname=None, dest=None, c_key='data', force_download=False, extract_func=file_extract):
     "Download `url` to `fname` if `dest` doesn't exist, and un-tgz to folder `dest`."
     default_dest = URLs.path(url, c_key=c_key).with_suffix('')
@@ -213,6 +223,7 @@ def untar_data(url, fname=None, dest=None, c_key='data', force_download=False, e
     if force_download:
         if fname.exists(): os.remove(fname)
         if dest.exists(): shutil.rmtree(dest)
+    if not dest.exists(): _try_from_storage(dest, URLs.path(url, c_key='storage').with_suffix(''))
     if not dest.exists():
         fname = download_data(url, fname=fname, c_key=c_key)
         if _get_check(url) and _check_file(fname) != _get_check(url):
