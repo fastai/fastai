@@ -41,7 +41,9 @@ class Config:
                   'storage_path': str(self.config_path/'data'),
                   'model_path':   str(self.config_path/'models'),
                   'version':      2}
-        if cfg is not None: config = merge(config, cfg)
+        if cfg is not None:
+            cfg['version'] = 2
+            config = merge(config, cfg)
         self.save_file(config)
 
     def save(self): self.save_file(self.d)
