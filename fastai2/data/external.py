@@ -209,7 +209,7 @@ def file_extract(fname, dest=None):
 def _try_from_storage(dest, storage):
     if not storage.exists(): return
     os.makedirs(dest, exist_ok=True)
-    for f in storage.glob('*'): os.symlink(f, dest/f.name)
+    for f in storage.glob('*'): os.symlink(f, dest/f.name, target_is_directory=f.is_dir())
 
 # Cell
 def untar_data(url, fname=None, dest=None, c_key='data', force_download=False, extract_func=file_extract):
