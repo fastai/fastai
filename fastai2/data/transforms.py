@@ -23,7 +23,7 @@ def _get_files(p, fs, extensions=None):
     return res
 
 # Cell
-def get_files(path, extensions=None, recurse=True, folders=None):
+def get_files(path, extensions=None, recurse=True, folders=None, followlinks=True):
     "Get all the files in `path` with optional `extensions`, optionally with `recurse`, only in `folders`, if specified."
     path = Path(path)
     folders=L(folders)
@@ -31,7 +31,7 @@ def get_files(path, extensions=None, recurse=True, folders=None):
     extensions = {e.lower() for e in extensions}
     if recurse:
         res = []
-        for i,(p,d,f) in enumerate(os.walk(path)): # returns (dirpath, dirnames, filenames)
+        for i,(p,d,f) in enumerate(os.walk(path, followlinks=followlinks)): # returns (dirpath, dirnames, filenames)
             if len(folders) !=0 and i==0: d[:] = [o for o in d if o in folders]
             else:                         d[:] = [o for o in d if not o.startswith('.')]
             if len(folders) !=0 and i==0 and '.' not in folders: continue

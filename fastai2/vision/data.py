@@ -105,25 +105,26 @@ class ImageDataLoaders(DataLoaders):
 
     @classmethod
     def from_name_func(cls, path, fnames, label_func, **kwargs):
-        "Create from name attrs in list of `fnames` in `path`s with `label_func`"
+        "Create from the name attrs of `fnames` in `path`s with `label_func`"
         f = using_attr(label_func, 'name')
         return cls.from_path_func(path, fnames, f, **kwargs)
 
     @classmethod
     def from_path_re(cls, path, fnames, pat, **kwargs):
-        "Create from list of `fnames` in `path`s with re expression `pat`."
+        "Create from list of `fnames` in `path`s with re expression `pat`"
         return cls.from_path_func(path, fnames, RegexLabeller(pat), **kwargs)
 
     @classmethod
     @delegates(DataLoaders.from_dblock)
     def from_name_re(cls, path, fnames, pat, **kwargs):
-        "Create from name attrs in list of `fnames` in `path`s with re expression `pat`."
+        "Create from the name attrs of `fnames` in `path`s with re expression `pat`"
         return cls.from_name_func(path, fnames, RegexLabeller(pat), **kwargs)
 
     @classmethod
     @delegates(DataLoaders.from_dblock)
     def from_df(cls, df, path='.', valid_pct=0.2, seed=None, fn_col=0, folder=None, suff='', label_col=1, label_delim=None,
                 y_block=None, valid_col=None, item_tfms=None, batch_tfms=None, **kwargs):
+        "Create from `df` using `fn_col` and `label_col`"
         pref = f'{Path(path) if folder is None else Path(path)/folder}{os.path.sep}'
         if y_block is None:
             is_multi = (is_listy(label_col) and len(label_col) > 1) or label_delim is not None
@@ -139,6 +140,7 @@ class ImageDataLoaders(DataLoaders):
 
     @classmethod
     def from_csv(cls, path, csv_fname='labels.csv', header='infer', delimiter=None, **kwargs):
+        "Create from `path/csv_fname` using `fn_col` and `label_col`"
         df = pd.read_csv(Path(path)/csv_fname, header=header, delimiter=delimiter)
         return cls.from_df(df, path=path, **kwargs)
 
@@ -146,11 +148,11 @@ class ImageDataLoaders(DataLoaders):
     @delegates(DataLoaders.from_dblock)
     def from_lists(cls, path, fnames, labels, valid_pct=0.2, seed:int=None, y_block=None, item_tfms=None, batch_tfms=None,
                    **kwargs):
-        "Create from list of `fnames` in `path`."
+        "Create from list of `fnames` and `labels` in `path`"
         if y_block is None:
             y_block = MultiCategoryBlock if is_listy(labels[0]) and len(labels[0]) > 1 else (
                 RegressionBlock if isinstance(labels[0], float) else CategoryBlock)
-        dblock = DataBlock(blocks=(ImageBlock, y_block),
+        dblock = DataBlock.from_columns(blocks=(ImageBlock, y_block),
                            splitter=RandomSplitter(valid_pct, seed=seed),
                            item_tfms=item_tfms,
                            batch_tfms=batch_tfms)
@@ -163,6 +165,7 @@ ImageDataLoaders.from_name_re = delegates(to=ImageDataLoaders.from_name_func)(Im
 
 # Cell
 class SegmentationDataLoaders(DataLoaders):
+    "Basic wrapper around several `DataLoader`s with factory methods for segmentation problems"
     @classmethod
     @delegates(DataLoaders.from_dblock)
     def from_label_func(cls, path, fnames, label_func, valid_pct=0.2, seed=None, codes=None, item_tfms=None, batch_tfms=None, **kwargs):
