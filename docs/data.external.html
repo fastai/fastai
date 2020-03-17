@@ -28,6 +28,35 @@ description: "Helper functions to download the fastai datasets"
 
 </div>
 <div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">merge</span><span class="p">({</span><span class="s1">&#39;a&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">},</span> <span class="p">{</span><span class="s1">&#39;a&#39;</span><span class="p">:</span><span class="mi">3</span><span class="p">})</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>{&#39;a&#39;: 3, &#39;b&#39;: 2}</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
 
 </div>
 <div class="cell border-box-sizing code_cell rendered">
@@ -120,7 +149,7 @@ description: "Helper functions to download the fastai datasets"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="URLs" class="doc_header"><code>class</code> <code>URLs</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/external.py#L49" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>URLs</code>()</p>
+<h2 id="URLs" class="doc_header"><code>class</code> <code>URLs</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/external.py#L52" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>URLs</code>()</p>
 </blockquote>
 <p>Global constants for dataset and model URLs.</p>
 
@@ -150,7 +179,7 @@ description: "Helper functions to download the fastai datasets"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="download_url" class="doc_header"><code>download_url</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/external.py#L137" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>download_url</code>(<strong><code>url</code></strong>, <strong><code>dest</code></strong>, <strong><code>overwrite</code></strong>=<em><code>False</code></em>, <strong><code>pbar</code></strong>=<em><code>None</code></em>, <strong><code>show_progress</code></strong>=<em><code>True</code></em>, <strong><code>chunk_size</code></strong>=<em><code>1048576</code></em>, <strong><code>timeout</code></strong>=<em><code>4</code></em>, <strong><code>retries</code></strong>=<em><code>5</code></em>)</p>
+<h4 id="download_url" class="doc_header"><code>download_url</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/external.py#L141" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>download_url</code>(<strong><code>url</code></strong>, <strong><code>dest</code></strong>, <strong><code>overwrite</code></strong>=<em><code>False</code></em>, <strong><code>pbar</code></strong>=<em><code>None</code></em>, <strong><code>show_progress</code></strong>=<em><code>True</code></em>, <strong><code>chunk_size</code></strong>=<em><code>1048576</code></em>, <strong><code>timeout</code></strong>=<em><code>4</code></em>, <strong><code>retries</code></strong>=<em><code>5</code></em>)</p>
 </blockquote>
 <p>Download <code>url</code> to <code>dest</code> unless it exists and not <code>overwrite</code></p>
 
@@ -255,7 +284,7 @@ description: "Helper functions to download the fastai datasets"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="download_data" class="doc_header"><code>download_data</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/external.py#L171" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>download_data</code>(<strong><code>url</code></strong>, <strong><code>fname</code></strong>=<em><code>None</code></em>, <strong><code>c_key</code></strong>=<em><code>'archive'</code></em>, <strong><code>force_download</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="download_data" class="doc_header"><code>download_data</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/external.py#L175" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>download_data</code>(<strong><code>url</code></strong>, <strong><code>fname</code></strong>=<em><code>None</code></em>, <strong><code>c_key</code></strong>=<em><code>'archive'</code></em>, <strong><code>force_download</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 <p>Download <code>url</code> to <code>fname</code>.</p>
 
@@ -346,7 +375,7 @@ description: "Helper functions to download the fastai datasets"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="file_extract" class="doc_header"><code>file_extract</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/external.py#L196" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>file_extract</code>(<strong><code>fname</code></strong>, <strong><code>dest</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="file_extract" class="doc_header"><code>file_extract</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/external.py#L200" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>file_extract</code>(<strong><code>fname</code></strong>, <strong><code>dest</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Extract <code>fname</code> to <code>dest</code> using <code>tarfile</code> or `zipfile</p>
 
@@ -369,6 +398,35 @@ description: "Helper functions to download the fastai datasets"
 
 </div>
 <div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">with</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">TemporaryDirectory</span><span class="p">()</span> <span class="k">as</span> <span class="n">d</span><span class="p">:</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">]:</span> <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">d</span><span class="o">/</span><span class="n">k</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;d&#39;</span><span class="p">,</span> <span class="s1">&#39;e&#39;</span><span class="p">,</span> <span class="s1">&#39;f&#39;</span><span class="p">]:</span> <span class="p">(</span><span class="n">d</span><span class="o">/</span><span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">touch</span><span class="p">()</span>
+    <span class="n">dest</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">parent</span><span class="o">/</span><span class="s1">&#39;tmp&#39;</span>
+    <span class="k">if</span> <span class="n">dest</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span> <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">dest</span><span class="p">)</span>
+    <span class="n">_try_from_storage</span><span class="p">(</span><span class="n">dest</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">dest</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">]:</span> 
+        <span class="k">assert</span> <span class="p">(</span><span class="n">dest</span><span class="o">/</span><span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span>
+        <span class="k">assert</span> <span class="p">(</span><span class="n">dest</span><span class="o">/</span><span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">is_dir</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;d&#39;</span><span class="p">,</span> <span class="s1">&#39;e&#39;</span><span class="p">,</span> <span class="s1">&#39;f&#39;</span><span class="p">]:</span> 
+        <span class="k">assert</span> <span class="p">(</span><span class="n">dest</span><span class="o">/</span><span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span>
+        <span class="k">assert</span> <span class="p">(</span><span class="n">dest</span><span class="o">/</span><span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">is_file</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
 <div class="output">
@@ -377,7 +435,7 @@ description: "Helper functions to download the fastai datasets"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="untar_data" class="doc_header"><code>untar_data</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/external.py#L205" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>untar_data</code>(<strong><code>url</code></strong>, <strong><code>fname</code></strong>=<em><code>None</code></em>, <strong><code>dest</code></strong>=<em><code>None</code></em>, <strong><code>c_key</code></strong>=<em><code>'data'</code></em>, <strong><code>force_download</code></strong>=<em><code>False</code></em>, <strong><code>extract_func</code></strong>=<em><code>'file_extract'</code></em>)</p>
+<h4 id="untar_data" class="doc_header"><code>untar_data</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/external.py#L215" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>untar_data</code>(<strong><code>url</code></strong>, <strong><code>fname</code></strong>=<em><code>None</code></em>, <strong><code>dest</code></strong>=<em><code>None</code></em>, <strong><code>c_key</code></strong>=<em><code>'data'</code></em>, <strong><code>force_download</code></strong>=<em><code>False</code></em>, <strong><code>extract_func</code></strong>=<em><code>'file_extract'</code></em>)</p>
 </blockquote>
 <p>Download <code>url</code> to <code>fname</code> if <code>dest</code> doesn't exist, and un-tgz to folder <code>dest</code>.</p>
 
