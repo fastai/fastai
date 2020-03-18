@@ -125,7 +125,7 @@ class URLs():
     PASCAL_2012        = f'{S3_IMAGELOC}pascal_2012.tgz'
 
     # Medical Imaging datasets
-    SKIN_LESION        = f'{S3_IMAGELOC}skin_lesion.tgz'
+    #SKIN_LESION        = f'{S3_IMAGELOC}skin_lesion.tgz'
     SIIM_SMALL         = f'{S3_IMAGELOC}siim_small.tgz'
 
     #Pretrained models

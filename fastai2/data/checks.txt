@@ -214,5 +214,9 @@
   "http://files.vedavimedical.com/siim_small.tgz": [
     33276453,
     "2f88ac350dce1d971ecbb5ec722da75f"
+  ],
+  "https://s3.amazonaws.com/fast-ai-imagelocal/siim_small.tgz": [
+    33276453,
+    "2f88ac350dce1d971ecbb5ec722da75f"
   ]
 }

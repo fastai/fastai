@@ -133,7 +133,7 @@ class Tabular(CollBase, GetAttr, FilteredBase):
     def copy(self): self.items = self.items.copy(); return self
     def decode(self): return self.procs.decode(self)
     def decode_row(self, row): return self.new(pd.DataFrame(row).T).decode().items.iloc[0]
-    def reduce_cats(self): self[self.cat_names] = self[self.cat_names].astype('category')
+    def reduce_cats(self): pass #self[self.cat_names] = self[self.cat_names].astype('category')
     def reduce_conts(self): self[self.cont_names] = self[self.cont_names].astype(np.float32)
     def show(self, max_n=10, **kwargs): display_df(self.new(self.all_cols[:max_n]).decode().items)
     def setup(self): self.procs.setup(self)
