@@ -22,6 +22,9 @@ def make_vocab(count, min_freq=3, max_vocab=60000):
 class TensorText(TensorBase):   pass
 class LMTensorText(TensorText): pass
 
+TensorText.__doc__ = "Semantic type for a tensor representing text"
+TensorText.__doc__ = "Semantic type for a tensor representing text in language modeling"
+
 # Cell
 class Numericalize(Transform):
     "Reversible transform of tokenized texts to numericalized ids"
@@ -60,6 +63,7 @@ def _get_lengths(ds):
 #TODO: add backward
 @delegates()
 class LMDataLoader(TfmdDL):
+    "A `DataLoader` suitable for language modeling"
     def __init__(self, dataset, lens=None, cache=2, bs=64, seq_len=72, num_workers=0, **kwargs):
         self.items = ReindexCollection(dataset, cache=cache, tfm=_maybe_first)
         self.seq_len = seq_len
@@ -180,6 +184,7 @@ class SortedDL(TfmdDL):
 
 # Cell
 class TextBlock(TransformBlock):
+    "A `TransformBlock` for texts"
     @delegates(Numericalize.__init__)
     def __init__(self, tok_tfm, vocab=None, is_lm=False, seq_len=72, **kwargs):
         return super().__init__(type_tfms=[tok_tfm, Numericalize(vocab, **kwargs)],
