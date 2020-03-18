@@ -122,7 +122,9 @@ class Tabular(CollBase, GetAttr, FilteredBase):
             procs = L(procs) + block_y.type_tfms
         self.cat_names,self.cont_names,self.procs = L(cat_names),L(cont_names),Pipeline(procs)
         self.split = len(df) if splits is None else len(splits[0])
-        if reduce_memory: self.reduce_cats(), self.reduce_conts()
+        if reduce_memory:
+        	if len(self.cat_names) > 0: self.reduce_cats()
+        	if len(self.cont_names) > 0: self.reduce_conts()
         if do_setup: self.setup()
 
     def new(self, df):
@@ -133,7 +135,7 @@ class Tabular(CollBase, GetAttr, FilteredBase):
     def copy(self): self.items = self.items.copy(); return self
     def decode(self): return self.procs.decode(self)
     def decode_row(self, row): return self.new(pd.DataFrame(row).T).decode().items.iloc[0]
-    def reduce_cats(self): pass #self[self.cat_names] = self[self.cat_names].astype('category')
+    def reduce_cats(self): self.train[self.cat_names] = self.train[self.cat_names].astype('category')
     def reduce_conts(self): self[self.cont_names] = self[self.cont_names].astype(np.float32)
     def show(self, max_n=10, **kwargs): display_df(self.new(self.all_cols[:max_n]).decode().items)
     def setup(self): self.procs.setup(self)
