@@ -223,7 +223,7 @@ class TextDataLoaders(DataLoaders):
     @delegates(DataLoaders.from_dblock)
     def from_df(cls, df, path='.', valid_pct=0.2, seed=None, text_col=0, label_col=1, label_delim=None, y_block=None,
                 text_vocab=None, is_lm=False, valid_col=None, tok_tfm=None, seq_len=72, **kwargs):
-        "Create from `df` with `valid_pct`"
+        "Create from `df` in `path` with `valid_pct`"
         blocks = [TextBlock.from_df(text_col, text_vocab, is_lm, seq_len) if tok_tfm is None else TextBlock(tok_tfm, text_vocab, is_lm, seq_len)]
         if y_block is None and not is_lm:
             blocks.append(MultiCategoryBlock if is_listy(label_col) and len(label_col) > 1 else CategoryBlock)
