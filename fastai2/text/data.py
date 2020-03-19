@@ -98,12 +98,6 @@ class LMDataLoader(TfmdDL):
         return super().new(dataset=dataset, lens=lens, seq_len=seq_len, **kwargs)
 
 # Cell
-@patch
-def truncate(self:TitledStr, n):
-    words = self.split(' ')[:n]
-    return TitledStr(' '.join(words))
-
-# Cell
 @typedispatch
 def show_batch(x: TensorText, y, samples, ctxs=None, max_n=10, trunc_at=150, **kwargs):
     if ctxs is None: ctxs = get_empty_df(min(len(samples), max_n))
@@ -120,7 +114,7 @@ def show_batch(x: LMTensorText, y, samples, ctxs=None, max_n=10, trunc_at=150, *
 
 # Cell
 def pad_input(samples, pad_idx=1, pad_fields=0, pad_first=False, backwards=False):
-    "Function that collect samples and adds padding. Flips token order if needed"
+    "Function that collect `samples` and adds padding"
     pad_fields = L(pad_fields)
     max_len_l = pad_fields.map(lambda f: max([len(s[f]) for s in samples]))
     if backwards: pad_first = not pad_first
@@ -136,6 +130,7 @@ def pad_input(samples, pad_idx=1, pad_fields=0, pad_first=False, backwards=False
 
 # Cell
 def pad_input_chunk(samples, pad_idx=1, pad_first=True, seq_len=72):
+    "Pad `samples` by adding padding by chunks of size `seq_len`"
     max_len = max([len(s[0]) for s in samples])
     def _f(x):
         l = max_len - x.shape[0]
@@ -150,6 +145,7 @@ def _default_sort(x): return len(x[0])
 
 @delegates(TfmdDL)
 class SortedDL(TfmdDL):
+    "A `DataLoader` that goes throught the item in the order given by `sort_func`"
     def __init__(self, dataset, sort_func=None, res=None, **kwargs):
         super().__init__(dataset, **kwargs)
         self.sort_func = _default_sort if sort_func is None else sort_func
@@ -194,22 +190,25 @@ class TextBlock(TransformBlock):
     @classmethod
     @delegates(Tokenizer.from_df, keep=True)
     def from_df(cls, text_cols, vocab=None, is_lm=False, seq_len=72, min_freq=3, max_vocab=60000, **kwargs):
+        "Build a `TextBlock` from a dataframe using `text_cols`"
         return cls(Tokenizer.from_df(text_cols, **kwargs), vocab=vocab, is_lm=is_lm, seq_len=seq_len,
                    min_freq=min_freq, max_vocab=max_vocab)
 
     @classmethod
     @delegates(Tokenizer.from_folder, keep=True)
     def from_folder(cls, path, vocab=None, is_lm=False, seq_len=72, min_freq=3, max_vocab=60000, **kwargs):
+        "Build a `TextBlock` from a `path`"
         return cls(Tokenizer.from_folder(path, **kwargs), vocab=vocab, is_lm=is_lm, seq_len=seq_len,
                    min_freq=min_freq, max_vocab=max_vocab)
 
 # Cell
 class TextDataLoaders(DataLoaders):
+    "Basic wrapper around several `DataLoader`s with factory methods for NLP problems"
     @classmethod
     @delegates(DataLoaders.from_dblock)
     def from_folder(cls, path, train='train', valid='valid', valid_pct=None, seed=None, vocab=None, text_vocab=None, is_lm=False,
                     tok_tfm=None, seq_len=72, **kwargs):
-        "Create from imagenet style dataset in `path` with `train`,`valid`,`test` subfolders (or provide `valid_pct`)."
+        "Create from imagenet style dataset in `path` with `train` and `valid` subfolders (or provide `valid_pct`)"
         splitter = GrandparentSplitter(train_name=train, valid_name=valid) if valid_pct is None else RandomSplitter(valid_pct, seed=seed)
         blocks = [TextBlock.from_folder(path, text_vocab, is_lm, seq_len) if tok_tfm is None else TextBlock(tok_tfm, text_vocab, is_lm, seq_len)]
         if not is_lm: blocks.append(CategoryBlock(vocab=vocab))
@@ -224,6 +223,7 @@ class TextDataLoaders(DataLoaders):
     @delegates(DataLoaders.from_dblock)
     def from_df(cls, df, path='.', valid_pct=0.2, seed=None, text_col=0, label_col=1, label_delim=None, y_block=None,
                 text_vocab=None, is_lm=False, valid_col=None, tok_tfm=None, seq_len=72, **kwargs):
+        "Create from `df` with `valid_pct`"
         blocks = [TextBlock.from_df(text_col, text_vocab, is_lm, seq_len) if tok_tfm is None else TextBlock(tok_tfm, text_vocab, is_lm, seq_len)]
         if y_block is None and not is_lm:
             blocks.append(MultiCategoryBlock if is_listy(label_col) and len(label_col) > 1 else CategoryBlock)
@@ -237,6 +237,7 @@ class TextDataLoaders(DataLoaders):
 
     @classmethod
     def from_csv(cls, path, csv_fname='labels.csv', header='infer', delimiter=None, **kwargs):
+        "Create from `csv` file in `path/csv_fname`"
         df = pd.read_csv(Path(path)/csv_fname, header=header, delimiter=delimiter)
         return cls.from_df(df, path=path, **kwargs)
 

@@ -422,6 +422,13 @@ add_docs(TitledInt, "An `int` with `show`"); add_docs(TitledStr, "An `str` with 
 add_docs(TitledFloat, "A `float` with `show`"); add_docs(TitledTuple, "A `Tuple` with `show`")
 
 # Cell
+@patch
+def truncate(self:TitledStr, n):
+    "Truncate self to `n`"
+    words = self.split(' ')[:n]
+    return TitledStr(' '.join(words))
+
+# Cell
 if not hasattr(pd.DataFrame,'_old_init'): pd.DataFrame._old_init = pd.DataFrame.__init__
 
 # Cell

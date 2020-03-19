@@ -4,8 +4,8 @@ __all__ = ['UNK', 'PAD', 'BOS', 'EOS', 'FLD', 'TK_REP', 'TK_WREP', 'TK_UP', 'TK_
            'rm_useless_spaces', 'replace_rep', 'replace_wrep', 'fix_html', 'replace_all_caps', 'replace_maj',
            'lowercase', 'replace_space', 'BaseTokenizer', 'SpacyTokenizer', 'WordTokenizer', 'TokenizeBatch',
            'tokenize1', 'parallel_tokenize', 'fn_counter_pkl', 'fn_lengths_pkl', 'tokenize_folder',
-           'read_tokenized_file', 'tokenize_files', 'tokenize_df', 'tokenize_csv', 'load_tokenized_csv',
-           'get_tokenizer', 'Tokenizer', 'eu_langs', 'SentencePieceTokenizer', 'SubwordTokenizer']
+           'read_tokenized_file', 'tokenize_files', 'tokenize_texts', 'tokenize_df', 'tokenize_csv',
+           'load_tokenized_csv', 'get_tokenizer', 'Tokenizer', 'eu_langs', 'SentencePieceTokenizer', 'SubwordTokenizer']
 
 # Cell
 from ..torch_basics import *
@@ -171,11 +171,11 @@ def tokenize_folder(path, extensions=None, folders=None, output_dir=None, n_work
 def read_tokenized_file(f): return L(f.read().split(' '))
 
 # Cell
-def tokenize_files(files, output_dir, output_names=None, n_workers=defaults.cpus, rules=None, tok_func=SpacyTokenizer,
+def tokenize_files(files, path, output_dir, output_names=None, n_workers=defaults.cpus, rules=None, tok_func=SpacyTokenizer,
                    encoding='utf8', **tok_kwargs):
     "Tokenize text `files` in parallel using `n_workers`"
-    if output_names is None: output_names = L(f'{i}.txt' for i in range_of(files))
     output_dir = Path(output_dir)
+    if output_names is None: output_names = L(output_dir/f.relative_to(path) for f in files)
     rules = partial(Path.read, encoding=encoding) + L(ifnone(rules, defaults.text_proc_rules.copy()))
 
     lengths = (output_dir/fn_lengths_pkl).load() if (output_dir/fn_lengths_pkl).exists() else {}
@@ -183,7 +183,7 @@ def tokenize_files(files, output_dir, output_names=None, n_workers=defaults.cpus
     for i,tok in parallel_tokenize(files, tok_func, rules, as_gen=True, n_workers=n_workers, **tok_kwargs):
         out = output_dir/output_names[i]
         out.write(' '.join(tok))
-        lengths[output_names[i]] = len(tok)
+        lengths[str(files[i].relative_to(path))] = len(tok)
         counter.update(tok)
 
     (output_dir/fn_lengths_pkl).save(lengths)
@@ -196,6 +196,14 @@ def _join_texts(df, mark_fields=False):
     for i in range(1,len(df.columns)):
         text_col += (f' {FLD} {i+1} ' if mark_fields else ' ') + df.iloc[:,i].astype(str)
     return text_col.values
+
+# Cell
+def tokenize_texts(texts, n_workers=defaults.cpus, rules=None, tok_func=SpacyTokenizer, **tok_kwargs):
+    "Tokenize `texts` in parallel using `n_workers`"
+    rules = L(ifnone(rules, defaults.text_proc_rules.copy()))
+    outputs = L(parallel_tokenize(texts, tok_func, rules, n_workers=n_workers, **tok_kwargs)
+               ).sorted().itemgot(1)
+    return outputs
 
 # Cell
 def tokenize_df(df, text_cols, n_workers=defaults.cpus, rules=None, mark_fields=None,
