@@ -6,6 +6,7 @@ __all__ = ['plot_top_losses', 'Interpretation', 'ClassificationInterpretation']
 from .data.all import *
 from .optimizer import *
 from .learner import *
+import sklearn.metrics as skm
 
 # Cell
 @typedispatch
@@ -93,3 +94,8 @@ class ClassificationInterpretation(Interpretation):
         res = [(self.vocab[i],self.vocab[j],cm[i,j])
                 for i,j in zip(*np.where(cm>=min_val))]
         return sorted(res, key=itemgetter(2), reverse=True)
+
+    def print_classification_report(self):
+        "Print scikit-learn classification report"
+        d,t = flatten_check(self.decoded, self.targs)
+        print(skm.classification_report(t, d, target_names=self.vocab))
