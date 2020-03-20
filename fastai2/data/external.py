@@ -7,6 +7,7 @@ from ..torch_basics import *
 
 # Cell
 class Config:
+    "Setup config at `~/.fastai` unless it exists already."
     config_path = Path(os.getenv('FASTAI_HOME', '~/.fastai')).expanduser()
     config_file = config_path/'config.yml'
 
@@ -28,6 +29,7 @@ class Config:
     def __contains__(self,k): return k in self.d
 
     def load_config(self):
+        "load and return config if version equals 2 in existing, else create new config."
         with open(self.config_file, 'r') as f:
             config = yaml.safe_load(f)
             if 'version' in config and config['version'] == 2: return config
@@ -36,6 +38,7 @@ class Config:
         return self.load_config()
 
     def create_config(self, cfg=None):
+        "create new config with default paths and set `version` to 2."
         config = {'data_path':    str(self.config_path/'data'),
                   'archive_path': str(self.config_path/'archive'),
                   'storage_path': str(self.config_path/'data'),
@@ -48,6 +51,7 @@ class Config:
 
     def save(self): self.save_file(self.d)
     def save_file(self, config):
+        "save config file at default config location `~/.fastai/config.yml`."
         with self.config_file.open('w') as f: yaml.dump(config, f, default_flow_style=False)
 
 # Cell
@@ -134,6 +138,7 @@ class URLs():
     WT103_BWD          = f'{S3_MODEL}wt103-bwd.tgz'
 
     def path(url='.', c_key='archive'):
+        "Return local path where to download based on `c_key`"
         fname = url.split('/')[-1]
         local_path = URLs.LOCAL_PATH/('models' if c_key=='models' else 'data')/fname
         if local_path.exists(): return local_path
@@ -183,10 +188,12 @@ def download_data(url, fname=None, c_key='archive', force_download=False):
 
 # Cell
 def _get_check(url):
+    "internal function to get the hash of the file at `url`."
     checks = json.load(open(Path(__file__).parent/'checks.txt', 'r'))
     return checks.get(url, None)
 
 def _check_file(fname):
+    "internal function to get the hash of the local file at `fname`."
     size = os.path.getsize(fname)
     with open(fname, "rb") as f: hash_nb = hashlib.md5(f.read(2**20)).hexdigest()
     return [size,hash_nb]
@@ -200,7 +207,7 @@ def _add_check(url, fname):
 
 # Cell
 def file_extract(fname, dest=None):
-    "Extract `fname` to `dest` using `tarfile` or `zipfile"
+    "Extract `fname` to `dest` using `tarfile` or `zipfile`."
     if dest is None: dest = Path(fname).parent
     fname = str(fname)
     if   fname.endswith('gz'):  tarfile.open(fname, 'r:gz').extractall(dest)
@@ -209,13 +216,14 @@ def file_extract(fname, dest=None):
 
 # Cell
 def _try_from_storage(dest, storage):
+    "an internal function to create symbolic links for files from `storage` to `dest` if `storage` exists"
     if not storage.exists(): return
     os.makedirs(dest, exist_ok=True)
     for f in storage.glob('*'): os.symlink(f, dest/f.name, target_is_directory=f.is_dir())
 
 # Cell
 def untar_data(url, fname=None, dest=None, c_key='data', force_download=False, extract_func=file_extract):
-    "Download `url` to `fname` if `dest` doesn't exist, and un-tgz to folder `dest`."
+    "Download `url` to `fname` if `dest` doesn't exist, and un-tgz or unzip to folder `dest`."
     default_dest = URLs.path(url, c_key=c_key).with_suffix('')
     dest = default_dest if dest is None else Path(dest)/default_dest.name
     fname = Path(fname or URLs.path(url))
