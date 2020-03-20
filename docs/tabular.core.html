@@ -425,7 +425,7 @@ description: "Basic function to preprocess tabular data before assembling it in 
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Tabular" class="doc_header"><code>class</code> <code>Tabular</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/tabular/core.py#L102" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Tabular</code>(<strong><code>df</code></strong>, <strong><code>procs</code></strong>=<em><code>None</code></em>, <strong><code>cat_names</code></strong>=<em><code>None</code></em>, <strong><code>cont_names</code></strong>=<em><code>None</code></em>, <strong><code>y_names</code></strong>=<em><code>None</code></em>, <strong><code>block_y</code></strong>=<em><code>None</code></em>, <strong><code>splits</code></strong>=<em><code>None</code></em>, <strong><code>do_setup</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>inplace</code></strong>=<em><code>False</code></em>, <strong><code>reduce_memory</code></strong>=<em><code>True</code></em>) :: <a href="https://fastcore.fast.ai/foundation#CollBase"><code>CollBase</code></a></p>
+<h2 id="Tabular" class="doc_header"><code>class</code> <code>Tabular</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/tabular/core.py#L102" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Tabular</code>(<strong><code>df</code></strong>, <strong><code>procs</code></strong>=<em><code>None</code></em>, <strong><code>cat_names</code></strong>=<em><code>None</code></em>, <strong><code>cont_names</code></strong>=<em><code>None</code></em>, <strong><code>y_names</code></strong>=<em><code>None</code></em>, <strong><code>y_block</code></strong>=<em><code>None</code></em>, <strong><code>splits</code></strong>=<em><code>None</code></em>, <strong><code>do_setup</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>inplace</code></strong>=<em><code>False</code></em>, <strong><code>reduce_memory</code></strong>=<em><code>True</code></em>) :: <a href="https://fastcore.fast.ai/foundation#CollBase"><code>CollBase</code></a></p>
 </blockquote>
 <p>A <code>DataFrame</code> wrapper that knows which cols are cont/cat/y, and returns rows in <code>__getitem__</code></p>
 
@@ -449,7 +449,7 @@ description: "Basic function to preprocess tabular data before assembling it in 
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TabularPandas" class="doc_header"><code>class</code> <code>TabularPandas</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/tabular/core.py#L161" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TabularPandas</code>(<strong><code>df</code></strong>, <strong><code>procs</code></strong>=<em><code>None</code></em>, <strong><code>cat_names</code></strong>=<em><code>None</code></em>, <strong><code>cont_names</code></strong>=<em><code>None</code></em>, <strong><code>y_names</code></strong>=<em><code>None</code></em>, <strong><code>block_y</code></strong>=<em><code>None</code></em>, <strong><code>splits</code></strong>=<em><code>None</code></em>, <strong><code>do_setup</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>inplace</code></strong>=<em><code>False</code></em>, <strong><code>reduce_memory</code></strong>=<em><code>True</code></em>) :: <a href="/tabular.core#Tabular"><code>Tabular</code></a></p>
+<h2 id="TabularPandas" class="doc_header"><code>class</code> <code>TabularPandas</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/tabular/core.py#L161" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TabularPandas</code>(<strong><code>df</code></strong>, <strong><code>procs</code></strong>=<em><code>None</code></em>, <strong><code>cat_names</code></strong>=<em><code>None</code></em>, <strong><code>cont_names</code></strong>=<em><code>None</code></em>, <strong><code>y_names</code></strong>=<em><code>None</code></em>, <strong><code>y_block</code></strong>=<em><code>None</code></em>, <strong><code>splits</code></strong>=<em><code>None</code></em>, <strong><code>do_setup</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>inplace</code></strong>=<em><code>False</code></em>, <strong><code>reduce_memory</code></strong>=<em><code>True</code></em>) :: <a href="/tabular.core#Tabular"><code>Tabular</code></a></p>
 </blockquote>
 <p>A <code>DataFrame</code> wrapper that knows which cols are cont/cat/y, and returns rows in <code>__getitem__</code></p>
 
@@ -2397,7 +2397,7 @@ Name: 2091, dtype: object</pre>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%</span><span class="k">time</span> to = TabularPandas(df_main, procs, cat_names, cont_names, y_names=y_names, block_y=MultiCategoryBlock(encoded=True, vocab=y_names), splits=splits)
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%</span><span class="k">time</span> to = TabularPandas(df_main, procs, cat_names, cont_names, y_names=y_names, by_block=MultiCategoryBlock(encoded=True, vocab=y_names), splits=splits)
 </pre></div>
 
     </div>
@@ -2878,7 +2878,7 @@ Wall time: 79.6 ms
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%</span><span class="k">time</span> to = TabularPandas(df_main, procs, cat_names, cont_names, y_names=&quot;target&quot;, block_y=MultiCategoryBlock(), splits=splits)
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%</span><span class="k">time</span> to = TabularPandas(df_main, procs, cat_names, cont_names, y_names=&quot;target&quot;, by_block=MultiCategoryBlock(), splits=splits)
 </pre></div>
 
     </div>
