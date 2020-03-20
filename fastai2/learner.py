@@ -507,7 +507,7 @@ def export(self:Learner, fname='export.pkl', pickle_protocol=2):
     with warnings.catch_warnings():
         #To avoid the warning that come from PyTorch about model not being checked
         warnings.simplefilter("ignore")
-        torch.save(self, self.path/fname)
+        torch.save(self, self.path/fname, pickle_protocol=pickle_protocol)
     self.create_opt()
     self.opt.load_state_dict(state)
     self.dls = old_dbunch

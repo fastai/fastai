@@ -21,7 +21,7 @@ class CollabDataLoaders(DataLoaders):
         rating_name = ifnone(rating_name,ratings.columns[2])
         cat_names = [user_name,item_name]
         splits = RandomSplitter(valid_pct=valid_pct, seed=seed)(range_of(ratings))
-        to = TabularCollab(ratings, [Categorify], cat_names, y_names=[rating_name], block_y=TransformBlock(), splits=splits)
+        to = TabularCollab(ratings, [Categorify], cat_names, y_names=[rating_name], y_block=TransformBlock(), splits=splits)
         return to.dataloaders(path=path, **kwargs)
 
     @delegates(DataLoaders.from_dblock)

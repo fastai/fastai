@@ -9,22 +9,25 @@ from .core import *
 
 # Cell
 class TabularDataLoaders(DataLoaders):
+    "Basic wrapper around several `DataLoader`s with factory methods for tabular data"
     @classmethod
     @delegates(Tabular.dataloaders)
-    def from_df(cls, df, path='.', procs=None, cat_names=None, cont_names=None, y_names=None, block_y=None,
+    def from_df(cls, df, path='.', procs=None, cat_names=None, cont_names=None, y_names=None, y_block=None,
                 valid_idx=None, **kwargs):
+        "Create from `df` in `path` using `procs`"
         if cat_names is None: cat_names = []
         if cont_names is None: cont_names = list(set(df)-set(cat_names)-set(y_names))
         splits = RandomSplitter()(df) if valid_idx is None else IndexSplitter(valid_idx)(df)
-        to = TabularPandas(df, procs, cat_names, cont_names, y_names, splits=splits, block_y=block_y)
+        to = TabularPandas(df, procs, cat_names, cont_names, y_names, splits=splits, y_block=y_block)
         return to.dataloaders(path=path, **kwargs)
 
     @classmethod
     @delegates(Tabular.dataloaders)
-    def from_csv(cls, csv, path='.', procs=None, cat_names=None, cont_names=None, y_names=None, block_y=None,
+    def from_csv(cls, csv, path='.', procs=None, cat_names=None, cont_names=None, y_names=None, y_block=None,
                 valid_idx=None, **kwargs):
+        "Create from `csv` file in `path` using `procs`"
         return cls.from_df(pd.read_csv(csv), path, procs, cat_names=cat_names, cont_names=cont_names, y_names=y_names,
-                           block_y=block_y, valid_idx=valid_idx, **kwargs)
+                           y_block=y_block, valid_idx=valid_idx, **kwargs)
 
     @delegates(TabDataLoader.__init__)
     def test_dl(self, test_items, rm_type_tfms=None, **kwargs):
