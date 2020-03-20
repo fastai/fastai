@@ -34,12 +34,12 @@ def mk_metric(m):
     return m if isinstance(m, Metric) else AvgMetric(m)
 
 # Cell
-def save_model(file, model, opt, with_opt=True):
+def save_model(file, model, opt, with_opt=True, pickle_protocol=2):
     "Save `model` to `file` along with `opt` (if available, and if `with_opt`)"
     if opt is None: with_opt=False
     state = get_model(model).state_dict()
     if with_opt: state = {'model': state, 'opt':opt.state_dict()}
-    torch.save(state, file)
+    torch.save(state, file, pickle_protocol=pickle_protocol)
 
 # Cell
 def load_model(file, model, opt, with_opt=None, device=None, strict=True):
@@ -257,17 +257,19 @@ class Learner():
         if hasattr(self.loss_func, 'reduction'): return replacing_yield(self.loss_func, 'reduction', 'none')
         else: return replacing_yield(self, 'loss_func', partial(self.loss_func, reduction='none'))
 
-    def save(self, file, with_opt=True):
+    @delegates(save_model)
+    def save(self, file, **kwargs):
         if rank_distrib(): return # don't save if slave proc
         file = join_path_file(file, self.path/self.model_dir, ext='.pth')
-        save_model(file, self.model, getattr(self,'opt',None), with_opt)
+        save_model(file, self.model, getattr(self,'opt',None), **kwargs)
 
-    def load(self, file, with_opt=None, device=None, strict=True):
+    @delegates(load_model)
+    def load(self, file, with_opt=None, device=None, **kwargs):
         if device is None: device = self.dls.device
         if self.opt is None: self.create_opt()
         distrib_barrier()
         file = join_path_file(file, self.path/self.model_dir, ext='.pth')
-        load_model(file, self.model, self.opt, with_opt=with_opt, device=device, strict=strict)
+        load_model(file, self.model, self.opt, device=device, **kwargs)
         return self
 
 Learner.x,Learner.y = add_props(lambda i,x: detuplify((x.xb,x.yb)[i]))
@@ -495,7 +497,7 @@ add_docs(Learner,
 
 # Cell
 @patch
-def export(self:Learner, fname='export.pkl'):
+def export(self:Learner, fname='export.pkl', pickle_protocol=2):
     "Export the content of `self` without the items and the optimizer state for inference"
     if rank_distrib(): return # don't export if slave proc
     old_dbunch = self.dls

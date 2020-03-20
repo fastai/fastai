@@ -13,7 +13,7 @@ from ..callback.rnn import *
 
 # Cell
 def match_embeds(old_wgts, old_vocab, new_vocab):
-    "Convert the embedding in `wgts` to go with a new vocabulary."
+    "Convert the embedding in `old_wgts` to go from `old_vocab` to `new_vocab`."
     bias, wgts = old_wgts.get('1.decoder.bias', None), old_wgts['0.encoder.weight']
     wgts_m = wgts.mean(0)
     new_wgts = wgts.new_zeros((len(new_vocab),wgts.size(1)))
@@ -53,14 +53,14 @@ class TextLearner(Learner):
         self.add_cbs([ModelReseter(), RNNRegularizer(alpha=alpha, beta=beta)])
 
     def save_encoder(self, file):
-        "Save the encoder to `self.path/self.model_dir/file`"
+        "Save the encoder to `file` in the model directory"
         if rank_distrib(): return # don't save if slave proc
         encoder = get_model(self.model)[0]
         if hasattr(encoder, 'module'): encoder = encoder.module
-        torch.save(encoder.state_dict(), join_path_file(file,self.path/self.model_dir, ext='.pth'))
+        torch.save(encoder.state_dict(), join_path_file(file, self.path/self.model_dir, ext='.pth'))
 
     def load_encoder(self, file, device=None):
-        "Load the encoder `name` from the model directory."
+        "Load the encoder `file` from the model directory, optionally ensuring it's on `device`"
         encoder = get_model(self.model)[0]
         if device is None: device = self.dls.device
         if hasattr(encoder, 'module'): encoder = encoder.module
@@ -82,6 +82,7 @@ class TextLearner(Learner):
 
 # Cell
 def decode_spec_tokens(tokens):
+    "Decode the special tokens in `tokens`"
     new_toks,rule,arg = [],None,None
     for t in tokens:
         if t in [TK_MAJ, TK_UP, TK_REP, TK_WREP]: rule = t
@@ -103,14 +104,11 @@ def decode_spec_tokens(tokens):
 # Cell
 class LMLearner(TextLearner):
     "Add functionality to `TextLearner` when dealingwith a language model"
-    @delegates(tokenize1)
-    def predict(self, text, n_words=1, no_unk=True, temperature=1., min_p=None, rm_type_tfms=0, no_bar=False,
-                decoder=decode_spec_tokens, **kwargs):
+    def predict(self, text, n_words=1, no_unk=True, temperature=1., min_p=None, no_bar=False,
+                decoder=decode_spec_tokens):
         "Return `text` and the `n_words` that come after"
         self.model.reset()
-        tokens = tokenize1(text, **kwargs)
-        tfm = self.dls.train_ds.numericalize
-        idxs = tfm(tokens).to(self.dls.device)
+        idxs = self.dls.test_dl([text]).items[0].to(dls.device)
         if no_unk: unk_idx = self.dls.vocab.index(UNK)
         for _ in (range(n_words) if no_bar else progress_bar(range(n_words), leave=False)):
             with self.no_bar(): preds,_ = self.get_preds(dl=[(idxs[None],)])
@@ -124,8 +122,9 @@ class LMLearner(TextLearner):
             idx = torch.multinomial(res, 1).item()
             idxs = torch.cat([idxs, idxs.new([idx])])
 
-        tokens = [tfm.vocab[i] for i in idxs if tfm.vocab[i] not in [BOS, PAD]]
-        sep = self.dls.train_ds.tokenizer
+        num = self.dls.train_ds.numericalize
+        tokens = [num.vocab[i] for i in idxs if num.vocab[i] not in [BOS, PAD]]
+        sep = self.dls.train_ds.tokenizer[-1].sep
         return sep.join(decoder(tokens))
 
     @delegates(Learner.get_preds)
