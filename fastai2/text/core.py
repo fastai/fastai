@@ -346,9 +346,8 @@ class SentencePieceTokenizer():#TODO: pass the special tokens symbol to sp
         from sentencepiece import SentencePieceTrainer
         vocab_sz = self._get_vocab_sz(raw_text_path) if self.vocab_sz is None else self.vocab_sz
         spec_tokens = ['\u2581'+s for s in self.special_toks]
-        q = '\"'
         SentencePieceTrainer.Train(" ".join([
-            f"--input={q}{raw_text_path}{q} --vocab_size={vocab_sz} --model_prefix={q}{self.cache_dir/'spm'}{q}",
+            f"--input={raw_text_path} --vocab_size={vocab_sz} --model_prefix={self.cache_dir/'spm'}",
             f"--character_coverage={self.char_coverage} --model_type={self.model_type}",
             f"--unk_id={len(spec_tokens)} --pad_id=-1 --bos_id=-1 --eos_id=-1",
             f"--user_defined_symbols={','.join(spec_tokens)}"]))
@@ -366,6 +365,7 @@ class SentencePieceTokenizer():#TODO: pass the special tokens symbol to sp
         sp_model = self.train(raw_text_path)
         self.tok = SentencePieceProcessor()
         self.tok.Load(str(sp_model))
+        return {'sp_model': sp_model}
 
     def __call__(self, items):
         for t in items: yield self.tok.EncodeAsPieces(t)
