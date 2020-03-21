@@ -349,7 +349,7 @@ class SentencePieceTokenizer():#TODO: pass the special tokens symbol to sp
         SentencePieceTrainer.Train(" ".join([
             f"--input={raw_text_path} --vocab_size={vocab_sz} --model_prefix={self.cache_dir/'spm'}",
             f"--character_coverage={self.char_coverage} --model_type={self.model_type}",
-            f"--unk_id={len(spec_tokens)} --pad_id=-1 --bos_id=-1 --eos_id=-1",
+            f"--unk_id={len(spec_tokens)} --pad_id=-1 --bos_id=-1 --eos_id=-1 --minloglevel=2",
             f"--user_defined_symbols={','.join(spec_tokens)}"]))
         raw_text_path.unlink()
         return self.cache_dir/'spm.model'
