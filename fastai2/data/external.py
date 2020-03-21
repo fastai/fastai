@@ -128,6 +128,9 @@ class URLs():
     PASCAL_2007        = f'{S3_IMAGELOC}pascal_2007.tgz'
     PASCAL_2012        = f'{S3_IMAGELOC}pascal_2012.tgz'
 
+    # Audio classification datasets
+    MACAQUES           = 'https://storage.googleapis.com/ml-animal-sounds-datasets/macaques.zip'
+
     # Medical Imaging datasets
     #SKIN_LESION        = f'{S3_IMAGELOC}skin_lesion.tgz'
     SIIM_SMALL         = f'{S3_IMAGELOC}siim_small.tgz'
