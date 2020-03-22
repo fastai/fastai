@@ -220,7 +220,7 @@
     "2f88ac350dce1d971ecbb5ec722da75f"
   ],
   "https://storage.googleapis.com/ml-animal-sounds-datasets/macaques.zip": [
-    132146894,
-    "05166775c97ae40a13c862d354ec0043"
+    131604586,
+    "44fec3950e61d6a898f16fe30bc9c88d"
   ]
 }
