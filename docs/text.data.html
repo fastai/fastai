@@ -19,14 +19,21 @@ description: "Functions and transforms to help gather text data in a `Datasets`"
 -->
 
 <div class="container" id="notebook-container">
-    {% raw %}
         
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Numericalizing">Numericalizing<a class="anchor-link" href="#Numericalizing"> </a></h2>
@@ -40,9 +47,15 @@ description: "Functions and transforms to help gather text data in a `Datasets`"
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -64,6 +77,8 @@ description: "Functions and transforms to help gather text data in a `Datasets`"
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>If there are more than <code>max_vocab</code> tokens, the ones kept are the most frequent.
@@ -72,6 +87,8 @@ description: "Functions and transforms to help gather text data in a `Datasets`"
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -92,9 +109,17 @@ description: "Functions and transforms to help gather text data in a `Datasets`"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -116,6 +141,10 @@ description: "Functions and transforms to help gather text data in a `Datasets`"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -137,9 +166,17 @@ description: "Functions and transforms to help gather text data in a `Datasets`"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -161,6 +198,8 @@ description: "Functions and transforms to help gather text data in a `Datasets`"
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>If no <code>vocab</code> is passed, one is created at setup from the data, using <a href="/text.data#make_vocab"><code>make_vocab</code></a> with <code>min_freq</code> and <code>max_vocab</code>.</p>
@@ -168,6 +207,8 @@ description: "Functions and transforms to help gather text data in a `Datasets`"
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -190,6 +231,10 @@ description: "Functions and transforms to help gather text data in a `Datasets`"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -210,18 +255,38 @@ description: "Functions and transforms to help gather text data in a `Datasets`"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -243,6 +308,8 @@ description: "Functions and transforms to help gather text data in a `Datasets`"
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><code>dataset</code> should be a collection of numericalized texts for this to work. <code>lens</code> can be passed for optimizing the creation, otherwise, the <a href="/text.data#LMDataLoader"><code>LMDataLoader</code></a> will do a full pass of the <code>dataset</code> to compute them. <code>cache</code> is used to avoid reloading items unnecessarily.</p>
@@ -251,6 +318,8 @@ description: "Functions and transforms to help gather text data in a `Datasets`"
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -265,6 +334,10 @@ description: "Functions and transforms to help gather text data in a `Datasets`"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -283,6 +356,10 @@ description: "Functions and transforms to help gather text data in a `Datasets`"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -301,12 +378,22 @@ description: "Functions and transforms to help gather text data in a `Datasets`"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Classification">Classification<a class="anchor-link" href="#Classification"> </a></h2>
@@ -320,9 +407,15 @@ description: "Functions and transforms to help gather text data in a `Datasets`"
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -344,6 +437,8 @@ description: "Functions and transforms to help gather text data in a `Datasets`"
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><code>pad_idx</code> is used for the padding, and the padding is applied to the <code>pad_fields</code> of the samples. The padding is applied at the beginning if <code>pad_first</code> is <code>True</code>, and if <code>backwards</code> is added, the tensors are flipped.</p>
@@ -351,6 +446,8 @@ description: "Functions and transforms to help gather text data in a `Datasets`"
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -373,9 +470,17 @@ description: "Functions and transforms to help gather text data in a `Datasets`"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -397,6 +502,8 @@ description: "Functions and transforms to help gather text data in a `Datasets`"
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>The difference with the base <a href="/text.data#pad_input"><code>pad_input</code></a> is that most of the padding is applied first (if <code>pad_first=True</code>) or at the end (if <code>pad_first=False</code>) but only by a round multiple of <code>seq_len</code>. The rest of the padding is applied to the end (or the beginning if <code>pad_first=False</code>). This is to work with <code>SequenceEncoder</code> with recurrent models.</p>
@@ -404,6 +511,8 @@ description: "Functions and transforms to help gather text data in a `Datasets`"
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -422,9 +531,17 @@ description: "Functions and transforms to help gather text data in a `Datasets`"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -446,6 +563,8 @@ description: "Functions and transforms to help gather text data in a `Datasets`"
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><code>res</code> is the result of <code>sort_func</code> applied on all elements of the <code>dataset</code>. You can pass it if available to make the init faster by avoiding an initial pass over the whole dataset. If <code>shuffle</code> is <code>True</code>, this will shuffle a bit the results of the sort to have items of roughly the same size in batches, but not in the exact sorted order.</p>
@@ -453,6 +572,8 @@ description: "Functions and transforms to help gather text data in a `Datasets`"
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -469,6 +590,10 @@ description: "Functions and transforms to help gather text data in a `Datasets`"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -488,6 +613,8 @@ description: "Functions and transforms to help gather text data in a `Datasets`"
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="TransformBlock-for-text">TransformBlock for text<a class="anchor-link" href="#TransformBlock-for-text"> </a></h2>
@@ -501,9 +628,15 @@ description: "Functions and transforms to help gather text data in a `Datasets`"
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -525,6 +658,8 @@ description: "Functions and transforms to help gather text data in a `Datasets`"
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>For efficient tokenization, you probably want to use one of the factory methods. Otherwise, you can pass your custom <code>tok_tfm</code> that will deal with tokenization (if your texts are already tokenized, you can pass <code>noop</code>), a <code>vocab</code>, or leave it to be inferred on the texts using <code>min_freq</code> and <code>max_vocab</code>.</p>
@@ -533,6 +668,8 @@ description: "Functions and transforms to help gather text data in a `Datasets`"
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -554,6 +691,8 @@ description: "Functions and transforms to help gather text data in a `Datasets`"
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><code>vocab</code>,  <code>is_lm</code>, <code>seq_len</code>, <code>min_freq</code> and <code>max_vocab</code> are passed to the main init, the other argument to <a href="/text.core#Tokenizer.from_df"><code>Tokenizer.from_df</code></a>.</p>
@@ -561,6 +700,8 @@ description: "Functions and transforms to help gather text data in a `Datasets`"
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -582,6 +723,8 @@ description: "Functions and transforms to help gather text data in a `Datasets`"
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><code>vocab</code>, <code>is_lm</code>, <code>seq_len</code>, <code>min_freq</code> and <code>max_vocab</code> are passed to the main init, the other argument to <a href="/text.core#Tokenizer.from_folder"><code>Tokenizer.from_folder</code></a>.</p>
@@ -589,9 +732,15 @@ description: "Functions and transforms to help gather text data in a `Datasets`"
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -613,6 +762,8 @@ description: "Functions and transforms to help gather text data in a `Datasets`"
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>You should not use the init directly but one of the following factory methods. All those factory methods accept as arguments:</p>
@@ -629,6 +780,8 @@ description: "Functions and transforms to help gather text data in a `Datasets`"
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -650,6 +803,8 @@ description: "Functions and transforms to help gather text data in a `Datasets`"
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>If <code>valid_pct</code> is provided, a random split is performed (with an optional <code>seed</code>) by setting aside that percentage of the data for the validation set (instead of looking at the grandparents folder). If a <code>vocab</code> is passed, only the folders with names in <code>vocab</code> are kept.</p>
@@ -658,6 +813,8 @@ description: "Functions and transforms to help gather text data in a `Datasets`"
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -666,19 +823,7 @@ description: "Functions and transforms to help gather text data in a `Datasets`"
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#slow</span>
 <span class="n">path</span> <span class="o">=</span> <span class="n">untar_data</span><span class="p">(</span><span class="n">URLs</span><span class="o">.</span><span class="n">IMDB</span><span class="p">)</span>
 <span class="n">dls</span> <span class="o">=</span> <span class="n">TextDataLoaders</span><span class="o">.</span><span class="n">from_folder</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dls</span><span class="o">.</span><span class="n">show_batch</span><span class="p">(</span><span class="n">max_n</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">dls</span><span class="o">.</span><span class="n">show_batch</span><span class="p">(</span><span class="n">max_n</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -708,12 +853,12 @@ description: "Functions and transforms to help gather text data in a `Datasets`"
     </tr>
     <tr>
       <th>1</th>
-      <td>xxbos * * attention xxmaj spoilers * * \n\n xxmaj first of all , let me say that xxmaj rob xxmaj roy is one of the best films of the 90 's . xxmaj it was an amazing achievement for all those involved , especially the acting of xxmaj liam xxmaj neeson , xxmaj jessica xxmaj lange , xxmaj john xxmaj hurt , xxmaj brian xxmaj cox , and xxmaj tim xxmaj roth . xxmaj michael xxmaj canton xxmaj jones painted a wonderful portrait of the honor and dishonor that men can represent in themselves . xxmaj but alas … \n\n it constantly , and unfairly gets compared to " braveheart " . xxmaj these are two entirely different films , probably only similar in the fact that they are both about xxmaj scots in historical xxmaj scotland . xxmaj yet , this comparison frequently bothers me because it seems</td>
+      <td>xxbos xxmaj titanic directed by xxmaj james xxmaj cameron presents a fictional love story on the historical setting of the xxmaj titanic . xxmaj the plot is simple , xxunk , or not for those who love plots that twist and turn and keep you in suspense . xxmaj the end of the movie can be figured out within minutes of the start of the film , but the love story is an interesting one , however . xxmaj kate xxmaj winslett is wonderful as xxmaj rose , an aristocratic young lady betrothed by xxmaj cal ( billy xxmaj zane ) . xxmaj early on the voyage xxmaj rose meets xxmaj jack ( leonardo dicaprio ) , a lower class artist on his way to xxmaj america after winning his ticket aboard xxmaj titanic in a poker game . xxmaj if he wants something , he goes and gets it</td>
       <td>pos</td>
     </tr>
     <tr>
       <th>2</th>
-      <td>xxbos xxmaj this movie was recently released on xxup dvd in the xxup us and i finally got the chance to see this hard - to - find gem . xxmaj it even came with original theatrical previews of other xxmaj italian horror classics like " xxunk " and " beyond xxup the xxup darkness " . xxmaj unfortunately , the previews were the best thing about this movie . \n\n " zombi 3 " in a bizarre way is actually linked to the infamous xxmaj lucio xxmaj fulci " zombie " franchise which began in 1979 . xxmaj similarly compared to " zombie " , " zombi 3 " consists of a threadbare plot and a handful of extremely bad actors that keeps this ' horror ' trash barely afloat . xxmaj the gore is nearly non - existent ( unless one is frightened of people running around with</td>
+      <td>xxbos xxmaj raising xxmaj victor xxmaj vargas : a xxmaj review \n\n xxmaj you know , xxmaj raising xxmaj victor xxmaj vargas is like sticking your hands into a big , steaming bowl of oatmeal . xxmaj it 's warm and gooey , but you 're not sure if it feels right . xxmaj try as i might , no matter how warm and gooey xxmaj raising xxmaj victor xxmaj vargas became i was always aware that something did n't quite feel right . xxmaj victor xxmaj vargas suffers from a certain xxunk on the director 's part . xxmaj apparently , the director thought that the ethnic backdrop of a xxmaj latino family on the lower east side , and an idyllic storyline would make the film critic proof . xxmaj he was right , but it did n't fool me . xxmaj raising xxmaj victor xxmaj vargas is</td>
       <td>neg</td>
     </tr>
   </tbody>
@@ -726,6 +871,10 @@ description: "Functions and transforms to help gather text data in a `Datasets`"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -747,6 +896,8 @@ description: "Functions and transforms to help gather text data in a `Datasets`"
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><code>seed</code> can optionally be passed for reproducibility. <code>text_col</code>, <code>label_col</code> and optionaly <code>valid_col</code> are indices or names of columns for texts/labels and the validation flag. <code>label_delim</code> can be passed for a multi-label problem if your labels are in one column, separated by a particular char. <code>y_block</code> should be passed to indicate your type of targets, in case the library did no infer it properly.</p>
@@ -755,6 +906,8 @@ description: "Functions and transforms to help gather text data in a `Datasets`"
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -823,6 +976,10 @@ description: "Functions and transforms to help gather text data in a `Datasets`"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -886,6 +1043,10 @@ description: "Functions and transforms to help gather text data in a `Datasets`"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -926,18 +1087,18 @@ description: "Functions and transforms to help gather text data in a `Datasets`"
   <tbody>
     <tr>
       <th>0</th>
-      <td>xxbos xxmaj this is an amazing film to watch or show young people . xxmaj aside from a very brief nude scene , it gives an interesting glimpse into xxunk rule in xxmaj africa that you 'll rarely find in other films . xxmaj it does bear a superficial similarity to xxup out xxup of xxmaj africa , but without all the romantic fluff . xxmaj the xxmaj white xxmaj french people</td>
-      <td>xxmaj this is an amazing film to watch or show young people . xxmaj aside from a very brief nude scene , it gives an interesting glimpse into xxunk rule in xxmaj africa that you 'll rarely find in other films . xxmaj it does bear a superficial similarity to xxup out xxup of xxmaj africa , but without all the romantic fluff . xxmaj the xxmaj white xxmaj french people in</td>
+      <td>xxbos xxmaj viewers xxunk over everything including the title sequence ( now xxup that is funny ) would have us believe this is some sort of cinematic miracle , but , trust me folks , this is one of the most embarrassingly bad films you could ever see , and if you 're not laughing at it five minutes in , xxmaj i 'd say you 've lost your sense of humor</td>
+      <td>xxmaj viewers xxunk over everything including the title sequence ( now xxup that is funny ) would have us believe this is some sort of cinematic miracle , but , trust me folks , this is one of the most embarrassingly bad films you could ever see , and if you 're not laughing at it five minutes in , xxmaj i 'd say you 've lost your sense of humor .</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>such a disappointment . xxmaj xxunk xxmaj brando plays and awful character , the movie is not funny at all , a subconscious message can be seen " it xxup is a xxup damn xxup crap xxrep 3 ! " , " it xxup xxunk xxup so xxup badly ! ! " , " throw xxup your xxup tv xxup through xxup window " , and so on . xxmaj it is</td>
-      <td>a disappointment . xxmaj xxunk xxmaj brando plays and awful character , the movie is not funny at all , a subconscious message can be seen " it xxup is a xxup damn xxup crap xxrep 3 ! " , " it xxup xxunk xxup so xxup badly ! ! " , " throw xxup your xxup tv xxup through xxup window " , and so on . xxmaj it is simply</td>
+      <td>xxunk to state that if xxmaj xxunk xxmaj xxunk saw this movie he 'd love it and call it a masterpiece ? xxmaj perhaps i should n't since the drama of this story shows what happens when other people do your thinking for you \n\n xxmaj in xxunk to the couple of reviewers who have claimed this movie is propaganda of the worst sort i do n't claim to know the exact</td>
+      <td>to state that if xxmaj xxunk xxmaj xxunk saw this movie he 'd love it and call it a masterpiece ? xxmaj perhaps i should n't since the drama of this story shows what happens when other people do your thinking for you \n\n xxmaj in xxunk to the couple of reviewers who have claimed this movie is propaganda of the worst sort i do n't claim to know the exact details</td>
     </tr>
     <tr>
       <th>2</th>
-      <td>xxunk differences with his religion and xxmaj state . xxmaj if anything , i find a humorous xxunk between the religious angle of this supposed documentary and xxmaj woody xxmaj allen 's hilarious xxunk in xxmaj xxunk ( 1973 ) that , " i was beaten up by xxmaj xxunk " . xxbos xxmaj roy xxmaj rogers and company try to bring " xxunk " back to life - it 's a</td>
-      <td>differences with his religion and xxmaj state . xxmaj if anything , i find a humorous xxunk between the religious angle of this supposed documentary and xxmaj woody xxmaj allen 's hilarious xxunk in xxmaj xxunk ( 1973 ) that , " i was beaten up by xxmaj xxunk " . xxbos xxmaj roy xxmaj rogers and company try to bring " xxunk " back to life - it 's a ghost</td>
+      <td>ring ? " xxmaj but little does he know that it is not the neat guy who ca n't deal with the messy guy , but the other way around . xxmaj their friendship becomes an xxunk xxunk relationship . xxmaj and the climax occurs when xxmaj oscar xxunk two lonely xxmaj british sisters for a get - together with both comedic and tragic results . xxmaj this is one of the</td>
+      <td>? " xxmaj but little does he know that it is not the neat guy who ca n't deal with the messy guy , but the other way around . xxmaj their friendship becomes an xxunk xxunk relationship . xxmaj and the climax occurs when xxmaj oscar xxunk two lonely xxmaj british sisters for a get - together with both comedic and tragic results . xxmaj this is one of the best</td>
     </tr>
   </tbody>
 </table>
@@ -949,6 +1110,10 @@ description: "Functions and transforms to help gather text data in a `Datasets`"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -970,6 +1135,8 @@ description: "Functions and transforms to help gather text data in a `Datasets`"
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Opens the csv file with <code>header</code> and <code>delimiter</code>, then pass all the other arguments to <a href="/text.data#TextDataLoaders.from_df"><code>TextDataLoaders.from_df</code></a>.</p>
@@ -977,6 +1144,8 @@ description: "Functions and transforms to help gather text data in a `Datasets`"
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -1041,6 +1210,7 @@ description: "Functions and transforms to help gather text data in a `Datasets`"
 
 </div>
     {% endraw %}
+
 </div>
  
 

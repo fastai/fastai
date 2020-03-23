@@ -19,14 +19,23 @@ description: "Callbacks that make decisions depending how a monitored metric/los
 -->
 
 <div class="container" id="notebook-container">
-    {% raw %}
         
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -41,122 +50,17 @@ description: "Callbacks that make decisions depending how a monitored metric/los
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
-<div class="cell border-box-sizing code_cell rendered">
+    {% endraw %}
 
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h2 id="ShortEpochCallback" class="doc_header"><code>class</code> <code>ShortEpochCallback</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/tracker.py#L11" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ShortEpochCallback</code>(<strong><code>pct</code></strong>=<em><code>0.01</code></em>, <strong><code>short_valid</code></strong>=<em><code>True</code></em>) :: <a href="/callback.core#Callback"><code>Callback</code></a></p>
-</blockquote>
-<p>Fit just <code>pct</code> of an epoch, then stop</p>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span> <span class="o">=</span> <span class="n">synth_learner</span><span class="p">()</span>
-<span class="n">learn</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">cbs</span><span class="o">=</span><span class="n">ShortEpochCallback</span><span class="p">())</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_html rendered_html output_subarea ">
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: left;">
-      <th>epoch</th>
-      <th>train_loss</th>
-      <th>valid_loss</th>
-      <th>time</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>0</td>
-      <td>00:00</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span> <span class="o">=</span> <span class="n">synth_learner</span><span class="p">()</span>
-<span class="n">learn</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">cbs</span><span class="o">=</span><span class="n">ShortEpochCallback</span><span class="p">(</span><span class="n">short_valid</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_html rendered_html output_subarea ">
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: left;">
-      <th>epoch</th>
-      <th>train_loss</th>
-      <th>valid_loss</th>
-      <th>time</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>0</td>
-      <td>5.195858</td>
-      <td>00:00</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-
-</div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -166,7 +70,7 @@ description: "Callbacks that make decisions depending how a monitored metric/los
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TerminateOnNaNCallback" class="doc_header"><code>class</code> <code>TerminateOnNaNCallback</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/tracker.py#L20" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TerminateOnNaNCallback</code>() :: <a href="/callback.core#Callback"><code>Callback</code></a></p>
+<h2 id="TerminateOnNaNCallback" class="doc_header"><code>class</code> <code>TerminateOnNaNCallback</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/tracker.py#L12" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TerminateOnNaNCallback</code>() :: <a href="/callback.core#Callback"><code>Callback</code></a></p>
 </blockquote>
 <p>A <a href="/callback.core#Callback"><code>Callback</code></a> that terminates training if loss is NaN.</p>
 
@@ -178,6 +82,10 @@ description: "Callbacks that make decisions depending how a monitored metric/los
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -210,7 +118,7 @@ description: "Callbacks that make decisions depending how a monitored metric/los
   <tbody>
     <tr>
       <td>0</td>
-      <td>3760005699824856134711503556584669184.000000</td>
+      <td>94965349535394494416764897591296.000000</td>
       <td>00:00</td>
     </tr>
   </tbody>
@@ -223,6 +131,10 @@ description: "Callbacks that make decisions depending how a monitored metric/los
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -238,9 +150,17 @@ description: "Callbacks that make decisions depending how a monitored metric/los
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -250,7 +170,7 @@ description: "Callbacks that make decisions depending how a monitored metric/los
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TrackerCallback" class="doc_header"><code>class</code> <code>TrackerCallback</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/tracker.py#L29" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TrackerCallback</code>(<strong><code>monitor</code></strong>=<em><code>'valid_loss'</code></em>, <strong><code>comp</code></strong>=<em><code>None</code></em>, <strong><code>min_delta</code></strong>=<em><code>0.0</code></em>) :: <a href="/callback.core#Callback"><code>Callback</code></a></p>
+<h2 id="TrackerCallback" class="doc_header"><code>class</code> <code>TrackerCallback</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/tracker.py#L21" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TrackerCallback</code>(<strong><code>monitor</code></strong>=<em><code>'valid_loss'</code></em>, <strong><code>comp</code></strong>=<em><code>None</code></em>, <strong><code>min_delta</code></strong>=<em><code>0.0</code></em>) :: <a href="/callback.core#Callback"><code>Callback</code></a></p>
 </blockquote>
 <p>A <a href="/callback.core#Callback"><code>Callback</code></a> that keeps track of the best value in <code>monitor</code>.</p>
 
@@ -262,6 +182,8 @@ description: "Callbacks that make decisions depending how a monitored metric/los
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>When implementing a <a href="/callback.core#Callback"><code>Callback</code></a> that has behavior that depends on the best value of a metric or loss, subclass this <a href="/callback.core#Callback"><code>Callback</code></a> and use its <code>best</code> (for best value so far) and <code>new_best</code> (there was a new best value this epoch) attributes.</p>
@@ -270,9 +192,15 @@ description: "Callbacks that make decisions depending how a monitored metric/los
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -282,7 +210,7 @@ description: "Callbacks that make decisions depending how a monitored metric/los
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="EarlyStoppingCallback" class="doc_header"><code>class</code> <code>EarlyStoppingCallback</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/tracker.py#L54" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>EarlyStoppingCallback</code>(<strong><code>monitor</code></strong>=<em><code>'valid_loss'</code></em>, <strong><code>comp</code></strong>=<em><code>None</code></em>, <strong><code>min_delta</code></strong>=<em><code>0.0</code></em>, <strong><code>patience</code></strong>=<em><code>1</code></em>) :: <a href="/callback.tracker#TrackerCallback"><code>TrackerCallback</code></a></p>
+<h2 id="EarlyStoppingCallback" class="doc_header"><code>class</code> <code>EarlyStoppingCallback</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/tracker.py#L46" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>EarlyStoppingCallback</code>(<strong><code>monitor</code></strong>=<em><code>'valid_loss'</code></em>, <strong><code>comp</code></strong>=<em><code>None</code></em>, <strong><code>min_delta</code></strong>=<em><code>0.0</code></em>, <strong><code>patience</code></strong>=<em><code>1</code></em>) :: <a href="/callback.tracker#TrackerCallback"><code>TrackerCallback</code></a></p>
 </blockquote>
 <p>A <a href="/callback.tracker#TrackerCallback"><code>TrackerCallback</code></a> that terminates training when monitored quantity stops improving.</p>
 
@@ -294,6 +222,8 @@ description: "Callbacks that make decisions depending how a monitored metric/los
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><code>comp</code> is the comparison operator used to determine if a value is best than another (defaults to <code>np.less</code> if 'loss' is in the name passed in <code>monitor</code>, <code>np.greater</code> otherwise) and <code>min_delta</code> is an optional float that requires a new value to go over the current best (depending on <code>comp</code>) by at least that amount. <code>patience</code> is the number of epochs you're willing to wait without improvement.</p>
@@ -301,13 +231,15 @@ description: "Callbacks that make decisions depending how a monitored metric/los
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span> <span class="o">=</span> <span class="n">synth_learner</span><span class="p">(</span><span class="n">n_trn</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-<span class="n">learn</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">n_epoch</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">1e-7</span><span class="p">,</span> <span class="n">cbs</span><span class="o">=</span><span class="n">EarlyStoppingCallback</span><span class="p">(</span><span class="n">monitor</span><span class="o">=</span><span class="s1">&#39;valid_loss&#39;</span><span class="p">,</span> <span class="n">min_delta</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">patience</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span> <span class="o">=</span> <span class="n">synth_learner</span><span class="p">(</span><span class="n">n_trn</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="n">F</span><span class="o">.</span><span class="n">mse_loss</span><span class="p">)</span>
+<span class="n">learn</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">n_epoch</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">1e-7</span><span class="p">,</span> <span class="n">cbs</span><span class="o">=</span><span class="n">EarlyStoppingCallback</span><span class="p">(</span><span class="n">monitor</span><span class="o">=</span><span class="s1">&#39;mse_loss&#39;</span><span class="p">,</span> <span class="n">min_delta</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">patience</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
 </pre></div>
 
     </div>
@@ -327,26 +259,30 @@ description: "Callbacks that make decisions depending how a monitored metric/los
       <th>epoch</th>
       <th>train_loss</th>
       <th>valid_loss</th>
+      <th>mse_loss</th>
       <th>time</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td>0</td>
-      <td>13.718269</td>
-      <td>12.409605</td>
+      <td>13.098995</td>
+      <td>11.774235</td>
+      <td>11.774235</td>
       <td>00:00</td>
     </tr>
     <tr>
       <td>1</td>
-      <td>13.720021</td>
-      <td>12.409575</td>
+      <td>13.106560</td>
+      <td>11.774205</td>
+      <td>11.774205</td>
       <td>00:00</td>
     </tr>
     <tr>
       <td>2</td>
-      <td>13.718283</td>
-      <td>12.409529</td>
+      <td>13.108378</td>
+      <td>11.774160</td>
+      <td>11.774160</td>
       <td>00:00</td>
     </tr>
   </tbody>
@@ -367,9 +303,77 @@ description: "Callbacks that make decisions depending how a monitored metric/los
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span><span class="o">.</span><span class="n">validate</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea ">
+
+</div>
+
+</div>
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>(#2) [11.774160385131836,11.774160385131836]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span> <span class="o">=</span> <span class="n">synth_learner</span><span class="p">(</span><span class="n">n_trn</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">learn</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">n_epoch</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">1e-7</span><span class="p">,</span> <span class="n">cbs</span><span class="o">=</span><span class="n">EarlyStoppingCallback</span><span class="p">(</span><span class="n">monitor</span><span class="o">=</span><span class="s1">&#39;valid_loss&#39;</span><span class="p">,</span> <span class="n">min_delta</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">patience</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -379,7 +383,7 @@ description: "Callbacks that make decisions depending how a monitored metric/los
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="SaveModelCallback" class="doc_header"><code>class</code> <code>SaveModelCallback</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/tracker.py#L72" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SaveModelCallback</code>(<strong><code>monitor</code></strong>=<em><code>'valid_loss'</code></em>, <strong><code>comp</code></strong>=<em><code>None</code></em>, <strong><code>min_delta</code></strong>=<em><code>0.0</code></em>, <strong><code>fname</code></strong>=<em><code>'model'</code></em>, <strong><code>every_epoch</code></strong>=<em><code>False</code></em>, <strong><code>add_save</code></strong>=<em><code>None</code></em>, <strong><code>with_opt</code></strong>=<em><code>False</code></em>) :: <a href="/callback.tracker#TrackerCallback"><code>TrackerCallback</code></a></p>
+<h2 id="SaveModelCallback" class="doc_header"><code>class</code> <code>SaveModelCallback</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/tracker.py#L64" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SaveModelCallback</code>(<strong><code>monitor</code></strong>=<em><code>'valid_loss'</code></em>, <strong><code>comp</code></strong>=<em><code>None</code></em>, <strong><code>min_delta</code></strong>=<em><code>0.0</code></em>, <strong><code>fname</code></strong>=<em><code>'model'</code></em>, <strong><code>every_epoch</code></strong>=<em><code>False</code></em>, <strong><code>add_save</code></strong>=<em><code>None</code></em>, <strong><code>with_opt</code></strong>=<em><code>False</code></em>) :: <a href="/callback.tracker#TrackerCallback"><code>TrackerCallback</code></a></p>
 </blockquote>
 <p>A <a href="/callback.tracker#TrackerCallback"><code>TrackerCallback</code></a> that saves the model's best during training and loads it at the end.</p>
 
@@ -391,6 +395,8 @@ description: "Callbacks that make decisions depending how a monitored metric/los
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><code>comp</code> is the comparison operator used to determine if a value is best than another (defaults to <code>np.less</code> if 'loss' is in the name passed in <code>monitor</code>, <code>np.greater</code> otherwise) and <code>min_delta</code> is an optional float that requires a new value to go over the current best (depending on <code>comp</code>) by at least that amount. Model will be saved in <code>learn.path/learn.model_dir/name.pth</code>, maybe <code>every_epoch</code> or at each improvement of the monitored quantity.</p>
@@ -398,6 +404,8 @@ description: "Callbacks that make decisions depending how a monitored metric/los
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -415,86 +423,24 @@ description: "Callbacks that make decisions depending how a monitored metric/los
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_html rendered_html output_subarea ">
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: left;">
-      <th>epoch</th>
-      <th>train_loss</th>
-      <th>valid_loss</th>
-      <th>time</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>0</td>
-      <td>12.607660</td>
-      <td>10.657997</td>
-      <td>00:00</td>
-    </tr>
-    <tr>
-      <td>1</td>
-      <td>12.488140</td>
-      <td>10.351438</td>
-      <td>00:00</td>
-    </tr>
-  </tbody>
-</table>
 </div>
+    {% endraw %}
 
-</div>
-
-<div class="output_area">
-
-
-<div class="output_html rendered_html output_subarea ">
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: left;">
-      <th>epoch</th>
-      <th>train_loss</th>
-      <th>valid_loss</th>
-      <th>time</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>0</td>
-      <td>11.985910</td>
-      <td>9.935776</td>
-      <td>00:00</td>
-    </tr>
-    <tr>
-      <td>1</td>
-      <td>11.721963</td>
-      <td>9.431005</td>
-      <td>00:00</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="ReduceLROnPlateau">ReduceLROnPlateau<a class="anchor-link" href="#ReduceLROnPlateau"> </a></h2>
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -504,7 +450,7 @@ description: "Callbacks that make decisions depending how a monitored metric/los
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ReduceLROnPlateau" class="doc_header"><code>class</code> <code>ReduceLROnPlateau</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/tracker.py#L95" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ReduceLROnPlateau</code>(<strong><code>monitor</code></strong>=<em><code>'valid_loss'</code></em>, <strong><code>comp</code></strong>=<em><code>None</code></em>, <strong><code>min_delta</code></strong>=<em><code>0.0</code></em>, <strong><code>patience</code></strong>=<em><code>1</code></em>, <strong><code>factor</code></strong>=<em><code>10.0</code></em>) :: <a href="/callback.tracker#TrackerCallback"><code>TrackerCallback</code></a></p>
+<h2 id="ReduceLROnPlateau" class="doc_header"><code>class</code> <code>ReduceLROnPlateau</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/tracker.py#L87" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ReduceLROnPlateau</code>(<strong><code>monitor</code></strong>=<em><code>'valid_loss'</code></em>, <strong><code>comp</code></strong>=<em><code>None</code></em>, <strong><code>min_delta</code></strong>=<em><code>0.0</code></em>, <strong><code>patience</code></strong>=<em><code>1</code></em>, <strong><code>factor</code></strong>=<em><code>10.0</code></em>) :: <a href="/callback.tracker#TrackerCallback"><code>TrackerCallback</code></a></p>
 </blockquote>
 <p>A <a href="/callback.tracker#TrackerCallback"><code>TrackerCallback</code></a> that reduces learning rate when a metric has stopped improving.</p>
 
@@ -516,6 +462,10 @@ description: "Callbacks that make decisions depending how a monitored metric/los
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -529,66 +479,9 @@ description: "Callbacks that make decisions depending how a monitored metric/los
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_html rendered_html output_subarea ">
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: left;">
-      <th>epoch</th>
-      <th>train_loss</th>
-      <th>valid_loss</th>
-      <th>time</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>0</td>
-      <td>14.922760</td>
-      <td>14.844461</td>
-      <td>00:00</td>
-    </tr>
-    <tr>
-      <td>1</td>
-      <td>14.919582</td>
-      <td>14.844421</td>
-      <td>00:00</td>
-    </tr>
-    <tr>
-      <td>2</td>
-      <td>14.918221</td>
-      <td>14.844364</td>
-      <td>00:00</td>
-    </tr>
-    <tr>
-      <td>3</td>
-      <td>14.929756</td>
-      <td>14.844357</td>
-      <td>00:00</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-</div>
-
-<div class="output_area">
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>Epoch 2: reducing lr to 1e-08
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
 </div>
     {% endraw %}
+
 </div>
  
 
