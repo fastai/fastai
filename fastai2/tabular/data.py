@@ -11,7 +11,7 @@ from .core import *
 class TabularDataLoaders(DataLoaders):
     "Basic wrapper around several `DataLoader`s with factory methods for tabular data"
     @classmethod
-    @delegates(Tabular.dataloaders)
+    @delegates(Tabular.dataloaders, but=["dl_type", "dl_kwargs"])
     def from_df(cls, df, path='.', procs=None, cat_names=None, cont_names=None, y_names=None, y_block=None,
                 valid_idx=None, **kwargs):
         "Create from `df` in `path` using `procs`"
@@ -22,12 +22,9 @@ class TabularDataLoaders(DataLoaders):
         return to.dataloaders(path=path, **kwargs)
 
     @classmethod
-    @delegates(Tabular.dataloaders)
-    def from_csv(cls, csv, path='.', procs=None, cat_names=None, cont_names=None, y_names=None, y_block=None,
-                valid_idx=None, **kwargs):
+    def from_csv(cls, csv, **kwargs):
         "Create from `csv` file in `path` using `procs`"
-        return cls.from_df(pd.read_csv(csv), path, procs, cat_names=cat_names, cont_names=cont_names, y_names=y_names,
-                           y_block=y_block, valid_idx=valid_idx, **kwargs)
+        return cls.from_df(pd.read_csv(csv), **kwargs)
 
     @delegates(TabDataLoader.__init__)
     def test_dl(self, test_items, rm_type_tfms=None, **kwargs):
@@ -36,3 +33,4 @@ class TabularDataLoaders(DataLoaders):
         return self.valid.new(to, **kwargs)
 
 Tabular._dbunch_type = TabularDataLoaders
+TabularDataLoaders.from_csv = delegates(to=TabularDataLoaders.from_df)(TabularDataLoaders.from_csv)

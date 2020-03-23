@@ -123,8 +123,8 @@ class Tabular(CollBase, GetAttr, FilteredBase):
         self.cat_names,self.cont_names,self.procs = L(cat_names),L(cont_names),Pipeline(procs)
         self.split = len(df) if splits is None else len(splits[0])
         if reduce_memory:
-        	if len(self.cat_names) > 0: self.reduce_cats()
-        	if len(self.cont_names) > 0: self.reduce_conts()
+            if len(self.cat_names) > 0: self.reduce_cats()
+            if len(self.cont_names) > 0: self.reduce_conts()
         if do_setup: self.setup()
 
     def new(self, df):
