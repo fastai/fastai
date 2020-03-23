@@ -52,7 +52,7 @@ def main(
 ):
     "Training of Imagenette."
 
-    #gpu = setup_distrib(gpu)
+    gpu = setup_distrib(gpu)
     if gpu is not None: torch.cuda.set_device(gpu)
     if   opt=='adam'  : opt_func = partial(Adam, mom=mom, sqr_mom=sqrmom, eps=eps)
     elif opt=='rms'   : opt_func = partial(RMSprop, sqr_mom=sqrmom)
@@ -73,6 +73,6 @@ def main(
         cbs = MixUp(mixup) if mixup else []
         #n_gpu = torch.cuda.device_count()
         #if gpu is None and n_gpu: learn.to_parallel()
-        if num_distrib()>1: learn.to_distributed(gpu) # Requires `-m fastai.launch`
+        if num_distrib()>1: learn.to_distributed(gpu) # Requires `-m fastai2.launch`
         learn.fit_flat_cos(epochs, lr, wd=1e-2, cbs=cbs)
 
