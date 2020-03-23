@@ -74,6 +74,7 @@ class TextLearner(Learner):
         "Load a pretrained model and adapt it to the data vocabulary."
         old_vocab = Path(vocab_fname).load()
         new_vocab = _get_text_vocab(self.dls)
+        distrib_barrier()
         wgts = torch.load(wgts_fname, map_location = lambda storage,loc: storage)
         if 'model' in wgts: wgts = wgts['model'] #Just in case the pretrained model was saved with an optimizer
         wgts = match_embeds(wgts, old_vocab, new_vocab)

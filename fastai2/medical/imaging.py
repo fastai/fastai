@@ -48,7 +48,6 @@ class PILDicom(PILBase):
 
 PILDicom._tensor_cls = TensorDicom
 
-
 # Cell
 @patch_property
 def pixels(self:DcmDataset):
