@@ -86,8 +86,11 @@ entries:
           title: Mixup
           url: /callback.mixup
         - output: web,pdf
-          title: Trackers
+          title: Tracker
           url: /callback.tracker
+        - output: web,pdf
+          title: Training
+          url: /callback.training
         - output: web,pdf
           title: RNN
           url: /callback.rnn
