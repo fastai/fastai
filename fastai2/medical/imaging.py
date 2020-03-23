@@ -38,9 +38,10 @@ class TensorDicom(TensorImage): _show_args = {'cmap':'gray'}
 class PILDicom(PILBase):
     _open_args,_tensor_cls,_show_args = {},TensorDicom,TensorDicom._show_args
     @classmethod
-    def create(cls, fn:(Path,str), mode=None)->None:
-        "Open a `DICOM file` from path `fn` and load it as a `PIL Image`"
-        im = Image.fromarray(dcmread(fn).pixel_array)
+    def create(cls, fn:(Path,str,bytes), mode=None)->None:
+        "Open a `DICOM file` from path `fn` or bytes `fn` and load it as a `PIL Image`"
+        if isinstance(fn,bytes): im = Image.fromarray(pydicom.dcmread(pydicom.filebase.DicomBytesIO(fn)).pixel_array)
+        if isinstance(fn,Path): im = Image.fromarray(dcmread(fn).pixel_array)
         im.load()
         im = im._new(im.im)
         return cls(im.convert(mode) if mode else im)

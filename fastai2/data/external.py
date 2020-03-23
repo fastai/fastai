@@ -64,6 +64,7 @@ class URLs():
 
     S3_IMAGE    = f'{S3}imageclas/'
     S3_IMAGELOC = f'{S3}imagelocal/'
+    S3_AUDI     = f'{S3}audio/'
     S3_NLP      = f'{S3}nlp/'
     S3_COCO     = f'{S3}coco/'
     S3_MODEL    = f'{S3}modelzoo/'
