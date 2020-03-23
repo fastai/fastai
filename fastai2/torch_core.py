@@ -63,11 +63,11 @@ def show_titled_image(o, **kwargs):
 
 # Cell
 @delegates(subplots)
-def show_images(ims, nrows=1, titles=None, **kwargs):
+def show_images(ims, nrows=1, ncols=None, titles=None, **kwargs):
     "Show all images `ims` as subplots with `rows` using `titles`"
-    ncols = int(math.ceil(len(ims)/nrows))
+    if ncols is None: ncols = int(math.ceil(len(ims)/nrows))
     if titles is None: titles = [None]*len(ims)
-    axs = subplots(nrows,ncols,**kwargs)[1].flat
+    axs = subplots(nrows, ncols, **kwargs)[1].flat
     for im,t,ax in zip(ims, titles, axs): show_image(im, ax=ax, title=t)
 
 # Cell
