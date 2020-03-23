@@ -36,6 +36,7 @@ def mk_metric(m):
 # Cell
 def save_model(file, model, opt, with_opt=True, pickle_protocol=2):
     "Save `model` to `file` along with `opt` (if available, and if `with_opt`)"
+    if rank_distrib(): return # don't save if slave proc
     if opt is None: with_opt=False
     state = get_model(model).state_dict()
     if with_opt: state = {'model': state, 'opt':opt.state_dict()}
@@ -44,6 +45,7 @@ def save_model(file, model, opt, with_opt=True, pickle_protocol=2):
 # Cell
 def load_model(file, model, opt, with_opt=None, device=None, strict=True):
     "Load `model` from `file` along with `opt` (if available, and if `with_opt`)"
+    distrib_barrier()
     if isinstance(device, int): device = torch.device('cuda', device)
     elif device is None: device = 'cpu'
     state = torch.load(file, map_location=device)
@@ -259,7 +261,6 @@ class Learner():
 
     @delegates(save_model)
     def save(self, file, **kwargs):
-        if rank_distrib(): return # don't save if slave proc
         file = join_path_file(file, self.path/self.model_dir, ext='.pth')
         save_model(file, self.model, getattr(self,'opt',None), **kwargs)
 
@@ -267,7 +268,6 @@ class Learner():
     def load(self, file, with_opt=None, device=None, **kwargs):
         if device is None: device = self.dls.device
         if self.opt is None: self.create_opt()
-        distrib_barrier()
         file = join_path_file(file, self.path/self.model_dir, ext='.pth')
         load_model(file, self.model, self.opt, device=device, **kwargs)
         return self
@@ -515,6 +515,7 @@ def export(self:Learner, fname='export.pkl', pickle_protocol=2):
 # Cell
 def load_learner(fname, cpu=True):
     "Load a `Learner` object in `fname`, optionally putting it on the `cpu`"
+    distrib_barrier()
     res = torch.load(fname, map_location='cpu' if cpu else None)
     if hasattr(res, 'to_fp32'): res = res.to_fp32()
     if cpu: res.dls.cpu()
