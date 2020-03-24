@@ -2,7 +2,7 @@
 
 __all__ = ['CancelFitException', 'CancelEpochException', 'CancelTrainException', 'CancelValidException',
            'CancelBatchException', 'replacing_yield', 'mk_metric', 'save_model', 'load_model', 'Learner', 'Metric',
-           'AvgMetric', 'AvgLoss', 'AvgSmoothLoss', 'ValueMetric', 'Recorder', 'FetchPreds', 'load_learner']
+           'AvgMetric', 'AvgLoss', 'AvgSmoothLoss', 'ValueMetric', 'Recorder', 'load_learner']
 
 # Cell
 from .data.all import *
@@ -81,7 +81,7 @@ class Learner():
             loss_func = getattr(dls.train_ds, 'loss_func', None)
             assert loss_func is not None, "Could not infer loss function from the data, please pass a loss function."
         self.loss_func = loss_func
-        self.path = path if path is not None else getattr(dls, 'path', Path('.'))
+        self.path = Path(path) if path is not None else getattr(dls, 'path', Path('.'))
         self.add_cbs([(cb() if isinstance(cb, type) else cb) for cb in L(defaults.callbacks)+L(cbs)])
         self.model.to(self.dls.device)
         if hasattr(self.model, 'reset'): self.model.reset()
@@ -285,7 +285,7 @@ add_docs(Learner, "Group together a `model`, some `dls` and a `loss_func` to han
     ordered_cbs="Return a list of `Callback` for one step `cb_func` in the training loop",
     create_opt="Create an optimizer with `lr`",
     one_batch="Train or evaluate `self.model` on batch `(xb,yb)`",
-    all_batches="Train or evaluate `self.model` on all batches of `self.dl`",
+    all_batches="Train or evaluate `self.model` on all the batches of `self.dl`",
     fit="Fit `self.model` for `n_epoch` using `cbs`. Optionally `reset_opt`.",
     validate="Validate on `dl` with potential new `cbs`.",
     get_preds="Get the predictions and targets on the `ds_idx`-th dbunchset or `dl`, optionally `with_input` and `with_loss`",
@@ -296,7 +296,8 @@ add_docs(Learner, "Group together a `model`, some `dls` and a `loss_func` to han
     no_mbar="Context manager to temporarily prevent the master progress bar from being created",
     loss_not_reduced="A context manager to evaluate `loss_func` with reduction set to none.",
     save="Save model and optimizer state (if `with_opt`) to `self.path/self.model_dir/file`",
-    load="Load model and optimizer state (if `with_opt`) from `self.path/self.model_dir/file` using `device`"
+    load="Load model and optimizer state (if `with_opt`) from `self.path/self.model_dir/file` using `device`",
+    __call__="Call `event_name` for all `Callback`s in `self.cbs`"
 )
 
 # Cell
@@ -365,7 +366,7 @@ class AvgSmoothLoss(Metric):
 
 # Cell
 class ValueMetric(Metric):
-    "Use to include a pre-calculated metric value (e.g., a metric calculated in a `Callback` and returned in `func`)"
+    "Use to include a pre-calculated metric value (for insance calculated in a `Callback`) and returned by `func`"
     def __init__(self, func, metric_name=None): store_attr(self, 'func, metric_name')
 
     @property
@@ -462,20 +463,6 @@ add_docs(Recorder,
          plot_loss = "Plot the losses from `skip_start` and onward")
 
 defaults.callbacks = [TrainEvalCallback, Recorder]
-
-# Cell
-class FetchPreds(Callback):
-    "A callback to fetch predictions during the training loop"
-    remove_on_fetch = True
-    def __init__(self, ds_idx=1, dl=None, with_input=False, with_decoded=False, cbs=None):
-        self.cbs = L(cbs)
-        store_attr(self, 'ds_idx,dl,with_input,with_decoded')
-
-    def after_validate(self):
-        to_rm = L(cb for cb in self.learn.cbs if getattr(cb, 'remove_on_fetch', False))
-        with self.learn.removed_cbs(to_rm + self.cbs) as learn:
-            self.preds = learn.get_preds(ds_idx=self.ds_idx, dl=self.dl,
-                with_input=self.with_input, with_decoded=self.with_decoded, inner=True)
 
 # Cell
 @patch
