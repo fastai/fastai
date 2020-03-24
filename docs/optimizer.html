@@ -19,14 +19,23 @@ description: "Define the general fastai optimizer and the variants"
 -->
 
 <div class="container" id="notebook-container">
-    {% raw %}
         
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -40,9 +49,17 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -63,12 +80,24 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -90,6 +119,10 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -108,6 +141,8 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h3 id="Initializing-an-Optimizer">Initializing an Optimizer<a class="anchor-link" href="#Initializing-an-Optimizer"> </a></h3>
@@ -122,6 +157,8 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -142,6 +179,8 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><code>cbs</code> is a list of functions that will be composed when applying the step. For instance, you can compose a function making the SGD step, with another one applying weight decay. Additionally, each <code>cb</code> can have a <a href="https://fastcore.fast.ai/foundation#defaults"><code>defaults</code></a> attribute that contains hyper-parameters and their default value. Those are all gathered at initialization, and new values can be passed to override those defaults with the <a href="https://fastcore.fast.ai/foundation#defaults"><code>defaults</code></a> kwargs. The steppers will be called by <a href="/optimizer#Optimizer.step"><code>Optimizer.step</code></a> (which is the standard PyTorch name), and gradients can be cleared with <a href="/optimizer#Optimizer.zero_grad"><code>Optimizer.zero_grad</code></a> (also a standard PyTorch name).</p>
@@ -150,6 +189,8 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -181,6 +222,8 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>For each hyper-parameter, you can pass a slice or a collection to set them, if there are multiple parameter groups. A slice will be converted to a log-uniform collection from its beginning to its end, or if it only has an end <code>e</code>, to a collection of as many values as there are parameter groups that are <code>...,e/10,e/10,e</code>.</p>
@@ -189,6 +232,8 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -208,6 +253,8 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h3 id="Basic-steppers">Basic steppers<a class="anchor-link" href="#Basic-steppers"> </a></h3>
@@ -221,9 +268,15 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -244,6 +297,10 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -261,6 +318,10 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -277,9 +338,17 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -301,6 +370,10 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -317,9 +390,17 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -341,6 +422,10 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -357,6 +442,8 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>{% include warning.html content='Weight decay and L2 regularization is the same thing for basic SGD, but for more complex optimizers, they are very different.' %}</p>
@@ -370,6 +457,8 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -390,6 +479,8 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>This method will loop over all param groups, then all parameters for which <code>grad</code> is not None and call each function in <code>stepper</code>, passing it the parameter <code>p</code> with the hyper-parameters in the corresponding dict in <code>hypers</code>.</p>
@@ -397,6 +488,8 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -417,6 +510,10 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -434,6 +531,10 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -452,6 +553,10 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -470,6 +575,10 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -490,6 +599,10 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -506,6 +619,8 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Some of the <a href="/optimizer#Optimizer"><code>Optimizer</code></a> <code>cbs</code> can be functions updating the state associated with a parameter. That state can then be used by any stepper. The best example is a momentum calculation.</p>
@@ -513,6 +628,8 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -543,15 +660,23 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Statistics">Statistics<a class="anchor-link" href="#Statistics"> </a></h2>
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -573,6 +698,8 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><code>dampening=False</code> gives the classical formula for momentum in SGD:</p>
@@ -585,6 +712,8 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -610,9 +739,17 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -633,6 +770,8 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><code>dampening=False</code> gives the classical formula for momentum in SGD:</p>
@@ -645,6 +784,8 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -670,12 +811,16 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h3 id="Freezing-part-of-the-model">Freezing part of the model<a class="anchor-link" href="#Freezing-part-of-the-model"> </a></h3>
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -696,6 +841,10 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -716,6 +865,10 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -736,6 +889,10 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -762,6 +919,8 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Parameters such as batchnorm weights/bias can be marked to always be in training mode, just put <code>force_train=true</code> in their state.</p>
@@ -769,6 +928,8 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -788,12 +949,16 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h3 id="Serializing">Serializing<a class="anchor-link" href="#Serializing"> </a></h3>
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -814,6 +979,10 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -834,6 +1003,10 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -860,6 +1033,10 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -880,6 +1057,10 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -900,6 +1081,8 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Optimizers">Optimizers<a class="anchor-link" href="#Optimizers"> </a></h2>
@@ -912,9 +1095,15 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -936,9 +1125,17 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -960,6 +1157,8 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Optional weight decay of <code>wd</code> is applied, as true weight decay (decay the weights directly) if <code>decouple_wd=True</code> else as L2 regularization (add the decay to the gradients).</p>
@@ -967,6 +1166,8 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -987,6 +1188,10 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -1009,6 +1214,8 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Test weight decay, notice how we can see that L2 regularization is different from weight decay even for simple SGD with momentum.</p>
@@ -1016,6 +1223,8 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -1038,15 +1247,23 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h3 id="RMSProp">RMSProp<a class="anchor-link" href="#RMSProp"> </a></h3>
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -1068,9 +1285,17 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -1092,6 +1317,8 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>RMSProp was introduced by Geoffrey Hinton in his <a href="http://www.cs.toronto.edu/~tijmen/csc321/slides/lecture_slides_lec6.pdf">course</a>. What is named <code>sqr_mom</code> here is the <code>alpha</code> in the course. Optional weight decay of <code>wd</code> is applied, as true weight decay (decay the weights directly) if <code>decouple_wd=True</code> else as L2 regularization (add the decay to the gradients).</p>
@@ -1099,6 +1326,8 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -1120,6 +1349,10 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -1140,15 +1373,23 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h3 id="Adam">Adam<a class="anchor-link" href="#Adam"> </a></h3>
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -1170,6 +1411,10 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -1188,9 +1433,17 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -1211,9 +1464,17 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -1235,9 +1496,17 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -1259,6 +1528,8 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Adam was introduced by Diederik P. Kingma and Jimmy Ba in <a href="https://arxiv.org/abs/1412.6980">Adam: A Method for Stochastic Optimization</a>. For consistency accross optimizers, we renamed <code>beta1</code> and <code>beta2</code> in the paper to <code>mom</code> and  <code>sqr_mom</code>. Note that our defaults also differ from the paper (0.99 for <code>sqr_mom</code> or <code>beta2</code>, 1e-5 for <code>eps</code>). Those values seem to be better from our experiments in a wide range of situations.</p>
@@ -1268,6 +1539,8 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -1287,6 +1560,8 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h3 id="RAdam">RAdam<a class="anchor-link" href="#RAdam"> </a></h3>
@@ -1301,9 +1576,15 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -1325,9 +1606,17 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -1349,6 +1638,8 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>This is the effective correction apported to the adam step for 500 iterations in RAdam. We can see how it goes from 0 to 1, mimicking the effect of a warm-up.</p>
@@ -1356,6 +1647,8 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -1391,6 +1684,10 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -1421,6 +1718,8 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h3 id="QHAdam">QHAdam<a class="anchor-link" href="#QHAdam"> </a></h3>
@@ -1439,9 +1738,15 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -1462,9 +1767,17 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -1486,6 +1799,10 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -1506,15 +1823,23 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h3 id="LARS/LARC">LARS/LARC<a class="anchor-link" href="#LARS/LARC"> </a></h3>
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -1536,9 +1861,17 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -1560,9 +1893,17 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -1584,6 +1925,8 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>The LARS optimizer was first introduced in <a href="https://arxiv.org/abs/1708.03888">Large Batch Training of Convolutional Networks</a> then refined in its LARC variant (original LARS is with <code>clip=False</code>). A learning rate is computed for each individual layer with a certain <code>trust_coefficient</code>, then clipped to be always less than <code>lr</code>.</p>
@@ -1592,6 +1935,8 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -1613,6 +1958,10 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -1633,15 +1982,23 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h3 id="LAMB">LAMB<a class="anchor-link" href="#LAMB"> </a></h3>
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -1663,9 +2020,17 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -1687,6 +2052,8 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>LAMB was introduced in <a href="https://arxiv.org/abs/1904.00962">Large Batch Optimization for Deep Learning: Training BERT in 76 minutes</a>. Intuitively, it's LARC applied to Adam. As in <a href="/optimizer#Adam"><code>Adam</code></a>, we renamed <code>beta1</code> and <code>beta2</code> in the paper to <code>mom</code> and  <code>sqr_mom</code>. Note that our defaults also differ from the paper (0.99 for <code>sqr_mom</code> or <code>beta2</code>, 1e-5 for <code>eps</code>). Those values seem to be better from our experiments in a wide range of situations.</p>
@@ -1695,6 +2062,8 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -1711,6 +2080,8 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Lookahead was introduced by Zhang et al. in <a href="https://arxiv.org/abs/1907.08610">Lookahead Optimizer: k steps forward, 1 step back</a>. It can be run on top of any optimizer and consists in having the final weights of the model be a moving average. In practice, we update our model using the internal optimizer but keep a copy of old weights that and every <code>k</code> steps, we change the weghts by a moving average of the <em>fast weights</em> (the ones updated by the inner optimizer) with the <em>slow weights</em> (the copy of old weights). Those <em>slow weights</em> act like a stability mechanism.</p>
@@ -1718,9 +2089,15 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -1742,6 +2119,10 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -1763,9 +2144,17 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -1787,9 +2176,17 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -1810,6 +2207,10 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -1826,9 +2227,17 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -1849,6 +2258,10 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -1865,12 +2278,24 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -1892,6 +2317,10 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -1916,6 +2345,10 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -1944,6 +2377,10 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -1964,6 +2401,10 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -1996,6 +2437,10 @@ description: "Define the general fastai optimizer and the variants"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -2029,6 +2474,7 @@ description: "Define the general fastai optimizer and the variants"
 
 </div>
     {% endraw %}
+
 </div>
  
 

@@ -19,14 +19,23 @@ description: "Basic callbacks for Learner"
 -->
 
 <div class="container" id="notebook-container">
-    {% raw %}
         
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -40,15 +49,31 @@ description: "Basic callbacks for Learner"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -58,7 +83,7 @@ description: "Basic callbacks for Learner"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Callback" class="doc_header"><code>class</code> <code>Callback</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/core.py#L14" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Callback</code>() :: <a href="https://fastcore.fast.ai/foundation#GetAttr"><code>GetAttr</code></a></p>
+<h2 id="Callback" class="doc_header"><code>class</code> <code>Callback</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/core.py#L15" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Callback</code>() :: <a href="https://fastcore.fast.ai/foundation#GetAttr"><code>GetAttr</code></a></p>
 </blockquote>
 <p>Basic class handling tweaks of the training loop by changing a <a href="/13a_learner#Learner"><code>Learner</code></a> in various events</p>
 
@@ -70,6 +95,8 @@ description: "Basic callbacks for Learner"
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>The training loop is defined in <a href="/13a_learner#Learner"><code>Learner</code></a> a bit below and consists in a minimal set of instructions: looping through the data we:</p>
@@ -101,6 +128,8 @@ description: "Basic callbacks for Learner"
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -110,7 +139,7 @@ description: "Basic callbacks for Learner"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Callback.__call__" class="doc_header"><code>Callback.__call__</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/core.py#L19" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Callback.__call__</code>(<strong><code>event_name</code></strong>)</p>
+<h4 id="Callback.__call__" class="doc_header"><code>Callback.__call__</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/core.py#L20" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Callback.__call__</code>(<strong><code>event_name</code></strong>)</p>
 </blockquote>
 <p>Call <code>self.{event_name}</code> if it's defined</p>
 
@@ -122,6 +151,10 @@ description: "Basic callbacks for Learner"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -137,6 +170,10 @@ description: "Basic callbacks for Learner"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -146,7 +183,7 @@ description: "Basic callbacks for Learner"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="GetAttr.__getattr__" class="doc_header"><code>GetAttr.__getattr__</code><a href="https://github.com/fastai/fastcore/tree/master/fastcore/foundation.py#L219" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>GetAttr.__getattr__</code>(<strong><code>k</code></strong>)</p>
+<h4 id="GetAttr.__getattr__" class="doc_header"><code>GetAttr.__getattr__</code><a href="https://github.com/fastai/fastcore/tree/master/fastcore/foundation.py#L227" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>GetAttr.__getattr__</code>(<strong><code>k</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -157,6 +194,8 @@ description: "Basic callbacks for Learner"
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>This is a shortcut to avoid having to write <code>self.learn.bla</code> for any <code>bla</code> attribute we seek, and just write <code>self.bla</code>.</p>
@@ -164,6 +203,8 @@ description: "Basic callbacks for Learner"
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -184,6 +225,8 @@ description: "Basic callbacks for Learner"
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Note that it only works to get the value of the attribute, if you want to change it, you have to manually access it with <code>self.learn.bla</code>. In the example below, <code>self.a += 1</code> creates an <code>a</code> attribute of 2 in the callback instead of setting the <code>a</code> of the learner to 2. It also issues a warning that something is probably wrong:</p>
@@ -191,6 +234,8 @@ description: "Basic callbacks for Learner"
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -220,6 +265,10 @@ description: "Basic callbacks for Learner"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -255,6 +304,8 @@ description: "Basic callbacks for Learner"
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>A proper version needs to write <code>self.learn.a = self.a + 1</code>:</p>
@@ -262,6 +313,8 @@ description: "Basic callbacks for Learner"
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -281,6 +334,10 @@ description: "Basic callbacks for Learner"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -300,6 +357,10 @@ description: "Basic callbacks for Learner"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -315,9 +376,17 @@ description: "Basic callbacks for Learner"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -327,7 +396,7 @@ description: "Basic callbacks for Learner"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="TrainEvalCallback" class="doc_header"><code>class</code> <code>TrainEvalCallback</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/core.py#L37" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>TrainEvalCallback</code>() :: <a href="/callback.core#Callback"><code>Callback</code></a></p>
+<h3 id="TrainEvalCallback" class="doc_header"><code>class</code> <code>TrainEvalCallback</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/core.py#L38" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>TrainEvalCallback</code>() :: <a href="/callback.core#Callback"><code>Callback</code></a></p>
 </blockquote>
 <p><a href="/callback.core#Callback"><code>Callback</code></a> that tracks the number of iterations done and properly sets training/eval mode</p>
 
@@ -339,6 +408,8 @@ description: "Basic callbacks for Learner"
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>This <a href="/callback.core#Callback"><code>Callback</code></a> is automatically added in every <a href="/13a_learner#Learner"><code>Learner</code></a> at initialization.</p>
@@ -346,6 +417,8 @@ description: "Basic callbacks for Learner"
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -355,7 +428,7 @@ description: "Basic callbacks for Learner"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="TrainEvalCallback.begin_fit" class="doc_header"><code>TrainEvalCallback.begin_fit</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/core.py#L40" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>TrainEvalCallback.begin_fit</code>()</p>
+<h4 id="TrainEvalCallback.begin_fit" class="doc_header"><code>TrainEvalCallback.begin_fit</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/core.py#L41" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>TrainEvalCallback.begin_fit</code>()</p>
 </blockquote>
 <p>Set the iter and epoch counters to 0, put the model and the right device</p>
 
@@ -367,6 +440,10 @@ description: "Basic callbacks for Learner"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -376,7 +453,7 @@ description: "Basic callbacks for Learner"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="TrainEvalCallback.after_batch" class="doc_header"><code>TrainEvalCallback.after_batch</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/core.py#L45" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>TrainEvalCallback.after_batch</code>()</p>
+<h4 id="TrainEvalCallback.after_batch" class="doc_header"><code>TrainEvalCallback.after_batch</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/core.py#L46" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>TrainEvalCallback.after_batch</code>()</p>
 </blockquote>
 <p>Update the iter counter (in training mode)</p>
 
@@ -388,6 +465,10 @@ description: "Basic callbacks for Learner"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -397,7 +478,7 @@ description: "Basic callbacks for Learner"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="TrainEvalCallback.begin_train" class="doc_header"><code>TrainEvalCallback.begin_train</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/core.py#L50" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>TrainEvalCallback.begin_train</code>()</p>
+<h4 id="TrainEvalCallback.begin_train" class="doc_header"><code>TrainEvalCallback.begin_train</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/core.py#L51" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>TrainEvalCallback.begin_train</code>()</p>
 </blockquote>
 <p>Set the model in training mode</p>
 
@@ -409,6 +490,10 @@ description: "Basic callbacks for Learner"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -418,7 +503,7 @@ description: "Basic callbacks for Learner"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="TrainEvalCallback.begin_validate" class="doc_header"><code>TrainEvalCallback.begin_validate</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/core.py#L56" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>TrainEvalCallback.begin_validate</code>()</p>
+<h4 id="TrainEvalCallback.begin_validate" class="doc_header"><code>TrainEvalCallback.begin_validate</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/core.py#L57" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>TrainEvalCallback.begin_validate</code>()</p>
 </blockquote>
 <p>Set the model in validation mode</p>
 
@@ -430,12 +515,24 @@ description: "Basic callbacks for Learner"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -445,7 +542,7 @@ description: "Basic callbacks for Learner"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="GatherPredsCallback" class="doc_header"><code>class</code> <code>GatherPredsCallback</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/core.py#L66" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>GatherPredsCallback</code>(<strong><code>with_input</code></strong>=<em><code>False</code></em>, <strong><code>with_loss</code></strong>=<em><code>False</code></em>, <strong><code>save_preds</code></strong>=<em><code>None</code></em>, <strong><code>save_targs</code></strong>=<em><code>None</code></em>, <strong><code>concat_dim</code></strong>=<em><code>0</code></em>) :: <a href="/callback.core#Callback"><code>Callback</code></a></p>
+<h3 id="GatherPredsCallback" class="doc_header"><code>class</code> <code>GatherPredsCallback</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/core.py#L67" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>GatherPredsCallback</code>(<strong><code>with_input</code></strong>=<em><code>False</code></em>, <strong><code>with_loss</code></strong>=<em><code>False</code></em>, <strong><code>save_preds</code></strong>=<em><code>None</code></em>, <strong><code>save_targs</code></strong>=<em><code>None</code></em>, <strong><code>concat_dim</code></strong>=<em><code>0</code></em>) :: <a href="/callback.core#Callback"><code>Callback</code></a></p>
 </blockquote>
 <p><a href="/callback.core#Callback"><code>Callback</code></a> that saves the predictions and targets, optionally <code>with_loss</code></p>
 
@@ -457,6 +554,10 @@ description: "Basic callbacks for Learner"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -466,7 +567,7 @@ description: "Basic callbacks for Learner"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="GatherPredsCallback.begin_validate" class="doc_header"><code>GatherPredsCallback.begin_validate</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/core.py#L74" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>GatherPredsCallback.begin_validate</code>()</p>
+<h4 id="GatherPredsCallback.begin_validate" class="doc_header"><code>GatherPredsCallback.begin_validate</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/core.py#L75" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>GatherPredsCallback.begin_validate</code>()</p>
 </blockquote>
 <p>Initialize containers</p>
 
@@ -478,6 +579,10 @@ description: "Basic callbacks for Learner"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -487,7 +592,7 @@ description: "Basic callbacks for Learner"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="GatherPredsCallback.after_batch" class="doc_header"><code>GatherPredsCallback.after_batch</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/core.py#L80" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>GatherPredsCallback.after_batch</code>()</p>
+<h4 id="GatherPredsCallback.after_batch" class="doc_header"><code>GatherPredsCallback.after_batch</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/core.py#L81" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>GatherPredsCallback.after_batch</code>()</p>
 </blockquote>
 <p>Save predictions, targets and potentially losses</p>
 
@@ -499,6 +604,10 @@ description: "Basic callbacks for Learner"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -508,7 +617,7 @@ description: "Basic callbacks for Learner"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="GatherPredsCallback.after_validate" class="doc_header"><code>GatherPredsCallback.after_validate</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/core.py#L92" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>GatherPredsCallback.after_validate</code>()</p>
+<h4 id="GatherPredsCallback.after_validate" class="doc_header"><code>GatherPredsCallback.after_validate</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/core.py#L93" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>GatherPredsCallback.after_validate</code>()</p>
 </blockquote>
 <p>Concatenate all recorded tensors</p>
 
@@ -519,6 +628,74 @@ description: "Basic callbacks for Learner"
 </div>
 </div>
 
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h3 id="FetchPredsCallback" class="doc_header"><code>class</code> <code>FetchPredsCallback</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/core.py#L107" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>FetchPredsCallback</code>(<strong><code>ds_idx</code></strong>=<em><code>1</code></em>, <strong><code>dl</code></strong>=<em><code>None</code></em>, <strong><code>with_input</code></strong>=<em><code>False</code></em>, <strong><code>with_decoded</code></strong>=<em><code>False</code></em>, <strong><code>cbs</code></strong>=<em><code>None</code></em>) :: <a href="/callback.core#Callback"><code>Callback</code></a></p>
+</blockquote>
+<p>A callback to fetch predictions during the training loop</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>When writing a callback, the following attributes of <a href="/13a_learner#Learner"><code>Learner</code></a> are available:</p>
+<ul>
+<li><code>model</code>: the model used for training/validation</li>
+<li><a href="/data"><code>data</code></a>: the underlying <a href="/data.core#DataLoaders"><code>DataLoaders</code></a></li>
+<li><code>loss_func</code>: the loss function used</li>
+<li><code>opt</code>: the optimizer used to udpate the model parameters</li>
+<li><code>opt_func</code>: the function used to create the optimizer</li>
+<li><code>cbs</code>: the list containing all <a href="/callback.core#Callback"><code>Callback</code></a>s</li>
+<li><code>dl</code>: current <a href="/data.load#DataLoader"><code>DataLoader</code></a> used for iteration</li>
+<li><code>x</code>/<code>xb</code>: last input drawn from <code>self.dl</code> (potentially modified by callbacks). <code>xb</code> is always a tuple (potentially with one element) and <code>x</code> is detuplified. You can only assign to <code>xb</code>.</li>
+<li><code>y</code>/<code>yb</code>: last target drawn from <code>self.dl</code> (potentially modified by callbacks). <code>yb</code> is always a tuple (potentially with one element) and <code>y</code> is detuplified. You can only assign to <code>yb</code>.</li>
+<li><code>pred</code>: last predictions from <code>self.model</code> (potentially modified by callbacks)</li>
+<li><code>loss</code>: last computed loss (potentially modified by callbacks)</li>
+<li><code>n_epoch</code>: the number of epochs in this training</li>
+<li><code>n_iter</code>: the number of iterations in the current <code>self.dl</code></li>
+<li><code>epoch</code>: the current epoch index (from 0 to <code>n_epoch-1</code>)</li>
+<li><code>iter</code>: the current iteration index in <code>self.dl</code> (from 0 to <code>n_iter-1</code>)</li>
+</ul>
+<p>The following attributes are added by <a href="/callback.core#TrainEvalCallback"><code>TrainEvalCallback</code></a> and should be available unless you went out of your way to remove that callback:</p>
+<ul>
+<li><code>train_iter</code>: the number of training iterations done since the beginning of this training</li>
+<li><code>pct_train</code>: from 0. to 1., the percentage of training iterations completed</li>
+<li><code>training</code>:  flag to indicate if we're in training mode or not</li>
+</ul>
+<p>The following attribute is added by <a href="/13a_learner#Recorder"><code>Recorder</code></a> and should be available unless you went out of your way to remove that callback:</p>
+<ul>
+<li><code>smooth_loss</code>: an exponentially-averaged version of the training loss</li>
+</ul>
+
+</div>
+</div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -534,9 +711,15 @@ description: "Basic callbacks for Learner"
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -558,6 +741,10 @@ description: "Basic callbacks for Learner"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -579,6 +766,10 @@ description: "Basic callbacks for Learner"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -600,6 +791,10 @@ description: "Basic callbacks for Learner"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -621,6 +816,10 @@ description: "Basic callbacks for Learner"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -642,6 +841,8 @@ description: "Basic callbacks for Learner"
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>You can detect one of those exceptions occurred and add code that executes right after with the following events:</p>
@@ -656,12 +857,22 @@ description: "Basic callbacks for Learner"
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -683,6 +894,10 @@ description: "Basic callbacks for Learner"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -696,6 +911,8 @@ description: "Basic callbacks for Learner"
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Here's the full list: <em>begin_fit begin_epoch begin_train begin_batch after_pred after_loss after_backward after_step after_cancel_batch after_batch after_cancel_train after_train begin_validate after_cancel_validate after_validate after_cancel_epoch after_epoch after_cancel_fit after_fit</em>.</p>
@@ -703,7 +920,6 @@ description: "Basic callbacks for Learner"
 </div>
 </div>
 </div>
-    {% endraw %}
 </div>
  
 

@@ -6,6 +6,7 @@ __all__ = ['synth_dbunch', 'RegModel', 'synth_learner', 'VerboseCallback']
 from .data.all import *
 from .optimizer import *
 from .learner import *
+from .callback.core import *
 from torch.utils.data import TensorDataset
 
 # Cell
