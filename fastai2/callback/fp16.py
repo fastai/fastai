@@ -81,6 +81,7 @@ class MixedPrecision(Callback):
         self.loss_scale = max_loss_scale if dynamic else loss_scale
 
     def begin_fit(self):
+        assert self.dls.device.type == 'cuda', "Mixed-precision training requires a GPU, remove the call `to_fp16`"
         if self.learn.opt is None: self.learn.create_opt()
         self.model_pgs,self.master_pgs = get_master(self.opt, self.flat_master)
         self.old_pgs = self.opt.param_groups
