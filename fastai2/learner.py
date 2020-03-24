@@ -489,14 +489,14 @@ def export(self:Learner, fname='export.pkl', pickle_protocol=2):
     if rank_distrib(): return # don't export if slave proc
     old_dbunch = self.dls
     self.dls = self.dls.new_empty()
-    state = self.opt.state_dict()
+    state = self.opt.state_dict() if self.opt is not None else None
     self.opt = None
     with warnings.catch_warnings():
         #To avoid the warning that come from PyTorch about model not being checked
         warnings.simplefilter("ignore")
         torch.save(self, self.path/fname, pickle_protocol=pickle_protocol)
     self.create_opt()
-    self.opt.load_state_dict(state)
+    if state is not None: self.opt.load_state_dict(state)
     self.dls = old_dbunch
 
 # Cell
