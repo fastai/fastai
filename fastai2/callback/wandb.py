@@ -46,7 +46,7 @@ class WandbCallback(Callback):
             self.valid_dl = self.dls.test_dl(test_items, with_labels=True)
 
         if self.valid_dl:
-            self.learn.add_cb(FetchPreds(dl=self.valid_dl, with_input=True, with_decoded=True))
+            self.learn.add_cb(FetchPredsCallback(dl=self.valid_dl, with_input=True, with_decoded=True))
 
     def after_batch(self):
         "Log hyper-parameters and training loss"
