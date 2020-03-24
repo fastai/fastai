@@ -19,14 +19,23 @@ description: "Callback and utility functions to allow mixed precision training "
 -->
 
 <div class="container" id="notebook-container">
-    {% raw %}
         
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -40,6 +49,8 @@ description: "Callback and utility functions to allow mixed precision training "
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="A-little-bit-of-theory">A little bit of theory<a class="anchor-link" href="#A-little-bit-of-theory"> </a></h2>
@@ -104,9 +115,13 @@ so need a mechanism to get this dynamic loss scale larger if it's safe to do so.
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h3 id="Converting-the-model-to-FP16">Converting the model to FP16<a class="anchor-link" href="#Converting-the-model-to-FP16"> </a></h3>
@@ -120,6 +135,8 @@ so need a mechanism to get this dynamic loss scale larger if it's safe to do so.
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -145,6 +162,8 @@ so need a mechanism to get this dynamic loss scale larger if it's safe to do so.
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h3 id="Creating-the-master-copy-of-the-parameters">Creating the master copy of the parameters<a class="anchor-link" href="#Creating-the-master-copy-of-the-parameters"> </a></h3>
@@ -164,9 +183,15 @@ so need a mechanism to get this dynamic loss scale larger if it's safe to do so.
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -187,6 +212,8 @@ so need a mechanism to get this dynamic loss scale larger if it's safe to do so.
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h3 id="Copy-the-gradients-from-model-params-to-master-params">Copy the gradients from model params to master params<a class="anchor-link" href="#Copy-the-gradients-from-model-params-to-master-params"> </a></h3>
@@ -200,9 +227,15 @@ so need a mechanism to get this dynamic loss scale larger if it's safe to do so.
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -223,6 +256,8 @@ so need a mechanism to get this dynamic loss scale larger if it's safe to do so.
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h3 id="Copy-the-master-params-to-the-model-params">Copy the master params to the model params<a class="anchor-link" href="#Copy-the-master-params-to-the-model-params"> </a></h3>
@@ -236,9 +271,15 @@ so need a mechanism to get this dynamic loss scale larger if it's safe to do so.
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -259,6 +300,8 @@ so need a mechanism to get this dynamic loss scale larger if it's safe to do so.
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h3 id="Checking-for-overflow">Checking for overflow<a class="anchor-link" href="#Checking-for-overflow"> </a></h3>
@@ -272,9 +315,15 @@ so need a mechanism to get this dynamic loss scale larger if it's safe to do so.
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -295,6 +344,10 @@ so need a mechanism to get this dynamic loss scale larger if it's safe to do so.
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -311,6 +364,8 @@ so need a mechanism to get this dynamic loss scale larger if it's safe to do so.
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Then we can use it in the following function that checks for gradient overflow:</p>
@@ -318,9 +373,15 @@ so need a mechanism to get this dynamic loss scale larger if it's safe to do so.
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -341,9 +402,17 @@ so need a mechanism to get this dynamic loss scale larger if it's safe to do so.
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -364,12 +433,24 @@ so need a mechanism to get this dynamic loss scale larger if it's safe to do so.
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -391,9 +472,17 @@ so need a mechanism to get this dynamic loss scale larger if it's safe to do so.
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -415,9 +504,17 @@ so need a mechanism to get this dynamic loss scale larger if it's safe to do so.
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -427,7 +524,7 @@ so need a mechanism to get this dynamic loss scale larger if it's safe to do so.
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Learner.to_fp16" class="doc_header"><code>Learner.to_fp16</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/fp16.py#L138" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.to_fp16</code>(<strong>**<code>kwargs</code></strong>)</p>
+<h4 id="Learner.to_fp16" class="doc_header"><code>Learner.to_fp16</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/fp16.py#L139" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.to_fp16</code>(<strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -438,6 +535,10 @@ so need a mechanism to get this dynamic loss scale larger if it's safe to do so.
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -477,20 +578,20 @@ so need a mechanism to get this dynamic loss scale larger if it's safe to do so.
   <tbody>
     <tr>
       <td>0</td>
-      <td>18.546440</td>
-      <td>18.863026</td>
+      <td>17.273338</td>
+      <td>22.520248</td>
       <td>00:00</td>
     </tr>
     <tr>
       <td>1</td>
-      <td>18.422367</td>
-      <td>18.424599</td>
+      <td>17.132734</td>
+      <td>21.821676</td>
       <td>00:00</td>
     </tr>
     <tr>
       <td>2</td>
-      <td>18.185823</td>
-      <td>17.866203</td>
+      <td>16.810154</td>
+      <td>20.992403</td>
       <td>00:00</td>
     </tr>
   </tbody>
@@ -503,9 +604,17 @@ so need a mechanism to get this dynamic loss scale larger if it's safe to do so.
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -515,7 +624,7 @@ so need a mechanism to get this dynamic loss scale larger if it's safe to do so.
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Learner.to_fp32" class="doc_header"><code>Learner.to_fp32</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/fp16.py#L145" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.to_fp32</code>()</p>
+<h4 id="Learner.to_fp32" class="doc_header"><code>Learner.to_fp32</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/fp16.py#L146" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.to_fp32</code>()</p>
 </blockquote>
 
 </div>
@@ -527,6 +636,7 @@ so need a mechanism to get this dynamic loss scale larger if it's safe to do so.
 
 </div>
     {% endraw %}
+
 </div>
  
 
