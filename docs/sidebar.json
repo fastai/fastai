@@ -8,7 +8,8 @@
       "Beginners": {
         "Vision tutorial": "/tutorial.vision",
         "Text tutorial": "/tutorial.text",
-        "Tabular tutorial": "/tutorial.tabular"
+        "Tabular tutorial": "/tutorial.tabular",
+        "Collab tutorial": "/tutorial.collab"
       }
     },
     "empty1": {
