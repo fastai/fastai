@@ -81,7 +81,7 @@ class OptimWrapper():
         self._lr = self.set_val('lr', listify(val, self._lr))
 
     @property
-    def mom(self)->float:return self._mom[-1]
+    def mom(self)->float:return self._mom[-1] if self._mom is not None else None
     @mom.setter
     def mom(self, val:float)->None:
         if 'momentum' in self.opt_keys: self.set_val('momentum', listify(val, self._mom))
