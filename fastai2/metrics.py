@@ -108,7 +108,7 @@ def BrierScore(axis=-1, sample_weight=None, pos_label=None):
 def CohenKappa(axis=-1, labels=None, weights=None, sample_weight=None):
     "Cohen kappa for single-label classification problems"
     return skm_to_fastai(skm.cohen_kappa_score, axis=axis, labels=labels, weights=weights,
-                         sample_weight=sample_weight, pos_label=pos_label)
+                         sample_weight=sample_weight)
 
 # Cell
 def F1Score(axis=-1, labels=None, pos_label=1, average='binary', sample_weight=None):
@@ -123,10 +123,10 @@ def FBeta(beta, axis=-1, labels=None, pos_label=1, average='binary', sample_weig
                 beta=beta, labels=labels, pos_label=pos_label, average=average, sample_weight=sample_weight)
 
 # Cell
-def HammingLoss(axis=-1, labels=None, sample_weight=None):
-    "Cohen kappa for single-label classification problems"
+def HammingLoss(axis=-1, sample_weight=None):
+    "Hamming loss for single-label classification problems"
     return skm_to_fastai(skm.hamming_loss, axis=axis,
-                         labels=labels, sample_weight=sample_weight)
+                         sample_weight=sample_weight)
 
 # Cell
 def Jaccard(axis=-1, labels=None, pos_label=1, average='binary', sample_weight=None):
@@ -195,9 +195,9 @@ def FBetaMulti(beta, thresh=0.5, sigmoid=True, labels=None, pos_label=1, average
 
 # Cell
 def HammingLossMulti(thresh=0.5, sigmoid=True, labels=None, sample_weight=None):
-    "Cohen kappa for multi-label classification problems"
+    "Hamming loss for multi-label classification problems"
     return skm_to_fastai(skm.hamming_loss, thresh=thresh, sigmoid=sigmoid, flatten=False,
-                         labels=labels, sample_weight=sample_weight)
+                         sample_weight=sample_weight)
 
 # Cell
 def JaccardMulti(thresh=0.5, sigmoid=True, labels=None, pos_label=1, average='macro', sample_weight=None):
