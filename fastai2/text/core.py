@@ -276,7 +276,7 @@ class Tokenizer(Transform):
     def from_folder(cls, path, tok_func=SpacyTokenizer, rules=None, **kwargs):
         path = Path(path)
         output_dir = Path(ifnone(kwargs.get('output_dir'), path.parent/f'{path.name}_tok'))
-        if not output_dir.exists(): tokenize_folder(path, rules=rules, **kwargs)
+        if not output_dir.exists(): tokenize_folder(path, tok_func=tok_func, rules=rules, **kwargs)
         res = cls(get_tokenizer(tok_func, **kwargs), counter=(output_dir/fn_counter_pkl).load(),
                   lengths=(output_dir/fn_lengths_pkl).load(), rules=rules, mode='folder')
         res.path,res.output_dir = path,output_dir
