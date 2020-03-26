@@ -82,7 +82,8 @@ class DataBlock():
         if kwargs: raise TypeError(f'invalid keyword arguments: {", ".join(kwargs.keys())}')
         self.new(item_tfms, batch_tfms)
 
-    def _combine_type_tfms(self): return L([self.getters, self.type_tfms]).map_zip(lambda g,tt: L(g) + tt)
+    def _combine_type_tfms(self): return L([self.getters, self.type_tfms]).map_zip(
+        lambda g,tt: (g.fs if isinstance(g, Pipeline) else L(g)) + tt)
 
     def new(self, item_tfms=None, batch_tfms=None):
         self.item_tfms  = _merge_tfms(self.default_item_tfms,  item_tfms)
