@@ -54,6 +54,7 @@ class DataBlock():
     get_x=get_items=splitter=get_y = None
     blocks,dl_type = (TransformBlock,TransformBlock),TfmdDL
     _methods = 'get_items splitter get_y get_x'.split()
+    _msg = "If you wanted to compose several transforms in your getter don't forget to wrap them in a `Pipeline`."
     def __init__(self, blocks=None, dl_type=None, getters=None, n_inp=None, item_tfms=None, batch_tfms=None, **kwargs):
         blocks = L(self.blocks if blocks is None else blocks)
         blocks = L(b() if callable(b) else b for b in blocks)
@@ -70,12 +71,12 @@ class DataBlock():
         self.getters = ifnone(getters, [noop]*len(self.type_tfms))
         if self.get_x:
             if len(L(self.get_x)) != self.n_inp:
-                raise ValueError(f'get_x contains {len(L(self.get_x))} functions, but must contain {self.n_inp} (one for each input)')
+                raise ValueError(f'get_x contains {len(L(self.get_x))} functions, but must contain {self.n_inp} (one for each input)\n{self._msg}')
             self.getters[:self.n_inp] = L(self.get_x)
         if self.get_y:
             n_targs = len(self.getters) - self.n_inp
             if len(L(self.get_y)) != n_targs:
-                raise ValueError(f'get_y contains {len(L(self.get_y))} functions, but must contain {n_targs} (one for each target)')
+                raise ValueError(f'get_y contains {len(L(self.get_y))} functions, but must contain {n_targs} (one for each target)\n{self._msg}')
             self.getters[self.n_inp:] = L(self.get_y)
 
         if kwargs: raise TypeError(f'invalid keyword arguments: {", ".join(kwargs.keys())}')
