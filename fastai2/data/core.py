@@ -272,7 +272,7 @@ class Datasets(FilteredBase):
     def __init__(self, items=None, tfms=None, tls=None, n_inp=None, dl_type=None, **kwargs):
         super().__init__(dl_type=dl_type)
         self.tls = L(tls if tls else [TfmdLists(items, t, **kwargs) for t in L(ifnone(tfms,[None]))])
-        self.n_inp = (1 if len(self.tls)==1 else len(self.tls)-1) if n_inp is None else n_inp
+        self.n_inp = ifnone(n_inp, max(1, len(self.tls)-1))
 
     def __getitem__(self, it):
         res = tuple([tl[it] for tl in self.tls])
