@@ -34,7 +34,7 @@ entries:
       - output: web
         subfolderitems:
         - output: web,pdf
-          title: Data block examples
+          title: Data block tutorial
           url: /tutorial.datablock
         - output: web,pdf
           title: Imagenette tutorial
