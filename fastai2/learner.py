@@ -229,8 +229,9 @@ class Learner():
     def predict(self, item, rm_type_tfms=None, with_input=False):
         dl = self.dls.test_dl([item], rm_type_tfms=rm_type_tfms)
         inp,preds,_,dec_preds = self.get_preds(dl=dl, with_input=True, with_decoded=True)
-        dec = self.dls.decode_batch((*tuplify(inp),*tuplify(dec_preds)))[0]
         i = getattr(self.dls, 'n_inp', -1)
+        inp = (inp,) if i==1 else tuplify(inp)
+        dec = self.dls.decode_batch(inp + tuplify(dec_preds))[0]
         dec_inp,dec_targ = map(detuplify, [dec[:i],dec[i:]])
         res = dec_targ,dec_preds[0],preds[0]
         if with_input: res = (dec_inp,) + res
