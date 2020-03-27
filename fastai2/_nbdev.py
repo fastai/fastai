@@ -559,6 +559,9 @@ index = {"subplots": "00_torch_core.ipynb",
          "Learner.to_fp32": "18_callback.fp16.ipynb",
          "ShortEpochCallback": "18a_callback.training.ipynb",
          "GradientAccumulation": "18a_callback.training.ipynb",
+         "set_bn_eval": "18a_callback.training.ipynb",
+         "BnFreeze": "18a_callback.training.ipynb",
+         "bn_types": "18a_callback.training.ipynb",
          "reduce_loss": "19_callback.mixup.ipynb",
          "MixUp": "19_callback.mixup.ipynb",
          "Interpretation": "20_interpret.ipynb",
@@ -792,8 +795,4 @@ doc_url = "https://dev.fast.ai/"
 
 git_url = "https://github.com/fastai/fastai2/tree/master/"
 
-def custom_doc_links(name):
-    from nbdev.showdoc import try_external_doc_link
-    from ._pytorch_doc import pytorch_doc_link
-    l = try_external_doc_link(name, ['fastcore', 'nbdev'])
-    return pytorch_doc_link(name) if l is None else l
+def custom_doc_links(name): return None
