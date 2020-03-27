@@ -14,7 +14,7 @@
     },
     "empty1": {
       "Intermediate": {
-        "Data block examples": "/tutorial.datablock",
+        "Data block tutorial": "/tutorial.datablock",
         "Imagenette tutorial": "/tutorial.imagenette",
         "Pets tutorial": "/tutorial.pets",
         "Wikitext tutorial": "/tutorial.wikitext"
