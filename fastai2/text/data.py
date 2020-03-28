@@ -93,8 +93,9 @@ class LMDataLoader(TfmdDL):
         return LMTensorText(txt[:-1]),txt[1:]
 
     @delegates(TfmdDL.new)
-    def new(self, dataset=None, seq_len=72, **kwargs):
+    def new(self, dataset=None, seq_len=None, **kwargs):
         lens = self.lens.coll if dataset is None else None
+        seq_len = self.seq_len if seq_len is None else seq_len
         return super().new(dataset=dataset, lens=lens, seq_len=seq_len, **kwargs)
 
 # Cell
