@@ -60,7 +60,7 @@ def basic_generator(out_size, n_channels, in_sz=100, n_features=64, n_extra_laye
     return nn.Sequential(*layers)
 
 # Cell
-_conv_args = dict(act_cls=partial(nn.LeakyReLU, negative_slope=0.2), norm_type=NormType.Spectral)
+_conv_args = dict(act_cls = partial(nn.LeakyReLU, negative_slope=0.2), norm_type=NormType.Spectral)
 
 def _conv(ni, nf, ks=3, stride=1, self_attention=False, **kwargs):
     if self_attention: kwargs['xtra'] = SelfAttention(nf)
