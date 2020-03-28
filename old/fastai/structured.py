@@ -1,7 +1,8 @@
 from .imports import *
 
 from sklearn_pandas import DataFrameMapper
-from sklearn.preprocessing import LabelEncoder, Imputer, StandardScaler
+from sklearn.preprocessing import LabelEncoder, StandardScaler
+from sklearn.impute._base import SimpleImputer as Imputer
 from pandas.api.types import is_string_dtype, is_numeric_dtype, is_categorical_dtype
 from sklearn.ensemble import forest
 from sklearn.tree import export_graphviz
