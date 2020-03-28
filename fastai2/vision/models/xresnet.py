@@ -21,7 +21,7 @@ def init_cnn(m):
 # Cell
 class XResNet(nn.Sequential):
     @delegates(ResBlock)
-    def __init__(self, block, expansion, layers, p=0.0, c_in=3, c_out=1000, stem_szs=(32,32,64),
+    def __init__(self, block, expansion, layers, p=0.0, c_in=3, n_out=1000, stem_szs=(32,32,64),
                  widen=1.0, sa=False, act_cls=defaults.activation, **kwargs):
         store_attr(self, 'block,expansion,act_cls')
         stem_szs = [c_in, *stem_szs]
@@ -36,7 +36,7 @@ class XResNet(nn.Sequential):
             *stem, nn.MaxPool2d(kernel_size=3, stride=2, padding=1),
             *blocks,
             nn.AdaptiveAvgPool2d(1), Flatten(), nn.Dropout(p),
-            nn.Linear(block_szs[-1]*expansion, c_out),
+            nn.Linear(block_szs[-1]*expansion, n_out),
         )
         init_cnn(self)
 
