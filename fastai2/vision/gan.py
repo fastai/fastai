@@ -60,7 +60,7 @@ def basic_generator(out_size, n_channels, in_sz=100, n_features=64, n_extra_laye
     return nn.Sequential(*layers)
 
 # Cell
-_conv_args = dict(act_cls = partial(nn.LeakyReLU, negative_slope=0.2), norm_type=NormType.Spectral)
+_conv_args = dict(act_cls=partial(nn.LeakyReLU, negative_slope=0.2), norm_type=NormType.Spectral)
 
 def _conv(ni, nf, ks=3, stride=1, self_attention=False, **kwargs):
     if self_attention: kwargs['xtra'] = SelfAttention(nf)
@@ -263,15 +263,15 @@ def generate_noise(fn, size=100): return cast(torch.randn(size), InvisibleTensor
 
 # Cell
 @typedispatch
-def show_batch(x:InvisibleTensor, y:TensorImage, samples, ctxs=None, max_n=10, rows=None, cols=None, figsize=None, **kwargs):
-    if ctxs is None: ctxs = get_grid(min(len(samples), max_n), rows=rows, cols=cols, figsize=figsize)
+def show_batch(x:InvisibleTensor, y:TensorImage, samples, ctxs=None, max_n=10, nrows=None, ncols=None, figsize=None, **kwargs):
+    if ctxs is None: ctxs = get_grid(min(len(samples), max_n), nrows=nrows, ncols=ncols, figsize=figsize)
     ctxs = show_batch[object](x, y, samples, ctxs=ctxs, max_n=max_n, **kwargs)
     return ctxs
 
 # Cell
 @typedispatch
-def show_results(x:InvisibleTensor, y:TensorImage, samples, outs, ctxs=None, max_n=10, rows=None, cols=None, figsize=None, **kwargs):
-    if ctxs is None: ctxs = get_grid(min(len(samples), max_n), rows=rows, cols=cols, add_vert=1, figsize=figsize)
+def show_results(x:InvisibleTensor, y:TensorImage, samples, outs, ctxs=None, max_n=10, nrows=None, ncols=None, figsize=None, **kwargs):
+    if ctxs is None: ctxs = get_grid(min(len(samples), max_n), nrows=nrows, ncols=ncols, add_vert=1, figsize=figsize)
     ctxs = [b.show(ctx=c, **kwargs) for b,c,_ in zip(outs.itemgot(0),ctxs,range(max_n))]
     return ctxs
 
