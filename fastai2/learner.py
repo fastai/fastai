@@ -119,7 +119,7 @@ class Learner():
         yield self
         self.add_cbs(cbs)
 
-    def ordered_cbs(self, cb_func): return [cb for cb in sort_by_run(self.cbs) if hasattr(cb, cb_func)]
+    def ordered_cbs(self, event): return [cb for cb in sort_by_run(self.cbs) if hasattr(cb, event)]
 
     def __call__(self, event_name): L(event_name).map(self._call_one)
     def _call_one(self, event_name):
@@ -283,15 +283,15 @@ add_docs(Learner, "Group together a `model`, some `dls` and a `loss_func` to han
     remove_cb="Add `cb` from the list of `Callback` and deregister `self` as their learner",
     added_cbs="Context manage that temporarily adds `cbs`",
     removed_cbs="Context manage that temporarily removes `cbs`",
-    ordered_cbs="Return a list of `Callback` for one step `cb_func` in the training loop",
-    create_opt="Create an optimizer with `lr`",
+    ordered_cbs="Return the list of `Callback`, in order, for an `event` in the training loop",
+    create_opt="Create an optimizer with default hyper-parameters",
     one_batch="Train or evaluate `self.model` on batch `(xb,yb)`",
     all_batches="Train or evaluate `self.model` on all the batches of `self.dl`",
     fit="Fit `self.model` for `n_epoch` using `cbs`. Optionally `reset_opt`.",
     validate="Validate on `dl` with potential new `cbs`.",
     get_preds="Get the predictions and targets on the `ds_idx`-th dbunchset or `dl`, optionally `with_input` and `with_loss`",
     predict="Return the prediction on `item`, fully decoded, loss function decoded and probabilities",
-    show_results="Show some predictions on `ds_idx`-th dbunchset or `dl`",
+    show_results="Show some predictions on `ds_idx`-th dataset or `dl`",
     show_training_loop="Show each step in the training loop",
     no_logging="Context manager to temporarily remove `logger`",
     no_mbar="Context manager to temporarily prevent the master progress bar from being created",
