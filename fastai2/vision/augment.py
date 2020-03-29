@@ -639,7 +639,7 @@ class LightingTfm(RandTransform):
     def __init__(self, fs): self.fs=L(fs)
     def before_call(self, b, split_idx):
         self.do = True
-        if isinstance(b, tuple): b = b[0]
+        while isinstance(b, tuple): b = b[0]
         for t in self.fs: t.before_call(b)
 
     def compose(self, tfm):
