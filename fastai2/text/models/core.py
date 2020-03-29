@@ -100,10 +100,11 @@ def masked_concat_pool(output, mask, bptt):
 # Cell
 class PoolingLinearClassifier(Module):
     "Create a linear classifier with pooling"
-    def __init__(self, dims, ps, bptt):
+    def __init__(self, dims, ps, bptt, y_range=None):
         if len(ps) != len(dims)-1: raise ValueError("Number of layers and dropout values do not match.")
         acts = [nn.ReLU(inplace=True)] * (len(dims) - 2) + [None]
         layers = [LinBnDrop(i, o, p=p, act=a) for i,o,p,a in zip(dims[:-1], dims[1:], ps, acts)]
+        if y_range is not None: layers.append(SigmoidRange(*y_range))
         self.layers = nn.Sequential(*layers)
         self.bptt = bptt
 
@@ -115,7 +116,7 @@ class PoolingLinearClassifier(Module):
 
 # Cell
 def get_text_classifier(arch, vocab_sz, n_class, seq_len=72, config=None, drop_mult=1., lin_ftrs=None,
-                        ps=None, pad_idx=1, max_len=72*20):
+                        ps=None, pad_idx=1, max_len=72*20, y_range=None):
     "Create a text classifier from `arch` and its `config`, maybe `pretrained`"
     meta = _model_meta[arch]
     config = ifnone(config, meta['config_clas']).copy()
@@ -127,5 +128,5 @@ def get_text_classifier(arch, vocab_sz, n_class, seq_len=72, config=None, drop_m
     ps = [config.pop('output_p')] + ps
     init = config.pop('init') if 'init' in config else None
     encoder = SentenceEncoder(seq_len, arch(vocab_sz, **config), pad_idx=pad_idx, max_len=max_len)
-    model = SequentialRNN(encoder, PoolingLinearClassifier(layers, ps, bptt=seq_len))
+    model = SequentialRNN(encoder, PoolingLinearClassifier(layers, ps, bptt=seq_len, y_range=y_range))
     return model if init is None else model.apply(init)

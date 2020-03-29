@@ -171,6 +171,7 @@ def cnn_learner(dls, arch, loss_func=None, pretrained=True, cut=None, splitter=N
     if n_out is None: n_out = get_c(dls)
     assert n_out, "`n_out` is not defined, and could not be infered from data, set `dls.c` or pass `n_out`"
     if normalize: _add_norm(dls, meta, pretrained)
+    if y_range is None and 'y_range' in config: y_range = config.pop('y_range')
     model = create_cnn_model(arch, n_out, ifnone(cut, meta['cut']), pretrained, y_range=y_range, **config)
     learn = Learner(dls, model, loss_func=loss_func, splitter=ifnone(splitter, meta['split']), **kwargs)
     if pretrained: learn.freeze()
