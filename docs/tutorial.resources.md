@@ -69,7 +69,7 @@ learn.purge()
 ```
 which removes any of the `Learner` guts that are no longer needed and reloads the model on GPU, which also helps to reduce [memory fragmentation](/dev/gpu.html#gpu-ram-fragmentation). Therefore, whenever you need the no longer memory purges, this is the way to do it.
 
-Furthermore, the purging functionality is included in `learn.load` and is performed by default. You can override the default behavior of it not to purge with `purge=False` argument).
+Furthermore, the purging functionality is included in `learn.load` if you pass `purge=True`.
 
 So instead of needing to do:
 
