@@ -1648,7 +1648,7 @@ summary: "Learner class and training loop"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="_learner_distributed" class="doc_header"><code>to_distributed</code><a href="https://github.com/fastai/fastai/blob/master/fastai/distributed.py#L71" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#_learner_distributed-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>to_distributed</code>(<strong><code>learn</code></strong>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <strong><code>cuda_id</code></strong>:<code>int</code>, <strong><code>cache_dir</code></strong>:<code>PathOrStr</code>=<strong><em><code>'tmp'</code></em></strong>)</p>
+<h4 id="_learner_distributed" class="doc_header"><code>to_distributed</code><a href="https://github.com/fastai/fastai/blob/master/fastai/distributed.py#L72" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#_learner_distributed-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>to_distributed</code>(<strong><code>learn</code></strong>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <strong><code>cuda_id</code></strong>:<code>int</code>, <strong><code>cache_dir</code></strong>:<code>PathOrStr</code>=<strong><em><code>'tmp'</code></em></strong>)</p>
 </blockquote>
 <div class="collapse" id="_learner_distributed-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#_learner_distributed-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>_learner_distributed</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Put <code>learn</code> on distributed training with <code>cuda_id</code>.</p>
 
@@ -1669,7 +1669,7 @@ summary: "Learner class and training loop"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="_learner_parallel" class="doc_header"><code>to_parallel</code><a href="https://github.com/fastai/fastai/blob/master/fastai/distributed.py#L65" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#_learner_parallel-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>to_parallel</code>(<strong><code>learn</code></strong>:<a href="/basic_train.html#Learner"><code>Learner</code></a>)</p>
+<h4 id="_learner_parallel" class="doc_header"><code>to_parallel</code><a href="https://github.com/fastai/fastai/blob/master/fastai/distributed.py#L66" class="source_link" style="float:right">[source]</a><a class="source_link" data-toggle="collapse" data-target="#_learner_parallel-pytest" style="float:right; padding-right:10px">[test]</a></h4><blockquote><p><code>to_parallel</code>(<strong><code>learn</code></strong>:<a href="/basic_train.html#Learner"><code>Learner</code></a>)</p>
 </blockquote>
 <div class="collapse" id="_learner_parallel-pytest"><div class="card card-body pytest_card"><a type="button" data-toggle="collapse" data-target="#_learner_parallel-pytest" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a><p>No tests found for <code>_learner_parallel</code>. To contribute a test please refer to <a href="/dev/test.html">this guide</a> and <a href="https://forums.fast.ai/t/improving-expanding-functional-tests/32929">this discussion</a>.</p></div></div><p>Use nn.DataParallel when training and remove when done</p>
 
@@ -2170,7 +2170,7 @@ Total non-trainable params: 11,166,912</code></pre>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>This method only works after <code>save</code> (don't confuse with <code>export</code>/<a href="/basic_train.html#load_learner"><code>load_learner</code></a> pair).</p>
-<p>If the <code>purge</code> argument is <code>True</code> (default) <code>load</code> internally calls <code>purge</code> with <code>clear_opt=False</code> to presever <code>learn.opt</code>.</p>
+<p>If the <code>purge</code> argument is <code>True</code>, <code>load</code> internally calls <code>purge</code> with <code>clear_opt=False</code> to presever <code>learn.opt</code>.</p>
 
 </div>
 </div>
