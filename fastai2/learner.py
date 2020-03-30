@@ -463,8 +463,8 @@ add_docs(Recorder,
          after_cancel_validate = "Ignore validation metrics for this epoch",
          plot_loss = "Plot the losses from `skip_start` and onward")
 
-if not hasattr(defaults, 'callbacks'): defaults.callbacks = [TrainEvalC]
-if Recorder not in defaults.callbacks: defaults.callbacks.append(Recorder)
+if not hasattr(defaults, 'callbacks'): defaults.callbacks = [TrainEvalCallback, Recorder]
+elif Recorder not in defaults.callbacks: defaults.callbacks.append(Recorder)
 
 # Cell
 @patch
