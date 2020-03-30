@@ -112,7 +112,7 @@ dep_groups = {
         typing
 """),
     'text':   to_list("""
-        spacy>=2.0.18
+        spacy>=2.0.18; python_version<'3.8'
 """),
     'vision': to_list("""
         torchvision
