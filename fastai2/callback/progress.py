@@ -67,7 +67,7 @@ def no_bar(self:Learner):
 # Cell
 class ShowGraphCallback(Callback):
     "Update a graph of training and validation loss"
-    run_after=ProgressCallback
+    run_after,run_valid=ProgressCallback,False
 
     def begin_fit(self):
         self.run = not hasattr(self.learn, 'lr_finder') and not hasattr(self, "gather_preds")
