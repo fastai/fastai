@@ -208,12 +208,14 @@ class TfmdLists(FilteredBase, L, GetAttr):
         if isinstance(tfms,TfmdLists): tfms = tfms.tfms
         if isinstance(tfms,Pipeline): do_setup=False
         self.tfms = Pipeline(tfms, split_idx=split_idx)
-        self.types = types
+        store_attr(self, 'types,split_idx')
         if do_setup:
             pv(f"Setting up {self.tfms}", verbose)
             self.setup(train_setup=train_setup)
 
-    def _new(self, items, **kwargs): return super()._new(items, tfms=self.tfms, do_setup=False, types=self.types, **kwargs)
+    def _new(self, items, split_idx=None, **kwargs):
+        split_idx = ifnone(split_idx,self.split_idx)
+        return super()._new(items, tfms=self.tfms, do_setup=False, types=self.types, split_idx=split_idx, **kwargs)
     def subset(self, i): return self._new(self._get(self.splits[i]), split_idx=i)
     def _after_item(self, o): return self.tfms(o)
     def __repr__(self): return f"{self.__class__.__name__}: {self.items}\ntfms - {self.tfms.fs}"
