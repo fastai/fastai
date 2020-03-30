@@ -60,7 +60,7 @@ class TrainEvalCallback(Callback):
         self.learn.training=False
 
 # Cell
-defaults.callbacks = [TrainEvalCallback]
+if not hasattr(defaults, 'callbacks'): defaults.callbacks = [TrainEvalCallback]
 
 # Cell
 #TODO: save_targs and save_preds only handle preds/targets that have one tensor, not tuples of tensors.

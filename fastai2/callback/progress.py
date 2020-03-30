@@ -52,7 +52,8 @@ class ProgressCallback(Callback):
                  after_batch="Update the current progress bar",
                  after_fit="Close the master bar")
 
-defaults.callbacks = [TrainEvalCallback, Recorder, ProgressCallback]
+if not hasattr(defaults, 'callbacks'): defaults.callbacks = [TrainEvalCallback, Recorder, ProgressCallback]
+elif ProgressCallback not in defaults.callbacks: defaults.callbacks.append(ProgressCallback)
 
 # Cell
 @patch
