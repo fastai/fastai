@@ -86,10 +86,14 @@ class TfmdDL(DataLoader):
         if not is_listy(b): b,its = [b],L((o,) for o in its)
         return detuplify(b[:self.n_inp]),detuplify(b[self.n_inp:]),its
 
-    def show_batch(self, b=None, max_n=9, ctxs=None, show=True, **kwargs):
+    def show_batch(self, b=None, max_n=9, ctxs=None, show=True, unique=False, **kwargs):
+        if unique:
+            old_get_idxs = self.get_idxs
+            self.get_idxs = lambda: Inf.zeros
         if b is None: b = self.one_batch()
         if not show: return self._pre_show_batch(b, max_n=max_n)
         show_batch(*self._pre_show_batch(b, max_n=max_n), ctxs=ctxs, max_n=max_n, **kwargs)
+        if unique: self.get_idxs = old_get_idxs
 
     def show_results(self, b, out, max_n=9, ctxs=None, show=True, **kwargs):
         x,y,its = self.show_batch(b, max_n=max_n, show=False)
