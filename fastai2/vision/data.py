@@ -86,7 +86,7 @@ class ImageDataLoaders(DataLoaders):
         splitter = GrandparentSplitter(train_name=train, valid_name=valid) if valid_pct is None else RandomSplitter(valid_pct, seed=seed)
         get_items = get_image_files if valid_pct else partial(get_image_files, folders=[train, valid])
         dblock = DataBlock(blocks=(ImageBlock, CategoryBlock(vocab=vocab)),
-                           get_items=get_image_files,
+                           get_items=get_items,
                            splitter=splitter,
                            get_y=parent_label,
                            item_tfms=item_tfms,
