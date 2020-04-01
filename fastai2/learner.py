@@ -227,7 +227,7 @@ class Learner():
             return tuple(res)
 
     def predict(self, item, rm_type_tfms=None, with_input=False):
-        dl = self.dls.test_dl([item], rm_type_tfms=rm_type_tfms)
+        dl = self.dls.test_dl([item], rm_type_tfms=rm_type_tfms, num_workers=0)
         inp,preds,_,dec_preds = self.get_preds(dl=dl, with_input=True, with_decoded=True)
         i = getattr(self.dls, 'n_inp', -1)
         inp = (inp,) if i==1 else tuplify(inp)
