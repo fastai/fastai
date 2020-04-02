@@ -11,8 +11,11 @@ from .load import *
 @typedispatch
 def show_batch(x, y, samples, ctxs=None, max_n=9, **kwargs):
     if ctxs is None: ctxs = Inf.nones
-    for i in range_of(samples[0]):
-        ctxs = [b.show(ctx=c, **kwargs) for b,c,_ in zip(samples.itemgot(i),ctxs,range(max_n))]
+    if hasattr(samples[0], 'show'):
+        ctxs = [s.show(ctx=c, **kwargs) for s,c,_ in zip(samples,ctxs,range(max_n))]
+    else:
+        for i in range_of(samples[0]):
+            ctxs = [b.show(ctx=c, **kwargs) for b,c,_ in zip(samples.itemgot(i),ctxs,range(max_n))]
     return ctxs
 
 # Cell
