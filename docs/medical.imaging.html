@@ -41,7 +41,7 @@ description: "Helpers for working with DICOM files"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">nbdev.showdoc</span> <span class="kn">import</span> <span class="o">*</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">nbdev.showdoc</span> <span class="k">import</span> <span class="o">*</span>
 <span class="n">matplotlib</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;image.cmap&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;bone&#39;</span>
 </pre></div>
 
@@ -616,7 +616,7 @@ directly.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="show" class="doc_header"><code>show</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/medical/imaging.py#L150" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>show</code>(<strong><code>scale</code></strong>=<em><code>True</code></em>, <strong><code>cmap</code></strong>=<em><code>&lt;matplotlib.colors.LinearSegmentedColormap object at 0x7f7380990110&gt;</code></em>, <strong><code>min_px</code></strong>=<em><code>-1100</code></em>, <strong><code>max_px</code></strong>=<em><code>None</code></em>, <strong><code>ax</code></strong>=<em><code>None</code></em>, <strong><code>figsize</code></strong>=<em><code>None</code></em>, <strong><code>title</code></strong>=<em><code>None</code></em>, <strong><code>ctx</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="show" class="doc_header"><code>show</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/medical/imaging.py#L150" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>show</code>(<strong><code>scale</code></strong>=<em><code>True</code></em>, <strong><code>cmap</code></strong>=<em><code>&lt;matplotlib.colors.LinearSegmentedColormap object at 0x7fd4fdfe1cc0&gt;</code></em>, <strong><code>min_px</code></strong>=<em><code>-1100</code></em>, <strong><code>max_px</code></strong>=<em><code>None</code></em>, <strong><code>ax</code></strong>=<em><code>None</code></em>, <strong><code>figsize</code></strong>=<em><code>None</code></em>, <strong><code>title</code></strong>=<em><code>None</code></em>, <strong><code>ctx</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 
 </div>
@@ -813,7 +813,7 @@ directly.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Tensor.mask_from_blur" class="doc_header"><code>Tensor.mask_from_blur</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/medical/imaging.py#L183" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Tensor.mask_from_blur</code>(<strong><code>x</code></strong>:<a href="https://pytorch.org/docs/stable/tensors.html"><code>Tensor</code></a>, <strong><code>window</code></strong>, <strong><code>sigma</code></strong>=<em><code>0.3</code></em>, <strong><code>thresh</code></strong>=<em><code>0.05</code></em>, <strong><code>remove_max</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="Tensor.mask_from_blur" class="doc_header"><code>Tensor.mask_from_blur</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/medical/imaging.py#L183" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Tensor.mask_from_blur</code>(<strong><code>x</code></strong>:<code>Tensor</code>, <strong><code>window</code></strong>, <strong><code>sigma</code></strong>=<em><code>0.3</code></em>, <strong><code>thresh</code></strong>=<em><code>0.05</code></em>, <strong><code>remove_max</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 
 </div>
@@ -1011,7 +1011,7 @@ directly.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Tensor.to_nchan" class="doc_header"><code>Tensor.to_nchan</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/medical/imaging.py#L238" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Tensor.to_nchan</code>(<strong><code>x</code></strong>:<a href="https://pytorch.org/docs/stable/tensors.html"><code>Tensor</code></a>, <strong><code>wins</code></strong>, <strong><code>bins</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="Tensor.to_nchan" class="doc_header"><code>Tensor.to_nchan</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/medical/imaging.py#L238" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Tensor.to_nchan</code>(<strong><code>x</code></strong>:<code>Tensor</code>, <strong><code>wins</code></strong>, <strong><code>bins</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 
 </div>
@@ -1073,7 +1073,7 @@ directly.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Tensor.to_3chan" class="doc_header"><code>Tensor.to_3chan</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/medical/imaging.py#L251" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Tensor.to_3chan</code>(<strong><code>x</code></strong>:<a href="https://pytorch.org/docs/stable/tensors.html"><code>Tensor</code></a>, <strong><code>win1</code></strong>, <strong><code>win2</code></strong>, <strong><code>bins</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="Tensor.to_3chan" class="doc_header"><code>Tensor.to_3chan</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/medical/imaging.py#L251" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Tensor.to_3chan</code>(<strong><code>x</code></strong>:<code>Tensor</code>, <strong><code>win1</code></strong>, <strong><code>win2</code></strong>, <strong><code>bins</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 
 </div>

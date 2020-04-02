@@ -19,11 +19,14 @@ description: "NB: This is still in early development. Use v1 unless you want to 
 -->
 
 <div class="container" id="notebook-container">
-    {% raw %}
         
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>To learn more about the library, read our introduction in the <a href="https://arxiv.org/abs/2002.04688">paper</a> presenting it.</p>
@@ -89,17 +92,16 @@ pip install pydicom kornia opencv-python scikit-image
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>After you clone this repository, please run <a href="https://nbdev.fast.ai/cli#nbdev_install_git_hooks"><code>nbdev_install_git_hooks</code></a> in your terminal. This sets up git hooks, which clean up the notebooks to remove the extraneous stuff stored in the notebooks (e.g. which cells you ran) which causes unnecessary merge conflicts.</p>
-<p>Before submitting a PR, check that the local library and notebooks match. The script <a href="https://nbdev.fast.ai/cli#nbdev_diff_nbs"><code>nbdev_diff_nbs</code></a> can let you know if there is a difference between the local library and the notebooks.</p>
+<p>After you clone this repository, please run <code>nbdev_install_git_hooks</code> in your terminal. This sets up git hooks, which clean up the notebooks to remove the extraneous stuff stored in the notebooks (e.g. which cells you ran) which causes unnecessary merge conflicts.</p>
+<p>Before submitting a PR, check that the local library and notebooks match. The script <code>nbdev_diff_nbs</code> can let you know if there is a difference between the local library and the notebooks.</p>
 <ul>
-<li>If you made a change to the notebooks in one of the exported cells, you can export it to the library with <a href="https://nbdev.fast.ai/cli#nbdev_build_lib"><code>nbdev_build_lib</code></a> or <code>make fastai2</code>.</li>
-<li>If you made a change to the library, you can export it back to the notebooks with <a href="https://nbdev.fast.ai/cli#nbdev_update_lib"><code>nbdev_update_lib</code></a>.</li>
+<li>If you made a change to the notebooks in one of the exported cells, you can export it to the library with <code>nbdev_build_lib</code> or <code>make fastai2</code>.</li>
+<li>If you made a change to the library, you can export it back to the notebooks with <code>nbdev_update_lib</code>.</li>
 </ul>
 
 </div>
 </div>
 </div>
-    {% endraw %}
 </div>
  
 

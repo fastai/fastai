@@ -19,17 +19,22 @@ description: "How to fine-tune a language model and train a classifier"
 -->
 
 <div class="container" id="notebook-container">
-    {% raw %}
         
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">fastai2.text.all</span> <span class="kn">import</span> <span class="o">*</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">fastai2.text.all</span> <span class="k">import</span> <span class="o">*</span>
 </pre></div>
 
     </div>
@@ -37,6 +42,8 @@ description: "How to fine-tune a language model and train a classifier"
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>In this tutorial, we will see how we can train a model to classify text (here based on their sentiment). First we will see how to do this quickly in a few lines of code, then how to get state-of-the art results using the approach of the <a href="https://arxiv.org/abs/1801.06146">ULMFit paper</a>.</p>
@@ -71,6 +78,8 @@ description: "How to fine-tune a language model and train a classifier"
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -101,6 +110,10 @@ description: "How to fine-tune a language model and train a classifier"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -130,6 +143,8 @@ description: "How to fine-tune a language model and train a classifier"
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>The data follows an ImageNet-style organization, in the train folder, we have two subfolders, <code>pos</code> and <code>neg</code> (for positive reviews and negative reviews). We can gather it by using the <a href="/text.data#TextDataLoaders.from_folder"><code>TextDataLoaders.from_folder</code></a> method. The only thing we need to specify is the name of the validation folder, which is "test" (and not the default "valid").</p>
@@ -137,6 +152,8 @@ description: "How to fine-tune a language model and train a classifier"
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -150,6 +167,8 @@ description: "How to fine-tune a language model and train a classifier"
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>We can then have a look at the data with the <code>show_batch</code> method:</p>
@@ -157,6 +176,8 @@ description: "How to fine-tune a language model and train a classifier"
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -240,6 +261,8 @@ description: "How to fine-tune a language model and train a classifier"
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>We can see that the library automatically processed all the texts to split then in <em>tokens</em>, adding some special tokens like:</p>
@@ -252,6 +275,8 @@ description: "How to fine-tune a language model and train a classifier"
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -265,6 +290,8 @@ description: "How to fine-tune a language model and train a classifier"
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>We use the <a href="https://arxiv.org/abs/1708.02182">AWD LSTM</a> architecture, <code>drop_mult</code> is a parameter that controls the magnitude of all dropouts in that model, and we use <a href="/13b_metrics#accuracy"><code>accuracy</code></a> to track down how well we are doing. We can then finetune our pretrained model:</p>
@@ -272,6 +299,8 @@ description: "How to fine-tune a language model and train a classifier"
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -368,6 +397,10 @@ description: "How to fine-tune a language model and train a classifier"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -473,6 +506,8 @@ description: "How to fine-tune a language model and train a classifier"
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Not too bad! To see how well our model is doing, we can use the <code>show_results</code> method:</p>
@@ -480,6 +515,8 @@ description: "How to fine-tune a language model and train a classifier"
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -582,6 +619,8 @@ description: "How to fine-tune a language model and train a classifier"
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>And we can predict on new texts quite easily:</p>
@@ -589,6 +628,8 @@ description: "How to fine-tune a language model and train a classifier"
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -627,6 +668,8 @@ description: "How to fine-tune a language model and train a classifier"
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Here we can see the model has considered the review to be positive. The second part of the result is the index of "pos" in our data vocabulary and the last part is the probabilities attributed to each class (99.1% for "pos" and 0.9% for "neg").</p>
@@ -655,6 +698,8 @@ description: "How to fine-tune a language model and train a classifier"
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -671,6 +716,8 @@ description: "How to fine-tune a language model and train a classifier"
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>This only gives a blueprint on how to assemble the data. To actually create it, we need to use the <code>dataloaders</code> method:</p>
@@ -678,6 +725,8 @@ description: "How to fine-tune a language model and train a classifier"
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -691,6 +740,8 @@ description: "How to fine-tune a language model and train a classifier"
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="The-ULMFiT-approach">The ULMFiT approach<a class="anchor-link" href="#The-ULMFiT-approach"> </a></h2>
@@ -720,6 +771,8 @@ description: "How to fine-tune a language model and train a classifier"
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -733,6 +786,8 @@ description: "How to fine-tune a language model and train a classifier"
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>We need to pass something for <code>valid_pct</code> otherwise this method will try to split the data by using the grandparent folder names. By passing <code>valid_pct=0.1</code>, we tell it to get a random 10% of those reviews for the validation set.</p>
@@ -741,6 +796,8 @@ description: "How to fine-tune a language model and train a classifier"
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -804,6 +861,8 @@ description: "How to fine-tune a language model and train a classifier"
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Then we have a convenience method to directly grab a <a href="/13a_learner#Learner"><code>Learner</code></a> from it, using the <a href="/text.models.awdlstm#AWD_LSTM"><code>AWD_LSTM</code></a> architecture like before. We use accuracy and perplexity as metrics (the later is the exponential of the loss) and we set a default weight decay of 0.1. <code>to_fp16</code> puts the <a href="/13a_learner#Learner"><code>Learner</code></a> in mixed precision, which is going to help speed up training on recent GPUs.</p>
@@ -811,6 +870,8 @@ description: "How to fine-tune a language model and train a classifier"
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -824,6 +885,8 @@ description: "How to fine-tune a language model and train a classifier"
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>By default, a pretrained <a href="/13a_learner#Learner"><code>Learner</code></a> is in a frozen state, meaning that only the head of the model will train while the body stays frozen. We show you what is beehind the finetune method here and use a first cycle to fit the model:</p>
@@ -831,6 +894,8 @@ description: "How to fine-tune a language model and train a classifier"
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -880,6 +945,8 @@ description: "How to fine-tune a language model and train a classifier"
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>This model takes a while to train, so it's a good opportunity to talk about saving intermediary results.</p>
@@ -894,6 +961,8 @@ description: "How to fine-tune a language model and train a classifier"
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -907,6 +976,8 @@ description: "How to fine-tune a language model and train a classifier"
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>It will create a file in <code>learn.path/models/</code> named "1epoch.pth". If you want to load your model in another machine after creating your <a href="/13a_learner#Learner"><code>Learner</code></a> the same way, or resume training later, you can load the content of this file with:</p>
@@ -914,6 +985,8 @@ description: "How to fine-tune a language model and train a classifier"
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -927,6 +1000,8 @@ description: "How to fine-tune a language model and train a classifier"
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>We can them finetune the model after unfreezing:</p>
@@ -934,6 +1009,8 @@ description: "How to fine-tune a language model and train a classifier"
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -1056,6 +1133,8 @@ description: "How to fine-tune a language model and train a classifier"
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Once this is done, we save all of our model except the final layer that converts activations to probabilities of picking each token in our vocabulary. The model not including the final layer is called the <em>encoder</em>. We can save it with <code>save_encoder</code>:</p>
@@ -1063,6 +1142,8 @@ description: "How to fine-tune a language model and train a classifier"
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -1076,9 +1157,11 @@ description: "How to fine-tune a language model and train a classifier"
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<blockquote><p>jargon: Encoder: The model not including the task-specific final layer(s). It means much the same thing as <em>body</em> when applied to vision CNNs, but tends to be more used for NLP and generative models.</p>
+<blockquote><p>jargon:Encoder: The model not including the task-specific final layer(s). It means much the same thing as <em>body</em> when applied to vision CNNs, but tends to be more used for NLP and generative models.</p>
 </blockquote>
 
 </div>
@@ -1091,6 +1174,8 @@ description: "How to fine-tune a language model and train a classifier"
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -1132,6 +1217,10 @@ description: "How to fine-tune a language model and train a classifier"
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -1160,6 +1249,8 @@ i liked this movie because i like the idea of the premise of the movie , the ( v
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h3 id="Training-a-text-classifier">Training a text classifier<a class="anchor-link" href="#Training-a-text-classifier"> </a></h3>
@@ -1173,6 +1264,8 @@ i liked this movie because i like the idea of the premise of the movie , the ( v
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -1186,6 +1279,8 @@ i liked this movie because i like the idea of the premise of the movie , the ( v
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>The main difference is that we have to use the exact same vocabulary as when we were fine-tuning our language model, or the weights learned won't make any sense. We pass that vocabulary with <code>text_vocab</code>.</p>
@@ -1194,6 +1289,8 @@ i liked this movie because i like the idea of the premise of the movie , the ( v
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -1207,6 +1304,8 @@ i liked this movie because i like the idea of the premise of the movie , the ( v
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>The difference is that before training it, we load the previous encoder:</p>
@@ -1214,6 +1313,8 @@ i liked this movie because i like the idea of the premise of the movie , the ( v
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -1227,6 +1328,8 @@ i liked this movie because i like the idea of the premise of the movie , the ( v
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>The last step is to train with discriminative learning rates and <em>gradual unfreezing</em>. In computer vision, we often unfreeze the model all at once, but for NLP classifiers, we find that unfreezing a few layers at a time makes a real difference.</p>
@@ -1234,6 +1337,8 @@ i liked this movie because i like the idea of the premise of the movie , the ( v
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -1281,6 +1386,8 @@ i liked this movie because i like the idea of the premise of the movie , the ( v
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>In just one epoch we get the same result as our training in the first section, not too bad! We can pass <code>-2</code> to <code>freeze_to</code> to freeze all except the last two parameter groups:</p>
@@ -1288,6 +1395,8 @@ i liked this movie because i like the idea of the premise of the movie , the ( v
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -1336,6 +1445,8 @@ i liked this movie because i like the idea of the premise of the movie , the ( v
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Then we can unfreeze a bit more, and continue training:</p>
@@ -1343,6 +1454,8 @@ i liked this movie because i like the idea of the premise of the movie , the ( v
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -1391,6 +1504,8 @@ i liked this movie because i like the idea of the premise of the movie , the ( v
 </div>
 
 </div>
+    {% endraw %}
+
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>And finally, the whole model!</p>
@@ -1398,6 +1513,8 @@ i liked this movie because i like the idea of the premise of the movie , the ( v
 </div>
 </div>
 </div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -1454,6 +1571,7 @@ i liked this movie because i like the idea of the premise of the movie , the ( v
 
 </div>
     {% endraw %}
+
 </div>
  
 

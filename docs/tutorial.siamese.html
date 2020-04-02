@@ -76,8 +76,8 @@ description: "How to use the mid-level API for data collection, model creation a
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">fastai2.data.external</span> <span class="kn">import</span> <span class="n">untar_data</span><span class="p">,</span><span class="n">URLs</span>
-<span class="kn">from</span> <span class="nn">fastai2.data.transforms</span> <span class="kn">import</span> <span class="n">get_image_files</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">fastai2.data.external</span> <span class="k">import</span> <span class="n">untar_data</span><span class="p">,</span><span class="n">URLs</span>
+<span class="kn">from</span> <span class="nn">fastai2.data.transforms</span> <span class="k">import</span> <span class="n">get_image_files</span>
 </pre></div>
 
     </div>
@@ -398,17 +398,17 @@ description: "How to use the mid-level API for data collection, model creation a
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">SiameseDataset</span><span class="p">():</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">files</span><span class="p">,</span> <span class="n">is_valid</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">files</span><span class="p">,</span> <span class="n">is_valid</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">is_valid</span> <span class="o">=</span> <span class="n">files</span><span class="p">,</span><span class="n">is_valid</span>
         <span class="k">if</span> <span class="n">is_valid</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">files2</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_draw</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span><span class="p">]</span>
         
-    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
         <span class="n">file1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
         <span class="p">(</span><span class="n">file2</span><span class="p">,</span><span class="n">same</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">files2</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_valid</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_draw</span><span class="p">(</span><span class="n">file1</span><span class="p">)</span>
         <span class="n">img1</span><span class="p">,</span><span class="n">img2</span> <span class="o">=</span> <span class="n">open_image</span><span class="p">(</span><span class="n">file1</span><span class="p">),</span><span class="n">open_image</span><span class="p">(</span><span class="n">file2</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">img1</span><span class="p">,</span> <span class="n">img2</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">([</span><span class="n">same</span><span class="p">])</span><span class="o">.</span><span class="n">squeeze</span><span class="p">())</span>
     
-    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="p">)</span>
     
     <span class="k">def</span> <span class="nf">_draw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
         <span class="n">same</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mf">0.5</span>
@@ -490,7 +490,7 @@ description: "How to use the mid-level API for data collection, model creation a
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">fastai2.data.core</span> <span class="kn">import</span> <span class="n">DataLoaders</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">fastai2.data.core</span> <span class="k">import</span> <span class="n">DataLoaders</span>
 </pre></div>
 
     </div>
@@ -593,7 +593,7 @@ description: "How to use the mid-level API for data collection, model creation a
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">fastai2.vision.all</span> <span class="kn">import</span> <span class="o">*</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">fastai2.vision.all</span> <span class="k">import</span> <span class="o">*</span>
 </pre></div>
 
     </div>
@@ -611,7 +611,7 @@ description: "How to use the mid-level API for data collection, model creation a
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">SiameseTransform</span><span class="p">(</span><span class="n">Transform</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">files</span><span class="p">,</span> <span class="n">is_valid</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">files</span><span class="p">,</span> <span class="n">is_valid</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">is_valid</span> <span class="o">=</span> <span class="n">files</span><span class="p">,</span><span class="n">is_valid</span>
         <span class="k">if</span> <span class="n">is_valid</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">files2</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_draw</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span><span class="p">]</span>
         
@@ -844,7 +844,7 @@ description: "How to use the mid-level API for data collection, model creation a
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">SiameseTransform</span><span class="p">(</span><span class="n">Transform</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">files</span><span class="p">,</span> <span class="n">splits</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">files</span><span class="p">,</span> <span class="n">splits</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">valid</span> <span class="o">=</span> <span class="p">{</span><span class="n">f</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_draw</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span><span class="p">[</span><span class="n">splits</span><span class="p">[</span><span class="mi">1</span><span class="p">]]}</span>
         
     <span class="k">def</span> <span class="nf">encodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
@@ -1036,7 +1036,7 @@ description: "How to use the mid-level API for data collection, model creation a
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>When we call <code>show_batch</code>, the fastai library will realize the batch as a whole has a show method, so it must know how to show itself. It will send that batch directly to the type-dispatched function <code>show_batch</code>. The signature of this function is the following:</p>
-<div class="highlight"><pre><span></span><span class="n">show_batch</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">samples</span><span class="p">,</span> <span class="n">ctxs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><span class="n">show_batch</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">samples</span><span class="p">,</span> <span class="n">ctxs</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </pre></div>
 <p>where the kwargs are specific to the application (here we will have <code>nrows</code>, <code>ncols</code> and <code>figsize</code> for instance). In our case, the batch will be sent as a whole to <code>x</code> and <code>y</code> and <code>samples</code> will be <code>None</code> (those arguments are used when the batch does not have a type that knows how to show itself, see the next section).</p>
 <p>To write our custom <code>show_batch</code> we just need to use the type annotation on <code>x</code> like this:</p>
@@ -1590,7 +1590,7 @@ description: "How to use the mid-level API for data collection, model creation a
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">SiameseModel</span><span class="p">(</span><span class="n">Module</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">encoder</span><span class="p">,</span> <span class="n">head</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">encoder</span><span class="p">,</span> <span class="n">head</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">encoder</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">head</span> <span class="o">=</span> <span class="n">encoder</span><span class="p">,</span><span class="n">head</span>
     
     <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">):</span>
@@ -1893,7 +1893,7 @@ description: "How to use the mid-level API for data collection, model creation a
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">SiameseTransform</span><span class="p">(</span><span class="n">Transform</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">files</span><span class="p">,</span> <span class="n">splits</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">files</span><span class="p">,</span> <span class="n">splits</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">valid</span> <span class="o">=</span> <span class="p">{</span><span class="n">f</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_draw</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span><span class="p">[</span><span class="n">splits</span><span class="p">[</span><span class="mi">1</span><span class="p">]]}</span>
         
     <span class="k">def</span> <span class="nf">encodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
@@ -2238,7 +2238,7 @@ description: "How to use the mid-level API for data collection, model creation a
     <span class="k">if</span> <span class="n">figsize</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">figsize</span> <span class="o">=</span> <span class="p">(</span><span class="n">ncols</span><span class="o">*</span><span class="mi">6</span><span class="p">,</span> <span class="n">max_n</span><span class="o">//</span><span class="n">ncols</span> <span class="o">*</span> <span class="mi">3</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">ctxs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">ctxs</span> <span class="o">=</span> <span class="n">get_grid</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">max_n</span><span class="p">),</span> <span class="n">nrows</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ncols</span><span class="o">=</span><span class="n">ncols</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="n">figsize</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">ctx</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ctxs</span><span class="p">):</span> 
-        <span class="n">title</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;{[False,True][x[2][i].item()]}</span><span class="se">\n</span><span class="s1">{[False,True][y[2][i].item()]}&#39;</span>
+        <span class="n">title</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;{[False,True][x[2][i].item()]}</span><span class="se">\n</span><span class="s1">{[False,True][y[2][i].item()]}&#39;</span>
         <span class="n">SiameseImage</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">i</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">i</span><span class="p">],</span> <span class="n">title</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">ctx</span><span class="o">=</span><span class="n">ctx</span><span class="p">)</span>
 </pre></div>
 

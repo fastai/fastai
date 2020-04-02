@@ -41,8 +41,8 @@ description: "Callbacks that make decisions depending how a monitored metric/los
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">nbdev.showdoc</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">fastai2.test_utils</span> <span class="kn">import</span> <span class="o">*</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">nbdev.showdoc</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">fastai2.test_utils</span> <span class="k">import</span> <span class="o">*</span>
 </pre></div>
 
     </div>
@@ -415,7 +415,7 @@ description: "Callbacks that make decisions depending how a monitored metric/los
 <span class="n">learn</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">n_epoch</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">cbs</span><span class="o">=</span><span class="n">SaveModelCallback</span><span class="p">())</span>
 <span class="k">assert</span> <span class="p">(</span><span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span><span class="o">/</span><span class="s1">&#39;tmp/models/model.pth&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span>
 <span class="n">learn</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">n_epoch</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">cbs</span><span class="o">=</span><span class="n">SaveModelCallback</span><span class="p">(</span><span class="n">every_epoch</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
-<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span> <span class="k">assert</span> <span class="p">(</span><span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span><span class="o">/</span><span class="sa">f</span><span class="s1">&#39;tmp/models/model_</span><span class="si">{i}</span><span class="s1">.pth&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span> <span class="k">assert</span> <span class="p">(</span><span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span><span class="o">/</span><span class="n">f</span><span class="s1">&#39;tmp/models/model_</span><span class="si">{i}</span><span class="s1">.pth&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span>
 <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span><span class="o">/</span><span class="s1">&#39;tmp&#39;</span><span class="p">)</span>
 </pre></div>
 
