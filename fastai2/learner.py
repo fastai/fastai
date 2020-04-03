@@ -212,8 +212,10 @@ class Learner():
     def get_preds(self, ds_idx=1, dl=None, with_input=False, with_decoded=False, with_loss=False, act=None,
                   inner=False, reorder=True, **kwargs):
         if dl is None: dl = self.dls[ds_idx].new(shuffled=False, drop_last=False)
+        if reorder and hasattr(dl, 'get_idxs'):
+            idxs = dl.get_idxs()
+            dl = dl.new(get_idxs = lambda: idxs)
         cb = GatherPredsCallback(with_input=with_input, with_loss=with_loss, **kwargs)
-        #with self.no_logging(), self.added_cbs(cb), self.loss_not_reduced(), self.no_mbar():
         ctx_mgrs = [self.no_logging(), self.added_cbs(cb), self.no_mbar()]
         if with_loss: ctx_mgrs.append(self.loss_not_reduced())
         with ExitStack() as stack:
@@ -227,9 +229,7 @@ class Learner():
             if res[pred_i] is not None:
                 res[pred_i] = act(res[pred_i])
                 if with_decoded: res.insert(pred_i+2, getattr(self.loss_func, 'decodes', noop)(res[pred_i]))
-            if reorder and hasattr(dl, 'get_idxs'):
-                idxs = tensor(dl.get_idxs()).argsort()
-                res = nested_reorder(res, idxs)
+            if reorder and hasattr(dl, 'get_idxs'): res = nested_reorder(res, tensor(idxs).argsort())
             return tuple(res)
 
     def predict(self, item, rm_type_tfms=None, with_input=False):
