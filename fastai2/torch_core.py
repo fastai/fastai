@@ -8,10 +8,10 @@ __all__ = ['progress_bar', 'master_bar', 'subplots', 'show_image', 'show_titled_
            'ShowTitle', 'TitledInt', 'TitledFloat', 'TitledStr', 'TitledTuple', 'get_empty_df', 'display_df',
            'get_first', 'one_param', 'item_find', 'find_device', 'find_bs', 'Module', 'get_model', 'one_hot',
            'one_hot_decode', 'params', 'trainable_params', 'norm_types', 'bn_bias_params', 'batch_to_samples', 'logit',
-           'num_distrib', 'rank_distrib', 'distrib_barrier', 'base_doc', 'doc', 'to_image', 'make_cross_image',
-           'show_image_batch', 'requires_grad', 'init_default', 'cond_init', 'apply_leaf', 'apply_init',
-           'set_num_threads', 'ProcessPoolExecutor', 'parallel', 'run_procs', 'parallel_gen', 'script_use_ctx',
-           'script_save_ctx', 'script_fwd', 'script_bwd', 'grad_module', 'flatten_check']
+           'num_distrib', 'rank_distrib', 'distrib_barrier', 'base_doc', 'doc', 'nested_reorder', 'to_image',
+           'make_cross_image', 'show_image_batch', 'requires_grad', 'init_default', 'cond_init', 'apply_leaf',
+           'apply_init', 'set_num_threads', 'ProcessPoolExecutor', 'parallel', 'run_procs', 'parallel_gen',
+           'script_use_ctx', 'script_save_ctx', 'script_fwd', 'script_bwd', 'grad_module', 'flatten_check']
 
 # Cell
 from .imports import *
@@ -607,6 +607,14 @@ def doc(elt):
         from nbdev.showdoc import doc
         doc(elt)
     except: base_doc(elt)
+
+# Cell
+def nested_reorder(t, idxs):
+    "Reorder all tensors in `t` using `idxs`"
+    if isinstance(t, Tensor): return t[idxs]
+    elif is_listy(t): return type(t)(nested_reorder(t_, idxs) for t_ in t)
+    if t is None: return t
+    raise TypeError(f"Expected tensor, tuple, list or L but got {type(t)}")
 
 # Cell
 def to_image(x):

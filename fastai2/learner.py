@@ -210,7 +210,7 @@ class Learner():
 
     @delegates(GatherPredsCallback.__init__)
     def get_preds(self, ds_idx=1, dl=None, with_input=False, with_decoded=False, with_loss=False, act=None,
-                  inner=False, **kwargs):
+                  inner=False, reorder=True, **kwargs):
         if dl is None: dl = self.dls[ds_idx].new(shuffled=False, drop_last=False)
         cb = GatherPredsCallback(with_input=with_input, with_loss=with_loss, **kwargs)
         #with self.no_logging(), self.added_cbs(cb), self.loss_not_reduced(), self.no_mbar():
@@ -227,6 +227,9 @@ class Learner():
             if res[pred_i] is not None:
                 res[pred_i] = act(res[pred_i])
                 if with_decoded: res.insert(pred_i+2, getattr(self.loss_func, 'decodes', noop)(res[pred_i]))
+            if reorder and hasattr(dl, 'get_idxs'):
+                idxs = tensor(dl.get_idxs()).argsort()
+                res = nested_reorder(res, idxs)
             return tuple(res)
 
     def predict(self, item, rm_type_tfms=None, with_input=False):
