@@ -92,6 +92,7 @@ class Learner():
     @metrics.setter
     def metrics(self,v): self._metrics = L(v).map(mk_metric)
 
+    def _grab_cbs(self, cb_cls): return L(cb for cb in self.cbs if isinstance(cb, cb_cls))
     def add_cbs(self, cbs): L(cbs).map(self.add_cb)
     def remove_cbs(self, cbs): L(cbs).map(self.remove_cb)
     def add_cb(self, cb):
@@ -103,9 +104,11 @@ class Learner():
         return self
 
     def remove_cb(self, cb):
-        cb.learn = None
-        if hasattr(self, cb.name): delattr(self, cb.name)
-        if cb in self.cbs: self.cbs.remove(cb)
+        if isinstance(cb, type): self.remove_cbs(self._grab_cbs(cb))
+        else:
+            cb.learn = None
+            if hasattr(self, cb.name): delattr(self, cb.name)
+            if cb in self.cbs: self.cbs.remove(cb)
 
     @contextmanager
     def added_cbs(self, cbs):

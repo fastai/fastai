@@ -145,6 +145,5 @@ def to_fp16(self:Learner, **kwargs):
 # Cell
 @patch
 def to_fp32(self: Learner):
-    if hasattr(self, 'model_to_half'):   self.remove_cb(self.model_to_half)
-    if hasattr(self, 'mixed_precision'): self.remove_cb(self.mixed_precision)
+    self.remove_cbs([ModelToHalf, MixedPrecision])
     return self
