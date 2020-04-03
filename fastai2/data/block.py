@@ -30,9 +30,9 @@ def MultiCategoryBlock(encoded=False, vocab=None, add_na=False):
     return TransformBlock(type_tfms=tfm)
 
 # Cell
-def RegressionBlock(c_out=None):
+def RegressionBlock(n_out=None):
     "`TransformBlock` for float targets"
-    return TransformBlock(type_tfms=RegressionSetup(c_out))
+    return TransformBlock(type_tfms=RegressionSetup(c=n_out))
 
 # Cell
 from inspect import isfunction,ismethod
