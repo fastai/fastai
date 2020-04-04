@@ -71,8 +71,16 @@ def main(
         if dump: print(learn.model); exit()
         if fp16: learn = learn.to_fp16()
         cbs = MixUp(mixup) if mixup else []
-        #n_gpu = torch.cuda.device_count()
-        #if gpu is None and n_gpu: learn.to_parallel()
-        # if num_distrib()>1: learn.to_distributed(gpu) # Requires `-m fastai2.launch`
-        with learn.distrib_ctx(gpu): learn.fit_flat_cos(epochs, lr, wd=1e-2, cbs=cbs)
 
+        n_gpu = torch.cuda.device_count()
+
+        # The old way to use DataParallel, or DistributedDataParallel training:
+        # if gpu is None and n_gpu: learn.to_parallel()
+        # if num_distrib()>1: learn.to_distributed(gpu) # Requires `-m fastai2.launch`
+
+        # the context manager way of dp/ddp, both can handle single GPU base case.
+        ctx = learn.parallel_ctx if gpu is None and n_gpu else learn.distrib_ctx
+
+        with partial(ctx, gpu)(): # distributed traing requires "-m fastai2.launch"
+            print(f"Training in {ctx.__name__} context on GPU {gpu if gpu is not None else list(range(n_gpu))}")
+            learn.fit_flat_cos(epochs, lr, wd=1e-2, cbs=cbs)
