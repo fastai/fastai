@@ -208,7 +208,9 @@ def init_default(m, func=nn.init.kaiming_normal_):
 
 # Cell
 def init_linear(m, act_func=None, init='auto', bias_std=0.01):
-    if getattr(m,'bias',None) is not None and bias_std is not None: normal_(m.bias, 0, bias_std)
+    if getattr(m,'bias',None) is not None and bias_std is not None:
+        if bias_std != 0: normal_(m.bias, 0, bias_std)
+        else: m.bias.data.zero_()
     if init=='auto':
         if act_func in (F.relu_,F.leaky_relu_): init = kaiming_uniform_
         else: init = getattr(act_func.__class__, '__default_init__', None)
