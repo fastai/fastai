@@ -549,8 +549,7 @@ class Recorder(LearnerCallback):
         ax.set_ylabel("Loss")
         ax.set_xlabel("Learning Rate")
         ax.set_xscale('log')
-        if show_grid:
-           plt.grid(True,which="both",ls="-")
+        if show_grid: plt.grid(True,which="both",ls="-")
         ax.xaxis.set_major_formatter(plt.FormatStrFormatter('%.0e'))
         if suggestion:
             try: mg = (np.gradient(np.array(losses))).argmin()
