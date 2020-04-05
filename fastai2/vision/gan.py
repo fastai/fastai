@@ -303,7 +303,7 @@ class GANLearner(Learner):
         gan = GANModule(generator, critic)
         loss_func = GANLoss(gen_loss_func, crit_loss_func, gan)
         if switcher is None: switcher = FixedGANSwitcher(n_crit=5, n_gen=1)
-        trainer = GANTrainer(clip=clip, switch_eval=switch_eval, show_img=show_img)
+        trainer = GANTrainer(clip=clip, switch_eval=switch_eval, gen_first=gen_first, show_img=show_img)
         cbs = L(cbs) + L(trainer, switcher)
         metrics = L(metrics) + L(*LossMetrics('gen_loss,crit_loss'))
         super().__init__(dls, gan, loss_func=loss_func, cbs=cbs, metrics=metrics, **kwargs)
