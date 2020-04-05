@@ -71,7 +71,7 @@ description: "A dive into the layered API of fastai in computer vision"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">fastai2.vision.all</span> <span class="k">import</span> <span class="o">*</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">fastai2.vision.all</span> <span class="kn">import</span> <span class="o">*</span>
 </pre></div>
 
     </div>
@@ -790,7 +790,7 @@ description: "A dive into the layered API of fastai in computer vision"
 <p>This way, when you have a <code>Transform</code> like resize, you can apply it on a tuple (image, label) and it will resize the image but not the categorical label (since there is no implementation of resize for categories). The exact same transform applied on a tuple (image, mask) will resize the image and the target, using bilinear interpolation on the image and nearest neighbor on the mask. This is how the library manages to always apply data augmentation transforms on every computer vision application (segmentation, point localization or object detection).</p>
 <p>Aditionnaly, a transform can have</p>
 <ul>
-<li>a setup executed on the whole se (or the whole training set). This is how <a href="/data.transforms#Categorize"><code>Categorize</code></a> builds it vocabulary automatically.</li>
+<li>a setup executed on the whole set (or the whole training set). This is how <a href="/data.transforms#Categorize"><code>Categorize</code></a> builds it vocabulary automatically.</li>
 <li>a decodes that can undo what the transform does for showing purposes (for instance <a href="/data.transforms#Categorize"><code>Categorize</code></a> will convert back an index into a category).</li>
 </ul>
 <p>We won't delve into those bits of the low API here, but you can check out the <a href="http://dev.fast.ai/tutorial.pets">pets tutorial</a> or the more advanced <a href="http://dev.fast.ai/tutorial.siamese">siamese tutorial</a> for more information.</p>
@@ -1577,7 +1577,7 @@ description: "A dive into the layered API of fastai in computer vision"
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">LabelSmoothingCE</span><span class="p">(</span><span class="n">Module</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">reduction</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">eps</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">reduction</span> <span class="o">=</span> <span class="n">eps</span><span class="p">,</span><span class="n">reduction</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">reduction</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">eps</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">reduction</span> <span class="o">=</span> <span class="n">eps</span><span class="p">,</span><span class="n">reduction</span>
 
     <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
         <span class="n">c</span> <span class="o">=</span> <span class="n">output</span><span class="o">.</span><span class="n">size</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
@@ -2065,7 +2065,7 @@ description: "A dive into the layered API of fastai in computer vision"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">torch.distributions.beta</span> <span class="k">import</span> <span class="n">Beta</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">torch.distributions.beta</span> <span class="kn">import</span> <span class="n">Beta</span>
 </pre></div>
 
     </div>
@@ -2085,7 +2085,7 @@ description: "A dive into the layered API of fastai in computer vision"
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">Mixup</span><span class="p">(</span><span class="n">Callback</span><span class="p">):</span>
     <span class="n">run_valid</span> <span class="o">=</span> <span class="kc">False</span>
     
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.4</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">distrib</span> <span class="o">=</span> <span class="n">Beta</span><span class="p">(</span><span class="n">tensor</span><span class="p">(</span><span class="n">alpha</span><span class="p">),</span> <span class="n">tensor</span><span class="p">(</span><span class="n">alpha</span><span class="p">))</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.4</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">distrib</span> <span class="o">=</span> <span class="n">Beta</span><span class="p">(</span><span class="n">tensor</span><span class="p">(</span><span class="n">alpha</span><span class="p">),</span> <span class="n">tensor</span><span class="p">(</span><span class="n">alpha</span><span class="p">))</span>
     
     <span class="k">def</span> <span class="nf">begin_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">distrib</span><span class="o">.</span><span class="n">sample</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">),))</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>

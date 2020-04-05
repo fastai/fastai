@@ -41,7 +41,7 @@ description: "Define the general fastai optimizer and the variants"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">nbdev.showdoc</span> <span class="k">import</span> <span class="o">*</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">nbdev.showdoc</span> <span class="kn">import</span> <span class="o">*</span>
 </pre></div>
 
     </div>
@@ -107,7 +107,7 @@ description: "Define the general fastai optimizer and the variants"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Optimizer" class="doc_header"><code>class</code> <code>Optimizer</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L54" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Optimizer</code>(<strong><code>params</code></strong>, <strong><code>cbs</code></strong>, <strong><code>train_bn</code></strong>=<em><code>True</code></em>, <strong>**<code>defaults</code></strong>) :: <code>_BaseOptimizer</code></p>
+<h2 id="Optimizer" class="doc_header"><code>class</code> <code>Optimizer</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L63" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Optimizer</code>(<strong><code>params</code></strong>, <strong><code>cbs</code></strong>, <strong><code>train_bn</code></strong>=<em><code>True</code></em>, <strong>**<code>defaults</code></strong>) :: <code>_BaseOptimizer</code></p>
 </blockquote>
 <p>Base optimizer class for the fastai library, updating <a href="/torch_core#params"><code>params</code></a> with <code>cbs</code></p>
 
@@ -165,13 +165,13 @@ description: "Define the general fastai optimizer and the variants"
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">opt</span> <span class="o">=</span> <span class="n">Optimizer</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="n">noop</span><span class="p">)</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">param_groups</span><span class="p">,</span> <span class="p">[[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]])</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">param_lists</span><span class="p">,</span> <span class="p">[[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]])</span>
 <span class="n">opt</span> <span class="o">=</span> <span class="n">Optimizer</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">noop</span><span class="p">)</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">param_groups</span><span class="p">,</span> <span class="p">[[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">]])</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">param_lists</span><span class="p">,</span> <span class="p">[[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">]])</span>
 <span class="n">opt</span> <span class="o">=</span> <span class="n">Optimizer</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">3</span><span class="p">]],</span> <span class="n">noop</span><span class="p">)</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">param_groups</span><span class="p">,</span> <span class="p">[[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">3</span><span class="p">]])</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">param_lists</span><span class="p">,</span> <span class="p">[[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">3</span><span class="p">]])</span>
 <span class="n">opt</span> <span class="o">=</span> <span class="n">Optimizer</span><span class="p">(([</span><span class="n">o</span><span class="p">,</span><span class="n">o</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">2</span><span class="p">)),</span> <span class="n">noop</span><span class="p">)</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">param_groups</span><span class="p">,</span> <span class="p">[[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]])</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">param_lists</span><span class="p">,</span> <span class="p">[[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]])</span>
 </pre></div>
 
     </div>
@@ -245,6 +245,7 @@ description: "Define the general fastai optimizer and the variants"
 <span class="n">test_eq</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">hypers</span><span class="p">,</span> <span class="p">[{</span><span class="s1">&#39;lr&#39;</span><span class="p">:</span> <span class="mf">1e-3</span><span class="p">},</span> <span class="p">{</span><span class="s1">&#39;lr&#39;</span><span class="p">:</span> <span class="mf">1e-3</span><span class="p">},</span> <span class="p">{</span><span class="s1">&#39;lr&#39;</span><span class="p">:</span> <span class="mf">1e-2</span><span class="p">}])</span>
 <span class="n">opt</span> <span class="o">=</span> <span class="n">Optimizer</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">3</span><span class="p">],[</span><span class="mi">4</span><span class="p">]],</span> <span class="n">tst_arg</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="nb">slice</span><span class="p">(</span><span class="mf">1e-4</span><span class="p">,</span><span class="mf">1e-2</span><span class="p">))</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">hypers</span><span class="p">,</span> <span class="p">[{</span><span class="s1">&#39;lr&#39;</span><span class="p">:</span> <span class="mf">1e-4</span><span class="p">},</span> <span class="p">{</span><span class="s1">&#39;lr&#39;</span><span class="p">:</span> <span class="mf">1e-3</span><span class="p">},</span> <span class="p">{</span><span class="s1">&#39;lr&#39;</span><span class="p">:</span> <span class="mf">1e-2</span><span class="p">}])</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">param_groups</span><span class="p">,</span> <span class="p">[{</span><span class="s1">&#39;params&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span> <span class="s1">&#39;lr&#39;</span><span class="p">:</span> <span class="mf">1e-4</span><span class="p">},</span> <span class="p">{</span><span class="s1">&#39;params&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="s1">&#39;lr&#39;</span><span class="p">:</span> <span class="mf">1e-3</span><span class="p">},</span> <span class="p">{</span><span class="s1">&#39;params&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="s1">&#39;lr&#39;</span><span class="p">:</span> <span class="mf">1e-2</span><span class="p">}])</span>
 <span class="n">test_fail</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">Optimizer</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">3</span><span class="p">],[</span><span class="mi">4</span><span class="p">]],</span> <span class="n">tst_arg</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.1</span><span class="p">,</span><span class="mf">0.2</span><span class="p">])))</span>
 </pre></div>
 
@@ -286,7 +287,7 @@ description: "Define the general fastai optimizer and the variants"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="sgd_step" class="doc_header"><code>sgd_step</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L91" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>sgd_step</code>(<strong><code>p</code></strong>, <strong><code>lr</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="sgd_step" class="doc_header"><code>sgd_step</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L100" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>sgd_step</code>(<strong><code>p</code></strong>, <strong><code>lr</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -358,7 +359,7 @@ description: "Define the general fastai optimizer and the variants"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="weight_decay" class="doc_header"><code>weight_decay</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L95" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>weight_decay</code>(<strong><code>p</code></strong>, <strong><code>lr</code></strong>, <strong><code>wd</code></strong>, <strong><code>do_wd</code></strong>=<em><code>True</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="weight_decay" class="doc_header"><code>weight_decay</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L104" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>weight_decay</code>(<strong><code>p</code></strong>, <strong><code>lr</code></strong>, <strong><code>wd</code></strong>, <strong><code>do_wd</code></strong>=<em><code>True</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Weight decay as decaying <code>p</code> with <code>lr*wd</code></p>
 
@@ -410,7 +411,7 @@ description: "Define the general fastai optimizer and the variants"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="l2_reg" class="doc_header"><code>l2_reg</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L102" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>l2_reg</code>(<strong><code>p</code></strong>, <strong><code>lr</code></strong>, <strong><code>wd</code></strong>, <strong><code>do_wd</code></strong>=<em><code>True</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="l2_reg" class="doc_header"><code>l2_reg</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L111" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>l2_reg</code>(<strong><code>p</code></strong>, <strong><code>lr</code></strong>, <strong><code>wd</code></strong>, <strong><code>do_wd</code></strong>=<em><code>True</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>L2 regularization as adding <code>wd*p</code> to <code>p.grad</code></p>
 
@@ -468,7 +469,7 @@ description: "Define the general fastai optimizer and the variants"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Optimizer.step" class="doc_header"><code>Optimizer.step</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L71" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Optimizer.step</code>()</p>
+<h4 id="Optimizer.step" class="doc_header"><code>Optimizer.step</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L80" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Optimizer.step</code>()</p>
 </blockquote>
 
 </div>
@@ -588,7 +589,7 @@ description: "Define the general fastai optimizer and the variants"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Optimizer.zero_grad" class="doc_header"><code>Optimizer.zero_grad</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L66" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Optimizer.zero_grad</code>()</p>
+<h4 id="Optimizer.zero_grad" class="doc_header"><code>Optimizer.zero_grad</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L75" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Optimizer.zero_grad</code>()</p>
 </blockquote>
 
 </div>
@@ -686,7 +687,7 @@ description: "Define the general fastai optimizer and the variants"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="average_grad" class="doc_header"><code>average_grad</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L109" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>average_grad</code>(<strong><code>p</code></strong>, <strong><code>mom</code></strong>, <strong><code>dampening</code></strong>=<em><code>False</code></em>, <strong><code>grad_avg</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="average_grad" class="doc_header"><code>average_grad</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L118" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>average_grad</code>(<strong><code>p</code></strong>, <strong><code>mom</code></strong>, <strong><code>dampening</code></strong>=<em><code>False</code></em>, <strong><code>grad_avg</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Keeps track of the avg grads of <code>p</code> in <code>state</code> with <code>mom</code>.</p>
 
@@ -759,7 +760,7 @@ description: "Define the general fastai optimizer and the variants"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="average_sqr_grad" class="doc_header"><code>average_sqr_grad</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L119" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>average_sqr_grad</code>(<strong><code>p</code></strong>, <strong><code>sqr_mom</code></strong>, <strong><code>dampening</code></strong>=<em><code>True</code></em>, <strong><code>sqr_avg</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="average_sqr_grad" class="doc_header"><code>average_sqr_grad</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L128" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>average_sqr_grad</code>(<strong><code>p</code></strong>, <strong><code>sqr_mom</code></strong>, <strong><code>dampening</code></strong>=<em><code>True</code></em>, <strong><code>sqr_avg</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -968,7 +969,7 @@ description: "Define the general fastai optimizer and the variants"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Optimizer.state_dict" class="doc_header"><code>Optimizer.state_dict</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L80" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Optimizer.state_dict</code>()</p>
+<h4 id="Optimizer.state_dict" class="doc_header"><code>Optimizer.state_dict</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L89" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Optimizer.state_dict</code>()</p>
 </blockquote>
 
 </div>
@@ -992,7 +993,7 @@ description: "Define the general fastai optimizer and the variants"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Optimizer.load_state_dict" class="doc_header"><code>Optimizer.load_state_dict</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L84" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Optimizer.load_state_dict</code>(<strong><code>sd</code></strong>)</p>
+<h4 id="Optimizer.load_state_dict" class="doc_header"><code>Optimizer.load_state_dict</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L93" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Optimizer.load_state_dict</code>(<strong><code>sd</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -1046,7 +1047,7 @@ description: "Define the general fastai optimizer and the variants"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Optimizer.clear_state" class="doc_header"><code>Optimizer.clear_state</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L76" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Optimizer.clear_state</code>()</p>
+<h4 id="Optimizer.clear_state" class="doc_header"><code>Optimizer.clear_state</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L85" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Optimizer.clear_state</code>()</p>
 </blockquote>
 
 </div>
@@ -1113,7 +1114,7 @@ description: "Define the general fastai optimizer and the variants"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="momentum_step" class="doc_header"><code>momentum_step</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L128" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>momentum_step</code>(<strong><code>p</code></strong>, <strong><code>lr</code></strong>, <strong><code>grad_avg</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="momentum_step" class="doc_header"><code>momentum_step</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L137" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>momentum_step</code>(<strong><code>p</code></strong>, <strong><code>lr</code></strong>, <strong><code>grad_avg</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Step for SGD with momentum with <code>lr</code></p>
 
@@ -1145,7 +1146,7 @@ description: "Define the general fastai optimizer and the variants"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="SGD" class="doc_header"><code>SGD</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L133" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>SGD</code>(<strong><code>params</code></strong>, <strong><code>lr</code></strong>, <strong><code>mom</code></strong>=<em><code>0.0</code></em>, <strong><code>wd</code></strong>=<em><code>0.0</code></em>, <strong><code>decouple_wd</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="SGD" class="doc_header"><code>SGD</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L142" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>SGD</code>(<strong><code>params</code></strong>, <strong><code>lr</code></strong>, <strong><code>mom</code></strong>=<em><code>0.0</code></em>, <strong><code>wd</code></strong>=<em><code>0.0</code></em>, <strong><code>decouple_wd</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 <p>A <a href="/optimizer#Optimizer"><code>Optimizer</code></a> for SGD with <code>lr</code> and <code>mom</code> and <a href="/torch_core#params"><code>params</code></a></p>
 
@@ -1273,7 +1274,7 @@ description: "Define the general fastai optimizer and the variants"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="rms_prop_step" class="doc_header"><code>rms_prop_step</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L141" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>rms_prop_step</code>(<strong><code>p</code></strong>, <strong><code>lr</code></strong>, <strong><code>sqr_avg</code></strong>, <strong><code>eps</code></strong>, <strong><code>grad_avg</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="rms_prop_step" class="doc_header"><code>rms_prop_step</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L151" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>rms_prop_step</code>(<strong><code>p</code></strong>, <strong><code>lr</code></strong>, <strong><code>sqr_avg</code></strong>, <strong><code>eps</code></strong>, <strong><code>grad_avg</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Step for SGD with momentum with <code>lr</code></p>
 
@@ -1305,7 +1306,7 @@ description: "Define the general fastai optimizer and the variants"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="RMSProp" class="doc_header"><code>RMSProp</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L149" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>RMSProp</code>(<strong><code>params</code></strong>, <strong><code>lr</code></strong>, <strong><code>sqr_mom</code></strong>=<em><code>0.99</code></em>, <strong><code>mom</code></strong>=<em><code>0.0</code></em>, <strong><code>wd</code></strong>=<em><code>0.0</code></em>, <strong><code>decouple_wd</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="RMSProp" class="doc_header"><code>RMSProp</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L159" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>RMSProp</code>(<strong><code>params</code></strong>, <strong><code>lr</code></strong>, <strong><code>sqr_mom</code></strong>=<em><code>0.99</code></em>, <strong><code>mom</code></strong>=<em><code>0.0</code></em>, <strong><code>wd</code></strong>=<em><code>0.0</code></em>, <strong><code>decouple_wd</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 <p>A <a href="/optimizer#Optimizer"><code>Optimizer</code></a> for RMSProp with <code>lr</code>, <code>sqr_mom</code>, <code>mom</code> and <a href="/torch_core#params"><code>params</code></a></p>
 
@@ -1399,7 +1400,7 @@ description: "Define the general fastai optimizer and the variants"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="step_stat" class="doc_header"><code>step_stat</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L157" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>step_stat</code>(<strong><code>p</code></strong>, <strong><code>step</code></strong>=<em><code>0</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="step_stat" class="doc_header"><code>step_stat</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L168" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>step_stat</code>(<strong><code>p</code></strong>, <strong><code>step</code></strong>=<em><code>0</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Register the number of steps done in <code>state</code> for <code>p</code></p>
 
@@ -1453,7 +1454,7 @@ description: "Define the general fastai optimizer and the variants"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="debias" class="doc_header"><code>debias</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L163" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>debias</code>(<strong><code>mom</code></strong>, <strong><code>damp</code></strong>, <strong><code>step</code></strong>)</p>
+<h4 id="debias" class="doc_header"><code>debias</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L174" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>debias</code>(<strong><code>mom</code></strong>, <strong><code>damp</code></strong>, <strong><code>step</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -1484,7 +1485,7 @@ description: "Define the general fastai optimizer and the variants"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="adam_step" class="doc_header"><code>adam_step</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L166" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>adam_step</code>(<strong><code>p</code></strong>, <strong><code>lr</code></strong>, <strong><code>mom</code></strong>, <strong><code>step</code></strong>, <strong><code>sqr_mom</code></strong>, <strong><code>grad_avg</code></strong>, <strong><code>sqr_avg</code></strong>, <strong><code>eps</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="adam_step" class="doc_header"><code>adam_step</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L177" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>adam_step</code>(<strong><code>p</code></strong>, <strong><code>lr</code></strong>, <strong><code>mom</code></strong>, <strong><code>step</code></strong>, <strong><code>sqr_mom</code></strong>, <strong><code>grad_avg</code></strong>, <strong><code>sqr_avg</code></strong>, <strong><code>eps</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Step for Adam with <code>lr</code> on <code>p</code></p>
 
@@ -1516,7 +1517,7 @@ description: "Define the general fastai optimizer and the variants"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Adam" class="doc_header"><code>Adam</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L176" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Adam</code>(<strong><code>params</code></strong>, <strong><code>lr</code></strong>, <strong><code>mom</code></strong>=<em><code>0.9</code></em>, <strong><code>sqr_mom</code></strong>=<em><code>0.99</code></em>, <strong><code>eps</code></strong>=<em><code>1e-05</code></em>, <strong><code>wd</code></strong>=<em><code>0.01</code></em>, <strong><code>decouple_wd</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="Adam" class="doc_header"><code>Adam</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L187" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Adam</code>(<strong><code>params</code></strong>, <strong><code>lr</code></strong>, <strong><code>mom</code></strong>=<em><code>0.9</code></em>, <strong><code>sqr_mom</code></strong>=<em><code>0.99</code></em>, <strong><code>eps</code></strong>=<em><code>1e-05</code></em>, <strong><code>wd</code></strong>=<em><code>0.01</code></em>, <strong><code>decouple_wd</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 <p>A <a href="/optimizer#Optimizer"><code>Optimizer</code></a> for Adam with <code>lr</code>, <code>mom</code>, <code>sqr_mom</code>, <code>eps</code> and <a href="/torch_core#params"><code>params</code></a></p>
 
@@ -1594,7 +1595,7 @@ description: "Define the general fastai optimizer and the variants"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="radam_step" class="doc_header"><code>radam_step</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L183" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>radam_step</code>(<strong><code>p</code></strong>, <strong><code>lr</code></strong>, <strong><code>mom</code></strong>, <strong><code>step</code></strong>, <strong><code>sqr_mom</code></strong>, <strong><code>grad_avg</code></strong>, <strong><code>sqr_avg</code></strong>, <strong><code>eps</code></strong>, <strong><code>beta</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="radam_step" class="doc_header"><code>radam_step</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L195" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>radam_step</code>(<strong><code>p</code></strong>, <strong><code>lr</code></strong>, <strong><code>mom</code></strong>, <strong><code>step</code></strong>, <strong><code>sqr_mom</code></strong>, <strong><code>grad_avg</code></strong>, <strong><code>sqr_avg</code></strong>, <strong><code>eps</code></strong>, <strong><code>beta</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Step for RAdam with <code>lr</code> on <code>p</code></p>
 
@@ -1626,7 +1627,7 @@ description: "Define the general fastai optimizer and the variants"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="RAdam" class="doc_header"><code>RAdam</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L201" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>RAdam</code>(<strong><code>params</code></strong>, <strong><code>lr</code></strong>, <strong><code>mom</code></strong>=<em><code>0.9</code></em>, <strong><code>sqr_mom</code></strong>=<em><code>0.99</code></em>, <strong><code>eps</code></strong>=<em><code>1e-05</code></em>, <strong><code>wd</code></strong>=<em><code>0.0</code></em>, <strong><code>beta</code></strong>=<em><code>0.0</code></em>, <strong><code>decouple_wd</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="RAdam" class="doc_header"><code>RAdam</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L213" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>RAdam</code>(<strong><code>params</code></strong>, <strong><code>lr</code></strong>, <strong><code>mom</code></strong>=<em><code>0.9</code></em>, <strong><code>sqr_mom</code></strong>=<em><code>0.99</code></em>, <strong><code>eps</code></strong>=<em><code>1e-05</code></em>, <strong><code>wd</code></strong>=<em><code>0.0</code></em>, <strong><code>beta</code></strong>=<em><code>0.0</code></em>, <strong><code>decouple_wd</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 <p>A <a href="/optimizer#Optimizer"><code>Optimizer</code></a> for Adam with <code>lr</code>, <code>mom</code>, <code>sqr_mom</code>, <code>eps</code> and <a href="/torch_core#params"><code>params</code></a></p>
 
@@ -1662,24 +1663,6 @@ description: "Define the general fastai optimizer and the variants"
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-
-<div class="output_png output_subarea ">
-<img src="data:image/png;base64,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
-"
->
-</div>
-
-</div>
-
 </div>
 </div>
 
@@ -1756,7 +1739,7 @@ description: "Define the general fastai optimizer and the variants"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="qhadam_step" class="doc_header"><code>qhadam_step</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L208" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>qhadam_step</code>(<strong><code>p</code></strong>, <strong><code>lr</code></strong>, <strong><code>mom</code></strong>, <strong><code>sqr_mom</code></strong>, <strong><code>sqr_avg</code></strong>, <strong><code>nu_1</code></strong>, <strong><code>nu_2</code></strong>, <strong><code>step</code></strong>, <strong><code>grad_avg</code></strong>, <strong><code>eps</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="qhadam_step" class="doc_header"><code>qhadam_step</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L221" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>qhadam_step</code>(<strong><code>p</code></strong>, <strong><code>lr</code></strong>, <strong><code>mom</code></strong>, <strong><code>sqr_mom</code></strong>, <strong><code>sqr_avg</code></strong>, <strong><code>nu_1</code></strong>, <strong><code>nu_2</code></strong>, <strong><code>step</code></strong>, <strong><code>grad_avg</code></strong>, <strong><code>eps</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -1787,7 +1770,7 @@ description: "Define the general fastai optimizer and the variants"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="QHAdam" class="doc_header"><code>QHAdam</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L218" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>QHAdam</code>(<strong><code>params</code></strong>, <strong><code>lr</code></strong>, <strong><code>mom</code></strong>=<em><code>0.999</code></em>, <strong><code>sqr_mom</code></strong>=<em><code>0.999</code></em>, <strong><code>nu_1</code></strong>=<em><code>0.7</code></em>, <strong><code>nu_2</code></strong>=<em><code>1.0</code></em>, <strong><code>eps</code></strong>=<em><code>1e-08</code></em>, <strong><code>wd</code></strong>=<em><code>0.0</code></em>, <strong><code>decouple_wd</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="QHAdam" class="doc_header"><code>QHAdam</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L232" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>QHAdam</code>(<strong><code>params</code></strong>, <strong><code>lr</code></strong>, <strong><code>mom</code></strong>=<em><code>0.999</code></em>, <strong><code>sqr_mom</code></strong>=<em><code>0.999</code></em>, <strong><code>nu_1</code></strong>=<em><code>0.7</code></em>, <strong><code>nu_2</code></strong>=<em><code>1.0</code></em>, <strong><code>eps</code></strong>=<em><code>1e-08</code></em>, <strong><code>wd</code></strong>=<em><code>0.0</code></em>, <strong><code>decouple_wd</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 <p>An <a href="/optimizer#Optimizer"><code>Optimizer</code></a> for Adam with <code>lr</code>, <code>mom</code>, <code>sqr_mom</code>, <code>nus</code>, eps<code>and</code>params`</p>
 
@@ -1849,7 +1832,7 @@ description: "Define the general fastai optimizer and the variants"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="larc_layer_lr" class="doc_header"><code>larc_layer_lr</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L226" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>larc_layer_lr</code>(<strong><code>p</code></strong>, <strong><code>lr</code></strong>, <strong><code>trust_coeff</code></strong>, <strong><code>wd</code></strong>, <strong><code>eps</code></strong>, <strong><code>clip</code></strong>=<em><code>True</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="larc_layer_lr" class="doc_header"><code>larc_layer_lr</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L241" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>larc_layer_lr</code>(<strong><code>p</code></strong>, <strong><code>lr</code></strong>, <strong><code>trust_coeff</code></strong>, <strong><code>wd</code></strong>, <strong><code>eps</code></strong>, <strong><code>clip</code></strong>=<em><code>True</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Computes the local lr before weight decay is applied</p>
 
@@ -1881,7 +1864,7 @@ description: "Define the general fastai optimizer and the variants"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="larc_step" class="doc_header"><code>larc_step</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L235" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>larc_step</code>(<strong><code>p</code></strong>, <strong><code>local_lr</code></strong>, <strong><code>grad_avg</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="larc_step" class="doc_header"><code>larc_step</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L250" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>larc_step</code>(<strong><code>p</code></strong>, <strong><code>local_lr</code></strong>, <strong><code>grad_avg</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Step for LARC <code>local_lr</code> on <code>p</code></p>
 
@@ -1913,7 +1896,7 @@ description: "Define the general fastai optimizer and the variants"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Larc" class="doc_header"><code>Larc</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L240" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Larc</code>(<strong><code>params</code></strong>, <strong><code>lr</code></strong>, <strong><code>mom</code></strong>=<em><code>0.9</code></em>, <strong><code>clip</code></strong>=<em><code>True</code></em>, <strong><code>trust_coeff</code></strong>=<em><code>0.02</code></em>, <strong><code>eps</code></strong>=<em><code>1e-08</code></em>, <strong><code>wd</code></strong>=<em><code>0.0</code></em>, <strong><code>decouple_wd</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="Larc" class="doc_header"><code>Larc</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L255" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Larc</code>(<strong><code>params</code></strong>, <strong><code>lr</code></strong>, <strong><code>mom</code></strong>=<em><code>0.9</code></em>, <strong><code>clip</code></strong>=<em><code>True</code></em>, <strong><code>trust_coeff</code></strong>=<em><code>0.02</code></em>, <strong><code>eps</code></strong>=<em><code>1e-08</code></em>, <strong><code>wd</code></strong>=<em><code>0.0</code></em>, <strong><code>decouple_wd</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 <p>A <a href="/optimizer#Optimizer"><code>Optimizer</code></a> for Adam with <code>lr</code>, <code>mom</code>, <code>sqr_mom</code>, <code>eps</code> and <a href="/torch_core#params"><code>params</code></a></p>
 
@@ -2008,7 +1991,7 @@ description: "Define the general fastai optimizer and the variants"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="lamb_step" class="doc_header"><code>lamb_step</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L248" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>lamb_step</code>(<strong><code>p</code></strong>, <strong><code>lr</code></strong>, <strong><code>mom</code></strong>, <strong><code>step</code></strong>, <strong><code>sqr_mom</code></strong>, <strong><code>grad_avg</code></strong>, <strong><code>sqr_avg</code></strong>, <strong><code>eps</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="lamb_step" class="doc_header"><code>lamb_step</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L264" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>lamb_step</code>(<strong><code>p</code></strong>, <strong><code>lr</code></strong>, <strong><code>mom</code></strong>, <strong><code>step</code></strong>, <strong><code>sqr_mom</code></strong>, <strong><code>grad_avg</code></strong>, <strong><code>sqr_avg</code></strong>, <strong><code>eps</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Step for LAMB with <code>lr</code> on <code>p</code></p>
 
@@ -2040,7 +2023,7 @@ description: "Define the general fastai optimizer and the variants"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Lamb" class="doc_header"><code>Lamb</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L261" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Lamb</code>(<strong><code>params</code></strong>, <strong><code>lr</code></strong>, <strong><code>mom</code></strong>=<em><code>0.9</code></em>, <strong><code>sqr_mom</code></strong>=<em><code>0.99</code></em>, <strong><code>eps</code></strong>=<em><code>1e-05</code></em>, <strong><code>wd</code></strong>=<em><code>0.0</code></em>, <strong><code>decouple_wd</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="Lamb" class="doc_header"><code>Lamb</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L277" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Lamb</code>(<strong><code>params</code></strong>, <strong><code>lr</code></strong>, <strong><code>mom</code></strong>=<em><code>0.9</code></em>, <strong><code>sqr_mom</code></strong>=<em><code>0.99</code></em>, <strong><code>eps</code></strong>=<em><code>1e-05</code></em>, <strong><code>wd</code></strong>=<em><code>0.0</code></em>, <strong><code>decouple_wd</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 <p>A <a href="/optimizer#Optimizer"><code>Optimizer</code></a> for Adam with <code>lr</code>, <code>mom</code>, <code>sqr_mom</code>, <code>eps</code> and <a href="/torch_core#params"><code>params</code></a></p>
 
@@ -2107,7 +2090,7 @@ description: "Define the general fastai optimizer and the variants"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Lookahead" class="doc_header"><code>class</code> <code>Lookahead</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L268" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Lookahead</code>(<strong><code>opt</code></strong>, <strong><code>k</code></strong>=<em><code>6</code></em>, <strong><code>alpha</code></strong>=<em><code>0.5</code></em>) :: <a href="/optimizer#Optimizer"><code>Optimizer</code></a></p>
+<h2 id="Lookahead" class="doc_header"><code>class</code> <code>Lookahead</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L286" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Lookahead</code>(<strong><code>opt</code></strong>, <strong><code>k</code></strong>=<em><code>6</code></em>, <strong><code>alpha</code></strong>=<em><code>0.5</code></em>) :: <a href="/optimizer#Optimizer"><code>Optimizer</code></a></p>
 </blockquote>
 <p>Wrap <code>opt</code> in a lookahead optimizer</p>
 
@@ -2164,7 +2147,7 @@ description: "Define the general fastai optimizer and the variants"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ranger" class="doc_header"><code>ranger</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L308" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ranger</code>(<strong><code>p</code></strong>, <strong><code>lr</code></strong>, <strong><code>mom</code></strong>=<em><code>0.95</code></em>, <strong><code>wd</code></strong>=<em><code>0.01</code></em>, <strong><code>eps</code></strong>=<em><code>1e-06</code></em>, <strong><code>sqr_mom</code></strong>=<em><code>0.99</code></em>, <strong><code>beta</code></strong>=<em><code>0.0</code></em>, <strong><code>decouple_wd</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="ranger" class="doc_header"><code>ranger</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L326" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ranger</code>(<strong><code>p</code></strong>, <strong><code>lr</code></strong>, <strong><code>mom</code></strong>=<em><code>0.95</code></em>, <strong><code>wd</code></strong>=<em><code>0.01</code></em>, <strong><code>eps</code></strong>=<em><code>1e-06</code></em>, <strong><code>sqr_mom</code></strong>=<em><code>0.99</code></em>, <strong><code>beta</code></strong>=<em><code>0.0</code></em>, <strong><code>decouple_wd</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 <p>Convenience method for <a href="/optimizer#Lookahead"><code>Lookahead</code></a> with <a href="/optimizer#RAdam"><code>RAdam</code></a></p>
 
@@ -2196,7 +2179,7 @@ description: "Define the general fastai optimizer and the variants"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="detuplify_pg" class="doc_header"><code>detuplify_pg</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L314" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>detuplify_pg</code>(<strong><code>d</code></strong>)</p>
+<h4 id="detuplify_pg" class="doc_header"><code>detuplify_pg</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L332" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>detuplify_pg</code>(<strong><code>d</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -2247,7 +2230,7 @@ description: "Define the general fastai optimizer and the variants"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="set_item_pg" class="doc_header"><code>set_item_pg</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L323" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>set_item_pg</code>(<strong><code>pg</code></strong>, <strong><code>k</code></strong>, <strong><code>v</code></strong>)</p>
+<h4 id="set_item_pg" class="doc_header"><code>set_item_pg</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L341" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>set_item_pg</code>(<strong><code>pg</code></strong>, <strong><code>k</code></strong>, <strong><code>v</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -2305,7 +2288,7 @@ description: "Define the general fastai optimizer and the variants"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="OptimWrapper" class="doc_header"><code>class</code> <code>OptimWrapper</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L334" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>OptimWrapper</code>(<strong><code>opt</code></strong>, <strong><code>hp_map</code></strong>=<em><code>None</code></em>) :: <code>_BaseOptimizer</code></p>
+<h2 id="OptimWrapper" class="doc_header"><code>class</code> <code>OptimWrapper</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/optimizer.py#L352" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>OptimWrapper</code>(<strong><code>opt</code></strong>, <strong><code>hp_map</code></strong>=<em><code>None</code></em>) :: <code>_BaseOptimizer</code></p>
 </blockquote>
 <p>Common functionality between <a href="/optimizer#Optimizer"><code>Optimizer</code></a> and <a href="/optimizer#OptimWrapper"><code>OptimWrapper</code></a></p>
 
@@ -2329,9 +2312,9 @@ description: "Define the general fastai optimizer and the variants"
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">sgd</span> <span class="o">=</span> <span class="n">SGD</span><span class="p">([</span><span class="n">tensor</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])],</span> <span class="n">lr</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">,</span> <span class="n">mom</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">wd</span><span class="o">=</span><span class="mf">1e-2</span><span class="p">)</span>
 <span class="n">tst_sgd</span> <span class="o">=</span> <span class="n">OptimWrapper</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">SGD</span><span class="p">([</span><span class="n">tensor</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])],</span> <span class="n">lr</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">,</span> <span class="n">momentum</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">weight_decay</span><span class="o">=</span><span class="mf">1e-2</span><span class="p">))</span>
 <span class="c1">#Access to param_groups</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">tst_sgd</span><span class="o">.</span><span class="n">param_groups</span><span class="p">,</span> <span class="n">sgd</span><span class="o">.</span><span class="n">param_groups</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">tst_sgd</span><span class="o">.</span><span class="n">param_lists</span><span class="p">,</span> <span class="n">sgd</span><span class="o">.</span><span class="n">param_lists</span><span class="p">)</span>
 <span class="c1">#Set param_groups</span>
-<span class="n">tst_sgd</span><span class="o">.</span><span class="n">param_groups</span> <span class="o">=</span> <span class="p">[[</span><span class="n">tensor</span><span class="p">([</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">])]]</span>
+<span class="n">tst_sgd</span><span class="o">.</span><span class="n">param_lists</span> <span class="o">=</span> <span class="p">[[</span><span class="n">tensor</span><span class="p">([</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">])]]</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">tst_sgd</span><span class="o">.</span><span class="n">opt</span><span class="o">.</span><span class="n">param_groups</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;params&#39;</span><span class="p">],</span> <span class="p">[</span><span class="n">tensor</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">)])</span>
 <span class="c1">#Access to hypers</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">tst_sgd</span><span class="o">.</span><span class="n">hypers</span><span class="p">,</span> <span class="p">[{</span><span class="o">**</span><span class="n">sgd</span><span class="o">.</span><span class="n">hypers</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;dampening&#39;</span><span class="p">:</span> <span class="mf">0.</span><span class="p">,</span> <span class="s1">&#39;nesterov&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}])</span>
@@ -2358,9 +2341,9 @@ description: "Define the general fastai optimizer and the variants"
                                         <span class="p">{</span><span class="s1">&#39;params&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">tensor</span><span class="p">([</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">])],</span> <span class="s1">&#39;lr&#39;</span><span class="p">:</span> <span class="mf">1e-2</span><span class="p">}],</span> <span class="n">momentum</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">weight_decay</span><span class="o">=</span><span class="mf">1e-2</span><span class="p">))</span>
 <span class="n">sgd</span> <span class="o">=</span> <span class="n">SGD</span><span class="p">([[</span><span class="n">tensor</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])],</span> <span class="p">[</span><span class="n">tensor</span><span class="p">([</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">])]],</span> <span class="n">lr</span><span class="o">=</span><span class="p">[</span><span class="mf">1e-3</span><span class="p">,</span> <span class="mf">1e-2</span><span class="p">],</span> <span class="n">mom</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">wd</span><span class="o">=</span><span class="mf">1e-2</span><span class="p">)</span>
 <span class="c1">#Access to param_groups</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">tst_sgd</span><span class="o">.</span><span class="n">param_groups</span><span class="p">,</span> <span class="n">sgd</span><span class="o">.</span><span class="n">param_groups</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">tst_sgd</span><span class="o">.</span><span class="n">param_lists</span><span class="p">,</span> <span class="n">sgd</span><span class="o">.</span><span class="n">param_lists</span><span class="p">)</span>
 <span class="c1">#Set param_groups</span>
-<span class="n">tst_sgd</span><span class="o">.</span><span class="n">param_groups</span> <span class="o">=</span> <span class="p">[[</span><span class="n">tensor</span><span class="p">([</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">])],</span> <span class="p">[</span><span class="n">tensor</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])]]</span>
+<span class="n">tst_sgd</span><span class="o">.</span><span class="n">param_lists</span> <span class="o">=</span> <span class="p">[[</span><span class="n">tensor</span><span class="p">([</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">])],</span> <span class="p">[</span><span class="n">tensor</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])]]</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">tst_sgd</span><span class="o">.</span><span class="n">opt</span><span class="o">.</span><span class="n">param_groups</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;params&#39;</span><span class="p">],</span> <span class="p">[</span><span class="n">tensor</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">)])</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">tst_sgd</span><span class="o">.</span><span class="n">opt</span><span class="o">.</span><span class="n">param_groups</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;params&#39;</span><span class="p">],</span> <span class="p">[</span><span class="n">tensor</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">)])</span>
 <span class="c1">#Access to hypers</span>
