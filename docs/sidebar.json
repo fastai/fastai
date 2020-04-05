@@ -39,6 +39,7 @@
         "Hooks and callbacks": "/callback.hook",
         "Mixed precision": "/callback.fp16",
         "Mixup": "/callback.mixup",
+        "Cutmix": "/callback.cutmix",
         "Tracker": "/callback.tracker",
         "Training": "/callback.training",
         "RNN": "/callback.rnn",

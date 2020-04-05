@@ -89,6 +89,9 @@ entries:
           title: Mixup
           url: /callback.mixup
         - output: web,pdf
+          title: Cutmix
+          url: /callback.cutmix
+        - output: web,pdf
           title: Tracker
           url: /callback.tracker
         - output: web,pdf
