@@ -8,6 +8,7 @@ from .core import *
 from .model import *
 
 # Cell
+@log_args(but='dls,model')
 class TabularLearner(Learner):
     "`Learner` for tabular data"
     def predict(self, row):
@@ -22,6 +23,7 @@ class TabularLearner(Learner):
         return full_dec,dec_preds[0],preds[0]
 
 # Cell
+@log_args(to_return=True, but='dls,model')
 @delegates(Learner.__init__)
 def tabular_learner(dls, layers=None, emb_szs=None, config=None, n_out=None, y_range=None, **kwargs):
     "Get a `Learner` using `dls`, with `metrics`, including a `TabularModel` created using the remaining params."

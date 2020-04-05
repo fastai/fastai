@@ -101,6 +101,7 @@ class ParamScheduler(Callback):
 
 # Cell
 @patch
+@log_args(but='cbs')
 def fit_one_cycle(self:Learner, n_epoch, lr_max=None, div=25., div_final=1e5, pct_start=0.25, wd=None,
                   moms=None, cbs=None, reset_opt=False):
     "Fit `self.model` for `n_epoch` using the 1cycle policy."
@@ -125,6 +126,7 @@ def plot_sched(self:Recorder, keys=None, figsize=None):
 
 # Cell
 @patch
+@log_args(but='cbs')
 def fit_flat_cos(self:Learner, n_epoch, lr=None, div_final=1e5, pct_start=0.75, wd=None,
                  cbs=None, reset_opt=False):
     "Fit `self.model` for `n_epoch` at flat `lr` before a cosine annealing."
@@ -136,6 +138,7 @@ def fit_flat_cos(self:Learner, n_epoch, lr=None, div_final=1e5, pct_start=0.75, 
 
 # Cell
 @patch
+@log_args(but='cbs')
 def fit_sgdr(self:Learner, n_cycles, cycle_len, lr_max=None, cycle_mult=2, cbs=None, reset_opt=False, wd=None):
     "Fit `self.model` for `n_cycles` of `cycle_len` using SGDR."
     if self.opt is None: self.create_opt()
@@ -148,8 +151,9 @@ def fit_sgdr(self:Learner, n_cycles, cycle_len, lr_max=None, cycle_mult=2, cbs=N
     self.fit(n_epoch, cbs=ParamScheduler(scheds)+L(cbs), reset_opt=reset_opt, wd=wd)
 
 # Cell
-@delegates(Learner.fit_one_cycle)
 @patch
+@log_args(but='cbs')
+@delegates(Learner.fit_one_cycle)
 def fine_tune(self:Learner, epochs, base_lr=2e-3, freeze_epochs=1, lr_mult=100,
               pct_start=0.3, div=5.0, **kwargs):
     "Fine tune with `freeze` for `freeze_epochs` then with `unfreeze` from `epochs` using discriminative LR"

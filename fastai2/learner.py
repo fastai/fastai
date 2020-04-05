@@ -71,6 +71,7 @@ _before_epoch = [event.begin_fit, event.begin_epoch]
 _after_epoch  = [event.after_epoch, event.after_fit]
 
 # Cell
+@log_args(but='dls,model')
 class Learner():
     def __init__(self, dls, model, loss_func=None, opt_func=Adam, lr=defaults.lr, splitter=trainable_params, cbs=None,
                  metrics=None, path=None, model_dir='models', wd=None, wd_bn_bias=False, train_bn=True,
@@ -180,6 +181,7 @@ class Learner():
         finally:
             dl,*_ = change_attrs(dl, names, old, has);       self('after_validate')
 
+    @log_args
     def fit(self, n_epoch, lr=None, wd=None, cbs=None, reset_opt=False):
         with self.added_cbs(cbs):
             if reset_opt or not self.opt: self.create_opt()

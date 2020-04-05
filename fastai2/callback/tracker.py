@@ -43,6 +43,7 @@ class TrackerCallback(Callback):
     def after_fit(self): self.run=True
 
 # Cell
+@log_args
 class EarlyStoppingCallback(TrackerCallback):
     "A `TrackerCallback` that terminates training when monitored quantity stops improving."
     def __init__(self, monitor='valid_loss', comp=None, min_delta=0., patience=1):
@@ -61,6 +62,7 @@ class EarlyStoppingCallback(TrackerCallback):
                 raise CancelFitException()
 
 # Cell
+@log_args
 class SaveModelCallback(TrackerCallback):
     "A `TrackerCallback` that saves the model's best during training and loads it at the end."
     def __init__(self, monitor='valid_loss', comp=None, min_delta=0., fname='model', every_epoch=False, add_save=None, with_opt=False):
@@ -84,6 +86,7 @@ class SaveModelCallback(TrackerCallback):
         if not self.every_epoch: self.learn.load(f'{self.fname}')
 
 # Cell
+@log_args
 class ReduceLROnPlateau(TrackerCallback):
     "A `TrackerCallback` that reduces learning rate when a metric has stopped improving."
     def __init__(self, monitor='valid_loss', comp=None, min_delta=0., patience=1, factor=10.):

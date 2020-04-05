@@ -56,6 +56,7 @@ def fa_convert(t):
 class SkipItemException(Exception): pass
 
 # Cell
+@log_args(but='dataset,wif,create_batch,create_batches,create_item,retain,get_idxs,sample,shuffle_fn,do_batch')
 @funcs_kwargs
 class DataLoader(GetAttr):
     _noop_methods = 'wif before_iter after_item before_batch after_batch after_iter'.split()
