@@ -214,7 +214,7 @@ radam_step._defaults = dict(eps=1e-5)
 def RAdam(params, lr, mom=0.9, sqr_mom=0.99, eps=1e-5, wd=0., beta=0., decouple_wd=True):
     "A `Optimizer` for Adam with `lr`, `mom`, `sqr_mom`, `eps` and `params`"
     cbs = [weight_decay] if decouple_wd else [l2_reg]
-    cbs += [partial(average_grad, dampening=True), average_sqr_grad, step_stat, radam_step]
+    cbs = [partial(average_grad, dampening=True), average_sqr_grad, step_stat, radam_step]
     return Optimizer(params, cbs, lr=lr, mom=mom, sqr_mom=sqr_mom, eps=eps, wd=wd, beta=beta)
 
 # Cell
