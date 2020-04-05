@@ -107,7 +107,7 @@ class GANLoss(GANModule):
 
     def critic(self, real_pred, input):
         "Create some `fake_pred` with the generator from `input` and compare them to `real_pred` in `self.crit_loss_func`."
-        fake = self.gan_model.generator(input.requires_grad_(False)).requires_grad_(True)
+        fake = self.gan_model.generator(input).requires_grad_(False)
         fake_pred = self.gan_model.critic(fake)
         self.crit_loss = self.crit_loss_func(real_pred, fake_pred)
         return self.crit_loss
