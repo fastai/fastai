@@ -109,10 +109,10 @@ def decode_spec_tokens(tokens):
 class LMLearner(TextLearner):
     "Add functionality to `TextLearner` when dealingwith a language model"
     def predict(self, text, n_words=1, no_unk=True, temperature=1., min_p=None, no_bar=False,
-                decoder=decode_spec_tokens):
+                decoder=decode_spec_tokens, only_last_word=False):
         "Return `text` and the `n_words` that come after"
         self.model.reset()
-        idxs = self.dls.test_dl([text]).items[0].to(self.dls.device)
+        idxs = idxs_all = self.dls.test_dl([text]).items[0].to(self.dls.device)
         if no_unk: unk_idx = self.dls.vocab.index(UNK)
         for _ in (range(n_words) if no_bar else progress_bar(range(n_words), leave=False)):
             with self.no_bar(): preds,_ = self.get_preds(dl=[(idxs[None],)])
@@ -124,10 +124,11 @@ class LMLearner(TextLearner):
                 else: res[res < min_p] = 0.
             if temperature != 1.: res.pow_(1 / temperature)
             idx = torch.multinomial(res, 1).item()
-            idxs = torch.cat([idxs, idxs.new([idx])])
+            idxs = idxs_all = torch.cat([idxs_all, idxs.new([idx])])
+            if only_last_word: idxs = idxs[-1][None]
 
         num = self.dls.train_ds.numericalize
-        tokens = [num.vocab[i] for i in idxs if num.vocab[i] not in [BOS, PAD]]
+        tokens = [num.vocab[i] for i in idxs_all if num.vocab[i] not in [BOS, PAD]]
         sep = self.dls.train_ds.tokenizer[-1].sep
         return sep.join(decoder(tokens))
 
