@@ -71,7 +71,7 @@ _before_epoch = [event.begin_fit, event.begin_epoch]
 _after_epoch  = [event.after_epoch, event.after_fit]
 
 # Cell
-@log_args(but='dls,model,opt_func')
+@log_args(but='dls,model,opt_func,cbs')
 class Learner():
     def __init__(self, dls, model, loss_func=None, opt_func=Adam, lr=defaults.lr, splitter=trainable_params, cbs=None,
                  metrics=None, path=None, model_dir='models', wd=None, wd_bn_bias=False, train_bn=True,
@@ -278,12 +278,6 @@ class Learner():
         load_model(file, self.model, self.opt, device=device, **kwargs)
         return self
 
-    def gather_args(self):
-        cb_args = {k:v for cb in self.cbs for k,v in getattr(cb,'init_args',{}).items()}
-        args = {**getattr(self,'init_args',{}), **cb_args, **getattr(self.dls,'init_args',{}),
-                **getattr(self.opt,'init_args',{}), **getattr(self.loss_func,'init_args',{})}
-        return args
-
 Learner.x,Learner.y = add_props(lambda i,x: detuplify((x.xb,x.yb)[i]))
 
 # Cell
@@ -309,7 +303,6 @@ add_docs(Learner, "Group together a `model`, some `dls` and a `loss_func` to han
     loss_not_reduced="A context manager to evaluate `loss_func` with reduction set to none.",
     save="Save model and optimizer state (if `with_opt`) to `self.path/self.model_dir/file`",
     load="Load model and optimizer state (if `with_opt`) from `self.path/self.model_dir/file` using `device`",
-    gather_args="Gather config parameters accessible to the learner",
     __call__="Call `event_name` for all `Callback`s in `self.cbs`"
 )
 
@@ -541,3 +534,35 @@ def tta(self:Learner, ds_idx=1, dl=None, n=4, item_tfms=None, batch_tfms=None, b
     if use_max: return torch.stack([preds, aug_preds], 0).max(0)[0],targs
     preds = (aug_preds,preds) if beta is None else torch.lerp(aug_preds, preds, beta)
     return preds,targs
+
+# Cell
+@patch
+def gather_args(self:Learner):
+    "Gather config parameters accessible to the learner"
+    # init_args
+    cb_args = {k:v for cb in self.cbs for k,v in getattr(cb,'init_args',{}).items()}
+    args = {**getattr(self,'init_args',{}), **cb_args, **getattr(self.dls,'init_args',{}),
+            **getattr(self.opt,'init_args',{}), **getattr(self.loss_func,'init_args',{})}
+    # callbacks used
+    args.update({f'{cb}':True for cb in self.cbs})
+    # input dimensions
+    try:
+        n_inp = self.dls.train.n_inp
+        args['n_inp'] = n_inp
+        xb = self.dls.train.one_batch()[:n_inp]
+        args.update({f'input dim {i}':d for i,d in enumerate(list(detuplify(xb).shape))})
+    except: print(f'Could not gather input dimensions')
+    # other useful information
+    with ignore_exceptions(): args['batch size'] = self.dls.bs
+    with ignore_exceptions(): args['batch per epoch'] = len(self.dls.train)
+    with ignore_exceptions(): args['model parameters'] = total_params(self.model)[0]
+    with ignore_exceptions(): args['loss function'] = f'{self.loss_func}'
+    with ignore_exceptions(): args['device'] = self.dls.device.type
+    with ignore_exceptions(): args['optimizer'] = self.opt_func.__name__
+    with ignore_exceptions(): args['frozen'] = bool(self.opt.frozen_idx)
+    with ignore_exceptions(): args['frozen idx'] = self.opt.frozen_idx
+    with ignore_exceptions(): args['dataset.tfms'] = f'{self.dls.dataset.tfms}'
+    with ignore_exceptions(): args['dls.after_item'] = f'{self.dls.after_item}'
+    with ignore_exceptions(): args['dls.before_batch'] = f'{self.dls.before_batch}'
+    with ignore_exceptions(): args['dls.after_batch'] = f'{self.dls.after_batch}'
+    return args
