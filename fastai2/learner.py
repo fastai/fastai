@@ -172,14 +172,11 @@ class Learner():
 
     def _do_epoch_validate(self, ds_idx=1, dl=None):
         if dl is None: dl = self.dls[ds_idx]
-        names = ['shuffle', 'drop_last']
         try:
-            dl,old,has = change_attrs(dl, names, [False,False])
             self.dl = dl;                                    self('begin_validate')
             with torch.no_grad(): self.all_batches()
         except CancelValidException:                         self('after_cancel_validate')
-        finally:
-            dl,*_ = change_attrs(dl, names, old, has);       self('after_validate')
+        finally:                                             self('after_validate')
 
     @log_args(but='cbs')
     def fit(self, n_epoch, lr=None, wd=None, cbs=None, reset_opt=False):
