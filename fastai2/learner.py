@@ -114,14 +114,14 @@ class Learner():
     @contextmanager
     def added_cbs(self, cbs):
         self.add_cbs(cbs)
-        yield
-        self.remove_cbs(cbs)
+        try: yield
+        finally: self.remove_cbs(cbs)
 
     @contextmanager
     def removed_cbs(self, cbs):
         self.remove_cbs(cbs)
-        yield self
-        self.add_cbs(cbs)
+        try: yield self
+        finally: self.add_cbs(cbs)
 
     def ordered_cbs(self, event): return [cb for cb in sort_by_run(self.cbs) if hasattr(cb, event)]
 
