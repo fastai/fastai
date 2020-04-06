@@ -46,7 +46,7 @@ def load_ignore_keys(model, wgts):
     return model.load_state_dict(sd)
 
 # Cell
-@log_args(but='dls,model')
+@log_args(but_as=Learner.__init__)
 @delegates(Learner.__init__)
 class TextLearner(Learner):
     "Basic class for a `Learner` in NLP."
@@ -105,7 +105,7 @@ def decode_spec_tokens(tokens):
     return new_toks
 
 # Cell
-@log_args(but='dls,model')
+@log_args(but_as=TextLearner.__init__)
 class LMLearner(TextLearner):
     "Add functionality to `TextLearner` when dealingwith a language model"
     def predict(self, text, n_words=1, no_unk=True, temperature=1., min_p=None, no_bar=False,
@@ -144,7 +144,7 @@ def _get_text_vocab(dls):
     return vocab
 
 # Cell
-@log_args(to_return=True, but='dls,model')
+@log_args(to_return=True, but_as=Learner.__init__)
 @delegates(Learner.__init__)
 def language_model_learner(dls, arch, config=None, drop_mult=1., pretrained=True, pretrained_fnames=None, **kwargs):
     "Create a `Learner` with a language model from `dls` and `arch`."
@@ -167,7 +167,7 @@ def language_model_learner(dls, arch, config=None, drop_mult=1., pretrained=True
     return learn
 
 # Cell
-@log_args(to_return=True, but='dls,model')
+@log_args(to_return=True, but_as=Learner.__init__)
 @delegates(Learner.__init__)
 def text_classifier_learner(dls, arch, seq_len=72, config=None, pretrained=True, drop_mult=0.5, n_out=None,
                             lin_ftrs=None, ps=None, max_len=72*20, y_range=None, **kwargs):

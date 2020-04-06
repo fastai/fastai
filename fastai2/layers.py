@@ -270,6 +270,7 @@ def AvgPool(ks=2, stride=None, padding=0, ndim=2, ceil_mode=False):
     return getattr(nn, f"AvgPool{ndim}d")(ks, stride=stride, padding=padding, ceil_mode=ceil_mode)
 
 # Cell
+@log_args
 @funcs_kwargs
 class BaseLoss():
     "Same as `loss_cls`, but flattens input and target."
@@ -295,6 +296,7 @@ class BaseLoss():
         return self.func.__call__(inp, targ.view(-1) if self.flatten else targ, **kwargs)
 
 # Cell
+@log_args
 @delegates(keep=True)
 class CrossEntropyLossFlat(BaseLoss):
     "Same as `nn.CrossEntropyLoss`, but flattens input and target."
@@ -304,6 +306,7 @@ class CrossEntropyLossFlat(BaseLoss):
     def activation(self, x): return F.softmax(x, dim=self.axis)
 
 # Cell
+@log_args
 @delegates(keep=True)
 class BCEWithLogitsLossFlat(BaseLoss):
     "Same as `nn.CrossEntropyLoss`, but flattens input and target."
@@ -315,21 +318,25 @@ class BCEWithLogitsLossFlat(BaseLoss):
     def activation(self, x): return torch.sigmoid(x)
 
 # Cell
+@log_args(to_return=True)
 def BCELossFlat(*args, axis=-1, floatify=True, **kwargs):
     "Same as `nn.BCELoss`, but flattens input and target."
     return BaseLoss(nn.BCELoss, *args, axis=axis, floatify=floatify, is_2d=False, **kwargs)
 
 # Cell
+@log_args(to_return=True)
 def MSELossFlat(*args, axis=-1, floatify=True, **kwargs):
     "Same as `nn.MSELoss`, but flattens input and target."
     return BaseLoss(nn.MSELoss, *args, axis=axis, floatify=floatify, is_2d=False, **kwargs)
 
 # Cell
+@log_args(to_return=True)
 def L1LossFlat(*args, axis=-1, floatify=True, **kwargs):
     "Same as `nn.MSELoss`, but flattens input and target."
     return BaseLoss(nn.L1Loss, *args, axis=axis, floatify=floatify, is_2d=False, **kwargs)
 
 # Cell
+@log_args
 class LabelSmoothingCrossEntropy(Module):
     y_int = True
     def __init__(self, eps:float=0.1, reduction='mean'): self.eps,self.reduction = eps,reduction

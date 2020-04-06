@@ -60,6 +60,7 @@ def _update(state, new=None):
     return state
 
 # Cell
+@log_args(but='params,cbs,defaults')
 class Optimizer(_BaseOptimizer):
     "Base optimizer class for the fastai library, updating `params` with `cbs`"
     _keep_on_clear = ['force_train', 'do_wd']
@@ -139,7 +140,7 @@ def momentum_step(p, lr, grad_avg, **kwargs):
     p.data.add_(grad_avg, alpha=-lr)
 
 # Cell
-@log_args(to_return=True, but='params')
+@log_args(to_return=True, but_as=Optimizer.__init__)
 def SGD(params, lr, mom=0., wd=0., decouple_wd=True):
     "A `Optimizer` for SGD with `lr` and `mom` and `params`"
     cbs = [weight_decay] if decouple_wd else [l2_reg]
@@ -156,7 +157,7 @@ def rms_prop_step(p, lr, sqr_avg, eps, grad_avg=None, **kwargs):
 rms_prop_step.defaults = dict(eps=1e-8)
 
 # Cell
-@log_args(to_return=True, but='params')
+@log_args(to_return=True, but_as=Optimizer.__init__)
 def RMSProp(params, lr, sqr_mom=0.99, mom=0., wd=0., decouple_wd=True):
     "A `Optimizer` for RMSProp with `lr`, `sqr_mom`, `mom` and `params`"
     cbs = [weight_decay] if decouple_wd else [l2_reg]
@@ -184,7 +185,7 @@ def adam_step(p, lr, mom, step, sqr_mom, grad_avg, sqr_avg, eps, **kwargs):
 adam_step._defaults = dict(eps=1e-5)
 
 # Cell
-@log_args(to_return=True, but='params')
+@log_args(to_return=True, but_as=Optimizer.__init__)
 def Adam(params, lr, mom=0.9, sqr_mom=0.99, eps=1e-5, wd=0.01, decouple_wd=True):
     "A `Optimizer` for Adam with `lr`, `mom`, `sqr_mom`, `eps` and `params`"
     cbs = [weight_decay] if decouple_wd else [l2_reg]
@@ -210,7 +211,7 @@ def radam_step(p, lr, mom, step, sqr_mom, grad_avg, sqr_avg, eps, beta, **kwargs
 radam_step._defaults = dict(eps=1e-5)
 
 # Cell
-@log_args(to_return=True, but='params')
+@log_args(to_return=True, but_as=Optimizer.__init__)
 def RAdam(params, lr, mom=0.9, sqr_mom=0.99, eps=1e-5, wd=0., beta=0., decouple_wd=True):
     "A `Optimizer` for Adam with `lr`, `mom`, `sqr_mom`, `eps` and `params`"
     cbs = [weight_decay] if decouple_wd else [l2_reg]
@@ -229,7 +230,7 @@ def qhadam_step(p, lr, mom, sqr_mom, sqr_avg, nu_1, nu_2, step, grad_avg, eps, *
 qhadam_step._defaults = dict(eps=1e-8)
 
 # Cell
-@log_args(to_return=True, but='params')
+@log_args(to_return=True, but_as=Optimizer.__init__)
 def QHAdam(params, lr, mom=0.999, sqr_mom=0.999, nu_1=0.7, nu_2 = 1.0, eps=1e-8, wd=0., decouple_wd=True):
     "An `Optimizer` for Adam with `lr`, `mom`, `sqr_mom`, `nus`, eps` and `params`"
     cbs = [weight_decay] if decouple_wd else [l2_reg]
@@ -252,7 +253,7 @@ def larc_step(p, local_lr, grad_avg=None, **kwargs):
     p.data.add_(p.grad.data if grad_avg is None else grad_avg, alpha = -local_lr)
 
 # Cell
-@log_args(to_return=True, but='params')
+@log_args(to_return=True, but_as=Optimizer.__init__)
 def Larc(params, lr, mom=0.9, clip=True, trust_coeff=0.02, eps=1e-8, wd=0., decouple_wd=True):
     "A `Optimizer` for Adam with `lr`, `mom`, `sqr_mom`, `eps` and `params`"
     cbs = [weight_decay] if decouple_wd else [l2_reg]
@@ -274,7 +275,7 @@ def lamb_step(p, lr, mom, step, sqr_mom, grad_avg, sqr_avg, eps, **kwargs):
 lamb_step._defaults = dict(eps=1e-6, wd=0.)
 
 # Cell
-@log_args(to_return=True, but='params')
+@log_args(to_return=True, but_as=Optimizer.__init__)
 def Lamb(params, lr, mom=0.9, sqr_mom=0.99, eps=1e-5, wd=0., decouple_wd=True):
     "A `Optimizer` for Adam with `lr`, `mom`, `sqr_mom`, `eps` and `params`"
     cbs = [weight_decay] if decouple_wd else [l2_reg]

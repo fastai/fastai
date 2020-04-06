@@ -65,7 +65,7 @@ def teardown_distrib():
     if torch.distributed.is_initialized(): torch.distributed.destroy_process_group()
 
 # Cell
-@log_args(but='dataset,wif,create_batch,create_batches,create_item,retain,get_idxs,sample,shuffle_fn,do_batch')
+@log_args(but_as=TfmdDL.__init__)
 @delegates()
 class DistributedDL(TfmdDL):
 

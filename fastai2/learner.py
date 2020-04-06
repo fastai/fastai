@@ -71,7 +71,7 @@ _before_epoch = [event.begin_fit, event.begin_epoch]
 _after_epoch  = [event.after_epoch, event.after_fit]
 
 # Cell
-@log_args(but='dls,model')
+@log_args(but='dls,model,opt_func')
 class Learner():
     def __init__(self, dls, model, loss_func=None, opt_func=Adam, lr=defaults.lr, splitter=trainable_params, cbs=None,
                  metrics=None, path=None, model_dir='models', wd=None, wd_bn_bias=False, train_bn=True,
@@ -181,7 +181,7 @@ class Learner():
         finally:
             dl,*_ = change_attrs(dl, names, old, has);       self('after_validate')
 
-    @log_args
+    @log_args(but='cbs')
     def fit(self, n_epoch, lr=None, wd=None, cbs=None, reset_opt=False):
         with self.added_cbs(cbs):
             if reset_opt or not self.opt: self.create_opt()
@@ -281,6 +281,12 @@ class Learner():
         load_model(file, self.model, self.opt, device=device, **kwargs)
         return self
 
+    def gather_args(self):
+        cb_args = {k:v for cb in self.cbs for k,v in getattr(cb,'init_args',{}).items()}
+        args = {**getattr(self,'init_args',{}), **cb_args, **getattr(self.dls,'init_args',{}),
+                **getattr(self.opt,'init_args',{}), **getattr(self.loss_func,'init_args',{})}
+        return args
+
 Learner.x,Learner.y = add_props(lambda i,x: detuplify((x.xb,x.yb)[i]))
 
 # Cell
@@ -306,6 +312,7 @@ add_docs(Learner, "Group together a `model`, some `dls` and a `loss_func` to han
     loss_not_reduced="A context manager to evaluate `loss_func` with reduction set to none.",
     save="Save model and optimizer state (if `with_opt`) to `self.path/self.model_dir/file`",
     load="Load model and optimizer state (if `with_opt`) from `self.path/self.model_dir/file` using `device`",
+    gather_args="Gather config parameters accessible to the learner",
     __call__="Call `event_name` for all `Callback`s in `self.cbs`"
 )
 

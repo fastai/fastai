@@ -12,7 +12,7 @@ class CollectDataCallback(Callback):
     def after_batch(self): self.data.append(to_detach((self.xb,self.yb,self.pred,self.loss)))
 
 # Cell
-@log_args(but='dataset,wif,create_batch,create_batches,create_item,retain,get_idxs,sample,shuffle_fn,do_batch')
+@log_args(but_as=TfmdDL.__init__)
 @delegates()
 class WeightedDL(TfmdDL):
     def __init__(self, dataset=None, bs=None, wgts=None, **kwargs):
@@ -33,7 +33,7 @@ def weighted_dataloaders(self:Datasets, wgts, bs=64, **kwargs):
     return self.dataloaders(bs=bs, dl_type=WeightedDL, dl_kwargs=({'wgts':wgts}, *xtra_kwargs), **kwargs)
 
 # Cell
-@log_args(but='dataset,wif,create_batch,create_batches,create_item,retain,get_idxs,sample,shuffle_fn,do_batch')
+@log_args(but_as=TfmdDL.__init__)
 @delegates()
 class PartialDL(TfmdDL):
     "Select randomly partial quantity of data at each epoch"

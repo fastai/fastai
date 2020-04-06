@@ -32,7 +32,7 @@ def show_results(x, y, samples, outs, ctxs=None, max_n=9, **kwargs):
 _batch_tfms = ('after_item','before_batch','after_batch')
 
 # Cell
-@log_args(but='dataset,wif,create_batch,create_batches,create_item,retain,get_idxs,sample,shuffle_fn,do_batch')
+@log_args(but_as=DataLoader.__init__)
 @delegates()
 class TfmdDL(DataLoader):
     "Transformed `DataLoader`"

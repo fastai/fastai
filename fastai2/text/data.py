@@ -61,7 +61,7 @@ def _get_lengths(ds):
 
 # Cell
 #TODO: add backward
-@log_args(but='dataset,wif,create_batch,create_batches,create_item,retain,get_idxs,sample,shuffle_fn,do_batch')
+@log_args(but_as=TfmdDL.__init__)
 @delegates()
 class LMDataLoader(TfmdDL):
     "A `DataLoader` suitable for language modeling"
