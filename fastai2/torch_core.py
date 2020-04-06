@@ -611,7 +611,7 @@ def doc(elt):
 # Cell
 def nested_reorder(t, idxs):
     "Reorder all tensors in `t` using `idxs`"
-    if isinstance(t, Tensor): return t[idxs]
+    if isinstance(t, (Tensor,L)): return t[idxs]
     elif is_listy(t): return type(t)(nested_reorder(t_, idxs) for t_ in t)
     if t is None: return t
     raise TypeError(f"Expected tensor, tuple, list or L but got {type(t)}")
