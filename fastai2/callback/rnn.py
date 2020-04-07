@@ -11,9 +11,11 @@ class ModelReseter(Callback):
     "`Callback` that resets the model at each validation/training step"
     def begin_train(self):    self.model.reset()
     def begin_validate(self): self.model.reset()
+    def after_fit(self):      self.model.reset()
 
     _docs = dict(begin_train="Reset the model before training",
-                 begin_validate="Reset the model before validation")
+                 begin_validate="Reset the model before validation",
+                 after_fit="Reset the model after fitting")
 
 # Cell
 @docs

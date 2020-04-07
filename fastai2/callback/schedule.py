@@ -192,6 +192,7 @@ class LRFinder(ParamScheduler):
     def begin_validate(self): raise CancelValidException()
 
     def after_fit(self):
+        self.learn.opt.zero_grad() #Need to zero the gradients of the model before detaching the optimizer for future fits
         tmp_f = self.path/self.model_dir/'_tmp.pth'
         if tmp_f.exists():
             self.learn.load('_tmp')
