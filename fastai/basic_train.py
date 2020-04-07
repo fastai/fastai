@@ -537,7 +537,7 @@ class Recorder(LearnerCallback):
         ys = spl(xs)
         return ys
 
-    def plot(self, skip_start:int=10, skip_end:int=5, suggestion:bool=False, return_fig:bool=None, show_grid:bool=False
+    def plot(self, skip_start:int=10, skip_end:int=5, suggestion:bool=False, return_fig:bool=None, show_grid:bool=False,
              **kwargs)->Optional[plt.Figure]:
         "Plot learning rate and losses, trimmed between `skip_start` and `skip_end`. Optionally plot and return min gradient"
         lrs = self._split_list(self.lrs, skip_start, skip_end)
