@@ -36,6 +36,7 @@ class WandbCallback(Callback):
         # Log config parameters
         log_config = self.learn.gather_args()
         for k,v in log_config.items():
+            if callable(v) and hasattr(v,'__qualname__') and hasattr(v,'__module__'): v = f'{v.__module__}.{v.__qualname__}'
             try:
                 wandb.config[k] = v
             except ConfigError:
