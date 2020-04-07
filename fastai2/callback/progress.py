@@ -62,8 +62,9 @@ def no_bar(self:Learner):
     "Context manager that deactivates the use of progress bars"
     has_progress = hasattr(self, 'progress')
     if has_progress: self.remove_cb(self.progress)
-    yield self
-    if has_progress: self.add_cb(ProgressCallback())
+    try: yield self
+    finally:
+        if has_progress: self.add_cb(ProgressCallback())
 
 # Cell
 class ShowGraphCallback(Callback):
