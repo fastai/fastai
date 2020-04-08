@@ -24,4 +24,3 @@ class OverSamplingCallback(LearnerCallback):
     def on_train_end(self, **kwargs):
         "Reset dataloader to its original state"
         self.data.train_dl = self.old_dl
-
