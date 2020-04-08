@@ -12,11 +12,16 @@ class OverSamplingCallback(LearnerCallback):
         self.weights = weights
 
     def on_train_begin(self, **kwargs):
-        ds,dl = self.data.train_ds,self.data.train_dl
-        self.labels = ds.y.items
+        self.old_dl = self.data.train_dl
+        self.labels = self.data.train_dl.y.items
         assert np.issubdtype(self.labels.dtype, np.integer), "Can only oversample integer values"
         _,self.label_counts = np.unique(self.labels,return_counts=True)
         if self.weights is None: self.weights = torch.DoubleTensor((1/self.label_counts)[self.labels])
         self.total_len_oversample = int(self.data.c*np.max(self.label_counts))
         sampler = WeightedRandomSampler(self.weights, self.total_len_oversample)
-        self.data.train_dl = dl.new(shuffle=False, sampler=sampler)
+        self.data.train_dl = self.data.train_dl.new(shuffle=False, sampler=sampler)
+
+    def on_train_end(self, **kwargs):
+        "Reset dataloader to its original state"
+        self.data.train_dl = self.old_dl
+
