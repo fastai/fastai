@@ -233,7 +233,7 @@ def untar_data(url:str, fname:PathOrStr=None, dest:PathOrStr=None, data=True, fo
         fname = download_data(url, fname=fname, data=data)
         if url in _checks:
             assert _check_file(fname) == _checks[url], f"Downloaded file {fname} does not match checksum expected! Remove that file from {Config().data_archive_path()} and try your code again."
-        if verbose: print('.tgz file downloaded. Extracting the contents...)
+        if verbose: print('.tgz file downloaded. Extracting the contents...')
         tarfile.open(fname, 'r:gz').extractall(dest.parent)
         if verbose: print('File extracted successfully.')
     return dest
