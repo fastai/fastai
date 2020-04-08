@@ -280,6 +280,7 @@ class RegressionSetup(Transform):
     "Transform that floatifies targets"
     def __init__(self, c=None): self.c = c
     def encodes(self, o): return tensor(o).float()
+    def decodes(self, o): return TitledFloat(o)
     def setups(self, dsets):
         if self.c is not None: return
         try: self.c = len(dsets[0]) if hasattr(dsets[0], '__len__') else 1
