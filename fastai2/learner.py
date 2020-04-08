@@ -71,6 +71,12 @@ _before_epoch = [event.begin_fit, event.begin_epoch]
 _after_epoch  = [event.after_epoch, event.after_fit]
 
 # Cell
+class _ConstantFunc():
+    "Returns a function that returns `o`"
+    def __init__(self, o): self.o = o
+    def __call__(self, *args, **kwargs): return self.o
+
+# Cell
 @log_args(but='dls,model,opt_func,cbs')
 class Learner():
     def __init__(self, dls, model, loss_func=None, opt_func=Adam, lr=defaults.lr, splitter=trainable_params, cbs=None,
@@ -213,7 +219,7 @@ class Learner():
         if dl is None: dl = self.dls[ds_idx].new(shuffled=False, drop_last=False)
         if reorder and hasattr(dl, 'get_idxs'):
             idxs = dl.get_idxs()
-            dl = dl.new(get_idxs = lambda: idxs)
+            dl = dl.new(get_idxs = _ConstantFunc(idxs))
         cb = GatherPredsCallback(with_input=with_input, with_loss=with_loss, **kwargs)
         ctx_mgrs = [self.no_logging(), self.added_cbs(cb), self.no_mbar()]
         if with_loss: ctx_mgrs.append(self.loss_not_reduced())
@@ -494,6 +500,7 @@ add_docs(Learner,
 def export(self:Learner, fname='export.pkl', pickle_protocol=2):
     "Export the content of `self` without the items and the optimizer state for inference"
     if rank_distrib(): return # don't export if slave proc
+    self.dl = None
     old_dbunch = self.dls
     self.dls = self.dls.new_empty()
     state = self.opt.state_dict() if self.opt is not None else None
