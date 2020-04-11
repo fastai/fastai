@@ -148,7 +148,8 @@ def _find_fail_collate(s):
 
 # Cell
 @patch
-def summary(self: DataBlock, source, bs=4, **kwargs):
+def summary(self: DataBlock, source, bs=4, show_batch=False, **kwargs):
+    "Steps through the transform pipeline for one batch, and optionally calls `show_batch(**kwargs)` on the transient `Dataloaders`."
     print(f"Setting-up type transforms pipelines")
     dsets = self.datasets(source, verbose=True)
     print("\nBuilding one sample")
@@ -156,7 +157,7 @@ def summary(self: DataBlock, source, bs=4, **kwargs):
         _apply_pipeline(tl.tfms, get_first(dsets.train.items))
     print(f"\nFinal sample: {dsets.train[0]}\n\n")
 
-    dls = self.dataloaders(source, verbose=True)
+    dls = self.dataloaders(source, bs=bs, verbose=True)
     print("\nBuilding one batch")
     if len([f for f in dls.train.after_item.fs if f.name != 'noop'])!=0:
         print("Applying item_tfms to the first sample:")
@@ -187,3 +188,5 @@ def summary(self: DataBlock, source, bs=4, **kwargs):
         b = to_device(b, dls.device)
         b = _apply_pipeline(dls.train.after_batch, b)
     else: print("\nNo batch_tfms to apply")
+
+    if show_batch: dls.show_batch(**kwargs)
