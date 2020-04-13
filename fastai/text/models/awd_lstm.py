@@ -36,6 +36,8 @@ class WeightDropout(Module):
             self.register_parameter(f'{layer}_raw', nn.Parameter(w.data))
             self.module._parameters[layer] = F.dropout(w, p=self.weight_p, training=False)
             if self.idxs is not None: self.idxs.append(self.module._flat_weights_names.index(layer))
+        if isinstance(self.module, (nn.RNNBase, nn.modules.rnn.RNNBase)):
+            self.module.flatten_parameters = self._do_nothing
 
     def _setweights(self):
         "Apply dropout to the raw weights."
@@ -56,6 +58,8 @@ class WeightDropout(Module):
             raw_w = getattr(self, f'{layer}_raw')
             self.module._parameters[layer] = F.dropout(raw_w, p=self.weight_p, training=False)
         if hasattr(self.module, 'reset'): self.module.reset()    
+    
+    def _do_nothing(self): pass
 
 class EmbeddingDropout(Module):
     "Apply dropout with probabily `embed_p` to an embedding layer `emb`."
