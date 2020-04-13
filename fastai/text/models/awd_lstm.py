@@ -27,8 +27,8 @@ class RNNDropout(Module):
 class WeightDropout(Module):
     "A module that warps another layer in which some weights will be replaced by 0 during training."
 
-    def __init__(self, module, weight_p, layer_names='weight_hh_l0'):
-        self.module,self.weight_p,self.layer_names = module,weight_p,L(layer_names)
+    def __init__(self, module:nn.Module, weight_p:float, layer_names:Collection[str]=['weight_hh_l0']):
+        self.module,self.weight_p,self.layer_names = module,weight_p,layer_names
         self.idxs = [] if hasattr(self.module, '_flat_weights_names') else None
         for layer in self.layer_names:
             #Makes a copy of the weights of the selected layers.
