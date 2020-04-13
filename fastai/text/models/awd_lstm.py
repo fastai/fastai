@@ -27,21 +27,24 @@ class RNNDropout(Module):
 class WeightDropout(Module):
     "A module that warps another layer in which some weights will be replaced by 0 during training."
 
-    def __init__(self, module:nn.Module, weight_p:float, layer_names:Collection[str]=['weight_hh_l0']):
-        self.module,self.weight_p,self.layer_names = module,weight_p,layer_names
+    def __init__(self, module, weight_p, layer_names='weight_hh_l0'):
+        self.module,self.weight_p,self.layer_names = module,weight_p,L(layer_names)
+        self.idxs = [] if hasattr(self.module, '_flat_weights_names') else None
         for layer in self.layer_names:
             #Makes a copy of the weights of the selected layers.
             w = getattr(self.module, layer)
             self.register_parameter(f'{layer}_raw', nn.Parameter(w.data))
             self.module._parameters[layer] = F.dropout(w, p=self.weight_p, training=False)
+            if self.idxs is not None: self.idxs.append(self.module._flat_weights_names.index(layer))
 
     def _setweights(self):
         "Apply dropout to the raw weights."
-        for layer in self.layer_names:
+        for i,layer in enumerate(self.layer_names):
             raw_w = getattr(self, f'{layer}_raw')
             self.module._parameters[layer] = F.dropout(raw_w, p=self.weight_p, training=self.training)
+            if self.idxs is not None: self.module._flat_weights[self.idxs[i]] = self.module._parameters[layer]
 
-    def forward(self, *args:ArgStar):
+    def forward(self, *args):
         self._setweights()
         with warnings.catch_warnings():
             #To avoid the warning that comes because the weights aren't flattened.
@@ -52,7 +55,7 @@ class WeightDropout(Module):
         for layer in self.layer_names:
             raw_w = getattr(self, f'{layer}_raw')
             self.module._parameters[layer] = F.dropout(raw_w, p=self.weight_p, training=False)
-        if hasattr(self.module, 'reset'): self.module.reset()
+        if hasattr(self.module, 'reset'): self.module.reset()    
 
 class EmbeddingDropout(Module):
     "Apply dropout with probabily `embed_p` to an embedding layer `emb`."
