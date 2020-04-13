@@ -34,14 +34,17 @@ class WeightDropout(Module):
         for layer in self.layer_names:
             #Makes a copy of the weights of the selected layers.
             w = getattr(self.module, layer)
+            delattr(self.module, layer)
             self.register_parameter(f'{layer}_raw', nn.Parameter(w.data))
-            self.module._parameters[layer] = F.dropout(w, p=self.weight_p, training=False)
+            setattr(self.module, layer, F.dropout(w.data, p=self.weight_p, training=False))
+            if isinstance(self.module, (nn.RNNBase, nn.modules.rnn.RNNBase)):
+                self.module.flatten_parameters = self._do_nothing
 
     def _setweights(self):
         "Apply dropout to the raw weights."
         for layer in self.layer_names:
             raw_w = getattr(self, f'{layer}_raw')
-            self.module._parameters[layer] = F.dropout(raw_w, p=self.weight_p, training=self.training)
+            setattr(self.module, layer, F.dropout(raw_w.data, p=self.weight_p, training=self.training))
 
     def forward(self, *args):
         self._setweights()
@@ -53,8 +56,10 @@ class WeightDropout(Module):
     def reset(self):
         for layer in self.layer_names:
             raw_w = getattr(self, f'{layer}_raw')
-            self.module._parameters[layer] = F.dropout(raw_w, p=self.weight_p, training=False)
+            setattr(self.module, layer, F.dropout(raw_w.data, p=self.weight_p, training=False))
         if hasattr(self.module, 'reset'): self.module.reset()
+
+    def _do_nothing(self): pass
 
 # Cell
 class EmbeddingDropout(Module):
