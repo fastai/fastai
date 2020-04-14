@@ -9,10 +9,10 @@ from ..data.all import *
 from .core import *
 
 # Cell
-def make_vocab(count, min_freq=3, max_vocab=60000):
+def make_vocab(count, min_freq=3, max_vocab=60000, text_spec_toks=[]):
     "Create a vocab of `max_vocab` size from `Counter` `count` with items present more than `min_freq`"
     vocab = [o for o,c in count.most_common(max_vocab) if c >= min_freq]
-    for o in reversed(defaults.text_spec_tok): #Make sure all special tokens are in the vocab
+    for o in reversed(text_spec_toks): #Make sure all special tokens are in the vocab
         if o in vocab: vocab.remove(o)
         vocab.insert(0, o)
     vocab = vocab[:max_vocab]
@@ -28,15 +28,15 @@ TensorText.__doc__ = "Semantic type for a tensor representing text in language m
 # Cell
 class Numericalize(Transform):
     "Reversible transform of tokenized texts to numericalized ids"
-    def __init__(self, vocab=None, min_freq=3, max_vocab=60000):
-        store_attr(self, 'vocab,min_freq,max_vocab')
+    def __init__(self, vocab=None, min_freq=3, max_vocab=60000, text_spec_toks=[]):
+        store_attr(self, 'vocab,min_freq,max_vocab,text_spec_toks')
         self.o2i = None if vocab is None else defaultdict(int, {v:k for k,v in enumerate(vocab)})
 
     def setups(self, dsets):
         if dsets is None: return
         if self.vocab is None:
             count = dsets.counter if hasattr(dsets, 'counter') else Counter(p for o in dsets for p in o)
-            self.vocab = make_vocab(count, min_freq=self.min_freq, max_vocab=self.max_vocab)
+            self.vocab = make_vocab(count, min_freq=self.min_freq, max_vocab=self.max_vocab, text_spec_toks=self.text_spec_toks)
             self.o2i = defaultdict(int, {v:k for k,v in enumerate(self.vocab) if v != 'xxfake'})
 
     def encodes(self, o): return TensorText(tensor([self.o2i  [o_] for o_ in o]))
@@ -185,7 +185,7 @@ class TextBlock(TransformBlock):
     "A `TransformBlock` for texts"
     @delegates(Numericalize.__init__)
     def __init__(self, tok_tfm, vocab=None, is_lm=False, seq_len=72, **kwargs):
-        return super().__init__(type_tfms=[tok_tfm, Numericalize(vocab, **kwargs)],
+        return super().__init__(type_tfms=[tok_tfm, Numericalize(vocab, text_spec_toks=tok_tfm.special_toks, **kwargs)],
                                 dl_type=LMDataLoader if is_lm else SortedDL,
                                 dls_kwargs={} if is_lm else {'before_batch': partial(pad_input_chunk, seq_len=seq_len)})
 

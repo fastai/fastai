@@ -110,9 +110,9 @@ class BaseTokenizer():
 class SpacyTokenizer():
     "Spacy tokenizer for `lang`"
     def __init__(self, lang='en', special_toks=None, buf_sz=5000):
-        special_toks = ifnone(special_toks, defaults.text_spec_tok)
+        self.special_toks = ifnone(special_toks, defaults.text_spec_tok)
         nlp = spacy.blank(lang, disable=["parser", "tagger", "ner"])
-        for w in special_toks: nlp.tokenizer.add_special_case(w, [{ORTH: w}])
+        for w in self.special_toks: nlp.tokenizer.add_special_case(w, [{ORTH: w}])
         self.pipe,self.buf_sz = nlp.pipe,buf_sz
 
     def __call__(self, items):
@@ -308,6 +308,9 @@ class Tokenizer(Transform):
             except: return None
 
     def decodes(self, o): return TitledStr(self.sep.join(o))
+
+    @property
+    def special_toks(self,): return self.tokenizer.special_toks
 
 # Cell
 eu_langs = ["bg", "cs", "da", "de", "el", "en", "es", "et", "fi", "fr", "ga", "hr", "hu",
