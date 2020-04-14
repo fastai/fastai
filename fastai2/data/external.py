@@ -132,6 +132,7 @@ class URLs():
 
     # Audio classification datasets
     MACAQUES           = 'https://storage.googleapis.com/ml-animal-sounds-datasets/macaques.zip'
+    ZEBRA_FINCH        = 'https://storage.googleapis.com/ml-animal-sounds-datasets/zebra_finch.zip'
 
     # Medical Imaging datasets
     #SKIN_LESION        = f'{S3_IMAGELOC}skin_lesion.tgz'

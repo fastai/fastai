@@ -222,5 +222,9 @@
   "https://storage.googleapis.com/ml-animal-sounds-datasets/macaques.zip": [
     131604586,
     "44fec3950e61d6a898f16fe30bc9c88d"
+  ],
+  "https://storage.googleapis.com/ml-animal-sounds-datasets/zebra_finch.zip": [
+    83886080,
+    "91fa9c4ebfc986b9babc2a805a10e281"
   ]
 }
