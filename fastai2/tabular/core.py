@@ -2,7 +2,8 @@
 
 __all__ = ['make_date', 'add_datepart', 'add_elapsed_times', 'cont_cat_split', 'Tabular', 'TabularPandas',
            'TabularProc', 'Categorify', 'setups', 'encodes', 'decodes', 'NormalizeTab', 'setups', 'encodes', 'decodes',
-           'FillStrategy', 'FillMissing', 'ReadTabBatch', 'TabDataLoader', 'encodes', 'decodes', 'setups', 'encodes']
+           'FillStrategy', 'FillMissing', 'ReadTabBatch', 'TabDataLoader', 'encodes', 'decodes', 'setups', 'encodes',
+           'decodes']
 
 # Cell
 from ..torch_basics import *
@@ -333,3 +334,6 @@ def setups(self, to:Tabular):
 
 @RegressionSetup
 def encodes(self, to:Tabular): return to
+
+@RegressionSetup
+def decodes(self, to:Tabular): return to
