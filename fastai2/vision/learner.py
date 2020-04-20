@@ -9,7 +9,6 @@ from .core import *
 from .data import *
 from .augment import *
 from . import models
-from . import models
 
 # Cell
 def _is_pool_type(l): return re.search(r'Pool[123]d$', l.__class__.__name__)
