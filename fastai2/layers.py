@@ -554,7 +554,7 @@ class ResBlock(Module):
         self.convpath = nn.Sequential(*convpath)
         idpath = []
         if ni!=nf: idpath.append(ConvLayer(ni, nf, 1, act_cls=None, ndim=ndim, **kwargs))
-        if stride!=1: idpath.insert((1,0)[pool_first], pool(2, ndim=ndim, ceil_mode=True))
+        if stride!=1: idpath.insert((1,0)[pool_first], pool(stride, ndim=ndim, ceil_mode=True))
         self.idpath = nn.Sequential(*idpath)
         self.act = defaults.activation(inplace=True) if act_cls is defaults.activation else act_cls()
 
