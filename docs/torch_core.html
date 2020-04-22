@@ -2137,6 +2137,21 @@ array([2, 3])</p>
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>/home/sgugger/anaconda3/lib/python3.7/site-packages/torch/storage.py:34: FutureWarning: pickle support for Storage will be removed in 1.5. Use `torch.save` instead
+  warnings.warn(&#34;pickle support for Storage will be removed in 1.5. Use `torch.save` instead&#34;, FutureWarning)
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
 </div>
     {% endraw %}
 
@@ -4247,7 +4262,11 @@ array([2, 3])</p>
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">tensor</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">])</span>
 <span class="n">idxs</span> <span class="o">=</span> <span class="n">tensor</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">])</span>
-<span class="n">test_eq_type</span><span class="p">(</span><span class="n">nested_reorder</span><span class="p">((</span><span class="n">L</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">x</span><span class="p">),</span> <span class="p">[</span><span class="n">x</span><span class="p">],</span> <span class="n">x</span><span class="p">),</span> <span class="n">idxs</span><span class="p">),</span> <span class="p">(</span><span class="n">L</span><span class="p">(</span><span class="n">idxs</span><span class="p">,</span><span class="n">idxs</span><span class="p">),</span> <span class="p">[</span><span class="n">idxs</span><span class="p">],</span> <span class="n">idxs</span><span class="p">))</span>
+<span class="n">test_eq_type</span><span class="p">(</span><span class="n">nested_reorder</span><span class="p">(([</span><span class="n">x</span><span class="p">],</span> <span class="n">x</span><span class="p">),</span> <span class="n">idxs</span><span class="p">),</span> <span class="p">([</span><span class="n">idxs</span><span class="p">],</span> <span class="n">idxs</span><span class="p">))</span>
+
+<span class="n">y</span> <span class="o">=</span> <span class="n">L</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">z</span> <span class="o">=</span> <span class="n">L</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">item</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">idxs</span><span class="p">)</span>
+<span class="n">test_eq_type</span><span class="p">(</span><span class="n">nested_reorder</span><span class="p">((</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">),</span> <span class="n">idxs</span><span class="p">),</span> <span class="p">(</span><span class="n">z</span><span class="p">,</span><span class="n">idxs</span><span class="p">))</span>
 </pre></div>
 
     </div>
