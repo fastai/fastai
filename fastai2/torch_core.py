@@ -570,7 +570,7 @@ def rank_distrib():
 # Cell
 def distrib_barrier():
     "Place a synchronization barrier in distributed training so that ALL sub-processes in the pytorch process group must arrive here before proceeding."
-    if num_distrib() > 1: torch.distributed.barrier()
+    if num_distrib() > 1 and torch.distributed.is_initialized(): torch.distributed.barrier()
 
 # Cell
 # Saving arrays requires pytables - optional dependency

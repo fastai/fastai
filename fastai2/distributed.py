@@ -96,7 +96,7 @@ class DistributedDL(TfmdDL):
 
     def create_item(self, s):
         if s is not None and s >= len(self.dataset): s = s%len(self.dataset)
-        return super().create_item(s)
+        return s if hasattr(self.dataset, 'iloc') else super().create_item(s)
 
     def set_epoch(self, epoch): self.epoch = epoch
 
