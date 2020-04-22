@@ -5,8 +5,8 @@ title: AWD-LSTM
 keywords: fastai
 sidebar: home_sidebar
 
-summary: "AWD LSTM from [Smerity et al.](https://arxiv.org/pdf/1708.02182.pdf) "
-description: "AWD LSTM from [Smerity et al.](https://arxiv.org/pdf/1708.02182.pdf) "
+summary: "AWD LSTM from <a href='https://arxiv.org/pdf/1708.02182.pdf'>Smerity et al.</a> "
+description: "AWD LSTM from <a href='https://arxiv.org/pdf/1708.02182.pdf'>Smerity et al.</a> "
 ---
 <!--
 
@@ -41,7 +41,7 @@ description: "AWD LSTM from [Smerity et al.](https://arxiv.org/pdf/1708.02182.pd
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">nbdev.showdoc</span> <span class="k">import</span> <span class="o">*</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">nbdev.showdoc</span> <span class="kn">import</span> <span class="o">*</span>
 </pre></div>
 
     </div>
@@ -221,6 +221,7 @@ description: "AWD LSTM from [Smerity et al.](https://arxiv.org/pdf/1708.02182.pd
 <span class="n">wgts</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">dp_module</span><span class="o">.</span><span class="n">module</span><span class="p">,</span> <span class="s1">&#39;weight_hh_l0&#39;</span><span class="p">)</span>
 <span class="n">tst_inp</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">20</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">cuda</span><span class="p">()</span>
 <span class="n">h</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">20</span><span class="p">,</span><span class="mi">7</span><span class="p">)</span><span class="o">.</span><span class="n">cuda</span><span class="p">(),</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">20</span><span class="p">,</span><span class="mi">7</span><span class="p">)</span><span class="o">.</span><span class="n">cuda</span><span class="p">()</span>
+<span class="n">dp_module</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
 <span class="n">x</span><span class="p">,</span><span class="n">h</span> <span class="o">=</span> <span class="n">dp_module</span><span class="p">(</span><span class="n">tst_inp</span><span class="p">,</span><span class="n">h</span><span class="p">)</span>
 <span class="n">new_wgts</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">dp_module</span><span class="o">.</span><span class="n">module</span><span class="p">,</span> <span class="s1">&#39;weight_hh_l0&#39;</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">wgts</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">dp_module</span><span class="p">,</span> <span class="s1">&#39;weight_hh_l0_raw&#39;</span><span class="p">))</span>
@@ -252,7 +253,7 @@ description: "AWD LSTM from [Smerity et al.](https://arxiv.org/pdf/1708.02182.pd
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="EmbeddingDropout" class="doc_header"><code>class</code> <code>EmbeddingDropout</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/models/awdlstm.py#L60" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>EmbeddingDropout</code>(<strong><code>emb</code></strong>, <strong><code>embed_p</code></strong>) :: <a href="/torch_core#Module"><code>Module</code></a></p>
+<h3 id="EmbeddingDropout" class="doc_header"><code>class</code> <code>EmbeddingDropout</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/models/awdlstm.py#L65" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>EmbeddingDropout</code>(<strong><code>emb</code></strong>, <strong><code>embed_p</code></strong>) :: <a href="/torch_core#Module"><code>Module</code></a></p>
 </blockquote>
 <p>Apply dropout with probabily <code>embed_p</code> to an embedding layer <code>emb</code>.</p>
 
@@ -306,7 +307,7 @@ description: "AWD LSTM from [Smerity et al.](https://arxiv.org/pdf/1708.02182.pd
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="AWD_LSTM" class="doc_header"><code>class</code> <code>AWD_LSTM</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/models/awdlstm.py#L77" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>AWD_LSTM</code>(<strong><code>vocab_sz</code></strong>, <strong><code>emb_sz</code></strong>, <strong><code>n_hid</code></strong>, <strong><code>n_layers</code></strong>, <strong><code>pad_token</code></strong>=<em><code>1</code></em>, <strong><code>hidden_p</code></strong>=<em><code>0.2</code></em>, <strong><code>input_p</code></strong>=<em><code>0.6</code></em>, <strong><code>embed_p</code></strong>=<em><code>0.1</code></em>, <strong><code>weight_p</code></strong>=<em><code>0.5</code></em>, <strong><code>bidir</code></strong>=<em><code>False</code></em>) :: <a href="/torch_core#Module"><code>Module</code></a></p>
+<h3 id="AWD_LSTM" class="doc_header"><code>class</code> <code>AWD_LSTM</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/models/awdlstm.py#L82" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>AWD_LSTM</code>(<strong><code>vocab_sz</code></strong>, <strong><code>emb_sz</code></strong>, <strong><code>n_hid</code></strong>, <strong><code>n_layers</code></strong>, <strong><code>pad_token</code></strong>=<em><code>1</code></em>, <strong><code>hidden_p</code></strong>=<em><code>0.2</code></em>, <strong><code>input_p</code></strong>=<em><code>0.6</code></em>, <strong><code>embed_p</code></strong>=<em><code>0.1</code></em>, <strong><code>weight_p</code></strong>=<em><code>0.5</code></em>, <strong><code>bidir</code></strong>=<em><code>False</code></em>) :: <a href="/torch_core#Module"><code>Module</code></a></p>
 </blockquote>
 <p>AWD-LSTM inspired by <a href="https://arxiv.org/abs/1708.02182">https://arxiv.org/abs/1708.02182</a></p>
 
@@ -378,7 +379,7 @@ description: "AWD LSTM from [Smerity et al.](https://arxiv.org/pdf/1708.02182.pd
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="awd_lstm_lm_split" class="doc_header"><code>awd_lstm_lm_split</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/models/awdlstm.py#L135" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>awd_lstm_lm_split</code>(<strong><code>model</code></strong>)</p>
+<h4 id="awd_lstm_lm_split" class="doc_header"><code>awd_lstm_lm_split</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/models/awdlstm.py#L140" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>awd_lstm_lm_split</code>(<strong><code>model</code></strong>)</p>
 </blockquote>
 <p>Split a RNN <code>model</code> in groups for differential learning rates.</p>
 
@@ -434,7 +435,7 @@ description: "AWD LSTM from [Smerity et al.](https://arxiv.org/pdf/1708.02182.pd
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="awd_lstm_clas_split" class="doc_header"><code>awd_lstm_clas_split</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/models/awdlstm.py#L146" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>awd_lstm_clas_split</code>(<strong><code>model</code></strong>)</p>
+<h4 id="awd_lstm_clas_split" class="doc_header"><code>awd_lstm_clas_split</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/models/awdlstm.py#L151" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>awd_lstm_clas_split</code>(<strong><code>model</code></strong>)</p>
 </blockquote>
 <p>Split a RNN <code>model</code> in groups for differential learning rates.</p>
 
@@ -479,7 +480,7 @@ description: "AWD LSTM from [Smerity et al.](https://arxiv.org/pdf/1708.02182.pd
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="AWD_QRNN" class="doc_header"><code>class</code> <code>AWD_QRNN</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/models/awdlstm.py#L158" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>AWD_QRNN</code>(<strong><code>vocab_sz</code></strong>, <strong><code>emb_sz</code></strong>, <strong><code>n_hid</code></strong>, <strong><code>n_layers</code></strong>, <strong><code>pad_token</code></strong>=<em><code>1</code></em>, <strong><code>hidden_p</code></strong>=<em><code>0.2</code></em>, <strong><code>input_p</code></strong>=<em><code>0.6</code></em>, <strong><code>embed_p</code></strong>=<em><code>0.1</code></em>, <strong><code>weight_p</code></strong>=<em><code>0.5</code></em>, <strong><code>bidir</code></strong>=<em><code>False</code></em>) :: <a href="/text.models.awdlstm#AWD_LSTM"><code>AWD_LSTM</code></a></p>
+<h3 id="AWD_QRNN" class="doc_header"><code>class</code> <code>AWD_QRNN</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/models/awdlstm.py#L163" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>AWD_QRNN</code>(<strong><code>vocab_sz</code></strong>, <strong><code>emb_sz</code></strong>, <strong><code>n_hid</code></strong>, <strong><code>n_layers</code></strong>, <strong><code>pad_token</code></strong>=<em><code>1</code></em>, <strong><code>hidden_p</code></strong>=<em><code>0.2</code></em>, <strong><code>input_p</code></strong>=<em><code>0.6</code></em>, <strong><code>embed_p</code></strong>=<em><code>0.1</code></em>, <strong><code>weight_p</code></strong>=<em><code>0.5</code></em>, <strong><code>bidir</code></strong>=<em><code>False</code></em>) :: <a href="/text.models.awdlstm#AWD_LSTM"><code>AWD_LSTM</code></a></p>
 </blockquote>
 <p>Same as an AWD-LSTM, but using QRNNs instead of LSTMs</p>
 

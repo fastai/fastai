@@ -58,7 +58,7 @@ description: "A dive into the layered API of fastai in computer vision"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>This is the most basic way of assembling the data that we present in all the beginner tutorials, so hopefully it should be familiar to you now.</p>
+<p>This is the most basic way of assembling the data that we have presented in all the beginner tutorials, so hopefully it should be familiar to you by now.</p>
 <p>First, we import everything inside the vision application:</p>
 
 </div>
@@ -180,7 +180,7 @@ description: "A dive into the layered API of fastai in computer vision"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>And as we saw, the <a href="/data.transforms#get_image_files"><code>get_image_files</code></a> function helps get all the images in subfolders:</p>
+<p>And as we saw in previous tutorials, the <a href="/data.transforms#get_image_files"><code>get_image_files</code></a> function helps get all the images in subfolders:</p>
 
 </div>
 </div>
@@ -228,7 +228,7 @@ description: "A dive into the layered API of fastai in computer vision"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>By itself, a <a href="/data.block#DataBlock"><code>DataBlock</code></a> is just a blue print on how to assemble your data. It does not do anything until you pass it a source. You can choose to then convert that source into a <a href="/data.core#Datasets"><code>Datasets</code></a> or a <a href="/data.core#DataLoaders"><code>DataLoaders</code></a> by using the <a href="/data.block#DataBlock.datasets"><code>DataBlock.datasets</code></a> or <a href="/data.block#DataBlock.dataloaders"><code>DataBlock.dataloaders</code></a> method. Since we haven't done anything to get our data ready for batches, the <code>dataloaders</code> method will fail here, but we can have a look at how it gets converted in <a href="/data.core#Datasets"><code>Datasets</code></a>. This is where we pass the source of our data, here all our filenames:</p>
+<p>By itself, a <a href="/data.block#DataBlock"><code>DataBlock</code></a> is just a blue print on how to assemble your data. It does not do anything until you pass it a source. You can choose to then convert that source into a <a href="/data.core#Datasets"><code>Datasets</code></a> or a <a href="/data.core#DataLoaders"><code>DataLoaders</code></a> by using the <a href="/data.block#DataBlock.datasets"><code>DataBlock.datasets</code></a> or <a href="/data.block#DataBlock.dataloaders"><code>DataBlock.dataloaders</code></a> method. Since we haven't done anything to get our data ready for batches, the <code>dataloaders</code> method will fail here, but we can have a look at how it gets converted in <a href="/data.core#Datasets"><code>Datasets</code></a>. This is where we pass the source of our data, here all of our filenames:</p>
 
 </div>
 </div>
@@ -271,7 +271,7 @@ description: "A dive into the layered API of fastai in computer vision"
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>By default, the data block API assumes we have an input and a target, which is why we see our filename repeated twice.</p>
-<p>The first thing we can do is use a <code>get_items</code> function to actually assemble our items inside the data block:</p>
+<p>The first thing we can do is to use a <code>get_items</code> function to actually assemble our items inside the data block:</p>
 
 </div>
 </div>
@@ -560,8 +560,8 @@ description: "A dive into the layered API of fastai in computer vision"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Note that you can mix an match any block for input and targets, which is why the API is named data block API. You can also have more than two blocks (if you have multiple inputs and/or targets), you would just need to pass <code>n_inp</code> to the <a href="/data.block#DataBlock"><code>DataBlock</code></a> to tell the library how many inputs there are (the rest would be targets) and pass a list of functions to <code>get_x</code> and/or <code>get_y</code> (to explain how to process each item to be ready for his type). See the object detection below for such an example.</p>
-<p>The next step is to control how our validation set is created. We do this by passing a <code>splitter</code> to <a href="/data.block#DataBlock"><code>DataBlock</code></a>. For instance, here is how split by grandparent folder.</p>
+<p>Note that you can mix and match any block for input and targets, which is why the API is named data block API. You can also have more than two blocks (if you have multiple inputs and/or targets), you would just need to pass <code>n_inp</code> to the <a href="/data.block#DataBlock"><code>DataBlock</code></a> to tell the library how many inputs there are (the rest would be targets) and pass a list of functions to <code>get_x</code> and/or <code>get_y</code> (to explain how to process each item to be ready for its type). See the object detection below for such an example.</p>
+<p>The next step is to control how our validation set is created. We do this by passing a <code>splitter</code> to <a href="/data.block#DataBlock"><code>DataBlock</code></a>. For instance, here is how we split by grandparent folder.</p>
 
 </div>
 </div>
@@ -607,7 +607,7 @@ description: "A dive into the layered API of fastai in computer vision"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The last step is to specify item transforms and batch transforms (the same way we do it in <a href="/vision.data#ImageDataLoaders"><code>ImageDataLoaders</code></a> factory methods):</p>
+<p>The last step is to specify item transforms and batch transforms (the same way as we do it in <a href="/vision.data#ImageDataLoaders"><code>ImageDataLoaders</code></a> factory methods):</p>
 
 </div>
 </div>
@@ -636,7 +636,7 @@ description: "A dive into the layered API of fastai in computer vision"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>We that resize, we are now able to batch items together and can finally call <code>dataloaders</code> to convert our <a href="/data.block#DataBlock"><code>DataBlock</code></a> to a <a href="/data.core#DataLoaders"><code>DataLoaders</code></a> object:</p>
+<p>With that resize, we are now able to batch items together and can finally call <code>dataloaders</code> to convert our <a href="/data.block#DataBlock"><code>DataBlock</code></a> to a <a href="/data.core#DataLoaders"><code>DataLoaders</code></a> object:</p>
 
 </div>
 </div>
@@ -782,7 +782,7 @@ description: "A dive into the layered API of fastai in computer vision"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Every bit of transformation we apply to our raw items (here the filenames) is called a <code>Transform</code> in fastai. It's basically a function with a bit of adding functionality:</p>
+<p>Every bit of transformation we apply to our raw items (here the filenames) is called a <code>Transform</code> in fastai. It's basically a function with a bit of added functionality:</p>
 <ul>
 <li>it can have different behavior depending on the type it receives (this is called type dispatch)</li>
 <li>it will generally be applied on each element of a tuple</li>
@@ -793,7 +793,7 @@ description: "A dive into the layered API of fastai in computer vision"
 <li>a setup executed on the whole set (or the whole training set). This is how <a href="/data.transforms#Categorize"><code>Categorize</code></a> builds it vocabulary automatically.</li>
 <li>a decodes that can undo what the transform does for showing purposes (for instance <a href="/data.transforms#Categorize"><code>Categorize</code></a> will convert back an index into a category).</li>
 </ul>
-<p>We won't delve into those bits of the low API here, but you can check out the <a href="http://dev.fast.ai/tutorial.pets">pets tutorial</a> or the more advanced <a href="http://dev.fast.ai/tutorial.siamese">siamese tutorial</a> for more information.</p>
+<p>We won't delve into those bits of the low level API here, but you can check out the <a href="http://dev.fast.ai/tutorial.pets">pets tutorial</a> or the more advanced <a href="http://dev.fast.ai/tutorial.siamese">siamese tutorial</a> for more information.</p>
 
 </div>
 </div>
@@ -928,7 +928,7 @@ description: "A dive into the layered API of fastai in computer vision"
 <li>our raw items</li>
 <li>the list of transforms that builds our inputs from the raw items</li>
 <li>the list of transforms that builds our targets from the raw items</li>
-<li>the split training and validation</li>
+<li>the split for training and validation</li>
 </ul>
 <p>We have everything apart from the split right now, which we can build this way:</p>
 
@@ -1191,7 +1191,7 @@ description: "A dive into the layered API of fastai in computer vision"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>We will start with the usual <a href="/vision.learner#cnn_learner"><code>cnn_learner</code></a> function we used in the <a href="http://dev.fast.ai/tutorial.vision">vision tutorial</a>, the we will see how one can build a <a href="/13a_learner#Learner"><code>Learner</code></a> object in fastai. Then we will learn how to customize</p>
+<p>We will start with the usual <a href="/vision.learner#cnn_learner"><code>cnn_learner</code></a> function we used in the <a href="http://dev.fast.ai/tutorial.vision">vision tutorial</a>, we will see how one can build a <a href="/13a_learner#Learner"><code>Learner</code></a> object in fastai. Then we will learn how to customize</p>
 <ul>
 <li>the loss function and how to write one that works fully with fastai,</li>
 <li>the optimizer function and how to use PyTorch optimizers,</li>
@@ -1209,7 +1209,7 @@ description: "A dive into the layered API of fastai in computer vision"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The easiest way to build a <a href="/13a_learner#Learner"><code>Learner</code></a> for image classification is, as we have seen, to use <a href="/vision.learner#cnn_learner"><code>cnn_learner</code></a>. We can specify we don't want a pretrained model by passing <code>pretrained=False</code> (here we the goal is to train a model from scratch):</p>
+<p>The easiest way to build a <a href="/13a_learner#Learner"><code>Learner</code></a> for image classification, as we have seen, is to use <a href="/vision.learner#cnn_learner"><code>cnn_learner</code></a>. We can specify that we don't want a pretrained model by passing <code>pretrained=False</code> (here the goal is to train a model from scratch):</p>
 
 </div>
 </div>
@@ -1320,7 +1320,7 @@ description: "A dive into the layered API of fastai in computer vision"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>That's a start. But since we are not using a pretrained model, why not use a different architecture? fastai comes with a version of the resnets models that have all the tricks from modern research incorporated. Why there is no pretrained model using those at the time of writing this tutorial, we can certainly use them here. For this, we just need to use the <a href="/13a_learner#Learner"><code>Learner</code></a> class. It takes our <a href="/data.core#DataLoaders"><code>DataLoaders</code></a> and a PyTorch model, at the minimum. Here we can use <a href="/vision.models.xresnet#xresnet34"><code>xresnet34</code></a> and since we have 10 classes, we specify <code>n_out=10</code>:</p>
+<p>That's a start. But since we are not using a pretrained model, why not use a different architecture? fastai comes with a version of the resnets models that have all the tricks from modern research incorporated. While there is no pretrained model using those at the time of writing this tutorial, we can certainly use them here. For this, we just need to use the <a href="/13a_learner#Learner"><code>Learner</code></a> class. It takes our <a href="/data.core#DataLoaders"><code>DataLoaders</code></a> and a PyTorch model, at the minimum. Here we can use <a href="/vision.models.xresnet#xresnet34"><code>xresnet34</code></a> and since we have 10 classes, we specify <code>n_out=10</code>:</p>
 
 </div>
 </div>
@@ -1558,7 +1558,7 @@ description: "A dive into the layered API of fastai in computer vision"
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>The loss function you pass to a <a href="/13a_learner#Learner"><code>Learner</code></a> is expected to take an output and target, then return the loss. It can be any regular PyTorch function and the training loop will work without any problem. What may cause problems is when you use fastai functions like <a href="/13a_learner#Learner.get_preds"><code>Learner.get_preds</code></a>, <a href="/13a_learner#Learner.predict"><code>Learner.predict</code></a> or <a href="/13a_learner#Learner.show_results"><code>Learner.show_results</code></a>.</p>
-<p>If you want <a href="/13a_learner#Learner.get_preds"><code>Learner.get_preds</code></a> to work with the argument <code>with_loss=True</code> (which is also used when you <a href="/interpret#ClassificationInterpretation.plot_top_losses"><code>ClassificationInterpretation.plot_top_losses</code></a> for instance), your loss function will need a <code>reduction</code> attribute (or argument) that you can set to "none" (this is standard for all PyTorch loss functions or classes). With a reduction of "none", the loss function does not return a single number (like a mean or sum) but something the same size as the target.</p>
+<p>If you want <a href="/13a_learner#Learner.get_preds"><code>Learner.get_preds</code></a> to work with the argument <code>with_loss=True</code> (which is also used when you run<a href="/interpret#ClassificationInterpretation.plot_top_losses"><code>ClassificationInterpretation.plot_top_losses</code></a> for instance), your loss function will need a <code>reduction</code> attribute (or argument) that you can set to "none" (this is standard for all PyTorch loss functions or classes). With a reduction of "none", the loss function does not return a single number (like a mean or sum) but something the same size as the target.</p>
 <p>As for <a href="/13a_learner#Learner.predict"><code>Learner.predict</code></a> or <a href="/13a_learner#Learner.show_results"><code>Learner.show_results</code></a>, they internally rely on two methods your loss function should have:</p>
 <ul>
 <li>if you have a loss that combines activation and loss function (such as <code>nn.CrossEntropyLoss</code>), an <code>activation</code> function.</li>
@@ -1602,7 +1602,7 @@ description: "A dive into the layered API of fastai in computer vision"
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>We won't comment on the <code>forward</code> pass that just implements the loss in itself. What is important is to notice how the <code>reduction</code> attribute plays in how the final result is computed.</p>
-<p>Then since this loss function combines activation (softmax) with the actual loss, we implement <code>activation</code> that take the softamx of the output. This is what will make <a href="/13a_learner#Learner.get_preds"><code>Learner.get_preds</code></a> or <a href="/13a_learner#Learner.predict"><code>Learner.predict</code></a> return the actual predictions instead of the final activations.</p>
+<p>Then since this loss function combines activation (softmax) with the actual loss, we implement <code>activation</code> that take the softmax of the output. This is what will make <a href="/13a_learner#Learner.get_preds"><code>Learner.get_preds</code></a> or <a href="/13a_learner#Learner.predict"><code>Learner.predict</code></a> return the actual predictions instead of the final activations.</p>
 <p>Lastly, <a href="/tabular.core#decodes"><code>decodes</code></a> changes the outputs of the model to put them in the same format as the targets (one int for each sample in the batch size) by taking the argmax of the predictions. We can pass this loss function to <a href="/13a_learner#Learner"><code>Learner</code></a>:</p>
 
 </div>
@@ -1810,7 +1810,7 @@ description: "A dive into the layered API of fastai in computer vision"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>fastai uses its own class of <a href="/optimizer#Optimizer"><code>Optimizer</code></a> build with various callbacks to refactor common functionality and provide a unique naming of hyperparameters playing the same role (like momentum in SGD, which is the same as alpha in RMSProp and beta0 in Adam) which makes it easier to schedule them (such as in <a href="/callback.schedule#Learner.fit_one_cycle"><code>Learner.fit_one_cycle</code></a>).</p>
+<p>fastai uses its own class of <a href="/optimizer#Optimizer"><code>Optimizer</code></a> built with various callbacks to refactor common functionality and provide a unique naming of hyperparameters playing the same role (like momentum in SGD, which is the same as alpha in RMSProp and beta0 in Adam) which makes it easier to schedule them (such as in <a href="/callback.schedule#Learner.fit_one_cycle"><code>Learner.fit_one_cycle</code></a>).</p>
 <p>It implements all optimizers supported by PyTorch (and much more) so you should never need to use one coming from PyTorch. Checkout the <a href="/optimizer"><code>optimizer</code></a> module to see all the optimizers natively available.</p>
 <p>However in some circumstances, you might need to use an optimizer that is not in fastai (if for instance it's a new one only implemented in PyTorch). Before learning how to port the code to our internal <a href="/optimizer#Optimizer"><code>Optimizer</code></a> (checkout the <a href="/optimizer"><code>optimizer</code></a> module to discover how), you can use the <a href="/optimizer#OptimWrapper"><code>OptimWrapper</code></a> class to wrap your PyTorch optimizer and train with it:</p>
 
@@ -2113,7 +2113,7 @@ description: "A dive into the layered API of fastai in computer vision"
 <li><code>begin_batch</code> is executed just after drawing a batch and before the model is run on the input. We first draw our random numbers <code>t</code>, following a beta distribution (like advised in the paper) and get a shuffled version of the batch (instead of drawing a second version of the batch, we mix one batch with a shuffled version of itself). Then we set <code>self.learn.xb</code> to the new input, which will be the on fed to the model.</li>
 <li><code>after_loss</code> is executed just after the loss is computed and before the backward pass. We replace <code>self.learn.loss</code> by the correct value. <a href="/layers#NoneReduce"><code>NoneReduce</code></a> is a context manager that temporarily sets the reduction attribute of a loss to 'none'.</li>
 </ul>
-<p>Also, we tell the <a href="/callback.core#Callback"><code>Callback</code></a> it should not run durong the validation phase with <code>run_valid=False</code>.</p>
+<p>Also, we tell the <a href="/callback.core#Callback"><code>Callback</code></a> it should not run during the validation phase with <code>run_valid=False</code>.</p>
 
 </div>
 </div>

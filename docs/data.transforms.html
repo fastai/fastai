@@ -427,7 +427,7 @@ description: "Functions for getting, splitting, and labeling data, as well as ge
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ItemGetter" class="doc_header"><code>ItemGetter</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/transforms.py#L71" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ItemGetter</code>(<strong><code>i</code></strong>)</p>
+<h2 id="ItemGetter" class="doc_header"><code>class</code> <code>ItemGetter</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/transforms.py#L71" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ItemGetter</code>(<strong><code>i</code></strong>) :: <code>ItemTransform</code></p>
 </blockquote>
 <p>Creates a proper transform that applies <code>itemgetter(i)</code> (even on a tuple)</p>
 
@@ -452,6 +452,56 @@ description: "Functions for getting, splitting, and labeling data, as well as ge
 <span class="n">test_eq</span><span class="p">(</span><span class="n">ItemGetter</span><span class="p">(</span><span class="mi">1</span><span class="p">)(</span><span class="n">L</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">)),</span> <span class="mi">2</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">ItemGetter</span><span class="p">(</span><span class="mi">1</span><span class="p">)([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]),</span>  <span class="mi">2</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">ItemGetter</span><span class="p">(</span><span class="mi">1</span><span class="p">)(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])),</span>  <span class="mi">2</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="AttrGetter" class="doc_header"><code>class</code> <code>AttrGetter</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/transforms.py#L78" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>AttrGetter</code>(<strong><code>nm</code></strong>, <strong><code>default</code></strong>=<em><code>None</code></em>) :: <code>ItemTransform</code></p>
+</blockquote>
+<p>Creates a proper transform that applies <code>attrgetter(nm)</code> (even on a tuple)</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">test_eq</span><span class="p">(</span><span class="n">AttrGetter</span><span class="p">(</span><span class="s1">&#39;shape&#39;</span><span class="p">)(</span><span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">([</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">])),</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">])</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">AttrGetter</span><span class="p">(</span><span class="s1">&#39;shape&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">])([</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">]),</span> <span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 </pre></div>
 
     </div>
@@ -492,7 +542,7 @@ description: "Functions for getting, splitting, and labeling data, as well as ge
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="RandomSplitter" class="doc_header"><code>RandomSplitter</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/transforms.py#L76" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>RandomSplitter</code>(<strong><code>valid_pct</code></strong>=<em><code>0.2</code></em>, <strong><code>seed</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="RandomSplitter" class="doc_header"><code>RandomSplitter</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/transforms.py#L85" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>RandomSplitter</code>(<strong><code>valid_pct</code></strong>=<em><code>0.2</code></em>, <strong><code>seed</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Create function that splits <code>items</code> between train/val with <code>valid_pct</code> randomly.</p>
 
@@ -555,7 +605,7 @@ description: "Functions for getting, splitting, and labeling data, as well as ge
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="TrainTestSplitter" class="doc_header"><code>TrainTestSplitter</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/transforms.py#L86" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>TrainTestSplitter</code>(<strong><code>test_size</code></strong>=<em><code>0.2</code></em>, <strong><code>random_state</code></strong>=<em><code>None</code></em>, <strong><code>stratify</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="TrainTestSplitter" class="doc_header"><code>TrainTestSplitter</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/transforms.py#L95" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>TrainTestSplitter</code>(<strong><code>test_size</code></strong>=<em><code>0.2</code></em>, <strong><code>random_state</code></strong>=<em><code>None</code></em>, <strong><code>stratify</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Split <code>items</code> into random train and test subsets using sklearn train_test_split utility.</p>
 
@@ -620,7 +670,7 @@ description: "Functions for getting, splitting, and labeling data, as well as ge
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="IndexSplitter" class="doc_header"><code>IndexSplitter</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/transforms.py#L94" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>IndexSplitter</code>(<strong><code>valid_idx</code></strong>)</p>
+<h4 id="IndexSplitter" class="doc_header"><code>IndexSplitter</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/transforms.py#L103" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>IndexSplitter</code>(<strong><code>valid_idx</code></strong>)</p>
 </blockquote>
 <p>Split <code>items</code> so that <code>val_idx</code> are in the validation set and the others in the training set</p>
 
@@ -678,7 +728,7 @@ description: "Functions for getting, splitting, and labeling data, as well as ge
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="GrandparentSplitter" class="doc_header"><code>GrandparentSplitter</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/transforms.py#L107" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>GrandparentSplitter</code>(<strong><code>train_name</code></strong>=<em><code>'train'</code></em>, <strong><code>valid_name</code></strong>=<em><code>'valid'</code></em>)</p>
+<h4 id="GrandparentSplitter" class="doc_header"><code>GrandparentSplitter</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/transforms.py#L116" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>GrandparentSplitter</code>(<strong><code>train_name</code></strong>=<em><code>'train'</code></em>, <strong><code>valid_name</code></strong>=<em><code>'valid'</code></em>)</p>
 </blockquote>
 <p>Split <code>items</code> from the grand parent folder names (<code>train_name</code> and <code>valid_name</code>).</p>
 
@@ -751,7 +801,7 @@ description: "Functions for getting, splitting, and labeling data, as well as ge
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="FuncSplitter" class="doc_header"><code>FuncSplitter</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/transforms.py#L114" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>FuncSplitter</code>(<strong><code>func</code></strong>)</p>
+<h4 id="FuncSplitter" class="doc_header"><code>FuncSplitter</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/transforms.py#L123" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>FuncSplitter</code>(<strong><code>func</code></strong>)</p>
 </blockquote>
 <p>Split <code>items</code> by result of <code>func</code> (<code>True</code> for validation, <code>False</code> for training set).</p>
 
@@ -801,7 +851,7 @@ description: "Functions for getting, splitting, and labeling data, as well as ge
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="MaskSplitter" class="doc_header"><code>MaskSplitter</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/transforms.py#L122" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>MaskSplitter</code>(<strong><code>mask</code></strong>)</p>
+<h4 id="MaskSplitter" class="doc_header"><code>MaskSplitter</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/transforms.py#L131" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>MaskSplitter</code>(<strong><code>mask</code></strong>)</p>
 </blockquote>
 <p>Split <code>items</code> depending on the value of <code>mask</code>.</p>
 
@@ -852,7 +902,7 @@ description: "Functions for getting, splitting, and labeling data, as well as ge
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="FileSplitter" class="doc_header"><code>FileSplitter</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/transforms.py#L128" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>FileSplitter</code>(<strong><code>fname</code></strong>)</p>
+<h4 id="FileSplitter" class="doc_header"><code>FileSplitter</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/transforms.py#L137" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>FileSplitter</code>(<strong><code>fname</code></strong>)</p>
 </blockquote>
 <p>Split <code>items</code> depending on the value of <code>mask</code>.</p>
 
@@ -905,7 +955,7 @@ description: "Functions for getting, splitting, and labeling data, as well as ge
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ColSplitter" class="doc_header"><code>ColSplitter</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/transforms.py#L136" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ColSplitter</code>(<strong><code>col</code></strong>=<em><code>'is_valid'</code></em>)</p>
+<h4 id="ColSplitter" class="doc_header"><code>ColSplitter</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/transforms.py#L145" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ColSplitter</code>(<strong><code>col</code></strong>=<em><code>'is_valid'</code></em>)</p>
 </blockquote>
 <p>Split <code>items</code> (supposed to be a dataframe) by value in <code>col</code></p>
 
@@ -959,7 +1009,7 @@ description: "Functions for getting, splitting, and labeling data, as well as ge
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="RandomSubsetSplitter" class="doc_header"><code>RandomSubsetSplitter</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/transforms.py#L145" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>RandomSubsetSplitter</code>(<strong><code>train_sz</code></strong>, <strong><code>valid_sz</code></strong>, <strong><code>seed</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="RandomSubsetSplitter" class="doc_header"><code>RandomSubsetSplitter</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/transforms.py#L154" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>RandomSubsetSplitter</code>(<strong><code>train_sz</code></strong>, <strong><code>valid_sz</code></strong>, <strong><code>seed</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Take randoms subsets of <code>splits</code> with <code>train_sz</code> and <code>valid_sz</code></p>
 
@@ -1025,7 +1075,7 @@ description: "Functions for getting, splitting, and labeling data, as well as ge
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="parent_label" class="doc_header"><code>parent_label</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/transforms.py#L159" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>parent_label</code>(<strong><code>o</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="parent_label" class="doc_header"><code>parent_label</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/transforms.py#L168" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>parent_label</code>(<strong><code>o</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Label <code>item</code> with the parent folder name.</p>
 
@@ -1099,7 +1149,7 @@ description: "Functions for getting, splitting, and labeling data, as well as ge
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="RegexLabeller" class="doc_header"><code>class</code> <code>RegexLabeller</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/transforms.py#L164" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RegexLabeller</code>(<strong><code>pat</code></strong>, <strong><code>match</code></strong>=<em><code>False</code></em>)</p>
+<h2 id="RegexLabeller" class="doc_header"><code>class</code> <code>RegexLabeller</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/transforms.py#L173" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RegexLabeller</code>(<strong><code>pat</code></strong>, <strong><code>match</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 <p>Label <code>item</code> with regex <code>pat</code>.</p>
 
@@ -1192,7 +1242,7 @@ description: "Functions for getting, splitting, and labeling data, as well as ge
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ColReader" class="doc_header"><code>class</code> <code>ColReader</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/transforms.py#L176" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ColReader</code>(<strong><code>cols</code></strong>, <strong><code>pref</code></strong>=<em><code>''</code></em>, <strong><code>suff</code></strong>=<em><code>''</code></em>, <strong><code>label_delim</code></strong>=<em><code>None</code></em>)</p>
+<h2 id="ColReader" class="doc_header"><code>class</code> <code>ColReader</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/transforms.py#L185" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ColReader</code>(<strong><code>cols</code></strong>, <strong><code>pref</code></strong>=<em><code>''</code></em>, <strong><code>suff</code></strong>=<em><code>''</code></em>, <strong><code>label_delim</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Read <code>cols</code> in <code>row</code> with potential <code>pref</code> and <code>suff</code></p>
 
@@ -1261,7 +1311,7 @@ description: "Functions for getting, splitting, and labeling data, as well as ge
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="CategoryMap" class="doc_header"><code>class</code> <code>CategoryMap</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/transforms.py#L194" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>CategoryMap</code>(<strong><code>col</code></strong>, <strong><code>sort</code></strong>=<em><code>True</code></em>, <strong><code>add_na</code></strong>=<em><code>False</code></em>) :: <code>CollBase</code></p>
+<h2 id="CategoryMap" class="doc_header"><code>class</code> <code>CategoryMap</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/transforms.py#L203" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>CategoryMap</code>(<strong><code>col</code></strong>, <strong><code>sort</code></strong>=<em><code>True</code></em>, <strong><code>add_na</code></strong>=<em><code>False</code></em>) :: <code>CollBase</code></p>
 </blockquote>
 <p>Collection of categories with the reverse mapping in <code>o2i</code></p>
 
@@ -1371,7 +1421,7 @@ description: "Functions for getting, splitting, and labeling data, as well as ge
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Categorize" class="doc_header"><code>class</code> <code>Categorize</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/transforms.py#L208" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Categorize</code>(<strong><code>vocab</code></strong>=<em><code>None</code></em>, <strong><code>add_na</code></strong>=<em><code>False</code></em>) :: <code>Transform</code></p>
+<h2 id="Categorize" class="doc_header"><code>class</code> <code>Categorize</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/transforms.py#L217" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Categorize</code>(<strong><code>vocab</code></strong>=<em><code>None</code></em>, <strong><code>add_na</code></strong>=<em><code>False</code></em>) :: <code>Transform</code></p>
 </blockquote>
 <p>Reversible transform of category string to <code>vocab</code> id</p>
 
@@ -1403,7 +1453,7 @@ description: "Functions for getting, splitting, and labeling data, as well as ge
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Category" class="doc_header"><code>class</code> <code>Category</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/transforms.py#L223" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Category</code>() :: <code>str</code></p>
+<h2 id="Category" class="doc_header"><code>class</code> <code>Category</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/transforms.py#L232" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Category</code>() :: <code>str</code></p>
 </blockquote>
 <p>str(object='') -&gt; str
 str(bytes_or_buffer[, encoding[, errors]]) -&gt; str</p>
@@ -1487,7 +1537,7 @@ errors defaults to 'strict'.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="MultiCategorize" class="doc_header"><code>class</code> <code>MultiCategorize</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/transforms.py#L226" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MultiCategorize</code>(<strong><code>vocab</code></strong>=<em><code>None</code></em>, <strong><code>add_na</code></strong>=<em><code>False</code></em>) :: <a href="/data.transforms#Categorize"><code>Categorize</code></a></p>
+<h2 id="MultiCategorize" class="doc_header"><code>class</code> <code>MultiCategorize</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/transforms.py#L235" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MultiCategorize</code>(<strong><code>vocab</code></strong>=<em><code>None</code></em>, <strong><code>add_na</code></strong>=<em><code>False</code></em>) :: <a href="/data.transforms#Categorize"><code>Categorize</code></a></p>
 </blockquote>
 <p>Reversible transform of multi-category strings to <code>vocab</code> id</p>
 
@@ -1519,7 +1569,7 @@ errors defaults to 'strict'.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="MultiCategory" class="doc_header"><code>class</code> <code>MultiCategory</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/transforms.py#L244" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MultiCategory</code>(<strong><code>items</code></strong>=<em><code>None</code></em>, <strong>*<code>rest</code></strong>, <strong><code>use_list</code></strong>=<em><code>False</code></em>, <strong><code>match</code></strong>=<em><code>None</code></em>) :: <code>L</code></p>
+<h2 id="MultiCategory" class="doc_header"><code>class</code> <code>MultiCategory</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/transforms.py#L253" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MultiCategory</code>(<strong><code>items</code></strong>=<em><code>None</code></em>, <strong>*<code>rest</code></strong>, <strong><code>use_list</code></strong>=<em><code>False</code></em>, <strong><code>match</code></strong>=<em><code>None</code></em>) :: <code>L</code></p>
 </blockquote>
 <p>Behaves like a list of <code>items</code> but can also index with list of indices or masks</p>
 
@@ -1576,7 +1626,7 @@ errors defaults to 'strict'.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="OneHotEncode" class="doc_header"><code>class</code> <code>OneHotEncode</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/transforms.py#L249" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>OneHotEncode</code>(<strong><code>c</code></strong>=<em><code>None</code></em>) :: <code>Transform</code></p>
+<h2 id="OneHotEncode" class="doc_header"><code>class</code> <code>OneHotEncode</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/transforms.py#L258" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>OneHotEncode</code>(<strong><code>c</code></strong>=<em><code>None</code></em>) :: <code>Transform</code></p>
 </blockquote>
 <p>One-hot encodes targets</p>
 
@@ -1656,7 +1706,7 @@ errors defaults to 'strict'.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="EncodedMultiCategorize" class="doc_header"><code>class</code> <code>EncodedMultiCategorize</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/transforms.py#L262" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>EncodedMultiCategorize</code>(<strong><code>vocab</code></strong>) :: <a href="/data.transforms#Categorize"><code>Categorize</code></a></p>
+<h2 id="EncodedMultiCategorize" class="doc_header"><code>class</code> <code>EncodedMultiCategorize</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/transforms.py#L271" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>EncodedMultiCategorize</code>(<strong><code>vocab</code></strong>) :: <a href="/data.transforms#Categorize"><code>Categorize</code></a></p>
 </blockquote>
 <p>Transform of one-hot encoded multi-category that decodes with <code>vocab</code></p>
 
@@ -1708,7 +1758,7 @@ errors defaults to 'strict'.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="RegressionSetup" class="doc_header"><code>class</code> <code>RegressionSetup</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/transforms.py#L270" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RegressionSetup</code>(<strong><code>c</code></strong>=<em><code>None</code></em>) :: <code>Transform</code></p>
+<h2 id="RegressionSetup" class="doc_header"><code>class</code> <code>RegressionSetup</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/transforms.py#L279" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RegressionSetup</code>(<strong><code>c</code></strong>=<em><code>None</code></em>) :: <code>Transform</code></p>
 </blockquote>
 <p>Transform that floatifies targets</p>
 
@@ -1764,7 +1814,7 @@ errors defaults to 'strict'.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_c" class="doc_header"><code>get_c</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/transforms.py#L280" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_c</code>(<strong><code>dls</code></strong>)</p>
+<h4 id="get_c" class="doc_header"><code>get_c</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/transforms.py#L290" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_c</code>(<strong><code>dls</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -1973,7 +2023,7 @@ errors defaults to 'strict'.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ToTensor" class="doc_header"><code>class</code> <code>ToTensor</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/transforms.py#L289" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ToTensor</code>(<strong><code>enc</code></strong>=<em><code>None</code></em>, <strong><code>dec</code></strong>=<em><code>None</code></em>, <strong><code>split_idx</code></strong>=<em><code>None</code></em>, <strong><code>order</code></strong>=<em><code>None</code></em>) :: <code>Transform</code></p>
+<h2 id="ToTensor" class="doc_header"><code>class</code> <code>ToTensor</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/transforms.py#L299" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ToTensor</code>(<strong><code>enc</code></strong>=<em><code>None</code></em>, <strong><code>dec</code></strong>=<em><code>None</code></em>, <strong><code>split_idx</code></strong>=<em><code>None</code></em>, <strong><code>order</code></strong>=<em><code>None</code></em>) :: <code>Transform</code></p>
 </blockquote>
 <p>Convert item to appropriate tensor class</p>
 
@@ -2005,7 +2055,7 @@ errors defaults to 'strict'.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="IntToFloatTensor" class="doc_header"><code>class</code> <code>IntToFloatTensor</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/transforms.py#L294" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>IntToFloatTensor</code>(<strong><code>div</code></strong>=<em><code>255.0</code></em>, <strong><code>div_mask</code></strong>=<em><code>1</code></em>) :: <code>Transform</code></p>
+<h2 id="IntToFloatTensor" class="doc_header"><code>class</code> <code>IntToFloatTensor</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/transforms.py#L304" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>IntToFloatTensor</code>(<strong><code>div</code></strong>=<em><code>255.0</code></em>, <strong><code>div_mask</code></strong>=<em><code>1</code></em>) :: <code>Transform</code></p>
 </blockquote>
 <p>Transform image to float tensor, optionally dividing by 255 (e.g. for images).</p>
 
@@ -2076,7 +2126,7 @@ errors defaults to 'strict'.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="broadcast_vec" class="doc_header"><code>broadcast_vec</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/transforms.py#L303" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>broadcast_vec</code>(<strong><code>dim</code></strong>, <strong><code>ndim</code></strong>, <strong>*<code>t</code></strong>, <strong><code>cuda</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="broadcast_vec" class="doc_header"><code>broadcast_vec</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/transforms.py#L313" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>broadcast_vec</code>(<strong><code>dim</code></strong>, <strong><code>ndim</code></strong>, <strong>*<code>t</code></strong>, <strong><code>cuda</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 <p>Make a vector broadcastable over <code>dim</code> (out of <code>ndim</code> total) by prepending and appending unit axes</p>
 
@@ -2108,7 +2158,7 @@ errors defaults to 'strict'.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Normalize" class="doc_header"><code>class</code> <code>Normalize</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/transforms.py#L312" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Normalize</code>(<strong><code>mean</code></strong>=<em><code>None</code></em>, <strong><code>std</code></strong>=<em><code>None</code></em>, <strong><code>axes</code></strong>=<em><code>(0, 2, 3)</code></em>) :: <code>Transform</code></p>
+<h2 id="Normalize" class="doc_header"><code>class</code> <code>Normalize</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/data/transforms.py#L322" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Normalize</code>(<strong><code>mean</code></strong>=<em><code>None</code></em>, <strong><code>std</code></strong>=<em><code>None</code></em>, <strong><code>axes</code></strong>=<em><code>(0, 2, 3)</code></em>) :: <code>Transform</code></p>
 </blockquote>
 <p>Normalize/denorm batch of <a href="/torch_core#TensorImage"><code>TensorImage</code></a></p>
 

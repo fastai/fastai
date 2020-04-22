@@ -65,7 +65,7 @@ description: "Functions and transforms to help gather text data in a `Datasets`"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="make_vocab" class="doc_header"><code>make_vocab</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/data.py#L12" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>make_vocab</code>(<strong><code>count</code></strong>, <strong><code>min_freq</code></strong>=<em><code>3</code></em>, <strong><code>max_vocab</code></strong>=<em><code>60000</code></em>)</p>
+<h4 id="make_vocab" class="doc_header"><code>make_vocab</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/data.py#L12" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>make_vocab</code>(<strong><code>count</code></strong>, <strong><code>min_freq</code></strong>=<em><code>3</code></em>, <strong><code>max_vocab</code></strong>=<em><code>60000</code></em>, <strong><code>special_toks</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Create a vocab of <code>max_vocab</code> size from <code>Counter</code> <code>count</code> with items present more than <code>min_freq</code></p>
 
@@ -129,7 +129,7 @@ description: "Functions and transforms to help gather text data in a `Datasets`"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="TensorText" class="doc_header"><code>class</code> <code>TensorText</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/data.py#L22" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>TensorText</code>(<strong><code>x</code></strong>, <strong>**<code>kwargs</code></strong>) :: <a href="/torch_core#TensorBase"><code>TensorBase</code></a></p>
+<h3 id="TensorText" class="doc_header"><code>class</code> <code>TensorText</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/data.py#L23" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>TensorText</code>(<strong><code>x</code></strong>, <strong>**<code>kwargs</code></strong>) :: <a href="/torch_core#TensorBase"><code>TensorBase</code></a></p>
 </blockquote>
 <p>Semantic type for a tensor representing text in language modeling</p>
 
@@ -154,7 +154,7 @@ description: "Functions and transforms to help gather text data in a `Datasets`"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="LMTensorText" class="doc_header"><code>class</code> <code>LMTensorText</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/data.py#L23" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>LMTensorText</code>(<strong><code>x</code></strong>, <strong>**<code>kwargs</code></strong>) :: <a href="/text.data#TensorText"><code>TensorText</code></a></p>
+<h3 id="LMTensorText" class="doc_header"><code>class</code> <code>LMTensorText</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/data.py#L24" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>LMTensorText</code>(<strong><code>x</code></strong>, <strong>**<code>kwargs</code></strong>) :: <a href="/text.data#TensorText"><code>TensorText</code></a></p>
 </blockquote>
 <p>Semantic type for a tensor representing text in language modeling</p>
 
@@ -186,7 +186,7 @@ description: "Functions and transforms to help gather text data in a `Datasets`"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="Numericalize" class="doc_header"><code>class</code> <code>Numericalize</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/data.py#L29" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>Numericalize</code>(<strong><code>vocab</code></strong>=<em><code>None</code></em>, <strong><code>min_freq</code></strong>=<em><code>3</code></em>, <strong><code>max_vocab</code></strong>=<em><code>60000</code></em>) :: <code>Transform</code></p>
+<h3 id="Numericalize" class="doc_header"><code>class</code> <code>Numericalize</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/data.py#L30" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>Numericalize</code>(<strong><code>vocab</code></strong>=<em><code>None</code></em>, <strong><code>min_freq</code></strong>=<em><code>3</code></em>, <strong><code>max_vocab</code></strong>=<em><code>60000</code></em>, <strong><code>special_toks</code></strong>=<em><code>None</code></em>) :: <code>Transform</code></p>
 </blockquote>
 <p>Reversible transform of tokenized texts to numericalized ids</p>
 
@@ -296,7 +296,7 @@ description: "Functions and transforms to help gather text data in a `Datasets`"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="LMDataLoader" class="doc_header"><code>class</code> <code>LMDataLoader</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/data.py#L66" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LMDataLoader</code>(<strong><code>dataset</code></strong>, <strong><code>lens</code></strong>=<em><code>None</code></em>, <strong><code>cache</code></strong>=<em><code>2</code></em>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>seq_len</code></strong>=<em><code>72</code></em>, <strong><code>num_workers</code></strong>=<em><code>0</code></em>, <strong><code>shuffle</code></strong>=<em><code>False</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>, <strong><code>do_setup</code></strong>=<em><code>True</code></em>, <strong><code>pin_memory</code></strong>=<em><code>False</code></em>, <strong><code>timeout</code></strong>=<em><code>0</code></em>, <strong><code>batch_size</code></strong>=<em><code>None</code></em>, <strong><code>drop_last</code></strong>=<em><code>False</code></em>, <strong><code>indexed</code></strong>=<em><code>None</code></em>, <strong><code>n</code></strong>=<em><code>None</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>wif</code></strong>=<em><code>None</code></em>, <strong><code>before_iter</code></strong>=<em><code>None</code></em>, <strong><code>after_item</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_iter</code></strong>=<em><code>None</code></em>, <strong><code>create_batches</code></strong>=<em><code>None</code></em>, <strong><code>create_item</code></strong>=<em><code>None</code></em>, <strong><code>create_batch</code></strong>=<em><code>None</code></em>, <strong><code>retain</code></strong>=<em><code>None</code></em>, <strong><code>get_idxs</code></strong>=<em><code>None</code></em>, <strong><code>sample</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_fn</code></strong>=<em><code>None</code></em>, <strong><code>do_batch</code></strong>=<em><code>None</code></em>) :: <a href="/data.core#TfmdDL"><code>TfmdDL</code></a></p>
+<h2 id="LMDataLoader" class="doc_header"><code>class</code> <code>LMDataLoader</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/data.py#L69" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>LMDataLoader</code>(<strong><code>dataset</code></strong>, <strong><code>lens</code></strong>=<em><code>None</code></em>, <strong><code>cache</code></strong>=<em><code>2</code></em>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>seq_len</code></strong>=<em><code>72</code></em>, <strong><code>num_workers</code></strong>=<em><code>0</code></em>, <strong><code>shuffle</code></strong>=<em><code>False</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>, <strong><code>do_setup</code></strong>=<em><code>True</code></em>, <strong><code>pin_memory</code></strong>=<em><code>False</code></em>, <strong><code>timeout</code></strong>=<em><code>0</code></em>, <strong><code>batch_size</code></strong>=<em><code>None</code></em>, <strong><code>drop_last</code></strong>=<em><code>False</code></em>, <strong><code>indexed</code></strong>=<em><code>None</code></em>, <strong><code>n</code></strong>=<em><code>None</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>wif</code></strong>=<em><code>None</code></em>, <strong><code>before_iter</code></strong>=<em><code>None</code></em>, <strong><code>after_item</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_iter</code></strong>=<em><code>None</code></em>, <strong><code>create_batches</code></strong>=<em><code>None</code></em>, <strong><code>create_item</code></strong>=<em><code>None</code></em>, <strong><code>create_batch</code></strong>=<em><code>None</code></em>, <strong><code>retain</code></strong>=<em><code>None</code></em>, <strong><code>get_idxs</code></strong>=<em><code>None</code></em>, <strong><code>sample</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_fn</code></strong>=<em><code>None</code></em>, <strong><code>do_batch</code></strong>=<em><code>None</code></em>) :: <a href="/data.core#TfmdDL"><code>TfmdDL</code></a></p>
 </blockquote>
 <p>A <a href="/data.load#DataLoader"><code>DataLoader</code></a> suitable for language modeling</p>
 
@@ -425,7 +425,7 @@ description: "Functions and transforms to help gather text data in a `Datasets`"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="pad_input" class="doc_header"><code>pad_input</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/data.py#L118" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>pad_input</code>(<strong><code>samples</code></strong>, <strong><code>pad_idx</code></strong>=<em><code>1</code></em>, <strong><code>pad_fields</code></strong>=<em><code>0</code></em>, <strong><code>pad_first</code></strong>=<em><code>False</code></em>, <strong><code>backwards</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="pad_input" class="doc_header"><code>pad_input</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/data.py#L121" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>pad_input</code>(<strong><code>samples</code></strong>, <strong><code>pad_idx</code></strong>=<em><code>1</code></em>, <strong><code>pad_fields</code></strong>=<em><code>0</code></em>, <strong><code>pad_first</code></strong>=<em><code>False</code></em>, <strong><code>backwards</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 <p>Function that collect <code>samples</code> and adds padding</p>
 
@@ -490,7 +490,7 @@ description: "Functions and transforms to help gather text data in a `Datasets`"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="pad_input_chunk" class="doc_header"><code>pad_input_chunk</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/data.py#L134" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>pad_input_chunk</code>(<strong><code>samples</code></strong>, <strong><code>pad_idx</code></strong>=<em><code>1</code></em>, <strong><code>pad_first</code></strong>=<em><code>True</code></em>, <strong><code>seq_len</code></strong>=<em><code>72</code></em>)</p>
+<h4 id="pad_input_chunk" class="doc_header"><code>pad_input_chunk</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/data.py#L137" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>pad_input_chunk</code>(<strong><code>samples</code></strong>, <strong><code>pad_idx</code></strong>=<em><code>1</code></em>, <strong><code>pad_first</code></strong>=<em><code>True</code></em>, <strong><code>seq_len</code></strong>=<em><code>72</code></em>)</p>
 </blockquote>
 <p>Pad <code>samples</code> by adding padding by chunks of size <code>seq_len</code></p>
 
@@ -551,7 +551,7 @@ description: "Functions and transforms to help gather text data in a `Datasets`"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="SortedDL" class="doc_header"><code>class</code> <code>SortedDL</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/data.py#L149" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>SortedDL</code>(<strong><code>dataset</code></strong>, <strong><code>sort_func</code></strong>=<em><code>None</code></em>, <strong><code>res</code></strong>=<em><code>None</code></em>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>shuffle</code></strong>=<em><code>False</code></em>, <strong><code>num_workers</code></strong>=<em><code>None</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>, <strong><code>do_setup</code></strong>=<em><code>True</code></em>, <strong><code>pin_memory</code></strong>=<em><code>False</code></em>, <strong><code>timeout</code></strong>=<em><code>0</code></em>, <strong><code>batch_size</code></strong>=<em><code>None</code></em>, <strong><code>drop_last</code></strong>=<em><code>False</code></em>, <strong><code>indexed</code></strong>=<em><code>None</code></em>, <strong><code>n</code></strong>=<em><code>None</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>wif</code></strong>=<em><code>None</code></em>, <strong><code>before_iter</code></strong>=<em><code>None</code></em>, <strong><code>after_item</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_iter</code></strong>=<em><code>None</code></em>, <strong><code>create_batches</code></strong>=<em><code>None</code></em>, <strong><code>create_item</code></strong>=<em><code>None</code></em>, <strong><code>create_batch</code></strong>=<em><code>None</code></em>, <strong><code>retain</code></strong>=<em><code>None</code></em>, <strong><code>get_idxs</code></strong>=<em><code>None</code></em>, <strong><code>sample</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_fn</code></strong>=<em><code>None</code></em>, <strong><code>do_batch</code></strong>=<em><code>None</code></em>) :: <a href="/data.core#TfmdDL"><code>TfmdDL</code></a></p>
+<h3 id="SortedDL" class="doc_header"><code>class</code> <code>SortedDL</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/data.py#L152" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>SortedDL</code>(<strong><code>dataset</code></strong>, <strong><code>sort_func</code></strong>=<em><code>None</code></em>, <strong><code>res</code></strong>=<em><code>None</code></em>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>shuffle</code></strong>=<em><code>False</code></em>, <strong><code>num_workers</code></strong>=<em><code>None</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>, <strong><code>do_setup</code></strong>=<em><code>True</code></em>, <strong><code>pin_memory</code></strong>=<em><code>False</code></em>, <strong><code>timeout</code></strong>=<em><code>0</code></em>, <strong><code>batch_size</code></strong>=<em><code>None</code></em>, <strong><code>drop_last</code></strong>=<em><code>False</code></em>, <strong><code>indexed</code></strong>=<em><code>None</code></em>, <strong><code>n</code></strong>=<em><code>None</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>wif</code></strong>=<em><code>None</code></em>, <strong><code>before_iter</code></strong>=<em><code>None</code></em>, <strong><code>after_item</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_iter</code></strong>=<em><code>None</code></em>, <strong><code>create_batches</code></strong>=<em><code>None</code></em>, <strong><code>create_item</code></strong>=<em><code>None</code></em>, <strong><code>create_batch</code></strong>=<em><code>None</code></em>, <strong><code>retain</code></strong>=<em><code>None</code></em>, <strong><code>get_idxs</code></strong>=<em><code>None</code></em>, <strong><code>sample</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_fn</code></strong>=<em><code>None</code></em>, <strong><code>do_batch</code></strong>=<em><code>None</code></em>) :: <a href="/data.core#TfmdDL"><code>TfmdDL</code></a></p>
 </blockquote>
 <p>A <a href="/data.load#DataLoader"><code>DataLoader</code></a> that goes throught the item in the order given by <code>sort_func</code></p>
 
@@ -646,7 +646,7 @@ description: "Functions and transforms to help gather text data in a `Datasets`"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="TextBlock" class="doc_header"><code>class</code> <code>TextBlock</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/data.py#L184" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>TextBlock</code>(<strong><code>tok_tfm</code></strong>, <strong><code>vocab</code></strong>=<em><code>None</code></em>, <strong><code>is_lm</code></strong>=<em><code>False</code></em>, <strong><code>seq_len</code></strong>=<em><code>72</code></em>, <strong><code>min_freq</code></strong>=<em><code>3</code></em>, <strong><code>max_vocab</code></strong>=<em><code>60000</code></em>) :: <a href="/data.block#TransformBlock"><code>TransformBlock</code></a></p>
+<h3 id="TextBlock" class="doc_header"><code>class</code> <code>TextBlock</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/data.py#L187" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>TextBlock</code>(<strong><code>tok_tfm</code></strong>, <strong><code>vocab</code></strong>=<em><code>None</code></em>, <strong><code>is_lm</code></strong>=<em><code>False</code></em>, <strong><code>seq_len</code></strong>=<em><code>72</code></em>, <strong><code>min_freq</code></strong>=<em><code>3</code></em>, <strong><code>max_vocab</code></strong>=<em><code>60000</code></em>, <strong><code>special_toks</code></strong>=<em><code>None</code></em>) :: <a href="/data.block#TransformBlock"><code>TransformBlock</code></a></p>
 </blockquote>
 <p>A <a href="/data.block#TransformBlock"><code>TransformBlock</code></a> for texts</p>
 
@@ -679,7 +679,7 @@ description: "Functions and transforms to help gather text data in a `Datasets`"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="TextBlock.from_df" class="doc_header"><code>TextBlock.from_df</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/data.py#L192" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>TextBlock.from_df</code>(<strong><code>text_cols</code></strong>, <strong><code>vocab</code></strong>=<em><code>None</code></em>, <strong><code>is_lm</code></strong>=<em><code>False</code></em>, <strong><code>seq_len</code></strong>=<em><code>72</code></em>, <strong><code>min_freq</code></strong>=<em><code>3</code></em>, <strong><code>max_vocab</code></strong>=<em><code>60000</code></em>, <strong><code>tok_func</code></strong>=<em><code>'SpacyTokenizer'</code></em>, <strong><code>rules</code></strong>=<em><code>None</code></em>, <strong><code>sep</code></strong>=<em><code>' '</code></em>, <strong><code>n_workers</code></strong>=<em><code>56</code></em>, <strong><code>mark_fields</code></strong>=<em><code>None</code></em>, <strong><code>res_col_name</code></strong>=<em><code>'text'</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="TextBlock.from_df" class="doc_header"><code>TextBlock.from_df</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/data.py#L195" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>TextBlock.from_df</code>(<strong><code>text_cols</code></strong>, <strong><code>vocab</code></strong>=<em><code>None</code></em>, <strong><code>is_lm</code></strong>=<em><code>False</code></em>, <strong><code>seq_len</code></strong>=<em><code>72</code></em>, <strong><code>min_freq</code></strong>=<em><code>3</code></em>, <strong><code>max_vocab</code></strong>=<em><code>60000</code></em>, <strong><code>tok_func</code></strong>=<em><code>'SpacyTokenizer'</code></em>, <strong><code>rules</code></strong>=<em><code>None</code></em>, <strong><code>sep</code></strong>=<em><code>' '</code></em>, <strong><code>n_workers</code></strong>=<em><code>56</code></em>, <strong><code>mark_fields</code></strong>=<em><code>None</code></em>, <strong><code>res_col_name</code></strong>=<em><code>'text'</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Build a <a href="/text.data#TextBlock"><code>TextBlock</code></a> from a dataframe using <code>text_cols</code></p>
 
@@ -711,7 +711,7 @@ description: "Functions and transforms to help gather text data in a `Datasets`"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="TextBlock.from_folder" class="doc_header"><code>TextBlock.from_folder</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/data.py#L199" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>TextBlock.from_folder</code>(<strong><code>path</code></strong>, <strong><code>vocab</code></strong>=<em><code>None</code></em>, <strong><code>is_lm</code></strong>=<em><code>False</code></em>, <strong><code>seq_len</code></strong>=<em><code>72</code></em>, <strong><code>min_freq</code></strong>=<em><code>3</code></em>, <strong><code>max_vocab</code></strong>=<em><code>60000</code></em>, <strong><code>tok_func</code></strong>=<em><code>'SpacyTokenizer'</code></em>, <strong><code>rules</code></strong>=<em><code>None</code></em>, <strong><code>extensions</code></strong>=<em><code>None</code></em>, <strong><code>folders</code></strong>=<em><code>None</code></em>, <strong><code>output_dir</code></strong>=<em><code>None</code></em>, <strong><code>n_workers</code></strong>=<em><code>56</code></em>, <strong><code>encoding</code></strong>=<em><code>'utf8'</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="TextBlock.from_folder" class="doc_header"><code>TextBlock.from_folder</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/data.py#L202" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>TextBlock.from_folder</code>(<strong><code>path</code></strong>, <strong><code>vocab</code></strong>=<em><code>None</code></em>, <strong><code>is_lm</code></strong>=<em><code>False</code></em>, <strong><code>seq_len</code></strong>=<em><code>72</code></em>, <strong><code>min_freq</code></strong>=<em><code>3</code></em>, <strong><code>max_vocab</code></strong>=<em><code>60000</code></em>, <strong><code>tok_func</code></strong>=<em><code>'SpacyTokenizer'</code></em>, <strong><code>rules</code></strong>=<em><code>None</code></em>, <strong><code>extensions</code></strong>=<em><code>None</code></em>, <strong><code>folders</code></strong>=<em><code>None</code></em>, <strong><code>output_dir</code></strong>=<em><code>None</code></em>, <strong><code>n_workers</code></strong>=<em><code>56</code></em>, <strong><code>encoding</code></strong>=<em><code>'utf8'</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Build a <a href="/text.data#TextBlock"><code>TextBlock</code></a> from a <code>path</code></p>
 
@@ -750,7 +750,7 @@ description: "Functions and transforms to help gather text data in a `Datasets`"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TextDataLoaders" class="doc_header"><code>class</code> <code>TextDataLoaders</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/data.py#L207" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TextDataLoaders</code>(<strong>*<code>loaders</code></strong>, <strong><code>path</code></strong>=<em><code>'.'</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>) :: <a href="/data.core#DataLoaders"><code>DataLoaders</code></a></p>
+<h2 id="TextDataLoaders" class="doc_header"><code>class</code> <code>TextDataLoaders</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/data.py#L210" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TextDataLoaders</code>(<strong>*<code>loaders</code></strong>, <strong><code>path</code></strong>=<em><code>'.'</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>) :: <a href="/data.core#DataLoaders"><code>DataLoaders</code></a></p>
 </blockquote>
 <p>Basic wrapper around several <a href="/data.load#DataLoader"><code>DataLoader</code></a>s with factory methods for NLP problems</p>
 
@@ -791,7 +791,7 @@ description: "Functions and transforms to help gather text data in a `Datasets`"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="TextDataLoaders.from_folder" class="doc_header"><code>TextDataLoaders.from_folder</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/data.py#L209" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>TextDataLoaders.from_folder</code>(<strong><code>path</code></strong>, <strong><code>train</code></strong>=<em><code>'train'</code></em>, <strong><code>valid</code></strong>=<em><code>'valid'</code></em>, <strong><code>valid_pct</code></strong>=<em><code>None</code></em>, <strong><code>seed</code></strong>=<em><code>None</code></em>, <strong><code>vocab</code></strong>=<em><code>None</code></em>, <strong><code>text_vocab</code></strong>=<em><code>None</code></em>, <strong><code>is_lm</code></strong>=<em><code>False</code></em>, <strong><code>tok_tfm</code></strong>=<em><code>None</code></em>, <strong><code>seq_len</code></strong>=<em><code>72</code></em>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>val_bs</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_train</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="TextDataLoaders.from_folder" class="doc_header"><code>TextDataLoaders.from_folder</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/data.py#L212" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>TextDataLoaders.from_folder</code>(<strong><code>path</code></strong>, <strong><code>train</code></strong>=<em><code>'train'</code></em>, <strong><code>valid</code></strong>=<em><code>'valid'</code></em>, <strong><code>valid_pct</code></strong>=<em><code>None</code></em>, <strong><code>seed</code></strong>=<em><code>None</code></em>, <strong><code>vocab</code></strong>=<em><code>None</code></em>, <strong><code>text_vocab</code></strong>=<em><code>None</code></em>, <strong><code>is_lm</code></strong>=<em><code>False</code></em>, <strong><code>tok_tfm</code></strong>=<em><code>None</code></em>, <strong><code>seq_len</code></strong>=<em><code>72</code></em>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>val_bs</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_train</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Create from imagenet style dataset in <code>path</code> with <code>train</code> and <code>valid</code> subfolders (or provide <code>valid_pct</code>)</p>
 
@@ -830,6 +830,46 @@ description: "Functions and transforms to help gather text data in a `Datasets`"
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea ">
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>text</th>
+      <th>category</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>xxbos xxmaj match 1 : xxmaj tag xxmaj team xxmaj table xxmaj match xxmaj bubba xxmaj ray and xxmaj spike xxmaj dudley vs xxmaj eddie xxmaj guerrero and xxmaj chris xxmaj benoit xxmaj bubba xxmaj ray and xxmaj spike xxmaj dudley started things off with a xxmaj tag xxmaj team xxmaj table xxmaj match against xxmaj eddie xxmaj guerrero and xxmaj chris xxmaj benoit . xxmaj according to the rules of the match , both opponents have to go through tables in order to get the win . xxmaj benoit and xxmaj guerrero heated up early on by taking turns hammering first xxmaj spike and then xxmaj bubba xxmaj ray . a xxmaj german xxunk by xxmaj benoit to xxmaj bubba took the wind out of the xxmaj dudley brother . xxmaj spike tried to help his brother , but the referee restrained him while xxmaj benoit and xxmaj guerrero</td>
+      <td>pos</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>xxbos xxmaj by now you 've probably heard a bit about the new xxmaj disney dub of xxmaj miyazaki 's classic film , xxmaj laputa : xxmaj castle xxmaj in xxmaj the xxmaj sky . xxmaj during late summer of 1998 , xxmaj disney released " kiki 's xxmaj delivery xxmaj service " on video which included a preview of the xxmaj laputa dub saying it was due out in " 1 xxrep 3 9 " . xxmaj it 's obviously way past that year now , but the dub has been finally completed . xxmaj and it 's not " laputa : xxmaj castle xxmaj in xxmaj the xxmaj sky " , just " castle xxmaj in xxmaj the xxmaj sky " for the dub , since xxmaj laputa is not such a nice word in xxmaj spanish ( even though they use the word xxmaj laputa many times</td>
+      <td>pos</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>xxbos xxmaj titanic directed by xxmaj james xxmaj cameron presents a fictional love story on the historical setting of the xxmaj titanic . xxmaj the plot is simple , xxunk , or not for those who love plots that twist and turn and keep you in suspense . xxmaj the end of the movie can be figured out within minutes of the start of the film , but the love story is an interesting one , however . xxmaj kate xxmaj winslett is wonderful as xxmaj rose , an aristocratic young lady betrothed by xxmaj cal ( billy xxmaj zane ) . xxmaj early on the voyage xxmaj rose meets xxmaj jack ( leonardo dicaprio ) , a lower class artist on his way to xxmaj america after winning his ticket aboard xxmaj titanic in a poker game . xxmaj if he wants something , he goes and gets it</td>
+      <td>pos</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+</div>
+
+</div>
+</div>
+
 </div>
     {% endraw %}
 
@@ -844,7 +884,7 @@ description: "Functions and transforms to help gather text data in a `Datasets`"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="TextDataLoaders.from_df" class="doc_header"><code>TextDataLoaders.from_df</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/data.py#L224" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>TextDataLoaders.from_df</code>(<strong><code>df</code></strong>, <strong><code>path</code></strong>=<em><code>'.'</code></em>, <strong><code>valid_pct</code></strong>=<em><code>0.2</code></em>, <strong><code>seed</code></strong>=<em><code>None</code></em>, <strong><code>text_col</code></strong>=<em><code>0</code></em>, <strong><code>label_col</code></strong>=<em><code>1</code></em>, <strong><code>label_delim</code></strong>=<em><code>None</code></em>, <strong><code>y_block</code></strong>=<em><code>None</code></em>, <strong><code>text_vocab</code></strong>=<em><code>None</code></em>, <strong><code>is_lm</code></strong>=<em><code>False</code></em>, <strong><code>valid_col</code></strong>=<em><code>None</code></em>, <strong><code>tok_tfm</code></strong>=<em><code>None</code></em>, <strong><code>seq_len</code></strong>=<em><code>72</code></em>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>val_bs</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_train</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="TextDataLoaders.from_df" class="doc_header"><code>TextDataLoaders.from_df</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/data.py#L227" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>TextDataLoaders.from_df</code>(<strong><code>df</code></strong>, <strong><code>path</code></strong>=<em><code>'.'</code></em>, <strong><code>valid_pct</code></strong>=<em><code>0.2</code></em>, <strong><code>seed</code></strong>=<em><code>None</code></em>, <strong><code>text_col</code></strong>=<em><code>0</code></em>, <strong><code>label_col</code></strong>=<em><code>1</code></em>, <strong><code>label_delim</code></strong>=<em><code>None</code></em>, <strong><code>y_block</code></strong>=<em><code>None</code></em>, <strong><code>text_vocab</code></strong>=<em><code>None</code></em>, <strong><code>is_lm</code></strong>=<em><code>False</code></em>, <strong><code>valid_col</code></strong>=<em><code>None</code></em>, <strong><code>tok_tfm</code></strong>=<em><code>None</code></em>, <strong><code>seq_len</code></strong>=<em><code>72</code></em>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>val_bs</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_train</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Create from <code>df</code> in <code>path</code> with <code>valid_pct</code></p>
 
@@ -882,6 +922,59 @@ description: "Functions and transforms to help gather text data in a `Datasets`"
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>label</th>
+      <th>text</th>
+      <th>is_valid</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>negative</td>
+      <td>Un-bleeping-believable! Meg Ryan doesn't even look her usual pert lovable self in this, which normally makes me forgive her shallow ticky acting schtick. Hard to believe she was the producer on this dog. Plus Kevin Kline: what kind of suicide trip has his career been on? Whoosh... Banzai!!! Finally this was directed by the guy who did Big Chill? Must be a replay of Jonestown - hollywood style. Wooofff!</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>positive</td>
+      <td>This is a extremely well-made film. The acting, script and camera-work are all first-rate. The music is good, too, though it is mostly early in the film, when things are still relatively cheery. There are no really superstars in the cast, though several faces will be familiar. The entire cast does an excellent job with the script.&lt;br /&gt;&lt;br /&gt;But it is hard to watch, because there is no good end to a situation like the one presented. It is now fashionable to blame the British for setting Hindus and Muslims against each other, and then cruelly separating them into two countries. There is som...</td>
+      <td>False</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
 </div>
     {% endraw %}
 
@@ -897,6 +990,55 @@ description: "Functions and transforms to help gather text data in a `Datasets`"
 </pre></div>
 
     </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea ">
+
+</div>
+
+</div>
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea ">
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>text</th>
+      <th>category</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>xxbos xxmaj raising xxmaj victor xxmaj vargas : a xxmaj review \n\n xxmaj you know , xxmaj raising xxmaj victor xxmaj vargas is like sticking your hands into a big , xxunk bowl of xxunk . xxmaj it 's warm and gooey , but you 're not sure if it feels right . xxmaj try as i might , no matter how warm and gooey xxmaj raising xxmaj victor xxmaj vargas became i was always aware that something did n't quite feel right . xxmaj victor xxmaj vargas suffers from a certain xxunk on the director 's part . xxmaj apparently , the director thought that the ethnic backdrop of a xxmaj latino family on the lower east side , and an xxunk storyline would make the film critic proof . xxmaj he was right , but it did n't fool me . xxmaj raising xxmaj victor xxmaj vargas is</td>
+      <td>negative</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>xxbos xxup the xxup shop xxup around xxup the xxup corner is one of the xxunk and most feel - good romantic comedies ever made . xxmaj there 's just no getting around that , and it 's hard to actually put one 's feeling for this film into words . xxmaj it 's not one of those films that tries too hard , nor does it come up with the xxunk possible scenarios to get the two protagonists together in the end . xxmaj in fact , all its charm is xxunk , contained within the characters and the setting and the plot … which is highly believable to xxunk . xxmaj it 's easy to think that such a love story , as beautiful as any other ever told , * could * happen to you … a feeling you do n't often get from other romantic comedies</td>
+      <td>positive</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>xxbos xxmaj now that xxmaj che(2008 ) has finished its relatively short xxmaj australian cinema run ( extremely limited xxunk screen in xxmaj xxunk , after xxunk ) , i can xxunk join both xxunk of " at xxmaj the xxmaj movies " in taking xxmaj steven xxmaj soderbergh to task . \n\n xxmaj it 's usually satisfying to watch a film director change his style / subject , but xxmaj soderbergh 's most recent stinker , xxmaj the xxmaj girlfriend xxmaj xxunk ) , was also missing a story , so narrative ( and editing ? ) seem to suddenly be xxmaj soderbergh 's main challenge . xxmaj strange , after xxunk years in the business . xxmaj he was probably never much good at narrative , just xxunk it well inside " edgy " projects . \n\n xxmaj none of this excuses him this present , almost diabolical</td>
+      <td>negative</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+</div>
+
 </div>
 </div>
 
@@ -918,6 +1060,55 @@ description: "Functions and transforms to help gather text data in a `Datasets`"
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea ">
+
+</div>
+
+</div>
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea ">
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>text</th>
+      <th>text_</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>xxbos i was very excited about seeing this film , xxunk a visual xxunk on the relation of artistic beauty and nature , xxunk the kinds of xxunk the likes of " rivers and xxmaj xxunk . " xxmaj however , that 's not what i received . xxmaj instead , i get a fairly uninspired film about how human industry is bad for nature . xxmaj which is clearly a quite</td>
+      <td>i was very excited about seeing this film , xxunk a visual xxunk on the relation of artistic beauty and nature , xxunk the kinds of xxunk the likes of " rivers and xxmaj xxunk . " xxmaj however , that 's not what i received . xxmaj instead , i get a fairly uninspired film about how human industry is bad for nature . xxmaj which is clearly a quite xxunk</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>each other . xxup the xxup end . xxbos xxmaj hip . xxmaj erotic . xxmaj xxunk sexy … whatever . xxmaj it 's " the xxmaj xxunk " with xxunk . \n\n xxmaj no , seriously . xxmaj the cop saves the girl ( waitress ! ) from the big monster and refers to himself as her ' protector ' . xxmaj the lead actor xxmaj ryan xxmaj xxunk does a</td>
+      <td>other . xxup the xxup end . xxbos xxmaj hip . xxmaj erotic . xxmaj xxunk sexy … whatever . xxmaj it 's " the xxmaj xxunk " with xxunk . \n\n xxmaj no , seriously . xxmaj the cop saves the girl ( waitress ! ) from the big monster and refers to himself as her ' protector ' . xxmaj the lead actor xxmaj ryan xxmaj xxunk does a pretty</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>xxmaj the xxmaj scene xxmaj that xxmaj explains xxmaj all was adequate and managed to explain all of the questions and mysterious dialogue bits throughout the movie but we were just checking them off a list . ( " oh , okay , that 's why xxmaj brad had that happen and xxmaj jonathan says this and … ") \n\n xxmaj what laughs we made were from the stupidity of the plot</td>
+      <td>the xxmaj scene xxmaj that xxmaj explains xxmaj all was adequate and managed to explain all of the questions and mysterious dialogue bits throughout the movie but we were just checking them off a list . ( " oh , okay , that 's why xxmaj brad had that happen and xxmaj jonathan says this and … ") \n\n xxmaj what laughs we made were from the stupidity of the plot than</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+</div>
+
+</div>
+</div>
+
 </div>
     {% endraw %}
 
@@ -932,7 +1123,7 @@ description: "Functions and transforms to help gather text data in a `Datasets`"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="TextDataLoaders.from_csv" class="doc_header"><code>TextDataLoaders.from_csv</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/data.py#L240" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>TextDataLoaders.from_csv</code>(<strong><code>path</code></strong>, <strong><code>csv_fname</code></strong>=<em><code>'labels.csv'</code></em>, <strong><code>header</code></strong>=<em><code>'infer'</code></em>, <strong><code>delimiter</code></strong>=<em><code>None</code></em>, <strong><code>valid_pct</code></strong>=<em><code>0.2</code></em>, <strong><code>seed</code></strong>=<em><code>None</code></em>, <strong><code>text_col</code></strong>=<em><code>0</code></em>, <strong><code>label_col</code></strong>=<em><code>1</code></em>, <strong><code>label_delim</code></strong>=<em><code>None</code></em>, <strong><code>y_block</code></strong>=<em><code>None</code></em>, <strong><code>text_vocab</code></strong>=<em><code>None</code></em>, <strong><code>is_lm</code></strong>=<em><code>False</code></em>, <strong><code>valid_col</code></strong>=<em><code>None</code></em>, <strong><code>tok_tfm</code></strong>=<em><code>None</code></em>, <strong><code>seq_len</code></strong>=<em><code>72</code></em>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>val_bs</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_train</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="TextDataLoaders.from_csv" class="doc_header"><code>TextDataLoaders.from_csv</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/data.py#L243" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>TextDataLoaders.from_csv</code>(<strong><code>path</code></strong>, <strong><code>csv_fname</code></strong>=<em><code>'labels.csv'</code></em>, <strong><code>header</code></strong>=<em><code>'infer'</code></em>, <strong><code>delimiter</code></strong>=<em><code>None</code></em>, <strong><code>valid_pct</code></strong>=<em><code>0.2</code></em>, <strong><code>seed</code></strong>=<em><code>None</code></em>, <strong><code>text_col</code></strong>=<em><code>0</code></em>, <strong><code>label_col</code></strong>=<em><code>1</code></em>, <strong><code>label_delim</code></strong>=<em><code>None</code></em>, <strong><code>y_block</code></strong>=<em><code>None</code></em>, <strong><code>text_vocab</code></strong>=<em><code>None</code></em>, <strong><code>is_lm</code></strong>=<em><code>False</code></em>, <strong><code>valid_col</code></strong>=<em><code>None</code></em>, <strong><code>tok_tfm</code></strong>=<em><code>None</code></em>, <strong><code>seq_len</code></strong>=<em><code>72</code></em>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>val_bs</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_train</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Create from <code>csv</code> file in <code>path/csv_fname</code></p>
 
@@ -965,6 +1156,55 @@ description: "Functions and transforms to help gather text data in a `Datasets`"
 </pre></div>
 
     </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea ">
+
+</div>
+
+</div>
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea ">
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>text</th>
+      <th>category</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>xxbos xxmaj raising xxmaj victor xxmaj vargas : a xxmaj review \n\n xxmaj you know , xxmaj raising xxmaj victor xxmaj vargas is like sticking your hands into a big , xxunk bowl of xxunk . xxmaj it 's warm and gooey , but you 're not sure if it feels right . xxmaj try as i might , no matter how warm and gooey xxmaj raising xxmaj victor xxmaj vargas became i was always aware that something did n't quite feel right . xxmaj victor xxmaj vargas suffers from a certain xxunk on the director 's part . xxmaj apparently , the director thought that the ethnic backdrop of a xxmaj latino family on the lower east side , and an xxunk storyline would make the film critic proof . xxmaj he was right , but it did n't fool me . xxmaj raising xxmaj victor xxmaj vargas is</td>
+      <td>negative</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>xxbos xxup the xxup shop xxup around xxup the xxup corner is one of the xxunk and most feel - good romantic comedies ever made . xxmaj there 's just no getting around that , and it 's hard to actually put one 's feeling for this film into words . xxmaj it 's not one of those films that tries too hard , nor does it come up with the xxunk possible scenarios to get the two protagonists together in the end . xxmaj in fact , all its charm is xxunk , contained within the characters and the setting and the plot … which is highly believable to xxunk . xxmaj it 's easy to think that such a love story , as beautiful as any other ever told , * could * happen to you … a feeling you do n't often get from other romantic comedies</td>
+      <td>positive</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>xxbos xxmaj now that xxmaj che(2008 ) has finished its relatively short xxmaj australian cinema run ( extremely limited xxunk screen in xxmaj xxunk , after xxunk ) , i can xxunk join both xxunk of " at xxmaj the xxmaj movies " in taking xxmaj steven xxmaj soderbergh to task . \n\n xxmaj it 's usually satisfying to watch a film director change his style / subject , but xxmaj soderbergh 's most recent stinker , xxmaj the xxmaj girlfriend xxmaj xxunk ) , was also missing a story , so narrative ( and editing ? ) seem to suddenly be xxmaj soderbergh 's main challenge . xxmaj strange , after xxunk years in the business . xxmaj he was probably never much good at narrative , just xxunk it well inside " edgy " projects . \n\n xxmaj none of this excuses him this present , almost diabolical</td>
+      <td>negative</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+</div>
+
 </div>
 </div>
 

@@ -338,7 +338,7 @@ description: "Callbacks that make decisions depending how a monitored metric/los
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ReduceLROnPlateau" class="doc_header"><code>class</code> <code>ReduceLROnPlateau</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/tracker.py#L90" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ReduceLROnPlateau</code>(<strong><code>monitor</code></strong>=<em><code>'valid_loss'</code></em>, <strong><code>comp</code></strong>=<em><code>None</code></em>, <strong><code>min_delta</code></strong>=<em><code>0.0</code></em>, <strong><code>patience</code></strong>=<em><code>1</code></em>, <strong><code>factor</code></strong>=<em><code>10.0</code></em>) :: <a href="/callback.tracker#TrackerCallback"><code>TrackerCallback</code></a></p>
+<h2 id="ReduceLROnPlateau" class="doc_header"><code>class</code> <code>ReduceLROnPlateau</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/callback/tracker.py#L90" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ReduceLROnPlateau</code>(<strong><code>monitor</code></strong>=<em><code>'valid_loss'</code></em>, <strong><code>comp</code></strong>=<em><code>None</code></em>, <strong><code>min_delta</code></strong>=<em><code>0.0</code></em>, <strong><code>patience</code></strong>=<em><code>1</code></em>, <strong><code>factor</code></strong>=<em><code>10.0</code></em>, <strong><code>min_lr</code></strong>=<em><code>0</code></em>) :: <a href="/callback.tracker#TrackerCallback"><code>TrackerCallback</code></a></p>
 </blockquote>
 <p>A <a href="/callback.tracker#TrackerCallback"><code>TrackerCallback</code></a> that reduces learning rate when a metric has stopped improving.</p>
 
@@ -361,6 +361,24 @@ description: "Callbacks that make decisions depending how a monitored metric/los
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span> <span class="o">=</span> <span class="n">synth_learner</span><span class="p">(</span><span class="n">n_trn</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 <span class="n">learn</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">n_epoch</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">1e-7</span><span class="p">,</span> <span class="n">cbs</span><span class="o">=</span><span class="n">ReduceLROnPlateau</span><span class="p">(</span><span class="n">monitor</span><span class="o">=</span><span class="s1">&#39;valid_loss&#39;</span><span class="p">,</span> <span class="n">min_delta</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">patience</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span> <span class="o">=</span> <span class="n">synth_learner</span><span class="p">(</span><span class="n">n_trn</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">learn</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">n_epoch</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">5e-8</span><span class="p">,</span> <span class="n">cbs</span><span class="o">=</span><span class="n">ReduceLROnPlateau</span><span class="p">(</span><span class="n">monitor</span><span class="o">=</span><span class="s1">&#39;valid_loss&#39;</span><span class="p">,</span> <span class="n">min_delta</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">patience</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">min_lr</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">))</span>
 </pre></div>
 
     </div>
