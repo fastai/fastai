@@ -179,7 +179,7 @@ class Image(ItemBase):
 
     def affine(self, func:AffineFunc, *args, **kwargs)->'Image':
         "Equivalent to `image.affine_mat = image.affine_mat @ func()`."
-        m = tensor(func(*args, **kwargs)).to(self.device)
+        m = tensor(func(*args, **kwargs)).to(self.device).float()
         self.affine_mat = self.affine_mat @ m
         return self
 
