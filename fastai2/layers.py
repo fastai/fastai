@@ -271,11 +271,9 @@ def AvgPool(ks=2, stride=None, padding=0, ndim=2, ceil_mode=False):
 
 # Cell
 @log_args
-@funcs_kwargs
 class BaseLoss():
     "Same as `loss_cls`, but flattens input and target."
     activation=decodes=noops
-    _methods = "activation decodes".split()
     def __init__(self, loss_cls, *args, axis=-1, flatten=True, floatify=False, is_2d=True, **kwargs):
         store_attr(self, "axis,flatten,floatify,is_2d")
         self.func = loss_cls(*args,**kwargs)
