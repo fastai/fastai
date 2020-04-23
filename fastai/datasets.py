@@ -211,7 +211,7 @@ def download_data(url:str, fname:PathOrStr=None, data:bool=True, ext:str='.tgz')
     fname = Path(ifnone(fname, _url2tgz(url, data, ext=ext)))
     os.makedirs(fname.parent, exist_ok=True)
     if not fname.exists():
-        print(f'Downloading {url}')
+        print(f'Downloading {url}{ext}')
         download_url(f'{url}{ext}', fname)
     return fname
 
