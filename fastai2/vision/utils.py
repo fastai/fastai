@@ -48,7 +48,7 @@ def verify_images(fns):
 
 # Cell
 def resize_image(file, dest, max_size=None, n_channels=3, ext=None,
-                 img_format=None, resume=False, **kwargs ):
+                 img_format=None, resample=Image.BILINEAR, resume=False, **kwargs ):
     "Resize file to dest to max_size"
     dest = Path(dest)
     dest_fname = dest/file.name
@@ -61,13 +61,13 @@ def resize_image(file, dest, max_size=None, n_channels=3, ext=None,
             if ext is not None: dest_fname=dest_fname.with_suffix(ext)
             if max_size is not None:
                 new_sz = resize_to(img, max_size)
-                img = img.resize(new_sz, resample=3)
+                img = img.resize(new_sz, resample=resample)
             if n_channels == 3: img = img.convert("RGB")
             img.save(dest_fname, img_format, **kwargs)
 
 # Cell
 def resize_images(path, max_workers=defaults.cpus, max_size=None, recurse=False,
-                  dest=Path('.'), n_channels=3, ext=None, img_format=None,
+                  dest=Path('.'), n_channels=3, ext=None, img_format=None, resample=Image.BILINEAR,
                   resume=None, **kwargs):
     "Resize files on path recursevely to dest to max_size"
     path = Path(path)
@@ -75,4 +75,4 @@ def resize_images(path, max_workers=defaults.cpus, max_size=None, recurse=False,
     os.makedirs(dest, exist_ok=True)
     files = get_image_files(path, recurse=recurse)
     parallel(resize_image, files, max_workers=max_workers, max_size=max_size, dest=dest, n_channels=n_channels, ext=ext,
-                   img_format=img_format, resume=resume, **kwargs)
+                   img_format=img_format, resample=resample, resume=resume, **kwargs)
