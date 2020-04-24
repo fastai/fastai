@@ -155,7 +155,7 @@ class ConfusionMatrix(Callback):
         targs = last_target.cpu()
         if self.n_classes == 0:
             self.n_classes = last_output.shape[-1]
-        if self.cm is None: self.cm = torch.zeros((n_classes, n_classes), device=torch.device('cpu'))
+        if self.cm is None: self.cm = torch.zeros((self.n_classes, self.n_classes), device=torch.device('cpu'))
         cm_temp_numpy = self.cm.numpy()
         np.add.at(cm_temp_numpy, (targs ,preds), 1)
         self.cm = torch.from_numpy(cm_temp_numpy)
