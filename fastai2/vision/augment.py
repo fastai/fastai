@@ -584,7 +584,8 @@ def apply_perspective(coords, coeffs):
     sz = coords.shape
     coords = coords.view(sz[0], -1, 2)
     coeffs = torch.cat([coeffs, t1(coeffs[:,:1])], dim=1).view(coeffs.shape[0], 3,3)
-    coords = coords @ coeffs[...,:2].transpose(1,2) + coeffs[...,2].unsqueeze(1)
+    coords1 = coords @ coeffs[...,:2].transpose(1,2) + coeffs[...,2].unsqueeze(1)
+    if (coords1[...,2]==0.).any(): return coords[...,:2].view(*sz)
     coords = coords/coords[...,2].unsqueeze(-1)
     return coords[...,:2].view(*sz)
 
