@@ -210,8 +210,9 @@ class TfmdLists(FilteredBase, L, GetAttr):
     "A `Pipeline` of `tfms` applied to a collection of `items`"
     _default='tfms'
     def __init__(self, items, tfms, use_list=None, do_setup=True, split_idx=None, train_setup=True,
-                 splits=None, types=None, verbose=False):
+                 splits=None, types=None, verbose=False, dl_type=None):
         super().__init__(items, use_list=use_list)
+        if dl_type is not None: self._dl_type = dl_type
         self.splits = L([slice(None),[]] if splits is None else splits).map(mask2idxs)
         if isinstance(tfms,TfmdLists): tfms = tfms.tfms
         if isinstance(tfms,Pipeline): do_setup=False

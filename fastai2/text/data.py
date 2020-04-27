@@ -36,7 +36,7 @@ class Numericalize(Transform):
     def setups(self, dsets):
         if dsets is None: return
         if self.vocab is None:
-            count = dsets.counter if hasattr(dsets, 'counter') else Counter(p for o in dsets for p in o)
+            count = dsets.counter if getattr(dsets, 'counter', None) is not None else Counter(p for o in dsets for p in o)
             if self.special_toks is None and hasattr(dsets, 'special_toks'):
                 self.special_toks = dsets.special_toks
             self.vocab = make_vocab(count, min_freq=self.min_freq, max_vocab=self.max_vocab, special_toks=self.special_toks)
