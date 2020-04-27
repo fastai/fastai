@@ -528,16 +528,21 @@ def tta(self:Learner, ds_idx=1, dl=None, n=4, item_tfms=None, batch_tfms=None, b
     "Return predictions on the `ds_idx` dataset or `dl` using Test Time Augmentation"
     if dl is None: dl = self.dls[ds_idx]
     if item_tfms is not None or batch_tfms is not None: dl = dl.new(after_item=item_tfms, after_batch=batch_tfms)
-    with dl.dataset.set_split_idx(0), self.no_mbar():
-        if hasattr(self,'progress'): self.progress.mbar = master_bar(list(range(n)))
-        aug_preds = []
-        for i in self.progress.mbar if hasattr(self,'progress') else range(n):
-            self.epoch = i #To keep track of progress on mbar since the progress callback will use self.epoch
-            aug_preds.append(self.get_preds(dl=dl, inner=True)[0][None])
-    aug_preds = torch.cat(aug_preds)
-    aug_preds = aug_preds.max(0)[0] if use_max else aug_preds.mean(0)
-    self.epoch = n
-    with dl.dataset.set_split_idx(1): preds,targs = self.get_preds(dl=dl, inner=True)
+    try:
+        self(event.begin_fit)
+        with dl.dataset.set_split_idx(0), self.no_mbar():
+            if hasattr(self,'progress'): self.progress.mbar = master_bar(list(range(n)))
+            aug_preds = []
+            for i in self.progress.mbar if hasattr(self,'progress') else range(n):
+                self.epoch = i #To keep track of progress on mbar since the progress callback will use self.epoch
+                aug_preds.append(self.get_preds(dl=dl, inner=True)[0][None])
+        aug_preds = torch.cat(aug_preds)
+        aug_preds = aug_preds.max(0)[0] if use_max else aug_preds.mean(0)
+        self.epoch = n
+        with dl.dataset.set_split_idx(1): preds,targs = self.get_preds(dl=dl, inner=True)
+    except CancelFitException:             self(event.after_cancel_fit)
+    finally:                               self(event.after_fit)
+
     if use_max: return torch.stack([preds, aug_preds], 0).max(0)[0],targs
     preds = (aug_preds,preds) if beta is None else torch.lerp(aug_preds, preds, beta)
     return preds,targs
