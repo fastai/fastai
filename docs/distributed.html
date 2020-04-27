@@ -464,7 +464,7 @@ description: "Callbacks and helper functions to train in parallel or use distrib
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Learner.to_distributed" class="doc_header"><code>Learner.to_distributed</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/distributed.py#L136" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.to_distributed</code>(<strong><code>cuda_id</code></strong>)</p>
+<h4 id="Learner.to_distributed" class="doc_header"><code>Learner.to_distributed</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/distributed.py#L138" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.to_distributed</code>(<strong><code>cuda_id</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -495,7 +495,7 @@ description: "Callbacks and helper functions to train in parallel or use distrib
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Learner.detach_distributed" class="doc_header"><code>Learner.detach_distributed</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/distributed.py#L143" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.detach_distributed</code>()</p>
+<h4 id="Learner.detach_distributed" class="doc_header"><code>Learner.detach_distributed</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/distributed.py#L145" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.detach_distributed</code>()</p>
 </blockquote>
 
 </div>
@@ -526,7 +526,7 @@ description: "Callbacks and helper functions to train in parallel or use distrib
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Learner.distrib_ctx" class="doc_header"><code>Learner.distrib_ctx</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/distributed.py#L151" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.distrib_ctx</code>(<strong><code>cuda_id</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="Learner.distrib_ctx" class="doc_header"><code>Learner.distrib_ctx</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/distributed.py#L153" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.distrib_ctx</code>(<strong><code>cuda_id</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>A context manager to adapt a learner to train in distributed data parallel mode.</p>
 
@@ -542,29 +542,58 @@ description: "Callbacks and helper functions to train in parallel or use distrib
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong><code>distrib_ctx(cuda_id)</code></strong> the context manager uses <code>cuda_id</code> to prepare a single learner in a single process to participate in distributed training among a group of processes.  It assumes the <a href="https://pytorch.org/tutorials/intermediate/dist_tuto.html#initialization-methods">environment variables</a> in this process have all been setup properly (see the example set up in <code>fastai2.launch</code>)</p>
-<p>To illustrate what <code>distrib_ctx()</code> does, consider the usage:</p>
+<h3 id="distrib_ctx-context-manager"><code>distrib_ctx</code> context manager<a class="anchor-link" href="#distrib_ctx-context-manager"> </a></h3><p><strong><code>distrib_ctx(cuda_id)</code></strong> prepares a learner to train in distributed data parallel mode.  It assumes these <a href="https://pytorch.org/tutorials/intermediate/dist_tuto.html#initialization-methods">environment variables</a> have all been setup properly, such as those launched by <code>python -m fastai2.launch</code>.</p>
+<h4 id="Typical-usage:">Typical usage:<a class="anchor-link" href="#Typical-usage:"> </a></h4>
+<pre><code>with learn.distrib_ctx(): learn.fit(.....)</code></pre>
+<p>It attaches a <a href="/20a_distributed#DistributedTrainer"><code>DistributedTrainer</code></a> callback and <a href="/20a_distributed#DistributedDL"><code>DistributedDL</code></a> data loader to  the learner, then executes <code>learn.fit(.....)</code>.  Upon exiting the context, it removes the <a href="/20a_distributed#DistributedTrainer"><code>DistributedTrainer</code></a> and <a href="/20a_distributed#DistributedDL"><code>DistributedDL</code></a>, and destroys any locally created distributed process group.  The process is still attached to the GPU though.</p>
 
-<pre><code>with learn.distrib_ctx():
-    learn.fit(.....)</code></pre>
-<p>Upon entering the context:</p>
-<ul>
-<li>If cuda_id is not provided, as the example shows, it asks rank_distrib().</li>
-<li><p>If there isn't already a pytorch distributed process group aka 'dpg', if creates one.</p>
-<p>Note 1. A <strong>dpg</strong> is merely a data abstraction, <strong>not a real pool of operating system processes</strong> -- those should have been created by now.
-Note 2. The initialization of the dpg <strong>waits</strong> until all processes have joined.</p>
-</li>
-<li><p>If there are more than 1 GPUs participating the group, it adds a DistributedTrainer callback to the learner object.</p>
-</li>
-<li>yield the learner object.</li>
-</ul>
-<p>Then line <code>learn.fit(.....)</code> is executed.</p>
-<p>Upon exiting the context:</p>
-<ul>
-<li>The DistributedTrainer is removed from the callback lists.</li>
-<li>Any locally created pytorch 'dpg' will be destoryed.</li>
-<li>The process still attaches to the same GPU though.</li>
-</ul>
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="rank0_first" class="doc_header"><code>rank0_first</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/distributed.py#L173" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>rank0_first</code>(<strong><code>func</code></strong>)</p>
+</blockquote>
+<p>Execute <code>func</code> in the Rank-0 process first, then in other ranks in parallel.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><strong><code>rank0_first(f)</code></strong> calls <code>f()</code> in rank-0 process first, then in parallel on the rest, in distributed training mode. In single process, non-distributed training mode, <code>f()</code> is called only once as expected.</p>
+<p>One application of <code>rank0_first()</code> is to make fresh downloads via <code>untar_data()</code> safe in distributed training scripts launched by <code>python -m fastai2.launch &lt;script&gt;</code>:</p>
+<blockquote><p><code>path = untar_data(URLs.IMDB)</code></p>
+</blockquote>
+<p>becomes:&gt; <code>path = <b>rank0_first(lambda:</b> untar_data(URLs.IMDB))</code></p>
+<p>Some learner factory methods may use <code>untar_data()</code> to <strong>download pretrained models</strong> by default:</p>
+<blockquote><p><code>learn = text_classifier_learner(dls, AWD_LSTM, drop_mult=0.5, metrics=accuracy)</code></p>
+</blockquote>
+<p>becomes:&gt; <code>learn = <b>rank0_first(lambda:</b> text_classifier_learner(dls, AWD_LSTM, drop_mult=0.5, metrics=accuracy))</code>
+Otherwise, multiple processes will download at the same time and corrupt the data.</p>
 
 </div>
 </div>
