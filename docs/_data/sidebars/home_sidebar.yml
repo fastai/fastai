@@ -43,6 +43,9 @@ entries:
           title: Pets tutorial
           url: /tutorial.pets
         - output: web,pdf
+          title: Transformers tutorial
+          url: /tutorial.transformers
+        - output: web,pdf
           title: Wikitext tutorial
           url: /tutorial.wikitext
         title: Intermediate

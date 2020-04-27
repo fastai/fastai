@@ -17,6 +17,7 @@
         "Data block tutorial": "/tutorial.datablock",
         "Imagenette tutorial": "/tutorial.imagenette",
         "Pets tutorial": "/tutorial.pets",
+        "Transformers tutorial": "/tutorial.transformers",
         "Wikitext tutorial": "/tutorial.wikitext"
       }
     },
