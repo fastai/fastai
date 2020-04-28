@@ -26,14 +26,14 @@ def test_fastai_prefix():
 
 def test_link_typedef():
     this_tests('na')
-    docstr   = "- `LayerFunc` = `Callable`\[`nn.Module`],`None`]"
-    expected = "- `LayerFunc` = `Callable`\[[`nn.Module`](https://pytorch.org/docs/stable/nn.html#torch.nn.Module)],`None`]"
+    docstr   = r"- `LayerFunc` = `Callable`\[`nn.Module`],`None`]"
+    expected = r"- `LayerFunc` = `Callable`\[[`nn.Module`](https://pytorch.org/docs/stable/nn.html#torch.nn.Module)],`None`]"
     assert_link(docstr, expected, modules=[torch], msg='Type definitions to torch formatted incorrectly. See fastai_typing.ipynb')
 
 def test_link_typedef_double_bt():
     this_tests('na')
-    docstr   = "- `ParamList` = `Collection`\[`nn`.`Parameter`]"
-    expected = "- `ParamList` = `Collection`\[[`nn`](https://pytorch.org/docs/stable/nn.html#torch-nn).`Parameter`]"
+    docstr   = r"- `ParamList` = `Collection`\[`nn`.`Parameter`]"
+    expected = r"- `ParamList` = `Collection`\[[`nn`](https://pytorch.org/docs/stable/nn.html#torch-nn).`Parameter`]"
     assert_link(docstr, expected)
 
 def test_link_inner_class_functions():

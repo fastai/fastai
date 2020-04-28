@@ -295,7 +295,7 @@ def split_kwargs_by_func(kwargs, func):
 
 def array(a, dtype:type=None, **kwargs)->np.ndarray:
     "Same as `np.array` but also handles generators. `kwargs` are passed to `np.array` with `dtype`."
-    if not isinstance(a, collections.Sized) and not getattr(a,'__array_interface__',False):
+    if not isinstance(a, Sized) and not getattr(a,'__array_interface__',False):
         a = list(a)
     if np.int_==np.int32 and dtype is None and is_listy(a) and len(a) and isinstance(a[0],int):
         dtype=np.int64

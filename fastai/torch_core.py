@@ -365,7 +365,7 @@ def try_int(o:Any)->Any:
     "Try to convert `o` to int, default to `o` if not possible."
     # NB: single-item rank-1 array/tensor can be converted to int, but we don't want to do this
     if isinstance(o, (np.ndarray,Tensor)): return o if o.ndim else int(o)
-    if isinstance(o, collections.Sized) or getattr(o,'__array_interface__',False): return o
+    if isinstance(o, Sized) or getattr(o,'__array_interface__',False): return o
     try: return int(o)
     except: return o
 

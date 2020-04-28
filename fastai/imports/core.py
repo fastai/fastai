@@ -7,7 +7,7 @@ import html, re, requests, tarfile, numbers, tempfile, bz2
 
 from abc import abstractmethod, abstractproperty
 from collections import Counter, defaultdict, namedtuple, OrderedDict
-from collections.abc import Iterable
+from collections.abc import Iterable, Sized
 import concurrent
 from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
 from copy import copy, deepcopy

@@ -81,7 +81,7 @@ def test_dict():
 
 def test_noop():
     this_tests(noop)
-    assert noop(1) is 1
+    assert noop(1) == 1
 
 def test_to_int():
     this_tests(to_int)
