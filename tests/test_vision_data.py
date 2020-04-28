@@ -60,7 +60,7 @@ def test_from_csv_and_from_df(path):
     this_tests(ImageDataBunch.from_csv, ImageDataBunch.from_df)
     for func in ['from_csv', 'from_df']:
         files = []
-        if func is 'from_df': data = ImageDataBunch.from_df(path, df=pd.read_csv(path/'labels.csv'), size=28)
+        if func == 'from_df': data = ImageDataBunch.from_df(path, df=pd.read_csv(path/'labels.csv'), size=28)
         else: data = ImageDataBunch.from_csv(path, size=28)
         mnist_tiny_sanity_test(data)
 
