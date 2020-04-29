@@ -171,3 +171,11 @@ def test_filter_by_folder():
         ItemList(items=items),
         include=["in", "and_in"], exclude=["out", "also_out"])
     assert res.items == ["parent/in"]
+
+def test_from_df():
+    this_tests(ItemList.from_df)
+    df = pd.DataFrame(["123.png"], columns=["name"])
+    try:
+        ImageList.from_df(path="dummy_path", df=df)
+    except Exception as ex:
+        assert not isinstance(ex, TypeError)
