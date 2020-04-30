@@ -135,7 +135,8 @@ class ItemList():
         "Create an `ItemList` in `path` from the inputs in the `cols` of `df`."
         inputs = df.iloc[:,df_names_to_idx(cols, df)]
         assert not inputs.isna().any().any(), f"You have NaN values in column(s) {cols} of your dataframe, please fix it."
-        res = cls(items=_maybe_squeeze(inputs.values), path=path, inner_df=df, processor=processor, **kwargs)
+        items = _maybe_squeeze(inputs.values) if len(df) > 1 else (inputs.values[0] if not isinstance(cols, Collection) or len(cols) == 1 else inputs.values)
+        res = cls(items=items, path=path, inner_df=df, processor=processor, **kwargs)
         return res
 
     @classmethod
