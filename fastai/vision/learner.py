@@ -93,11 +93,11 @@ def create_cnn_model(base_arch:Callable, nc:int, cut:Union[int,Callable]=None, p
 
 def cnn_learner(data:DataBunch, base_arch:Callable, cut:Union[int,Callable]=None, pretrained:bool=True,
                 lin_ftrs:Optional[Collection[int]]=None, ps:Floats=0.5, custom_head:Optional[nn.Module]=None,
-                split_on:Optional[SplitFuncOrIdxList]=None, bn_final:bool=False, init=nn.init.kaiming_normal_,
+                split_on:Optional[SplitFuncOrIdxList]=None, bn_final:bool=False, nc:Optional[int]=3 init=nn.init.kaiming_normal_,
                 concat_pool:bool=True, **kwargs:Any)->Learner:
     "Build convnet style learner."
     meta = cnn_config(base_arch)
-    model = create_cnn_model(base_arch, data.c, cut, pretrained, lin_ftrs, ps=ps, custom_head=custom_head,
+    model = create_cnn_model(base_arch, data.c, cut, pretrained, lin_ftrs, ps=ps, nc=nc, custom_head=custom_head,
         bn_final=bn_final, concat_pool=concat_pool)
     learn = Learner(data, model, **kwargs)
     learn.split(split_on or meta['split'])
