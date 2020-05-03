@@ -85,8 +85,8 @@ def load_model_text(file, model, opt, with_opt=None, device=None, strict=True):
 @delegates(Learner.__init__)
 class TextLearner(Learner):
     "Basic class for a `Learner` in NLP."
-    def __init__(self, model, dls, alpha=2., beta=1., moms=(0.8,0.7,0.8), **kwargs):
-        super().__init__(model, dls, moms=moms, **kwargs)
+    def __init__(self, dls, model, alpha=2., beta=1., moms=(0.8,0.7,0.8), **kwargs):
+        super().__init__(dls, model, moms=moms, **kwargs)
         self.add_cbs([ModelReseter(), RNNRegularizer(alpha=alpha, beta=beta)])
 
     def save_encoder(self, file):
