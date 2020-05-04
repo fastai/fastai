@@ -278,6 +278,7 @@ class EncodedMultiCategorize(Categorize):
 # Cell
 class RegressionSetup(Transform):
     "Transform that floatifies targets"
+    loss_func=MSELossFlat()
     def __init__(self, c=None): self.c = c
     def encodes(self, o): return tensor(o).float()
     def decodes(self, o): return TitledFloat(o) if o.ndim==0 else TitledTuple(o_.item() for o_ in o)
