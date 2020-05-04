@@ -90,7 +90,7 @@ def top_k_accuracy(inp, targ, k=5, axis=-1):
 # Cell
 def APScore(axis=-1, average='macro', pos_label=1, sample_weight=None):
     "Average Precision for single-label classification problems"
-    return skm_to_fastai(skm.average_precision_score, axis=axis, softmax=True,
+    return skm_to_fastai(skm.average_precision_score, axis=axis, softmax=True, flatten=False,
                          average=average, pos_label=pos_label, sample_weight=sample_weight)
 
 # Cell
@@ -150,7 +150,7 @@ def Recall(axis=-1, labels=None, pos_label=1, average='binary', sample_weight=No
 # Cell
 def RocAuc(axis=-1, average='macro', sample_weight=None, max_fpr=None):
     "Area Under the Receiver Operating Characteristic Curve for single-label binary classification problems"
-    return skm_to_fastai(skm.roc_auc_score, axis=axis, softmax=True,
+    return skm_to_fastai(skm.roc_auc_score, axis=axis, softmax=True, flatten=False,
                          average=average, sample_weight=sample_weight, max_fpr=max_fpr)
 
 # Cell
