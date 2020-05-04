@@ -19,14 +19,15 @@ import sklearn.metrics as skm
 class AccumMetric(Metric):
     "Stores predictions and targets on CPU in accumulate to perform final calculations with `func`."
     def __init__(self, func, dim_argmax=None, sigmoid=False, thresh=None, to_np=False, invert_arg=False,
-                 flatten=True, **kwargs):
-        store_attr(self,'func,dim_argmax,sigmoid,thresh,flatten')
+                 flatten=True, softmax=False, **kwargs):
+        store_attr(self,'func,dim_argmax,sigmoid,thresh,flatten,softmax')
         self.to_np,self.invert_args,self.kwargs = to_np,invert_arg,kwargs
 
     def reset(self): self.targs,self.preds = [],[]
 
     def accumulate(self, learn):
-        pred = learn.pred.argmax(dim=self.dim_argmax) if self.dim_argmax else learn.pred
+        pred = learn.pred.argmax(dim=self.dim_argmax) if (self.dim_argmax and not self.softmax) else learn.pred
+        if self.softmax: pred = F.softmax(pred, dim=self.dim_argmax)
         if self.sigmoid: pred = torch.sigmoid(pred)
         if self.thresh:  pred = (pred >= self.thresh)
         targ = learn.y
@@ -46,12 +47,12 @@ class AccumMetric(Metric):
     def name(self):  return self.func.func.__name__ if hasattr(self.func, 'func') else  self.func.__name__
 
 # Cell
-def skm_to_fastai(func, is_class=True, thresh=None, axis=-1, sigmoid=None, **kwargs):
+def skm_to_fastai(func, is_class=True, thresh=None, axis=-1, sigmoid=None, softmax=False, **kwargs):
     "Convert `func` from sklearn.metrics to a fastai metric"
     dim_argmax = axis if is_class and thresh is None else None
     sigmoid = sigmoid if sigmoid is not None else (is_class and thresh is not None)
     return AccumMetric(func, dim_argmax=dim_argmax, sigmoid=sigmoid, thresh=thresh,
-                       to_np=True, invert_arg=True, **kwargs)
+                       to_np=True, invert_arg=True, softmax=softmax, **kwargs)
 
 # Cell
 def optim_metric(f, argname, bounds, tol=0.01, do_neg=True, get_x=False):
@@ -89,7 +90,7 @@ def top_k_accuracy(inp, targ, k=5, axis=-1):
 # Cell
 def APScore(axis=-1, average='macro', pos_label=1, sample_weight=None):
     "Average Precision for single-label classification problems"
-    return skm_to_fastai(skm.average_precision_score, axis=axis,
+    return skm_to_fastai(skm.average_precision_score, axis=axis, softmax=True,
                          average=average, pos_label=pos_label, sample_weight=sample_weight)
 
 # Cell
@@ -149,7 +150,7 @@ def Recall(axis=-1, labels=None, pos_label=1, average='binary', sample_weight=No
 # Cell
 def RocAuc(axis=-1, average='macro', sample_weight=None, max_fpr=None):
     "Area Under the Receiver Operating Characteristic Curve for single-label binary classification problems"
-    return skm_to_fastai(skm.roc_auc_score, axis=axis,
+    return skm_to_fastai(skm.roc_auc_score, axis=axis, softamx=True,
                          average=average, sample_weight=sample_weight, max_fpr=max_fpr)
 
 # Cell
