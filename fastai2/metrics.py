@@ -157,7 +157,7 @@ def Recall(axis=-1, labels=None, pos_label=1, average='binary', sample_weight=No
 
 # Cell
 def RocAuc(axis=-1, average='macro', sample_weight=None, max_fpr=None, multi_class='ovr'):
-    "Area Under the Receiver Operating Characteristic Curve for single-label multi-label classification problems"
+    "Area Under the Receiver Operating Characteristic Curve for single-label multiclass classification problems"
     assert multi_class in ['ovr', 'ovo']
     return skm_to_fastai(skm.roc_auc_score, axis=axis, activation=ActivationType.Softmax, flatten=False,
                          average=average, sample_weight=sample_weight, max_fpr=max_fpr, multi_class=multi_class)
@@ -186,10 +186,10 @@ def accuracy_multi(inp, targ, thresh=0.5, sigmoid=True):
     return ((inp>thresh)==targ.bool()).float().mean()
 
 # Cell
-def APScoreMulti(thresh=0.5, sigmoid=True, average='macro', pos_label=1, sample_weight=None):
+def APScoreMulti(sigmoid=True, average='macro', pos_label=1, sample_weight=None):
     "Average Precision for multi-label classification problems"
     activation = ActivationType.Sigmoid if sigmoid else ActivationType.No
-    return skm_to_fastai(skm.average_precision_score, thresh=thresh, activation=activation, flatten=False,
+    return skm_to_fastai(skm.average_precision_score, activation=activation, flatten=False,
                          average=average, pos_label=pos_label, sample_weight=sample_weight)
 
 # Cell
@@ -248,10 +248,10 @@ def RecallMulti(thresh=0.5, sigmoid=True, labels=None, pos_label=1, average='mac
                          labels=labels, pos_label=pos_label, average=average, sample_weight=sample_weight)
 
 # Cell
-def RocAucMulti(thresh=0.5, sigmoid=True, average='macro', sample_weight=None, max_fpr=None):
+def RocAucMulti(sigmoid=True, average='macro', sample_weight=None, max_fpr=None):
     "Area Under the Receiver Operating Characteristic Curve for multi-label binary classification problems"
     activation = ActivationType.Sigmoid if sigmoid else ActivationType.No
-    return skm_to_fastai(skm.roc_auc_score, thresh=thresh, activation=activation, flatten=False,
+    return skm_to_fastai(skm.roc_auc_score, activation=activation, flatten=False,
                          average=average, sample_weight=sample_weight, max_fpr=max_fpr)
 
 # Cell
