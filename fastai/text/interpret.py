@@ -44,7 +44,7 @@ class TextClassificationInterpretation(ClassificationInterpretation):
     @classmethod
     def from_learner(cls, learn: Learner,  ds_type:DatasetType=DatasetType.Valid, activ:nn.Module=None):
         "Gets preds, y_true, losses to construct base class from a learner"
-        return cls(learn, *learn.get_preds(ds_type=ds_type, activ=activ, with_loss=True, ordered=True))
+        return cls(learn, *learn.get_preds(ds_type=ds_type, activ=activ, with_loss=True, ordered=True), ds_type=ds_type)
 
     def intrinsic_attention(self, text:str, class_id:int=None):
         """Calculate the intrinsic attention of the input w.r.t to an output `class_id`, or the classification given by the model if `None`.
