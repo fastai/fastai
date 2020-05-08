@@ -206,7 +206,7 @@ def language_model_learner(data:DataBunch, arch, config:dict=None, drop_mult:flo
     model = get_language_model(arch, len(data.vocab.itos), config=config, drop_mult=drop_mult)
     meta = _model_meta[arch]
     learn = LanguageLearner(data, model, split_func=meta['split_lm'], **learn_kwargs)
-    url = 'url_bwd' if data.backwards else 'url'
+    url = 'url_bwd' if hasattr(data, 'backwards') else 'url'
     if pretrained or pretrained_fnames:
         if pretrained_fnames is not None:
             fnames = [learn.path/learn.model_dir/f'{fn}.{ext}' for fn,ext in zip(pretrained_fnames, ['pth', 'pkl'])]
