@@ -89,7 +89,7 @@ class TabularDataBunch(DataBunch):
                 device:torch.device=None, collate_fn:Callable=data_collate, no_check:bool=False)->DataBunch:
         "Create a `DataBunch` from `df` and `valid_idx` with `dep_var`. `kwargs` are passed to `DataBunch.create`."
         cat_names = ifnone(cat_names, []).copy()
-        cont_names = ifnone(cont_names, list(set(df)-set(cat_names)-{dep_var}))
+        cont_names = ifnone(cont_names, list(set(df)-set(cat_names)-set(dep_var)))
         procs = listify(procs)
         src = (TabularList.from_df(df, path=path, cat_names=cat_names, cont_names=cont_names, procs=procs)
                            .split_by_idx(valid_idx))
