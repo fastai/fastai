@@ -104,7 +104,7 @@ class ImageDataBunch(DataBunch):
                     valid_pct=None, seed:int=None, classes:Collection=None, **kwargs:Any)->'ImageDataBunch':
         "Create from imagenet style dataset in `path` with `train`,`valid`,`test` subfolders (or provide `valid_pct`)."
         path=Path(path)
-        il = ImageList.from_folder(path/train, exclude=test)
+        il = ImageList.from_folder(path, include=train)
         if valid_pct is None: src = il.split_by_folder(train=train, valid=valid)
         else: src = il.split_by_rand_pct(valid_pct, seed)
         src = src.label_from_folder(classes=classes)
