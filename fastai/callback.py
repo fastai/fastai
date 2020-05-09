@@ -50,6 +50,7 @@ class OptimWrapper():
         # weight decay outside of optimizer step (AdamW)
         if self.true_wd:
             for lr,wd,pg1,pg2 in zip(self._lr,self._wd,self.opt.param_groups[::2],self.opt.param_groups[1::2]):
+                if p.grad is None: continue
                 for p in pg1['params']: p.data.mul_(1 - wd*lr)
                 if self.bn_wd:
                     for p in pg2['params']: p.data.mul_(1 - wd*lr)
