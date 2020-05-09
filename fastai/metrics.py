@@ -166,7 +166,7 @@ class ConfusionMatrix(Callback):
 @dataclass
 class CMScores(ConfusionMatrix):
     "Base class for metrics which rely on the calculation of the precision and/or recall score."
-    average:Optional[str]="binary"      # `binary`, `micro`, `macro`, `weigthed` or None
+    average:Optional[str]="binary"      # `binary`, `micro`, `macro`, `weighted` or None
     pos_label:int=1                     # 0 or 1
     eps:float=1e-9
 
