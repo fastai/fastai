@@ -252,7 +252,7 @@ class ImagePoints(Image):
     "Support applying transforms to a `flow` of points."
     def __init__(self, flow:FlowField, scale:bool=True, y_first:bool=True):
         if scale: flow = scale_flow(flow)
-        if y_first: flow.flow = flow.flow.flip(1)
+        if y_first: flow.flow = flow.flow.flip(1).float()
         self._flow = flow
         self._affine_mat = None
         self.flow_func = []
