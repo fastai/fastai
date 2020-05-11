@@ -76,7 +76,6 @@ class DatasetFormatter():
     def comb_similarity(t1: torch.Tensor, t2: torch.Tensor, **kwargs):
         # https://github.com/pytorch/pytorch/issues/11202
         "Computes the similarity function between each embedding of `t1` and `t2` matrices."
-        print('Computing similarities...')
 
         w1 = t1.norm(p=2, dim=1, keepdim=True)
         w2 = w1 if t2 is t1 else t2.norm(p=2, dim=1, keepdim=True)
