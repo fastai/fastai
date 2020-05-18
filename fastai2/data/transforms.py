@@ -217,12 +217,12 @@ class CategoryMap(CollBase):
 class Categorize(Transform):
     "Reversible transform of category string to `vocab` id"
     loss_func,order=CrossEntropyLossFlat(),1
-    def __init__(self, vocab=None, add_na=False):
-        self.add_na = add_na
-        self.vocab = None if vocab is None else CategoryMap(vocab, add_na=add_na)
+    def __init__(self, vocab=None, sort=True, add_na=False):
+        store_attr(self, 'add_na,sort')
+        self.vocab = None if vocab is None else CategoryMap(vocab, sort=sort, add_na=add_na)
 
     def setups(self, dsets):
-        if self.vocab is None and dsets is not None: self.vocab = CategoryMap(dsets, add_na=self.add_na)
+        if self.vocab is None and dsets is not None: self.vocab = CategoryMap(dsets, sort=self.sort, add_na=self.add_na)
         self.c = len(self.vocab)
 
     def encodes(self, o): return TensorCategory(self.vocab.o2i[o])

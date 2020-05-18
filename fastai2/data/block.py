@@ -19,9 +19,9 @@ class TransformBlock():
         self.dl_type,self.dls_kwargs = dl_type,({} if dls_kwargs is None else dls_kwargs)
 
 # Cell
-def CategoryBlock(vocab=None, add_na=False):
+def CategoryBlock(vocab=None, sort=True, add_na=False):
     "`TransformBlock` for single-label categorical targets"
-    return TransformBlock(type_tfms=Categorize(vocab=vocab, add_na=add_na))
+    return TransformBlock(type_tfms=Categorize(vocab=vocab, sort=sort, add_na=add_na))
 
 # Cell
 def MultiCategoryBlock(encoded=False, vocab=None, add_na=False):
