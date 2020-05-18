@@ -243,7 +243,7 @@ description: "All the functions necessary to build `Learner` suitable for transf
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TextLearner" class="doc_header"><code>class</code> <code>TextLearner</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/learner.py#L86" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TextLearner</code>(<strong><code>model</code></strong>, <strong><code>dls</code></strong>, <strong><code>alpha</code></strong>=<em><code>2.0</code></em>, <strong><code>beta</code></strong>=<em><code>1.0</code></em>, <strong><code>moms</code></strong>=<em><code>(0.8, 0.7, 0.8)</code></em>, <strong><code>loss_func</code></strong>=<em><code>None</code></em>, <strong><code>opt_func</code></strong>=<em><code>'Adam'</code></em>, <strong><code>lr</code></strong>=<em><code>0.001</code></em>, <strong><code>splitter</code></strong>=<em><code>'trainable_params'</code></em>, <strong><code>cbs</code></strong>=<em><code>None</code></em>, <strong><code>metrics</code></strong>=<em><code>None</code></em>, <strong><code>path</code></strong>=<em><code>None</code></em>, <strong><code>model_dir</code></strong>=<em><code>'models'</code></em>, <strong><code>wd</code></strong>=<em><code>None</code></em>, <strong><code>wd_bn_bias</code></strong>=<em><code>False</code></em>, <strong><code>train_bn</code></strong>=<em><code>True</code></em>) :: <a href="/13a_learner#Learner"><code>Learner</code></a></p>
+<h2 id="TextLearner" class="doc_header"><code>class</code> <code>TextLearner</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/learner.py#L86" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TextLearner</code>(<strong><code>dls</code></strong>, <strong><code>model</code></strong>, <strong><code>alpha</code></strong>=<em><code>2.0</code></em>, <strong><code>beta</code></strong>=<em><code>1.0</code></em>, <strong><code>moms</code></strong>=<em><code>(0.8, 0.7, 0.8)</code></em>, <strong><code>loss_func</code></strong>=<em><code>None</code></em>, <strong><code>opt_func</code></strong>=<em><code>'Adam'</code></em>, <strong><code>lr</code></strong>=<em><code>0.001</code></em>, <strong><code>splitter</code></strong>=<em><code>'trainable_params'</code></em>, <strong><code>cbs</code></strong>=<em><code>None</code></em>, <strong><code>metrics</code></strong>=<em><code>None</code></em>, <strong><code>path</code></strong>=<em><code>None</code></em>, <strong><code>model_dir</code></strong>=<em><code>'models'</code></em>, <strong><code>wd</code></strong>=<em><code>None</code></em>, <strong><code>wd_bn_bias</code></strong>=<em><code>False</code></em>, <strong><code>train_bn</code></strong>=<em><code>True</code></em>) :: <a href="/13a_learner#Learner"><code>Learner</code></a></p>
 </blockquote>
 <p>Basic class for a <a href="/13a_learner#Learner"><code>Learner</code></a> in NLP.</p>
 
@@ -437,7 +437,7 @@ description: "All the functions necessary to build `Learner` suitable for transf
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="LMLearner" class="doc_header"><code>class</code> <code>LMLearner</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/learner.py#L154" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>LMLearner</code>(<strong><code>model</code></strong>, <strong><code>dls</code></strong>, <strong><code>alpha</code></strong>=<em><code>2.0</code></em>, <strong><code>beta</code></strong>=<em><code>1.0</code></em>, <strong><code>moms</code></strong>=<em><code>(0.8, 0.7, 0.8)</code></em>, <strong><code>loss_func</code></strong>=<em><code>None</code></em>, <strong><code>opt_func</code></strong>=<em><code>'Adam'</code></em>, <strong><code>lr</code></strong>=<em><code>0.001</code></em>, <strong><code>splitter</code></strong>=<em><code>'trainable_params'</code></em>, <strong><code>cbs</code></strong>=<em><code>None</code></em>, <strong><code>metrics</code></strong>=<em><code>None</code></em>, <strong><code>path</code></strong>=<em><code>None</code></em>, <strong><code>model_dir</code></strong>=<em><code>'models'</code></em>, <strong><code>wd</code></strong>=<em><code>None</code></em>, <strong><code>wd_bn_bias</code></strong>=<em><code>False</code></em>, <strong><code>train_bn</code></strong>=<em><code>True</code></em>) :: <a href="/text.learner#TextLearner"><code>TextLearner</code></a></p>
+<h3 id="LMLearner" class="doc_header"><code>class</code> <code>LMLearner</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/learner.py#L154" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>LMLearner</code>(<strong><code>dls</code></strong>, <strong><code>model</code></strong>, <strong><code>alpha</code></strong>=<em><code>2.0</code></em>, <strong><code>beta</code></strong>=<em><code>1.0</code></em>, <strong><code>moms</code></strong>=<em><code>(0.8, 0.7, 0.8)</code></em>, <strong><code>loss_func</code></strong>=<em><code>None</code></em>, <strong><code>opt_func</code></strong>=<em><code>'Adam'</code></em>, <strong><code>lr</code></strong>=<em><code>0.001</code></em>, <strong><code>splitter</code></strong>=<em><code>'trainable_params'</code></em>, <strong><code>cbs</code></strong>=<em><code>None</code></em>, <strong><code>metrics</code></strong>=<em><code>None</code></em>, <strong><code>path</code></strong>=<em><code>None</code></em>, <strong><code>model_dir</code></strong>=<em><code>'models'</code></em>, <strong><code>wd</code></strong>=<em><code>None</code></em>, <strong><code>wd_bn_bias</code></strong>=<em><code>False</code></em>, <strong><code>train_bn</code></strong>=<em><code>True</code></em>) :: <a href="/text.learner#TextLearner"><code>TextLearner</code></a></p>
 </blockquote>
 <p>Add functionality to <a href="/text.learner#TextLearner"><code>TextLearner</code></a> when dealingwith a language model</p>
 
@@ -615,7 +615,7 @@ description: "All the functions necessary to build `Learner` suitable for transf
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>&#39;This movie is about the kissing of Jean Marie Louise Jean - Marie Buster , who was not&#39;</pre>
+<pre>&#39;This movie is about nine seconds in length and are shooter , and carries one footage of the kicking and g - kicking scene&#39;</pre>
 </div>
 
 </div>
@@ -664,7 +664,7 @@ description: "All the functions necessary to build `Learner` suitable for transf
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>&#39;This movie is about elements that Sterling , to Perfect score voted for the American lands Adorable childhood features features&#39;</pre>
+<pre>&#39;This movie is about a bizarre , none of the chief , the Creative control over the cities of the cast the first&#39;</pre>
 </div>
 
 </div>
