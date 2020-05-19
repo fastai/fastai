@@ -190,6 +190,7 @@ properties(Tabular,'loc','iloc','targ','all_col_names','n_subsets','x_names','y'
 
 # Cell
 class TabularPandas(Tabular):
+    "A `Tabular` object with transforms"
     def transform(self, cols, f, all_col=True):
         if not all_col: cols = [c for c in cols if c in self.items.columns]
         if len(cols) > 0: self[cols] = self[cols].transform(f)
@@ -226,7 +227,7 @@ def _decode_cats(voc, c): return c.map(dict(enumerate(voc[c.name].items)))
 
 # Cell
 class Categorify(TabularProc):
-    "Transform the categorical variables to that type."
+    "Transform the categorical variables to something similar to `pd.Categorical`"
     order = 1
     def setups(self, to):
         self.classes = {n:CategoryMap(to.iloc[:,n].items, add_na=(n in to.cat_names)) for n in to.cat_names}
@@ -258,7 +259,7 @@ def decodes(self, to:Tabular):
 
 # Cell
 class NormalizeTab(TabularProc):
-    "Normalize the continuous variables."
+    "Normalize the continuous variables"
     order = 2
     def setups(self, dsets): self.means,self.stds = dsets.conts.mean(),dsets.conts.std(ddof=0)+1e-7
     def encodes(self, to): to.conts = (to.conts-self.means) / self.stds
@@ -340,6 +341,7 @@ def show_batch(x: Tabular, y, its, max_n=10, ctxs=None):
 # Cell
 @delegates()
 class TabDataLoader(TfmdDL):
+    "A transformed `DataLoader` for Tabular data"
     do_item = noops
     def __init__(self, dataset, bs=16, shuffle=False, after_batch=None, num_workers=0, **kwargs):
         if after_batch is None: after_batch = L(TransformBlock().batch_tfms)+ReadTabBatch(dataset)
