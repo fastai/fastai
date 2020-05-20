@@ -202,8 +202,11 @@ class ColReader():
 # Cell
 class CategoryMap(CollBase):
     "Collection of categories with the reverse mapping in `o2i`"
-    def __init__(self, col, sort=True, add_na=False):
-        if is_categorical_dtype(col): items = L(col.cat.categories, use_list=True)
+    def __init__(self, col, sort=True, add_na=False, strict=False):
+        if is_categorical_dtype(col):
+            items = L(col.cat.categories, use_list=True)
+            #Remove non-used categories while keeping order
+            if strict: items = L(o for o in items if o in col.unique())
         else:
             if not hasattr(col,'unique'): col = L(col, use_list=True)
             # `o==o` is the generalized definition of non-NaN used by Pandas

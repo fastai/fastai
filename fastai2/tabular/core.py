@@ -240,7 +240,7 @@ class Categorify(TabularProc):
 def setups(self, to:Tabular):
     if len(to.y_names) > 0:
         if self.vocab is None:
-            self.vocab = CategoryMap(getattr(to, 'train', to).iloc[:,to.y_names[0]].items)
+            self.vocab = CategoryMap(getattr(to, 'train', to).iloc[:,to.y_names[0]].items, strict=True)
         else:
             self.vocab = CategoryMap(self.vocab, sort=False, add_na=self.add_na)
         self.c = len(self.vocab)

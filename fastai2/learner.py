@@ -184,6 +184,9 @@ class Learner():
         except CancelValidException:                         self('after_cancel_validate')
         finally:                                             self('after_validate')
 
+    def _end_cleanup(self):
+        self.dl,self.xb,self.yb,self.pred,self.loss = None,(None,),(None,),None,None
+
     @log_args(but='cbs')
     def fit(self, n_epoch, lr=None, wd=None, cbs=None, reset_opt=False):
         with self.added_cbs(cbs):
@@ -203,7 +206,9 @@ class Learner():
                     finally:                       self('after_epoch')
 
             except CancelFitException:             self('after_cancel_fit')
-            finally:                               self('after_fit')
+            finally:
+                self('after_fit')
+                self._end_cleanup()
 
     def validate(self, ds_idx=1, dl=None, cbs=None):
         if dl is None: dl = self.dls[ds_idx]
@@ -236,6 +241,7 @@ class Learner():
                 if with_decoded: res.insert(pred_i+2, getattr(self.loss_func, 'decodes', noop)(res[pred_i]))
             if reorder and hasattr(dl, 'get_idxs'): res = nested_reorder(res, tensor(idxs).argsort())
             return tuple(res)
+        self._end_cleanup()
 
     def predict(self, item, rm_type_tfms=None, with_input=False):
         dl = self.dls.test_dl([item], rm_type_tfms=rm_type_tfms, num_workers=0)
@@ -500,7 +506,7 @@ add_docs(Learner,
 def export(self:Learner, fname='export.pkl', pickle_protocol=2):
     "Export the content of `self` without the items and the optimizer state for inference"
     if rank_distrib(): return # don't export if slave proc
-    self.dl = None
+    self._end_cleanup()
     old_dbunch = self.dls
     self.dls = self.dls.new_empty()
     state = self.opt.state_dict() if self.opt is not None else None
