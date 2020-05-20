@@ -87,7 +87,7 @@ class TextLearner(Learner):
     "Basic class for a `Learner` in NLP."
     def __init__(self, dls, model, alpha=2., beta=1., moms=(0.8,0.7,0.8), **kwargs):
         super().__init__(dls, model, moms=moms, **kwargs)
-        self.add_cbs([ModelReseter(), RNNRegularizer(alpha=alpha, beta=beta)])
+        self.add_cbs([ModelResetter(), RNNRegularizer(alpha=alpha, beta=beta)])
 
     def save_encoder(self, file):
         "Save the encoder to `file` in the model directory"

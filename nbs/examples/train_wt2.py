@@ -44,7 +44,7 @@ def main(gpu:Param("GPU to run on", int)=6,
     model = get_language_model((AWD_QRNN if qrnn else AWD_LSTM), len(vocab), config=config) 
     opt_func = partial(Adam, wd=0.1, eps=1e-7)
     (alpha,beta) = (2,1) if qrnn else (3,2)
-    cbs = [MixedPrecision(clip=0.1), ModelReseter, RNNRegularizer(alpha, beta)]
+    cbs = [MixedPrecision(clip=0.1), ModelResetter, RNNRegularizer(alpha, beta)]
     learn = Learner(model, dbch, loss_func=CrossEntropyLossFlat(), opt_func=opt_func, cbs=cbs, metrics=[accuracy, Perplexity()])
     learn.fit_one_cycle(90, 5e-3, moms=(0.8,0.7,0.8), div=10)
 
