@@ -63,7 +63,6 @@ def _get_lengths(ds):
     return tok.get_lengths(ds.items)
 
 # Cell
-#TODO: add backward
 @log_args(but_as=TfmdDL.__init__)
 @delegates()
 class LMDataLoader(TfmdDL):
