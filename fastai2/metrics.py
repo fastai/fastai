@@ -5,7 +5,8 @@ __all__ = ['AccumMetric', 'skm_to_fastai', 'optim_metric', 'accuracy', 'error_ra
            'Recall', 'RocAuc', 'RocAucBinary', 'Perplexity', 'perplexity', 'accuracy_multi', 'APScoreMulti',
            'BrierScoreMulti', 'F1ScoreMulti', 'FBetaMulti', 'HammingLossMulti', 'JaccardMulti', 'MatthewsCorrCoefMulti',
            'PrecisionMulti', 'RecallMulti', 'RocAucMulti', 'mse', 'rmse', 'mae', 'msle', 'exp_rmspe',
-           'ExplainedVariance', 'R2Score', 'foreground_acc', 'Dice', 'JaccardCoeff', 'LossMetric', 'LossMetrics']
+           'ExplainedVariance', 'R2Score', 'foreground_acc', 'Dice', 'JaccardCoeff', 'CorpusBLEUMetric', 'LossMetric',
+           'LossMetrics']
 
 # Cell
 from .data.all import *
@@ -318,6 +319,53 @@ class JaccardCoeff(Dice):
     "Implemetation of the jaccard coefficient that is lighter in RAM"
     @property
     def value(self): return self.inter/(self.union-self.inter) if self.union > 0 else None
+
+# Cell
+class CorpusBLEUMetric(Metric):
+    def __init__(self, vocab_sz=5000, axis=-1):
+        "BLEU Metric calculated over the validation corpus"
+        self.metric_name = 'CorpusBLEU'
+        self.axis, self.vocab_sz = axis, vocab_sz
+        self.pred_len,self.targ_len,self.corrects,self.counts = 0,0,[0]*4,[0]*4
+
+    def reset(self):
+        self.pred_len,self.targ_len,self.corrects,self.counts = 0,0,[0]*4,[0]*4
+
+    class NGram():
+        def __init__(self, ngram, max_n=5000): self.ngram,self.max_n = ngram,max_n
+        def __eq__(self, other):
+            if len(self.ngram) != len(other.ngram): return False
+            return np.all(np.array(self.ngram) == np.array(other.ngram))
+        def __hash__(self): return int(sum([o * self.max_n**i for i,o in enumerate(self.ngram)]))
+
+    def get_grams(self, x, n, max_n=5000):
+        return x if n==1 else [NGram(x[i:i+n], max_n=max_n) for i in range(len(x)-n+1)]
+
+    def get_correct_ngrams(self, pred, targ, n, max_n=5000):
+        pred_grams,targ_grams = self.get_grams(pred, n, max_n=max_n),self.get_grams(targ, n, max_n=max_n)
+        pred_cnt,targ_cnt = Counter(pred_grams),Counter(targ_grams)
+        return sum([min(c, targ_cnt[g]) for g,c in pred_cnt.items()]),len(pred_grams)
+
+    def accumulate(self, learn):
+        if learn.training: return None
+        else:
+            last_output = learn.pred.argmax(dim=self.axis)
+            last_target = learn.y
+            for pred,targ in zip(last_output.cpu().numpy(),last_target.cpu().numpy()):
+                self.pred_len += len(pred)
+                self.targ_len += len(targ)
+                for i in range(4):
+                    c,t = self.get_correct_ngrams(pred, targ, i+1, max_n=self.vocab_sz)
+                    self.corrects[i] += c
+                    self.counts[i]   += t
+
+    @property
+    def value(self):
+        if self.counts == 0: return None
+        else:
+            precs = [c/t for c,t in zip(self.corrects,self.counts)]
+            len_penalty = exp(1 - self.targ_len/self.pred_len) if self.pred_len < self.targ_len else 1
+            return len_penalty * ((precs[0]*precs[1]*precs[2]*precs[3]) ** 0.25)
 
 # Cell
 class LossMetric(AvgMetric):

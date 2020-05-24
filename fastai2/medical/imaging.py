@@ -2,7 +2,7 @@
 
 __all__ = ['DcmDataset', 'DcmTag', 'DcmMultiValue', 'dcmread', 'get_dicom_files', 'get_dicom_files', 'TensorDicom',
            'PILDicom', 'pixels', 'scaled_px', 'array_freqhist_bins', 'dicom_windows', 'TensorCTScan', 'PILCTScan',
-           'uniform_blur2d', 'gauss_blur2d', 'mask2bbox', 'crop_resize', 'shape']
+           'show', 'uniform_blur2d', 'gauss_blur2d', 'mask2bbox', 'crop_resize', 'shape']
 
 # Cell
 from ..basics import *
@@ -125,6 +125,7 @@ def windowed(self:DcmDataset, w, l):
     return self.scaled_px.windowed(w,l)
 
 # Cell
+# From https://radiopaedia.org/articles/windowing-ct
 dicom_windows = types.SimpleNamespace(
     brain=(80,40),
     subdural=(254,100),
