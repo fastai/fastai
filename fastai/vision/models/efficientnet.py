@@ -22,33 +22,9 @@ class EfficientNetBody(nn.Module):
     """Take out conv part of a given efficientnet model"""
     def __init__(self, model: EfficientNet, cut: Optional[int]):
         super().__init__()
-        self.cut = cut
-        self._swish = deepcopy(model._swish)
-        self._bn0 = deepcopy(model._bn0)
-        self._conv_stem = deepcopy(model._conv_stem)
-        self._blocks = deepcopy(model._blocks)
-        self._drop_connect_rate = deepcopy(model._global_params.drop_connect_rate)
-        self._bn1 = deepcopy(model._bn1)
-        self._conv_head = deepcopy(model._conv_head)
+        self.model = deepcopy(model)
+        self.model._blocks = self.model._blocks[:cut]
 
     def forward(self, inputs):
-        """The extract_features method of EfficientNet.
-
-         Returns output of the final convolution layer.
-         """
-
-        # Stem
-        x = self._swish(self._bn0(self._conv_stem(inputs)))
-
-        # Blocks
-        for idx, block in enumerate(self._blocks[:self.cut]):
-            drop_connect_rate = self._drop_connect_rate
-            if drop_connect_rate:
-                drop_connect_rate *= float(idx) / len(self._blocks)
-            x = block(x, drop_connect_rate=drop_connect_rate)
-
-        # Head
-        x = self._swish(self._bn1(self._conv_head(x)))
-
-        return x
+        return self.model.extract_features(inputs)
 
