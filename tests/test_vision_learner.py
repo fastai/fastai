@@ -7,11 +7,11 @@ from fastai.callbacks.hooks import *
 from torchvision.models import resnet18
 from torchvision.models.resnet import BasicBlock
 from fastai.vision.learner import has_pool_type
+from fastai.vision.models import EfficientNetB0, EfficientNetB3, EfficientNetB5
 
 @pytest.fixture
 def image():
     return torch.randn([4, 3, 32, 32])
-
 
 def test_create_body(image):
     this_tests(create_body)
@@ -35,6 +35,23 @@ def test_create_body(image):
 
     with pytest.raises(NameError):
         create_body(resnet18, cut=1.)
+
+@pytest.mark.parametrize("image_size", [128, 224, 256])
+@pytest.mark.parametrize("base_arch", [EfficientNetB0, EfficientNetB3, EfficientNetB5])
+def test_create_body_effnet(image_size, base_arch):
+    this_tests(create_body)
+    img = torch.randn([4, 3, image_size, image_size])
+    body = create_body(base_arch, pretrained=True)
+    ref = base_arch(pretrained=True)
+    body.eval()
+    ref.eval()
+    assert torch.allclose(body(img), ref.extract_features(img)) # check activation values after conv blocks
+
+    body = create_body(base_arch, cut=lambda x:x)
+    assert isinstance(body, type(base_arch()))
+
+    with pytest.raises(NameError):
+        create_body(base_arch, cut=1.)
 
 def test_create_head(image):
     this_tests(create_head)
