@@ -1,4 +1,5 @@
 "`Learner` support for computer vision"
+from .models.efficientnet import EfficientNetBody
 from ..torch_core import *
 from ..basic_train import *
 from ..basic_data import *
@@ -57,6 +58,8 @@ def has_pool_type(m):
 def create_body(arch:Callable, pretrained:bool=True, cut:Optional[Union[int, Callable]]=None):
     "Cut off the body of a typically pretrained `model` at `cut` (int) or cut the model as specified by `cut(model)` (function)."
     model = arch(pretrained)
+    if "EfficientNet" in arch.__name__:
+        return EfficientNetBody(model)
     cut = ifnone(cut, cnn_config(arch)['cut'])
     if cut is None:
         ll = list(enumerate(model.children()))
@@ -80,14 +83,23 @@ def create_head(nf:int, nc:int, lin_ftrs:Optional[Collection[int]]=None, ps:Floa
     if bn_final: layers.append(nn.BatchNorm1d(lin_ftrs[-1], momentum=0.01))
     return nn.Sequential(*layers)
 
+def create_effnet_head(base_arch:Callable, nc:int, pretrained:bool=True):
+    model = base_arch(pretrained)
+    model._fc = nn.Linear(model._fc.in_features, nc)
+    head = nn.Sequential(deepcopy(model._avg_pooling), Flatten(), deepcopy(model._dropout), deepcopy(model._fc))
+    return head
+
 def create_cnn_model(base_arch:Callable, nc:int, cut:Union[int,Callable]=None, pretrained:bool=True,
                      lin_ftrs:Optional[Collection[int]]=None, ps:Floats=0.5, custom_head:Optional[nn.Module]=None,
                      bn_final:bool=False, concat_pool:bool=True):
     "Create custom convnet architecture"
     body = create_body(base_arch, pretrained, cut)
     if custom_head is None:
-        nf = num_features_model(nn.Sequential(*body.children())) * (2 if concat_pool else 1)
-        head = create_head(nf, nc, lin_ftrs, ps=ps, concat_pool=concat_pool, bn_final=bn_final)
+        if "EfficientNet" in base_arch.__name__:
+            head = create_effnet_head(base_arch, nc, pretrained)
+        else:
+            nf = num_features_model(nn.Sequential(*body.children())) * (2 if concat_pool else 1)
+            head = create_head(nf, nc, lin_ftrs, ps=ps, concat_pool=concat_pool, bn_final=bn_final)
     else: head = custom_head
     return nn.Sequential(body, head)
 

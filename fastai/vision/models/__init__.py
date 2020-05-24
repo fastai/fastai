@@ -8,3 +8,4 @@ from .darknet import *
 from .unet import *
 from .wrn import *
 from .xception import *
+from .efficientnet import *
