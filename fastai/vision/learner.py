@@ -69,6 +69,7 @@ def create_body(arch:Callable, pretrained:bool=True, cut:Optional[Union[int, Cal
     else:                           raise NamedError("cut must be either integer or a function")
 
 def create_effnet_body(model: Callable, cut:Optional[Union[int, Callable]]=None):
+    "Cut off the body of an efficientnet at `cut` (int) or cut the model as specified by `cut(model)` (function)."
     if isinstance(cut, int) or cut is None: return EfficientNetBody(model, cut)
     elif isinstance(cut, Callable):         return cut(model)
     else:                                   raise NamedError("cut must be either integer or a function")
@@ -83,27 +84,23 @@ def create_head(nf:int, nc:int, lin_ftrs:Optional[Collection[int]]=None, ps:Floa
     pool = AdaptiveConcatPool2d() if concat_pool else nn.AdaptiveAvgPool2d(1)
     layers = [pool, Flatten()]
     for ni,no,p,actn in zip(lin_ftrs[:-1], lin_ftrs[1:], ps, actns):
-        layers += bn_drop_lin(ni, no, True, p, actn)
+        layers += bn_drop_lin(ni, no, len(lin_ftrs) > 2, p, actn)
     if bn_final: layers.append(nn.BatchNorm1d(lin_ftrs[-1], momentum=0.01))
     return nn.Sequential(*layers)
-
-def create_effnet_head(base_arch:Callable, nc:int, pretrained:bool=True):
-    model = base_arch(pretrained)
-    model._fc = nn.Linear(model._fc.in_features, nc)
-    head = nn.Sequential(deepcopy(model._avg_pooling), Flatten(), deepcopy(model._dropout), deepcopy(model._fc))
-    return head
 
 def create_cnn_model(base_arch:Callable, nc:int, cut:Union[int,Callable]=None, pretrained:bool=True,
                      lin_ftrs:Optional[Collection[int]]=None, ps:Floats=0.5, custom_head:Optional[nn.Module]=None,
                      bn_final:bool=False, concat_pool:bool=True):
     "Create custom convnet architecture"
+    base_arch_is_effnet = "EfficientNet" in base_arch.__name__
+    if base_arch_is_effnet:
+        effnet = base_arch(pretrained)
+        lin_ftrs,concat_pool = [] if lin_ftrs is None else lin_ftrs,False
+        ps = effnet._dropout.p
     body = create_body(base_arch, pretrained, cut)
     if custom_head is None:
-        if "EfficientNet" in base_arch.__name__:
-            head = create_effnet_head(base_arch, nc, pretrained)
-        else:
-            nf = num_features_model(nn.Sequential(*body.children())) * (2 if concat_pool else 1)
-            head = create_head(nf, nc, lin_ftrs, ps=ps, concat_pool=concat_pool, bn_final=bn_final)
+        nf = num_features_model(nn.Sequential(*body.children())) * (2 if concat_pool else 1) if not base_arch_is_effnet else effnet._fc.in_features
+        head = create_head(nf, nc, lin_ftrs, ps=ps, concat_pool=concat_pool, bn_final=bn_final)
     else: head = custom_head
     return nn.Sequential(body, head)
 
