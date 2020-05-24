@@ -19,7 +19,7 @@ def EfficientNetB7(pretrained=False): return EfficientNet.from_pretrained('effic
 
 
 class EfficientNetBody(nn.Module):
-
+    """Take out conv part of a given efficientnet model"""
     def __init__(self, model: EfficientNet, cut: Optional[int]):
         super().__init__()
         self.cut = cut
@@ -32,7 +32,7 @@ class EfficientNetBody(nn.Module):
         self._conv_head = deepcopy(model._conv_head)
 
     def forward(self, inputs):
-        """ The extract_features method of EfficientNet.
+        """The extract_features method of EfficientNet.
 
          Returns output of the final convolution layer.
          """
