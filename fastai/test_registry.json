@@ -578,6 +578,13 @@
             "test": "test_filter_by_rand"
         }
     ],
+    "fastai.data_block.ItemList.from_df": [
+        {
+            "file": "tests/test_data_block.py",
+            "line": 175,
+            "test": "test_from_df"
+        }
+    ],
     "fastai.data_block.ItemList.label_from_folder": [
         {
             "file": "tests/test_text_data.py",
