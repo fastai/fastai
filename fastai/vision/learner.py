@@ -59,7 +59,7 @@ def create_body(arch:Callable, pretrained:bool=True, cut:Optional[Union[int, Cal
     "Cut off the body of a typically pretrained `model` at `cut` (int) or cut the model as specified by `cut(model)` (function)."
     model = arch(pretrained)
     if "EfficientNet" in arch.__name__:
-        return EfficientNetBody(model)
+        return create_effnet_body(model, cut)
     cut = ifnone(cut, cnn_config(arch)['cut'])
     if cut is None:
         ll = list(enumerate(model.children()))
@@ -68,6 +68,10 @@ def create_body(arch:Callable, pretrained:bool=True, cut:Optional[Union[int, Cal
     elif isinstance(cut, Callable): return cut(model)
     else:                           raise NamedError("cut must be either integer or a function")
 
+def create_effnet_body(model: Callable, cut:Optional[Union[int, Callable]]=None):
+    if isinstance(cut, int) or cut is None: return EfficientNetBody(model, cut)
+    elif isinstance(cut, Callable):         return cut(model)
+    else:                                   raise NamedError("cut must be either integer or a function")
 
 def create_head(nf:int, nc:int, lin_ftrs:Optional[Collection[int]]=None, ps:Floats=0.5,
                 concat_pool:bool=True, bn_final:bool=False):

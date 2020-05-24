@@ -20,8 +20,9 @@ def EfficientNetB7(pretrained=False): return EfficientNet.from_pretrained('effic
 
 class EfficientNetBody(nn.Module):
 
-    def __init__(self, model: EfficientNet):
+    def __init__(self, model: EfficientNet, cut: Optional[int]):
         super().__init__()
+        self.cut = cut
         self._swish = deepcopy(model._swish)
         self._bn0 = deepcopy(model._bn0)
         self._conv_stem = deepcopy(model._conv_stem)
@@ -40,7 +41,7 @@ class EfficientNetBody(nn.Module):
         x = self._swish(self._bn0(self._conv_stem(inputs)))
 
         # Blocks
-        for idx, block in enumerate(self._blocks):
+        for idx, block in enumerate(self._blocks[:self.cut]):
             drop_connect_rate = self._drop_connect_rate
             if drop_connect_rate:
                 drop_connect_rate *= float(idx) / len(self._blocks)
