@@ -24,7 +24,7 @@ class EfficientNetBody(nn.Module):
         super().__init__()
         self.model = deepcopy(model)
         self.model._blocks = self.model._blocks[:cut]
+        self.model._fc, self.model._dropout, self.model._avg_pooling = nn.Module(), nn.Module(), nn.Module()
 
     def forward(self, inputs):
         return self.model.extract_features(inputs)
-
