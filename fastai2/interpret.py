@@ -98,4 +98,4 @@ class ClassificationInterpretation(Interpretation):
     def print_classification_report(self):
         "Print scikit-learn classification report"
         d,t = flatten_check(self.decoded, self.targs)
-        print(skm.classification_report(t, d, target_names=self.vocab))
+        print(skm.classification_report(t, d, target_names=[str(v) for v in self.vocab]))
