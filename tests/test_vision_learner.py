@@ -1,13 +1,19 @@
 import pytest
+from inspect import getmembers, isfunction
 import torch
 import torch.nn as nn
+
+from fastai.vision import ImageDataBunch, Learner
+
+from fastai.datasets import untar_data, URLs
+
 from fastai.gen_doc.doctest import this_tests
 from fastai.vision.learner import *
 from fastai.callbacks.hooks import *
 from torchvision.models import resnet18
+from fastai.vision.models import efficientnet
 from torchvision.models.resnet import BasicBlock
 from fastai.vision.learner import has_pool_type
-from fastai.vision.models import EfficientNetB0, EfficientNetB3, EfficientNetB5
 
 @pytest.fixture
 def image():
@@ -36,8 +42,10 @@ def test_create_body(image):
     with pytest.raises(NameError):
         create_body(resnet18, cut=1.)
 
+efficientnets = [o[1] for o in getmembers(efficientnet) if isfunction(o[1]) and o[0].startswith("EfficientNet")]
+
 @pytest.mark.parametrize("image_size", [128, 224, 256])
-@pytest.mark.parametrize("base_arch", [EfficientNetB0, EfficientNetB3, EfficientNetB5])
+@pytest.mark.parametrize("base_arch", efficientnets)
 def test_create_body_effnet(image_size, base_arch):
     this_tests(create_body)
     img = torch.randn([4, 3, image_size, image_size])
@@ -52,6 +60,22 @@ def test_create_body_effnet(image_size, base_arch):
 
     with pytest.raises(NameError):
         create_body(base_arch, cut=1.)
+
+@pytest.mark.parametrize("base_arch", efficientnets)
+def test_freeze_unfreeze_effnet(base_arch):
+    def get_number_of_trainable_params(model: nn.Module):
+        return sum(p.numel() for p in model.parameters() if p.requires_grad)
+
+    path = untar_data(URLs.MNIST_SAMPLE)
+    data = ImageDataBunch.from_folder(path, size=64)
+    data.c = 1000 # Set number of class to be 1000 to stay in line with the pretrained model.
+    cnn_learn = cnn_learner(data, base_arch, pretrained=True)
+    ref_learn = Learner(data, base_arch(pretrained=True))
+    # By default the neural net in cnn learner is freezed.
+    assert get_number_of_trainable_params(cnn_learn.model) < get_number_of_trainable_params(ref_learn.model)
+    cnn_learn.unfreeze()
+    assert get_number_of_trainable_params(cnn_learn.model) == get_number_of_trainable_params(ref_learn.model)
+
 
 def test_create_head(image):
     this_tests(create_head)
