@@ -58,8 +58,7 @@ def has_pool_type(m):
 def create_body(arch:Callable, pretrained:bool=True, cut:Optional[Union[int, Callable]]=None):
     "Cut off the body of a typically pretrained `model` at `cut` (int) or cut the model as specified by `cut(model)` (function)."
     model = arch(pretrained)
-    if "EfficientNet" in arch.__name__:
-        return create_effnet_body(model, cut)
+    if "EfficientNet" in arch.__name__: return create_effnet_body(model, cut)
     cut = ifnone(cut, cnn_config(arch)['cut'])
     if cut is None:
         ll = list(enumerate(model.children()))
