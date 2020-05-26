@@ -1,5 +1,4 @@
 "`Learner` support for computer vision"
-from .models.efficientnet import EfficientNetBody
 from ..torch_core import *
 from ..basic_train import *
 from ..basic_data import *
@@ -58,7 +57,6 @@ def has_pool_type(m):
 def create_body(arch:Callable, pretrained:bool=True, cut:Optional[Union[int, Callable]]=None):
     "Cut off the body of a typically pretrained `model` at `cut` (int) or cut the model as specified by `cut(model)` (function)."
     model = arch(pretrained)
-    if "EfficientNet" in arch.__name__: return create_effnet_body(model, cut)
     cut = ifnone(cut, cnn_config(arch)['cut'])
     if cut is None:
         ll = list(enumerate(model.children()))
@@ -67,11 +65,6 @@ def create_body(arch:Callable, pretrained:bool=True, cut:Optional[Union[int, Cal
     elif isinstance(cut, Callable): return cut(model)
     else:                           raise NamedError("cut must be either integer or a function")
 
-def create_effnet_body(model: Callable, cut:Optional[Union[int, Callable]]=None):
-    "Cut off the body of an efficientnet at `cut` (int) or cut the model as specified by `cut(model)` (function)."
-    if isinstance(cut, int) or cut is None: return EfficientNetBody(model, cut)
-    elif isinstance(cut, Callable):         return cut(model)
-    else:                                   raise NamedError("cut must be either integer or a function")
 
 def create_head(nf:int, nc:int, lin_ftrs:Optional[Collection[int]]=None, ps:Floats=0.5,
                 concat_pool:bool=True, bn_final:bool=False):
@@ -94,11 +87,10 @@ def create_cnn_model(base_arch:Callable, nc:int, cut:Union[int,Callable]=None, p
     base_arch_is_effnet = "EfficientNet" in base_arch.__name__
     if base_arch_is_effnet:
         effnet = base_arch(pretrained)
-        lin_ftrs,concat_pool = [] if lin_ftrs is None else lin_ftrs,False
-        ps = effnet._dropout.p
+        lin_ftrs,concat_pool = lin_ftrs or [],False
     body = create_body(base_arch, pretrained, cut)
     if custom_head is None:
-        nf = num_features_model(nn.Sequential(*body.children())) * (2 if concat_pool else 1) if not base_arch_is_effnet else effnet._fc.in_features
+        nf = num_features_model(nn.Sequential(*body.children())) * (2 if concat_pool else 1) if not base_arch_is_effnet else effnet.in_features
         head = create_head(nf, nc, lin_ftrs, ps=ps, concat_pool=concat_pool, bn_final=bn_final)
     else: head = custom_head
     return nn.Sequential(body, head)
