@@ -189,7 +189,7 @@ mk_class('ResizeMethod', **{o:o.lower() for o in ['Squish', 'Crop', 'Pad']},
 @delegates()
 class Resize(RandTransform):
     split_idx = None
-    mode,mode_mask,order,final_size = Image.BILINEAR,Image.NEAREST,1,None
+    mode,mode_mask,order = Image.BILINEAR,Image.NEAREST,1
     "Resize image to `size` using `method`"
     def __init__(self, size, method=ResizeMethod.Crop, pad_mode=PadMode.Reflection,
                  resamples=(Image.BILINEAR, Image.NEAREST), **kwargs):
@@ -203,7 +203,6 @@ class Resize(RandTransform):
 
     def encodes(self, x:(Image.Image,TensorBBox,TensorPoint)):
         orig_sz = _get_sz(x)
-        self.final_size = self.size
         if self.method==ResizeMethod.Squish:
             return x.crop_pad(orig_sz, Tuple(0,0), orig_sz=orig_sz, pad_mode=self.pad_mode,
                    resize_mode=self.mode_mask if isinstance(x,PILMask) else self.mode, resize_to=self.size)
@@ -220,7 +219,7 @@ class Resize(RandTransform):
 @delegates()
 class RandomResizedCrop(RandTransform):
     "Picks a random scaled crop of an image and resize it to `size`"
-    split_idx = None
+    split_idx,order = None,1
     def __init__(self, size, min_scale=0.08, ratio=(3/4, 4/3), resamples=(Image.BILINEAR, Image.NEAREST),
                  val_xtra=0.14, **kwargs):
         super().__init__(**kwargs)
@@ -534,12 +533,13 @@ def Rotate(max_deg=10, p=0.5, draw=None, size=None, mode='bilinear', pad_mode=Pa
                           size=size, mode=mode, pad_mode=pad_mode, align_corners=align_corners)
 
 # Cell
-def zoom_mat(x, max_zoom=1.1, p=0.5, draw=None, draw_x=None, draw_y=None, batch=False):
+def zoom_mat(x, min_zoom=1., max_zoom=1.1, p=0.5, draw=None, draw_x=None, draw_y=None, batch=False):
     "Return a random zoom matrix with `max_zoom` and `p`"
-    def _def_draw(x):       return x.new(x.size(0)).uniform_(1, max_zoom)
-    def _def_draw_b(x):     return x.new_zeros(x.size(0)) + random.uniform(1, max_zoom)
+    def _def_draw(x):       return x.new(x.size(0)).uniform_(min_zoom, max_zoom)
+    def _def_draw_b(x):     return x.new_zeros(x.size(0)) + random.uniform(min_zoom, max_zoom)
     def _def_draw_ctr(x):   return x.new(x.size(0)).uniform_(0,1)
     def _def_draw_ctr_b(x): return x.new_zeros(x.size(0)) + random.uniform(0,1)
+    assert(min_zoom<=max_zoom)
     s = 1/_draw_mask(x, _def_draw_b if batch else _def_draw, draw=draw, p=p, neutral=1., batch=batch)
     def_draw_c = _def_draw_ctr_b if batch else _def_draw_ctr
     col_pct = _draw_mask(x, def_draw_c, draw=draw_x, p=1., batch=batch)
@@ -558,10 +558,10 @@ def zoom(x: (TensorImage,TensorMask,TensorPoint,TensorBBox), size=None, mode='bi
     return x.affine_coord(mat=zoom_mat(x0, **kwargs)[:,:2], sz=size, mode=mode, pad_mode=pad_mode, align_corners=align_corners)
 
 # Cell
-def Zoom(max_zoom=1.1, p=0.5, draw=None, draw_x=None, draw_y=None, size=None, mode='bilinear',
+def Zoom(min_zoom=1., max_zoom=1.1, p=0.5, draw=None, draw_x=None, draw_y=None, size=None, mode='bilinear',
          pad_mode=PadMode.Reflection, batch=False, align_corners=True):
     "Apply a random zoom of at most `max_zoom` with probability `p` to a batch of images"
-    return AffineCoordTfm(partial(zoom_mat, max_zoom=max_zoom, p=p, draw=draw, draw_x=draw_x, draw_y=draw_y, batch=batch),
+    return AffineCoordTfm(partial(zoom_mat, min_zoom=min_zoom, max_zoom=max_zoom, p=p, draw=draw, draw_x=draw_x, draw_y=draw_y, batch=batch),
                           size=size, mode=mode, pad_mode=pad_mode, align_corners=align_corners)
 
 # Cell
@@ -765,8 +765,8 @@ def setup_aug_tfms(tfms):
     return res + others
 
 # Cell
-def aug_transforms(mult=1.0, do_flip=True, flip_vert=False, max_rotate=10., max_zoom=1.1, max_lighting=0.2,
-                   max_warp=0.2, p_affine=0.75, p_lighting=0.75, xtra_tfms=None, size=None,
+def aug_transforms(mult=1.0, do_flip=True, flip_vert=False, max_rotate=10., min_zoom=1., max_zoom=1.1,
+                   max_lighting=0.2, max_warp=0.2, p_affine=0.75, p_lighting=0.75, xtra_tfms=None, size=None,
                    mode='bilinear', pad_mode=PadMode.Reflection, align_corners=True, batch=False, min_scale=1.):
     "Utility func to easily create a list of flip, rotate, zoom, warp, lighting transforms."
     res,tkw = [],dict(size=size if min_scale==1. else None, mode=mode, pad_mode=pad_mode, batch=batch, align_corners=align_corners)
@@ -774,7 +774,7 @@ def aug_transforms(mult=1.0, do_flip=True, flip_vert=False, max_rotate=10., max_
     if do_flip: res.append(Dihedral(p=0.5, **tkw) if flip_vert else Flip(p=0.5, **tkw))
     if max_warp:   res.append(Warp(magnitude=max_warp, p=p_affine, **tkw))
     if max_rotate: res.append(Rotate(max_deg=max_rotate, p=p_affine, **tkw))
-    if max_zoom>1: res.append(Zoom(max_zoom=max_zoom, p=p_affine, **tkw))
+    if min_zoom<1 or max_zoom>1: res.append(Zoom(min_zoom=min_zoom, max_zoom=max_zoom, p=p_affine, **tkw))
     if max_lighting:
         res.append(Brightness(max_lighting=max_lighting, p=p_lighting, batch=batch))
         res.append(Contrast(max_lighting=max_lighting, p=p_lighting, batch=batch))
