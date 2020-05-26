@@ -2,6 +2,7 @@ import pytest
 from inspect import getmembers, isfunction
 import torch
 import torch.nn as nn
+from efficientnet_pytorch import EfficientNet
 
 from fastai.vision import ImageDataBunch, Learner
 
@@ -48,12 +49,12 @@ efficientnets = [o[1] for o in getmembers(efficientnet) if isfunction(o[1]) and 
 @pytest.mark.parametrize("base_arch", efficientnets)
 def test_create_body_effnet(image_size, base_arch):
     this_tests(create_body)
-    img = torch.randn([4, 3, image_size, image_size])
+    imgs = torch.randn([4, 3, image_size, image_size])
     body = create_body(base_arch, pretrained=True)
-    ref = base_arch(pretrained=True)
+    ref = EfficientNet.from_pretrained(f"efficientnet-b{base_arch.__name__[-1]}")
     body.eval()
     ref.eval()
-    assert torch.allclose(body(img), ref.extract_features(img)) # check activation values after conv blocks
+    assert torch.allclose(body(imgs), ref.extract_features(imgs)) # check activation values after conv blocks
 
     body = create_body(base_arch, cut=lambda x:x)
     assert isinstance(body, type(base_arch()))
@@ -63,6 +64,7 @@ def test_create_body_effnet(image_size, base_arch):
 
 @pytest.mark.parametrize("base_arch", efficientnets)
 def test_freeze_unfreeze_effnet(base_arch):
+    this_tests(cnn_learner)
     def get_number_of_trainable_params(model: nn.Module):
         return sum(p.numel() for p in model.parameters() if p.requires_grad)
 
