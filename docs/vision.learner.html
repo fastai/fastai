@@ -36,7 +36,7 @@ description: "All the functions necessary to build `Learner` suitable for transf
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The most important functions of this module are <a href="/vision.learner#cnn_learner"><code>cnn_learner</code></a> and <a href="/vision.learner#unet_learner"><code>unet_learner</code></a>. They will help you define a <a href="/13a_learner#Learner"><code>Learner</code></a> using a pretrained model. See the <a href="http://dev.fast.ai/tutorial.vision">vision tutorial</a> for examples of use.</p>
+<p>The most important functions of this module are <a href="/vision.learner#cnn_learner"><code>cnn_learner</code></a> and <a href="/vision.learner#unet_learner"><code>unet_learner</code></a>. They will help you define a <a href="/learner#Learner"><code>Learner</code></a> using a pretrained model. See the <a href="http://dev.fast.ai/tutorial.vision">vision tutorial</a> for examples of use.</p>
 
 </div>
 </div>
@@ -436,11 +436,7 @@ description: "All the functions necessary to build `Learner` suitable for transf
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#TODO: refactor, i.e. something like this?</span>
-<span class="c1"># class ModelSplitter():</span>
-<span class="c1">#     def __init__(self, idx): self.idx = idx</span>
-<span class="c1">#     def split(self, m): return L(m[:self.idx], m[self.idx:]).map(params)</span>
-<span class="c1">#     def __call__(self,): return {&#39;cut&#39;:self.idx, &#39;split&#39;:self.split}</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#     def __call__(self,): return {&#39;cut&#39;:self.idx, &#39;split&#39;:self.split}</span>
 </pre></div>
 
     </div>
@@ -484,7 +480,7 @@ description: "All the functions necessary to build `Learner` suitable for transf
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>To do transfer learning, you need to pass a <code>splitter</code> to <a href="/13a_learner#Learner"><code>Learner</code></a>. This should be a function taking the model and returning a collection of parameter groups, e.g. a list of list of parameters.</p>
+<p>To do transfer learning, you need to pass a <code>splitter</code> to <a href="/learner#Learner"><code>Learner</code></a>. This should be a function taking the model and returning a collection of parameter groups, e.g. a list of list of parameters.</p>
 
 </div>
 </div>
@@ -505,7 +501,7 @@ description: "All the functions necessary to build `Learner` suitable for transf
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Learner-convenience-functions"><a href="/13a_learner#Learner"><code>Learner</code></a> convenience functions<a class="anchor-link" href="#Learner-convenience-functions"> </a></h2>
+<h2 id="Learner-convenience-functions"><a href="/learner#Learner"><code>Learner</code></a> convenience functions<a class="anchor-link" href="#Learner-convenience-functions"> </a></h2>
 </div>
 </div>
 </div>
@@ -553,7 +549,7 @@ description: "All the functions necessary to build `Learner` suitable for transf
 <p>The model is built from <code>arch</code> using the number of final activations inferred from <code>dls</code> if possible (otherwise pass a value to <code>n_out</code>). It might be <code>pretrained</code> and the architecture is cut and split using the default metadata of the model architecture (this can be customized by passing a <code>cut</code> or a <code>splitter</code>).</p>
 <p>To customize the model creation, use <a href="/vision.learner#cnn_config"><code>cnn_config</code></a> and pass the result to the <code>config</code> argument. There is just easy access to <code>y_range</code> because this argument is often used.</p>
 <p>If <code>normalize</code> and <code>pretrained</code> are <code>True</code>, this function adds a <code>Normalization</code> transform to the <code>dls</code> (if there is not already one) using the statistics of the pretrained model. That way, you won't ever forget to normalize your data in transfer learning.</p>
-<p>All other arguments are passed to <a href="/13a_learner#Learner"><code>Learner</code></a>.</p>
+<p>All other arguments are passed to <a href="/learner#Learner"><code>Learner</code></a>.</p>
 
 </div>
 </div>
@@ -615,7 +611,7 @@ description: "All the functions necessary to build `Learner` suitable for transf
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="unet_config" class="doc_header"><code>unet_config</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/vision/learner.py#L181" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>unet_config</code>(<strong><code>blur</code></strong>=<em><code>False</code></em>, <strong><code>blur_final</code></strong>=<em><code>True</code></em>, <strong><code>self_attention</code></strong>=<em><code>False</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>, <strong><code>last_cross</code></strong>=<em><code>True</code></em>, <strong><code>bottle</code></strong>=<em><code>False</code></em>, <strong><code>act_cls</code></strong>=<em><code>'ReLU'</code></em>, <strong><code>init</code></strong>=<em><code>'kaiming_normal_'</code></em>, <strong><code>norm_type</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
-<p>Convenience function to easily create a config for <a href="/15a_vision.models.unet#DynamicUnet"><code>DynamicUnet</code></a></p>
+<p>Convenience function to easily create a config for <a href="/vision.models.unet#DynamicUnet"><code>DynamicUnet</code></a></p>
 
 </div>
 
@@ -664,7 +660,7 @@ description: "All the functions necessary to build `Learner` suitable for transf
 <p>The model is built from <code>arch</code> using the number of final filters inferred from <code>dls</code> if possible (otherwise pass a value to <code>n_out</code>). It might be <code>pretrained</code> and the architecture is cut and split using the default metadata of the model architecture (this can be customized by passing a <code>cut</code> or a <code>splitter</code>).</p>
 <p>To customize the model creation, use <a href="/vision.learner#unet_config"><code>unet_config</code></a> and pass the result to the <code>config</code> argument.</p>
 <p>If <code>normalize</code> and <code>pretrained</code> are <code>True</code>, this function adds a <code>Normalization</code> transform to the <code>dls</code> (if there is not already one) using the statistics of the pretrained model. That way, you won't ever forget to normalize your data in transfer learning.</p>
-<p>All other arguments are passed to <a href="/13a_learner#Learner"><code>Learner</code></a>.</p>
+<p>All other arguments are passed to <a href="/learner#Learner"><code>Learner</code></a>.</p>
 
 </div>
 </div>
@@ -678,7 +674,7 @@ description: "All the functions necessary to build `Learner` suitable for transf
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">path</span> <span class="o">=</span> <span class="n">untar_data</span><span class="p">(</span><span class="n">URLs</span><span class="o">.</span><span class="n">CAMVID_TINY</span><span class="p">)</span>
 <span class="n">fnames</span> <span class="o">=</span> <span class="n">get_image_files</span><span class="p">(</span><span class="n">path</span><span class="o">/</span><span class="s1">&#39;images&#39;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">label_func</span><span class="p">(</span><span class="n">x</span><span class="p">):</span> <span class="k">return</span> <span class="n">path</span><span class="o">/</span><span class="s1">&#39;labels&#39;</span><span class="o">/</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{x.stem}</span><span class="s1">_P</span><span class="si">{x.suffix}</span><span class="s1">&#39;</span>
+<span class="k">def</span> <span class="nf">label_func</span><span class="p">(</span><span class="n">x</span><span class="p">):</span> <span class="k">return</span> <span class="n">path</span><span class="o">/</span><span class="s1">&#39;labels&#39;</span><span class="o">/</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">x</span><span class="o">.</span><span class="n">stem</span><span class="si">}</span><span class="s1">_P</span><span class="si">{</span><span class="n">x</span><span class="o">.</span><span class="n">suffix</span><span class="si">}</span><span class="s1">&#39;</span>
 <span class="n">codes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">path</span><span class="o">/</span><span class="s1">&#39;codes.txt&#39;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
     
 <span class="n">dls</span> <span class="o">=</span> <span class="n">SegmentationDataLoaders</span><span class="o">.</span><span class="n">from_label_func</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">fnames</span><span class="p">,</span> <span class="n">label_func</span><span class="p">,</span> <span class="n">codes</span><span class="o">=</span><span class="n">codes</span><span class="p">)</span>

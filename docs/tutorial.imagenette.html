@@ -1191,7 +1191,7 @@ description: "A dive into the layered API of fastai in computer vision"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>We will start with the usual <a href="/vision.learner#cnn_learner"><code>cnn_learner</code></a> function we used in the <a href="http://dev.fast.ai/tutorial.vision">vision tutorial</a>, we will see how one can build a <a href="/13a_learner#Learner"><code>Learner</code></a> object in fastai. Then we will learn how to customize</p>
+<p>We will start with the usual <a href="/vision.learner#cnn_learner"><code>cnn_learner</code></a> function we used in the <a href="http://dev.fast.ai/tutorial.vision">vision tutorial</a>, we will see how one can build a <a href="/learner#Learner"><code>Learner</code></a> object in fastai. Then we will learn how to customize</p>
 <ul>
 <li>the loss function and how to write one that works fully with fastai,</li>
 <li>the optimizer function and how to use PyTorch optimizers,</li>
@@ -1203,13 +1203,13 @@ description: "A dive into the layered API of fastai in computer vision"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Building-a-Learner">Building a <a href="/13a_learner#Learner"><code>Learner</code></a><a class="anchor-link" href="#Building-a-Learner"> </a></h3>
+<h3 id="Building-a-Learner">Building a <a href="/learner#Learner"><code>Learner</code></a><a class="anchor-link" href="#Building-a-Learner"> </a></h3>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The easiest way to build a <a href="/13a_learner#Learner"><code>Learner</code></a> for image classification, as we have seen, is to use <a href="/vision.learner#cnn_learner"><code>cnn_learner</code></a>. We can specify that we don't want a pretrained model by passing <code>pretrained=False</code> (here the goal is to train a model from scratch):</p>
+<p>The easiest way to build a <a href="/learner#Learner"><code>Learner</code></a> for image classification, as we have seen, is to use <a href="/vision.learner#cnn_learner"><code>cnn_learner</code></a>. We can specify that we don't want a pretrained model by passing <code>pretrained=False</code> (here the goal is to train a model from scratch):</p>
 
 </div>
 </div>
@@ -1245,8 +1245,7 @@ description: "A dive into the layered API of fastai in computer vision"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#slow</span>
-<span class="n">learn</span><span class="o">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mf">5e-3</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span><span class="o">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mf">5e-3</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -1320,7 +1319,7 @@ description: "A dive into the layered API of fastai in computer vision"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>That's a start. But since we are not using a pretrained model, why not use a different architecture? fastai comes with a version of the resnets models that have all the tricks from modern research incorporated. While there is no pretrained model using those at the time of writing this tutorial, we can certainly use them here. For this, we just need to use the <a href="/13a_learner#Learner"><code>Learner</code></a> class. It takes our <a href="/data.core#DataLoaders"><code>DataLoaders</code></a> and a PyTorch model, at the minimum. Here we can use <a href="/vision.models.xresnet#xresnet34"><code>xresnet34</code></a> and since we have 10 classes, we specify <code>n_out=10</code>:</p>
+<p>That's a start. But since we are not using a pretrained model, why not use a different architecture? fastai comes with a version of the resnets models that have all the tricks from modern research incorporated. While there is no pretrained model using those at the time of writing this tutorial, we can certainly use them here. For this, we just need to use the <a href="/learner#Learner"><code>Learner</code></a> class. It takes our <a href="/data.core#DataLoaders"><code>DataLoaders</code></a> and a PyTorch model, at the minimum. Here we can use <a href="/vision.models.xresnet#xresnet34"><code>xresnet34</code></a> and since we have 10 classes, we specify <code>n_out=10</code>:</p>
 
 </div>
 </div>
@@ -1356,8 +1355,7 @@ description: "A dive into the layered API of fastai in computer vision"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#slow</span>
-<span class="n">learn</span><span class="o">.</span><span class="n">lr_find</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span><span class="o">.</span><span class="n">lr_find</span><span class="p">()</span>
 </pre></div>
 
     </div>
@@ -1418,8 +1416,7 @@ description: "A dive into the layered API of fastai in computer vision"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#slow</span>
-<span class="n">learn</span><span class="o">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mf">1e-3</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span><span class="o">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mf">1e-3</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -1557,9 +1554,9 @@ description: "A dive into the layered API of fastai in computer vision"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The loss function you pass to a <a href="/13a_learner#Learner"><code>Learner</code></a> is expected to take an output and target, then return the loss. It can be any regular PyTorch function and the training loop will work without any problem. What may cause problems is when you use fastai functions like <a href="/13a_learner#Learner.get_preds"><code>Learner.get_preds</code></a>, <a href="/13a_learner#Learner.predict"><code>Learner.predict</code></a> or <a href="/13a_learner#Learner.show_results"><code>Learner.show_results</code></a>.</p>
-<p>If you want <a href="/13a_learner#Learner.get_preds"><code>Learner.get_preds</code></a> to work with the argument <code>with_loss=True</code> (which is also used when you run<a href="/interpret#ClassificationInterpretation.plot_top_losses"><code>ClassificationInterpretation.plot_top_losses</code></a> for instance), your loss function will need a <code>reduction</code> attribute (or argument) that you can set to "none" (this is standard for all PyTorch loss functions or classes). With a reduction of "none", the loss function does not return a single number (like a mean or sum) but something the same size as the target.</p>
-<p>As for <a href="/13a_learner#Learner.predict"><code>Learner.predict</code></a> or <a href="/13a_learner#Learner.show_results"><code>Learner.show_results</code></a>, they internally rely on two methods your loss function should have:</p>
+<p>The loss function you pass to a <a href="/learner#Learner"><code>Learner</code></a> is expected to take an output and target, then return the loss. It can be any regular PyTorch function and the training loop will work without any problem. What may cause problems is when you use fastai functions like <a href="/learner#Learner.get_preds"><code>Learner.get_preds</code></a>, <a href="/learner#Learner.predict"><code>Learner.predict</code></a> or <a href="/learner#Learner.show_results"><code>Learner.show_results</code></a>.</p>
+<p>If you want <a href="/learner#Learner.get_preds"><code>Learner.get_preds</code></a> to work with the argument <code>with_loss=True</code> (which is also used when you run<a href="/interpret#ClassificationInterpretation.plot_top_losses"><code>ClassificationInterpretation.plot_top_losses</code></a> for instance), your loss function will need a <code>reduction</code> attribute (or argument) that you can set to "none" (this is standard for all PyTorch loss functions or classes). With a reduction of "none", the loss function does not return a single number (like a mean or sum) but something the same size as the target.</p>
+<p>As for <a href="/learner#Learner.predict"><code>Learner.predict</code></a> or <a href="/learner#Learner.show_results"><code>Learner.show_results</code></a>, they internally rely on two methods your loss function should have:</p>
 <ul>
 <li>if you have a loss that combines activation and loss function (such as <code>nn.CrossEntropyLoss</code>), an <code>activation</code> function.</li>
 <li>a <a href="/tabular.core#decodes"><code>decodes</code></a> function that converts your predictions to the same format your targets are: for instance in the case of <code>nn.CrossEntropyLoss</code>, the <a href="/tabular.core#decodes"><code>decodes</code></a> function should take the argmax.it's </li>
@@ -1602,8 +1599,8 @@ description: "A dive into the layered API of fastai in computer vision"
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>We won't comment on the <code>forward</code> pass that just implements the loss in itself. What is important is to notice how the <code>reduction</code> attribute plays in how the final result is computed.</p>
-<p>Then since this loss function combines activation (softmax) with the actual loss, we implement <code>activation</code> that take the softmax of the output. This is what will make <a href="/13a_learner#Learner.get_preds"><code>Learner.get_preds</code></a> or <a href="/13a_learner#Learner.predict"><code>Learner.predict</code></a> return the actual predictions instead of the final activations.</p>
-<p>Lastly, <a href="/tabular.core#decodes"><code>decodes</code></a> changes the outputs of the model to put them in the same format as the targets (one int for each sample in the batch size) by taking the argmax of the predictions. We can pass this loss function to <a href="/13a_learner#Learner"><code>Learner</code></a>:</p>
+<p>Then since this loss function combines activation (softmax) with the actual loss, we implement <code>activation</code> that take the softmax of the output. This is what will make <a href="/learner#Learner.get_preds"><code>Learner.get_preds</code></a> or <a href="/learner#Learner.predict"><code>Learner.predict</code></a> return the actual predictions instead of the final activations.</p>
+<p>Lastly, <a href="/tabular.core#decodes"><code>decodes</code></a> changes the outputs of the model to put them in the same format as the targets (one int for each sample in the batch size) by taking the argmax of the predictions. We can pass this loss function to <a href="/learner#Learner"><code>Learner</code></a>:</p>
 
 </div>
 </div>
@@ -1632,8 +1629,7 @@ description: "A dive into the layered API of fastai in computer vision"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#slow</span>
-<span class="n">learn</span><span class="o">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mf">1e-3</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span><span class="o">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mf">1e-3</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -1839,7 +1835,7 @@ description: "A dive into the layered API of fastai in computer vision"
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>We write an optimizer function that expects <code>param_groups</code>, which is a list of list of parameters. Then we pass those to the PyTorch optimizer we want to use.</p>
-<p>We can use this function and pass it to the <code>opt_func</code> argument of <a href="/13a_learner#Learner"><code>Learner</code></a>:</p>
+<p>We can use this function and pass it to the <code>opt_func</code> argument of <a href="/learner#Learner"><code>Learner</code></a>:</p>
 
 </div>
 </div>
@@ -1877,8 +1873,7 @@ description: "A dive into the layered API of fastai in computer vision"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#slow</span>
-<span class="n">learn</span><span class="o">.</span><span class="n">lr_find</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span><span class="o">.</span><span class="n">lr_find</span><span class="p">()</span>
 </pre></div>
 
     </div>
@@ -1939,8 +1934,7 @@ description: "A dive into the layered API of fastai in computer vision"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#slow</span>
-<span class="n">learn</span><span class="o">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mf">5e-3</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span><span class="o">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mf">5e-3</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -2028,11 +2022,11 @@ description: "A dive into the layered API of fastai in computer vision"
     <span class="n">opt</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
     <span class="n">opt</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
 </pre></div>
-<p>where <code>model</code>, <code>loss_func</code> and <code>opt</code> are all attributes of our <a href="/13a_learner#Learner"><code>Learner</code></a>. To easily allow you to add new behavior in that training loop without needing to rewrite it yourself (along with all the fastai pieces you might want like mixed precision, 1cycle schedule, distributed training...), you can customize what happens in the training loop by writing a callback.</p>
+<p>where <code>model</code>, <code>loss_func</code> and <code>opt</code> are all attributes of our <a href="/learner#Learner"><code>Learner</code></a>. To easily allow you to add new behavior in that training loop without needing to rewrite it yourself (along with all the fastai pieces you might want like mixed precision, 1cycle schedule, distributed training...), you can customize what happens in the training loop by writing a callback.</p>
 <p><a href="/callback.core#Callback"><code>Callback</code></a>s will be fully explained in an upcoming tutorial, but the basics are that:</p>
 <ul>
-<li>a <a href="/callback.core#Callback"><code>Callback</code></a> can read every piece of a <a href="/13a_learner#Learner"><code>Learner</code></a>, hence knowing everything happening in the training loop</li>
-<li>a <a href="/callback.core#Callback"><code>Callback</code></a> can change any piece of the <a href="/13a_learner#Learner"><code>Learner</code></a>, allowing it to alter the behavior of the training loop</li>
+<li>a <a href="/callback.core#Callback"><code>Callback</code></a> can read every piece of a <a href="/learner#Learner"><code>Learner</code></a>, hence knowing everything happening in the training loop</li>
+<li>a <a href="/callback.core#Callback"><code>Callback</code></a> can change any piece of the <a href="/learner#Learner"><code>Learner</code></a>, allowing it to alter the behavior of the training loop</li>
 <li>a <a href="/callback.core#Callback"><code>Callback</code></a> can even raise special exceptions that will allow breaking points (skipping a step, a validation phase, an epoch or even cancelling training entirely)</li>
 </ul>
 <p>Here we will write a simple <a href="/callback.core#Callback"><code>Callback</code></a> applying <a href="https://arxiv.org/abs/1710.09412">mixup</a> to our training (the version we will write is specific to our problem, use fastai's <a href="/callback.mixup#MixUp"><code>MixUp</code></a> in other settings).</p>
@@ -2120,7 +2114,7 @@ description: "A dive into the layered API of fastai in computer vision"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>To pass a <a href="/callback.core#Callback"><code>Callback</code></a> to a <a href="/13a_learner#Learner"><code>Learner</code></a>, we use <code>cbs=</code>:</p>
+<p>To pass a <a href="/callback.core#Callback"><code>Callback</code></a> to a <a href="/learner#Learner"><code>Learner</code></a>, we use <code>cbs=</code>:</p>
 
 </div>
 </div>
@@ -2158,8 +2152,7 @@ description: "A dive into the layered API of fastai in computer vision"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#slow</span>
-<span class="n">learn</span><span class="o">.</span><span class="n">lr_find</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span><span class="o">.</span><span class="n">lr_find</span><span class="p">()</span>
 </pre></div>
 
     </div>
@@ -2220,8 +2213,7 @@ description: "A dive into the layered API of fastai in computer vision"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#slow</span>
-<span class="n">learn</span><span class="o">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mf">5e-3</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span><span class="o">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mf">5e-3</span><span class="p">)</span>
 </pre></div>
 
     </div>

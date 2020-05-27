@@ -496,8 +496,7 @@ description: "Define the general fastai optimizer and the variants"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#test basic step</span>
-<span class="n">r</span> <span class="o">=</span> <span class="n">L</span><span class="o">.</span><span class="n">range</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">r</span> <span class="o">=</span> <span class="n">L</span><span class="o">.</span><span class="n">range</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">tst_params</span><span class="p">():</span> <span class="k">return</span> <span class="n">r</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">tst_param</span><span class="p">)</span>
 
 <span class="n">params</span> <span class="o">=</span> <span class="n">tst_params</span><span class="p">()</span>
@@ -520,8 +519,7 @@ description: "Define the general fastai optimizer and the variants"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#test two steps</span>
-<span class="n">params</span> <span class="o">=</span> <span class="n">tst_params</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">params</span> <span class="o">=</span> <span class="n">tst_params</span><span class="p">()</span>
 <span class="n">opt</span> <span class="o">=</span> <span class="n">Optimizer</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="p">[</span><span class="n">weight_decay</span><span class="p">,</span> <span class="n">sgd_step</span><span class="p">],</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">wd</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
 <span class="n">opt</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
 <span class="n">test_close</span><span class="p">([</span><span class="n">p</span><span class="o">.</span><span class="n">item</span><span class="p">()</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">params</span><span class="p">],</span> <span class="n">r</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">mul</span><span class="p">(</span><span class="mf">0.98</span><span class="p">)))</span>
@@ -541,8 +539,7 @@ description: "Define the general fastai optimizer and the variants"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#test None gradients are ignored</span>
-<span class="n">params</span> <span class="o">=</span> <span class="n">tst_params</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">params</span> <span class="o">=</span> <span class="n">tst_params</span><span class="p">()</span>
 <span class="n">opt</span> <span class="o">=</span> <span class="n">Optimizer</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">sgd_step</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
 <span class="n">params</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">grad</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="n">opt</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
@@ -563,8 +560,7 @@ description: "Define the general fastai optimizer and the variants"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#test discriminative lrs</span>
-<span class="n">params</span> <span class="o">=</span> <span class="n">tst_params</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">params</span> <span class="o">=</span> <span class="n">tst_params</span><span class="p">()</span>
 <span class="n">opt</span> <span class="o">=</span> <span class="n">Optimizer</span><span class="p">([</span><span class="n">params</span><span class="p">[:</span><span class="mi">2</span><span class="p">],</span> <span class="n">params</span><span class="p">[</span><span class="mi">2</span><span class="p">:]],</span> <span class="n">sgd_step</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
 <span class="n">opt</span><span class="o">.</span><span class="n">hypers</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;lr&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.01</span>
 <span class="n">opt</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
@@ -899,8 +895,7 @@ description: "Define the general fastai optimizer and the variants"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#Freezing the first layer</span>
-<span class="n">params</span> <span class="o">=</span> <span class="p">[</span><span class="n">tst_params</span><span class="p">(),</span> <span class="n">tst_params</span><span class="p">(),</span> <span class="n">tst_params</span><span class="p">()]</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">params</span> <span class="o">=</span> <span class="p">[</span><span class="n">tst_params</span><span class="p">(),</span> <span class="n">tst_params</span><span class="p">(),</span> <span class="n">tst_params</span><span class="p">()]</span>
 <span class="n">opt</span> <span class="o">=</span> <span class="n">Optimizer</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">sgd_step</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
 <span class="n">opt</span><span class="o">.</span><span class="n">freeze_to</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">req_grad</span> <span class="o">=</span> <span class="n">Self</span><span class="o">.</span><span class="n">requires_grad</span><span class="p">()</span>
@@ -1174,8 +1169,7 @@ description: "Define the general fastai optimizer and the variants"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#Vanilla SGD</span>
-<span class="n">params</span> <span class="o">=</span> <span class="n">tst_params</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">params</span> <span class="o">=</span> <span class="n">tst_params</span><span class="p">()</span>
 <span class="n">opt</span> <span class="o">=</span> <span class="n">SGD</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
 <span class="n">opt</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
 <span class="n">test_close</span><span class="p">([</span><span class="n">p</span><span class="o">.</span><span class="n">item</span><span class="p">()</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">params</span><span class="p">],</span> <span class="p">[</span><span class="n">i</span><span class="o">*</span><span class="mf">0.99</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">)])</span>
@@ -1198,8 +1192,7 @@ description: "Define the general fastai optimizer and the variants"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#SGD with momentum</span>
-<span class="n">params</span> <span class="o">=</span> <span class="n">tst_params</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">params</span> <span class="o">=</span> <span class="n">tst_params</span><span class="p">()</span>
 <span class="n">opt</span> <span class="o">=</span> <span class="n">SGD</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">mom</span><span class="o">=</span><span class="mf">0.9</span><span class="p">)</span>
 <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">opt</span><span class="p">,</span> <span class="n">Optimizer</span><span class="p">)</span>
 <span class="n">opt</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
@@ -1334,8 +1327,7 @@ description: "Define the general fastai optimizer and the variants"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#Without momentum</span>
-<span class="kn">import</span> <span class="nn">math</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">math</span>
 <span class="n">params</span> <span class="o">=</span> <span class="n">tst_param</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span><span class="mf">0.2</span><span class="p">,</span><span class="mf">0.3</span><span class="p">])</span>
 <span class="n">opt</span> <span class="o">=</span> <span class="n">RMSProp</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
 <span class="n">opt</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
@@ -1359,8 +1351,7 @@ description: "Define the general fastai optimizer and the variants"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#With momentum</span>
-<span class="n">params</span> <span class="o">=</span> <span class="n">tst_param</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span><span class="mf">0.2</span><span class="p">,</span><span class="mf">0.3</span><span class="p">])</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">params</span> <span class="o">=</span> <span class="n">tst_param</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span><span class="mf">0.2</span><span class="p">,</span><span class="mf">0.3</span><span class="p">])</span>
 <span class="n">opt</span> <span class="o">=</span> <span class="n">RMSProp</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">mom</span><span class="o">=</span><span class="mf">0.9</span><span class="p">)</span>
 <span class="n">opt</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
 <span class="n">test_close</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">tensor</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mf">2.</span><span class="p">]))</span>

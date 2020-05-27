@@ -83,9 +83,9 @@ description: "The function to immediately get a `Learner` ready to train for tab
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="TabularLearner" class="doc_header"><code>class</code> <code>TabularLearner</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/tabular/learner.py#L12" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>TabularLearner</code>(<strong><code>dls</code></strong>, <strong><code>model</code></strong>, <strong><code>loss_func</code></strong>=<em><code>None</code></em>, <strong><code>opt_func</code></strong>=<em><code>'Adam'</code></em>, <strong><code>lr</code></strong>=<em><code>0.001</code></em>, <strong><code>splitter</code></strong>=<em><code>'trainable_params'</code></em>, <strong><code>cbs</code></strong>=<em><code>None</code></em>, <strong><code>metrics</code></strong>=<em><code>None</code></em>, <strong><code>path</code></strong>=<em><code>None</code></em>, <strong><code>model_dir</code></strong>=<em><code>'models'</code></em>, <strong><code>wd</code></strong>=<em><code>None</code></em>, <strong><code>wd_bn_bias</code></strong>=<em><code>False</code></em>, <strong><code>train_bn</code></strong>=<em><code>True</code></em>, <strong><code>moms</code></strong>=<em><code>(0.95, 0.85, 0.95)</code></em>) :: <a href="/13a_learner#Learner"><code>Learner</code></a></p>
+<h3 id="TabularLearner" class="doc_header"><code>class</code> <code>TabularLearner</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/tabular/learner.py#L12" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>TabularLearner</code>(<strong><code>dls</code></strong>, <strong><code>model</code></strong>, <strong><code>loss_func</code></strong>=<em><code>None</code></em>, <strong><code>opt_func</code></strong>=<em><code>'Adam'</code></em>, <strong><code>lr</code></strong>=<em><code>0.001</code></em>, <strong><code>splitter</code></strong>=<em><code>'trainable_params'</code></em>, <strong><code>cbs</code></strong>=<em><code>None</code></em>, <strong><code>metrics</code></strong>=<em><code>None</code></em>, <strong><code>path</code></strong>=<em><code>None</code></em>, <strong><code>model_dir</code></strong>=<em><code>'models'</code></em>, <strong><code>wd</code></strong>=<em><code>None</code></em>, <strong><code>wd_bn_bias</code></strong>=<em><code>False</code></em>, <strong><code>train_bn</code></strong>=<em><code>True</code></em>, <strong><code>moms</code></strong>=<em><code>(0.95, 0.85, 0.95)</code></em>) :: <a href="/learner#Learner"><code>Learner</code></a></p>
 </blockquote>
-<p><a href="/13a_learner#Learner"><code>Learner</code></a> for tabular data</p>
+<p><a href="/learner#Learner"><code>Learner</code></a> for tabular data</p>
 
 </div>
 
@@ -99,7 +99,7 @@ description: "The function to immediately get a `Learner` ready to train for tab
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>It works exactly as a normal <a href="/13a_learner#Learner"><code>Learner</code></a>, the only difference is that it implements a <code>predict</code> method specific to work on a row of data.</p>
+<p>It works exactly as a normal <a href="/learner#Learner"><code>Learner</code></a>, the only difference is that it implements a <code>predict</code> method specific to work on a row of data.</p>
 
 </div>
 </div>
@@ -124,7 +124,7 @@ description: "The function to immediately get a `Learner` ready to train for tab
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="tabular_learner" class="doc_header"><code>tabular_learner</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/tabular/learner.py#L26" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>tabular_learner</code>(<strong><code>dls</code></strong>, <strong><code>layers</code></strong>=<em><code>None</code></em>, <strong><code>emb_szs</code></strong>=<em><code>None</code></em>, <strong><code>config</code></strong>=<em><code>None</code></em>, <strong><code>n_out</code></strong>=<em><code>None</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>, <strong><code>loss_func</code></strong>=<em><code>None</code></em>, <strong><code>opt_func</code></strong>=<em><code>'Adam'</code></em>, <strong><code>lr</code></strong>=<em><code>0.001</code></em>, <strong><code>splitter</code></strong>=<em><code>'trainable_params'</code></em>, <strong><code>cbs</code></strong>=<em><code>None</code></em>, <strong><code>metrics</code></strong>=<em><code>None</code></em>, <strong><code>path</code></strong>=<em><code>None</code></em>, <strong><code>model_dir</code></strong>=<em><code>'models'</code></em>, <strong><code>wd</code></strong>=<em><code>None</code></em>, <strong><code>wd_bn_bias</code></strong>=<em><code>False</code></em>, <strong><code>train_bn</code></strong>=<em><code>True</code></em>, <strong><code>moms</code></strong>=<em><code>(0.95, 0.85, 0.95)</code></em>)</p>
 </blockquote>
-<p>Get a <a href="/13a_learner#Learner"><code>Learner</code></a> using <code>dls</code>, with <a href="/metrics"><code>metrics</code></a>, including a <a href="/tabular.model#TabularModel"><code>TabularModel</code></a> created using the remaining params.</p>
+<p>Get a <a href="/learner#Learner"><code>Learner</code></a> using <code>dls</code>, with <a href="/metrics"><code>metrics</code></a>, including a <a href="/tabular.model#TabularModel"><code>TabularModel</code></a> created using the remaining params.</p>
 
 </div>
 
@@ -140,7 +140,7 @@ description: "The function to immediately get a `Learner` ready to train for tab
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>If your data was built with fastai, you probably won't need to pass anything to <code>emb_szs</code> unless you want to change the default of the library (produced by <a href="/tabular.model#get_emb_sz"><code>get_emb_sz</code></a>), same for <code>n_out</code> which should be automatically inferred. <a href="/layers"><code>layers</code></a> will default to <code>[200,100]</code> and is passed to <a href="/tabular.model#TabularModel"><code>TabularModel</code></a> along with the <code>config</code>.</p>
 <p>Use <a href="/tabular.model#tabular_config"><code>tabular_config</code></a> to create a <code>config</code> and cusotmize the model used. There is just easy access to <code>y_range</code> because this argument is often used.</p>
-<p>All the other arguments are passed to <a href="/13a_learner#Learner"><code>Learner</code></a>.</p>
+<p>All the other arguments are passed to <a href="/learner#Learner"><code>Learner</code></a>.</p>
 
 </div>
 </div>

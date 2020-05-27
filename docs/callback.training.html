@@ -224,8 +224,8 @@ description: "Callbacks that make decisions depending how a monitored metric/los
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a href="/18a_callback.training#BnFreeze"><code>BnFreeze</code></a> is useful when you'd like to train two separate models that have a common feature extractor / body. The only part of the model that's different is the head that you attach for transfer learning. <br></p>
-<p><a href="/13a_learner#Learner.freeze("><code>Learner.freeze()</code></a>) doesn't suffice here as the <a href="/layers#BatchNorm"><code>BatchNorm</code></a> layers are trainable by default, and running mean and sdev of batches are tracked. For feature extractors to fully match, you need to set <code>train_bn=False</code> and these stats need to be frozen as well, which is precisely the function of <a href="/18a_callback.training#BnFreeze"><code>BnFreeze</code></a>.</p>
+<p><a href="/callback.training#BnFreeze"><code>BnFreeze</code></a> is useful when you'd like to train two separate models that have a common feature extractor / body. The only part of the model that's different is the head that you attach for transfer learning. <br></p>
+<p><a href="/learner#Learner.freeze("><code>Learner.freeze()</code></a>) doesn't suffice here as the <a href="/layers#BatchNorm"><code>BatchNorm</code></a> layers are trainable by default, and running mean and sdev of batches are tracked. For feature extractors to fully match, you need to set <code>train_bn=False</code> and these stats need to be frozen as well, which is precisely the function of <a href="/callback.training#BnFreeze"><code>BnFreeze</code></a>.</p>
 
 </div>
 </div>
@@ -237,8 +237,7 @@ description: "Callbacks that make decisions depending how a monitored metric/los
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#slow</span>
-<span class="kn">from</span> <span class="nn">fastai2.vision.all</span> <span class="kn">import</span> <span class="o">*</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">fastai2.vision.all</span> <span class="kn">import</span> <span class="o">*</span>
 
 <span class="n">path</span> <span class="o">=</span> <span class="n">untar_data</span><span class="p">(</span><span class="n">URLs</span><span class="o">.</span><span class="n">MNIST_TINY</span><span class="p">)</span>
 <span class="n">dls</span>  <span class="o">=</span> <span class="n">ImageDataLoaders</span><span class="o">.</span><span class="n">from_folder</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">valid_pct</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
@@ -265,8 +264,7 @@ description: "Callbacks that make decisions depending how a monitored metric/los
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#slow</span>
-<span class="n">learn1</span> <span class="o">=</span> <span class="n">cnn_learner</span><span class="p">(</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">dls</span><span class="p">),</span> <span class="n">resnet18</span><span class="p">,</span> <span class="n">pretrained</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">train_bn</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn1</span> <span class="o">=</span> <span class="n">cnn_learner</span><span class="p">(</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">dls</span><span class="p">),</span> <span class="n">resnet18</span><span class="p">,</span> <span class="n">pretrained</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">train_bn</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">learn2</span> <span class="o">=</span> <span class="n">cnn_learner</span><span class="p">(</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">dls</span><span class="p">),</span> <span class="n">resnet18</span><span class="p">,</span> <span class="n">pretrained</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">train_bn</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
 <span class="n">learn1</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.02</span><span class="p">)</span>
@@ -287,9 +285,7 @@ description: "Callbacks that make decisions depending how a monitored metric/los
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#slow</span>
-<span class="c1"># SOURCE: https://discuss.pytorch.org/t/check-if-models-have-same-weights/4351/6</span>
-<span class="k">def</span> <span class="nf">models_equal</span><span class="p">(</span><span class="n">model_1</span><span class="p">,</span> <span class="n">model_2</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">models_equal</span><span class="p">(</span><span class="n">model_1</span><span class="p">,</span> <span class="n">model_2</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="n">models_differ</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="k">for</span> <span class="n">key_item_1</span><span class="p">,</span> <span class="n">key_item_2</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">model_1</span><span class="o">.</span><span class="n">state_dict</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">model_2</span><span class="o">.</span><span class="n">state_dict</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
         <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">equal</span><span class="p">(</span><span class="n">key_item_1</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">key_item_2</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
@@ -297,7 +293,7 @@ description: "Callbacks that make decisions depending how a monitored metric/los
         <span class="k">else</span><span class="p">:</span>
             <span class="n">models_differ</span> <span class="o">+=</span> <span class="mi">1</span>
             <span class="k">if</span> <span class="p">(</span><span class="n">key_item_1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">key_item_2</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
-                <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Mismtach found at </span><span class="si">{key_item_1[0]}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Mismtach found at </span><span class="si">{</span><span class="n">key_item_1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">Exception</span>
                 <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Models being compared have different architectures&#39;</span><span class="p">)</span>
@@ -321,8 +317,7 @@ description: "Callbacks that make decisions depending how a monitored metric/los
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#slow</span>
-<span class="n">models_equal</span><span class="p">(</span><span class="n">learn1</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">learn2</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">models_equal</span><span class="p">(</span><span class="n">learn1</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">learn2</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -339,8 +334,7 @@ description: "Callbacks that make decisions depending how a monitored metric/los
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#slow</span>
-<span class="n">learn1</span> <span class="o">=</span> <span class="n">cnn_learner</span><span class="p">(</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">dls</span><span class="p">),</span> <span class="n">resnet18</span><span class="p">,</span> <span class="n">pretrained</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">train_bn</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">cbs</span><span class="o">=</span><span class="n">BnFreeze</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn1</span> <span class="o">=</span> <span class="n">cnn_learner</span><span class="p">(</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">dls</span><span class="p">),</span> <span class="n">resnet18</span><span class="p">,</span> <span class="n">pretrained</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">train_bn</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">cbs</span><span class="o">=</span><span class="n">BnFreeze</span><span class="p">)</span>
 <span class="n">learn2</span> <span class="o">=</span> <span class="n">cnn_learner</span><span class="p">(</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">dls</span><span class="p">),</span> <span class="n">resnet18</span><span class="p">,</span> <span class="n">pretrained</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">train_bn</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">cbs</span><span class="o">=</span><span class="n">BnFreeze</span><span class="p">)</span>
 
 <span class="n">learn1</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.02</span><span class="p">)</span>

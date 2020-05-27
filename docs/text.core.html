@@ -86,7 +86,7 @@ description: "Basic function to preprocess text before assembling it in a `DataL
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="spec_add_spaces" class="doc_header"><code>spec_add_spaces</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L25" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>spec_add_spaces</code>(<strong><code>t</code></strong>)</p>
+<h4 id="spec_add_spaces" class="doc_header"><code>spec_add_spaces</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L24" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>spec_add_spaces</code>(<strong><code>t</code></strong>)</p>
 </blockquote>
 <p>Add spaces around / and #</p>
 
@@ -137,7 +137,7 @@ description: "Basic function to preprocess text before assembling it in a `DataL
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="rm_useless_spaces" class="doc_header"><code>rm_useless_spaces</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L32" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>rm_useless_spaces</code>(<strong><code>t</code></strong>)</p>
+<h4 id="rm_useless_spaces" class="doc_header"><code>rm_useless_spaces</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L31" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>rm_useless_spaces</code>(<strong><code>t</code></strong>)</p>
 </blockquote>
 <p>Remove multiple spaces</p>
 
@@ -186,7 +186,7 @@ description: "Basic function to preprocess text before assembling it in a `DataL
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="replace_rep" class="doc_header"><code>replace_rep</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L39" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>replace_rep</code>(<strong><code>t</code></strong>)</p>
+<h4 id="replace_rep" class="doc_header"><code>replace_rep</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L38" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>replace_rep</code>(<strong><code>t</code></strong>)</p>
 </blockquote>
 <p>Replace repetitions at the character level: cccc -- TK_REP 4 c</p>
 
@@ -215,7 +215,7 @@ description: "Basic function to preprocess text before assembling it in a `DataL
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">test_eq</span><span class="p">(</span><span class="n">replace_rep</span><span class="p">(</span><span class="s1">&#39;aa&#39;</span><span class="p">),</span> <span class="s1">&#39;aa&#39;</span><span class="p">)</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">replace_rep</span><span class="p">(</span><span class="s1">&#39;aaaa&#39;</span><span class="p">),</span> <span class="sa">f</span><span class="s1">&#39; </span><span class="si">{TK_REP}</span><span class="s1"> 4 a &#39;</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">replace_rep</span><span class="p">(</span><span class="s1">&#39;aaaa&#39;</span><span class="p">),</span> <span class="sa">f</span><span class="s1">&#39; </span><span class="si">{</span><span class="n">TK_REP</span><span class="si">}</span><span class="s1"> 4 a &#39;</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -250,7 +250,7 @@ description: "Basic function to preprocess text before assembling it in a `DataL
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="replace_wrep" class="doc_header"><code>replace_wrep</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L50" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>replace_wrep</code>(<strong><code>t</code></strong>)</p>
+<h4 id="replace_wrep" class="doc_header"><code>replace_wrep</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L49" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>replace_wrep</code>(<strong><code>t</code></strong>)</p>
 </blockquote>
 <p>Replace word repetitions: word word word word -- TK_WREP 4 word</p>
 
@@ -279,10 +279,10 @@ description: "Basic function to preprocess text before assembling it in a `DataL
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">test_eq</span><span class="p">(</span><span class="n">replace_wrep</span><span class="p">(</span><span class="s1">&#39;ah ah&#39;</span><span class="p">),</span> <span class="s1">&#39;ah ah&#39;</span><span class="p">)</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">replace_wrep</span><span class="p">(</span><span class="s1">&#39;ah ah ah&#39;</span><span class="p">),</span> <span class="sa">f</span><span class="s1">&#39; </span><span class="si">{TK_WREP}</span><span class="s1"> 3 ah &#39;</span><span class="p">)</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">replace_wrep</span><span class="p">(</span><span class="s1">&#39;ah ah   ah  ah&#39;</span><span class="p">),</span> <span class="sa">f</span><span class="s1">&#39; </span><span class="si">{TK_WREP}</span><span class="s1"> 4 ah &#39;</span><span class="p">)</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">replace_wrep</span><span class="p">(</span><span class="s1">&#39;ah ah ah ah &#39;</span><span class="p">),</span> <span class="sa">f</span><span class="s1">&#39; </span><span class="si">{TK_WREP}</span><span class="s1"> 4 ah  &#39;</span><span class="p">)</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">replace_wrep</span><span class="p">(</span><span class="s1">&#39;ah ah ah ah.&#39;</span><span class="p">),</span> <span class="sa">f</span><span class="s1">&#39; </span><span class="si">{TK_WREP}</span><span class="s1"> 4 ah .&#39;</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">replace_wrep</span><span class="p">(</span><span class="s1">&#39;ah ah ah&#39;</span><span class="p">),</span> <span class="sa">f</span><span class="s1">&#39; </span><span class="si">{</span><span class="n">TK_WREP</span><span class="si">}</span><span class="s1"> 3 ah &#39;</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">replace_wrep</span><span class="p">(</span><span class="s1">&#39;ah ah   ah  ah&#39;</span><span class="p">),</span> <span class="sa">f</span><span class="s1">&#39; </span><span class="si">{</span><span class="n">TK_WREP</span><span class="si">}</span><span class="s1"> 4 ah &#39;</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">replace_wrep</span><span class="p">(</span><span class="s1">&#39;ah ah ah ah &#39;</span><span class="p">),</span> <span class="sa">f</span><span class="s1">&#39; </span><span class="si">{</span><span class="n">TK_WREP</span><span class="si">}</span><span class="s1"> 4 ah  &#39;</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">replace_wrep</span><span class="p">(</span><span class="s1">&#39;ah ah ah ah.&#39;</span><span class="p">),</span> <span class="sa">f</span><span class="s1">&#39; </span><span class="si">{</span><span class="n">TK_WREP</span><span class="si">}</span><span class="s1"> 4 ah .&#39;</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">replace_wrep</span><span class="p">(</span><span class="s1">&#39;ah ah ahi&#39;</span><span class="p">),</span> <span class="sa">f</span><span class="s1">&#39;ah ah ahi&#39;</span><span class="p">)</span>
 </pre></div>
 
@@ -311,7 +311,7 @@ description: "Basic function to preprocess text before assembling it in a `DataL
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="fix_html" class="doc_header"><code>fix_html</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L58" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>fix_html</code>(<strong><code>x</code></strong>)</p>
+<h4 id="fix_html" class="doc_header"><code>fix_html</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L57" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>fix_html</code>(<strong><code>x</code></strong>)</p>
 </blockquote>
 <p>Various messy things we've seen in documents</p>
 
@@ -335,7 +335,7 @@ description: "Basic function to preprocess text before assembling it in a `DataL
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">test_eq</span><span class="p">(</span><span class="n">fix_html</span><span class="p">(</span><span class="s1">&#39;#39;bli#146;&#39;</span><span class="p">),</span> <span class="s2">&quot;&#39;bli&#39;&quot;</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">fix_html</span><span class="p">(</span><span class="s1">&#39;Sarah amp; Duck...&#39;</span><span class="p">),</span> <span class="s1">&#39;Sarah &amp; Duck …&#39;</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">fix_html</span><span class="p">(</span><span class="s1">&#39;a nbsp; #36;&#39;</span><span class="p">),</span> <span class="s1">&#39;a   $&#39;</span><span class="p">)</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">fix_html</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">&quot; &lt;unk&gt;&#39;</span><span class="p">),</span> <span class="sa">f</span><span class="s1">&#39;&quot; </span><span class="si">{UNK}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">fix_html</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">&quot; &lt;unk&gt;&#39;</span><span class="p">),</span> <span class="sa">f</span><span class="s1">&#39;&quot; </span><span class="si">{</span><span class="n">UNK</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">fix_html</span><span class="p">(</span><span class="s1">&#39;quot;  @.@  @-@ &#39;</span><span class="p">),</span> <span class="s2">&quot;&#39; .-&quot;</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">fix_html</span><span class="p">(</span><span class="s1">&#39;&lt;br /&gt;text</span><span class="se">\\</span><span class="s1">n&#39;</span><span class="p">),</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">text</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
 </pre></div>
@@ -372,7 +372,7 @@ description: "Basic function to preprocess text before assembling it in a `DataL
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="replace_all_caps" class="doc_header"><code>replace_all_caps</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L69" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>replace_all_caps</code>(<strong><code>t</code></strong>)</p>
+<h4 id="replace_all_caps" class="doc_header"><code>replace_all_caps</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L68" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>replace_all_caps</code>(<strong><code>t</code></strong>)</p>
 </blockquote>
 <p>Replace tokens in ALL CAPS by their lower version and add <code>TK_UP</code> before.</p>
 
@@ -393,7 +393,7 @@ description: "Basic function to preprocess text before assembling it in a `DataL
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">test_eq</span><span class="p">(</span><span class="n">replace_all_caps</span><span class="p">(</span><span class="s2">&quot;I&#39;M SHOUTING&quot;</span><span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{TK_UP}</span><span class="s2"> i&#39;m </span><span class="si">{TK_UP}</span><span class="s2"> shouting&quot;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">test_eq</span><span class="p">(</span><span class="n">replace_all_caps</span><span class="p">(</span><span class="s2">&quot;I&#39;M SHOUTING&quot;</span><span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">TK_UP</span><span class="si">}</span><span class="s2"> i&#39;m </span><span class="si">{</span><span class="n">TK_UP</span><span class="si">}</span><span class="s2"> shouting&quot;</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">replace_all_caps</span><span class="p">(</span><span class="s2">&quot;I&#39;m speaking normally&quot;</span><span class="p">),</span> <span class="s2">&quot;I&#39;m speaking normally&quot;</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">replace_all_caps</span><span class="p">(</span><span class="s2">&quot;I am speaking normally&quot;</span><span class="p">),</span> <span class="s2">&quot;i am speaking normally&quot;</span><span class="p">)</span>
 </pre></div>
@@ -430,7 +430,7 @@ description: "Basic function to preprocess text before assembling it in a `DataL
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="replace_maj" class="doc_header"><code>replace_maj</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L80" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>replace_maj</code>(<strong><code>t</code></strong>)</p>
+<h4 id="replace_maj" class="doc_header"><code>replace_maj</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L79" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>replace_maj</code>(<strong><code>t</code></strong>)</p>
 </blockquote>
 <p>Replace tokens in ALL CAPS by their lower version and add <code>TK_UP</code> before.</p>
 
@@ -451,7 +451,7 @@ description: "Basic function to preprocess text before assembling it in a `DataL
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">test_eq</span><span class="p">(</span><span class="n">replace_maj</span><span class="p">(</span><span class="s2">&quot;Jeremy Howard&quot;</span><span class="p">),</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{TK_MAJ}</span><span class="s1"> jeremy </span><span class="si">{TK_MAJ}</span><span class="s1"> howard&#39;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">test_eq</span><span class="p">(</span><span class="n">replace_maj</span><span class="p">(</span><span class="s2">&quot;Jeremy Howard&quot;</span><span class="p">),</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">TK_MAJ</span><span class="si">}</span><span class="s1"> jeremy </span><span class="si">{</span><span class="n">TK_MAJ</span><span class="si">}</span><span class="s1"> howard&#39;</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">replace_maj</span><span class="p">(</span><span class="s2">&quot;I don&#39;t think there is any maj here&quot;</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;i don&#39;t think there is any maj here&quot;</span><span class="p">),)</span>
 </pre></div>
 
@@ -480,7 +480,7 @@ description: "Basic function to preprocess text before assembling it in a `DataL
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="lowercase" class="doc_header"><code>lowercase</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L88" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>lowercase</code>(<strong><code>t</code></strong>, <strong><code>add_bos</code></strong>=<em><code>True</code></em>, <strong><code>add_eos</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="lowercase" class="doc_header"><code>lowercase</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L87" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>lowercase</code>(<strong><code>t</code></strong>, <strong><code>add_bos</code></strong>=<em><code>True</code></em>, <strong><code>add_eos</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 <p>Converts <code>t</code> to lowercase</p>
 
@@ -512,7 +512,7 @@ description: "Basic function to preprocess text before assembling it in a `DataL
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="replace_space" class="doc_header"><code>replace_space</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L93" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>replace_space</code>(<strong><code>t</code></strong>)</p>
+<h4 id="replace_space" class="doc_header"><code>replace_space</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L92" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>replace_space</code>(<strong><code>t</code></strong>)</p>
 </blockquote>
 <p>Replace embedded spaces in a token with unicode line char to allow for split/join</p>
 
@@ -564,7 +564,7 @@ description: "Basic function to preprocess text before assembling it in a `DataL
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="BaseTokenizer" class="doc_header"><code>class</code> <code>BaseTokenizer</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L104" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>BaseTokenizer</code>(<strong><code>split_char</code></strong>=<em><code>' '</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h3 id="BaseTokenizer" class="doc_header"><code>class</code> <code>BaseTokenizer</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L103" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>BaseTokenizer</code>(<strong><code>split_char</code></strong>=<em><code>' '</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Basic tokenizer that just splits on spaces</p>
 
@@ -616,7 +616,7 @@ description: "Basic function to preprocess text before assembling it in a `DataL
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="SpacyTokenizer" class="doc_header"><code>class</code> <code>SpacyTokenizer</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L110" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>SpacyTokenizer</code>(<strong><code>lang</code></strong>=<em><code>'en'</code></em>, <strong><code>special_toks</code></strong>=<em><code>None</code></em>, <strong><code>buf_sz</code></strong>=<em><code>5000</code></em>)</p>
+<h3 id="SpacyTokenizer" class="doc_header"><code>class</code> <code>SpacyTokenizer</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L109" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>SpacyTokenizer</code>(<strong><code>lang</code></strong>=<em><code>'en'</code></em>, <strong><code>special_toks</code></strong>=<em><code>None</code></em>, <strong><code>buf_sz</code></strong>=<em><code>5000</code></em>)</p>
 </blockquote>
 <p>Spacy tokenizer for <code>lang</code></p>
 
@@ -674,7 +674,7 @@ description: "Basic function to preprocess text before assembling it in a `DataL
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="TokenizeBatch" class="doc_header"><code>class</code> <code>TokenizeBatch</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L125" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>TokenizeBatch</code>(<strong><code>tok_func</code></strong>=<em><code>'SpacyTokenizer'</code></em>, <strong><code>rules</code></strong>=<em><code>None</code></em>, <strong><code>post_rules</code></strong>=<em><code>None</code></em>, <strong>**<code>tok_kwargs</code></strong>)</p>
+<h3 id="TokenizeBatch" class="doc_header"><code>class</code> <code>TokenizeBatch</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L124" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>TokenizeBatch</code>(<strong><code>tok_func</code></strong>=<em><code>'SpacyTokenizer'</code></em>, <strong><code>rules</code></strong>=<em><code>None</code></em>, <strong><code>post_rules</code></strong>=<em><code>None</code></em>, <strong>**<code>tok_kwargs</code></strong>)</p>
 </blockquote>
 <p>A wrapper around <code>tok_func</code> to apply <code>rules</code> and tokenize in parallel</p>
 
@@ -752,7 +752,7 @@ description: "Basic function to preprocess text before assembling it in a `DataL
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="tokenize1" class="doc_header"><code>tokenize1</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L136" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>tokenize1</code>(<strong><code>text</code></strong>, <strong><code>tok_func</code></strong>=<em><code>'SpacyTokenizer'</code></em>, <strong><code>rules</code></strong>=<em><code>None</code></em>, <strong><code>post_rules</code></strong>=<em><code>None</code></em>, <strong>**<code>tok_kwargs</code></strong>)</p>
+<h4 id="tokenize1" class="doc_header"><code>tokenize1</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L135" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>tokenize1</code>(<strong><code>text</code></strong>, <strong><code>tok_func</code></strong>=<em><code>'SpacyTokenizer'</code></em>, <strong><code>rules</code></strong>=<em><code>None</code></em>, <strong><code>post_rules</code></strong>=<em><code>None</code></em>, <strong>**<code>tok_kwargs</code></strong>)</p>
 </blockquote>
 <p>Tokenize one <a href="/text"><code>text</code></a> with an instance of <code>tok_func</code> and some <code>rules</code></p>
 
@@ -804,7 +804,7 @@ description: "Basic function to preprocess text before assembling it in a `DataL
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="parallel_tokenize" class="doc_header"><code>parallel_tokenize</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L141" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>parallel_tokenize</code>(<strong><code>items</code></strong>, <strong><code>tok_func</code></strong>, <strong><code>rules</code></strong>, <strong><code>as_gen</code></strong>=<em><code>False</code></em>, <strong><code>n_workers</code></strong>=<em><code>56</code></em>, <strong>**<code>tok_kwargs</code></strong>)</p>
+<h4 id="parallel_tokenize" class="doc_header"><code>parallel_tokenize</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L140" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>parallel_tokenize</code>(<strong><code>items</code></strong>, <strong><code>tok_func</code></strong>, <strong><code>rules</code></strong>, <strong><code>as_gen</code></strong>=<em><code>False</code></em>, <strong><code>n_workers</code></strong>=<em><code>56</code></em>, <strong>**<code>tok_kwargs</code></strong>)</p>
 </blockquote>
 <p>Calls a potential setup on <code>tok_func</code> before launching <a href="/text.core#TokenizeBatch"><code>TokenizeBatch</code></a> in parallel</p>
 
@@ -856,7 +856,7 @@ description: "Basic function to preprocess text before assembling it in a `DataL
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="tokenize_folder" class="doc_header"><code>tokenize_folder</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L152" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>tokenize_folder</code>(<strong><code>path</code></strong>, <strong><code>extensions</code></strong>=<em><code>None</code></em>, <strong><code>folders</code></strong>=<em><code>None</code></em>, <strong><code>output_dir</code></strong>=<em><code>None</code></em>, <strong><code>n_workers</code></strong>=<em><code>56</code></em>, <strong><code>rules</code></strong>=<em><code>None</code></em>, <strong><code>tok_func</code></strong>=<em><code>'SpacyTokenizer'</code></em>, <strong><code>encoding</code></strong>=<em><code>'utf8'</code></em>, <strong>**<code>tok_kwargs</code></strong>)</p>
+<h4 id="tokenize_folder" class="doc_header"><code>tokenize_folder</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L151" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>tokenize_folder</code>(<strong><code>path</code></strong>, <strong><code>extensions</code></strong>=<em><code>None</code></em>, <strong><code>folders</code></strong>=<em><code>None</code></em>, <strong><code>output_dir</code></strong>=<em><code>None</code></em>, <strong><code>n_workers</code></strong>=<em><code>56</code></em>, <strong><code>rules</code></strong>=<em><code>None</code></em>, <strong><code>tok_func</code></strong>=<em><code>'SpacyTokenizer'</code></em>, <strong><code>encoding</code></strong>=<em><code>'utf8'</code></em>, <strong>**<code>tok_kwargs</code></strong>)</p>
 </blockquote>
 <p>Tokenize text files in <code>path</code> in parallel using <code>n_workers</code></p>
 
@@ -888,7 +888,7 @@ description: "Basic function to preprocess text before assembling it in a `DataL
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="read_tokenized_file" class="doc_header"><code>read_tokenized_file</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L171" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>read_tokenized_file</code>(<strong><code>f</code></strong>)</p>
+<h4 id="read_tokenized_file" class="doc_header"><code>read_tokenized_file</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L170" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>read_tokenized_file</code>(<strong><code>f</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -927,7 +927,7 @@ description: "Basic function to preprocess text before assembling it in a `DataL
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="tokenize_files" class="doc_header"><code>tokenize_files</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L174" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>tokenize_files</code>(<strong><code>files</code></strong>, <strong><code>path</code></strong>, <strong><code>output_dir</code></strong>, <strong><code>output_names</code></strong>=<em><code>None</code></em>, <strong><code>n_workers</code></strong>=<em><code>56</code></em>, <strong><code>rules</code></strong>=<em><code>None</code></em>, <strong><code>tok_func</code></strong>=<em><code>'SpacyTokenizer'</code></em>, <strong><code>encoding</code></strong>=<em><code>'utf8'</code></em>, <strong>**<code>tok_kwargs</code></strong>)</p>
+<h4 id="tokenize_files" class="doc_header"><code>tokenize_files</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L173" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>tokenize_files</code>(<strong><code>files</code></strong>, <strong><code>path</code></strong>, <strong><code>output_dir</code></strong>, <strong><code>output_names</code></strong>=<em><code>None</code></em>, <strong><code>n_workers</code></strong>=<em><code>56</code></em>, <strong><code>rules</code></strong>=<em><code>None</code></em>, <strong><code>tok_func</code></strong>=<em><code>'SpacyTokenizer'</code></em>, <strong><code>encoding</code></strong>=<em><code>'utf8'</code></em>, <strong>**<code>tok_kwargs</code></strong>)</p>
 </blockquote>
 <p>Tokenize text <code>files</code> in parallel using <code>n_workers</code></p>
 
@@ -972,7 +972,7 @@ description: "Basic function to preprocess text before assembling it in a `DataL
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="tokenize_texts" class="doc_header"><code>tokenize_texts</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L201" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>tokenize_texts</code>(<strong><code>texts</code></strong>, <strong><code>n_workers</code></strong>=<em><code>56</code></em>, <strong><code>rules</code></strong>=<em><code>None</code></em>, <strong><code>tok_func</code></strong>=<em><code>'SpacyTokenizer'</code></em>, <strong>**<code>tok_kwargs</code></strong>)</p>
+<h4 id="tokenize_texts" class="doc_header"><code>tokenize_texts</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L200" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>tokenize_texts</code>(<strong><code>texts</code></strong>, <strong><code>n_workers</code></strong>=<em><code>56</code></em>, <strong><code>rules</code></strong>=<em><code>None</code></em>, <strong><code>tok_func</code></strong>=<em><code>'SpacyTokenizer'</code></em>, <strong>**<code>tok_kwargs</code></strong>)</p>
 </blockquote>
 <p>Tokenize <code>texts</code> in parallel using <code>n_workers</code></p>
 
@@ -1004,7 +1004,7 @@ description: "Basic function to preprocess text before assembling it in a `DataL
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="tokenize_df" class="doc_header"><code>tokenize_df</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L209" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>tokenize_df</code>(<strong><code>df</code></strong>, <strong><code>text_cols</code></strong>, <strong><code>n_workers</code></strong>=<em><code>56</code></em>, <strong><code>rules</code></strong>=<em><code>None</code></em>, <strong><code>mark_fields</code></strong>=<em><code>None</code></em>, <strong><code>tok_func</code></strong>=<em><code>'SpacyTokenizer'</code></em>, <strong><code>res_col_name</code></strong>=<em><code>'text'</code></em>, <strong>**<code>tok_kwargs</code></strong>)</p>
+<h4 id="tokenize_df" class="doc_header"><code>tokenize_df</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L208" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>tokenize_df</code>(<strong><code>df</code></strong>, <strong><code>text_cols</code></strong>, <strong><code>n_workers</code></strong>=<em><code>56</code></em>, <strong><code>rules</code></strong>=<em><code>None</code></em>, <strong><code>mark_fields</code></strong>=<em><code>None</code></em>, <strong><code>tok_func</code></strong>=<em><code>'SpacyTokenizer'</code></em>, <strong><code>res_col_name</code></strong>=<em><code>'text'</code></em>, <strong>**<code>tok_kwargs</code></strong>)</p>
 </blockquote>
 <p>Tokenize texts in <code>df[text_cols]</code> in parallel using <code>n_workers</code></p>
 
@@ -1044,7 +1044,7 @@ description: "Basic function to preprocess text before assembling it in a `DataL
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="tokenize_csv" class="doc_header"><code>tokenize_csv</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L227" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>tokenize_csv</code>(<strong><code>fname</code></strong>, <strong><code>text_cols</code></strong>, <strong><code>outname</code></strong>=<em><code>None</code></em>, <strong><code>n_workers</code></strong>=<em><code>4</code></em>, <strong><code>rules</code></strong>=<em><code>None</code></em>, <strong><code>mark_fields</code></strong>=<em><code>None</code></em>, <strong><code>tok_func</code></strong>=<em><code>'SpacyTokenizer'</code></em>, <strong><code>header</code></strong>=<em><code>'infer'</code></em>, <strong><code>chunksize</code></strong>=<em><code>50000</code></em>, <strong>**<code>tok_kwargs</code></strong>)</p>
+<h4 id="tokenize_csv" class="doc_header"><code>tokenize_csv</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L226" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>tokenize_csv</code>(<strong><code>fname</code></strong>, <strong><code>text_cols</code></strong>, <strong><code>outname</code></strong>=<em><code>None</code></em>, <strong><code>n_workers</code></strong>=<em><code>4</code></em>, <strong><code>rules</code></strong>=<em><code>None</code></em>, <strong><code>mark_fields</code></strong>=<em><code>None</code></em>, <strong><code>tok_func</code></strong>=<em><code>'SpacyTokenizer'</code></em>, <strong><code>header</code></strong>=<em><code>'infer'</code></em>, <strong><code>chunksize</code></strong>=<em><code>50000</code></em>, <strong>**<code>tok_kwargs</code></strong>)</p>
 </blockquote>
 <p>Tokenize texts in the <code>text_cols</code> of the csv <code>fname</code> in parallel using <code>n_workers</code></p>
 
@@ -1076,7 +1076,7 @@ description: "Basic function to preprocess text before assembling it in a `DataL
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="load_tokenized_csv" class="doc_header"><code>load_tokenized_csv</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L244" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>load_tokenized_csv</code>(<strong><code>fname</code></strong>)</p>
+<h4 id="load_tokenized_csv" class="doc_header"><code>load_tokenized_csv</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L243" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>load_tokenized_csv</code>(<strong><code>fname</code></strong>)</p>
 </blockquote>
 <p>Utility function to quickly load a tokenized csv ans the corresponding counter</p>
 
@@ -1113,9 +1113,9 @@ description: "Basic function to preprocess text before assembling it in a `DataL
     <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">]:</span> 
         <span class="p">(</span><span class="n">path</span><span class="o">/</span><span class="n">d</span><span class="p">)</span><span class="o">.</span><span class="n">mkdir</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="o">/</span><span class="n">d</span><span class="o">/</span><span class="sa">f</span><span class="s1">&#39;text</span><span class="si">{i}</span><span class="s1">.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span> <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;This is an example of text </span><span class="si">{d}</span><span class="s2"> </span><span class="si">{i}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="o">/</span><span class="n">d</span><span class="o">/</span><span class="sa">f</span><span class="s1">&#39;text</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span> <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;This is an example of text </span><span class="si">{</span><span class="n">d</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     
-    <span class="n">texts</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;This is an example of text </span><span class="si">{d}</span><span class="s2"> </span><span class="si">{i}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">]]</span>
+    <span class="n">texts</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;This is an example of text </span><span class="si">{</span><span class="n">d</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">]]</span>
     <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;text&#39;</span><span class="p">:</span> <span class="n">texts</span><span class="p">,</span> <span class="s1">&#39;label&#39;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">15</span><span class="p">))},</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">,</span> <span class="s1">&#39;label&#39;</span><span class="p">])</span>
     <span class="n">csv_fname</span> <span class="o">=</span> <span class="n">tmp_d</span><span class="o">/</span><span class="s1">&#39;input.csv&#39;</span>
     <span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">csv_fname</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -1144,7 +1144,7 @@ description: "Basic function to preprocess text before assembling it in a `DataL
     <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">]:</span> 
         <span class="n">p</span> <span class="o">=</span> <span class="n">outp</span><span class="o">/</span><span class="n">d</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
-            <span class="n">test_eq</span><span class="p">((</span><span class="n">p</span><span class="o">/</span><span class="sa">f</span><span class="s1">&#39;text</span><span class="si">{i}</span><span class="s1">.txt&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">(),</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span>
+            <span class="n">test_eq</span><span class="p">((</span><span class="n">p</span><span class="o">/</span><span class="sa">f</span><span class="s1">&#39;text</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">.txt&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">(),</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span>
                 <span class="n">BOS</span><span class="p">,</span> <span class="n">TK_MAJ</span><span class="p">,</span> <span class="s1">&#39;this&#39;</span><span class="p">,</span> <span class="s1">&#39;is&#39;</span><span class="p">,</span> <span class="s1">&#39;an&#39;</span><span class="p">,</span> <span class="s1">&#39;example&#39;</span><span class="p">,</span> <span class="s1">&#39;of&#39;</span><span class="p">,</span> <span class="s1">&#39;text&#39;</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="p">]))</span>
     <span class="n">cnt_a</span> <span class="o">=</span> <span class="p">(</span><span class="n">outp</span><span class="o">/</span><span class="n">fn_counter_pkl</span><span class="p">)</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
     <span class="n">test_eq</span><span class="p">(</span><span class="n">cnt_a</span><span class="p">[</span><span class="s1">&#39;this&#39;</span><span class="p">],</span> <span class="mi">15</span><span class="p">)</span>
@@ -1160,13 +1160,13 @@ description: "Basic function to preprocess text before assembling it in a `DataL
     
     <span class="c1">#Tokenize as individual texts</span>
     <span class="n">out</span> <span class="o">=</span> <span class="n">tokenize_texts</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
-    <span class="n">test_eq</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="p">[(</span><span class="n">outp</span><span class="o">/</span><span class="n">d</span><span class="o">/</span><span class="sa">f</span><span class="s1">&#39;text</span><span class="si">{i}</span><span class="s1">.txt&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">]])</span>
+    <span class="n">test_eq</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="p">[(</span><span class="n">outp</span><span class="o">/</span><span class="n">d</span><span class="o">/</span><span class="sa">f</span><span class="s1">&#39;text</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">.txt&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">]])</span>
     
     <span class="c1">#Tokenize as a dataframe</span>
     <span class="n">out</span><span class="p">,</span><span class="n">cnt_b</span> <span class="o">=</span> <span class="n">tokenize_df</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">text_cols</span><span class="o">=</span><span class="s1">&#39;text&#39;</span><span class="p">)</span>
     <span class="n">test_eq</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">out</span><span class="o">.</span><span class="n">columns</span><span class="p">),</span> <span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">,</span> <span class="s1">&#39;text&#39;</span><span class="p">,</span> <span class="s1">&#39;text_length&#39;</span><span class="p">])</span>
     <span class="n">test_eq</span><span class="p">(</span><span class="n">out</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
-    <span class="n">test_eq</span><span class="p">(</span><span class="n">out</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">],</span> <span class="p">[(</span><span class="n">outp</span><span class="o">/</span><span class="n">d</span><span class="o">/</span><span class="sa">f</span><span class="s1">&#39;text</span><span class="si">{i}</span><span class="s1">.txt&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">]])</span>
+    <span class="n">test_eq</span><span class="p">(</span><span class="n">out</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">],</span> <span class="p">[(</span><span class="n">outp</span><span class="o">/</span><span class="n">d</span><span class="o">/</span><span class="sa">f</span><span class="s1">&#39;text</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">.txt&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">]])</span>
     <span class="n">test_eq</span><span class="p">(</span><span class="n">cnt_a</span><span class="p">,</span> <span class="n">cnt_b</span><span class="p">)</span>
     
     <span class="c1">#Tokenize as a csv </span>
@@ -1251,7 +1251,7 @@ description: "Basic function to preprocess text before assembling it in a `DataL
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_tokenizer" class="doc_header"><code>get_tokenizer</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L253" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_tokenizer</code>(<strong><code>tok_func</code></strong>=<em><code>'SpacyTokenizer'</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="get_tokenizer" class="doc_header"><code>get_tokenizer</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L252" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_tokenizer</code>(<strong><code>tok_func</code></strong>=<em><code>'SpacyTokenizer'</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -1282,7 +1282,7 @@ description: "Basic function to preprocess text before assembling it in a `DataL
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="Tokenizer" class="doc_header"><code>class</code> <code>Tokenizer</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L260" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>Tokenizer</code>(<strong><code>tokenizer</code></strong>, <strong><code>rules</code></strong>=<em><code>None</code></em>, <strong><code>counter</code></strong>=<em><code>None</code></em>, <strong><code>lengths</code></strong>=<em><code>None</code></em>, <strong><code>mode</code></strong>=<em><code>None</code></em>, <strong><code>sep</code></strong>=<em><code>' '</code></em>) :: <code>Transform</code></p>
+<h3 id="Tokenizer" class="doc_header"><code>class</code> <code>Tokenizer</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L259" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>Tokenizer</code>(<strong><code>tokenizer</code></strong>, <strong><code>rules</code></strong>=<em><code>None</code></em>, <strong><code>counter</code></strong>=<em><code>None</code></em>, <strong><code>lengths</code></strong>=<em><code>None</code></em>, <strong><code>mode</code></strong>=<em><code>None</code></em>, <strong><code>sep</code></strong>=<em><code>' '</code></em>) :: <code>Transform</code></p>
 </blockquote>
 <p>Delegates (<code>__call__</code>,<code>decode</code>,<code>setup</code>) to (<a href="/tabular.core#encodes"><code>encodes</code></a>,<a href="/tabular.core#decodes"><code>decodes</code></a>,<a href="/tabular.core#setups"><code>setups</code></a>) if <code>split_idx</code> matches</p>
 
@@ -1411,7 +1411,7 @@ description: "Basic function to preprocess text before assembling it in a `DataL
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="SentencePieceTokenizer" class="doc_header"><code>class</code> <code>SentencePieceTokenizer</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L320" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>SentencePieceTokenizer</code>(<strong><code>lang</code></strong>=<em><code>'en'</code></em>, <strong><code>special_toks</code></strong>=<em><code>None</code></em>, <strong><code>sp_model</code></strong>=<em><code>None</code></em>, <strong><code>vocab_sz</code></strong>=<em><code>None</code></em>, <strong><code>max_vocab_sz</code></strong>=<em><code>30000</code></em>, <strong><code>model_type</code></strong>=<em><code>'unigram'</code></em>, <strong><code>char_coverage</code></strong>=<em><code>None</code></em>, <strong><code>cache_dir</code></strong>=<em><code>'tmp'</code></em>)</p>
+<h3 id="SentencePieceTokenizer" class="doc_header"><code>class</code> <code>SentencePieceTokenizer</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/text/core.py#L319" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>SentencePieceTokenizer</code>(<strong><code>lang</code></strong>=<em><code>'en'</code></em>, <strong><code>special_toks</code></strong>=<em><code>None</code></em>, <strong><code>sp_model</code></strong>=<em><code>None</code></em>, <strong><code>vocab_sz</code></strong>=<em><code>None</code></em>, <strong><code>max_vocab_sz</code></strong>=<em><code>30000</code></em>, <strong><code>model_type</code></strong>=<em><code>'unigram'</code></em>, <strong><code>char_coverage</code></strong>=<em><code>None</code></em>, <strong><code>cache_dir</code></strong>=<em><code>'tmp'</code></em>)</p>
 </blockquote>
 <p>Spacy tokenizer for <code>lang</code></p>
 
@@ -1439,7 +1439,7 @@ description: "Basic function to preprocess text before assembling it in a `DataL
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">texts</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;This is an example of text </span><span class="si">{i}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)]</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">texts</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;This is an example of text </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)]</span>
 <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;text&#39;</span><span class="p">:</span> <span class="n">texts</span><span class="p">,</span> <span class="s1">&#39;label&#39;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">))},</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">,</span> <span class="s1">&#39;label&#39;</span><span class="p">])</span>
 </pre></div>
 
@@ -1457,8 +1457,7 @@ description: "Basic function to preprocess text before assembling it in a `DataL
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#Prints too much in stdout. Uncomment when tests are debugged</span>
-<span class="n">out</span><span class="p">,</span><span class="n">cnt</span> <span class="o">=</span> <span class="n">tokenize_df</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">text_cols</span><span class="o">=</span><span class="s1">&#39;text&#39;</span><span class="p">,</span> <span class="n">tok_func</span><span class="o">=</span><span class="n">SentencePieceTokenizer</span><span class="p">,</span> <span class="n">vocab_sz</span><span class="o">=</span><span class="mi">34</span><span class="p">,</span> <span class="n">n_workers</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">out</span><span class="p">,</span><span class="n">cnt</span> <span class="o">=</span> <span class="n">tokenize_df</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">text_cols</span><span class="o">=</span><span class="s1">&#39;text&#39;</span><span class="p">,</span> <span class="n">tok_func</span><span class="o">=</span><span class="n">SentencePieceTokenizer</span><span class="p">,</span> <span class="n">vocab_sz</span><span class="o">=</span><span class="mi">34</span><span class="p">,</span> <span class="n">n_workers</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 
     </div>

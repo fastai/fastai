@@ -36,7 +36,7 @@ description: "Tools to quickly get the data and train models suitable for collab
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>This module contains all the high-level functions you need in a collaborative filtering application to assemble your data, get a model and train it with a <a href="/13a_learner#Learner"><code>Learner</code></a>. We will go other those in order but you can also check the <a href="http://dev.fast.ai/tutorial.collab">collaborative filtering tutorial</a>.</p>
+<p>This module contains all the high-level functions you need in a collaborative filtering application to assemble your data, get a model and train it with a <a href="/learner#Learner"><code>Learner</code></a>. We will go other those in order but you can also check the <a href="http://dev.fast.ai/tutorial.collab">collaborative filtering tutorial</a>.</p>
 
 </div>
 </div>
@@ -756,13 +756,13 @@ description: "Tools to quickly get the data and train models suitable for collab
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Create-a-Learner">Create a <a href="/13a_learner#Learner"><code>Learner</code></a><a class="anchor-link" href="#Create-a-Learner"> </a></h2>
+<h2 id="Create-a-Learner">Create a <a href="/learner#Learner"><code>Learner</code></a><a class="anchor-link" href="#Create-a-Learner"> </a></h2>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The following function lets us quickly create a <a href="/13a_learner#Learner"><code>Learner</code></a> for collaborative filtering from the data.</p>
+<p>The following function lets us quickly create a <a href="/learner#Learner"><code>Learner</code></a> for collaborative filtering from the data.</p>
 
 </div>
 </div>
@@ -802,7 +802,7 @@ description: "Tools to quickly get the data and train models suitable for collab
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>If <code>use_nn=False</code>, the model used is an <a href="/collab#EmbeddingDotBias"><code>EmbeddingDotBias</code></a> with <code>n_factors</code> and <code>y_range</code>. Otherwise, it's a <a href="/collab#EmbeddingNN"><code>EmbeddingNN</code></a> for which you can pass <code>emb_szs</code> (will be infered from the <code>dls</code> with <a href="/tabular.model#get_emb_sz"><code>get_emb_sz</code></a> if you don't provide any), <a href="/layers"><code>layers</code></a> (defaults to <code>[n_factors]</code>) <code>y_range</code>, and a <code>config</code> that you can create with <a href="/tabular.model#tabular_config"><code>tabular_config</code></a> to customize your model.</p>
-<p><code>loss_func</code> will default to <a href="/layers#MSELossFlat"><code>MSELossFlat</code></a> and all the other arguments are passed to <a href="/13a_learner#Learner"><code>Learner</code></a>.</p>
+<p><code>loss_func</code> will default to <a href="/layers#MSELossFlat"><code>MSELossFlat</code></a> and all the other arguments are passed to <a href="/learner#Learner"><code>Learner</code></a>.</p>
 
 </div>
 </div>

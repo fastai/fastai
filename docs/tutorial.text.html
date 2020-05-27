@@ -270,7 +270,7 @@ description: "How to fine-tune a language model and train a classifier"
 <li><code>xxbos</code> to indicate the beginning of a text</li>
 <li><code>xxmaj</code> to indicate the next word was capitalized</li>
 </ul>
-<p>Then, we can define a <a href="/13a_learner#Learner"><code>Learner</code></a> suitable for text classification in one line:</p>
+<p>Then, we can define a <a href="/learner#Learner"><code>Learner</code></a> suitable for text classification in one line:</p>
 
 </div>
 </div>
@@ -294,7 +294,7 @@ description: "How to fine-tune a language model and train a classifier"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>We use the <a href="https://arxiv.org/abs/1708.02182">AWD LSTM</a> architecture, <code>drop_mult</code> is a parameter that controls the magnitude of all dropouts in that model, and we use <a href="/13b_metrics#accuracy"><code>accuracy</code></a> to track down how well we are doing. We can then fine-tune our pretrained model:</p>
+<p>We use the <a href="https://arxiv.org/abs/1708.02182">AWD LSTM</a> architecture, <code>drop_mult</code> is a parameter that controls the magnitude of all dropouts in that model, and we use <a href="/metrics#accuracy"><code>accuracy</code></a> to track down how well we are doing. We can then fine-tune our pretrained model:</p>
 
 </div>
 </div>
@@ -865,7 +865,7 @@ description: "How to fine-tune a language model and train a classifier"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Then we have a convenience method to directly grab a <a href="/13a_learner#Learner"><code>Learner</code></a> from it, using the <a href="/text.models.awdlstm#AWD_LSTM"><code>AWD_LSTM</code></a> architecture like before. We use accuracy and perplexity as metrics (the later is the exponential of the loss) and we set a default weight decay of 0.1. <code>to_fp16</code> puts the <a href="/13a_learner#Learner"><code>Learner</code></a> in mixed precision, which is going to help speed up training on GPUs that have Tensor Cores.</p>
+<p>Then we have a convenience method to directly grab a <a href="/learner#Learner"><code>Learner</code></a> from it, using the <a href="/text.models.awdlstm#AWD_LSTM"><code>AWD_LSTM</code></a> architecture like before. We use accuracy and perplexity as metrics (the later is the exponential of the loss) and we set a default weight decay of 0.1. <code>to_fp16</code> puts the <a href="/learner#Learner"><code>Learner</code></a> in mixed precision, which is going to help speed up training on GPUs that have Tensor Cores.</p>
 
 </div>
 </div>
@@ -889,7 +889,7 @@ description: "How to fine-tune a language model and train a classifier"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>By default, a pretrained <a href="/13a_learner#Learner"><code>Learner</code></a> is in a frozen state, meaning that only the head of the model will train while the body stays frozen. We show you what is behind the fine_tune method here and use a fit_one_cycle method to fit the model:</p>
+<p>By default, a pretrained <a href="/learner#Learner"><code>Learner</code></a> is in a frozen state, meaning that only the head of the model will train while the body stays frozen. We show you what is behind the fine_tune method here and use a fit_one_cycle method to fit the model:</p>
 
 </div>
 </div>
@@ -980,7 +980,7 @@ description: "How to fine-tune a language model and train a classifier"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>It will create a file in <code>learn.path/models/</code> named "1epoch.pth". If you want to load your model on another machine after creating your <a href="/13a_learner#Learner"><code>Learner</code></a> the same way, or resume training later, you can load the content of this file with:</p>
+<p>It will create a file in <code>learn.path/models/</code> named "1epoch.pth". If you want to load your model on another machine after creating your <a href="/learner#Learner"><code>Learner</code></a> the same way, or resume training later, you can load the content of this file with:</p>
 
 </div>
 </div>

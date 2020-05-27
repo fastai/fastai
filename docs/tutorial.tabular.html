@@ -493,7 +493,8 @@ description: "How to use the tabular application in fastai"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>We can define a model using the <a href="/tabular.learner#tabular_learner"><code>tabular_learner</code></a> method.</p>
+<p>We can define a model using the <a href="/tabular.learner#tabular_learner"><code>tabular_learner</code></a> method. When we define our model, <code>fastai</code> will try to infer the loss function based on our <code>y_names</code> earlier.</p>
+<p><strong>Note</strong>: Sometimes with tabular data, your <code>y</code>'s may be encoded (such as 0 and 1). In such a case you should explicitly pass <code>y_block = CategoryBlock</code> in your constructor so <code>fastai</code> won't presume you are doing regression.</p>
 
 </div>
 </div>
@@ -859,7 +860,7 @@ description: "How to use the tabular application in fastai"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Then <a href="/13a_learner#Learner.get_preds"><code>Learner.get_preds</code></a> will give you the predictions:</p>
+<p>Then <a href="/learner#Learner.get_preds"><code>Learner.get_preds</code></a> will give you the predictions:</p>
 
 </div>
 </div>

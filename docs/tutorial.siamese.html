@@ -36,7 +36,7 @@ description: "How to use the mid-level API for data collection, model creation a
 <li>how to add some new behavior to <code>show_batch</code>/<code>show_results</code> for a custom task</li>
 <li>how to write a custom <a href="/data.block#DataBlock"><code>DataBlock</code></a></li>
 <li>how to create your own model from a pretrained model</li>
-<li>how to pass along a custom <code>splitter</code> to <a href="/13a_learner#Learner"><code>Learner</code></a> to take advantage of transfer learning</li>
+<li>how to pass along a custom <code>splitter</code> to <a href="/learner#Learner"><code>Learner</code></a> to take advantage of transfer learning</li>
 </ul>
 
 </div>
@@ -519,7 +519,7 @@ description: "How to use the mid-level API for data collection, model creation a
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>You can then use this <a href="/data.core#DataLoaders"><code>DataLoaders</code></a> object in a <a href="/13a_learner#Learner"><code>Learner</code></a> and start training. Most methods that don't rely on showing something (e.g. <a href="/data.core#DataLoaders.show_batch"><code>DataLoaders.show_batch</code></a> and <a href="/13a_learner#Learner.show_results"><code>Learner.show_results</code></a> for instance) should work. For instance, you can get and inspect a batch with:</p>
+<p>You can then use this <a href="/data.core#DataLoaders"><code>DataLoaders</code></a> object in a <a href="/learner#Learner"><code>Learner</code></a> and start training. Most methods that don't rely on showing something (e.g. <a href="/data.core#DataLoaders.show_batch"><code>DataLoaders.show_batch</code></a> and <a href="/learner#Learner.show_results"><code>Learner.show_results</code></a> for instance) should work. For instance, you can get and inspect a batch with:</p>
 
 </div>
 </div>
@@ -1942,7 +1942,7 @@ description: "How to use the mid-level API for data collection, model creation a
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>We can then create our <a href="/13a_learner#Learner"><code>Learner</code></a>:</p>
+<p>We can then create our <a href="/learner#Learner"><code>Learner</code></a>:</p>
 
 </div>
 </div>
@@ -1966,7 +1966,7 @@ description: "How to use the mid-level API for data collection, model creation a
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Since we are not using a convenience function that directly creates the <a href="/13a_learner#Learner"><code>Learner</code></a> for us, we need to <code>freeze</code> it manually:</p>
+<p>Since we are not using a convenience function that directly creates the <a href="/learner#Learner"><code>Learner</code></a> for us, we need to <code>freeze</code> it manually:</p>
 
 </div>
 </div>
@@ -2299,7 +2299,7 @@ description: "How to use the mid-level API for data collection, model creation a
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Patch-in-a-siampredict-method-to-Learner,-to-automatically-show-images-and-prediction">Patch in a <code>siampredict</code> method to <a href="/13a_learner#Learner"><code>Learner</code></a>, to automatically show images and prediction<a class="anchor-link" href="#Patch-in-a-siampredict-method-to-Learner,-to-automatically-show-images-and-prediction"> </a></h3>
+<h3 id="Patch-in-a-siampredict-method-to-Learner,-to-automatically-show-images-and-prediction">Patch in a <code>siampredict</code> method to <a href="/learner#Learner"><code>Learner</code></a>, to automatically show images and prediction<a class="anchor-link" href="#Patch-in-a-siampredict-method-to-Learner,-to-automatically-show-images-and-prediction"> </a></h3>
 </div>
 </div>
 </div>

@@ -1204,7 +1204,7 @@ description: "Custom fastai layers and basic functions to grab them."
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="init_default" class="doc_header"><code>init_default</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L655" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>init_default</code>(<strong><code>m</code></strong>, <strong><code>func</code></strong>=<em><code>'kaiming_normal_'</code></em>)</p>
+<h4 id="init_default" class="doc_header"><code>init_default</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/torch_core.py#L653" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>init_default</code>(<strong><code>m</code></strong>, <strong><code>func</code></strong>=<em><code>'kaiming_normal_'</code></em>)</p>
 </blockquote>
 <p>Initialize <code>m</code> weights with <code>func</code> and set <code>bias</code> to 0.</p>
 
@@ -1355,8 +1355,7 @@ description: "Custom fastai layers and basic functions to grab them."
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#Padding is selected to make the shape the same if stride=1</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">tst</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">[</span><span class="mi">64</span><span class="p">,</span><span class="mi">32</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">8</span><span class="p">])</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">test_eq</span><span class="p">(</span><span class="n">tst</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">[</span><span class="mi">64</span><span class="p">,</span><span class="mi">32</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">8</span><span class="p">])</span>
 </pre></div>
 
     </div>
@@ -1373,8 +1372,7 @@ description: "Custom fastai layers and basic functions to grab them."
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#Padding is selected to make the shape half if stride=2</span>
-<span class="n">tst</span> <span class="o">=</span> <span class="n">ConvLayer</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">tst</span> <span class="o">=</span> <span class="n">ConvLayer</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">tst</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">[</span><span class="mi">64</span><span class="p">,</span><span class="mi">32</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">4</span><span class="p">])</span>
 </pre></div>
 
@@ -1392,8 +1390,7 @@ description: "Custom fastai layers and basic functions to grab them."
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#But you can always pass your own padding if you want</span>
-<span class="n">tst</span> <span class="o">=</span> <span class="n">ConvLayer</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">tst</span> <span class="o">=</span> <span class="n">ConvLayer</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">tst</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">[</span><span class="mi">64</span><span class="p">,</span><span class="mi">32</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">6</span><span class="p">])</span>
 </pre></div>
 
@@ -1411,8 +1408,7 @@ description: "Custom fastai layers and basic functions to grab them."
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#No bias by default for Batch NormType</span>
-<span class="k">assert</span> <span class="n">mods</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">bias</span> <span class="ow">is</span> <span class="kc">None</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">assert</span> <span class="n">mods</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">bias</span> <span class="ow">is</span> <span class="kc">None</span>
 <span class="c1">#But can be overriden with `bias=True`</span>
 <span class="n">tst</span> <span class="o">=</span> <span class="n">ConvLayer</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">assert</span> <span class="n">first</span><span class="p">(</span><span class="n">tst</span><span class="o">.</span><span class="n">children</span><span class="p">())</span><span class="o">.</span><span class="n">bias</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
@@ -1436,8 +1432,7 @@ description: "Custom fastai layers and basic functions to grab them."
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#Various n_dim/tranpose</span>
-<span class="n">tst</span> <span class="o">=</span> <span class="n">ConvLayer</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">tst</span> <span class="o">=</span> <span class="n">ConvLayer</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
 <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">tst</span><span class="o">.</span><span class="n">children</span><span class="p">())[</span><span class="mi">0</span><span class="p">],</span> <span class="n">nn</span><span class="o">.</span><span class="n">Conv3d</span><span class="p">)</span>
 <span class="n">tst</span> <span class="o">=</span> <span class="n">ConvLayer</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">transpose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">tst</span><span class="o">.</span><span class="n">children</span><span class="p">())[</span><span class="mi">0</span><span class="p">],</span> <span class="n">nn</span><span class="o">.</span><span class="n">ConvTranspose1d</span><span class="p">)</span>
@@ -1457,8 +1452,7 @@ description: "Custom fastai layers and basic functions to grab them."
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#No activation/leaky</span>
-<span class="n">tst</span> <span class="o">=</span> <span class="n">ConvLayer</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">act_cls</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">tst</span> <span class="o">=</span> <span class="n">ConvLayer</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">act_cls</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 <span class="n">mods</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">tst</span><span class="o">.</span><span class="n">children</span><span class="p">())</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">mods</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
 <span class="n">tst</span> <span class="o">=</span> <span class="n">ConvLayer</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">act_cls</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">LeakyReLU</span><span class="p">,</span> <span class="n">negative_slope</span><span class="o">=</span><span class="mf">0.1</span><span class="p">))</span>
@@ -1481,14 +1475,7 @@ description: "Custom fastai layers and basic functions to grab them."
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># #export</span>
-<span class="c1"># def linear(in_features, out_features, bias=True, act_cls=None, init=&#39;auto&#39;):</span>
-<span class="c1">#     &quot;Linear layer followed by optional activation, with optional auto-init&quot;</span>
-<span class="c1">#     res = nn.Linear(in_features, out_features, bias=bias)</span>
-<span class="c1">#     if act_cls: act_cls = act_cls()</span>
-<span class="c1">#     init_linear(res, act_cls, init=init)</span>
-<span class="c1">#     if act_cls: res = nn.Sequential(res, act_cls)</span>
-<span class="c1">#     return res</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#     return res</span>
 </pre></div>
 
     </div>
@@ -1505,11 +1492,7 @@ description: "Custom fastai layers and basic functions to grab them."
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># #export</span>
-<span class="c1"># @delegates(ConvLayer)</span>
-<span class="c1"># def conv1d(ni, nf, ks, stride=1, ndim=1, norm_type=None, **kwargs):</span>
-<span class="c1">#     &quot;Convolutional layer followed by optional activation, with optional auto-init&quot;</span>
-<span class="c1">#     return ConvLayer(ni, nf, ks, stride=stride, ndim=ndim, norm_type=norm_type, **kwargs)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#     return ConvLayer(ni, nf, ks, stride=stride, ndim=ndim, norm_type=norm_type, **kwargs)</span>
 </pre></div>
 
     </div>
@@ -1526,11 +1509,7 @@ description: "Custom fastai layers and basic functions to grab them."
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># #export</span>
-<span class="c1"># @delegates(ConvLayer)</span>
-<span class="c1"># def conv2d(ni, nf, ks, stride=1, ndim=2, norm_type=None, **kwargs):</span>
-<span class="c1">#     &quot;Convolutional layer followed by optional activation, with optional auto-init&quot;</span>
-<span class="c1">#     return ConvLayer(ni, nf, ks, stride=stride, ndim=ndim, norm_type=norm_type, **kwargs)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#     return ConvLayer(ni, nf, ks, stride=stride, ndim=ndim, norm_type=norm_type, **kwargs)</span>
 </pre></div>
 
     </div>
@@ -1547,11 +1526,7 @@ description: "Custom fastai layers and basic functions to grab them."
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># #export</span>
-<span class="c1"># @delegates(ConvLayer)</span>
-<span class="c1"># def conv3d(ni, nf, ks, stride=1, ndim=3, norm_type=None, **kwargs):</span>
-<span class="c1">#     &quot;Convolutional layer followed by optional activation, with optional auto-init&quot;</span>
-<span class="c1">#     return ConvLayer(ni, nf, ks, stride=stride, ndim=ndim, norm_type=norm_type, **kwargs)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#     return ConvLayer(ni, nf, ks, stride=stride, ndim=ndim, norm_type=norm_type, **kwargs)</span>
 </pre></div>
 
     </div>
@@ -1668,7 +1643,7 @@ description: "Custom fastai layers and basic functions to grab them."
 <p>The following class if the base class to warp a loss function it provides several added functionality:</p>
 <ul>
 <li>it flattens the tensors before trying to take the losses since it's more convenient (with a potential tranpose to put <code>axis</code> at the end)</li>
-<li>it has a potential <code>activation</code> method that tells the library if there is an activation fused in the loss (useful for inference and methods such as <a href="/13a_learner#Learner.get_preds"><code>Learner.get_preds</code></a> or <a href="/13a_learner#Learner.predict"><code>Learner.predict</code></a>)</li>
+<li>it has a potential <code>activation</code> method that tells the library if there is an activation fused in the loss (useful for inference and methods such as <a href="/learner#Learner.get_preds"><code>Learner.get_preds</code></a> or <a href="/learner#Learner.predict"><code>Learner.predict</code></a>)</li>
 <li>it has a potential <a href="/tabular.core#decodes"><code>decodes</code></a> method that is used on predictions in inference (for instance, an argmax in classification)</li>
 </ul>
 
@@ -1849,8 +1824,7 @@ description: "Custom fastai layers and basic functions to grab them."
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#In a segmentation task, we want to take the softmax over the channel dimension</span>
-<span class="n">tst</span> <span class="o">=</span> <span class="n">CrossEntropyLossFlat</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">tst</span> <span class="o">=</span> <span class="n">CrossEntropyLossFlat</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">output</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">)</span>
 <span class="n">target</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">))</span>
 <span class="n">_</span> <span class="o">=</span> <span class="n">tst</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
@@ -2102,9 +2076,9 @@ description: "Custom fastai layers and basic functions to grab them."
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>On top of the formula we define:</p>
 <ul>
-<li>a <code>reduction</code> attribute, that will be used when we call <a href="/13a_learner#Learner.get_preds"><code>Learner.get_preds</code></a></li>
-<li>an <code>activation</code> function that represents the activation fused in the loss (since we use cross entropy behind the scenes). It will be applied to the output of the model when calling <a href="/13a_learner#Learner.get_preds"><code>Learner.get_preds</code></a> or <a href="/13a_learner#Learner.predict"><code>Learner.predict</code></a></li>
-<li>a <a href="/tabular.core#decodes"><code>decodes</code></a> function that converts the output of the model to a format similar to the target (here indices). This is used in <a href="/13a_learner#Learner.predict"><code>Learner.predict</code></a> and <a href="/13a_learner#Learner.show_results"><code>Learner.show_results</code></a> to decode the predictions </li>
+<li>a <code>reduction</code> attribute, that will be used when we call <a href="/learner#Learner.get_preds"><code>Learner.get_preds</code></a></li>
+<li>an <code>activation</code> function that represents the activation fused in the loss (since we use cross entropy behind the scenes). It will be applied to the output of the model when calling <a href="/learner#Learner.get_preds"><code>Learner.get_preds</code></a> or <a href="/learner#Learner.predict"><code>Learner.predict</code></a></li>
+<li>a <a href="/tabular.core#decodes"><code>decodes</code></a> function that converts the output of the model to a format similar to the target (here indices). This is used in <a href="/learner#Learner.predict"><code>Learner.predict</code></a> and <a href="/learner#Learner.show_results"><code>Learner.show_results</code></a> to decode the predictions </li>
 </ul>
 
 </div>

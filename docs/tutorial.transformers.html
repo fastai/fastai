@@ -1167,7 +1167,7 @@ description: "An example of how to incorporate the transfomers library from Hugg
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>The HuggingFace model will return a tuple in outputs, with the actual predictions and some additional activations (should we want to use them is some regularization scheme). To work inside the fastai training loop, we will need to drop those using a <a href="/callback.core#Callback"><code>Callback</code></a>: we use those to alter the behavior of the training loop.</p>
-<p>Here we need to write the event <code>after_pred</code> and replace <code>self.learn.pred</code> (which contains the predictions that will be passed to the loss function) by just its first element. In callbacks, there is a shortcut that lets you access any of the underlying <a href="/13a_learner#Learner"><code>Learner</code></a> attribute so we can write <code>self.pred[0]</code> instead of <code>self.learn.pred[0]</code>. That shorcut only works for read access, not write, so we have to write <code>self.learn.pred</code> on the right side (otherwise we would set a <code>pred</code> attribute in the <a href="/callback.core#Callback"><code>Callback</code></a>).</p>
+<p>Here we need to write the event <code>after_pred</code> and replace <code>self.learn.pred</code> (which contains the predictions that will be passed to the loss function) by just its first element. In callbacks, there is a shortcut that lets you access any of the underlying <a href="/learner#Learner"><code>Learner</code></a> attribute so we can write <code>self.pred[0]</code> instead of <code>self.learn.pred[0]</code>. That shorcut only works for read access, not write, so we have to write <code>self.learn.pred</code> on the right side (otherwise we would set a <code>pred</code> attribute in the <a href="/callback.core#Callback"><code>Callback</code></a>).</p>
 
 </div>
 </div>
@@ -1193,7 +1193,7 @@ description: "An example of how to incorporate the transfomers library from Hugg
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Of course we could make this a bit more complex and add some penalty to the loss using the other part of the tuple of predictions, like the <a href="/callback.rnn#RNNRegularizer"><code>RNNRegularizer</code></a>.</p>
-<p>Now, we are ready to create our <a href="/13a_learner#Learner"><code>Learner</code></a>, which is a fastai object grouping data, model and loss function and handles model training or inference. Since we are in a language model setting, we pass perplexity as a metric, and we need to use the callback we just defined. Lastly, we use mixed precision to save every bit of memory we can (and if you have a modern GPU, it will also make training faster):</p>
+<p>Now, we are ready to create our <a href="/learner#Learner"><code>Learner</code></a>, which is a fastai object grouping data, model and loss function and handles model training or inference. Since we are in a language model setting, we pass perplexity as a metric, and we need to use the callback we just defined. Lastly, we use mixed precision to save every bit of memory we can (and if you have a modern GPU, it will also make training faster):</p>
 
 </div>
 </div>
@@ -1273,7 +1273,7 @@ description: "An example of how to incorporate the transfomers library from Hugg
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Now that we have a <a href="/13a_learner#Learner"><code>Learner</code></a> we can use all the fastai training loop capabilities: learning rate finder, training with 1cycle etc...</p>
+<p>Now that we have a <a href="/learner#Learner"><code>Learner</code></a> we can use all the fastai training loop capabilities: learning rate finder, training with 1cycle etc...</p>
 
 </div>
 </div>

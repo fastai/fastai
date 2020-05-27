@@ -206,8 +206,7 @@ description: "High level API to quickly get your data in a `DataLoaders`"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#For example, so not exported</span>
-<span class="kn">from</span> <span class="nn">fastai2.vision.core</span> <span class="kn">import</span> <span class="o">*</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">fastai2.vision.core</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">fastai2.vision.data</span> <span class="kn">import</span> <span class="o">*</span>
 </pre></div>
 
@@ -252,7 +251,7 @@ description: "High level API to quickly get your data in a `DataLoaders`"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>To build a <a href="/data.block#DataBlock"><code>DataBlock</code></a> you need to give the library four things: the types of your input/labels then at least two functions: <code>get_items</code> and <code>splitter</code>. You may also need to include <code>get_x</code> and <code>get_y</code> or a more generic list of <code>getters</code> that are applied to the results of <code>get_items</code>.</p>
+<p>To build a <a href="/data.block#DataBlock"><code>DataBlock</code></a> you need to give the library four things: the types of your input/labels, and at least two functions: <code>get_items</code> and <code>splitter</code>. You may also need to include <code>get_x</code> and <code>get_y</code> or a more generic list of <code>getters</code> that are applied to the results of <code>get_items</code>.</p>
 <p>Once those are provided, you automatically get a <a href="/data.core#Datasets"><code>Datasets</code></a> or a <a href="/data.core#DataLoaders"><code>DataLoaders</code></a>:</p>
 
 </div>

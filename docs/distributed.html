@@ -98,7 +98,7 @@ description: "Callbacks and helper functions to train in parallel or use distrib
 <div class="output_markdown rendered_html output_subarea ">
 <h2 id="ParallelTrainer" class="doc_header"><code>class</code> <code>ParallelTrainer</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/distributed.py#L18" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ParallelTrainer</code>(<strong><code>device_ids</code></strong>) :: <a href="/callback.core#Callback"><code>Callback</code></a></p>
 </blockquote>
-<p>Basic class handling tweaks of the training loop by changing a <a href="/13a_learner#Learner"><code>Learner</code></a> in various events</p>
+<p>Basic class handling tweaks of the training loop by changing a <a href="/learner#Learner"><code>Learner</code></a> in various events</p>
 
 </div>
 
@@ -427,7 +427,7 @@ description: "Callbacks and helper functions to train in parallel or use distrib
 <div class="output_markdown rendered_html output_subarea ">
 <h2 id="DistributedTrainer" class="doc_header"><code>class</code> <code>DistributedTrainer</code><a href="https://github.com/fastai/fastai2/tree/master/fastai2/distributed.py#L112" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>DistributedTrainer</code>(<strong><code>cuda_id</code></strong>=<em><code>0</code></em>) :: <a href="/callback.core#Callback"><code>Callback</code></a></p>
 </blockquote>
-<p>Basic class handling tweaks of the training loop by changing a <a href="/13a_learner#Learner"><code>Learner</code></a> in various events</p>
+<p>Basic class handling tweaks of the training loop by changing a <a href="/learner#Learner"><code>Learner</code></a> in various events</p>
 
 </div>
 
@@ -545,7 +545,7 @@ description: "Callbacks and helper functions to train in parallel or use distrib
 <h3 id="distrib_ctx-context-manager"><code>distrib_ctx</code> context manager<a class="anchor-link" href="#distrib_ctx-context-manager"> </a></h3><p><strong><code>distrib_ctx(cuda_id)</code></strong> prepares a learner to train in distributed data parallel mode.  It assumes these <a href="https://pytorch.org/tutorials/intermediate/dist_tuto.html#initialization-methods">environment variables</a> have all been setup properly, such as those launched by <code>python -m fastai2.launch</code>.</p>
 <h4 id="Typical-usage:">Typical usage:<a class="anchor-link" href="#Typical-usage:"> </a></h4>
 <pre><code>with learn.distrib_ctx(): learn.fit(.....)</code></pre>
-<p>It attaches a <a href="/20a_distributed#DistributedTrainer"><code>DistributedTrainer</code></a> callback and <a href="/20a_distributed#DistributedDL"><code>DistributedDL</code></a> data loader to  the learner, then executes <code>learn.fit(.....)</code>.  Upon exiting the context, it removes the <a href="/20a_distributed#DistributedTrainer"><code>DistributedTrainer</code></a> and <a href="/20a_distributed#DistributedDL"><code>DistributedDL</code></a>, and destroys any locally created distributed process group.  The process is still attached to the GPU though.</p>
+<p>It attaches a <a href="/distributed#DistributedTrainer"><code>DistributedTrainer</code></a> callback and <a href="/distributed#DistributedDL"><code>DistributedDL</code></a> data loader to  the learner, then executes <code>learn.fit(.....)</code>.  Upon exiting the context, it removes the <a href="/distributed#DistributedTrainer"><code>DistributedTrainer</code></a> and <a href="/distributed#DistributedDL"><code>DistributedDL</code></a>, and destroys any locally created distributed process group.  The process is still attached to the GPU though.</p>
 
 </div>
 </div>
