@@ -16,7 +16,6 @@ import spacy,html
 from spacy.symbols import ORTH
 
 # Cell
-#special tokens
 UNK, PAD, BOS, EOS, FLD, TK_REP, TK_WREP, TK_UP, TK_MAJ = "xxunk xxpad xxbos xxeos xxfld xxrep xxwrep xxup xxmaj".split()
 
 # Cell

@@ -7,9 +7,6 @@ import tempfile
 from ..basics import *
 
 # Cell
-
-# Dirty hack as json_clean doesn't support CategoryMap type
-
 from ipykernel import jsonutil
 
 _json_clean=jsonutil.json_clean

@@ -2,8 +2,8 @@
 
 __all__ = ['make_date', 'add_datepart', 'add_elapsed_times', 'cont_cat_split', 'df_shrink_dtypes', 'df_shrink',
            'Tabular', 'TabularPandas', 'TabularProc', 'Categorify', 'setups', 'encodes', 'decodes', 'NormalizeTab',
-           'setups', 'encodes', 'decodes', 'FillStrategy', 'FillMissing', 'ReadTabBatch', 'TabDataLoader', 'encodes',
-           'decodes', 'setups', 'encodes', 'decodes']
+           'setups', 'encodes', 'decodes', 'FillStrategy', 'FillMissing', 'ReadTabBatch', 'TabDataLoader', 'setups',
+           'encodes', 'decodes', 'setups', 'encodes', 'decodes']
 
 # Cell
 from ..torch_basics import *
@@ -352,6 +352,11 @@ class TabDataLoader(TfmdDL):
 TabularPandas._dl_type = TabDataLoader
 
 # Cell
+@EncodedMultiCategorize
+def setups(self, to:Tabular):
+    self.c = len(self.vocab)
+    return self(to)
+
 @EncodedMultiCategorize
 def encodes(self, to:Tabular): return to
 

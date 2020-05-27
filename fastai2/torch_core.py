@@ -178,7 +178,6 @@ def to_float(b):
     return apply(lambda x: x.float() if torch.is_floating_point(x) else x, b)
 
 # Cell
-# None: True if available; True: error if not availabe; False: use CPU
 defaults.use_cuda = None
 
 # Cell
@@ -573,7 +572,6 @@ def distrib_barrier():
     if num_distrib() > 1 and torch.distributed.is_initialized(): torch.distributed.barrier()
 
 # Cell
-# Saving arrays requires pytables - optional dependency
 try: import tables
 except: pass
 
