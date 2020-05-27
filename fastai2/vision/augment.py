@@ -127,8 +127,8 @@ def _do_crop_pad(x:TensorBBox, sz, tl, orig_sz, pad_mode=PadMode.Zeros, resize_t
 def crop_pad(x:(TensorBBox,TensorPoint,Image.Image),
              sz, tl=None, orig_sz=None, pad_mode=PadMode.Zeros, resize_mode=Image.BILINEAR, resize_to=None):
     if isinstance(sz,int): sz = (sz,sz)
-    orig_sz = Tuple(x.size if orig_sz is None else orig_sz)
-    sz,tl = Tuple(sz),Tuple(((x.size-sz)//2) if tl is None else tl)
+    orig_sz = Tuple(_get_sz(x) if orig_sz is None else orig_sz)
+    sz,tl = Tuple(sz),Tuple(((_get_sz(x)-sz)//2) if tl is None else tl)
     return x._do_crop_pad(sz, tl, orig_sz=orig_sz, pad_mode=pad_mode, resize_mode=resize_mode, resize_to=resize_to)
 
 # Cell
@@ -139,7 +139,7 @@ def _process_sz(size):
 def _get_sz(x):
     if isinstance(x, tuple): x = x[0]
     if not isinstance(x, Tensor): return Tuple(x.size)
-    return Tuple(x.get_meta('img_size', (x.shape[-1], x.shape[-2])))
+    return Tuple(x.get_meta('img_size', x.get_meta('sz', (x.shape[-1], x.shape[-2]))))
 
 # Cell
 @delegates()
