@@ -5,10 +5,10 @@ __all__ = ['module', 'Identity', 'Lambda', 'PartialLambda', 'Flatten', 'View', '
            'PoolFlatten', 'NormType', 'BatchNorm', 'InstanceNorm', 'BatchNorm1dFlat', 'LinBnDrop', 'sigmoid',
            'sigmoid_', 'vleaky_relu', 'init_default', 'init_linear', 'ConvLayer', 'AdaptiveAvgPool', 'MaxPool',
            'AvgPool', 'BaseLoss', 'CrossEntropyLossFlat', 'BCEWithLogitsLossFlat', 'BCELossFlat', 'MSELossFlat',
-           'L1LossFlat', 'LabelSmoothingCrossEntropy', 'trunc_normal_', 'Embedding', 'SelfAttention',
-           'PooledSelfAttention2d', 'SimpleSelfAttention', 'icnr_init', 'PixelShuffle_ICNR', 'sequential',
-           'SequentialEx', 'MergeLayer', 'Cat', 'SimpleCNN', 'ProdLayer', 'inplace_relu', 'SEModule', 'ResBlock',
-           'SEBlock', 'SEResNeXtBlock', 'SeparableBlock', 'swish', 'Swish', 'MishJitAutoFn', 'mish', 'Mish',
+           'L1LossFlat', 'LabelSmoothingCrossEntropy', 'LabelSmoothingCrossEntropyFlat', 'trunc_normal_', 'Embedding',
+           'SelfAttention', 'PooledSelfAttention2d', 'SimpleSelfAttention', 'icnr_init', 'PixelShuffle_ICNR',
+           'sequential', 'SequentialEx', 'MergeLayer', 'Cat', 'SimpleCNN', 'ProdLayer', 'inplace_relu', 'SEModule',
+           'ResBlock', 'SEBlock', 'SEResNeXtBlock', 'SeparableBlock', 'swish', 'Swish', 'MishJitAutoFn', 'mish', 'Mish',
            'ParameterModule', 'children_and_parameters', 'flatten_model', 'NoneReduce', 'in_channels']
 
 # Cell
@@ -348,6 +348,16 @@ class LabelSmoothingCrossEntropy(Module):
             if self.reduction=='mean':  loss = loss.mean()
         return loss*self.eps/c + (1-self.eps) * F.nll_loss(log_preds, target.long(), reduction=self.reduction)
 
+    def activation(self, out): return F.softmax(out, dim=-1)
+    def decodes(self, out):    return out.argmax(dim=-1)
+
+# Cell
+@log_args
+@delegates(keep=True)
+class LabelSmoothingCrossEntropyFlat(BaseLoss):
+    "Same as `LabelSmoothingCrossEntropy`, but flattens input and target."
+    y_int = True
+    def __init__(self, *args, axis=-1, **kwargs): super().__init__(LabelSmoothingCrossEntropy, *args, axis=axis, **kwargs)
     def activation(self, out): return F.softmax(out, dim=-1)
     def decodes(self, out):    return out.argmax(dim=-1)
 
