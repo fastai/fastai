@@ -12,7 +12,6 @@ from fastai.vision import ImageDataBunch, Learner
 from fastai.vision.models import efficientnet
 from fastai.vision.learner import has_pool_type
 
-
 @pytest.fixture
 def image():
     return torch.randn([4, 3, 32, 32])
@@ -20,17 +19,14 @@ def image():
 
 def test_create_body(image):
     this_tests(create_body)
-
     def get_hook_fn(actns):
         return lambda self, input, output: actns.append(output)
-
     def run_with_capture(m):
         actns = []
         hooks = Hooks(m, get_hook_fn(actns))
         m(image)
         hooks.remove()
         return actns
-
     body = create_body(resnet18, pretrained=True, cut=-2)
     resnet = nn.Sequential(*list(resnet18(pretrained=True).children())[:-2])
     body_actns = run_with_capture(body)
