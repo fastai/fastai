@@ -1,3 +1,4 @@
+from efficientnet_pytorch.utils import Conv2dStaticSamePadding
 from torch import nn
 
 from ...core import *
@@ -28,6 +29,7 @@ class EfficientnetBlocks(nn.Module):
         self._blocks = deepcopy(model._blocks)
         self._global_params = deepcopy(model._global_params)
 
+    # From: https://github.com/lukemelas/EfficientNet-PyTorch/blob/master/efficientnet_pytorch/model.py#L233
     def forward(self, inputs):
         for idx, block in enumerate(self._blocks):
             drop_connect_rate = self._global_params.drop_connect_rate
@@ -48,6 +50,9 @@ class EfficientNetWrapper(nn.Module):
         super().__init__()
         self.model = deepcopy(model)
         self.in_features = model._fc.in_features
+        _transform_conv_2d_static_same_padding_to_seq(self.model)
+        for block in model._blocks:
+            _transform_conv_2d_static_same_padding_to_seq(block)
         self.model._blocks = EfficientnetBlocks(model)
 
     def children(self):
@@ -63,3 +68,12 @@ class EfficientNetWrapper(nn.Module):
 
     def __len__(self):
         return len(list(self.children()))
+
+def _transform_conv_2d_static_same_padding_to_seq(model: nn.Module):
+    for name, module in model._modules.items():
+        if isinstance(module, Conv2dStaticSamePadding):
+            conv2d_arguments = [param.name for param in inspect.signature(nn.Conv2d).parameters.values()]
+            filtered_dict = dict(filter(lambda attr: attr[0] in conv2d_arguments, module.__dict__.items()))
+            conv2d = nn.Conv2d(bias=module.bias is not None, **filtered_dict)
+            conv2d.load_state_dict(module.state_dict(), strict=False)
+            setattr(model, name, nn.Sequential(deepcopy(module.static_padding), conv2d))
