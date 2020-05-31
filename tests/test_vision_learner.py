@@ -1,6 +1,5 @@
 from efficientnet_pytorch import EfficientNet
 import pytest
-from inspect import getmembers, isfunction
 import torch
 import torch.nn as nn
 from torchvision.models import resnet18
@@ -9,7 +8,7 @@ from fastai.gen_doc.doctest import this_tests
 from fastai.vision.learner import *
 from fastai.callbacks.hooks import *
 from fastai.vision import ImageDataBunch, Learner
-from fastai.vision.models import efficientnet
+from fastai.vision.models import EfficientNetB1
 from fastai.vision.learner import has_pool_type
 
 @pytest.fixture
@@ -52,12 +51,11 @@ def test_has_pool_type():
 	rn18m = create_cnn_model(resnet18, nc=nc)
 	assert has_pool_type(rn18m) # rn34 has pool type
 
-efficientnets = [o[1] for o in getmembers(efficientnet) if isfunction(o[1]) and o[0].startswith("EfficientNet")]
 
 @pytest.mark.parametrize("image_size", [128, 224, 256])
-@pytest.mark.parametrize("base_arch", efficientnets)
-def test_create_body_effnet(image_size, base_arch):
+def test_create_body_effnet(image_size):
     this_tests(create_body)
+    base_arch = EfficientNetB1
     imgs = torch.randn([4, 3, image_size, image_size])
     body = create_body(base_arch, pretrained=True)
     ref = EfficientNet.from_pretrained(f"efficientnet-b{base_arch.__name__[-1]}")
@@ -71,13 +69,11 @@ def test_create_body_effnet(image_size, base_arch):
     with pytest.raises(NameError):
         create_body(base_arch, cut=1.)
 
-@pytest.mark.parametrize("base_arch", efficientnets)
-def test_freeze_unfreeze_effnet(base_arch):
+def test_freeze_unfreeze_effnet():
     this_tests(cnn_learner)
-
     def get_number_of_trainable_params(model: nn.Module):
         return sum(p.numel() for p in model.parameters() if p.requires_grad)
-
+    base_arch = EfficientNetB1
     path = untar_data(URLs.MNIST_SAMPLE)
     data = ImageDataBunch.from_folder(path, size=64)
     data.c = 1000  # Set number of class to be 1000 to stay in line with the pretrained model.
