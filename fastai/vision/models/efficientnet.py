@@ -23,6 +23,7 @@ def EfficientNetB6(pretrained=False): return create_efficientnet("efficientnet-b
 def EfficientNetB7(pretrained=False): return create_efficientnet("efficientnet-b7", pretrained)
 
 class EfficientnetBlocks(nn.Module):
+    """Convert MBConvBlock from nn.ModuleList to nn.Module."""
 
     def __init__(self, model: EfficientNet):
         super().__init__()
@@ -45,6 +46,7 @@ class EfficientnetBlocks(nn.Module):
         return len(self._blocks)
 
 class EfficientNetWrapper(nn.Module):
+    """Convert EfficientNet instance to an object that can be processed by existing cnn_learner scheme."""
 
     def __init__(self, model: EfficientNet):
         super().__init__()
@@ -70,6 +72,7 @@ class EfficientNetWrapper(nn.Module):
         return len(list(self.children()))
 
 def _transform_conv_2d_static_same_padding_to_seq(model: nn.Module):
+    """Split Conv2dStaticSamePadding instance into Sequential(padding, Conv2d)."""
     for name, module in model._modules.items():
         if isinstance(module, Conv2dStaticSamePadding):
             conv2d_arguments = [param.name for param in inspect.signature(nn.Conv2d).parameters.values()]
