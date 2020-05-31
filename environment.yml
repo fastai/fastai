@@ -113,3 +113,4 @@ dependencies:
   - PyHamcrest
   - pdpbox==0.1.0
   - scikit-misc
+  - efficient_pytorch
