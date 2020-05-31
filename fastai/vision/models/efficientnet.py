@@ -51,7 +51,6 @@ class EfficientNetWrapper(nn.Module):
     def __init__(self, model: EfficientNet):
         super().__init__()
         self.model = deepcopy(model)
-        self.in_features = model._fc.in_features
         _transform_conv_2d_static_same_padding_to_seq(self.model)
         for block in model._blocks:
             _transform_conv_2d_static_same_padding_to_seq(block)
@@ -80,3 +79,19 @@ def _transform_conv_2d_static_same_padding_to_seq(model: nn.Module):
             conv2d = nn.Conv2d(bias=module.bias is not None, **filtered_dict)
             conv2d.load_state_dict(module.state_dict(), strict=False)
             setattr(model, name, nn.Sequential(deepcopy(module.static_padding), conv2d))
+
+# From: https://github.com/lukemelas/EfficientNet-PyTorch/blob/master/efficientnet_pytorch/utils.py
+def efficientnet_params(model_name):
+    """ Map EfficientNet model name to parameter coefficients. """
+    params_dict = {
+        # Coefficients:   width,depth,res,dropout
+        'EfficientNetB0': (1.0, 1.0, 224, 0.2),
+        'EfficientNetB1': (1.0, 1.1, 240, 0.2),
+        'EfficientNetB2': (1.1, 1.2, 260, 0.3),
+        'EfficientNetB3': (1.2, 1.4, 300, 0.3),
+        'EfficientNetB4': (1.4, 1.8, 380, 0.4),
+        'EfficientNetB5': (1.6, 2.2, 456, 0.4),
+        'EfficientNetB6': (1.8, 2.6, 528, 0.5),
+        'EfficientNetB7': (2.0, 3.1, 600, 0.5),
+    }
+    return params_dict[model_name]
