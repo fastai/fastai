@@ -1,3 +1,4 @@
+from efficientnet_pytorch.model import MBConvBlock
 from efficientnet_pytorch.utils import Conv2dStaticSamePadding
 from torch import nn
 
@@ -22,39 +23,31 @@ def EfficientNetB5(pretrained=False): return create_efficientnet("efficientnet-b
 def EfficientNetB6(pretrained=False): return create_efficientnet("efficientnet-b6", pretrained)
 def EfficientNetB7(pretrained=False): return create_efficientnet("efficientnet-b7", pretrained)
 
-class EfficientnetBlocks(nn.Module):
-    """Convert MBConvBlock from nn.ModuleList to nn.Module."""
+class MBConvBlockWrapper(nn.Module):
 
-    def __init__(self, model: EfficientNet):
+    def __init__(self, model: MBConvBlock, drop_connect_rate: float):
         super().__init__()
-        self._blocks = deepcopy(model._blocks)
-        self._global_params = deepcopy(model._global_params)
+        self.model = model
+        self.drop_connect_rate = drop_connect_rate
 
-    # From: https://github.com/lukemelas/EfficientNet-PyTorch/blob/master/efficientnet_pytorch/model.py#L233
     def forward(self, inputs):
-        for idx, block in enumerate(self._blocks):
-            drop_connect_rate = self._global_params.drop_connect_rate
-            if drop_connect_rate:
-                drop_connect_rate *= float(idx) / len(self._blocks)
-            inputs = block(inputs, drop_connect_rate=drop_connect_rate)
-        return inputs
-
-    def __getitem__(self, item):
-        return self._blocks[item]
-
-    def __len__(self):
-        return len(self._blocks)
+        return self.model.forward(inputs, self.drop_connect_rate)
 
 class EfficientNetWrapper(nn.Module):
     """Convert EfficientNet instance to an object that can be processed by existing cnn_learner scheme."""
 
     def __init__(self, model: EfficientNet):
         super().__init__()
-        self.model = deepcopy(model)
+        self.model = model
         _transform_conv_2d_static_same_padding_to_seq(self.model)
-        for block in model._blocks:
+        blocks = []
+        for idx, block in enumerate(model._blocks):
             _transform_conv_2d_static_same_padding_to_seq(block)
-        self.model._blocks = EfficientnetBlocks(model)
+            drop_connect_rate = model._global_params.drop_connect_rate
+            if drop_connect_rate:
+                drop_connect_rate *= float(idx) / len(model._blocks)
+            blocks.append(MBConvBlockWrapper(block, drop_connect_rate))
+        self.model._blocks = nn.Sequential(*blocks)
 
     def children(self):
         swish = self.model._swish
@@ -62,7 +55,7 @@ class EfficientNetWrapper(nn.Module):
         modules.remove(swish)
         modules.insert(modules.index(self.model._bn0) + 1, swish)
         modules.insert(modules.index(self.model._bn1) + 1, swish)
-        return (module for module in deepcopy(modules))
+        return (module for module in modules)
 
     def __getitem__(self, item):
         return nn.Sequential(*self.children())[item]
@@ -78,7 +71,7 @@ def _transform_conv_2d_static_same_padding_to_seq(model: nn.Module):
             filtered_dict = dict(filter(lambda attr: attr[0] in conv2d_arguments, module.__dict__.items()))
             conv2d = nn.Conv2d(bias=module.bias is not None, **filtered_dict)
             conv2d.load_state_dict(module.state_dict(), strict=False)
-            setattr(model, name, nn.Sequential(deepcopy(module.static_padding), conv2d))
+            setattr(model, name, nn.Sequential(module.static_padding, conv2d))
 
 # From: https://github.com/lukemelas/EfficientNet-PyTorch/blob/master/efficientnet_pytorch/utils.py
 def efficientnet_params(model_name):
