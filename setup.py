@@ -114,7 +114,8 @@ dep_groups = {
         spacy>=2.0.18; python_version<'3.8'
 """),
     'vision': to_list("""
-        torchvision; efficientnet_pytorch
+        torchvision
+        efficientnet_pytorch
 """),
 }
 
