@@ -53,7 +53,10 @@ class EfficientNetWrapper(nn.Module):
         swish = self.model._swish
         modules = list(self.model.children())
         modules.remove(swish)
-        modules.insert(modules.index(self.model._bn0) + 1, swish)
+        modules.remove(self.model._blocks)
+        bn0_index = modules.index(self.model._bn0)
+        modules = modules[:bn0_index + 1] + list(self.model._blocks) + modules[bn0_index + 1:]
+        modules.insert(bn0_index + 1, swish)
         modules.insert(modules.index(self.model._bn1) + 1, swish)
         return (module for module in modules)
 
