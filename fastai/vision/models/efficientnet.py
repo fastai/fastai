@@ -1,5 +1,3 @@
-from efficientnet_pytorch.model import MBConvBlock
-from efficientnet_pytorch.utils import Conv2dStaticSamePadding
 from torch import nn
 
 from ...core import *
@@ -9,6 +7,8 @@ pretrainedmodels = try_import('efficientnet_pytorch')
 if not pretrainedmodels:
     raise Exception('Error: efficientnet-pytorch is needed. pip install efficientnet-pytorch')
 from efficientnet_pytorch import EfficientNet
+from efficientnet_pytorch.model import MBConvBlock
+from efficientnet_pytorch.utils import Conv2dStaticSamePadding
 
 def create_efficientnet(model_name, pretrained=False):
     model = EfficientNet.from_pretrained(model_name) if pretrained else EfficientNet.from_name(model_name)
