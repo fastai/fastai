@@ -84,10 +84,9 @@ def create_cnn_model(base_arch:Callable, nc:int, cut:Union[int,Callable]=None, p
                      lin_ftrs:Optional[Collection[int]]=None, ps:Floats=0.5, custom_head:Optional[nn.Module]=None,
                      bn_final:bool=False, concat_pool:bool=True):
     "Create custom convnet architecture"
-    base_arch_is_effnet = "EfficientNet" in base_arch.__name__
     body = create_body(base_arch, pretrained, cut)
     if custom_head is None:
-        if base_arch_is_effnet:
+        if "EfficientNet" in base_arch.__name__:
             ps, lin_ftrs, concat_pool = models.efficientnet_params(base_arch.__name__)[3], lin_ftrs or [], False
         nf = num_features_model(nn.Sequential(*body.children())) * (2 if concat_pool else 1)
         head = create_head(nf, nc, lin_ftrs, ps=ps, concat_pool=concat_pool, bn_final=bn_final)
