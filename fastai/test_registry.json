@@ -1769,29 +1769,36 @@
             "test": "test_interp_shortcut"
         }
     ],
+    "fastai.vision.learner.cnn_learner": [
+        {
+            "file": "tests/test_vision_learner.py",
+            "line": 79,
+            "test": "test_freeze_unfreeze_effnet"
+        }
+    ],
     "fastai.vision.learner.create_body": [
         {
             "file": "tests/test_vision_learner.py",
-            "line": 16,
+            "line": 21,
             "test": "test_create_body"
         },
         {
             "file": "tests/test_vision_learner.py",
-            "line": 41,
+            "line": 63,
             "test": "test_create_body_effnet"
         }
     ],
     "fastai.vision.learner.create_head": [
         {
             "file": "tests/test_vision_learner.py",
-            "line": 56,
+            "line": 47,
             "test": "test_create_head"
         }
     ],
     "fastai.vision.learner.has_pool_type": [
         {
             "file": "tests/test_vision_learner.py",
-            "line": 62,
+            "line": 53,
             "test": "test_has_pool_type"
         }
     ],
