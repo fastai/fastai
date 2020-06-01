@@ -1772,33 +1772,33 @@
     "fastai.vision.learner.cnn_learner": [
         {
             "file": "tests/test_vision_learner.py",
-            "line": 79,
+            "line": 72,
             "test": "test_freeze_unfreeze_effnet"
         }
     ],
     "fastai.vision.learner.create_body": [
         {
             "file": "tests/test_vision_learner.py",
-            "line": 21,
+            "line": 19,
             "test": "test_create_body"
         },
         {
             "file": "tests/test_vision_learner.py",
-            "line": 63,
+            "line": 56,
             "test": "test_create_body_effnet"
         }
     ],
     "fastai.vision.learner.create_head": [
         {
             "file": "tests/test_vision_learner.py",
-            "line": 47,
+            "line": 42,
             "test": "test_create_head"
         }
     ],
     "fastai.vision.learner.has_pool_type": [
         {
             "file": "tests/test_vision_learner.py",
-            "line": 53,
+            "line": 48,
             "test": "test_has_pool_type"
         }
     ],
