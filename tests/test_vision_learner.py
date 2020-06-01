@@ -74,11 +74,11 @@ def test_freeze_unfreeze_effnet():
     def get_number_of_trainable_params(model: nn.Module):
         return sum(p.numel() for p in model.parameters() if p.requires_grad)
     base_arch = EfficientNetB1
-    path = untar_data(URLs.MNIST_SAMPLE)
+    path = untar_data(URLs.MNIST_TINY)
     data = ImageDataBunch.from_folder(path, size=64)
     data.c = 1000  # Set number of class to be 1000 to stay in line with the pretrained model.
     cnn_learn = cnn_learner(data, base_arch, pretrained=True)
-    ref_learn = Learner(data, base_arch(pretrained=True))
+    ref_learn = Learner(data, EfficientNet.from_pretrained("efficientnet-b1"))
     # By default the neural net in cnn learner is freezed.
     assert get_number_of_trainable_params(cnn_learn.model) < get_number_of_trainable_params(ref_learn.model)
     cnn_learn.unfreeze()
