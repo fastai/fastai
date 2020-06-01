@@ -39,15 +39,15 @@ class SequentialEfficientNet(nn.Module):
 
     def __init__(self, model: EfficientNet):
         super().__init__()
-        _transform_conv_2d_static_same_padding_to_sequential(model)
+        _transform_Conv2dStaticSamePadding_to_Sequential(model)
         for block in model._blocks:
-            _transform_conv_2d_static_same_padding_to_sequential(block)
+            _transform_Conv2dStaticSamePadding_to_Sequential(block)
         self._conv_stem = model._conv_stem
         self._bn0 = model._bn0
         self._swish0 = deepcopy(model._swish)
         blocks = []
         for idx, block in enumerate(model._blocks):
-            _transform_conv_2d_static_same_padding_to_sequential(block)
+            _transform_Conv2dStaticSamePadding_to_Sequential(block)
             drop_connect_rate = model._global_params.drop_connect_rate
             if drop_connect_rate:
                 drop_connect_rate *= float(idx) / len(model._blocks)
@@ -64,7 +64,7 @@ class SequentialEfficientNet(nn.Module):
     def forward(self, inputs):
         return nn.Sequential(*self.children()).forward(inputs)
 
-def _transform_conv_2d_static_same_padding_to_sequential(model: nn.Module):
+def _transform_Conv2dStaticSamePadding_to_Sequential(model: nn.Module):
     """Split Conv2dStaticSamePadding instance into Sequential(padding, Conv2d)."""
     for name, module in model._modules.items():
         if isinstance(module, Conv2dStaticSamePadding):
