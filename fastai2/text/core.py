@@ -322,7 +322,7 @@ class SentencePieceTokenizer():#TODO: pass the special tokens symbol to sp
                  model_type='unigram', char_coverage=None, cache_dir='tmp'):
         try: from sentencepiece import SentencePieceTrainer,SentencePieceProcessor
         except ImportError:
-            raise Exception('sentencepiece module is missing: run `pip install sentencepiece`')
+            raise Exception('sentencepiece module is missing: run `pip install sentencepiece!=0.1.90,!=0.1.91`')
         self.sp_model,self.cache_dir = sp_model,Path(cache_dir)
         self.vocab_sz,self.max_vocab_sz,self.model_type = vocab_sz,max_vocab_sz,model_type
         self.char_coverage = ifnone(char_coverage, 0.99999 if lang in eu_langs else 0.9998)
