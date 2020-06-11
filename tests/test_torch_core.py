@@ -56,6 +56,26 @@ def test_apply_init():
     assert conv1_w.equal(m[0][0].weight), "Expected first colvulition layer's weights to be %r" % conv1_w
     assert bn1_w.equal(m[0][2].weight), "Expected first batch norm layers weights to be %r" % bn1_w
 
+
+def test_in_channels_withchildren():
+    class Conv2dStaticSamePadding(nn.Conv2d):
+        "It is a mini class for first layer of Efficientnet:"
+        #https://github.com/lukemelas/EfficientNet-PyTorch/blob/master/efficientnet_pytorch/utils.py
+        def __init__(self, in_channels, out_channels, kernel_size, stride=1, **kwargs):
+            super().__init__(in_channels, out_channels, kernel_size, stride, **kwargs)
+            self.stride = self.stride if len(self.stride) == 2 else [self.stride[0]] * 2
+            self.static_padding = nn.ZeroPad2d((0, 1, 0, 1))
+
+    class dummy_efficientnet(nn.Module):
+        "It is a dummy class for efficientNet, which is only used for testing in_channels"
+        def __init__(self):
+            super().__init__()
+            self.conv_head = Conv2dStaticSamePadding(3, 48, kernel_size=1)
+
+    this_tests(in_channels)
+    m = dummy_efficientnet()
+    assert in_channels(m) == 3
+
 def test_in_channels():
     this_tests(in_channels)
     m = simple_cnn(b)
