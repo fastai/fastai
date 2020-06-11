@@ -178,6 +178,7 @@ def to_float(b):
     return apply(lambda x: x.float() if torch.is_floating_point(x) else x, b)
 
 # Cell
+# None: True if available; True: error if not availabe; False: use CPU
 defaults.use_cuda = None
 
 # Cell
@@ -273,7 +274,7 @@ def _patch_tb():
         return _f
 
     t = tensor([1])
-    skips = 'as_subclass __getitem__ __class__ __deepcopy__ __delattr__ __dir__ __doc__ __getattribute__ __hash__ __init__ \
+    skips = 'as_subclass imag real __getitem__ __class__ __deepcopy__ __delattr__ __dir__ __doc__ __getattribute__ __hash__ __init__ \
         __init_subclass__ __new__ __reduce__ __reduce_ex__ __repr__ __module__ __setstate__'.split()
 
     for fn in dir(t):
@@ -572,6 +573,7 @@ def distrib_barrier():
     if num_distrib() > 1 and torch.distributed.is_initialized(): torch.distributed.barrier()
 
 # Cell
+# Saving arrays requires pytables - optional dependency
 try: import tables
 except: pass
 
