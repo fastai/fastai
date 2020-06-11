@@ -258,7 +258,7 @@ def apply_init(m, init_func:LayerFunc):
 
 def in_channels(m:nn.Module) -> List[int]:
     "Return the shape of the first weight layer in `m`."
-    for l in m.children():
+    for l in m.modules():
         if hasattr(l, 'weight'): return l.weight.shape[1]
     raise Exception('No weight layer')
 
