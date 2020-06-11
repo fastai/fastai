@@ -142,7 +142,7 @@ class Vocab():
 
     def save(self, path):
         "Save `self.itos` in `path`"
-        if rank_distrib(): return # don't save if slave proc
+        if rank_distrib(): return # don't save if child proc
         pickle.dump(self.itos, open(path, 'wb'))
 
     @classmethod

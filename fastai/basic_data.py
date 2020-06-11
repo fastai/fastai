@@ -148,7 +148,7 @@ class DataBunch():
 
     def save(self, file:PathLikeOrBinaryStream= 'data_save.pkl')->None:
         "Save the `DataBunch` in `self.path/file`. `file` can be file-like (file or buffer)"
-        if rank_distrib(): return # don't save if slave proc
+        if rank_distrib(): return # don't save if child proc
         if not getattr(self, 'label_list', False):
             warn("Serializing the `DataBunch` only works when you created it using the data block API.")
             return
