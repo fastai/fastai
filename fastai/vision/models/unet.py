@@ -46,7 +46,7 @@ def get_unet_config(model, img_size=(512, 512))->Tuple[List[Tuple], List[nn.Modu
     img_size = [x.shape[-1] // (2 ** i) for i in range(8)]
     img_size = [size for size in img_size if size >= 7]
     layer_mata = pd.DataFrame(layer_mata, columns=['sn', 'layer_name', 'c', 'w', 'h', 'size'])
-    layer_mata = layer_mata.loc[(layer_mata.w.isin(img_size))].drop_duplicates(['w'], keep='last')
+    layer_mata = layer_mata.loc[(layer_mata.h.isin(img_size))].drop_duplicates(['h'], keep='last')
 
     layer_size = list(layer_mata['size'])
     layers = [layers[i] for i in layer_mata.sn]
