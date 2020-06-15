@@ -22,12 +22,20 @@ def fbeta(y_pred:Tensor, y_true:Tensor, thresh:float=0.2, beta:float=2, eps:floa
     res = (prec*rec)/(prec*beta2+rec+eps)*(1+beta2)
     return res.mean()
 
-def accuracy(input:Tensor, targs:Tensor)->Rank0Tensor:
-    "Computes accuracy with `targs` when `input` is bs * n_classes."
-    n = targs.shape[0]
-    input = input.argmax(dim=-1).view(n,-1)
-    targs = targs.view(n,-1)
-    return (input==targs).float().mean()
+def accuracy(input: Tensor, targs: Tensor) -> Rank0Tensor:
+    """Computes accuracy with `targs` when `input` is bs * n_classes or bs of predicted labels"""
+    n = targs.shape[0]  # n = bs
+    if input.ndim > 1:
+        if input.size(-1) > 1:
+            input = input.argmax(dim=-1)
+        else:
+            input = input.squeeze()
+    if targs.ndim > 1:
+        if targs.size(-1) > 1:
+            targs = targs.argmax(dim=-1)
+        else:
+            targs = targs.squeeze()
+    return (input == targs).float().mean()
 
 def accuracy_thresh(y_pred:Tensor, y_true:Tensor, thresh:float=0.5, sigmoid:bool=True)->Rank0Tensor:
     "Computes accuracy when `y_pred` and `y_true` are the same size."
