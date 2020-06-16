@@ -167,7 +167,7 @@ class Transformer(Module):
         bs, x_len = x.size()
         pos = torch.arange(0, x_len, device=x.device, dtype=x.dtype)
         inp = self.drop_emb(self.encoder(x) + self.pos_enc(pos)[None]) #.mul_(self.d_model ** 0.5)
-        mask = torch.triu(x.new_ones(x_len, x_len), diagonal=1).byte()[None,None] if self.mask else None
+        mask = torch.triu(x.new_ones(x_len, x_len), diagonal=1).bool()[None,None] if self.mask else None
         #[None,:,:None] for einsum implementation of attention
         for layer in self.layers: inp = layer(inp, mask=mask)
         return ([inp],[inp]) #For the LinearDecoder
@@ -212,7 +212,7 @@ class TransformerXL(Module):
         inp = self.drop_emb(self.encoder(x)) #.mul_(self.d_model ** 0.5)
         m_len = self.hidden[0].size(1) if hasattr(self, 'hidden') and len(self.hidden[0].size()) > 1 else 0
         seq_len = m_len + x_len
-        mask = torch.triu(x.new_ones(x_len, seq_len), diagonal=1+m_len).byte()[None,None] if self.mask else None
+        mask = torch.triu(x.new_ones(x_len, seq_len), diagonal=1+m_len).bool()[None,None] if self.mask else None
         #[None,:,:None] for einsum implementation of attention
         hids = []
         pos = torch.arange(seq_len-1, -1, -1, device=inp.device, dtype=inp.dtype)
