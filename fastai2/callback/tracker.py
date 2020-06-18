@@ -79,7 +79,9 @@ class SaveModelCallback(TrackerCallback):
         if self.every_epoch: self._save(f'{self.fname}_{self.epoch}')
         else: #every improvement
             super().after_epoch()
-            if self.new_best: self._save(f'{self.fname}')
+            if self.new_best:
+                print(f'Better model found at epoch {self.epoch} with {self.monitor} value: {self.best}.')
+                self._save(f'{self.fname}')
 
     def after_fit(self, **kwargs):
         "Load the best model."
