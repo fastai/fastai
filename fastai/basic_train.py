@@ -264,7 +264,7 @@ class Learner():
         if purge: self.purge(clear_opt=ifnone(with_opt, False))
         if device is None: device = self.data.device
         elif isinstance(device, int): device = torch.device('cuda', device)
-        source = self.path/self.model_dir/f'{file}.pth' if is_pathlike(file) else file
+        source = str(self.path/self.model_dir/f'{file}.pth') if is_pathlike(file) else file
         distrib_barrier()
         state = torch.load(source, map_location=device)
         if set(state.keys()) == {'model', 'opt'}:
@@ -617,7 +617,7 @@ def load_callback(class_func, state, learn:Learner):
 
 def load_learner(path:PathOrStr, file:PathLikeOrBinaryStream='export.pkl', test:ItemList=None, tfm_y=None, **db_kwargs):
     "Load a `Learner` object saved with `export_state` in `path/file` with empty data, optionally add `test` and load on `cpu`. `file` can be file-like (file or buffer)"
-    source = Path(path)/file if is_pathlike(file) else file
+    source = str(Path(path)/file) if is_pathlike(file) else file
     state = torch.load(source, map_location='cpu') if defaults.device == torch.device('cpu') else torch.load(source)
     model = state.pop('model')
     src = LabelLists.load_state(path, state.pop('data'))
