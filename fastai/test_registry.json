@@ -2,7 +2,7 @@
     "fastai.basic_data.DataBunch": [
         {
             "file": "tests/test_data_block.py",
-            "line": 152,
+            "line": 153,
             "test": "test_custom_dataset"
         }
     ],
@@ -555,33 +555,33 @@
     "fastai.data_block.CategoryProcessor.process_one": [
         {
             "file": "tests/test_data_block.py",
-            "line": 80,
+            "line": 81,
             "test": "test_category_processor_existing_class"
         },
         {
             "file": "tests/test_data_block.py",
-            "line": 91,
+            "line": 92,
             "test": "test_category_processor_non_existing_class"
         }
     ],
     "fastai.data_block.ItemList.filter_by_folder": [
         {
             "file": "tests/test_data_block.py",
-            "line": 161,
+            "line": 162,
             "test": "test_filter_by_folder"
         }
     ],
     "fastai.data_block.ItemList.filter_by_rand": [
         {
             "file": "tests/test_data_block.py",
-            "line": 112,
+            "line": 113,
             "test": "test_filter_by_rand"
         }
     ],
     "fastai.data_block.ItemList.from_df": [
         {
             "file": "tests/test_data_block.py",
-            "line": 175,
+            "line": 176,
             "test": "test_from_df"
         }
     ],
@@ -600,15 +600,22 @@
     "fastai.data_block.ItemList.split_by_rand_pct": [
         {
             "file": "tests/test_data_block.py",
-            "line": 103,
+            "line": 104,
             "test": "test_splitdata_datasets"
         }
     ],
     "fastai.data_block.ItemList.split_subsets": [
         {
             "file": "tests/test_data_block.py",
-            "line": 121,
+            "line": 122,
             "test": "test_split_subsets"
+        }
+    ],
+    "fastai.data_block.LabelLists.add_test": [
+        {
+            "file": "tests/test_data_block.py",
+            "line": 184,
+            "test": "test_add_test"
         }
     ],
     "fastai.data_block.LabelLists.databunch": [
