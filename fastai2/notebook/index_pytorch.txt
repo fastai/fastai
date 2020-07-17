@@ -1,5 +1,0 @@
-{
-  "Tensor": "https://pytorch.org/docs/stable/tensors.html#torch-tensor",
-  "device": "https://pytorch.org/docs/stable/tensor_attributes.html#torch-device",
-  "DataLoader": "https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"
-}
