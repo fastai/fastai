@@ -353,7 +353,7 @@ class CorpusBLEUMetric(Metric):
         "BLEU Metric calculated over the validation corpus"
         self.metric_name = 'CorpusBLEU'
         self.axis, self.vocab_sz = axis, vocab_sz
-        self.pred_len,self.targ_len,self.corrects,self.counts = 0,0,[0]*4,[0]*4
+        self.pred_len,self.targ_len,self.samp_idx,self.corrects,self.counts, = 0,0,0,[0]*4,[0]*4
 
     def reset(self):
         self.pred_len,self.targ_len,self.corrects,self.counts = 0,0,[0]*4,[0]*4
@@ -381,17 +381,22 @@ class CorpusBLEUMetric(Metric):
             for pred,targ in zip(last_output.cpu().numpy(),last_target.cpu().numpy()):
                 self.pred_len += len(pred)
                 self.targ_len += len(targ)
+                smooth_mteval = 1
                 for i in range(4):
                     c,t = self.get_correct_ngrams(pred, targ, i+1, max_n=self.vocab_sz)
+                    if c == 0:
+                        smooth_mteval *= 2
+                        c = 1 / smooth_mteval    # exp smoothing, method 3 from http://acl2014.org/acl2014/W14-33/pdf/W14-3346.pdf
                     self.corrects[i] += c
                     self.counts[i]   += t
 
     @property
     def value(self):
         if self.counts == 0: return None
+        elif max(self.corrects) == 0: return 0.0
         else:
             precs = [c/t for c,t in zip(self.corrects,self.counts)]
-            len_penalty = exp(1 - self.targ_len/self.pred_len) if self.pred_len < self.targ_len else 1
+            len_penalty = math.exp(1 - self.targ_len/self.pred_len) if self.pred_len < self.targ_len else 1
             return len_penalty * ((precs[0]*precs[1]*precs[2]*precs[3]) ** 0.25)
 
 # Cell
