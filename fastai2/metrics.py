@@ -366,7 +366,7 @@ class CorpusBLEUMetric(Metric):
         def __hash__(self): return int(sum([o * self.max_n**i for i,o in enumerate(self.ngram)]))
 
     def get_grams(self, x, n, max_n=5000):
-        return x if n==1 else [NGram(x[i:i+n], max_n=max_n) for i in range(len(x)-n+1)]
+        return x if n==1 else [self.NGram(x[i:i+n], max_n=max_n) for i in range(len(x)-n+1)]
 
     def get_correct_ngrams(self, pred, targ, n, max_n=5000):
         pred_grams,targ_grams = self.get_grams(pred, n, max_n=max_n),self.get_grams(targ, n, max_n=max_n)
