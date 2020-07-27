@@ -27,9 +27,9 @@ class TabularDataLoaders(DataLoaders):
         return cls.from_df(pd.read_csv(csv), **kwargs)
 
     @delegates(TabDataLoader.__init__)
-    def test_dl(self, test_items, rm_type_tfms=None, **kwargs):
+    def test_dl(self, test_items, rm_type_tfms=None, process=True, **kwargs):
         to = self.train_ds.new(test_items)
-        to.process()
+        if process: to.process()
         return self.valid.new(to, **kwargs)
 
 Tabular._dbunch_type = TabularDataLoaders

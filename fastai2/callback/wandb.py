@@ -6,6 +6,7 @@ __all__ = ['WandbCallback', 'wandb_process']
 from ..basics import *
 from .progress import *
 from ..text.data import TensorText
+from ..tabular.all import TabularDataLoaders, Tabular
 from .hook import total_params
 
 # Cell
@@ -40,8 +41,7 @@ class WandbCallback(Callback):
             # Log all parameters at once
             wandb.config.update(log_config, allow_val_change=True)
         except Exception as e:
-            print(f'WandbCallback could not log all parameters at once and will log them one at a time -> {e}')
-            _log_config_separately(log_config)
+            print(f'WandbCallback could not log config parameters -> {e}')
 
         if not WandbCallback._wandb_watch_called:
             WandbCallback._wandb_watch_called = True
@@ -57,9 +57,12 @@ class WandbCallback(Callback):
                     wandbRandom = random.Random(self.seed)  # For repeatability
                     self.n_preds = min(self.n_preds, len(self.dls.valid_ds))
                     idxs = wandbRandom.sample(range(len(self.dls.valid_ds)), self.n_preds)
-                    test_items = [getattr(self.dls.valid_ds.items, 'iloc', self.dls.valid_ds.items)[i] for i in idxs]
-                    self.valid_dl = self.dls.test_dl(test_items, with_labels=True)
-
+                    if isinstance(self.dls,  TabularDataLoaders):
+                        test_items = getattr(self.dls.valid_ds.items, 'iloc', self.dls.valid_ds.items)[idxs]
+                        self.valid_dl = self.dls.test_dl(test_items, with_labels=True, process=False)
+                    else:
+                        test_items = [getattr(self.dls.valid_ds.items, 'iloc', self.dls.valid_ds.items)[i] for i in idxs]
+                        self.valid_dl = self.dls.test_dl(test_items, with_labels=True)
                 self.learn.add_cb(FetchPredsCallback(dl=self.valid_dl, with_input=True, with_decoded=True))
             except Exception as e:
                 self.log_preds = False
@@ -118,21 +121,6 @@ def _format_config(log_config):
         if isinstance(v, slice): log_config[k] = dict(slice_start=v.start, slice_step=v.step, slice_stop=v.stop)
 
 # Cell
-def _log_config_separately(log_config):
-    "Log as many config parameters as possible"
-    for k,v in log_config.items():
-        try:
-            wandb.config.update({k:v}, allow_val_change=True)
-        except:
-            try:
-                # maybe type not supported
-                wandb.config.update({k:str(v)}, allow_val_change=True)
-            except:
-                # just remove the parameter if it exists to let config sync
-                wandb.config._items.pop(k, None)
-                print(f"Unexpected error while setting wandb.config['{k}']")
-
-# Cell
 @typedispatch
 def wandb_process(x:TensorImage, y, samples, outs):
     "Process `sample` and `out` depending on the type of `x/y`"
@@ -174,3 +162,10 @@ def wandb_process(x:TensorImage, y:TensorMask, samples, outs):
 def wandb_process(x:TensorText, y:(TensorCategory,TensorMultiCategory), samples, outs):
     data = [[s[0], s[1], o[0]] for s,o in zip(samples,outs)]
     return {"Prediction Samples": wandb.Table(data=data, columns=["Text", "Target", "Prediction"])}
+
+# Cell
+@typedispatch
+def wandb_process(x:Tabular, y:Tabular, samples, outs):
+    df = x.all_cols
+    for n in x.y_names: df[n+'_pred'] = y[n].values
+    return {"Prediction Samples": wandb.Table(dataframe=df)}
