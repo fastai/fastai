@@ -311,7 +311,7 @@ description: "Callback and helper function to add hooks in models"
 <span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
 <span class="n">y</span> <span class="o">=</span> <span class="n">tst_model</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 <span class="n">hook</span> <span class="o">=</span> <span class="n">Hook</span><span class="p">(</span><span class="n">tst_model</span><span class="p">,</span> <span class="n">example_forward_hook</span><span class="p">)</span>
-<span class="n">test_stdout</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">tst_model</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">tst_model</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s2">,) </span><span class="si">{</span><span class="n">y</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">test_stdout</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">tst_model</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{tst_model}</span><span class="s2"> (</span><span class="si">{x}</span><span class="s2">,) {y.detach()}&quot;</span><span class="p">)</span>
 <span class="n">hook</span><span class="o">.</span><span class="n">remove</span><span class="p">()</span>
 <span class="n">test_stdout</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">tst_model</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
 </pre></div>
@@ -397,7 +397,7 @@ description: "Callback and helper function to add hooks in models"
 <span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
 <span class="n">y</span> <span class="o">=</span> <span class="n">tst_model</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 <span class="k">with</span> <span class="n">Hook</span><span class="p">(</span><span class="n">tst_model</span><span class="p">,</span> <span class="n">example_forward_hook</span><span class="p">)</span> <span class="k">as</span> <span class="n">h</span><span class="p">:</span>
-    <span class="n">test_stdout</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">tst_model</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">tst_model</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s2">,) </span><span class="si">{</span><span class="n">y</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">test_stdout</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">tst_model</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{tst_model}</span><span class="s2"> (</span><span class="si">{x}</span><span class="s2">,) {y.detach()}&quot;</span><span class="p">)</span>
 <span class="n">test_stdout</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">tst_model</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
 </pre></div>
 
@@ -1733,12 +1733,12 @@ Callbacks:
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>(#4) [0,12.596071243286133,10.469954490661621,&#39;00:00&#39;]
-(#4) [0,31.34967803955078,23.612323760986328,&#39;00:00&#39;]
-(#4) [0,14.076311111450195,11.747014999389648,&#39;00:00&#39;]
-(#4) [0,16.8385066986084,9.499192237854004,&#39;00:00&#39;]
-(#4) [0,18.776268005371094,14.976844787597656,&#39;00:00&#39;]
-(#4) [0,11.286646842956543,8.42125415802002,&#39;00:00&#39;]
+<pre>(#4) [0,11.752055168151855,14.988609313964844,&#39;00:00&#39;]
+(#4) [0,14.951037406921387,18.276052474975586,&#39;00:00&#39;]
+(#4) [0,9.073861122131348,7.193134307861328,&#39;00:00&#39;]
+(#4) [0,9.109945297241211,7.256011486053467,&#39;00:00&#39;]
+(#4) [0,3.2069666385650635,2.0685923099517822,&#39;00:00&#39;]
+(#4) [0,22.388145446777344,16.59320068359375,&#39;00:00&#39;]
 </pre>
 </div>
 </div>

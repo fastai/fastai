@@ -54,7 +54,7 @@ description: "An example of how to incorporate the transfomers library from Hugg
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># ! pip install transformers</span>
+<div class=" highlight hl-ipython3"><pre><span></span> 
 </pre></div>
 
     </div>
@@ -82,6 +82,25 @@ description: "An example of how to incorporate the transfomers library from Hugg
 </pre></div>
 
     </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_text output_error">
+<pre>
+<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">ModuleNotFoundError</span>                       Traceback (most recent call last)
+<span class="ansi-green-fg">&lt;ipython-input-2-fc69044e9ef7&gt;</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span>
+<span class="ansi-green-fg">----&gt; 1</span><span class="ansi-red-fg"> </span><span class="ansi-green-fg">from</span> transformers <span class="ansi-green-fg">import</span> GPT2LMHeadModel<span class="ansi-blue-fg">,</span> GPT2TokenizerFast
+
+<span class="ansi-red-fg">ModuleNotFoundError</span>: No module named &#39;transformers&#39;</pre>
+</div>
+</div>
+
 </div>
 </div>
 
@@ -231,9 +250,16 @@ description: "An example of how to incorporate the transfomers library from Hugg
 
 <div class="output_area">
 
-<div class="output_subarea output_stream output_stderr output_text">
-<pre>Setting `pad_token_id` to 50256 (first `eos_token_id`) to generate sequence
-</pre>
+<div class="output_subarea output_text output_error">
+<pre>
+<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">NameError</span>                                 Traceback (most recent call last)
+<span class="ansi-green-fg">&lt;ipython-input-3-71ded8accb3e&gt;</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span>
+<span class="ansi-green-intense-fg ansi-bold">      1</span> <span class="ansi-green-fg">import</span> torch
+<span class="ansi-green-fg">----&gt; 2</span><span class="ansi-red-fg"> </span>t <span class="ansi-blue-fg">=</span> torch<span class="ansi-blue-fg">.</span>LongTensor<span class="ansi-blue-fg">(</span>ids<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">[</span><span class="ansi-green-fg">None</span><span class="ansi-blue-fg">]</span>
+<span class="ansi-green-intense-fg ansi-bold">      3</span> preds <span class="ansi-blue-fg">=</span> model<span class="ansi-blue-fg">.</span>generate<span class="ansi-blue-fg">(</span>t<span class="ansi-blue-fg">)</span>
+
+<span class="ansi-red-fg">NameError</span>: name &#39;ids&#39; is not defined</pre>
 </div>
 </div>
 

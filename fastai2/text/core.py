@@ -16,6 +16,7 @@ import spacy,html
 from spacy.symbols import ORTH
 
 # Cell
+#special tokens
 UNK, PAD, BOS, EOS, FLD, TK_REP, TK_WREP, TK_UP, TK_MAJ = "xxunk xxpad xxbos xxeos xxfld xxrep xxwrep xxup xxmaj".split()
 
 # Cell
@@ -317,7 +318,7 @@ eu_langs = ["bg", "cs", "da", "de", "el", "en", "es", "et", "fi", "fr", "ga", "h
 
 # Cell
 class SentencePieceTokenizer():#TODO: pass the special tokens symbol to sp
-    "Spacy tokenizer for `lang`"
+    "SentencePiece tokenizer for `lang`"
     def __init__(self, lang='en', special_toks=None, sp_model=None, vocab_sz=None, max_vocab_sz=30000,
                  model_type='unigram', char_coverage=None, cache_dir='tmp'):
         try: from sentencepiece import SentencePieceTrainer,SentencePieceProcessor

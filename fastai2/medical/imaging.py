@@ -125,6 +125,7 @@ def windowed(self:DcmDataset, w, l):
     return self.scaled_px.windowed(w,l)
 
 # Cell
+# From https://radiopaedia.org/articles/windowing-ct
 dicom_windows = types.SimpleNamespace(
     brain=(80,40),
     subdural=(254,100),

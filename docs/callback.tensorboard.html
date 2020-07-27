@@ -154,7 +154,9 @@ description: "Integration with <a href='https://www.tensorflow.org/tensorboard'>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#                 get_y=RegexLabeller(pat = r&#39;/([^/]+)_\d+.jpg$&#39;))</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#                 get_items=get_image_files, </span>
+<span class="c1">#                 splitter=RandomSplitter(),</span>
+<span class="c1">#                 get_y=RegexLabeller(pat = r&#39;/([^/]+)_\d+.jpg$&#39;))</span>
 </pre></div>
 
     </div>
@@ -188,7 +190,7 @@ description: "Integration with <a href='https://www.tensorflow.org/tensorboard'>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#opt_func = partial(Adam, lr=slice(3e-3), wd=0.01, eps=1e-8)</span>
+<div class=" highlight hl-ipython3"><pre><span></span> 
 </pre></div>
 
     </div>
@@ -205,7 +207,7 @@ description: "Integration with <a href='https://www.tensorflow.org/tensorboard'>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#learn = cnn_learner(dls, resnet50, opt_func=opt_func, metrics=error_rate).to_fp16()</span>
+<div class=" highlight hl-ipython3"><pre><span></span> 
 </pre></div>
 
     </div>
@@ -222,7 +224,7 @@ description: "Integration with <a href='https://www.tensorflow.org/tensorboard'>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#learn.fit_one_cycle(3, cbs=TensorBoardCallback(Path.home()/&#39;tmp&#39;/&#39;runs&#39;, trace_model=False))</span>
+<div class=" highlight hl-ipython3"><pre><span></span> 
 </pre></div>
 
     </div>

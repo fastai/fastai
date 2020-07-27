@@ -263,6 +263,7 @@ class BBoxLabeler(Transform):
         return self.bbox if self.lbls is None else LabeledBBox(self.bbox, self.lbls)
 
 # Cell
+#LabeledBBox can be sent in a tl with MultiCategorize (depending on the order of the tls) but it is already decoded.
 @MultiCategorize
 def decodes(self, x:LabeledBBox): return x
 

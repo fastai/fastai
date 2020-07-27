@@ -63,6 +63,7 @@ class TrainEvalCallback(Callback):
 if not hasattr(defaults, 'callbacks'): defaults.callbacks = [TrainEvalCallback]
 
 # Cell
+#TODO: save_targs and save_preds only handle preds/targets that have one tensor, not tuples of tensors.
 class GatherPredsCallback(Callback):
     "`Callback` that saves the predictions and targets, optionally `with_loss`"
     def __init__(self, with_input=False, with_loss=False, save_preds=None, save_targs=None, concat_dim=0):

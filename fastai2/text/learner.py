@@ -55,6 +55,7 @@ def _rm_module(n):
     return '.'.join(t)
 
 # Cell
+#For previous versions compatibility, remove for release
 def clean_raw_keys(wgts):
     keys = list(wgts.keys())
     for k in keys:
@@ -63,6 +64,7 @@ def clean_raw_keys(wgts):
     return wgts
 
 # Cell
+#For previous versions compatibility, remove for release
 def load_model_text(file, model, opt, with_opt=None, device=None, strict=True):
     "Load `model` from `file` along with `opt` (if available, and if `with_opt`)"
     distrib_barrier()

@@ -285,7 +285,8 @@ description: "Callbacks that make decisions depending how a monitored metric/los
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">models_equal</span><span class="p">(</span><span class="n">model_1</span><span class="p">,</span> <span class="n">model_2</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># SOURCE: https://discuss.pytorch.org/t/check-if-models-have-same-weights/4351/6</span>
+<span class="k">def</span> <span class="nf">models_equal</span><span class="p">(</span><span class="n">model_1</span><span class="p">,</span> <span class="n">model_2</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="n">models_differ</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="k">for</span> <span class="n">key_item_1</span><span class="p">,</span> <span class="n">key_item_2</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">model_1</span><span class="o">.</span><span class="n">state_dict</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">model_2</span><span class="o">.</span><span class="n">state_dict</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
         <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">equal</span><span class="p">(</span><span class="n">key_item_1</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">key_item_2</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
@@ -293,7 +294,7 @@ description: "Callbacks that make decisions depending how a monitored metric/los
         <span class="k">else</span><span class="p">:</span>
             <span class="n">models_differ</span> <span class="o">+=</span> <span class="mi">1</span>
             <span class="k">if</span> <span class="p">(</span><span class="n">key_item_1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">key_item_2</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
-                <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Mismtach found at </span><span class="si">{</span><span class="n">key_item_1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Mismtach found at </span><span class="si">{key_item_1[0]}</span><span class="s1">&#39;</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">Exception</span>
                 <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Models being compared have different architectures&#39;</span><span class="p">)</span>

@@ -622,7 +622,7 @@ use <code>df_shrink_dtypes()</code> with all the same parameters for <code>df_sh
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">path</span> <span class="o">=</span> <span class="n">untar_data</span><span class="p">(</span><span class="n">URLs</span><span class="o">.</span><span class="n">ADULT_SAMPLE</span><span class="p">)</span>
 <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">path</span><span class="o">/</span><span class="s1">&#39;adult.csv&#39;</span><span class="p">)</span>
 <span class="n">new_df</span> <span class="o">=</span> <span class="n">df_shrink</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">int2uint</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Memory usage: </span><span class="si">{</span><span class="n">df</span><span class="o">.</span><span class="n">memory_usage</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="si">}</span><span class="s2"> --&gt; </span><span class="si">{</span><span class="n">new_df</span><span class="o">.</span><span class="n">memory_usage</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Memory usage: {df.memory_usage().sum()} --&gt; {new_df.memory_usage().sum()}&quot;</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -3954,7 +3954,21 @@ dtype: float64</pre>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># dtype: object&quot;&quot;&quot;)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># enc = tds[1]</span>
+<span class="c1"># test_eq(enc[0][0], tensor([2,1]))</span>
+<span class="c1"># test_close(enc[0][1], tensor([-0.628828]))</span>
+<span class="c1"># test_eq(enc[1], 1)</span>
+
+<span class="c1"># dec = tds.decode(enc)</span>
+<span class="c1"># assert isinstance(dec[0], TabularLine)</span>
+<span class="c1"># test_close(dec[0], pd.Series({&#39;a&#39;: 1, &#39;b_na&#39;: False, &#39;b&#39;: 1}))</span>
+<span class="c1"># test_eq(dec[1], &#39;a&#39;)</span>
+
+<span class="c1"># test_stdout(lambda: print(show_at(tds, 1)), &quot;&quot;&quot;a               1</span>
+<span class="c1"># b_na        False</span>
+<span class="c1"># b               1</span>
+<span class="c1"># category        a</span>
+<span class="c1"># dtype: object&quot;&quot;&quot;)</span>
 </pre></div>
 
     </div>
