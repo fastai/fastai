@@ -48,7 +48,6 @@ class NeptuneCallback(Callback):
 
     def after_batch(self):
         # log loss and opt.hypers
-        self.experiment.set_property('n_iter', str(self.learn.n_iter))
         if self.learn.training:
             self.experiment.log_metric('batch__smooth_loss', self.learn.smooth_loss)
             self.experiment.log_metric('batch__loss', self.learn.loss)
