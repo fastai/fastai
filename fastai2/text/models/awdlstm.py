@@ -44,7 +44,7 @@ class WeightDropout(Module):
         "Apply dropout to the raw weights."
         for layer in self.layer_names:
             raw_w = getattr(self, f'{layer}_raw')
-            setattr(self.module, layer, F.dropout(raw_w.data, p=self.weight_p, training=self.training))
+            setattr(self.module, layer, F.dropout(raw_w, p=self.weight_p, training=self.training))
 
     def forward(self, *args):
         self._setweights()
