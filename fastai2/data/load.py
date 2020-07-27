@@ -18,8 +18,8 @@ def _wif(worker_id):
     ds.wif()
 
 class _FakeLoader:
-    _IterableDataset_len_called,_auto_collation,collate_fn,drop_last,dataset_kind,_dataset_kind,_index_sampler = (
-        None,False,noops,False,_DatasetKind.Iterable,_DatasetKind.Iterable,Inf.count)
+    _IterableDataset_len_called,_auto_collation,collate_fn,drop_last,dataset_kind,_dataset_kind,_index_sampler,generator,prefetch_factor = (
+        None,False,noops,False,_DatasetKind.Iterable,_DatasetKind.Iterable,Inf.count,None,2)
     def __init__(self, d, pin_memory, num_workers, timeout):
         self.dataset,self.default,self.worker_init_fn = self,d,_wif
         store_attr(self, 'd,pin_memory,num_workers,timeout')
