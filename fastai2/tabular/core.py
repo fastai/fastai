@@ -96,7 +96,8 @@ def df_shrink_dtypes(df, skip=[], obj2cat=True, int2uint=False):
 
     typemap = {'int'   : [(np.dtype(x), np.iinfo(x).min, np.iinfo(x).max) for x in (np.int8, np.int16, np.int32, np.int64)],
                'uint'  : [(np.dtype(x), np.iinfo(x).min, np.iinfo(x).max) for x in (np.uint8, np.uint16, np.uint32, np.uint64)],
-               'float' : [(np.dtype(x), np.finfo(x).min, np.finfo(x).max) for x in (np.float32, np.float64, np.float128)],}
+               'float' : [(np.dtype(x), np.finfo(x).min, np.finfo(x).max) for x in (np.float32, np.float64, np.longdouble)]
+              }
     if obj2cat: typemap['object'] = 'category'  # User wants to categorify dtype('Object'), which may not always save space
     else:       excl_types.add('object')
 
