@@ -220,9 +220,14 @@ def to_concat(xs, dim=0):
 
 # Cell
 @patch
-def set_meta(self:Tensor, x):
+def set_meta(self:Tensor, x, copy_meta=False):
     "Set all metadata in `__dict__`"
-    if hasattr(x,'__dict__'): self.__dict__ = x.__dict__
+    if not hasattr(x,'__dict__'): return
+    d = x.__dict__
+    if copy_meta:
+        d = copy(d)
+        if '_meta' in d: d['_meta'] = copy(d['_meta'])
+    self.__dict__ = d
 
 # Cell
 @patch
@@ -270,7 +275,7 @@ def _patch_tb():
         def _f(self, *args, **kwargs):
             cls = self.__class__
             res = getattr(super(TensorBase, self), fn)(*args, **kwargs)
-            return retain_type(res, self)
+            return retain_type(res, self, copy_meta=True)
         return _f
 
     t = tensor([1])

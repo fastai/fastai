@@ -45,7 +45,6 @@ def parallel_ctx(self: Learner, device_ids=None):
     finally:
         self.detach_parallel()
 
-
 # Cell
 @patch
 def reset(self: DistributedDataParallel):
@@ -167,7 +166,6 @@ def distrib_ctx(self: Learner, cuda_id=None):
     finally:
         self.detach_distributed()
         if cleanup_dpg: teardown_distrib()
-
 
 # Cell
 def rank0_first(func):

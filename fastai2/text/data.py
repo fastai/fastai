@@ -183,7 +183,7 @@ class SortedDL(TfmdDL):
 
     @delegates(TfmdDL.new)
     def new(self, dataset=None, **kwargs):
-        if kwargs['val_res'] is not None: res = kwargs['val_res']
+        if 'val_res' in kwargs: res = kwargs['val_res']
         else: res = self.res if dataset is None else None
         return super().new(dataset=dataset, res=res, **kwargs)
 
