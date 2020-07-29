@@ -38,10 +38,16 @@ def RegressionBlock(n_out=None):
 from inspect import isfunction,ismethod
 
 # Cell
+def _merge_grouper(o):
+    if isinstance(o, LambdaType): return id(o)
+    elif isinstance(o, type): return o
+    elif (isfunction(o) or ismethod(o)): return o.__qualname__
+    return o.__class__
+
+# Cell
 def _merge_tfms(*tfms):
     "Group the `tfms` in a single list, removing duplicates (from the same class) and instantiating"
-    g = groupby(concat(*tfms), lambda o:
-        o if isinstance(o, type) else o.__qualname__ if (isfunction(o) or ismethod(o)) else o.__class__)
+    g = groupby(concat(*tfms), _merge_grouper)
     return L(v[-1] for k,v in g.items()).map(instantiate)
 
 def _zip(x): return L(x).zip()
