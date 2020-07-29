@@ -1,10 +1,14 @@
 SRC = $(wildcard nbs/*.ipynb)
 
-all: fastai2 docs
+all: fastai2 docs test
 
 fastai2: $(SRC)
+	nbdev_clean_nbs
 	nbdev_build_lib
 	touch fastai2
+
+update_lib:
+	pip install nbdev --upgrade
 
 docs_serve: docs
 	cd docs && bundle exec jekyll serve
