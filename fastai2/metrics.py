@@ -186,14 +186,14 @@ def MatthewsCorrCoef(sample_weight=None, **kwargs):
 @delegates(scs_to_fastai)
 def PearsonCorrCoef(**kwargs):
     "Pearson correlation coefficient"
-    def pearsonr(x,y): return spm.pearsonr(x,y)[0]
+    def pearsonr(x,y): return scs.pearsonr(x,y)[0]
     return scs_to_fastai(pearsonr, invert_arg=False, **kwargs)
 
 # Cell
 @delegates(scs_to_fastai)
 def SpearmanCorrCoef(axis=0, nan_policy='propagate', **kwargs):
     "Spearman correlation coefficient"
-    def spearmanr(a,b=None,**kwargs): return spm.spearmanr(a,b,**kwargs)[0]
+    def spearmanr(a,b=None,**kwargs): return scs.spearmanr(a,b,**kwargs)[0]
     return scs_to_fastai(spearmanr, invert_arg=False, axis=axis, nan_policy=nan_policy, **kwargs)
 
 # Cell

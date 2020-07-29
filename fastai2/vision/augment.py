@@ -30,6 +30,7 @@ class RandTransform(Transform):
 
     def __call__(self, b, split_idx=None, **kwargs):
         self.before_call(b, split_idx=split_idx)
+#         self._do_call(self.before_call, b, split_idx=split_idx)
         return super().__call__(b, split_idx=split_idx, **kwargs) if self.do else b
 
 # Cell

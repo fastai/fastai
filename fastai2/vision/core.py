@@ -248,7 +248,6 @@ class PointScaler(Transform):
 # Cell
 class BBoxLabeler(Transform):
     def setups(self, dl): self.vocab = dl.vocab
-    def before_call(self): self.bbox,self.lbls = None,None
 
     def decode (self, x, **kwargs):
         self.bbox,self.lbls = None,None
