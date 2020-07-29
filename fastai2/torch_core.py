@@ -236,21 +236,24 @@ def get_meta(self:Tensor, n, d=None):
     return getattr(self, '_meta', {}).get(n, d)
 
 # Cell
+if not hasattr(torch,'as_subclass'):
+    setattr(torch, 'as_subclass', torch.Tensor.as_subclass)
+
+# Cell
 @patch
 def as_subclass(self:Tensor, typ):
-    "Cast to `typ` (should be in future PyTorch version, so remove this then)"
-    res = torch.Tensor._make_subclass(typ, self)
-    return retain_meta(self, res)
+    "Cast to `typ` and include `__dict__` and meta"
+    return retain_meta(self, torch.as_subclass(self, typ))
 
 # Cell
 class TensorBase(Tensor):
     def __new__(cls, x, **kwargs):
         res = cast(tensor(x), cls)
-        res._meta = kwargs
+        if kwargs: res._meta = kwargs
         return res
 
     @classmethod
-    def _before_cast(cls, x): return x if isinstance(x,Tensor) else tensor(x)
+    def _before_cast(cls, x): return tensor(x)
 
     def __reduce_ex__(self,proto):
         torch.utils.hooks.warn_if_has_hooks(self)
