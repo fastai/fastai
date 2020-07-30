@@ -44,6 +44,7 @@ mimetypes.init()
 
 # PyTorch warnings
 warnings.filterwarnings("ignore", message='.*nonzero.*', category=UserWarning)
+warnings.filterwarnings("ignore", message='.*grid_sample.*', category=UserWarning)
 
 def is_iter(o):
     "Test whether `o` can be used in a `for` loop"
