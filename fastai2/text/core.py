@@ -155,6 +155,7 @@ def tokenize_folder(path, extensions=None, folders=None, output_dir=None, n_work
     path,extensions = Path(path),ifnone(extensions, ['.txt'])
     fnames = get_files(path, extensions=extensions, recurse=True, folders=folders)
     output_dir = Path(ifnone(output_dir, path.parent/f'{path.name}_tok'))
+    output_dir.mkdir(exist_ok=True)
     rules = partial(Path.read, encoding=encoding) + L(ifnone(rules, defaults.text_proc_rules.copy()))
 
     lengths,counter = {},Counter()
