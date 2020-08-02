@@ -358,9 +358,11 @@ def _prepare_mat(x, mat):
 # Cell
 class AffineCoordTfm(RandTransform):
     "Combine and apply affine and coord transforms"
-    order,split_idx,store_attrs = 30,None,'size,mode,pad_mode,mode_mask,align_corners'
+    order,split_idx,store_attrs = 30,None,'mode,pad_mode'
     def __init__(self, aff_fs=None, coord_fs=None, size=None, mode='bilinear', pad_mode=PadMode.Reflection,
-                 mode_mask='nearest', align_corners=None):
+                 mode_mask='nearest', align_corners=None, **kwargs):
+        super().__init__(**kwargs)
+        store_attr(self, 'size,mode,pad_mode,mode_mask,align_corners')
         self.aff_fs,self.coord_fs = L(aff_fs),L(coord_fs)
         self.cp_size = None if size is None else (size,size) if isinstance(size, int) else tuple(size)
 
@@ -394,12 +396,10 @@ class AffineCoordTfm(RandTransform):
 # Cell
 class RandomResizedCropGPU(RandTransform):
     "Picks a random scaled crop of an image and resize it to `size`"
-    split_idx,order = None,30
+    split_idx,order,store_attrs = None,30,'size,min_scale,ratio,mode,valid_scale'
     def __init__(self, size, min_scale=0.08, ratio=(3/4, 4/3), mode='bilinear', valid_scale=1., **kwargs):
         super().__init__(**kwargs)
         self.size = (size,size) if isinstance(size, int) else size
-        store_attr(self, 'min_scale,ratio,mode,valid_scale')
-        self.store_attrs = 'size,min_scale,ratio,valid_scale'
         store_attr(self, self.store_attrs)
 
     def before_call(self, b, split_idx):
@@ -478,12 +478,10 @@ def flip_batch(x: (TensorImage,TensorMask,TensorPoint,TensorBBox), p=0.5, draw=N
 
 # Cell
 class Flip(AffineCoordTfm):
+    "Randomly flip a batch of images with a probability `p`"
     def __init__(self, p=0.5, draw=None, size=None, mode='bilinear', pad_mode=PadMode.Reflection, align_corners=True, batch=False):
-        "Randomly flip a batch of images with a probability `p`"
         aff_fs = partial(flip_mat, p=p, draw=draw, batch=batch)
-        super().__init__(aff_fs, size=size, mode=mode, pad_mode=pad_mode, align_corners=align_corners)
-        self.store_attrs = 'p'
-        store_attr(self, self.store_attrs)
+        super().__init__(aff_fs, size=size, mode=mode, pad_mode=pad_mode, align_corners=align_corners, p=p)
 
 # Cell
 class DeterministicDraw():
@@ -497,11 +495,9 @@ class DeterministicDraw():
 
 # Cell
 class DeterministicFlip(Flip):
-    def __init__(self, size=None, mode='bilinear', pad_mode=PadMode.Reflection, align_corners=True):
-        "Flip the batch every other call"
-        super().__init__(p=1., draw=DeterministicDraw([0,1]), mode=mode, pad_mode=pad_mode, align_corners=align_corners)
-        self.store_attrs = 'size'
-        store_attr(self, self.store_attrs)
+    "Flip the batch every other call"
+    def __init__(self, size=None, mode='bilinear', pad_mode=PadMode.Reflection, align_corners=True, **kwargs):
+        super().__init__(p=1., draw=DeterministicDraw([0,1]), mode=mode, pad_mode=pad_mode, align_corners=align_corners, **kwargs)
 
 # Cell
 def dihedral_mat(x, p=0.5, draw=None, batch=False):
@@ -526,11 +522,11 @@ def dihedral_batch(x: (TensorImage,TensorMask,TensorPoint,TensorBBox), p=0.5, dr
 
 # Cell
 class Dihedral(AffineCoordTfm):
+    "Apply a random dihedral transformation to a batch of images with a probability `p`"
+    store_attrs = 'p'
     def __init__(self, p=0.5, draw=None, size=None, mode='bilinear', pad_mode=PadMode.Reflection, align_corners=None, batch=False):
-        "Apply a random dihedral transformation to a batch of images with a probability `p`"
         f = partial(dihedral_mat, p=p, draw=draw, batch=batch)
         super().__init__(aff_fs=f, size=size, mode=mode, pad_mode=pad_mode, align_corners=align_corners)
-        self.store_attrs = 'p'
         store_attr(self, self.store_attrs)
 
 # Cell
@@ -558,11 +554,11 @@ def rotate(x: (TensorImage,TensorMask,TensorPoint,TensorBBox), size=None, mode=N
 
 # Cell
 class Rotate(AffineCoordTfm):
+    "Apply a random rotation of at most `max_deg` with probability `p` to a batch of images"
+    store_attrs = 'p,max_deg'
     def __init__(self, max_deg=10, p=0.5, draw=None, size=None, mode='bilinear', pad_mode=PadMode.Reflection, align_corners=True, batch=False):
-        "Apply a random rotation of at most `max_deg` with probability `p` to a batch of images"
         aff_fs = partial(rotate_mat, max_deg=max_deg, p=p, draw=draw, batch=batch)
         super().__init__(aff_fs=aff_fs, size=size, mode=mode, pad_mode=pad_mode, align_corners=align_corners)
-        self.store_attrs = 'max_deg,p'
         store_attr(self, self.store_attrs)
 
 # Cell
@@ -592,12 +588,12 @@ def zoom(x: (TensorImage,TensorMask,TensorPoint,TensorBBox), size=None, mode='bi
 
 # Cell
 class Zoom(AffineCoordTfm):
+    "Apply a random zoom of at most `max_zoom` with probability `p` to a batch of images"
+    store_attrs = 'p,min_zoom,max_zoom'
     def __init__(self,min_zoom=1., max_zoom=1.1, p=0.5, draw=None, draw_x=None, draw_y=None, size=None, mode='bilinear',
          pad_mode=PadMode.Reflection, batch=False, align_corners=True):
-        "Apply a random zoom of at most `max_zoom` with probability `p` to a batch of images"
         aff_fs = partial(zoom_mat, min_zoom=min_zoom, max_zoom=max_zoom, p=p, draw=draw, draw_x=draw_x, draw_y=draw_y, batch=batch)
         super().__init__(aff_fs, size=size, mode=mode, pad_mode=pad_mode, align_corners=align_corners)
-        self.store_attrs = 'min_zoom,max_zoom,p'
         store_attr(self, self.store_attrs)
 
 # Cell
@@ -627,6 +623,7 @@ def apply_perspective(coords, coeffs):
 
 # Cell
 class _WarpCoord():
+    store_attrs = 'magnitude'
     def __init__(self, magnitude=0.2, p=0.5, draw_x=None, draw_y=None, batch=False):
         store_attr(self, "magnitude,p,draw_x,draw_y,batch")
         self.coeffs = None
@@ -660,12 +657,12 @@ def warp(x:(TensorImage,TensorMask,TensorPoint,TensorBBox), size=None, mode='bil
 
 # Cell
 class Warp(AffineCoordTfm):
+    "Apply perspective warping with `magnitude` and `p` on a batch of matrices"
+    store_attrs = 'magnitude,p'
     def __init__(self, magnitude=0.2, p=0.5, draw_x=None, draw_y=None,size=None, mode='bilinear',
          pad_mode=PadMode.Reflection, batch=False, align_corners=True):
-        "Apply perspective warping with `magnitude` and `p` on a batch of matrices"
         coord_fs = _WarpCoord(magnitude=magnitude, p=p, draw_x=draw_x, draw_y=draw_y, batch=batch)
-        super().__init__(coord_fs=coord_fs, size=size, mode=mode, pad_mode=pad_mode, align_corners=align_corners)
-        self.store_attrs = 'magnitude,p'
+        super().__init__(coord_fs=coord_fs, size=size, mode=mode, pad_mode=pad_mode, align_corners=align_corners )
         store_attr(self, self.store_attrs)
 
 # Cell
@@ -693,8 +690,6 @@ class LightingTfm(RandTransform):
 class _BrightnessLogit():
     def __init__(self, max_lighting=0.2, p=0.75, draw=None, batch=False):
         store_attr(self, 'max_lighting,p,draw,batch')
-        self.store_attrs = 'max_lighting,p'
-        store_attr(self, self.store_attrs)
 
     def _def_draw(self, x):
         if not self.batch: return x.new(x.size(0)).uniform_(0.5*(1-self.max_lighting), 0.5*(1+self.max_lighting))
@@ -715,11 +710,11 @@ def brightness(x: TensorImage, **kwargs):
 
 # Cell
 class Brightness(LightingTfm):
+    store_attrs = 'p,max_lighting'
     def __init__(self, max_lighting=0.2, p=0.75, draw=None, batch=False):
         "Apply change in brightness of `max_lighting` to batch of images with probability `p`."
         super().__init__(_BrightnessLogit(max_lighting, p, draw, batch))
-        self.store_attrs = 'max_lighting,p'
-        store_attr(self, self.store_attrs)
+        store_attr(self,self.store_attrs)
 
 # Cell
 class _ContrastLogit():
@@ -746,10 +741,10 @@ def contrast(x: TensorImage, **kwargs):
 
 # Cell
 class Contrast(LightingTfm):
+    "Apply change in contrast of `max_lighting` to batch of images with probability `p`."
+    store_attrs = 'max_lighting,p'
     def __init__(self,max_lighting=0.2, p=0.75, draw=None, batch=False):
-        "Apply change in contrast of `max_lighting` to batch of images with probability `p`."
         super().__init__(_ContrastLogit(max_lighting, p, draw, batch))
-        self.store_attrs = 'max_lighting,p'
         store_attr(self, self.store_attrs)
 
 # Cell
@@ -774,12 +769,11 @@ def _slice(area, sz):
 # Cell
 class RandomErasing(RandTransform):
     "Randomly selects a rectangle region in an image and randomizes its pixels."
-    order = 100 # After Normalize
+    order,store_attrs = 100,'p,sl,sh,min_aspect,max_count' # After Normalize
     def __init__(self, p=0.5, sl=0., sh=0.3, min_aspect=0.3, max_count=1):
         super().__init__(p=p)
         log_ratio = (math.log(min_aspect), math.log(1/min_aspect))
-        store_attr(self, 'sl,sh,log_ratio,max_count')
-        self.store_attrs = 'sl,sh,max_count'
+        store_attr(self, 'log_ratio')
         store_attr(self, self.store_attrs)
 
     def _bounds(self, area, img_h, img_w):
