@@ -27,7 +27,7 @@ class TensorText(TensorBase):   pass
 class LMTensorText(TensorText): pass
 
 TensorText.__doc__ = "Semantic type for a tensor representing text"
-TensorText.__doc__ = "Semantic type for a tensor representing text in language modeling"
+LMTensorText.__doc__ = "Semantic type for a tensor representing text in language modeling"
 
 # Cell
 class Numericalize(Transform):
