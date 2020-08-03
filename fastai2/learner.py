@@ -226,7 +226,7 @@ class Learner():
             idxs = dl.get_idxs()
             dl = dl.new(get_idxs = _ConstantFunc(idxs))
         cb = GatherPredsCallback(with_input=with_input, with_loss=with_loss, **kwargs)
-        ctx_mgrs = [self.no_logging(), self.added_cbs(cb), self.no_mbar()]
+        ctx_mgrs = [self.no_logging(), self.added_cbs(L(cbs)+[cb]), self.no_mbar()]
         if with_loss: ctx_mgrs.append(self.loss_not_reduced())
         with ExitStack() as stack:
             for mgr in ctx_mgrs: stack.enter_context(mgr)

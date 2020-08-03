@@ -42,7 +42,7 @@ class Config:
         "create new config with default paths and set `version` to 2."
         config = {'data_path':    str(self.config_path/'data'),
                   'archive_path': str(self.config_path/'archive'),
-                  'storage_path': str(self.config_path/'data'),
+                  'storage_path': '/tmp',
                   'model_path':   str(self.config_path/'models'),
                   'version':      2}
         if cfg is not None:

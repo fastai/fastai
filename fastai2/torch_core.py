@@ -10,8 +10,9 @@ __all__ = ['progress_bar', 'master_bar', 'subplots', 'show_image', 'show_titled_
            'one_hot_decode', 'params', 'trainable_params', 'norm_types', 'bn_bias_params', 'batch_to_samples', 'logit',
            'num_distrib', 'rank_distrib', 'distrib_barrier', 'base_doc', 'doc', 'nested_reorder', 'to_image',
            'make_cross_image', 'show_image_batch', 'requires_grad', 'init_default', 'cond_init', 'apply_leaf',
-           'apply_init', 'set_num_threads', 'ProcessPoolExecutor', 'parallel', 'run_procs', 'parallel_gen',
-           'script_use_ctx', 'script_save_ctx', 'script_fwd', 'script_bwd', 'grad_module', 'flatten_check']
+           'apply_init', 'set_num_threads', 'ProcessPoolExecutor', 'parallel', 'parallel_chunks', 'run_procs',
+           'parallel_gen', 'script_use_ctx', 'script_save_ctx', 'script_fwd', 'script_bwd', 'grad_module',
+           'flatten_check']
 
 # Cell
 from .imports import *
@@ -721,6 +722,15 @@ def parallel(f, items, *args, n_workers=defaults.cpus, total=None, progress=True
             if total is None: total = len(items)
             r = progress_bar(r, total=total, leave=False)
         return L(r)
+
+# Cell
+@delegates(parallel)
+def parallel_chunks(f, items, n_workers=0, **kwargs):
+    "Calls `parallel` after first creating `n_workers` batches from `items`"
+    nc = 1 if n_workers==0 else n_workers
+    chunks = list(chunked(items, n_chunks=nc))
+    res = parallel(f, chunks, n_workers= n_workers, **kwargs)
+    return res.sum()
 
 # Cell
 def run_procs(f, f_done, args):

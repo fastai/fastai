@@ -387,6 +387,8 @@ class AffineCoordTfm(RandTransform):
 
     def compose(self, tfm):
         "Compose `self` with another `AffineCoordTfm` to only do the interpolation step once"
+        # TODO: keep `name` up to date with the combination
+        # TODO: have option to only show a subset of the attrs, e.g. for `Flip`
         self.aff_fs   += tfm.aff_fs
         self.coord_fs += tfm.coord_fs
 
