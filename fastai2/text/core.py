@@ -2,10 +2,10 @@
 
 __all__ = ['UNK', 'PAD', 'BOS', 'EOS', 'FLD', 'TK_REP', 'TK_WREP', 'TK_UP', 'TK_MAJ', 'spec_add_spaces',
            'rm_useless_spaces', 'replace_rep', 'replace_wrep', 'fix_html', 'replace_all_caps', 'replace_maj',
-           'lowercase', 'replace_space', 'BaseTokenizer', 'SpacyTokenizer', 'WordTokenizer', 'TokenizeBatch',
-           'tokenize1', 'parallel_tokenize', 'fn_counter_pkl', 'fn_lengths_pkl', 'tokenize_folder',
-           'read_tokenized_file', 'tokenize_files', 'tokenize_texts', 'tokenize_df', 'tokenize_csv',
-           'load_tokenized_csv', 'get_tokenizer', 'Tokenizer', 'eu_langs', 'SentencePieceTokenizer', 'SubwordTokenizer']
+           'lowercase', 'replace_space', 'BaseTokenizer', 'SpacyTokenizer', 'WordTokenizer', 'TokenizeWithRules',
+           'tokenize1', 'parallel_tokenize', 'fn_counter_pkl', 'fn_lengths_pkl', 'tokenize_folder', 'tokenize_files',
+           'tokenize_texts', 'tokenize_df', 'tokenize_csv', 'load_tokenized_csv', 'Tokenizer', 'eu_langs',
+           'SentencePieceTokenizer', 'SubwordTokenizer']
 
 # Cell
 from ..torch_basics import *
@@ -116,79 +116,77 @@ class SpacyTokenizer():
         self.pipe,self.buf_sz = nlp.pipe,buf_sz
 
     def __call__(self, items):
-        return (L(doc).attrgot('text') for doc in self.pipe(items, batch_size=self.buf_sz))
+        return (L(doc).attrgot('text') for doc in self.pipe(map(str,items), batch_size=self.buf_sz))
 
 # Cell
 WordTokenizer = SpacyTokenizer
 
 # Cell
-class TokenizeBatch:
-    "A wrapper around `tok_func` to apply `rules` and tokenize in parallel"
-    def __init__(self, tok_func=SpacyTokenizer, rules=None, post_rules=None, **tok_kwargs ):
+class TokenizeWithRules:
+    "A wrapper around `tok` which applies `rules`, then tokenizes, then applies `post_rules`"
+    def __init__(self, tok, rules=None, post_rules=None):
         self.rules = L(ifnone(rules, defaults.text_proc_rules))
         self.post_f = compose(*L(ifnone(post_rules, defaults.text_postproc_rules)))
-        self.tok = tok_func(**tok_kwargs)
+        self.tok = tok
 
     def __call__(self, batch):
         return (L(o).map(self.post_f) for o in self.tok(maps(*self.rules, batch)))
 
 # Cell
-def tokenize1(text, tok_func=SpacyTokenizer, rules=None, post_rules=None, **tok_kwargs):
-    "Tokenize one `text` with an instance of `tok_func` and some `rules`"
-    return first(TokenizeBatch(tok_func, rules, post_rules, **tok_kwargs)([text]))
+@delegates(TokenizeWithRules)
+def tokenize1(text, tok, **kwargs):
+    "Call `TokenizeWithRules` with a single text"
+    return first(TokenizeWithRules(tok=tok, **kwargs)([text]))
 
 # Cell
-def parallel_tokenize(items, tok_func, rules, as_gen=False, n_workers=defaults.cpus, **tok_kwargs):
-    "Calls a potential setup on `tok_func` before launching `TokenizeBatch` in parallel"
-    if hasattr(tok_func, 'setup'): tok_kwargs = tok_func(**tok_kwargs).setup(items, rules)
-    return parallel_gen(TokenizeBatch, items, as_gen=as_gen, tok_func=tok_func,
-                        rules=rules, n_workers=n_workers, **tok_kwargs)
+def parallel_tokenize(items, tok=None, rules=None, n_workers=defaults.cpus, **kwargs):
+    "Calls optional `setup` on `tok` before launching `TokenizeWithRules` using `parallel_gen"
+    if tok is None: tok = WordTokenizer()
+    if hasattr(tok, 'setup'): tok.setup(items, rules)
+    return parallel_gen(TokenizeWithRules, items, tok=tok, rules=rules, n_workers=n_workers, **kwargs)
 
 # Cell
 fn_counter_pkl = 'counter.pkl'
 fn_lengths_pkl = 'lengths.pkl'
 
 # Cell
-def tokenize_folder(path, extensions=None, folders=None, output_dir=None, n_workers=defaults.cpus,
-                    rules=None, tok_func=SpacyTokenizer, encoding='utf8', **tok_kwargs):
-    "Tokenize text files in `path` in parallel using `n_workers`"
-    path,extensions = Path(path),ifnone(extensions, ['.txt'])
-    fnames = get_files(path, extensions=extensions, recurse=True, folders=folders)
-    output_dir = Path(ifnone(output_dir, path.parent/f'{path.name}_tok'))
-    output_dir.mkdir(exist_ok=True)
-    rules = partial(Path.read, encoding=encoding) + L(ifnone(rules, defaults.text_proc_rules.copy()))
-
-    lengths,counter = {},Counter()
-    for i,tok in parallel_tokenize(fnames, tok_func, rules, as_gen=True, n_workers=n_workers, **tok_kwargs):
-        out = output_dir/fnames[i].relative_to(path)
-        out.write(' '.join(tok))
-        lengths[str(fnames[i].relative_to(path))] = len(tok)
-        counter.update(tok)
-
-    (output_dir/fn_lengths_pkl).save(lengths)
-    (output_dir/fn_counter_pkl).save(counter)
-
-# Cell
-def read_tokenized_file(f): return L(f.read().split(' '))
-
-# Cell
-def tokenize_files(files, path, output_dir, output_names=None, n_workers=defaults.cpus, rules=None, tok_func=SpacyTokenizer,
-                   encoding='utf8', **tok_kwargs):
+def _tokenize_files(func, files, path, output_dir=None, output_names=None, n_workers=defaults.cpus, rules=None, tok=None,
+                   encoding='utf8', skip_if_exists=False):
     "Tokenize text `files` in parallel using `n_workers`"
-    output_dir = Path(output_dir)
+    if tok is None: tok = WordTokenizer()
+    output_dir = Path(ifnone(output_dir, path.parent/f'{path.name}_tok'))
+    if skip_if_exists and output_dir.exists(): return output_dir
+    output_dir.mkdir(exist_ok=True)
     if output_names is None: output_names = L(output_dir/f.relative_to(path) for f in files)
     rules = partial(Path.read, encoding=encoding) + L(ifnone(rules, defaults.text_proc_rules.copy()))
 
-    lengths = (output_dir/fn_lengths_pkl).load() if (output_dir/fn_lengths_pkl).exists() else {}
-    counter = (output_dir/fn_counter_pkl).load() if (output_dir/fn_counter_pkl).exists() else Counter()
-    for i,tok in parallel_tokenize(files, tok_func, rules, as_gen=True, n_workers=n_workers, **tok_kwargs):
-        out = output_dir/output_names[i]
+    lengths,counter = {},Counter()
+    for i,tok in parallel_tokenize(files, tok, rules, n_workers=n_workers):
+        out = func(i,output_dir)
         out.write(' '.join(tok))
         lengths[str(files[i].relative_to(path))] = len(tok)
         counter.update(tok)
 
     (output_dir/fn_lengths_pkl).save(lengths)
     (output_dir/fn_counter_pkl).save(counter)
+    return output_dir
+
+# Cell
+@delegates(_tokenize_files)
+def tokenize_folder(path, extensions=None, folders=None, output_dir=None, skip_if_exists=True, **kwargs):
+    "Tokenize text files in `path` in parallel using `n_workers`"
+    path,extensions = Path(path),ifnone(extensions, ['.txt'])
+    files = get_files(path, extensions=extensions, recurse=True, folders=folders)
+    def _f(i,output_dir): return output_dir/files[i].relative_to(path)
+    return _tokenize_files(_f, files, path, skip_if_exists=skip_if_exists, **kwargs)
+
+# Cell
+@delegates(_tokenize_files)
+def tokenize_files(files, path, output_dir, output_names=None, **kwargs):
+    "Tokenize text `files` in parallel using `n_workers`"
+    if output_names is None: output_names = L(output_dir/f.relative_to(path) for f in files)
+    def _f(i,output_dir): return output_dir/output_names[i]
+    return _tokenize_files(_f, files, path, output_dir=output_dir, **kwargs)
 
 # Cell
 def _join_texts(df, mark_fields=False):
@@ -199,23 +197,23 @@ def _join_texts(df, mark_fields=False):
     return text_col.values
 
 # Cell
-def tokenize_texts(texts, n_workers=defaults.cpus, rules=None, tok_func=SpacyTokenizer, **tok_kwargs):
+def tokenize_texts(texts, n_workers=defaults.cpus, rules=None, tok=None):
     "Tokenize `texts` in parallel using `n_workers`"
     rules = L(ifnone(rules, defaults.text_proc_rules.copy()))
-    outputs = L(parallel_tokenize(texts, tok_func, rules, n_workers=n_workers, **tok_kwargs)
+    outputs = L(parallel_tokenize(texts, tok=tok, rules=rules, n_workers=n_workers)
                ).sorted().itemgot(1)
     return outputs
 
 # Cell
 def tokenize_df(df, text_cols, n_workers=defaults.cpus, rules=None, mark_fields=None,
-                tok_func=SpacyTokenizer, res_col_name="text", **tok_kwargs):
+                tok=None, res_col_name="text"):
     "Tokenize texts in `df[text_cols]` in parallel using `n_workers`"
     text_cols = [df.columns[c] if isinstance(c, int) else c for c in L(text_cols)]
     #mark_fields defaults to False if there is one column of texts, True if there are multiple
     if mark_fields is None: mark_fields = len(text_cols)>1
     rules = L(ifnone(rules, defaults.text_proc_rules.copy()))
     texts = _join_texts(df[text_cols], mark_fields=mark_fields)
-    outputs = L(parallel_tokenize(texts, tok_func, rules, n_workers=n_workers, **tok_kwargs)
+    outputs = L(parallel_tokenize(texts, tok, rules, n_workers=n_workers)
                ).sorted().itemgot(1)
 
     other_cols = df.columns[~df.columns.isin(text_cols)]
@@ -226,7 +224,7 @@ def tokenize_df(df, text_cols, n_workers=defaults.cpus, rules=None, mark_fields=
 
 # Cell
 def tokenize_csv(fname, text_cols, outname=None, n_workers=4, rules=None, mark_fields=None,
-                 tok_func=SpacyTokenizer, header='infer', chunksize=50000, **tok_kwargs):
+                 tok=None, header='infer', chunksize=50000):
     "Tokenize texts in the `text_cols` of the csv `fname` in parallel using `n_workers`"
     df = pd.read_csv(fname, header=header, chunksize=chunksize)
     outname = Path(ifnone(outname, fname.parent/f'{fname.stem}_tok.csv'))
@@ -234,7 +232,7 @@ def tokenize_csv(fname, text_cols, outname=None, n_workers=4, rules=None, mark_f
 
     for i,dfp in enumerate(df):
         out,c = tokenize_df(dfp, text_cols, n_workers=n_workers, rules=rules,
-                            mark_fields=mark_fields, tok_func=tok_func, **tok_kwargs)
+                            mark_fields=mark_fields, tok=tok)
         out.text = out.text.str.join(' ')
         out.to_csv(outname, header=(None,header)[i==0], index=False, mode=('a','w')[i==0])
         cnt.update(c)
@@ -251,34 +249,29 @@ def load_tokenized_csv(fname):
     return out,fname.with_suffix('.pkl').load()
 
 # Cell
-def get_tokenizer(tok_func=SpacyTokenizer, **kwargs):
-    sign = str(inspect.signature(tok_func))
-    for k in list(kwargs.keys()):
-        if k not in sign: kwargs.pop(k)
-    return tok_func(**kwargs)
-
-# Cell
 class Tokenizer(Transform):
+    "Provides a consistent `Transform` interface to tokenizers operating on `DataFrame`s and folders"
     input_types = (str, list, L, tuple, Path)
-    def __init__(self, tokenizer, rules=None, counter=None, lengths=None, mode=None, sep=' '):
-        store_attr(self, 'tokenizer,counter,lengths,mode,sep')
+    def __init__(self, tok, rules=None, counter=None, lengths=None, mode=None, sep=' '):
+        store_attr(self, 'tok,counter,lengths,mode,sep')
         self.rules = defaults.text_proc_rules if rules is None else rules
 
     @classmethod
     @delegates(tokenize_df, keep=True)
-    def from_df(cls, text_cols, tok_func=SpacyTokenizer, rules=None, sep=' ', **kwargs):
-        res = cls(get_tokenizer(tok_func, **kwargs), rules=rules, mode='df')
-        res.kwargs,res.train_setup = merge({'tok_func': tok_func}, kwargs),False
+    def from_df(cls, text_cols, tok=None, rules=None, sep=' ', **kwargs):
+        if tok is None: tok = WordTokenizer()
+        res = cls(tok, rules=rules, mode='df')
+        res.kwargs,res.train_setup = merge({'tok': tok}, kwargs),False
         res.text_cols,res.sep = text_cols,sep
         return res
 
     @classmethod
     @delegates(tokenize_folder, keep=True)
-    def from_folder(cls, path, tok_func=SpacyTokenizer, rules=None, **kwargs):
+    def from_folder(cls, path, tok=None, rules=None, **kwargs):
         path = Path(path)
-        output_dir = Path(ifnone(kwargs.get('output_dir'), path.parent/f'{path.name}_tok'))
-        if not output_dir.exists(): tokenize_folder(path, tok_func=tok_func, rules=rules, **kwargs)
-        res = cls(get_tokenizer(tok_func, **kwargs), counter=(output_dir/fn_counter_pkl).load(),
+        if tok is None: tok = WordTokenizer()
+        output_dir = tokenize_folder(path, tok=tok, rules=rules, **kwargs)
+        res = cls(tok, counter=(output_dir/fn_counter_pkl).load(),
                   lengths=(output_dir/fn_lengths_pkl).load(), rules=rules, mode='folder')
         res.path,res.output_dir = path,output_dir
         return res
@@ -296,7 +289,7 @@ class Tokenizer(Transform):
         else: return self._tokenize1(o.read())
 
     def encodes(self, o:str): return self._tokenize1(o)
-    def _tokenize1(self, o): return first(self.tokenizer([compose(*self.rules)(o)]))
+    def _tokenize1(self, o): return first(self.tok([compose(*self.rules)(o)]))
 
     def get_lengths(self, items):
         if self.lengths is None: return None
@@ -309,9 +302,6 @@ class Tokenizer(Transform):
             except: return None
 
     def decodes(self, o): return TitledStr(self.sep.join(o))
-
-    @property
-    def special_toks(self,): return self.tokenizer.special_toks
 
 # Cell
 eu_langs = ["bg", "cs", "da", "de", "el", "en", "es", "et", "fi", "fr", "ga", "hr", "hu",
@@ -343,7 +333,7 @@ class SentencePieceTokenizer():#TODO: pass the special tokens symbol to sp
                 if len(cnt)//4 > self.max_vocab_sz: return self.max_vocab_sz
         res = len(cnt)//4
         while res%8 != 0: res+=1
-        return res
+        return max(res,29)
 
     def train(self, raw_text_path):
         "Train a sentencepiece tokenizer on `texts` and save it in `path/tmp_dir`"
@@ -354,7 +344,7 @@ class SentencePieceTokenizer():#TODO: pass the special tokens symbol to sp
             f"--input={raw_text_path} --vocab_size={vocab_sz} --model_prefix={self.cache_dir/'spm'}",
             f"--character_coverage={self.char_coverage} --model_type={self.model_type}",
             f"--unk_id={len(spec_tokens)} --pad_id=-1 --bos_id=-1 --eos_id=-1 --minloglevel=2",
-            f"--user_defined_symbols={','.join(spec_tokens)}"]))
+            f"--user_defined_symbols={','.join(spec_tokens)} --hard_vocab_limit=false"]))
         raw_text_path.unlink()
         return self.cache_dir/'spm.model'
 

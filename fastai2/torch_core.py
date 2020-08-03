@@ -692,7 +692,7 @@ def set_num_threads(nt):
     "Get numpy (and others) to use `nt` threads"
     try: import mkl; mkl.set_num_threads(nt)
     except: pass
-    torch.set_num_threads(1)
+    torch.set_num_threads(nt)
     os.environ['IPC_ENABLE']='1'
     for o in ['OPENBLAS_NUM_THREADS','NUMEXPR_NUM_THREADS','OMP_NUM_THREADS','MKL_NUM_THREADS']:
         os.environ[o] = str(nt)
@@ -727,18 +727,23 @@ def run_procs(f, f_done, args):
     "Call `f` for each item in `args` in parallel, yielding `f_done`"
     processes = L(args).map(Process, args=arg0, target=f)
     for o in processes: o.start()
-    try: yield from f_done()
-    except Exception as e: print(e)
-    finally: processes.map(Self.join())
+    yield from f_done()
+#     except Exception as e: print(e)
+    processes.map(Self.join())
 
 # Cell
-def parallel_gen(cls, items, n_workers=defaults.cpus, as_gen=False, **kwargs):
+def parallel_gen(cls, items, n_workers=defaults.cpus, **kwargs):
     "Instantiate `cls` in `n_workers` procs & call each on a subset of `items` in parallel."
+    if n_workers==0:
+        yield from enumerate(list(cls(**kwargs)(items)))
+        return
     batches = np.array_split(items, n_workers)
     idx = np.cumsum(0 + L(batches).map(len))
     queue = Queue()
     def f(batch, start_idx):
-        for i,b in enumerate(cls(**kwargs)(batch)): queue.put((start_idx+i,b))
+        obj = cls(**kwargs)
+        res = obj(batch)
+        for i,b in enumerate(res): queue.put((start_idx+i,b))
     def done(): return (queue.get() for _ in progress_bar(items, leave=False))
     yield from run_procs(f, done, L(batches,idx).zip())
 

@@ -245,7 +245,7 @@ class Category(str, ShowTitle): _show_args = {'label': 'category'}
 class MultiCategorize(Categorize):
     "Reversible transform of multi-category strings to `vocab` id"
     loss_func,order=BCEWithLogitsLossFlat(),1
-    def __init__(self, vocab=None, add_na=False): super().__init__(vocab,add_na)
+    def __init__(self, vocab=None, add_na=False): super().__init__(vocab=vocab,add_na=add_na)
 
     def setups(self, dsets):
         if not dsets: return

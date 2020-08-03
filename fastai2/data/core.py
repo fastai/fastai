@@ -248,6 +248,7 @@ class TfmdLists(FilteredBase, L, GetAttr):
         self.pretty_types = '\n'.join([f'  - {t}' for t in types])
 
     def infer_idx(self, x):
+        # TODO: check if we really need this, or can simplify
         idx = 0
         for t in self.types:
             if isinstance(x, t): break

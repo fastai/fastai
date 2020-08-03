@@ -174,7 +174,7 @@ class LMLearner(TextLearner):
 
         num = self.dls.train_ds.numericalize
         tokens = [num.vocab[i] for i in idxs_all if num.vocab[i] not in [BOS, PAD]]
-        sep = self.dls.train_ds.tokenizer[-1].sep
+        sep = self.dls.train_ds.tokenizer.sep
         return sep.join(decoder(tokens))
 
     @delegates(Learner.get_preds)
