@@ -143,13 +143,13 @@ def _get_norm(prefix, nf, ndim=2, zero=False, **kwargs):
     return bn
 
 # Cell
-@use_kwargs_dict(eps=1e-5, momentum=0.1, affine=True, track_running_stats=True)
+@delegates(nn.BatchNorm2d)
 def BatchNorm(nf, ndim=2, norm_type=NormType.Batch, **kwargs):
     "BatchNorm layer with `nf` features and `ndim` initialized depending on `norm_type`."
     return _get_norm('BatchNorm', nf, ndim, zero=norm_type==NormType.BatchZero, **kwargs)
 
 # Cell
-@use_kwargs_dict(eps=1e-5, momentum=0.1, track_running_stats=True)
+@delegates(nn.InstanceNorm2d)
 def InstanceNorm(nf, ndim=2, norm_type=NormType.Instance, affine=True, **kwargs):
     "InstanceNorm layer with `nf` features and `ndim` initialized depending on `norm_type`."
     return _get_norm('InstanceNorm', nf, ndim, zero=norm_type==NormType.InstanceZero, affine=affine, **kwargs)
@@ -231,7 +231,7 @@ defaults.activation=nn.ReLU
 # Cell
 class ConvLayer(nn.Sequential):
     "Create a sequence of convolutional (`ni` to `nf`), ReLU (if `use_activ`) and `norm_type` layers."
-    @use_kwargs_dict(dilation=1, groups=1, padding_mode='zeros')
+    @delegates(nn.Conv2d)
     def __init__(self, ni, nf, ks=3, stride=1, padding=None, bias=None, ndim=2, norm_type=NormType.Batch, bn_1st=True,
                  act_cls=defaults.activation, transpose=False, init='auto', xtra=None, bias_std=0.01, **kwargs):
         if padding is None: padding = ((ks-1)//2 if not transpose else 0)
