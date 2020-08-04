@@ -7,8 +7,8 @@ __all__ = ['progress_bar', 'master_bar', 'subplots', 'show_image', 'show_titled_
            'TensorImage', 'TensorImageBW', 'TensorMask', 'TitledTensorScalar', 'concat', 'Chunks', 'show_title',
            'ShowTitle', 'TitledInt', 'TitledFloat', 'TitledStr', 'TitledTuple', 'get_empty_df', 'display_df',
            'get_first', 'one_param', 'item_find', 'find_device', 'find_bs', 'Module', 'get_model', 'one_hot',
-           'one_hot_decode', 'params', 'trainable_params', 'norm_types', 'bn_bias_params', 'batch_to_samples', 'logit',
-           'num_distrib', 'rank_distrib', 'distrib_barrier', 'base_doc', 'doc', 'nested_reorder', 'to_image',
+           'one_hot_decode', 'params', 'trainable_params', 'norm_types', 'norm_bias_params', 'batch_to_samples',
+           'logit', 'num_distrib', 'rank_distrib', 'distrib_barrier', 'base_doc', 'doc', 'nested_reorder', 'to_image',
            'make_cross_image', 'show_image_batch', 'requires_grad', 'init_default', 'cond_init', 'apply_leaf',
            'apply_init', 'set_num_threads', 'ProcessPoolExecutor', 'parallel', 'parallel_chunks', 'run_procs',
            'parallel_gen', 'script_use_ctx', 'script_save_ctx', 'script_fwd', 'script_bwd', 'grad_module',
@@ -102,6 +102,7 @@ def _array2tensor(x):
     return torch.from_numpy(x)
 
 # Cell
+@use_kwargs_dict(dtype=None, device=None, requires_grad=False, pin_memory=False)
 def tensor(x, *rest, **kwargs):
     "Like `torch.as_tensor`, but handle lists too, and can pass multiple vector elements directly."
     if len(rest): x = (x,)+rest
@@ -527,10 +528,10 @@ def trainable_params(m):
 norm_types = (nn.BatchNorm1d, nn.BatchNorm2d, nn.BatchNorm3d, nn.InstanceNorm1d, nn.InstanceNorm2d, nn.InstanceNorm3d)
 
 # Cell
-def bn_bias_params(m, with_bias=True): # TODO: Rename to `norm_bias_params`
+def norm_bias_params(m, with_bias=True):
     "Return all bias and BatchNorm parameters"
     if isinstance(m, norm_types): return L(m.parameters())
-    res = L(m.children()).map(bn_bias_params, with_bias=with_bias).concat()
+    res = L(m.children()).map(norm_bias_params, with_bias=with_bias).concat()
     if with_bias and getattr(m, 'bias', None) is not None: res.append(m.bias)
     return res
 

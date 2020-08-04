@@ -143,11 +143,13 @@ def _get_norm(prefix, nf, ndim=2, zero=False, **kwargs):
     return bn
 
 # Cell
+@use_kwargs_dict(eps=1e-5, momentum=0.1, affine=True, track_running_stats=True)
 def BatchNorm(nf, ndim=2, norm_type=NormType.Batch, **kwargs):
     "BatchNorm layer with `nf` features and `ndim` initialized depending on `norm_type`."
     return _get_norm('BatchNorm', nf, ndim, zero=norm_type==NormType.BatchZero, **kwargs)
 
 # Cell
+@use_kwargs_dict(eps=1e-5, momentum=0.1, track_running_stats=True)
 def InstanceNorm(nf, ndim=2, norm_type=NormType.Instance, affine=True, **kwargs):
     "InstanceNorm layer with `nf` features and `ndim` initialized depending on `norm_type`."
     return _get_norm('InstanceNorm', nf, ndim, zero=norm_type==NormType.InstanceZero, affine=affine, **kwargs)
@@ -229,6 +231,7 @@ defaults.activation=nn.ReLU
 # Cell
 class ConvLayer(nn.Sequential):
     "Create a sequence of convolutional (`ni` to `nf`), ReLU (if `use_activ`) and `norm_type` layers."
+    @use_kwargs_dict(dilation=1, groups=1, padding_mode='zeros')
     def __init__(self, ni, nf, ks=3, stride=1, padding=None, bias=None, ndim=2, norm_type=NormType.Batch, bn_1st=True,
                  act_cls=defaults.activation, transpose=False, init='auto', xtra=None, bias_std=0.01, **kwargs):
         if padding is None: padding = ((ks-1)//2 if not transpose else 0)
@@ -295,19 +298,21 @@ class BaseLoss():
 
 # Cell
 @log_args
-@delegates(keep=True)
+@delegates()
 class CrossEntropyLossFlat(BaseLoss):
     "Same as `nn.CrossEntropyLoss`, but flattens input and target."
     y_int = True
+    @use_kwargs_dict(keep=True, weight=None, ignore_index=-100, reduction='mean')
     def __init__(self, *args, axis=-1, **kwargs): super().__init__(nn.CrossEntropyLoss, *args, axis=axis, **kwargs)
     def decodes(self, x):    return x.argmax(dim=self.axis)
     def activation(self, x): return F.softmax(x, dim=self.axis)
 
 # Cell
 @log_args
-@delegates(keep=True)
+@delegates()
 class BCEWithLogitsLossFlat(BaseLoss):
     "Same as `nn.CrossEntropyLoss`, but flattens input and target."
+    @use_kwargs_dict(keep=True, weight=None, reduction='mean', pos_weight=None)
     def __init__(self, *args, axis=-1, floatify=True, thresh=0.5, **kwargs):
         super().__init__(nn.BCEWithLogitsLoss, *args, axis=axis, floatify=floatify, is_2d=False, **kwargs)
         self.thresh = thresh
@@ -317,20 +322,23 @@ class BCEWithLogitsLossFlat(BaseLoss):
 
 # Cell
 @log_args(to_return=True)
+@use_kwargs_dict(weight=None, reduction='mean')
 def BCELossFlat(*args, axis=-1, floatify=True, **kwargs):
     "Same as `nn.BCELoss`, but flattens input and target."
     return BaseLoss(nn.BCELoss, *args, axis=axis, floatify=floatify, is_2d=False, **kwargs)
 
 # Cell
 @log_args(to_return=True)
+@use_kwargs_dict(reduction='mean')
 def MSELossFlat(*args, axis=-1, floatify=True, **kwargs):
     "Same as `nn.MSELoss`, but flattens input and target."
     return BaseLoss(nn.MSELoss, *args, axis=axis, floatify=floatify, is_2d=False, **kwargs)
 
 # Cell
 @log_args(to_return=True)
+@use_kwargs_dict(reduction='mean')
 def L1LossFlat(*args, axis=-1, floatify=True, **kwargs):
-    "Same as `nn.MSELoss`, but flattens input and target."
+    "Same as `nn.L1Loss`, but flattens input and target."
     return BaseLoss(nn.L1Loss, *args, axis=axis, floatify=floatify, is_2d=False, **kwargs)
 
 # Cell
@@ -353,10 +361,11 @@ class LabelSmoothingCrossEntropy(Module):
 
 # Cell
 @log_args
-@delegates(keep=True)
+@delegates()
 class LabelSmoothingCrossEntropyFlat(BaseLoss):
     "Same as `LabelSmoothingCrossEntropy`, but flattens input and target."
     y_int = True
+    @use_kwargs_dict(keep=True, eps=0.1, reduction='mean')
     def __init__(self, *args, axis=-1, **kwargs): super().__init__(LabelSmoothingCrossEntropy, *args, axis=axis, **kwargs)
     def activation(self, out): return F.softmax(out, dim=-1)
     def decodes(self, out):    return out.argmax(dim=-1)

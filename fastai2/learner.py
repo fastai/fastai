@@ -136,7 +136,7 @@ class Learner():
         assert hasattr(event, event_name)
         [cb(event_name) for cb in sort_by_run(self.cbs)]
 
-    def _bn_bias_state(self, with_bias): return bn_bias_params(self.model, with_bias).map(self.opt.state)
+    def _bn_bias_state(self, with_bias): return norm_bias_params(self.model, with_bias).map(self.opt.state)
     def create_opt(self):
         self.opt = self.opt_func(self.splitter(self.model), lr=self.lr)
         if not self.wd_bn_bias:
