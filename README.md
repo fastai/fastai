@@ -4,13 +4,15 @@
 
 To learn more about the library, read our introduction in the [paper](https://arxiv.org/abs/2002.04688) presenting it.
 
+Note that the docs are in a submodule, so to clone with docs included, you should use:
+
+     git clone --recurse-submodules https://github.com/fastai/fastai2
+
 ## Installing
 
 You can get all the necessary dependencies by simply installing fastai v1: `conda install -c fastai -c pytorch fastai`. Or alternatively you can automatically install the dependencies into a new environment:
 
 ```bash
-git clone https://github.com/fastai/fastai2
-cd fastai2
 conda env create -f environment.yml
 source activate fastai2
 ```
@@ -19,7 +21,7 @@ Then, you can install fastai v2 with pip: `pip install fastai2`.
 
 Or you can use an editable install (which is probably the best approach at the moment, since fastai v2 is under heavy development):
 ``` 
-git clone https://github.com/fastai/fastai2
+git clone --recurse-submodules https://github.com/fastai/fastai2
 cd fastai2
 pip install -e ".[dev]"
 ``` 
