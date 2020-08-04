@@ -1,34 +1,80 @@
 name: CI
-on: [push, pull_request]
+on: [pull_request_target]
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
+    env:
+      # hamel: I recommend not turning turning this option on
+      auto_fix: false  
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-python@v2
+
+    - name: checkout contents of PR
+      uses: actions/checkout@v2
+
+    - name: setup python
+      uses: actions/setup-python@v2
       with:
         python-version: '3.8'
         architecture: 'x64'
-    - name: Install the library
+
+    - name: Install libraries
       run: |
         pip install nbdev jupyter
         pip install -e .
-    - name: Read all notebooks
+
+    - name: Attempt to read notebooks
       run: |
         nbdev_read_nbs
-    - name: Check if all notebooks are cleaned
+
+    - name: Check if notebooks are clean
+      id: clean
       run: |
-        echo "Check we are starting with clean git checkout"
-        if [ -n "$(git status -uno -s)" ]; then echo "git status is not clean"; false; fi
-        echo "Trying to strip out notebooks"
         nbdev_clean_nbs
-        echo "Check that strip out was unnecessary"
-        git status -s # display the status to see which nbs need cleaning up
-        if [ -n "$(git status -uno -s)" ]; then echo -e "!!! Detected unstripped out notebooks\n!!!Remember to run nbdev_install_git_hooks"; false; fi
-# There will be diff right now since we're using nbdev master that has a few fixes, uncomment at next release
-#    - name: Check if there is no diff library/notebooks
-#      run: |
-#        if [ -n "$(nbdev_diff_nbs)" ]; then echo -e "!!! Detected difference between the notebooks and the library"; false; fi
-#    - name: Run tests
-#      run: |
-#        nbdev_test_nbs
+        if [ -n "$(git status -uno -s)" ]; then
+          echo"::set-output name=forgot_to_clean::true"
+          echo "::error::Detected notebooks that are not cleaned."
+          echo "\n\nList of notebooks that are not clean:"
+          git status -s
+          exit 1;
+        fi
+  
+    - name: Check that library syncs with notebooks
+      id: lib
+      run: |
+        nbdev_diff_nbs > _nbdev_diff_logs.txt
+        if [ -n "$(cat _nbdev_diff_logs.txt)" ]; then 
+          echo "::set-output name=forgot_to_lib::true"
+          echo "::error::Detected notebooks that are not in sync with the library."
+          cat _nbdev_diff_logs.test
+          exit 1;
+          if [[ $auto_fix == 'true' ]]; then 
+            nbdev_build_lib
+          fi
+        fi
+
+    - name: Commit differences back to GitHub
+      if: github.env.auto_fix == 'true' && ( steps.clean.outputs.forgot_to_clean == 'true' || steps.clean.outputs.forgot_to_lib == 'true' )
+      run: |
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        git config --global user.name "github-actions[bot]"
+        git add nbs && git commit --allow-empty -m'apply changes from `nbdev_clean_nbs`'
+        git add fastai2 && git commit --allow-empty -m'apply changes from `nbdev_build_lib`'
+        git push -f
+
+    - name: comment on PR
+      if: failure() && ( steps.clean.outputs.forgot_to_clean == 'true' || steps.clean.outputs.forgot_to_lib == 'true' )
+      uses: actions/github-script@v2
+      with:
+        github-token: ${{secrets.GITHUB_TOKEN}}
+        script: |
+          var user = context.payload.pull_request.user.login;
+          github.issues.createComment({
+            issue_number: context.payload.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: `👋 @${user}! We detected notebooks that are not stripped or that are out of sync with the library in this PR.\n\nYou need to run \`nbdev_install_git_hooks\` before submitting a pull request! For more information, see the [CONTRIBUTING](https://github.com/${{github.repository}}#contributing) guide.\n\nYou can see the logs of the tests that triggered this message in run [${{github.run_id}}](https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}).`
+          })
+
+    - name: Test notebooks
+      run: |
+        nbdev_test_nbs --flags ''
