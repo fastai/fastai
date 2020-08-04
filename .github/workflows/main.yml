@@ -8,7 +8,7 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    container: fastdotai/torch-test
+    container: fastdotai/torch-test #this is defined here: https://github.com/fastai/docker-containers/blob/master/torchcpu/Dockerfile
     env:
       auto_fix: false  
     steps:
