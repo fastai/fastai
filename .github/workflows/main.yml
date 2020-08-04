@@ -8,24 +8,17 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    container: fastdotai/torch-test
     env:
-      # hamel: I recommend not turning turning this option on
       auto_fix: false  
     steps:
 
     - name: checkout contents of PR
       uses: actions/checkout@v2
 
-    - name: setup python
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.8'
-        architecture: 'x64'
-
     - name: Install libraries
       run: |
-        pip install nbdev jupyter sentencepiece wandb tensorboard albumentations pydicom opencv-python scikit-image pyarrow
-        pip install kornia --no-deps
+        pip install nbdev
         pip install -e .
 
     - name: Attempt to read notebooks
