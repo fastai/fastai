@@ -51,6 +51,12 @@ or
 make test
 ```
 
+For all the tests to pass, you'll need to install the following optional dependencies:
+
+```
+pip install sentencepiece wandb tensorboard albumentations pydicom kornia opencv-python scikit-image pyarrow
+```
+
 ## Contributing
 
 After you clone this repository, please run `nbdev_install_git_hooks` in your terminal. This sets up git hooks, which clean up the notebooks to remove the extraneous stuff stored in the notebooks (e.g. which cells you ran) which causes unnecessary merge conflicts.
