@@ -24,7 +24,7 @@ jobs:
 
     - name: Install libraries
       run: |
-        pip install nbdev jupyter
+        pip install nbdev jupyter sentencepiece wandb tensorboard albumentations pydicom kornia opencv-python scikit-image pyarrow
         pip install -e .
 
     - name: Attempt to read notebooks
