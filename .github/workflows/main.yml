@@ -1,5 +1,6 @@
 name: CI
 on: 
+  workflow_dispatch: #allows repo admins to trigger this workflow from the Actions tab
   push:
     branches: 
       - master
