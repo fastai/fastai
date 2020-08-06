@@ -1,4 +1,4 @@
-![CI-Badge](https://github.com/fastai/fastai2/workflows/CI/badge.svg)
+[![CI-Badge](https://github.com/fastai/fastai2/workflows/CI/badge.svg)](https://github.com/fastai/fastai2/actions?query=workflow%3ACI) [![PyPI](https://img.shields.io/pypi/v/fastai2?color=blue&label=pypi%20version)](https://pypi.org/project/fastai2/#description) [![Conda (channel only)](https://img.shields.io/conda/vn/fastai/fastai2?color=seagreen&label=conda%20version)](https://anaconda.org/fastai/fastai2) [![Build fastai2 images](https://github.com/fastai/docker-containers/workflows/Build%20fastai2%20images/badge.svg)](https://github.com/fastai/docker-containers)
 
 # Welcome to fastai v2
 > NB: This is still in early development. Use v1 unless you want to contribute to the next version of fastai
