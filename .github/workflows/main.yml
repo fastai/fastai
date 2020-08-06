@@ -74,7 +74,24 @@ jobs:
             repo: context.repo.repo,
             body: `👋 @${user}! We detected notebooks that are not stripped or that are out of sync with the library in this PR.\n\nYou need to run \`nbdev_install_git_hooks\` before submitting a pull request! For more information, see the [CONTRIBUTING](https://github.com/${{github.repository}}#contributing) guide.\n\nYou can see the logs of the tests that triggered this message in run [${{github.run_id}}](https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}).`
           })
+        
+  test-notebooks:
+    container: fastdotai/fastai2
+    needs: test
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        nb: [0,1,2,3,4,5,6,7,8,9]
+    steps:
+    - name: checkout contents of PR
+      uses: actions/checkout@v2
 
-    - name: Test notebooks
+    - name: Install libraries
       run: |
-        nbdev_test_nbs --flags '' --n_workers 1
+        pip install nbdev
+        pip install -e .
+        
+    - name: Test notebooks $${matrix.nb}*.ipynb
+      run: |
+        nbdev_test_nbs --flags '' --n_workers 1 --fname "nbs/${{matrix.nb}}*.ipynb"
+  
