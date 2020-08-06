@@ -77,7 +77,6 @@ jobs:
         
   test-notebooks:
     container: fastdotai/fastai2
-    needs: test
     runs-on: ubuntu-latest
     strategy:
       matrix:
