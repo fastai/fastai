@@ -77,4 +77,4 @@ jobs:
 
     - name: Test notebooks
       run: |
-        nbdev_test_nbs --flags ''
+        nbdev_test_nbs --flags '' --n_workers 1
