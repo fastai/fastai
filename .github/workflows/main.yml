@@ -90,7 +90,7 @@ jobs:
         pip install nbdev
         pip install -e .
         
-    - name: Test notebooks ${matrix.nb}*.ipynb
+    - name: Test notebooks ${{matrix.nb}}*.ipynb
       run: |
         nbdev_test_nbs --flags '' --n_workers 1 --fname "nbs/${{matrix.nb}}*.ipynb"
   
