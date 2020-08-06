@@ -1,3 +1,6 @@
+help:
+	cat Makefile
+
 SRC = $(wildcard nbs/*.ipynb)
 
 all: fastai2 docs test
