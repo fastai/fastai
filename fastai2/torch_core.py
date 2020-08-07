@@ -39,6 +39,7 @@ def _fig_bounds(x):
     return min(5, max(1,r))
 
 # Cell
+@delegates(plt.Axes.imshow, keep=True, but=['shape', 'imlim'])
 def show_image(im, ax=None, figsize=None, title=None, ctx=None, **kwargs):
     "Show a PIL or PyTorch image on `ax`."
     # Handle pytorch axis order
@@ -58,6 +59,7 @@ def show_image(im, ax=None, figsize=None, title=None, ctx=None, **kwargs):
     return ax
 
 # Cell
+@delegates(show_image, keep=True)
 def show_titled_image(o, **kwargs):
     "Call `show_image` destructuring `o` to `(img,title)`"
     show_image(o[0], title=str(o[1]), **kwargs)
