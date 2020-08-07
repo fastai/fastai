@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     container: fastdotai/fastai2 #this is defined here: https://github.com/fastai/docker-containers/blob/master/fastai2-build/Dockerfile
     env:
-      auto_fix: false  
+      auto_fix: false 
     steps:
 
     - name: checkout contents of PR
@@ -82,42 +82,11 @@ jobs:
             body: `👋 @${user}! We detected notebooks that are not stripped or that are out of sync with the library in this PR.\n\nYou need to run \`nbdev_install_git_hooks\` before submitting a pull request! For more information, see the [CONTRIBUTING](https://github.com/${{github.repository}}#contributing) guide.\n\nYou can see the logs of the tests that triggered this message in run [${{github.run_id}}](https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}).`
           })
 
-  upload:
-    runs-on: ubuntu-latest
-    container: fastdotai/fastai2 #this is defined here: https://github.com/fastai/docker-containers/blob/master/fastai2-build/Dockerfile
-    steps:
-
-    - name: check for cache hit
-      uses: actions/cache@v2
-      id: cache
-      with:
-        path: ~/.fastai
-        key: 'fastai-test-data-v1'
-
-    - name: download data
-      if: steps.cache.outputs.cache-hit != 'true'
-      run: |
-        from fastai2.data.external import untar_data, URLs
-        from fastai2.torch_core import parallel
-        from pathlib import Path
-        urls = ['ADULT_SAMPLE','BIWI_SAMPLE','CAMVID_TINY','CIFAR','COCO_SAMPLE',
-                'COCO_TINY','IMDB_SAMPLE','LSUN_BEDROOMS','ML_SAMPLE',
-                'MNIST_SAMPLE','MNIST_TINY','PASCAL_2007','PETS']
-        url_list = [URLs.__dict__[k] for k in urls]
-        parallel(untar_data, url_list, progress=True)
-      shell: python
-
-    - name: upload data to actions artifacts
-      if: steps.cache.outputs.cache-hit != 'true'
-      uses: actions/upload-artifact@v2
-      with:
-        name: fastai-data
-        path: ~/.fastai
-
   test-notebooks:
-    needs: upload
     container: fastdotai/fastai2
     runs-on: ubuntu-latest
+    env:
+      download: "false"
     strategy:
       matrix:
         nb: ['[0-2]','[3-5]','[6-9]']
@@ -137,19 +106,25 @@ jobs:
         pip install nbdev
         pip install -e .
     
-    - name: attempt to download with cache
+    - name: check for cache hit
       uses: actions/cache@v2
       id: cache
       with:
         path: ~/.fastai
-        key: 'fastai-test-data-v1'  
- 
-    - name: download data if no cache hit
-      if: steps.cache.outputs.cache-hit != 'true'
-      uses: actions/download-artifact@v2
-      with:
-        name: fastai-data
-        path: ~/.fastai
+        key: 'fastai-test-data-v1'
+
+    - name: download data
+      if: github.env.download == 'true' && steps.cache.outputs.cache-hit != 'true'
+      run: |
+        from fastai2.data.external import untar_data, URLs
+        from fastai2.torch_core import parallel
+        from pathlib import Path
+        urls = ['ADULT_SAMPLE','BIWI_SAMPLE','CAMVID_TINY','CIFAR','COCO_SAMPLE',
+                'COCO_TINY','IMDB_SAMPLE','ML_SAMPLE',
+                'MNIST_SAMPLE','MNIST_TINY','PETS']
+        url_list = [URLs.__dict__[k] for k in urls]
+        parallel(untar_data, url_list, progress=True)
+      shell: python
       
     - name: Test notebooks batch ${{matrix.nb}}
       run: |
