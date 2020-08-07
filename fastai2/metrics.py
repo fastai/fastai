@@ -31,9 +31,12 @@ class AccumMetric(Metric):
         store_attr(self,'func,dim_argmax,activation,thresh,flatten')
         self.to_np,self.invert_args,self.kwargs = to_np,invert_arg,kwargs
 
-    def reset(self): self.targs,self.preds = [],[]
+    def reset(self):
+        "Clear all targs and preds"
+        self.targs,self.preds = [],[]
 
     def accumulate(self, learn):
+        "Store targs and preds from `learn`, using activation function and argmax as appropriate"
         pred = learn.pred
         if self.activation in [ActivationType.Softmax, ActivationType.BinarySoftmax]:
             pred = F.softmax(pred, dim=self.dim_argmax)
@@ -41,14 +44,24 @@ class AccumMetric(Metric):
         elif self.activation == ActivationType.Sigmoid: pred = torch.sigmoid(pred)
         elif self.dim_argmax: pred = pred.argmax(dim=self.dim_argmax)
         if self.thresh:  pred = (pred >= self.thresh)
-        targ = learn.y
-        pred,targ = to_detach(pred),to_detach(targ)
-        if self.flatten: pred,targ = flatten_check(pred,targ)
-        self.preds.append(pred)
-        self.targs.append(targ)
+        self.accum_values(pred,learn.y)
+
+    def accum_values(self, preds, targs):
+        "Store targs and preds"
+        preds,targs = to_detach(preds),to_detach(targs)
+        if self.flatten: preds,targs = flatten_check(preds,targs)
+        self.preds.append(preds)
+        self.targs.append(targs)
+
+    def __call__(self, preds, targs):
+        "Calculate metric on one batch of data"
+        self.reset()
+        self.accum_values(preds,targs)
+        return self.value
 
     @property
     def value(self):
+        "Value of the metric using accumulated preds and targs"
         if len(self.preds) == 0: return
         preds,targs = torch.cat(self.preds),torch.cat(self.targs)
         if self.to_np: preds,targs = preds.numpy(),targs.numpy()
