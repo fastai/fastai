@@ -83,10 +83,10 @@ jobs:
           })
 
   test-notebooks:
-    container: fastdotai/fastai2-ci
+    container: fastdotai/fastai2
     runs-on: ubuntu-latest
     env:
-      download: "false"
+      download: "true"
     strategy:
       matrix:
         nb: ['[0-2]','[3-5]','[6-9]']
@@ -116,15 +116,8 @@ jobs:
     - name: download data
       if: github.env.download == 'true' && steps.cache.outputs.cache-hit != 'true'
       run: |
-        from fastai2.data.external import untar_data, URLs
-        from fastai2.torch_core import parallel
-        from pathlib import Path
-        urls = ['ADULT_SAMPLE','BIWI_SAMPLE','CAMVID_TINY','CIFAR','COCO_SAMPLE',
-                'COCO_TINY','IMDB_SAMPLE','ML_SAMPLE',
-                'MNIST_SAMPLE','MNIST_TINY','PETS']
-        url_list = [URLs.__dict__[k] for k in urls]
-        parallel(untar_data, url_list, progress=True)
-      shell: python
+        python /workspace/download_testdata.py
+        /workspace/extract.sh
       
     - name: Test notebooks batch ${{matrix.nb}}
       run: |
