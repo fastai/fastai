@@ -86,7 +86,7 @@ jobs:
     container: fastdotai/fastai2
     runs-on: ubuntu-latest
     env:
-      download: "false"
+      download: "true"
       caching: "true"
     strategy:
       matrix:
