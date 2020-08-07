@@ -4,8 +4,8 @@ progress bar tweaks
 
 import pytest
 from fastai.utils.mod_display import *
-from utils.fakes import *
-from utils.text import *
+from fastai.utils.fakes import *
+from fastai.utils.text import *
 from fastai.gen_doc.doctest import this_tests
 
 @pytest.fixture(scope="module")

@@ -2,8 +2,8 @@ import pytest
 from fastai.gen_doc.doctest import this_tests
 from fastai.basics import *
 from fastai.metrics import *
-from utils.fakes import fake_learner
-from utils.text import CaptureStdout
+from fastai.utils.fakes import fake_learner
+from fastai.utils.text import CaptureStdout
 
 p1 = torch.Tensor([0,1,0,0,0]).expand(5,-1)
 p2 = torch.Tensor([[0,0,0,0,0],[0,1,0,0,0]]).expand(5,2,-1).float()

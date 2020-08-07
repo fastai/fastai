@@ -1,6 +1,6 @@
 import pytest
 from fastai.gen_doc.doctest import this_tests
-from utils.fakes import *
+from fastai.utils.fakes import *
 a3b3b3 = torch.ones([1,3,3,3])
 
 def test_model2half():

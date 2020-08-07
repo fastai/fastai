@@ -4,8 +4,8 @@ docs  : https://docs.fast.ai/train.html
 """
 
 import pytest, fastai
-from utils.fakes import *
-from utils.text import *
+from fastai.utils.fakes import *
+from fastai.utils.text import *
 from fastai.gen_doc.doctest import this_tests
 
 @pytest.fixture(scope="module")

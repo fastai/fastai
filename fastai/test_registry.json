@@ -88,19 +88,19 @@
     "fastai.basic_train.Learner.destroy": [
         {
             "file": "tests/test_basic_train.py",
-            "line": 156,
+            "line": 154,
             "test": "test_destroy"
         },
         {
             "file": "tests/test_basic_train.py",
-            "line": 199,
+            "line": 197,
             "test": "test_memory"
         }
     ],
     "fastai.basic_train.Learner.export": [
         {
             "file": "tests/test_basic_train.py",
-            "line": 216,
+            "line": 214,
             "test": "test_export_load_learner"
         }
     ],
@@ -114,81 +114,81 @@
     "fastai.basic_train.Learner.freeze": [
         {
             "file": "tests/test_basic_train.py",
-            "line": 49,
+            "line": 47,
             "test": "test_freeze"
         }
     ],
     "fastai.basic_train.Learner.freeze_to": [
         {
             "file": "tests/test_basic_train.py",
-            "line": 39,
+            "line": 37,
             "test": "test_freeze_to"
         }
     ],
     "fastai.basic_train.Learner.get_preds": [
         {
             "file": "tests/test_basic_train.py",
-            "line": 32,
+            "line": 30,
             "test": "test_get_preds"
         }
     ],
     "fastai.basic_train.Learner.load": [
         {
             "file": "tests/test_basic_train.py",
-            "line": 90,
+            "line": 88,
             "test": "test_save_load"
         },
         {
             "file": "tests/test_basic_train.py",
-            "line": 199,
+            "line": 197,
             "test": "test_memory"
         }
     ],
     "fastai.basic_train.Learner.predict": [
         {
             "file": "tests/test_vision_train.py",
-            "line": 63,
+            "line": 61,
             "test": "test_preds"
         },
         {
             "file": "tests/test_vision_train.py",
-            "line": 89,
+            "line": 87,
             "test": "test_models_meta"
         }
     ],
     "fastai.basic_train.Learner.purge": [
         {
             "file": "tests/test_basic_train.py",
-            "line": 76,
+            "line": 74,
             "test": "test_purge"
         },
         {
             "file": "tests/test_basic_train.py",
-            "line": 90,
+            "line": 88,
             "test": "test_save_load"
         },
         {
             "file": "tests/test_basic_train.py",
-            "line": 199,
+            "line": 197,
             "test": "test_memory"
         }
     ],
     "fastai.basic_train.Learner.save": [
         {
             "file": "tests/test_basic_train.py",
-            "line": 90,
+            "line": 88,
             "test": "test_save_load"
         },
         {
             "file": "tests/test_basic_train.py",
-            "line": 199,
+            "line": 197,
             "test": "test_memory"
         }
     ],
     "fastai.basic_train.Learner.unfreeze": [
         {
             "file": "tests/test_basic_train.py",
-            "line": 58,
+            "line": 56,
             "test": "test_unfreeze"
         }
     ],
@@ -207,19 +207,19 @@
     "fastai.basic_train.Recorder": [
         {
             "file": "tests/test_vision_train.py",
-            "line": 41,
+            "line": 39,
             "test": "test_1cycle_lrs"
         },
         {
             "file": "tests/test_vision_train.py",
-            "line": 48,
+            "line": 46,
             "test": "test_1cycle_moms"
         }
     ],
     "fastai.basic_train.load_learner": [
         {
             "file": "tests/test_basic_train.py",
-            "line": 216,
+            "line": 214,
             "test": "test_export_load_learner"
         }
     ],
@@ -286,7 +286,7 @@
         },
         {
             "file": "tests/test_basic_train.py",
-            "line": 216,
+            "line": 214,
             "test": "test_export_load_learner"
         }
     ],
@@ -783,7 +783,7 @@
         },
         {
             "file": "tests/test_vision_train.py",
-            "line": 55,
+            "line": 53,
             "test": "test_accuracy"
         }
     ],
@@ -814,7 +814,7 @@
         },
         {
             "file": "tests/test_vision_train.py",
-            "line": 59,
+            "line": 57,
             "test": "test_error_rate"
         }
     ],
@@ -903,14 +903,14 @@
     "fastai.tabular.learner._cl_int_from_learner": [
         {
             "file": "tests/test_vision_train.py",
-            "line": 72,
+            "line": 70,
             "test": "test_interp"
         }
     ],
     "fastai.tabular.learner._learner_interpret": [
         {
             "file": "tests/test_vision_train.py",
-            "line": 78,
+            "line": 76,
             "test": "test_interp_shortcut"
         }
     ],
@@ -1401,7 +1401,7 @@
     "fastai.train.ClassificationInterpretation": [
         {
             "file": "tests/test_vision_train.py",
-            "line": 95,
+            "line": 93,
             "test": "test_ClassificationInterpretation"
         }
     ],
@@ -1427,7 +1427,7 @@
         },
         {
             "file": "tests/test_vision_train.py",
-            "line": 84,
+            "line": 82,
             "test": "test_lrfind"
         }
     ],
@@ -1460,35 +1460,35 @@
     "fastai.utils.mem.gpu_mem_get": [
         {
             "file": "tests/test_utils_mem.py",
-            "line": 25,
+            "line": 24,
             "test": "test_gpu_mem_by_id"
         }
     ],
     "fastai.utils.mem.gpu_mem_get_all": [
         {
             "file": "tests/test_utils_mem.py",
-            "line": 35,
+            "line": 34,
             "test": "test_gpu_mem_all"
         }
     ],
     "fastai.utils.mem.gpu_mem_get_used": [
         {
             "file": "tests/test_utils_mem.py",
-            "line": 56,
+            "line": 55,
             "test": "test_gpu_mem_measure_consumed_reclaimed"
         }
     ],
     "fastai.utils.mem.gpu_mem_trace": [
         {
             "file": "tests/test_utils_mem.py",
-            "line": 178,
+            "line": 177,
             "test": "test_gpu_mem_trace_decorator"
         }
     ],
     "fastai.utils.mem.gpu_with_max_free_mem": [
         {
             "file": "tests/test_utils_mem.py",
-            "line": 44,
+            "line": 43,
             "test": "test_gpu_with_max_free_mem"
         }
     ],

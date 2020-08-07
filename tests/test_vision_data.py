@@ -2,7 +2,7 @@ import pytest
 from fastai.gen_doc.doctest import this_tests
 from fastai.vision import *
 from fastai.vision.data import verify_image
-from utils.text import *
+from fastai.utils.text import *
 import PIL
 
 @pytest.fixture(scope="module")

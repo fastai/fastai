@@ -12,7 +12,7 @@ git_repo_path = abspath(dirname(dirname(__file__)))
 sys.path.insert(1, git_repo_path)
 
 # fastai modules should be imported **only after sys.path was tweaked to include the local checkout**
-from utils.mem import use_gpu
+from fastai.utils.mem import use_gpu
 from fastai.gen_doc.doctest import TestRegistry
 
 def pytest_addoption(parser):

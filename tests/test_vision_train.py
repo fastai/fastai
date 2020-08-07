@@ -3,12 +3,10 @@ from fastai.vision import *
 from fastai.gen_doc.doctest import this_tests
 from fastai.callbacks import *
 from fastai.utils.mem import *
-from utils.mem import *
 from math import isclose
 from fastai.train import ClassificationInterpretation
 
 use_gpu = torch.cuda.is_available()
-torch_preload_mem()
 
 pytestmark = pytest.mark.integration
 

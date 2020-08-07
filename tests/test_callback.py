@@ -1,8 +1,8 @@
 import pytest, fastai
 from fastai.vision import *
 from fastai.gen_doc.doctest import this_tests
-from utils.fakes import fake_data
-from utils.text import CaptureStdout
+from fastai.utils.fakes import fake_data
+from fastai.utils.text import CaptureStdout
 
 n_in, n_out = 3, 2
 @pytest.fixture(scope="module")

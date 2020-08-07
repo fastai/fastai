@@ -1,8 +1,8 @@
 import pytest
 from fastai.callbacks.misc import *
 from fastai.gen_doc.doctest import this_tests
-from utils.fakes import *
-from utils.text import CaptureStdout
+from fastai.utils.fakes import *
+from fastai.utils.text import CaptureStdout
 
 def stop_after_n_batches_run_n_check(learn, bs, run_n_batches_exp):
     has_batches = len(learn.data.train_ds)//bs

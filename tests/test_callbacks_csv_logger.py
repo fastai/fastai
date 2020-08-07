@@ -1,7 +1,7 @@
 import pytest, re
 from fastai.gen_doc.doctest import this_tests
-from utils.fakes import *
-from utils.text import CaptureStdout
+from fastai.utils.fakes import *
+from fastai.utils.text import CaptureStdout
 
 def create_metrics_dataframe(learn):
     "Converts metrics stored in `Recorder` into dataframe."

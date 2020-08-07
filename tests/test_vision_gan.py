@@ -1,6 +1,6 @@
 import pytest, torch
 from fastai.gen_doc.doctest import this_tests
-from utils.text import CaptureStdout
+from fastai.utils.text import CaptureStdout
 from fastai.datasets import untar_data, URLs
 from fastai.core import noop
 from fastai.vision.gan import *

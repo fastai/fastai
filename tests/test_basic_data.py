@@ -1,5 +1,5 @@
 import pytest
-from utils.fakes import *
+from fastai.utils.fakes import *
 import sys
 from fastai.gen_doc.doctest import this_tests
 from fastai.basic_data import intercept_args

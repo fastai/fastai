@@ -1,8 +1,8 @@
 import pytest
 from fastai.callbacks.mem import *
 from fastai.gen_doc.doctest import this_tests
-from utils.fakes import *
-from utils.text import CaptureStdout
+from fastai.utils.fakes import *
+from fastai.utils.text import CaptureStdout
 
 @pytest.mark.skip("occassional random failures")
 @pytest.mark.cuda

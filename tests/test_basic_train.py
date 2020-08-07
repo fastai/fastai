@@ -7,12 +7,10 @@ import pytest
 from fastai.vision import *
 from fastai.utils.mem import *
 from fastai.gen_doc.doctest import this_tests
-from utils.fakes import *
-from utils.text import *
-from utils.mem import *
+from fastai.utils.fakes import *
+from fastai.utils.text import *
+from fastai.utils.mem import *
 from math import isclose
-
-torch_preload_mem()
 
 @pytest.fixture(scope="module")
 def data():

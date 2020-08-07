@@ -89,14 +89,14 @@ def download_google_images(path:PathOrStr, search_term:str, size:str='>400*300',
     if len(downloaded_images) == 0: raise RuntimeError(f"Couldn't download any images.")
     verify_images(label_path, max_workers=max_workers)
     return get_image_files(label_path)
-    
+
 def _url_params(size:str='>400*300', format:str='jpg') -> str:
     "Build Google Images Search Url params and return them as a string."
     _fmts = {'jpg':'ift:jpg','gif':'ift:gif','png':'ift:png','bmp':'ift:bmp', 'svg':'ift:svg','webp':'webp','ico':'ift:ico'}
-    if size not in _img_sizes: 
+    if size not in _img_sizes:
         raise RuntimeError(f"""Unexpected size argument value: {size}.
-                    See `widgets.image_downloader._img_sizes` for supported sizes.""") 
-    if format not in _fmts: 
+                    See `widgets.image_downloader._img_sizes` for supported sizes.""")
+    if format not in _fmts:
         raise RuntimeError(f"Unexpected image file format: {format}. Use jpg, gif, png, bmp, svg, webp, or ico.")
     return "&tbs=" + _img_sizes[size] + "," + _fmts[format]
 
@@ -116,7 +116,7 @@ def _fetch_img_tuples(url:str, format:str='jpg', n_images:int=10) -> list:
     html = requests.get(url, headers=headers).text
     return _html_to_img_tuples(html, format=format, n_images=n_images)
 
-def _html_to_img_tuples(html:str, format:str='jpg', n_images:int=10) -> list:    
+def _html_to_img_tuples(html:str, format:str='jpg', n_images:int=10) -> list:
     "Parse the google images html to img tuples containining `(fname, url)`"
     bs = BeautifulSoup(html, 'html.parser')
     img_tags = bs.find_all('div', {'class': 'rg_meta'})
@@ -134,12 +134,12 @@ def _fetch_img_tuples_webdriver(url:str, format:str='jpg', n_images:int=150) -> 
         from selenium.webdriver.common.keys import Keys
     except:
         print("""Looks like you're trying to download > 100 images and `selenium`
-                is not installed. Try running `pip install selenium` to fix this. 
+                is not installed. Try running `pip install selenium` to fix this.
                 You'll also need chrome and `chromedriver` installed.""")
     options = webdriver.ChromeOptions()
     options.add_argument("--headless")
     try: driver = webdriver.Chrome(chrome_options=options)
-    except: print("""Error initializing chromedriver. 
+    except: print("""Error initializing chromedriver.
                     Check if it's in your path by running `which chromedriver`""")
     driver.set_window_size(1440, 900)
     driver.get(url)
@@ -158,7 +158,7 @@ def _fetch_img_tuples_webdriver(url:str, format:str='jpg', n_images:int=150) -> 
 
 def _download_images(label_path:PathOrStr, img_tuples:list, max_workers:int=defaults.cpus, timeout:int=4) -> FilePathList:
     """
-    Downloads images in `img_tuples` to `label_path`. 
+    Downloads images in `img_tuples` to `label_path`.
     If the directory doesn't exist, it'll be created automatically.
     Uses `parallel` to speed things up in `max_workers` when the system has enough CPU cores.
     If something doesn't work, try setting up `max_workers=0` to debug.
@@ -171,7 +171,7 @@ def _download_single_image(label_path:Path, img_tuple:tuple, i:int, timeout:int=
     """
     Downloads a single image from Google Search results to `label_path`
     given an `img_tuple` that contains `(fname, url)` of an image to download.
-    `i` is just an iteration number `int`. 
+    `i` is just an iteration number `int`.
     """
     suffix = re.findall(r'\.\w+?(?=(?:\?|$))', img_tuple[1])
     suffix = suffix[0].lower() if len(suffix)>0  else '.jpg'
