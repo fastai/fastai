@@ -9,9 +9,6 @@ from ..data.all import *
 from ..optimizer import *
 
 # Cell
-#nbdev_comment _all_ = ['CancelFitException', 'CancelEpochException', 'CancelTrainException', 'CancelValidException', 'CancelBatchException']
-
-# Cell
 _inner_loop = "begin_batch after_pred after_loss after_backward after_step after_cancel_batch after_batch".split()
 
 # Cell
@@ -138,6 +135,3 @@ _events = L.split('begin_fit begin_epoch begin_train begin_batch after_pred afte
 
 mk_class('event', **_events.map_dict(),
          doc="All possible events as attributes to get tab-completion and typo-proofing")
-
-# Cell
-#nbdev_comment _all_ = ['event']

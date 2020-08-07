@@ -94,9 +94,6 @@ mk_class('PadMode', **{o:o.lower() for o in ['Zeros', 'Border', 'Reflection']},
          doc="All possible padding mode as attributes to get tab-completion and typo-proofing")
 
 # Cell
-#nbdev_comment _all_ = ['PadMode']
-
-# Cell
 _pad_modes = {'zeros': 'constant', 'border': 'edge', 'reflection': 'reflect'}
 
 @patch
@@ -216,9 +213,6 @@ class OldRandomCrop(CropPad):
 # Cell
 mk_class('ResizeMethod', **{o:o.lower() for o in ['Squish', 'Crop', 'Pad']},
          doc="All possible resize method as attributes to get tab-completion and typo-proofing")
-
-# Cell
-#nbdev_comment _all_ = ['ResizeMethod']
 
 # Cell
 @delegates()

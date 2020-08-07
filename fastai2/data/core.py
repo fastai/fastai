@@ -29,9 +29,6 @@ def show_results(x, y, samples, outs, ctxs=None, max_n=9, **kwargs):
     return ctxs
 
 # Cell
-#nbdev_comment _all_ = ["show_batch", "show_results"]
-
-# Cell
 _batch_tfms = ('after_item','before_batch','after_batch')
 
 # Cell
