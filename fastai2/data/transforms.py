@@ -82,9 +82,9 @@ class AttrGetter(ItemTransform):
     def encodes(self, x): return getattr(x, self.nm, self.default)
 
 # Cell
-def RandomSplitter(valid_pct=0.2, seed=None, **kwargs):
+def RandomSplitter(valid_pct=0.2, seed=None):
     "Create function that splits `items` between train/val with `valid_pct` randomly."
-    def _inner(o, **kwargs):
+    def _inner(o):
         if seed is not None: torch.manual_seed(seed)
         rand_idx = L(int(i) for i in torch.randperm(len(o)))
         cut = int(valid_pct * len(o))
