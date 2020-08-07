@@ -39,6 +39,7 @@ jobs:
       uses: actions/checkout@v2
       with:
         ref: ${{github.event.pull_request.head.ref}}
+        repository: ${{github.event.pull_request.head.repo.full_name}}
 
     - name: Install libraries
       run: |
@@ -113,6 +114,7 @@ jobs:
       if: github.event_name == 'pull_request_target'
       with:
         ref: ${{github.event.pull_request.head.ref}}
+        repository: ${{github.event.pull_request.head.repo.full_name}}
         
     - name: checkout contents of PR
       if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
