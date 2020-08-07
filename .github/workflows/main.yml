@@ -86,8 +86,8 @@ jobs:
     container: fastdotai/fastai2
     runs-on: ubuntu-latest
     env:
-      download: "false"
-      caching: "false"
+      download: "true"
+      caching: "true"
     strategy:
       matrix:
         nb: ['[0-2]','[3-5]','[6-9]']
