@@ -119,7 +119,8 @@ jobs:
       if: env.download == 'true' && steps.cache.outputs.cache != 'true'
       run: |
         python /workspace/download_testdata.py
-        /workspace/extract.sh
+        mkdir -p $HOME/.fastai/data
+        find $HOME/.fastai/archive/ -name "*.tgz" -exec tar -xzvf {} -C $HOME/.fastai/data \;
       
     - name: Test notebooks batch ${{matrix.nb}}
       run: |
