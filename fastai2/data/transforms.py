@@ -218,6 +218,15 @@ class CategoryMap(CollBase):
             if sort: items = items.sorted()
         self.items = '#na#' + items if add_na else items
         self.o2i = defaultdict(int, self.items.val2idx()) if add_na else dict(self.items.val2idx())
+
+    def map_objs(self,objs):
+        "Map `objs` to IDs"
+        return L(self.o2i[o] for o in objs)
+
+    def map_ids(self,ids):
+        "Map `ids` to objects in vocab"
+        return L(self.items[o] for o in ids)
+
     def __eq__(self,b): return all_equal(b,self)
 
 # Cell
