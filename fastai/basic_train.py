@@ -251,7 +251,7 @@ class Learner():
         if not hasattr(self, 'opt'): with_opt=False
         if not with_opt: state = get_model(self.model).state_dict()
         else: state = {'model': get_model(self.model).state_dict(), 'opt':self.opt.state_dict()}
-        torch.save(state, target)
+        torch_save(state, target)
         if return_path: return target
 
     def dl(self, ds_type:DatasetType=DatasetType.Valid):
@@ -314,7 +314,7 @@ class Learner():
         if hasattr(self, 'opt'): state['opt'] = self.opt.get_state()
 
         tmp_file = get_tmp_file(self.path/self.model_dir)
-        torch.save(state, open(tmp_file, 'wb'))
+        torch_save(state, open(tmp_file, 'wb'))
         for a in attrs_del: delattr(self, a)
         gc.collect()
         state = torch.load(tmp_file)

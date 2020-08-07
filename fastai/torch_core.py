@@ -401,11 +401,15 @@ def rank_distrib():
 def distrib_barrier():
     "Barrier synchronization in distributed training (if applicable).  Processes in the same process group must all arrive here before proceeding further. Example use case: avoid processes stepping on each other when saving and loading models in distributed training.  See https://pytorch.org/tutorials/intermediate/ddp_tutorial.html#save-and-load-checkpoints."
     if num_distrib() > 1: torch.distributed.barrier()
-    
+
 def add_metrics(last_metrics:Collection[Rank0Tensor], mets:Union[Rank0Tensor, Collection[Rank0Tensor]]):
     "Return a dictionary for updating `last_metrics` with `mets`."
     last_metrics,mets = listify(last_metrics),listify(mets)
     return {'last_metrics': last_metrics + mets}
+
+def torch_save(*args, _use_new_zipfile_serialization=False, **kwargs):
+    if torch.__version__ > "1.6.0": kwargs['_use_new_zipfile_serialization']=_use_new_zipfile_serialization
+    torch.save(*args, **kwargs)
 
 def try_save(state:Dict, path:Path=None, file:PathLikeOrBinaryStream=None):
     target = open(path/file, 'wb') if is_pathlike(file) else file
@@ -413,7 +417,7 @@ def try_save(state:Dict, path:Path=None, file:PathLikeOrBinaryStream=None):
         with warnings.catch_warnings():
             #To avoid the warning that come from PyTorch about model not being checked
             warnings.simplefilter("ignore")
-            torch.save(state, target)
+            torch_save(state, target)
     except OSError as e:
         raise Exception(f"{e}\n Can't write {path/file}. Pass an absolute writable pathlib obj `fname`.")
 
