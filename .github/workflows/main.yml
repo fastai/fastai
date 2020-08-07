@@ -90,9 +90,6 @@ jobs:
       run: |
         pip install nbdev
         pip install -e .
-   
-    - name: Setup tmate session
-      uses: mxschmitt/action-tmate@v2
       
     - name: Test notebooks batch ${{matrix.nb}}
       run: |
