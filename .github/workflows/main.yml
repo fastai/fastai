@@ -79,7 +79,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        nb: [4] # [0,1,2,3,4,5,6,7,8,9]
+        nb: [0,1,2,3,4,5,6,7,8,9]
     steps:
     - name: checkout contents of PR
       uses: actions/checkout@v2
