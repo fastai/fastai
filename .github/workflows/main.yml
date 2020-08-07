@@ -1,9 +1,6 @@
 name: CI
 on: 
   workflow_dispatch: #allows repo admins to trigger this workflow from the Actions tab
-  push:
-    branches: 
-      - master
   pull_request_target:
 
 jobs:
@@ -16,6 +13,8 @@ jobs:
 
     - name: checkout contents of PR
       uses: actions/checkout@v2
+      with:
+        ref: ${{ github.event.pull_request.head.sha }}
 
     - name: Install libraries
       run: |
@@ -84,6 +83,8 @@ jobs:
     steps:
     - name: checkout contents of PR
       uses: actions/checkout@v2
+      with:
+        ref: ${{ github.event.pull_request.head.sha }}
 
     - name: Install libraries
       run: |
