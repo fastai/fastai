@@ -79,7 +79,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        nb: [0,1,2,3,4,5,6,7,8,9]
+        nb: [4] # [0,1,2,3,4,5,6,7,8,9]
     steps:
     - name: checkout contents of PR
       uses: actions/checkout@v2
@@ -90,7 +90,10 @@ jobs:
       run: |
         pip install nbdev
         pip install -e .
-        
+   
+    - name: Setup tmate session
+      uses: mxschmitt/action-tmate@v2
+      
     - name: Test notebooks batch ${{matrix.nb}}
       run: |
         nbdev_test_nbs --flags '' --n_workers 1 --timing True --fname "nbs/[0-9]${{matrix.nb}}*.ipynb"
