@@ -116,7 +116,7 @@ jobs:
         key: 'fastai-test-data-v1'
 
     - name: download data
-      if: env.download == 'true' && steps.cache.outputs.cache != 'true'
+      if: env.download == 'true' && steps.cache.outputs.cache-hit != 'true'
       run: |
         python /workspace/download_testdata.py
         mkdir -p $HOME/.fastai/data
