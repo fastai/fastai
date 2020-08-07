@@ -11,7 +11,7 @@ Github. Parentheses after an item show the name or github id of the contributor
 of that change.
 
 
-## 1.0.62.dev0 (Work In Progress)
+## 1.0.63.dev0 (Work In Progress)
 
 ### New:
 
@@ -21,7 +21,17 @@ of that change.
 
 
 
-## 1.0.61.dev0 (Work In Progress)
+## 1.0.62 (2020-08-07)
+
+### New:
+
+### Changed:
+
+### Fixed:
+
+
+
+## 1.0.62 (2020-08-07)
 
 ### New:
 
