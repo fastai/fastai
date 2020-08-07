@@ -6,7 +6,23 @@ on:
     branches: 
       - master
 
-jobs:
+jobs:     
+  debug:
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: see payload
+      run: |
+        echo "$PAYLOAD"
+      env:
+        PAYLOAD: ${{ toJSON(github.event) }}
+    
+    - name: store payload
+      uses: actions/upload-artifact@v2
+      with:
+        name: payload.json
+        path: ${{ github.event_path }}
+        
   test:
     runs-on: ubuntu-latest
     container: fastdotai/fastai2 #this is defined here: https://github.com/fastai/docker-containers/blob/master/fastai2-build/Dockerfile
