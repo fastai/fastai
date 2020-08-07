@@ -60,7 +60,7 @@ jobs:
         fi
 
     - name: Commit differences back to GitHub
-      if: github.env.auto_fix == 'true' && ( steps.clean.outputs.forgot_to_clean == 'true' || steps.clean.outputs.forgot_to_lib == 'true' )
+      if: env.auto_fix == 'true' && ( steps.clean.outputs.forgot_to_clean == 'true' || steps.clean.outputs.forgot_to_lib == 'true' )
       run: |
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
         git config --global user.name "github-actions[bot]"
@@ -109,14 +109,14 @@ jobs:
     
     - name: check for cache hit
       uses: actions/cache@v2
-      if: github.env.caching == 'true'
+      if: env.caching == 'true'
       id: cache
       with:
         path: ~/.fastai/data
         key: 'fastai-test-data-v1'
 
     - name: download data
-      if: github.env.download == 'true' && steps.cache.outputs.cache != 'true'
+      if: env.download == 'true' && steps.cache.outputs.cache != 'true'
       run: |
         python /workspace/download_testdata.py
         /workspace/extract.sh
