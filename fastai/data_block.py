@@ -562,7 +562,9 @@ class LabelLists(ItemLists):
         "Add test set containing `items` with an arbitrary `label`."
         # if no label passed, use label of first training item
         if label is None: labels = EmptyLabelList([0] * len(items))
-        else: labels = self.valid.y.new([label] * len(items)).process()
+        else:
+          labels = label if hasattr(label, '__len__') else [label] * len(items)
+          labels = self.valid.y.new(labels).process()
         if isinstance(items, MixedItemList): items = self.valid.x.new(items.item_lists, inner_df=items.inner_df).process()
         elif isinstance(items, ItemList): items = self.valid.x.new(items.items, inner_df=items.inner_df).process()
         else: items = self.valid.x.new(items).process()

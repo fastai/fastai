@@ -1,4 +1,5 @@
 import pytest
+import numpy as np
 from fastai.gen_doc.doctest import this_tests
 from fastai.basics import *
 from fastai.vision import ImageList
@@ -179,3 +180,23 @@ def test_from_df():
         ImageList.from_df(path="dummy_path", df=df)
     except Exception as ex:
         assert not isinstance(ex, TypeError)
+
+def test_add_test():
+    this_tests(LabelLists.add_test)
+    label_lists = LabelLists('.',
+      LabelList(ItemList([1, 2]), ItemList([True, False])),
+      LabelList(ItemList([2, 3]), ItemList([True, False])))
+
+    checks = [
+      ([ 7,  8,  9], None,                [False, False, False]),
+      ([10, 11, 12], True,                [True, True, True]),
+      ([13, 14, 15], [True, False, True], [True, False, True])
+    ]
+
+    for check in checks:
+      items, label, final_labels = check
+
+      label_lists.add_test(ItemList(items), label)
+
+      np.testing.assert_array_equal(label_lists.test.items, items)
+      np.testing.assert_array_equal(label_lists.test.y.items, final_labels)
