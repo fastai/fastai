@@ -20,6 +20,9 @@ from spacy.symbols import ORTH
 UNK, PAD, BOS, EOS, FLD, TK_REP, TK_WREP, TK_UP, TK_MAJ = "xxunk xxpad xxbos xxeos xxfld xxrep xxwrep xxup xxmaj".split()
 
 # Cell
+#nbdev_comment _all_ = ["UNK", "PAD", "BOS", "EOS", "FLD", "TK_REP", "TK_WREP", "TK_UP", "TK_MAJ"]
+
+# Cell
 _re_spec = re.compile(r'([/#\\])')
 
 def spec_add_spaces(t):
