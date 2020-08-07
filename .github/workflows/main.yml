@@ -86,7 +86,7 @@ jobs:
     container: fastdotai/fastai2
     runs-on: ubuntu-latest
     env:
-      download: "true"
+      download: "false"
       caching: "true"
     strategy:
       matrix:
@@ -116,7 +116,7 @@ jobs:
         key: 'fastai-test-data-v1'
 
     - name: download data
-      if: github.env.download == 'true' && steps.cache.outputs.cache-hit != 'true'
+      if: github.env.download == 'true' && steps.cache.outputs.cache != 'true'
       run: |
         python /workspace/download_testdata.py
         /workspace/extract.sh
