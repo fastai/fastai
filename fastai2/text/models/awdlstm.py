@@ -23,9 +23,6 @@ class RNNDropout(Module):
         return x * dropout_mask(x.data, (x.size(0), 1, x.size(2)), self.p)
 
 # Cell
-import warnings
-
-# Cell
 class WeightDropout(Module):
     "A module that warps another layer in which some weights will be replaced by 0 during training."
 
@@ -37,7 +34,6 @@ class WeightDropout(Module):
             delattr(self.module, layer)
             self.register_parameter(f'{layer}_raw', nn.Parameter(w.data))
             setattr(self.module, layer, w.clone())
-#             setattr(self.module, layer, F.dropout(w.data, p=self.weight_p, training=False))
             if isinstance(self.module, (nn.RNNBase, nn.modules.rnn.RNNBase)):
                 self.module.flatten_parameters = self._do_nothing
 
@@ -45,22 +41,21 @@ class WeightDropout(Module):
         "Apply dropout to the raw weights."
         for layer in self.layer_names:
             raw_w = getattr(self, f'{layer}_raw')
-            w = F.dropout(raw_w, p=self.weight_p, training=self.training)
-            if not self.training: w = w.clone()
+            if self.training: w = F.dropout(raw_w, p=self.weight_p)
+            else: w = raw_w.clone()
             setattr(self.module, layer, w)
 
     def forward(self, *args):
         self._setweights()
         with warnings.catch_warnings():
-            #To avoid the warning that comes because the weights aren't flattened.
-            warnings.simplefilter("ignore")
+            # To avoid the warning that comes because the weights aren't flattened.
+            warnings.simplefilter("ignore", category=UserWarning)
             return self.module.forward(*args)
 
     def reset(self):
         for layer in self.layer_names:
             raw_w = getattr(self, f'{layer}_raw')
             setattr(self.module, layer, raw_w.clone())
-#             setattr(self.module, layer, F.dropout(raw_w.data, p=self.weight_p, training=False))
         if hasattr(self.module, 'reset'): self.module.reset()
 
     def _do_nothing(self): pass

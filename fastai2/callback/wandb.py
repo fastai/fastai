@@ -169,3 +169,6 @@ def wandb_process(x:Tabular, y:Tabular, samples, outs):
     df = x.all_cols
     for n in x.y_names: df[n+'_pred'] = y[n].values
     return {"Prediction Samples": wandb.Table(dataframe=df)}
+
+# Cell
+#nbdev_comment _all_ = ['wandb_process']

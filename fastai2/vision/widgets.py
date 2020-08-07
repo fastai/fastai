@@ -10,6 +10,9 @@ from .core import *
 from ipywidgets import HBox,VBox,widgets,Button,Checkbox,Dropdown,Layout,Box,Output,Label,FileUpload
 
 # Cell
+#nbdev_comment _all_ = ['HBox','VBox','widgets','Button','Checkbox','Dropdown','Layout','Box','Output','Label','FileUpload']
+
+# Cell
 @patch
 def __getitem__(self:Box, i): return self.children[i]
 
