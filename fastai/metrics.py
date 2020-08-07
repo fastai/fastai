@@ -242,6 +242,7 @@ class KappaScore(ConfusionMatrix):
         expected = torch.einsum('i,j->ij', (sum0, sum1)) / sum0.sum()
         if self.weights is None:
             w = torch.ones((self.n_classes, self.n_classes))
+            self.x = torch.arange(0, self.n_classes)
             w[self.x, self.x] = 0
         elif self.weights == "linear" or self.weights == "quadratic":
             w = torch.zeros((self.n_classes, self.n_classes))
