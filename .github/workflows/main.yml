@@ -26,8 +26,8 @@ jobs:
 
     - name: Install libraries
       run: |
-        pip install nbdev
-        pip install -e .
+        pip install -U nbdev
+        pip install -Ue .
 
     - name: Attempt to read notebooks
       run: |
@@ -104,8 +104,8 @@ jobs:
 
     - name: Install libraries
       run: |
-        pip install nbdev
-        pip install -e .
+        pip install -U nbdev
+        pip install -Ue .
     
     - name: check for cache hit
       uses: actions/cache@v2
