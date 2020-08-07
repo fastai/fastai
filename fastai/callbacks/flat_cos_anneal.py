@@ -18,7 +18,7 @@ def FlatCosAnnealScheduler(learn, lr:float=4e-3, tot_epochs:int=1, moms:Floats=(
   if curve=="cosine":        curve_type=annealing_cos
   elif curve=="linear":      curve_type=annealing_linear
   elif curve=="exponential": curve_type=annealing_exp
-  else: raiseValueError(f"annealing type not supported {curve}")
+  else: raise ValueError(f"annealing type not supported {curve}")
   phase0 = TrainingPhase(anneal_start).schedule_hp('lr', lr).schedule_hp('mom', moms[0])
   phase1 = TrainingPhase(batch_finish).schedule_hp('lr', lr, anneal=curve_type).schedule_hp('mom', moms[1])
   phases = [phase0, phase1]
