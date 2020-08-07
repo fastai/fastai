@@ -1,3 +1,4 @@
 [submodule "docs"]
-	path = docs
-	url = ../fastai-docs.git
+        path = docs
+        url = ../fastai-docs.git
+        update = merge

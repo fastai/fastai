@@ -1,1 +1,4 @@
+logs/
+lightning_logs/
 exps/
+MNIST/
