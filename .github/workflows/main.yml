@@ -86,7 +86,7 @@ jobs:
         git push -f
 
     - name: comment on PR
-      if: failure() && ( steps.clean.outputs.forgot_to_clean == 'true' || steps.clean.outputs.forgot_to_lib == 'true' )
+      if: failure() && ( steps.clean.outcome == 'failure' || steps.lib.outcome == 'failure' )
       uses: actions/github-script@v2
       with:
         github-token: ${{secrets.GITHUB_TOKEN}}
