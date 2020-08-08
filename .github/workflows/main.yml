@@ -70,10 +70,10 @@ jobs:
           echo "::set-output name=forgot_to_lib::true"
           echo "::error::Detected notebooks that are not in sync with the library."
           cat _nbdev_diff_logs.txt
-          exit 1;
           if [[ $auto_fix == 'true' ]]; then 
             nbdev_build_lib
           fi
+          exit 1;
         fi
 
 #     - name: Commit differences back to GitHub
