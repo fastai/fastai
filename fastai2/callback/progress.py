@@ -38,7 +38,7 @@ class ProgressCallback(Callback):
         if getattr(self, 'mbar', False):
             self.mbar.on_iter_end()
             delattr(self, 'mbar')
-        self.learn.logger = self.old_logger
+        if hasattr(self, 'old_logger'): self.learn.logger = self.old_logger
 
     def _write_stats(self, log):
         if getattr(self, 'mbar', False): self.mbar.write([f'{l:.6f}' if isinstance(l, float) else str(l) for l in log], table=True)

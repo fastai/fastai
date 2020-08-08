@@ -92,7 +92,7 @@ class ParamScheduler(Callback):
         for p in self.scheds.keys(): self.hps[p].append(self.opt.hypers[-1][p])
 
     def after_fit(self):
-        if hasattr(self.learn, 'recorder'): self.recorder.hps = self.hps
+        if hasattr(self.learn, 'recorder') and hasattr(self, 'hps'): self.recorder.hps = self.hps
 
     _docs = {"begin_fit": "Initialize container for hyper-parameters",
              "begin_batch": "Set the proper hyper-parameters in the optimizer",

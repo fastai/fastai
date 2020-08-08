@@ -5,7 +5,7 @@ __all__ = ['get_files', 'FileGetter', 'image_extensions', 'get_image_files', 'Im
            'FuncSplitter', 'MaskSplitter', 'FileSplitter', 'ColSplitter', 'RandomSubsetSplitter', 'parent_label',
            'RegexLabeller', 'ColReader', 'CategoryMap', 'Categorize', 'Category', 'MultiCategorize', 'MultiCategory',
            'OneHotEncode', 'EncodedMultiCategorize', 'RegressionSetup', 'get_c', 'ToTensor', 'IntToFloatTensor',
-           'broadcast_vec', 'Normalize', 'ToCuda']
+           'broadcast_vec', 'Normalize']
 
 # Cell
 from ..torch_basics import *
@@ -375,9 +375,3 @@ class Normalize(Transform):
     def name(self): return f"{super().name} -- {attrdict(self, *self.store_attrs.split(','))}"
 
     _docs=dict(encodes="Normalize batch", decodes="Denormalize batch")
-
-# Cell
-class ToCuda(Transform):
-    "Move data to CUDA device"
-    def encodes(self, x): return x.cuda()
-    def decodes(self, x): return to_cpu(x)

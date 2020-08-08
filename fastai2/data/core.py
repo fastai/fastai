@@ -129,7 +129,7 @@ class DataLoaders(GetAttr):
     _default='train'
     def __init__(self, *loaders, path='.', device=None):
         self.loaders,self.path = list(loaders),Path(path)
-        self.device = device
+        if device is not None or hasattr(loaders[0],'to'): self.device = device
 
     def __getitem__(self, i): return self.loaders[i]
     def new_empty(self):
