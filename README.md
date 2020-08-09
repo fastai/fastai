@@ -10,6 +10,8 @@ Note that the docs are in a submodule, so to clone with docs included, you shoul
 
      git clone --recurse-submodules https://github.com/fastai/fastai2
 
+If you're using a fork of fastai2, you'll need to fork the `fastai-docs` repo as well. 
+
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 
 ## Installing
