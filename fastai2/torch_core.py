@@ -529,7 +529,7 @@ def trainable_params(m):
     return [p for p in m.parameters() if p.requires_grad]
 
 # Cell
-norm_types = (nn.BatchNorm1d, nn.BatchNorm2d, nn.BatchNorm3d, nn.InstanceNorm1d, nn.InstanceNorm2d, nn.InstanceNorm3d)
+norm_types = (nn.BatchNorm1d, nn.BatchNorm2d, nn.BatchNorm3d, nn.InstanceNorm1d, nn.InstanceNorm2d, nn.InstanceNorm3d, nn.LayerNorm)
 
 # Cell
 def norm_bias_params(m, with_bias=True):
