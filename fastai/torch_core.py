@@ -259,7 +259,9 @@ def apply_init(m, init_func:LayerFunc):
 def in_channels(m:nn.Module) -> List[int]:
     "Return the shape of the first weight layer in `m`."
     for l in flatten_model(m):
-        if hasattr(l, 'weight'): return l.weight.shape[1]
+        if hasattr(l, 'weight'):
+            return l.weight.shape[1] * l.groups if hasattr(l, 'groups') else l.weight.shape[1]
+
     raise Exception('No weight layer')
 
 class ModelOnCPU():

@@ -67,6 +67,11 @@ def test_in_channels_no_weights():
         in_channels(nn.Sequential())
     assert e_info.value.args[0] == 'No weight layer'
     
+def test_in_channels_groups():
+    this_tests(in_channels)
+    m = nn.Conv2d(6, 2, 3, groups=2)
+    assert in_channels(m) == 6
+
 def test_range_children():
     this_tests(range_children)
     m = simple_cnn(b)
