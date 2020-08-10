@@ -1,7 +1,7 @@
 name: CI
 on: 
   workflow_dispatch: #allows repo admins to trigger this workflow from the Actions tab
-  pull_request_target:
+  pull_request:
   push:
     branches: 
       - master
@@ -23,24 +23,13 @@ jobs:
         name: payload.json
         path: ${{ github.event_path }}
         
-  test:
+  test-nbdev-sync:
     runs-on: ubuntu-latest
     container: fastdotai/fastai2 #this is defined here: https://github.com/fastai/docker-containers/blob/master/fastai2-build/Dockerfile
     steps:
 
     - name: checkout contents of PR
-      if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
       uses: actions/checkout@v2
-      with:
-        persist-credentials: false
-
-    - name: checkout contents of PR
-      if: github.event_name == 'pull_request_target'
-      uses: actions/checkout@v2
-      with:
-        ref: ${{github.event.pull_request.head.ref}}
-        repository: ${{github.event.pull_request.head.repo.full_name}}
-        persist-credentials: false
 
     - name: Install libraries
       run: |
@@ -77,20 +66,6 @@ jobs:
           exit 1;
         fi
 
-    - name: comment on PR
-      if: failure() && ( steps.clean.outcome == 'failure' || steps.lib.outcome == 'failure' )
-      uses: actions/github-script@v2
-      with:
-        github-token: ${{secrets.GITHUB_TOKEN}}
-        script: |
-          var user = context.payload.pull_request.user.login;
-          github.issues.createComment({
-            issue_number: context.payload.number,
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            body: `👋 @${user}! We detected notebooks that are not stripped or that are out of sync with the library in this PR.\n\nYou need to run \`nbdev_install_git_hooks\` before submitting a pull request! For more information, see the [CONTRIBUTING](https://github.com/${{github.repository}}#contributing) guide.\n\nYou can see the logs of the tests that triggered this message in run [${{github.run_id}}](https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}).`
-          })
-
   test-notebooks:
     container: fastdotai/fastai2
     runs-on: ubuntu-latest
@@ -100,20 +75,9 @@ jobs:
     strategy:
       matrix:
         nb: ['[0-2]','[3-5]','[6-9]']
-    steps:
+    steps:        
     - name: checkout contents of PR
       uses: actions/checkout@v2
-      if: github.event_name == 'pull_request_target'
-      with:
-        ref: ${{github.event.pull_request.head.ref}}
-        repository: ${{github.event.pull_request.head.repo.full_name}}
-        persist-credentials: false
-        
-    - name: checkout contents of PR
-      if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
-      uses: actions/checkout@v2
-      with:
-        persist-credentials: false
 
     - name: Install libraries
       run: |
