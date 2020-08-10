@@ -8,6 +8,9 @@ from ..basics import *
 from .progress import *
 
 # Cell
+from torch.cuda.amp import GradScaler, autocast
+
+# Cell
 from ..fp16_utils import convert_network, model_grads_to_master_grads, master_params_to_model_params
 
 # Cell
@@ -151,7 +154,6 @@ def to_fp32(self: Learner):
 
 # Cell
 def mixed_precision_one_batch(self, i, b):
-    from torch.cuda.amp import autocast
     self.iter = i
     try:
         self._split(b);                                      self('begin_batch')
@@ -168,23 +170,24 @@ def mixed_precision_one_batch(self, i, b):
 
 # Cell
 class NativeMixedPrecision(Callback):
-    def __init__(self):
-        try: from torch.cuda.amp import GradScaler, autocast
-        except: raise Exception("NativeMixedPrecision requires PyTorch nightlies")
+
+    @delegates(GradScaler.__init__)
+    def __init__(self, **kwargs):
+        self.scaler_kwargs = kwargs
     def begin_fit(self):
-        from torch.cuda.amp import GradScaler
         self.old_one_batch = self.learn.one_batch
         self.learn.one_batch = partial(mixed_precision_one_batch, self.learn)
-        self.learn.scaler = GradScaler()
+        self.learn.scaler = GradScaler(**self.scaler_kwargs)
 
     def after_step(self): self.learn.scaler.update()
     def after_fit(self):
         if getattr(self, 'old_one_batch', None) is not None: self.learn.one_batch = self.old_one_batch
 
 # Cell
+@delegates(GradScaler.__init__)
 @patch
-def to_native_fp16(self:Learner):
-    self.add_cb(NativeMixedPrecision())
+def to_native_fp16(self:Learner, **kwargs):
+    self.add_cb(NativeMixedPrecision(**kwargs))
     return self
 
 # Cell
