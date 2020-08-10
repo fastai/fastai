@@ -286,7 +286,7 @@ class Learner():
 
     @delegates(load_model)
     def load(self, file, with_opt=None, device=None, **kwargs):
-        if device is None: device = self.dls.device
+        if device is None and hasattr(self.dls, 'device'): device = self.dls.device
         if self.opt is None: self.create_opt()
         file = join_path_file(file, self.path/self.model_dir, ext='.pth')
         load_model(file, self.model, self.opt, device=device, **kwargs)
