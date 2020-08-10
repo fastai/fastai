@@ -10,8 +10,7 @@ __all__ = ['progress_bar', 'master_bar', 'subplots', 'show_image', 'show_titled_
            'one_hot_decode', 'params', 'trainable_params', 'norm_types', 'norm_bias_params', 'batch_to_samples',
            'logit', 'num_distrib', 'rank_distrib', 'distrib_barrier', 'base_doc', 'doc', 'nested_reorder', 'to_image',
            'make_cross_image', 'show_image_batch', 'requires_grad', 'init_default', 'cond_init', 'apply_leaf',
-           'apply_init', 'set_num_threads', 'ProcessPoolExecutor', 'parallel', 'parallel_chunks', 'run_procs',
-           'parallel_gen', 'script_use_ctx', 'script_save_ctx', 'script_fwd', 'script_bwd', 'grad_module',
+           'apply_init', 'script_use_ctx', 'script_save_ctx', 'script_fwd', 'script_bwd', 'grad_module',
            'flatten_check']
 
 # Cell
@@ -690,78 +689,6 @@ def apply_leaf(m, f):
 def apply_init(m, func=nn.init.kaiming_normal_):
     "Initialize all non-batchnorm layers of `m` with `func`."
     apply_leaf(m, partial(cond_init, func=func))
-
-# Cell
-from multiprocessing import Process, Queue
-
-# Cell
-def set_num_threads(nt):
-    "Get numpy (and others) to use `nt` threads"
-    try: import mkl; mkl.set_num_threads(nt)
-    except: pass
-    torch.set_num_threads(nt)
-    os.environ['IPC_ENABLE']='1'
-    for o in ['OPENBLAS_NUM_THREADS','NUMEXPR_NUM_THREADS','OMP_NUM_THREADS','MKL_NUM_THREADS']:
-        os.environ[o] = str(nt)
-
-# Cell
-@delegates(concurrent.futures.ProcessPoolExecutor)
-class ProcessPoolExecutor(concurrent.futures.ProcessPoolExecutor):
-    def __init__(self, max_workers=None, on_exc=print, **kwargs):
-        self.not_parallel = max_workers==0
-        self.on_exc = on_exc
-        if self.not_parallel: max_workers=1
-        super().__init__(max_workers, **kwargs)
-
-    def map(self, f, items, *args, **kwargs):
-        g = partial(f, *args, **kwargs)
-        if self.not_parallel: return map(g, items)
-        try: return super().map(g, items)
-        except Exception as e: self.on_exc(e)
-
-# Cell
-def parallel(f, items, *args, n_workers=defaults.cpus, total=None, progress=True, **kwargs):
-    "Applies `func` in parallel to `items`, using `n_workers`"
-    with ProcessPoolExecutor(n_workers) as ex:
-        r = ex.map(f,items, *args, **kwargs)
-        if progress:
-            if total is None: total = len(items)
-            r = progress_bar(r, total=total, leave=False)
-        return L(r)
-
-# Cell
-@delegates(parallel)
-def parallel_chunks(f, items, n_workers=0, **kwargs):
-    "Calls `parallel` after first creating `n_workers` batches from `items`"
-    nc = 1 if n_workers==0 else n_workers
-    chunks = list(chunked(items, n_chunks=nc))
-    res = parallel(f, chunks, n_workers= n_workers, **kwargs)
-    return res.sum()
-
-# Cell
-def run_procs(f, f_done, args):
-    "Call `f` for each item in `args` in parallel, yielding `f_done`"
-    processes = L(args).map(Process, args=arg0, target=f)
-    for o in processes: o.start()
-    yield from f_done()
-#     except Exception as e: print(e)
-    processes.map(Self.join())
-
-# Cell
-def parallel_gen(cls, items, n_workers=defaults.cpus, **kwargs):
-    "Instantiate `cls` in `n_workers` procs & call each on a subset of `items` in parallel."
-    if n_workers==0:
-        yield from enumerate(list(cls(**kwargs)(items)))
-        return
-    batches = np.array_split(items, n_workers)
-    idx = np.cumsum(0 + L(batches).map(len))
-    queue = Queue()
-    def f(batch, start_idx):
-        obj = cls(**kwargs)
-        res = obj(batch)
-        for i,b in enumerate(res): queue.put((start_idx+i,b))
-    def done(): return (queue.get() for _ in progress_bar(items, leave=False))
-    yield from run_procs(f, done, L(batches,idx).zip())
 
 # Cell
 def script_use_ctx(f):

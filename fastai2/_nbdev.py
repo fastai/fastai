@@ -86,12 +86,6 @@ index = {"subplots": "00_torch_core.ipynb",
          "cond_init": "00_torch_core.ipynb",
          "apply_leaf": "00_torch_core.ipynb",
          "apply_init": "00_torch_core.ipynb",
-         "set_num_threads": "00_torch_core.ipynb",
-         "ProcessPoolExecutor": "00_torch_core.ipynb",
-         "parallel": "00_torch_core.ipynb",
-         "parallel_chunks": "00_torch_core.ipynb",
-         "run_procs": "00_torch_core.ipynb",
-         "parallel_gen": "00_torch_core.ipynb",
          "script_use_ctx": "00_torch_core.ipynb",
          "script_save_ctx": "00_torch_core.ipynb",
          "script_fwd": "00_torch_core.ipynb",
@@ -848,7 +842,7 @@ modules = ["torch_core.py",
            "test_utils.py",
            "_pytorch_doc.py"]
 
-doc_url = "https://dev.fast.ai"
+doc_url = "https://dev.fast.ai/"
 
 git_url = "https://github.com/fastai/fastai2/tree/master/"
 
