@@ -26,13 +26,13 @@ jobs:
   test:
     runs-on: ubuntu-latest
     container: fastdotai/fastai2 #this is defined here: https://github.com/fastai/docker-containers/blob/master/fastai2-build/Dockerfile
-    env:
-      auto_fix: false 
     steps:
 
     - name: checkout contents of PR
       if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
       uses: actions/checkout@v2
+      with:
+        persist-credentials: false
 
     - name: checkout contents of PR
       if: github.event_name == 'pull_request_target'
@@ -40,6 +40,7 @@ jobs:
       with:
         ref: ${{github.event.pull_request.head.ref}}
         repository: ${{github.event.pull_request.head.repo.full_name}}
+        persist-credentials: false
 
     - name: Install libraries
       run: |
@@ -76,15 +77,6 @@ jobs:
           exit 1;
         fi
 
-#     - name: Commit differences back to GitHub
-#       if: env.auto_fix == 'true' && ( steps.clean.outputs.forgot_to_clean == 'true' || steps.clean.outputs.forgot_to_lib == 'true' )
-#       run: |
-#         git config --global user.email "github-actions[bot]@users.noreply.github.com"
-#         git config --global user.name "github-actions[bot]"
-#         git add nbs && git commit --allow-empty -m'apply changes from `nbdev_clean_nbs`'
-#         git add fastai2 && git commit --allow-empty -m'apply changes from `nbdev_build_lib`'
-#         git push -f
-
     - name: comment on PR
       if: failure() && ( steps.clean.outcome == 'failure' || steps.lib.outcome == 'failure' )
       uses: actions/github-script@v2
@@ -115,10 +107,13 @@ jobs:
       with:
         ref: ${{github.event.pull_request.head.ref}}
         repository: ${{github.event.pull_request.head.repo.full_name}}
+        persist-credentials: false
         
     - name: checkout contents of PR
       if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
       uses: actions/checkout@v2
+      with:
+        persist-credentials: false
 
     - name: Install libraries
       run: |
