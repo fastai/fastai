@@ -20,14 +20,17 @@ class WandbCallback(Callback):
     # Record if watch has been called previously (even in another instance)
     _wandb_watch_called = False
 
-    def __init__(self, log="gradients", log_preds=True, valid_dl=None, n_preds=36, seed=12345):
+    def __init__(self, log="gradients", log_preds=True, dataset_path=None, dataset_name=None, valid_dl=None, n_preds=36, seed=12345):
         # Check if wandb.init has been called
         if wandb.run is None:
             raise ValueError('You must call wandb.init() before WandbCallback()')
         # W&B log step
         self._wandb_step = wandb.run.step - 1  # -1 except if the run has previously logged data (incremented at each batch)
         self._wandb_epoch = 0 if not(wandb.run.step) else math.ceil(wandb.run.summary['epoch']) # continue to next epoch
-        store_attr(self, 'log,log_preds,valid_dl,n_preds,seed')
+        if dataset_path is not None:
+            assert isinstance(dataset_path, (str, Path)), f'dataset_path must be a path: {type(dataset_path)}'
+            _log_dataset(dataset_path=dataset_path, name=dataset_name)
+        store_attr(self, 'log,log_preds,dataset_path,dataset_name,valid_dl,n_preds,seed')
 
     def begin_fit(self):
         "Call watch method to log model topology, gradients & weights"
@@ -38,7 +41,6 @@ class WandbCallback(Callback):
         log_config = self.learn.gather_args()
         _format_config(log_config)
         try:
-            # Log all parameters at once
             wandb.config.update(log_config, allow_val_change=True)
         except Exception as e:
             print(f'WandbCallback could not log config parameters -> {e}')
@@ -121,6 +123,26 @@ def _format_config(log_config):
         if isinstance(v, slice): log_config[k] = dict(slice_start=v.start, slice_step=v.step, slice_stop=v.stop)
 
 # Cell
+def _format_metadata(metadata):
+    "Format metadata associated to artifacts"
+    for k,v in metadata.items(): metadata[k] = str(v)
+
+# Cell
+def _log_dataset(dataset_path=None, name=None, dls=None):
+    "Log dataset folder"
+    dataset_path = Path(dataset_path)
+    assert dataset_path.is_dir(), f'dataset_path must be a directory: {dataset_path}'
+    name = ifnone(name, dataset_path.name if dataset_path.name != '' else wandb.run.name)
+
+    # log dataset artifact
+    metadata={'path':dataset_path}
+    with ignore_exceptions(): metadata['path'] = Path('~') / metadata['path'].relative_to(Path.home())  # make path relative to home
+    _format_metadata(metadata)
+    artifact_dataset = wandb.Artifact(name=name, type='dataset', description="raw dataset", metadata=metadata)
+    artifact_dataset.add_dir(str(dataset_path.resolve()))
+    wandb.run.use_artifact(artifact_dataset)
+
+# Cell
 @typedispatch
 def wandb_process(x:TensorImage, y, samples, outs):
     "Process `sample` and `out` depending on the type of `x/y`"
@@ -169,6 +191,3 @@ def wandb_process(x:Tabular, y:Tabular, samples, outs):
     df = x.all_cols
     for n in x.y_names: df[n+'_pred'] = y[n].values
     return {"Prediction Samples": wandb.Table(dataframe=df)}
-
-# Cell
-#nbdev_comment _all_ = ['wandb_process']
