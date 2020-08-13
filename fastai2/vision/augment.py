@@ -5,7 +5,8 @@ __all__ = ['RandTransform', 'TensorTypes', 'FlipItem', 'DihedralItem', 'PadMode'
            'AffineCoordTfm', 'RandomResizedCropGPU', 'affine_mat', 'mask_tensor', 'flip_mat', 'Flip',
            'DeterministicDraw', 'DeterministicFlip', 'dihedral_mat', 'Dihedral', 'DeterministicDihedral', 'rotate_mat',
            'Rotate', 'zoom_mat', 'Zoom', 'find_coeffs', 'apply_perspective', 'Warp', 'LightingTfm', 'Brightness',
-           'Contrast', 'cutout_gaussian', 'norm_apply_denorm', 'RandomErasing', 'setup_aug_tfms', 'aug_transforms']
+           'Contrast', 'grayscale', 'Saturation', 'rgb2hsv', 'hsv2rgb', 'Hue', 'cutout_gaussian', 'norm_apply_denorm',
+           'RandomErasing', 'setup_aug_tfms', 'aug_transforms']
 
 # Cell
 from ..data.all import *
@@ -758,6 +759,141 @@ class Contrast(LightingTfm):
     store_attrs = 'max_lighting,p'
     def __init__(self,max_lighting=0.2, p=0.75, draw=None, batch=False):
         super().__init__(_ContrastLogit(max_lighting, p, draw, batch))
+        store_attr(self, self.store_attrs)
+
+# Cell
+def grayscale(x):
+    """ RGB tensor to grayscale tensor. Uses the ITU-R 601-2 luma transform.
+    Args:
+        b (Tensor): Image Batch to be converted to Grayscale in the form [N, 3, H, W].
+    Returns:
+        Tensor: Greyscale Image in the form [N, C, H, W]
+    """
+    return (x*torch.tensor([0.2989,0.5870,0.1140],device=x.device)[...,None,None]).sum(1)[:,None]
+
+# Cell
+class _SaturationLogit():
+    def __init__(self, max_lighting=0.2, p=0.75, draw=None, batch=False):
+        store_attr(self, 'max_lighting,p,draw,batch')
+
+    def _def_draw(self, x):
+        if not self.batch: res = x.new(x.size(0)).uniform_(math.log(1-self.max_lighting), -math.log(1-self.max_lighting))
+        else: res = x.new_zeros(x.size(0)) + random.uniform(math.log(1-self.max_lighting), -math.log(1-self.max_lighting))
+        return torch.exp(res)
+
+    def before_call(self, x):
+        self.change = _draw_mask(x, self._def_draw, draw=self.draw, p=self.p, neutral=1., batch=self.batch)
+
+    def __call__(self, x):
+        #interpolate between grayscale and original in-place
+        gs = grayscale(x)
+        gs.mul_(1-self.change[:,None,None,None])
+        x.mul_(self.change[:,None,None,None])
+        return x.add_(gs)
+
+# Cell
+@delegates(_SaturationLogit.__init__)
+@patch
+def saturation(x: TensorImage, **kwargs):
+    func = _SaturationLogit(**kwargs)
+    func.before_call(x)
+    return x.lighting(func)
+
+# Cell
+class Saturation(LightingTfm):
+    """Apply change in saturation of `max_lighting` to batch of images with probability `p`.
+    Ref: https://pytorch.org/docs/stable/torchvision/transforms.html#torchvision.transforms.functional.adjust_saturation
+    """
+    store_attrs = 'max_lighting,p'
+    def __init__(self,max_lighting=0.2, p=0.75, draw=None, batch=False):
+        super().__init__(_SaturationLogit(max_lighting, p, draw, batch))
+        store_attr(self, self.store_attrs)
+
+# Cell
+def rgb2hsv(img):
+    """ Converts a RGB image to an HSV image.
+       Note: Will not work on logit space images.
+    """
+    r, g, b = img.unbind(1)
+    maxc = torch.max(img, dim=1).values
+    minc = torch.min(img, dim=1).values
+    eqc = maxc == minc
+
+    cr = maxc - minc
+    s = cr / torch.where(eqc, maxc.new_ones(()), maxc)
+    cr_divisor = torch.where(eqc, maxc.new_ones(()), cr)
+    rc = (maxc - r) / cr_divisor
+    gc = (maxc - g) / cr_divisor
+    bc = (maxc - b) / cr_divisor
+
+    hr = (maxc == r) * (bc - gc)
+    hg = ((maxc == g) & (maxc != r)) * (2.0 + rc - bc)
+    hb = ((maxc != g) & (maxc != r)) * (4.0 + gc - rc)
+    h = (hr + hg + hb)
+    h = torch.fmod((h / 6.0 + 1.0), 1.0)
+
+    return torch.stack((h, s, maxc),dim=1)
+
+# Cell
+def hsv2rgb(img):
+    """ Converts a HSV image to an RGB image.
+    """
+    h, s, v = img.unbind(1)
+    i = torch.floor(h * 6.0)
+    f = (h * 6.0) - i
+    i = i.to(dtype=torch.int32)
+
+    p = torch.clamp((v * (1.0 - s)), 0.0, 1.0)
+    q = torch.clamp((v * (1.0 - s * f)), 0.0, 1.0)
+    t = torch.clamp((v * (1.0 - s * (1.0 - f))), 0.0, 1.0)
+    i = i % 6
+
+    mask = i[:,None] == torch.arange(6,device=i.device)[:, None, None][None]
+
+    a1 = torch.stack((v, q, p, p, t, v),dim=1)
+    a2 = torch.stack((t, v, v, q, p, p),dim=1)
+    a3 = torch.stack((p, p, t, v, v, q),dim=1)
+    a4 = torch.stack((a1, a2, a3),dim=1)
+
+    return torch.einsum("nijk, nxijk -> nxjk", mask.to(dtype=img.dtype), a4)
+
+# Cell
+class _Hue():
+    def __init__(self, max_hue=0.2, p=0.75, draw=None, batch=False):
+        store_attr(self, 'max_hue,p,draw,batch')
+
+    def _def_draw(self, x):
+        if not self.batch: res = x.new(x.size(0)).uniform_(math.log(1-self.max_lighting), -math.log(1-self.max_lighting))
+        else: res = x.new_zeros(x.size(0)) + random.uniform(math.log(1-self.max_lighting), -math.log(1-self.max_lighting))
+        return torch.exp(res)
+
+    def before_call(self, x):
+        self.change = _draw_mask(x, self._def_draw, draw=self.draw, p=self.p, neutral=0., batch=self.batch)
+
+    def __call__(self, x):
+        hsv=rgb2hsv(x)
+        h,s,v = hsv.unbind(1)
+        h += self.change[:,None,None]
+        h = h % 1.0
+        hsv.set_(torch.stack((h, s, v),dim=1))
+        return x.set_(hsv2rgb(hsv))
+
+# Cell
+@delegates(_Hue.__init__)
+@patch
+def hue(x: TensorImage, **kwargs):
+    func = _Hue(**kwargs)
+    func.before_call(x)
+    return TensorImage(func(x))
+
+# Cell
+class Hue(RandTransform):
+    """Apply change in hue of `max_hue` to batch of images with probability `p`.
+    Ref: https://pytorch.org/docs/stable/torchvision/transforms.html#torchvision.transforms.functional.adjust_hue
+    """
+    store_attrs = 'max_hue,p'
+    def __init__(self,max_hue=0.1, p=0.75, draw=None, batch=False):
+        super().__init__(_Hue(max_hue, p, draw, batch))
         store_attr(self, self.store_attrs)
 
 # Cell
