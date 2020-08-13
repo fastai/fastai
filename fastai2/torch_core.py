@@ -6,7 +6,7 @@ __all__ = ['progress_bar', 'master_bar', 'subplots', 'show_image', 'show_titled_
            'to_np', 'to_concat', 'TensorBase', 'TensorCategory', 'TensorMultiCategory', 'TensorImageBase',
            'TensorImage', 'TensorImageBW', 'TensorMask', 'TitledTensorScalar', 'concat', 'Chunks', 'show_title',
            'ShowTitle', 'TitledInt', 'TitledFloat', 'TitledStr', 'TitledTuple', 'get_empty_df', 'display_df',
-           'get_first', 'one_param', 'item_find', 'find_device', 'find_bs', 'Module', 'get_model', 'one_hot',
+           'get_first', 'one_param', 'item_find', 'find_device', 'find_bs', 'np_func', 'Module', 'get_model', 'one_hot',
            'one_hot_decode', 'params', 'trainable_params', 'norm_types', 'norm_bias_params', 'batch_to_samples',
            'logit', 'num_distrib', 'rank_distrib', 'distrib_barrier', 'base_doc', 'doc', 'nested_reorder', 'to_image',
            'make_cross_image', 'show_image_batch', 'requires_grad', 'init_default', 'cond_init', 'apply_leaf',
@@ -77,23 +77,31 @@ def show_images(ims, nrows=1, ncols=None, titles=None, **kwargs):
 
 # Cell
 class ArrayBase(ndarray):
+    "An `ndarray` that can modify casting behavior"
     @classmethod
     def _before_cast(cls, x): return x if isinstance(x,ndarray) else array(x)
 
 # Cell
 class ArrayImageBase(ArrayBase):
+    "Base class for arrays representing images"
     _show_args = {'cmap':'viridis'}
     def show(self, ctx=None, **kwargs):
         return show_image(self, ctx=ctx, **{**self._show_args, **kwargs})
 
 # Cell
-class ArrayImage(ArrayImageBase): pass
+class ArrayImage(ArrayImageBase):
+    "An array representing an image"
+    pass
 
 # Cell
-class ArrayImageBW(ArrayImage): _show_args = {'cmap':'Greys'}
+class ArrayImageBW(ArrayImage):
+    "An array representing an image"
+    _show_args = {'cmap':'Greys'}
 
 # Cell
-class ArrayMask(ArrayImageBase): _show_args = {'alpha':0.5, 'cmap':'tab20', 'interpolation':'nearest'}
+class ArrayMask(ArrayImageBase):
+    "An array representing an image mask"
+    _show_args = {'alpha':0.5, 'cmap':'tab20', 'interpolation':'nearest'}
 
 # Cell
 @patch
@@ -492,6 +500,15 @@ def find_device(b):
 def find_bs(b):
     "Recursively search the batch size of `b`."
     return item_find(b).shape[0]
+
+# Cell
+def np_func(f):
+    "Convert a function taking and returning numpy arrays to one taking and returning tensors"
+    def _inner(*args, **kwargs):
+        nargs = [to_np(arg) if isinstance(arg,Tensor) else arg for arg in args]
+        return tensor(f(*nargs, **kwargs))
+    functools.update_wrapper(_inner, f)
+    return _inner
 
 # Cell
 class Module(nn.Module, metaclass=PrePostInitMeta):
