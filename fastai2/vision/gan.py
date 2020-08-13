@@ -146,7 +146,7 @@ class GANTrainer(Callback):
             train_model.train()
             loss_model.eval()
 
-    def begin_fit(self):
+    def before_fit(self):
         "Initialize smootheners."
         self.generator,self.critic = self.model.generator,self.model.critic
         self.gen_mode = self.gen_first
@@ -157,11 +157,11 @@ class GANTrainer(Callback):
         #self.recorder.add_metric_names(['gen_loss', 'disc_loss'])
         #self.imgs,self.titles = [],[]
 
-    def begin_validate(self):
+    def before_validate(self):
         "Switch in generator mode for showing results."
         self.switch(gen_mode=True)
 
-    def begin_batch(self):
+    def before_batch(self):
         "Clamp the weights with `self.clip` if it's not None, set the correct input/target."
         if self.training and self.clip is not None:
             for p in self.critic.parameters(): p.data.clamp_(-self.clip, self.clip)
@@ -179,7 +179,7 @@ class GANTrainer(Callback):
             self.crit_loss.accumulate(self.learn)
             self.crit_losses.append(self.crit_loss.value)
 
-    def begin_epoch(self):
+    def before_epoch(self):
         "Put the critic or the generator back to eval if necessary."
         self.switch(self.gen_mode)
 
@@ -208,7 +208,7 @@ class FixedGANSwitcher(Callback):
     "Switcher to do `n_crit` iterations of the critic then `n_gen` iterations of the generator."
     run_after = GANTrainer
     def __init__(self, n_crit=1, n_gen=1): store_attr(self, 'n_crit,n_gen')
-    def begin_train(self): self.n_c,self.n_g = 0,0
+    def before_train(self): self.n_c,self.n_g = 0,0
 
     def after_batch(self):
         "Switch the model if necessary."
@@ -245,7 +245,7 @@ class GANDiscriminativeLR(Callback):
     run_after = GANTrainer
     def __init__(self, mult_lr=5.): self.mult_lr = mult_lr
 
-    def begin_batch(self):
+    def before_batch(self):
         "Multiply the current lr if necessary."
         if not self.learn.gan_trainer.gen_mode and self.training:
             self.learn.opt.set_hyper('lr', self.learn.opt.hypers[0]['lr']*self.mult_lr)

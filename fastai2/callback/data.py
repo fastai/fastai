@@ -8,15 +8,15 @@ from ..basics import *
 # Cell
 class CollectDataCallback(Callback):
     "Collect all batches, along with `pred` and `loss`, into `self.data`. Mainly for testing"
-    def begin_fit(self): self.data = L()
+    def before_fit(self): self.data = L()
     def after_batch(self): self.data.append(to_detach((self.xb,self.yb,self.pred,self.loss)))
 
 # Cell
 class CudaCallback(Callback):
     "Move data to CUDA device"
     def __init__(self, device=None): self.device = ifnone(device, default_device())
-    def begin_batch(self): self.learn.xb,self.learn.yb = to_device(self.xb),to_device(self.yb)
-    def begin_fit(self): self.model.to(self.device)
+    def before_batch(self): self.learn.xb,self.learn.yb = to_device(self.xb),to_device(self.yb)
+    def before_fit(self): self.model.to(self.device)
 
 # Cell
 @log_args(but_as=TfmdDL.__init__)

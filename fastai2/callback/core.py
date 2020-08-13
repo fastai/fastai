@@ -12,9 +12,9 @@ from ..optimizer import *
 #nbdev_comment _all_ = ['CancelFitException', 'CancelEpochException', 'CancelTrainException', 'CancelValidException', 'CancelBatchException']
 
 # Cell
-_events = L.split('begin_fit begin_epoch begin_train begin_batch after_pred after_loss \
+_events = L.split('before_fit before_epoch before_train before_batch after_pred after_loss \
     after_backward after_step after_cancel_batch after_batch after_cancel_train \
-    after_train begin_validate after_cancel_validate after_validate after_cancel_epoch \
+    after_train before_validate after_cancel_validate after_validate after_cancel_epoch \
     after_epoch after_cancel_fit after_fit')
 
 mk_class('event', **_events.map_dict(),
@@ -24,7 +24,7 @@ mk_class('event', **_events.map_dict(),
 #nbdev_comment _all_ = ['event']
 
 # Cell
-_inner_loop = "begin_batch after_pred after_loss after_backward after_step after_cancel_batch after_batch".split()
+_inner_loop = "before_batch after_pred after_loss after_backward after_step after_cancel_batch after_batch".split()
 
 # Cell
 @funcs_kwargs(as_method=True)
@@ -59,7 +59,7 @@ class Callback(GetAttr):
 class TrainEvalCallback(Callback):
     "`Callback` that tracks the number of iterations done and properly sets training/eval mode"
     run_valid = False
-    def begin_fit(self):
+    def before_fit(self):
         "Set the iter and epoch counters to 0, put the model and the right device"
         self.learn.train_iter,self.learn.pct_train = 0,0.
         if hasattr(self.dls, 'device'): self.model.to(self.dls.device)
@@ -70,13 +70,13 @@ class TrainEvalCallback(Callback):
         self.learn.pct_train += 1./(self.n_iter*self.n_epoch)
         self.learn.train_iter += 1
 
-    def begin_train(self):
+    def before_train(self):
         "Set the model in training mode"
         self.learn.pct_train=self.epoch/self.n_epoch
         self.model.train()
         self.learn.training=True
 
-    def begin_validate(self):
+    def before_validate(self):
         "Set the model in validation mode"
         self.model.eval()
         self.learn.training=False
@@ -91,10 +91,10 @@ class GatherPredsCallback(Callback):
     def __init__(self, with_input=False, with_loss=False, save_preds=None, save_targs=None, concat_dim=0):
         store_attr(self, "with_input,with_loss,save_preds,save_targs,concat_dim")
 
-    def begin_batch(self):
+    def before_batch(self):
         if self.with_input: self.inputs.append((to_detach(self.xb)))
 
-    def begin_validate(self):
+    def before_validate(self):
         "Initialize containers"
         self.preds,self.targets = [],[]
         if self.with_input: self.inputs = []

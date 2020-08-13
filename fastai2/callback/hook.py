@@ -111,12 +111,12 @@ class HookCallback(Callback):
         store_attr(self, 'modules,every,remove_end,is_forward,detach,cpu')
         assert not kwargs
 
-    def begin_fit(self):
+    def before_fit(self):
         "Register the `Hooks` on `self.modules`."
         if self.modules is None: self.modules = [m for m in flatten_model(self.model) if has_params(m)]
         if self.every is None: self._register()
 
-    def begin_batch(self):
+    def before_batch(self):
         if self.every is None: return
         if self.training and self.train_iter%self.every==0: self._register()
 
@@ -200,9 +200,9 @@ class ActivationStats(HookCallback):
         super().__init__(**kwargs)
         self.with_hist = with_hist
 
-    def begin_fit(self):
+    def before_fit(self):
         "Initialize stats."
-        super().begin_fit()
+        super().before_fit()
         self.stats = L()
 
     def hook(self, m, i, o):

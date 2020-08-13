@@ -29,7 +29,7 @@ class WandbCallback(Callback):
         self._wandb_epoch = 0 if not(wandb.run.step) else math.ceil(wandb.run.summary['epoch']) # continue to next epoch
         store_attr(self, 'log,log_preds,log_dataset,dataset_name,valid_dl,n_preds,seed')
 
-    def begin_fit(self):
+    def before_fit(self):
         "Call watch method to log model topology, gradients & weights"
         self.run = not hasattr(self.learn, 'lr_finder') and not hasattr(self, "gather_preds") and rank_distrib()==0
         if not self.run: return

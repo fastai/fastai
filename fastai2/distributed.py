@@ -18,7 +18,7 @@ def reset(self: DataParallel):
 class ParallelTrainer(Callback):
     run_after,run_before = TrainEvalCallback,Recorder
     def __init__(self, device_ids): self.device_ids = device_ids
-    def begin_fit(self): self.learn.model = DataParallel(self.learn.model, device_ids=self.device_ids)
+    def before_fit(self): self.learn.model = DataParallel(self.learn.model, device_ids=self.device_ids)
     def after_fit(self): self.learn.model = self.learn.model.module
 
 # Cell
@@ -113,7 +113,7 @@ class DistributedTrainer(Callback):
     fup = None # for `find_unused_parameters` in DistributedDataParallel()
     def __init__(self, cuda_id=0): self.cuda_id = cuda_id
 
-    def begin_fit(self):
+    def before_fit(self):
         opt_kwargs = { 'find_unused_parameters' : DistributedTrainer.fup } if DistributedTrainer.fup is not None else {}
         self.learn.model = DistributedDataParallel(self.model, device_ids=[self.cuda_id], output_device=self.cuda_id, **opt_kwargs)
         self.old_dls = list(self.dls)
@@ -123,11 +123,11 @@ class DistributedTrainer(Callback):
     def _wrap_dl(self, dl):
         return dl if isinstance(dl, DistributedDL) else DistributedDL.from_dl(dl, rank_distrib(), num_distrib())
 
-    def begin_epoch(self):
+    def before_epoch(self):
         for dl in self.dls: dl.set_epoch(self.epoch)
 
-    def begin_train(self):    self.learn.dl = self._wrap_dl(self.learn.dl)
-    def begin_validate(self): self.learn.dl = self._wrap_dl(self.learn.dl)
+    def before_train(self):    self.learn.dl = self._wrap_dl(self.learn.dl)
+    def before_validate(self): self.learn.dl = self._wrap_dl(self.learn.dl)
 
     def after_fit(self):
         self.learn.model = self.learn.model.module

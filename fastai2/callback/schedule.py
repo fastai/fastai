@@ -82,8 +82,8 @@ class ParamScheduler(Callback):
     run_after,run_valid = TrainEvalCallback,False
 
     def __init__(self, scheds): self.scheds = scheds
-    def begin_fit(self): self.hps = {p:[] for p in self.scheds.keys()}
-    def begin_batch(self): self._update_val(self.pct_train)
+    def before_fit(self): self.hps = {p:[] for p in self.scheds.keys()}
+    def before_batch(self): self._update_val(self.pct_train)
 
     def _update_val(self, pct):
         for n,f in self.scheds.items(): self.opt.set_hyper(n, f(pct))
@@ -94,8 +94,8 @@ class ParamScheduler(Callback):
     def after_fit(self):
         if hasattr(self.learn, 'recorder') and hasattr(self, 'hps'): self.recorder.hps = self.hps
 
-    _docs = {"begin_fit": "Initialize container for hyper-parameters",
-             "begin_batch": "Set the proper hyper-parameters in the optimizer",
+    _docs = {"before_fit": "Initialize container for hyper-parameters",
+             "before_batch": "Set the proper hyper-parameters in the optimizer",
              "after_batch": "Record hyper-parameters of this batch",
              "after_fit": "Save the hyper-parameters in the recorder if there is one"}
 
@@ -175,12 +175,12 @@ class LRFinder(ParamScheduler):
         else: self.scheds = {'lr': SchedExp(start_lr, end_lr)}
         self.num_it,self.stop_div = num_it,stop_div
 
-    def begin_fit(self):
-        super().begin_fit()
+    def before_fit(self):
+        super().before_fit()
         self.learn.save('_tmp')
         self.best_loss = float('inf')
 
-    def begin_batch(self):
+    def before_batch(self):
         self._update_val(self.train_iter/self.num_it)
 
     def after_batch(self):
@@ -189,7 +189,7 @@ class LRFinder(ParamScheduler):
         if self.smooth_loss > 4*self.best_loss and self.stop_div: raise CancelFitException()
         if self.train_iter >= self.num_it: raise CancelFitException()
 
-    def begin_validate(self): raise CancelValidException()
+    def before_validate(self): raise CancelValidException()
 
     def after_fit(self):
         self.learn.opt.zero_grad() #Need to zero the gradients of the model before detaching the optimizer for future fits
@@ -198,11 +198,11 @@ class LRFinder(ParamScheduler):
             self.learn.load('_tmp')
             os.remove(tmp_f)
 
-    _docs = {"begin_fit": "Initialize container for hyper-parameters and save the model",
-             "begin_batch": "Set the proper hyper-parameters in the optimizer",
+    _docs = {"before_fit": "Initialize container for hyper-parameters and save the model",
+             "before_batch": "Set the proper hyper-parameters in the optimizer",
              "after_batch": "Record hyper-parameters of this batch and potentially stop training",
              "after_fit": "Save the hyper-parameters in the recorder if there is one and load the original model",
-             "begin_validate": "Skip the validation part of training"}
+             "before_validate": "Skip the validation part of training"}
 
 # Cell
 @patch

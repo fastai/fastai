@@ -27,7 +27,7 @@ class TrackerCallback(Callback):
         if comp == np.less: min_delta *= -1
         self.monitor,self.comp,self.min_delta = monitor,comp,min_delta
 
-    def begin_fit(self):
+    def before_fit(self):
         "Prepare the monitored value"
         self.run = not hasattr(self, "lr_finder") and not hasattr(self, "gather_preds")
         self.best = float('inf') if self.comp == np.less else -float('inf')
@@ -50,7 +50,7 @@ class EarlyStoppingCallback(TrackerCallback):
         super().__init__(monitor=monitor, comp=comp, min_delta=min_delta)
         self.patience = patience
 
-    def begin_fit(self): self.wait = 0; super().begin_fit()
+    def before_fit(self): self.wait = 0; super().before_fit()
     def after_epoch(self):
         "Compare the value monitored to its best score and maybe stop training."
         super().after_epoch()
@@ -95,7 +95,7 @@ class ReduceLROnPlateau(TrackerCallback):
         super().__init__(monitor=monitor, comp=comp, min_delta=min_delta)
         self.patience,self.factor,self.min_lr = patience,factor,min_lr
 
-    def begin_fit(self): self.wait = 0; super().begin_fit()
+    def before_fit(self): self.wait = 0; super().before_fit()
     def after_epoch(self):
         "Compare the value monitored to its best score and reduce LR by `factor` if no improvement."
         super().after_epoch()

@@ -11,7 +11,7 @@ class ProgressCallback(Callback):
     "A `Callback` to handle the display of progress bars"
     run_after=Recorder
 
-    def begin_fit(self):
+    def before_fit(self):
         assert hasattr(self.learn, 'recorder')
         if self.create_mbar: self.mbar = master_bar(list(range(self.n_epoch)))
         if self.learn.logger != noop:
@@ -19,11 +19,11 @@ class ProgressCallback(Callback):
             self._write_stats(self.recorder.metric_names)
         else: self.old_logger = noop
 
-    def begin_epoch(self):
+    def before_epoch(self):
         if getattr(self, 'mbar', False): self.mbar.update(self.epoch)
 
-    def begin_train(self):    self._launch_pbar()
-    def begin_validate(self): self._launch_pbar()
+    def before_train(self):    self._launch_pbar()
+    def before_validate(self): self._launch_pbar()
     def after_train(self):    self.pbar.on_iter_end()
     def after_validate(self): self.pbar.on_iter_end()
     def after_batch(self):
@@ -43,10 +43,10 @@ class ProgressCallback(Callback):
     def _write_stats(self, log):
         if getattr(self, 'mbar', False): self.mbar.write([f'{l:.6f}' if isinstance(l, float) else str(l) for l in log], table=True)
 
-    _docs = dict(begin_fit="Setup the master bar over the epochs",
-                 begin_epoch="Update the master bar",
-                 begin_train="Launch a progress bar over the training dataloader",
-                 begin_validate="Launch a progress bar over the validation dataloader",
+    _docs = dict(before_fit="Setup the master bar over the epochs",
+                 before_epoch="Update the master bar",
+                 before_train="Launch a progress bar over the training dataloader",
+                 before_validate="Launch a progress bar over the validation dataloader",
                  after_train="Close the progress bar over the training dataloader",
                  after_validate="Close the progress bar over the validation dataloader",
                  after_batch="Update the current progress bar",
@@ -71,7 +71,7 @@ class ShowGraphCallback(Callback):
     "Update a graph of training and validation loss"
     run_after,run_valid=ProgressCallback,False
 
-    def begin_fit(self):
+    def before_fit(self):
         self.run = not hasattr(self.learn, 'lr_finder') and not hasattr(self, "gather_preds")
         self.nb_batches = []
         assert hasattr(self.learn, 'progress')
@@ -98,7 +98,7 @@ class CSVLogger(Callback):
         "Convenience method to quickly access the log."
         return pd.read_csv(self.path/self.fname)
 
-    def begin_fit(self):
+    def before_fit(self):
         "Prepare file with metric names."
         self.path.parent.mkdir(parents=True, exist_ok=True)
         self.file = (self.path/self.fname).open('a' if self.append else 'w')

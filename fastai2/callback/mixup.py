@@ -18,14 +18,14 @@ def reduce_loss(loss, reduction='mean'):
 class MixUp(Callback):
     run_after,run_valid = [Normalize],False
     def __init__(self, alpha=0.4): self.distrib = Beta(tensor(alpha), tensor(alpha))
-    def begin_fit(self):
+    def before_fit(self):
         self.stack_y = getattr(self.learn.loss_func, 'y_int', False)
         if self.stack_y: self.old_lf,self.learn.loss_func = self.learn.loss_func,self.lf
 
     def after_fit(self):
         if self.stack_y: self.learn.loss_func = self.old_lf
 
-    def begin_batch(self):
+    def before_batch(self):
         lam = self.distrib.sample((self.y.size(0),)).squeeze().to(self.x.device)
         lam = torch.stack([lam, 1-lam], 1)
         self.lam = lam.max(1)[0]

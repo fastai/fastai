@@ -2,7 +2,7 @@
 
 __all__ = ['CancelFitException', 'CancelEpochException', 'CancelTrainException', 'CancelValidException',
            'CancelBatchException', 'replacing_yield', 'mk_metric', 'save_model', 'load_model', 'Learner',
-           'begin_batch_cb', 'Metric', 'AvgMetric', 'AvgLoss', 'AvgSmoothLoss', 'ValueMetric', 'Recorder',
+           'before_batch_cb', 'Metric', 'AvgMetric', 'AvgLoss', 'AvgSmoothLoss', 'ValueMetric', 'Recorder',
            'load_learner']
 
 # Cell
@@ -14,10 +14,10 @@ from .callback.core import *
 #nbdev_comment _all_ = ['CancelFitException', 'CancelEpochException', 'CancelTrainException', 'CancelValidException', 'CancelBatchException']
 
 # Cell
-_loop = ['Start Fit', 'begin_fit', 'Start Epoch Loop', 'begin_epoch', 'Start Train', 'begin_train',
-         'Start Batch Loop', 'begin_batch', 'after_pred', 'after_loss', 'after_backward',
+_loop = ['Start Fit', 'before_fit', 'Start Epoch Loop', 'before_epoch', 'Start Train', 'before_train',
+         'Start Batch Loop', 'before_batch', 'after_pred', 'after_loss', 'after_backward',
          'after_step', 'after_cancel_batch', 'after_batch','End Batch Loop','End Train',
-         'after_cancel_train', 'after_train', 'Start Valid', 'begin_validate','Start Batch Loop',
+         'after_cancel_train', 'after_train', 'Start Valid', 'before_validate','Start Batch Loop',
          '**CBs same as train batch**', 'End Batch Loop', 'End Valid', 'after_cancel_validate',
          'after_validate', 'End Epoch Loop', 'after_cancel_epoch', 'after_epoch', 'End Fit',
          'after_cancel_fit', 'after_fit']
@@ -71,7 +71,7 @@ def _try_concat(o):
 from contextlib import ExitStack
 
 # Cell
-_before_epoch = [event.begin_fit, event.begin_epoch]
+_before_epoch = [event.before_fit, event.before_epoch]
 _after_epoch  = [event.after_epoch, event.after_fit]
 
 # Cell
@@ -157,7 +157,7 @@ class Learner():
     def one_batch(self, i, b):
         self.iter = i
         try:
-            self._split(b);                                  self('begin_batch')
+            self._split(b);                                  self('before_batch')
             self.pred = self.model(*self.xb);                self('after_pred')
             if len(self.yb) == 0: return
             self.loss = self.loss_func(self.pred, *self.yb); self('after_loss')
@@ -168,12 +168,12 @@ class Learner():
         except CancelBatchException:                         self('after_cancel_batch')
         finally:                                             self('after_batch')
 
-    def _do_begin_fit(self, n_epoch):
-        self.n_epoch,self.loss = n_epoch,tensor(0.);         self('begin_fit')
+    def _do_before_fit(self, n_epoch):
+        self.n_epoch,self.loss = n_epoch,tensor(0.);         self('before_fit')
 
     def _do_epoch_train(self):
         try:
-            self.dl = self.dls.train;                        self('begin_train')
+            self.dl = self.dls.train;                        self('before_train')
             self.all_batches()
         except CancelTrainException:                         self('after_cancel_train')
         finally:                                             self('after_train')
@@ -181,7 +181,7 @@ class Learner():
     def _do_epoch_validate(self, ds_idx=1, dl=None):
         if dl is None: dl = self.dls[ds_idx]
         try:
-            self.dl = dl;                                    self('begin_validate')
+            self.dl = dl;                                    self('before_validate')
             with torch.no_grad(): self.all_batches()
         except CancelValidException:                         self('after_cancel_validate')
         finally:                                             self('after_validate')
@@ -198,10 +198,10 @@ class Learner():
             self.opt.set_hypers(lr=self.lr if lr is None else lr)
 
             try:
-                self._do_begin_fit(n_epoch)
+                self._do_before_fit(n_epoch)
                 for epoch in range(n_epoch):
                     try:
-                        self.epoch=epoch;          self('begin_epoch')
+                        self.epoch=epoch;          self('before_epoch')
                         self._do_epoch_train()
                         self._do_epoch_validate()
                     except CancelEpochException:   self('after_cancel_epoch')
@@ -232,7 +232,7 @@ class Learner():
         if with_loss: ctx_mgrs.append(self.loss_not_reduced())
         with ExitStack() as stack:
             for mgr in ctx_mgrs: stack.enter_context(mgr)
-            self(event.begin_epoch if inner else _before_epoch)
+            self(event.before_epoch if inner else _before_epoch)
             self._do_epoch_validate(dl=dl)
             self(event.after_epoch if inner else _after_epoch)
             if act is None: act = getattr(self.loss_func, 'activation', noop)
@@ -321,14 +321,14 @@ add_docs(Learner, "Group together a `model`, some `dls` and a `loss_func` to han
 )
 
 # Cell
-def _begin_batch_cb(self):
+def _before_batch_cb(self):
     xb,yb = f(self, self.xb, self.yb)
     self.learn.xb,self.learn.yb = xb,yb
 
 # Cell
-def begin_batch_cb(f):
-    "Shortcut for creating a Callback on the `begin_batch` event, which takes and returns `xb,yb`"
-    return Callback(begin_batch=_begin_batch_cb)
+def before_batch_cb(f):
+    "Shortcut for creating a Callback on the `before_batch` event, which takes and returns `xb,yb`"
+    return Callback(before_batch=_before_batch_cb)
 
 # Cell
 @docs
@@ -421,7 +421,7 @@ class Recorder(Callback):
         store_attr(self, 'add_time,train_metrics,valid_metrics')
         self.loss,self.smooth_loss = AvgLoss(),AvgSmoothLoss(beta=beta)
 
-    def begin_fit(self):
+    def before_fit(self):
         "Prepare state for training"
         self.lrs,self.iters,self.losses,self.values = [],[],[],[]
         names = self.metrics.attrgot('name')
@@ -444,14 +444,14 @@ class Recorder(Callback):
         self.losses.append(self.smooth_loss.value)
         self.learn.smooth_loss = self.smooth_loss.value
 
-    def begin_epoch(self):
+    def before_epoch(self):
         "Set timer if `self.add_time=True`"
         self.cancel_train,self.cancel_valid = False,False
         if self.add_time: self.start_epoch = time.time()
         self.log = L(getattr(self, 'epoch', 0))
 
-    def begin_train   (self): self._train_mets[1:].map(Self.reset())
-    def begin_validate(self): self._valid_mets.map(Self.reset())
+    def before_train   (self): self._train_mets[1:].map(Self.reset())
+    def before_validate(self): self._valid_mets.map(Self.reset())
     def after_train   (self): self.log += self._train_mets.map(_maybe_item)
     def after_validate(self): self.log += self._valid_mets.map(_maybe_item)
     def after_cancel_train(self):    self.cancel_train = True
@@ -484,9 +484,9 @@ class Recorder(Callback):
 
 # Cell
 add_docs(Recorder,
-         begin_train = "Reset loss and metrics state",
+         before_train = "Reset loss and metrics state",
          after_train = "Log loss and metric values on the training set (if `self.training_metrics=True`)",
-         begin_validate = "Reset loss and metrics state",
+         before_validate = "Reset loss and metrics state",
          after_validate = "Log loss and metric values on the validation set",
          after_cancel_train = "Ignore training metrics for this epoch",
          after_cancel_validate = "Ignore validation metrics for this epoch",
@@ -547,7 +547,7 @@ def tta(self:Learner, ds_idx=1, dl=None, n=4, item_tfms=None, batch_tfms=None, b
     if dl is None: dl = self.dls[ds_idx]
     if item_tfms is not None or batch_tfms is not None: dl = dl.new(after_item=item_tfms, after_batch=batch_tfms)
     try:
-        self(event.begin_fit)
+        self(event.before_fit)
         with dl.dataset.set_split_idx(0), self.no_mbar():
             if hasattr(self,'progress'): self.progress.mbar = master_bar(list(range(n)))
             aug_preds = []

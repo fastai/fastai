@@ -22,7 +22,7 @@ class NeptuneCallback(Callback):
             raise ValueError('You did not initialize project in neptune.\n',
                              'Please invoke `neptune.init("USERNAME/PROJECT_NAME")` before this callback.')
 
-    def begin_fit(self):
+    def before_fit(self):
         try:
             self.experiment = neptune.get_experiment()
         except ValueError:

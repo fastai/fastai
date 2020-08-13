@@ -11,14 +11,14 @@ class CutMix(Callback):
     "Implementation of `https://arxiv.org/abs/1905.04899`"
     run_after,run_valid = [Normalize],False
     def __init__(self, alpha=1.): self.distrib = Beta(tensor(alpha), tensor(alpha))
-    def begin_fit(self):
+    def before_fit(self):
         self.stack_y = getattr(self.learn.loss_func, 'y_int', False)
         if self.stack_y: self.old_lf,self.learn.loss_func = self.learn.loss_func,self.lf
 
     def after_fit(self):
         if self.stack_y: self.learn.loss_func = self.old_lf
 
-    def begin_batch(self):
+    def before_batch(self):
         W, H = self.xb[0].size(3), self.xb[0].size(2)
         lam = self.distrib.sample((1,)).squeeze().to(self.x.device)
         lam = torch.stack([lam, 1-lam])
