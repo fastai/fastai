@@ -30,9 +30,10 @@ class RegModel(Module):
 
 # Cell
 @delegates(Learner.__init__)
-def synth_learner(n_trn=10, n_val=2, cuda=False, lr=1e-3, data=None, **kwargs):
-    if data is None: data = synth_dbunch(n_train=n_trn,n_valid=n_val, cuda=cuda)
-    return Learner(data, RegModel(), lr=lr, loss_func=MSELossFlat(),
+def synth_learner(n_trn=10, n_val=2, cuda=False, lr=1e-3, data=None, model=None, **kwargs):
+    if data is None: data=synth_dbunch(n_train=n_trn,n_valid=n_val, cuda=cuda)
+    if model is None: model=RegModel()
+    return Learner(data, model, lr=lr, loss_func=MSELossFlat(),
                    opt_func=partial(SGD, mom=0.9), **kwargs)
 
 # Cell

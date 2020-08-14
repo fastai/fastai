@@ -6,6 +6,7 @@ __all__ = ['reduce_loss', 'MixUp']
 from ..basics import *
 from .progress import *
 from ..vision.core import *
+from ..vision.models.xresnet import *
 
 from torch.distributions.beta import Beta
 

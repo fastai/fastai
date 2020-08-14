@@ -224,6 +224,7 @@ def to_np(x):
 # Cell
 def to_concat(xs, dim=0):
     "Concat the element in `xs` (recursively if they are tuples/lists of tensors)"
+    if not xs: return xs
     if is_listy(xs[0]): return type(xs[0])([to_concat([x[i] for x in xs], dim=dim) for i in range_of(xs[0])])
     if isinstance(xs[0],dict):  return {k: to_concat([x[k] for x in xs], dim=dim) for k in xs[0].keys()}
     #We may receives xs that are not concatenatable (inputs of a text classifier for instance),

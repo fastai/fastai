@@ -13,7 +13,7 @@ from ..optimizer import *
 
 # Cell
 _events = L.split('before_fit before_epoch before_train before_batch after_pred after_loss \
-    after_backward after_step after_cancel_batch after_batch after_cancel_train \
+    before_backward after_backward after_step after_cancel_batch after_batch after_cancel_train \
     after_train before_validate after_cancel_validate after_validate after_cancel_epoch \
     after_epoch after_cancel_fit after_fit')
 
@@ -24,7 +24,7 @@ mk_class('event', **_events.map_dict(),
 #nbdev_comment _all_ = ['event']
 
 # Cell
-_inner_loop = "before_batch after_pred after_loss after_backward after_step after_cancel_batch after_batch".split()
+_inner_loop = "before_batch after_pred after_loss before_backward after_backward after_step after_cancel_batch after_batch".split()
 
 # Cell
 @funcs_kwargs(as_method=True)
@@ -102,6 +102,7 @@ class GatherPredsCallback(Callback):
 
     def after_batch(self):
         "Save predictions, targets and potentially losses"
+        if not hasattr(self, 'pred'): return
         preds,targs = to_detach(self.pred),to_detach(self.yb)
         if self.save_preds is None: self.preds.append(preds)
         else: (self.save_preds/str(self.iter)).save_array(preds)
@@ -114,6 +115,7 @@ class GatherPredsCallback(Callback):
 
     def after_validate(self):
         "Concatenate all recorded tensors"
+        if not hasattr(self, 'preds'): return
         if self.with_input:     self.inputs  = detuplify(to_concat(self.inputs, dim=self.concat_dim))
         if not self.save_preds: self.preds   = detuplify(to_concat(self.preds, dim=self.concat_dim))
         if not self.save_targs: self.targets = detuplify(to_concat(self.targets, dim=self.concat_dim))

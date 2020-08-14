@@ -142,14 +142,13 @@ def total_params(m):
     return params, (False if len(trains)==0 else trains[0])
 
 # Cell
-def layer_info(model, *xb):
+def layer_info(learn, *xb):
     "Return layer infos of `model` on `xb` (only support batch first inputs)"
-    def _track(m, i, o):
-        return (m.__class__.__name__,)+total_params(m)+(apply(lambda x:x.shape, o),)
-    layers = [m for m in flatten_model(model)]
-    with Hooks(layers, _track) as h:
-        _ = model.eval()(*apply(lambda o:o[:1], xb))
-        return xb,h.stored
+    def _track(m, i, o): return (m.__class__.__name__,)+total_params(m)+(apply(lambda x:x.shape, o),)
+    with Hooks(flatten_model(learn.model), _track) as h:
+        batch = apply(lambda o:o[:1], xb)
+        with learn: r = learn.get_preds(dl=[batch], reorder=False)
+        return h.stored
 
 # Cell
 def _print_shapes(o, bs):
@@ -157,12 +156,15 @@ def _print_shapes(o, bs):
     else: return str([_print_shapes(x, bs) for x in o])
 
 # Cell
-def module_summary(self, *xb):
-    "Print a summary of `self` using `xb`"
-    sample_inputs,infos = layer_info(self, *xb)
+def module_summary(learn, *xb):
+    "Print a summary of `model` using `xb`"
+    #Individual parameters wrapped in ParameterModule aren't called through the hooks in `layer_info`,
+    #  thus are not counted inside the summary
+    #TODO: find a way to have them counted in param number somehow
+    infos = layer_info(learn, *xb)
     n,bs = 64,find_bs(xb)
     inp_sz = _print_shapes(apply(lambda x:x.shape, xb), bs)
-    res = f"{self.__class__.__name__} (Input shape: {inp_sz})\n"
+    res = f"{learn.model.__class__.__name__} (Input shape: {inp_sz})\n"
     res += "=" * n + "\n"
     res += f"{'Layer (type)':<20} {'Output Shape':<20} {'Param #':<10} {'Trainable':<10}\n"
     res += "=" * n + "\n"
@@ -184,10 +186,10 @@ def module_summary(self, *xb):
 def summary(self:Learner):
     "Print a summary of the model, optimizer and loss function."
     xb = self.dls.train.one_batch()[:self.dls.train.n_inp]
-    res = module_summary(self.model, *xb)
+    res = module_summary(self, *xb)
     res += f"Optimizer used: {self.opt_func}\nLoss function: {self.loss_func}\n\n"
     if self.opt is not None:
-        res += f"Model " + ("unfrozen\n\n" if self.opt.frozen_idx==0 else f"frozen up to parameter group number {self.opt.frozen_idx}\n\n")
+        res += f"Model " + ("unfrozen\n\n" if self.opt.frozen_idx==0 else f"frozen up to parameter group #{self.opt.frozen_idx}\n\n")
     res += "Callbacks:\n" + '\n'.join(f"  - {cb}" for cb in sort_by_run(self.cbs))
     return PrettyString(res)
 
