@@ -182,7 +182,7 @@ class RegexLabeller():
         return res.group(1)
 
 # Cell
-class ColReader():
+class ColReader(DisplayedTransform):
     "Read `cols` in `row` with potential `pref` and `suff`"
     store_attrs = 'cols'
     def __init__(self, cols, pref='', suff='', label_delim=None):
@@ -196,12 +196,9 @@ class ColReader():
         if self.label_delim is None: return f'{self.pref}{o}{self.suff}'
         else: return o.split(self.label_delim) if len(o)>0 else []
 
-    def __call__(self, o):
+    def __call__(self, o, **kwargs):
         if len(self.cols) == 1: return self._do_one(o, self.cols[0])
         return L(self._do_one(o, c) for c in self.cols)
-
-    @property
-    def name(self): return f"ColReader -- {attrdict(self, *self.store_attrs.split(','))}"
 
 # Cell
 class CategoryMap(CollBase):
@@ -230,7 +227,7 @@ class CategoryMap(CollBase):
     def __eq__(self,b): return all_equal(b,self)
 
 # Cell
-class Categorize(Transform):
+class Categorize(DisplayedTransform):
     "Reversible transform of category string to `vocab` id"
     loss_func,order,store_attrs=CrossEntropyLossFlat(),1,'vocab,add_na'
     def __init__(self, vocab=None, sort=True, add_na=False):
@@ -243,9 +240,6 @@ class Categorize(Transform):
 
     def encodes(self, o): return TensorCategory(self.vocab.o2i[o])
     def decodes(self, o): return Category      (self.vocab    [o])
-
-    @property
-    def name(self): return f"{super().name} -- {attrdict(self, *self.store_attrs.split(','))}"
 
 # Cell
 class Category(str, ShowTitle): _show_args = {'label': 'category'}
@@ -272,7 +266,7 @@ class MultiCategory(L):
         return show_title(sep.join(self.map(str)), ctx=ctx, color=color, **kwargs)
 
 # Cell
-class OneHotEncode(Transform):
+class OneHotEncode(DisplayedTransform):
     "One-hot encodes targets"
     order,store_attrs=2,'c'
     def __init__(self, c=None):
@@ -285,9 +279,6 @@ class OneHotEncode(Transform):
     def encodes(self, o): return TensorMultiCategory(one_hot(o, self.c).float())
     def decodes(self, o): return one_hot_decode(o, None)
 
-    @property
-    def name(self): return f"{super().name} -- {attrdict(self, *self.store_attrs.split(','))}"
-
 # Cell
 class EncodedMultiCategorize(Categorize):
     "Transform of one-hot encoded multi-category that decodes with `vocab`"
@@ -299,7 +290,7 @@ class EncodedMultiCategorize(Categorize):
     def decodes(self, o): return MultiCategory (one_hot_decode(o, self.vocab))
 
 # Cell
-class RegressionSetup(Transform):
+class RegressionSetup(DisplayedTransform):
     "Transform that floatifies targets"
     loss_func,store_attrs=MSELossFlat(),'c'
     def __init__(self, c=None):
@@ -311,9 +302,6 @@ class RegressionSetup(Transform):
         if self.c is not None: return
         try: self.c = len(dsets[0]) if hasattr(dsets[0], '__len__') else 1
         except: self.c = 0
-
-    @property
-    def name(self): return f"{super().name} -- {attrdict(self, *self.store_attrs.split(','))}"
 
 # Cell
 def get_c(dls):
@@ -330,7 +318,7 @@ class ToTensor(Transform):
     order = 5
 
 # Cell
-class IntToFloatTensor(Transform):
+class IntToFloatTensor(DisplayedTransform):
     "Transform image to float tensor, optionally dividing by 255 (e.g. for images)."
     order,store_attrs = 10,'div,div_mask' #Need to run after PIL transforms on the GPU
     def __init__(self, div=255., div_mask=1):
@@ -338,9 +326,6 @@ class IntToFloatTensor(Transform):
     def encodes(self, o:TensorImage): return o.float().div_(self.div)
     def encodes(self, o:TensorMask ): return o.long() // self.div_mask
     def decodes(self, o:TensorImage): return ((o.clamp(0., 1.) * self.div).long()) if self.div else o
-
-    @property
-    def name(self): return f"{super().name} -- {attrdict(self, *self.store_attrs.split(','))}"
 
 # Cell
 def broadcast_vec(dim, ndim, *t, cuda=True):
@@ -352,7 +337,7 @@ def broadcast_vec(dim, ndim, *t, cuda=True):
 
 # Cell
 @docs
-class Normalize(Transform):
+class Normalize(DisplayedTransform):
     "Normalize/denorm batch of `TensorImage`"
     parameters,order,store_attrs=L('mean', 'std'),99, 'mean,std,axes'
     def __init__(self, mean=None, std=None, axes=(0,2,3)):
@@ -370,8 +355,5 @@ class Normalize(Transform):
     def decodes(self, x:TensorImage):
         f = to_cpu if x.device.type=='cpu' else noop
         return (x*f(self.std) + f(self.mean))
-
-    @property
-    def name(self): return f"{super().name} -- {attrdict(self, *self.store_attrs.split(','))}"
 
     _docs=dict(encodes="Normalize batch", decodes="Denormalize batch")

@@ -15,7 +15,7 @@ from .callback.core import *
 
 # Cell
 _loop = ['Start Fit', 'before_fit', 'Start Epoch Loop', 'before_epoch', 'Start Train', 'before_train',
-         'Start Batch Loop', 'before_batch', 'after_pred', 'after_loss', 'after_backward', 'before_backward',
+         'Start Batch Loop', 'before_batch', 'after_pred', 'after_loss', 'before_backward', 'after_backward',
          'after_step', 'after_cancel_batch', 'after_batch','End Batch Loop','End Train',
          'after_cancel_train', 'after_train', 'Start Valid', 'before_validate','Start Batch Loop',
          '**CBs same as train batch**', 'End Batch Loop', 'End Valid', 'after_cancel_validate',
