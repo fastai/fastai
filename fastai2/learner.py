@@ -317,14 +317,14 @@ add_docs(Learner, "Group together a `model`, some `dls` and a `loss_func` to han
 )
 
 # Cell
-def _before_batch_cb(self):
+def _before_batch_cb(f, self):
     xb,yb = f(self, self.xb, self.yb)
     self.learn.xb,self.learn.yb = xb,yb
 
 # Cell
 def before_batch_cb(f):
     "Shortcut for creating a Callback on the `before_batch` event, which takes and returns `xb,yb`"
-    return Callback(before_batch=_before_batch_cb)
+    return Callback(before_batch=partial(_before_batch_cb, f))
 
 # Cell
 @docs

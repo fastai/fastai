@@ -1,8 +1,8 @@
 import torch
 from torch import nn
+import torch.nn.functional as F
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
-from torch.optim.lr_scheduler import StepLR
 
 class Flatten(nn.Module):
     def forward(self, x): return x.view(x.size(0), -1)
@@ -44,22 +44,24 @@ def test(model, device, test_loader):
         100. * correct/len(test_loader.dataset)))
 
 batch_size,test_batch_size = 256,512
-epochs,lr,gamma = 1,1e-2,0.7
+epochs,lr = 1,1e-2
 
 use_cuda = torch.cuda.is_available()
 device = torch.device("cuda" if use_cuda else "cpu")
 kwargs = {'num_workers': 1, 'pin_memory': True} if use_cuda else {}
+transform=transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.1307,), (0.3081,))])
 train_loader = DataLoader(
-    datasets.MNIST('../data', train=True, download=True, transform=transforms.Compose([
-        transforms.ToTensor(), transforms.Normalize((0.1307,), (0.3081,))
-    ])),
-    batch_size=batch_size, shuffle=True, **kwargs)
+    datasets.MNIST('../data', train=True, download=True, transform=transform),
+                   batch_size=batch_size, shuffle=True, **kwargs)
 test_loader = DataLoader(
-    datasets.MNIST('../data', train=False, transform=transforms.Compose([
-        transforms.ToTensor(), transforms.Normalize((0.1307,), (0.3081,))
-    ])),
-    batch_size=test_batch_size, shuffle=True, **kwargs)
+    datasets.MNIST('../data', train=False, transform=transform),
+                   batch_size=test_batch_size, shuffle=True, **kwargs)
 
 model = Net().to(device)
 optimizer = torch.optim.AdamW(model.parameters(), lr=lr)
+
+if __name__ == '__main__':
+    for epoch in range(1, epochs+1):
+        train(model, device, train_loader, optimizer, epoch)
+        test(model, device, test_loader)
 
