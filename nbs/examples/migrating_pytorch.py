@@ -36,8 +36,8 @@ def test(model, device, test_loader):
         for data, target in test_loader:
             data, target = data.to(device), target.to(device)
             output = model(data)
-            test_loss += F.nll_loss(output, target, reduction='sum').item()  # sum up batch loss
-            pred = output.argmax(dim=1, keepdim=True)  # get the index of the max log-probability
+            test_loss += F.nll_loss(output, target, reduction='sum').item()
+            pred = output.argmax(dim=1, keepdim=True)
             correct += pred.eq(target.view_as(pred)).sum().item()
     print('\nTest set: Average loss: {:.4f}, Accuracy: {}/{} ({:.0f}%)\n'.format(
         test_loss/len(test_loader.dataset), correct, len(test_loader.dataset),
@@ -48,8 +48,9 @@ epochs,lr = 1,1e-2
 
 use_cuda = torch.cuda.is_available()
 device = torch.device("cuda" if use_cuda else "cpu")
-kwargs = {'num_workers': 1, 'pin_memory': True} if use_cuda else {}
-transform=transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.1307,), (0.3081,))])
+kwargs = {'num_workers': 1, 'pin_memory': True}
+transform=transforms.Compose([transforms.ToTensor(),
+                              transforms.Normalize((0.1307,), (0.3081,))])
 train_loader = DataLoader(
     datasets.MNIST('../data', train=True, download=True, transform=transform),
                    batch_size=batch_size, shuffle=True, **kwargs)

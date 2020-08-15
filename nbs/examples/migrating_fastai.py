@@ -12,13 +12,15 @@ class Net(nn.Sequential):
 batch_size,test_batch_size = 256,512
 epochs,lr = 1,1e-2
 
-transform=transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.1307,), (0.3081,))])
+kwargs = {'num_workers': 1, 'pin_memory': True}
+transform=transforms.Compose([transforms.ToTensor(),
+                              transforms.Normalize((0.1307,), (0.3081,))])
 train_loader = DataLoader(
     datasets.MNIST('../data', train=True, download=True, transform=transform),
-                   batch_size=batch_size, shuffle=True)
+                   batch_size=batch_size, shuffle=True, **kwargs)
 test_loader = DataLoader(
     datasets.MNIST('../data', train=False, transform=transform),
-                   batch_size=test_batch_size, shuffle=True)
+                   batch_size=test_batch_size, shuffle=True, **kwargs)
 
 if __name__ == '__main__':
     data = DataLoaders(train_loader, test_loader).cuda()
