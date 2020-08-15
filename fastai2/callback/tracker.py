@@ -35,7 +35,7 @@ class TrackerCallback(Callback):
         self.idx = list(self.recorder.metric_names[1:]).index(self.monitor)
 
     def after_epoch(self):
-        "Compare the last value to the best up to know"
+        "Compare the last value to the best up to now"
         val = self.recorder.values[-1][self.idx]
         if self.comp(val - self.min_delta, self.best): self.best,self.new_best = val,True
         else: self.new_best = False
