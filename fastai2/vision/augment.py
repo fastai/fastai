@@ -130,19 +130,19 @@ def _do_crop_pad(x:TensorBBox, sz, tl, orig_sz, pad_mode=PadMode.Zeros, resize_t
 def crop_pad(x:(TensorBBox,TensorPoint,Image.Image),
              sz, tl=None, orig_sz=None, pad_mode=PadMode.Zeros, resize_mode=Image.BILINEAR, resize_to=None):
     if isinstance(sz,int): sz = (sz,sz)
-    orig_sz = Tuple(_get_sz(x) if orig_sz is None else orig_sz)
-    sz,tl = Tuple(sz),Tuple(((_get_sz(x)-sz)//2) if tl is None else tl)
+    orig_sz = fastuple(_get_sz(x) if orig_sz is None else orig_sz)
+    sz,tl = fastuple(sz),fastuple(((_get_sz(x)-sz)//2) if tl is None else tl)
     return x._do_crop_pad(sz, tl, orig_sz=orig_sz, pad_mode=pad_mode, resize_mode=resize_mode, resize_to=resize_to)
 
 # Cell
 def _process_sz(size):
     if isinstance(size,int): size=(size,size)
-    return Tuple(size[1],size[0])
+    return fastuple(size[1],size[0])
 
 def _get_sz(x):
     if isinstance(x, tuple): x = x[0]
-    if not isinstance(x, Tensor): return Tuple(x.size)
-    return Tuple(x.get_meta('img_size', x.get_meta('sz', (x.shape[-1], x.shape[-2]))))
+    if not isinstance(x, Tensor): return fastuple(x.size)
+    return fastuple(x.get_meta('img_size', x.get_meta('sz', (x.shape[-1], x.shape[-2]))))
 
 # Cell
 @delegates()
@@ -201,7 +201,7 @@ class RandomCrop(RandTransform):
     def before_call(self, b, split_idx):
         self.orig_sz = _get_sz(b)
         if split_idx: self.tl = (self.orig_sz-self.size)//2
-        else: self.tl = Tuple(random.randint(0,self.orig_sz[0]-self.size[0]), random.randint(0,self.orig_sz[1]-self.size[1]))
+        else: self.tl = fastuple(random.randint(0,self.orig_sz[0]-self.size[0]), random.randint(0,self.orig_sz[1]-self.size[1]))
 
     def encodes(self, x:(Image.Image,TensorBBox,TensorPoint)):
         return x.crop_pad(self.size, self.tl, orig_sz=self.orig_sz)
@@ -239,14 +239,14 @@ class Resize(RandTransform):
     def encodes(self, x:(Image.Image,TensorBBox,TensorPoint)):
         orig_sz = _get_sz(x)
         if self.method==ResizeMethod.Squish:
-            return x.crop_pad(orig_sz, Tuple(0,0), orig_sz=orig_sz, pad_mode=self.pad_mode,
+            return x.crop_pad(orig_sz, fastuple(0,0), orig_sz=orig_sz, pad_mode=self.pad_mode,
                    resize_mode=self.mode_mask if isinstance(x,PILMask) else self.mode, resize_to=self.size)
 
         w,h = orig_sz
         op = (operator.lt,operator.gt)[self.method==ResizeMethod.Pad]
         m = w/self.size[0] if op(w/self.size[0],h/self.size[1]) else h/self.size[1]
         cp_sz = (int(m*self.size[0]),int(m*self.size[1]))
-        tl = Tuple(int(self.pcts[0]*(w-cp_sz[0])), int(self.pcts[1]*(h-cp_sz[1])))
+        tl = fastuple(int(self.pcts[0]*(w-cp_sz[0])), int(self.pcts[1]*(h-cp_sz[1])))
         return x.crop_pad(cp_sz, tl, orig_sz=orig_sz, pad_mode=self.pad_mode,
                    resize_mode=self.mode_mask if isinstance(x,PILMask) else self.mode, resize_to=self.size)
 
@@ -425,7 +425,7 @@ class RandomResizedCropGPU(RandTransform):
 
     def before_call(self, b, split_idx):
         self.do = True
-        h,w = Tuple((b[0] if isinstance(b, tuple) else b).shape[-2:])
+        h,w = fastuple((b[0] if isinstance(b, tuple) else b).shape[-2:])
         for attempt in range(10):
             if split_idx: break
             area = random.uniform(self.min_scale,1.) * w * h

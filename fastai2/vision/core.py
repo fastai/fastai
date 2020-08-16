@@ -23,7 +23,7 @@ mnist_stats    = ([0.131], [0.308])
 if not hasattr(Image,'_patched'):
     _old_sz = Image.Image.size.fget
     @patch_property
-    def size(x:Image.Image): return Tuple(_old_sz(x))
+    def size(x:Image.Image): return fastuple(_old_sz(x))
     Image._patched = True
 
 # Cell
@@ -66,7 +66,7 @@ def to_thumb(self:Image.Image, h, w=None):
 def resize_max(x: Image.Image, resample=0, max_px=None, max_h=None, max_w=None):
     "`resize` `x` to `max_px`, or `max_h`, or `max_w`"
     h,w = x.shape
-    if max_px and x.n_px>max_px: h,w = Tuple(h,w).mul(math.sqrt(max_px/x.n_px))
+    if max_px and x.n_px>max_px: h,w = fastuple(h,w).mul(math.sqrt(max_px/x.n_px))
     if max_h and h>max_h: h,w = (max_h    ,max_h*w/h)
     if max_w and w>max_w: h,w = (max_w*h/w,max_w    )
     return x.reshape(round(h), round(w), resample=resample)

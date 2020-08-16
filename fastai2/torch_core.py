@@ -435,14 +435,14 @@ class TitledStr(Str, ShowTitle):
         "Show self"
         return show_title(str(self), ctx=ctx, **merge(self._show_args, kwargs))
 
-class TitledTuple(Tuple, ShowTitle):
+class TitledTuple(fastuple, ShowTitle):
     _show_args = {'label': 'text'}
     def show(self, ctx=None, **kwargs):
         "Show self"
         return show_title(str(self), ctx=ctx, **merge(self._show_args, kwargs))
 
 add_docs(TitledInt, "An `int` with `show`"); add_docs(TitledStr, "An `str` with `show`");
-add_docs(TitledFloat, "A `float` with `show`"); add_docs(TitledTuple, "A `Tuple` with `show`")
+add_docs(TitledFloat, "A `float` with `show`"); add_docs(TitledTuple, "A `fastuple` with `show`")
 
 # Cell
 @patch
