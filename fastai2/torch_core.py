@@ -130,13 +130,16 @@ def tensor(x, *rest, **kwargs):
     return res
 
 # Cell
-def set_seed(s):
+def set_seed(s, reproducible=False):
     "Set random seed for `random`, `torch`, and `numpy` (where available)"
     try: torch.manual_seed(s)
     except NameError: pass
     try: np.random.seed(s%(2**32-1))
     except NameError: pass
     random.seed(s)
+    if reproducible:
+        torch.backends.cudnn.deterministic = True
+        torch.backends.cudnn.benchmark = False
 
 # Cell
 def unsqueeze(x, dim=-1, n=1):
