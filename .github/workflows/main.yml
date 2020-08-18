@@ -93,7 +93,7 @@ jobs:
     - name: download data
       if: env.download == 'true' && steps.cache.outputs.cache-hit != 'true'
       run: |
-        python /workspace/download_testdata.py
+        ipython /workspace/download_testdata.py
         mkdir -p $HOME/.fastai/data
         find $HOME/.fastai/archive/ -name "*.tgz" -exec tar -xzvf {} -C $HOME/.fastai/data \;
       
