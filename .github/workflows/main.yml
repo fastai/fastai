@@ -99,5 +99,5 @@ jobs:
       
     - name: Test notebooks batch ${{matrix.nb}}
       run: |
-        nbdev_test_nbs --flags '' --n_workers 4 --timing True --pause 0.5 --fname "nbs/[0-9]${{matrix.nb}}*.ipynb"
+        nbdev_test_nbs --flags '' --n_workers 3 --pause 0.5 --fname "nbs/[0-9]${{matrix.nb}}*.ipynb"
   
