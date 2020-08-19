@@ -65,14 +65,14 @@ class EarlyStoppingCallback(TrackerCallback):
 @log_args
 class SaveModelCallback(TrackerCallback):
     "A `TrackerCallback` that saves the model's best during training and loads it at the end."
-    def __init__(self, monitor='valid_loss', comp=None, min_delta=0., fname='model', every_epoch=False, add_save=None, with_opt=False):
+    def __init__(self, monitor='valid_loss', comp=None, min_delta=0., fname='model', every_epoch=False, with_opt=False):
         super().__init__(monitor=monitor, comp=comp, min_delta=min_delta)
-        store_attr(self, 'fname,every_epoch,add_save,with_opt')
+        # keep track of file path for loggers
+        self.last_saved_path = None
+        store_attr(self, 'fname,every_epoch,with_opt')
 
     def _save(self, name):
-        self.learn.save(name, with_opt=self.with_opt)
-        if self.add_save is not None:
-            with self.add_save.open('wb') as f: self.learn.save(f, with_opt=self.with_opt)
+        self.last_saved_path = self.learn.save(name, with_opt=self.with_opt)
 
     def after_epoch(self):
         "Compare the value monitored to its best score and save if best."

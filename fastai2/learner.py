@@ -278,6 +278,7 @@ class Learner():
     def save(self, file, **kwargs):
         file = join_path_file(file, self.path/self.model_dir, ext='.pth')
         save_model(file, self.model, getattr(self,'opt',None), **kwargs)
+        return file
 
     @delegates(load_model)
     def load(self, file, with_opt=None, device=None, **kwargs):
