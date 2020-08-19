@@ -8,7 +8,7 @@ To learn more about the library, read our introduction in the [paper](https://ar
 
 Note that the docs are in a submodule, so to clone with docs included, you should use:
 
-     git clone --recurse-submodules https://github.com/fastai/fastai2
+     git clone --recurse-submodules https://github.com/fastai/fastai
 
 If you're using a fork of fastai2, you'll need to fork the `fastai-docs` repo as well. 
 
@@ -27,8 +27,8 @@ Then, you can install fastai v2 with pip: `pip install fastai2`.
 
 Or you can use an editable install (which is probably the best approach at the moment, since fastai v2 is under heavy development):
 ``` 
-git clone --recurse-submodules https://github.com/fastai/fastai2
-cd fastai2
+git clone --recurse-submodules https://github.com/fastai/fastai
+cd fastai
 pip install -e ".[dev]"
 ``` 
 You should also use an editable install of [fastcore](https://github.com/fastai/fastcore) to go with it.
