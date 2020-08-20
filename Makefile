@@ -1,3 +1,6 @@
+.ONESHELL:
+SHELL := /bin/bash
+
 SRC = $(wildcard nbs/*.ipynb)
 
 all: fastai2 docs
