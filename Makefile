@@ -1,9 +1,9 @@
-help:
-	cat Makefile
-
 SRC = $(wildcard nbs/*.ipynb)
 
-all: fastai2 docs test
+all: fastai2 docs
+
+help:
+	cat Makefile
 
 fastai2: $(SRC)
 	nbdev_clean_nbs

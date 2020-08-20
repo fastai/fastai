@@ -46,19 +46,15 @@ pip install pydicom kornia opencv-python scikit-image
 
 To run the tests in parallel, launch:
 
-```bash
-nbdev_test_nbs
-```
-or 
-```bash
-make test
-```
+`nbdev_test_nbs` or `make test`
 
 For all the tests to pass, you'll need to install the following optional dependencies:
 
 ```
 pip install "sentencepiece<0.1.90" wandb tensorboard albumentations pydicom opencv-python scikit-image pyarrow kornia
 ```
+
+Tests are written using `nbdev`, for example see the documentation for `test_eq`.
 
 ## Contributing
 
