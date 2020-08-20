@@ -763,12 +763,7 @@ class Contrast(LightingTfm):
 
 # Cell
 def grayscale(x):
-    """ RGB tensor to grayscale tensor. Uses the ITU-R 601-2 luma transform.
-    Args:
-        b (Tensor): Image Batch to be converted to Grayscale in the form [N, 3, H, W].
-    Returns:
-        Tensor: Greyscale Image in the form [N, C, H, W]
-    """
+    "Tensor to grayscale tensor. Uses the ITU-R 601-2 luma transform. "
     return (x*torch.tensor([0.2989,0.5870,0.1140],device=x.device)[...,None,None]).sum(1)[:,None]
 
 # Cell
@@ -863,8 +858,8 @@ class _Hue():
         store_attr(self, 'max_hue,p,draw,batch')
 
     def _def_draw(self, x):
-        if not self.batch: res = x.new(x.size(0)).uniform_(math.log(1-self.max_lighting), -math.log(1-self.max_lighting))
-        else: res = x.new_zeros(x.size(0)) + random.uniform(math.log(1-self.max_lighting), -math.log(1-self.max_lighting))
+        if not self.batch: res = x.new(x.size(0)).uniform_(math.log(1-self.max_hue), -math.log(1-self.max_hue))
+        else: res = x.new_zeros(x.size(0)) + random.uniform(math.log(1-self.max_hue), -math.log(1-self.max_hue))
         return torch.exp(res)
 
     def before_call(self, x):
