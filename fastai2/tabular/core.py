@@ -31,7 +31,8 @@ def add_datepart(df, field_name, prefix=None, drop=True, time=False):
             'Is_quarter_end', 'Is_quarter_start', 'Is_year_end', 'Is_year_start']
     if time: attr = attr + ['Hour', 'Minute', 'Second']
     for n in attr: df[prefix + n] = getattr(field.dt, n.lower())
-    df[prefix + 'Elapsed'] = field.astype(np.int64) // 10 ** 9
+    mask = ~field.isna()
+    df[prefix + 'Elapsed'] = np.where(mask,field.values.astype(np.int64) // 10 ** 9,None)
     if drop: df.drop(field_name, axis=1, inplace=True)
     return df
 
