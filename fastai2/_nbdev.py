@@ -852,6 +852,6 @@ modules = ["torch_core.py",
 
 doc_url = "https://dev.fast.ai/"
 
-git_url = "https://github.com/fastai/fastai2/tree/master/"
+git_url = "https://github.com/fastai/fastai/tree/master/"
 
 def custom_doc_links(name): return None
