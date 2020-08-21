@@ -152,7 +152,7 @@ def decode_spec_tokens(tokens):
 # Cell
 @log_args(but_as=TextLearner.__init__)
 class LMLearner(TextLearner):
-    "Add functionality to `TextLearner` when dealingwith a language model"
+    "Add functionality to `TextLearner` when dealing with a language model"
     def predict(self, text, n_words=1, no_unk=True, temperature=1., min_p=None, no_bar=False,
                 decoder=decode_spec_tokens, only_last_word=False):
         "Return `text` and the `n_words` that come after"

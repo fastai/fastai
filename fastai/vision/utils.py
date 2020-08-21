@@ -69,7 +69,7 @@ def resize_image(file, dest, max_size=None, n_channels=3, ext=None,
 def resize_images(path, max_workers=defaults.cpus, max_size=None, recurse=False,
                   dest=Path('.'), n_channels=3, ext=None, img_format=None, resample=Image.BILINEAR,
                   resume=None, **kwargs):
-    "Resize files on path recursevely to dest to max_size"
+    "Resize files on path recursively to dest to max_size"
     path = Path(path)
     if resume is None and dest != Path('.'): resume=False
     os.makedirs(dest, exist_ok=True)

@@ -195,7 +195,7 @@ def to_float(b):
     return apply(lambda x: x.float() if torch.is_floating_point(x) else x, b)
 
 # Cell
-# None: True if available; True: error if not availabe; False: use CPU
+# None: True if available; True: error if not available; False: use CPU
 defaults.use_cuda = None
 
 # Cell
@@ -230,7 +230,7 @@ def to_concat(xs, dim=0):
     if not xs: return xs
     if is_listy(xs[0]): return type(xs[0])([to_concat([x[i] for x in xs], dim=dim) for i in range_of(xs[0])])
     if isinstance(xs[0],dict):  return {k: to_concat([x[k] for x in xs], dim=dim) for k in xs[0].keys()}
-    #We may receives xs that are not concatenatable (inputs of a text classifier for instance),
+    #We may receive xs that are not concatenable (inputs of a text classifier for instance),
     #   in this case we return a big list
     try:    return retain_type(torch.cat(xs, dim=dim), xs[0])
     except: return sum([L(retain_type(o_.index_select(dim, tensor(i)).squeeze(dim), xs[0])
