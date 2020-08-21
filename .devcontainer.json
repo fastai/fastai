@@ -1,4 +1,4 @@
 {
-    "name": "fastai2-codespaces",
+    "name": "fastai-codespaces",
     "extensions": ["ms-python.python"]
 }

@@ -3,15 +3,15 @@ SHELL := /bin/bash
 
 SRC = $(wildcard nbs/*.ipynb)
 
-all: fastai2 docs
+all: fastai docs
 
 help:
 	cat Makefile
 
-fastai2: $(SRC)
+fastai: $(SRC)
 	nbdev_clean_nbs
 	nbdev_build_lib
-	touch fastai2
+	touch fastai
 
 update_lib:
 	pip install nbdev --upgrade
