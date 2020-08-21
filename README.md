@@ -21,11 +21,13 @@ pip install -e "fastai[dev]"
 
 ## Learning fastai
 
-The best way to get start with fastai (and deep learning) is to read [the book](https://www.amazon.com/Deep-Learning-Coders-fastai-PyTorch/dp/1492045527), and complete [the free course](https://course.fast.ai). The course includes full access to the book for free.
+The best way to get start with fastai (and deep learning) is to read [the book](https://www.amazon.com/Deep-Learning-Coders-fastai-PyTorch/dp/1492045527), and complete [the free course](https://course.fast.ai).
 
 To see what's possible with fastai, take a look at the [Quick Start](quick_start), which shows how to use around 5 lines of code to build an image classifier, an image segmentation model, a text sentiment model, a recommendation system, and a tabular model. For each of the applications, the code is much the same.
 
-Read through the [Tutorials](tutorials), to learn how to train your own models on your own datasets. To learn about the design and motivation of the library, read the [peer reviewed paper](https://www.mdpi.com/2078-2489/11/2/108/htm).
+Read through the [Tutorials](tutorial) to learn how to train your own models on your own datasets. Use the navigation sidebar to look through the fastai documentation. Every class, function, and method is documented here.
+
+To learn about the design and motivation of the library, read the [peer reviewed paper](https://www.mdpi.com/2078-2489/11/2/108/htm).
 
 ## About fastai
 
