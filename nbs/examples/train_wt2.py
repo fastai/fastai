@@ -1,6 +1,6 @@
-from fastai2.basics import *
-from fastai2.text.all import *
-from fastai2.callback.all import *
+from fastai.basics import *
+from fastai.text.all import *
+from fastai.callback.all import *
 from fastscript import *
 
 path = untar_data(URLs.WIKITEXT_TINY)

@@ -1,4 +1,4 @@
-from fastai2.vision.all import *
+from fastai.vision.all import *
 
 splitter = GrandparentSplitter(train_name='training', valid_name='testing')
 mnist = DataBlock(blocks=(ImageBlock(PILImageBW), CategoryBlock),

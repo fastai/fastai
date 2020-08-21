@@ -850,8 +850,11 @@ modules = ["torch_core.py",
            "test_utils.py",
            "_pytorch_doc.py"]
 
-doc_url = "https://dev.fast.ai/"
+doc_url = "https://docs.fast.ai/"
 
 git_url = "https://github.com/fastai/fastai/tree/master/"
 
-def custom_doc_links(name): return None
+def custom_doc_links(name):
+    from nbdev.showdoc import try_external_doc_link
+    return try_external_doc_link(name, ['fastcore', 'nbdev'])
+

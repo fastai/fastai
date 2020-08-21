@@ -1,4 +1,4 @@
-from fastai2.vision.all import *
+from fastai.vision.all import *
 from torchvision import datasets, transforms
 
 class Net(nn.Sequential):

@@ -1,14 +1,17 @@
-help:
-	cat Makefile
+.ONESHELL:
+SHELL := /bin/bash
 
 SRC = $(wildcard nbs/*.ipynb)
 
-all: fastai2 docs test
+all: fastai docs
 
-fastai2: $(SRC)
+help:
+	cat Makefile
+
+fastai: $(SRC)
 	nbdev_clean_nbs
 	nbdev_build_lib
-	touch fastai2
+	touch fastai
 
 update_lib:
 	pip install nbdev --upgrade

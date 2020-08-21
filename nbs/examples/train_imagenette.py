@@ -1,11 +1,11 @@
-from fastai2.basics import *
-from fastai2.vision.all import *
-from fastai2.callback.all import *
-from fastai2.distributed import *
+from fastai.basics import *
+from fastai.vision.all import *
+from fastai.callback.all import *
+from fastai.distributed import *
 from fastprogress import fastprogress
 from torchvision.models import *
-from fastai2.vision.models.xresnet import *
-from fastai2.callback.mixup import *
+from fastai.vision.models.xresnet import *
+from fastai.callback.mixup import *
 from fastscript import *
 
 torch.backends.cudnn.benchmark = True
@@ -76,11 +76,11 @@ def main(
 
         # The old way to use DataParallel, or DistributedDataParallel training:
         # if gpu is None and n_gpu: learn.to_parallel()
-        # if num_distrib()>1: learn.to_distributed(gpu) # Requires `-m fastai2.launch`
+        # if num_distrib()>1: learn.to_distributed(gpu) # Requires `-m fastai.launch`
 
         # the context manager way of dp/ddp, both can handle single GPU base case.
         ctx = learn.parallel_ctx if gpu is None and n_gpu else learn.distrib_ctx
 
-        with partial(ctx, gpu)(): # distributed traing requires "-m fastai2.launch"
+        with partial(ctx, gpu)(): # distributed traing requires "-m fastai.launch"
             print(f"Training in {ctx.__name__} context on GPU {gpu if gpu is not None else list(range(n_gpu))}")
             learn.fit_flat_cos(epochs, lr, wd=1e-2, cbs=cbs)

@@ -1,9 +1,9 @@
-from fastai2.basics import *
-from fastai2.tabular.all import *
-from fastai2.callback.all import *
-from fastai2.distributed import *
+from fastai.basics import *
+from fastai.tabular.all import *
+from fastai.callback.all import *
+from fastai.distributed import *
 from fastprogress import fastprogress
-from fastai2.callback.mixup import *
+from fastai.callback.mixup import *
 from fastscript import *
 
 torch.backends.cudnn.benchmark = True
@@ -45,6 +45,6 @@ def main(
         n_gpu = torch.cuda.device_count()
         ctx = learn.parallel_ctx if gpu is None and n_gpu else learn.distrib_ctx
 
-        with partial(ctx, gpu)(): # distributed traing requires "-m fastai2.launch"
+        with partial(ctx, gpu)(): # distributed traing requires "-m fastai.launch"
             print(f"Training in {ctx.__name__} context on GPU {gpu if gpu is not None else list(range(n_gpu))}")
             learn.fit_one_cycle(epochs)
