@@ -25,7 +25,7 @@ jobs:
         
   test-nbdev-sync:
     runs-on: ubuntu-latest
-    container: fastdotai/fastai2 #this is defined here: https://github.com/fastai/docker-containers/blob/master/fastai2-build/Dockerfile
+    container: fastdotai/fastai #this is defined here: https://github.com/fastai/docker-containers/blob/master/fastai-build/Dockerfile
     steps:
 
     - name: checkout contents of PR
@@ -65,7 +65,7 @@ jobs:
         fi
 
   test-notebooks:
-    container: fastdotai/fastai2
+    container: fastdotai/fastai
     runs-on: ubuntu-latest
     env:
       download: "true"
