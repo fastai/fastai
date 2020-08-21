@@ -1,6 +1,6 @@
 # The fastai DataLoader is a drop-in replacement for Pytorch's;
 #   no code changes are required other than changing the import line
-from fastai2.data.load import DataLoader
+from fastai.data.load import DataLoader
 import os,torch
 from torch.nn import functional as F
 from catalyst import dl

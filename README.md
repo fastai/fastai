@@ -2,15 +2,15 @@
 > NB: This is still in early development. Use v1 unless you want to contribute to the next version of fastai
 
 
-[![CI-Badge](https://github.com/fastai/fastai/workflows/CI/badge.svg)](https://github.com/fastai/fastai/actions?query=workflow%3ACI) [![PyPI](https://img.shields.io/pypi/v/fastai2?color=blue&label=pypi%20version)](https://pypi.org/project/fastai2/#description) [![Conda (channel only)](https://img.shields.io/conda/vn/fastai/fastai2?color=seagreen&label=conda%20version)](https://anaconda.org/fastai/fastai2) [![Build fastai2 images](https://github.com/fastai/docker-containers/workflows/Build%20fastai2%20images/badge.svg)](https://github.com/fastai/docker-containers)
+[![CI-Badge](https://github.com/fastai/fastai/workflows/CI/badge.svg)](https://github.com/fastai/fastai/actions?query=workflow%3ACI) [![PyPI](https://img.shields.io/pypi/v/fastai?color=blue&label=pypi%20version)](https://pypi.org/project/fastai/#description) [![Conda (channel only)](https://img.shields.io/conda/vn/fastai/fastai?color=seagreen&label=conda%20version)](https://anaconda.org/fastai/fastai) [![Build fastai images](https://github.com/fastai/docker-containers/workflows/Build%20fastai%20images/badge.svg)](https://github.com/fastai/docker-containers)
 
 To learn more about the library, read our introduction in the [paper](https://arxiv.org/abs/2002.04688) presenting it.
 
 Note that the docs are in a submodule, so to clone with docs included, you should use:
 
-     git clone --recurse-submodules https://github.com/fastai/fastai2
+     git clone --recurse-submodules https://github.com/fastai/fastai
 
-If you're using a fork of fastai2, you'll need to fork the [fastai-docs](https://github.com/fastai/fastai-docs) repo as well. 
+If you're using a fork of fastai, you'll need to fork the [fastai-docs](https://github.com/fastai/fastai-docs) repo as well. 
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -20,22 +20,22 @@ You can get all the necessary dependencies by simply installing fastai v1: `cond
 
 ```bash
 conda env create -f environment.yml
-source activate fastai2
+source activate fastai
 ```
 
-Then, you can install fastai v2 with pip: `pip install fastai2`. 
+Then, you can install fastai v2 with pip: `pip install fastai`. 
 
 Or you can use an editable install (which is probably the best approach at the moment, since fastai v2 is under heavy development):
 ``` 
-git clone --recurse-submodules https://github.com/fastai/fastai2
-cd fastai2
+git clone --recurse-submodules https://github.com/fastai/fastai
+cd fastai
 pip install -e ".[dev]"
 ``` 
 You should also use an editable install of [fastcore](https://github.com/fastai/fastcore) to go with it.
 
 If you want to browse the notebooks and build the library from them you will need nbdev, which you can install with conda or pip.
 
-To use `fastai2.medical.imaging` you'll also need to:
+To use `fastai.medical.imaging` you'll also need to:
 
 ```bash
 conda install pyarrow
@@ -66,9 +66,9 @@ git config --local submodule.recurse true
 ```
 
 Before submitting a PR, check that the local library and notebooks match. The script `nbdev_diff_nbs` can let you know if there is a difference between the local library and the notebooks.
-* If you made a change to the notebooks in one of the exported cells, you can export it to the library with `nbdev_build_lib` or `make fastai2`.
+* If you made a change to the notebooks in one of the exported cells, you can export it to the library with `nbdev_build_lib` or `make fastai`.
 * If you made a change to the library, you can export it back to the notebooks with `nbdev_update_lib`.
 
 ## Docker Containers
 
-For those interested in offical docker containers for this project, they can be found [here](https://github.com/fastai/docker-containers#fastai2).
+For those interested in offical docker containers for this project, they can be found [here](https://github.com/fastai/docker-containers#fastai).

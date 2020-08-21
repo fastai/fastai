@@ -1,4 +1,4 @@
-from fastai2.basics import *
+from fastai.basics import *
 from PIL import Image, ImageDraw, ImageFont
 
 def resize_to(img, targ_sz, use_min=False):

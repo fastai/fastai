@@ -1,10 +1,10 @@
-from fastai2.basics import *
-from fastai2.callback.all import *
-from fastai2.distributed import *
+from fastai.basics import *
+from fastai.callback.all import *
+from fastai.distributed import *
 from fastprogress import fastprogress
-from fastai2.callback.mixup import *
+from fastai.callback.mixup import *
 from fastscript import *
-from fastai2.text.all import *
+from fastai.text.all import *
 
 torch.backends.cudnn.benchmark = True
 fastprogress.MAX_COLS = 80
@@ -47,7 +47,7 @@ def main(
 
         if num_distrib() > 1 and torch.__version__.startswith("1.4"): DistributedTrainer.fup = True
 
-        with learn.distrib_ctx(cuda_id=gpu): # distributed traing requires "-m fastai2.launch"
+        with learn.distrib_ctx(cuda_id=gpu): # distributed traing requires "-m fastai.launch"
             print(f"Training in distributed data parallel context on GPU {gpu}", flush=True)
             learn.fine_tune(epochs, lr)
 
