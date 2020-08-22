@@ -200,7 +200,7 @@ defaults.use_cuda = None
 
 # Cell
 def default_device(use_cuda=-1):
-    "Return or set default device; `use_cuda`: None - CUDA if available; True - error if not availabe; False - CPU"
+    "Return or set default device; `use_cuda`: None - CUDA if available; True - error if not available; False - CPU"
     if use_cuda != -1: defaults.use_cuda=use_cuda
     use = defaults.use_cuda or (torch.cuda.is_available() and defaults.use_cuda is None)
     assert torch.cuda.is_available() or not use
