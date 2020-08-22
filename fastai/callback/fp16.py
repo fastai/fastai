@@ -15,6 +15,7 @@ from ..fp16_utils import convert_network, model_grads_to_master_grads, master_pa
 # Cell
 from torch.nn.utils import parameters_to_vector
 
+# Cell
 def get_master(opt, flat_master=False):
     model_params = [[param for param in pg if param.requires_grad] for pg in opt.param_lists]
     if flat_master:

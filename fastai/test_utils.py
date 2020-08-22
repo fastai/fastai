@@ -12,6 +12,7 @@ from torch.utils.data import TensorDataset
 # Cell
 from torch.utils.data import TensorDataset
 
+# Cell
 def synth_dbunch(a=2, b=3, bs=16, n_train=10, n_valid=2, cuda=False):
     def get_data(n):
         x = torch.randn(bs*n, 1)

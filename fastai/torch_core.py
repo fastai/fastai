@@ -523,6 +523,7 @@ class Module(nn.Module, metaclass=PrePostInitMeta):
 # Cell
 from torch.nn.parallel import DistributedDataParallel
 
+# Cell
 def get_model(model):
     "Return the model maybe wrapped inside `model`."
     return model.module if isinstance(model, (DistributedDataParallel, nn.DataParallel)) else model
