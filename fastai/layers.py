@@ -593,6 +593,7 @@ def SeparableBlock(expansion, ni, nf, reduction=16, stride=1, base_width=4, **kw
 # Cell
 from torch.jit import script
 
+# Cell
 @script
 def _swish_jit_fwd(x): return x.mul(torch.sigmoid(x))
 

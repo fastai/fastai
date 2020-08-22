@@ -2,34 +2,56 @@
 > fastai simplifies training fast and accurate neural nets using modern best practices
 
 
+**Important**: This documentation covers fastai v2, which is a from-scratch rewrite of fastai. The v1 documentation has moved to [fastai1.fast.ai](https://fastai1.fast.ai). To stop fastai from updating to v2, run in your terminal `echo 'fastai 1.*' >> $CONDA_PREFIX/conda-meta/pinned` (if you use conda).
+
 [![CI-Badge](https://github.com/fastai/fastai/workflows/CI/badge.svg)](https://github.com/fastai/fastai/actions?query=workflow%3ACI) [![PyPI](https://img.shields.io/pypi/v/fastai?color=blue&label=pypi%20version)](https://pypi.org/project/fastai/#description) [![Conda (channel only)](https://img.shields.io/conda/vn/fastai/fastai?color=seagreen&label=conda%20version)](https://anaconda.org/fastai/fastai) [![Build fastai images](https://github.com/fastai/docker-containers/workflows/Build%20fastai%20images/badge.svg)](https://github.com/fastai/docker-containers)
-
-To learn more about the design and motivation of the library, read the [peer reviewed paper](https://arxiv.org/abs/2002.04688).
-
-Note that the docs are in a submodule, so to clone with docs included, you should use:
-
-     git clone --recurse-submodules https://github.com/fastai/fastai
 
 ## Installing
 
-You can install fastai with conda (highly recommended; requires [Anaconda](https://www.anaconda.com/products/individual) or [miniconda](https://docs.conda.io/en/latest/miniconda.html): `conda install -c fastai -c pytorch fastai`, or with pip: `pip install fastai`. If you install with pip, you should install PyTorch first by following the PyTorch [installation instructions](https://pytorch.org/get-started/locally/).
+You can use fastai without any installation by using [Google Colab](https://colab.research.google.com/). In fact, every page of this documentation is also available as an interactive notebook - click "Open in colab" at the top of any page to open it (be sure to change the Colab runtime to "GPU" to have it run fast!) See the fast.ai course [Introduction to Colab](https://colab.research.google.com/) for more information.
 
-Or if you plan to develop fastai yourself, or want to be on the cutting edge, you can use an editable install (if you do this, youu should also use an editable install of [fastcore](https://github.com/fastai/fastcore) to go with it.):
+You can install fastai on your own machines with conda (highly recommended; requires [Anaconda](https://www.anaconda.com/products/individual) or [miniconda](https://docs.conda.io/en/latest/miniconda.html)): `conda install -c fastai -c pytorch fastai`, or with pip: `pip install fastai`. If you install with pip, you should install PyTorch first by following the PyTorch [installation instructions](https://pytorch.org/get-started/locally/).
+
+If you plan to develop fastai yourself, or want to be on the cutting edge, you can use an editable install (if you do this, you should also use an editable install of [fastcore](https://github.com/fastai/fastcore) to go with it.):
 
 ``` 
 git clone --recurse-submodules https://github.com/fastai/fastai
-cd fastai
-pip install -e ".[dev]"
+pip install -e "fastai[dev]"
 ``` 
 
-If you want to browse the notebooks and build the library from them you will need nbdev, which you can install with conda or pip.
+## Learning fastai
 
-To use `fastai.medical.imaging` you'll also need to:
+The best way to get start with fastai (and deep learning) is to read [the book](https://www.amazon.com/Deep-Learning-Coders-fastai-PyTorch/dp/1492045527), and complete [the free course](https://course.fast.ai).
 
-```bash
-conda install pyarrow
-pip install pydicom kornia opencv-python scikit-image
-```
+To see what's possible with fastai, take a look at the [Quick Start](quick_start), which shows how to use around 5 lines of code to build an image classifier, an image segmentation model, a text sentiment model, a recommendation system, and a tabular model. For each of the applications, the code is much the same.
+
+Read through the [Tutorials](tutorial) to learn how to train your own models on your own datasets. Use the navigation sidebar to look through the fastai documentation. Every class, function, and method is documented here.
+
+To learn about the design and motivation of the library, read the [peer reviewed paper](https://www.mdpi.com/2078-2489/11/2/108/htm).
+
+## About fastai
+
+fastai is a deep learning library which provides practitioners with high-level components that can quickly and easily provide state-of-the-art results in standard deep learning domains, and provides researchers with low-level components that can be mixed and matched to build new approaches. It aims to do both things without substantial compromises in ease of use, flexibility, or performance. This is possible thanks to a carefully layered architecture, which expresses common underlying patterns of many deep learning and data processing techniques in terms of decoupled abstractions. These abstractions can be expressed concisely and clearly by leveraging the dynamism of the underlying Python language and the flexibility of the PyTorch library. fastai includes:
+
+- A new type dispatch system for Python along with a semantic type hierarchy for tensors
+- A GPU-optimized computer vision library which can be extended in pure Python
+- An optimizer which refactors out the common functionality of modern optimizers into two basic pieces, allowing optimization algorithms to be implemented in 4–5 lines of code
+- A novel 2-way callback system that can access any part of the data, model, or optimizer and change it at any point during training
+- A new data block API
+- And much more...
+
+fastai is organized around two main design goals: to be approachable and rapidly productive, while also being deeply hackable and configurable. It is built on top of a hierarchy of lower-level APIs which provide composable building blocks. This way, a user wanting to rewrite part of the high-level API or add particular behavior to suit their needs does not have to learn how to use the lowest level.
+
+<img alt="Layered API" src="nbs/images/layered.png" width="345">
+
+## Migrating from other libraries
+
+It's very easy to migrate from plain PyTorch, Ignite, or any other PyTorch-based library, or even to use fastai in conjunction with other libraries. Generally, you'll be able to use all your existing data processing code, but will be able to reduce the amount of code you require for training, and more easily take advantage of modern best practices. Here are migration guides from some popular libraries to help you on your way:
+
+- [Plain PyTorch](migrating_pytorch)
+- [Ignite](migrating_ignite)
+- [Lightning](migrating_lightning)
+- [Catalyst](migrating_catalys)
 
 ## Tests
 

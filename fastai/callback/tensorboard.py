@@ -59,6 +59,8 @@ def tensorboard_log(x:TensorImage, y: TensorCategory, samples, outs, writer, ste
 
 # Cell
 from ..vision.core import TensorPoint,TensorBBox
+
+# Cell
 @typedispatch
 def tensorboard_log(x:TensorImage, y: (TensorImageBase, TensorPoint, TensorBBox), samples, outs, writer, step):
     fig,axs = get_grid(len(samples), add_vert=1, return_fig=True, double=True)
