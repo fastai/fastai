@@ -111,11 +111,12 @@ class DistributedDL(TfmdDL):
 class DistributedTrainer(Callback):
     run_after,run_before = TrainEvalCallback,Recorder
     fup = None # for `find_unused_parameters` in DistributedDataParallel()
-    def __init__(self, cuda_id=0): self.cuda_id = cuda_id
-
+    def __init__(self, cuda_id=0,sync_bn=True): store_attr(self,'cuda_id,sync_bn')
     def before_fit(self):
         opt_kwargs = { 'find_unused_parameters' : DistributedTrainer.fup } if DistributedTrainer.fup is not None else {}
-        self.learn.model = DistributedDataParallel(self.model, device_ids=[self.cuda_id], output_device=self.cuda_id, **opt_kwargs)
+        self.learn.model = DistributedDataParallel(
+            nn.SyncBatchNorm.convert_sync_batchnorm(self.model) if self.sync_bn else self.model,
+            device_ids=[self.cuda_id], output_device=self.cuda_id, **opt_kwargs)
         self.old_dls = list(self.dls)
         self.learn.dls.loaders = [self._wrap_dl(dl) for dl in self.dls]
         if rank_distrib() > 0: self.learn.logger=noop
@@ -135,8 +136,8 @@ class DistributedTrainer(Callback):
 
 # Cell
 @patch
-def to_distributed(self: Learner, cuda_id):
-    self.add_cb(DistributedTrainer(cuda_id))
+def to_distributed(self: Learner, cuda_id,sync_bn=True):
+    self.add_cb(DistributedTrainer(cuda_id,sync_bn))
     if rank_distrib() > 0: self.remove_cb(ProgressCallback)
     return self
 
@@ -151,7 +152,7 @@ def detach_distributed(self: Learner):
 # Cell
 @patch
 @contextmanager
-def distrib_ctx(self: Learner, cuda_id=None):
+def distrib_ctx(self: Learner, cuda_id=None,sync_bn=True):
     "A context manager to adapt a learner to train in distributed data parallel mode."
     # Figure out the GPU to use from rank.  Create a dpg if none exists yet.
     if cuda_id is None: cuda_id = rank_distrib()
@@ -161,7 +162,7 @@ def distrib_ctx(self: Learner, cuda_id=None):
     else: cleanup_dpg = False
     # Adapt self to DistributedDataParallel, yield, and cleanup afterwards.
     try:
-        if num_distrib() > 1: self.to_distributed(cuda_id)
+        if num_distrib() > 1: self.to_distributed(cuda_id,sync_bn)
         yield self
     finally:
         self.detach_distributed()

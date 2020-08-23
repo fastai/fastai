@@ -173,7 +173,7 @@ def maybe_gather(x, axis=0):
     if num_distrib()<=1: return x
     ndim = x.ndim
     res = [x.new_zeros(*x.shape if ndim > 0 else (1,)) for _ in range(num_distrib())]
-    torch.distributed.all_gather(res, x if ndim > 0 else x[None])
+    torch.distributed.all_gather(res, x.contiguous() if ndim > 0 else x[None])
     return torch.cat(res, dim=axis) if ndim > 0 else torch.cat(res, dim=axis).mean()
 
 # Cell
