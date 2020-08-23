@@ -12,14 +12,12 @@ from .model import *
 class TabularLearner(Learner):
     "`Learner` for tabular data"
     def predict(self, row):
-        tst_to = self.dls.valid_ds.new(pd.DataFrame(row).T)
-        tst_to.process()
-        tst_to.conts = tst_to.conts.astype(np.float32)
-        dl = self.dls.valid.new(tst_to)
+        "Predict on a Pandas Series"
+        dl = self.dls.test_dl(row.to_frame().T)
+        dl.dataset.conts = dl.dataset.conts.astype(np.float32)
         inp,preds,_,dec_preds = self.get_preds(dl=dl, with_input=True, with_decoded=True)
-        i = getattr(self.dls, 'n_inp', -1)
         b = (*tuplify(inp),*tuplify(dec_preds))
-        full_dec = self.dls.decode((*tuplify(inp),*tuplify(dec_preds)))
+        full_dec = self.dls.decode(b)
         return full_dec,dec_preds[0],preds[0]
 
 # Cell
