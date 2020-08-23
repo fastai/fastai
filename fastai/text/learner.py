@@ -152,7 +152,7 @@ def decode_spec_tokens(tokens):
 # Cell
 @log_args(but_as=TextLearner.__init__)
 class LMLearner(TextLearner):
-    "Add functionality to `TextLearner` when dealingwith a language model"
+    "Add functionality to `TextLearner` when dealing with a language model"
     def predict(self, text, n_words=1, no_unk=True, temperature=1., min_p=None, no_bar=False,
                 decoder=decode_spec_tokens, only_last_word=False):
         "Return `text` and the `n_words` that come after"
@@ -219,7 +219,7 @@ def text_classifier_learner(dls, arch, seq_len=72, config=None, backwards=False,
     "Create a `Learner` with a text classifier from `dls` and `arch`."
     vocab = _get_text_vocab(dls)
     if n_out is None: n_out = get_c(dls)
-    assert n_out, "`n_out` is not defined, and could not be infered from data, set `dls.c` or pass `n_out`"
+    assert n_out, "`n_out` is not defined, and could not be inferred from data, set `dls.c` or pass `n_out`"
     model = get_text_classifier(arch, len(vocab), n_out, seq_len=seq_len, config=config, y_range=y_range,
                                 drop_mult=drop_mult, lin_ftrs=lin_ftrs, ps=ps, max_len=max_len)
     meta = _model_meta[arch]
