@@ -10,7 +10,17 @@
 
 You can use fastai without any installation by using [Google Colab](https://colab.research.google.com/). In fact, every page of this documentation is also available as an interactive notebook - click "Open in colab" at the top of any page to open it (be sure to change the Colab runtime to "GPU" to have it run fast!) See the fast.ai course [Introduction to Colab](https://colab.research.google.com/) for more information.
 
-You can install fastai on your own machines with conda (highly recommended; requires [Anaconda](https://www.anaconda.com/products/individual) or [miniconda](https://docs.conda.io/en/latest/miniconda.html)): `conda install -c fastai -c pytorch fastai`, or with pip: `pip install fastai`. If you install with pip, you should install PyTorch first by following the PyTorch [installation instructions](https://pytorch.org/get-started/locally/).
+You can install fastai on your own machines with conda (highly recommended). If you're using [Anaconda](https://www.anaconda.com/products/individual) then run:
+```bash
+conda install -c fastai -c pytorch -c anaconda fastai gh anaconda
+```
+
+...or if you're using [miniconda](https://docs.conda.io/en/latest/miniconda.html)) then run:
+```bash
+conda install -c fastai -c pytorch fastai
+```
+
+To install with pip, use: `pip install fastai`. If you install with pip, you should install PyTorch first by following the PyTorch [installation instructions](https://pytorch.org/get-started/locally/).
 
 If you plan to develop fastai yourself, or want to be on the cutting edge, you can use an editable install (if you do this, you should also use an editable install of [fastcore](https://github.com/fastai/fastcore) to go with it.):
 
@@ -23,10 +33,9 @@ pip install -e "fastai[dev]"
 
 The best way to get start with fastai (and deep learning) is to read [the book](https://www.amazon.com/Deep-Learning-Coders-fastai-PyTorch/dp/1492045527), and complete [the free course](https://course.fast.ai).
 
-To see what's possible with fastai, take a look at the [Quick Start](https://docs.fast.ai/quick_start), which shows how to use around 5 lines of code to build an image classifier, an image segmentation model, a text sentiment model, a recommendation system, and a tabular model. For each of the applications, the code is much the same.
+To see what's possible with fastai, take a look at the [Quick Start](quick_start), which shows how to use around 5 lines of code to build an image classifier, an image segmentation model, a text sentiment model, a recommendation system, and a tabular model. For each of the applications, the code is much the same.
 
-Read through the [Tutorials](https://docs.fast.ai/tutorial
-) to learn how to train your own models on your own datasets. Use the navigation sidebar to look through the fastai documentation. Every class, function, and method is documented here.
+Read through the [Tutorials](tutorial) to learn how to train your own models on your own datasets. Use the navigation sidebar to look through the fastai documentation. Every class, function, and method is documented here.
 
 To learn about the design and motivation of the library, read the [peer reviewed paper](https://www.mdpi.com/2078-2489/11/2/108/htm).
 
@@ -49,10 +58,10 @@ fastai is organized around two main design goals: to be approachable and rapidly
 
 It's very easy to migrate from plain PyTorch, Ignite, or any other PyTorch-based library, or even to use fastai in conjunction with other libraries. Generally, you'll be able to use all your existing data processing code, but will be able to reduce the amount of code you require for training, and more easily take advantage of modern best practices. Here are migration guides from some popular libraries to help you on your way:
 
-- [Plain PyTorch](https://docs.fast.ai/migrating_pytorch)
-- [Ignite](https://docs.fast.ai/migrating_ignite)
-- [Lightning](https://docs.fast.ai/migrating_lightning)
-- [Catalyst](https://docs.fast.ai/migrating_catalyst)
+- [Plain PyTorch](migrating_pytorch)
+- [Ignite](migrating_ignite)
+- [Lightning](migrating_lightning)
+- [Catalyst](migrating_catalys)
 
 ## Tests
 
@@ -85,4 +94,4 @@ Before submitting a PR, check that the local library and notebooks match. The sc
 
 ## Docker Containers
 
-For those interested in offical docker containers for this project, they can be found [here](https://github.com/fastai/docker-containers#fastai).
+For those interested in official docker containers for this project, they can be found [here](https://github.com/fastai/docker-containers#fastai).
