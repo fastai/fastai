@@ -25,7 +25,7 @@ import requests,yaml,matplotlib.pyplot as plt,numpy as np,pandas as pd,scipy
 from pandas.api.types import is_categorical_dtype,is_numeric_dtype
 from numpy import array,ndarray
 from scipy import ndimage
-from IPython.core.debugger import set_trace
+from pdb import set_trace
 from fastcore.all import *
 from fastprogress.fastprogress import progress_bar,master_bar
 

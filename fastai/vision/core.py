@@ -178,6 +178,7 @@ def get_annotations(fname, prefix=None):
 # Cell
 from matplotlib import patches, patheffects
 
+# Cell
 def _draw_outline(o, lw):
     o.set_path_effects([patheffects.Stroke(linewidth=lw, foreground='black'), patheffects.Normal()])
 

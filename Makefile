@@ -21,6 +21,9 @@ docs_serve: docs
 
 docs: $(SRC)
 	nbdev_build_docs
+	cd docs
+	git commit -am docs && git push
+	cd -
 	touch docs
 
 test:

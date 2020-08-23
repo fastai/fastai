@@ -134,6 +134,8 @@ def set_seed(s, reproducible=False):
     "Set random seed for `random`, `torch`, and `numpy` (where available)"
     try: torch.manual_seed(s)
     except NameError: pass
+    try: torch.cuda.manual_seed_all(s)
+    except NameError: pass
     try: np.random.seed(s%(2**32-1))
     except NameError: pass
     random.seed(s)
@@ -523,6 +525,7 @@ class Module(nn.Module, metaclass=PrePostInitMeta):
 # Cell
 from torch.nn.parallel import DistributedDataParallel
 
+# Cell
 def get_model(model):
     "Return the model maybe wrapped inside `model`."
     return model.module if isinstance(model, (DistributedDataParallel, nn.DataParallel)) else model
