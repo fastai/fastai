@@ -24,7 +24,7 @@ class RNNDropout(Module):
 
 # Cell
 class WeightDropout(Module):
-    "A module that warps another layer in which some weights will be replaced by 0 during training."
+    "A module that wraps another layer in which some weights will be replaced by 0 during training."
 
     def __init__(self, module, weight_p, layer_names='weight_hh_l0'):
         self.module,self.weight_p,self.layer_names = module,weight_p,L(layer_names)
@@ -62,7 +62,7 @@ class WeightDropout(Module):
 
 # Cell
 class EmbeddingDropout(Module):
-    "Apply dropout with probabily `embed_p` to an embedding layer `emb`."
+    "Apply dropout with probability `embed_p` to an embedding layer `emb`."
 
     def __init__(self, emb, embed_p):
         self.emb,self.embed_p = emb,embed_p
