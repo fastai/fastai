@@ -16,15 +16,17 @@ jobs:
         key: ${{ secrets.DH_KEY }}
         name: id_rsa # optional
         known_hosts: ${{ secrets.DH_HOSTS }}
-        config: ${{ secrets.SSH_CONFIG }} # ssh_config; optional
 
     - name: Install libraries
-      run: |
-        pip install -Uqqq nbdev
-    - name: Attempt to read notebooks
-      run: |
-        nbdev_read_nbs
+      run: pip install -Uqqq nbdev
+
+    - name: checkout contents of PR
+      uses: actions/checkout@v2
+
     - name: Create docs
       id: docs
       run: |
         nbdev_build_docs
+        cd docs
+        JEKYLL_ENV=production bundle exec jekyll build
+        rsync -az _site/* ps625762.dreamhostps.com:docs1.fast.ai
