@@ -8,6 +8,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    container: fastdotai/fastai
     steps:
     - name: Install SSH key
       uses: shimataro/ssh-key-action@v2
