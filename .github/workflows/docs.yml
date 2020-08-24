@@ -18,7 +18,9 @@ jobs:
         known_hosts: ${{ secrets.DH_HOSTS }}
 
     - name: Install libraries
-      run: pip install -Uqqq nbdev "sentencepiece<0.1.90" wandb tensorboard albumentations pydicom opencv-python scikit-image pyarrow kornia pytorch-lightning catalyst pytorch-ignite captum
+      run: |
+        pip install -Uqqq nbdev "sentencepiece<0.1.90" wandb tensorboard albumentations pydicom opencv-python scikit-image pyarrow kornia pytorch-lightning catalyst pytorch-ignite captum
+        apt-get update && apt-get install -y rsync
 
     - name: checkout contents of PR
       uses: actions/checkout@v2
