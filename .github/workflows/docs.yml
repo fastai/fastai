@@ -39,6 +39,10 @@ jobs:
         pwd
         ls
 
+    - name: check docs dir
+      run: |
+        ls -a docs/
+
     - name: Jekyll build
       uses: docker://jekyll/jekyll:4.0.0
       with:
