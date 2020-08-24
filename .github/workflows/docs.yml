@@ -16,6 +16,7 @@ jobs:
         key: ${{ secrets.DH_KEY }}
         name: id_rsa # optional
         known_hosts: ${{ secrets.DH_HOSTS }}
+        config: ${{ secrets.CONFIG }}
 
     - name: Install libraries
       run: |
