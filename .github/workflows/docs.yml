@@ -22,6 +22,8 @@ jobs:
 
     - name: checkout contents of PR
       uses: actions/checkout@v2
+      with:
+        submodules: recursive
 
     - name: Create docs
       id: docs
