@@ -33,8 +33,8 @@ jobs:
 
     - name: Install libraries
       run: |
-        pip install -U nbdev
-        pip install -Ue .
+        pip install -Uqqq nbdev
+        pip install -Uqe .
 
     - name: Attempt to read notebooks
       run: |
