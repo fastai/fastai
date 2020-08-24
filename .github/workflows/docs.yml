@@ -29,9 +29,10 @@ jobs:
       id: docs
       run: nbdev_build_docs
 
-    - name: check docs dir
+    - name: setup directories for Jekyll build
       run: |
-        ls -a docs/
+        rm -rf docs/_site
+        sudo chmod -R 777 docs/
 
     - name: Jekyll build
       uses: docker://jekyll/jekyll:4.0.0
