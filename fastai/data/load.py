@@ -61,7 +61,6 @@ class SkipItemException(Exception): pass
 @log_args(but='dataset,wif,create_batch,create_batches,create_item,retain,get_idxs,sample,shuffle_fn,do_batch')
 @funcs_kwargs
 class DataLoader(GetAttr):
-    "API compatible with PyTorch DataLoader, with a lot more callbacks and flexibility"
     _noop_methods = 'wif before_iter after_item before_batch after_batch after_iter'.split()
     for o in _noop_methods:
         exec(f"def {o}(self, x=None, *args, **kwargs): return x")
