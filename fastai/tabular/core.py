@@ -29,8 +29,12 @@ def add_datepart(df, field_name, prefix=None, drop=True, time=False):
     prefix = ifnone(prefix, re.sub('[Dd]ate$', '', field_name))
     attr = ['Year', 'Month', 'Week', 'Day', 'Dayofweek', 'Dayofyear', 'Is_month_end', 'Is_month_start',
             'Is_quarter_end', 'Is_quarter_start', 'Is_year_end', 'Is_year_start']
+    attr_deprecated = ['Week']
     if time: attr = attr + ['Hour', 'Minute', 'Second']
-    for n in attr: df[prefix + n] = getattr(field.dt, n.lower())
+    for n in attr:
+        if n not in attr_deprecated: df[prefix + n] = getattr(field.dt, n.lower())
+    # Handle deprecations manually (currently only 1, if more in future can use another approach)
+    df.insert(df.columns.get_loc(prefix+'Month')+1, prefix+'Week', field.dt.isocalendar().week)
     mask = ~field.isna()
     df[prefix + 'Elapsed'] = np.where(mask,field.values.astype(np.int64) // 10 ** 9,None)
     if drop: df.drop(field_name, axis=1, inplace=True)
