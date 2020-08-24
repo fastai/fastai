@@ -18,7 +18,7 @@ jobs:
         known_hosts: ${{ secrets.DH_HOSTS }}
 
     - name: Install libraries
-      run: pip install -Uqqq nbdev
+      run: pip install -Uqqq nbdev "sentencepiece<0.1.90" wandb tensorboard albumentations pydicom opencv-python scikit-image pyarrow kornia
 
     - name: checkout contents of PR
       uses: actions/checkout@v2
