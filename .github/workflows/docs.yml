@@ -1,16 +1,17 @@
-name: CI
+name: docs
 on: 
   push:
     branches: 
       - master
 
-jobs:     
-  runs-on: ubuntu-latest
-  steps:
-  - name: Install SSH key
-    uses: shimataro/ssh-key-action@v2
-    with:
-      key: ${{ secrets.SSH_KEY }}
-      name: id_rsa # optional
-      known_hosts: ${{ secrets.KNOWN_HOSTS }}
-      config: ${{ secrets.CONFIG }} # ssh_config; optional
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Install SSH key
+      uses: shimataro/ssh-key-action@v2
+      with:
+        key: ${{ secrets.DH_KEY }}
+        name: id_rsa # optional
+        known_hosts: ${{ secrets.DH_HOSTS }}
+        config: ${{ secrets.SSH_CONFIG }} # ssh_config; optional
