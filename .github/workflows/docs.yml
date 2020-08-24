@@ -29,16 +29,6 @@ jobs:
       id: docs
       run: nbdev_build_docs
 
-    - name: setup directories for Jekyll build
-      run: |
-        rm -rf _site
-        chmod -R 777 .
-    
-    - name: check dir
-      run: |
-        pwd
-        ls
-
     - name: check docs dir
       run: |
         ls -a docs/
