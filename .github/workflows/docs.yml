@@ -27,8 +27,12 @@ jobs:
 
     - name: Create docs
       id: docs
-      run: |
-        nbdev_build_docs
-        cd docs
-        JEKYLL_ENV=production bundle exec jekyll build
-        rsync -az _site/* ps625762.dreamhostps.com:docs1.fast.ai
+      run: nbdev_build_docs
+      
+    - name: build jekyll
+      uses: limjh16/jekyll-action-ts@v2
+      with:
+        enable_cache: true
+    
+    - name: rsync
+      run: rsync -az docs/_site/ ps625762.dreamhostps.com:docs1.fast.ai/
