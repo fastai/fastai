@@ -46,8 +46,7 @@ jobs:
     - name: Jekyll build
       uses: docker://jekyll/jekyll:4.0.0
       with:
-        # bash -c "gem install bundler && jekyll build -V --strict_front_matter --trace"
-        args: bash -c "pwd && ls"
+        args: bash -c "gem install bundler && jekyll build -V -s docs --strict_front_matter --trace"
       env:
         JEKYLL_ENV: 'production'
     
