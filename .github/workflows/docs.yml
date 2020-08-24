@@ -33,9 +33,14 @@ jobs:
       run: |
         rm -rf _site
         chmod -R 777 .
-        
+    
+    - name: check dir
+      run: |
+        pwd
+        ls
+
     - name: Jekyll build
-      uses: docker://jekyll/jekyll:4.1.0
+      uses: docker://jekyll/jekyll:4.0.0
       with:
         args: bash -c "gem install bundler && jekyll build -V --strict_front_matter --trace"
       env:
