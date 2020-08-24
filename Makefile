@@ -3,7 +3,9 @@ SHELL := /bin/bash
 
 SRC = $(wildcard nbs/*.ipynb)
 
-all: fastai docs
+all: fastai 
+
+both: fastai docs
 
 help:
 	cat Makefile
