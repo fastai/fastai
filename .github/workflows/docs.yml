@@ -35,7 +35,7 @@ jobs:
         chmod -R 777 docs/
 
     - name: Jekyll build
-      uses: docker://jekyll/jekyll:4.0.0
+      uses: docker://jekyll/jekyll:4.0.1
       with:
         args: bash -c "cd docs && gem install bundler && chmod -R u+rwx . && jekyll build -V --strict_front_matter --trace"
       env:
