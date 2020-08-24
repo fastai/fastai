@@ -29,10 +29,12 @@ jobs:
       id: docs
       run: nbdev_build_docs
       
-    - name: build jekyll
-      uses: limjh16/jekyll-action-ts@v2
+    - name: Jekyll build
+      uses: docker://jekyll/jekyll:4.1.0
       with:
-        enable_cache: true
+        args: bash -c "gem install bundler && jekyll build -V --strict_front_matter --trace"
+      env:
+        JEKYLL_ENV: 'production'
     
     - name: rsync
       run: rsync -az docs/_site/ ps625762.dreamhostps.com:docs1.fast.ai/
