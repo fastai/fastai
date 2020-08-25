@@ -84,12 +84,7 @@ class DistributedDL(TfmdDL):
         idxs += idxs[:(DistributedDL._round_to_multiple(n_idxs,self.world_size)-n_idxs)]
         # subsample
         return idxs[self.rank::self.world_size]
-    def sample(self):
-        # this gets executed in fake_l context (e.g. subprocesses) so we cannot call self.get_idxs() here
-        return (b for i,b in enumerate(self._idxs) if i//(self.bs or 1)%self.nw==self.offs)
-    def before_iter(self):
-        self.dl.before_iter()
-        self._idxs = self.get_idxs()
+    def before_iter(self): self.dl.before_iter()
     def randomize(self): self.dl.randomize()
     def after_batch(self,b): return self.dl.after_batch(b)
     def after_iter(self): self.dl.after_iter()
