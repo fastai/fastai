@@ -5,6 +5,12 @@ on:
   push:
     branches: 
       - master
+    paths-ignore:
+      - '.github/**'
+      - '!.github/workflows/main.yml'
+      - 'docs/**'
+      - '*.md'
+      - '.git*'
 
 jobs:     
   debug:
@@ -30,11 +36,13 @@ jobs:
 
     - name: checkout contents of PR
       uses: actions/checkout@v2
+      with:
+        submodules: true
 
     - name: Install libraries
       run: |
-        pip install -U nbdev
-        pip install -Ue .
+        pip install -Uqqq nbdev
+        pip install -Uqe .
 
     - name: Attempt to read notebooks
       run: |

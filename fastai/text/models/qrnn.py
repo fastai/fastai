@@ -59,7 +59,7 @@ def forget_mult_CPU(x, f, first_h=None, batch_first=True, backward=False):
 
 # Cell
 class ForgetMultGPU(Function):
-    "Wraper around the CUDA kernels for the ForgetMult gate."
+    "Wrapper around the CUDA kernels for the ForgetMult gate."
     @staticmethod
     def forward(ctx, x, f, first_h=None, batch_first=True, backward=False):
         ind = -1 if backward else 0

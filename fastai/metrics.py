@@ -307,12 +307,12 @@ exp_rmspe.__doc__ = "Root mean square percentage error of the exponential of  pr
 
 # Cell
 def ExplainedVariance(sample_weight=None):
-    "Explained variance betzeen predictions and targets"
+    "Explained variance between predictions and targets"
     return skm_to_fastai(skm.explained_variance_score, is_class=False, sample_weight=sample_weight)
 
 # Cell
 def R2Score(sample_weight=None):
-    "R2 score betzeen predictions and targets"
+    "R2 score between predictions and targets"
     return skm_to_fastai(skm.r2_score, is_class=False, sample_weight=sample_weight)
 
 # Cell
@@ -352,7 +352,7 @@ class Dice(Metric):
 
 # Cell
 class JaccardCoeff(Dice):
-    "Implemetation of the jaccard coefficient that is lighter in RAM"
+    "Implementation of the Jaccard coefficient that is lighter in RAM"
     @property
     def value(self): return self.inter/(self.union-self.inter) if self.union > 0 else None
 

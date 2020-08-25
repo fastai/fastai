@@ -44,7 +44,7 @@ class Interpretation():
         if its is not None:
             plot_top_losses(x, y, its, outs.itemgot(slice(len(inps), None)), self.preds[idx], losses,  **kwargs)
         #TODO: figure out if this is needed
-        #its None means that a batch knos how to show itself as a whole, so we pass x, x1
+        #its None means that a batch knows how to show itself as a whole, so we pass x, x1
         #else: show_results(x, x1, its, ctxs=ctxs, max_n=max_n, **kwargs)
 
 # Cell

@@ -12,14 +12,12 @@ from .model import *
 class TabularLearner(Learner):
     "`Learner` for tabular data"
     def predict(self, row):
-        tst_to = self.dls.valid_ds.new(pd.DataFrame(row).T)
-        tst_to.process()
-        tst_to.conts = tst_to.conts.astype(np.float32)
-        dl = self.dls.valid.new(tst_to)
+        "Predict on a Pandas Series"
+        dl = self.dls.test_dl(row.to_frame().T)
+        dl.dataset.conts = dl.dataset.conts.astype(np.float32)
         inp,preds,_,dec_preds = self.get_preds(dl=dl, with_input=True, with_decoded=True)
-        i = getattr(self.dls, 'n_inp', -1)
         b = (*tuplify(inp),*tuplify(dec_preds))
-        full_dec = self.dls.decode((*tuplify(inp),*tuplify(dec_preds)))
+        full_dec = self.dls.decode(b)
         return full_dec,dec_preds[0],preds[0]
 
 # Cell
@@ -32,7 +30,7 @@ def tabular_learner(dls, layers=None, emb_szs=None, config=None, n_out=None, y_r
     to = dls.train_ds
     emb_szs = get_emb_sz(dls.train_ds, {} if emb_szs is None else emb_szs)
     if n_out is None: n_out = get_c(dls)
-    assert n_out, "`n_out` is not defined, and could not be infered from data, set `dls.c` or pass `n_out`"
+    assert n_out, "`n_out` is not defined, and could not be inferred from data, set `dls.c` or pass `n_out`"
     if y_range is None and 'y_range' in config: y_range = config.pop('y_range')
     model = TabularModel(emb_szs, len(dls.cont_names), n_out, layers, y_range=y_range, **config)
     return TabularLearner(dls, model, **kwargs)

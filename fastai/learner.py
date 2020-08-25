@@ -393,7 +393,7 @@ class AvgSmoothLoss(Metric):
 
 # Cell
 class ValueMetric(Metric):
-    "Use to include a pre-calculated metric value (for insance calculated in a `Callback`) and returned by `func`"
+    "Use to include a pre-calculated metric value (for instance calculated in a `Callback`) and returned by `func`"
     def __init__(self, func, metric_name=None): store_attr(self, 'func, metric_name')
 
     @property
@@ -405,6 +405,7 @@ class ValueMetric(Metric):
 # Cell
 from fastprogress.fastprogress import format_time
 
+# Cell
 def _maybe_item(t):
     t = t.value
     return t.item() if isinstance(t, Tensor) and t.numel()==1 else t

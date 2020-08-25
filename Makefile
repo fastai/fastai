@@ -3,7 +3,9 @@ SHELL := /bin/bash
 
 SRC = $(wildcard nbs/*.ipynb)
 
-all: fastai docs
+all: fastai 
+
+both: fastai docs
 
 help:
 	cat Makefile
@@ -21,6 +23,9 @@ docs_serve: docs
 
 docs: $(SRC)
 	nbdev_build_docs
+	cd docs
+	git commit -am docs && git push
+	cd -
 	touch docs
 
 test:

@@ -1,0 +1,73 @@
+name: docs
+on: 
+  workflow_dispatch:
+  workflow_run:
+    workflows: ["CI"]
+    branches: [main]
+    types: 
+      - completed
+      - requested
+  push:
+    branches: 
+      - master
+    paths:
+      - 'docs/**'
+      - '.github/workflows/docs.yml'
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: fastdotai/fastai
+    steps:
+    - name: Install libraries
+      run: |
+        pip install -Uqqq nbdev "sentencepiece<0.1.90" pytorch-lightning pytorch-ignite
+        apt-get update && apt-get install -y rsync
+
+    - name: checkout contents of PR
+      uses: actions/checkout@v2
+      with:
+        submodules: recursive
+
+    - name: Create docs
+      id: docs
+      run: nbdev_build_docs
+
+    - name: setup directories for Jekyll build
+      run: |
+        rm -rf docs/_site
+        chmod -R 777 docs/
+
+    - name: Jekyll build
+      uses: docker://fastdotai/nbdev-docs
+      with:
+        args: bash -c "cd docs && gem install bundler && chmod -R u+rwx . && jekyll build -V --strict_front_matter --trace"
+      env:
+        JEKYLL_ENV: 'production'
+    
+    - name: rsync
+      env:
+        DH_KEY: ${{ secrets.DH_KEY }}
+        SSH_CONFIG: ${{ secrets.SSH_CONFIG }}
+      run: |
+        export HOME=/root
+        mkdir -p ~/.ssh
+        pushd ~/.ssh
+        echo "${DH_KEY}" > id_rsa
+        chmod 400 id_rsa
+        echo "${SSH_CONFIG}" > config
+        chmod 400 config
+        touch known_hosts
+        chmod 644 known_hosts
+        chmod 700 .
+        popd
+        rsync -az docs/_site/ jeremyphoward@dreamhost:docs1.fast.ai/
+        # rsync  -e "ssh -F /root/.ssh/config -i /root/.ssh/id_rsa" -az docs/_site/ jeremyphoward@dreamhost:docs1.fast.ai/
+        # rsync  -e "ssh -F /root/.ssh/config -i /root/.ssh/id_rsa" -az docs/_site/ jeremyphoward@dreamhost:docs1.fast.ai/
+        # rsync  -e "ssh -F /root/.ssh/config -i /root/.ssh/id_rsa" -az docs/_site/ jeremyphoward@ps625762.dreamhostps.com:docs1.fast.ai/
+        # rsync  -e "ssh -l jeremyphoward -F /root/.ssh/config -i /root/.ssh/id_rsa" -az docs/_site/ jeremyphoward@dreamhost:docs1.fast.ai/
+        # rsync  -e "ssh -l jeremyphoward -F /root/.ssh/config -i /root/.ssh/id_rsa" -az docs/_site/ jeremyphoward@ps625762.dreamhostps.com:docs1.fast.ai/

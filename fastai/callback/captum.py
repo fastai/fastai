@@ -7,11 +7,10 @@ import tempfile
 from ..basics import *
 
 # Cell
-
-# Dirty hack as json_clean doesn't support CategoryMap type
-
 from ipykernel import jsonutil
 
+# Cell
+# Dirty hack as json_clean doesn't support CategoryMap type
 _json_clean=jsonutil.json_clean
 def json_clean(o):
     o = list(o.items) if isinstance(o,CategoryMap) else o
@@ -24,7 +23,6 @@ from captum.attr import IntegratedGradients,NoiseTunnel,GradientShap,Occlusion
 from captum.attr import visualization as viz
 
 from matplotlib.colors import LinearSegmentedColormap
-
 
 from captum.insights import AttributionVisualizer, Batch
 from captum.insights.features import ImageFeature

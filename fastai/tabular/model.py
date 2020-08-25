@@ -28,7 +28,7 @@ def get_emb_sz(to, sz_dict=None):
 class TabularModel(Module):
     "Basic model for tabular data."
     def __init__(self, emb_szs, n_cont, out_sz, layers, ps=None, embed_p=0.,
-                 y_range=None, use_bn=True, bn_final=False, bn_cont=True):
+                 y_range=None, use_bn=True, bn_final=False, bn_cont=True, act_cls=nn.ReLU(inplace=True)):
         ps = ifnone(ps, [0]*len(layers))
         if not is_listy(ps): ps = [ps]*len(layers)
         self.embeds = nn.ModuleList([Embedding(ni, nf) for ni,nf in emb_szs])
@@ -37,7 +37,7 @@ class TabularModel(Module):
         n_emb = sum(e.embedding_dim for e in self.embeds)
         self.n_emb,self.n_cont = n_emb,n_cont
         sizes = [n_emb + n_cont] + layers + [out_sz]
-        actns = [nn.ReLU(inplace=True) for _ in range(len(sizes)-2)] + [None]
+        actns = [act_cls for _ in range(len(sizes)-2)] + [None]
         _layers = [LinBnDrop(sizes[i], sizes[i+1], bn=use_bn and (i!=len(actns)-1 or bn_final), p=p, act=a)
                        for i,(p,a) in enumerate(zip(ps+[0.],actns))]
         if y_range is not None: _layers.append(SigmoidRange(*y_range))
@@ -56,5 +56,5 @@ class TabularModel(Module):
 # Cell
 @delegates(TabularModel.__init__)
 def tabular_config(**kwargs):
-    "Convenience function to easily create a config for `tabular_model`"
+    "Convenience function to easily create a config for `TabularModel`"
     return kwargs

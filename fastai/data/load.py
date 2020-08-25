@@ -6,6 +6,8 @@ __all__ = ['fa_collate', 'fa_convert', 'SkipItemException', 'DataLoader']
 from ..torch_basics import *
 
 from torch.utils.data.dataloader import _MultiProcessingDataLoaderIter,_SingleProcessDataLoaderIter,_DatasetKind
+
+# Cell
 _loaders = (_MultiProcessingDataLoaderIter,_SingleProcessDataLoaderIter)
 
 # Cell
@@ -132,3 +134,28 @@ class DataLoader(GetAttr):
         with self.fake_l.no_multiproc(): res = first(self)
         if hasattr(self, 'it'): delattr(self, 'it')
         return res
+
+# Cell
+add_docs(DataLoader, "API compatible with PyTorch DataLoader, with a lot more callbacks and flexibility",
+         get_idxs = "TODO",
+         sample = "TODO",
+         create_batches = "TODO",
+         new = "TODO",
+         prebatched = "TODO",
+         do_item = "TODO",
+         chunkify = "TODO",
+         shuffle_fn = "TODO",
+         randomize = "TODO",
+         retain = "TODO",
+         create_item = "TODO",
+         create_batch = "TODO",
+         do_batch = "TODO",
+         to = "TODO",
+         one_batch = "TODO",
+         wif  = "TODO",
+         before_iter = "TODO",
+         after_item = "TODO",
+         before_batch = "TODO",
+         after_batch = "TODO",
+         after_iter  = "TODO"
+        )
