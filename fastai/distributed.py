@@ -6,7 +6,7 @@ __all__ = ['ParallelTrainer', 'setup_distrib', 'teardown_distrib', 'DistributedD
 from .basics import *
 from .callback.progress import ProgressCallback
 from torch.nn.parallel import DistributedDataParallel, DataParallel
-from torch.utils.data.distributed import DistributedSampler
+from .data.load import _FakeLoader
 
 # Cell
 @patch
@@ -65,46 +65,39 @@ def teardown_distrib():
 
 # Cell
 @log_args(but_as=TfmdDL.__init__)
-@delegates()
 class DistributedDL(TfmdDL):
 
-    def __init__(self, dataset, rank, world_size, **kwargs):
-        super().__init__(dataset, **kwargs)
-        if self.n%world_size != 0: self.n += world_size-self.n%world_size
-        self.total_n,self.n = self.n,self.n//world_size
-        store_attr(self, 'rank,world_size')
+    _round_to_multiple=lambda number,multiple:int(math.ceil(number/multiple)*multiple)
 
+    def _broadcast(self,t,rank):
+        "Broadcasts t from rank `rank` to all other ranks. Returns t so t is same for all ranks after call."
+        t = LongTensor(t).cuda() # nccl only works with cuda tensors
+        torch.distributed.broadcast(t,rank)
+        return t.cpu().tolist()
+    def __len__(self):
+        return DistributedDL._round_to_multiple(len(self.dl),self.world_size)//self.world_size
     def get_idxs(self):
-        idxs = Inf.count if self.indexed else Inf.nones
-        return idxs if self.n is None else list(itertools.islice(idxs, self.total_n))
-
-    def shuffle_fn(self, idxs):
-        "Deterministically shuffle on each training process based on epoch."
-        g = torch.Generator()
-        g.manual_seed(self.epoch)
-        return L(idxs)[torch.randperm(self.total_n, generator=g)]
-
-    def sample(self):
-        idxs = self.get_idxs()
-        if self.shuffle: idxs = self.shuffle_fn(idxs)
+        idxs = self.dl.get_idxs()       # compute get_idxs in all ranks (we'll only use rank 0 but size must be consistent)
+        idxs = self._broadcast(idxs,0)  # broadcast and receive it from rank 0 to all
+        n_idxs = len(idxs)
         # add extra samples to make it evenly divisible
-        idxs += idxs[:(self.total_n - len(idxs))]
+        idxs += idxs[:(DistributedDL._round_to_multiple(n_idxs,self.world_size)-n_idxs)]
         # subsample
-        idxs = idxs[self.rank:self.total_n:self.world_size]
-        return (b for i,b in enumerate(idxs) if i//(self.bs or 1)%self.nw==self.offs)
-
-    def create_item(self, s):
-        if s is not None and s >= len(self.dataset): s = s%len(self.dataset)
-        return s if hasattr(self.dataset, 'iloc') else super().create_item(s)
-
-    def set_epoch(self, epoch): self.epoch = epoch
-
-    @classmethod
-    def from_dl(cls, dl, rank, world_size, **kwargs):
-        cur_kwargs = dict(num_workers=dl.fake_l.num_workers, pin_memory=dl.pin_memory, timeout=dl.timeout,
-                          bs=dl.bs, shuffle=dl.shuffle, drop_last=dl.drop_last, indexed=dl.indexed, device=dl.device)
-        cur_kwargs.update({n: getattr(dl, n) for n in cls._methods if n not in "get_idxs sample shuffle_fn create_item".split()})
-        return cls(dl.dataset, rank, world_size, **merge(cur_kwargs, kwargs))
+        return idxs[self.rank::self.world_size]
+    def sample(self):
+        # this gets executed in fake_l context (e.g. subprocesses) so we cannot call self.get_idxs() here
+        return (b for i,b in enumerate(self._idxs) if i//(self.bs or 1)%self.nw==self.offs)
+    def before_iter(self):
+        self.dl.before_iter()
+        self._idxs = self.get_idxs()
+    def randomize(self): self.dl.randomize()
+    def after_batch(self,b): return self.dl.after_batch(b)
+    def after_iter(self): self.dl.after_iter()
+    def create_batches(self,samps): return self.dl.create_batches(samps)
+    def __init__(self,dl,rank,world_size):
+        store_attr(self,'dl,rank,world_size')
+        self.bs,self.device,self.drop_last,self.dataset = dl.bs,dl.device,dl.drop_last,dl.dataset
+        self.fake_l = _FakeLoader(self, dl.fake_l.pin_memory, dl.fake_l.num_workers, dl.fake_l.timeout)
 
 # Cell
 @log_args
@@ -122,10 +115,7 @@ class DistributedTrainer(Callback):
         if rank_distrib() > 0: self.learn.logger=noop
 
     def _wrap_dl(self, dl):
-        return dl if isinstance(dl, DistributedDL) else DistributedDL.from_dl(dl, rank_distrib(), num_distrib())
-
-    def before_epoch(self):
-        for dl in self.dls: dl.set_epoch(self.epoch)
+        return dl if isinstance(dl, DistributedDL) else DistributedDL(dl, rank_distrib(), num_distrib())
 
     def before_train(self):    self.learn.dl = self._wrap_dl(self.learn.dl)
     def before_validate(self): self.learn.dl = self._wrap_dl(self.learn.dl)
