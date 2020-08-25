@@ -33,7 +33,7 @@ jobs:
         chmod -R 777 docs/
 
     - name: Jekyll build
-      uses: docker://jekyll/jekyll:4.0.1
+      uses: docker://fastdotai/nbdev-docs
       with:
         args: bash -c "cd docs && gem install bundler && chmod -R u+rwx . && jekyll build -V --strict_front_matter --trace"
       env:
