@@ -12,7 +12,7 @@ on:
       - '*.md'
       - '.git*'
 
-jobs:     
+jobs: 
   debug:
     runs-on: ubuntu-latest
     steps:
@@ -29,7 +29,17 @@ jobs:
         name: payload.json
         path: ${{ github.event_path }}
         
+  filter:
+    runs-on: ubuntu-latest
+    if: (github.event_name == 'push' && github.event.head_commit.author.username == 'jph00') || github.event_name != 'push'
+    steps:
+      - run: |
+          echo "passed filter"
+          echo "event_name: ${{ github.event_name }}"
+          echo "head_commit.author.username: ${{ github.event.head_commit.author.username }}"
+ 
   test-nbdev-sync:
+    needs: filter
     runs-on: ubuntu-latest
     container: fastdotai/fastai #this is defined here: https://github.com/fastai/docker-containers/blob/master/fastai-build/Dockerfile
     steps:
@@ -73,6 +83,7 @@ jobs:
         fi
 
   test-notebooks:
+    needs: filter
     container: fastdotai/fastai
     runs-on: ubuntu-latest
     env:
