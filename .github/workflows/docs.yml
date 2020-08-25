@@ -1,9 +1,19 @@
 name: docs
 on: 
   workflow_dispatch:
+  workflow_run:
+    workflows: ["CI"]
+    branches: [main]
+    types: 
+      - completed
+      - requested
   push:
     branches: 
       - master
+    paths:
+      - 'docs/**'
+      - '.github/workflows/docs.yml'
+
 defaults:
   run:
     shell: bash
@@ -15,7 +25,7 @@ jobs:
     steps:
     - name: Install libraries
       run: |
-        pip install -Uqqq nbdev "sentencepiece<0.1.90" wandb tensorboard albumentations pydicom opencv-python scikit-image pyarrow kornia pytorch-lightning catalyst pytorch-ignite captum
+        pip install -Uqqq nbdev "sentencepiece<0.1.90" pytorch-lightning catalyst pytorch-ignite captum
         apt-get update && apt-get install -y rsync
 
     - name: checkout contents of PR
