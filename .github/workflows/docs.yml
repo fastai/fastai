@@ -51,18 +51,14 @@ jobs:
     
     - name: rsync
       env:
-        DH_KEY: ${{ secrets.DH_KEY }}
+        SSH_KEY: ${{ secrets.DH_KEY }}
         SSH_CONFIG: ${{ secrets.SSH_CONFIG }}
       run: |
         export HOME=/root
         mkdir -p ~/.ssh
-        pushd ~/.ssh
-        echo "${DH_KEY}" > id_rsa
-        chmod 400 id_rsa
-        echo "${SSH_CONFIG}" > config
-        chmod 400 config
-        # touch known_hosts
-        # chmod 644 known_hosts
-        chmod 700 .
-        popd
+        echo "${SSH_KEY}" > ~/.ssh/id_rsa
+        chmod 400 ~/.ssh/id_rsa
+        echo "${SSH_CONFIG}" > ~/.ssh/config
+        chmod 400 ~/.ssh/config
+        chmod 700 ~/.ssh
         rsync -az docs/_site/ dreamhost:docs1.fast.ai/
