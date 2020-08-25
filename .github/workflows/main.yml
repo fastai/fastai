@@ -46,44 +46,14 @@ jobs:
 
     - name: checkout contents of PR
       uses: actions/checkout@v2
-      with:
-        submodules: true
 
     - name: Install libraries
       run: |
         pip install -Uqqq nbdev
         pip install -Uqe .
         
-    - name: check notebooks
+    - name: check if notebooks are synced and cleaned
       uses: fastai/workflows/nb@master
-
-#     - name: Attempt to read notebooks
-#       run: |
-#         nbdev_read_nbs
-
-#     - name: Check if notebooks are clean
-#       id: clean
-#       run: |
-#         nbdev_clean_nbs
-#         if [ -n "$(git status -uno -s)" ]; then
-#           echo "::error::Detected notebooks that are not cleaned."
-#           echo "\n\nList of notebooks that are not clean:"
-#           git status -s
-#           exit 1;
-#         fi
-  
-#     - name: Check that library syncs with notebooks
-#       id: lib
-#       run: |
-#         nbdev_diff_nbs > _nbdev_diff_logs.txt
-#         if [ -n "$(cat _nbdev_diff_logs.txt)" ]; then 
-#           echo "::error::Detected notebooks that are not in sync with the library."
-#           cat _nbdev_diff_logs.txt
-#           if [[ $auto_fix == 'true' ]]; then 
-#             nbdev_build_lib
-#           fi
-#           exit 1;
-#         fi
 
   test-notebooks:
     needs: filter
