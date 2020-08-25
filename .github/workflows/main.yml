@@ -52,7 +52,7 @@ jobs:
         pip install -Uqqq nbdev
         pip install -Uqe .
         
-    - name: check notebooks
+    - name: check if notebooks are synced and cleaned
       uses: fastai/workflows/nb@master
 
   test-notebooks:
