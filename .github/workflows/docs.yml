@@ -19,7 +19,6 @@ jobs:
     - name: Install libraries
       run: |
         pip install -Uqqq nbdev "sentencepiece<0.1.90" pytorch-lightning pytorch-ignite
-        apt-get update && apt-get install -y rsync
 
     - name: checkout contents of PR
       uses: actions/checkout@v2
