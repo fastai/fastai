@@ -41,20 +41,6 @@ jobs:
       env:
         JEKYLL_ENV: 'production'
     
-#     - name: rsync
-#       shell: bash
-#       env:
-#         SSH_KEY: ${{ secrets.DH_KEY }}
-#         SSH_CONFIG: ${{ secrets.SSH_CONFIG }}
-#       run: |
-#         export HOME=/root
-#         mkdir -p ~/.ssh
-#         echo "${SSH_KEY}" > ~/.ssh/id_rsa
-#         chmod 400 ~/.ssh/id_rsa
-#         echo "${SSH_CONFIG}" > ~/.ssh/config
-#         chmod 400 ~/.ssh/config
-#         chmod 700 ~/.ssh
-#         rsync --delete -az docs/_site/ dreamhost:docs.fast.ai/
     - name: rsync to dreamhost
       uses: fastai/workflows/docs@master
       with:
