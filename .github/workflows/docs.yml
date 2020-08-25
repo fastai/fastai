@@ -59,7 +59,7 @@ jobs:
 #         chmod 700 ~/.ssh
 #         rsync --delete -az docs/_site/ dreamhost:docs.fast.ai/
     - name: rsync
-      uses: fastai/workflow/docs@v1
+      uses: fastai/workflow@v1.1
       with:
         SSH_KEY: ${{ secrets.DH_KEY }}
         SSH_CONFIG: ${{ secrets.SSH_CONFIG }}
