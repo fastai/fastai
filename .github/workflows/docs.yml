@@ -45,5 +45,12 @@ jobs:
         config: ${{ secrets.SSH_CONFIG }}
 
     - name: rsync
-      run: rsync  -e "ssh -l jeremyphoward -o StrictHostKeyChecking=no" -az docs/_site/ ps625762.dreamhostps.com:docs1.fast.ai/
+      run: |
+        cd
+        pwd
+        cp -r /github/home/.ssh ~/
+        chown -R root:root ~/.ssh
+        cp -r /github/home/.ssh /root
+        chown -R root:root /root/.ssh
+        rsync  -e "ssh -l jeremyphoward -o StrictHostKeyChecking=no" -az docs/_site/ ps625762.dreamhostps.com:docs1.fast.ai/
 
