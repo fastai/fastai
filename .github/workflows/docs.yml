@@ -42,10 +42,9 @@ jobs:
         JEKYLL_ENV: 'production'
     
     - name: rsync to dreamhost
-      uses: fastai/workflows/docs@master
+      uses: fastai/workflows/rsync@master
       with:
-        SSH_KEY: ${{ secrets.DH_KEY }}
-        SSH_CONFIG: ${{ secrets.SSH_CONFIG }}
-        DEST_PATH: "docs.fast.ai/"
-  
-  
+        hostname: ps625762.dreamhostps.com
+        ssh_key: ${{ secrets.DH_KEY }}
+        dest_path: "docs.fast.ai/"
+        username: jeremyphoward
