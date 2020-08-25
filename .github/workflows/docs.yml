@@ -44,13 +44,17 @@ jobs:
         DH_KEY: ${{ secrets.DH_KEY }}
         SSH_CONFIG: ${{ secrets.SSH_CONFIG }}
       run: |
-        pushd ~
-        mkdir .ssh
-        cd .ssh
+        mkdir -p /root/.ssh
+        pushd /root/.ssh
         echo "${DH_KEY}" > id_rsa
+        chmod 400 id_rsa
         echo "${SSH_CONFIG}" > config
-        chmod -R 600 .
+        chmod 400 config
+        touch known_hosts
+        chmod 644 known_hosts
+        chmod 700 .
         popd
         # rsync -az docs/_site/ dreamhost:docs1.fast.ai/
-        rsync  -e "ssh -F /github/home/.ssh/config -i /github/home/.ssh/id_rsa" -az docs/_site/ ps625762.dreamhostps.com:docs1.fast.ai/
+        rsync -az docs/_site/ ps625762.dreamhostps.com:docs1.fast.ai/
+        # rsync  -e "ssh -F /github/home/.ssh/config -i /github/home/.ssh/id_rsa" -az docs/_site/ ps625762.dreamhostps.com:docs1.fast.ai/
         # rsync  -e "ssh -l jeremyphoward -o StrictHostKeyChecking=no" -az docs/_site/ ps625762.dreamhostps.com:docs1.fast.ai/
