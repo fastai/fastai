@@ -61,9 +61,8 @@ jobs:
         chmod 400 id_rsa
         echo "${SSH_CONFIG}" > config
         chmod 400 config
-        touch known_hosts
-        chmod 644 known_hosts
+        # touch known_hosts
+        # chmod 644 known_hosts
         chmod 700 .
         popd
         rsync -az docs/_site/ dreamhost:docs1.fast.ai/
-        # rsync -az docs/_site/ jeremyphoward@dreamhost:docs1.fast.ai/
