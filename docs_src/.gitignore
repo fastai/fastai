@@ -1,5 +1,5 @@
-docs/
-conda/
+.jekyll-cache/
+_site/
 tmp/
 
 tags
@@ -83,8 +83,6 @@ target/
 
 # pyenv
 .python-version
-
-.vscode/
 
 # celery beat schedule file
 celerybeat-schedule

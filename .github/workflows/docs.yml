@@ -31,12 +31,14 @@ jobs:
 
     - name: Create docs
       id: docs
-      run: nbdev_build_docs
+      run: |
+        cp -r docs_src docs
+        nbdev_build_docs
 
     - name: setup directories for Jekyll build
       run: |
         rm -rf docs/_site
-        chmod -R 777 docs/
+        chmod -R 777 docs
 
     - name: Jekyll build
       uses: docker://fastdotai/nbdev-docs
