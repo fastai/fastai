@@ -44,8 +44,9 @@ jobs:
         DH_KEY: ${{ secrets.DH_KEY }}
         SSH_CONFIG: ${{ secrets.SSH_CONFIG }}
       run: |
-        mkdir -p /root/.ssh
-        pushd /root/.ssh
+        export HOME=/root
+        mkdir -p ~/.ssh
+        pushd ~/.ssh
         echo "${DH_KEY}" > id_rsa
         chmod 400 id_rsa
         echo "${SSH_CONFIG}" > config
@@ -54,7 +55,9 @@ jobs:
         chmod 644 known_hosts
         chmod 700 .
         popd
-        rsync  -e "ssh -F /root/.ssh/config -i /root/.ssh/id_rsa" -az docs/_site/ jeremyphoward@dreamhost:docs1.fast.ai/
+        rsync -az docs/_site/ jeremyphoward@dreamhost:docs1.fast.ai/
+        # rsync  -e "ssh -F /root/.ssh/config -i /root/.ssh/id_rsa" -az docs/_site/ jeremyphoward@dreamhost:docs1.fast.ai/
+        # rsync  -e "ssh -F /root/.ssh/config -i /root/.ssh/id_rsa" -az docs/_site/ jeremyphoward@dreamhost:docs1.fast.ai/
         # rsync  -e "ssh -F /root/.ssh/config -i /root/.ssh/id_rsa" -az docs/_site/ jeremyphoward@ps625762.dreamhostps.com:docs1.fast.ai/
         # rsync  -e "ssh -l jeremyphoward -F /root/.ssh/config -i /root/.ssh/id_rsa" -az docs/_site/ jeremyphoward@dreamhost:docs1.fast.ai/
         # rsync  -e "ssh -l jeremyphoward -F /root/.ssh/config -i /root/.ssh/id_rsa" -az docs/_site/ jeremyphoward@ps625762.dreamhostps.com:docs1.fast.ai/
