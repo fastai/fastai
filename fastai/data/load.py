@@ -43,6 +43,7 @@ _collate_types = (ndarray, Tensor, typing.Mapping, str)
 
 # Cell
 def fa_collate(t):
+    "A replacement for PyTorch `default_collate` which maintains types and handles `Sequence`s"
     b = t[0]
     return (default_collate(t) if isinstance(b, _collate_types)
             else type(t[0])([fa_collate(s) for s in zip(*t)]) if isinstance(b, Sequence)
@@ -50,20 +51,22 @@ def fa_collate(t):
 
 # Cell
 def fa_convert(t):
+    "A replacement for PyTorch `default_convert` which maintains types and handles `Sequence`s"
     return (default_convert(t) if isinstance(t, _collate_types)
             else type(t)([fa_convert(s) for s in t]) if isinstance(t, Sequence)
             else default_convert(t))
 
 # Cell
-class SkipItemException(Exception): pass
+class SkipItemException(Exception):
+    "Raised to notify `DataLoader` to skip an item"
+    pass
 
 # Cell
 @log_args(but='dataset,wif,create_batch,create_batches,create_item,retain,get_idxs,sample,shuffle_fn,do_batch')
 @funcs_kwargs
 class DataLoader(GetAttr):
     _noop_methods = 'wif before_iter after_item before_batch after_batch after_iter'.split()
-    for o in _noop_methods:
-        exec(f"def {o}(self, x=None, *args, **kwargs): return x")
+    for o in _noop_methods: exec(f"def {o}(self, x=None, *args, **kwargs): return x")
     _methods = _noop_methods + 'create_batches create_item create_batch retain \
         get_idxs sample shuffle_fn do_batch create_batch'.split()
     _default = 'dataset'
@@ -157,5 +160,4 @@ add_docs(DataLoader, "API compatible with PyTorch DataLoader, with a lot more ca
          after_item = "TODO",
          before_batch = "TODO",
          after_batch = "TODO",
-         after_iter  = "TODO"
-        )
+         after_iter  = "TODO")
