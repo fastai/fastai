@@ -58,4 +58,4 @@ jobs:
         echo "${SSH_CONFIG}" > ~/.ssh/config
         chmod 400 ~/.ssh/config
         chmod 700 ~/.ssh
-        rsync -az docs/_site/ dreamhost:docs1.fast.ai/
+        rsync -az docs/_site/ dreamhost:docs.fast.ai/
