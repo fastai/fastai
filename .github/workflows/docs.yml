@@ -49,10 +49,8 @@ jobs:
         cd .ssh
         echo "${DH_KEY}" > id_rsa
         echo "${SSH_CONFIG}" > config
-        cat config
         chmod -R 600 .
-        pwd
-        ls -la
         popd
-        rsync -az docs/_site/ dreamhost:docs1.fast.ai/
+        # rsync -az docs/_site/ dreamhost:docs1.fast.ai/
+        rsync  -e "ssh -F /github/home/.ssh/config -i /github/home/.ssh/id_rsa" -az docs/_site/ ps625762.dreamhostps.com:docs1.fast.ai/
         # rsync  -e "ssh -l jeremyphoward -o StrictHostKeyChecking=no" -az docs/_site/ ps625762.dreamhostps.com:docs1.fast.ai/
