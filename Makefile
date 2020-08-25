@@ -22,10 +22,8 @@ docs_serve: docs
 	cd docs && bundle exec jekyll serve
 
 docs: $(SRC)
+	rsync -a docs_src/ docs
 	nbdev_build_docs
-	cd docs
-	git commit -am docs && git push
-	cd -
 	touch docs
 
 test:
