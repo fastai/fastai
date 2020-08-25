@@ -44,7 +44,7 @@ jobs:
     - name: rsync to dreamhost
       uses: fastai/workflows/rsync@master
       with:
-        hostname: dreamhost
+        hostname: ps625762.dreamhostps.com
         ssh_key: ${{ secrets.DH_KEY }}
         dest_path: "docs.fast.ai/"
         username: jeremyphoward
