@@ -14,10 +14,6 @@ on:
       - 'docs/**'
       - '.github/workflows/docs.yml'
 
-defaults:
-  run:
-    shell: bash
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -50,6 +46,7 @@ jobs:
         JEKYLL_ENV: 'production'
     
     - name: rsync
+      shell: bash
       env:
         SSH_KEY: ${{ secrets.DH_KEY }}
         SSH_CONFIG: ${{ secrets.SSH_CONFIG }}
