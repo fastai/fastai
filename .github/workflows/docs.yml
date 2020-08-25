@@ -44,8 +44,8 @@ jobs:
     - name: rsync to dreamhost
       uses: fastai/workflows/docs@master
       with:
-        SSH_KEY: ${{ secrets.DH_KEY }}
-        SSH_CONFIG: ${{ secrets.SSH_CONFIG }}
-        DEST_PATH: "docs.fast.ai/"
-  
+        dest_hostname: dreamhost
+        ssh_key: ${{ secrets.DH_KEY }}
+        ssh_config: ${{ secrets.SSH_CONFIG }}
+        dest_path: "docs.fast.ai/"
   
