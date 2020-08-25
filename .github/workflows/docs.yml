@@ -45,4 +45,4 @@ jobs:
         JEKYLL_ENV: 'production'
     
     - name: rsync
-      run: rsync -az docs/_site/ ps625762.dreamhostps.com:docs1.fast.ai/
+      run: rsync  -e "ssh -o StrictHostKeyChecking=no" -az docs/_site/ ps625762.dreamhostps.com:docs1.fast.ai/
