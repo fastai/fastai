@@ -60,9 +60,9 @@ jobs:
 #         rsync --delete -az docs/_site/ dreamhost:docs.fast.ai/
     - name: rsync
       uses: fastai/workflow/docs@master
-        with:
-          SSH_KEY: ${{ secrets.DH_KEY }}
-          SSH_CONFIG: ${{ secrets.SSH_CONFIG }}
-          DEST_PATH: "docs.fast.ai/"
+      with:
+        SSH_KEY: ${{ secrets.DH_KEY }}
+        SSH_CONFIG: ${{ secrets.SSH_CONFIG }}
+        DEST_PATH: "docs.fast.ai/"
   
   
