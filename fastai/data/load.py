@@ -41,6 +41,7 @@ _collate_types = (ndarray, Tensor, typing.Mapping, str)
 
 # Cell
 def fa_collate(t):
+    "A replacement for PyTorch `default_collate` which maintains types and handles `Sequence`s"
     b = t[0]
     return (default_collate(t) if isinstance(b, _collate_types)
             else type(t[0])([fa_collate(s) for s in zip(*t)]) if isinstance(b, Sequence)
@@ -48,20 +49,22 @@ def fa_collate(t):
 
 # Cell
 def fa_convert(t):
+    "A replacement for PyTorch `default_convert` which maintains types and handles `Sequence`s"
     return (default_convert(t) if isinstance(t, _collate_types)
             else type(t)([fa_convert(s) for s in t]) if isinstance(t, Sequence)
             else default_convert(t))
 
 # Cell
-class SkipItemException(Exception): pass
+class SkipItemException(Exception):
+    "Raised to notify `DataLoader` to skip an item"
+    pass
 
 # Cell
 @log_args(but='dataset,wif,create_batch,create_batches,create_item,retain,get_idxs,sample,shuffle_fn,do_batch')
 @funcs_kwargs
 class DataLoader(GetAttr):
     _noop_methods = 'wif before_iter after_item before_batch after_batch after_iter'.split()
-    for o in _noop_methods:
-        exec(f"def {o}(self, x=None, *args, **kwargs): return x")
+    for o in _noop_methods: exec(f"def {o}(self, x=None, *args, **kwargs): return x")
     _methods = _noop_methods + 'create_batches create_item create_batch retain \
         get_idxs sample shuffle_fn do_batch create_batch'.split()
     _default = 'dataset'
@@ -133,3 +136,27 @@ class DataLoader(GetAttr):
         with self.fake_l.no_multiproc(): res = first(self)
         if hasattr(self, 'it'): delattr(self, 'it')
         return res
+
+# Cell
+add_docs(DataLoader, "API compatible with PyTorch DataLoader, with a lot more callbacks and flexibility",
+         get_idxs       = "Return a list of indices to reference the dataset. Calls `shuffle_fn` internally if `shuffle=True`.",
+         sample         = "Same as `get_idxs` but returns a generator of indices to reference the dataset.",
+         create_batches = "Takes output of `sample` as input, and returns batches of data. Does not apply `after_batch`.",
+         new            = "Create a new `DataLoader` with given arguments keeping remaining arguments same as original `DataLoader`.",
+         prebatched     = "Check if `bs` is None.",
+         do_item        = "Combines `after_item` and `create_item` to get an item from dataset by providing index as input.",
+         chunkify       = "Used by `create_batches` to turn generator of items (`b`) into batches.",
+         shuffle_fn     = "Returns a random permutation of `idxs`.",
+         randomize      = "Set's `DataLoader` random number generator state.",
+         retain         = "Cast each item of `res` to type of matching item in `b` if its a superclass.",
+         create_item    = "Return a subset of the dataset containing the index values of the sample if there are samples, else return the next iterator.",
+         create_batch   = "Collate a list of items into a batch.",
+         do_batch       = "Combines `create_batch` and `before_batch` to get a batch of items. Input is a list of items to collate.",
+         to             = "Sets `self.device=device`.",
+         one_batch      = "Return one batch from `DataLoader`.",
+         wif            = "See pytorch `worker_init_fn` for details (https://pytorch.org/docs/stable/data.html#multi-process-data-loading).",
+         before_iter    = "Called before `DataLoader` starts to read/iterate over the dataset.",
+         after_item     = "Takes output of `create_item` as input and applies this function on it.",
+         before_batch   = "It is called before collating a list of items into a batch. Input is a list of items.",
+         after_batch    = "After collating mini-batch of items, the mini-batch is passed through this function.",
+         after_iter     = "Called after `DataLoader` has fully read/iterated over the dataset.")
