@@ -59,6 +59,6 @@ description: "Documentation for the fastai library"
 # theme: jekyll-theme-cayman
 
 baseurl: /
-url: https://doctest.fast.ai
+url: https://docs.fast.ai
 twitter_username: jeremyphoward
 
