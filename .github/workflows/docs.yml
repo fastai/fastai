@@ -10,14 +10,6 @@ jobs:
     runs-on: ubuntu-latest
     container: fastdotai/fastai
     steps:
-    - name: Install SSH key
-      uses: shimataro/ssh-key-action@v2
-      with:
-        key: ${{ secrets.DH_KEY }}
-        name: id_rsa # optional
-        known_hosts: ${{ secrets.DH_HOSTS }}
-        config: ${{ secrets.SSH_CONFIG }}
-
     - name: Install libraries
       run: |
         pip install -Uqqq nbdev "sentencepiece<0.1.90" wandb tensorboard albumentations pydicom opencv-python scikit-image pyarrow kornia pytorch-lightning catalyst pytorch-ignite captum
@@ -44,6 +36,14 @@ jobs:
       env:
         JEKYLL_ENV: 'production'
     
+    - name: Install SSH key
+      uses: shimataro/ssh-key-action@v2
+      with:
+        key: ${{ secrets.DH_KEY }}
+        name: id_rsa # optional
+        known_hosts: ${{ secrets.DH_HOSTS }}
+        config: ${{ secrets.SSH_CONFIG }}
+
     - name: rsync
       run: rsync  -e "ssh -l jeremyphoward -o StrictHostKeyChecking=no" -az docs/_site/ ps625762.dreamhostps.com:docs1.fast.ai/
 
