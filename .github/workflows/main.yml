@@ -2,15 +2,15 @@ name: CI
 on: 
   workflow_dispatch: #allows repo admins to trigger this workflow from the Actions tab
   pull_request:
-#   push:
-#     branches: 
-#       - master
-#     paths-ignore:
-#       - '.github/**'
-#       - '!.github/workflows/main.yml'
-#       - 'docs/**'
-#       - '*.md'
-#       - '.git*'
+  push:
+    branches: 
+      - master
+    paths-ignore:
+      - '.github/**'
+      - '!.github/workflows/main.yml'
+      - 'docs/**'
+      - '*.md'
+      - '.git*'
 
 jobs:     
   debug:
