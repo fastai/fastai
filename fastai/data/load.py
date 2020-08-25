@@ -157,5 +157,4 @@ add_docs(DataLoader, "API compatible with PyTorch DataLoader, with a lot more ca
          after_item     = "Takes output of `create_item` as input and applies this function on it.",
          before_batch   = "It is called before collating a list of items into a batch. Input is a list of items.",
          after_batch    = "After collating mini-batch of items, the mini-batch is passed through this function.",
-         after_iter     = "Called after `DataLoader` has fully read/iterated over the dataset.",
-        )
+         after_iter     = "Called after `DataLoader` has fully read/iterated over the dataset.")
