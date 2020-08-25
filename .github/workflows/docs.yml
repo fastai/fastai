@@ -36,23 +36,20 @@ jobs:
       env:
         JEKYLL_ENV: 'production'
     
-    - name: Install SSH key
-      uses: shimataro/ssh-key-action@v2
-      with:
-        key: ${{ secrets.DH_KEY }}
-        known_hosts: ${{ secrets.DH_HOSTS }}
-        config: |
-          Host *
-            StrictHostKeyChecking no
-          Host dreamhost
-              Hostname ps625762.dreamhostps.com
-              User jeremyphoward
-
     - name: rsync
+      env:
+        DH_KEY: ${{ secrets.DH_KEY }}
+        SSH_CONFIG: ${{ secrets.SSH_CONFIG }}
       run: |
-        cd
+        pushd ~
+        mkdir .ssh
+        cd .ssh
+        echo "${DH_KEY}" > id_rsa
+        echo "${SSH_CONFIG}" > config
+        cat config
+        chmod -R 600 .
         pwd
-        cp -r /github/home/.ssh /root
-        chown -R root:root /root/.ssh
-        rsync  -az docs/_site/ dreamhost:docs1.fast.ai/
+        ls -la
+        popd
+        rsync -az docs/_site/ dreamhost:docs1.fast.ai/
         # rsync  -e "ssh -l jeremyphoward -o StrictHostKeyChecking=no" -az docs/_site/ ps625762.dreamhostps.com:docs1.fast.ai/
