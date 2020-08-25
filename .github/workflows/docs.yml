@@ -40,17 +40,19 @@ jobs:
       uses: shimataro/ssh-key-action@v2
       with:
         key: ${{ secrets.DH_KEY }}
-        name: id_rsa # optional
         known_hosts: ${{ secrets.DH_HOSTS }}
-        config: ${{ secrets.SSH_CONFIG }}
+        config: |
+          Host *
+            StrictHostKeyChecking no
+          Host dreamhost
+              Hostname ps625762.dreamhostps.com
+              User jeremyphoward
 
     - name: rsync
       run: |
         cd
         pwd
-        cp -r /github/home/.ssh ~/
-        chown -R root:root ~/.ssh
         cp -r /github/home/.ssh /root
         chown -R root:root /root/.ssh
-        rsync  -e "ssh -l jeremyphoward -o StrictHostKeyChecking=no" -az docs/_site/ ps625762.dreamhostps.com:docs1.fast.ai/
-
+        rsync  -az docs/_site/ dreamhost:docs1.fast.ai/
+        # rsync  -e "ssh -l jeremyphoward -o StrictHostKeyChecking=no" -az docs/_site/ ps625762.dreamhostps.com:docs1.fast.ai/
