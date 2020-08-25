@@ -5,6 +5,12 @@ on:
   push:
     branches: 
       - master
+    paths-ignore:
+      - '.github/**'
+      - '!.github/workflows/main.yml'
+      - 'docs/**'
+      - '*.md'
+      - '.git*'
 
 jobs:     
   debug:
