@@ -54,5 +54,6 @@ jobs:
         chmod 644 known_hosts
         chmod 700 .
         popd
-        rsync  -e "ssh -l jeremyphoward -F /root/.ssh/config -i /root/.ssh/id_rsa" -az docs/_site/ jeremyphoward@dreamhost:docs1.fast.ai/
+        rsync  -e "ssh -F /root/.ssh/config -i /root/.ssh/id_rsa" -az docs/_site/ jeremyphoward@ps625762.dreamhostps.com:docs1.fast.ai/
+        # rsync  -e "ssh -l jeremyphoward -F /root/.ssh/config -i /root/.ssh/id_rsa" -az docs/_site/ jeremyphoward@dreamhost:docs1.fast.ai/
         # rsync  -e "ssh -l jeremyphoward -F /root/.ssh/config -i /root/.ssh/id_rsa" -az docs/_site/ jeremyphoward@ps625762.dreamhostps.com:docs1.fast.ai/
