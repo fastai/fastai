@@ -184,7 +184,7 @@ class Learner():
 
     def _do_epoch_validate(self, ds_idx=1, dl=None):
         if dl is None: dl = self.dls[ds_idx]
-        self.dl = dl;
+        self.dl = dl
         with torch.no_grad(): self._with_events(self.all_batches, 'validate', CancelValidException)
 
     def _do_epoch(self):
