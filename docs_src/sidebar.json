@@ -109,10 +109,10 @@
   },
   "fastai development": {
     "Developers guide": "/dev-setup",
-    "Abbreviation guide": "/abbr", 
-    "Style guide": "/style", 
-    "GPU Notes": "/gpu", 
-    "git notes": "/git", 
-    "Notes": "/develop"
+    "Abbreviation guide": "/dev/abbr", 
+    "Style guide": "/dev/style", 
+    "GPU Notes": "/dev/gpu", 
+    "git notes": "/dev/git", 
+    "Notes": "/dev/develop"
   }
 }
