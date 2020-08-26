@@ -25,7 +25,6 @@
     "empty2": {
       "Advanced": {
         "Siamese tutorial": "/tutorial.siamese",
-        "Developers guide": "/dev-setup"
       }
     },
     "empty3": {
@@ -107,5 +106,13 @@
   "Medical": {
     "Medical imagery": "/medical.imaging",
     "Medical text": "/medical.text"
+  },
+  "fastai development": {
+    "Developers guide": "/dev-setup",
+    "Abbreviation guide": "/abbr", 
+    "Style guide": "/style", 
+    "GPU Notes": "/gpu", 
+    "git notes": "/git", 
+    "Notes": "/develop"
   }
 }
