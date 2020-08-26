@@ -6,7 +6,8 @@ company_name: fast.ai
 github_editme_path: 
 use_math: true
 google_analytics: UA-89522379-3
-google_search: 000837339549978028235:mygjrpycyx2
+#google_search: 000837339549978028235:mygjrpycyx2
+google_search: 000837339549978028235:ycech_9fn6e
 
 exclude:
   - .idea/
