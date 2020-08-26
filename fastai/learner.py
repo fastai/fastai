@@ -228,8 +228,6 @@ class Learner():
         with self.validation_context(cbs=cbs): self._do_epoch_validate(ds_idx, dl)
         return getattr(self, 'final_record', None)
 
-
-
     @delegates(GatherPredsCallback.__init__)
     def get_preds(self, ds_idx=1, dl=None, with_input=False, with_decoded=False, with_loss=False, act=None,
                   inner=False, reorder=True, cbs=None, **kwargs):
