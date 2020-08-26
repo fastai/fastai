@@ -229,8 +229,8 @@ class Learner():
         return getattr(self, 'final_record', None)
 
     @delegates(GatherPredsCallback.__init__)
-    def get_preds(self, ds_idx=1, dl=None, with_input=False, with_decoded=False, with_loss=False, act=None,
-                  inner=False, reorder=True, cbs=None, **kwargs):
+    def get_preds(self, ds_idx=1, dl=None, with_input=False, with_decoded=False, with_loss=False, with_names=False, act=None,
+                    inner=False, reorder=True, cbs=None, **kwargs):
         if dl is None: dl = self.dls[ds_idx].new(shuffled=False, drop_last=False)
         if reorder and hasattr(dl, 'get_idxs'):
             idxs = dl.get_idxs()
@@ -246,9 +246,9 @@ class Learner():
             if res[pred_i] is not None:
                 res[pred_i] = act(res[pred_i])
             if reorder and hasattr(dl, 'get_idxs'): res = nested_reorder(res, tensor(idxs).argsort())
-            if with_decoded:
+            if with_decoded or with_names:
                     res.insert(pred_i+2, getattr(self.loss_func, 'decodes', noop)(res[pred_i]))
-                    res[pred_i+2] = _decode_loss(self.dls, res[pred_i+2])
+                    if with_names: res[pred_i+2] = _decode_loss(self.dls, res[pred_i+2])
             return tuple(res)
         self._end_cleanup()
 
