@@ -154,17 +154,21 @@ def to_fp32(self: Learner):
 class NativeMixedPrecision(Callback):
     "Mixed precision training using Pytorch's `autocast` and `GradScaler`"
     @delegates(GradScaler.__init__)
-    def __init__(self, **kwargs): self.scaler_kwargs,self.autocast = kwargs,autocast()
+    def __init__(self, **kwargs): 
+      self.scaler_kwargs = kwargs
+      self.autocast, self.in_autocast = autocast(), False
 
     def before_fit(self):
         self.learn.scaler = GradScaler(**self.scaler_kwargs)
         self.learn._step,self.learn._backward = self._step,self._backward
 
-    def before_batch(self): self.autocast.__enter__()
+    def before_batch(self): self.autocast.__enter__(); self.in_autocast = True
     def after_step(self): self.learn.scaler.update()
-    def after_loss(self): self.autocast.__exit__()
+    def after_loss(self): self.autocast.__exit__(); self.in_autocast = False
     def _backward(self): self.scaler.scale(self.loss).backward()
     def _step(self): self.scaler.step(self.opt)
+    def after_batch(self):
+      if self.in_autocast: self.autocast.__exit__(); self.in_autocast = False
 
 # Cell
 @delegates(GradScaler.__init__)
