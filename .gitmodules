@@ -1,4 +1,0 @@
-[submodule "docs"]
-	path = docs
-	url = https://github.com/fastai/fastai-docs.git
-	branch = master

@@ -1,0 +1,118 @@
+{
+  "Getting started": {
+    "Overview": "/",
+    "Quick start": "/quick_start.html"
+  },
+  "Tutorials": {
+    "Overview": "/tutorial",
+    "": {
+      "Beginners": {
+        "Vision tutorial": "/tutorial.vision",
+        "Text tutorial": "/tutorial.text",
+        "Tabular tutorial": "/tutorial.tabular",
+        "Collab tutorial": "/tutorial.collab"
+      }
+    },
+    "empty1": {
+      "Intermediate": {
+        "Data block tutorial": "/tutorial.datablock",
+        "Imagenette tutorial": "/tutorial.imagenette",
+        "Pets tutorial": "/tutorial.pets",
+        "Transformers tutorial": "/tutorial.transformers",
+        "Wikitext tutorial": "/tutorial.wikitext"
+      }
+    },
+    "empty2": {
+      "Advanced": {
+        "Siamese tutorial": "/tutorial.siamese"
+      }
+    },
+    "empty3": {
+      "Migrating from other libraries": {
+        "Plain PyTorch": "/migrating_pytorch",
+        "Ignite": "/migrating_ignite",
+        "Lightning": "/migrating_lightning",
+        "Catalyst": "/migrating_catalyst"
+      }
+    }
+  },
+  "Training": {
+    "Training loop": "/learner",
+    "Optimizer": "/optimizer",
+    "Metrics": "/metrics",
+    "Interpretation": "/interpret",
+    "Distributed": "/distributed",
+    "": {
+      "Callbacks": {
+        "Core": "/callback.core",
+        "Schedulers": "/callback.schedule",
+        "Hooks and callbacks": "/callback.hook",
+        "Mixed precision": "/callback.fp16",
+        "Mixup": "/callback.mixup",
+        "Cutmix": "/callback.cutmix",
+        "Tracker": "/callback.tracker",
+        "Training": "/callback.training",
+        "RNN": "/callback.rnn",
+        "Data": "/callback.data",
+        "Progress": "/callback.progress"
+      }
+    }
+  },
+  "Data": {
+    "Data Blocks": "/data.block",
+    "Data Transforms": "/data.transforms",
+    "Data External": "/data.external",
+    "Data Core": "/data.core",
+    "DataLoader": "/data.load"
+  },
+  "Core": {
+    "PyTorch Core": "/torch_core",
+    "Layers": "/layers"
+  },
+  "Vision": {
+    "Vision Learner": "/vision.learner",
+    "Vision Data Augmentation": "/vision.augment",
+    "Vision Data": "/vision.data",
+    "Vision Core": "/vision.core",
+    "Vision Utils": "/vision.utils",
+    "Vision Widgets": "/vision.widgets",
+    "GAN": "/vision.gan",
+    "": {
+      "Models": {
+        "XResnet": "/vision.models.xresnet",
+        "Unet": "/vision.models.unet"
+      }
+    }
+  },
+  "Text": {
+    "Text Core": "/text.core",
+    "Text Data": "/text.data",
+    "Text Learner": "/text.learner",
+    "": {
+      "Models": {
+        "Core": "/text.models.core",
+        "AWD LSTM": "/text.models.awdlstm",
+        "QRNN": "/text.models.qrnn"
+      }
+    }
+  },
+  "Tabular": {
+    "Tabular Core": "/tabular.core",
+    "Tabular Data": "/tabular.data",
+    "Tabular Learner": "/tabular.learner",
+    "Tabular Model": "/tabular.model",
+    "Collab": "/collab"
+  },
+  "Medical": {
+    "Medical imagery": "/medical.imaging",
+    "Medical text": "/medical.text"
+  },
+  "fastai development": {
+    "Developers guide": "/dev-setup",
+    "Abbreviation guide": "/dev/abbr", 
+    "Style guide": "/dev/style", 
+    "GPU Notes": "/dev/gpu", 
+    "git notes": "/dev/git", 
+    "Notes": "/dev/develop"
+  }
+}

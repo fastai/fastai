@@ -1,0 +1,65 @@
+repository: fastai/fastai
+output: web
+topnav_title: fastai
+site_title: fastai
+company_name: fast.ai
+github_editme_path: 
+use_math: true
+google_analytics: UA-89522379-3
+#google_search: 000837339549978028235:mygjrpycyx2
+google_search: 000837339549978028235:ycech_9fn6e
+
+exclude:
+  - .idea/
+  - .gitignore
+  - vendor
+
+feedback_disable: true
+
+highlighter: rouge
+
+markdown: kramdown
+kramdown:
+ auto_ids: true
+ hard_wrap: false
+ syntax_highlighter: rouge
+
+default_badges:
+  colab: true
+
+collections:
+  tooltips:
+    output: false
+# collections are declared here. this renders the content in _tooltips and processes it, but doesn't output it as actual files in the output unless you change output to true
+
+defaults:
+  -
+    scope:
+      path: ""
+      type: "pages"
+    values:
+      layout: "page"
+      comments: true
+      search: true
+      sidebar: home_sidebar
+      topnav: topnav
+  -
+    scope:
+      path: ""
+      type: "tooltips"
+    values:
+      layout: "page"
+      comments: true
+      search: true
+      tooltip: true
+
+sidebars:
+- home_sidebar
+
+description: "Documentation for the fastai library"
+# theme: jekyll-theme-cayman
+
+baseurl: /
+url: https://docs.fast.ai
+twitter_username: jeremyphoward
+

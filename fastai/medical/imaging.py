@@ -161,6 +161,24 @@ def show(self:DcmDataset, scale=True, cmap=plt.cm.bone, min_px=-1100, max_px=Non
 
 # Cell
 @patch
+@delegates(show_image, show_images)
+def show(self:DcmDataset, frames=1, scale=True, cmap=plt.cm.bone, min_px=-1100, max_px=None, **kwargs):
+    """Adds functionality to view dicom images where each file may have more than 1 frame"""
+    px = (self.windowed(*scale) if isinstance(scale,tuple)
+          else self.hist_scaled(min_px=min_px,max_px=max_px,brks=scale) if isinstance(scale,(ndarray,Tensor))
+          else self.hist_scaled(min_px=min_px,max_px=max_px) if scale
+          else self.scaled_px)
+    if px.ndim > 2:
+        gh=[]
+        p = px.shape; print(f'{p[0]} frames per file')
+        for i in range(frames): u = px[i]; gh.append(u)
+        show_images(gh, **kwargs)
+    else:
+        print('1 frame per file')
+        show_image(px, cmap=cmap, **kwargs)
+
+# Cell
+@patch
 def pct_in_window(dcm:DcmDataset, w, l):
     "% of pixels in the window `(w,l)`"
     px = dcm.scaled_px

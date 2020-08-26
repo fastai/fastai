@@ -12,7 +12,7 @@ on:
       - '*.md'
       - '.git*'
 
-jobs:     
+jobs: 
   debug:
     runs-on: ubuntu-latest
     steps:
@@ -29,50 +29,34 @@ jobs:
         name: payload.json
         path: ${{ github.event_path }}
         
+  filter:
+    runs-on: ubuntu-latest
+    if: (github.event_name == 'push' && github.event.head_commit.author.username == 'jph00') || github.event_name != 'push'
+    steps:
+      - run: |
+          echo "passed filter"
+          echo "event_name: ${{ github.event_name }}"
+          echo "head_commit.author.username: ${{ github.event.head_commit.author.username }}"
+ 
   test-nbdev-sync:
+    needs: filter
     runs-on: ubuntu-latest
     container: fastdotai/fastai #this is defined here: https://github.com/fastai/docker-containers/blob/master/fastai-build/Dockerfile
     steps:
 
     - name: checkout contents of PR
       uses: actions/checkout@v2
-      with:
-        submodules: true
 
     - name: Install libraries
       run: |
         pip install -Uqqq nbdev
         pip install -Uqe .
-
-    - name: Attempt to read notebooks
-      run: |
-        nbdev_read_nbs
-
-    - name: Check if notebooks are clean
-      id: clean
-      run: |
-        nbdev_clean_nbs
-        if [ -n "$(git status -uno -s)" ]; then
-          echo "::error::Detected notebooks that are not cleaned."
-          echo "\n\nList of notebooks that are not clean:"
-          git status -s
-          exit 1;
-        fi
-  
-    - name: Check that library syncs with notebooks
-      id: lib
-      run: |
-        nbdev_diff_nbs > _nbdev_diff_logs.txt
-        if [ -n "$(cat _nbdev_diff_logs.txt)" ]; then 
-          echo "::error::Detected notebooks that are not in sync with the library."
-          cat _nbdev_diff_logs.txt
-          if [[ $auto_fix == 'true' ]]; then 
-            nbdev_build_lib
-          fi
-          exit 1;
-        fi
+        
+    - name: check if notebooks are synced and cleaned
+      uses: fastai/workflows/nb@master
 
   test-notebooks:
+    needs: filter
     container: fastdotai/fastai
     runs-on: ubuntu-latest
     env:
