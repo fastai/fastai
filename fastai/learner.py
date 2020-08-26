@@ -78,6 +78,13 @@ class _ConstantFunc():
     def __call__(self, *args, **kwargs): return self.o
 
 # Cell
+def _decode_loss(dls, dec_out):
+    vocab, i2c, dec2c = None, {}, []
+    if hasattr(dls, 'categorize'): return dls.categorize.decodes(dec_out)
+    if hasattr(dls, 'multi_categorize'): return dls.multi_categorize.decodes(dec_out)
+    return dec_out
+
+# Cell
 @log_args(but='dls,model,opt_func,cbs')
 class Learner():
     def __init__(self, dls, model, loss_func=None, opt_func=Adam, lr=defaults.lr, splitter=trainable_params, cbs=None,
@@ -221,9 +228,11 @@ class Learner():
         with self.validation_context(cbs=cbs): self._do_epoch_validate(ds_idx, dl)
         return getattr(self, 'final_record', None)
 
+
+
     @delegates(GatherPredsCallback.__init__)
-    def get_preds(self, ds_idx=1, dl=None, with_input=False, with_decoded=False, with_loss=False, act=None,
-                  inner=False, reorder=True, cbs=None, **kwargs):
+    def get_preds(self:Learner, ds_idx=1, dl=None, with_input=False, with_decoded=False, with_loss=False, act=None,
+                    inner=False, reorder=True, cbs=None, **kwargs):
         if dl is None: dl = self.dls[ds_idx].new(shuffled=False, drop_last=False)
         if reorder and hasattr(dl, 'get_idxs'):
             idxs = dl.get_idxs()
@@ -238,8 +247,10 @@ class Learner():
             pred_i = 1 if with_input else 0
             if res[pred_i] is not None:
                 res[pred_i] = act(res[pred_i])
-                if with_decoded: res.insert(pred_i+2, getattr(self.loss_func, 'decodes', noop)(res[pred_i]))
             if reorder and hasattr(dl, 'get_idxs'): res = nested_reorder(res, tensor(idxs).argsort())
+            if with_decoded:
+                    res.insert(pred_i+2, getattr(self.loss_func, 'decodes', noop)(res[pred_i]))
+                    res[pred_i+2] = _decode_loss(self.dls, res[pred_i+2])
             return tuple(res)
         self._end_cleanup()
 
