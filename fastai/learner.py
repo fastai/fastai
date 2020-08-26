@@ -165,7 +165,7 @@ class Learner():
         self('after_pred')
         if len(self.yb): self.loss = self.loss_func(self.pred, *self.yb)
         self('after_loss')
-        if not self.training: return
+        if not self.training or not len(self.yb): return
         self('before_backward')
         self._backward()
         self('after_backward')
