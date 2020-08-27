@@ -58,10 +58,10 @@ fastai is organized around two main design goals: to be approachable and rapidly
 
 It's very easy to migrate from plain PyTorch, Ignite, or any other PyTorch-based library, or even to use fastai in conjunction with other libraries. Generally, you'll be able to use all your existing data processing code, but will be able to reduce the amount of code you require for training, and more easily take advantage of modern best practices. Here are migration guides from some popular libraries to help you on your way:
 
-- [Plain PyTorch](migrating_pytorch)
-- [Ignite](migrating_ignite)
-- [Lightning](migrating_lightning)
-- [Catalyst](migrating_catalys)
+- [Plain PyTorch](nbs/examples/migrating_pytorch.ipynb)
+- [Ignite](nbs/examples/migrating_ignite.ipynb)
+- [Lightning](nbs/examples/migrating_lightning.ipynb)
+- [Catalyst](nbs/examples/migrating_catalys.ipynb)
 
 ## Tests
 
