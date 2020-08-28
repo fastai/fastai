@@ -92,7 +92,6 @@ class WandbCallback(Callback):
             hypers = {f'{k}_{i}':v for i,h in enumerate(self.opt.hypers) for k,v in h.items()}
             wandb.log({'epoch': self._wandb_epoch, 'train_loss': to_detach(self.smooth_loss.clone()), 'raw_loss': to_detach(self.loss.clone()), **hypers}, step=self._wandb_step)
 
-    
     def log_predictions(self, preds):
         inp,preds,targs,out = preds
         b = tuplify(inp) + tuplify(targs)
@@ -107,7 +106,7 @@ class WandbCallback(Callback):
         # Log sample predictions
         if self.log_preds:
             try:
-                 self.log_predictions(self.learn.fetch_preds.preds)
+                self.log_predictions(self.learn.fetch_preds.preds)
             except Exception as e:
                 self.log_preds = False
                 print(f'WandbCallback was not able to get prediction samples -> {e}')
