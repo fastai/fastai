@@ -22,9 +22,9 @@ class TabularDataLoaders(DataLoaders):
         return to.dataloaders(path=path, **kwargs)
 
     @classmethod
-    def from_csv(cls, csv, **kwargs):
+    def from_csv(cls, csv, skipinitialspace=True, **kwargs):
         "Create from `csv` file in `path` using `procs`"
-        return cls.from_df(pd.read_csv(csv), **kwargs)
+        return cls.from_df(pd.read_csv(csv, skipinitialspace=skipinitialspace), **kwargs)
 
     @delegates(TabDataLoader.__init__)
     def test_dl(self, test_items, rm_type_tfms=None, process=True, **kwargs):
