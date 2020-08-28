@@ -131,15 +131,15 @@ class GatherPredsCallback(Callback):
 class FetchPredsCallback(Callback):
     "A callback to fetch predictions during the training loop"
     remove_on_fetch = True
-    def __init__(self, ds_idx=1, dl=None, with_input=False, with_decoded=False, cbs=None):
+    def __init__(self, ds_idx=1, dl=None, with_input=False, with_decoded=False, cbs=None, reorder=True):
         self.cbs = L(cbs)
-        store_attr(self, 'ds_idx,dl,with_input,with_decoded')
+        store_attr(self, 'ds_idx,dl,with_input,with_decoded,reorder')
 
     def after_validate(self):
         to_rm = L(cb for cb in self.learn.cbs if getattr(cb, 'remove_on_fetch', False))
         with self.learn.removed_cbs(to_rm + self.cbs) as learn:
             self.preds = learn.get_preds(ds_idx=self.ds_idx, dl=self.dl,
-                with_input=self.with_input, with_decoded=self.with_decoded, inner=True)
+                with_input=self.with_input, with_decoded=self.with_decoded, inner=True, reorder=self.reorder)
 
 # Cell
 _ex_docs = dict(
