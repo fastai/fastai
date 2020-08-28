@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   workflow_run:
     workflows: ["CI"]
-    branches: [main]
+    branches: [master]
     types: 
       - completed
       - requested
@@ -18,7 +18,7 @@ jobs:
     steps:
     - name: Install libraries
       run: |
-        pip install -Uqqq nbdev "sentencepiece<0.1.90" pytorch-lightning pytorch-ignite
+        pip install -Uqqq nbdev "sentencepiece<0.1.90" pytorch-lightning pytorch-ignite transformers
 
     - name: checkout contents of PR
       uses: actions/checkout@v2
