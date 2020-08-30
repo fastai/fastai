@@ -6,7 +6,7 @@ __all__ = ['ParallelTrainer', 'setup_distrib', 'teardown_distrib', 'DistributedD
 from .basics import *
 from .callback.progress import ProgressCallback
 from torch.nn.parallel import DistributedDataParallel, DataParallel
-from .data.load import _FakeLoader
+from .data.load import _FakeLoader,_loaders
 
 # Cell
 @patch
@@ -55,7 +55,7 @@ def setup_distrib(gpu=None):
     if gpu is None: return gpu
     gpu = int(gpu)
     torch.cuda.set_device(int(gpu))
-    if num_distrib() > 1:
+    if num_distrib() > 0:
         torch.distributed.init_process_group(backend='nccl', init_method='env://')
     return gpu
 
@@ -74,21 +74,38 @@ class DistributedDL(TfmdDL):
         t = LongTensor(t).cuda() # nccl only works with cuda tensors
         torch.distributed.broadcast(t,rank)
         return t.cpu().tolist()
+    def _to_detach(self,b,cpu=True,gather=True): return to_detach(b,cpu,gather) # member func so we can override for test
     def __len__(self):
         return DistributedDL._round_to_multiple(len(self.dl),self.world_size)//self.world_size
     def get_idxs(self):
         idxs = self.dl.get_idxs()       # compute get_idxs in all ranks (we'll only use rank 0 but size must be consistent)
         idxs = self._broadcast(idxs,0)  # broadcast and receive it from rank 0 to all
-        n_idxs = len(idxs)
+        self.n = len(idxs)              # we assumed n was dl.n but we really care about number of idxs
         # add extra samples to make it evenly divisible
-        idxs += idxs[:(DistributedDL._round_to_multiple(n_idxs,self.world_size)-n_idxs)]
-        # subsample
-        return idxs[self.rank::self.world_size]
-    def before_iter(self): self.dl.before_iter()
+        self.n_padded = DistributedDL._round_to_multiple(self.n,self.world_size)
+        idxs += (idxs * (self.n_padded//self.n))[:self.n_padded-self.n] # idx needs to be repeated when n_padded>>n
+        # slice padded idxs so that each rank gets self.n_padded//self.world_size tensors
+        return idxs[self.rank*self.n_padded//self.world_size:(self.rank+1)*self.n_padded//self.world_size]
+    def before_iter(self):
+        self.i = 0
+        self.dl.before_iter()
     def randomize(self): self.dl.randomize()
-    def after_batch(self,b): return self.dl.after_batch(b)
-    def after_iter(self): self.dl.after_iter()
+    def after_batch(self,b):
+        self.i += find_bs(b)
+        return self.dl.after_batch(b)
+    def after_iter(self):
+        self.dl.after_iter()
     def create_batches(self,samps): return self.dl.create_batches(samps)
+    def to_detach(self,b, cpu=True, gather=True):
+        b = self._to_detach(b, cpu, gather)
+        def _inner(b):
+            if b.ndim>0:
+                # for each rank, compute overflow of read idxs vs self.n and accumulate them to unpad totals after gathering
+                n = sum([min(0,max(-len(b)//self.world_size,
+                                   self.n-(self.i+r*self.n_padded//self.world_size))) for r in range(self.world_size)])
+                b = b[:n or None]
+            return b
+        return apply(_inner,b) if gather and hasattr(self,'i') and hasattr(self,'n') and hasattr(self,'n_padded') else b
     def __init__(self,dl,rank,world_size):
         store_attr(self,'dl,rank,world_size')
         self.bs,self.device,self.drop_last,self.dataset = dl.bs,dl.device,dl.drop_last,dl.dataset

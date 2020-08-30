@@ -92,7 +92,6 @@ class DataLoader(GetAttr):
         return idxs
 
     def sample(self):
-        # may be called in context of worker/subprocesses hence we need to have get_idxs() already computed for consistency
         return (b for i,b in enumerate(self.__idxs) if i//(self.bs or 1)%self.nw==self.offs)
 
     def __iter__(self):
