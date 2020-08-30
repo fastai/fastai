@@ -3,7 +3,7 @@
 __all__ = ['CancelFitException', 'CancelEpochException', 'CancelTrainException', 'CancelValidException',
            'CancelBatchException', 'replacing_yield', 'mk_metric', 'save_model', 'load_model', 'Learner',
            'before_batch_cb', 'Metric', 'AvgMetric', 'AvgLoss', 'AvgSmoothLoss', 'ValueMetric', 'Recorder',
-           'load_learner' ]
+           'load_learner']
 
 # Cell
 from .data.all import *
