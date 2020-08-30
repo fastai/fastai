@@ -6,7 +6,6 @@ on:
     branches: [master]
     types: 
       - completed
-      - requested
   push:
     branches: 
       - master
