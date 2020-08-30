@@ -41,11 +41,12 @@ jobs:
   test-nbdev-sync:
     needs: filter
     runs-on: ubuntu-latest
-    container: fastai/fastai
+    container: fastai/nbdev
     steps:
 
     - name: checkout contents of PR
       uses: actions/checkout@v2
+    - uses: fastai/workflows/conda-env@master
 
     - name: Install libraries
       run: |
@@ -67,6 +68,7 @@ jobs:
     steps:        
     - name: checkout contents of PR
       uses: actions/checkout@v2
+    - uses: fastai/workflows/conda-env@master
 
     - name: Install libraries
       run: |
