@@ -19,7 +19,7 @@ My personal approach to coding style is informed heavily by [Iverson's](https://
 
 One key idea in the paper is that "*brevity facilitates reasoning*", which has been incorporated into various guidelines such as "[shorten lines of communication](http://archive.vector.org.uk/art10009750)". This is sometimes incorrectly assumed to just mean 'terseness', but it is a much deeper idea, as described in [this Hacker News thread](https://news.ycombinator.com/item?id=13595729). I can't hope to summarize this thinking here, but I can point out a couple of key benefits:
 
-- It supports [expository programming](http://vector.org.uk/art10000980), particularly when combined with the use of Jupyter Notebook or a similar tool designed for experimentation
+- It supports [expository programming](http://archive.vector.org.uk/art10000980), particularly when combined with the use of Jupyter Notebook or a similar tool designed for experimentation
 - The most productive programmers I'm aware of in the world, such as the extraordinary [Arthur Whitney](https://en.wikipedia.org/wiki/Arthur_Whitney_(computer_scientist)) often use this coding style (which may or may not be a coincidence!)
 
 ## Style guide
@@ -40,7 +40,7 @@ Although Python will always be more verbose than many languages, by using these 
 
 > In metaphorical honor of Huffman's compression code that assigns smaller numbers of bits to more common bytes. In terms of syntax, it simply means that commonly used things should be shorter, but you shouldn't waste short sequences on less common constructs.
 
-- A fairly complete list of abbreviations is in [abbr.md](abbr.md); if you see anything missing, feel free to edit this file.
+- A fairly complete list of abbreviations is in [abbr.md](abbr); if you see anything missing, feel free to edit this file.
 - For example, that in computer vision code, where we say 'size' and 'image' all the time, we use shortened forms `sz` and `img`. Or in NLP code, we would say `lm` instead of 'language model'
 - Use `o` for an object in a comprehension, `i` for an index, and `k` and `v` for a key and value in a dictionary comprehension.
 - Use `x` for a tensor input to an algorithm (e.g. layer, transform, etc), unless interoperating with a library where
