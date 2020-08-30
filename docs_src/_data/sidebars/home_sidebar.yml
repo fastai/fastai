@@ -57,9 +57,6 @@ entries:
         - output: web,pdf
           title: Siamese tutorial
           url: /tutorial.siamese
-        - output: web,pdf
-          title: Developers guide
-          url: /dev-setup
         title: Advanced
       - output: web
         subfolderitems:
@@ -179,6 +176,9 @@ entries:
     - output: web,pdf
       title: Vision Widgets
       url: /vision.widgets
+    - output: web,pdf
+      title: GAN
+      url: /vision.gan
       subfolders:
       - output: web
         subfolderitems:
@@ -243,5 +243,26 @@ entries:
       url: /medical.text
     output: web
     title: Medical
+  - folderitems:
+    - output: web,pdf
+      title: Developers guide
+      url: /dev-setup
+    - output: web,pdf
+      title: Abbreviation guide
+      url: /abbr
+    - output: web,pdf
+      title: Style guide
+      url: /style
+    - output: web,pdf
+      title: GPU Notes
+      url: /gpu
+    - output: web,pdf
+      title: git notes
+      url: /git
+    - output: web,pdf
+      title: Notes
+      url: /develop
+    output: web
+    title: fastai development
   output: web
   title: Sidebar

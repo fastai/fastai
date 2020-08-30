@@ -1,3 +1,4 @@
+.idea/
 docs/
 conda/
 tmp/
@@ -113,3 +114,6 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+# Mac stuff
+.DS_Store

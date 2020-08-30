@@ -41,7 +41,7 @@ jobs:
   test-nbdev-sync:
     needs: filter
     runs-on: ubuntu-latest
-    container: fastdotai/fastai #this is defined here: https://github.com/fastai/docker-containers/blob/master/fastai-build/Dockerfile
+    container: fastai/fastai
     steps:
 
     - name: checkout contents of PR
@@ -49,7 +49,6 @@ jobs:
 
     - name: Install libraries
       run: |
-        pip install -Uqqq nbdev
         pip install -Uqe .
         
     - name: check if notebooks are synced and cleaned
@@ -57,7 +56,7 @@ jobs:
 
   test-notebooks:
     needs: filter
-    container: fastdotai/fastai
+    container: fastai/fastai
     runs-on: ubuntu-latest
     env:
       download: "true"
@@ -71,8 +70,9 @@ jobs:
 
     - name: Install libraries
       run: |
-        pip install -U nbdev
         pip install -Ue .
+        pip install "sentencepiece<0.1.90" wandb tensorboard albumentations pydicom opencv-python scikit-image pyarrow kornia catalyst captum neptune-cli
+
     
     - name: check for cache hit
       uses: actions/cache@v2
@@ -91,5 +91,5 @@ jobs:
       
     - name: Test notebooks batch ${{matrix.nb}}
       run: |
-        nbdev_test_nbs --flags '' --n_workers 3 --pause 0.5 --fname "nbs/[0-9]${{matrix.nb}}*.ipynb"
+        nbdev_test_nbs --flags '' --n_workers 3 --pause 1.0 --fname "nbs/[0-9]${{matrix.nb}}*.ipynb"
   

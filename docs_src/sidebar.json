@@ -24,8 +24,7 @@
     },
     "empty2": {
       "Advanced": {
-        "Siamese tutorial": "/tutorial.siamese",
-        "Developers guide": "/dev-setup"
+        "Siamese tutorial": "/tutorial.siamese"
       }
     },
     "empty3": {
@@ -77,6 +76,7 @@
     "Vision Core": "/vision.core",
     "Vision Utils": "/vision.utils",
     "Vision Widgets": "/vision.widgets",
+    "GAN": "/vision.gan",
     "": {
       "Models": {
         "XResnet": "/vision.models.xresnet",
@@ -106,5 +106,13 @@
   "Medical": {
     "Medical imagery": "/medical.imaging",
     "Medical text": "/medical.text"
+  },
+  "fastai development": {
+    "Developers guide": "/dev-setup",
+    "Abbreviation guide": "/dev/abbr", 
+    "Style guide": "/dev/style", 
+    "GPU Notes": "/dev/gpu", 
+    "git notes": "/dev/git", 
+    "Notes": "/dev/develop"
   }
 }

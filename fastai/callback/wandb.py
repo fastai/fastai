@@ -20,14 +20,14 @@ class WandbCallback(Callback):
     # Record if watch has been called previously (even in another instance)
     _wandb_watch_called = False
 
-    def __init__(self, log="gradients", log_preds=True, log_model=True, log_dataset=False, dataset_name=None, valid_dl=None, n_preds=36, seed=12345):
+    def __init__(self, log="gradients", log_preds=True, log_model=True, log_dataset=False, dataset_name=None, valid_dl=None, n_preds=36, seed=12345, reorder=True):
         # Check if wandb.init has been called
         if wandb.run is None:
             raise ValueError('You must call wandb.init() before WandbCallback()')
         # W&B log step
         self._wandb_step = wandb.run.step - 1  # -1 except if the run has previously logged data (incremented at each batch)
         self._wandb_epoch = 0 if not(wandb.run.step) else math.ceil(wandb.run.summary['epoch']) # continue to next epoch
-        store_attr(self, 'log,log_preds,log_model,log_dataset,dataset_name,valid_dl,n_preds,seed')
+        store_attr(self, 'log,log_preds,log_model,log_dataset,dataset_name,valid_dl,n_preds,seed,reorder')
 
     def before_fit(self):
         "Call watch method to log model topology, gradients & weights"
@@ -79,7 +79,7 @@ class WandbCallback(Callback):
                     else:
                         test_items = [getattr(self.dls.valid_ds.items, 'iloc', self.dls.valid_ds.items)[i] for i in idxs]
                         self.valid_dl = self.dls.test_dl(test_items, with_labels=True)
-                self.learn.add_cb(FetchPredsCallback(dl=self.valid_dl, with_input=True, with_decoded=True))
+                self.learn.add_cb(FetchPredsCallback(dl=self.valid_dl, with_input=True, with_decoded=True, reorder=self.reorder))
             except Exception as e:
                 self.log_preds = False
                 print(f'WandbCallback was not able to prepare a DataLoader for logging prediction samples -> {e}')
@@ -90,7 +90,13 @@ class WandbCallback(Callback):
             self._wandb_step += 1
             self._wandb_epoch += 1/self.n_iter
             hypers = {f'{k}_{i}':v for i,h in enumerate(self.opt.hypers) for k,v in h.items()}
-            wandb.log({'epoch': self._wandb_epoch, 'train_loss': self.smooth_loss, 'raw_loss': self.loss, **hypers}, step=self._wandb_step)
+            wandb.log({'epoch': self._wandb_epoch, 'train_loss': to_detach(self.smooth_loss.clone()), 'raw_loss': to_detach(self.loss.clone()), **hypers}, step=self._wandb_step)
+
+    def log_predictions(self, preds):
+        inp,preds,targs,out = preds
+        b = tuplify(inp) + tuplify(targs)
+        x,y,its,outs = self.valid_dl.show_results(b, out, show=False, max_n=self.n_preds)
+        wandb.log(wandb_process(x, y, its, outs), step=self._wandb_step)
 
     def after_epoch(self):
         "Log validation loss and custom metrics & log prediction samples"
@@ -100,10 +106,7 @@ class WandbCallback(Callback):
         # Log sample predictions
         if self.log_preds:
             try:
-                inp,preds,targs,out = self.learn.fetch_preds.preds
-                b = tuplify(inp) + tuplify(targs)
-                x,y,its,outs = self.valid_dl.show_results(b, out, show=False, max_n=self.n_preds)
-                wandb.log(wandb_process(x, y, its, outs), step=self._wandb_step)
+                self.log_predictions(self.learn.fetch_preds.preds)
             except Exception as e:
                 self.log_preds = False
                 print(f'WandbCallback was not able to get prediction samples -> {e}')

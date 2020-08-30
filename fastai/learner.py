@@ -161,13 +161,16 @@ class Learner():
         for o in enumerate(self.dl): self.one_batch(*o)
 
     def _do_one_batch(self):
-        self.pred = self.model(*self.xb);                self('after_pred')
-        if len(self.yb) == 0: return
-        self.loss = self.loss_func(self.pred, *self.yb); self('after_loss')
-        if not self.training: return
+        self.pred = self.model(*self.xb)
+        self('after_pred')
+        if len(self.yb): self.loss = self.loss_func(self.pred, *self.yb)
+        self('after_loss')
+        if not self.training or not len(self.yb): return
         self('before_backward')
-        self._backward();                                self('after_backward')
-        self._step();                                    self('after_step')
+        self._backward()
+        self('after_backward')
+        self._step()
+        self('after_step')
         self.opt.zero_grad()
 
     def one_batch(self, i, b):
@@ -181,7 +184,7 @@ class Learner():
 
     def _do_epoch_validate(self, ds_idx=1, dl=None):
         if dl is None: dl = self.dls[ds_idx]
-        self.dl = dl;
+        self.dl = dl
         with torch.no_grad(): self._with_events(self.all_batches, 'validate', CancelValidException)
 
     def _do_epoch(self):

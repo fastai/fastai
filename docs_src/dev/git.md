@@ -2,27 +2,17 @@
 title: git Notes
 ---
 
+> **NB**: This document was written for a previous version of fastai. It hasn't been fully updated to fastai v2. See the [developer's guide](/dev-setup) for current instructions.
+
 Chances are that you may need to know some git when using fastai - for example if you want to contribute to the project, or you want to undo some change in your code tree. This document has a variety of useful recipes that might be of help in your work.
-
-
-
 
 ## How to Make a Pull Request (PR)
 
-While this guide is mostly suitable for creating PRs for any github project, it includes several steps specific to the `fastai` project repositories, which currently are:
-
-* [https://github.com/fastai/fastai](https://github.com/fastai/fastai)
-* [https://github.com/fastai/fastai_docs](https://github.com/fastai/fastai_docs)
-* [https://github.com/fastai/course-v3](https://github.com/fastai/course-v3)
-* [https://github.com/fastai/fastprogress](https://github.com/fastai/fastprogress)
-
-If you already know how to make PRs, you only need to read: the "Step 3" and "Step 5" sections, since they are unique requirements for the fastai project.
+While this guide is mostly suitable for creating PRs for any github project, it includes several steps specific to the `fastai` project repositories.
 
 The following instructions use `USERNAME` as a github username placeholder. The easiest way to follow this guide is to copy-n-paste the whole section into a file, replace `USERNAME` with your real username and then follow the steps.
 
 All the examples in this guide are written for working with the [fastai repository](https://github.com/fastai/fastai). If you'd like to contribute to other `fastai`-project repositories, just replace `fastai` with that other repository name in the instructions below.
-
-For the purpose of these examples, we will clone into a folder `fastai-fork`, to differentiate from `fastai` which you most likely already checked out to install it.
 
 Also don't get confused between the `fastai` github username, the `fastai` repository, and the `fastai` module directory, where the python code resides. The following url shows all three, in the order they have been mentioned:
 
@@ -34,106 +24,13 @@ https://github.com/fastai/fastai/tree/master/fastai
 
 Below you will find detailed steps towards creating a PR.
 
-### Helper Program
-
-There is a smart [program](https://github.com/fastai/git-tools/blob/master/fastai-make-pr-branch) that can do all the heavy lifting of the first 2 steps for you. Then you just need to do your work, commit changes and submit PR. To run it:
-
-```
-curl -O https://raw.githubusercontent.com/fastai/git-tools/master/fastai-make-pr-branch
-chmod a+x fastai-make-pr-branch
-./fastai-make-pr-branch https your-github-username fastai new-feature
-```
-
-For more details run:
-```
-./fastai-make-pr-branch
-```
-
-While this is new and experimental, you probably want to place that script somewhere in your `$PATH`, so that you could invoke it from anywhere. Once it is well tested, it'll probably get installed automatically with the `fastai` package.
-
-And now we also have a python version of the same:
-```
-curl -O https://raw.githubusercontent.com/fastai/git-tools/master/fastai-make-pr-branch-py
-chmod a+x fastai-make-pr-branch-py
-./fastai-make-pr-branch-py https your-github-username fastai new-feature
-```
-
 ### Step 1. Start With a Synced Fork Checkout
 
 #### 1a. First time
 
 If you made the fork of the desired repository already, proceed to section 1b.
 
-If it's your first time, you just need to make a fork of the original repository:
-
-1. Go to [https://github.com/fastai/fastai](https://github.com/fastai/fastai) and in the right upper corner click on `[Fork]`. This will generate a fork of this repository, and you will be redirected to
- github.com/USERNAME/fastai.
-
-2. Clone the main repository fork. Click on `[Clone or download]` button to get the clone url and then clone your repository.
-
-   * Choose the SSH option if you have SSH configured with github and run:
-
-   ```
-   git clone git@github.com:USERNAME/fastai.git fastai-fork
-   ```
-   * otherwise choose the HTTPS option:
-
-   ```
-   git clone https://github.com/USERNAME/fastai.git fastai-fork
-   ```
-
-   Make sure the url has your username in it. If the username is `fastai` you're cloning the original repo and not your fork. This will not do what you need.
-
-   Then move into the newly created directory:
-
-   ```
-   cd fastai-fork
-   ```
-
-   and run the setup tool:
-   ```
-   tools/run-after-git-clone
-   ```
-   for any of the `fastai` project repositories, except `fastprogress` where it doesn't exist.
-
-   Finally, let's setup this fork to track the upstream:
-
-   * Using SSH:
-
-   ```
-   git remote add upstream git@github.com:fastai/fastai.git
-   ```
-   * Using HTTPS:
-
-   ```
-   git remote add upstream https://github.com/fastai/fastai.git
-   ```
-
-   You can check your setup:
-   ```
-   git remote -v
-   ```
-
-   It should show:
-
-   * If you used SSH:
-
-   ```
-   origin  git@github.com:USERNAME/fastai.git (fetch)
-   origin  git@github.com:USERNAME/fastai.git (push)
-   upstream  git@github.com:fastai/fastai.git (fetch)
-   upstream  git@github.com:fastai/fastai.git (push)
-   ```
-   * If you used HTTPS:
-
-   ```
-   origin  https://github.com/USERNAME/fastai.git (fetch)
-   origin  https://github.com/USERNAME/fastai.git (push)
-   upstream  https://github.com/fastai/fastai.git (fetch)
-   upstream  https://github.com/fastai/fastai.git (push)
-   ```
-
-   You can now proceed to step 2.
+If it's your first time, you just need to make a fork of the original repository.
 
 #### 1b. Subsequent times
 
@@ -147,29 +44,12 @@ This branch is 331 commits behind fastai:master.
 
 So, let's synchronize the two:
 
-1. Place yourself in the `master` branch of the forked repository:
-
-   * Either you go back to a repository you checked out earlier and switch to the `master` branch:
+1. Place yourself in the `master` branch of the forked repository. Go back to a repository you checked out earlier and switch to the `master` branch:
 
    ```
-   cd fastai-fork
+   cd fastai
    git checkout master
    ```
-
-   * or you make a new clone
-
-   ```
-   git clone git://github.com/USERNAME/fastai.git fastai-fork
-   cd fastai-fork
-   git remote add upstream git@github.com:fastai/fastai.git
-   ```
-
-   and set things up as before (except for the `fastprogress` repository):
-   ```
-   tools/run-after-git-clone
-   ```
-
-   Use the https version https://github.com/USERNAME/fastai if you don't have ssh configured with github.
 
 2. Sync the forked repository with the original repository:
 
@@ -189,11 +69,9 @@ So, let's synchronize the two:
    ```
    Now you can work on a new PR.
 
-
 ### Step 2. Create a Branch
 
 It's very important that you **always work inside a branch**. If you make any commits into the `master` branch, you will not be able to make more than one PR at the same time, and you will not be able to synchronize your forked `master` branch with the original without doing a reset. If you made a mistake and committed to the `master` branch, it's not the end of the world, it's just that you made your life more complicated. This guide will explain how to deal with this situation.
-
 
 1. Create a branch with any name you want, for example `new-feature-branch`, and switch to it. Then set this branch's upstream, so that you could do `git push` and other git commands without needing to pass any more arguments.
 
@@ -201,77 +79,6 @@ It's very important that you **always work inside a branch**. If you make any co
    git checkout -b new-feature-branch
    git push --set-upstream origin new-feature-branch
    ```
-
-### Step 3. Prepare Your Checkout
-
-1. Uninstall preinstalled `fastai`
-
-   In order for you to be able to test your code against this particular `fastai` checkout, first make sure to uninstall the released version of `fastai` that you may have already installed.
-
-   ```
-   conda uninstall -y fastai
-   ```
-
-   If you previously installed `fastai` via `pip` you don't need to uninstall it - `pip` will automatically do it for you when you install `fastai` in the next step.
-
-   Also this is probably a good time for you to deepen your understanding of [Editable installs](/dev/develop.html#editable-install-explained).
-
-2. Install the prerequisites.
-
-   No matter which repository you contribute to, unless you have already done so install the developer prerequisites:
-
-   Use an existing checkout, or make one:
-   ```
-   git clone https://github.com/fastai/fastai fastai-fork
-   cd fastai-fork
-   ```
-   and make an editable install with the developer prerequisites:
-   ```
-   pip install -e ".[dev]"
-   ```
-
-3. Now configure the nbstripout filters if you haven't yet done so (the helper script does it automatically for you if you have used it to create the PR branch).
-
-   Move into the root of the repository where your PR branch is and run:
-
-   ```
-   tools/run-after-git-clone # or python tools\run-after-git-clone on windows
-   ```
-
-### Step 4. Write Your Code
-
-This is where the magic happens.
-
-Create new code, fix bugs, add/correct documentation.
-
-
-### Step 5. Test Your Changes
-
-Test that your changes don't break things. Choose one according to which project you are creating PR for:
-
-* `fastai`
-
-   In the `fastai` repository, if you made changes to the libraries under `fastai` or you added/changed anything under `tests`, move into the root of the repository and run:
-
-   ```
-   make test
-   ```
-   or if you don't have `make`, just:
-   ```
-   pytest
-   ```
-
-* `docs_src`
-
-   In the `docs_src` folder, if you made changes to the code cells of the documentation notebooks, run:
-
-   ```
-   cd docs_src
-   ./run_tests.sh
-   ```
-   You will need at least 8GB free GPU RAM to run these tests.
-
-   Please ignore this if you're just adding/changing the prose.
 
 ### Step 6. Push Your Changes
 
@@ -296,25 +103,9 @@ Test that your changes don't break things. Choose one according to which project
    git push
    ```
 
-### Step 7. Submit Your PR
-
-1. Go to github and make a new Pull Request:
-
-   Usually, if you go to https://github.com/USERNAME/fastai github will notice that you committed to a new branch and will offer you to make a PR, so you don't need to figure out how to do it.
-
-   If for any reason it's not working, go to https://github.com/USERNAME/fastai/tree/new-feature-branch (replace `new-feature-branch` with the real branch name, and click `[Pull Request]` in the right upper corner.
-
-If you work on several unrelated PRs, make different directories for each one, ideally using the same directory name as the branch name, to simplify things.
-
 ### Step 8. Passing CI Tests
 
-Once your PR was submitted, you will see on github that we have various tests running on CI servers that will validate your PR. The tests run on various platforms and on both pip and conda virtual environments, so we have all bases covered.
-
-Do note that since our test suite contains many non-deterministic tests, at times you will notice that one of the checks on a single platform will fail. Most of the time it's normal, and there is nothing to worry about. We are constantly trying to make those less error-prone, but we can't make them too loose either, otherwise the test would be ineffective. Hence the occasional failures.
-
-You can go to Azure CI following the failing link and check what has failed. Unless you see the failure is related to your PR, please ignore it and consider that all tests have succeeded. The maintainer can always initiate a re-run of a CI job on the failed platform if need be.
-
-
+Once your PR was submitted, you will see on github that we have various tests running on CI servers that will validate your PR.
 
 ### How to Keep Your Feature Branch Up-to-date
 
@@ -325,7 +116,7 @@ You could update your feature branch directly, but it's best to update the maste
 * Step 1: sync your forked `master` branch:
 
    ```
-   cd my-cool-feature # your fastai fork clone directory
+   cd fastai
    git fetch upstream
    git checkout master
    git merge --no-edit upstream/master
@@ -348,8 +139,6 @@ You could update your feature branch directly, but it's best to update the maste
    ```
 
    If your PR is already open, github will automatically update its status showing the new commits and the conflict shouldn't be there any more if you followed the steps above.
-
-
 
 ### How To Reset Your Forked Master Branch
 
@@ -421,47 +210,6 @@ The numbers after the branch are modified/untracked/stashed counts. The leading 
 
 If you're not using `bash` or `fish` shell, search for forks of this idea for other shells.
 
-
-
-## hub
-
-hub == hub helps you win at git
-
-[`hub`](https://github.com/github/hub) is the command line GitHub. It provides integration between git and github in command line. One of the most useful commands is creating pull request by just typing `hub pull-request` in your terminal.
-
-We have a script that will do the installing for you: [hub-install.py](https://github.com/fastai/git-tools/blob/master/hub-install.py).
-
-If for any reason you can't use the script, here are the manual installation instructions:
-
-There is a variety of [ways to install](https://github.com/github/hub#installation) this application (written in go), but the easiest is to download the latest binary for your platform at [https://github.com/github/hub/releases/latest](https://github.com/github/hub/releases/latest), un-archiving the package and running `./install`, for example for the `linux-64` build:
-
-```
-wget https://github.com/github/hub/releases/download/v2.5.1/hub-linux-amd64-2.5.1.tgz
-tar -xvzf hub-linux-amd64-2.5.1.tgz
-cd hub-linux-amd64-2.5.1
-sudo ./install
-```
-
-You can add a prefix to install it to a different location, for example, under your home:
-
-```
-prefix=~ ./install
-```
-
-or say you wanted to install it inside your active conda environment:
-
-```
-prefix=`which conda | sed 's/\/bin\/conda//'` ./install
-```
-
-Either of the these two should give you the location of the your active conda environment:
-```
-which conda | sed 's/\/bin\/conda//'
-conda info | grep 'location' | awk '{print $5}'
-```
-but the first one is more reliable, `conda info`'s output may change down the road.
-
-
 ## Github Shortcuts
 
 * show commits by author: `?author=github_username`
@@ -493,9 +241,6 @@ but the first one is more reliable, `conda info`'s output may change down the ro
    3. Scroll down and hit [Delete this repository]
 
    replace, `USERNAME` with your github username, and `FORKED-REPO-NAME` with the repository name
-
-
-
 
 ## Revisions
 
@@ -1276,96 +1021,6 @@ use `!` for non-git sub-commands in aliases, e.g.:
 git config --global alias.visual '!gitk'
 ```
 
-
-## git hooks and filters
-
-### strip output from Jupyter and IPython notebooks
-
-
-install nbstripout
-```
-pip install nbstripout
-```
-
-
-check it's in the path:
-```
-which nbstripout
-```
-
-
-switch to the repository you want to work in
-```
-cd fastai_v1/
-```
-
-
-#### automatic install for git commit and git diff
-```
-nbstripout --install
-```
-
-
-#### manual git commit instrumentation
-
-
-
-add to .gitattributes or .git/info/attributes:
-```
-*.ipynb filter=nbstripout
-```
-
-
-these will modify .git/config
-```
-git config filter.nbstripout.clean `which nbstripout`
-git config filter.nbstripout.smudge cat
-git config filter.nbstripout.required true
-```
-
-
-#### manual git diff instrumentation
-
-
-
-add to .gitattributes or .git/info/attributes:
-```
-*.ipynb diff=ipynb
-```
-
-
-this will modify .git/config
-```
-git config diff.ipynb.textconv "$(which nbstripout) -t"
-```
-
-
-### git filters
-
-- before check in: clean filter
-- before checkout: smudge filter
-
-
-to check what the "clean" filter produced (to see the actual contents of the index)
-```
-git show :0:repo-relative/path/to/file
-```
-
-you can not usually use git diff for this since it also applies the filters.
-
-report all attributes set on file
-```
-git check-attr -a repo-relative/path/to/file
-```
-
-
-#### useful git filters
-
-git keyword expansion.
-[https://github.com/gistya/expandr](https://github.com/gistya/expandr)
-
-
-
 ## Miscellaneous Recipes
 
 * download a sub-directory from a git tree, e.g. [https://github.com/buckyroberts/Source-Code-from-Tutorials/tree/master/Python](https://github.com/buckyroberts/Source-Code-from-Tutorials/tree/master/Python)
@@ -1376,7 +1031,7 @@ git keyword expansion.
    svn co https://github.com/buckyroberts/Source-Code-from-Tutorials/trunk/Python
    ```
 
-
 ## Useful Resources
 
 * [https://learngitbranching.js.org/](https://learngitbranching.js.org/) - visual teaching with exercises
+

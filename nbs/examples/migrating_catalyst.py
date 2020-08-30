@@ -4,7 +4,7 @@ from fastai.data.load import DataLoader
 import os,torch
 from torch.nn import functional as F
 from catalyst import dl
-from catalyst.contrib.data.transforms import ToTensor
+from catalyst.data.cv import ToTensor
 from catalyst.contrib.datasets import MNIST
 from catalyst.utils import metrics
 
