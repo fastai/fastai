@@ -22,10 +22,11 @@ def init_cnn(m):
 class XResNet(nn.Sequential):
     @delegates(ResBlock)
     def __init__(self, block, expansion, layers, p=0.0, c_in=3, n_out=1000, stem_szs=(32,32,64),
-                 widen=1.0, sa=False, act_cls=defaults.activation, **kwargs):
-        store_attr(self, 'block,expansion,act_cls')
+                 widen=1.0, sa=False, act_cls=defaults.activation, ndim=2, ks=3, **kwargs):
+        store_attr(self, 'block,expansion,act_cls,ndim,ks')
+        if ks % 2 == 0: raise Exception('kernel size has to be odd!')
         stem_szs = [c_in, *stem_szs]
-        stem = [ConvLayer(stem_szs[i], stem_szs[i+1], stride=2 if i==0 else 1, act_cls=act_cls)
+        stem = [ConvLayer(stem_szs[i], stem_szs[i+1], ks=ks, stride=2 if i==0 else 1, act_cls=act_cls, ndim=ndim)
                 for i in range(3)]
 
         block_szs = [int(o*widen) for o in [64,128,256,512] +[256]*(len(layers)-4)]
@@ -33,9 +34,9 @@ class XResNet(nn.Sequential):
         blocks    = self._make_blocks(layers, block_szs, sa, **kwargs)
 
         super().__init__(
-            *stem, nn.MaxPool2d(kernel_size=3, stride=2, padding=1),
+            *stem, MaxPool(ks=ks, stride=2, padding=1, ndim=ndim),
             *blocks,
-            nn.AdaptiveAvgPool2d(1), Flatten(), nn.Dropout(p),
+            AdaptiveAvgPool(sz=1, ndim=ndim), Flatten(), nn.Dropout(p),
             nn.Linear(block_szs[-1]*expansion, n_out),
         )
         init_cnn(self)
@@ -48,7 +49,7 @@ class XResNet(nn.Sequential):
     def _make_layer(self, ni, nf, blocks, stride, sa, **kwargs):
         return nn.Sequential(
             *[self.block(self.expansion, ni if i==0 else nf, nf, stride=stride if i==0 else 1,
-                      sa=sa and i==(blocks-1), act_cls=self.act_cls, **kwargs)
+                      sa=sa and i==(blocks-1), act_cls=self.act_cls, ndim=self.ndim, ks=self.ks, **kwargs)
               for i in range(blocks)])
 
 # Cell
