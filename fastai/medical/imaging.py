@@ -35,7 +35,9 @@ def dcmread(fn:Path, force = False):
     return pydicom.dcmread(str(fn), force)
 
 # Cell
-class TensorDicom(TensorImage): _show_args = {'cmap':'gray'}
+class TensorDicom(TensorImage):
+    "Inherits from `TensorImage and converts the `pixel_array` into a `TensorDicom"
+    _show_args = {'cmap':'gray'}
 
 # Cell
 class PILDicom(PILBase):
@@ -54,7 +56,7 @@ PILDicom._tensor_cls = TensorDicom
 # Cell
 @patch_property
 def pixels(self:DcmDataset):
-    "`pixel_array` as a tensor"
+    "converts the `pixel_array` into a tensor"
     return tensor(self.pixel_array.astype(np.float32))
 
 # Cell
@@ -97,6 +99,7 @@ def hist_scaled_pt(self:Tensor, brks=None):
 # Cell
 @patch
 def hist_scaled(self:Tensor, brks=None):
+    "A function that scales a tensor using `freqhist_bins` to values between 0 and 1"
     if self.device.type=='cuda': return self.hist_scaled_pt(brks)
     if brks is None: brks = self.freqhist_bins()
     ys = np.linspace(0., 1., len(brks))
@@ -107,6 +110,7 @@ def hist_scaled(self:Tensor, brks=None):
 # Cell
 @patch
 def hist_scaled(self:DcmDataset, brks=None, min_px=None, max_px=None):
+    "pixels scaled to a `min_px` and `max_px` value"
     px = self.scaled_px
     if min_px is not None: px[px<min_px] = min_px
     if max_px is not None: px[px>max_px] = max_px
@@ -186,6 +190,7 @@ def pct_in_window(dcm:DcmDataset, w, l):
 
 # Cell
 def uniform_blur2d(x,s):
+    "A function to uniformly apply blurring"
     w = x.new_ones(1,1,1,s)/s
     # Factor 2d conv into 2 1d convs
     x = unsqueeze(x, dim=0, n=4-x.dim())
@@ -195,6 +200,7 @@ def uniform_blur2d(x,s):
 
 # Cell
 def gauss_blur2d(x,s):
+    "A function that uses the gaussian_blur2d kornia filter"
     s2 = int(s/4)*2+1
     x2 = unsqueeze(x, dim=0, n=4-x.dim())
     res = kornia.filters.gaussian_blur2d(x2, (s2,s2), (s,s), 'replicate')
