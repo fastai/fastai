@@ -75,7 +75,7 @@ jobs:
     - name: Install libraries
       run: |
         pip install -Ue .
-        pip install "ipywidgets sentencepiece<0.1.90" wandb tensorboard albumentations pydicom opencv-python scikit-image pyarrow kornia catalyst captum neptune-cli
+        pip install ipywidgets "sentencepiece<0.1.90" wandb tensorboard albumentations pydicom opencv-python scikit-image pyarrow kornia catalyst captum neptune-cli
 
     
     - name: check for cache hit
