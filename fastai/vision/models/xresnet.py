@@ -15,7 +15,7 @@ from torchvision.models.utils import load_state_dict_from_url
 # Cell
 def init_cnn(m):
     if getattr(m, 'bias', None) is not None: nn.init.constant_(m.bias, 0)
-    if isinstance(m, (nn.Conv2d,nn.Linear)): nn.init.kaiming_normal_(m.weight)
+    if isinstance(m, (nn.Conv1d,nn.Conv2d,nn.Conv3d,nn.Linear)): nn.init.kaiming_normal_(m.weight)
     for l in m.children(): init_cnn(l)
 
 # Cell
