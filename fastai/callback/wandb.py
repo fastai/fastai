@@ -11,7 +11,6 @@ from .hook import total_params
 
 # Cell
 import wandb
-from wandb.wandb_config import ConfigError
 
 # Cell
 class WandbCallback(Callback):
