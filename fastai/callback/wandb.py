@@ -179,7 +179,8 @@ def log_model(path, name=None, metadata={}):
     name = ifnone(name, f'run-{wandb.run.id}-model')
     _format_metadata(metadata)
     artifact_model = wandb.Artifact(name=name, type='model', description='trained model', metadata=metadata)
-    artifact_model.add_file(str(path.resolve()))
+    with artifact_model.new_file(name, mode='wb') as fa:
+        fa.write(path.read_bytes())
     wandb.run.log_artifact(artifact_model)
 
 # Cell
