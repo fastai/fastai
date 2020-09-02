@@ -83,7 +83,7 @@ class ImageDataLoaders(DataLoaders):
     def from_folder(cls, path, train='train', valid='valid', valid_pct=None, seed=None, vocab=None, item_tfms=None,
                     batch_tfms=None, **kwargs):
         "Create from imagenet style dataset in `path` with `train` and `valid` subfolders (or provide `valid_pct`)"
-        splitter = GrandparentSplitter(train_name=train, valid_name=valid) if valid_pct is None else RandomSplitter(valid_pct, seed=seed)
+        splitter = RandomSplitter(valid_pct, seed=seed) if valid_pct else GrandparentSplitter(train_name=train, valid_name=valid)
         get_items = get_image_files if valid_pct else partial(get_image_files, folders=[train, valid])
         dblock = DataBlock(blocks=(ImageBlock, CategoryBlock(vocab=vocab)),
                            get_items=get_items,
