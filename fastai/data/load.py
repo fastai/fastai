@@ -151,7 +151,7 @@ add_docs(DataLoader, "API compatible with PyTorch DataLoader, with a lot more ca
          randomize      = "Set's `DataLoader` random number generator state.",
          retain         = "Cast each item of `res` to type of matching item in `b` if its a superclass.",
          create_item    = "Return a subset of the dataset containing the index values of the sample if there are samples, else return the next iterator.",
-         create_batch   = "Collate a list of items into a batch.",
+         create_batch   = "Collate a list of items into a batch. Same as `collate_fn` use in PyTorch.",
          do_batch       = "Combines `create_batch` and `before_batch` to get a batch of items. Input is a list of items to collate.",
          to             = "Sets `self.device=device`.",
          one_batch      = "Return one batch from `DataLoader`.",
