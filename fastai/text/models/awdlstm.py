@@ -20,7 +20,7 @@ class RNNDropout(Module):
 
     def forward(self, x):
         if not self.training or self.p == 0.: return x
-        return x * dropout_mask(x.data, (x.size(0), 1, x.size(2)), self.p)
+        return x * dropout_mask(x.data, (x.size(0), 1, *x.shape[2:]), self.p)
 
 # Cell
 class WeightDropout(Module):
