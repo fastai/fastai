@@ -9,41 +9,30 @@ on:
   push:
     branches: 
       - master
+env:
+  HOME: /root
+defaults:
+  run:
+    shell: bash  
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-    container: fastdotai/fastai
+    runs-on: ubuntu-20.04
+    container: fastai/fastai
     steps:
-    - name: Install libraries
-      run: |
-        pip install -Uqqq nbdev "sentencepiece<0.1.90" pytorch-lightning pytorch-ignite transformers
-
-    - name: checkout contents of PR
-      uses: actions/checkout@v2
-
+    - uses: actions/checkout@v2
+    - uses: fastai/workflows/conda-env@master
     - name: Create docs
-      id: docs
-      run: |
-        cp -r docs_src docs
-        nbdev_build_docs
-
-    - name: setup directories for Jekyll build
-      run: |
-        rm -rf docs/_site
-        chmod -R 777 docs
-
-    - name: Jekyll build
-      uses: docker://fastdotai/nbdev-docs
-      with:
-        args: bash -c "cd docs && gem install bundler && chmod -R u+rwx . && jekyll build -V --strict_front_matter --trace"
       env:
         JEKYLL_ENV: 'production'
-    
-    - name: rsync to dreamhost
-      uses: fastai/workflows/rsync@master
-      with:
-        hostname: ps625762.dreamhostps.com
-        ssh_key: ${{ secrets.DH_KEY }}
-        dest_path: "docs.fast.ai/"
-        username: jeremyphoward
+        SSH_KEY: ${{ secrets.DH_KEY }}
+      run: |
+        pip install -Uqqq nbdev "sentencepiece<0.1.90" pytorch-lightning pytorch-ignite transformers
+        cp -r docs_src docs
+        nbdev_build_docs
+        cd docs 
+        bundle i
+        bundle exec jekyll build --strict_front_matter
+        echo "$SSH_KEY" > ~/.ssh/id_rsa
+        chmod 400 ~/.ssh/id_rsa
+        rsync -az _site/ jeremyphoward@ps625762.dreamhostps.com:fastai.fast.ai/
