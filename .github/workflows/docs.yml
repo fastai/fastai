@@ -22,17 +22,11 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - uses: fastai/workflows/conda-env@master
-    - name: Create docs
-      env:
-        JEKYLL_ENV: 'production'
-        SSH_KEY: ${{ secrets.DH_KEY }}
-      run: |
-        pip install -Uqqq nbdev "sentencepiece<0.1.90" pytorch-lightning pytorch-ignite transformers
-        cp -r docs_src docs
-        nbdev_build_docs
-        cd docs 
-        bundle i
-        bundle exec jekyll build --strict_front_matter
-        echo "$SSH_KEY" > ~/.ssh/id_rsa
-        chmod 400 ~/.ssh/id_rsa
-        rsync -az _site/ jeremyphoward@ps625762.dreamhostps.com:fastai.fast.ai/
+    - name: Install prereqs
+      run: pip install -Uqqq nbdev "sentencepiece<0.1.90" pytorch-lightning pytorch-ignite transformers catalyst
+    - uses: fastai/workflows/build-docs@master
+      with:
+        username: jeremyphoward
+        hostname: ps625762.dreamhostps.com
+        dest_path: fastai.fast.ai
+        ssh_key: ${{ secrets.DH_KEY }}
