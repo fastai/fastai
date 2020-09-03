@@ -49,11 +49,8 @@ jobs:
     - name: checkout contents of PR
       uses: actions/checkout@v2
     - uses: fastai/workflows/conda-env@master
-
     - name: Install libraries
-      run: |
-        pip install -Uqe .
-        
+      run: pip install -Uqe .
     - name: check if notebooks are synced and cleaned
       uses: fastai/workflows/nb@master
 
@@ -77,7 +74,6 @@ jobs:
         pip install -Uqe .
         pip install -Uq fastcore fastscript fastprogress
         pip install -Uq ipywidgets "sentencepiece<0.1.90" wandb tensorboard albumentations pydicom opencv-python scikit-image pyarrow kornia catalyst captum neptune-cli
-
     
     - name: check for cache hit
       uses: actions/cache@v2
