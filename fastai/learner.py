@@ -83,13 +83,13 @@ class Learner():
     def __init__(self, dls, model, loss_func=None, opt_func=Adam, lr=defaults.lr, splitter=trainable_params, cbs=None,
                  metrics=None, path=None, model_dir='models', wd=None, wd_bn_bias=False, train_bn=True,
                  moms=(0.95,0.85,0.95)):
-        store_attr("dls,model,opt_func,lr,splitter,model_dir,wd,wd_bn_bias,train_bn,metrics,moms")
-        self.training,self.create_mbar,self.logger,self.opt,self.cbs = False,True,print,None,L()
+        path = Path(path) if path is not None else getattr(dls, 'path', Path('.'))
         if loss_func is None:
             loss_func = getattr(dls.train_ds, 'loss_func', None)
             assert loss_func is not None, "Could not infer loss function from the data, please pass a loss function."
-        self.loss_func = loss_func
-        self.path = Path(path) if path is not None else getattr(dls, 'path', Path('.'))
+        self.dls,self.model = dls,model
+        store_attr(but='dls,model,cbs')
+        self.training,self.create_mbar,self.logger,self.opt,self.cbs = False,True,print,None,L()
         self.add_cbs([(cb() if isinstance(cb, type) else cb) for cb in L(defaults.callbacks)+L(cbs)])
         self.epoch,self.n_epoch,self.loss = 0,1,tensor(0.)
 

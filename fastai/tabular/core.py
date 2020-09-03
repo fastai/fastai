@@ -219,17 +219,13 @@ _add_prop(Tabular, 'all_col')
 # Cell
 class TabularProc(InplaceTransform):
     "Base class to write a non-lazy tabular processor for dataframes"
-    store_attrs=''
     def setup(self, items=None, train_setup=False): #TODO: properly deal with train_setup
         super().setup(getattr(items,'train',items), train_setup=False)
         # Procs are called as soon as data is available
         return self(items.items if isinstance(items,Datasets) else items)
 
     @property
-    def name(self):
-        if self.store_attrs: attrs = self.store_attrs.split(',')
-        else: attrs = ''
-        return f"{super().name} -- {attrdict(self, *attrs)}"
+    def name(self): return f"{super().name} -- {getattr(self,'__stored_args__',{})}"
 
 # Cell
 def _apply_cats (voc, add, c):
@@ -241,9 +237,9 @@ def _decode_cats(voc, c): return c.map(dict(enumerate(voc[c.name].items)))
 # Cell
 class Categorify(TabularProc):
     "Transform the categorical variables to something similar to `pd.Categorical`"
-    order,store_attrs = 1,'classes'
+    order = 1
     def setups(self, to):
-        self.classes = {n:CategoryMap(to.iloc[:,n].items, add_na=(n in to.cat_names)) for n in to.cat_names}
+        store_attr(classes={n:CategoryMap(to.iloc[:,n].items, add_na=(n in to.cat_names)) for n in to.cat_names})
 
     def encodes(self, to): to.transform(to.cat_names, partial(_apply_cats, self.classes, 1))
     def decodes(self, to): to.transform(to.cat_names, partial(_decode_cats, self.classes))
@@ -273,8 +269,8 @@ def decodes(self, to:Tabular):
 # Cell
 @Normalize
 def setups(self, to:Tabular):
-    self.means,self.stds = dict(getattr(to, 'train', to).conts.mean()),dict(getattr(to, 'train', to).conts.std(ddof=0)+1e-7)
-    self.store_attrs = 'means,stds'
+    store_attr(means=dict(getattr(to, 'train', to).conts.mean()),
+               stds=dict(getattr(to, 'train', to).conts.std(ddof=0)+1e-7))
     return self(to)
 
 @Normalize
@@ -297,15 +293,14 @@ class FillStrategy:
 # Cell
 class FillMissing(TabularProc):
     "Fill the missing values in continuous columns."
-    store_attrs = 'fill_strategy,add_col,fill_vals'
     def __init__(self, fill_strategy=FillStrategy.median, add_col=True, fill_vals=None):
         if fill_vals is None: fill_vals = defaultdict(int)
-        store_attr(self.store_attrs)
+        store_attr()
+
     def setups(self, dsets):
         missing = pd.isnull(dsets.conts).any()
-        self.na_dict = {n:self.fill_strategy(dsets[n], self.fill_vals[n])
-                        for n in missing[missing].keys()}
-        self.store_attrs += ',na_dict'
+        store_attr(na_dict={n:self.fill_strategy(dsets[n], self.fill_vals[n])
+                            for n in missing[missing].keys()})
         self.fill_strategy = self.fill_strategy.__name__
 
     def encodes(self, to):
