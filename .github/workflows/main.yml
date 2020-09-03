@@ -52,6 +52,7 @@ jobs:
 
     - name: Install libraries
       run: |
+        pip install -Uq fastcore fastscript fastprogress
         pip install -Uqe .
         
     - name: check if notebooks are synced and cleaned
