@@ -45,7 +45,7 @@ class ImagesCleaner:
     "A widget that displays all images in `fns` along with a `Dropdown`"
     def __init__(self, opts=(), height=128, width=256, max_n=30):
         opts = ('<Keep>', '<Delete>')+tuple(opts)
-        store_attr(self, 'opts,height,width,max_n')
+        store_attr('opts,height,width,max_n')
         self.widget = carousel(width='100%')
 
     def set_fns(self, fns):

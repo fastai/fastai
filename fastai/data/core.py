@@ -220,7 +220,7 @@ class TfmdLists(FilteredBase, L, GetAttr):
         if isinstance(tfms,TfmdLists): tfms = tfms.tfms
         if isinstance(tfms,Pipeline): do_setup=False
         self.tfms = Pipeline(tfms, split_idx=split_idx)
-        store_attr(self, 'types,split_idx')
+        store_attr('types,split_idx')
         if do_setup:
             pv(f"Setting up {self.tfms}", verbose)
             self.setup(train_setup=train_setup)

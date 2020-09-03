@@ -26,7 +26,7 @@ class WandbCallback(Callback):
         # W&B log step
         self._wandb_step = wandb.run.step - 1  # -1 except if the run has previously logged data (incremented at each batch)
         self._wandb_epoch = 0 if not(wandb.run.step) else math.ceil(wandb.run.summary['epoch']) # continue to next epoch
-        store_attr(self, 'log,log_preds,log_model,log_dataset,dataset_name,valid_dl,n_preds,seed,reorder')
+        store_attr('log,log_preds,log_model,log_dataset,dataset_name,valid_dl,n_preds,seed,reorder')
 
     def before_fit(self):
         "Call watch method to log model topology, gradients & weights"

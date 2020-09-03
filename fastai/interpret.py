@@ -20,7 +20,7 @@ def plot_top_losses(x, y, *args, **kwargs):
 class Interpretation():
     "Interpretation base class, can be inherited for task specific Interpretation classes"
     def __init__(self, dl, inputs, preds, targs, decoded, losses):
-        store_attr(self, "dl,inputs,preds,targs,decoded,losses")
+        store_attr("dl,inputs,preds,targs,decoded,losses")
 
     @classmethod
     def from_learner(cls, learn, ds_idx=1, dl=None, act=None):

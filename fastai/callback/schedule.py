@@ -8,7 +8,7 @@ from ..basics import *
 
 # Cell
 class _Annealer:
-    def __init__(self, f, start, end): store_attr(self, 'f,start,end')
+    def __init__(self, f, start, end): store_attr('f,start,end')
     def __call__(self, pos): return self.f(self.start, self.end, pos)
 
 # Cell

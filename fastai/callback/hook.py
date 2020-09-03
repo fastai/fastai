@@ -11,7 +11,7 @@ from ..basics import *
 class Hook():
     "Create a hook on `m` with `hook_func`."
     def __init__(self, m, hook_func, is_forward=True, detach=True, cpu=False, gather=False):
-        store_attr(self,'hook_func,detach,cpu,gather')
+        store_attr('hook_func,detach,cpu,gather')
         f = m.register_forward_hook if is_forward else m.register_backward_hook
         self.hook = f(self.hook_fn)
         self.stored,self.removed = None,False
@@ -108,7 +108,7 @@ class HookCallback(Callback):
     _methods = ["hook"]
     hook = noops
     def __init__(self, modules=None, every=None, remove_end=True, is_forward=True, detach=True, cpu=True, **kwargs):
-        store_attr(self, 'modules,every,remove_end,is_forward,detach,cpu')
+        store_attr('modules,every,remove_end,is_forward,detach,cpu')
         assert not kwargs
 
     def before_fit(self):

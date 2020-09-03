@@ -638,7 +638,7 @@ def apply_perspective(coords, coeffs):
 class _WarpCoord():
     store_attrs = "magnitude,p,draw_x,draw_y,batch"
     def __init__(self, magnitude=0.2, p=0.5, draw_x=None, draw_y=None, batch=False):
-        store_attr(self)
+        store_attr()
         self.coeffs = None
 
     def _def_draw(self, x):
@@ -704,7 +704,7 @@ class LightingTfm(RandTransform):
 # Cell
 class _BrightnessLogit():
     def __init__(self, max_lighting=0.2, p=0.75, draw=None, batch=False):
-        store_attr(self, 'max_lighting,p,draw,batch')
+        store_attr('max_lighting,p,draw,batch')
 
     def _def_draw(self, x):
         if not self.batch: return x.new(x.size(0)).uniform_(0.5*(1-self.max_lighting), 0.5*(1+self.max_lighting))
@@ -733,7 +733,7 @@ class Brightness(LightingTfm):
 # Cell
 class _ContrastLogit():
     def __init__(self, max_lighting=0.2, p=0.75, draw=None, batch=False):
-        store_attr(self, 'max_lighting,p,draw,batch')
+        store_attr('max_lighting,p,draw,batch')
 
     def _def_draw(self, x):
         if not self.batch: res = x.new(x.size(0)).uniform_(math.log(1-self.max_lighting), -math.log(1-self.max_lighting))
@@ -759,7 +759,7 @@ class Contrast(LightingTfm):
     store_attrs = 'max_lighting,p'
     def __init__(self,max_lighting=0.2, p=0.75, draw=None, batch=False):
         super().__init__(_ContrastLogit(max_lighting, p, draw, batch))
-        store_attr(self, self.store_attrs)
+        store_attr(self.store_attrs)
 
 # Cell
 def grayscale(x):
@@ -769,7 +769,7 @@ def grayscale(x):
 # Cell
 class _SaturationLogit():
     def __init__(self, max_lighting=0.2, p=0.75, draw=None, batch=False):
-        store_attr(self, 'max_lighting,p,draw,batch')
+        store_attr('max_lighting,p,draw,batch')
 
     def _def_draw(self, x):
         if not self.batch: res = x.new(x.size(0)).uniform_(math.log(1-self.max_lighting), -math.log(1-self.max_lighting))
@@ -802,7 +802,7 @@ class Saturation(LightingTfm):
     store_attrs = 'max_lighting,p'
     def __init__(self,max_lighting=0.2, p=0.75, draw=None, batch=False):
         super().__init__(_SaturationLogit(max_lighting, p, draw, batch))
-        store_attr(self, self.store_attrs)
+        store_attr(self.store_attrs)
 
 # Cell
 def rgb2hsv(img):
@@ -855,7 +855,7 @@ def hsv2rgb(img):
 # Cell
 class _Hue():
     def __init__(self, max_hue=0.2, p=0.75, draw=None, batch=False):
-        store_attr(self, 'max_hue,p,draw,batch')
+        store_attr('max_hue,p,draw,batch')
 
     def _def_draw(self, x):
         if not self.batch: res = x.new(x.size(0)).uniform_(math.log(1-self.max_hue), -math.log(1-self.max_hue))
@@ -889,7 +889,7 @@ class Hue(RandTransform):
     store_attrs = 'max_hue,p'
     def __init__(self,max_hue=0.1, p=0.75, draw=None, batch=False):
         super().__init__(_Hue(max_hue, p, draw, batch))
-        store_attr(self, self.store_attrs)
+        store_attr(self.store_attrs)
 
 # Cell
 def cutout_gaussian(x, areas):
@@ -917,8 +917,8 @@ class RandomErasing(RandTransform):
     def __init__(self, p=0.5, sl=0., sh=0.3, min_aspect=0.3, max_count=1):
         super().__init__(p=p)
         log_ratio = (math.log(min_aspect), math.log(1/min_aspect))
-        store_attr(self, 'log_ratio')
-        store_attr(self, self.store_attrs)
+        store_attr('log_ratio')
+        store_attr(self.store_attrs)
 
     def _bounds(self, area, img_h, img_w):
         r_area = random.uniform(self.sl,self.sh) * area

@@ -300,7 +300,7 @@ class FillMissing(TabularProc):
     store_attrs = 'fill_strategy,add_col,fill_vals'
     def __init__(self, fill_strategy=FillStrategy.median, add_col=True, fill_vals=None):
         if fill_vals is None: fill_vals = defaultdict(int)
-        store_attr(self,self.store_attrs)
+        store_attr(self.store_attrs)
     def setups(self, dsets):
         missing = pd.isnull(dsets.conts).any()
         self.na_dict = {n:self.fill_strategy(dsets[n], self.fill_vals[n])

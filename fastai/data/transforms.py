@@ -78,7 +78,7 @@ class ItemGetter(ItemTransform):
 class AttrGetter(ItemTransform):
     "Creates a proper transform that applies `attrgetter(nm)` (even on a tuple)"
     _retain = False
-    def __init__(self, nm, default=None): store_attr(self, 'nm,default')
+    def __init__(self, nm, default=None): store_attr('nm,default')
     def encodes(self, x): return getattr(x, self.nm, self.default)
 
 # Cell
@@ -186,7 +186,7 @@ class ColReader(DisplayedTransform):
     "Read `cols` in `row` with potential `pref` and `suff`"
     store_attrs = 'cols'
     def __init__(self, cols, pref='', suff='', label_delim=None):
-        store_attr(self, 'suff,label_delim')
+        store_attr('suff,label_delim')
         self.pref = str(pref) + os.path.sep if isinstance(pref, Path) else pref
         self.cols = L(cols)
 
@@ -231,7 +231,7 @@ class Categorize(DisplayedTransform):
     "Reversible transform of category string to `vocab` id"
     loss_func,order,store_attrs=CrossEntropyLossFlat(),1,'vocab,add_na'
     def __init__(self, vocab=None, sort=True, add_na=False):
-        store_attr(self, self.store_attrs+',sort')
+        store_attr(self.store_attrs+',sort')
         self.vocab = None if vocab is None else CategoryMap(vocab, sort=sort, add_na=add_na)
 
     def setups(self, dsets):
@@ -322,7 +322,7 @@ class IntToFloatTensor(DisplayedTransform):
     "Transform image to float tensor, optionally dividing by 255 (e.g. for images)."
     order,store_attrs = 10,'div,div_mask' #Need to run after PIL transforms on the GPU
     def __init__(self, div=255., div_mask=1):
-        store_attr(self, 'div,div_mask')
+        store_attr('div,div_mask')
     def encodes(self, o:TensorImage): return o.float().div_(self.div)
     def encodes(self, o:TensorMask ): return o.long() // self.div_mask
     def decodes(self, o:TensorImage): return ((o.clamp(0., 1.) * self.div).long()) if self.div else o
