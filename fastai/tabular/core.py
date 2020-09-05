@@ -86,7 +86,7 @@ def cont_cat_split(df, max_card=20, dep_var=None):
     "Helper function that returns column names of cont and cat variables from given `df`."
     cont_names, cat_names = [], []
     for label in df:
-        if label == dep_var: continue
+        if label in list(dep_var): continue
         if df[label].dtype == int and df[label].unique().shape[0] > max_card or df[label].dtype == float:
             cont_names.append(label)
         else: cat_names.append(label)
