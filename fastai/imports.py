@@ -15,7 +15,6 @@ from types import SimpleNamespace
 from pathlib import Path
 from collections import OrderedDict,defaultdict,Counter,namedtuple
 from enum import Enum,IntEnum
-from warnings import warn
 from textwrap import TextWrapper
 from operator import itemgetter,attrgetter,methodcaller
 from urllib.request import urlopen
