@@ -282,8 +282,8 @@ class TfmdLists(FilteredBase, L, GetAttr):
 # Cell
 add_docs(TfmdLists,
          setup="Transform setup with self",
-         decode="From `Pipeline",
-         show="From `Pipeline",
+         decode="From `Pipeline`",
+         show="From `Pipeline`",
          overlapping_splits="All splits that are in more than one split",
          subset="New `TfmdLists` with same tfms that only includes items in `i`th split",
          infer_idx="Finds the index where `self.tfms` can be applied to `x`, depending on the type of `x`",
