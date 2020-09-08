@@ -119,6 +119,7 @@ def hist_scaled(self:DcmDataset, brks=None, min_px=None, max_px=None):
 # Cell
 @patch
 def windowed(self:Tensor, w, l):
+    """Scale pixel intensity by window width and window level"""
     px = self.clone()
     px_min = l - w//2
     px_max = l + w//2
@@ -148,7 +149,9 @@ dicom_windows = types.SimpleNamespace(
 )
 
 # Cell
-class TensorCTScan(TensorImageBW): _show_args = {'cmap':'bone'}
+class TensorCTScan(TensorImageBW):
+    "Inherits from `TensorImageBW` and converts the `pixel_array` into a `TensorCTScan`"
+    _show_args = {'cmap':'bone'}
 
 # Cell
 class PILCTScan(PILBase): _open_args,_tensor_cls,_show_args = {},TensorCTScan,TensorCTScan._show_args
@@ -157,6 +160,7 @@ class PILCTScan(PILBase): _open_args,_tensor_cls,_show_args = {},TensorCTScan,Te
 @patch
 @delegates(show_image)
 def show(self:DcmDataset, scale=True, cmap=plt.cm.bone, min_px=-1100, max_px=None, **kwargs):
+    """Display a normalized dicom image by default"""
     px = (self.windowed(*scale) if isinstance(scale,tuple)
           else self.hist_scaled(min_px=min_px,max_px=max_px,brks=scale) if isinstance(scale,(ndarray,Tensor))
           else self.hist_scaled(min_px=min_px,max_px=max_px) if scale
@@ -209,6 +213,7 @@ def gauss_blur2d(x,s):
 # Cell
 @patch
 def mask_from_blur(x:Tensor, window, sigma=0.3, thresh=0.05, remove_max=True):
+    """Create a mask from the blurred image"""
     p = x.windowed(*window)
     if remove_max: p[p==1] = 0
     return gauss_blur2d(p, s=sigma*x.shape[-1])>thresh
@@ -216,6 +221,7 @@ def mask_from_blur(x:Tensor, window, sigma=0.3, thresh=0.05, remove_max=True):
 # Cell
 @patch
 def mask_from_blur(x:DcmDataset, window, sigma=0.3, thresh=0.05, remove_max=True):
+    """Create a mask from the blurred image"""
     return to_device(x.scaled_px).mask_from_blur(window, sigma, thresh, remove_max=remove_max)
 
 # Cell
@@ -287,6 +293,7 @@ def to_3chan(x:DcmDataset, win1, win2, bins=None):
 # Cell
 @patch
 def save_jpg(x:(Tensor,DcmDataset), path, wins, bins=None, quality=90):
+    """Save tensor or dicom image into `jpg` format"""
     fn = Path(path).with_suffix('.jpg')
     x = (x.to_nchan(wins, bins)*255).byte()
     im = Image.fromarray(x.permute(1,2,0).numpy(), mode=['RGB','CMYK'][x.shape[0]==4])
@@ -295,12 +302,14 @@ def save_jpg(x:(Tensor,DcmDataset), path, wins, bins=None, quality=90):
 # Cell
 @patch
 def to_uint16(x:(Tensor,DcmDataset), bins=None):
+    """Convert into a unit16 array"""
     d = x.hist_scaled(bins).clamp(0,1) * 2**16
     return d.numpy().astype(np.uint16)
 
 # Cell
 @patch
 def save_tif16(x:(Tensor,DcmDataset), path, bins=None, compress=True):
+    """Save tensor or dicom image into `tiff` format"""
     fn = Path(path).with_suffix('.tif')
     Image.fromarray(x.to_uint16(bins)).save(str(fn), compression='tiff_deflate' if compress else None)
 
@@ -314,6 +323,7 @@ DcmDataset.pixel_array = property(DcmDataset.pixel_array.fget, set_pixels)
 # Cell
 @patch
 def zoom(self:DcmDataset, ratio):
+    """Zoom image by specified ratio"""
     with warnings.catch_warnings():
         warnings.simplefilter("ignore", UserWarning)
         self.pixel_array = ndimage.zoom(self.pixel_array, ratio)
@@ -321,13 +331,16 @@ def zoom(self:DcmDataset, ratio):
 # Cell
 @patch
 def zoom_to(self:DcmDataset, sz):
+    """Change image size to specified pixel size"""
     if not isinstance(sz,(list,tuple)): sz=(sz,sz)
     rows,cols = sz
     self.zoom((rows/self.Rows,cols/self.Columns))
 
 # Cell
 @patch_property
-def shape(self:DcmDataset): return self.Rows,self.Columns
+def shape(self:DcmDataset):
+    """Returns the shape of a dicom image as rows and columns"""
+    return self.Rows,self.Columns
 
 # Cell
 def _cast_dicom_special(x):
@@ -344,6 +357,7 @@ def _split_elem(res,k,v):
 # Cell
 @patch
 def as_dict(self:DcmDataset, px_summ=True, window=dicom_windows.brain):
+    """Covert the header of a dicom into a dictionary"""
     pxdata = (0x7fe0,0x0010)
     vals = [self[o] for o in self.keys() if o != pxdata]
     its = [(v.keyword,v.value) for v in vals]
