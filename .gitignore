@@ -1,3 +1,5 @@
+*.bak
+token
 .idea/
 docs/
 conda/
