@@ -2,6 +2,12 @@
 
 <!-- do not remove -->
 
+## 2.0.10
+
+### New Features
+
+- update for fastcore 1.0.5 ([#2775](https://api.github.com/repos/fastai/fastai/issues/2775))
+
 ## 2.0.6
 
 ### New Features
