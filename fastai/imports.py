@@ -1,3 +1,5 @@
+import numpy as np
+
 import io,operator,sys,os,re,mimetypes,csv,itertools,json,shutil,glob,pickle,tarfile,collections
 import hashlib,itertools,types,inspect,functools,random,time,math,bz2,typing,numbers,string
 import multiprocessing,threading,urllib,tempfile,concurrent.futures,matplotlib,warnings,zipfile
@@ -20,7 +22,7 @@ from operator import itemgetter,attrgetter,methodcaller
 from urllib.request import urlopen
 
 # External modules
-import requests,yaml,matplotlib.pyplot as plt,numpy as np,pandas as pd,scipy
+import requests,yaml,matplotlib.pyplot as plt,pandas as pd,scipy
 from pandas.api.types import is_categorical_dtype,is_numeric_dtype
 from numpy import array,ndarray
 from scipy import ndimage
