@@ -21,9 +21,8 @@ jobs:
     container: fastai/fastai
     steps:
     - uses: actions/checkout@v2
-    - uses: fastai/workflows/conda-env@master
     - name: Install prereqs
-      run: pip install -Uqqq nbdev "sentencepiece<0.1.90" pytorch-lightning pytorch-ignite transformers catalyst
+      run: pip install -Uqqq "sentencepiece<0.1.90" pytorch-lightning pytorch-ignite transformers catalyst
     - uses: fastai/workflows/build-docs@master
       with:
         username: jeremyphoward
