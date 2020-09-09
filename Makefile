@@ -29,21 +29,14 @@ docs: $(SRC)
 test:
 	nbdev_test_nbs --pause 0.5 --flags ''
 
-release: pypi tag
-	sleep 10
+release: pypi
+	sleep 3
 	nbdev_conda_package --upload_user fastai
 	nbdev_bump_version
 
 conda_release:
 	nbdev_conda_package --upload_user fastai
-
-tag:
-	export TAG="$$(python setup.py version)"
-	echo "$$(python setup.py version)"
-	echo "$${TAG}"
-	git tag "$${TAG}"
-	git push --tags
-	gh api repos/:owner/:repo/releases -F tag_name="$${TAG}" -F name="$${TAG}"
+	nbdev_bump_version
 
 pypi: dist
 	twine upload --repository pypi dist/*

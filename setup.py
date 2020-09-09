@@ -29,6 +29,7 @@ lic = licenses[cfg['license']]
 requirements = ['pip', 'packaging']
 if cfg.get('requirements'): requirements += cfg.get('requirements','').split()
 if cfg.get('pip_requirements'): requirements += cfg.get('pip_requirements','').split()
+dev_requirements = (cfg.get('dev_requirements') or '').split()
 
 long_description = open('README.md').read()
 # ![png](docs/images/output_13_0.png)
@@ -45,10 +46,11 @@ setuptools.setup(
         'License :: ' + lic[1],
         'Natural Language :: ' + cfg['language'].title(),
     ] + ['Programming Language :: Python :: '+o for o in py_versions[py_versions.index(min_python):]],
-    url = cfg['git_url'], 
+    url = cfg['git_url'],
     packages = setuptools.find_packages(),
     include_package_data = True,
     install_requires = requirements,
+    extras_require={ 'dev': dev_requirements },
     python_requires  = '>=' + cfg['min_python'],
     long_description = long_description,
     long_description_content_type = 'text/markdown',
