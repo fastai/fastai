@@ -2,6 +2,7 @@
     "name": "fastai-codespaces",
     "dockerComposeFile": "docker-compose.yml",
     "service": "watcher",
+    "settings": {"terminal.integrated.shell.linux": "/bin/bash"},
     "mounts": [ "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind" ],
     "forwardPorts": [4000, 8080],
     "appPort": [4000, 8080],
