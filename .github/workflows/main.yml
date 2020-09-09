@@ -43,12 +43,11 @@ jobs:
   test-nbdev-sync:
     needs: filter
     runs-on: ubuntu-latest
-    container: fastai/nbdev
+    container: fastai/jekyll
     steps:
 
     - name: checkout contents of PR
       uses: actions/checkout@v2
-    - uses: fastai/workflows/conda-env@master
     - name: Install libraries
       run: pip install -Uqe .
     - name: check if notebooks are synced and cleaned
@@ -67,8 +66,6 @@ jobs:
     steps:        
     - name: checkout contents of PR
       uses: actions/checkout@v2
-    - uses: fastai/workflows/conda-env@master
-
     - name: Install libraries
       run: |
         pip install -Uqe .
