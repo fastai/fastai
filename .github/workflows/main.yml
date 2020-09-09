@@ -1,6 +1,6 @@
 name: CI
-env:
-  HOME: /root
+# env:
+#   HOME: /root
 on: 
   workflow_dispatch: #allows repo admins to trigger this workflow from the Actions tab
   pull_request:
