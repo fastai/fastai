@@ -45,7 +45,6 @@ jobs:
     runs-on: ubuntu-latest
     container: fastai/jekyll
     steps:
-
     - name: checkout contents of PR
       uses: actions/checkout@v2
     - name: Install libraries
@@ -68,9 +67,8 @@ jobs:
       uses: actions/checkout@v2
     - name: Install libraries
       run: |
-        pip install -Uqe .
         pip install -Uq fastcore fastscript fastprogress
-        pip install -Uq ipywidgets "sentencepiece<0.1.90" wandb tensorboard albumentations pydicom opencv-python scikit-image pyarrow kornia catalyst captum neptune-cli
+        pip install -Uqe .[dev]
     
     - name: check for cache hit
       uses: actions/cache@v2
@@ -86,8 +84,6 @@ jobs:
         ipython /root/download_testdata.py
         mkdir -p $HOME/.fastai/data
         find $HOME/.fastai/archive/ -name "*.tgz" -exec tar -xzvf {} -C $HOME/.fastai/data \;
-      
     - name: Test notebooks batch ${{matrix.nb}}
-      run: |
-        nbdev_test_nbs --flags '' --n_workers 3 --pause 1.0 --fname "nbs/[0-9]${{matrix.nb}}*.ipynb"
+      run: nbdev_test_nbs --flags '' --n_workers 3 --pause 1.0 --fname "nbs/[0-9]${{matrix.nb}}*.ipynb"
   
