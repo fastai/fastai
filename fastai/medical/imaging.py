@@ -64,7 +64,10 @@ def pixels(self:DcmDataset):
 def scaled_px(self:DcmDataset):
     "`pixels` scaled by `RescaleSlope` and `RescaleIntercept`"
     img = self.pixels
-    return img if self.Modality == "CR" else img * self.RescaleSlope + self.RescaleIntercept
+    try:
+        scale = img * self.RescaleSlope + self.RescaleIntercept; return scale
+    except Exception as e:
+        return img
 
 # Cell
 def array_freqhist_bins(self, n_bins=100):
