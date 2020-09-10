@@ -64,10 +64,9 @@ def pixels(self:DcmDataset):
 def scaled_px(self:DcmDataset):
     "`pixels` scaled by `RescaleSlope` and `RescaleIntercept`"
     img = self.pixels
-    try:
-        scale = img * self.RescaleSlope + self.RescaleIntercept; return scale
-    except Exception as e:
-        return img
+    if hasattr(self, 'RescaleSlope') and hasattr(self, 'RescaleIntercept') is not None:
+        return img * self.RescaleSlope + self.RescaleIntercept
+    else: return img
 
 # Cell
 def array_freqhist_bins(self, n_bins=100):
