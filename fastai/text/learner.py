@@ -154,13 +154,13 @@ def decode_spec_tokens(tokens):
 class LMLearner(TextLearner):
     "Add functionality to `TextLearner` when dealing with a language model"
     def predict(self, text, n_words=1, no_unk=True, temperature=1., min_p=None, no_bar=False,
-                decoder=decode_spec_tokens, only_last_word=False):
+                decoder=decode_spec_tokens, only_last_word=False, n_workers=0):
         "Return `text` and the `n_words` that come after"
         self.model.reset()
-        idxs = idxs_all = self.dls.test_dl([text], num_workers=0).items[0].to(self.dls.device)
+        idxs = idxs_all = self.dls.test_dl([text], num_workers=n_workers).items[0].to(self.dls.device)
         if no_unk: unk_idx = self.dls.vocab.index(UNK)
         for _ in (range(n_words) if no_bar else progress_bar(range(n_words), leave=False)):
-            with self.no_bar(): preds,_ = self.get_preds(dl=[(idxs[None],)])
+            with self.no_bar(): preds,_ = self.get_preds(dl=[(idxs[None],)], num_workers=n_workers)
             res = preds[0][-1]
             if no_unk: res[unk_idx] = 0.
             if min_p is not None:

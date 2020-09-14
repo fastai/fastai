@@ -14,19 +14,16 @@ def plot_top_losses(x, y, *args, **kwargs):
     raise Exception(f"plot_top_losses is not implemented for {type(x)},{type(y)}")
 
 # Cell
-#nbdev_comment _all_ = ["plot_top_losses"]
-
-# Cell
 class Interpretation():
     "Interpretation base class, can be inherited for task specific Interpretation classes"
-    def __init__(self, dl, inputs, preds, targs, decoded, losses):
-        store_attr("dl,inputs,preds,targs,decoded,losses")
+    def __init__(self, dl, inputs, preds, targs, decoded, losses, n_workers):
+        store_attr("dl,inputs,preds,targs,decoded,losses,n_workers")
 
     @classmethod
-    def from_learner(cls, learn, ds_idx=1, dl=None, act=None):
+    def from_learner(cls, learn, ds_idx=1, dl=None, act=None, n_workers=defaults.cpus):
         "Construct interpretation object from a learner"
         if dl is None: dl = learn.dls[ds_idx]
-        return cls(dl, *learn.get_preds(dl=dl, with_input=True, with_loss=True, with_decoded=True, act=None))
+        return cls(dl, *learn.get_preds(dl=dl, with_input=True, with_loss=True, with_decoded=True, act=None, num_workers=n_workers))
 
     def top_losses(self, k=None, largest=True):
         "`k` largest(/smallest) losses and indexes, defaulting to all losses (sorted by `largest`)."
@@ -51,8 +48,8 @@ class Interpretation():
 class ClassificationInterpretation(Interpretation):
     "Interpretation methods for classification models."
 
-    def __init__(self, dl, inputs, preds, targs, decoded, losses):
-        super().__init__(dl, inputs, preds, targs, decoded, losses)
+    def __init__(self, dl, inputs, preds, targs, decoded, losses, n_workers):
+        super().__init__(dl, inputs, preds, targs, decoded, losses, n_workers)
         self.vocab = self.dl.vocab
         if is_listy(self.vocab): self.vocab = self.vocab[-1]
 
