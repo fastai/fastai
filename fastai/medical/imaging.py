@@ -21,6 +21,9 @@ try:
 except: pass
 
 # Cell
+#nbdev_comment _all_ = ['DcmDataset', 'DcmTag', 'DcmMultiValue', 'dcmread', 'get_dicom_files']
+
+# Cell
 def get_dicom_files(path, recurse=True, folders=None):
     "Get dicom files in `path` recursively, only in `folders`, if specified."
     return get_files(path, extensions=[".dcm"], recurse=recurse, folders=folders)

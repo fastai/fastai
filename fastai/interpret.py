@@ -14,6 +14,9 @@ def plot_top_losses(x, y, *args, **kwargs):
     raise Exception(f"plot_top_losses is not implemented for {type(x)},{type(y)}")
 
 # Cell
+#nbdev_comment _all_ = ["plot_top_losses"]
+
+# Cell
 class Interpretation():
     "Interpretation base class, can be inherited for task specific Interpretation classes"
     def __init__(self, dl, inputs, preds, targs, decoded, losses, n_workers):

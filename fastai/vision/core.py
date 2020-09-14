@@ -12,6 +12,9 @@ from ..data.all import *
 from PIL import Image
 
 # Cell
+#nbdev_comment _all_ = ['Image','ToTensor']
+
+# Cell
 imagenet_stats = ([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
 cifar_stats    = ([0.491, 0.482, 0.447], [0.247, 0.243, 0.261])
 mnist_stats    = ([0.131], [0.308])
