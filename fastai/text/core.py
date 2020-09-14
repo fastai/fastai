@@ -257,7 +257,7 @@ class Tokenizer(Transform):
     input_types = (str, list, L, tuple, Path)
     def __init__(self, tok, rules=None, counter=None, lengths=None, mode=None, sep=' '):
         if isinstance(tok,type): tok=tok()
-        store_attr(self, 'tok,counter,lengths,mode,sep')
+        store_attr('tok,counter,lengths,mode,sep')
         self.rules = defaults.text_proc_rules if rules is None else rules
 
     @classmethod

@@ -67,7 +67,7 @@ def _pad_tensor(t, bs):
 # Cell
 class SentenceEncoder(Module):
     "Create an encoder over `module` that can process a full sentence."
-    def __init__(self, bptt, module, pad_idx=1, max_len=None): store_attr(self, 'bptt,module,pad_idx,max_len')
+    def __init__(self, bptt, module, pad_idx=1, max_len=None): store_attr('bptt,module,pad_idx,max_len')
     def reset(self): getattr(self.module, 'reset', noop)()
 
     def forward(self, input):

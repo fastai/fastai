@@ -226,5 +226,57 @@
   "https://storage.googleapis.com/ml-animal-sounds-datasets/zebra_finch.zip": [
     83886080,
     "91fa9c4ebfc986b9babc2a805a10e281"
+  ],
+  "https://s3.amazonaws.com/fast-ai-sample/mnist_sample.tgz": [
+    3214948,
+    "2dbc7ec6f9259b583af0072c55816a88"
+  ],
+  "https://s3.amazonaws.com/fast-ai-sample/adult_sample.tgz": [
+    968212,
+    "64eb9d7e23732de0b138f7372d15492f"
+  ],
+  "https://s3.amazonaws.com/fast-ai-sample/biwi_sample.tgz": [
+    593774,
+    "9179f4c1435f4b291f0d5b072d60c2c9"
+  ],
+  "https://s3.amazonaws.com/fast-ai-sample/cifar10.tgz": [
+    168168549,
+    "a5f8c31371b63a406b23368042812d3c"
+  ],
+  "https://s3.amazonaws.com/fast-ai-sample/human_numbers.tgz": [
+    30252,
+    "8a19c3bfa2bcb08cd787e741261f3ea2"
+  ],
+  "https://s3.amazonaws.com/fast-ai-sample/imdb_sample.tgz": [
+    571827,
+    "0842e61a9867caa2e6fbdb14fa703d61"
+  ],
+  "https://s3.amazonaws.com/fast-ai-sample/movie_lens_sample.tgz": [
+    51790,
+    "10961384dfe7c5181460390a460c1f77"
+  ],
+  "https://s3.amazonaws.com/fast-ai-sample/mnist_tiny.tgz": [
+    342207,
+    "56143e8f24db90d925d82a5a74141875"
+  ],
+  "https://s3.amazonaws.com/fast-ai-sample/planet_sample.tgz": [
+    15523994,
+    "8bfb174b3162f07fbde09b54555bdb00"
+  ],
+  "https://s3.amazonaws.com/fast-ai-sample/planet_tiny.tgz": [
+    997569,
+    "490873c5683454d4b2611fb1f00a68a9"
+  ],
+  "https://s3.amazonaws.com/fast-ai-sample/camvid_tiny.tgz": [
+    2314212,
+    "2cf6daf91b7a2083ecfa3e9968e9d915"
+  ],
+  "https://s3.amazonaws.com/fast-ai-coco/coco_tiny.tgz": [
+    801038,
+    "367467451ac4fba79a647753c2c66d3a"
+  ],
+  "https://s3.amazonaws.com/fast-ai-sample/dogscats.tgz": [
+    839285364,
+    "3e483c8d6ef2175e9d395a6027eb92b7"
   ]
 }

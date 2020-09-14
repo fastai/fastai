@@ -14,7 +14,7 @@ from .fp16 import ModelToHalf
 class TensorBoardCallback(Callback):
     "Saves model topology, losses & metrics"
     def __init__(self, log_dir=None, trace_model=True, log_preds=True, n_preds=9):
-        store_attr(self, 'log_dir,trace_model,log_preds,n_preds')
+        store_attr('log_dir,trace_model,log_preds,n_preds')
 
     def before_fit(self):
         self.run = not hasattr(self.learn, 'lr_finder') and not hasattr(self, "gather_preds") and rank_distrib()==0

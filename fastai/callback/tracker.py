@@ -69,7 +69,7 @@ class SaveModelCallback(TrackerCallback):
         super().__init__(monitor=monitor, comp=comp, min_delta=min_delta)
         # keep track of file path for loggers
         self.last_saved_path = None
-        store_attr(self, 'fname,every_epoch,with_opt')
+        store_attr('fname,every_epoch,with_opt')
 
     def _save(self, name):
         self.last_saved_path = self.learn.save(name, with_opt=self.with_opt)

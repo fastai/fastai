@@ -41,23 +41,18 @@ jobs:
   test-nbdev-sync:
     needs: filter
     runs-on: ubuntu-latest
-    container: fastdotai/fastai #this is defined here: https://github.com/fastai/docker-containers/blob/master/fastai-build/Dockerfile
+    container: fastai/jekyll
     steps:
-
     - name: checkout contents of PR
       uses: actions/checkout@v2
-
     - name: Install libraries
-      run: |
-        pip install -Uqqq nbdev
-        pip install -Uqe .
-        
+      run: pip install -Uqe .
     - name: check if notebooks are synced and cleaned
       uses: fastai/workflows/nb@master
 
   test-notebooks:
     needs: filter
-    container: fastdotai/fastai
+    container: fastai/fastai
     runs-on: ubuntu-latest
     env:
       download: "true"
@@ -68,11 +63,10 @@ jobs:
     steps:        
     - name: checkout contents of PR
       uses: actions/checkout@v2
-
     - name: Install libraries
       run: |
-        pip install -U nbdev
-        pip install -Ue .
+        pip install -Uq fastcore fastscript fastprogress
+        pip install -Uqe .[dev]
     
     - name: check for cache hit
       uses: actions/cache@v2
@@ -80,16 +74,14 @@ jobs:
       id: cache
       with:
         path: ~/.fastai/data
-        key: 'fastai-test-data-v1'
+        key: 'fastai-test-data-v3'
 
     - name: download data
       if: env.download == 'true' && steps.cache.outputs.cache-hit != 'true'
       run: |
-        ipython /workspace/download_testdata.py
+        ipython /root/download_testdata.py
         mkdir -p $HOME/.fastai/data
         find $HOME/.fastai/archive/ -name "*.tgz" -exec tar -xzvf {} -C $HOME/.fastai/data \;
-      
     - name: Test notebooks batch ${{matrix.nb}}
-      run: |
-        nbdev_test_nbs --flags '' --n_workers 3 --pause 0.5 --fname "nbs/[0-9]${{matrix.nb}}*.ipynb"
+      run: nbdev_test_nbs --flags '' --n_workers 3 --pause 1.0 --fname "nbs/[0-9]${{matrix.nb}}*.ipynb"
   

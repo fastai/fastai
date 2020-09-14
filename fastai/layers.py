@@ -278,7 +278,7 @@ class BaseLoss():
     "Same as `loss_cls`, but flattens input and target."
     activation=decodes=noops
     def __init__(self, loss_cls, *args, axis=-1, flatten=True, floatify=False, is_2d=True, **kwargs):
-        store_attr(self, "axis,flatten,floatify,is_2d")
+        store_attr("axis,flatten,floatify,is_2d")
         self.func = loss_cls(*args,**kwargs)
         functools.update_wrapper(self, self.func)
 
@@ -311,7 +311,7 @@ class CrossEntropyLossFlat(BaseLoss):
 @log_args
 @delegates()
 class BCEWithLogitsLossFlat(BaseLoss):
-    "Same as `nn.CrossEntropyLoss`, but flattens input and target."
+    "Same as `nn.BCEWithLogitsLoss`, but flattens input and target."
     @use_kwargs_dict(keep=True, weight=None, reduction='mean', pos_weight=None)
     def __init__(self, *args, axis=-1, floatify=True, thresh=0.5, **kwargs):
         super().__init__(nn.BCEWithLogitsLoss, *args, axis=axis, floatify=floatify, is_2d=False, **kwargs)

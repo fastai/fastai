@@ -24,7 +24,7 @@ class _FakeLoader:
         None,False,noops,False,_DatasetKind.Iterable,_DatasetKind.Iterable,Inf.count,None,2)
     def __init__(self, d, pin_memory, num_workers, timeout):
         self.dataset,self.default,self.worker_init_fn = self,d,_wif
-        store_attr(self, 'd,pin_memory,num_workers,timeout')
+        store_attr('d,pin_memory,num_workers,timeout')
 
     def __iter__(self): return iter(self.d.create_batches(self.d.sample()))
 
@@ -78,7 +78,7 @@ class DataLoader(GetAttr):
         if n is None:
             try: n = len(dataset)
             except TypeError: pass
-        store_attr(self, 'dataset,bs,shuffle,drop_last,indexed,n,pin_memory,timeout,device')
+        store_attr('dataset,bs,shuffle,drop_last,indexed,n,pin_memory,timeout,device')
         self.rng,self.nw,self.offs = random.Random(random.randint(0,2**32-1)),1,0
         self.fake_l = _FakeLoader(self, pin_memory, num_workers, timeout)
 

@@ -15,7 +15,7 @@ class GANModule(Module):
     def __init__(self, generator=None, critic=None, gen_mode=False):
         if generator is not None: self.generator=generator
         if critic    is not None: self.critic   =critic
-        store_attr(self, 'gen_mode')
+        store_attr('gen_mode')
 
     def forward(self, *args):
         return self.generator(*args) if self.gen_mode else self.critic(*args)
@@ -97,7 +97,7 @@ class GANLoss(GANModule):
     "Wrapper around `crit_loss_func` and `gen_loss_func`"
     def __init__(self, gen_loss_func, crit_loss_func, gan_model):
         super().__init__()
-        store_attr(self, 'gen_loss_func,crit_loss_func,gan_model')
+        store_attr('gen_loss_func,crit_loss_func,gan_model')
 
     def generator(self, output, target):
         "Evaluate the `output` with the critic then uses `self.gen_loss_func`"
@@ -134,7 +134,7 @@ class GANTrainer(Callback):
     "Handles GAN Training."
     run_after = TrainEvalCallback
     def __init__(self, switch_eval=False, clip=None, beta=0.98, gen_first=False, show_img=True):
-        store_attr(self, 'switch_eval,clip,gen_first,show_img')
+        store_attr('switch_eval,clip,gen_first,show_img')
         self.gen_loss,self.crit_loss = AvgSmoothLoss(beta=beta),AvgSmoothLoss(beta=beta)
 
     def _set_trainable(self):
@@ -207,7 +207,7 @@ class GANTrainer(Callback):
 class FixedGANSwitcher(Callback):
     "Switcher to do `n_crit` iterations of the critic then `n_gen` iterations of the generator."
     run_after = GANTrainer
-    def __init__(self, n_crit=1, n_gen=1): store_attr(self, 'n_crit,n_gen')
+    def __init__(self, n_crit=1, n_gen=1): store_attr('n_crit,n_gen')
     def before_train(self): self.n_c,self.n_g = 0,0
 
     def after_batch(self):
@@ -229,7 +229,7 @@ class AdaptiveGANSwitcher(Callback):
     "Switcher that goes back to generator/critic when the loss goes below `gen_thresh`/`crit_thresh`."
     run_after = GANTrainer
     def __init__(self, gen_thresh=None, critic_thresh=None):
-        store_attr(self, 'gen_thresh,critic_thresh')
+        store_attr('gen_thresh,critic_thresh')
 
     def after_batch(self):
         "Switch the model if necessary."

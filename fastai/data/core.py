@@ -123,6 +123,16 @@ class TfmdDL(DataLoader):
         return self
 
 # Cell
+add_docs(TfmdDL,
+         decode="Decode `b` using `tfms`",
+         decode_batch="Decode `b` entirely",
+         new="Create a new version of self with a few changed attributes",
+         show_batch="Show `b` (defaults to `one_batch`), a list of lists of pipeline outputs (i.e. output of a `DataLoader`)",
+         show_results="Show each item of `b` and `out`",
+         before_iter="override",
+         to="Put self and its transforms state on `device`")
+
+# Cell
 @docs
 class DataLoaders(GetAttr):
     "Basic wrapper around several `DataLoader`s."
@@ -220,7 +230,7 @@ class TfmdLists(FilteredBase, L, GetAttr):
         if isinstance(tfms,TfmdLists): tfms = tfms.tfms
         if isinstance(tfms,Pipeline): do_setup=False
         self.tfms = Pipeline(tfms, split_idx=split_idx)
-        store_attr(self, 'types,split_idx')
+        store_attr('types,split_idx')
         if do_setup:
             pv(f"Setting up {self.tfms}", verbose)
             self.setup(train_setup=train_setup)
@@ -268,6 +278,17 @@ class TfmdLists(FilteredBase, L, GetAttr):
         res = super().__getitem__(idx)
         if self._after_item is None: return res
         return self._after_item(res) if is_indexer(idx) else res.map(self._after_item)
+
+# Cell
+add_docs(TfmdLists,
+         setup="Transform setup with self",
+         decode="From `Pipeline`",
+         show="From `Pipeline`",
+         overlapping_splits="All splits that are in more than one split",
+         subset="New `TfmdLists` with same tfms that only includes items in `i`th split",
+         infer_idx="Finds the index where `self.tfms` can be applied to `x`, depending on the type of `x`",
+         infer="Apply `self.tfms` to `x` starting at the right tfm depending on the type of `x`",
+         new_empty="A new version of `self` but with no items")
 
 # Cell
 def decode_at(o, idx):

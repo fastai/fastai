@@ -1,4 +1,13 @@
 {
     "name": "fastai-codespaces",
-    "extensions": ["ms-python.python"]
+    "dockerComposeFile": "docker-compose.yml",
+    "service": "watcher",
+    "settings": {"terminal.integrated.shell.linux": "/bin/bash"},
+    "mounts": [ "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind" ],
+    "forwardPorts": [4000, 8080],
+    "appPort": [4000, 8080],
+    "extensions": ["ms-python.python",
+                   "ms-azuretools.vscode-docker"],
+    "runServices": ["notebook", "jekyll", "watcher"],
+    "postStartCommand": "pip install -e ."
 }
