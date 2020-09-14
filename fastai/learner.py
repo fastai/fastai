@@ -227,7 +227,7 @@ class Learner():
         if dl is None: dl = self.dls[ds_idx].new(shuffled=False, drop_last=False, num_workers=n_workers)
         if reorder and hasattr(dl, 'get_idxs'):
             idxs = dl.get_idxs()
-            dl = dl.new(get_idxs = _ConstantFunc(idxs), num_workers=n_workers)
+            dl = dl.new(get_idxs = _ConstantFunc(idxs))
         cb = GatherPredsCallback(with_input=with_input, with_loss=with_loss, **kwargs)
         ctx_mgrs = self.validation_context(cbs=L(cbs)+[cb], inner=inner)
         if with_loss: ctx_mgrs.append(self.loss_not_reduced())
