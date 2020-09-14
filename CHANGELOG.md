@@ -2,6 +2,13 @@
 
 <!-- do not remove -->
 
+## 2.0.11
+
+### Bugs Squashed
+
+- Fix `cont_cat_split` for multi-label classification ([#2759](https://api.github.com/repos/fastai/fastai/issues/2759))
+- fastbook error: "index 3 is out of bounds for dimension 0 with size 3" ([#2792](https://api.github.com/repos/fastai/fastai/issues/2792))
+
 ## 2.0.10
 
 ### New Features
