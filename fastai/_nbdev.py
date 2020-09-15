@@ -852,7 +852,7 @@ modules = ["torch_core.py",
            "test_utils.py",
            "_pytorch_doc.py"]
 
-doc_url = "https://docs.fast.ai/"
+doc_url = "https://muellerzr.github.io/fastai"
 
 git_url = "https://github.com/fastai/fastai/tree/master/"
 
