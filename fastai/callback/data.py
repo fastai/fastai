@@ -9,7 +9,9 @@ from ..basics import *
 class CollectDataCallback(Callback):
     "Collect all batches, along with `pred` and `loss`, into `self.data`. Mainly for testing"
     def before_fit(self): self.data = L()
-    def after_batch(self): self.data.append(to_detach((self.xb,self.yb,self.pred,self.loss)))
+    def after_batch(self):
+        self.data.append(self.learn.to_detach((self.xb,self.yb,self.pred,self.loss)))
+
 
 # Cell
 class CudaCallback(Callback):

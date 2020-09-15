@@ -6,8 +6,6 @@ __all__ = ['fa_collate', 'fa_convert', 'SkipItemException', 'DataLoader']
 from ..torch_basics import *
 
 from torch.utils.data.dataloader import _MultiProcessingDataLoaderIter,_SingleProcessDataLoaderIter,_DatasetKind
-
-# Cell
 _loaders = (_MultiProcessingDataLoaderIter,_SingleProcessDataLoaderIter)
 
 # Cell
@@ -95,12 +93,12 @@ class DataLoader(GetAttr):
         return idxs
 
     def sample(self):
-        idxs = self.get_idxs()
-        return (b for i,b in enumerate(idxs) if i//(self.bs or 1)%self.num_workers==self.offs)
+        return (b for i,b in enumerate(self.__idxs) if i//(self.bs or 1)%self.num_workers==self.offs)
 
     def __iter__(self):
         self.randomize()
         self.before_iter()
+        self.__idxs=self.get_idxs() # called in context of main process (not workers/subprocesses)
         for b in _loaders[self.fake_l.num_workers==0](self.fake_l):
             if self.device is not None: b = to_device(b, self.device)
             yield self.after_batch(b)
@@ -148,7 +146,7 @@ add_docs(DataLoader, "API compatible with PyTorch DataLoader, with a lot more ca
          prebatched     = "Check if `bs` is None.",
          do_item        = "Combines `after_item` and `create_item` to get an item from dataset by providing index as input.",
          chunkify       = "Used by `create_batches` to turn generator of items (`b`) into batches.",
-         shuffle_fn     = "Returns a random permutation of `idxs`. Use python's `random` functionality to implement it.",
+         shuffle_fn     = "Returns a random permutation of `idxs`.",
          randomize      = "Set's `DataLoader` random number generator state.",
          retain         = "Cast each item of `res` to type of matching item in `b` if its a superclass.",
          create_item    = "Return a subset of the dataset containing the index values of the sample if there are samples, else return the next iterator.",

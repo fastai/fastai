@@ -291,6 +291,9 @@ class Learner():
         load_model(file, self.model, self.opt, device=device, **kwargs)
         return self
 
+    def to_detach(self,b,cpu=True,gather=True):
+        return self.dl.to_detach(b,cpu,gather) if hasattr(getattr(self,'dl',None),'to_detach') else to_detach(b,cpu,gather)
+
 Learner.x,Learner.y = add_props(lambda i,x: detuplify((x.xb,x.yb)[i]))
 
 # Cell
@@ -317,6 +320,7 @@ add_docs(Learner, "Group together a `model`, some `dls` and a `loss_func` to han
     loss_not_reduced="A context manager to evaluate `loss_func` with reduction set to none.",
     save="Save model and optimizer state (if `with_opt`) to `self.path/self.model_dir/file`",
     load="Load model and optimizer state (if `with_opt`) from `self.path/self.model_dir/file` using `device`",
+    to_detach="Calls `to_detach` if `self.dl` provides a `.to_detach` function otherwise calls global `to_detach`",
     __call__="Call `event_name` for all `Callback`s in `self.cbs`"
 )
 
@@ -363,7 +367,7 @@ class AvgMetric(Metric):
     def reset(self):           self.total,self.count = 0.,0
     def accumulate(self, learn):
         bs = find_bs(learn.yb)
-        self.total += to_detach(self.func(learn.pred, *learn.yb))*bs
+        self.total += learn.to_detach(self.func(learn.pred, *learn.yb))*bs
         self.count += bs
     @property
     def value(self): return self.total/self.count if self.count != 0 else None
@@ -376,7 +380,7 @@ class AvgLoss(Metric):
     def reset(self):           self.total,self.count = 0.,0
     def accumulate(self, learn):
         bs = find_bs(learn.yb)
-        self.total += to_detach(learn.loss.mean())*bs
+        self.total += learn.to_detach(learn.loss.mean())*bs
         self.count += bs
     @property
     def value(self): return self.total/self.count if self.count != 0 else None

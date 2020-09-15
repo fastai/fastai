@@ -92,7 +92,7 @@ class GatherPredsCallback(Callback):
         store_attr("with_input,with_loss,save_preds,save_targs,concat_dim")
 
     def before_batch(self):
-        if self.with_input: self.inputs.append((to_detach(self.xb)))
+        if self.with_input: self.inputs.append((self.learn.to_detach(self.xb)))
 
     def before_validate(self):
         "Initialize containers"
@@ -103,7 +103,7 @@ class GatherPredsCallback(Callback):
     def after_batch(self):
         "Save predictions, targets and potentially losses"
         if not hasattr(self, 'pred'): return
-        preds,targs = to_detach(self.pred),to_detach(self.yb)
+        preds,targs = self.learn.to_detach(self.pred),self.learn.to_detach(self.yb)
         if self.save_preds is None: self.preds.append(preds)
         else: (self.save_preds/str(self.iter)).save_array(preds)
         if self.save_targs is None: self.targets.append(targs)
@@ -111,7 +111,7 @@ class GatherPredsCallback(Callback):
         if self.with_loss:
             bs = find_bs(self.yb)
             loss = self.loss if self.loss.numel() == bs else self.loss.view(bs,-1).mean(1)
-            self.losses.append(to_detach(loss))
+            self.losses.append(self.learn.to_detach(loss))
 
     def after_validate(self):
         "Concatenate all recorded tensors"

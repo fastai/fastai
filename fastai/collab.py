@@ -71,13 +71,13 @@ class EmbeddingDotBias(Module):
         "Bias for item or user (based on `is_item`) for all in `arr`"
         idx = self._get_idx(arr, is_item)
         layer = (self.i_bias if is_item else self.u_bias).eval().cpu()
-        return to_detach(layer(idx).squeeze())
+        return to_detach(layer(idx).squeeze(),gather=False)
 
     def weight(self, arr, is_item=True):
         "Weight for item or user (based on `is_item`) for all in `arr`"
         idx = self._get_idx(arr, is_item)
         layer = (self.i_weight if is_item else self.u_weight).eval().cpu()
-        return to_detach(layer(idx))
+        return to_detach(layer(idx),gather=False)
 
 # Cell
 class EmbeddingNN(TabularModel):

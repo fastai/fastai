@@ -174,7 +174,7 @@ class GANTrainer(Callback):
         if self.gen_mode:
             self.gen_loss.accumulate(self.learn)
             self.gen_losses.append(self.gen_loss.value)
-            self.last_gen = to_detach(self.pred)
+            self.last_gen = self.learn.to_detach(self.pred)
         else:
             self.crit_loss.accumulate(self.learn)
             self.crit_losses.append(self.crit_loss.value)
