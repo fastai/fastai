@@ -13,7 +13,6 @@ help:
 fastai: $(SRC)
 	nbdev_clean_nbs
 	nbdev_build_lib
-	touch fastai
 
 update_lib:
 	pip install nbdev --upgrade
@@ -24,7 +23,6 @@ docs_serve: docs
 docs: $(SRC)
 	rsync -a docs_src/ docs
 	nbdev_build_docs
-	touch docs
 
 test:
 	nbdev_test_nbs --pause 0.5 --flags ''
