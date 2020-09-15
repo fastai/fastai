@@ -15,13 +15,14 @@ def _wif(worker_id):
     set_num_threads(1)
     info = get_worker_info()
     ds = info.dataset.d
-    ds.nw,ds.offs = info.num_workers,info.id
+    ds.num_workers,ds.offs = info.num_workers,info.id
     set_seed(info.seed)
     ds.wif()
 
 class _FakeLoader:
-    _IterableDataset_len_called,_auto_collation,collate_fn,drop_last,dataset_kind,_dataset_kind,_index_sampler,generator,prefetch_factor = (
-        None,False,noops,False,_DatasetKind.Iterable,_DatasetKind.Iterable,Inf.count,None,2)
+    _IterableDataset_len_called,_auto_collation,collate_fn,drop_last = None,False,noops,False
+    _index_sampler,generator,prefetch_factor = Inf.count,None,2
+    dataset_kind = _dataset_kind = _DatasetKind.Iterable
     def __init__(self, d, pin_memory, num_workers, timeout):
         self.dataset,self.default,self.worker_init_fn = self,d,_wif
         store_attr('d,pin_memory,num_workers,timeout')
@@ -33,11 +34,11 @@ class _FakeLoader:
 
     @contextmanager
     def no_multiproc(self):
-        old_nw = self.num_workers
+        old_num_workers = self.num_workers
         try:
             self.num_workers = 0
             yield self.d
-        finally: self.num_workers = old_nw
+        finally: self.num_workers = old_num_workers
 
 _collate_types = (ndarray, Tensor, typing.Mapping, str)
 
@@ -79,7 +80,7 @@ class DataLoader(GetAttr):
             try: n = len(dataset)
             except TypeError: pass
         store_attr('dataset,bs,shuffle,drop_last,indexed,n,pin_memory,timeout,device')
-        self.rng,self.nw,self.offs = random.Random(random.randint(0,2**32-1)),1,0
+        self.rng,self.num_workers,self.offs = random.Random(random.randint(0,2**32-1)),1,0
         self.fake_l = _FakeLoader(self, pin_memory, num_workers, timeout)
 
     def __len__(self):
@@ -95,7 +96,7 @@ class DataLoader(GetAttr):
 
     def sample(self):
         idxs = self.get_idxs()
-        return (b for i,b in enumerate(idxs) if i//(self.bs or 1)%self.nw==self.offs)
+        return (b for i,b in enumerate(idxs) if i//(self.bs or 1)%self.num_workers==self.offs)
 
     def __iter__(self):
         self.randomize()
