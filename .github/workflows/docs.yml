@@ -25,5 +25,5 @@ jobs:
       with:
         username: jeremyphoward
         hostname: ps625762.dreamhostps.com
-        dest_path: fastai.fast.ai
+        dest_path: docs.fast.ai
         ssh_key: ${{ secrets.DH_KEY }}
