@@ -147,7 +147,7 @@ def layer_info(learn, *xb):
     def _track(m, i, o): return (m.__class__.__name__,)+total_params(m)+(apply(lambda x:x.shape, o),)
     with Hooks(flatten_model(learn.model), _track) as h:
         batch = apply(lambda o:o[:1], xb)
-        with learn: r = learn.get_preds(dl=[batch], inner=True, reorder=False)
+        with learn.no_mbar(), learn: r = learn.get_preds(dl=[batch], inner=True, reorder=False)
         return h.stored
 
 # Cell

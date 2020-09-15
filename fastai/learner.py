@@ -565,8 +565,8 @@ def tta(self:Learner, ds_idx=1, dl=None, n=4, item_tfms=None, batch_tfms=None, b
     if dl is None: dl = self.dls[ds_idx]
     if item_tfms is not None or batch_tfms is not None: dl = dl.new(after_item=item_tfms, after_batch=batch_tfms)
     try:
-        self(_before_epoch)
         with dl.dataset.set_split_idx(0), self.no_mbar():
+            self(_before_epoch)
             if hasattr(self,'progress'): self.progress.mbar = master_bar(list(range(n)))
             aug_preds = []
             for i in self.progress.mbar if hasattr(self,'progress') else range(n):
