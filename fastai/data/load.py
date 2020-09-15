@@ -103,7 +103,7 @@ class DataLoader(GetAttr):
             if self.device is not None: b = to_device(b, self.device)
             yield self.after_batch(b)
         self.after_iter()
-        if hasattr(self, 'it'): delattr(self, 'it')
+        if hasattr(self, 'it'): del(self.it)
 
     def create_batches(self, samps):
         self.it = iter(self.dataset) if self.dataset is not None else None

@@ -31,7 +31,6 @@ test:
 
 release: pypi
 	sleep 3
-	fastrelease_release
 	fastrelease_conda_package --upload_user fastai
 	nbdev_bump_version
 
