@@ -31,11 +31,12 @@ test:
 
 release: pypi
 	sleep 3
-	nbdev_conda_package --upload_user fastai
+	fastrelease_release
+	fastrelease_conda_package --upload_user fastai
 	nbdev_bump_version
 
 conda_release:
-	nbdev_conda_package --upload_user fastai
+	fastrelease_conda_package --upload_user fastai
 	nbdev_bump_version
 
 pypi: dist
