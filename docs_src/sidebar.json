@@ -6,7 +6,7 @@
     "Tutorials": {
         "Overview": "/tutorial",
         "": {
-            "Beginners": {
+            "Beginner": {
                 "Vision Tutorial": "/tutorial.vision",
                 "Text Tutorial": "/tutorial.text",
                 "Tabular Tutorial": "/tutorial.tabular",
