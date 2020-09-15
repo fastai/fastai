@@ -59,9 +59,9 @@ class Config:
 class URLs():
     "Global constants for dataset and model URLs."
     LOCAL_PATH = Path.cwd()
-    URL = 'http://files.fast.ai/data/examples/'
     MDL = 'http://files.fast.ai/models/'
-    S3 = 'https://s3.amazonaws.com/fast-ai-'
+    S3  = 'https://s3.amazonaws.com/fast-ai-'
+    URL = f'{S3}sample/'
 
     S3_IMAGE    = f'{S3}imageclas/'
     S3_IMAGELOC = f'{S3}imagelocal/'
@@ -75,7 +75,7 @@ class URLs():
     BIWI_SAMPLE         = f'{URL}biwi_sample.tgz'
     CIFAR               = f'{URL}cifar10.tgz'
     COCO_SAMPLE         = f'{S3_COCO}coco_sample.tgz'
-    COCO_TINY           = f'{URL}coco_tiny.tgz'
+    COCO_TINY           = f'{S3_COCO}coco_tiny.tgz'
     HUMAN_NUMBERS       = f'{URL}human_numbers.tgz'
     IMDB                = f'{S3_NLP}imdb.tgz'
     IMDB_SAMPLE         = f'{URL}imdb_sample.tgz'
@@ -196,7 +196,7 @@ def download_data(url, fname=None, c_key='archive', force_download=False):
 def _get_check(url):
     "internal function to get the hash of the file at `url`."
     checks = json.load(open(Path(__file__).parent/'checks.txt', 'r'))
-    return checks.get(url, None)
+    return checks.get(url, '')
 
 def _check_file(fname):
     "internal function to get the hash of the local file at `fname`."

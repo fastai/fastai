@@ -23,7 +23,7 @@ class GradientAccumulation(Callback):
     "Accumulate gradients before updating weights"
     toward_end,run_before=True,MixedPrecision
 
-    def __init__(self, n_acc=32): store_attr(self, 'n_acc')
+    def __init__(self, n_acc=32): store_attr('n_acc')
     def before_fit(self): self.count=0
 
     def after_backward(self):

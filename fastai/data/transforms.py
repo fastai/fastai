@@ -78,7 +78,7 @@ class ItemGetter(ItemTransform):
 class AttrGetter(ItemTransform):
     "Creates a proper transform that applies `attrgetter(nm)` (even on a tuple)"
     _retain = False
-    def __init__(self, nm, default=None): store_attr(self, 'nm,default')
+    def __init__(self, nm, default=None): store_attr()
     def encodes(self, x): return getattr(x, self.nm, self.default)
 
 # Cell
@@ -184,9 +184,8 @@ class RegexLabeller():
 # Cell
 class ColReader(DisplayedTransform):
     "Read `cols` in `row` with potential `pref` and `suff`"
-    store_attrs = 'cols'
     def __init__(self, cols, pref='', suff='', label_delim=None):
-        store_attr(self, 'suff,label_delim')
+        store_attr()
         self.pref = str(pref) + os.path.sep if isinstance(pref, Path) else pref
         self.cols = L(cols)
 
@@ -229,10 +228,10 @@ class CategoryMap(CollBase):
 # Cell
 class Categorize(DisplayedTransform):
     "Reversible transform of category string to `vocab` id"
-    loss_func,order,store_attrs=CrossEntropyLossFlat(),1,'vocab,add_na'
+    loss_func,order=CrossEntropyLossFlat(),1
     def __init__(self, vocab=None, sort=True, add_na=False):
-        store_attr(self, self.store_attrs+',sort')
-        self.vocab = None if vocab is None else CategoryMap(vocab, sort=sort, add_na=add_na)
+        if vocab is not None: vocab = CategoryMap(vocab, sort=sort, add_na=add_na)
+        store_attr()
 
     def setups(self, dsets):
         if self.vocab is None and dsets is not None: self.vocab = CategoryMap(dsets, sort=self.sort, add_na=self.add_na)
@@ -268,9 +267,8 @@ class MultiCategory(L):
 # Cell
 class OneHotEncode(DisplayedTransform):
     "One-hot encodes targets"
-    order,store_attrs=2,'c'
-    def __init__(self, c=None):
-        self.c = c
+    order=2
+    def __init__(self, c=None): store_attr()
 
     def setups(self, dsets):
         if self.c is None: self.c = len(L(getattr(dsets, 'vocab', None)))
@@ -292,9 +290,8 @@ class EncodedMultiCategorize(Categorize):
 # Cell
 class RegressionSetup(DisplayedTransform):
     "Transform that floatifies targets"
-    loss_func,store_attrs=MSELossFlat(),'c'
-    def __init__(self, c=None):
-        self.c = c
+    loss_func=MSELossFlat()
+    def __init__(self, c=None): store_attr()
 
     def encodes(self, o): return tensor(o).float()
     def decodes(self, o): return TitledFloat(o) if o.ndim==0 else TitledTuple(o_.item() for o_ in o)
@@ -320,9 +317,8 @@ class ToTensor(Transform):
 # Cell
 class IntToFloatTensor(DisplayedTransform):
     "Transform image to float tensor, optionally dividing by 255 (e.g. for images)."
-    order,store_attrs = 10,'div,div_mask' #Need to run after PIL transforms on the GPU
-    def __init__(self, div=255., div_mask=1):
-        store_attr(self, 'div,div_mask')
+    order = 10 #Need to run after PIL transforms on the GPU
+    def __init__(self, div=255., div_mask=1): store_attr()
     def encodes(self, o:TensorImage): return o.float().div_(self.div)
     def encodes(self, o:TensorMask ): return o.long() // self.div_mask
     def decodes(self, o:TensorImage): return ((o.clamp(0., 1.) * self.div).long()) if self.div else o
@@ -339,9 +335,8 @@ def broadcast_vec(dim, ndim, *t, cuda=True):
 @docs
 class Normalize(DisplayedTransform):
     "Normalize/denorm batch of `TensorImage`"
-    parameters,order,store_attrs=L('mean', 'std'),99, 'mean,std,axes'
-    def __init__(self, mean=None, std=None, axes=(0,2,3)):
-        self.mean,self.std,self.axes = mean,std,axes
+    parameters,order = L('mean', 'std'),99
+    def __init__(self, mean=None, std=None, axes=(0,2,3)): store_attr()
 
     @classmethod
     def from_stats(cls, mean, std, dim=1, ndim=4, cuda=True): return cls(*broadcast_vec(dim, ndim, mean, std, cuda=cuda))

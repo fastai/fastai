@@ -31,7 +31,7 @@ from captum.insights.features import ImageFeature
 class CaptumInterpretation():
     "Captum Interpretation for Resnet"
     def __init__(self,learn,cmap_name='custom blue',colors=None,N=256,methods=['original_image','heat_map'],signs=["all", "positive"],outlier_perc=1):
-        store_attr(self, 'learn,cmap_name,colors,N,methods,signs,outlier_perc')
+        store_attr('learn,cmap_name,colors,N,methods,signs,outlier_perc')
         self.colors = [(0, '#ffffff'),(0.25, '#000000'),(1, '#000000')] if self.colors is None else self.colors
         self.dls=learn.dls
         self.model=self.learn.model

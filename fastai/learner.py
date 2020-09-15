@@ -83,13 +83,13 @@ class Learner():
     def __init__(self, dls, model, loss_func=None, opt_func=Adam, lr=defaults.lr, splitter=trainable_params, cbs=None,
                  metrics=None, path=None, model_dir='models', wd=None, wd_bn_bias=False, train_bn=True,
                  moms=(0.95,0.85,0.95)):
-        store_attr(self, "dls,model,opt_func,lr,splitter,model_dir,wd,wd_bn_bias,train_bn,metrics,moms")
-        self.training,self.create_mbar,self.logger,self.opt,self.cbs = False,True,print,None,L()
+        path = Path(path) if path is not None else getattr(dls, 'path', Path('.'))
         if loss_func is None:
             loss_func = getattr(dls.train_ds, 'loss_func', None)
             assert loss_func is not None, "Could not infer loss function from the data, please pass a loss function."
-        self.loss_func = loss_func
-        self.path = Path(path) if path is not None else getattr(dls, 'path', Path('.'))
+        self.dls,self.model = dls,model
+        store_attr(but='dls,model,cbs')
+        self.training,self.create_mbar,self.logger,self.opt,self.cbs = False,True,print,None,L()
         self.add_cbs([(cb() if isinstance(cb, type) else cb) for cb in L(defaults.callbacks)+L(cbs)])
         self.epoch,self.n_epoch,self.loss = 0,1,tensor(0.)
 
@@ -223,11 +223,11 @@ class Learner():
 
     @delegates(GatherPredsCallback.__init__)
     def get_preds(self, ds_idx=1, dl=None, with_input=False, with_decoded=False, with_loss=False, act=None,
-                  inner=False, reorder=True, cbs=None, **kwargs):
-        if dl is None: dl = self.dls[ds_idx].new(shuffled=False, drop_last=False)
+                  inner=False, reorder=True, cbs=None, n_workers=defaults.cpus, **kwargs):
+        if dl is None: dl = self.dls[ds_idx].new(shuffled=False, drop_last=False, num_workers=n_workers)
         if reorder and hasattr(dl, 'get_idxs'):
             idxs = dl.get_idxs()
-            dl = dl.new(get_idxs = _ConstantFunc(idxs))
+            dl = dl.new(get_idxs = _ConstantFunc(idxs), num_workers=n_workers)
         cb = GatherPredsCallback(with_input=with_input, with_loss=with_loss, **kwargs)
         ctx_mgrs = self.validation_context(cbs=L(cbs)+[cb], inner=inner)
         if with_loss: ctx_mgrs.append(self.loss_not_reduced())
@@ -401,7 +401,7 @@ class AvgSmoothLoss(Metric):
 # Cell
 class ValueMetric(Metric):
     "Use to include a pre-calculated metric value (for instance calculated in a `Callback`) and returned by `func`"
-    def __init__(self, func, metric_name=None): store_attr(self, 'func, metric_name')
+    def __init__(self, func, metric_name=None): store_attr('func, metric_name')
 
     @property
     def value(self): return self.func()
@@ -423,7 +423,7 @@ class Recorder(Callback):
     remove_on_fetch,run_after = True,TrainEvalCallback
 
     def __init__(self, add_time=True, train_metrics=False, valid_metrics=True, beta=0.98):
-        store_attr(self, 'add_time,train_metrics,valid_metrics')
+        store_attr('add_time,train_metrics,valid_metrics')
         self.loss,self.smooth_loss = AvgLoss(),AvgSmoothLoss(beta=beta)
 
     def before_fit(self):

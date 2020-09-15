@@ -107,7 +107,7 @@ class DistributedDL(TfmdDL):
             return b
         return apply(_inner,b) if gather and hasattr(self,'i') and hasattr(self,'n') and hasattr(self,'n_padded') else b
     def __init__(self,dl,rank,world_size):
-        store_attr(self,'dl,rank,world_size')
+        store_attr('dl,rank,world_size')
         self.bs,self.device,self.drop_last,self.dataset = dl.bs,dl.device,dl.drop_last,dl.dataset
         self.fake_l = _FakeLoader(self, dl.fake_l.pin_memory, dl.fake_l.num_workers, dl.fake_l.timeout)
 
@@ -116,7 +116,7 @@ class DistributedDL(TfmdDL):
 class DistributedTrainer(Callback):
     run_after,run_before = TrainEvalCallback,Recorder
     fup = None # for `find_unused_parameters` in DistributedDataParallel()
-    def __init__(self, cuda_id=0,sync_bn=True): store_attr(self,'cuda_id,sync_bn')
+    def __init__(self, cuda_id=0,sync_bn=True): store_attr('cuda_id,sync_bn')
     def before_fit(self):
         opt_kwargs = { 'find_unused_parameters' : DistributedTrainer.fup } if DistributedTrainer.fup is not None else {}
         self.learn.model = DistributedDataParallel(

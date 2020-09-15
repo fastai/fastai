@@ -288,7 +288,7 @@ class Lookahead(Optimizer, GetAttr):
     "Wrap `opt` in a lookahead optimizer"
     _default='opt'
     def __init__(self, opt, k=6, alpha=0.5):
-        store_attr(self, 'opt,k,alpha')
+        store_attr('opt,k,alpha')
         self._init_state()
 
     def step(self):

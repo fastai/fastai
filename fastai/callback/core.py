@@ -89,7 +89,7 @@ if not hasattr(defaults, 'callbacks'): defaults.callbacks = [TrainEvalCallback]
 class GatherPredsCallback(Callback):
     "`Callback` that saves the predictions and targets, optionally `with_loss`"
     def __init__(self, with_input=False, with_loss=False, save_preds=None, save_targs=None, concat_dim=0):
-        store_attr(self, "with_input,with_loss,save_preds,save_targs,concat_dim")
+        store_attr("with_input,with_loss,save_preds,save_targs,concat_dim")
 
     def before_batch(self):
         if self.with_input: self.inputs.append((self.learn.to_detach(self.xb)))
@@ -133,7 +133,7 @@ class FetchPredsCallback(Callback):
     remove_on_fetch = True
     def __init__(self, ds_idx=1, dl=None, with_input=False, with_decoded=False, cbs=None, reorder=True):
         self.cbs = L(cbs)
-        store_attr(self, 'ds_idx,dl,with_input,with_decoded,reorder')
+        store_attr('ds_idx,dl,with_input,with_decoded,reorder')
 
     def after_validate(self):
         to_rm = L(cb for cb in self.learn.cbs if getattr(cb, 'remove_on_fetch', False))

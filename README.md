@@ -25,7 +25,7 @@ To install with pip, use: `pip install fastai`. If you install with pip, you sho
 If you plan to develop fastai yourself, or want to be on the cutting edge, you can use an editable install (if you do this, you should also use an editable install of [fastcore](https://github.com/fastai/fastcore) to go with it.):
 
 ``` 
-git clone --recurse-submodules https://github.com/fastai/fastai
+git clone https://github.com/fastai/fastai
 pip install -e "fastai[dev]"
 ``` 
 
@@ -33,9 +33,9 @@ pip install -e "fastai[dev]"
 
 The best way to get start with fastai (and deep learning) is to read [the book](https://www.amazon.com/Deep-Learning-Coders-fastai-PyTorch/dp/1492045527), and complete [the free course](https://course.fast.ai).
 
-To see what's possible with fastai, take a look at the [Quick Start](quick_start), which shows how to use around 5 lines of code to build an image classifier, an image segmentation model, a text sentiment model, a recommendation system, and a tabular model. For each of the applications, the code is much the same.
+To see what's possible with fastai, take a look at the [Quick Start](https://docs.fast.ai/quick_start.html), which shows how to use around 5 lines of code to build an image classifier, an image segmentation model, a text sentiment model, a recommendation system, and a tabular model. For each of the applications, the code is much the same.
 
-Read through the [Tutorials](tutorial) to learn how to train your own models on your own datasets. Use the navigation sidebar to look through the fastai documentation. Every class, function, and method is documented here.
+Read through the [Tutorials](https://docs.fast.ai/tutorial) to learn how to train your own models on your own datasets. Use the navigation sidebar to look through the fastai documentation. Every class, function, and method is documented here.
 
 To learn about the design and motivation of the library, read the [peer reviewed paper](https://www.mdpi.com/2078-2489/11/2/108/htm).
 
@@ -58,10 +58,10 @@ fastai is organized around two main design goals: to be approachable and rapidly
 
 It's very easy to migrate from plain PyTorch, Ignite, or any other PyTorch-based library, or even to use fastai in conjunction with other libraries. Generally, you'll be able to use all your existing data processing code, but will be able to reduce the amount of code you require for training, and more easily take advantage of modern best practices. Here are migration guides from some popular libraries to help you on your way:
 
-- [Plain PyTorch](migrating_pytorch)
-- [Ignite](migrating_ignite)
-- [Lightning](migrating_lightning)
-- [Catalyst](migrating_catalys)
+- [Plain PyTorch](https://docs.fast.ai/migrating_pytorch)
+- [Ignite](https://docs.fast.ai/migrating_ignite)
+- [Lightning](https://docs.fast.ai/migrating_lightning)
+- [Catalyst](https://docs.fast.ai/migrating_catalyst)
 
 ## Tests
 
@@ -81,12 +81,6 @@ Tests are written using `nbdev`, for example see the documentation for `test_eq`
 ## Contributing
 
 After you clone this repository, please run `nbdev_install_git_hooks` in your terminal. This sets up git hooks, which clean up the notebooks to remove the extraneous stuff stored in the notebooks (e.g. which cells you ran) which causes unnecessary merge conflicts.
-
-Remember that fastai uses [Git submodules](https://git-scm.com/docs/gitsubmodules), so you have to include the flag `--recurse-submodules` in some of your Git commands (`git clone`, `git pull`). Alternatively, you can set the Git configuration option (since Git 2.15):
-
-```
-git config --local submodule.recurse true
-```
 
 Before submitting a PR, check that the local library and notebooks match. The script `nbdev_diff_nbs` can let you know if there is a difference between the local library and the notebooks.
 

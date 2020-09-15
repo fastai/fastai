@@ -30,7 +30,13 @@ test:
 	nbdev_test_nbs --pause 0.5 --flags ''
 
 release: pypi
-	nbdev_conda_package --upload_user fastai #--build_args '-c pytorch -c fastai'
+	sleep 3
+	fastrelease_release
+	fastrelease_conda_package --upload_user fastai
+	nbdev_bump_version
+
+conda_release:
+	fastrelease_conda_package --upload_user fastai
 	nbdev_bump_version
 
 pypi: dist
