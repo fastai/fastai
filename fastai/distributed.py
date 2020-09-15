@@ -86,7 +86,7 @@ class DistributedDL(TfmdDL):
         return idxs[self.rank::self.world_size]
     def sample(self):
         # this gets executed in fake_l context (e.g. subprocesses) so we cannot call self.get_idxs() here
-        return (b for i,b in enumerate(self._idxs) if i//(self.bs or 1)%self.nw==self.offs)
+        return (b for i,b in enumerate(self._idxs) if i//(self.bs or 1)%self.num_workers==self.offs)
     def before_iter(self):
         self.dl.before_iter()
         self._idxs = self.get_idxs()
