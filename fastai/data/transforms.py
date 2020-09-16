@@ -2,10 +2,10 @@
 
 __all__ = ['get_files', 'FileGetter', 'image_extensions', 'get_image_files', 'ImageGetter', 'get_text_files',
            'ItemGetter', 'AttrGetter', 'RandomSplitter', 'TrainTestSplitter', 'IndexSplitter', 'GrandparentSplitter',
-           'FuncSplitter', 'MaskSplitter', 'FileSplitter', 'ColSplitter', 'RandomSubsetSplitter', 'parent_label',
-           'RegexLabeller', 'ColReader', 'CategoryMap', 'Categorize', 'Category', 'MultiCategorize', 'MultiCategory',
-           'OneHotEncode', 'EncodedMultiCategorize', 'RegressionSetup', 'get_c', 'ToTensor', 'IntToFloatTensor',
-           'broadcast_vec', 'Normalize']
+           'FuncSplitter', 'MaskSplitter', 'FileSplitter', 'ColSplitter', 'RandomSubsetSplitter', 'GroupedSplitter',
+           'parent_label', 'RegexLabeller', 'ColReader', 'CategoryMap', 'Categorize', 'Category', 'MultiCategorize',
+           'MultiCategory', 'OneHotEncode', 'EncodedMultiCategorize', 'RegressionSetup', 'get_c', 'ToTensor',
+           'IntToFloatTensor', 'broadcast_vec', 'Normalize']
 
 # Cell
 from ..torch_basics import *
@@ -162,6 +162,31 @@ def RandomSubsetSplitter(train_sz, valid_sz, seed=None):
         train_len,valid_len = int(len(o)*train_sz),int(len(o)*valid_sz)
         idxs = L(int(i) for i in torch.randperm(len(o)))
         return idxs[:train_len],idxs[train_len:train_len+valid_len]
+    return _inner
+
+# Cell
+def GroupedSplitter(groupkey,valid_pct=0.2, seed=None):
+    "Split `items` between train/val with `valid_pct` randomly, ensuring that subgroups are not split between sets. Groups are defined by a group key extractor function, or by a colname if `o` is a DataFrame"
+    def _inner(o):
+        if callable(groupkey):
+            ids=pd.DataFrame(o)
+            ids['group_keys']=ids.apply(groupkey)
+            keycol='group_keys'
+        else:
+            assert isinstance(o, pd.DataFrame), "`groupkey` can be a colname if `o` is a DataFrame, otherwise `groupkey` must be a function item->key that can extract a groupkey from an item in `o`"
+            assert groupkey in o, "`groupkey` is not a colname in the DataFrame `o`"
+            keycol=groupkey
+            ids=o
+        gk=ids.groupby(keycol).count()
+        shuffled_gk=gk.sample(frac=1,random_state=seed)
+        cumsum=shuffled_gk.cumsum()
+        desired_valid=len(o)*valid_pct
+        abs_diff=abs(cumsum-desired_valid)
+        valid_rows=abs_diff.iloc[:,0].argmin()+1
+        shuffled_gk['is_valid']=([True] * valid_rows +
+                                 [False]*(len(shuffled_gk) - valid_rows))
+        split_df=ids.join(shuffled_gk.loc[:,'is_valid'],on=keycol)
+        return ColSplitter()(split_df)
     return _inner
 
 # Cell
