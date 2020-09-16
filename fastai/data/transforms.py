@@ -166,7 +166,7 @@ def RandomSubsetSplitter(train_sz, valid_sz, seed=None):
 
 # Cell
 def GroupedSplitter(groupkey,valid_pct=0.2, seed=None):
-    "Split `items` between train/val with `valid_pct` randomly, ensuring that subgroups are not split between sets. Groups are defined by a group key extractor function, or by a colname if `o` is a DataFrame"
+    "Split `items` between train/val with `valid_pct` randomly, ensuring that groups are not split between sets. Groups are defined by a group key extractor function, or by a colname if `o` is a DataFrame"
     def _inner(o):
         if callable(groupkey):
             ids=pd.DataFrame(o)
