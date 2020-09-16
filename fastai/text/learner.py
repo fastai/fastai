@@ -157,7 +157,7 @@ class LMLearner(TextLearner):
                 decoder=decode_spec_tokens, only_last_word=False):
         "Return `text` and the `n_words` that come after"
         self.model.reset()
-        idxs = idxs_all = self.dls.test_dl([text], num_workers=0).items[0].to(self.dls.device)
+        idxs = idxs_all = self.dls.test_dl([text]).items[0].to(self.dls.device)
         if no_unk: unk_idx = self.dls.vocab.index(UNK)
         for _ in (range(n_words) if no_bar else progress_bar(range(n_words), leave=False)):
             with self.no_bar(): preds,_ = self.get_preds(dl=[(idxs[None],)])
@@ -207,7 +207,8 @@ def language_model_learner(dls, arch, config=None, drop_mult=1., backwards=False
                 warn("There are no pretrained weights for that architecture yet!")
                 return learn
             model_path = untar_data(meta[url] , c_key='model')
-            fnames = [list(model_path.glob(f'*.{ext}'))[0] for ext in ['pth', 'pkl']]
+            try: fnames = [list(model_path.glob(f'*.{ext}'))[0] for ext in ['pth', 'pkl']]
+            except IndexError: print(f'The model in {model_path} is incomplete, download again'); raise
         learn = learn.load_pretrained(*fnames)
     return learn
 
@@ -230,7 +231,8 @@ def text_classifier_learner(dls, arch, seq_len=72, config=None, backwards=False,
             warn("There are no pretrained weights for that architecture yet!")
             return learn
         model_path = untar_data(meta[url], c_key='model')
-        fnames = [list(model_path.glob(f'*.{ext}'))[0] for ext in ['pth', 'pkl']]
+        try: fnames = [list(model_path.glob(f'*.{ext}'))[0] for ext in ['pth', 'pkl']]
+        except IndexError: print(f'The model in {model_path} is incomplete, download again'); raise
         learn = learn.load_pretrained(*fnames, model=learn.model[0])
         learn.freeze()
     return learn

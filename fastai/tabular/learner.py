@@ -11,9 +11,9 @@ from .model import *
 @log_args(but_as=Learner.__init__)
 class TabularLearner(Learner):
     "`Learner` for tabular data"
-    def predict(self, row, n_workers=defaults.cpus):
+    def predict(self, row):
         "Predict on a Pandas Series"
-        dl = self.dls.test_dl(row.to_frame().T, num_workers=0)
+        dl = self.dls.test_dl(row.to_frame().T)
         dl.dataset.conts = dl.dataset.conts.astype(np.float32)
         inp,preds,_,dec_preds = self.get_preds(dl=dl, with_input=True, with_decoded=True)
         b = (*tuplify(inp),*tuplify(dec_preds))
