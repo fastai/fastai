@@ -71,7 +71,7 @@
     "Core": {
         "PyTorch Core": "/torch_core",
         "Layers": "/layers",
-        "Loss Functions": "/losses",
+        "Loss Functions": "/losses"
     },
     
     "Vision": {
