@@ -4,12 +4,11 @@ __all__ = ['module', 'Identity', 'Lambda', 'PartialLambda', 'Flatten', 'View', '
            'sigmoid_range', 'SigmoidRange', 'AdaptiveConcatPool1d', 'AdaptiveConcatPool2d', 'PoolType', 'adaptive_pool',
            'PoolFlatten', 'NormType', 'BatchNorm', 'InstanceNorm', 'BatchNorm1dFlat', 'LinBnDrop', 'sigmoid',
            'sigmoid_', 'vleaky_relu', 'init_default', 'init_linear', 'ConvLayer', 'AdaptiveAvgPool', 'MaxPool',
-           'AvgPool', 'BaseLoss', 'CrossEntropyLossFlat', 'BCEWithLogitsLossFlat', 'BCELossFlat', 'MSELossFlat',
-           'L1LossFlat', 'LabelSmoothingCrossEntropy', 'LabelSmoothingCrossEntropyFlat', 'trunc_normal_', 'Embedding',
-           'SelfAttention', 'PooledSelfAttention2d', 'SimpleSelfAttention', 'icnr_init', 'PixelShuffle_ICNR',
-           'sequential', 'SequentialEx', 'MergeLayer', 'Cat', 'SimpleCNN', 'ProdLayer', 'inplace_relu', 'SEModule',
-           'ResBlock', 'SEBlock', 'SEResNeXtBlock', 'SeparableBlock', 'swish', 'Swish', 'MishJitAutoFn', 'mish', 'Mish',
-           'ParameterModule', 'children_and_parameters', 'flatten_model', 'NoneReduce', 'in_channels']
+           'AvgPool', 'trunc_normal_', 'Embedding', 'SelfAttention', 'PooledSelfAttention2d', 'SimpleSelfAttention',
+           'icnr_init', 'PixelShuffle_ICNR', 'sequential', 'SequentialEx', 'MergeLayer', 'Cat', 'SimpleCNN',
+           'ProdLayer', 'inplace_relu', 'SEModule', 'ResBlock', 'SEBlock', 'SEResNeXtBlock', 'SeparableBlock', 'swish',
+           'Swish', 'MishJitAutoFn', 'mish', 'Mish', 'ParameterModule', 'children_and_parameters', 'flatten_model',
+           'NoneReduce', 'in_channels']
 
 # Cell
 from .imports import *
@@ -271,104 +270,6 @@ def AvgPool(ks=2, stride=None, padding=0, ndim=2, ceil_mode=False):
     "nn.AvgPool layer for `ndim`"
     assert 1 <= ndim <= 3
     return getattr(nn, f"AvgPool{ndim}d")(ks, stride=stride, padding=padding, ceil_mode=ceil_mode)
-
-# Cell
-@log_args
-class BaseLoss():
-    "Same as `loss_cls`, but flattens input and target."
-    activation=decodes=noops
-    def __init__(self, loss_cls, *args, axis=-1, flatten=True, floatify=False, is_2d=True, **kwargs):
-        store_attr("axis,flatten,floatify,is_2d")
-        self.func = loss_cls(*args,**kwargs)
-        functools.update_wrapper(self, self.func)
-
-    def __repr__(self): return f"FlattenedLoss of {self.func}"
-    @property
-    def reduction(self): return self.func.reduction
-    @reduction.setter
-    def reduction(self, v): self.func.reduction = v
-
-    def __call__(self, inp, targ, **kwargs):
-        inp  = inp .transpose(self.axis,-1).contiguous()
-        targ = targ.transpose(self.axis,-1).contiguous()
-        if self.floatify and targ.dtype!=torch.float16: targ = targ.float()
-        if targ.dtype in [torch.int8, torch.int16, torch.int32]: targ = targ.long()
-        if self.flatten: inp = inp.view(-1,inp.shape[-1]) if self.is_2d else inp.view(-1)
-        return self.func.__call__(inp, targ.view(-1) if self.flatten else targ, **kwargs)
-
-# Cell
-@log_args
-@delegates()
-class CrossEntropyLossFlat(BaseLoss):
-    "Same as `nn.CrossEntropyLoss`, but flattens input and target."
-    y_int = True
-    @use_kwargs_dict(keep=True, weight=None, ignore_index=-100, reduction='mean')
-    def __init__(self, *args, axis=-1, **kwargs): super().__init__(nn.CrossEntropyLoss, *args, axis=axis, **kwargs)
-    def decodes(self, x):    return x.argmax(dim=self.axis)
-    def activation(self, x): return F.softmax(x, dim=self.axis)
-
-# Cell
-@log_args
-@delegates()
-class BCEWithLogitsLossFlat(BaseLoss):
-    "Same as `nn.BCEWithLogitsLoss`, but flattens input and target."
-    @use_kwargs_dict(keep=True, weight=None, reduction='mean', pos_weight=None)
-    def __init__(self, *args, axis=-1, floatify=True, thresh=0.5, **kwargs):
-        super().__init__(nn.BCEWithLogitsLoss, *args, axis=axis, floatify=floatify, is_2d=False, **kwargs)
-        self.thresh = thresh
-
-    def decodes(self, x):    return x>self.thresh
-    def activation(self, x): return torch.sigmoid(x)
-
-# Cell
-@log_args(to_return=True)
-@use_kwargs_dict(weight=None, reduction='mean')
-def BCELossFlat(*args, axis=-1, floatify=True, **kwargs):
-    "Same as `nn.BCELoss`, but flattens input and target."
-    return BaseLoss(nn.BCELoss, *args, axis=axis, floatify=floatify, is_2d=False, **kwargs)
-
-# Cell
-@log_args(to_return=True)
-@use_kwargs_dict(reduction='mean')
-def MSELossFlat(*args, axis=-1, floatify=True, **kwargs):
-    "Same as `nn.MSELoss`, but flattens input and target."
-    return BaseLoss(nn.MSELoss, *args, axis=axis, floatify=floatify, is_2d=False, **kwargs)
-
-# Cell
-@log_args(to_return=True)
-@use_kwargs_dict(reduction='mean')
-def L1LossFlat(*args, axis=-1, floatify=True, **kwargs):
-    "Same as `nn.L1Loss`, but flattens input and target."
-    return BaseLoss(nn.L1Loss, *args, axis=axis, floatify=floatify, is_2d=False, **kwargs)
-
-# Cell
-@log_args
-class LabelSmoothingCrossEntropy(Module):
-    y_int = True
-    def __init__(self, eps:float=0.1, reduction='mean'): self.eps,self.reduction = eps,reduction
-
-    def forward(self, output, target):
-        c = output.size()[-1]
-        log_preds = F.log_softmax(output, dim=-1)
-        if self.reduction=='sum': loss = -log_preds.sum()
-        else:
-            loss = -log_preds.sum(dim=-1) #We divide by that size at the return line so sum and not mean
-            if self.reduction=='mean':  loss = loss.mean()
-        return loss*self.eps/c + (1-self.eps) * F.nll_loss(log_preds, target.long(), reduction=self.reduction)
-
-    def activation(self, out): return F.softmax(out, dim=-1)
-    def decodes(self, out):    return out.argmax(dim=-1)
-
-# Cell
-@log_args
-@delegates()
-class LabelSmoothingCrossEntropyFlat(BaseLoss):
-    "Same as `LabelSmoothingCrossEntropy`, but flattens input and target."
-    y_int = True
-    @use_kwargs_dict(keep=True, eps=0.1, reduction='mean')
-    def __init__(self, *args, axis=-1, **kwargs): super().__init__(LabelSmoothingCrossEntropy, *args, axis=axis, **kwargs)
-    def activation(self, out): return F.softmax(out, dim=-1)
-    def decodes(self, out):    return out.argmax(dim=-1)
 
 # Cell
 def trunc_normal_(x, mean=0., std=1.):
