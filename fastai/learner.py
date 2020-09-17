@@ -2,8 +2,8 @@
 
 __all__ = ['CancelFitException', 'CancelEpochException', 'CancelTrainException', 'CancelValidException',
            'CancelBatchException', 'replacing_yield', 'mk_metric', 'save_model', 'load_model', 'Learner',
-           'before_batch_cb', 'Metric', 'AvgMetric', 'AvgLoss', 'AvgSmoothLoss', 'ValueMetric', 'Recorder',
-           'load_learner']
+           'before_batch_cb', 'to_detach_from_dl', 'Metric', 'AvgMetric', 'AvgLoss', 'AvgSmoothLoss', 'ValueMetric',
+           'Recorder', 'load_learner']
 
 # Cell
 from .data.all import *
@@ -203,7 +203,7 @@ class Learner():
             if wd is None: wd = self.wd
             if wd is not None: self.opt.set_hypers(wd=wd)
             self.opt.set_hypers(lr=self.lr if lr is None else lr)
-            self.n_epoch,self.loss = n_epoch,tensor(0.)
+            self.n_epoch = n_epoch
             self._with_events(self._do_fit, 'fit', CancelFitException, self._end_cleanup)
 
     def _end_cleanup(self): self.dl,self.xb,self.yb,self.pred,self.loss = None,(None,),(None,),None,None
@@ -333,6 +333,10 @@ def _before_batch_cb(f, self):
 def before_batch_cb(f):
     "Shortcut for creating a Callback on the `before_batch` event, which takes and returns `xb,yb`"
     return Callback(before_batch=partial(_before_batch_cb, f))
+
+# Cell
+def to_detach_from_dl(learn:(Learner,NoneType),b:object,cpu:bool=True,gather:bool=True):
+    return learn.dl.to_detach(b,cpu,gather) if hasattr(getattr(learn,'dl',None),'to_detach') else to_detach(b,cpu,gather)
 
 # Cell
 @docs
@@ -546,19 +550,6 @@ def load_learner(fname, cpu=True):
     return res
 
 # Cell
-def _tta(self:Learner, ds_idx=1, dl=None, n=4, item_tfms=None, batch_tfms=None, beta=0.25, use_max=False):
-    with dl.dataset.set_split_idx(0), self.no_mbar():
-        if hasattr(self,'progress'): self.progress.mbar = master_bar(list(range(n)))
-        aug_preds = []
-        for i in self.progress.mbar if hasattr(self,'progress') else range(n):
-            self.epoch = i #To keep track of progress on mbar since the progress callback will use self.epoch
-            aug_preds.append(self.get_preds(dl=dl, inner=True)[0][None])
-    aug_preds = torch.cat(aug_preds)
-    aug_preds = aug_preds.max(0)[0] if use_max else aug_preds.mean(0)
-    self.epoch = n
-    with dl.dataset.set_split_idx(1): preds,targs = self.get_preds(dl=dl, inner=True)
-
-# Cell
 @patch
 def tta(self:Learner, ds_idx=1, dl=None, n=4, item_tfms=None, batch_tfms=None, beta=0.25, use_max=False):
     "Return predictions on the `ds_idx` dataset or `dl` using Test Time Augmentation"
@@ -576,8 +567,7 @@ def tta(self:Learner, ds_idx=1, dl=None, n=4, item_tfms=None, batch_tfms=None, b
         aug_preds = aug_preds.max(0)[0] if use_max else aug_preds.mean(0)
         self.epoch = n
         with dl.dataset.set_split_idx(1): preds,targs = self.get_preds(dl=dl, inner=True)
-    except CancelFitException:             self(event.after_cancel_fit)
-    finally:                               self(event.after_fit)
+    finally: self(event.after_fit)
 
     if use_max: return torch.stack([preds, aug_preds], 0).max(0)[0],targs
     preds = (aug_preds,preds) if beta is None else torch.lerp(aug_preds, preds, beta)
