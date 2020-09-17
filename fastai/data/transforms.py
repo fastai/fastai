@@ -166,15 +166,15 @@ def RandomSubsetSplitter(train_sz, valid_sz, seed=None):
 
 # Cell
 def GroupedSplitter(groupkey,valid_pct=0.2, seed=None):
-    "Split `items` between train/val with `valid_pct` randomly, ensuring that groups are not split between sets. Groups are defined by a group key extractor function, or by a colname if `o` is a DataFrame"
+    "Splits groups of items between train/val randomly, such that val should have close to `valid_pct` of the total number of items (similar to RandomSplitter). Groups are defined by a `groupkey`, a function/lambda to apply to individual items, or a colname if `o` is a DataFrame"
     def _inner(o):
         if callable(groupkey):
             ids=pd.DataFrame(o)
             ids['group_keys']=ids.apply(groupkey)
             keycol='group_keys'
         else:
-            assert isinstance(o, pd.DataFrame), "`groupkey` can be a colname if `o` is a DataFrame, otherwise `groupkey` must be a function item->key that can extract a groupkey from an item in `o`"
-            assert groupkey in o, "`groupkey` is not a colname in the DataFrame `o`"
+            assert isinstance(o, pd.DataFrame), "o is not a DataFrame, so groupkey must be a function\lambda that extracts a group key from an item"
+            assert groupkey in o, "groupkey is not a colname in the DataFrame o"
             keycol=groupkey
             ids=o
         gk=ids.groupby(keycol).count()
