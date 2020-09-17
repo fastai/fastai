@@ -2,6 +2,18 @@
 
 <!-- do not remove -->
 
+## 2.0.13
+
+### Bugs Squashed
+
+- Undo breaking num_workers fix ([#2804](https://github.com/fastai/fastai/pull/2804))
+  - Some users found the recent addition of `num_workers` to inference
+    functions was causing problems, particularly on Windows. This PR
+    reverts that change, until we find a more reliable way to handle
+    `num_workers` for inference.
+- learn.tta() fails on a learner imported with load_learner() ([#2764](https://github.com/fastai/fastai/issues/2764))
+- learn.summary() crashes out on 2nd transfer learning ([#2735](https://github.com/fastai/fastai/issues/2735))
+
 ## 2.0.12
 
 ### Bugs Squashed
