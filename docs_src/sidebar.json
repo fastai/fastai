@@ -76,7 +76,7 @@
     
     "Vision": {
         "Core": "/vision.core",
-        "Data": "/vision.data",d
+        "Data": "/vision.data",
         "Data Augmentation": "/vision.augment",
         "Learner": "/vision.learner",
         "": {
