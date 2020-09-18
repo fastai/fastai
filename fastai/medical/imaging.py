@@ -184,7 +184,6 @@ def show(self:DcmDataset, frames=1, scale=True, cmap=plt.cm.bone, min_px=-1100, 
         for i in range(frames): u = px[i]; gh.append(u)
         show_images(gh, **kwargs)
     else:
-        print('1 frame per file')
         show_image(px, cmap=cmap, **kwargs)
 
 # Cell
