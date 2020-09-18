@@ -81,7 +81,7 @@ _re_maj = re.compile(r'(\s|^)([A-Z][^A-Z\s]*)(?=(\s|$))')
 
 # Cell
 def replace_maj(t):
-    "Replace tokens in ALL CAPS by their lower version and add `TK_UP` before."
+    "Replace tokens in Sentence Case by their lower version and add `TK_MAJ` before."
     def _replace_maj(m):
         tok = f'{TK_MAJ} ' if len(m.groups()[1]) > 1 else ''
         return f"{m.groups()[0]}{tok}{m.groups()[1].lower()}"
