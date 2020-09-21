@@ -25,7 +25,7 @@
         },
         "empty2": {
             "Advanced": {
-                "Albumentions Tutorial": "/tutorial.albumentions",
+                "Albumentations Tutorial": "/tutorial.albumentations",
                 "Siamese Tutorial": "/tutorial.siamese"
             }
         },
