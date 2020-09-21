@@ -170,7 +170,7 @@ def GroupedSplitter(groupkey,valid_pct=0.2, seed=None):
     def _inner(o):
         if callable(groupkey):
             ids=pd.DataFrame(o)
-            ids['group_keys']=ids.apply(groupkey)
+            ids['group_keys']=ids.applymap(groupkey)
             keycol='group_keys'
         else:
             assert isinstance(o, pd.DataFrame), "o is not a DataFrame, so groupkey must be a function\lambda that extracts a group key from an item"
