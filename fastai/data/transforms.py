@@ -282,7 +282,7 @@ class EncodedMultiCategorize(Categorize):
     "Transform of one-hot encoded multi-category that decodes with `vocab`"
     loss_func,order=BCEWithLogitsLossFlat(),1
     def __init__(self, vocab):
-        super().__init__(vocab)
+        super().__init__(vocab, sort=vocab==None)
         self.c = len(vocab)
     def encodes(self, o): return TensorMultiCategory(tensor(o).float())
     def decodes(self, o): return MultiCategory (one_hot_decode(o, self.vocab))
