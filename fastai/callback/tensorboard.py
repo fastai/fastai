@@ -9,6 +9,7 @@ from ..basics import *
 import tensorboard
 from torch.utils.tensorboard import SummaryWriter
 from .fp16 import ModelToHalf
+from .hook import hook_output
 
 # Cell
 class TensorBoardBaseCallback(Callback):
