@@ -26,12 +26,16 @@ class TensorBoardBaseCallback(Callback):
         self._remove()
         _write_projector_embedding(self.learn, self.writer, self.feat)
 
-    def after_fit(self): self.writer.close()
+    def after_fit(self):
+        if self.run: self.writer.close()
 
     def _setup_projector(self):
         self.run_projector = True
         self.h = hook_output(self.learn.model[1][1] if not self.layer else self.layer)
         self.feat = {}
+
+    def _setup_writer(self):
+        self.writer = SummaryWriter(log_dir=self.log_dir)
 
     def _remove(self):
         if getattr(self, 'h', None): self.h.remove()
@@ -47,7 +51,8 @@ class TensorBoardCallback(TensorBoardBaseCallback):
 
     def before_fit(self):
         self.run = not hasattr(self.learn, 'lr_finder') and not hasattr(self, "gather_preds") and rank_distrib()==0
-        self.writer = SummaryWriter(log_dir=self.log_dir)
+        if not self.run: return
+        self._setup_writer()
         if self.trace_model:
             if hasattr(self.learn, 'mixed_precision'):
                 raise Exception("Can't trace model in mixed precision, pass `trace_model=False` or don't use FP16.")
@@ -81,27 +86,27 @@ class TensorBoardProjectorCallback(TensorBoardBaseCallback):
         super().__init__()
         store_attr()
 
+    def before_fit(self):
+        self.run = not hasattr(self.learn, 'lr_finder') and hasattr(self, "gather_preds") and rank_distrib()==0
+        if not self.run: return
+        self._setup_writer()
+
     def before_validate(self):
         self._setup_projector()
-        self.writer = SummaryWriter(log_dir=self.log_dir)
 
 # Cell
 def _write_projector_embedding(learn, writer, feat):
     lbls = [learn.dl.vocab[l] for l in feat['lbl']] if getattr(learn.dl, 'vocab', None) else None
-
     writer.add_embedding(feat['vec'], metadata=lbls, label_img=feat['img'], global_step=learn.train_iter)
 
 # Cell
 def _add_projector_features(learn, hook, feat):
     img = normalize_for_projector(learn.x)
-
     first_epoch = True if learn.iter == 0 else False
-
     feat['vec'] = hook.stored if first_epoch else torch.cat((feat['vec'], hook.stored),0)
     feat['img'] = img           if first_epoch else torch.cat((feat['img'], img),0)
     if getattr(learn.dl, 'vocab', None):
         feat['lbl'] = learn.y if first_epoch else torch.cat((feat['lbl'], learn.y),0)
-
     return feat
 
 # Cell
