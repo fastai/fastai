@@ -86,8 +86,7 @@ class TrainEvalCallback(Callback):
 if not hasattr(defaults, 'callbacks'): defaults.callbacks = [TrainEvalCallback]
 
 # Cell
-try: import pickle
-except: pass
+import pickle
 
 #export
 class GatherPredsCallback(Callback):
@@ -111,18 +110,16 @@ class GatherPredsCallback(Callback):
         if self.save_preds is None: self.preds.append(preds)
         elif self.save_preds is not False: self.save_data((self.save_preds/str(self.iter)), preds)
         if self.save_targs is None: self.targets.append(targs)
-        elif self.save_targs is not False: self.save_data((self.save_targs/str(self.iter)), targs[0])
+        elif self.save_targs != False: self.save_data((self.save_targs/str(self.iter)), targs[0])
         if self.with_loss:
             bs = find_bs(self.yb)
             loss = self.loss if self.loss.numel() == bs else self.loss.view(bs,-1).mean(1)
             self.losses.append(self.learn.to_detach(loss))
 
     def save_data(self, path, data):
-        if isinstance(data, (np.ndarray, np.generic)):
-            path.save_array(data)
+        if isinstance(data, (np.ndarray, np.generic)): path.save_array(data)
         else:
-            with open(path,'wb') as file:
-                pickle.dump(data, file)
+            with open(path,'wb') as file: pickle.dump(data, file)
 
     def after_validate(self):
         "Concatenate all recorded tensors"
