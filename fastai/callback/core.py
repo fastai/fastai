@@ -86,7 +86,10 @@ class TrainEvalCallback(Callback):
 if not hasattr(defaults, 'callbacks'): defaults.callbacks = [TrainEvalCallback]
 
 # Cell
-#TODO: save_targs and save_preds only handle preds/targets that have one tensor, not tuples of tensors.
+try: import pickle
+except: pass
+
+#export
 class GatherPredsCallback(Callback):
     "`Callback` that saves the predictions and targets, optionally `with_loss`"
     def __init__(self, with_input=False, with_loss=False, save_preds=None, save_targs=None, concat_dim=0):
@@ -106,13 +109,20 @@ class GatherPredsCallback(Callback):
         if not hasattr(self, 'pred'): return
         preds,targs = self.learn.to_detach(self.pred),self.learn.to_detach(self.yb)
         if self.save_preds is None: self.preds.append(preds)
-        else: (self.save_preds/str(self.iter)).save_array(preds)
+        elif self.save_preds is not False: self.save_data((self.save_preds/str(self.iter)), preds)
         if self.save_targs is None: self.targets.append(targs)
-        else: (self.save_targs/str(self.iter)).save_array(targs[0])
+        elif self.save_targs is not False: self.save_data((self.save_targs/str(self.iter)), targs[0])
         if self.with_loss:
             bs = find_bs(self.yb)
             loss = self.loss if self.loss.numel() == bs else self.loss.view(bs,-1).mean(1)
             self.losses.append(self.learn.to_detach(loss))
+
+    def save_data(self, path, data):
+        if isinstance(data, (np.ndarray, np.generic)):
+            path.save_array(data)
+        else:
+            with open(path,'wb') as file:
+                pickle.dump(data, file)
 
     def after_validate(self):
         "Concatenate all recorded tensors"
