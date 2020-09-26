@@ -27,7 +27,7 @@ class TabularDataLoaders(DataLoaders):
         return cls.from_df(pd.read_csv(csv, skipinitialspace=skipinitialspace), **kwargs)
 
     @delegates(TabDataLoader.__init__)
-    def test_dl(self, test_items, rm_type_tfms=None, process=True, **kwargs):
+    def test_dl(self, test_items, process=True, **kwargs):
         to = self.train_ds.new(test_items)
         if process: to.process()
         return self.valid.new(to, **kwargs)
