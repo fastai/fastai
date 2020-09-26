@@ -2,8 +2,8 @@
 
 __all__ = ['make_date', 'add_datepart', 'add_elapsed_times', 'cont_cat_split', 'df_shrink_dtypes', 'df_shrink',
            'Tabular', 'TabularPandas', 'TabularProc', 'Categorify', 'setups', 'encodes', 'decodes', 'setups', 'encodes',
-           'decodes', 'FillStrategy', 'FillMissing', 'ReadTabBatch', 'TabDataLoader', 'setups', 'encodes', 'decodes',
-           'setups', 'encodes', 'decodes']
+           'decodes', 'from_tab', 'FillStrategy', 'FillMissing', 'ReadTabBatch', 'TabDataLoader', 'setups', 'encodes',
+           'decodes', 'setups', 'encodes', 'decodes']
 
 # Cell
 from ..torch_basics import *
@@ -237,8 +237,18 @@ def _decode_cats(voc, c): return c.map(dict(enumerate(voc[c.name].items)))
 class Categorify(TabularProc):
     "Transform the categorical variables to something similar to `pd.Categorical`"
     order = 1
+    def __init__(self, classes=None):
+        store_attr()
+        super().__init__()
     def setups(self, to):
-        store_attr(classes={n:CategoryMap(to.iloc[:,n].items, add_na=(n in to.cat_names)) for n in to.cat_names})
+        if self.classes is None:
+            classes={n:CategoryMap(to.iloc[:,n].items, add_na=(n in to.cat_names)) for n in to.cat_names}
+        else:
+            classes = {}
+            for n in to.cat_names:
+                if n in self.classes.keys(): classes[n] = self.classes[n]
+                else: classes[n] = CategoryMap(to.iloc[:,n].items, add_na=n)
+        store_attr(classes=classes)
 
     def encodes(self, to): to.transform(to.cat_names, partial(_apply_cats, self.classes, 1))
     def decodes(self, to): to.transform(to.cat_names, partial(_decode_cats, self.classes))
@@ -268,8 +278,16 @@ def decodes(self, to:Tabular):
 # Cell
 @Normalize
 def setups(self, to:Tabular):
-    store_attr(means=dict(getattr(to, 'train', to).conts.mean()),
-               stds=dict(getattr(to, 'train', to).conts.std(ddof=0)+1e-7))
+    if not hasattr(self, 'means'):
+        self.means = dict(getattr(to, 'train', to).conts.mean())
+        self.stds  = dict(getattr(to, 'train', to).conts.std(ddof=0)+1e-7)
+    else:
+        for name in getattr(to, 'train', to).conts.columns:
+            if name not in self.means.keys():
+                self.means[name] = getattr(to, 'train', to)[name].mean()
+            if name not in self.stds.keys():
+                self.stds[name] = getattr(to, 'train', to)[name].std(ddof=0)+1e-7
+
     return self(to)
 
 @Normalize
@@ -283,6 +301,10 @@ def decodes(self, to:Tabular):
     return to
 
 # Cell
+@patch_to(Normalize, cls_method=True)
+def from_tab(cls, means=None, stds=None): return cls(means=means, stds=stds)
+
+# Cell
 class FillStrategy:
     "Namespace containing the various filling strategies."
     def median  (c,fill): return c.median()
@@ -292,14 +314,15 @@ class FillStrategy:
 # Cell
 class FillMissing(TabularProc):
     "Fill the missing values in continuous columns."
-    def __init__(self, fill_strategy=FillStrategy.median, add_col=True, fill_vals=None):
+    def __init__(self, fill_strategy=FillStrategy.median, add_col=True, fill_vals=None, na_dict=None):
         if fill_vals is None: fill_vals = defaultdict(int)
         store_attr()
 
     def setups(self, dsets):
-        missing = pd.isnull(dsets.conts).any()
-        store_attr(na_dict={n:self.fill_strategy(dsets[n], self.fill_vals[n])
-                            for n in missing[missing].keys()})
+        if self.na_dict is None:
+            missing = pd.isnull(dsets.conts).any()
+            store_attr(na_dict={n:self.fill_strategy(dsets[n], self.fill_vals[n])
+                                for n in missing[missing].keys()})
         self.fill_strategy = self.fill_strategy.__name__
 
     def encodes(self, to):
