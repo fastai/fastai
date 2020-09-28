@@ -345,10 +345,10 @@ def broadcast_vec(dim, ndim, *t, cuda=True):
 class Normalize(DisplayedTransform):
     "Normalize/denorm batch of `TensorImage`"
     parameters,order = L('mean', 'std'),99
-    def __init__(self, mean=None, std=None, axes=(0,2,3), **kwargs): store_attr(**kwargs)
+    def __init__(self, mean=None, std=None, axes=(0,2,3), means=None, stds=None): store_attr()
 
     @classmethod
-    def from_stats(cls, mean, std, dim=1, ndim=4, cuda=True, **kwargs): return cls(*broadcast_vec(dim, ndim, mean, std, cuda=cuda), **kwargs)
+    def from_stats(cls, mean, std, dim=1, ndim=4, cuda=True): return cls(*broadcast_vec(dim, ndim, mean, std, cuda=cuda))
 
     def setups(self, dl:DataLoader):
         if self.mean is None or self.std is None:

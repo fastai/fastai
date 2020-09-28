@@ -2,8 +2,8 @@
 
 __all__ = ['make_date', 'add_datepart', 'add_elapsed_times', 'cont_cat_split', 'df_shrink_dtypes', 'df_shrink',
            'Tabular', 'TabularPandas', 'TabularProc', 'Categorify', 'setups', 'encodes', 'decodes', 'setups', 'encodes',
-           'decodes', 'from_tab', 'FillStrategy', 'FillMissing', 'ReadTabBatch', 'TabDataLoader', 'setups', 'encodes',
-           'decodes', 'setups', 'encodes', 'decodes']
+           'decodes', 'FillStrategy', 'FillMissing', 'ReadTabBatch', 'TabDataLoader', 'setups', 'encodes', 'decodes',
+           'setups', 'encodes', 'decodes']
 
 # Cell
 from ..torch_basics import *
@@ -237,18 +237,13 @@ def _decode_cats(voc, c): return c.map(dict(enumerate(voc[c.name].items)))
 class Categorify(TabularProc):
     "Transform the categorical variables to something similar to `pd.Categorical`"
     order = 1
-    def __init__(self, classes=None):
+    def __init__(self, classes=defaultdict(L)):
         store_attr()
         super().__init__()
     def setups(self, to):
-        if self.classes is None:
-            classes={n:CategoryMap(to.iloc[:,n].items, add_na=(n in to.cat_names)) for n in to.cat_names}
-        else:
-            classes = {}
-            for n in to.cat_names:
-                if n in self.classes.keys(): classes[n] = self.classes[n]
-                else: classes[n] = CategoryMap(to.iloc[:,n].items, add_na=n)
-        store_attr(classes=classes)
+        for n in to.cat_names:
+            if n not in self.classes or is_categorical_dtype(to[n]):
+                self.classes[n] = CategoryMap(to.iloc[:,n].items, add_na=n)
 
     def encodes(self, to): to.transform(to.cat_names, partial(_apply_cats, self.classes, 1))
     def decodes(self, to): to.transform(to.cat_names, partial(_decode_cats, self.classes))
@@ -299,10 +294,6 @@ def encodes(self, to:Tabular):
 def decodes(self, to:Tabular):
     to.conts = (to.conts*self.stds ) + self.means
     return to
-
-# Cell
-@patch_to(Normalize, cls_method=True)
-def from_tab(cls, means=None, stds=None): return cls(means=means, stds=stds)
 
 # Cell
 class FillStrategy:
