@@ -237,13 +237,18 @@ def _decode_cats(voc, c): return c.map(dict(enumerate(voc[c.name].items)))
 class Categorify(TabularProc):
     "Transform the categorical variables to something similar to `pd.Categorical`"
     order = 1
-    def __init__(self, classes=defaultdict(L)):
+    def __init__(self, classes=None):
         store_attr()
         super().__init__()
     def setups(self, to):
-        for n in to.cat_names:
-            if n not in self.classes or is_categorical_dtype(to[n]):
-                self.classes[n] = CategoryMap(to.iloc[:,n].items, add_na=n)
+        if self.classes is None:
+            classes={n:CategoryMap(to.iloc[:,n].items, add_na=(n in to.cat_names)) for n in to.cat_names}
+        else:
+            classes = {}
+            for n in to.cat_names:
+                if n in self.classes.keys(): classes[n] = self.classes[n]
+                else: classes[n] = CategoryMap(to.iloc[:,n].items, add_na=n)
+        store_attr(classes=classes)
 
     def encodes(self, to): to.transform(to.cat_names, partial(_apply_cats, self.classes, 1))
     def decodes(self, to): to.transform(to.cat_names, partial(_decode_cats, self.classes))
