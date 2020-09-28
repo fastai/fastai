@@ -238,17 +238,13 @@ class Categorify(TabularProc):
     "Transform the categorical variables to something similar to `pd.Categorical`"
     order = 1
     def __init__(self, classes=None):
+        if classes is None: classes=defaultdict(L)
         store_attr()
         super().__init__()
     def setups(self, to):
-        if self.classes is None:
-            classes={n:CategoryMap(to.iloc[:,n].items, add_na=(n in to.cat_names)) for n in to.cat_names}
-        else:
-            classes = {}
-            for n in to.cat_names:
-                if n in self.classes.keys(): classes[n] = self.classes[n]
-                else: classes[n] = CategoryMap(to.iloc[:,n].items, add_na=n)
-        store_attr(classes=classes)
+        for n in to.cat_names:
+            if n not in self.classes or is_categorical_dtype(to[n]):
+                self.classes[n] = CategoryMap(to.iloc[:,n].items, add_na=n)
 
     def encodes(self, to): to.transform(to.cat_names, partial(_apply_cats, self.classes, 1))
     def decodes(self, to): to.transform(to.cat_names, partial(_decode_cats, self.classes))
