@@ -273,7 +273,7 @@ def decodes(self, to:Tabular):
 # Cell
 @Normalize
 def setups(self, to:Tabular):
-    if not hasattr(self, 'means'):
+    if self.means is None:
         self.means = dict(getattr(to, 'train', to).conts.mean())
         self.stds  = dict(getattr(to, 'train', to).conts.std(ddof=0)+1e-7)
     else:
