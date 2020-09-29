@@ -46,8 +46,8 @@ class TrackerCallback(Callback):
 @log_args
 class EarlyStoppingCallback(TrackerCallback):
     "A `TrackerCallback` that terminates training when monitored quantity stops improving."
-    def __init__(self, monitor='valid_loss', comp=None, min_delta=0., patience=1):
-        super().__init__(monitor=monitor, comp=comp, min_delta=min_delta)
+    def __init__(self, monitor='valid_loss', comp=None, min_delta=0., patience=1, reset_on_fit=True):
+        super().__init__(monitor=monitor, comp=comp, min_delta=min_delta, reset_on_fit=reset_on_fit)
         self.patience = patience
 
     def before_fit(self): self.wait = 0; super().before_fit()
@@ -65,8 +65,8 @@ class EarlyStoppingCallback(TrackerCallback):
 @log_args
 class SaveModelCallback(TrackerCallback):
     "A `TrackerCallback` that saves the model's best during training and loads it at the end."
-    def __init__(self, monitor='valid_loss', comp=None, min_delta=0., fname='model', every_epoch=False, with_opt=False):
-        super().__init__(monitor=monitor, comp=comp, min_delta=min_delta)
+    def __init__(self, monitor='valid_loss', comp=None, min_delta=0., fname='model', every_epoch=False, with_opt=False, reset_on_fit=True):
+        super().__init__(monitor=monitor, comp=comp, min_delta=min_delta, reset_on_fit=reset_on_fit)
         # keep track of file path for loggers
         self.last_saved_path = None
         store_attr('fname,every_epoch,with_opt')
@@ -91,8 +91,8 @@ class SaveModelCallback(TrackerCallback):
 @log_args
 class ReduceLROnPlateau(TrackerCallback):
     "A `TrackerCallback` that reduces learning rate when a metric has stopped improving."
-    def __init__(self, monitor='valid_loss', comp=None, min_delta=0., patience=1, factor=10., min_lr=0):
-        super().__init__(monitor=monitor, comp=comp, min_delta=min_delta)
+    def __init__(self, monitor='valid_loss', comp=None, min_delta=0., patience=1, factor=10., min_lr=0, reset_on_fit=True):
+        super().__init__(monitor=monitor, comp=comp, min_delta=min_delta, reset_on_fit=reset_on_fit)
         self.patience,self.factor,self.min_lr = patience,factor,min_lr
 
     def before_fit(self): self.wait = 0; super().before_fit()
