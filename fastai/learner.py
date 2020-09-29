@@ -91,7 +91,7 @@ class Learner():
         store_attr(but='dls,model,cbs')
         self.training,self.create_mbar,self.logger,self.opt,self.cbs = False,True,print,None,L()
         self.add_cbs([(cb() if isinstance(cb, type) else cb) for cb in L(defaults.callbacks)+L(cbs)])
-        self.epoch,self.n_epoch,self.loss = 0,1,tensor(0.)
+        self("after_create")
 
     @property
     def metrics(self): return self._metrics
