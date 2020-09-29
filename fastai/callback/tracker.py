@@ -22,15 +22,15 @@ class TrackerCallback(Callback):
     "A `Callback` that keeps track of the best value in `monitor`."
     remove_on_fetch,run_after = True,Recorder
 
-    def __init__(self, monitor='valid_loss', comp=None, min_delta=0.):
+    def __init__(self, monitor='valid_loss', comp=None, min_delta=0., reset_on_fit=True):
         if comp is None: comp = np.less if 'loss' in monitor or 'error' in monitor else np.greater
         if comp == np.less: min_delta *= -1
-        self.monitor,self.comp,self.min_delta = monitor,comp,min_delta
+        self.monitor,self.comp,self.min_delta,self.reset_on_fit,self.best= monitor,comp,min_delta,reset_on_fit,None
 
     def before_fit(self):
         "Prepare the monitored value"
         self.run = not hasattr(self, "lr_finder") and not hasattr(self, "gather_preds")
-        self.best = float('inf') if self.comp == np.less else -float('inf')
+        if self.reset_on_fit or self.best is None: self.best = float('inf') if self.comp == np.less else -float('inf')
         assert self.monitor in self.recorder.metric_names[1:]
         self.idx = list(self.recorder.metric_names[1:]).index(self.monitor)
 
