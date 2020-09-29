@@ -237,7 +237,11 @@ class Categorize(DisplayedTransform):
         if self.vocab is None and dsets is not None: self.vocab = CategoryMap(dsets, sort=self.sort, add_na=self.add_na)
         self.c = len(self.vocab)
 
-    def encodes(self, o): return TensorCategory(self.vocab.o2i[o])
+    def encodes(self, o):
+        try:
+            return TensorCategory(self.vocab.o2i[o])
+        except KeyError as e:
+            raise KeyError(f"Label '{o}' was not included in the training dataset") from e
     def decodes(self, o): return Category      (self.vocab    [o])
 
 # Cell
@@ -256,7 +260,12 @@ class MultiCategorize(Categorize):
             for b in dsets: vals = vals.union(set(b))
             self.vocab = CategoryMap(list(vals), add_na=self.add_na)
 
-    def encodes(self, o): return TensorMultiCategory([self.vocab.o2i[o_] for o_ in o])
+    def encodes(self, o):
+        if not all(elem in self.vocab.o2i.keys() for elem in o):
+            diff = [elem for elem in o if elem not in self.vocab.o2i.keys()]
+            diff_str = "', '".join(diff)
+            raise KeyError(f"Labels '{diff_str}' were not included in the training dataset")
+        return TensorMultiCategory([self.vocab.o2i[o_] for o_ in o])
     def decodes(self, o): return MultiCategory      ([self.vocab    [o_] for o_ in o])
 
 # Cell
