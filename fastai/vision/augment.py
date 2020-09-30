@@ -458,7 +458,7 @@ def _draw_mask(x, def_draw, draw=None, p=0.5, neutral=0., batch=False):
     if draw is None: draw=def_draw
     if callable(draw): res=draw(x)
     elif is_listy(draw):
-        test(len(draw),x.size(0),lambda a,b:a>=b)
+        test(len(draw),x.size(0), ge)
         res = tensor(draw[:x.size(0)], dtype=x.dtype, device=x.device)
     else: res = x.new_zeros(x.size(0)) + draw
     return mask_tensor(res, p=p, neutral=neutral, batch=batch)
