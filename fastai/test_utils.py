@@ -61,7 +61,7 @@ def try_import(module):
 def show_install(show_nvidia_smi:bool=False):
     "Print user's setup information"
 
-    import platform, fastprogress
+    import fastai, platform, fastprogress
 
     rep = []
     opt_mods = []
