@@ -319,16 +319,15 @@ def export(self:TabularPandas, fname='export.pkl', pickle_protocol=2):
     old_to = self
     self = self.new_empty()
     with warnings.catch_warnings():
-        #To avoid the warning that come from PyTorch about model not being checked
         warnings.simplefilter("ignore")
-        torch.save(self, Path(fname), pickle_protocol=pickle_protocol)
+        pickle.dump(self, open(Path(fname), 'wb'), protocol=pickle_protocol)
     self = old_to
 
 # Cell
 def load_pandas(fname):
     "Load in a `TabularPandas` object from `fname`"
     distrib_barrier()
-    res = torch.load(fname)
+    res = pickle.load(open(fname, 'rb'))
     return res
 
 # Cell
