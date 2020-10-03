@@ -165,8 +165,8 @@ class Tabular(CollBase, GetAttr, FilteredBase):
         self.split = len(df) if splits is None else len(splits[0])
         if do_setup: self.setup()
 
-    def new(self, df):
-        return type(self)(df, do_setup=False, reduce_memory=False, y_block=TransformBlock(),
+    def new(self, df, inplace=False):
+        return type(self)(df, do_setup=False, reduce_memory=False, y_block=TransformBlock(), inplace=inplace,
                           **attrdict(self, 'procs','cat_names','cont_names','y_names', 'device'))
 
     def subset(self, i): return self.new(self.items[slice(0,self.split) if i==0 else slice(self.split,len(self))])
