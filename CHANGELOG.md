@@ -2,6 +2,13 @@
 
 <!-- do not remove -->
 
+## 2.0.15
+
+### Breaking Changes
+
+- loss functions were moved to `loss.py` ([#2843](https://github.com/fastai/fastai/pull/2810))
+
+
 ## 2.0.14
 
 ### New Features
