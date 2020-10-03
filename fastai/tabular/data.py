@@ -16,7 +16,7 @@ class TabularDataLoaders(DataLoaders):
                 valid_idx=None, **kwargs):
         "Create from `df` in `path` using `procs`"
         if cat_names is None: cat_names = []
-        if cont_names is None: cont_names = list(set(df)-set(cat_names)-set(y_names))
+        if cont_names is None: cont_names = list(set(df)-set(L(cat_names))-set(L(y_names)))
         splits = RandomSplitter()(df) if valid_idx is None else IndexSplitter(valid_idx)(df)
         to = TabularPandas(df, procs, cat_names, cont_names, y_names, splits=splits, y_block=y_block)
         return to.dataloaders(path=path, **kwargs)
