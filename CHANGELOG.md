@@ -2,12 +2,11 @@
 
 <!-- do not remove -->
 
-## 2.0.16
+## 2.0.15
 
-### New Features
+### Breaking Changes
 
-- add pip upgrade cell to all notebooks, to ensure colab has current fastai version ([#2843](https://github.com/fastai/fastai/issues/2843))
-
+- loss functions were moved to `loss.py` ([#2843](https://github.com/fastai/fastai/pull/2810))
 
 
 ## 2.0.14
