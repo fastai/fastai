@@ -2,8 +2,8 @@
 
 __all__ = ['make_date', 'add_datepart', 'add_elapsed_times', 'cont_cat_split', 'df_shrink_dtypes', 'df_shrink',
            'Tabular', 'TabularPandas', 'TabularProc', 'Categorify', 'setups', 'encodes', 'decodes', 'setups', 'encodes',
-           'decodes', 'FillStrategy', 'FillMissing', 'ReadTabBatch', 'TabDataLoader', 'setups', 'encodes', 'decodes',
-           'setups', 'encodes', 'decodes']
+           'decodes', 'FillStrategy', 'FillMissing', 'load_pandas', 'ReadTabBatch', 'TabDataLoader', 'setups',
+           'encodes', 'decodes', 'setups', 'encodes', 'decodes']
 
 # Cell
 from ..torch_basics import *
@@ -311,6 +311,25 @@ class FillMissing(TabularProc):
             if self.add_col:
                 to.loc[:,n+'_na'] = missing[n]
                 if n+'_na' not in to.cat_names: to.cat_names.append(n+'_na')
+
+# Cell
+@patch
+def export(self:TabularPandas, fname='export.pkl', pickle_protocol=2):
+    "Export the content of `self` without the items"
+    old_to = self
+    self = self.new_empty()
+    with warnings.catch_warnings():
+        #To avoid the warning that come from PyTorch about model not being checked
+        warnings.simplefilter("ignore")
+        torch.save(self, Path(fname), pickle_protocol=pickle_protocol)
+    self = old_to
+
+# Cell
+def load_pandas(fname):
+    "Load in a `TabularPandas` object from `fname`"
+    distrib_barrier()
+    res = torch.load(fname)
+    return res
 
 # Cell
 def _maybe_expand(o): return o[:,None] if o.ndim==1 else o
