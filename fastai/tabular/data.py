@@ -13,7 +13,7 @@ class TabularDataLoaders(DataLoaders):
     @classmethod
     @delegates(Tabular.dataloaders, but=["dl_type", "dl_kwargs"])
     def from_df(cls, df, path='.', procs=None, cat_names=None, cont_names=None, y_names=None, y_block=None,
-                valid_idx=None, **kwargs):
+                inplace=False, valid_idx=None, **kwargs):
         "Create from `df` in `path` using `procs`"
         if cat_names is None: cat_names = []
         if cont_names is None: cont_names = list(set(df)-set(cat_names)-set(y_names))
@@ -27,7 +27,7 @@ class TabularDataLoaders(DataLoaders):
         return cls.from_df(pd.read_csv(csv, skipinitialspace=skipinitialspace), **kwargs)
 
     @delegates(TabDataLoader.__init__)
-    def test_dl(self, test_items, process=True, inplace=True, **kwargs):
+    def test_dl(self, test_items, process=True, inplace=False, **kwargs):
         to = self.train_ds.new(test_items, inplace=inplace)
         if process: to.process()
         return self.valid.new(to, **kwargs)
