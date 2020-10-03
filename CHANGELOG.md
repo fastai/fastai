@@ -2,6 +2,14 @@
 
 <!-- do not remove -->
 
+## 2.0.16
+
+### New Features
+
+- add pip upgrade cell to all notebooks, to ensure colab has current fastai version ([#2843](https://github.com/fastai/fastai/issues/2843))
+
+
+
 ## 2.0.14
 
 ### New Features
