@@ -100,6 +100,7 @@ class CSVLogger(Callback):
 
     def before_fit(self):
         "Prepare file with metric names."
+        if hasattr(self, "gather_preds"): return
         self.path.parent.mkdir(parents=True, exist_ok=True)
         self.file = (self.path/self.fname).open('a' if self.append else 'w')
         self.file.write(','.join(self.recorder.metric_names) + '\n')
@@ -112,5 +113,6 @@ class CSVLogger(Callback):
 
     def after_fit(self):
         "Close the file and clean up."
+        if hasattr(self, "gather_preds"): return
         self.file.close()
         self.learn.logger = self.old_logger
