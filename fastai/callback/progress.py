@@ -24,8 +24,8 @@ class ProgressCallback(Callback):
 
     def before_train(self):    self._launch_pbar()
     def before_validate(self): self._launch_pbar()
-    def after_train(self):    self.pbar.on_iter_end()
-    def after_validate(self): self.pbar.on_iter_end()
+    def after_train(self):     self.pbar.on_iter_end()
+    def after_validate(self):  self.pbar.on_iter_end()
     def after_batch(self):
         self.pbar.update(self.iter+1)
         if hasattr(self, 'smooth_loss'): self.pbar.comment = f'{self.smooth_loss:.4f}'
