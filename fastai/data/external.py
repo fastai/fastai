@@ -243,7 +243,7 @@ def rename_extracted(dest):
 def untar_data(url, fname=None, dest=None, c_key='data', force_download=False, extract_func=file_extract, timeout=4):
     "Download `url` to `fname` if `dest` doesn't exist, and un-tgz or unzip to folder `dest`."
     default_dest = URLs.path(url, c_key=c_key).with_suffix('')
-    dest = default_dest if dest is None else Path(dest)/default_dest.name
+    dest = default_dest if dest is None else Path(dest)
     fname = Path(fname or URLs.path(url))
     if fname.exists() and _get_check(url) and _check_file(fname) != _get_check(url):
         print("A new version of this dataset is available, downloading...")
