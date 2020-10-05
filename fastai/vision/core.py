@@ -244,7 +244,7 @@ class PointScaler(Transform):
     def _get_sz(self, x):
         sz = x.get_meta('img_size')
         assert sz is not None or self.sz is not None, "Size could not be inferred, pass it in the init of your TensorPoint with `img_size=...`"
-        return self.sz if sz is None else sz
+        return sz if self.sz is None else self.sz
 
     def setups(self, dl):
         its = dl.do_item(0)

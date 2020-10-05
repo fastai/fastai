@@ -2,6 +2,27 @@
 
 <!-- do not remove -->
 
+## 2.0.15
+
+### Breaking Changes
+
+- loss functions were moved to `loss.py` ([#2843](https://github.com/fastai/fastai/pull/2810))
+
+
+## 2.0.14
+
+### New Features
+
+- new callback event: `after_create` ([#2842](https://github.com/fastai/fastai/issues/2842))
+  - This event runs after a `Learner` is constructed. It's useful for initial setup which isn't needed for every `fit`, but just once for each `Learner` (such as setting initial defaults).
+
+- Modified XResNet to support Conv1d / Conv3d ([#2744](https://github.com/fastai/fastai/pull/2744)), thanks to [@floleuerer](https://github.com/floleuerer)
+  - Supports different input dimensions, kernel sizes and stride (added parameters ndim, ks, stride). Tested with fastai_audio and fastai time series with promising results.
+
+### Bugs Squashed
+
+- `img_size` attribute for `TensorPoint` is not updated properly ([#2799](https://github.com/fastai/fastai/pull/2799)), thanks to [@IRailean](https://github.com/IRailean)
+
 ## 2.0.13
 
 ### Bugs Squashed

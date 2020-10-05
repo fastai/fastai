@@ -262,7 +262,11 @@ class Categorize(DisplayedTransform):
         if self.vocab is None and dsets is not None: self.vocab = CategoryMap(dsets, sort=self.sort, add_na=self.add_na)
         self.c = len(self.vocab)
 
-    def encodes(self, o): return TensorCategory(self.vocab.o2i[o])
+    def encodes(self, o):
+        try:
+            return TensorCategory(self.vocab.o2i[o])
+        except KeyError as e:
+            raise KeyError(f"Label '{o}' was not included in the training dataset") from e
     def decodes(self, o): return Category      (self.vocab    [o])
 
 # Cell
@@ -272,7 +276,7 @@ class Category(str, ShowTitle): _show_args = {'label': 'category'}
 class MultiCategorize(Categorize):
     "Reversible transform of multi-category strings to `vocab` id"
     loss_func,order=BCEWithLogitsLossFlat(),1
-    def __init__(self, vocab=None, add_na=False): super().__init__(vocab=vocab,add_na=add_na)
+    def __init__(self, vocab=None, add_na=False): super().__init__(vocab=vocab,add_na=add_na,sort=vocab==None)
 
     def setups(self, dsets):
         if not dsets: return
@@ -281,7 +285,12 @@ class MultiCategorize(Categorize):
             for b in dsets: vals = vals.union(set(b))
             self.vocab = CategoryMap(list(vals), add_na=self.add_na)
 
-    def encodes(self, o): return TensorMultiCategory([self.vocab.o2i[o_] for o_ in o])
+    def encodes(self, o):
+        if not all(elem in self.vocab.o2i.keys() for elem in o):
+            diff = [elem for elem in o if elem not in self.vocab.o2i.keys()]
+            diff_str = "', '".join(diff)
+            raise KeyError(f"Labels '{diff_str}' were not included in the training dataset")
+        return TensorMultiCategory([self.vocab.o2i[o_] for o_ in o])
     def decodes(self, o): return MultiCategory      ([self.vocab    [o_] for o_ in o])
 
 # Cell
@@ -307,7 +316,7 @@ class EncodedMultiCategorize(Categorize):
     "Transform of one-hot encoded multi-category that decodes with `vocab`"
     loss_func,order=BCEWithLogitsLossFlat(),1
     def __init__(self, vocab):
-        super().__init__(vocab)
+        super().__init__(vocab, sort=vocab==None)
         self.c = len(vocab)
     def encodes(self, o): return TensorMultiCategory(tensor(o).float())
     def decodes(self, o): return MultiCategory (one_hot_decode(o, self.vocab))

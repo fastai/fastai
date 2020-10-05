@@ -12,7 +12,7 @@ from ..optimizer import *
 #nbdev_comment _all_ = ['CancelFitException', 'CancelEpochException', 'CancelTrainException', 'CancelValidException', 'CancelBatchException']
 
 # Cell
-_events = L.split('before_fit before_epoch before_train before_batch after_pred after_loss \
+_events = L.split('after_create before_fit before_epoch before_train before_batch after_pred after_loss \
     before_backward after_backward after_step after_cancel_batch after_batch after_cancel_train \
     after_train before_validate after_cancel_validate after_validate after_cancel_epoch \
     after_epoch after_cancel_fit after_fit')
@@ -59,6 +59,8 @@ class Callback(GetAttr):
 class TrainEvalCallback(Callback):
     "`Callback` that tracks the number of iterations done and properly sets training/eval mode"
     run_valid = False
+    def after_create(self): self.learn.n_epoch = 1
+
     def before_fit(self):
         "Set the iter and epoch counters to 0, put the model and the right device"
         self.learn.epoch,self.learn.loss = 0,tensor(0.)

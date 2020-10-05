@@ -14,15 +14,6 @@ from .callback.core import *
 #nbdev_comment _all_ = ['CancelFitException', 'CancelEpochException', 'CancelTrainException', 'CancelValidException', 'CancelBatchException']
 
 # Cell
-_loop = ['Start Fit', 'before_fit', 'Start Epoch Loop', 'before_epoch', 'Start Train', 'before_train',
-         'Start Batch Loop', 'before_batch', 'after_pred', 'after_loss', 'before_backward', 'after_backward',
-         'after_step', 'after_cancel_batch', 'after_batch','End Batch Loop','End Train',
-         'after_cancel_train', 'after_train', 'Start Valid', 'before_validate','Start Batch Loop',
-         '**CBs same as train batch**', 'End Batch Loop', 'End Valid', 'after_cancel_validate',
-         'after_validate', 'End Epoch Loop', 'after_cancel_epoch', 'after_epoch', 'End Fit',
-         'after_cancel_fit', 'after_fit']
-
-# Cell
 defaults.lr = 1e-3
 
 # Cell
@@ -78,6 +69,15 @@ class _ConstantFunc():
     def __call__(self, *args, **kwargs): return self.o
 
 # Cell
+_loop = ['Start Fit', 'before_fit', 'Start Epoch Loop', 'before_epoch', 'Start Train', 'before_train',
+         'Start Batch Loop', 'before_batch', 'after_pred', 'after_loss', 'before_backward', 'after_backward',
+         'after_step', 'after_cancel_batch', 'after_batch','End Batch Loop','End Train',
+         'after_cancel_train', 'after_train', 'Start Valid', 'before_validate','Start Batch Loop',
+         '**CBs same as train batch**', 'End Batch Loop', 'End Valid', 'after_cancel_validate',
+         'after_validate', 'End Epoch Loop', 'after_cancel_epoch', 'after_epoch', 'End Fit',
+         'after_cancel_fit', 'after_fit']
+
+# Cell
 @log_args(but='dls,model,opt_func,cbs')
 class Learner():
     def __init__(self, dls, model, loss_func=None, opt_func=Adam, lr=defaults.lr, splitter=trainable_params, cbs=None,
@@ -91,7 +91,7 @@ class Learner():
         store_attr(but='dls,model,cbs')
         self.training,self.create_mbar,self.logger,self.opt,self.cbs = False,True,print,None,L()
         self.add_cbs([(cb() if isinstance(cb, type) else cb) for cb in L(defaults.callbacks)+L(cbs)])
-        self.epoch,self.n_epoch,self.loss = 0,1,tensor(0.)
+        self("after_create")
 
     @property
     def metrics(self): return self._metrics
@@ -325,6 +325,9 @@ add_docs(Learner, "Group together a `model`, some `dls` and a `loss_func` to han
 )
 
 # Cell
+if not hasattr(defaults, 'callbacks'): defaults.callbacks = [TrainEvalCallback]
+
+# Cell
 def _before_batch_cb(f, self):
     xb,yb = f(self, self.xb, self.yb)
     self.learn.xb,self.learn.yb = xb,yb
@@ -501,8 +504,7 @@ add_docs(Recorder,
          after_cancel_validate = "Ignore validation metrics for this epoch",
          plot_loss = "Plot the losses from `skip_start` and onward")
 
-if not hasattr(defaults, 'callbacks'): defaults.callbacks = [TrainEvalCallback, Recorder]
-elif Recorder not in defaults.callbacks: defaults.callbacks.append(Recorder)
+if Recorder not in defaults.callbacks: defaults.callbacks.append(Recorder)
 
 # Cell
 @patch
