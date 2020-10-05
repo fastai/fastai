@@ -45,11 +45,11 @@ class PILDicom(PILBase):
     @classmethod
     def create(cls, fn:(Path,str,bytes), mode=None)->None:
         "Open a `DICOM file` from path `fn` or bytes `fn` and load it as a `PIL Image`"
-        if isinstance(fn,bytes): im = Image.fromarray(pydicom.dcmread(pydicom.filebase.DicomBytesIO(fn)).pixel_array)
-        if isinstance(fn,(Path,str)): im = Image.fromarray(dcmread(fn).pixel_array)
-        im.load()
-        im = im._new(im.im)
-        return cls(im.convert(mode) if mode else im)
+        if isinstance(fn,bytes): im = pydicom.dcmread(pydicom.filebase.DicomBytesIO(fn))
+        if isinstance(fn,(Path,str)): im = dcmread(fn)
+        scaled = np.array(im.hist_scaled(min_px =-1100, max_px=None).numpy())*255
+        scaled = scaled.astype(np.uint8)
+        return cls(Image.fromarray(scaled))
 
 PILDicom._tensor_cls = TensorDicom
 
