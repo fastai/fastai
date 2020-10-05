@@ -43,7 +43,7 @@ class TensorDicom(TensorImage):
 class PILDicom(PILBase):
     _open_args,_tensor_cls,_show_args = {},TensorDicom,TensorDicom._show_args
     @classmethod
-    def create(cls, fn:(Path,str,bytes), mode=None)->None:
+    def create(cls, fn:(Path,str,bytes))->None:
         "Open a `DICOM file` from path `fn` or bytes `fn` and load it as a `PIL Image`"
         if isinstance(fn,bytes): im = pydicom.dcmread(pydicom.filebase.DicomBytesIO(fn))
         if isinstance(fn,(Path,str)): im = dcmread(fn)
