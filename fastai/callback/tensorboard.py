@@ -98,7 +98,8 @@ class TensorBoardProjectorCallback(TensorBoardBaseCallback):
 # Cell
 def _write_projector_embedding(learn, writer, feat):
     lbls = [learn.dl.vocab[l] for l in feat['lbl']] if getattr(learn.dl, 'vocab', None) else None
-    writer.add_embedding(feat['vec'], metadata=lbls, label_img=feat['img'], global_step=learn.train_iter)
+    vecs = feat['vec'].squeeze()
+    writer.add_embedding(vecs, metadata=lbls, label_img=feat['img'], global_step=learn.train_iter)
 
 # Cell
 def _add_projector_features(learn, hook, feat):
