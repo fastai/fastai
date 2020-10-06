@@ -2,7 +2,7 @@
 
 __all__ = ['RandTransform', 'TensorTypes', 'FlipItem', 'DihedralItem', 'PadMode', 'CropPad', 'CropPad', 'RandomCrop',
            'OldRandomCrop', 'ResizeMethod', 'Resize', 'RandomResizedCrop', 'RatioResize', 'AffineCoordTfm',
-           'RandomResizedCropGPU', 'affine_mat', 'mask_tensor', 'flip_mat', 'Flip', 'DeterministicDraw',
+           'RandomResizedCropGPU', 'mask_tensor', 'affine_mat', 'flip_mat', 'Flip', 'DeterministicDraw',
            'DeterministicFlip', 'dihedral_mat', 'Dihedral', 'DeterministicDihedral', 'rotate_mat', 'Rotate', 'zoom_mat',
            'Zoom', 'find_coeffs', 'apply_perspective', 'Warp', 'LightingTfm', 'Brightness', 'Contrast', 'grayscale',
            'Saturation', 'rgb2hsv', 'hsv2rgb', 'Hue', 'cutout_gaussian', 'norm_apply_denorm', 'RandomErasing',
@@ -437,13 +437,6 @@ class RandomResizedCropGPU(RandTransform):
         return TensorImage(x).affine_coord(sz=self.size, mode=self.mode)
 
 # Cell
-def affine_mat(*ms):
-    "Restructure length-6 vector `ms` into an affine matrix with 0,0,1 in the last line"
-    return stack([stack([ms[0], ms[1], ms[2]], dim=1),
-                  stack([ms[3], ms[4], ms[5]], dim=1),
-                  stack([t0(ms[0]), t0(ms[0]), t1(ms[0])], dim=1)], dim=1)
-
-# Cell
 def mask_tensor(x, p=0.5, neutral=0., batch=False):
     "Mask elements of `x` with `neutral` with probability `1-p`"
     if p==1.: return x
@@ -455,6 +448,7 @@ def mask_tensor(x, p=0.5, neutral=0., batch=False):
 
 # Cell
 def _draw_mask(x, def_draw, draw=None, p=0.5, neutral=0., batch=False):
+    "Creates mask_tensor based on `x` with `neutral` with probability `1-p`. "
     if draw is None: draw=def_draw
     if callable(draw): res=draw(x)
     elif is_listy(draw):
@@ -462,6 +456,13 @@ def _draw_mask(x, def_draw, draw=None, p=0.5, neutral=0., batch=False):
         res = tensor(draw[:x.size(0)], dtype=x.dtype, device=x.device)
     else: res = x.new_zeros(x.size(0)) + draw
     return mask_tensor(res, p=p, neutral=neutral, batch=batch)
+
+# Cell
+def affine_mat(*ms):
+    "Restructure length-6 vector `ms` into an affine matrix with 0,0,1 in the last line"
+    return stack([stack([ms[0], ms[1], ms[2]], dim=1),
+                  stack([ms[3], ms[4], ms[5]], dim=1),
+                  stack([t0(ms[0]), t0(ms[0]), t1(ms[0])], dim=1)], dim=1)
 
 # Cell
 def flip_mat(x, p=0.5, draw=None, batch=False):
