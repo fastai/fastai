@@ -109,6 +109,8 @@ class CSVLogger(Callback):
     def _write_line(self, log):
         "Write a line with `log` and call the old logger."
         self.file.write(','.join([str(t) for t in log]) + '\n')
+        self.file.flush()
+        os.fsync(self.file.fileno())
         self.old_logger(log)
 
     def after_fit(self):
