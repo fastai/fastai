@@ -22,20 +22,20 @@ mnist_stats    = ([0.131], [0.308])
 # Cell
 if not hasattr(Image,'_patched'):
     _old_sz = Image.Image.size.fget
-    @patch_property
+    @patch(as_prop=True)
     def size(x:Image.Image): return fastuple(_old_sz(x))
     Image._patched = True
 
 # Cell
-@patch_property
+@patch(as_prop=True)
 def n_px(x: Image.Image): return x.size[0] * x.size[1]
 
 # Cell
-@patch_property
+@patch(as_prop=True)
 def shape(x: Image.Image): return x.size[1],x.size[0]
 
 # Cell
-@patch_property
+@patch(as_prop=True)
 def aspect(x: Image.Image): return x.size[0]/x.size[1]
 
 # Cell

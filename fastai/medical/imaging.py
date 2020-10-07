@@ -54,13 +54,13 @@ class PILDicom(PILBase):
 PILDicom._tensor_cls = TensorDicom
 
 # Cell
-@patch_property
+@patch(as_prop=True)
 def pixels(self:DcmDataset):
     "`pixel_array` as a tensor"
     return tensor(self.pixel_array.astype(np.float32))
 
 # Cell
-@patch_property
+@patch(as_prop=True)
 def scaled_px(self:DcmDataset):
     "`pixels` scaled by `RescaleSlope` and `RescaleIntercept`"
     img = self.pixels
@@ -338,7 +338,7 @@ def zoom_to(self:DcmDataset, sz):
     self.zoom((rows/self.Rows,cols/self.Columns))
 
 # Cell
-@patch_property
+@patch(as_prop=True)
 def shape(self:DcmDataset):
     "Returns the shape of a dicom image as rows and columns"
     return self.Rows,self.Columns
