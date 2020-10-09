@@ -136,7 +136,7 @@ def MaskSplitter(mask):
 # Cell
 def FileSplitter(fname):
     "Split `items` by providing file `fname` (contains names of valid items separated by newline)."
-    valid = Path(fname).read().split('\n')
+    valid = Path(fname).read_text().split('\n')
     def _func(x): return x.name in valid
     def _inner(o): return FuncSplitter(_func)(o)
     return _inner
