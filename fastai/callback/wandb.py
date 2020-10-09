@@ -136,13 +136,27 @@ def _make_plt(img):
     return fig, ax
 
 # Cell
+def _format_config_value(config_value):
+    "Format a single config parameter value before logging it"
+    if callable(config_value):
+        config_value = (
+            f'{config_value.__module__}.{config_value.__qualname__}'
+            if hasattr(config_value, '__qualname__') and hasattr(config_value, '__module__')
+            else str(config_value)
+        )
+    return config_value
+
+# Cell
 def _format_config(log_config):
     "Format config parameters before logging them"
     for k,v in log_config.items():
-        if callable(v):
-            if hasattr(v,'__qualname__') and hasattr(v,'__module__'): log_config[k] = f'{v.__module__}.{v.__qualname__}'
-            else: log_config[k] = str(v)
-        if isinstance(v, slice): log_config[k] = dict(slice_start=v.start, slice_step=v.step, slice_stop=v.stop)
+        if isinstance(v, slice):
+            v = dict(slice_start=v.start, slice_step=v.step, slice_stop=v.stop)
+        elif isinstance(v, list):
+            v = [_format_config_value(item) for item in v]
+        else:
+            v = _format_config_value(v)
+        log_config[k] = v
 
 # Cell
 def _format_metadata(metadata):
