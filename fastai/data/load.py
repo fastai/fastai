@@ -19,7 +19,7 @@ def _wif(worker_id):
 
 class _FakeLoader:
     _IterableDataset_len_called,_auto_collation,collate_fn,drop_last = None,False,noops,False
-    _index_sampler,generator,prefetch_factor = Inf.count,None,2
+    _index_sampler,generator,prefetch_factor,persistent_workers = Inf.count,None,2,False
     dataset_kind = _dataset_kind = _DatasetKind.Iterable
     def __init__(self, d, pin_memory, num_workers, timeout):
         self.dataset,self.default,self.worker_init_fn = self,d,_wif
