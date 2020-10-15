@@ -147,7 +147,9 @@ def layer_info(learn, *xb):
     def _track(m, i, o): return (m.__class__.__name__,)+total_params(m)+(apply(lambda x:x.shape, o),)
     with Hooks(flatten_model(learn.model), _track) as h:
         batch = apply(lambda o:o[:1], xb)
-        with learn: r = learn.get_preds(dl=[batch], inner=True, reorder=False)
+        train_only_cbs = [cb for cb in learn.cbs if hasattr(cb, '_only_train_loop')]
+        with learn.removed_cbs(train_only_cbs) as l:
+            with l: r = l.get_preds(dl=[batch], inner=True, reorder=False)
         return h.stored
 
 # Cell
