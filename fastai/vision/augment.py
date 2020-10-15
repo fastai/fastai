@@ -187,7 +187,12 @@ class RandomCrop(RandTransform):
     def before_call(self, b, split_idx):
         self.orig_sz = _get_sz(b)
         if split_idx: self.tl = (self.orig_sz-self.size)//2
-        else: self.tl = fastuple(random.randint(0,self.orig_sz[0]-self.size[0]), random.randint(0,self.orig_sz[1]-self.size[1]))
+        else:
+            wd = self.orig_sz[0] - self.size[0]
+            hd = self.orig_sz[1] - self.size[1]
+            w_rand = (wd, -1) if wd < 0 else (0, wd)
+            h_rand = (hd, -1) if hd < 0 else (0, hd)
+            self.tl = fastuple(random.randint(*w_rand), random.randint(*h_rand))
 
     def encodes(self, x:(Image.Image,TensorBBox,TensorPoint)):
         return x.crop_pad(self.size, self.tl, orig_sz=self.orig_sz)
