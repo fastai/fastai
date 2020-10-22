@@ -469,7 +469,6 @@ def flip_mat(x, p=0.5, draw=None, batch=False):
     "Return a random flip matrix"
     def _def_draw(x): return x.new_ones(x.size(0))
     mask = x.new_ones(x.size(0)) - 2*_draw_mask(x, _def_draw, draw=draw, p=p, batch=batch)
-    #mask = mask_tensor(-x.new_ones(x.size(0)), p=p, neutral=1.)
     return affine_mat(mask,     t0(mask), t0(mask),
                       t0(mask), t1(mask), t0(mask))
 
