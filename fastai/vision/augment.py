@@ -4,9 +4,9 @@ __all__ = ['RandTransform', 'TensorTypes', 'FlipItem', 'DihedralItem', 'PadMode'
            'OldRandomCrop', 'ResizeMethod', 'Resize', 'RandomResizedCrop', 'RatioResize', 'AffineCoordTfm',
            'RandomResizedCropGPU', 'mask_tensor', 'affine_mat', 'flip_mat', 'Flip', 'DeterministicDraw',
            'DeterministicFlip', 'dihedral_mat', 'Dihedral', 'DeterministicDihedral', 'rotate_mat', 'Rotate', 'zoom_mat',
-           'Zoom', 'find_coeffs', 'apply_perspective', 'Warp', 'LightingTfm', 'Brightness', 'Contrast', 'grayscale',
-           'Saturation', 'rgb2hsv', 'hsv2rgb', 'Hue', 'cutout_gaussian', 'norm_apply_denorm', 'RandomErasing',
-           'setup_aug_tfms', 'aug_transforms']
+           'Zoom', 'find_coeffs', 'apply_perspective', 'Warp', 'SpaceTfm', 'LightingTfm', 'Brightness', 'Contrast',
+           'grayscale', 'Saturation', 'rgb2hsv', 'hsv2rgb', 'HSVTfm', 'Hue', 'cutout_gaussian', 'norm_apply_denorm',
+           'RandomErasing', 'setup_aug_tfms', 'aug_transforms']
 
 # Cell
 from ..data.all import *
@@ -688,11 +688,12 @@ class Warp(AffineCoordTfm):
 def lighting(x: TensorImage, func): return TensorImage(torch.sigmoid(func(logit(x))))
 
 # Cell
-class LightingTfm(RandTransform):
+class SpaceTfm(RandTransform):
     "Apply `fs` to the logits"
     order = 40
-    def __init__(self, fs, **kwargs):
+    def __init__(self, fs,space_fn, **kwargs):
         super().__init__(**kwargs)
+        self.space_fn=space_fn
         self.fs=L(fs)
 
     def before_call(self, b, split_idx):
@@ -704,7 +705,14 @@ class LightingTfm(RandTransform):
         "Compose `self` with another `LightingTransform`"
         self.fs += tfm.fs
 
-    def encodes(self,x:TensorImage): return x.lighting(partial(compose_tfms, tfms=self.fs))
+    def encodes(self,x:TensorImage): return self.space_fn(x,partial(compose_tfms, tfms=self.fs))
+
+# Cell
+class LightingTfm(SpaceTfm):
+    "Apply `fs` to the logits"
+    order = 40
+    def __init__(self, fs, **kwargs):
+        super().__init__(fs,lighting, **kwargs)
 
 # Cell
 class _BrightnessLogit():
@@ -852,8 +860,18 @@ def hsv2rgb(img):
     return torch.einsum("nijk, nxijk -> nxjk", mask.to(dtype=img.dtype), a4)
 
 # Cell
+@patch
+def hsv(x: TensorImage, func): return TensorImage(hsv2rgb(func(rgb2hsv(x))))
+
+# Cell
+class HSVTfm(SpaceTfm):
+    "Apply `fs` to the images in HSV space"
+    def __init__(self, fs, **kwargs):
+        super().__init__(fs,hsv, **kwargs)
+
+# Cell
 class _Hue():
-    def __init__(self, max_hue=0.2, p=0.75, draw=None, batch=False): store_attr()
+    def __init__(self, max_hue=0.1, p=0.75, draw=None, batch=False): store_attr()
 
     def _def_draw(self, x):
         if not self.batch: res = x.new_empty(x.size(0)).uniform_(math.log(1-self.max_hue), -math.log(1-self.max_hue))
@@ -864,12 +882,10 @@ class _Hue():
         self.change = _draw_mask(x, self._def_draw, draw=self.draw, p=self.p, neutral=0., batch=self.batch)
 
     def __call__(self, x):
-        hsv=rgb2hsv(x)
-        h,s,v = hsv.unbind(1)
+        h,s,v = x.unbind(1)
         h += self.change[:,None,None]
         h = h % 1.0
-        hsv.set_(torch.stack((h, s, v),dim=1))
-        return x.set_(hsv2rgb(hsv))
+        return x.set_(torch.stack((h, s, v),dim=1))
 
 # Cell
 @delegates(_Hue.__init__)
@@ -877,15 +893,14 @@ class _Hue():
 def hue(x: TensorImage, **kwargs):
     func = _Hue(**kwargs)
     func.before_call(x)
-    return TensorImage(func(x))
+    return TensorImage(x.hsv(func))
 
 # Cell
-class Hue(RandTransform):
+class Hue(HSVTfm):
     "Apply change in hue of `max_hue` to batch of images with probability `p`."
     # Ref: https://pytorch.org/docs/stable/torchvision/transforms.html#torchvision.transforms.functional.adjust_hue
     def __init__(self,max_hue=0.1, p=0.75, draw=None, batch=False):
         super().__init__(_Hue(max_hue, p, draw, batch))
-        store_attr()
 
 # Cell
 def cutout_gaussian(x, areas):
