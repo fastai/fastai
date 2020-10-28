@@ -51,6 +51,9 @@ class BCEWithLogitsLossFlat(BaseLoss):
     "Same as `nn.BCEWithLogitsLoss`, but flattens input and target."
     @use_kwargs_dict(keep=True, weight=None, reduction='mean', pos_weight=None)
     def __init__(self, *args, axis=-1, floatify=True, thresh=0.5, **kwargs):
+        if kwargs.get('pos_weight', None) is not None and kwargs.get('flatten', None) is True:
+            raise ValueError("`flatten` must be False when using `pos_weight` to avoid a RuntimeError due to shape mismatch")
+        if kwargs.get('pos_weight', None) is not None: kwargs['flatten'] = False
         super().__init__(nn.BCEWithLogitsLoss, *args, axis=axis, floatify=floatify, is_2d=False, **kwargs)
         self.thresh = thresh
 

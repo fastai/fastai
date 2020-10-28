@@ -147,7 +147,9 @@ def layer_info(learn, *xb):
     def _track(m, i, o): return (m.__class__.__name__,)+total_params(m)+(apply(lambda x:x.shape, o),)
     with Hooks(flatten_model(learn.model), _track) as h:
         batch = apply(lambda o:o[:1], xb)
-        with learn: r = learn.get_preds(dl=[batch], inner=True, reorder=False)
+        train_only_cbs = [cb for cb in learn.cbs if hasattr(cb, '_only_train_loop')]
+        with learn.removed_cbs(train_only_cbs) as l:
+            with l: r = l.get_preds(dl=[batch], inner=True, reorder=False)
         return h.stored
 
 # Cell
@@ -208,11 +210,28 @@ class ActivationStats(HookCallback):
         self.stats = L()
 
     def hook(self, m, i, o):
+        if isinstance(o, tuple): return self.hook_multi_ouput(o)
         o = o.float()
         res = {'mean': o.mean().item(), 'std': o.std().item(),
                'near_zero': (o<=0.05).long().sum().item()/o.numel()}
         if self.with_hist: res['hist'] = o.histc(40,0,10)
         return res
+
+    def hook_multi_ouput(self,o_tuple):
+        "For outputs of RNN which are [nested] tuples of tensors"
+        res = []
+        for o in self._flatten_tuple(o_tuple):
+            if not(isinstance(o, Tensor)): continue
+            res.append(self.hook(None, None, o))
+        return res
+
+    def _flatten_tuple(self, o_tuple):
+        "Recursively flatten a [nested] tuple"
+        res = []
+        for it in o_tuple:
+            if isinstance(it, tuple): res += self._flatten_tuple(it)
+            else: res += [it]
+        return tuple(res)
 
     def after_batch(self):
         "Take the stored results and puts it in `self.stats`"

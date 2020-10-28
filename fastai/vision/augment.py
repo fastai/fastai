@@ -2,7 +2,7 @@
 
 __all__ = ['RandTransform', 'TensorTypes', 'FlipItem', 'DihedralItem', 'PadMode', 'CropPad', 'CropPad', 'RandomCrop',
            'OldRandomCrop', 'ResizeMethod', 'Resize', 'RandomResizedCrop', 'RatioResize', 'AffineCoordTfm',
-           'RandomResizedCropGPU', 'affine_mat', 'mask_tensor', 'flip_mat', 'Flip', 'DeterministicDraw',
+           'RandomResizedCropGPU', 'mask_tensor', 'affine_mat', 'flip_mat', 'Flip', 'DeterministicDraw',
            'DeterministicFlip', 'dihedral_mat', 'Dihedral', 'DeterministicDihedral', 'rotate_mat', 'Rotate', 'zoom_mat',
            'Zoom', 'find_coeffs', 'apply_perspective', 'Warp', 'LightingTfm', 'Brightness', 'Contrast', 'grayscale',
            'Saturation', 'rgb2hsv', 'hsv2rgb', 'Hue', 'cutout_gaussian', 'norm_apply_denorm', 'RandomErasing',
@@ -187,7 +187,12 @@ class RandomCrop(RandTransform):
     def before_call(self, b, split_idx):
         self.orig_sz = _get_sz(b)
         if split_idx: self.tl = (self.orig_sz-self.size)//2
-        else: self.tl = fastuple(random.randint(0,self.orig_sz[0]-self.size[0]), random.randint(0,self.orig_sz[1]-self.size[1]))
+        else:
+            wd = self.orig_sz[0] - self.size[0]
+            hd = self.orig_sz[1] - self.size[1]
+            w_rand = (wd, -1) if wd < 0 else (0, wd)
+            h_rand = (hd, -1) if hd < 0 else (0, hd)
+            self.tl = fastuple(random.randint(*w_rand), random.randint(*h_rand))
 
     def encodes(self, x:(Image.Image,TensorBBox,TensorPoint)):
         return x.crop_pad(self.size, self.tl, orig_sz=self.orig_sz)
@@ -437,13 +442,6 @@ class RandomResizedCropGPU(RandTransform):
         return TensorImage(x).affine_coord(sz=self.size, mode=self.mode)
 
 # Cell
-def affine_mat(*ms):
-    "Restructure length-6 vector `ms` into an affine matrix with 0,0,1 in the last line"
-    return stack([stack([ms[0], ms[1], ms[2]], dim=1),
-                  stack([ms[3], ms[4], ms[5]], dim=1),
-                  stack([t0(ms[0]), t0(ms[0]), t1(ms[0])], dim=1)], dim=1)
-
-# Cell
 def mask_tensor(x, p=0.5, neutral=0., batch=False):
     "Mask elements of `x` with `neutral` with probability `1-p`"
     if p==1.: return x
@@ -455,6 +453,7 @@ def mask_tensor(x, p=0.5, neutral=0., batch=False):
 
 # Cell
 def _draw_mask(x, def_draw, draw=None, p=0.5, neutral=0., batch=False):
+    "Creates mask_tensor based on `x` with `neutral` with probability `1-p`. "
     if draw is None: draw=def_draw
     if callable(draw): res=draw(x)
     elif is_listy(draw):
@@ -464,11 +463,17 @@ def _draw_mask(x, def_draw, draw=None, p=0.5, neutral=0., batch=False):
     return mask_tensor(res, p=p, neutral=neutral, batch=batch)
 
 # Cell
+def affine_mat(*ms):
+    "Restructure length-6 vector `ms` into an affine matrix with 0,0,1 in the last line"
+    return stack([stack([ms[0], ms[1], ms[2]], dim=1),
+                  stack([ms[3], ms[4], ms[5]], dim=1),
+                  stack([t0(ms[0]), t0(ms[0]), t1(ms[0])], dim=1)], dim=1)
+
+# Cell
 def flip_mat(x, p=0.5, draw=None, batch=False):
     "Return a random flip matrix"
     def _def_draw(x): return x.new_ones(x.size(0))
     mask = x.new_ones(x.size(0)) - 2*_draw_mask(x, _def_draw, draw=draw, p=p, batch=batch)
-    #mask = mask_tensor(-x.new_ones(x.size(0)), p=p, neutral=1.)
     return affine_mat(mask,     t0(mask), t0(mask),
                       t0(mask), t1(mask), t0(mask))
 

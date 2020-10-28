@@ -13,7 +13,7 @@ class _BaseOptimizer():
     "Common functionality between `Optimizer` and `OptimWrapper`"
     def all_params(self, n=slice(None), with_grad=False):
         res = L((p,pg,self.state[p],hyper) for pg,hyper in zip(self.param_lists[n],self.hypers[n]) for p in pg)
-        return L(o for o in res if o[0].grad is not None) if with_grad else res
+        return L(o for o in res if hasattr(o[0], 'grad') and o[0].grad is not None) if with_grad else res
 
     def _set_require_grad(self, rg, p,pg,state,h): p.requires_grad_(rg or state.get('force_train', False))
     def freeze_to(self, n):
