@@ -9,7 +9,6 @@ __all__ = ['DcmDataset', 'DcmTag', 'DcmMultiValue', 'dcmread', 'get_dicom_files'
 from ..basics import *
 from ..vision.all import *
 from ..data.transforms import *
-#from fastai.data.load import *
 
 import pydicom,kornia,skimage
 from pydicom.dataset import Dataset as DcmDataset
