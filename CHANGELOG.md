@@ -2,6 +2,17 @@
 
 <!-- do not remove -->
 
+## 2.0.17
+
+### Forthcoming breaking changes
+
+The next version of fastai will be 2.1. It will require PyTorch 1.7, which has significant foundational changes. It should not require any code changes except for people doing sophisticated tensor subclassing work, but nonetheless we recommend testing carefully. Therefore, we recommend pinning your fastai version to `<2.1` if you are not able to fully test your fastai code when the new version comes out.
+
+### New Features
+
+- pin pytorch (`<1.7`) and torchvision (`<0.8`) requirements ([#2915](https://github.com/fastai/fastai/issues/2915))
+
+
 ## 2.0.16
 
 ### New Features
