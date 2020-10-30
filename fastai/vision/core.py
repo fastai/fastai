@@ -137,7 +137,7 @@ class AddMaskCodes(Transform):
         if codes is not None: self.vocab,self.c = codes,len(codes)
 
     def decodes(self, o:TensorMask):
-        if self.codes is not None: o._meta = {'codes': self.codes}
+        if self.codes is not None: o.codes=self.codes
         return o
 
 # Cell
@@ -242,8 +242,8 @@ class PointScaler(Transform):
         return x
 
     def _get_sz(self, x):
-        sz = x.get_meta('img_size')
-        assert sz is not None or self.sz is not None, "Size could not be inferred, pass it in the init of your TensorPoint with `img_size=...`"
+        sz = x.img_size
+        assert sz is not None or self.sz is not None, "Size could not be inferred, pass to init with `img_size=...`"
         return sz if self.sz is None else self.sz
 
     def setups(self, dl):

@@ -3,8 +3,8 @@
 __all__ = ['progress_bar', 'master_bar', 'subplots', 'show_image', 'show_titled_image', 'show_images', 'ArrayBase',
            'ArrayImageBase', 'ArrayImage', 'ArrayImageBW', 'ArrayMask', 'tensor', 'set_seed', 'get_random_states',
            'set_random_states', 'no_random', 'unsqueeze', 'unsqueeze_', 'apply', 'maybe_gather', 'to_detach', 'to_half',
-           'to_float', 'default_device', 'to_device', 'to_cpu', 'to_np', 'to_concat', 'TensorBase', 'TensorCategory',
-           'TensorMultiCategory', 'TensorImageBase', 'TensorImage', 'TensorImageBW', 'TensorMask', 'TitledTensorScalar',
+           'to_float', 'default_device', 'to_device', 'to_cpu', 'to_np', 'to_concat', 'TensorBase', 'TensorImageBase',
+           'TensorImage', 'TensorImageBW', 'TensorMask', 'TensorCategory', 'TensorMultiCategory', 'TitledTensorScalar',
            'concat', 'Chunks', 'show_title', 'ShowTitle', 'TitledInt', 'TitledFloat', 'TitledStr', 'TitledTuple',
            'get_empty_df', 'display_df', 'get_first', 'one_param', 'item_find', 'find_device', 'find_bs', 'np_func',
            'Module', 'get_model', 'one_hot', 'one_hot_decode', 'params', 'trainable_params', 'norm_types',
@@ -271,24 +271,13 @@ def to_concat(xs, dim=0):
 
 # Cell
 @patch
-def set_meta(self:Tensor, x, copy_meta=False):
+def set_meta(self:Tensor, x, as_copy=False):
     "Set all metadata in `__dict__`"
     if not hasattr(x,'__dict__'): return
-    d = x.__dict__
-    if copy_meta:
-        d = copy(d)
-        if '_meta' in d: d['_meta'] = copy(d['_meta'])
-    self.__dict__ = d
+    self.__dict__ = deepcopy(x.__dict__) if as_copy else x.__dict__
 
 # Cell
-@patch
-def get_meta(self:Tensor, n, d=None):
-    "Set `n` from `self._meta` if it exists and returns default `d` otherwise"
-    return getattr(self, '_meta', {}).get(n, d)
-
-# Cell
-if not hasattr(torch,'as_subclass'):
-    setattr(torch, 'as_subclass', torch.Tensor.as_subclass)
+if not hasattr(torch,'as_subclass'): torch.as_subclass = torch.Tensor.as_subclass
 
 # Cell
 @patch
@@ -300,7 +289,7 @@ def as_subclass(self:Tensor, typ):
 class TensorBase(Tensor):
     def __new__(cls, x, **kwargs):
         res = cast(tensor(x), cls)
-        if kwargs: res._meta = kwargs
+        for k,v in kwargs.items(): setattr(res, k, v)
         return res
 
     @classmethod
@@ -313,42 +302,21 @@ class TensorBase(Tensor):
         f = _fa_rebuild_qtensor if self.is_quantized else  _fa_rebuild_tensor
         return (f, args + (self.requires_grad, OrderedDict()))
 
-    def gi(self, i):
-        res = self[i]
-        return res.as_subclass(type(self)) if isinstance(res,Tensor) else res
+    def __torch_function__(self, func, types, args=(), kwargs=None):
+        # temp workaround for https://github.com/pytorch/pytorch/issues/47091
+        if len(types)>1:
+            t = first(o for o in types if issubclass(o,TensorBase))
+            if t: types = tuple(t if issubclass(o, TensorBase) else o for o in types)
+        ret = super().__torch_function__(func, types, args=args, kwargs=kwargs)
+        if isinstance(ret, TensorBase): ret.set_meta(self, as_copy=True)
+        return ret
 
-    def __repr__(self):
-        return re.sub('tensor', self.__class__.__name__, super().__repr__())
+    def __repr__(self): return re.sub('tensor', self.__class__.__name__, super().__repr__())
 
-# Cell
-def _patch_tb():
-    if getattr(TensorBase,'_patched',False): return
-    TensorBase._patched = True
-
-    def get_f(fn):
-        def _f(self, *args, **kwargs):
-            cls = self.__class__
-            res = getattr(super(TensorBase, self), fn)(*args, **kwargs)
-            return retain_type(res, self, copy_meta=True)
-        return _f
-
-    t = tensor([1])
-    skips = 'as_subclass imag real __getitem__ __class__ __deepcopy__ __delattr__ __dir__ __doc__ __getattribute__ __hash__ __init__ \
-        __init_subclass__ __new__ __reduce__ __reduce_ex__ __repr__ __module__ __setstate__'.split()
-
-    for fn in dir(t):
-        if fn in skips: continue
-        f = getattr(t, fn)
-        if isinstance(f, (MethodWrapperType, BuiltinFunctionType, BuiltinMethodType, MethodType, FunctionType)):
-            setattr(TensorBase, fn, get_f(fn))
-
-_patch_tb()
-
-# Cell
-class TensorCategory(TensorBase): pass
-
-# Cell
-class TensorMultiCategory(TensorCategory): pass
+    def new_ones(self, size, dtype=None, device=None, requires_grad=False):
+        "Temporarily override PyTorch broken `new_ones`"
+        if isinstance(size, int): size = tuple([size])
+        return self.new_full(size, 1, dtype=dtype, device=device, requires_grad=requires_grad)
 
 # Cell
 class TensorImageBase(TensorBase):
@@ -367,9 +335,15 @@ class TensorMask(TensorImageBase):
     _show_args = ArrayMask._show_args
 
     def show(self, ctx=None, **kwargs):
-        codes = self.get_meta('codes')
+        codes = getattr(self, 'codes', None)
         if codes is not None: kwargs = merge({'vmin': 1, 'vmax': len(codes)}, kwargs)
         return super().show(ctx=ctx, **kwargs)
+
+# Cell
+class TensorCategory(TensorBase): pass
+
+# Cell
+class TensorMultiCategory(TensorCategory): pass
 
 # Cell
 class TitledTensorScalar(TensorBase):

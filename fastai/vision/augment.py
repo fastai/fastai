@@ -76,7 +76,7 @@ def dihedral(x:TensorPoint, k):
 def dihedral(x:TensorBBox, k):
         pnts = TensorPoint(x.view(-1,2)).dihedral(k).view(-1,2,2)
         tl,br = pnts.min(dim=1)[0],pnts.max(dim=1)[0]
-        return TensorBBox(torch.cat([tl, br], dim=1), img_size=x.get_meta('img_size'))
+        return TensorBBox(torch.cat([tl, br], dim=1), img_size=x.img_size)
 
 # Cell
 class DihedralItem(RandTransform):
@@ -124,7 +124,7 @@ def _do_crop_pad(x:TensorPoint, sz, tl, orig_sz, pad_mode=PadMode.Zeros, resize_
 @patch
 def _do_crop_pad(x:TensorBBox, sz, tl, orig_sz, pad_mode=PadMode.Zeros, resize_to=None, **kwargs):
     bbox = TensorPoint._do_crop_pad(x.view(-1,2), sz, tl, orig_sz, pad_mode, resize_to).view(-1,4)
-    return TensorBBox(bbox, img_size=x.get_meta('img_size'))
+    return TensorBBox(bbox, img_size=x.img_size)
 
 @patch
 def crop_pad(x:(TensorBBox,TensorPoint,Image.Image),
@@ -142,7 +142,7 @@ def _process_sz(size):
 def _get_sz(x):
     if isinstance(x, tuple): x = x[0]
     if not isinstance(x, Tensor): return fastuple(x.size)
-    return fastuple(x.get_meta('img_size', x.get_meta('sz', (x.shape[-1], x.shape[-2]))))
+    return fastuple(getattr(x, 'img_size', getattr(x, 'sz', (x.shape[-1], x.shape[-2]))))
 
 # Cell
 @delegates()
@@ -344,7 +344,7 @@ def affine_coord(x: TensorMask, mat=None, coord_tfm=None, sz=None, mode='nearest
 def affine_coord(x: TensorPoint, mat=None, coord_tfm=None, sz=None, mode='nearest',
                  pad_mode=PadMode.Zeros, align_corners=True):
     #assert pad_mode==PadMode.Zeros, "Only zero padding is supported for `TensorPoint` and `TensorBBox`"
-    if sz is None: sz = x.get_meta('img_size')
+    if sz is None: sz = getattr(x, "img_size", None)
     if coord_tfm is not None: x = coord_tfm(x, invert=True)
     if mat is not None: x = (x - mat[:,:,2].unsqueeze(1)) @ torch.inverse(mat[:,:,:2].transpose(1,2))
     return TensorPoint(x, sz=sz)
@@ -353,7 +353,7 @@ def affine_coord(x: TensorPoint, mat=None, coord_tfm=None, sz=None, mode='neares
 def affine_coord(x: TensorBBox, mat=None, coord_tfm=None, sz=None, mode='nearest',
                  pad_mode=PadMode.Zeros, align_corners=True):
     if mat is None and coord_tfm is None: return x
-    if sz is None: sz = x.get_meta('img_size')
+    if sz is None: sz = getattr(x, "img_size", None)
     bs,n = x.shape[:2]
     pnts = stack([x[...,:2], stack([x[...,0],x[...,3]],dim=2),
                   stack([x[...,2],x[...,1]],dim=2), x[...,2:]], dim=2)
@@ -364,7 +364,7 @@ def affine_coord(x: TensorBBox, mat=None, coord_tfm=None, sz=None, mode='nearest
 
 # Cell
 def _prepare_mat(x, mat):
-    h,w = x.get_meta('img_size', x.shape[-2:])
+    h,w = getattr(x, 'img_size', x.shape[-2:])
     mat[:,0,1] *= h/w
     mat[:,1,0] *= w/h
     return mat[:,:2]
@@ -550,7 +550,7 @@ class DeterministicDihedral(Dihedral):
 # Cell
 def rotate_mat(x, max_deg=10, p=0.5, draw=None, batch=False):
     "Return a random rotation matrix with `max_deg` and `p`"
-    def _def_draw(x):   return x.new(x.size(0)).uniform_(-max_deg, max_deg)
+    def _def_draw(x):   return x.new_empty(x.size(0)).uniform_(-max_deg, max_deg)
     def _def_draw_b(x): return x.new_zeros(x.size(0)) + random.uniform(-max_deg, max_deg)
     thetas = _draw_mask(x, _def_draw_b if batch else _def_draw, draw=draw, p=p, batch=batch) * math.pi/180
     return affine_mat(thetas.cos(), thetas.sin(), t0(thetas),
@@ -575,9 +575,9 @@ class Rotate(AffineCoordTfm):
 # Cell
 def zoom_mat(x, min_zoom=1., max_zoom=1.1, p=0.5, draw=None, draw_x=None, draw_y=None, batch=False):
     "Return a random zoom matrix with `max_zoom` and `p`"
-    def _def_draw(x):       return x.new(x.size(0)).uniform_(min_zoom, max_zoom)
+    def _def_draw(x):       return x.new_empty(x.size(0)).uniform_(min_zoom, max_zoom)
     def _def_draw_b(x):     return x.new_zeros(x.size(0)) + random.uniform(min_zoom, max_zoom)
-    def _def_draw_ctr(x):   return x.new(x.size(0)).uniform_(0,1)
+    def _def_draw_ctr(x):   return x.new_empty(x.size(0)).uniform_(0,1)
     def _def_draw_ctr_b(x): return x.new_zeros(x.size(0)) + random.uniform(0,1)
     assert(min_zoom<=max_zoom)
     s = 1/_draw_mask(x, _def_draw_b if batch else _def_draw, draw=draw, p=p, neutral=1., batch=batch)
@@ -604,6 +604,17 @@ class Zoom(AffineCoordTfm):
          pad_mode=PadMode.Reflection, batch=False, align_corners=True):
         aff_fs = partial(zoom_mat, min_zoom=min_zoom, max_zoom=max_zoom, p=p, draw=draw, draw_x=draw_x, draw_y=draw_y, batch=batch)
         super().__init__(aff_fs, size=size, mode=mode, pad_mode=pad_mode, align_corners=align_corners)
+
+# Cell
+def _draw_mask(x, def_draw, draw=None, p=0.5, neutral=0., batch=False):
+    "Creates mask_tensor based on `x` with `neutral` with probability `1-p`. "
+    if draw is None: draw=def_draw
+    if callable(draw): res=draw(x)
+    elif is_listy(draw):
+        test(len(draw),x.size(0), ge)
+        res = tensor(draw[:x.size(0)], dtype=x.dtype, device=x.device)
+    else: res = x.new_zeros(x.size(0)) + draw
+    return mask_tensor(res, p=p, neutral=neutral, batch=batch)
 
 # Cell
 def find_coeffs(p1, p2):
@@ -637,7 +648,7 @@ class _WarpCoord():
         self.coeffs = None
 
     def _def_draw(self, x):
-        if not self.batch: return x.new(x.size(0)).uniform_(-self.magnitude, self.magnitude)
+        if not self.batch: return x.new_empty(x.size(0)).uniform_(-self.magnitude, self.magnitude)
         return x.new_zeros(x.size(0)) + random.uniform(-self.magnitude, self.magnitude)
 
     def before_call(self, x):
@@ -700,7 +711,7 @@ class _BrightnessLogit():
     def __init__(self, max_lighting=0.2, p=0.75, draw=None, batch=False): store_attr()
 
     def _def_draw(self, x):
-        if not self.batch: return x.new(x.size(0)).uniform_(0.5*(1-self.max_lighting), 0.5*(1+self.max_lighting))
+        if not self.batch: return x.new_empty(x.size(0)).uniform_(0.5*(1-self.max_lighting), 0.5*(1+self.max_lighting))
         return x.new_zeros(x.size(0)) + random.uniform(0.5*(1-self.max_lighting), 0.5*(1+self.max_lighting))
 
     def before_call(self, x):
@@ -728,7 +739,7 @@ class _ContrastLogit():
     def __init__(self, max_lighting=0.2, p=0.75, draw=None, batch=False): store_attr()
 
     def _def_draw(self, x):
-        if not self.batch: res = x.new(x.size(0)).uniform_(math.log(1-self.max_lighting), -math.log(1-self.max_lighting))
+        if not self.batch: res = x.new_empty(x.size(0)).uniform_(math.log(1-self.max_lighting), -math.log(1-self.max_lighting))
         else: res = x.new_zeros(x.size(0)) + random.uniform(math.log(1-self.max_lighting), -math.log(1-self.max_lighting))
         return torch.exp(res)
 
@@ -762,7 +773,7 @@ class _SaturationLogit():
     def __init__(self, max_lighting=0.2, p=0.75, draw=None, batch=False): store_attr()
 
     def _def_draw(self, x):
-        if not self.batch: res = x.new(x.size(0)).uniform_(math.log(1-self.max_lighting), -math.log(1-self.max_lighting))
+        if not self.batch: res = x.new_empty(x.size(0)).uniform_(math.log(1-self.max_lighting), -math.log(1-self.max_lighting))
         else: res = x.new_zeros(x.size(0)) + random.uniform(math.log(1-self.max_lighting), -math.log(1-self.max_lighting))
         return torch.exp(res)
 
@@ -796,8 +807,11 @@ class Saturation(LightingTfm):
 def rgb2hsv(img):
     "Converts a RGB image to an HSV image. Note: Will not work on logit space images."
     r, g, b = img.unbind(1)
-    maxc = torch.max(img, dim=1).values
-    minc = torch.min(img, dim=1).values
+    # temp commented out due to https://github.com/pytorch/pytorch/issues/47069
+#     maxc = torch.max(img, dim=1).values
+#     minc = torch.min(img, dim=1).values
+    maxc = torch.max(img, dim=1)[0]
+    minc = torch.min(img, dim=1)[0]
     eqc = maxc == minc
 
     cr = maxc - minc
@@ -842,7 +856,7 @@ class _Hue():
     def __init__(self, max_hue=0.2, p=0.75, draw=None, batch=False): store_attr()
 
     def _def_draw(self, x):
-        if not self.batch: res = x.new(x.size(0)).uniform_(math.log(1-self.max_hue), -math.log(1-self.max_hue))
+        if not self.batch: res = x.new_empty(x.size(0)).uniform_(math.log(1-self.max_hue), -math.log(1-self.max_hue))
         else: res = x.new_zeros(x.size(0)) + random.uniform(math.log(1-self.max_hue), -math.log(1-self.max_hue))
         return torch.exp(res)
 
