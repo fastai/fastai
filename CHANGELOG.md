@@ -2,6 +2,17 @@
 
 <!-- do not remove -->
 
+## 2.1.0
+
+### New Features
+
+- PyTorch 1.7 compatibility ([#2917](https://github.com/fastai/fastai/issues/2917))
+
+PyTorch 1.7 includes support for tensor subclassing, so we have replaced much of our custom subclassing code with PyTorch's. We have seen a few bugs in PyTorch's subclassing feature, however, so please file an issue if you see any code failing now which was working before.
+
+There is one breaking change in this version of fastai, which is that custom metadata is now stored directly in tensors as standard python attributes, instead of in the special `_meta` attribute. Only advanced customization of fastai OO tensors would have used this functionality, so if you do not know what this all means, then it means you did not use it.
+
+
 ## 2.0.18
 
 ### Forthcoming breaking changes
