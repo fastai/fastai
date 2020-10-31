@@ -29,9 +29,12 @@ if torch.cuda.is_available():
 
 # Cell
 @delegates(plt.subplots, keep=True)
-def subplots(nrows=1, ncols=1, figsize=None, imsize=3, add_vert=0, **kwargs):
-    if figsize is None: figsize=(ncols*imsize, nrows*imsize+add_vert)
+def subplots(nrows=1, ncols=1, figsize=None, imsize=3,suptitle=None, **kwargs):
+    if figsize is None:
+        h=nrows*imsize if suptitle is None or imsize>2 else nrows*imsize+0.6 #https://github.com/matplotlib/matplotlib/issues/5355
+        figsize=(ncols*imsize, h)
     fig,ax = plt.subplots(nrows, ncols, figsize=figsize, **kwargs)
+    if suptitle is not None: fig.suptitle(suptitle)
     if nrows*ncols==1: ax = array([ax])
     return fig,ax
 
@@ -69,7 +72,7 @@ def show_titled_image(o, **kwargs):
 # Cell
 @delegates(subplots)
 def show_images(ims, nrows=1, ncols=None, titles=None, **kwargs):
-    "Show all images `ims` as subplots with `rows` using `titles`"
+    "Show all images `ims` as subplots with `rows` using `titles`."
     if ncols is None: ncols = int(math.ceil(len(ims)/nrows))
     if titles is None: titles = [None]*len(ims)
     axs = subplots(nrows, ncols, **kwargs)[1].flat
