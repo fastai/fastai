@@ -24,7 +24,7 @@ def get_grid(n, nrows=None, ncols=None, add_vert=0, figsize=None, double=False, 
 def clip_remove_empty(bbox, label):
     "Clip bounding boxes with image border and label background the empty ones"
     bbox = torch.clamp(bbox, -1, 1)
-    empty = ((bbox[...,2] - bbox[...,0])*(bbox[...,3] - bbox[...,1]) < 0.)
+    empty = ((bbox[...,2] - bbox[...,0])*(bbox[...,3] - bbox[...,1]) <= 0.)
     return (bbox[~empty], label[~empty])
 
 # Cell
