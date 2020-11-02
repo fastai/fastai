@@ -289,6 +289,12 @@ def as_subclass(self:Tensor, typ):
     return retain_meta(self, torch.as_subclass(self, typ))
 
 # Cell
+def _convert(ret, cls):
+    if isinstance(ret, torch.Tensor): ret = ret.as_subclass(cls)
+    if isinstance(ret, (tuple, list)): ret = type(ret)(_convert(r, cls) for r in ret)
+    return ret
+
+# Cell
 class TensorBase(Tensor):
     def __new__(cls, x, **kwargs):
         res = cast(tensor(x), cls)
@@ -297,6 +303,7 @@ class TensorBase(Tensor):
 
     @classmethod
     def _before_cast(cls, x): return tensor(x)
+    def __repr__(self): return re.sub('tensor', self.__class__.__name__, super().__repr__())
 
     def __reduce_ex__(self,proto):
         torch.utils.hooks.warn_if_has_hooks(self)
@@ -306,20 +313,21 @@ class TensorBase(Tensor):
         return (f, args + (self.requires_grad, OrderedDict()))
 
     def __torch_function__(self, func, types, args=(), kwargs=None):
-        # temp workaround for https://github.com/pytorch/pytorch/issues/47091
-        if len(types)>1:
-            t = first(o for o in types if issubclass(o,TensorBase))
-            if t: types = tuple(t if issubclass(o, TensorBase) else o for o in types)
-        ret = super().__torch_function__(func, types, args=args, kwargs=kwargs)
+        with torch._C.DisableTorchFunction(): ret = _convert(func(*args, **(kwargs or {})), self.__class__)
         if isinstance(ret, TensorBase): ret.set_meta(self, as_copy=True)
         return ret
 
-    def __repr__(self): return re.sub('tensor', self.__class__.__name__, super().__repr__())
+    def new_tensor(self, size, dtype=None, device=None, requires_grad=False):
+        cls = type(self)
+        return self.as_subclass(Tensor).new_tensor(size, dtype=dtype, device=device, requires_grad=requires_grad).as_subclass(cls)
 
-    def new_ones(self, size, dtype=None, device=None, requires_grad=False):
-        "Temporarily override PyTorch broken `new_ones`"
-        if isinstance(size, int): size = tuple([size])
-        return self.new_full(size, 1, dtype=dtype, device=device, requires_grad=requires_grad)
+    def new_ones(self, data, dtype=None, device=None, requires_grad=False):
+        cls = type(self)
+        return self.as_subclass(Tensor).new_ones(data, dtype=dtype, device=device, requires_grad=requires_grad).as_subclass(cls)
+
+    def new(self, x):
+        cls = type(self)
+        return self.as_subclass(Tensor).new(x).as_subclass(cls)
 
 # Cell
 class TensorImageBase(TensorBase):
