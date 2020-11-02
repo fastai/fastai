@@ -2,6 +2,14 @@
 
 <!-- do not remove -->
 
+
+## 2.1.3
+
+### Bugs Squashed
+
+- Work around broken PyTorch subclassing of some `new_*` methods ([#2769](https://github.com/fastai/fastai/issues/2769))
+
+
 ## 2.1.0
 
 ### New Features
