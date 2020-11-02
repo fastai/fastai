@@ -11,7 +11,7 @@ from ..core import *
 # Cell
 def dropout_mask(x, sz, p):
     "Return a dropout mask of the same type as `x`, size `sz`, with probability `p` to cancel an element."
-    return x.new(*sz).bernoulli_(1-p).div_(1-p)
+    return x.new_empty(*sz).bernoulli_(1-p).div_(1-p)
 
 # Cell
 class RNNDropout(Module):
