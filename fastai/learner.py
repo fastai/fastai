@@ -47,7 +47,7 @@ def load_model(file, model, opt, with_opt=None, device=None, strict=True):
     hasopt = set(state)=={'model', 'opt'}
     model_state = state['model'] if hasopt else state
     get_model(model).load_state_dict(model_state, strict=strict)
-    if hasopt and ifnone(with_opt,True):
+    if hasopt and with_opt:
         try: opt.load_state_dict(state['opt'])
         except:
             if with_opt: warn("Could not load the optimizer state.")
