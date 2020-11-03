@@ -7,8 +7,8 @@ __all__ = ['module', 'Identity', 'Lambda', 'PartialLambda', 'Flatten', 'View', '
            'AvgPool', 'trunc_normal_', 'Embedding', 'SelfAttention', 'PooledSelfAttention2d', 'SimpleSelfAttention',
            'icnr_init', 'PixelShuffle_ICNR', 'sequential', 'SequentialEx', 'MergeLayer', 'Cat', 'SimpleCNN',
            'ProdLayer', 'inplace_relu', 'SEModule', 'ResBlock', 'SEBlock', 'SEResNeXtBlock', 'SeparableBlock', 'swish',
-           'Swish', 'MishJitAutoFn', 'mish', 'Mish', 'ParameterModule', 'children_and_parameters', 'flatten_model',
-           'NoneReduce', 'in_channels']
+           'Swish', 'MishJitAutoFn', 'mish', 'Mish', 'ParameterModule', 'children_and_parameters', 'has_children',
+           'flatten_model', 'NoneReduce', 'in_channels']
 
 # Cell
 from .imports import *
@@ -568,17 +568,15 @@ def children_and_parameters(m):
     return children
 
 # Cell
-def _has_children(m:nn.Module):
+def has_children(m):
     try: next(m.children())
     except StopIteration: return False
     return True
 
-nn.Module.has_children = property(_has_children)
-
 # Cell
 def flatten_model(m):
     "Return the list of all submodules and parameters of `m`"
-    return sum(map(flatten_model,children_and_parameters(m)),[]) if m.has_children else [m]
+    return sum(map(flatten_model,children_and_parameters(m)),[]) if has_children(m) else [m]
 
 # Cell
 class NoneReduce():
