@@ -32,7 +32,7 @@ LMTensorText.__doc__ = "Semantic type for a tensor representing text in language
 # Cell
 class Numericalize(Transform):
     "Reversible transform of tokenized texts to numericalized ids"
-    def __init__(self, vocab=None, min_freq=3, max_vocab=60000, special_toks=None, pad_tok=None):
+    def __init__(self, vocab=None, min_freq=3, max_vocab=60000, special_toks=None, pad_tok=PAD):
         store_attr('vocab,min_freq,max_vocab,special_toks,pad_tok')
         self.o2i = None if vocab is None else defaultdict(int, {v:k for k,v in enumerate(vocab)})
 
