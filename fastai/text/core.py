@@ -161,17 +161,17 @@ def _tokenize_files(func, files, path, output_dir=None, output_names=None, n_wor
     if skip_if_exists and output_dir.exists(): return output_dir
     output_dir.mkdir(exist_ok=True)
     if output_names is None: output_names = L(output_dir/f.relative_to(path) for f in files)
-    rules = partial(Path.read, encoding=encoding) + L(ifnone(rules, defaults.text_proc_rules.copy()))
+    rules = partial(Path.read_text, encoding=encoding) + L(ifnone(rules, defaults.text_proc_rules.copy()))
 
     lengths,counter = {},Counter()
     for i,tok in parallel_tokenize(files, tok, rules, n_workers=n_workers):
         out = func(i,output_dir)
-        out.write(' '.join(tok))
+        out.mk_write(' '.join(tok))
         lengths[str(files[i].relative_to(path))] = len(tok)
         counter.update(tok)
 
-    (output_dir/fn_lengths_pkl).save(lengths)
-    (output_dir/fn_counter_pkl).save(counter)
+    save_pickle(output_dir/fn_lengths_pkl, lengths)
+    save_pickle(output_dir/fn_counter_pkl, counter)
     return output_dir
 
 # Cell
@@ -240,7 +240,7 @@ def tokenize_csv(fname, text_cols, outname=None, n_workers=4, rules=None, mark_f
         out.to_csv(outname, header=(None,header)[i==0], index=False, mode=('a','w')[i==0])
         cnt.update(c)
 
-    outname.with_suffix('.pkl').save(cnt)
+    save_pickle(outname.with_suffix('.pkl'), cnt)
 
 # Cell
 def load_tokenized_csv(fname):
@@ -249,7 +249,7 @@ def load_tokenized_csv(fname):
     out = pd.read_csv(fname)
     for txt_col in out.columns[1:-1]:
         out[txt_col] = out[txt_col].str.split(' ')
-    return out,fname.with_suffix('.pkl').load()
+    return out,load_pickle(fname.with_suffix('.pkl'))
 
 # Cell
 class Tokenizer(Transform):
@@ -275,8 +275,8 @@ class Tokenizer(Transform):
         path = Path(path)
         if tok is None: tok = WordTokenizer()
         output_dir = tokenize_folder(path, tok=tok, rules=rules, **kwargs)
-        res = cls(tok, counter=(output_dir/fn_counter_pkl).load(),
-                  lengths=(output_dir/fn_lengths_pkl).load(), rules=rules, mode='folder')
+        res = cls(tok, counter=load_pickle(output_dir/fn_counter_pkl),
+                  lengths=load_pickle(output_dir/fn_lengths_pkl), rules=rules, mode='folder')
         res.path,res.output_dir = path,output_dir
         return res
 
@@ -289,8 +289,8 @@ class Tokenizer(Transform):
     def encodes(self, o:Path):
         if self.mode=='folder' and str(o).startswith(str(self.path)):
             tok = self.output_dir/o.relative_to(self.path)
-            return L(tok.read().split(' '))
-        else: return self._tokenize1(o.read())
+            return L(tok.read_text().split(' '))
+        else: return self._tokenize1(o.read_text())
 
     def encodes(self, o:str): return self._tokenize1(o)
     def _tokenize1(self, o): return first(self.tok([compose(*self.rules)(o)]))

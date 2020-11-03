@@ -18,7 +18,7 @@ def _download_image_inner(dest, inp, timeout=4):
 # Cell
 def download_images(dest, url_file=None, urls=None, max_pics=1000, n_workers=8, timeout=4):
     "Download images listed in text file `url_file` to path `dest`, at most `max_pics`"
-    if urls is None: urls = url_file.read().strip().split("\n")[:max_pics]
+    if urls is None: urls = url_file.read_text().strip().split("\n")[:max_pics]
     dest = Path(dest)
     dest.mkdir(exist_ok=True)
     parallel(partial(_download_image_inner, dest, timeout=timeout), list(enumerate(urls)), n_workers=n_workers)

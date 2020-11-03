@@ -2,6 +2,63 @@
 
 <!-- do not remove -->
 
+
+## 2.1.3
+
+### Bugs Squashed
+
+- Work around broken PyTorch subclassing of some `new_*` methods ([#2769](https://github.com/fastai/fastai/issues/2769))
+
+
+## 2.1.0
+
+### New Features
+
+- PyTorch 1.7 compatibility ([#2917](https://github.com/fastai/fastai/issues/2917))
+
+PyTorch 1.7 includes support for tensor subclassing, so we have replaced much of our custom subclassing code with PyTorch's. We have seen a few bugs in PyTorch's subclassing feature, however, so please file an issue if you see any code failing now which was working before.
+
+There is one breaking change in this version of fastai, which is that custom metadata is now stored directly in tensors as standard python attributes, instead of in the special `_meta` attribute. Only advanced customization of fastai OO tensors would have used this functionality, so if you do not know what this all means, then it means you did not use it.
+
+
+## 2.0.19
+
+This version was released *after* `2.1.0`, and adds fastcore 1.3 compatibility, whilst maintaining PyTorch 1.6 compatibility. It has no new features or bug fixes.
+
+
+## 2.0.18
+
+### Forthcoming breaking changes
+
+The next version of fastai will be 2.1. It will require PyTorch 1.7, which has significant foundational changes. It should not require any code changes except for people doing sophisticated tensor subclassing work, but nonetheless we recommend testing carefully. Therefore, we recommend pinning your fastai version to `<2.1` if you are not able to fully test your fastai code when the new version comes out.
+
+### Dependencies
+
+- pin pytorch (`<1.7`) and torchvision (`<0.8`) requirements ([#2915](https://github.com/fastai/fastai/issues/2915))
+- Add version pin for fastcore
+- Remove version pin for sentencepiece
+
+
+## 2.0.16
+
+### New Features
+
+- added support for tb projector word embeddings ([#2853](https://github.com/fastai/fastai/pull/2853)), thanks to [@floleuerer](https://github.com/floleuerer)
+- Added ability to have variable length draw ([#2845](https://github.com/fastai/fastai/pull/2845)), thanks to [@marii-moe](https://github.com/marii-moe)
+- add pip upgrade cell to all notebooks, to ensure colab has current fastai version ([#2843](https://github.com/fastai/fastai/issues/2843))
+
+### Bugs Squashed
+
+- fix TabularDataLoaders inference of cont_names to keep y_names separate ([#2859](https://github.com/fastai/fastai/pull/2859)), thanks to [@sutt](https://github.com/sutt)
+
+
+## 2.0.15
+
+### Breaking Changes
+
+- loss functions were moved to `loss.py` ([#2843](https://github.com/fastai/fastai/pull/2810))
+
+
 ## 2.0.14
 
 ### New Features
@@ -64,4 +121,3 @@
 ## Version 2.0.0
 
 - Initial release of v2
-

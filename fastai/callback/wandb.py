@@ -136,13 +136,27 @@ def _make_plt(img):
     return fig, ax
 
 # Cell
+def _format_config_value(config_value):
+    "Format a single config parameter value before logging it"
+    if callable(config_value):
+        config_value = (
+            f'{config_value.__module__}.{config_value.__qualname__}'
+            if hasattr(config_value, '__qualname__') and hasattr(config_value, '__module__')
+            else str(config_value)
+        )
+    return config_value
+
+# Cell
 def _format_config(log_config):
     "Format config parameters before logging them"
     for k,v in log_config.items():
-        if callable(v):
-            if hasattr(v,'__qualname__') and hasattr(v,'__module__'): log_config[k] = f'{v.__module__}.{v.__qualname__}'
-            else: log_config[k] = str(v)
-        if isinstance(v, slice): log_config[k] = dict(slice_start=v.start, slice_step=v.step, slice_stop=v.stop)
+        if isinstance(v, slice):
+            v = dict(slice_start=v.start, slice_step=v.step, slice_stop=v.stop)
+        elif isinstance(v, list):
+            v = [_format_config_value(item) for item in v]
+        else:
+            v = _format_config_value(v)
+        log_config[k] = v
 
 # Cell
 def _format_metadata(metadata):
@@ -150,7 +164,7 @@ def _format_metadata(metadata):
     for k,v in metadata.items(): metadata[k] = str(v)
 
 # Cell
-def log_dataset(path, name=None, metadata={}):
+def log_dataset(path, name=None, metadata={}, description='raw dataset'):
     "Log dataset folder"
     # Check if wandb.init has been called in case datasets are logged manually
     if wandb.run is None:
@@ -160,7 +174,7 @@ def log_dataset(path, name=None, metadata={}):
         raise f'path must be a valid directory: {path}'
     name = ifnone(name, path.name)
     _format_metadata(metadata)
-    artifact_dataset = wandb.Artifact(name=name, type='dataset', description='raw dataset', metadata=metadata)
+    artifact_dataset = wandb.Artifact(name=name, type='dataset', metadata=metadata, description=description)
     # log everything except "models" folder
     for p in path.ls():
         if p.is_dir():
@@ -169,7 +183,7 @@ def log_dataset(path, name=None, metadata={}):
     wandb.run.use_artifact(artifact_dataset)
 
 # Cell
-def log_model(path, name=None, metadata={}):
+def log_model(path, name=None, metadata={}, description='trained model'):
     "Log model file"
     if wandb.run is None:
         raise ValueError('You must call wandb.init() before log_model()')
@@ -178,7 +192,7 @@ def log_model(path, name=None, metadata={}):
         raise f'path must be a valid file: {path}'
     name = ifnone(name, f'run-{wandb.run.id}-model')
     _format_metadata(metadata)
-    artifact_model = wandb.Artifact(name=name, type='model', description='trained model', metadata=metadata)
+    artifact_model = wandb.Artifact(name=name, type='model', metadata=metadata, description=description)
     with artifact_model.new_file(name, mode='wb') as fa:
         fa.write(path.read_bytes())
     wandb.run.log_artifact(artifact_model)

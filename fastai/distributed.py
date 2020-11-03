@@ -109,7 +109,8 @@ class DistributedDL(TfmdDL):
     def __init__(self,dl,rank,world_size):
         store_attr('dl,rank,world_size')
         self.bs,self.device,self.drop_last,self.dataset = dl.bs,dl.device,dl.drop_last,dl.dataset
-        self.fake_l = _FakeLoader(self, dl.fake_l.pin_memory, dl.fake_l.num_workers, dl.fake_l.timeout)
+        fake = dl.fake_l
+        self.fake_l = _FakeLoader(self, fake.pin_memory, fake.num_workers, fake.timeout, persistent_workers=fake.persistent_workers)
 
 # Cell
 @log_args
