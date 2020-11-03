@@ -88,6 +88,7 @@ class AWD_LSTM(Module):
         self.bs = 1
         self.n_dir = 2 if bidir else 1
         self.encoder = EmbeddingDropout(vocab_sz, emb_sz, embed_p=embed_p, padding_idx=pad_token)
+        self.encoder_dp = self.encoder
         self.encoder.weight.data.uniform_(-self.initrange, self.initrange)
         self.rnns = nn.ModuleList([self._one_rnn(emb_sz if l == 0 else n_hid, (n_hid if l != n_layers - 1 else emb_sz)//self.n_dir,
                                                  bidir, weight_p, l) for l in range(n_layers)])
@@ -99,7 +100,7 @@ class AWD_LSTM(Module):
         bs,sl = inp.shape[:2] if from_embeds else inp.shape
         if bs!=self.bs: self._change_hidden(bs)
 
-        output = self.input_dp(inp if from_embeds else self.encoder(inp))
+        output = self.input_dp(inp if from_embeds else self.encoder_dp(inp))
         new_hidden = []
         for l, (rnn,hid_dp) in enumerate(zip(self.rnns, self.hidden_dps)):
             output, new_h = rnn(output, self.hidden[l])
