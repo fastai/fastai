@@ -2,7 +2,7 @@
 
 __all__ = ['make_date', 'add_datepart', 'add_elapsed_times', 'cont_cat_split', 'df_shrink_dtypes', 'df_shrink',
            'Tabular', 'TabularPandas', 'TabularProc', 'Categorify', 'FillStrategy', 'FillMissing', 'ReadTabBatch',
-           'TabDataLoader', 'setups', 'encodes', 'decodes', 'setups', 'encodes', 'decodes']
+           'TabDataLoader']
 
 # Cell
 from ..torch_basics import *
@@ -353,7 +353,7 @@ class TabDataLoader(TfmdDL):
 
 TabularPandas._dl_type = TabDataLoader
 
-# Cell
+# Internal Cell
 @EncodedMultiCategorize
 def setups(self, to:Tabular):
     self.c = len(self.vocab)
@@ -367,7 +367,7 @@ def decodes(self, to:Tabular):
     to.transform(to.y_names, lambda c: c==1)
     return to
 
-# Cell
+# Internal Cell
 @RegressionSetup
 def setups(self, to:Tabular):
     if self.c is not None: return
