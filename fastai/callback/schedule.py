@@ -195,7 +195,7 @@ class LRFinder(ParamScheduler):
         self.learn.opt.zero_grad() #Need to zero the gradients of the model before detaching the optimizer for future fits
         tmp_f = self.path/self.model_dir/'_tmp.pth'
         if tmp_f.exists():
-            self.learn.load('_tmp')
+            self.learn.load('_tmp', with_opt=True)
             os.remove(tmp_f)
 
     _docs = {"before_fit": "Initialize container for hyper-parameters and save the model",

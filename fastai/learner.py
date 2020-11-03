@@ -38,7 +38,7 @@ def save_model(file, model, opt, with_opt=True, pickle_protocol=2):
     torch.save(state, file, pickle_protocol=pickle_protocol)
 
 # Cell
-def load_model(file, model, opt, with_opt=None, device=None, strict=True):
+def load_model(file, model, opt, with_opt=True, device=None, strict=True):
     "Load `model` from `file` along with `opt` (if available, and if `with_opt`)"
     distrib_barrier()
     if isinstance(device, int): device = torch.device('cuda', device)
@@ -47,7 +47,7 @@ def load_model(file, model, opt, with_opt=None, device=None, strict=True):
     hasopt = set(state)=={'model', 'opt'}
     model_state = state['model'] if hasopt else state
     get_model(model).load_state_dict(model_state, strict=strict)
-    if hasopt and ifnone(with_opt,True):
+    if hasopt and with_opt:
         try: opt.load_state_dict(state['opt'])
         except:
             if with_opt: warn("Could not load the optimizer state.")
@@ -288,7 +288,7 @@ class Learner():
         return file
 
     @delegates(load_model)
-    def load(self, file, with_opt=None, device=None, **kwargs):
+    def load(self, file, with_opt=True, device=None, **kwargs):
         if device is None and hasattr(self.dls, 'device'): device = self.dls.device
         if self.opt is None: self.create_opt()
         file = join_path_file(file, self.path/self.model_dir, ext='.pth')
@@ -597,16 +597,17 @@ def gather_args(self:Learner):
         args.update({f'input {n+1} dim {i+1}':d for n in range(n_inp) for i,d in enumerate(list(detuplify(xb[n]).shape))})
     except: print(f'Could not gather input dimensions')
     # other useful information
-    with ignore_exceptions(): args['batch size'] = self.dls.bs
-    with ignore_exceptions(): args['batch per epoch'] = len(self.dls.train)
-    with ignore_exceptions(): args['model parameters'] = total_params(self.model)[0]
-    with ignore_exceptions(): args['loss function'] = f'{self.loss_func}'
-    with ignore_exceptions(): args['device'] = self.dls.device.type
-    with ignore_exceptions(): args['optimizer'] = self.opt_func.__name__
-    with ignore_exceptions(): args['frozen'] = bool(self.opt.frozen_idx)
-    with ignore_exceptions(): args['frozen idx'] = self.opt.frozen_idx
-    with ignore_exceptions(): args['dataset.tfms'] = f'{self.dls.dataset.tfms}'
-    with ignore_exceptions(): args['dls.after_item'] = f'{self.dls.after_item}'
-    with ignore_exceptions(): args['dls.before_batch'] = f'{self.dls.before_batch}'
-    with ignore_exceptions(): args['dls.after_batch'] = f'{self.dls.after_batch}'
+    with ignore_exceptions():
+        args['batch size'] = self.dls.bs
+        args['batch per epoch'] = len(self.dls.train)
+        args['model parameters'] = total_params(self.model)[0]
+        args['loss function'] = f'{self.loss_func}'
+        args['device'] = self.dls.device.type
+        args['optimizer'] = self.opt_func.__name__
+        args['frozen'] = bool(self.opt.frozen_idx)
+        args['frozen idx'] = self.opt.frozen_idx
+        args['dataset.tfms'] = f'{self.dls.dataset.tfms}'
+        args['dls.after_item'] = f'{self.dls.after_item}'
+        args['dls.before_batch'] = f'{self.dls.before_batch}'
+        args['dls.after_batch'] = f'{self.dls.after_batch}'
     return args
