@@ -277,7 +277,7 @@ def to_concat(xs, dim=0):
 def set_meta(self:Tensor, x, as_copy=False):
     "Set all metadata in `__dict__`"
     if not hasattr(x,'__dict__'): return
-    self.__dict__ = deepcopy(x.__dict__) if as_copy else x.__dict__
+    self.__dict__ = copy(x.__dict__) if as_copy else x.__dict__
 
 # Cell
 if not hasattr(torch,'as_subclass'): torch.as_subclass = torch.Tensor.as_subclass
@@ -325,9 +325,10 @@ class TensorBase(Tensor):
         cls = type(self)
         return self.as_subclass(Tensor).new_ones(data, dtype=dtype, device=device, requires_grad=requires_grad).as_subclass(cls)
 
-    def new(self, x):
+    def new(self, x=None):
         cls = type(self)
-        return self.as_subclass(Tensor).new(x).as_subclass(cls)
+        res = self.as_subclass(Tensor).new() if x is None else self.as_subclass(Tensor).new(x)
+        return res.as_subclass(cls)
 
 # Cell
 class TensorImageBase(TensorBase):
