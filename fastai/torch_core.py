@@ -277,6 +277,7 @@ def to_concat(xs, dim=0):
 def set_meta(self:Tensor, x, as_copy=False):
     "Set all metadata in `__dict__`"
     if not hasattr(x,'__dict__'): return
+    # XXX: change to `deepcopy` once PyTorch 1.7.1 is out, and check nb 23 segmentation fit works
     self.__dict__ = copy(x.__dict__) if as_copy else x.__dict__
 
 # Cell
