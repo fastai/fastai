@@ -165,7 +165,7 @@ def RandomSubsetSplitter(train_sz, valid_sz, seed=None):
     return _inner
 
 # Cell
-def GroupedSplitter(groupkey,valid_pct=0.2, seed=None):
+def GroupedSplitter(groupkey,valid_pct=0.2,seed=None,best_split_of=3,suppress_warning=False):
     "Splits groups of items between train/val randomly, such that val should have close to `valid_pct` of the total number of items (similar to RandomSplitter). Groups are defined by a `groupkey`, a function/lambda to apply to individual items, or a colname if `o` is a DataFrame"
     def _inner(o):
         if callable(groupkey):
@@ -178,14 +178,31 @@ def GroupedSplitter(groupkey,valid_pct=0.2, seed=None):
             keycol=groupkey
             ids=o
         gk=ids.groupby(keycol).count()
-        shuffled_gk=gk.sample(frac=1,random_state=seed)
-        cumsum=shuffled_gk.cumsum()
-        desired_valid=len(o)*valid_pct
-        abs_diff=abs(cumsum-desired_valid)
-        valid_rows=abs_diff.iloc[:,0].argmin()+1
+        r_state=np.random.RandomState(seed)
+        desired_valid=round(len(o)*valid_pct) #might as well round it
+        def one_shuffle():
+            shuffled_gk=gk.sample(frac=1,random_state=r_state)
+            cumsum=shuffled_gk.cumsum()
+            abs_diff=abs(cumsum-desired_valid)
+            split_goodness=-abs_diff.min().iat[0]
+            valid_rows=abs_diff.iloc[:,0].argmin()+1
+            return shuffled_gk,split_goodness,valid_rows
+        def n_shuffles(n):
+            best_shuffled,best_goodness,best_rows=one_shuffle()
+            for _ in range(n-1):
+                if best_goodness==0: return best_shuffled,best_goodness,best_rows #might as well return early
+                sh,g,r=one_shuffle()
+                if g>best_goodness:
+                    best_shuffled,best_goodness,best_rows=sh,g,r
+            return best_shuffled,best_goodness,best_rows
+        shuffled_gk,split_goodness,valid_rows=n_shuffles(best_split_of)
         shuffled_gk['is_valid']=([True] * valid_rows +
                                  [False]*(len(shuffled_gk) - valid_rows))
         split_df=ids.join(shuffled_gk.loc[:,'is_valid'],on=keycol)
+        if ~suppress_warning and -split_goodness/desired_valid>.25:
+            import warnings
+            actual_split=split_df.groupby('is_valid').count()[0].to_string(header=False,index=False).replace('\n','/').replace(' ','')
+            warnings.warn(f'actual train/val split {actual_split} is significantly different from `valid_pct` requested, consider raising `best_split_of`, but if you have very few categories this may be unavoidable. This warning is suppressable with `suppress_warning`')
         return ColSplitter()(split_df)
     return _inner
 
