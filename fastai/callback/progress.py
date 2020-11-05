@@ -73,6 +73,7 @@ class ShowGraphCallback(Callback):
 
     def before_fit(self):
         self.run = not hasattr(self.learn, 'lr_finder') and not hasattr(self, "gather_preds")
+        if not(self.run): return
         self.nb_batches = []
         assert hasattr(self.learn, 'progress')
 
@@ -100,6 +101,7 @@ class CSVLogger(Callback):
 
     def before_fit(self):
         "Prepare file with metric names."
+        if hasattr(self, "gather_preds"): return
         self.path.parent.mkdir(parents=True, exist_ok=True)
         self.file = (self.path/self.fname).open('a' if self.append else 'w')
         self.file.write(','.join(self.recorder.metric_names) + '\n')
@@ -108,9 +110,12 @@ class CSVLogger(Callback):
     def _write_line(self, log):
         "Write a line with `log` and call the old logger."
         self.file.write(','.join([str(t) for t in log]) + '\n')
+        self.file.flush()
+        os.fsync(self.file.fileno())
         self.old_logger(log)
 
     def after_fit(self):
         "Close the file and clean up."
+        if hasattr(self, "gather_preds"): return
         self.file.close()
         self.learn.logger = self.old_logger
