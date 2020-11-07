@@ -86,7 +86,8 @@ def RandomSplitter(valid_pct=0.2, seed=None):
     "Create function that splits `items` between train/val with `valid_pct` randomly."
     def _inner(o):
         if seed is not None: np.random.seed(seed)
-        rand_idx = L(int(i) for i in np.random.permutation(len(o)))
+        split_idxs = np.random.choice(len(o), size=len(len(o)), replace=False)
+        rand_idx = L(int(i) for i in split_idxs)
         cut = int(valid_pct * len(o))
         return rand_idx[cut:],rand_idx[:cut]
     return _inner
@@ -160,7 +161,8 @@ def RandomSubsetSplitter(train_sz, valid_sz, seed=None):
     def _inner(o):
         if seed is not None: np.random.seed(seed)
         train_len,valid_len = int(len(o)*train_sz),int(len(o)*valid_sz)
-        idxs = L(int(i) for i in np.random.permutation(len(o)))
+        split_idxs = np.random.choice(len(o), size=len(len(o)), replace=False)
+        idxs = L(int(i) for i in split_idxs)
         return idxs[:train_len],idxs[train_len:train_len+valid_len]
     return _inner
 
