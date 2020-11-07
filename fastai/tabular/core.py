@@ -317,7 +317,7 @@ def _maybe_expand(o): return o[:,None] if o.ndim==1 else o
 # Cell
 class ReadTabBatch(ItemTransform):
     "Transform `TabularPandas` values into a `Tensor` with the ability to decode"
-    def __init__(self, to): self.to = to
+    def __init__(self, to): self.to = to.new_empty()
 
     def encodes(self, to):
         if not to.with_cont: res = (tensor(to.cats).long(),)
