@@ -85,8 +85,8 @@ class AttrGetter(ItemTransform):
 def RandomSplitter(valid_pct=0.2, seed=None):
     "Create function that splits `items` between train/val with `valid_pct` randomly."
     def _inner(o):
-        if seed is not None: torch.manual_seed(seed)
-        rand_idx = L(int(i) for i in torch.randperm(len(o)))
+        if seed is not None: np.random.seed(seed)
+        rand_idx = L(int(i) for i in np.random.permutation(len(o)))
         cut = int(valid_pct * len(o))
         return rand_idx[cut:],rand_idx[:cut]
     return _inner
@@ -158,9 +158,9 @@ def RandomSubsetSplitter(train_sz, valid_sz, seed=None):
     assert train_sz + valid_sz <= 1.
 
     def _inner(o):
-        if seed is not None: torch.manual_seed(seed)
+        if seed is not None: np.random.seed(seed)
         train_len,valid_len = int(len(o)*train_sz),int(len(o)*valid_sz)
-        idxs = L(int(i) for i in torch.randperm(len(o)))
+        idxs = L(int(i) for i in np.random.permutation(len(o)))
         return idxs[:train_len],idxs[train_len:train_len+valid_len]
     return _inner
 
