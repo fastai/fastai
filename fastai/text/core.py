@@ -221,7 +221,7 @@ def tokenize_df(df, text_cols, n_workers=defaults.cpus, rules=None, mark_fields=
 
     other_cols = df.columns[~df.columns.isin(text_cols)]
     res = df[other_cols].copy()
-    res[tok_text_col] = outputs
+    res[tok_text_col] = pd.Series(outputs, dtype=object)
     res[f'{tok_text_col}_length'] = [len(o) for o in outputs]
     return res,Counter(outputs.concat())
 
