@@ -2,6 +2,24 @@
 
 <!-- do not remove -->
 
+## 2.1.4
+
+### Breaking Changes
+
+- moved `has_children` from `nn.Module` to free function ([#2931](https://github.com/fastai/fastai/issues/2931))
+
+### New Features
+
+- Support persistent workers ([#2768](https://github.com/fastai/fastai/issues/2768))
+
+### Bugs Squashed
+
+- `unet_learner` segmentation fails ([#2939](https://github.com/fastai/fastai/issues/2939))
+- In "Transfer learning in text" tutorial, the "dls.show_batch()" show wrong outputs ([#2910](https://github.com/fastai/fastai/issues/2910))
+- `Learn.load` and `LRFinder` not functioning properly for the optimizer states ([#2892](https://github.com/fastai/fastai/issues/2892))
+- Documentation for `Show_Images` broken ([#2876](https://github.com/fastai/fastai/issues/2876))
+- URL link for documentation for `torch_core` library from the `doc()` method gives incorrect url ([#2872](https://github.com/fastai/fastai/issues/2872))
+
 
 ## 2.1.3
 

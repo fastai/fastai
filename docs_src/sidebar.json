@@ -48,7 +48,7 @@
             "Callbacks": {
                 "Core": "/callback.core",
                 "Hooks": "/callback.hook",
-                "Progress": "/callback.hook",
+                "Progress": "/callback.progress",
                 "Schedulers": "/callback.schedule",
                 "CutMix": "/callback.cutmix",
                 "Data": "/callback.data",

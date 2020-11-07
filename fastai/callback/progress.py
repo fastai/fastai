@@ -81,6 +81,7 @@ class ShowGraphCallback(Callback):
 
     def after_epoch(self):
         "Plot validation loss in the pbar graph"
+        if not self.nb_batches: return
         rec = self.learn.recorder
         iters = range_of(rec.losses)
         val_losses = [v[1] for v in rec.values]

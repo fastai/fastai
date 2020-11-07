@@ -469,7 +469,7 @@ def _get_default(x, mode=None, pad_mode=None):
     x0 = x[0] if isinstance(x, tuple) else x
     return x0,mode,pad_mode
 
-# Cell
+# Internal Cell
 @patch
 def flip_batch(x: (TensorImage,TensorMask,TensorPoint,TensorBBox), p=0.5, draw=None, size=None,
                mode=None, pad_mode=None, align_corners=True, batch=False):
