@@ -61,7 +61,6 @@ class SkipItemException(Exception):
     pass
 
 # Cell
-@log_args(but='dataset,wif,create_batch,create_batches,create_item,retain,get_idxs,sample,shuffle_fn,do_batch')
 @funcs_kwargs
 class DataLoader(GetAttr):
     _noop_methods = 'wif before_iter after_item before_batch after_batch after_iter'.split()
@@ -115,7 +114,9 @@ class DataLoader(GetAttr):
         if cls is None: cls = type(self)
         cur_kwargs = dict(dataset=dataset, num_workers=self.fake_l.num_workers, pin_memory=self.pin_memory, timeout=self.timeout,
                           bs=self.bs, shuffle=self.shuffle, drop_last=self.drop_last, indexed=self.indexed, device=self.device)
-        for n in self._methods: cur_kwargs[n] = getattr(self, n)
+        for n in self._methods:
+            o = getattr(self, n)
+            if not isinstance(o, MethodType): cur_kwargs[n] = o
         return cls(**merge(cur_kwargs, kwargs))
 
     @property
