@@ -61,7 +61,6 @@ class SkipItemException(Exception):
     pass
 
 # Cell
-@log_args(but='dataset,wif,create_batch,create_batches,create_item,retain,get_idxs,sample,shuffle_fn,do_batch')
 @funcs_kwargs
 class DataLoader(GetAttr):
     _noop_methods = 'wif before_iter after_item before_batch after_batch after_iter'.split()
@@ -115,7 +114,9 @@ class DataLoader(GetAttr):
         if cls is None: cls = type(self)
         cur_kwargs = dict(dataset=dataset, num_workers=self.fake_l.num_workers, pin_memory=self.pin_memory, timeout=self.timeout,
                           bs=self.bs, shuffle=self.shuffle, drop_last=self.drop_last, indexed=self.indexed, device=self.device)
-        for n in self._methods: cur_kwargs[n] = getattr(self, n)
+        for n in self._methods:
+            o = getattr(self, n)
+            if not isinstance(o, MethodType): cur_kwargs[n] = o
         return cls(**merge(cur_kwargs, kwargs))
 
     @property
@@ -149,12 +150,12 @@ add_docs(DataLoader, "API compatible with PyTorch DataLoader, with a lot more ca
          shuffle_fn     = "Returns a random permutation of `idxs`.",
          randomize      = "Set's `DataLoader` random number generator state.",
          retain         = "Cast each item of `res` to type of matching item in `b` if its a superclass.",
-         create_item    = "Return a subset of the dataset containing the index values of the sample if there are samples, else return the next iterator.",
+         create_item    = "Subset of the dataset containing the index values of sample if exists, else next iterator.",
          create_batch   = "Collate a list of items into a batch.",
          do_batch       = "Combines `create_batch` and `before_batch` to get a batch of items. Input is a list of items to collate.",
          to             = "Sets `self.device=device`.",
          one_batch      = "Return one batch from `DataLoader`.",
-         wif            = "See pytorch `worker_init_fn` for details (https://pytorch.org/docs/stable/data.html#multi-process-data-loading).",
+         wif            = "See pytorch `worker_init_fn` for details.",
          before_iter    = "Called before `DataLoader` starts to read/iterate over the dataset.",
          after_item     = "Takes output of `create_item` as input and applies this function on it.",
          before_batch   = "It is called before collating a list of items into a batch. Input is a list of items.",
