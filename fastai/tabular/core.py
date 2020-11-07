@@ -317,9 +317,7 @@ def _maybe_expand(o): return o[:,None] if o.ndim==1 else o
 # Cell
 class ReadTabBatch(ItemTransform):
     "Transform `TabularPandas` values into a `Tensor` with the ability to decode"
-    def __init__(self, to):
-        self.cols = to.all_col_names
-        self.xs = to.x_names
+    def __init__(self, to): self.to = to.new_empty()
 
     def encodes(self, to):
         if not to.with_cont: res = (tensor(to.cats).long(),)
@@ -334,7 +332,8 @@ class ReadTabBatch(ItemTransform):
         vals = np.concatenate(o, axis=1)
         try: df = pd.DataFrame(vals, columns=self.to.all_col_names)
         except: df = pd.DataFrame(vals, columns=self.to.x_names)
-        return df
+        to = self.to.new(df)
+        return to
 
 # Cell
 @typedispatch
