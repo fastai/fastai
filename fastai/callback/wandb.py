@@ -177,10 +177,8 @@ def _format_config(config):
     for k,v in config.items():
         if isinstance(v, dict):
             config[k] = _format_config(v)
-        elif isinstance(v, list):
-            config[k] = [_format_config[item] for item in v]
-        elif hasattr(v, '__stored_args__'):
-            config[k] = {**_format_config(v.__stored_args__), '_name': v}
+        else:
+            config[k] = _format_config_value(v)
     return config
 
 # Cell
