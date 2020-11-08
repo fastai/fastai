@@ -161,7 +161,7 @@ def RandomSubsetSplitter(train_sz, valid_sz, seed=None):
     def _inner(o):
         if seed is not None: torch.manual_seed(seed)
         train_len,valid_len = int(len(o)*train_sz),int(len(o)*valid_sz)
-        idxs = L(int(i) for i in torch.randperm(len(o)))
+        idxs = L(list(torch.randperm(len(o)).numpy()))
         return idxs[:train_len],idxs[train_len:train_len+valid_len]
     return _inner
 
