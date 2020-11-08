@@ -128,7 +128,7 @@ def gather_args(self:Learner):
     "Gather config parameters accessible to the learner"
     # args stored by `store_attr`
     cb_args = {f'{cb}':getattr(cb,'__stored_args__',True) for cb in self.cbs}
-    args = {'Learner':self, **cb_args, 'Loss':self.loss_func}
+    args = {'Learner':self, **cb_args}
     # input dimensions
     try:
         n_inp = self.dls.train.n_inp
@@ -249,7 +249,8 @@ def wandb_process(x:TensorImage, y:(TensorCategory,TensorMultiCategory), samples
 @typedispatch
 def wandb_process(x:TensorImage, y:TensorMask, samples, outs):
     res = []
-    class_labels = {i:f'{c}' for i,c in enumerate(y.get_meta('codes'))} if y.get_meta('codes') is not None else None
+    codes = getattr(y, 'codes', None)
+    class_labels = {i:f'{c}' for i,c in enumerate(codes)} if codes is not None else None
     for s,o in zip(samples, outs):
         img = s[0].permute(1,2,0)
         masks = {}
