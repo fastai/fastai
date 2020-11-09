@@ -2,6 +2,7 @@
 
 <!-- do not remove -->
 
+
 ## 2.1.5
 
 ### Breaking Changes
@@ -15,6 +16,7 @@
 ### Bugs Squashed
 
 - Exporting TabularLearner via learn.export() leads to huge file size ([#2945](https://github.com/fastai/fastai/issues/2945))
+- `TensorPoint` object has no attribute `img_size` ([#2950](https://github.com/fastai/fastai/issues/2950))
 
 
 ## 2.1.4

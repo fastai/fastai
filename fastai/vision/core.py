@@ -241,10 +241,7 @@ class PointScaler(Transform):
         self.sz = [x.shape[-1], x.shape[-2]] if isinstance(x, Tensor) else x.size
         return x
 
-    def _get_sz(self, x):
-        res = getattr(x, 'img_size') if self.sz is None else self.sz
-        assert res is not None, "Size could not be inferred, pass to init with `img_size=...`"
-        return res
+    def _get_sz(self, x): return getattr(x, 'img_size') if self.sz is None else self.sz
 
     def setups(self, dl):
         res = first(dl.do_item(0), risinstance(TensorPoint))
