@@ -177,6 +177,9 @@ def cnn_learner(dls, arch, normalize=True, n_out=None, pretrained=True,
                    metrics=metrics, path=path, model_dir=model_dir, wd=wd, wd_bn_bias=wd_bn_bias, train_bn=train_bn,
                    moms=moms)
     if pretrained: learn.freeze()
+    # keep track of args for loggers
+    store_attr('arch,normalize,n_out,pretrained', self=learn)
+    if kwargs: store_attr(self=learn, **kwargs)
     return learn
 
 # Cell
@@ -212,6 +215,9 @@ def unet_learner(dls, arch, normalize=True, n_out=None, pretrained=True,
                    metrics=metrics, path=path, model_dir=model_dir, wd=wd, wd_bn_bias=wd_bn_bias, train_bn=train_bn,
                    moms=moms)
     if pretrained: learn.freeze()
+    # keep track of args for loggers
+    store_attr('arch,normalize,n_out,pretrained', self=learn)
+    if kwargs: store_attr(self=learn, **kwargs)
     return learn
 
 # Cell
