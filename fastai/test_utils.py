@@ -73,20 +73,8 @@ def show_install(show_nvidia_smi:bool=False):
     rep.append(["torch",  torch.__version__])
 
     # nvidia-smi
-    cmd = "nvidia-smi"
-    have_nvidia_smi = False
-    try: result = subprocess.run(cmd.split(), shell=False, check=False, stdout=subprocess.PIPE)
-    except: pass
-    else:
-        if result.returncode == 0 and result.stdout: have_nvidia_smi = True
-
-    # XXX: if nvidia-smi is not available, another check could be:
-    # /proc/driver/nvidia/version on most systems, since it's the
-    # currently active version
-
-    if have_nvidia_smi:
-        smi = result.stdout.decode('utf-8')
-        # matching: "Driver Version: 396.44"
+    smi = nvidia_smi()
+    if smi:
         match = re.findall(r'Driver Version: +(\d+\.\d+)', smi)
         if match: rep.append(["nvidia driver", match[0]])
 
@@ -101,21 +89,11 @@ def show_install(show_nvidia_smi:bool=False):
 
     rep.append(["\n=== Hardware ===", None])
 
-    # it's possible that torch might not see what nvidia-smi sees?
     gpu_total_mem = []
     nvidia_gpu_cnt = 0
-    if have_nvidia_smi:
-        try:
-            cmd = "nvidia-smi --query-gpu=memory.total --format=csv,nounits,noheader"
-            result = subprocess.run(cmd.split(), shell=False, check=False, stdout=subprocess.PIPE)
-        except:
-            print("have nvidia-smi, but failed to query it")
-        else:
-            if result.returncode == 0 and result.stdout:
-                output = result.stdout.decode('utf-8')
-                gpu_total_mem = [int(x) for x in output.strip().split('\n')]
-                nvidia_gpu_cnt = len(gpu_total_mem)
-
+    if smi:
+        mem = nvidia_mem()
+        nvidia_gpu_cnt = len(ifnone(mem, []))
 
     if nvidia_gpu_cnt: rep.append(["nvidia gpus", nvidia_gpu_cnt])
 
@@ -156,7 +134,7 @@ def show_install(show_nvidia_smi:bool=False):
     for e in rep:
         print(f"{e[0]:{keylen}}", (f": {e[1]}" if e[1] is not None else ""))
 
-    if have_nvidia_smi:
+    if smi:
         if show_nvidia_smi: print(f"\n{smi}")
     else:
         if torch_gpu_cnt: print("no nvidia-smi is found")
