@@ -810,6 +810,8 @@ index = {"subplots": "00_torch_core.ipynb",
          "VerboseCallback": "97_test_utils.ipynb",
          "get_env": "97_test_utils.ipynb",
          "try_import": "97_test_utils.ipynb",
+         "nvidia_smi": "97_test_utils.ipynb",
+         "nvidia_mem": "97_test_utils.ipynb",
          "show_install": "97_test_utils.ipynb",
          "PYTORCH_URL": "99_pytorch_doc.ipynb",
          "pytorch_doc_link": "99_pytorch_doc.ipynb"}
