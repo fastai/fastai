@@ -396,7 +396,7 @@ class SequentialEx(Module):
             res.orig = x
             nres = l(res)
             # We have to remove res.orig to avoid hanging refs and therefore memory leaks
-            res.orig = None
+            res.orig, nres.orig = None, None
             res = nres
         return res
 
