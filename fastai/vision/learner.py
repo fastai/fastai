@@ -157,14 +157,18 @@ def _add_norm(dls, meta, pretrained):
 
 # Cell
 @delegates(create_cnn_model)
-def cnn_learner(dls, arch, normalize=True, n_out=None, pretrained=True,
+def cnn_learner(dls, arch, normalize=True, n_out=None, pretrained=True, config=None,
                 # learner args
                 loss_func=None, opt_func=Adam, lr=defaults.lr, splitter=None, cbs=None, metrics=None, path=None,
                 model_dir='models', wd=None, wd_bn_bias=False, train_bn=True, moms=(0.95,0.85,0.95),
                 # other model args
                 **kwargs):
-
     "Build a convnet style learner from `dls` and `arch`"
+
+    if config:
+        print('Warning: config is deprecated and will be removed in the future. Pass your args directly to cnn_learner.')
+        kwargs = {**config, **kwargs}
+
     meta = model_meta.get(arch, _default_meta)
     if normalize: _add_norm(dls, meta, pretrained)
 
@@ -193,14 +197,18 @@ def create_unet_model(arch, n_out, img_size, pretrained=True, cut=None, n_in=3, 
 
 # Cell
 @delegates(create_unet_model)
-def unet_learner(dls, arch, normalize=True, n_out=None, pretrained=True,
+def unet_learner(dls, arch, normalize=True, n_out=None, pretrained=True, config=None,
                  # learner args
                  loss_func=None, opt_func=Adam, lr=defaults.lr, splitter=None, cbs=None, metrics=None, path=None,
                  model_dir='models', wd=None, wd_bn_bias=False, train_bn=True, moms=(0.95,0.85,0.95),
                  # other model args
                  **kwargs):
-
     "Build a unet learner from `dls` and `arch`"
+
+    if config:
+        print('Warning: config is deprecated and will be removed in the future. Pass your args directly to unet_learner.')
+        kwargs = {**config, **kwargs}
+
     meta = model_meta.get(arch, _default_meta)
     if normalize: _add_norm(dls, meta, pretrained)
 
