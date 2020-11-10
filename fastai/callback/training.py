@@ -8,7 +8,6 @@ from .progress import *
 from .fp16 import *
 
 # Cell
-@log_args
 class ShortEpochCallback(Callback):
     "Fit just `pct` of an epoch, then stop"
     def __init__(self,pct=0.01,short_valid=True): self.pct,self.short_valid = pct,short_valid
@@ -18,7 +17,6 @@ class ShortEpochCallback(Callback):
         if self.short_valid: raise CancelValidException
 
 # Cell
-@log_args
 class GradientAccumulation(Callback):
     "Accumulate gradients before updating weights"
     toward_end,run_before=True,MixedPrecision

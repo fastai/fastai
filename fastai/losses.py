@@ -10,7 +10,6 @@ from .torch_core import *
 from .layers import *
 
 # Cell
-@log_args
 class BaseLoss():
     "Same as `loss_cls`, but flattens input and target."
     activation=decodes=noops
@@ -34,7 +33,6 @@ class BaseLoss():
         return self.func.__call__(inp, targ.view(-1) if self.flatten else targ, **kwargs)
 
 # Cell
-@log_args
 @delegates()
 class CrossEntropyLossFlat(BaseLoss):
     "Same as `nn.CrossEntropyLoss`, but flattens input and target."
@@ -45,7 +43,6 @@ class CrossEntropyLossFlat(BaseLoss):
     def activation(self, x): return F.softmax(x, dim=self.axis)
 
 # Cell
-@log_args
 @delegates()
 class BCEWithLogitsLossFlat(BaseLoss):
     "Same as `nn.BCEWithLogitsLoss`, but flattens input and target."
@@ -61,28 +58,24 @@ class BCEWithLogitsLossFlat(BaseLoss):
     def activation(self, x): return torch.sigmoid(x)
 
 # Cell
-@log_args(to_return=True)
 @use_kwargs_dict(weight=None, reduction='mean')
 def BCELossFlat(*args, axis=-1, floatify=True, **kwargs):
     "Same as `nn.BCELoss`, but flattens input and target."
     return BaseLoss(nn.BCELoss, *args, axis=axis, floatify=floatify, is_2d=False, **kwargs)
 
 # Cell
-@log_args(to_return=True)
 @use_kwargs_dict(reduction='mean')
 def MSELossFlat(*args, axis=-1, floatify=True, **kwargs):
     "Same as `nn.MSELoss`, but flattens input and target."
     return BaseLoss(nn.MSELoss, *args, axis=axis, floatify=floatify, is_2d=False, **kwargs)
 
 # Cell
-@log_args(to_return=True)
 @use_kwargs_dict(reduction='mean')
 def L1LossFlat(*args, axis=-1, floatify=True, **kwargs):
     "Same as `nn.L1Loss`, but flattens input and target."
     return BaseLoss(nn.L1Loss, *args, axis=axis, floatify=floatify, is_2d=False, **kwargs)
 
 # Cell
-@log_args
 class LabelSmoothingCrossEntropy(Module):
     y_int = True
     def __init__(self, eps:float=0.1, reduction='mean'): self.eps,self.reduction = eps,reduction
@@ -100,7 +93,6 @@ class LabelSmoothingCrossEntropy(Module):
     def decodes(self, out):    return out.argmax(dim=-1)
 
 # Cell
-@log_args
 @delegates()
 class LabelSmoothingCrossEntropyFlat(BaseLoss):
     "Same as `LabelSmoothingCrossEntropy`, but flattens input and target."

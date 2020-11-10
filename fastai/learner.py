@@ -78,7 +78,6 @@ _loop = ['Start Fit', 'before_fit', 'Start Epoch Loop', 'before_epoch', 'Start T
          'after_cancel_fit', 'after_fit']
 
 # Cell
-@log_args(but='dls,model,opt_func,cbs')
 class Learner():
     def __init__(self, dls, model, loss_func=None, opt_func=Adam, lr=defaults.lr, splitter=trainable_params, cbs=None,
                  metrics=None, path=None, model_dir='models', wd=None, wd_bn_bias=False, train_bn=True,
@@ -196,7 +195,6 @@ class Learner():
             self.epoch=epoch
             self._with_events(self._do_epoch, 'epoch', CancelEpochException)
 
-    @log_args(but='cbs')
     def fit(self, n_epoch, lr=None, wd=None, cbs=None, reset_opt=False):
         with self.added_cbs(cbs):
             if reset_opt or not self.opt: self.create_opt()
@@ -578,36 +576,3 @@ def tta(self:Learner, ds_idx=1, dl=None, n=4, item_tfms=None, batch_tfms=None, b
     if use_max: return torch.stack([preds, aug_preds], 0).max(0)[0],targs
     preds = (aug_preds,preds) if beta is None else torch.lerp(aug_preds, preds, beta)
     return preds,targs
-
-# Cell
-@patch
-def gather_args(self:Learner):
-    "Gather config parameters accessible to the learner"
-    # init_args
-    cb_args = {k:v for cb in self.cbs for k,v in getattr(cb,'init_args',{}).items()}
-    args = {**getattr(self,'init_args',{}), **cb_args, **getattr(self.dls,'init_args',{}),
-            **getattr(self.opt,'init_args',{}), **getattr(self.loss_func,'init_args',{})}
-    # callbacks used
-    args.update({f'{cb}':True for cb in self.cbs})
-    # input dimensions
-    try:
-        n_inp = self.dls.train.n_inp
-        args['n_inp'] = n_inp
-        xb = self.dls.train.one_batch()[:n_inp]
-        args.update({f'input {n+1} dim {i+1}':d for n in range(n_inp) for i,d in enumerate(list(detuplify(xb[n]).shape))})
-    except: print(f'Could not gather input dimensions')
-    # other useful information
-    with ignore_exceptions():
-        args['batch size'] = self.dls.bs
-        args['batch per epoch'] = len(self.dls.train)
-        args['model parameters'] = total_params(self.model)[0]
-        args['loss function'] = f'{self.loss_func}'
-        args['device'] = self.dls.device.type
-        args['optimizer'] = self.opt_func.__name__
-        args['frozen'] = bool(self.opt.frozen_idx)
-        args['frozen idx'] = self.opt.frozen_idx
-        args['dataset.tfms'] = f'{self.dls.dataset.tfms}'
-        args['dls.after_item'] = f'{self.dls.after_item}'
-        args['dls.before_batch'] = f'{self.dls.before_batch}'
-        args['dls.after_batch'] = f'{self.dls.after_batch}'
-    return args

@@ -14,7 +14,6 @@ def reset(self: DataParallel):
     if hasattr(self.module, 'reset'): self.module.reset()
 
 # Cell
-@log_args
 class ParallelTrainer(Callback):
     run_after,run_before = TrainEvalCallback,Recorder
     def __init__(self, device_ids): self.device_ids = device_ids
@@ -64,7 +63,6 @@ def teardown_distrib():
     if torch.distributed.is_initialized(): torch.distributed.destroy_process_group()
 
 # Cell
-@log_args(but_as=TfmdDL.__init__)
 class DistributedDL(TfmdDL):
 
     _round_to_multiple=lambda number,multiple:int(math.ceil(number/multiple)*multiple)
@@ -113,7 +111,6 @@ class DistributedDL(TfmdDL):
         self.fake_l = _FakeLoader(self, fake.pin_memory, fake.num_workers, fake.timeout, persistent_workers=fake.persistent_workers)
 
 # Cell
-@log_args
 class DistributedTrainer(Callback):
     run_after,run_before = TrainEvalCallback,Recorder
     fup = None # for `find_unused_parameters` in DistributedDataParallel()

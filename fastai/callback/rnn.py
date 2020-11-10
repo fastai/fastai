@@ -19,7 +19,6 @@ class ModelResetter(Callback):
 
 # Cell
 @docs
-@log_args
 class RNNRegularizer(Callback):
     "`Callback` that adds AR and TAR regularization in RNN training"
     def __init__(self, alpha=0., beta=0.): self.alpha,self.beta = alpha,beta
