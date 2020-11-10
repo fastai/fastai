@@ -166,7 +166,7 @@ def cnn_learner(dls, arch, normalize=True, n_out=None, pretrained=True, config=N
     "Build a convnet style learner from `dls` and `arch`"
 
     if config:
-        print('Warning: config is deprecated and will be removed in the future. Pass your args directly to cnn_learner.')
+        warnings.warn('config param is deprecated. Pass your args directly to cnn_learner.')
         kwargs = {**config, **kwargs}
 
     meta = model_meta.get(arch, _default_meta)
@@ -206,7 +206,7 @@ def unet_learner(dls, arch, normalize=True, n_out=None, pretrained=True, config=
     "Build a unet learner from `dls` and `arch`"
 
     if config:
-        print('Warning: config is deprecated and will be removed in the future. Pass your args directly to unet_learner.')
+        warnings.warn('config param is deprecated. Pass your args directly to unet_learner.')
         kwargs = {**config, **kwargs}
 
     meta = model_meta.get(arch, _default_meta)
