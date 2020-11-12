@@ -114,9 +114,10 @@
     },
     
     "Integrations": {
+        "Captum": "/callback.captum",
+        "Weights & Biases": "/callback.wandb",
         "Neptune": "/callback.neptune",
-        "TensorBoard": "/callback.tensorboard",
-        "Weights & Biases": "/callback.wandb"
+        "TensorBoard": "/callback.tensorboard"
     },
     "fastai Development": {
         "Developers Guide": "/dev-setup",
