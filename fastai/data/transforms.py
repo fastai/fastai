@@ -165,15 +165,16 @@ def RandomSubsetSplitter(train_sz, valid_sz, seed=None):
     return _inner
 
 # Cell
-def GroupedSplitter(groupkey,valid_pct=0.2,seed=None,best_split_of=3,suppress_warning=False):
-    "Splits groups of items between train/val randomly, such that val should have close to `valid_pct` of the total number of items (similar to RandomSplitter). Groups are defined by a `groupkey`, a function/lambda to apply to individual items, or a colname if `o` is a DataFrame"
+def GroupedSplitter(groupkey,valid_pct=0.2,seed=None,n_tries=3,suppress_warning=False):
+    "Splits groups of items between train/val randomly, such that val should have close to `valid_pct` of the total number of items (similar to RandomSplitter). Groups are defined by a `groupkey`, which is a callable to apply to individual items to get the groupname, or a column name if `o` is a DataFrame"
     def _inner(o):
         if callable(groupkey):
+            assert not isinstance(o,pd.DataFrame), "o is a DataFrame so groupkey should be a column name not a callable"
             ids=pd.DataFrame(o)
             ids['group_keys']=ids.applymap(groupkey)
             keycol='group_keys'
         else:
-            assert isinstance(o, pd.DataFrame), "o is not a DataFrame, so groupkey must be a function\lambda that extracts a group key from an item"
+            assert isinstance(o, pd.DataFrame), "o is not a DataFrame, so groupkey must be a callable that extracts a group key from an item"
             assert groupkey in o, "groupkey is not a colname in the DataFrame o"
             keycol=groupkey
             ids=o
@@ -195,7 +196,7 @@ def GroupedSplitter(groupkey,valid_pct=0.2,seed=None,best_split_of=3,suppress_wa
                 if g>best_goodness:
                     best_shuffled,best_goodness,best_rows=sh,g,r
             return best_shuffled,best_goodness,best_rows
-        shuffled_gk,split_goodness,valid_rows=n_shuffles(best_split_of)
+        shuffled_gk,split_goodness,valid_rows=n_shuffles(n_tries)
         shuffled_gk['is_valid']=([True] * valid_rows +
                                  [False]*(len(shuffled_gk) - valid_rows))
         split_df=ids.join(shuffled_gk.loc[:,'is_valid'],on=keycol)
