@@ -166,7 +166,7 @@ def RandomSubsetSplitter(train_sz, valid_sz, seed=None):
     return _inner
 
 # Cell
-def GroupedSplitter(groupkey,valid_pct=0.2,seed=None,n_tries=3,suppress_warning=False):
+def GroupedSplitter(groupkey,valid_pct=0.2,seed=None,n_tries=3):
     "Splits groups of items between train/val randomly, such that val should have close to `valid_pct` of the total number of items (similar to RandomSplitter). Groups are defined by a `groupkey`, which is a callable to apply to individual items to get the groupname, or a column name if `o` is a DataFrame"
     def _inner(o):
         if callable(groupkey):
@@ -201,10 +201,6 @@ def GroupedSplitter(groupkey,valid_pct=0.2,seed=None,n_tries=3,suppress_warning=
         shuffled_gk['is_valid']=([True] * valid_rows +
                                  [False]*(len(shuffled_gk) - valid_rows))
         split_df=ids.join(shuffled_gk.loc[:,'is_valid'],on=keycol)
-        if ~suppress_warning and -split_goodness/desired_valid>.25:
-            import warnings
-            actual_split=split_df.groupby('is_valid').count()[0].to_string(header=False,index=False).replace('\n','/').replace(' ','')
-            warnings.warn(f'actual train/val split {actual_split} is significantly different from `valid_pct` requested, consider raising `best_split_of`, but if you have very few categories this may be unavoidable. This warning is suppressable with `suppress_warning`')
         return ColSplitter()(split_df)
     return _inner
 
