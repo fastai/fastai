@@ -30,7 +30,7 @@ test:
 release: pypi
 	sleep 3
 	fastrelease_conda_package --upload_user fastai
-	nbdev_bump_version
+	fastrelease_bump_version
 
 conda_release:
 	fastrelease_conda_package --upload_user fastai

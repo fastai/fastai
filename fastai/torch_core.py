@@ -3,8 +3,8 @@
 __all__ = ['progress_bar', 'master_bar', 'subplots', 'show_image', 'show_titled_image', 'show_images', 'ArrayBase',
            'ArrayImageBase', 'ArrayImage', 'ArrayImageBW', 'ArrayMask', 'tensor', 'set_seed', 'get_random_states',
            'set_random_states', 'no_random', 'unsqueeze', 'unsqueeze_', 'apply', 'maybe_gather', 'to_detach', 'to_half',
-           'to_float', 'default_device', 'to_device', 'to_cpu', 'to_np', 'to_concat', 'TensorBase', 'TensorCategory',
-           'TensorMultiCategory', 'TensorImageBase', 'TensorImage', 'TensorImageBW', 'TensorMask', 'TitledTensorScalar',
+           'to_float', 'default_device', 'to_device', 'to_cpu', 'to_np', 'to_concat', 'TensorBase', 'TensorImageBase',
+           'TensorImage', 'TensorImageBW', 'TensorMask', 'TensorCategory', 'TensorMultiCategory', 'TitledTensorScalar',
            'concat', 'Chunks', 'show_title', 'ShowTitle', 'TitledInt', 'TitledFloat', 'TitledStr', 'TitledTuple',
            'get_empty_df', 'display_df', 'get_first', 'one_param', 'item_find', 'find_device', 'find_bs', 'np_func',
            'Module', 'get_model', 'one_hot', 'one_hot_decode', 'params', 'trainable_params', 'norm_types',
@@ -29,9 +29,12 @@ if torch.cuda.is_available():
 
 # Cell
 @delegates(plt.subplots, keep=True)
-def subplots(nrows=1, ncols=1, figsize=None, imsize=3, add_vert=0, **kwargs):
-    if figsize is None: figsize=(ncols*imsize, nrows*imsize+add_vert)
+def subplots(nrows=1, ncols=1, figsize=None, imsize=3,suptitle=None, **kwargs):
+    if figsize is None:
+        h=nrows*imsize if suptitle is None or imsize>2 else nrows*imsize+0.6 #https://github.com/matplotlib/matplotlib/issues/5355
+        figsize=(ncols*imsize, h)
     fig,ax = plt.subplots(nrows, ncols, figsize=figsize, **kwargs)
+    if suptitle is not None: fig.suptitle(suptitle)
     if nrows*ncols==1: ax = array([ax])
     return fig,ax
 
@@ -69,7 +72,7 @@ def show_titled_image(o, **kwargs):
 # Cell
 @delegates(subplots)
 def show_images(ims, nrows=1, ncols=None, titles=None, **kwargs):
-    "Show all images `ims` as subplots with `rows` using `titles`"
+    "Show all images `ims` as subplots with `rows` using `titles`."
     if ncols is None: ncols = int(math.ceil(len(ims)/nrows))
     if titles is None: titles = [None]*len(ims)
     axs = subplots(nrows, ncols, **kwargs)[1].flat
@@ -271,24 +274,14 @@ def to_concat(xs, dim=0):
 
 # Cell
 @patch
-def set_meta(self:Tensor, x, copy_meta=False):
+def set_meta(self:Tensor, x, as_copy=False):
     "Set all metadata in `__dict__`"
     if not hasattr(x,'__dict__'): return
-    d = x.__dict__
-    if copy_meta:
-        d = copy(d)
-        if '_meta' in d: d['_meta'] = copy(d['_meta'])
-    self.__dict__ = d
+    # XXX: change to `deepcopy` once PyTorch 1.7.1 is out, and check nb 23 segmentation fit works
+    self.__dict__ = copy(x.__dict__) if as_copy else x.__dict__
 
 # Cell
-@patch
-def get_meta(self:Tensor, n, d=None):
-    "Set `n` from `self._meta` if it exists and returns default `d` otherwise"
-    return getattr(self, '_meta', {}).get(n, d)
-
-# Cell
-if not hasattr(torch,'as_subclass'):
-    setattr(torch, 'as_subclass', torch.Tensor.as_subclass)
+if not hasattr(torch,'as_subclass'): torch.as_subclass = torch.Tensor.as_subclass
 
 # Cell
 @patch
@@ -297,14 +290,21 @@ def as_subclass(self:Tensor, typ):
     return retain_meta(self, torch.as_subclass(self, typ))
 
 # Cell
+def _convert(ret, cls):
+    if isinstance(ret, torch.Tensor): ret = ret.as_subclass(cls)
+    if isinstance(ret, (tuple, list)): ret = type(ret)(_convert(r, cls) for r in ret)
+    return ret
+
+# Cell
 class TensorBase(Tensor):
     def __new__(cls, x, **kwargs):
         res = cast(tensor(x), cls)
-        if kwargs: res._meta = kwargs
+        for k,v in kwargs.items(): setattr(res, k, v)
         return res
 
     @classmethod
     def _before_cast(cls, x): return tensor(x)
+    def __repr__(self): return re.sub('tensor', self.__class__.__name__, super().__repr__())
 
     def __reduce_ex__(self,proto):
         torch.utils.hooks.warn_if_has_hooks(self)
@@ -313,42 +313,23 @@ class TensorBase(Tensor):
         f = _fa_rebuild_qtensor if self.is_quantized else  _fa_rebuild_tensor
         return (f, args + (self.requires_grad, OrderedDict()))
 
-    def gi(self, i):
-        res = self[i]
-        return res.as_subclass(type(self)) if isinstance(res,Tensor) else res
+    def __torch_function__(self, func, types, args=(), kwargs=None):
+        with torch._C.DisableTorchFunction(): ret = _convert(func(*args, **(kwargs or {})), self.__class__)
+        if isinstance(ret, TensorBase): ret.set_meta(self, as_copy=True)
+        return ret
 
-    def __repr__(self):
-        return re.sub('tensor', self.__class__.__name__, super().__repr__())
+    def new_tensor(self, size, dtype=None, device=None, requires_grad=False):
+        cls = type(self)
+        return self.as_subclass(Tensor).new_tensor(size, dtype=dtype, device=device, requires_grad=requires_grad).as_subclass(cls)
 
-# Cell
-def _patch_tb():
-    if getattr(TensorBase,'_patched',False): return
-    TensorBase._patched = True
+    def new_ones(self, data, dtype=None, device=None, requires_grad=False):
+        cls = type(self)
+        return self.as_subclass(Tensor).new_ones(data, dtype=dtype, device=device, requires_grad=requires_grad).as_subclass(cls)
 
-    def get_f(fn):
-        def _f(self, *args, **kwargs):
-            cls = self.__class__
-            res = getattr(super(TensorBase, self), fn)(*args, **kwargs)
-            return retain_type(res, self, copy_meta=True)
-        return _f
-
-    t = tensor([1])
-    skips = 'as_subclass imag real __getitem__ __class__ __deepcopy__ __delattr__ __dir__ __doc__ __getattribute__ __hash__ __init__ \
-        __init_subclass__ __new__ __reduce__ __reduce_ex__ __repr__ __module__ __setstate__'.split()
-
-    for fn in dir(t):
-        if fn in skips: continue
-        f = getattr(t, fn)
-        if isinstance(f, (MethodWrapperType, BuiltinFunctionType, BuiltinMethodType, MethodType, FunctionType)):
-            setattr(TensorBase, fn, get_f(fn))
-
-_patch_tb()
-
-# Cell
-class TensorCategory(TensorBase): pass
-
-# Cell
-class TensorMultiCategory(TensorCategory): pass
+    def new(self, x=None):
+        cls = type(self)
+        res = self.as_subclass(Tensor).new() if x is None else self.as_subclass(Tensor).new(x)
+        return res.as_subclass(cls)
 
 # Cell
 class TensorImageBase(TensorBase):
@@ -367,9 +348,15 @@ class TensorMask(TensorImageBase):
     _show_args = ArrayMask._show_args
 
     def show(self, ctx=None, **kwargs):
-        codes = self.get_meta('codes')
+        codes = getattr(self, 'codes', None)
         if codes is not None: kwargs = merge({'vmin': 1, 'vmax': len(codes)}, kwargs)
         return super().show(ctx=ctx, **kwargs)
+
+# Cell
+class TensorCategory(TensorBase): pass
+
+# Cell
+class TensorMultiCategory(TensorCategory): pass
 
 # Cell
 class TitledTensorScalar(TensorBase):

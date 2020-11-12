@@ -70,7 +70,6 @@ class ModelToHalf(Callback):
 
 # Cell
 @docs
-@log_args
 class MixedPrecision(Callback):
     "Run training in mixed precision"
     toward_end=True
