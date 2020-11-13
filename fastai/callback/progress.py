@@ -9,6 +9,7 @@ from ..basics import *
 @docs
 class ProgressCallback(Callback):
     "A `Callback` to handle the display of progress bars"
+    _stateattrs=('mbar','pbar')
     run_after=Recorder
 
     def before_fit(self):
