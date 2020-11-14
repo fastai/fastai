@@ -424,11 +424,13 @@ from fastprogress.fastprogress import format_time
 # Cell
 def _maybe_item(t):
     t = t.value
-    return t.item() if isinstance(t, Tensor) and t.numel()==1 else t
+    try: return t.item()
+    except: return t
 
 # Cell
 class Recorder(Callback):
     "Callback that registers statistics (lr, loss and metrics) during training"
+    _stateattrs=('lrs','iters','losses','values')
     remove_on_fetch,run_after = True,TrainEvalCallback
 
     def __init__(self, add_time=True, train_metrics=False, valid_metrics=True, beta=0.98):

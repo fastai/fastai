@@ -28,7 +28,7 @@ _inner_loop = "before_batch after_pred after_loss before_backward after_backward
 
 # Cell
 @funcs_kwargs(as_method=True)
-class Callback(GetAttr):
+class Callback(Stateful,GetAttr):
     "Basic class handling tweaks of the training loop by changing a `Learner` in various events"
     _default,learn,run,run_train,run_valid = 'learn',None,True,True,True
     _methods = _events
@@ -91,6 +91,7 @@ if not hasattr(defaults, 'callbacks'): defaults.callbacks = [TrainEvalCallback]
 #TODO: save_targs and save_preds only handle preds/targets that have one tensor, not tuples of tensors.
 class GatherPredsCallback(Callback):
     "`Callback` that saves the predictions and targets, optionally `with_loss`"
+    _stateattrs=('preds','targets','inputs','losses')
     def __init__(self, with_input=False, with_loss=False, save_preds=None, save_targs=None, concat_dim=0):
         store_attr("with_input,with_loss,save_preds,save_targs,concat_dim")
 

@@ -110,7 +110,7 @@ class DataBlock():
         return Datasets(items, tfms=self._combine_type_tfms(), splits=splits, dl_type=self.dl_type, n_inp=self.n_inp, verbose=verbose)
 
     def dataloaders(self, source, path='.', verbose=False, **kwargs):
-        dsets = self.datasets(source)
+        dsets = self.datasets(source, verbose=verbose)
         kwargs = {**self.dls_kwargs, **kwargs, 'verbose': verbose}
         return dsets.dataloaders(path=path, after_item=self.item_tfms, after_batch=self.batch_tfms, **kwargs)
 

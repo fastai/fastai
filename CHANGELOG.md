@@ -2,6 +2,23 @@
 
 <!-- do not remove -->
 
+
+## 2.1.5
+
+### Breaking Changes
+
+- remove `log_args` ([#2954](https://github.com/fastai/fastai/issues/2954))
+
+### New Features
+
+- Improve performance of `RandomSplitter` (h/t @muellerzr) ([#2957](https://github.com/fastai/fastai/issues/2957))
+
+### Bugs Squashed
+
+- Exporting TabularLearner via learn.export() leads to huge file size ([#2945](https://github.com/fastai/fastai/issues/2945))
+- `TensorPoint` object has no attribute `img_size` ([#2950](https://github.com/fastai/fastai/issues/2950))
+
+
 ## 2.1.4
 
 ### Breaking Changes
