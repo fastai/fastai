@@ -166,7 +166,7 @@ def _make_plt(img):
 # Cell
 def _format_config_value(v):
     if isinstance(v, list):
-        return [_format_config_value[item] for item in v]
+        return [_format_config_value(item) for item in v]
     elif hasattr(v, '__stored_args__'):
         return {**_format_config(v.__stored_args__), '_name': v}
     return v
