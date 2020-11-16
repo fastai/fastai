@@ -30,8 +30,6 @@ jobs:
         delete: 'yes'
     - name: check for broken links
       run: |
-        sudo chown "$USER":"$USER" /home/"$USER"/.docker -R
-        sudo chmod g+rwx "/home/$USER/.docker" -R
         pip install fastlinkcheck
         link_check _site --host "docs.fast.ai" 2> err || true
         export GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
