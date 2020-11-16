@@ -9,11 +9,22 @@ from .core import *
 from pathlib import Path
 
 # Cell
+def _get_downloaded_image_filename(dest, name, suffix):
+    start_index = 1
+    candidate_name = name
+
+    while (dest/f"{candidate_name}{suffix}").is_file():
+        candidate_name = f"{candidate_name}{start_index}"
+        start_index += 1
+
+    return candidate_name
+
+# Cell
 def _download_image_inner(dest, inp, timeout=4, preserve_filename=False):
     i,url = inp
     url_path = Path(url)
     suffix = url_path.suffix if url_path.suffix else '.jpg'
-    name = url_path.stem if preserve_filename else f"{i:08d}"
+    name = _get_downloaded_image_filename(dest, url_path.stem, suffix) if preserve_filename else f"{i:08d}"
     try: download_url(url, dest/f"{name}{suffix}", overwrite=True, show_progress=False, timeout=timeout)
     except Exception as e: f"Couldn't download {url}."
 
