@@ -31,7 +31,7 @@ jobs:
     - name: check for broken links
       run: |
         pip install fastlinkcheck
-        link_check _site --host "docs.fast.ai" 2> err || true
+        link_check "docs/_site" --host "docs.fast.ai" 2> err || true
         export GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
         [[ -s err ]] && gh issue create -t "Broken links found" -b "$(cat err)" -R "${{ github.repository }}"
          
