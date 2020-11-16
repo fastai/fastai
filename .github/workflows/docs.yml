@@ -28,7 +28,6 @@ jobs:
         dest_path: docs.fast.ai
         ssh_key: ${{ secrets.DH_KEY }}
         delete: 'yes'
-    - uses: actions/setup-python@v2
     - name: check for broken links
       run: |
         pip install fastlinkcheck
