@@ -29,6 +29,7 @@ jobs:
         ssh_key: ${{ secrets.DH_KEY }}
         delete: 'yes'
     - name: check for broken links
+      if: github.event == 'workflow_dispatch'
       run: |
         pip install fastlinkcheck
         link_check "docs/_site" --host "docs.fast.ai" 2> err || true
