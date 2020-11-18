@@ -374,8 +374,8 @@ def test_set(dsets, test_items, rm_tfms=None, with_labels=False):
     else: raise Exception(f"This method requires using the fastai library to assemble your data. Expected a `Datasets` or a `TfmdLists` but got {dsets.__class__.__name__}")
 
 # Cell
-@delegates(TfmdDL.__init__)
 @patch
+@delegates(TfmdDL.__init__)
 def test_dl(self:DataLoaders, test_items, rm_type_tfms=None, with_labels=False, **kwargs):
     "Create a test dataloader from `test_items` using validation transforms of `dls`"
     test_ds = test_set(self.valid_ds, test_items, rm_tfms=rm_type_tfms, with_labels=with_labels

@@ -4,10 +4,10 @@ __all__ = ['progress_bar', 'master_bar', 'subplots', 'show_image', 'show_titled_
            'ArrayImageBase', 'ArrayImage', 'ArrayImageBW', 'ArrayMask', 'tensor', 'set_seed', 'get_random_states',
            'set_random_states', 'no_random', 'unsqueeze', 'unsqueeze_', 'apply', 'maybe_gather', 'to_detach', 'to_half',
            'to_float', 'default_device', 'to_device', 'to_cpu', 'to_np', 'to_concat', 'TensorBase', 'TensorImageBase',
-           'TensorImage', 'TensorImageBW', 'TensorMask', 'TensorCategory', 'TensorMultiCategory', 'TitledTensorScalar',
-           'concat', 'Chunks', 'show_title', 'ShowTitle', 'TitledInt', 'TitledFloat', 'TitledStr', 'TitledTuple',
-           'get_empty_df', 'display_df', 'get_first', 'one_param', 'item_find', 'find_device', 'find_bs', 'np_func',
-           'Module', 'get_model', 'one_hot', 'one_hot_decode', 'params', 'trainable_params', 'norm_types',
+           'TensorImage', 'TensorImageBW', 'TensorMask', 'TensorFlowField', 'TensorCategory', 'TensorMultiCategory',
+           'TitledTensorScalar', 'concat', 'Chunks', 'show_title', 'ShowTitle', 'TitledInt', 'TitledFloat', 'TitledStr',
+           'TitledTuple', 'get_empty_df', 'display_df', 'get_first', 'one_param', 'item_find', 'find_device', 'find_bs',
+           'np_func', 'Module', 'get_model', 'one_hot', 'one_hot_decode', 'params', 'trainable_params', 'norm_types',
            'norm_bias_params', 'batch_to_samples', 'logit', 'num_distrib', 'rank_distrib', 'distrib_barrier',
            'base_doc', 'doc', 'nested_reorder', 'make_cross_image', 'show_image_batch', 'requires_grad', 'init_default',
            'cond_init', 'apply_leaf', 'apply_init', 'script_use_ctx', 'script_save_ctx', 'script_fwd', 'script_bwd',
@@ -314,7 +314,9 @@ class TensorBase(Tensor):
         return (f, args + (self.requires_grad, OrderedDict()))
 
     def __torch_function__(self, func, types, args=(), kwargs=None):
-        with torch._C.DisableTorchFunction(): ret = _convert(func(*args, **(kwargs or {})), self.__class__)
+#         if func.__name__[0]!='_': print(func, types, args, kwargs)
+#         with torch._C.DisableTorchFunction(): ret = _convert(func(*args, **(kwargs or {})), self.__class__)
+        ret = super().__torch_function__(func, types, args=args, kwargs=kwargs)
         if isinstance(ret, TensorBase): ret.set_meta(self, as_copy=True)
         return ret
 
@@ -351,6 +353,16 @@ class TensorMask(TensorImageBase):
         codes = getattr(self, 'codes', None)
         if codes is not None: kwargs = merge({'vmin': 1, 'vmax': len(codes)}, kwargs)
         return super().show(ctx=ctx, **kwargs)
+
+# Cell
+class TensorFlowField(TensorBase):
+    def __torch_function__(self, func, types, args=(), kwargs=None):
+        convert=False
+        if func == F.grid_sample and issubclass(types[0],TensorImageBase):
+            convert,types = types[0],(torch.Tensor,torch.Tensor)
+        ret = super().__torch_function__(func, types, args=args, kwargs=kwargs)
+        if convert: ret = convert(ret)
+        return ret
 
 # Cell
 class TensorCategory(TensorBase): pass
@@ -625,7 +637,7 @@ def rank_distrib():
 
 # Cell
 def distrib_barrier():
-    "Place a synchronization barrier in distributed training so that ALL sub-processes in the pytorch process group must arrive here before proceeding."
+    "Place a synchronization barrier in distributed training"
     if num_distrib() > 1 and torch.distributed.is_initialized(): torch.distributed.barrier()
 
 # Cell
