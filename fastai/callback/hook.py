@@ -144,12 +144,26 @@ def total_params(m):
 # Cell
 def layer_info(learn, *xb):
     "Return layer infos of `model` on `xb` (only support batch first inputs)"
-    def _track(m, i, o): return (m.__class__.__name__,)+total_params(m)+(apply(lambda x:x.shape, o),)
+    def _track(m, i, o):
+        for inp, out in zip(i,o):
+            if inp.shape[1:] == out.shape: same = True
+            else: same = False
+        if hasattr(m, 'weight'): # non activation layer
+            if hasattr(learn.opt, 'param_groups'):
+                for j, group in enumerate(learn.opt.param_groups):
+                    if len(group['params'].argwhere(lambda x: x is m.weight)) > 0:
+                        return (type(m).__name__,)+total_params(m)+(apply(lambda x:x.shape,o),) + (str(j), same)
+            else:
+                return (type(m).__name__,)+total_params(m)+(apply(lambda x:x.shape,o),) + ('', same)
+
+        if same: return (type(m).__name__,)+('','')+('', '', same) # activation layer
+        else: return (type(m).__name__,)+('','')+(apply(lambda x:x.shape, o), '', same) # pooling layer
+
     with Hooks(flatten_model(learn.model), _track) as h:
         batch = apply(lambda o:o[:1], xb)
         train_only_cbs = [cb for cb in learn.cbs if hasattr(cb, '_only_train_loop')]
-        with learn.removed_cbs(train_only_cbs) as l:
-            with l: r = l.get_preds(dl=[batch], inner=True, reorder=False)
+        with learn.removed_cbs(train_only_cbs) and learn.no_logging():
+            with learn as l: r = l.get_preds(dl=[batch], inner=True, reorder=False)
         return h.stored
 
 # Cell
@@ -164,20 +178,31 @@ def module_summary(learn, *xb):
     #  thus are not counted inside the summary
     #TODO: find a way to have them counted in param number somehow
     infos = layer_info(learn, *xb)
-    n,bs = 64,find_bs(xb)
+    n,bs = 76,find_bs(xb)
     inp_sz = _print_shapes(apply(lambda x:x.shape, xb), bs)
-    res = f"{learn.model.__class__.__name__} (Input shape: {inp_sz})\n"
+    res = f"{type(learn.model).__name__} (Input shape: {inp_sz})\n"
     res += "=" * n + "\n"
-    res += f"{'Layer (type)':<20} {'Output Shape':<20} {'Param #':<10} {'Trainable':<10}\n"
-    res += "=" * n + "\n"
-    ps,trn_ps = 0,0
+    res += f"{'Layer (type)':<20} {'Output Shape':<20} {'Param #':<10} {'Trainable':<10} {'Group':<10}\n"
+    res += "=" * n
+    ps,trn_ps,j = 0,0,0
     infos = [o for o in infos if o is not None] #see comment in previous cell
-    for typ,np,trn,sz in infos:
+    prev_sz = None
+    for typ,np,trn,sz,grp,chnged in infos:
         if sz is None: continue
-        ps += np
-        if trn: trn_ps += np
-        res += f"{typ:<20} {_print_shapes(sz, bs)[:19]:<20} {np:<10,} {str(trn):<10}\n"
-        res += "_" * n + "\n"
+        if j == 0: res += f'\n{"":<20} {_print_shapes(sz, bs)[:19]:<20}' # to avoid a double line at the top
+        if not chnged and not prev_sz == sz and j > 0: res += "\n" + "_" * n + "\n" + f'{"":<20} {_print_shapes(sz, bs)[:19]:<20}'
+        j = 1
+        if np is '':
+            if sz is not '':  # Pooling layer
+                res += f"\n{typ:<20} {'':<20} {'':<10} {'':<10} {'':<10}"
+            else: # Activation layer
+                res += f"\n{typ:<20} {'':<20} {'':<10} {'':<10} {'':<10}"
+        else: # Non activation layer
+            ps += np
+            if trn: trn_ps += np
+            res += f"\n{typ:<20} {'':<20} {np:<10,} {str(trn):<10} {grp:<10}"
+        prev_sz = sz
+    res += "\n" + "_" * n + "\n"
     res += f"\nTotal params: {ps:,}\n"
     res += f"Total trainable params: {trn_ps:,}\n"
     res += f"Total non-trainable params: {ps - trn_ps:,}\n\n"
