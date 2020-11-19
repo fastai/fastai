@@ -5,6 +5,7 @@ __all__ = ['has_pool_type', 'create_body', 'create_head', 'default_split', 'mode
 
 # Cell
 from ..basics import *
+from ..callback.hook import *
 from .core import *
 from .data import *
 from .augment import *
@@ -73,17 +74,19 @@ def create_body(arch, n_in=3, pretrained=True, cut=None):
     else:                           raise NamedError("cut must be either integer or a function")
 
 # Cell
-def create_head(nf, n_out, lin_ftrs=None, ps=0.5, concat_pool=True, bn_final=False, lin_first=False, y_range=None):
+def create_head(nf, n_out, lin_ftrs=None, ps=0.5, concat_pool=True, first_bn=True, bn_final=False,
+                lin_first=False, y_range=None):
     "Model head that takes `nf` features, runs through `lin_ftrs`, and out `n_out` classes."
     lin_ftrs = [nf, 512, n_out] if lin_ftrs is None else [nf] + lin_ftrs + [n_out]
+    bns = [first_bn] + [True]*len(lin_ftrs[1:])
     ps = L(ps)
     if len(ps) == 1: ps = [ps[0]/2] * (len(lin_ftrs)-2) + ps
     actns = [nn.ReLU(inplace=True)] * (len(lin_ftrs)-2) + [None]
     pool = AdaptiveConcatPool2d() if concat_pool else nn.AdaptiveAvgPool2d(1)
     layers = [pool, Flatten()]
     if lin_first: layers.append(nn.Dropout(ps.pop(0)))
-    for ni,no,p,actn in zip(lin_ftrs[:-1], lin_ftrs[1:], ps, actns):
-        layers += LinBnDrop(ni, no, bn=True, p=p, act=actn, lin_first=lin_first)
+    for ni,no,bn,p,actn in zip(lin_ftrs[:-1], lin_ftrs[1:], bns, ps, actns):
+        layers += LinBnDrop(ni, no, bn=bn, p=p, act=actn, lin_first=lin_first)
     if lin_first: layers.append(nn.Linear(lin_ftrs[-2], n_out))
     if bn_final: layers.append(nn.BatchNorm1d(lin_ftrs[-1], momentum=0.01))
     if y_range is not None: layers.append(SigmoidRange(*y_range))
@@ -140,7 +143,12 @@ def create_cnn_model(arch, n_out, pretrained=True, cut=None, n_in=3, init=nn.ini
     body = create_body(arch, n_in, pretrained, ifnone(cut, meta['cut']))
     if custom_head is None:
         nf = num_features_model(nn.Sequential(*body.children())) * (2 if concat_pool else 1)
-        head = create_head(nf, n_out, concat_pool=concat_pool, **kwargs)
+        last_layer = first(flatten_model(body)[::-1], lambda x: hasattr(x, 'weight'))
+        if isinstance(last_layer, nn.BatchNorm2d):
+            with hook_output(last_layer) as hook: out = dummy_eval(body)
+            first_bn = not (hook.stored == out).all()
+        else: first_bn = True
+        head = create_head(nf, n_out, concat_pool=concat_pool, first_bn=first_bn, **kwargs)
     else: head = custom_head
     model = nn.Sequential(body, head)
     if init is not None: apply_init(model[1], init)
