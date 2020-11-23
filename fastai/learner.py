@@ -290,7 +290,7 @@ class Learner():
         if device is None and hasattr(self.dls, 'device'): device = self.dls.device
         if self.opt is None: self.create_opt()
         file = join_path_file(file, self.path/self.model_dir, ext='.pth')
-        load_model(file, self.model, self.opt, device=device, **kwargs)
+        load_model(file, self.model, self.opt, with_opt=with_opt, device=device, **kwargs)
         return self
 
     def to_detach(self,b,cpu=True,gather=True):
