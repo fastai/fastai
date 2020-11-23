@@ -146,8 +146,7 @@ def layer_info(learn, *xb):
     "Return layer infos of `model` on `xb` (only support batch first inputs)"
     def _track(m, i, o):
         params, trainable, shape = '', '', ''
-        same = next(filter(lambda x: x[0].shape[1:] == x[1].shape, zip(i, o)), False)
-        if same is not False: same = True
+        same = any((x[0].shape[1:] == x[1].shape for x in zip(i, o)))
         if hasattr(m, 'weight'): # non activation layer
             params, trainable = total_params(m)
             shape = apply(lambda x: x.shape, o)
