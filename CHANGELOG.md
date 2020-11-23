@@ -2,6 +2,21 @@
 
 <!-- do not remove -->
 
+## 2.1.7
+
+### New Features
+
+- Pytorch 1.7 subclassing support ([#2769](https://github.com/fastai/fastai/issues/2769))
+
+### Bugs Squashed
+
+- unsupported operand type(s) for +=: 'TensorCategory' and 'TensorText' when using AWD_LSTM for text classification ([#3027](https://github.com/fastai/fastai/issues/3027))
+- UserWarning when using SaveModelCallback() on after_epoch ([#3025](https://github.com/fastai/fastai/issues/3025))
+- Segmentation error: no implementation found for 'torch.nn.functional.cross_entropy' on types that implement torch_function ([#3022](https://github.com/fastai/fastai/issues/3022))
+- `TextDataLoaders.from_df()` returns `TypeError: 'float' object is not iterable` ([#2978](https://github.com/fastai/fastai/issues/2978))
+- Internal assert error in awd_qrnn ([#2967](https://github.com/fastai/fastai/issues/2967))
+
+
 ## 2.1.6
 
 ### New Features
