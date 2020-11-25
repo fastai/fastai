@@ -44,6 +44,7 @@ def set_bn_eval(m:nn.Module, use_eval=True)->None:
         set_bn_eval(l)
 
 class BnFreeze(Callback):
+    run_after=TrainEvalCallback
     "Freeze moving average statistics in all non-trainable batchnorm layers."
-    def before_epoch(self):
+    def before_train(self):
         set_bn_eval(self.model)
