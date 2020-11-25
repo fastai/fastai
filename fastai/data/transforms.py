@@ -168,21 +168,20 @@ def RandomSubsetSplitter(train_sz, valid_sz, seed=None):
 
 # Cell
 def _grouped_dataframe_splitter(df,group_col,valid_pct=0.2,seed=None,n_tries=3):
-    "Splits groups of items between train/val randomly, such that val should have close to `valid_pct` of the total number of items (similar to RandomSplitter). Groups are defined by a `groupkey`, which is a callable to apply to individual items to get the groupname, or a column name if `o` is a DataFrame"
-    gk=df.groupby(group_col).count()
     r_state=np.random.RandomState(seed)
     desired_valid=round(len(df)*valid_pct)
+    gk=df.groupby(group_col).count()#make a table of groups and their counts
     def one_shuffle():
-        shuffled_gk=gk.sample(frac=1,random_state=r_state)
+        shuffled_gk=gk.sample(frac=1,random_state=r_state) #shuffle the groups
         cumsum=shuffled_gk.cumsum()
         abs_diff=abs(cumsum-desired_valid)
-        split_goodness=-abs_diff.min().iat[0]
-        valid_rows=abs_diff.iloc[:,0].argmin()+1
+        split_goodness=-abs_diff.min().iat[0] #find the best split point for this shuffle
+        valid_rows=abs_diff.iloc[:,0].argmin()+1 #(the groups included in val for that split)
         return shuffled_gk,split_goodness,valid_rows
-    def n_shuffles(n):
+    def n_shuffles(n): #finding the closest possible split to valid_pct is NP hard so instead we just take the best of a few tries
         best_shuffled,best_goodness,best_rows=one_shuffle()
         for _ in range(n-1):
-            if best_goodness==0: return best_shuffled,best_goodness,best_rows #return early
+            if best_goodness==0: return best_shuffled,best_goodness,best_rows #perfect split, return early
             sh,g,r=one_shuffle()
             if g>best_goodness:
                 best_shuffled,best_goodness,best_rows=sh,g,r
@@ -190,7 +189,7 @@ def _grouped_dataframe_splitter(df,group_col,valid_pct=0.2,seed=None,n_tries=3):
     shuffled_gk,split_goodness,valid_rows=n_shuffles(n_tries)
     shuffled_gk['is_valid']=([True] * valid_rows +
                              [False]*(len(shuffled_gk) - valid_rows))
-    split_df=df.join(shuffled_gk.loc[:,'is_valid'],on=group_col)
+    split_df=df.join(shuffled_gk.loc[:,'is_valid'],on=group_col) #apply the group split to the actual items
     return ColSplitter()(split_df)
 
 # Cell
