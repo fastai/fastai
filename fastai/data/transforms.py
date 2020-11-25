@@ -2,10 +2,11 @@
 
 __all__ = ['get_files', 'FileGetter', 'image_extensions', 'get_image_files', 'ImageGetter', 'get_text_files',
            'ItemGetter', 'AttrGetter', 'RandomSplitter', 'TrainTestSplitter', 'IndexSplitter', 'GrandparentSplitter',
-           'FuncSplitter', 'MaskSplitter', 'FileSplitter', 'ColSplitter', 'RandomSubsetSplitter', 'GroupedSplitter',
-           'parent_label', 'RegexLabeller', 'ColReader', 'CategoryMap', 'Categorize', 'Category', 'MultiCategorize',
-           'MultiCategory', 'OneHotEncode', 'EncodedMultiCategorize', 'RegressionSetup', 'get_c', 'ToTensor',
-           'IntToFloatTensor', 'broadcast_vec', 'Normalize']
+           'FuncSplitter', 'MaskSplitter', 'FileSplitter', 'ColSplitter', 'RandomSubsetSplitter',
+           'GroupedDataframeSplitter', 'GroupedListSplitter', 'parent_label', 'RegexLabeller', 'ColReader',
+           'CategoryMap', 'Categorize', 'Category', 'MultiCategorize', 'MultiCategory', 'OneHotEncode',
+           'EncodedMultiCategorize', 'RegressionSetup', 'get_c', 'ToTensor', 'IntToFloatTensor', 'broadcast_vec',
+           'Normalize']
 
 # Cell
 from ..torch_basics import *
@@ -166,42 +167,54 @@ def RandomSubsetSplitter(train_sz, valid_sz, seed=None):
     return _inner
 
 # Cell
-def GroupedSplitter(groupkey,valid_pct=0.2,seed=None,n_tries=3):
+def _grouped_dataframe_splitter(df,group_col,valid_pct=0.2,seed=None,n_tries=3):
     "Splits groups of items between train/val randomly, such that val should have close to `valid_pct` of the total number of items (similar to RandomSplitter). Groups are defined by a `groupkey`, which is a callable to apply to individual items to get the groupname, or a column name if `o` is a DataFrame"
+    gk=df.groupby(group_col).count()
+    r_state=np.random.RandomState(seed)
+    desired_valid=round(len(df)*valid_pct)
+    def one_shuffle():
+        shuffled_gk=gk.sample(frac=1,random_state=r_state)
+        cumsum=shuffled_gk.cumsum()
+        abs_diff=abs(cumsum-desired_valid)
+        split_goodness=-abs_diff.min().iat[0]
+        valid_rows=abs_diff.iloc[:,0].argmin()+1
+        return shuffled_gk,split_goodness,valid_rows
+    def n_shuffles(n):
+        best_shuffled,best_goodness,best_rows=one_shuffle()
+        for _ in range(n-1):
+            if best_goodness==0: return best_shuffled,best_goodness,best_rows #return early
+            sh,g,r=one_shuffle()
+            if g>best_goodness:
+                best_shuffled,best_goodness,best_rows=sh,g,r
+        return best_shuffled,best_goodness,best_rows
+    shuffled_gk,split_goodness,valid_rows=n_shuffles(n_tries)
+    shuffled_gk['is_valid']=([True] * valid_rows +
+                             [False]*(len(shuffled_gk) - valid_rows))
+    split_df=df.join(shuffled_gk.loc[:,'is_valid'],on=group_col)
+    return ColSplitter()(split_df)
+
+# Cell
+def GroupedDataframeSplitter(group_col,colval2groupname=None,valid_pct=0.2,seed=None,n_tries=3):
+    "Splits items randomly without breaking up groups, to help ensure generalizability to unseen groups. Groups are defined by `group_col` with optional extra function `colval2groupname`"
     def _inner(o):
-        if callable(groupkey):
-            assert not isinstance(o,pd.DataFrame), "o is a DataFrame so groupkey should be a column name not a callable"
-            ids=pd.DataFrame(o)
-            ids['group_keys']=ids.applymap(groupkey)
-            keycol='group_keys'
-        else:
-            assert isinstance(o, pd.DataFrame), "o is not a DataFrame, so groupkey must be a callable that extracts a group key from an item"
-            assert groupkey in o, "groupkey is not a colname in the DataFrame o"
-            keycol=groupkey
-            ids=o
-        gk=ids.groupby(keycol).count()
-        r_state=np.random.RandomState(seed)
-        desired_valid=round(len(o)*valid_pct) #might as well round it
-        def one_shuffle():
-            shuffled_gk=gk.sample(frac=1,random_state=r_state)
-            cumsum=shuffled_gk.cumsum()
-            abs_diff=abs(cumsum-desired_valid)
-            split_goodness=-abs_diff.min().iat[0]
-            valid_rows=abs_diff.iloc[:,0].argmin()+1
-            return shuffled_gk,split_goodness,valid_rows
-        def n_shuffles(n):
-            best_shuffled,best_goodness,best_rows=one_shuffle()
-            for _ in range(n-1):
-                if best_goodness==0: return best_shuffled,best_goodness,best_rows #might as well return early
-                sh,g,r=one_shuffle()
-                if g>best_goodness:
-                    best_shuffled,best_goodness,best_rows=sh,g,r
-            return best_shuffled,best_goodness,best_rows
-        shuffled_gk,split_goodness,valid_rows=n_shuffles(n_tries)
-        shuffled_gk['is_valid']=([True] * valid_rows +
-                                 [False]*(len(shuffled_gk) - valid_rows))
-        split_df=ids.join(shuffled_gk.loc[:,'is_valid'],on=keycol)
-        return ColSplitter()(split_df)
+        assert isinstance(o,pd.DataFrame), 'This splitter is meant for Dataframes, please use GroupedListSplitter'
+        assert group_col in o, "`group_col` is not a valid column name in the DataFrame o"
+        df=pd.DataFrame(o)
+        if callable(colval2groupname):
+            df['group_keys']=df[group_col].apply(colval2groupname)
+            return _grouped_dataframe_splitter(df,'group_keys',valid_pct,seed,n_tries)
+        return _grouped_dataframe_splitter(df,group_col,valid_pct,seed,n_tries)
+    return _inner
+
+# Cell
+def GroupedListSplitter(item2group,valid_pct=0.2,seed=None,n_tries=3):
+    "Splits items randomly without breaking up groups, to help ensure generalizability to unseen groups. `itemtogroup` should be a function (eg a regex) that returns the group name for each item."
+    def _inner(o):
+        assert not isinstance(o,pd.DataFrame), 'Please use GroupedDataframeSplitter instead'
+        assert callable(item2group), "You must pass in a callable `item2group` that extracts a group name from each item"
+        df=pd.DataFrame(o)
+        df['group_keys']=df.applymap(item2group)
+        return _grouped_dataframe_splitter(df,'group_keys',valid_pct,seed,n_tries)
     return _inner
 
 # Cell
