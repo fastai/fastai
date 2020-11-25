@@ -59,7 +59,7 @@ class ImagesCleaner:
     def values(self): return L(self.widget.children).itemgot(1).attrgot('value')
     def delete(self): return self.values().argwhere(eq('<Delete>'))
     def change(self):
-        idxs = self.values().argwhere(negate_func(in_(['<Delete>','<Keep>'])))
+        idxs = self.values().argwhere(not_(in_(['<Delete>','<Keep>'])))
         return idxs.zipwith(self.values()[idxs])
 
 # Cell

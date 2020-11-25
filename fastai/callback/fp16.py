@@ -137,8 +137,8 @@ class MixedPrecision(Callback):
     )
 
 # Cell
-@delegates(MixedPrecision.__init__)
 @patch
+@delegates(MixedPrecision.__init__)
 def to_fp16(self:Learner, **kwargs):
     self.add_cbs([ModelToHalf(), MixedPrecision(**kwargs)])
     return self
@@ -166,8 +166,8 @@ class NativeMixedPrecision(Callback):
     def _step(self): self.scaler.step(self.opt)
 
 # Cell
-@delegates(GradScaler.__init__)
 @patch
+@delegates(GradScaler.__init__)
 def to_native_fp16(self:Learner, **kwargs):
     self.add_cb(NativeMixedPrecision(**kwargs))
     return self

@@ -24,9 +24,9 @@ class BaseLoss():
     @reduction.setter
     def reduction(self, v): self.func.reduction = v
 
+    def _contiguous(self,x): return TensorBase(x.transpose(self.axis,-1).contiguous())
     def __call__(self, inp, targ, **kwargs):
-        inp  = inp .transpose(self.axis,-1).contiguous()
-        targ = targ.transpose(self.axis,-1).contiguous()
+        inp,targ  = map(self._contiguous, (inp,targ))
         if self.floatify and targ.dtype!=torch.float16: targ = targ.float()
         if targ.dtype in [torch.int8, torch.int16, torch.int32]: targ = targ.long()
         if self.flatten: inp = inp.view(-1,inp.shape[-1]) if self.is_2d else inp.view(-1)

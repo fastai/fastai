@@ -84,7 +84,7 @@ class SaveModelCallback(TrackerCallback):
 
     def after_fit(self, **kwargs):
         "Load the best model."
-        if not self.every_epoch: self.learn.load(f'{self.fname}')
+        if not self.every_epoch: self.learn.load(f'{self.fname}', with_opt=self.with_opt)
 
 # Cell
 class ReduceLROnPlateau(TrackerCallback):

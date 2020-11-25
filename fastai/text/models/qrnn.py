@@ -102,11 +102,9 @@ class QRNNLayer(Module):
         y = self.linear(self._get_source(inp))
         if self.output_gate: z_gate,f_gate,o_gate = y.chunk(3, dim=2)
         else:                z_gate,f_gate        = y.chunk(2, dim=2)
-        z_gate.tanh_()
-        f_gate.sigmoid_()
+        z_gate,f_gate = z_gate.tanh(),f_gate.sigmoid()
         if self.zoneout and self.training:
-            f_gate = f_gate * dropout_mask(f_gate, f_gate.size(), self.zoneout).requires_grad_(False)
-        z_gate,f_gate = z_gate.contiguous(),f_gate.contiguous()
+            f_gate *= dropout_mask(f_gate, f_gate.size(), self.zoneout).requires_grad_(False)
         forget_mult = dispatch_cuda(ForgetMultGPU, partial(forget_mult_CPU), inp)
         c_gate = forget_mult(z_gate, f_gate, hid, self.batch_first, self.backward)
         output = torch.sigmoid(o_gate) * c_gate if self.output_gate else c_gate
