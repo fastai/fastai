@@ -120,7 +120,7 @@
     "024b0d2203ebb0cd1fc64b27cf8af18e"
   ],
   "https://s3.amazonaws.com/fast-ai-imagelocal/pascal_2007.tgz": [
-    1637796771,
+    524288000,
     "433b4706eb7c42bd74e7f784e3fdf244"
   ],
   "https://s3.amazonaws.com/fast-ai-imagelocal/pascal_2012.tgz": [
@@ -278,5 +278,9 @@
   "https://s3.amazonaws.com/fast-ai-sample/dogscats.tgz": [
     839285364,
     "3e483c8d6ef2175e9d395a6027eb92b7"
+  ],
+  "https://fibermedical.ch/img/tcga_small.tgz": [
+    14744474,
+    "3ceffe7cf522cb1c60e93dc555d8817f"
   ]
 }
