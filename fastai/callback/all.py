@@ -2,7 +2,7 @@ from .core import *
 from .data import *
 from .fp16 import *
 from .hook import *
-from .mixups import *
+from .mixup import *
 from .progress import *
 from .schedule import *
 from .tracker import *
