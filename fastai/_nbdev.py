@@ -847,7 +847,7 @@ modules = ["torch_core.py",
            "callback/fp16.py",
            "callback/training.py",
            "callback/preds.py",
-           "callback/mixups.py",
+           "callback/mixup.py",
            "interpret.py",
            "distributed.py",
            "vision/learner.py",
@@ -871,8 +871,7 @@ modules = ["torch_core.py",
            "callback/neptune.py",
            "callback/captum.py",
            "test_utils.py",
-           "_pytorch_doc.py",
-           "callback/mixup.py"]
+           "_pytorch_doc.py"]
 
 doc_url = "https://docs.fast.ai/"
 
