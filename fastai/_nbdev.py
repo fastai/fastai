@@ -591,10 +591,10 @@ index = {"subplots": "00_torch_core.ipynb",
          "BnFreeze": "18a_callback.training.ipynb",
          "bn_types": "18a_callback.training.ipynb",
          "MCDropoutCallback": "18b_callback.preds.ipynb",
-         "reduce_loss": "19_callback.mixups.ipynb",
-         "MixHandler": "19_callback.mixups.ipynb",
-         "MixUp": "19_callback.mixups.ipynb",
-         "CutMix": "19_callback.mixups.ipynb",
+         "reduce_loss": "19_callback.mixup.ipynb",
+         "MixHandler": "19_callback.mixup.ipynb",
+         "MixUp": "19_callback.mixup.ipynb",
+         "CutMix": "19_callback.mixup.ipynb",
          "Interpretation": "20_interpret.ipynb",
          "ClassificationInterpretation": "20_interpret.ipynb",
          "DataParallel.reset": "20a_distributed.ipynb",
@@ -871,7 +871,8 @@ modules = ["torch_core.py",
            "callback/neptune.py",
            "callback/captum.py",
            "test_utils.py",
-           "_pytorch_doc.py"]
+           "_pytorch_doc.py",
+           "callback/mixup.py"]
 
 doc_url = "https://docs.fast.ai/"
 
