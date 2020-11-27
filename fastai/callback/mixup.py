@@ -15,7 +15,6 @@ def reduce_loss(loss, reduction='mean'):
     return loss.mean() if reduction=='mean' else loss.sum() if reduction=='sum' else loss
 
 # Cell
-@log_args
 class MixUp(Callback):
     run_after,run_valid = [Normalize],False
     def __init__(self, alpha=0.4): self.distrib = Beta(tensor(alpha), tensor(alpha))

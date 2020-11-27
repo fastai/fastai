@@ -46,12 +46,16 @@ class PILDicom(PILBase):
     def create(cls, fn:(Path,str,bytes), mode=None)->None:
         "Open a `DICOM file` from path `fn` or bytes `fn` and load it as a `PIL Image`"
         if isinstance(fn,bytes): im = Image.fromarray(pydicom.dcmread(pydicom.filebase.DicomBytesIO(fn)).pixel_array)
-        if isinstance(fn,(Path,str)): im = Image.fromarray(dcmread(fn).pixel_array)
+        if isinstance(fn,(Path,str)): im = Image.fromarray(pydicom.dcmread(fn).pixel_array)
         im.load()
         im = im._new(im.im)
         return cls(im.convert(mode) if mode else im)
 
 PILDicom._tensor_cls = TensorDicom
+
+# Cell
+@patch
+def png16read(self:Path): return array(Image.open(self), dtype=np.uint16)
 
 # Cell
 @patch(as_prop=True)
@@ -171,7 +175,6 @@ def show(self:DcmDataset, scale=True, cmap=plt.cm.bone, min_px=-1100, max_px=Non
 
 # Cell
 @patch
-@delegates(show_image, show_images)
 def show(self:DcmDataset, frames=1, scale=True, cmap=plt.cm.bone, min_px=-1100, max_px=None, **kwargs):
     "Adds functionality to view dicom images where each file may have more than 1 frame"
     px = (self.windowed(*scale) if isinstance(scale,tuple)
@@ -183,8 +186,7 @@ def show(self:DcmDataset, frames=1, scale=True, cmap=plt.cm.bone, min_px=-1100, 
         p = px.shape; print(f'{p[0]} frames per file')
         for i in range(frames): u = px[i]; gh.append(u)
         show_images(gh, **kwargs)
-    else:
-        show_image(px, cmap=cmap, **kwargs)
+    else: show_image(px, cmap=cmap, **kwargs)
 
 # Cell
 @patch

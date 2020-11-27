@@ -19,11 +19,11 @@ def _wif(worker_id):
 
 class _FakeLoader:
     _IterableDataset_len_called,_auto_collation,collate_fn,drop_last = None,False,noops,False
-    _index_sampler,generator,prefetch_factor = Inf.count,None,2
+    _index_sampler,generator,prefetch_factor  = Inf.count,None,2
     dataset_kind = _dataset_kind = _DatasetKind.Iterable
-    def __init__(self, d, pin_memory, num_workers, timeout):
+    def __init__(self, d, pin_memory, num_workers, timeout, persistent_workers):
         self.dataset,self.default,self.worker_init_fn = self,d,_wif
-        store_attr('d,pin_memory,num_workers,timeout')
+        store_attr('d,pin_memory,num_workers,timeout,persistent_workers')
 
     def __iter__(self): return iter(self.d.create_batches(self.d.sample()))
 
@@ -61,7 +61,6 @@ class SkipItemException(Exception):
     pass
 
 # Cell
-@log_args(but='dataset,wif,create_batch,create_batches,create_item,retain,get_idxs,sample,shuffle_fn,do_batch')
 @funcs_kwargs
 class DataLoader(GetAttr):
     _noop_methods = 'wif before_iter after_item before_batch after_batch after_iter'.split()
@@ -70,7 +69,7 @@ class DataLoader(GetAttr):
         get_idxs sample shuffle_fn do_batch create_batch'.split()
     _default = 'dataset'
     def __init__(self, dataset=None, bs=None, num_workers=0, pin_memory=False, timeout=0, batch_size=None,
-                 shuffle=False, drop_last=False, indexed=None, n=None, device=None, **kwargs):
+                 shuffle=False, drop_last=False, indexed=None, n=None, device=None, persistent_workers=False, **kwargs):
         if batch_size is not None: bs = batch_size # PyTorch compatibility
         assert not (bs is None and drop_last)
         if indexed is None: indexed = dataset is not None and hasattr(dataset,'__getitem__')
@@ -79,7 +78,7 @@ class DataLoader(GetAttr):
             except TypeError: pass
         store_attr('dataset,bs,shuffle,drop_last,indexed,n,pin_memory,timeout,device')
         self.rng,self.num_workers,self.offs = random.Random(random.randint(0,2**32-1)),1,0
-        self.fake_l = _FakeLoader(self, pin_memory, num_workers, timeout)
+        self.fake_l = _FakeLoader(self, pin_memory, num_workers, timeout, persistent_workers=persistent_workers)
 
     def __len__(self):
         if self.n is None: raise TypeError
@@ -115,7 +114,9 @@ class DataLoader(GetAttr):
         if cls is None: cls = type(self)
         cur_kwargs = dict(dataset=dataset, num_workers=self.fake_l.num_workers, pin_memory=self.pin_memory, timeout=self.timeout,
                           bs=self.bs, shuffle=self.shuffle, drop_last=self.drop_last, indexed=self.indexed, device=self.device)
-        for n in self._methods: cur_kwargs[n] = getattr(self, n)
+        for n in self._methods:
+            o = getattr(self, n)
+            if not isinstance(o, MethodType): cur_kwargs[n] = o
         return cls(**merge(cur_kwargs, kwargs))
 
     @property
@@ -149,12 +150,12 @@ add_docs(DataLoader, "API compatible with PyTorch DataLoader, with a lot more ca
          shuffle_fn     = "Returns a random permutation of `idxs`.",
          randomize      = "Set's `DataLoader` random number generator state.",
          retain         = "Cast each item of `res` to type of matching item in `b` if its a superclass.",
-         create_item    = "Return a subset of the dataset containing the index values of the sample if there are samples, else return the next iterator.",
+         create_item    = "Subset of the dataset containing the index values of sample if exists, else next iterator.",
          create_batch   = "Collate a list of items into a batch.",
          do_batch       = "Combines `create_batch` and `before_batch` to get a batch of items. Input is a list of items to collate.",
          to             = "Sets `self.device=device`.",
          one_batch      = "Return one batch from `DataLoader`.",
-         wif            = "See pytorch `worker_init_fn` for details (https://pytorch.org/docs/stable/data.html#multi-process-data-loading).",
+         wif            = "See pytorch `worker_init_fn` for details.",
          before_iter    = "Called before `DataLoader` starts to read/iterate over the dataset.",
          after_item     = "Takes output of `create_item` as input and applies this function on it.",
          before_batch   = "It is called before collating a list of items into a batch. Input is a list of items.",

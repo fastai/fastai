@@ -35,7 +35,6 @@ def show_results(x, y, samples, outs, ctxs=None, max_n=9, **kwargs):
 _batch_tfms = ('after_item','before_batch','after_batch')
 
 # Cell
-@log_args(but_as=DataLoader.__init__)
 @delegates()
 class TfmdDL(DataLoader):
     "Transformed `DataLoader`"
@@ -77,12 +76,13 @@ class TfmdDL(DataLoader):
             f = getattr(self,nm)
             if isinstance(f,Pipeline): f.split_idx=split_idx
 
-    def decode(self, b): return self.before_batch.decode(to_cpu(self.after_batch.decode(self._retain_dl(b))))
+    def decode(self, b): return to_cpu(self.after_batch.decode(self._retain_dl(b)))
     def decode_batch(self, b, max_n=9, full=True): return self._decode_batch(self.decode(b), max_n, full)
 
     def _decode_batch(self, b, max_n=9, full=True):
         f = self.after_item.decode
-        f = compose(f, partial(getattr(self.dataset,'decode',noop), full = full))
+        f1 = self.before_batch.decode
+        f = compose(f1, f, partial(getattr(self.dataset,'decode',noop), full = full))
         return L(batch_to_samples(b, max_n=max_n)).map(f)
 
     def _pre_show_batch(self, b, max_n=9):
@@ -374,8 +374,8 @@ def test_set(dsets, test_items, rm_tfms=None, with_labels=False):
     else: raise Exception(f"This method requires using the fastai library to assemble your data. Expected a `Datasets` or a `TfmdLists` but got {dsets.__class__.__name__}")
 
 # Cell
-@delegates(TfmdDL.__init__)
 @patch
+@delegates(TfmdDL.__init__)
 def test_dl(self:DataLoaders, test_items, rm_type_tfms=None, with_labels=False, **kwargs):
     "Create a test dataloader from `test_items` using validation transforms of `dls`"
     test_ds = test_set(self.valid_ds, test_items, rm_tfms=rm_type_tfms, with_labels=with_labels
