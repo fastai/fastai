@@ -17,7 +17,7 @@ from torch.nn.utils import parameters_to_vector
 
 # Cell
 def get_master(opt, flat_master=False):
-    model_params = [[param for param in pg if getattr(param, 'requires_grad', False)] for pg in opt.param_lists]
+    model_params = [[param for param in pg if getattr(param, 'requires_grad', False) and hasattr(param, 'data')] for pg in opt.param_lists]
     if flat_master:
         master_params = []
         for pg in model_params:
