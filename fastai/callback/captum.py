@@ -25,7 +25,7 @@ from captum.attr import visualization as viz
 from matplotlib.colors import LinearSegmentedColormap
 
 from captum.insights import AttributionVisualizer, Batch
-from captum.insights.features import ImageFeature
+from captum.insights.attr_vis.features import ImageFeature
 
 # Cell
 class CaptumInterpretation():
@@ -105,6 +105,12 @@ def insights(x: CaptumInterpretation,inp_data,debug=True):
     _get_vocab = lambda vocab: list(map(str,vocab)) if isinstance(vocab[0],bool) else vocab
     dl = x.dls.test_dl(L(inp_data),with_labels=True, bs=4)
     normalize_func= next((func for func in dl.after_batch if type(func)==Normalize),noop)
+
+    # captum v0.3 expects tensors without the batch dimension.
+    if hasattr(normalize_func, 'mean'):
+        if normalize_func.mean.ndim==4: normalize_func.mean.squeeze_(0)
+    if hasattr(normalize_func, 'std'):
+        if normalize_func.std.ndim==4: normalize_func.std.squeeze_(0)
 
     visualizer = AttributionVisualizer(
         models=[x.model],
