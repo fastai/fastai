@@ -2,6 +2,16 @@
 
 <!-- do not remove -->
 
+## 2.1.8
+
+### New Features
+
+### Bugs Squashed
+
+- Update for fastcore `negate_func`->`not_`
+- LR too high for gradient accumulation ([#3040](https://github.com/fastai/fastai/pull/3040)), thanks to [@marii-moe](https://github.com/marii-moe)
+- Torchscript transforms incompatibility with nn.Sequential ([#2920](https://github.com/fastai/fastai/issues/2920))
+
 
 ## 2.1.7
 
