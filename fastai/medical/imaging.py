@@ -330,7 +330,7 @@ def zoom(self:DcmDataset, ratio):
     "Zoom image by specified ratio"
     with warnings.catch_warnings():
         warnings.simplefilter("ignore", UserWarning)
-        self.pixel_array = ndimage.zoom(self.pixel_array, ratio)
+        self.set_pixels(ndimage.zoom(self.pixel_array, ratio))
 
 # Cell
 @patch
