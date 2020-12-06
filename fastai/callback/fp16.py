@@ -17,7 +17,7 @@ from torch.nn.utils import parameters_to_vector
 
 # Cell
 def get_master(opt, flat_master=False):
-    model_params = [[param for param in pg if param.requires_grad] for pg in opt.param_lists]
+    model_params = [[param for param in pg if getattr(param, 'requires_grad', False) and hasattr(param, 'data')] for pg in opt.param_lists]
     if flat_master:
         master_params = []
         for pg in model_params:
@@ -72,7 +72,7 @@ class ModelToHalf(Callback):
 @docs
 class MixedPrecision(Callback):
     "Run training in mixed precision"
-    toward_end=True
+    toward_end,run_before=True,Recorder
 
     def __init__(self, loss_scale=512, flat_master=False, dynamic=True, max_loss_scale=2.**24,
                  div_factor=2., scale_wait=500, clip=None):
@@ -95,13 +95,12 @@ class MixedPrecision(Callback):
     def before_backward(self): self.learn.loss *= self.loss_scale
 
     def after_backward(self):
-        self.learn.loss /= self.loss_scale #To record the real loss
         #First, check for an overflow
         if self.dynamic and grad_overflow(self.model_pgs):
             self.loss_scale /= self.div_factor
+            self.learn.loss /= self.div_factor #to record correct loss
             self.model.zero_grad()
             raise CancelBatchException() #skip step and zero_grad
-
         to_master_grads(self.model_pgs, self.master_pgs, self.flat_master)
         for master_params in self.master_pgs:
             for param in master_params:
@@ -118,7 +117,9 @@ class MixedPrecision(Callback):
     def after_step(self):
         self.model.zero_grad() #Zero the gradients of the model manually (optimizer disconnected)
         to_model_params(self.model_pgs, self.master_pgs, self.flat_master)
-
+    def after_batch(self):
+        #Log correct loss
+        if self.training: self.learn.loss /= self.loss_scale
     def after_fit(self):
         if not hasattr(self,'master_pgs'): return
         _copy_state(self.learn.opt, self.master_pgs, self.model_pgs)
@@ -133,6 +134,7 @@ class MixedPrecision(Callback):
                  before_backward="Apply loss scaling to avoid gradient underflow",
                  after_backward="Copy the gradients to the master param and undo the loss scaling",
                  after_step="Copy the master params to the model params",
+                 after_batch="Ensure loss is logged correctly",
                  after_fit="Put the model back in FP32"
     )
 

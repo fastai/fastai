@@ -9,6 +9,7 @@ __all__ = ['CancelFitException', 'CancelEpochException', 'CancelTrainException',
 from .data.all import *
 from .optimizer import *
 from .callback.core import *
+import pickle
 
 # Cell
 #nbdev_comment _all_ = ['CancelFitException', 'CancelEpochException', 'CancelTrainException', 'CancelValidException', 'CancelBatchException']
@@ -530,7 +531,7 @@ add_docs(Learner,
 
 # Cell
 @patch
-def export(self:Learner, fname='export.pkl', pickle_protocol=2):
+def export(self:Learner, fname='export.pkl', pickle_module=pickle, pickle_protocol=2):
     "Export the content of `self` without the items and the optimizer state for inference"
     if rank_distrib(): return # don't export if child proc
     self._end_cleanup()
@@ -541,16 +542,16 @@ def export(self:Learner, fname='export.pkl', pickle_protocol=2):
     with warnings.catch_warnings():
         #To avoid the warning that come from PyTorch about model not being checked
         warnings.simplefilter("ignore")
-        torch.save(self, self.path/fname, pickle_protocol=pickle_protocol)
+        torch.save(self, self.path/fname, pickle_module=pickle_module, pickle_protocol=pickle_protocol)
     self.create_opt()
     if state is not None: self.opt.load_state_dict(state)
     self.dls = old_dbunch
 
 # Cell
-def load_learner(fname, cpu=True):
+def load_learner(fname, cpu=True, pickle_module=pickle):
     "Load a `Learner` object in `fname`, optionally putting it on the `cpu`"
     distrib_barrier()
-    res = torch.load(fname, map_location='cpu' if cpu else None)
+    res = torch.load(fname, map_location='cpu' if cpu else None, pickle_module=pickle_module)
     if hasattr(res, 'to_fp32'): res = res.to_fp32()
     if cpu: res.dls.cpu()
     return res
