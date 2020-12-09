@@ -15,5 +15,5 @@ dependencies:
 - scikit-learn
 - scipy
 - spacy
-- pytorch>=1.6.0
+- pytorch>=1.7.0
 
