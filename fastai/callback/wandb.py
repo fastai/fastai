@@ -23,8 +23,6 @@ class WandbCallback(Callback):
         # Check if wandb.init has been called
         if wandb.run is None:
             raise ValueError('You must call wandb.init() before WandbCallback()')
-        # W&B log step
-        self._wandb_step = wandb.run.step - 1  # -1 except if the run has previously logged data (incremented at each batch)
         self._wandb_epoch = 0 if not(wandb.run.step) else math.ceil(wandb.run.summary['epoch']) # continue to next epoch
         store_attr('log,log_preds,log_model,log_dataset,dataset_name,valid_dl,n_preds,seed,reorder')
 
@@ -86,22 +84,21 @@ class WandbCallback(Callback):
     def after_batch(self):
         "Log hyper-parameters and training loss"
         if self.training:
-            self._wandb_step += 1
             self._wandb_epoch += 1/self.n_iter
             hypers = {f'{k}_{i}':v for i,h in enumerate(self.opt.hypers) for k,v in h.items()}
-            wandb.log({'epoch': self._wandb_epoch, 'train_loss': to_detach(self.smooth_loss.clone()), 'raw_loss': to_detach(self.loss.clone()), **hypers}, step=self._wandb_step)
+            wandb.log({'epoch': self._wandb_epoch, 'train_loss': to_detach(self.smooth_loss.clone()), 'raw_loss': to_detach(self.loss.clone()), **hypers}, commit=True)
 
     def log_predictions(self, preds):
         inp,preds,targs,out = preds
         b = tuplify(inp) + tuplify(targs)
         x,y,its,outs = self.valid_dl.show_results(b, out, show=False, max_n=self.n_preds)
-        wandb.log(wandb_process(x, y, its, outs), step=self._wandb_step)
+        wandb.log(wandb_process(x, y, its, outs), commit=False)
 
     def after_epoch(self):
         "Log validation loss and custom metrics & log prediction samples"
         # Correct any epoch rounding error and overwrite value
         self._wandb_epoch = round(self._wandb_epoch)
-        wandb.log({'epoch': self._wandb_epoch}, step=self._wandb_step)
+        wandb.log({'epoch': self._wandb_epoch}, commit=False)
         # Log sample predictions
         if self.log_preds:
             try:
@@ -109,7 +106,7 @@ class WandbCallback(Callback):
             except Exception as e:
                 self.log_preds = False
                 print(f'WandbCallback was not able to get prediction samples -> {e}')
-        wandb.log({n:s for n,s in zip(self.recorder.metric_names, self.recorder.log) if n not in ['train_loss', 'epoch', 'time']}, step=self._wandb_step)
+        wandb.log({n:s for n,s in zip(self.recorder.metric_names, self.recorder.log) if n not in ['train_loss', 'epoch', 'time']}, commit=False)
 
     def after_fit(self):
         if self.log_model:
@@ -120,7 +117,7 @@ class WandbCallback(Callback):
                 log_model(self.save_model.last_saved_path, metadata=metadata)
         self.run = True
         if self.log_preds: self.remove_cb(FetchPredsCallback)
-        wandb.log({}) # ensure sync of last step
+        wandb.log({}, commit=False) # ensure sync of last step
 
 # Cell
 @patch
