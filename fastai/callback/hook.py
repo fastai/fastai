@@ -161,8 +161,7 @@ def layer_info(learn, *xb):
 
 # Cell
 def _print_shapes(o, bs):
-    if isinstance(o, torch.Size): return ' x '.join([str(bs)] + [str(t) for t in o[1:]])
-    if isinstance(o, tuple): return ' x '.join([str(bs)] + [str(t) for t in o[1:]])
+    if isinstance(o, (torch.Size,tuple)): return ' x '.join([str(bs)] + [str(t) for t in o[1:]])
     else: return str([_print_shapes(x, bs) for x in o])
 
 # Cell
