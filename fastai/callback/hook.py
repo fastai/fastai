@@ -161,7 +161,7 @@ def layer_info(learn, *xb):
 
 # Cell
 def _print_shapes(o, bs):
-    if isinstance(o, torch.Size): return ' x '.join([str(bs)] + [str(t) for t in o[1:]])
+    if isinstance(o, (torch.Size,tuple)): return ' x '.join([str(bs)] + [str(t) for t in o[1:]])
     else: return str([_print_shapes(x, bs) for x in o])
 
 # Cell
@@ -187,7 +187,7 @@ def module_summary(learn, *xb):
         if not chnged and not prev_sz == sz and j > 0: res += "\n" + "_" * n + "\n" + f'{"":<20} {_print_shapes(sz, bs)[:19]:<20}'
         j = 1
         res += f"\n{typ:<20} {'':<20} {np:<10} {str(trn):<10}"
-        if np is not '':
+        if np != '':
             ps += np
             if trn: trn_ps += np
         prev_sz = sz
