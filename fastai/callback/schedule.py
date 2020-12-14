@@ -81,8 +81,13 @@ class ParamScheduler(Callback):
     "Schedule hyper-parameters according to `scheds`"
     run_after,run_valid = TrainEvalCallback,False
 
-    def __init__(self, scheds): self.scheds = scheds
-    def before_fit(self): self.hps = {p:[] for p in self.scheds.keys()}
+    def __init__(self, scheds, from_epoch=0): store_attr()
+    def before_fit(self):
+        self.hps = {p:[] for p in self.scheds.keys()}
+        if hasattr(self, 'learn'):
+            self.learn.from_epoch = self.from_epoch
+            self.learn.train_iter = len(self.learn.dls.train) * self.from_epoch
+
     def before_batch(self): self._update_val(self.pct_train)
 
     def _update_val(self, pct):
@@ -102,14 +107,14 @@ class ParamScheduler(Callback):
 # Cell
 @patch
 def fit_one_cycle(self:Learner, n_epoch, lr_max=None, div=25., div_final=1e5, pct_start=0.25, wd=None,
-                  moms=None, cbs=None, reset_opt=False):
+                  moms=None, cbs=None, from_epoch=0, reset_opt=False):
     "Fit `self.model` for `n_epoch` using the 1cycle policy."
     if self.opt is None: self.create_opt()
     self.opt.set_hyper('lr', self.lr if lr_max is None else lr_max)
     lr_max = np.array([h['lr'] for h in self.opt.hypers])
     scheds = {'lr': combined_cos(pct_start, lr_max/div, lr_max, lr_max/div_final),
               'mom': combined_cos(pct_start, *(self.moms if moms is None else moms))}
-    self.fit(n_epoch, cbs=ParamScheduler(scheds)+L(cbs), reset_opt=reset_opt, wd=wd)
+    self.fit(n_epoch, cbs=ParamScheduler(scheds, from_epoch)+L(cbs), reset_opt=reset_opt, wd=wd)
 
 # Cell
 @patch
@@ -126,17 +131,18 @@ def plot_sched(self:Recorder, keys=None, figsize=None):
 # Cell
 @patch
 def fit_flat_cos(self:Learner, n_epoch, lr=None, div_final=1e5, pct_start=0.75, wd=None,
-                 cbs=None, reset_opt=False):
+                 cbs=None, from_epoch=0, reset_opt=False):
     "Fit `self.model` for `n_epoch` at flat `lr` before a cosine annealing."
     if self.opt is None: self.create_opt()
     self.opt.set_hyper('lr', self.lr if lr is None else lr)
     lr = np.array([h['lr'] for h in self.opt.hypers])
     scheds = {'lr': combined_cos(pct_start, lr, lr, lr/div_final)}
-    self.fit(n_epoch, cbs=ParamScheduler(scheds)+L(cbs), reset_opt=reset_opt, wd=wd)
+    self.fit(n_epoch, cbs=ParamScheduler(scheds, from_epoch)+L(cbs), reset_opt=reset_opt, wd=wd)
 
 # Cell
 @patch
-def fit_sgdr(self:Learner, n_cycles, cycle_len, lr_max=None, cycle_mult=2, cbs=None, reset_opt=False, wd=None):
+def fit_sgdr(self:Learner, n_cycles, cycle_len, lr_max=None, cycle_mult=2, cbs=None, from_epoch=0,
+             reset_opt=False, wd=None):
     "Fit `self.model` for `n_cycles` of `cycle_len` using SGDR."
     if self.opt is None: self.create_opt()
     self.opt.set_hyper('lr', self.lr if lr_max is None else lr_max)
@@ -145,7 +151,7 @@ def fit_sgdr(self:Learner, n_cycles, cycle_len, lr_max=None, cycle_mult=2, cbs=N
     pcts = [cycle_len * cycle_mult**i / n_epoch for i in range(n_cycles)]
     scheds = [SchedCos(lr_max, 0) for _ in range(n_cycles)]
     scheds = {'lr': combine_scheds(pcts, scheds)}
-    self.fit(n_epoch, cbs=ParamScheduler(scheds)+L(cbs), reset_opt=reset_opt, wd=wd)
+    self.fit(n_epoch, cbs=ParamScheduler(scheds, from_epoch)+L(cbs), reset_opt=reset_opt, wd=wd)
 
 # Cell
 @patch
@@ -169,7 +175,7 @@ class LRFinder(ParamScheduler):
         if is_listy(start_lr):
             self.scheds = {'lr': [SchedExp(s, e) for (s,e) in zip(start_lr,end_lr)]}
         else: self.scheds = {'lr': SchedExp(start_lr, end_lr)}
-        self.num_it,self.stop_div = num_it,stop_div
+        self.num_it,self.stop_div,self.from_epoch = num_it,stop_div,0
 
     def before_fit(self):
         super().before_fit()

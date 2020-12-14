@@ -192,7 +192,8 @@ class Learner():
         self._do_epoch_validate()
 
     def _do_fit(self):
-        for epoch in range(self.n_epoch):
+        from_epoch = getattr(self, 'from_epoch', 0)
+        for epoch in range(from_epoch, self.n_epoch):
             self.epoch=epoch
             self._with_events(self._do_epoch, 'epoch', CancelEpochException)
 
