@@ -75,7 +75,7 @@ class CaptumInterpretation():
 
     def _get_enc_dec_data(self,inp_data):
         dec_data=self.dls.after_item(inp_data)
-        enc_data=dls.after_batch(to_device(self.dls.before_batch(dec_data),self.dls.device))
+        enc_data=self.dls.after_batch(to_device(self.dls.before_batch(dec_data),self.dls.device))
         return(enc_data,dec_data)
 
 
