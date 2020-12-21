@@ -248,7 +248,7 @@ def load_tokenized_csv(fname):
     fname = Path(fname)
     out = pd.read_csv(fname)
     for txt_col in out.columns[1:-1]:
-        out[txt_col] = out[txt_col].str.split(' ')
+        out[txt_col] = tuple(out[txt_col].str.split(' '))
     return out,load_pickle(fname.with_suffix('.pkl'))
 
 # Cell
