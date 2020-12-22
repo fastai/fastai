@@ -354,6 +354,16 @@ class TensorMask(TensorImageBase):
         if codes is not None: kwargs = merge({'vmin': 1, 'vmax': len(codes)}, kwargs)
         return super().show(ctx=ctx, **kwargs)
 
+    def __torch_function__(self, func, types, args=(), kwargs=None):
+        # Promote to a TensorImage if one is in args
+        if any(issubclass(t, TensorImage) for t in types):
+            with torch._C.DisableTorchFunction(): ret = _convert(func(*args, **(kwargs or {})), TensorImage)
+            if isinstance(ret, TensorBase): ret.set_meta([a for a in args if issubclass(type(a), TensorImage)][0], as_copy=True)
+        else:
+            ret = super().__torch_function__(func, types, args=args, kwargs=kwargs)
+            if isinstance(ret, TensorBase): ret.set_meta(self, as_copy=True)
+        return ret
+
 # Cell
 class TensorFlowField(TensorBase):
     def __torch_function__(self, func, types, args=(), kwargs=None):
