@@ -137,7 +137,7 @@ class URLs():
     # Medical Imaging datasets
     #SKIN_LESION        = f'{S3_IMAGELOC}skin_lesion.tgz'
     SIIM_SMALL         = f'{S3_IMAGELOC}siim_small.tgz'
-    TCGA_SMALL         = 'https://fibermedical.ch/img/tcga_small.tgz'
+    TCGA_SMALL         = f'{S3_IMAGELOC}tcga_small.tgz'
 
     #Pretrained models
     OPENAI_TRANSFORMER = f'{S3_MODEL}transformer.tgz'
