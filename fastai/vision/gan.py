@@ -50,7 +50,7 @@ def basic_generator(out_size, n_channels, in_sz=100, n_features=64, n_extra_laye
     "A basic generator from `in_sz` to images `n_channels` x `out_size` x `out_size`."
     cur_size, cur_ftrs = 4, n_features//2
     while cur_size < out_size:  cur_size *= 2; cur_ftrs *= 2
-    layers = [AddChannels(2), ConvLayer(in_sz, cur_ftrs, 4, 1, transpose=True, **kwargs)]
+    layers = [Lambda(Self.as_subclass(TensorImage)), AddChannels(2), ConvLayer(in_sz, cur_ftrs, 4, 1, transpose=True, **kwargs)]
     cur_size = 4
     while cur_size < out_size // 2:
         layers.append(ConvLayer(cur_ftrs, cur_ftrs//2, 4, 2, 1, transpose=True, **kwargs))
