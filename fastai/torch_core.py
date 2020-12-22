@@ -315,8 +315,13 @@ class TensorBase(Tensor):
 
     def __torch_function__(self, func, types, args=(), kwargs=None):
 #         if func.__name__[0]!='_': print(func, types, args, kwargs)
-#         with torch._C.DisableTorchFunction(): ret = _convert(func(*args, **(kwargs or {})), self.__class__)
-        ret = super().__torch_function__(func, types, args=args, kwargs=kwargs)
+        # Convert to the lowest common ancestor of the argument types
+        for cs in itertools.zip_longest(*[t.__mro__[::-1] for t in types]):
+            cs = set(cs) - {None}
+            if len(cs) > 1: break
+            cls = cs.pop()
+        with torch._C.DisableTorchFunction(): ret = _convert(func(*args, **(kwargs or {})), cls)
+#         ret = super().__torch_function__(func, types, args=args, kwargs=kwargs)
         if isinstance(ret, TensorBase): ret.set_meta(self, as_copy=True)
         return ret
 
