@@ -7,7 +7,8 @@ __all__ = ['get_master', 'to_master_grads', 'to_model_params', 'test_overflow', 
 from ..basics import *
 from .progress import *
 
-from torch.cuda.amp import GradScaler, autocast
+from torch.cuda.amp import GradScaler,autocast
+from torch.cuda.amp.grad_scaler import OptState
 
 # Cell
 from ..fp16_utils import convert_network, model_grads_to_master_grads, master_params_to_model_params
@@ -92,13 +93,13 @@ class MixedPrecision(Callback):
 
     def before_batch(self): self.learn.xb = to_half(self.xb)
     def after_pred(self): self.learn.pred = to_float(self.pred)
-    def before_backward(self): self.learn.loss *= self.loss_scale
+    def before_backward(self): self.learn.loss_grad *= self.loss_scale
 
-    def after_backward(self):
+    def before_step(self):
         #First, check for an overflow
         if self.dynamic and grad_overflow(self.model_pgs):
             self.loss_scale /= self.div_factor
-            self.learn.loss /= self.div_factor #to record correct loss
+            self.learn.loss_grad /= self.div_factor #to record correct loss
             self.model.zero_grad()
             raise CancelBatchException() #skip step and zero_grad
         to_master_grads(self.model_pgs, self.master_pgs, self.flat_master)
@@ -119,7 +120,7 @@ class MixedPrecision(Callback):
         to_model_params(self.model_pgs, self.master_pgs, self.flat_master)
     def after_batch(self):
         #Log correct loss
-        if self.training: self.learn.loss /= self.loss_scale
+        if self.training: self.learn.loss_grad /= self.loss_scale
     def after_fit(self):
         if not hasattr(self,'master_pgs'): return
         _copy_state(self.learn.opt, self.master_pgs, self.model_pgs)
@@ -132,11 +133,10 @@ class MixedPrecision(Callback):
                  before_batch="Put the input in FP16",
                  after_pred="Put the output back to FP32 so that the loss is computed in FP32",
                  before_backward="Apply loss scaling to avoid gradient underflow",
-                 after_backward="Copy the gradients to the master param and undo the loss scaling",
+                 before_step="Copy the gradients to the master param and undo the loss scaling",
                  after_step="Copy the master params to the model params",
                  after_batch="Ensure loss is logged correctly",
-                 after_fit="Put the model back in FP32"
-    )
+                 after_fit="Put the model back in FP32")
 
 # Cell
 @patch
@@ -155,17 +155,27 @@ def to_fp32(self: Learner):
 class NativeMixedPrecision(Callback):
     "Mixed precision training using Pytorch's `autocast` and `GradScaler`"
     @delegates(GradScaler.__init__)
-    def __init__(self, **kwargs): self.scaler_kwargs,self.autocast = kwargs,autocast()
+    def __init__(self, pct_interval=0.1, **kwargs): self.pct_interval,self.kwargs,self.autocast = pct_interval,kwargs,autocast()
+    def before_fit(self): self.learn.scaler = GradScaler(**self.kwargs)
+    def before_batch(self):
+        if self.training and self.pct_interval is not None:
+            self.scaler._growth_interval = min(self.scaler._growth_interval, int(self.pct_interval*self.n_iter*max(3,self.n_epoch)+0.5))
+        self.autocast.__enter__()
 
-    def before_fit(self):
-        self.learn.scaler = GradScaler(**self.scaler_kwargs)
-        self.learn._step,self.learn._backward = self._step,self._backward
-
-    def before_batch(self): self.autocast.__enter__()
     def after_step(self): self.learn.scaler.update()
     def after_loss(self): self.autocast.__exit__()
-    def _backward(self): self.scaler.scale(self.loss).backward()
-    def _step(self): self.scaler.step(self.opt)
+    def before_backward(self): self.learn.loss_grad = self.scaler.scale(self.loss_grad)
+    def before_step(self):
+        state = self.scaler._per_optimizer_states[id(self.opt)]
+        if state["stage"]==OptState.STEPPED: raise RuntimeError("step has already been called since")
+        if getattr(self.opt, "_step_supports_amp_scaling", False):
+            try: self.opt.step(*args, **dict(kwargs, grad_scaler=self))
+            finally: state["stage"] = OptState.STEPPED
+
+        if state["stage"]==OptState.READY: self.scaler.unscale_(self.opt)
+        assert len(state["found_inf_per_device"]), "No inf checks were recorded"
+        state["stage"] = OptState.STEPPED
+        if sum(v.item() for v in state["found_inf_per_device"].values()): raise CancelStepException()
 
 # Cell
 @patch
