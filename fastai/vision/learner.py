@@ -5,7 +5,6 @@ __all__ = ['has_pool_type', 'create_body', 'create_head', 'default_split', 'mode
 
 # Cell
 from ..basics import *
-from ..callback.hook import *
 from .core import *
 from .data import *
 from .augment import *
@@ -143,12 +142,7 @@ def create_cnn_model(arch, n_out, pretrained=True, cut=None, n_in=3, init=nn.ini
     body = create_body(arch, n_in, pretrained, ifnone(cut, meta['cut']))
     if custom_head is None:
         nf = num_features_model(nn.Sequential(*body.children())) * (2 if concat_pool else 1)
-        last_layer = first(flatten_model(body)[::-1], lambda x: hasattr(x, 'weight'))
-        if isinstance(last_layer, nn.BatchNorm2d):
-            with hook_output(last_layer) as hook: out = dummy_eval(body)
-            first_bn = not (hook.stored == out).all()
-        else: first_bn = True
-        head = create_head(nf, n_out, concat_pool=concat_pool, first_bn=first_bn, **kwargs)
+        head = create_head(nf, n_out, concat_pool=concat_pool, **kwargs)
     else: head = custom_head
     model = nn.Sequential(body, head)
     if init is not None: apply_init(model[1], init)
