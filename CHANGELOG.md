@@ -2,6 +2,17 @@
 
 <!-- do not remove -->
 
+## 2.1.10
+
+### New Features
+
+- Small DICOM segmentation dataset ([#3034](https://github.com/fastai/fastai/pull/3034)), thanks to [@moritzschwyzer](https://github.com/moritzschwyzer)
+
+### Bugs Squashed
+
+- `NoneType object has no attribute append` in fastbook chapter 6 BIWI example ([#3091](https://github.com/fastai/fastai/issues/3091))
+
+
 ## 2.1.9
 
 ### New Features
