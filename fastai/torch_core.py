@@ -290,9 +290,15 @@ def as_subclass(self:Tensor, typ):
     return retain_meta(self, torch.as_subclass(self, typ))
 
 # Cell
+def _torch_handled(args, opt, func):
+    if func not in opt: return False
+    for oks in opt[func]:
+        if all(isinstance(arg,ok) for arg,ok in zip(args,oks) if ok): return True
+
+# Cell
 class TensorBase(Tensor):
     "A `Tensor` which support subclass pickling, and maintains metadata when casting or after methods"
-    debug,_opt = False,{}
+    debug,_opt = False,defaultdict(list)
     def __new__(cls, x, **kwargs):
         res = cast(tensor(x), cls)
         for k,v in kwargs.items(): setattr(res, k, v)
@@ -310,15 +316,12 @@ class TensorBase(Tensor):
         return (f, args + (self.requires_grad, OrderedDict()))
 
     @classmethod
-    def register_func(cls, func, *oks): cls._opt[func] = (cls,oks)
+    def register_func(cls, func, *oks): cls._opt[func].append(oks)
 
     def __torch_function__(self, func, types, args=(), kwargs=None):
         if self.debug and func.__name__ not in ('__str__','__repr__'): print(func, types, args, kwargs)
         convert=False
-        if func in self._opt:
-            typ,*oks = self._opt[func]
-            if all(isinstance(arg,ok) for arg,ok in zip(args,[type(self)]+oks) if ok):
-                convert,types = type(args[0]),(torch.Tensor,)
+        if _torch_handled(args, self._opt, func): convert,types = type(self),(torch.Tensor,)
         res = super().__torch_function__(func, types, args=args, kwargs=kwargs)
         if convert: res = convert(res)
         if isinstance(res, TensorBase): res.set_meta(self, as_copy=True)
@@ -359,13 +362,16 @@ class TensorMask(TensorImageBase):
         return super().show(ctx=ctx, **kwargs)
 
 # Cell
-for o in Tensor.add,Tensor.sub,Tensor.mul,Tensor.div,Tensor.__rsub__,Tensor.__radd__:
-    TensorMask.register_func(o, TensorImageBase)
-    TensorImageBase.register_func(o, TensorMask)
+for o in Tensor.add,Tensor.sub,Tensor.mul,Tensor.div,Tensor.__rsub__,Tensor.__radd__,Tensor.matmul,Tensor.bmm:
+    TensorBase.register_func(o, TensorMask, TensorImageBase)
+    TensorBase.register_func(o, TensorImageBase, TensorMask)
+
+TensorMask.register_func(torch.einsum, str, TensorImageBase, TensorMask)
+TensorMask.register_func(torch.einsum, str, TensorMask, TensorImageBase)
 
 # Cell
 class TensorFlowField(TensorBase): pass
-TensorImage.register_func(F.grid_sample, TensorFlowField)
+TensorImage.register_func(F.grid_sample, TensorImageBase, TensorFlowField)
 
 # Cell
 class TensorCategory(TensorBase): pass
