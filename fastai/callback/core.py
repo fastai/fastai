@@ -24,7 +24,7 @@ mk_class('event', **_events.map_dict(),
 #nbdev_comment _all_ = ['event']
 
 # Cell
-_inner_loop = "before_batch after_pred after_loss before_backward after_backward after_step after_cancel_batch after_batch".split()
+_inner_loop = "before_batch after_pred after_loss before_backward before_step after_step after_cancel_batch after_batch".split()
 
 # Cell
 @funcs_kwargs(as_method=True)

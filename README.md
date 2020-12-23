@@ -52,7 +52,7 @@ fastai is a deep learning library which provides practitioners with high-level c
 
 fastai is organized around two main design goals: to be approachable and rapidly productive, while also being deeply hackable and configurable. It is built on top of a hierarchy of lower-level APIs which provide composable building blocks. This way, a user wanting to rewrite part of the high-level API or add particular behavior to suit their needs does not have to learn how to use the lowest level.
 
-<img alt="Layered API" src="nbs/images/layered.png" width="345">
+<img alt="Layered API" src="nbs/images/layered.png" width="345" style="max-width: 345px">
 
 ## Migrating from other libraries
 

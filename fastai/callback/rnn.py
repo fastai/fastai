@@ -30,10 +30,10 @@ class RNNRegularizer(Callback):
 
     def after_loss(self):
         if not self.training: return
-        if self.alpha != 0.:  self.learn.loss += self.alpha * self.out.float().pow(2).mean()
+        if self.alpha != 0.:  self.learn.loss_grad += self.alpha * self.out.float().pow(2).mean()
         if self.beta != 0.:
             h = self.raw_out
-            if len(h)>1: self.learn.loss += self.beta * (h[:,1:] - h[:,:-1]).float().pow(2).mean()
+            if len(h)>1: self.learn.loss_grad += self.beta * (h[:,1:] - h[:,:-1]).float().pow(2).mean()
 
     _docs = dict(after_pred="Save the raw and dropped-out outputs and only keep the true output for loss computation",
                  after_loss="Add AR and TAR regularization")
