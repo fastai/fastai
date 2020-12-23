@@ -156,7 +156,11 @@ def to_fp32(self: Learner):
 class NativeMixedPrecision(Callback):
     "Mixed precision training using Pytorch's `autocast` and `GradScaler`"
     run_valid,skipped = False,False
-    def __init__(self, pct_interval=0.2, **kwargs): self.pct_interval,self.kwargs,self.autocast = pct_interval,kwargs,autocast()
+    def __init__(self, pct_interval=0.2, dynamic=True, **kwargs):
+        if not dynamic: pct_interval,growth_factor=None,1e20
+        store_attr()
+        self.kwargs,self.autocast = kwargs,autocast()
+
     def before_fit(self): self.learn.scaler = GradScaler(**self.kwargs)
     def before_batch(self):
         if self.training and self.pct_interval is not None:
@@ -175,7 +179,7 @@ class NativeMixedPrecision(Callback):
         if state["stage"]==OptState.READY: self.scaler.unscale_(self.opt)
         assert len(state["found_inf_per_device"]), "No inf checks were recorded"
         state["stage"] = OptState.STEPPED
-        if sum(v.item() for v in state["found_inf_per_device"].values()): raise CancelStepException()
+        if self.dynamic and sum(v.item() for v in state["found_inf_per_device"].values()): raise CancelStepException()
         self.skipped=False
 
     def after_cancel_step(self): self.skipped = True
