@@ -290,13 +290,9 @@ def as_subclass(self:Tensor, typ):
     return retain_meta(self, torch.as_subclass(self, typ))
 
 # Cell
-def _convert(ret, cls):
-    if isinstance(ret, torch.Tensor): ret = ret.as_subclass(cls)
-    if isinstance(ret, (tuple, list)): ret = type(ret)(_convert(r, cls) for r in ret)
-    return ret
-
-# Cell
 class TensorBase(Tensor):
+    "A `Tensor` which support subclass pickling, and maintains metadata when casting or after methods"
+    debug,_opt = False,{}
     def __new__(cls, x, **kwargs):
         res = cast(tensor(x), cls)
         for k,v in kwargs.items(): setattr(res, k, v)
@@ -313,12 +309,20 @@ class TensorBase(Tensor):
         f = _fa_rebuild_qtensor if self.is_quantized else  _fa_rebuild_tensor
         return (f, args + (self.requires_grad, OrderedDict()))
 
+    @classmethod
+    def register_func(cls, func, *oks): cls._opt[func] = (cls,oks)
+
     def __torch_function__(self, func, types, args=(), kwargs=None):
-#         if func.__name__[0]!='_': print(func, types, args, kwargs)
-#         with torch._C.DisableTorchFunction(): ret = _convert(func(*args, **(kwargs or {})), self.__class__)
-        ret = super().__torch_function__(func, types, args=args, kwargs=kwargs)
-        if isinstance(ret, TensorBase): ret.set_meta(self, as_copy=True)
-        return ret
+        if self.debug and func.__name__ not in ('__str__','__repr__'): print(func, types, args, kwargs)
+        convert=False
+        if func in self._opt:
+            typ,*oks = self._opt[func]
+            if all(isinstance(arg,ok) for arg,ok in zip(args,[type(self)]+oks) if ok):
+                convert,types = type(args[0]),(torch.Tensor,)
+        res = super().__torch_function__(func, types, args=args, kwargs=kwargs)
+        if convert: res = convert(res)
+        if isinstance(res, TensorBase): res.set_meta(self, as_copy=True)
+        return res
 
     def new_tensor(self, size, dtype=None, device=None, requires_grad=False):
         cls = type(self)
@@ -355,14 +359,13 @@ class TensorMask(TensorImageBase):
         return super().show(ctx=ctx, **kwargs)
 
 # Cell
-class TensorFlowField(TensorBase):
-    def __torch_function__(self, func, types, args=(), kwargs=None):
-        convert=False
-        if func == F.grid_sample and issubclass(types[0],TensorImageBase):
-            convert,types = types[0],(torch.Tensor,torch.Tensor)
-        ret = super().__torch_function__(func, types, args=args, kwargs=kwargs)
-        if convert: ret = convert(ret)
-        return ret
+for o in Tensor.add,Tensor.sub,Tensor.mul,Tensor.div,Tensor.__rsub__,Tensor.__radd__:
+    TensorMask.register_func(o, TensorImageBase)
+    TensorImageBase.register_func(o, TensorMask)
+
+# Cell
+class TensorFlowField(TensorBase): pass
+TensorImage.register_func(F.grid_sample, TensorFlowField)
 
 # Cell
 class TensorCategory(TensorBase): pass

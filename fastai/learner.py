@@ -27,6 +27,7 @@ def replacing_yield(o, attr, val):
 # Cell
 def mk_metric(m):
     "Convert `m` to an `AvgMetric`, unless it's already a `Metric`"
+    if isinstance(m,type): m = m()
     return m if isinstance(m, Metric) else AvgMetric(m)
 
 # Cell
