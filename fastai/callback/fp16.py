@@ -152,17 +152,17 @@ def to_fp32(self: Learner):
     return self
 
 # Cell
+@delegates(GradScaler)
 class NativeMixedPrecision(Callback):
     "Mixed precision training using Pytorch's `autocast` and `GradScaler`"
-    @delegates(GradScaler.__init__)
-    def __init__(self, pct_interval=0.1, **kwargs): self.pct_interval,self.kwargs,self.autocast = pct_interval,kwargs,autocast()
+    run_valid,skipped = False,False
+    def __init__(self, pct_interval=0.2, **kwargs): self.pct_interval,self.kwargs,self.autocast = pct_interval,kwargs,autocast()
     def before_fit(self): self.learn.scaler = GradScaler(**self.kwargs)
     def before_batch(self):
         if self.training and self.pct_interval is not None:
             self.scaler._growth_interval = min(self.scaler._growth_interval, int(self.pct_interval*self.n_iter*max(3,self.n_epoch)+0.5))
         self.autocast.__enter__()
 
-    def after_step(self): self.learn.scaler.update()
     def after_loss(self): self.autocast.__exit__()
     def before_backward(self): self.learn.loss_grad = self.scaler.scale(self.loss_grad)
     def before_step(self):
@@ -176,6 +176,10 @@ class NativeMixedPrecision(Callback):
         assert len(state["found_inf_per_device"]), "No inf checks were recorded"
         state["stage"] = OptState.STEPPED
         if sum(v.item() for v in state["found_inf_per_device"].values()): raise CancelStepException()
+        self.skipped=False
+
+    def after_cancel_step(self): self.skipped = True
+    def after_step(self): self.learn.scaler.update()
 
 # Cell
 @patch

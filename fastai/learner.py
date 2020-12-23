@@ -129,11 +129,10 @@ class Learner():
         finally: self.add_cbs(cbs)
 
     def ordered_cbs(self, event): return [cb for cb in sort_by_run(self.cbs) if hasattr(cb, event)]
-
     def __call__(self, event_name): L(event_name).map(self._call_one)
 
     def _call_one(self, event_name):
-        assert hasattr(event, event_name), event_name
+        if not hasattr(event, event_name): raise Exception(f'missing {event_name}')
         [cb(event_name) for cb in sort_by_run(self.cbs)]
 
     def _bn_bias_state(self, with_bias): return norm_bias_params(self.model, with_bias).map(self.opt.state)
