@@ -156,12 +156,12 @@ def to_fp32(self: Learner):
 class NativeMixedPrecision(Callback):
     "Mixed precision training using Pytorch's `autocast` and `GradScaler`"
     run_valid,skipped = False,False
-    def __init__(self, pct_interval=0.2, dynamic=True, **kwargs):
+    def __init__(self, pct_interval=None, dynamic=True, **kwargs):
         if not dynamic: pct_interval,growth_factor=None,1e20
         store_attr()
         self.kwargs,self.autocast = kwargs,autocast()
 
-    def before_fit(self): self.learn.scaler = GradScaler(**self.kwargs)
+    def before_fit(self): self.learn.scaler,self.scales = GradScaler(**self.kwargs),L(self.kwargs['init_scale'])
     def before_batch(self):
         if self.training and self.pct_interval is not None:
             self.scaler._growth_interval = min(self.scaler._growth_interval, int(self.pct_interval*self.n_iter*max(3,self.n_epoch)+0.5))
@@ -170,19 +170,14 @@ class NativeMixedPrecision(Callback):
     def after_loss(self): self.autocast.__exit__()
     def before_backward(self): self.learn.loss_grad = self.scaler.scale(self.loss_grad)
     def before_step(self):
-        state = self.scaler._per_optimizer_states[id(self.opt)]
-        if state["stage"]==OptState.STEPPED: raise RuntimeError("step has already been called since")
-        if getattr(self.opt, "_step_supports_amp_scaling", False):
-            try: self.opt.step(*args, **dict(kwargs, grad_scaler=self))
-            finally: state["stage"] = OptState.STEPPED
+        self.skipped=True
+        self.scaler.step(self)
+        if self.skipped: raise CancelStepException()
+        self.scales.append(self.scaler._scale.item())
 
-        if state["stage"]==OptState.READY: self.scaler.unscale_(self.opt)
-        assert len(state["found_inf_per_device"]), "No inf checks were recorded"
-        state["stage"] = OptState.STEPPED
-        if self.dynamic and sum(v.item() for v in state["found_inf_per_device"].values()): raise CancelStepException()
-        self.skipped=False
-
-    def after_cancel_step(self): self.skipped = True
+    @property
+    def param_groups(self): return self.opt.param_groups
+    def step(self, *args, **kwargs): self.skipped=False
     def after_step(self): self.learn.scaler.update()
 
 # Cell
