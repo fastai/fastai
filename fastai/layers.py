@@ -280,9 +280,9 @@ def trunc_normal_(x, mean=0., std=1.):
 # Cell
 class Embedding(nn.Embedding):
     "Embedding layer with truncated normal initialization"
-    def __init__(self, ni, nf):
+    def __init__(self, ni, nf, std=0.01):
         super().__init__(ni, nf)
-        trunc_normal_(self.weight.data, std=0.01)
+        trunc_normal_(self.weight.data, std=std)
 
 # Cell
 class SelfAttention(Module):
