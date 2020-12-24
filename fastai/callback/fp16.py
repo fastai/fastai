@@ -155,18 +155,10 @@ def to_fp32(self: Learner):
 @delegates(GradScaler)
 class NativeMixedPrecision(Callback):
     "Mixed precision training using Pytorch's `autocast` and `GradScaler`"
-    run_valid,skipped = False,False
-    def __init__(self, pct_interval=None, dynamic=True, **kwargs):
-        if not dynamic: pct_interval,growth_factor=None,1e20
-        store_attr()
-        self.kwargs,self.autocast = kwargs,autocast()
-
-    def before_fit(self): self.learn.scaler,self.scales = GradScaler(**self.kwargs),L(self.kwargs['init_scale'])
-    def before_batch(self):
-        if self.training and self.pct_interval is not None:
-            self.scaler._growth_interval = min(self.scaler._growth_interval, int(self.pct_interval*self.n_iter*max(3,self.n_epoch)+0.5))
-        self.autocast.__enter__()
-
+    run_valid=False
+    def __init__(self, **kwargs): self.kwargs,self.autocast = kwargs,autocast()
+    def before_fit(self): self.learn.scaler,self.scales = GradScaler(**self.kwargs),L()
+    def before_batch(self): self.autocast.__enter__()
     def after_loss(self): self.autocast.__exit__()
     def before_backward(self): self.learn.loss_grad = self.scaler.scale(self.loss_grad)
     def before_step(self):
@@ -174,11 +166,11 @@ class NativeMixedPrecision(Callback):
         self.scaler.step(self)
         if self.skipped: raise CancelStepException()
         self.scales.append(self.scaler._scale.item())
+    def after_step(self): self.learn.scaler.update()
 
-    @property
+    @property # pretend to be an optimizer for `GradScaler`
     def param_groups(self): return self.opt.param_groups
     def step(self, *args, **kwargs): self.skipped=False
-    def after_step(self): self.learn.scaler.update()
 
 # Cell
 @patch
