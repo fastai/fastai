@@ -14,7 +14,7 @@ def reduce_loss(loss, reduction='mean'):
 # Cell
 class MixHandler(Callback):
     "A handler class for implementing `MixUp` style scheduling"
-    run_after,run_valid = [Normalize],False
+    run_valid = False
     def __init__(self, alpha=0.5):
         self.distrib = Beta(tensor(alpha), tensor(alpha))
 

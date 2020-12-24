@@ -79,7 +79,7 @@ def combined_cos(pct, start, middle, end):
 @docs
 class ParamScheduler(Callback):
     "Schedule hyper-parameters according to `scheds`"
-    run_after,run_valid = TrainEvalCallback,False
+    order,run_valid = 60,False
 
     def __init__(self, scheds): self.scheds = scheds
     def before_fit(self): self.hps = {p:[] for p in self.scheds.keys()}
@@ -163,8 +163,6 @@ def fine_tune(self:Learner, epochs, base_lr=2e-3, freeze_epochs=1, lr_mult=100,
 @docs
 class LRFinder(ParamScheduler):
     "Training with exponentially growing learning rate"
-    run_after=Recorder
-
     def __init__(self, start_lr=1e-7, end_lr=10, num_it=100, stop_div=True):
         if is_listy(start_lr):
             self.scheds = {'lr': [SchedExp(s, e) for (s,e) in zip(start_lr,end_lr)]}

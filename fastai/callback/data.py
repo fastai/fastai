@@ -12,7 +12,6 @@ class CollectDataCallback(Callback):
     def after_batch(self):
         self.data.append(self.learn.to_detach((self.xb,self.yb,self.pred,self.loss)))
 
-
 # Cell
 class CudaCallback(Callback):
     "Move data to CUDA device"

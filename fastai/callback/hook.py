@@ -206,14 +206,14 @@ def summary(self:Learner):
     res += f"Optimizer used: {self.opt_func}\nLoss function: {self.loss_func}\n\n"
     if self.opt is not None:
         res += f"Model " + ("unfrozen\n\n" if self.opt.frozen_idx==0 else f"frozen up to parameter group #{self.opt.frozen_idx}\n\n")
-    res += "Callbacks:\n" + '\n'.join(f"  - {cb}" for cb in sort_by_run(self.cbs))
+    res += "Callbacks:\n" + '\n'.join(f"  - {cb}" for cb in self.cbs.sorted('order'))
     return PrettyString(res)
 
 # Cell
 @delegates()
 class ActivationStats(HookCallback):
     "Callback that record the mean and std of activations."
-    run_before=TrainEvalCallback
+    order=-20
     def __init__(self, with_hist=False, **kwargs):
         super().__init__(**kwargs)
         self.with_hist = with_hist

@@ -11,8 +11,7 @@ from .fp16 import MixedPrecision
 # Cell
 class TerminateOnNaNCallback(Callback):
     "A `Callback` that terminates training if loss is NaN."
-    run_before=Recorder
-
+    order=-9
     def after_batch(self):
         "Test if `last_loss` is NaN and interrupts training."
         if torch.isinf(self.loss) or torch.isnan(self.loss): raise CancelFitException
@@ -20,8 +19,7 @@ class TerminateOnNaNCallback(Callback):
 # Cell
 class TrackerCallback(Callback):
     "A `Callback` that keeps track of the best value in `monitor`."
-    remove_on_fetch,run_after = True,Recorder
-
+    order,remove_on_fetch = 60,True
     def __init__(self, monitor='valid_loss', comp=None, min_delta=0., reset_on_fit=True):
         if comp is None: comp = np.less if 'loss' in monitor or 'error' in monitor else np.greater
         if comp == np.less: min_delta *= -1

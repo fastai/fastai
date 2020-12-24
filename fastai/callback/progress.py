@@ -9,8 +9,7 @@ from ..basics import *
 @docs
 class ProgressCallback(Callback):
     "A `Callback` to handle the display of progress bars"
-    _stateattrs=('mbar','pbar')
-    run_after=Recorder
+    order,_stateattrs = 60,('mbar','pbar')
 
     def before_fit(self):
         assert hasattr(self.learn, 'recorder')
@@ -70,7 +69,7 @@ def no_bar(self:Learner):
 # Cell
 class ShowGraphCallback(Callback):
     "Update a graph of training and validation loss"
-    run_after,run_valid=ProgressCallback,False
+    order,run_valid=65,False
 
     def before_fit(self):
         self.run = not hasattr(self.learn, 'lr_finder') and not hasattr(self, "gather_preds")
@@ -92,8 +91,8 @@ class ShowGraphCallback(Callback):
 
 # Cell
 class CSVLogger(Callback):
-    run_after=Recorder
     "Log the results displayed in `learn.path/fname`"
+    order=60
     def __init__(self, fname='history.csv', append=False):
         self.fname,self.append = Path(fname),append
 

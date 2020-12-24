@@ -65,16 +65,15 @@ def _copy_state(opt, pgs1, pgs2):
 # Cell
 class ModelToHalf(Callback):
     "Use with MixedPrecision callback (but it needs to run at the very beginning)"
-    run_before=TrainEvalCallback
+    order=-50
     def before_fit(self): self.learn.model = convert_network(self.model, dtype=torch.float16)
-    def after_fit(self): self.learn.model = convert_network(self.model, dtype=torch.float32)
+    def after_fit (self): self.learn.model = convert_network(self.model, dtype=torch.float32)
 
 # Cell
 @docs
 class MixedPrecision(Callback):
     "Run training in mixed precision"
-    toward_end,run_before=True,Recorder
-
+    order=10
     def __init__(self, loss_scale=512, flat_master=False, dynamic=True, max_loss_scale=2.**24,
                  div_factor=2., scale_wait=500, clip=None):
         assert torch.backends.cudnn.enabled, "Mixed precision training requires cudnn."
@@ -118,9 +117,9 @@ class MixedPrecision(Callback):
     def after_step(self):
         self.model.zero_grad() #Zero the gradients of the model manually (optimizer disconnected)
         to_model_params(self.model_pgs, self.master_pgs, self.flat_master)
+
     def after_batch(self):
-        #Log correct loss
-        if self.training: self.learn.loss_grad /= self.loss_scale
+        if self.training: self.learn.loss_grad /= self.loss_scale  #Log correct loss
     def after_fit(self):
         if not hasattr(self,'master_pgs'): return
         _copy_state(self.learn.opt, self.master_pgs, self.model_pgs)
@@ -141,21 +140,17 @@ class MixedPrecision(Callback):
 # Cell
 @patch
 @delegates(MixedPrecision.__init__)
-def to_fp16(self:Learner, **kwargs):
-    self.add_cbs([ModelToHalf(), MixedPrecision(**kwargs)])
-    return self
+def to_fp16(self:Learner, **kwargs): return self.add_cbs([ModelToHalf(), MixedPrecision(**kwargs)])
 
 # Cell
 @patch
-def to_fp32(self: Learner):
-    self.remove_cbs([ModelToHalf, MixedPrecision])
-    return self
+def to_fp32(self: Learner): return self.remove_cbs([ModelToHalf, MixedPrecision])
 
 # Cell
 @delegates(GradScaler)
 class NativeMixedPrecision(Callback):
     "Mixed precision training using Pytorch's `autocast` and `GradScaler`"
-    run_valid=False
+    order,run_valid = 10,False
     def __init__(self, **kwargs): self.kwargs,self.autocast = kwargs,autocast()
     def before_fit(self): self.learn.scaler,self.scales = GradScaler(**self.kwargs),L()
     def before_batch(self): self.autocast.__enter__()
@@ -175,12 +170,8 @@ class NativeMixedPrecision(Callback):
 # Cell
 @patch
 @delegates(GradScaler.__init__)
-def to_native_fp16(self:Learner, **kwargs):
-    self.add_cb(NativeMixedPrecision(**kwargs))
-    return self
+def to_native_fp16(self:Learner, **kwargs): return self.add_cb(NativeMixedPrecision(**kwargs))
 
 # Cell
 @patch
-def to_native_fp32(self:Learner):
-    self.remove_cb(NativeMixedPrecision)
-    return self
+def to_native_fp32(self:Learner): return self.remove_cb(NativeMixedPrecision)

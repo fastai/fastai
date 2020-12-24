@@ -30,7 +30,7 @@ _inner_loop = "before_batch after_pred after_loss before_backward before_step af
 @funcs_kwargs(as_method=True)
 class Callback(Stateful,GetAttr):
     "Basic class handling tweaks of the training loop by changing a `Learner` in various events"
-    _default,learn,run,run_train,run_valid = 'learn',None,True,True,True
+    order,_default,learn,run,run_train,run_valid = 0,'learn',None,True,True,True
     _methods = _events
 
     def __init__(self, **kwargs): assert not kwargs, f'Passed unknown events: {kwargs}'
@@ -47,7 +47,7 @@ class Callback(Stateful,GetAttr):
 
     def __setattr__(self, name, value):
         if hasattr(self.learn,name):
-            warn(f"You are setting an attribute ({name}) that also exists in the learner, so you're not setting it in the learner but in the callback. Use `self.learn.{name}` otherwise.")
+            warn(f"You are shadowing an attribute ({name}) that exists in the learner. Use `self.learn.{name}` to avoid this")
         super().__setattr__(name, value)
 
     @property
@@ -58,7 +58,7 @@ class Callback(Stateful,GetAttr):
 # Cell
 class TrainEvalCallback(Callback):
     "`Callback` that tracks the number of iterations done and properly sets training/eval mode"
-    run_valid = False
+    order,run_valid = -10,False
     def after_create(self): self.learn.n_epoch = 1
 
     def before_fit(self):
@@ -86,6 +86,17 @@ class TrainEvalCallback(Callback):
 
 # Cell
 if not hasattr(defaults, 'callbacks'): defaults.callbacks = [TrainEvalCallback]
+
+# Cell
+_ex_docs = dict(
+    CancelBatchException="Skip the rest of this batch and go to `after_batch`",
+    CancelTrainException="Skip the rest of the training part of the epoch and go to `after_train`",
+    CancelValidException="Skip the rest of the validation part of the epoch and go to `after_validate`",
+    CancelEpochException="Skip the rest of this epoch and go to `after_epoch`",
+    CancelStepException ="Skip stepping the optimizer",
+    CancelFitException  ="Interrupts training and go to `after_fit`")
+
+for c,d in _ex_docs.items(): mk_class(c,sup=Exception,doc=d)
 
 # Cell
 #TODO: save_targs and save_preds only handle preds/targets that have one tensor, not tuples of tensors.
@@ -144,14 +155,3 @@ class FetchPredsCallback(Callback):
         with self.learn.removed_cbs(to_rm + self.cbs) as learn:
             self.preds = learn.get_preds(ds_idx=self.ds_idx, dl=self.dl,
                 with_input=self.with_input, with_decoded=self.with_decoded, inner=True, reorder=self.reorder)
-
-# Cell
-_ex_docs = dict(
-    CancelBatchException="Skip the rest of this batch and go to `after_batch`",
-    CancelTrainException="Skip the rest of the training part of the epoch and go to `after_train`",
-    CancelValidException="Skip the rest of the validation part of the epoch and go to `after_validate`",
-    CancelEpochException="Skip the rest of this epoch and go to `after_epoch`",
-    CancelStepException ="Skip stepping the optimizer",
-    CancelFitException  ="Interrupts training and go to `after_fit`")
-
-for c,d in _ex_docs.items(): mk_class(c,sup=Exception,doc=d)
