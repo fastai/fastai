@@ -21,17 +21,17 @@ class GradientAccumulation(Callback):
     "Accumulate gradients before updating weights"
     order=5
     def __init__(self, n_acc=32): store_attr('n_acc')
-    def before_fit(self): self.count=0
+    def before_fit(self):
+        "Set counter to 0"
+        self.count=0
     def after_loss(self):
         if self.training: self.learn.loss_grad /= self.n_acc/find_bs(self.learn.yb)
     def before_step(self):
+        "Skip weight update if we have not seen enough items"
         self.learn.loss_grad *= self.n_acc/find_bs(self.learn.yb) #so correct loss is logged
         self.count += find_bs(self.learn.yb)
         if self.count < self.n_acc: raise CancelBatchException() #skip weight update
         else: self.count=0
-
-    _docs = dict(before_fit="Set counter to 0",
-                 before_step="Skip weight update if we have not seen enough items")
 
 # Cell
 bn_types = (nn.BatchNorm1d, nn.BatchNorm2d, nn.BatchNorm3d)

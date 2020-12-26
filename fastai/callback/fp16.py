@@ -150,10 +150,11 @@ def to_fp32(self: Learner): return self.remove_cbs([ModelToHalf, MixedPrecision]
 @delegates(GradScaler)
 class NativeMixedPrecision(Callback):
     "Mixed precision training using Pytorch's `autocast` and `GradScaler`"
-    order,run_valid = 10,False
+    order = 10
     def __init__(self, **kwargs): self.kwargs,self.autocast = kwargs,autocast()
     def before_fit(self): self.learn.scaler,self.scales = GradScaler(**self.kwargs),L()
     def before_batch(self): self.autocast.__enter__()
+    def after_pred(self): self.learn.pred = to_float(self.pred)
     def after_loss(self): self.autocast.__exit__()
     def before_backward(self): self.learn.loss_grad = self.scaler.scale(self.loss_grad)
     def before_step(self):
