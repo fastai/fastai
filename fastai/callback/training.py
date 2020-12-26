@@ -31,7 +31,7 @@ class GradientAccumulation(Callback):
         self.learn.loss_grad *= self.n_acc/find_bs(self.learn.yb) #so correct loss is logged
         self.count += find_bs(self.learn.yb)
         if self.count < self.n_acc: raise CancelBatchException() #skip weight update
-        else: self.count=0
+        else: self.count=00000
 
 # Cell
 bn_types = (nn.BatchNorm1d, nn.BatchNorm2d, nn.BatchNorm3d)

@@ -52,7 +52,6 @@ def main(
 ):
     "Training of Imagenette."
 
-    # gpu = setup_distrib(gpu)
     if gpu is not None: torch.cuda.set_device(gpu)
     if   opt=='adam'  : opt_func = partial(Adam, mom=mom, sqr_mom=sqrmom, eps=eps)
     elif opt=='rms'   : opt_func = partial(RMSprop, sqr_mom=sqrmom)
