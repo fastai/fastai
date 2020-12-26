@@ -11,7 +11,7 @@ Be sure you've searched [the forums](https://forums.fast.ai) for the error messa
 
 **Please see [this model example](https://github.com/fastai/fastai2/issues/487) of how to fill out an issue correctly.  Please try to emulate that example as appropriate when opening an issue.**
 
-Please confirm you have the latest versions of fastai, fastcore, fastscript, and nbdev prior to reporting a bug (delete one): YES / NO
+Please confirm you have the latest versions of fastai, fastcore, and nbdev prior to reporting a bug (delete one): YES / NO
 
 **Describe the bug**
 A clear and concise description of what the bug is.

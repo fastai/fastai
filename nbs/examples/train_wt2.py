@@ -1,7 +1,7 @@
 from fastai.basics import *
 from fastai.text.all import *
 from fastai.callback.all import *
-from fastscript import *
+from fastcore.script import *
 
 path = untar_data(URLs.WIKITEXT_TINY)
 

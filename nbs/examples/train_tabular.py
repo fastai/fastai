@@ -4,7 +4,7 @@ from fastai.callback.all import *
 from fastai.distributed import *
 from fastprogress import fastprogress
 from fastai.callback.mixup import *
-from fastscript import *
+from fastcore.script import *
 
 torch.backends.cudnn.benchmark = True
 fastprogress.MAX_COLS = 80

@@ -1,6 +1,6 @@
 import subprocess, torch
 from fastai.basics import *
-from fastscript import *
+from fastcore.script import *
 
 @call_parse
 def main(
@@ -11,7 +11,7 @@ def main(
     "PyTorch distributed training launch helper that spawns multiple distributed processes"
     # Loosely based on torch.distributed.launch
     current_env = os.environ.copy()
-    gpus = list(range(torch.cuda.device_count())) if gpus=='all' else list(gpus)
+    gpus = list(range(torch.cuda.device_count())) if gpus=='all' else gpus.split(',')
     current_env["WORLD_SIZE"] = str(len(gpus))
     current_env["MASTER_ADDR"] = '127.0.0.1'
     current_env["MASTER_PORT"] = '29500'

@@ -133,9 +133,9 @@ class DistributedTrainer(Callback):
         self.learn.dls.loaders = [self._wrap_dl(dl) for dl in self.dls]
         if rank_distrib() > 0: self.learn.logger=noop
 
-    def _wrap_dl(self, dl): self.learn.dl = self.dl if isinstance(self.dl, DistributedDL) else DistributedDL(self.dl)
-    def before_train(self):    self._wrap_dl()
-    def before_validate(self): self._wrap_dl()
+    def _wrap_dl(self, dl): return dl if isinstance(dl,DistributedDL) else DistributedDL(dl)
+    def before_train(self):    self.learn.dl = self._wrap_dl(self.learn.dl)
+    def before_validate(self): self.learn.dl = self._wrap_dl(self.learn.dl)
     def after_fit(self): self.learn.model,self.learn.dls.loaders = self.learn.model.module,self.old_dls
 
 # Cell

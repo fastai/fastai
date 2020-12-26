@@ -6,7 +6,7 @@ from fastprogress import fastprogress
 from torchvision.models import *
 from fastai.vision.models.xresnet import *
 from fastai.callback.mixup import *
-from fastscript import *
+from fastcore.script import *
 
 torch.backends.cudnn.benchmark = True
 fastprogress.MAX_COLS = 80
@@ -40,11 +40,11 @@ def main(
     opt:   Param("Optimizer (adam,rms,sgd,ranger)", str)='ranger',
     arch:  Param("Architecture", str)='xresnet50',
     sh:    Param("Random erase max proportion", float)=0.,
-    sa:    Param("Self-attention", int)=0,
+    sa:    Param("Self-attention", store_true)=False,
     sym:   Param("Symmetry for self-attention", int)=0,
     beta:  Param("SAdam softplus beta", float)=0.,
     act_fn:Param("Activation function", str)='Mish',
-    fp16:  Param("Use mixed precision training", int)=0,
+    fp16:  Param("Use mixed precision training", store_true)=False,
     pool:  Param("Pooling method", str)='AvgPool',
     dump:  Param("Print model; don't train", int)=0,
     runs:  Param("Number of times to repeat training", int)=1,
@@ -64,22 +64,17 @@ def main(
     m,act_fn,pool = [globals()[o] for o in (arch,act_fn,pool)]
 
     for run in range(runs):
-        print(f'Run: {run}')
+        if rank_distrib()==0: print(f'Run: {run}')
         learn = Learner(dls, m(n_out=10, act_cls=act_fn, sa=sa, sym=sym, pool=pool), opt_func=opt_func, \
                 metrics=[accuracy,top_k_accuracy], loss_func=LabelSmoothingCrossEntropy())
         if dump: print(learn.model); exit()
-        if fp16: learn = learn.to_fp16()
+        if fp16: learn = learn.to_native_fp16()
         cbs = MixUp(mixup) if mixup else []
-
         n_gpu = torch.cuda.device_count()
-
-        # The old way to use DataParallel, or DistributedDataParallel training:
-        # if gpu is None and n_gpu: learn.to_parallel()
-        # if num_distrib()>1: learn.to_distributed(gpu) # Requires `-m fastai.launch`
-
         # the context manager way of dp/ddp, both can handle single GPU base case.
         ctx = learn.parallel_ctx if gpu is None and n_gpu else learn.distrib_ctx
+        #ctx = learn.distrib_ctx if gpu is None and n_gpu else learn.parallel_ctx
 
         with partial(ctx, gpu)(): # distributed traing requires "-m fastai.launch"
-            print(f"Training in {ctx.__name__} context on GPU {gpu if gpu is not None else list(range(n_gpu))}")
+            if rank_distrib()==0: print(f"Training in {ctx.__name__} context on GPU {gpu if gpu is not None else list(range(n_gpu))}")
             learn.fit_flat_cos(epochs, lr, wd=1e-2, cbs=cbs)
