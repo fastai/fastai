@@ -15,8 +15,6 @@ from .learner import *
 
 # Cell
 import sklearn.metrics as skm
-
-# Cell
 import scipy.stats as scs
 
 # Cell

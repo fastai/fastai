@@ -788,6 +788,6 @@ def grad_module(cls):
 # Comes from 13b_metrics.ipynb, cell
 def flatten_check(inp, targ):
     "Check that `out` and `targ` have the same number of elements and flatten them."
-    inp,targ = inp.contiguous().view(-1),targ.contiguous().view(-1)
+    inp,targ = TensorBase(inp.contiguous()).view(-1),TensorBase(targ.contiguous()).view(-1)
     test_eq(len(inp), len(targ))
     return inp,targ
