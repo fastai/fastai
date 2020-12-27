@@ -10,6 +10,8 @@ from fastcore.script import *
 
 torch.backends.cudnn.benchmark = True
 fastprogress.MAX_COLS = 80
+def pr(s):
+    if rank_distrib()==0: print(s)
 
 def get_dls(size, woof, bs, sh=0., workers=None):
     if size<=224: path = URLs.IMAGEWOOF_320 if woof else URLs.IMAGENETTE_320
@@ -27,7 +29,6 @@ def get_dls(size, woof, bs, sh=0., workers=None):
 
 @call_parse
 def main(
-    gpu:   Param("GPU to run on", int)=None,
     woof:  Param("Use imagewoof (otherwise imagenette)", int)=0,
     lr:    Param("Learning rate", float)=1e-2,
     size:  Param("Size (px: 128,192,256)", int)=128,
@@ -50,31 +51,25 @@ def main(
     runs:  Param("Number of times to repeat training", int)=1,
     meta:  Param("Metadata (ignored)", str)=''
 ):
-    "Training of Imagenette."
-
-    if gpu is not None: torch.cuda.set_device(gpu)
+    "Training of Imagenette. Call with `python -m fastai.launch` for distributed training"
     if   opt=='adam'  : opt_func = partial(Adam, mom=mom, sqr_mom=sqrmom, eps=eps)
     elif opt=='rms'   : opt_func = partial(RMSprop, sqr_mom=sqrmom)
     elif opt=='sgd'   : opt_func = partial(SGD, mom=mom)
     elif opt=='ranger': opt_func = partial(ranger, mom=mom, sqr_mom=sqrmom, eps=eps, beta=beta)
 
-    dls = get_dls(size, woof, bs, sh=sh)
-    if not gpu: print(f'epochs: {epochs}; lr: {lr}; size: {size}; sqrmom: {sqrmom}; mom: {mom}; eps: {eps}')
-
+    dls = rank0_first(get_dls, size, woof, bs, sh=sh)
+    pr(f'epochs: {epochs}; lr: {lr}; size: {size}; sqrmom: {sqrmom}; mom: {mom}; eps: {eps}')
     m,act_fn,pool = [globals()[o] for o in (arch,act_fn,pool)]
 
     for run in range(runs):
-        if rank_distrib()==0: print(f'Run: {run}')
+        pr(f'Run: {run}')
         learn = Learner(dls, m(n_out=10, act_cls=act_fn, sa=sa, sym=sym, pool=pool), opt_func=opt_func, \
                 metrics=[accuracy,top_k_accuracy], loss_func=LabelSmoothingCrossEntropy())
-        if dump: print(learn.model); exit()
+        if dump: pr(learn.model); exit()
         if fp16: learn = learn.to_native_fp16()
         cbs = MixUp(mixup) if mixup else []
         n_gpu = torch.cuda.device_count()
-        # the context manager way of dp/ddp, both can handle single GPU base case.
-        ctx = learn.parallel_ctx if gpu is None and n_gpu else learn.distrib_ctx
-        #ctx = learn.distrib_ctx if gpu is None and n_gpu else learn.parallel_ctx
+        # Both context managers work fine for single GPU too
+        ctx = learn.distrib_ctx if num_distrib() and n_gpu else learn.parallel_ctx
+        with ctx(): learn.fit_flat_cos(epochs, lr, wd=1e-2, cbs=cbs)
 
-        with partial(ctx, gpu)(): # distributed traing requires "-m fastai.launch"
-            if rank_distrib()==0: print(f"Training in {ctx.__name__} context on GPU {gpu if gpu is not None else list(range(n_gpu))}")
-            learn.fit_flat_cos(epochs, lr, wd=1e-2, cbs=cbs)

@@ -88,7 +88,7 @@ class DistributedDL(TfmdDL):
     def _to_detach(self,b,cpu=True,gather=True): return to_detach(b,cpu,gather) # member func so we can override for test
     def __len__(self): return _round_to_multiple(len(self.dl),self.world_size)//self.world_size
     def get_idxs(self):
-        idxs = self.dl.get_idxs()       # compute get_idxs in all ranks (we'll only use rank 0 but size must be consistent)
+        idxs = list(self.dl.get_idxs()) # compute get_idxs in all ranks (we'll only use rank 0 but size must be consistent)
         idxs = self._broadcast(idxs,0)  # broadcast and receive it from rank 0 to all
         self.n = len(idxs)              # we assumed n was dl.n but we really care about number of idxs
         # add extra samples to make it evenly divisible
@@ -131,7 +131,7 @@ class DistributedTrainer(Callback):
             device_ids=[self.cuda_id], output_device=self.cuda_id, **opt_kwargs)
         self.old_dls = list(self.dls)
         self.learn.dls.loaders = [self._wrap_dl(dl) for dl in self.dls]
-        if rank_distrib() > 0: self.learn.logger=noop
+        if rank_distrib(): self.learn.logger=noop
 
     def _wrap_dl(self, dl): return dl if isinstance(dl,DistributedDL) else DistributedDL(dl)
     def before_train(self):    self.learn.dl = self._wrap_dl(self.learn.dl)
@@ -143,7 +143,7 @@ class DistributedTrainer(Callback):
 def to_distributed(self: Learner, cuda_id, sync_bn=True):
     "Add `DistributedTrainer` to a learner"
     self.add_cb(DistributedTrainer(cuda_id,sync_bn))
-    if rank_distrib() > 0: self.remove_cb(ProgressCallback)
+    if rank_distrib(): self.remove_cb(ProgressCallback)
     return self
 
 # Cell
@@ -152,7 +152,7 @@ def detach_distributed(self: Learner):
     "Remove `DistributedTrainer` from a learner"
     if num_distrib() <=1: return self
     self.remove_cb(DistributedTrainer)
-    if rank_distrib() > 0 and not hasattr(self, 'progress'): self.add_cb(ProgressCallback())
+    if rank_distrib() and not hasattr(self, 'progress'): self.add_cb(ProgressCallback())
     return self
 
 # Cell
@@ -168,18 +168,19 @@ def distrib_ctx(self: Learner, cuda_id=None,sync_bn=True):
     else: cleanup_dpg = False
     # Adapt self to DistributedDataParallel, yield, and cleanup afterwards.
     try:
-        if num_distrib() > 1: self.to_distributed(cuda_id,sync_bn)
+        if num_distrib(): self.to_distributed(cuda_id,sync_bn)
         yield self
     finally:
         self.detach_distributed()
         if cleanup_dpg: teardown_distrib()
 
 # Cell
-def rank0_first(func):
+def rank0_first(func, *args, **kwargs):
     "Execute `func` in the Rank-0 process first, then in other ranks in parallel."
+    if args or kwargs: func = partial(func, *args, **kwargs)
     dummy_l = Learner(DataLoaders(device='cpu'), nn.Linear(1,1), loss_func=lambda: 0)
     with dummy_l.distrib_ctx():
-        if rank_distrib() == 0: res = func()
+        if not rank_distrib(): res = func()
         distrib_barrier()
-        if rank_distrib() != 0: res = func()
+        if rank_distrib(): res = func()
     return res
