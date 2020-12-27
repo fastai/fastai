@@ -80,7 +80,8 @@ _loop = ['Start Fit', 'before_fit', 'Start Epoch Loop', 'before_epoch', 'Start T
          'after_cancel_fit', 'after_fit']
 
 # Cell
-class Learner():
+class Learner(GetAttr):
+    _default='model'
     def __init__(self, dls, model, loss_func=None, opt_func=Adam, lr=defaults.lr, splitter=trainable_params, cbs=None,
                  metrics=None, path=None, model_dir='models', wd=None, wd_bn_bias=False, train_bn=True,
                  moms=(0.95,0.85,0.95)):
@@ -91,7 +92,7 @@ class Learner():
         self.dls,self.model = dls,model
         store_attr(but='dls,model,cbs')
         self.training,self.create_mbar,self.logger,self.opt,self.cbs = False,True,print,None,L()
-        self.add_cbs([(cb() if isinstance(cb, type) else cb) for cb in L(defaults.callbacks)+L(cbs)])
+        self.add_cbs(L(defaults.callbacks)+L(cbs))
         self("after_create")
 
     @property
@@ -110,6 +111,7 @@ class Learner():
         return self
 
     def add_cb(self, cb):
+        if isinstance(cb, type): cb = cb()
         old = getattr(self, cb.name, None)
         assert not old or isinstance(old, type(cb)), f"self.{cb.name} already registered"
         cb.learn = self

@@ -154,7 +154,8 @@ class NativeMixedPrecision(Callback):
     def __init__(self, **kwargs): self.kwargs,self.autocast = kwargs,autocast()
     def before_fit(self): self.learn.scaler,self.scales = GradScaler(**self.kwargs),L()
     def before_batch(self): self.autocast.__enter__()
-    def after_pred(self): self.learn.pred = to_float(self.pred) if self.pred.dtype==torch.float16 else self.pred
+    def after_pred(self):
+        if self.pred.dtype==torch.float16: self.learn.pred = to_float(self.pred)
     def after_loss(self): self.autocast.__exit__()
     def before_backward(self): self.learn.loss_grad = self.scaler.scale(self.loss_grad)
     def before_step(self):
