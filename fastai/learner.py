@@ -112,8 +112,6 @@ class Learner(GetAttr):
 
     def add_cb(self, cb):
         if isinstance(cb, type): cb = cb()
-        old = getattr(self, cb.name, None)
-        assert not old or isinstance(old, type(cb)), f"self.{cb.name} already registered"
         cb.learn = self
         setattr(self, cb.name, cb)
         self.cbs.append(cb)
