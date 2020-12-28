@@ -35,7 +35,7 @@ class GradientClip(Callback):
     "Clip norm of gradients"
     order=NativeMixedPrecision.order+1
     def __init__(self,max_norm:float=1., norm_type:float=2.0): store_attr()
-    def before_step(self): nn.utils.clip_grad_norm_(learn.model.parameters(), self.max_norm, self.norm_type)
+    def before_step(self): nn.utils.clip_grad_norm_(self.parameters(), self.max_norm, self.norm_type)
 
 # Cell
 bn_types = (nn.BatchNorm1d, nn.BatchNorm2d, nn.BatchNorm3d)
