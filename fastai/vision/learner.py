@@ -73,17 +73,19 @@ def create_body(arch, n_in=3, pretrained=True, cut=None):
     else:                           raise NamedError("cut must be either integer or a function")
 
 # Cell
-def create_head(nf, n_out, lin_ftrs=None, ps=0.5, concat_pool=True, bn_final=False, lin_first=False, y_range=None):
+def create_head(nf, n_out, lin_ftrs=None, ps=0.5, concat_pool=True, first_bn=True, bn_final=False,
+                lin_first=False, y_range=None):
     "Model head that takes `nf` features, runs through `lin_ftrs`, and out `n_out` classes."
     lin_ftrs = [nf, 512, n_out] if lin_ftrs is None else [nf] + lin_ftrs + [n_out]
+    bns = [first_bn] + [True]*len(lin_ftrs[1:])
     ps = L(ps)
     if len(ps) == 1: ps = [ps[0]/2] * (len(lin_ftrs)-2) + ps
     actns = [nn.ReLU(inplace=True)] * (len(lin_ftrs)-2) + [None]
     pool = AdaptiveConcatPool2d() if concat_pool else nn.AdaptiveAvgPool2d(1)
     layers = [pool, Flatten()]
     if lin_first: layers.append(nn.Dropout(ps.pop(0)))
-    for ni,no,p,actn in zip(lin_ftrs[:-1], lin_ftrs[1:], ps, actns):
-        layers += LinBnDrop(ni, no, bn=True, p=p, act=actn, lin_first=lin_first)
+    for ni,no,bn,p,actn in zip(lin_ftrs[:-1], lin_ftrs[1:], bns, ps, actns):
+        layers += LinBnDrop(ni, no, bn=bn, p=p, act=actn, lin_first=lin_first)
     if lin_first: layers.append(nn.Linear(lin_ftrs[-2], n_out))
     if bn_final: layers.append(nn.BatchNorm1d(lin_ftrs[-1], momentum=0.01))
     if y_range is not None: layers.append(SigmoidRange(*y_range))
