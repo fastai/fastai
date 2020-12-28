@@ -162,7 +162,7 @@ class NativeMixedPrecision(Callback):
         self.skipped=True
         self.scaler.step(self)
         if self.skipped: raise CancelStepException()
-        self.scales.append(self.scaler._scale.item())
+        self.scales.append(self.scaler.get_scale())
     def after_step(self): self.learn.scaler.update()
 
     @property # pretend to be an optimizer for `GradScaler`
