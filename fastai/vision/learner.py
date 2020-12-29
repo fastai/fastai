@@ -225,8 +225,7 @@ def unet_learner(dls, arch, normalize=True, n_out=None, pretrained=True, config=
                    moms=moms)
     if pretrained: learn.freeze()
     # keep track of args for loggers
-    store_attr('arch,normalize,n_out,pretrained', self=learn)
-    if kwargs: store_attr(self=learn, **kwargs)
+    store_attr('arch,normalize,n_out,pretrained', self=learn, **kwargs)
     return learn
 
 # Cell
