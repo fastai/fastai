@@ -34,7 +34,8 @@ def main(
     size:  Param("Size (px: 128,192,256)", int)=128,
     sqrmom:Param("sqr_mom", float)=0.99,
     mom:   Param("Momentum", float)=0.9,
-    eps:   Param("epsilon", float)=1e-6,
+    eps:   Param("Epsilon", float)=1e-6,
+    wd:    Param("Weight decay", float)=1e-2,
     epochs:Param("Number of epochs", int)=5,
     bs:    Param("Batch size", int)=64,
     mixup: Param("Mixup", float)=0.,
@@ -71,5 +72,5 @@ def main(
         n_gpu = torch.cuda.device_count()
         # Both context managers work fine for single GPU too
         ctx = learn.distrib_ctx if num_distrib() and n_gpu else learn.parallel_ctx
-        with ctx(): learn.fit_flat_cos(epochs, lr, wd=1e-2, cbs=cbs)
+        with ctx(): learn.fit_flat_cos(epochs, lr, wd=wd, cbs=cbs)
 
