@@ -85,7 +85,9 @@ def cont_cat_split(df, max_card=20, dep_var=None):
     cont_names, cat_names = [], []
     for label in df:
         if label in L(dep_var): continue
-        if df[label].dtype == int and df[label].unique().shape[0] > max_card or df[label].dtype == float:
+        if (np.issubdtype(df[label].dtype, np.integer) and
+            df[label].unique().shape[0] > max_card or
+            np.issubdtype(df[label].dtype, np.floating)):
             cont_names.append(label)
         else: cat_names.append(label)
     return cont_names, cat_names
