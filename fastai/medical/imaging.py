@@ -27,7 +27,7 @@ except: pass
 # Cell
 def get_dicom_files(path, recurse=True, folders=None):
     "Get dicom files in `path` recursively, only in `folders`, if specified."
-    return get_files(path, extensions=[".dcm"], recurse=recurse, folders=folders)
+    return get_files(path, extensions=[".dcm",".dicom"], recurse=recurse, folders=folders)
 
 # Cell
 @patch
