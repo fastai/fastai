@@ -239,7 +239,7 @@ class Categorify(TabularProc):
     "Transform the categorical variables to something similar to `pd.Categorical`"
     order = 1
     def setups(self, to):
-        store_attr(classes={n:CategoryMap(to.iloc[:,n].items, add_na=(n in to.cat_names)) for n in to.cat_names})
+        store_attr(classes={n:CategoryMap(to.iloc[:,n].items, add_na=(n in to.cat_names)) for n in to.cat_names}, but='to')
 
     def encodes(self, to): to.transform(to.cat_names, partial(_apply_cats, self.classes, 1))
     def decodes(self, to): to.transform(to.cat_names, partial(_decode_cats, self.classes))
@@ -270,7 +270,8 @@ def decodes(self, to:Tabular):
 @Normalize
 def setups(self, to:Tabular):
     store_attr(means=dict(getattr(to, 'train', to).conts.mean()),
-               stds=dict(getattr(to, 'train', to).conts.std(ddof=0)+1e-7))
+               stds=dict(getattr(to, 'train', to).conts.std(ddof=0)+1e-7),
+               but='to')
     return self(to)
 
 @Normalize
@@ -300,7 +301,8 @@ class FillMissing(TabularProc):
     def setups(self, dsets):
         missing = pd.isnull(dsets.conts).any()
         store_attr(na_dict={n:self.fill_strategy(dsets[n], self.fill_vals[n])
-                            for n in missing[missing].keys()})
+                            for n in missing[missing].keys()},
+                   but='to')
         self.fill_strategy = self.fill_strategy.__name__
 
     def encodes(self, to):
