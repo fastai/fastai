@@ -500,9 +500,7 @@ def _stack_tups(tuples, stack_dim=1):
 class TimeDistributed(Module):
     "Applies `module` over `tdim` identically for each step, use `low_mem` to compute one at a time."
     def __init__(self, module, low_mem=False, tdim=1):
-        self.module = module
-        self.low_mem = low_mem
-        self.tdim = tdim
+        store_attr()
 
     def forward(self, *args, **kwargs):
         "input x with shape:(bs,seq_len,channels,width,height)"
