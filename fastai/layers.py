@@ -502,21 +502,21 @@ class TimeDistributed(Module):
     def __init__(self, module, low_mem=False, tdim=1):
         store_attr()
 
-    def forward(self, *args, **kwargs):
+    def forward(self, *tensors, **kwargs):
         "input x with shape:(bs,seq_len,channels,width,height)"
         if self.low_mem or self.tdim!=1:
-            return self.low_mem_forward(*args)
+            return self.low_mem_forward(*tensors, **kwargs)
         else:
             #only support tdim=1
-            inp_shape = args[0].shape
+            inp_shape = tensors[0].shape
             bs, seq_len = inp_shape[0], inp_shape[1]
-            out = self.module(*[x.view(bs*seq_len, *x.shape[2:]) for x in args], **kwargs)
+            out = self.module(*[x.view(bs*seq_len, *x.shape[2:]) for x in tensors], **kwargs)
         return self.format_output(out, bs, seq_len)
 
-    def low_mem_forward(self, *args, **kwargs):
+    def low_mem_forward(self, *tensors, **kwargs):
         "input x with shape:(bs,seq_len,channels,width,height)"
-        seq_len = args[0].shape[self.tdim]
-        args_split = [torch.unbind(x, dim=self.tdim) for x in args]
+        seq_len = tensors[0].shape[self.tdim]
+        args_split = [torch.unbind(x, dim=self.tdim) for x in tensors]
         out = []
         for i in range(seq_len):
             out.append(self.module(*[args[i] for args in args_split]), **kwargs)
