@@ -35,11 +35,11 @@ testall:
 
 release: pypi
 	sleep 3
-	fastrelease_conda_package --upload_user fastai
+	fastrelease_conda_package --mambabuild --upload_user fastai
 	fastrelease_bump_version
 
 conda_release:
-	fastrelease_conda_package --upload_user fastai
+	fastrelease_conda_package --mambabuild --upload_user fastai
 	nbdev_bump_version
 
 pypi: dist
