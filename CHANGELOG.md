@@ -2,6 +2,27 @@
 
 <!-- do not remove -->
 
+## 2.2.0
+### Breaking Changes
+
+- Promote `NativeMixedPrecision` to default `MixedPrecision` (and similar for `Learner.to_fp16`); old `MixedPrecision` is now called `NonNativeMixedPrecision` ([#3127](https://github.com/fastai/fastai/issues/3127))
+  - Use the new `GradientClip` callback instead of the `clip` parameter to use gradient clipping
+- Adding a `Callback` which has the same name as an attribute no longer raises an exception ([#3109](https://github.com/fastai/fastai/issues/3109))
+- RNN training now requires `RNNCallback`, but does not require `RNNRegularizer`; `out` and `raw_out` have moved to `RNNRegularizer` ([#3108](https://github.com/fastai/fastai/issues/3108))
+  - Call `rnn_cbs` to get all callbacks needed for RNN training, optionally with regularization
+- replace callback `run_after` with `order`; do not run `after` cbs on exception ([#3101](https://github.com/fastai/fastai/issues/3101))
+
+### New Features
+
+- Add `GradientClip` callback ([#3107](https://github.com/fastai/fastai/issues/3107))
+- Make `Flatten` cast to `TensorBase` to simplify type compatibility ([#3106](https://github.com/fastai/fastai/issues/3106))
+- make flattened metrics compatible with all tensor subclasses ([#3105](https://github.com/fastai/fastai/issues/3105))
+- New class method `TensorBase.register_func` to register types for `__torch_function__` ([#3097](https://github.com/fastai/fastai/issues/3097))
+- new `dynamic` flag for controlling dynamic loss scaling in `NativeMixedPrecision` ([#3096](https://github.com/fastai/fastai/issues/3096))
+- remove need to call `to_native_fp32` before `predict`; set `skipped` in NativeMixedPrecision after NaN from dynamic loss scaling ([#3095](https://github.com/fastai/fastai/issues/3095))
+- make native fp16 extensible with callbacks ([#3094](https://github.com/fastai/fastai/issues/3094))
+
+
 ## 2.1.10
 
 ### New Features
