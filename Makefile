@@ -40,7 +40,6 @@ release: pypi
 
 conda_release:
 	fastrelease_conda_package --mambabuild --upload_user fastai
-	nbdev_bump_version
 
 pypi: dist
 	twine upload --repository pypi dist/*
