@@ -340,6 +340,11 @@ class TensorBase(Tensor):
         res = self.as_subclass(Tensor).new() if x is None else self.as_subclass(Tensor).new(x)
         return res.as_subclass(cls)
 
+    def requires_grad_(self):
+        # Workaround https://github.com/pytorch/pytorch/issues/50219
+        self.requires_grad = True
+        return self
+
 # Cell
 class TensorImageBase(TensorBase):
     _show_args = ArrayImageBase._show_args
