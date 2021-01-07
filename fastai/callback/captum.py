@@ -99,22 +99,13 @@ def insights(x: CaptumInterpretation,inp_data,debug=True):
     normalize_func= next((func for func in dl.after_batch if type(func)==Normalize),noop)
 
     # captum v0.3 expects tensors without the batch dimension.
-    if hasattr(normalize_func, 'mean'):
-        if normalize_func.mean.ndim==4: normalize_func.mean.squeeze_(0)
-    if hasattr(normalize_func, 'std'):
-        if normalize_func.std.ndim==4: normalize_func.std.squeeze_(0)
+    if nested_attr(normalize_func, 'mean.ndim', 4)==4: normalize_func.mean.squeeze_(0)
+    if nested_attr(normalize_func, 'std.ndim', 4)==4: normalize_func.std.squeeze_(0)
 
     visualizer = AttributionVisualizer(
         models=[x.model],
         score_func=lambda o: torch.nn.functional.softmax(o, 1),
         classes=_get_vocab(dl.vocab),
-        features=[
-            ImageFeature(
-                "Image",
-                baseline_transforms=[_baseline_func],
-                input_transforms=[normalize_func],
-            )
-        ],
-        dataset=x._formatted_data_iter(dl,normalize_func)
-    )
+        features=[ImageFeature("Image", baseline_transforms=[_baseline_func], input_transforms=[normalize_func])],
+        dataset=x._formatted_data_iter(dl,normalize_func))
     visualizer.render(debug=debug)
