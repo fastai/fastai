@@ -15,7 +15,7 @@ import wandb
 # Cell
 class WandbCallback(Callback):
     "Saves model topology, losses & metrics"
-    toward_end,remove_on_fetch,run_after = True,True,FetchPredsCallback
+    remove_on_fetch,order = True,Recorder.order+1
     # Record if watch has been called previously (even in another instance)
     _wandb_watch_called = False
 

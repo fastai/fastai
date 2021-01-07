@@ -14,9 +14,9 @@ from .hook import hook_output
 
 # Cell
 class TensorBoardBaseCallback(Callback):
+    order = Recorder.order+1
     "Base class for tensorboard callbacks"
-    def __init__(self):
-        self.run_projector = False
+    def __init__(self): self.run_projector = False
 
     def after_pred(self):
         if self.run_projector: self.feat = _add_projector_features(self.learn, self.h, self.feat)
@@ -35,13 +35,10 @@ class TensorBoardBaseCallback(Callback):
         self.h = hook_output(self.learn.model[1][1] if not self.layer else self.layer)
         self.feat = {}
 
-    def _setup_writer(self):
-        self.writer = SummaryWriter(log_dir=self.log_dir)
-
+    def _setup_writer(self): self.writer = SummaryWriter(log_dir=self.log_dir)
+    def __del__(self): self._remove()
     def _remove(self):
         if getattr(self, 'h', None): self.h.remove()
-
-    def __del__(self): self._remove()
 
 # Cell
 class TensorBoardCallback(TensorBoardBaseCallback):
