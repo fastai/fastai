@@ -2,6 +2,13 @@
 
 <!-- do not remove -->
 
+## 2.2.2
+
+### Bugs Squashed
+
+- tensorboard and wandb can not access `smooth_loss` ([#3131](https://github.com/fastai/fastai/issues/3131))
+
+
 ## 2.2.0
 ### Breaking Changes
 
