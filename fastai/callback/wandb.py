@@ -120,7 +120,8 @@ class WandbCallback(Callback):
                 log_model(self.save_model.last_saved_path, metadata=metadata)
         self.run = True
         if self.log_preds: self.remove_cb(FetchPredsCallback)
-        wandb.log({}) # ensure sync of last step
+        wandb.log({})  # ensure sync of last step
+        self._wandb_step += 1
 
 # Cell
 @patch
