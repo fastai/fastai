@@ -367,7 +367,7 @@ class TensorMask(TensorImageBase):
         return super().show(ctx=ctx, **kwargs)
 
 # Cell
-for o in Tensor.add,Tensor.sub,Tensor.mul,Tensor.div,Tensor.__rsub__,Tensor.__radd__,Tensor.matmul,Tensor.bmm:
+for o in Tensor.__ne__,Tensor.__eq__,Tensor.add,Tensor.sub,Tensor.mul,Tensor.div,Tensor.__rsub__,Tensor.__radd__,Tensor.matmul,Tensor.bmm:
     TensorBase.register_func(o, TensorMask, TensorImageBase)
     TensorBase.register_func(o, TensorImageBase, TensorMask)
 
