@@ -80,7 +80,8 @@ def L1LossFlat(*args, axis=-1, floatify=True, **kwargs):
 # Cell
 class LabelSmoothingCrossEntropy(Module):
     y_int = True
-    def __init__(self, eps:float=0.1, reduction='mean'): self.eps,self.reduction = eps,reduction
+    def __init__(self, eps:float=0.1, weight=None, reduction='mean'):
+        store_attr()
 
     def forward(self, output, target):
         c = output.size()[-1]
@@ -89,7 +90,7 @@ class LabelSmoothingCrossEntropy(Module):
         else:
             loss = -log_preds.sum(dim=-1) #We divide by that size at the return line so sum and not mean
             if self.reduction=='mean':  loss = loss.mean()
-        return loss*self.eps/c + (1-self.eps) * F.nll_loss(log_preds, target.long(), reduction=self.reduction)
+        return loss*self.eps/c + (1-self.eps) * F.nll_loss(log_preds, target.long(), weight=self.weight, reduction=self.reduction)
 
     def activation(self, out): return F.softmax(out, dim=-1)
     def decodes(self, out):    return out.argmax(dim=-1)
