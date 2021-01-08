@@ -130,7 +130,7 @@ def df_shrink(df, skip=[], obj2cat=True, int2uint=False):
 # Cell
 class _TabIloc:
     "Get/set rows by iloc and cols by name"
-    def __init__(self,to): self.to = to
+    def __init__(self,to): store_attr()
     def __getitem__(self, idxs):
         df = self.to.items
         if isinstance(idxs,tuple):
@@ -297,13 +297,13 @@ class FillMissing(TabularProc):
         if fill_vals is None: fill_vals = defaultdict(int)
         store_attr()
 
-    def setups(self, dsets):
-        missing = pd.isnull(dsets.conts).any()
-        store_attr(but='to', na_dict={n:self.fill_strategy(dsets[n], self.fill_vals[n])
+    def setups(self, to:Tabular):
+        missing = pd.isnull(to.conts).any()
+        store_attr(but='to', na_dict={n:self.fill_strategy(to[n], self.fill_vals[n])
                             for n in missing[missing].keys()})
         self.fill_strategy = self.fill_strategy.__name__
 
-    def encodes(self, to):
+    def encodes(self, to:Tabular):
         missing = pd.isnull(to.conts)
         for n in missing.any()[missing.any()].keys():
             assert n in self.na_dict, f"nan values in `{n}` but not in setup training set"
