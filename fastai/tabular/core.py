@@ -238,11 +238,11 @@ def _decode_cats(voc, c): return c.map(dict(enumerate(voc[c.name].items)))
 class Categorify(TabularProc):
     "Transform the categorical variables to something similar to `pd.Categorical`"
     order = 1
-    def setups(self, to):
+    def setups(self, to:Tabular):
         store_attr(classes={n:CategoryMap(to.iloc[:,n].items, add_na=(n in to.cat_names)) for n in to.cat_names}, but='to')
 
-    def encodes(self, to): to.transform(to.cat_names, partial(_apply_cats, self.classes, 1))
-    def decodes(self, to): to.transform(to.cat_names, partial(_decode_cats, self.classes))
+    def encodes(self, to:Tabular): to.transform(to.cat_names, partial(_apply_cats, self.classes, 1))
+    def decodes(self, to:Tabular): to.transform(to.cat_names, partial(_decode_cats, self.classes))
     def __getitem__(self,k): return self.classes[k]
 
 # Internal Cell
