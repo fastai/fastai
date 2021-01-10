@@ -12,7 +12,6 @@ class CollectDataCallback(Callback):
     def after_batch(self):
         self.data.append(self.learn.to_detach((self.xb,self.yb,self.pred,self.loss)))
 
-
 # Cell
 class CudaCallback(Callback):
     "Move data to CUDA device"
@@ -21,7 +20,6 @@ class CudaCallback(Callback):
     def before_fit(self): self.model.to(self.device)
 
 # Cell
-@log_args(but_as=TfmdDL.__init__)
 @delegates()
 class WeightedDL(TfmdDL):
     def __init__(self, dataset=None, bs=None, wgts=None, **kwargs):
@@ -42,7 +40,6 @@ def weighted_dataloaders(self:Datasets, wgts, bs=64, **kwargs):
     return self.dataloaders(bs=bs, dl_type=WeightedDL, dl_kwargs=({'wgts':wgts}, *xtra_kwargs), **kwargs)
 
 # Cell
-@log_args(but_as=TfmdDL.__init__)
 @delegates()
 class PartialDL(TfmdDL):
     "Select randomly partial quantity of data at each epoch"

@@ -66,7 +66,7 @@ class PartialLambda(Lambda):
 @module(full=False)
 def Flatten(self, x):
     "Flatten `x` to a single dimension, e.g. at end of a model. `full` for rank-1 tensor"
-    return x.view(-1) if self.full else x.view(x.size(0), -1)
+    return TensorBase(x.view(-1) if self.full else x.view(x.size(0), -1))
 
 # Cell
 class View(Module):
@@ -280,9 +280,9 @@ def trunc_normal_(x, mean=0., std=1.):
 # Cell
 class Embedding(nn.Embedding):
     "Embedding layer with truncated normal initialization"
-    def __init__(self, ni, nf):
+    def __init__(self, ni, nf, std=0.01):
         super().__init__(ni, nf)
-        trunc_normal_(self.weight.data, std=0.01)
+        trunc_normal_(self.weight.data, std=std)
 
 # Cell
 class SelfAttention(Module):
@@ -396,7 +396,7 @@ class SequentialEx(Module):
             res.orig = x
             nres = l(res)
             # We have to remove res.orig to avoid hanging refs and therefore memory leaks
-            res.orig = None
+            res.orig, nres.orig = None, None
             res = nres
         return res
 

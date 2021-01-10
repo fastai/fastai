@@ -278,5 +278,9 @@
   "https://s3.amazonaws.com/fast-ai-sample/dogscats.tgz": [
     839285364,
     "3e483c8d6ef2175e9d395a6027eb92b7"
+  ],
+  "https://s3.amazonaws.com/fast-ai-imagelocal/tcga_small.tgz": [
+    14744474,
+    "3ceffe7cf522cb1c60e93dc555d8817f"
   ]
 }

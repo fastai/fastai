@@ -4,10 +4,13 @@ from fastai.callback.all import *
 from fastai.distributed import *
 from fastprogress import fastprogress
 from fastai.callback.mixup import *
-from fastscript import *
+from fastcore.script import *
 
 torch.backends.cudnn.benchmark = True
 fastprogress.MAX_COLS = 80
+
+def pr(s):
+    if rank_distrib()==0: print(s)
 
 def get_dls(path):
     dls = TabularDataLoaders.from_csv(path/'adult.csv', path=path, y_names="salary",
@@ -19,32 +22,22 @@ def get_dls(path):
 
 @call_parse
 def main(
-    gpu:   Param("GPU to run on", int)=None,
     epochs:Param("Number of epochs", int)=5,
-    fp16:  Param("Use mixed precision training", int)=0,
+    fp16:  Param("Use mixed precision training", store_true)=False,
     dump:  Param("Print model; don't train", int)=0,
     runs:  Param("Number of times to repeat training", int)=1,
 ):
     "Training of Tabular data 'ADULT_SAMPLE'."
-
-    # gpu = setup_distrib(gpu)
-    if gpu is not None: torch.cuda.set_device(gpu)
-
-    path = untar_data(URLs.ADULT_SAMPLE)
+    path = rank0_first(untar_data,URLs.ADULT_SAMPLE)
     dls = get_dls(path)
-
-    if not gpu: print(f'epochs: {epochs};')
+    pr(f'epochs: {epochs};')
 
     for run in range(runs):
-        print(f'Run: {run}')
-
+        pr(f'Run: {run}')
         learn = tabular_learner(dls, metrics=accuracy)
-        if dump: print(learn.model); exit()
+        if dump: pr(learn.model); exit()
         if fp16: learn = learn.to_fp16()
-
         n_gpu = torch.cuda.device_count()
-        ctx = learn.parallel_ctx if gpu is None and n_gpu else learn.distrib_ctx
+        ctx = learn.distrib_ctx if num_distrib() and n_gpu else learn.parallel_ctx
+        with ctx(): learn.fit_one_cycle(epochs)
 
-        with partial(ctx, gpu)(): # distributed traing requires "-m fastai.launch"
-            print(f"Training in {ctx.__name__} context on GPU {gpu if gpu is not None else list(range(n_gpu))}")
-            learn.fit_one_cycle(epochs)

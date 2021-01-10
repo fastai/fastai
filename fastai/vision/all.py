@@ -1,3 +1,4 @@
+from . import models
 from ..basics import *
 from ..callback.all import *
 from .augment import *

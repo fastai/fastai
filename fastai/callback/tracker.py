@@ -11,8 +11,7 @@ from .fp16 import MixedPrecision
 # Cell
 class TerminateOnNaNCallback(Callback):
     "A `Callback` that terminates training if loss is NaN."
-    run_before=Recorder
-
+    order=-9
     def after_batch(self):
         "Test if `last_loss` is NaN and interrupts training."
         if torch.isinf(self.loss) or torch.isnan(self.loss): raise CancelFitException
@@ -20,8 +19,7 @@ class TerminateOnNaNCallback(Callback):
 # Cell
 class TrackerCallback(Callback):
     "A `Callback` that keeps track of the best value in `monitor`."
-    remove_on_fetch,run_after = True,Recorder
-
+    order,remove_on_fetch = 60,True
     def __init__(self, monitor='valid_loss', comp=None, min_delta=0., reset_on_fit=True):
         if comp is None: comp = np.less if 'loss' in monitor or 'error' in monitor else np.greater
         if comp == np.less: min_delta *= -1
@@ -43,7 +41,6 @@ class TrackerCallback(Callback):
     def after_fit(self): self.run=True
 
 # Cell
-@log_args
 class EarlyStoppingCallback(TrackerCallback):
     "A `TrackerCallback` that terminates training when monitored quantity stops improving."
     def __init__(self, monitor='valid_loss', comp=None, min_delta=0., patience=1, reset_on_fit=True):
@@ -62,18 +59,17 @@ class EarlyStoppingCallback(TrackerCallback):
                 raise CancelFitException()
 
 # Cell
-@log_args
 class SaveModelCallback(TrackerCallback):
     "A `TrackerCallback` that saves the model's best during training and loads it at the end."
     _only_train_loop = True
-    def __init__(self, monitor='valid_loss', comp=None, min_delta=0., fname='model', every_epoch=False, with_opt=False, reset_on_fit=True):
+    def __init__(self, monitor='valid_loss', comp=None, min_delta=0., fname='model', every_epoch=False,
+                 with_opt=False, reset_on_fit=True):
         super().__init__(monitor=monitor, comp=comp, min_delta=min_delta, reset_on_fit=reset_on_fit)
         # keep track of file path for loggers
         self.last_saved_path = None
         store_attr('fname,every_epoch,with_opt')
 
-    def _save(self, name):
-        self.last_saved_path = self.learn.save(name, with_opt=self.with_opt)
+    def _save(self, name): self.last_saved_path = self.learn.save(name, with_opt=self.with_opt)
 
     def after_epoch(self):
         "Compare the value monitored to its best score and save if best."
@@ -86,10 +82,9 @@ class SaveModelCallback(TrackerCallback):
 
     def after_fit(self, **kwargs):
         "Load the best model."
-        if not self.every_epoch: self.learn.load(f'{self.fname}')
+        if not self.every_epoch: self.learn.load(f'{self.fname}', with_opt=self.with_opt)
 
 # Cell
-@log_args
 class ReduceLROnPlateau(TrackerCallback):
     "A `TrackerCallback` that reduces learning rate when a metric has stopped improving."
     def __init__(self, monitor='valid_loss', comp=None, min_delta=0., patience=1, factor=10., min_lr=0, reset_on_fit=True):

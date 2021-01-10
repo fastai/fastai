@@ -209,8 +209,8 @@ def tokenize_texts(texts, n_workers=defaults.cpus, rules=None, tok=None):
 
 # Cell
 def tokenize_df(df, text_cols, n_workers=defaults.cpus, rules=None, mark_fields=None,
-                tok=None, res_col_name="text"):
-    "Tokenize texts in `df[text_cols]` in parallel using `n_workers`"
+                tok=None, tok_text_col="text"):
+    "Tokenize texts in `df[text_cols]` in parallel using `n_workers` and stores them in `df[tok_text_col]`"
     text_cols = [df.columns[c] if isinstance(c, int) else c for c in L(text_cols)]
     #mark_fields defaults to False if there is one column of texts, True if there are multiple
     if mark_fields is None: mark_fields = len(text_cols)>1
@@ -221,8 +221,8 @@ def tokenize_df(df, text_cols, n_workers=defaults.cpus, rules=None, mark_fields=
 
     other_cols = df.columns[~df.columns.isin(text_cols)]
     res = df[other_cols].copy()
-    res[res_col_name] = outputs
-    res[f'{res_col_name}_length'] = [len(o) for o in outputs]
+    res[tok_text_col] = outputs
+    res[f'{tok_text_col}_length'] = [len(o) for o in outputs]
     return res,Counter(outputs.concat())
 
 # Cell
@@ -248,7 +248,7 @@ def load_tokenized_csv(fname):
     fname = Path(fname)
     out = pd.read_csv(fname)
     for txt_col in out.columns[1:-1]:
-        out[txt_col] = out[txt_col].str.split(' ')
+        out[txt_col] = tuple(out[txt_col].str.split(' '))
     return out,load_pickle(fname.with_suffix('.pkl'))
 
 # Cell
