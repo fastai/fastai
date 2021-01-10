@@ -6,7 +6,7 @@ __all__ = ['AccumMetric', 'skm_to_fastai', 'optim_metric', 'accuracy', 'error_ra
            'APScoreMulti', 'BrierScoreMulti', 'F1ScoreMulti', 'FBetaMulti', 'HammingLossMulti', 'JaccardMulti',
            'MatthewsCorrCoefMulti', 'PrecisionMulti', 'RecallMulti', 'RocAucMulti', 'mse', 'rmse', 'mae', 'msle',
            'exp_rmspe', 'ExplainedVariance', 'R2Score', 'PearsonCorrCoef', 'SpearmanCorrCoef', 'foreground_acc', 'Dice',
-           'JaccardCoeff', 'CorpusBLEUMetric', 'LossMetric', 'LossMetrics']
+           'DiceMulti', 'JaccardCoeff', 'CorpusBLEUMetric', 'LossMetric', 'LossMetrics']
 
 # Cell
 from .data.all import *
@@ -15,8 +15,6 @@ from .learner import *
 
 # Cell
 import sklearn.metrics as skm
-
-# Cell
 import scipy.stats as scs
 
 # Cell
@@ -350,6 +348,32 @@ class Dice(Metric):
 
     @property
     def value(self): return 2. * self.inter/self.union if self.union > 0 else None
+
+# Cell
+class DiceMulti(Metric):
+    "Averaged Dice metric (Macro F1) for multiclass target in segmentation"
+    def __init__(self, axis=1): self.axis = axis
+    def reset(self): self.inter,self.union = {},{}
+    def accumulate(self, learn):
+        pred,targ = flatten_check(learn.pred.argmax(dim=self.axis), learn.y)
+        for c in range(learn.pred.shape[self.axis]):
+            p = torch.where(pred == c, 1, 0)
+            t = torch.where(targ == c, 1, 0)
+            c_inter = (p*t).float().sum().item()
+            c_union = (p+t).float().sum().item()
+            if c in self.inter:
+                self.inter[c] += c_inter
+                self.union[c] += c_union
+            else:
+                self.inter[c] = c_inter
+                self.union[c] = c_union
+
+    @property
+    def value(self):
+        binary_dice_scores = np.array([])
+        for c in self.inter:
+            binary_dice_scores = np.append(binary_dice_scores, 2.*self.inter[c]/self.union[c] if self.union[c] > 0 else np.nan)
+        return np.nanmean(binary_dice_scores)
 
 # Cell
 class JaccardCoeff(Dice):

@@ -65,7 +65,7 @@ jobs:
       uses: actions/checkout@v2
     - name: Install libraries
       run: |
-        pip install -Uq fastcore fastscript fastprogress
+        pip install -Uq fastcore fastprogress
         pip install -Uqe .[dev]
     
     - name: check for cache hit

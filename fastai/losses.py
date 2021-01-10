@@ -10,7 +10,6 @@ from .torch_core import *
 from .layers import *
 
 # Cell
-@log_args
 class BaseLoss():
     "Same as `loss_cls`, but flattens input and target."
     activation=decodes=noops
@@ -25,16 +24,17 @@ class BaseLoss():
     @reduction.setter
     def reduction(self, v): self.func.reduction = v
 
+    def _contiguous(self,x):
+        return TensorBase(x.transpose(self.axis,-1).contiguous()) if isinstance(x,torch.Tensor) else x
+
     def __call__(self, inp, targ, **kwargs):
-        inp  = inp .transpose(self.axis,-1).contiguous()
-        targ = targ.transpose(self.axis,-1).contiguous()
+        inp,targ  = map(self._contiguous, (inp,targ))
         if self.floatify and targ.dtype!=torch.float16: targ = targ.float()
         if targ.dtype in [torch.int8, torch.int16, torch.int32]: targ = targ.long()
         if self.flatten: inp = inp.view(-1,inp.shape[-1]) if self.is_2d else inp.view(-1)
         return self.func.__call__(inp, targ.view(-1) if self.flatten else targ, **kwargs)
 
 # Cell
-@log_args
 @delegates()
 class CrossEntropyLossFlat(BaseLoss):
     "Same as `nn.CrossEntropyLoss`, but flattens input and target."
@@ -45,7 +45,6 @@ class CrossEntropyLossFlat(BaseLoss):
     def activation(self, x): return F.softmax(x, dim=self.axis)
 
 # Cell
-@log_args
 @delegates()
 class BCEWithLogitsLossFlat(BaseLoss):
     "Same as `nn.BCEWithLogitsLoss`, but flattens input and target."
@@ -61,31 +60,28 @@ class BCEWithLogitsLossFlat(BaseLoss):
     def activation(self, x): return torch.sigmoid(x)
 
 # Cell
-@log_args(to_return=True)
 @use_kwargs_dict(weight=None, reduction='mean')
 def BCELossFlat(*args, axis=-1, floatify=True, **kwargs):
     "Same as `nn.BCELoss`, but flattens input and target."
     return BaseLoss(nn.BCELoss, *args, axis=axis, floatify=floatify, is_2d=False, **kwargs)
 
 # Cell
-@log_args(to_return=True)
 @use_kwargs_dict(reduction='mean')
 def MSELossFlat(*args, axis=-1, floatify=True, **kwargs):
     "Same as `nn.MSELoss`, but flattens input and target."
     return BaseLoss(nn.MSELoss, *args, axis=axis, floatify=floatify, is_2d=False, **kwargs)
 
 # Cell
-@log_args(to_return=True)
 @use_kwargs_dict(reduction='mean')
 def L1LossFlat(*args, axis=-1, floatify=True, **kwargs):
     "Same as `nn.L1Loss`, but flattens input and target."
     return BaseLoss(nn.L1Loss, *args, axis=axis, floatify=floatify, is_2d=False, **kwargs)
 
 # Cell
-@log_args
 class LabelSmoothingCrossEntropy(Module):
     y_int = True
-    def __init__(self, eps:float=0.1, reduction='mean'): self.eps,self.reduction = eps,reduction
+    def __init__(self, eps:float=0.1, weight=None, reduction='mean'):
+        store_attr()
 
     def forward(self, output, target):
         c = output.size()[-1]
@@ -94,13 +90,12 @@ class LabelSmoothingCrossEntropy(Module):
         else:
             loss = -log_preds.sum(dim=-1) #We divide by that size at the return line so sum and not mean
             if self.reduction=='mean':  loss = loss.mean()
-        return loss*self.eps/c + (1-self.eps) * F.nll_loss(log_preds, target.long(), reduction=self.reduction)
+        return loss*self.eps/c + (1-self.eps) * F.nll_loss(log_preds, target.long(), weight=self.weight, reduction=self.reduction)
 
     def activation(self, out): return F.softmax(out, dim=-1)
     def decodes(self, out):    return out.argmax(dim=-1)
 
 # Cell
-@log_args
 @delegates()
 class LabelSmoothingCrossEntropyFlat(BaseLoss):
     "Same as `LabelSmoothingCrossEntropy`, but flattens input and target."

@@ -1,9 +1,7 @@
 from fastai.basics import *
 from fastai.text.all import *
 from fastai.callback.all import *
-from fastscript import *
-
-path = untar_data(URLs.WIKITEXT_TINY)
+from fastcore.script import *
 
 def istitle(line):
     return len(re.findall(r'^ = [^=]* = $', line)) != 0
@@ -22,6 +20,7 @@ def read_file(filename):
     return articles
 
 def get_data(bs, sl):
+    path = untar_data(URLs.WIKITEXT_TINY)
     train = LM_Dataset(read_file(path/'train.txt'), bs=bs, seq_len=sl, shuffle=True)
     valid = LM_Dataset(read_file(path/'valid.txt'), bs=bs, seq_len=sl)
     count = Counter([p for t in train.ds for p in t])
@@ -33,18 +32,17 @@ def get_data(bs, sl):
     return DataLoaders(train_dl, valid_dl),vocab
 
 @call_parse
-def main(gpu:Param("GPU to run on", int)=6,
-         bs:Param("Batch size", int)=104,
+def main(bs:Param("Batch size", int)=104,
          sl:Param("Sequence length", int)=72,
          qrnn:Param("Use QRNNs instead of LSTMs", bool)=False):
-    dbch,vocab = get_data(bs, sl)
+    dls,vocab = get_data(bs, sl)
     config = awd_lstm_lm_config.copy()
     if qrnn: config.update({'input_p': 0.4, 'output_p': 0.4, 'weight_p': 0.1, 'embed_p': 0.1, 'hidden_p': 0.2})
     else:    config.update({'input_p': 0.6, 'output_p': 0.4, 'weight_p': 0.5, 'embed_p': 0.1, 'hidden_p': 0.2})
-    model = get_language_model((AWD_QRNN if qrnn else AWD_LSTM), len(vocab), config=config) 
+    model = get_language_model((AWD_QRNN if qrnn else AWD_LSTM), len(vocab), config=config)
     opt_func = partial(Adam, wd=0.1, eps=1e-7)
-    (alpha,beta) = (2,1) if qrnn else (3,2)
+    alpha,beta = (2,1) if qrnn else (3,2)
     cbs = [MixedPrecision(clip=0.1), ModelResetter, RNNRegularizer(alpha, beta)]
-    learn = Learner(model, dbch, loss_func=CrossEntropyLossFlat(), opt_func=opt_func, cbs=cbs, metrics=[accuracy, Perplexity()])
+    learn = Learner(model, dls, loss_func=CrossEntropyLossFlat(), opt_func=opt_func, cbs=cbs, metrics=[accuracy, Perplexity()])
     learn.fit_one_cycle(90, 5e-3, moms=(0.8,0.7,0.8), div=10)
 

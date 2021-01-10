@@ -4,10 +4,10 @@ __all__ = ['progress_bar', 'master_bar', 'subplots', 'show_image', 'show_titled_
            'ArrayImageBase', 'ArrayImage', 'ArrayImageBW', 'ArrayMask', 'tensor', 'set_seed', 'get_random_states',
            'set_random_states', 'no_random', 'unsqueeze', 'unsqueeze_', 'apply', 'maybe_gather', 'to_detach', 'to_half',
            'to_float', 'default_device', 'to_device', 'to_cpu', 'to_np', 'to_concat', 'TensorBase', 'TensorImageBase',
-           'TensorImage', 'TensorImageBW', 'TensorMask', 'TensorCategory', 'TensorMultiCategory', 'TitledTensorScalar',
-           'concat', 'Chunks', 'show_title', 'ShowTitle', 'TitledInt', 'TitledFloat', 'TitledStr', 'TitledTuple',
-           'get_empty_df', 'display_df', 'get_first', 'one_param', 'item_find', 'find_device', 'find_bs', 'np_func',
-           'Module', 'get_model', 'one_hot', 'one_hot_decode', 'params', 'trainable_params', 'norm_types',
+           'TensorImage', 'TensorImageBW', 'TensorMask', 'TensorFlowField', 'TensorCategory', 'TensorMultiCategory',
+           'TitledTensorScalar', 'concat', 'Chunks', 'show_title', 'ShowTitle', 'TitledInt', 'TitledFloat', 'TitledStr',
+           'TitledTuple', 'get_empty_df', 'display_df', 'get_first', 'one_param', 'item_find', 'find_device', 'find_bs',
+           'np_func', 'Module', 'get_model', 'one_hot', 'one_hot_decode', 'params', 'trainable_params', 'norm_types',
            'norm_bias_params', 'batch_to_samples', 'logit', 'num_distrib', 'rank_distrib', 'distrib_barrier',
            'base_doc', 'doc', 'nested_reorder', 'make_cross_image', 'show_image_batch', 'requires_grad', 'init_default',
            'cond_init', 'apply_leaf', 'apply_init', 'script_use_ctx', 'script_save_ctx', 'script_fwd', 'script_bwd',
@@ -277,7 +277,8 @@ def to_concat(xs, dim=0):
 def set_meta(self:Tensor, x, as_copy=False):
     "Set all metadata in `__dict__`"
     if not hasattr(x,'__dict__'): return
-    self.__dict__ = deepcopy(x.__dict__) if as_copy else x.__dict__
+    # XXX: change to `deepcopy` once PyTorch 1.7.1 is out, and check nb 23 segmentation fit works
+    self.__dict__ = copy(x.__dict__) if as_copy else x.__dict__
 
 # Cell
 if not hasattr(torch,'as_subclass'): torch.as_subclass = torch.Tensor.as_subclass
@@ -289,13 +290,15 @@ def as_subclass(self:Tensor, typ):
     return retain_meta(self, torch.as_subclass(self, typ))
 
 # Cell
-def _convert(ret, cls):
-    if isinstance(ret, torch.Tensor): ret = ret.as_subclass(cls)
-    if isinstance(ret, (tuple, list)): ret = type(ret)(_convert(r, cls) for r in ret)
-    return ret
+def _torch_handled(args, opt, func):
+    if func not in opt: return False
+    for oks in opt[func]:
+        if all(isinstance(arg,ok) for arg,ok in zip(args,oks) if ok): return True
 
 # Cell
 class TensorBase(Tensor):
+    "A `Tensor` which support subclass pickling, and maintains metadata when casting or after methods"
+    debug,_opt = False,defaultdict(list)
     def __new__(cls, x, **kwargs):
         res = cast(tensor(x), cls)
         for k,v in kwargs.items(): setattr(res, k, v)
@@ -312,10 +315,17 @@ class TensorBase(Tensor):
         f = _fa_rebuild_qtensor if self.is_quantized else  _fa_rebuild_tensor
         return (f, args + (self.requires_grad, OrderedDict()))
 
+    @classmethod
+    def register_func(cls, func, *oks): cls._opt[func].append(oks)
+
     def __torch_function__(self, func, types, args=(), kwargs=None):
-        with torch._C.DisableTorchFunction(): ret = _convert(func(*args, **(kwargs or {})), self.__class__)
-        if isinstance(ret, TensorBase): ret.set_meta(self, as_copy=True)
-        return ret
+        if self.debug and func.__name__ not in ('__str__','__repr__'): print(func, types, args, kwargs)
+        convert=False
+        if _torch_handled(args, self._opt, func): convert,types = type(self),(torch.Tensor,)
+        res = super().__torch_function__(func, types, args=args, kwargs=kwargs)
+        if convert: res = convert(res)
+        if isinstance(res, TensorBase): res.set_meta(self, as_copy=True)
+        return res
 
     def new_tensor(self, size, dtype=None, device=None, requires_grad=False):
         cls = type(self)
@@ -325,9 +335,15 @@ class TensorBase(Tensor):
         cls = type(self)
         return self.as_subclass(Tensor).new_ones(data, dtype=dtype, device=device, requires_grad=requires_grad).as_subclass(cls)
 
-    def new(self, x):
+    def new(self, x=None):
         cls = type(self)
-        return self.as_subclass(Tensor).new(x).as_subclass(cls)
+        res = self.as_subclass(Tensor).new() if x is None else self.as_subclass(Tensor).new(x)
+        return res.as_subclass(cls)
+
+    def requires_grad_(self):
+        # Workaround https://github.com/pytorch/pytorch/issues/50219
+        self.requires_grad = True
+        return self
 
 # Cell
 class TensorImageBase(TensorBase):
@@ -349,6 +365,18 @@ class TensorMask(TensorImageBase):
         codes = getattr(self, 'codes', None)
         if codes is not None: kwargs = merge({'vmin': 1, 'vmax': len(codes)}, kwargs)
         return super().show(ctx=ctx, **kwargs)
+
+# Cell
+for o in Tensor.__ne__,Tensor.__eq__,Tensor.add,Tensor.sub,Tensor.mul,Tensor.div,Tensor.__rsub__,Tensor.__radd__,Tensor.matmul,Tensor.bmm:
+    TensorBase.register_func(o, TensorMask, TensorImageBase)
+    TensorBase.register_func(o, TensorImageBase, TensorMask)
+
+TensorMask.register_func(torch.einsum, str, TensorImageBase, TensorMask)
+TensorMask.register_func(torch.einsum, str, TensorMask, TensorImageBase)
+
+# Cell
+class TensorFlowField(TensorBase): pass
+TensorImage.register_func(F.grid_sample, TensorImageBase, TensorFlowField)
 
 # Cell
 class TensorCategory(TensorBase): pass
@@ -623,7 +651,7 @@ def rank_distrib():
 
 # Cell
 def distrib_barrier():
-    "Place a synchronization barrier in distributed training so that ALL sub-processes in the pytorch process group must arrive here before proceeding."
+    "Place a synchronization barrier in distributed training"
     if num_distrib() > 1 and torch.distributed.is_initialized(): torch.distributed.barrier()
 
 # Cell
@@ -765,6 +793,6 @@ def grad_module(cls):
 # Comes from 13b_metrics.ipynb, cell
 def flatten_check(inp, targ):
     "Check that `out` and `targ` have the same number of elements and flatten them."
-    inp,targ = inp.contiguous().view(-1),targ.contiguous().view(-1)
+    inp,targ = TensorBase(inp.contiguous()).view(-1),TensorBase(targ.contiguous()).view(-1)
     test_eq(len(inp), len(targ))
     return inp,targ
