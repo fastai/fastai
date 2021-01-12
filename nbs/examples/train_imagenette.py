@@ -13,12 +13,11 @@ fastprogress.MAX_COLS = 80
 def pr(s):
     if rank_distrib()==0: print(s)
 
-def get_dls(size, woof, bs, sh=0., wks=None):
+def get_dls(size, woof, bs, sh=0., workers=None):
     if size<=224: path = URLs.IMAGEWOOF_320 if woof else URLs.IMAGENETTE_320
     else        : path = URLs.IMAGEWOOF     if woof else URLs.IMAGENETTE
     source = untar_data(path)
-    wks = ifnone(wks,min(8,num_cpus()))
-#    if workers is None: workers = min(8, num_cpus())
+    workers = ifnone(workers,min(8,num_cpus()))
     batch_tfms = [Normalize.from_stats(*imagenet_stats)]
     if sh: batch_tfms.append(RandomErasing(p=0.3, max_count=3, sh=sh))
     dblock = DataBlock(blocks=(ImageBlock, CategoryBlock),
@@ -26,7 +25,7 @@ def get_dls(size, woof, bs, sh=0., wks=None):
                        get_items=get_image_files, get_y=parent_label,
                        item_tfms=[RandomResizedCrop(size, min_scale=0.35), FlipItem(0.5)],
                        batch_tfms=batch_tfms)
-    return dblock.dataloaders(source, path=source, bs=bs, num_workers=wks)
+    return dblock.dataloaders(source, path=source, bs=bs, num_workers=workers)
 
 @call_parse
 def main(
@@ -52,7 +51,7 @@ def main(
     dump:  Param("Print model; don't train", int)=0,
     runs:  Param("Number of times to repeat training", int)=1,
     meta:  Param("Metadata (ignored)", str)='',
-    wks:   Param("Number of workers", int)=None,
+    workers:   Param("Number of workers", int)=None,
 ):
     "Training of Imagenette. Call with `python -m fastai.launch` for distributed training"
     if   opt=='adam'  : opt_func = partial(Adam, mom=mom, sqr_mom=sqrmom, eps=eps)
@@ -60,7 +59,7 @@ def main(
     elif opt=='sgd'   : opt_func = partial(SGD, mom=mom)
     elif opt=='ranger': opt_func = partial(ranger, mom=mom, sqr_mom=sqrmom, eps=eps, beta=beta)
 
-    dls = rank0_first(get_dls, size, woof, bs, sh=sh, wks=wks)
+    dls = rank0_first(get_dls, size, woof, bs, sh=sh, workers=workers)
     pr(f'epochs: {epochs}; lr: {lr}; size: {size}; sqrmom: {sqrmom}; mom: {mom}; eps: {eps}')
     m,act_fn,pool = [globals()[o] for o in (arch,act_fn,pool)]
 
