@@ -2,6 +2,7 @@
 
 <!-- do not remove -->
 
+
 ## 2.2.3
 
 ### New Features
@@ -260,5 +261,4 @@ The next version of fastai will be 2.1. It will require PyTorch 1.7, which has s
 ## Version 2.0.0
 
 - Initial release of v2
-
 
