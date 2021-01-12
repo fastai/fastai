@@ -178,7 +178,7 @@ class NonNativeMixedPrecision(Callback):
 # Cell
 @patch
 @delegates(NonNativeMixedPrecision.__init__)
-def to_to_non_native_fp16(self:Learner, **kwargs): return self.add_cbs([ModelToHalf(), NonNativeMixedPrecision(**kwargs)])
+def to_non_native_fp16(self:Learner, **kwargs): return self.add_cbs([ModelToHalf(), NonNativeMixedPrecision(**kwargs)])
 
 # Cell
 @patch
