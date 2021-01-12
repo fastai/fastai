@@ -20,7 +20,7 @@ class MixHandler(Callback):
 
     def before_fit(self):
         self.stack_y = getattr(self.learn.loss_func, 'y_int', False)
-        if self.stack_y: self.old_lf,self.learn.loss_func = self.learn.loss_func,self.loss_func
+        if self.stack_y: self.old_lf,self.learn.loss_func = self.learn.loss_func,self.lf
 
     def after_fit(self):
         if self.stack_y: self.learn.loss_func = self.old_lf
