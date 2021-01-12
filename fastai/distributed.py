@@ -76,7 +76,8 @@ class DistributedDL(TfmdDL):
         if rank is None: rank=rank_distrib()
         if world_size is None: world_size=num_distrib()
         store_attr()
-        self.bs,self.device,self.drop_last,self.dataset,fake = attrgetter('bs','device','drop_last','dataset','fake_l')(dl)
+        self.bs,self.device,self.drop_last,self.dataset,fake,self.num_workers,self.offs = \
+            attrgetter('bs','device','drop_last','dataset','fake_l','num_workers','offs')(dl)
         self.fake_l = _FakeLoader(self, fake.pin_memory, fake.num_workers, fake.timeout, persistent_workers=fake.persistent_workers)
 
     def _broadcast(self,t,rank):
