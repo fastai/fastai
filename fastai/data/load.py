@@ -21,6 +21,7 @@ class _FakeLoader:
     _IterableDataset_len_called,_auto_collation,collate_fn,drop_last = None,False,noops,False
     _index_sampler,generator,prefetch_factor  = Inf.count,None,2
     dataset_kind = _dataset_kind = _DatasetKind.Iterable
+    noops = noops
     def __init__(self, d, pin_memory, num_workers, timeout, persistent_workers):
         self.dataset,self.default,self.worker_init_fn = self,d,_wif
         store_attr('d,pin_memory,num_workers,timeout,persistent_workers')
