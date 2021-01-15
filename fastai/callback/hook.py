@@ -104,16 +104,16 @@ def has_params(m):
 # Cell
 @funcs_kwargs
 class HookCallback(Callback):
-    "`Callback` that can be used to register hooks on `modules`"
+    "`Callback` that can be used to register hooks on modules in `ms`"
     _methods = ["hook"]
     hook = noops
-    def __init__(self, modules=None, every=None, remove_end=True, is_forward=True, detach=True, cpu=True, **kwargs):
-        store_attr('modules,every,remove_end,is_forward,detach,cpu')
+    def __init__(self, ms=None, every=None, remove_end=True, is_forward=True, detach=True, cpu=True, **kwargs):
+        store_attr('ms,every,remove_end,is_forward,detach,cpu')
         assert not kwargs
 
     def before_fit(self):
-        "Register the `Hooks` on `self.modules`."
-        if self.modules is None: self.modules = [m for m in flatten_model(self.model) if has_params(m)]
+        "Register the `Hooks` on `self.ms`."
+        if self.ms is None: self.ms = [m for m in flatten_model(self.model) if has_params(m)]
         if self.every is None: self._register()
 
     def before_batch(self):
@@ -128,7 +128,7 @@ class HookCallback(Callback):
         "Remove the `Hooks`."
         if self.remove_end: self._remove()
 
-    def _register(self): self.hooks = Hooks(self.modules, self.hook, self.is_forward, self.detach, self.cpu)
+    def _register(self): self.hooks = Hooks(self.ms, self.hook, self.is_forward, self.detach, self.cpu)
     def _remove(self):
         if getattr(self, 'hooks', None): self.hooks.remove()
 
