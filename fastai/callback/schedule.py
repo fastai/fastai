@@ -200,12 +200,20 @@ class LRFinder(ParamScheduler):
 
 # Cell
 @patch
-def plot_lr_find(self:Recorder, skip_end=5):
+def plot_lr_find(self:Recorder, suggestions= False,skip_end=5, lr_min=None, lr_steep=None):
     "Plot the result of an LR Finder test (won't work if you didn't do `learn.lr_find()` before)"
     lrs    = self.lrs    if skip_end==0 else self.lrs   [:-skip_end]
     losses = self.losses if skip_end==0 else self.losses[:-skip_end]
+
+    if suggestions:
+        lr_min_index = min(range(len(lrs)), key=lambda i: abs(lrs[i]-lr_min))
+        lr_steep_index = min(range(len(lrs)), key=lambda i: abs(lrs[i]-lr_steep))
+
     fig, ax = plt.subplots(1,1)
     ax.plot(lrs, losses)
+    if suggestions:
+        ax.plot(lr_min,L(losses)[lr_min_index],'ro')
+        ax.plot(lr_steep,L(losses)[lr_steep_index],'ro')
     ax.set_ylabel("Loss")
     ax.set_xlabel("Learning Rate")
     ax.set_xscale('log')
@@ -220,11 +228,15 @@ def lr_find(self:Learner, start_lr=1e-7, end_lr=10, num_it=100, stop_div=True, s
     n_epoch = num_it//len(self.dls.train) + 1
     cb=LRFinder(start_lr=start_lr, end_lr=end_lr, num_it=num_it, stop_div=stop_div)
     with self.no_logging(): self.fit(n_epoch, cbs=cb)
-    if show_plot: self.recorder.plot_lr_find()
     if suggestions:
         lrs,losses = tensor(self.recorder.lrs[num_it//10:-5]),tensor(self.recorder.losses[num_it//10:-5])
         if len(losses) == 0: return
         lr_min = lrs[losses.argmin()].item()
         grads = (losses[1:]-losses[:-1]) / (lrs[1:].log()-lrs[:-1].log())
         lr_steep = lrs[grads.argmin()].item()
+        if show_plot: self.recorder.plot_lr_find(suggestions=True, lr_min =lr_min/10., lr_steep=lr_steep)
+    else:
+        if show_plot: self.recorder.plot_lr_find()
+
+    if suggestions:
         return SuggestedLRs(lr_min/10.,lr_steep)
