@@ -1,7 +1,8 @@
 {
     "Getting started": {
         "Overview": "/",
-        "Quick Start": "/quick_start.html"
+        "Quick Start": "/quick_start.html",
+        "Performance Tips and Tricks": "/dev/performance.html"
     },
     "Tutorials": {
         "Overview": "/tutorial.html",
