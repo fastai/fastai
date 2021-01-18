@@ -133,7 +133,7 @@ def tensor(x, *rest, **kwargs):
     return res
 
 # Cell
-def set_seed(s, reproducible=False):
+def set_seed(s, reproducible=True):
     "Set random seed for `random`, `torch`, and `numpy` (where available)"
     try: torch.manual_seed(s)
     except NameError: pass
