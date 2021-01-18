@@ -48,7 +48,7 @@ class TfmdDL(DataLoader):
                 kwargs[nm].setup(self)
 
     def _one_pass(self):
-        b = self.do_batch([self.do_item(0)])
+        b = self.do_batch([self.do_item(None)])
         if self.device is not None: b = to_device(b, self.device)
         its = self.after_batch(b)
         self._n_inp = 1 if not isinstance(its, (list,tuple)) or len(its)==1 else len(its)-1

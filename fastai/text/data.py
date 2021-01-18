@@ -92,6 +92,7 @@ class LMDataLoader(TfmdDL):
         return idxs
 
     def create_item(self, seq):
+        if seq is None: seq = 0
         if seq>=self.n: raise IndexError
         sl = self.last_len if seq//self.bs==self.n_batches-1 else self.seq_len
         st = (seq%self.bs)*self.bl + (seq//self.bs)*self.seq_len

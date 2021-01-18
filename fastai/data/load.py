@@ -72,7 +72,9 @@ class DataLoader(GetAttr):
                  shuffle=False, drop_last=False, indexed=None, n=None, device=None, persistent_workers=False, **kwargs):
         if batch_size is not None: bs = batch_size # PyTorch compatibility
         assert not (bs is None and drop_last)
-        if indexed is None: indexed = dataset is not None and hasattr(dataset,'__getitem__')
+        if indexed is None: indexed = (hasattr(dataset,'__getitem__')
+                                       and not isinstance(dataset, IterableDataset))
+        if not indexed and shuffle: raise ValueError("Can only shuffle an indexed dataset (not an iterable one).")
         if n is None:
             try: n = len(dataset)
             except TypeError: pass
@@ -105,7 +107,7 @@ class DataLoader(GetAttr):
         if hasattr(self, 'it'): del(self.it)
 
     def create_batches(self, samps):
-        self.it = iter(self.dataset) if self.dataset is not None else None
+        if self.dataset is not None: self.it = iter(self.dataset)
         res = filter(lambda o:o is not None, map(self.do_item, samps))
         yield from map(self.do_batch, self.chunkify(res))
 
@@ -128,7 +130,10 @@ class DataLoader(GetAttr):
     def shuffle_fn(self, idxs): return self.rng.sample(idxs, len(idxs))
     def randomize(self): self.rng = random.Random(self.rng.randint(0,2**32-1))
     def retain(self, res, b):  return retain_types(res, b[0] if is_listy(b) else b)
-    def create_item(self, s):  return next(self.it) if s is None else self.dataset[s]
+    def create_item(self, s):
+        if self.indexed: return self.dataset[s or 0]
+        elif s is None:  return next(self.it)
+        else: raise IndexError("Cannot index an iterable dataset numerically - must use `None`.")
     def create_batch(self, b): return (fa_collate,fa_convert)[self.prebatched](b)
     def do_batch(self, b): return self.retain(self.create_batch(self.before_batch(b)), b)
     def to(self, device): self.device = device
