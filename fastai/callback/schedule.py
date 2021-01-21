@@ -208,7 +208,7 @@ def plot_lr_find(self:Recorder, skip_end=5):
     ax.plot(lrs, losses)
     ax.set_ylabel("Loss")
     ax.set_xlabel("Learning Rate")
-    ax.set_xscale('log')
+    ax.set_xscale('linear')
 
 # Cell
 SuggestedLRs = collections.namedtuple('SuggestedLRs', ['lr_min', 'lr_steep'])
