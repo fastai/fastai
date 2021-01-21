@@ -285,3 +285,17 @@ def plot_top_losses(x: TensorImage, y:TensorMultiCategory, samples, outs, raws, 
     for i,l in enumerate(["target", "predicted", "probabilities", "loss"]):
         rows = [b.show(ctx=r, label=l, **kwargs) for b,r in zip(outs.itemgot(i),rows)]
     display_df(pd.DataFrame(rows))
+
+# Cell
+@typedispatch
+def plot_top_losses(x:TensorImage, y:TensorMask, samples, outs, raws, losses, nrows=None, ncols=None, figsize=None, **kwargs):
+    axes = get_grid(len(samples)*3, nrows=len(samples), ncols=3, add_vert=1, figsize=figsize, flatten=False, title="Input | Target | Prediction")
+    if axes.ndim == 1: axes = (axes,)
+    titles = ["input", "target", "pred"]
+    for axs,s,o,l in zip(axes, samples, outs, losses):
+        imgs = (s[0], s[1], o[0])
+        for ax,im,title in zip(axs, imgs, titles):
+            if title=="pred":
+                title += f"; loss = {l:.4f}"
+            im.show(ctx=ax)
+            ax.set_title(title)
