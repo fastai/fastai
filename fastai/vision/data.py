@@ -10,13 +10,14 @@ from .core import *
 
 # Cell
 @delegates(subplots)
-def get_grid(n, nrows=None, ncols=None, add_vert=0, figsize=None, double=False, title=None, return_fig=False, **kwargs):
+def get_grid(n, nrows=None, ncols=None, add_vert=0, figsize=None, double=False, title=None, return_fig=False,
+             flatten=True, **kwargs):
     "Return a grid of `n` axes, `rows` by `cols`"
     nrows = nrows or int(math.sqrt(n))
     ncols = ncols or int(np.ceil(n/nrows))
     if double: ncols*=2 ; n*=2
     fig,axs = subplots(nrows, ncols, figsize=figsize, **kwargs)
-    axs = [ax if i<n else ax.set_axis_off() for i, ax in enumerate(axs.flatten())][:n]
+    if flatten: axs = [ax if i<n else ax.set_axis_off() for i, ax in enumerate(axs.flatten())][:n]
     if title is not None: fig.suptitle(title, weight='bold', size=14)
     return (fig,axs) if return_fig else axs
 
