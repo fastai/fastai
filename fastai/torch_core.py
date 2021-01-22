@@ -340,9 +340,9 @@ class TensorBase(Tensor):
         res = self.as_subclass(Tensor).new() if x is None else self.as_subclass(Tensor).new(x)
         return res.as_subclass(cls)
 
-    def requires_grad_(self):
+    def requires_grad_(self, requires_grad=True):
         # Workaround https://github.com/pytorch/pytorch/issues/50219
-        self.requires_grad = True
+        self.requires_grad = requires_grad
         return self
 
 # Cell
