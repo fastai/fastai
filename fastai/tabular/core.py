@@ -26,13 +26,12 @@ def add_datepart(df, field_name, prefix=None, drop=True, time=False):
     make_date(df, field_name)
     field = df[field_name]
     prefix = ifnone(prefix, re.sub('[Dd]ate$', '', field_name))
-    attr = ['Year', 'Month', 'Day', 'Dayofweek', 'Dayofyear', 'Is_month_end', 'Is_month_start',
+    attr = ['Year', 'Month', 'Week', 'Day', 'Dayofweek', 'Dayofyear', 'Is_month_end', 'Is_month_start',
             'Is_quarter_end', 'Is_quarter_start', 'Is_year_end', 'Is_year_start']
     if time: attr = attr + ['Hour', 'Minute', 'Second']
-    for n in attr: df[prefix + n] = getattr(field.dt, n.lower())
     # Pandas removed `dt.week` in v1.1.10
-    week = field.dt.isocalendar().week if hasattr(field.dt, 'isocalendar') else field.dt.week
-    df.insert(3, prefix+'Week', week)
+    week = field.dt.isocalendar().week.astype(field.dt.day.dtype) if hasattr(field.dt, 'isocalendar') else field.dt.week
+    for n in attr: df[prefix + n] = getattr(field.dt, n.lower()) if n != 'Week' else week
     mask = ~field.isna()
     df[prefix + 'Elapsed'] = np.where(mask,field.values.astype(np.int64) // 10 ** 9,None)
     if drop: df.drop(field_name, axis=1, inplace=True)
@@ -85,9 +84,9 @@ def cont_cat_split(df, max_card=20, dep_var=None):
     cont_names, cat_names = [], []
     for label in df:
         if label in L(dep_var): continue
-        if (np.issubdtype(df[label].dtype, np.integer) and
-            df[label].unique().shape[0] > max_card or
-            np.issubdtype(df[label].dtype, np.floating)):
+        if ((pd.api.types.is_integer_dtype(df[label].dtype) and
+            df[label].unique().shape[0] > max_card) or
+            pd.api.types.is_float_dtype(df[label].dtype)):
             cont_names.append(label)
         else: cat_names.append(label)
     return cont_names, cat_names
