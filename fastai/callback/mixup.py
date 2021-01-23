@@ -18,11 +18,11 @@ class MixHandler(Callback):
     def __init__(self, alpha=0.5):
         self.distrib = Beta(tensor(alpha), tensor(alpha))
 
-    def before_fit(self):
+    def before_train(self):
         self.stack_y = getattr(self.learn.loss_func, 'y_int', False)
-        if self.stack_y: self.old_lf,self.learn.loss_func = self.learn.loss_func,self.lf
+        if self.stack_y: self.old_lf,self.learn.loss_func = self.learn.loss_func,self.loss_func
 
-    def after_fit(self):
+    def after_train(self):
         if self.stack_y: self.learn.loss_func = self.old_lf
 
     def lf(self, pred, *yb):
