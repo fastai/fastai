@@ -103,11 +103,11 @@ class LabelSmoothingCrossEntropy(Module):
         store_attr()
 
     def forward(self, output, target):
-        c = output.size()[-1]
-        log_preds = F.log_softmax(output, dim=-1)
+        c = output.size()[1]
+        log_preds = F.log_softmax(output, dim=1)
         if self.reduction=='sum': loss = -log_preds.sum()
         else:
-            loss = -log_preds.sum(dim=-1) #We divide by that size at the return line so sum and not mean
+            loss = -log_preds.sum(dim=1) #We divide by that size at the return line so sum and not mean
             if self.reduction=='mean':  loss = loss.mean()
         return loss*self.eps/c + (1-self.eps) * F.nll_loss(log_preds, target.long(), weight=self.weight, reduction=self.reduction)
 
