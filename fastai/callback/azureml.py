@@ -13,6 +13,7 @@ from azureml.core.run import Run
 # Cell
 class AzureMLCallback(Callback):
     "Log losses, metrics, model architecture summary to AzureML"
+    order = Recorder.order+1
 
     def before_fit(self):
         self.run = Run.get_context()
