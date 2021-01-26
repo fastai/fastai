@@ -78,6 +78,8 @@ class DataLoader(GetAttr):
             except TypeError: pass
         store_attr('dataset,bs,shuffle,drop_last,indexed,n,pin_memory,timeout,device')
         self.rng,self.num_workers,self.offs = random.Random(random.randint(0,2**32-1)),1,0
+        if sys.platform == "win32":
+            num_workers = 0
         self.fake_l = _FakeLoader(self, pin_memory, num_workers, timeout, persistent_workers=persistent_workers)
 
     def __len__(self):
