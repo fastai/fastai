@@ -4,7 +4,6 @@ __all__ = ['fa_collate', 'fa_convert', 'SkipItemException', 'DataLoader']
 
 # Cell
 from ..torch_basics import *
-
 from torch.utils.data.dataloader import _MultiProcessingDataLoaderIter,_SingleProcessDataLoaderIter,_DatasetKind
 _loaders = (_MultiProcessingDataLoaderIter,_SingleProcessDataLoaderIter)
 
@@ -18,7 +17,10 @@ def _wif(worker_id):
     ds.wif()
 
 class _FakeLoader:
-    _IterableDataset_len_called,_auto_collation,collate_fn,drop_last = None,False,noops,False
+    def fn_noops(self, x=None, *args, **kwargs):
+        "Do nothing (method)"
+        return x
+    _IterableDataset_len_called,_auto_collation,collate_fn,drop_last = None,False,fn_noops,False
     _index_sampler,generator,prefetch_factor  = Inf.count,None,2
     dataset_kind = _dataset_kind = _DatasetKind.Iterable
     def __init__(self, d, pin_memory, num_workers, timeout, persistent_workers):
@@ -78,7 +80,9 @@ class DataLoader(GetAttr):
             except TypeError: pass
         store_attr('dataset,bs,shuffle,drop_last,indexed,n,pin_memory,timeout,device')
         self.rng,self.num_workers,self.offs = random.Random(random.randint(0,2**32-1)),1,0
-        if sys.platform == "win32":
+        if sys.platform == "win32" and is_in_ipython() and num_workers > 0:
+            print("Due to IPython and Windows limitation, python multiprocessing isn't avaialable now.")
+            print("So the number_workers is changed to 0 to avoid getting stuck")
             num_workers = 0
         self.fake_l = _FakeLoader(self, pin_memory, num_workers, timeout, persistent_workers=persistent_workers)
 
