@@ -81,7 +81,7 @@ class DataLoader(GetAttr):
         store_attr('dataset,bs,shuffle,drop_last,indexed,n,pin_memory,timeout,device')
         self.rng,self.num_workers,self.offs = random.Random(random.randint(0,2**32-1)),1,0
         if sys.platform == "win32" and is_in_ipython() and num_workers > 0:
-            print("Due to IPython and Windows limitation, python multiprocessing isn't avaialable now.")
+            print("Due to IPython and Windows limitation, python multiprocessing isn't available now.")
             print("So the number_workers is changed to 0 to avoid getting stuck")
             num_workers = 0
         self.fake_l = _FakeLoader(self, pin_memory, num_workers, timeout, persistent_workers=persistent_workers)
