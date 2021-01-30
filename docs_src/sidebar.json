@@ -26,7 +26,8 @@
         "empty2": {
             "Advanced": {
                 "Albumentations Tutorial": "/tutorial.albumentations.html",
-                "Siamese Tutorial": "/tutorial.siamese.html"
+                "Siamese Tutorial": "/tutorial.siamese.html",
+                "Performance Tips and Tricks": "/dev/performance.html"
             }
         },
         "empty3": {
@@ -72,7 +73,7 @@
         "Layers": "/layers.html",
         "Loss Functions": "/losses.html"
     },
-    
+
     "Vision": {
         "Core": "/vision.core.html",
         "Data": "/vision.data.html",
@@ -83,7 +84,7 @@
                 "XResnet": "/vision.models.xresnet.html",
                 "Unet": "/vision.models.unet.html"
             }
-        },        
+        },
         "GAN": "/vision.gan.html",
         "Utilities": "/vision.utils.html",
         "Widgets": "/vision.widgets.html"
@@ -111,7 +112,7 @@
         "Imagery": "/medical.imaging.html",
         "Text": "/medical.text.html"
     },
-    
+
     "Integrations": {
         "Captum": "/callback.captum.html",
         "Weights & Biases": "/callback.wandb.html",

@@ -31,7 +31,7 @@ jobs:
         
   filter:
     runs-on: ubuntu-latest
-    if: (github.event_name == 'push' && github.event.head_commit.author.username == 'jph00') || github.event_name != 'push'
+    if: true # (github.event_name == 'push' && github.event.head_commit.author.username == 'jph00') || github.event_name != 'push'
     steps:
       - run: |
           echo "passed filter"
