@@ -114,6 +114,10 @@ def __array_eq__(self:Tensor,b):
 # Cell
 def _array2tensor(x):
     if x.dtype==np.uint16: x = x.astype(np.float32)
+    # windows default numpy int dytpe is int32, while torch tensor default int dtype is int64
+    # https://github.com/numpy/numpy/issues/9464
+    if sys.platform == "win32":
+        if x.dtype==np.int: x = x.astype(np.int64)
     return torch.from_numpy(x)
 
 # Cell
