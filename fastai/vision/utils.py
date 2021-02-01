@@ -35,7 +35,7 @@ def download_images(dest, url_file=None, urls=None, max_pics=1000, n_workers=8, 
     dest = Path(dest)
     dest.mkdir(exist_ok=True)
     parallel(partial(_download_image_inner, dest, timeout=timeout, preserve_filename=preserve_filename),
-             list(enumerate(urls)), n_workers=n_workers)
+             list(enumerate(urls)), n_workers=n_workers, threadpool=True)
 
 # Cell
 def resize_to(img, targ_sz, use_min=False):
