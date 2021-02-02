@@ -166,7 +166,7 @@ def _tokenize_files(func, files, path, output_dir=None, output_names=None, n_wor
     lengths,counter = {},Counter()
     for i,tok in parallel_tokenize(files, tok, rules, n_workers=n_workers):
         out = func(i,output_dir)
-        out.mk_write(' '.join(tok))
+        out.mk_write(' '.join(tok), encoding=encoding)
         lengths[str(files[i].relative_to(path))] = len(tok)
         counter.update(tok)
 
