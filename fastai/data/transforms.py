@@ -15,6 +15,8 @@ from .external import *
 
 from sklearn.model_selection import train_test_split
 
+import posixpath
+
 # Cell
 def _get_files(p, fs, extensions=None):
     p = Path(p)
