@@ -37,7 +37,7 @@ class MixedPrecision(Callback):
 class FP16TestCallback(Callback):
     "Asserts that predictions are `float16` values"
     order = 9
-    def after_pred(self): assert self.pred.dtype==torch.float16
+    def after_pred(self): assert floatify(self.pred)[0].dtype==torch.float16
 
 # Cell
 @patch
