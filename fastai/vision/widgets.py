@@ -88,3 +88,4 @@ class ImageClassifierCleaner(GetAttr):
     def on_change_ds(self, change=None):
         info = L(o for o in self.iwis[self.dd_ds.index] if o[1]==self.dd_cats.value)
         self.iw.set_fns(info.sorted(2, reverse=True).itemgot(0))
+
