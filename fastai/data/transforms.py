@@ -178,9 +178,9 @@ class RegexLabeller():
         self.matcher = self.pat.match if match else self.pat.search
 
     def __call__(self, o):
-        posix_o = Path(o).as_posix()
-        res = self.matcher(str(posix_o))
-        assert res,f'Failed to find "{self.pat}" in "{posix_o}"'
+        o = str(o).replace(os.sep, posixpath.sep)
+        res = self.matcher(o)
+        assert res,f'Failed to find "{self.pat}" in "{o}"'
         return res.group(1)
 
 # Cell
