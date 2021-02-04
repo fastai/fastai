@@ -268,7 +268,7 @@ class TextDataLoaders(DataLoaders):
         if y_block is not None and not is_lm: blocks += (y_block if is_listy(y_block) else [y_block])
         splitter = RandomSplitter(valid_pct, seed=seed) if valid_col is None else ColSplitter(valid_col)
         dblock = DataBlock(blocks=blocks,
-                           get_x=ColReader("text"),
+                           get_x=ColReader(text_col),
                            get_y=None if is_lm else ColReader(label_col, label_delim=label_delim),
                            splitter=splitter)
         return cls.from_dblock(dblock, df, path=path, seq_len=seq_len, **kwargs)
