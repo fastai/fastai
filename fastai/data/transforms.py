@@ -15,6 +15,8 @@ from .external import *
 
 from sklearn.model_selection import train_test_split
 
+import posixpath
+
 # Cell
 def _get_files(p, fs, extensions=None):
     p = Path(p)
@@ -178,7 +180,8 @@ class RegexLabeller():
         self.matcher = self.pat.match if match else self.pat.search
 
     def __call__(self, o):
-        res = self.matcher(str(o))
+        o = str(o).replace(os.sep, posixpath.sep)
+        res = self.matcher(o)
         assert res,f'Failed to find "{self.pat}" in "{o}"'
         return res.group(1)
 

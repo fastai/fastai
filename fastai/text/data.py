@@ -260,7 +260,7 @@ class TextDataLoaders(DataLoaders):
     @classmethod
     @delegates(DataLoaders.from_dblock)
     def from_df(cls, df, path='.', valid_pct=0.2, seed=None, text_col=0, label_col=1, label_delim=None, y_block=None,
-                text_vocab=None, is_lm=False, valid_col=None, tok_tfm=None, seq_len=72, backwards=False, **kwargs):
+                text_vocab=None, is_lm=False, valid_col=None, tok_tfm=None, tok_text_col="text", seq_len=72, backwards=False, **kwargs):
         "Create from `df` in `path` with `valid_pct`"
         blocks = [TextBlock.from_df(text_col, text_vocab, is_lm, seq_len, backwards) if tok_tfm is None else TextBlock(tok_tfm, text_vocab, is_lm, seq_len, backwards)]
         if y_block is None and not is_lm:
@@ -268,7 +268,7 @@ class TextDataLoaders(DataLoaders):
         if y_block is not None and not is_lm: blocks += (y_block if is_listy(y_block) else [y_block])
         splitter = RandomSplitter(valid_pct, seed=seed) if valid_col is None else ColSplitter(valid_col)
         dblock = DataBlock(blocks=blocks,
-                           get_x=ColReader("text"),
+                           get_x=ColReader(tok_text_col),
                            get_y=None if is_lm else ColReader(label_col, label_delim=label_delim),
                            splitter=splitter)
         return cls.from_dblock(dblock, df, path=path, seq_len=seq_len, **kwargs)
