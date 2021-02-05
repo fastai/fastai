@@ -10,5 +10,5 @@ if __name__ == "__main__":
     # It can be reproduced in Linux by uncommenting this line
     # multiprocessing.set_start_method('spawn')
     print("start main ...")
-    dl = RandDL(bs=4, num_workers=4, drop_last=True)
+    dl = RandDL(bs=4, num_workers=2, drop_last=True)
     print(L(dl).map(len))
