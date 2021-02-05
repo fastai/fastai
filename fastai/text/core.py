@@ -166,7 +166,7 @@ def _tokenize_files(func, files, path, output_dir=None, output_names=None, n_wor
     lengths,counter = {},Counter()
     for i,tok in parallel_tokenize(files, tok, rules, n_workers=n_workers):
         out = func(i,output_dir)
-        out.mk_write(' '.join(tok))
+        out.mk_write(' '.join(tok), encoding=encoding)
         lengths[str(files[i].relative_to(path))] = len(tok)
         counter.update(tok)
 
@@ -289,7 +289,7 @@ class Tokenizer(Transform):
     def encodes(self, o:Path):
         if self.mode=='folder' and str(o).startswith(str(self.path)):
             tok = self.output_dir/o.relative_to(self.path)
-            return L(tok.read_text().split(' '))
+            return L(tok.read_text(encoding='UTF-8').split(' '))
         else: return self._tokenize1(o.read_text())
 
     def encodes(self, o:str): return self._tokenize1(o)
