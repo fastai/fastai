@@ -13,23 +13,40 @@ fastprogress.MAX_COLS = 80
 def pr(s):
     if rank_distrib()==0: print(s)
 
-def get_dls(size, woof, bs, sh=0., workers=None):
+def get_dls(size, woof, pct_noise, bs, sh=0., workers=None):
+    assert pct_noise in [0,5,50], '`pct_noise` must be 0,5 or 50.'
     if size<=224: path = URLs.IMAGEWOOF_320 if woof else URLs.IMAGENETTE_320
     else        : path = URLs.IMAGEWOOF     if woof else URLs.IMAGENETTE
     source = untar_data(path)
     workers = ifnone(workers,min(8,num_cpus()))
+    blocks=(ImageBlock, CategoryBlock)
+    tfms = [RandomResizedCrop(size, min_scale=0.35), FlipItem(0.5)]
     batch_tfms = [Normalize.from_stats(*imagenet_stats)]
     if sh: batch_tfms.append(RandomErasing(p=0.3, max_count=3, sh=sh))
-    dblock = DataBlock(blocks=(ImageBlock, CategoryBlock),
-                       splitter=GrandparentSplitter(valid_name='val'),
-                       get_items=get_image_files, get_y=parent_label,
-                       item_tfms=[RandomResizedCrop(size, min_scale=0.35), FlipItem(0.5)],
-                       batch_tfms=batch_tfms)
-    return dblock.dataloaders(source, path=source, bs=bs, num_workers=workers)
+    
+    if pct_noise > 0:
+        csv_file = 'noisy_imagewoof.csv' if woof else 'noisy_imagenette.csv'
+        inp = pd.read_csv(source/csv_file)
+        dblock = DataBlock(blocks=blocks,
+                   splitter=ColSplitter(),
+                   get_x=ColReader('path', pref=source), 
+                   get_y=ColReader(f'noisy_labels_{pct_noise}'),
+                   item_tfms=tfms,
+                   batch_tfms=batch_tfms)
+    else:
+        inp = source
+        dblock = DataBlock(blocks=blocks,
+                   splitter=GrandparentSplitter(valid_name='val'),
+                   get_items=get_image_files, get_y=parent_label,
+                   item_tfms=tfms,
+                   batch_tfms=batch_tfms)
+    
+    return dblock.dataloaders(inp, path=source, bs=bs, num_workers=workers)
 
 @call_parse
 def main(
     woof:  Param("Use imagewoof (otherwise imagenette)", int)=0,
+    pct_noise:Param("Percentage of noise in training set (1,5,25,50%)", int)=0,
     lr:    Param("Learning rate", float)=1e-2,
     size:  Param("Size (px: 128,192,256)", int)=128,
     sqrmom:Param("sqr_mom", float)=0.99,
@@ -59,7 +76,7 @@ def main(
     elif opt=='sgd'   : opt_func = partial(SGD, mom=mom)
     elif opt=='ranger': opt_func = partial(ranger, mom=mom, sqr_mom=sqrmom, eps=eps, beta=beta)
 
-    dls = rank0_first(get_dls, size, woof, bs, sh=sh, workers=workers)
+    dls = rank0_first(get_dls, size, woof, pct_noise, bs, sh=sh, workers=workers)
     pr(f'epochs: {epochs}; lr: {lr}; size: {size}; sqrmom: {sqrmom}; mom: {mom}; eps: {eps}')
     m,act_fn,pool = [globals()[o] for o in (arch,act_fn,pool)]
 
