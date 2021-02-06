@@ -77,7 +77,7 @@ def main(
         learn = Learner(dls, m(n_out=10, act_cls=act_fn, sa=sa, sym=sym, pool=pool), opt_func=opt_func, \
                 metrics=[accuracy,top_k_accuracy], loss_func=LabelSmoothingCrossEntropy())
         if dump: pr(learn.model); exit()
-        if fp16: learn = learn.to_native_fp16()
+        if fp16: learn = learn.to_fp16()
         cbs = MixUp(mixup) if mixup else []
         n_gpu = torch.cuda.device_count()
         # Both context managers work fine for single GPU too
