@@ -24,22 +24,14 @@ def get_dls(size, woof, pct_noise, bs, sh=0., workers=None):
     batch_tfms = [Normalize.from_stats(*imagenet_stats)]
     if sh: batch_tfms.append(RandomErasing(p=0.3, max_count=3, sh=sh))
     
-    if pct_noise > 0:
-        csv_file = 'noisy_imagewoof.csv' if woof else 'noisy_imagenette.csv'
-        inp = pd.read_csv(source/csv_file)
-        dblock = DataBlock(blocks=blocks,
-                   splitter=ColSplitter(),
-                   get_x=ColReader('path', pref=source), 
-                   get_y=ColReader(f'noisy_labels_{pct_noise}'),
-                   item_tfms=tfms,
-                   batch_tfms=batch_tfms)
-    else:
-        inp = source
-        dblock = DataBlock(blocks=blocks,
-                   splitter=GrandparentSplitter(valid_name='val'),
-                   get_items=get_image_files, get_y=parent_label,
-                   item_tfms=tfms,
-                   batch_tfms=batch_tfms)
+    csv_file = 'noisy_imagewoof.csv' if woof else 'noisy_imagenette.csv'
+    inp = pd.read_csv(source/csv_file)
+    dblock = DataBlock(blocks=blocks,
+               splitter=ColSplitter(),
+               get_x=ColReader('path', pref=source), 
+               get_y=ColReader(f'noisy_labels_{pct_noise}'),
+               item_tfms=tfms,
+               batch_tfms=batch_tfms)
     
     return dblock.dataloaders(inp, path=source, bs=bs, num_workers=workers)
 
