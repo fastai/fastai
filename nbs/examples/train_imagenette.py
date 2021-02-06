@@ -46,7 +46,7 @@ def get_dls(size, woof, pct_noise, bs, sh=0., workers=None):
 @call_parse
 def main(
     woof:  Param("Use imagewoof (otherwise imagenette)", int)=0,
-    pct_noise:Param("Percentage of noise in training set (1,5,25,50%)", int)=0,
+    pct_noise:Param("Percentage of noise in training set (0,5,50%)", int)=0,
     lr:    Param("Learning rate", float)=1e-2,
     size:  Param("Size (px: 128,192,256)", int)=128,
     sqrmom:Param("sqr_mom", float)=0.99,
