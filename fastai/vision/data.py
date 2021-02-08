@@ -14,8 +14,11 @@ import types
 def get_grid(n, nrows=None, ncols=None, add_vert=0, figsize=None, double=False, title=None, return_fig=False,
              flatten=True, **kwargs):
     "Return a grid of `n` axes, `rows` by `cols`"
-    nrows = nrows or int(math.sqrt(n))
-    ncols = ncols or int(np.ceil(n/nrows))
+    if ncols:
+        nrows = int(np.ceil(n/ncols))
+    else:
+        nrows = nrows or int(math.sqrt(n))
+        ncols = int(np.ceil(n/nrows))
     if double: ncols*=2 ; n*=2
     fig,axs = subplots(nrows, ncols, figsize=figsize, **kwargs)
     if flatten: axs = [ax if i<n else ax.set_axis_off() for i, ax in enumerate(axs.flatten())][:n]
