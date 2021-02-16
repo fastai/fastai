@@ -342,6 +342,7 @@ pytorch_hp_map = {'momentum': 'mom', 'weight_decay': 'wd', 'alpha': 'sqr_mom', '
 
 # Cell
 class OptimWrapper(_BaseOptimizer, GetAttr):
+    "A wrapper class for existing PyTorch optimizers"
     _xtra=['zero_grad', 'step', 'state_dict', 'load_state_dict']
     _default='opt'
     def __init__(self, opt, hp_map=None):
