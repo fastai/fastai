@@ -2,6 +2,12 @@
 
 <!-- do not remove -->
 
+## 2.2.6
+
+### Bugs Squashed
+
+- 2.2.5 was not released correctly - it was actually 2.2.3
+
 ## 2.2.5
 
 ### New Features
