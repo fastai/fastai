@@ -33,7 +33,7 @@ def add_datepart(df, field_name, prefix=None, drop=True, time=False):
     week = field.dt.isocalendar().week.astype(field.dt.day.dtype) if hasattr(field.dt, 'isocalendar') else field.dt.week
     for n in attr: df[prefix + n] = getattr(field.dt, n.lower()) if n != 'Week' else week
     mask = ~field.isna()
-    df[prefix + 'Elapsed'] = np.where(mask,field.values.astype(np.int64) // 10 ** 9,None)
+    df[prefix + 'Elapsed'] = np.where(mask,field.values.astype(np.int64) // 10 ** 9,np.nan)
     if drop: df.drop(field_name, axis=1, inplace=True)
     return df
 
