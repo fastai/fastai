@@ -40,7 +40,7 @@ release: pypi
 	nbdev_build_lib | tail
 
 conda_release:
-	fastrelease_conda_package --upload_user fastai
+	fastrelease_conda_package --mambabuild --upload_user fastai
 
 pypi: dist
 	twine upload --repository pypi dist/*
