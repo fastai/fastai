@@ -3,7 +3,7 @@
 __all__ = ['Optimizer', 'sgd_step', 'weight_decay', 'l2_reg', 'average_grad', 'average_sqr_grad', 'momentum_step',
            'SGD', 'rms_prop_step', 'RMSProp', 'step_stat', 'debias', 'adam_step', 'Adam', 'radam_step', 'RAdam',
            'qhadam_step', 'QHAdam', 'larc_layer_lr', 'larc_step', 'Larc', 'lamb_step', 'Lamb', 'Lookahead', 'ranger',
-           'detuplify_pg', 'set_item_pg', 'pytorch_hp_map', 'OptimWrapper']
+           'detuplify_pg', 'set_item_pg', 'pytorch_hp_map', 'convert_params', 'OptimWrapper']
 
 # Cell
 from .torch_basics import *
@@ -341,13 +341,21 @@ def set_item_pg(pg, k, v):
 pytorch_hp_map = {'momentum': 'mom', 'weight_decay': 'wd', 'alpha': 'sqr_mom', 'betas__0': 'mom', 'betas__1': 'sqr_mom'}
 
 # Cell
+def convert_params(o:list) -> list:
+    splitter = []
+    for group in o:
+        if isinstance(group, dict): return o
+        splitter.append({'params':group})
+    return splitter
+
+# Cell
 class OptimWrapper(_BaseOptimizer, GetAttr):
     _xtra=['zero_grad', 'step', 'state_dict', 'load_state_dict']
     _default='opt'
-    def __init__(self, opt, hp_map=None):
-        self.opt = opt
+    def __init__(self, opt, params, hp_map=None, torch_param_groups=True, **kwargs):
+        self.opt = opt(convert_params(params), **kwargs) if torch_param_groups else opt(params, **kwargs)
         if hp_map is None: hp_map = pytorch_hp_map
-        self.fwd_map = {k: hp_map[k] if k in hp_map else k for k in detuplify_pg(opt.param_groups[0]).keys()}
+        self.fwd_map = {k: hp_map[k] if k in hp_map else k for k in detuplify_pg(self.opt.param_groups[0]).keys()}
         self.bwd_map = {v:k for k,v in self.fwd_map.items()}
         self.state = defaultdict(dict, {})
         self.frozen_idx = 0
