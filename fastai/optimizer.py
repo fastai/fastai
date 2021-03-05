@@ -352,7 +352,7 @@ def convert_params(o:list) -> list:
 class OptimWrapper(_BaseOptimizer, GetAttr):
     _xtra=['zero_grad', 'step', 'state_dict', 'load_state_dict']
     _default='opt'
-    def __init__(self, opt, params, hp_map=None, torch_param_groups=True, **kwargs):
+    def __init__(self, params, opt, hp_map=None, torch_param_groups=True, **kwargs):
         self.opt = opt(convert_params(params), **kwargs) if torch_param_groups else opt(params, **kwargs)
         if hp_map is None: hp_map = pytorch_hp_map
         self.fwd_map = {k: hp_map[k] if k in hp_map else k for k in detuplify_pg(self.opt.param_groups[0]).keys()}
