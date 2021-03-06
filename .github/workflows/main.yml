@@ -82,6 +82,6 @@ jobs:
         ipython /root/download_testdata.py
         mkdir -p $HOME/.fastai/data
         find $HOME/.fastai/archive/ -name "*.tgz" -exec tar -xzvf {} -C $HOME/.fastai/data \;
-    - name: Test notebooks batch ${{matrix.nb}}
-      run: nbdev_test_nbs --flags '' --n_workers 3 --pause 1.0 --fname "nbs/[0-9]${{matrix.nb}}*.ipynb"
+    - name: Test notebooks batch ${{matrix.nb}}${{matrix.nb}}
+      run: nbdev_test_nbs --flags '' --n_workers 3 --pause 1.0 --fname "nbs/${{matrix.nb}}${{matrix.nb}}*.ipynb"
   
