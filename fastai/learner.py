@@ -180,7 +180,8 @@ class Learner(GetAttr):
 
     def one_batch(self, i, b):
         self.iter = i
-        self._split(b)
+        b_on_device = tuple( e.to(device=self.dls.device) for e in b if hasattr(e, "to")) if self.dls.device is not None else b
+        self._split(b_on_device)
         self._with_events(self._do_one_batch, 'batch', CancelBatchException)
 
     def _do_epoch_train(self):
