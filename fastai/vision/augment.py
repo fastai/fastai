@@ -233,7 +233,7 @@ class RandomResizedCrop(RandTransform):
     "Picks a random scaled crop of an image and resize it to `size`"
     split_idx,order = None,1
     def __init__(self, size, min_scale=0.08, ratio=(3/4, 4/3), resamples=(Image.BILINEAR, Image.NEAREST),
-                 val_xtra=0.14, **kwargs):
+                 val_xtra=0.14, max_scale=1., **kwargs):
         size = _process_sz(size)
         store_attr()
         super().__init__(**kwargs)
@@ -248,7 +248,7 @@ class RandomResizedCrop(RandTransform):
             return
         self.final_size = self.size
         for attempt in range(10):
-            area = random.uniform(self.min_scale,1.) * w * h
+            area = random.uniform(self.min_scale, self.max_scale) * w * h
             ratio = math.exp(random.uniform(math.log(self.ratio[0]), math.log(self.ratio[1])))
             nw = int(round(math.sqrt(area * ratio)))
             nh = int(round(math.sqrt(area / ratio)))
@@ -404,7 +404,7 @@ class AffineCoordTfm(RandTransform):
 class RandomResizedCropGPU(RandTransform):
     "Picks a random scaled crop of an image and resize it to `size`"
     split_idx,order = None,30
-    def __init__(self, size, min_scale=0.08, ratio=(3/4, 4/3), mode='bilinear', valid_scale=1., **kwargs):
+    def __init__(self, size, min_scale=0.08, ratio=(3/4, 4/3), mode='bilinear', valid_scale=1., max_scale=1., **kwargs):
         if isinstance(size, int): size = (size,size)
         store_attr()
         super().__init__(**kwargs)
@@ -414,7 +414,7 @@ class RandomResizedCropGPU(RandTransform):
         h,w = fastuple((b[0] if isinstance(b, tuple) else b).shape[-2:])
         for attempt in range(10):
             if split_idx: break
-            area = random.uniform(self.min_scale,1.) * w * h
+            area = random.uniform(self.min_scale,self.max_scale) * w * h
             ratio = math.exp(random.uniform(math.log(self.ratio[0]), math.log(self.ratio[1])))
             nw = int(round(math.sqrt(area * ratio)))
             nh = int(round(math.sqrt(area / ratio)))
