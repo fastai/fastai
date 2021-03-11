@@ -665,7 +665,7 @@ class Warp(AffineCoordTfm):
 
 # Cell
 @patch
-def lighting(x: TensorImage, func): return TensorImage(torch.sigmoid(func(logit(x))))
+def lighting(x: TensorImage, func): return torch.sigmoid(func(logit(x)))
 
 # Cell
 class SpaceTfm(RandTransform):
