@@ -249,7 +249,7 @@ class TextDataLoaders(DataLoaders):
                     tok_tfm=None, seq_len=72, backwards=False, **kwargs):
         "Create from imagenet style dataset in `path` with `train` and `valid` subfolders (or provide `valid_pct`)"
         splitter = GrandparentSplitter(train_name=train, valid_name=valid) if valid_pct is None else RandomSplitter(valid_pct, seed=seed)
-        blocks = [TextBlock.from_folder(path, text_vocab, is_lm, seq_len, backwards) if tok_tfm is None else TextBlock(tok_tfm, text_vocab, is_lm, seq_len, backwards)]
+        blocks = [TextBlock.from_folder(path, text_vocab, is_lm, seq_len, backwards, tok=tok_tfm)]
         if not is_lm: blocks.append(CategoryBlock(vocab=vocab))
         get_items = partial(get_text_files, folders=[train,valid]) if valid_pct is None else get_text_files
         dblock = DataBlock(blocks=blocks,
