@@ -59,7 +59,7 @@ class CutMix(MixHandler):
         xb1,self.yb1 = self.x[shuffle], tuple((self.y[shuffle],))
         x1, y1, x2, y2 = self.rand_bbox(W, H, self.lam)
         self.learn.xb[0][..., y1:y2, x1:x2] = xb1[..., y1:y2, x1:x2]
-        self.lam = (1 - ((x2-x1)(y2-y1))/float(W*H))
+        self.lam = (1 - ((x2-x1)*(y2-y1))/float(W*H))
         if not self.stack_y:
             ny_dims = len(self.y.size())
             self.learn.yb = tuple(L(self.yb1,self.yb).map_zip(torch.lerp,weight=unsqueeze(self.lam, n=ny_dims-1)))
