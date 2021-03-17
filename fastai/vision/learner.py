@@ -152,11 +152,9 @@ def create_cnn_model(arch, n_out, pretrained=True, cut=None, n_in=3, init=nn.ini
 # Cell
 def _add_norm(dls, meta, pretrained):
     if not pretrained: return
-    after_batch = dls.after_batch
-    if first(o for o in after_batch.fs if isinstance(o,Normalize)): return
     stats = meta.get('stats')
     if stats is None: return
-    after_batch.add(Normalize.from_stats(*stats))
+    dls.add_tfms([Normalize.from_stats(*stats)],'after_batch')
 
 # Cell
 @delegates(create_cnn_model)

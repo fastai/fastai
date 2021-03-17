@@ -164,6 +164,18 @@ class DataLoaders(GetAttr):
         self.device = device
         return self
 
+    def _add_tfm(self,tfm,event,loader):
+        if(isinstance(loader, int)):
+            getattr(self.loaders[loader],event).add(tfm)
+        elif(isinstance(loader, str)):
+            getattr(getattr(self,loader),event).add(tfm)
+
+    def add_tfms(self,tfms,event,loaders=None):
+        if(loaders is None): loaders=range(len(self.loaders))
+        for tfm in tfms:
+            for loader in loaders:
+                self._add_tfm(tfm,event,loader)
+
     def cuda(self): return self.to(device=default_device())
     def cpu(self):  return self.to(device=torch.device('cpu'))
 
@@ -187,6 +199,7 @@ class DataLoaders(GetAttr):
                train_ds="Training `Dataset`",
                valid_ds="Validation `Dataset`",
                to="Use `device`",
+               add_tfms="Add `tfms` to `loaders` for `event",
                cuda="Use the gpu if available",
                cpu="Use the cpu",
                new_empty="Create a new empty version of `self` with the same transforms",
