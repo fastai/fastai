@@ -202,7 +202,7 @@ How can we do a lot of experimentation in a given jupyter notebook w/o needing t
 
 To automate this process, and get various stats on memory consumption, you can use [IPyExperiments](https://github.com/stas00/ipyexperiments). Other than helping you to reclaim general and GPU RAM, it is also helpful with efficiently tuning up your notebook parameters to avoid `CUDA: out of memory` errors and detecting various other memory leaks.
 
-And also make sure you read the tutorial on `learn.purge` and its friends [here](/tutorial.resources.html), which provide an even better solution.
+And also make sure you read the tutorial on `learn.purge` and its friends [here](https://fastai1.fast.ai/tutorial.resources.html), which provide an even better solution.
 
 
 ### GPU RAM Fragmentation
