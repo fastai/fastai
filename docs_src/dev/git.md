@@ -802,24 +802,24 @@ git checkout <rev> -- dir1 dir2 file1 file2
 
 #### Reset branch's HEAD to a given commit hash
 
-If somehow the HEAD of the branch got messed up and it got moved to some place in master, when someone by mistake merges it into master, here is how to reset it back. In this example we will use a release branch-1.0.36 with a postfix changes applied at a later time, resulting in tag `1.0.36.post`.
+If somehow the HEAD of the branch got messed up and it got moved to some place in master, when someone by mistake merges it into master, here is how to reset it back. In this example we will use the branch imagenette-noise-lb.
 
-1. find the last commit that was supposed to be the HEAD, e.g.: [https://github.com/fastai/fastai/commit/1c63e868d3d11e73d9f51f58cbd271e67a0fe983](https://github.com/fastai/fastai/commit/1c63e868d3d11e73d9f51f58cbd271e67a0fe983)
+1. find the last commit that was supposed to be the HEAD, e.g.: [https://github.com/fastai/fastai/commit/3ac14751101ff3997bc6b3e26f612d1b6d0ac9ea](https://github.com/fastai/fastai/commit/3ac14751101ff3997bc6b3e26f612d1b6d0ac9ea)
 
    Either use this to help find the right commit:
    ```
-   git log origin/release-1.0.36
+   git log origin/imagenette-noise-lb
    ```
 
-   or using github's branch browse of a given tag ([1.0.36.post1](https://github.com/fastai/fastai/commits/1.0.36.post1) in this example).
+   or using github's branch browse of a given tag ([imagenette-noise-lb](https://github.com/fastai/fastai/commits/imagenette-noise-lb) in this example).
 
 
 2. and now reset the branch's HEAD to it:
 
    ```
-   git checkout release-1.0.36
-   git reset --hard 1c63e868d3
-   git push --force origin release-1.0.36
+   git checkout imagenette-noise-lb
+   git reset --hard g52ff7b4
+   git push --force origin imagenette-noise-lb
    ```
 
 
