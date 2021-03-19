@@ -164,17 +164,18 @@ class DataLoaders(GetAttr):
         self.device = device
         return self
 
-    def _add_tfm(self,tfm,event,loader):
-        if(isinstance(loader, int)):
-            getattr(self.loaders[loader],event).add(tfm)
-        elif(isinstance(loader, str)):
-            getattr(getattr(self,loader),event).add(tfm)
+    def _add_tfms(self, tfms, event, dl_idx):
+        "Adds `tfms` to `event` on `dl`"
+        if(isinstance(dl_idx,str)): dl_idx = 0 if(dl_idx=='train') else 1
+        dl_tfms = getattr(self[dl_idx], event)
+        apply(dl_tfms.add, tfms)
 
     def add_tfms(self,tfms,event,loaders=None):
+        "Adds `tfms` to `events` on `loaders`"
         if(loaders is None): loaders=range(len(self.loaders))
-        for tfm in tfms:
-            for loader in loaders:
-                self._add_tfm(tfm,event,loader)
+        if not is_listy(loaders): loaders = listify(loaders)
+        for loader in loaders:
+            self._add_tfms(tfms,event,loader)
 
     def cuda(self): return self.to(device=default_device())
     def cpu(self):  return self.to(device=torch.device('cpu'))
