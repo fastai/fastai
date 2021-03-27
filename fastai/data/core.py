@@ -164,6 +164,19 @@ class DataLoaders(GetAttr):
         self.device = device
         return self
 
+    def _add_tfms(self, tfms, event, dl_idx):
+        "Adds `tfms` to `event` on `dl`"
+        if(isinstance(dl_idx,str)): dl_idx = 0 if(dl_idx=='train') else 1
+        dl_tfms = getattr(self[dl_idx], event)
+        apply(dl_tfms.add, tfms)
+
+    def add_tfms(self,tfms,event,loaders=None):
+        "Adds `tfms` to `events` on `loaders`"
+        if(loaders is None): loaders=range(len(self.loaders))
+        if not is_listy(loaders): loaders = listify(loaders)
+        for loader in loaders:
+            self._add_tfms(tfms,event,loader)
+
     def cuda(self): return self.to(device=default_device())
     def cpu(self):  return self.to(device=torch.device('cpu'))
 
@@ -187,6 +200,7 @@ class DataLoaders(GetAttr):
                train_ds="Training `Dataset`",
                valid_ds="Validation `Dataset`",
                to="Use `device`",
+               add_tfms="Add `tfms` to `loaders` for `event",
                cuda="Use the gpu if available",
                cpu="Use the cpu",
                new_empty="Create a new empty version of `self` with the same transforms",
