@@ -180,7 +180,7 @@ class Learner(GetAttr):
 
     def one_batch(self, i, b):
         self.iter = i
-        b_on_device = tuple( e.to(device=self.dls.device) for e in b if hasattr(e, "to")) if self.dls.device is not None else b
+        b_on_device = to_device(b, device=self.dls.device) if self.dls.device is not None else b
         self._split(b_on_device)
         self._with_events(self._do_one_batch, 'batch', CancelBatchException)
 
