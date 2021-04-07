@@ -62,12 +62,13 @@ class EarlyStoppingCallback(TrackerCallback):
 class SaveModelCallback(TrackerCallback):
     "A `TrackerCallback` that saves the model's best during training and loads it at the end."
     _only_train_loop = True
-    def __init__(self, monitor='valid_loss', comp=None, min_delta=0., fname='model', every_epoch=False,
+    def __init__(self, monitor='valid_loss', comp=None, min_delta=0., fname='model', every_epoch=False, at_end=False,
                  with_opt=False, reset_on_fit=True):
         super().__init__(monitor=monitor, comp=comp, min_delta=min_delta, reset_on_fit=reset_on_fit)
+        assert not (every_epoch and at_end), "every_epoch and at_end cannot both be set to True"
         # keep track of file path for loggers
         self.last_saved_path = None
-        store_attr('fname,every_epoch,with_opt')
+        store_attr('fname,every_epoch,at_end,with_opt')
 
     def _save(self, name): self.last_saved_path = self.learn.save(name, with_opt=self.with_opt)
 
@@ -82,7 +83,8 @@ class SaveModelCallback(TrackerCallback):
 
     def after_fit(self, **kwargs):
         "Load the best model."
-        if not self.every_epoch: self.learn.load(f'{self.fname}', with_opt=self.with_opt)
+        if self.at_end: self._save(f'{self.fname}')
+        elif not self.every_epoch: self.learn.load(f'{self.fname}', with_opt=self.with_opt)
 
 # Cell
 class ReduceLROnPlateau(TrackerCallback):
