@@ -367,7 +367,7 @@ class TensorMask(TensorImageBase):
 
     def show(self, ctx=None, **kwargs):
         codes = getattr(self, 'codes', None)
-        if codes is not None: kwargs = merge({'vmin': 1, 'vmax': len(codes)}, kwargs)
+        if codes is not None: kwargs = merge({'vmin': 0, 'vmax': len(codes)}, kwargs)
         return super().show(ctx=ctx, **kwargs)
 
 # Cell
