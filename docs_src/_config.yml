@@ -1,52 +1,65 @@
-baseurl: /
+repository: fastai/fastai
+output: web
+topnav_title: fastai
+site_title: fastai
+company_name: fast.ai
+github_editme_path: 
+use_math: true
+google_analytics: UA-89522379-3
+#google_search: 000837339549978028235:mygjrpycyx2
+google_search: 000837339549978028235:ycech_9fn6e
+
+exclude:
+  - .idea/
+  - .gitignore
+  - vendor
+
+feedback_disable: true
+
+highlighter: rouge
+
+markdown: kramdown
+kramdown:
+ auto_ids: true
+ hard_wrap: false
+ syntax_highlighter: rouge
+
+default_badges:
+  colab: true
+
 collections:
   tooltips:
     output: false
-company_name: fast.ai
-default_badges:
-  colab: true
+# collections are declared here. this renders the content in _tooltips and processes it, but doesn't output it as actual files in the output unless you change output to true
+
 defaults:
-- scope:
-    path: ''
-    type: pages
-  values:
-    comments: true
-    layout: page
-    search: true
-    sidebar: home_sidebar
-    topnav: topnav
-- scope:
-    path: ''
-    type: tooltips
-  values:
-    comments: true
-    layout: page
-    search: true
-    tooltip: true
-description: Documentation for the fastai library
-exclude:
-- .idea/
-- .gitignore
-- vendor
-feedback_disable: true
-github_editme_path: null
-google_analytics: UA-89522379-3
-google_search: 000837339549978028235:ycech_9fn6e
-highlighter: rouge
-kramdown:
-  auto_ids: true
-  hard_wrap: false
-  syntax_highlighter: rouge
-markdown: kramdown
-output: web
-plugins:
-- jekyll-remote-theme
-remote_theme: fastai/nbdev-jekyll-theme
-repository: fastai/fastai
+  -
+    scope:
+      path: ""
+      type: "pages"
+    values:
+      layout: "page"
+      comments: true
+      search: true
+      sidebar: home_sidebar
+      topnav: topnav
+  -
+    scope:
+      path: ""
+      type: "tooltips"
+    values:
+      layout: "page"
+      comments: true
+      search: true
+      tooltip: true
+
 sidebars:
 - home_sidebar
-site_title: fastai
-topnav_title: fastai
-twitter_username: jeremyphoward
+
+description: "Documentation for the fastai library"
+# theme: jekyll-theme-cayman
+
+baseurl: /
 url: https://docs.fast.ai
-use_math: true
+twitter_username: jeremyphoward
+
