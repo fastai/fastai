@@ -1,11 +1,11 @@
 name: docs
 on: 
   workflow_dispatch:
-  workflow_run:
-    workflows: ["CI"]
-    branches: [master]
-    types: 
-      - completed
+#   workflow_run:
+#     workflows: ["CI"]
+#     branches: [master]
+#     types: 
+#       - completed
   push:
     branches: 
       - master
