@@ -49,7 +49,7 @@ class MixUp(MixHandler):
             self.learn.yb = tuple(L(self.yb1,self.yb).map_zip(torch.lerp,weight=unsqueeze(self.lam, n=ny_dims-1)))
 
 # Cell
-class CutMix(MixHandler): 
+class CutMix(MixHandler):
     "Implementation of https://arxiv.org/abs/1905.04899"
     def __init__(self, alpha=1.): super().__init__(alpha)
     def before_batch(self):
