@@ -229,7 +229,7 @@ class Learner(GetAttr):
     @delegates(GatherPredsCallback.__init__)
     def get_preds(self, ds_idx=1, dl=None, with_input=False, with_decoded=False, with_loss=False, act=None,
                   inner=False, reorder=True, cbs=None, **kwargs):
-        if dl is None: dl = self.dls[ds_idx].new(shuffled=False, drop_last=False)
+        if dl is None: dl = self.dls[ds_idx].new(shuffle=False, drop_last=False)
         else:
             try: len(dl)
             except TypeError as e:
