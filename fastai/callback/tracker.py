@@ -43,6 +43,7 @@ class TrackerCallback(Callback):
 # Cell
 class EarlyStoppingCallback(TrackerCallback):
     "A `TrackerCallback` that terminates training when monitored quantity stops improving."
+    order=TrackerCallback.order+3
     def __init__(self, monitor='valid_loss', comp=None, min_delta=0., patience=1, reset_on_fit=True):
         super().__init__(monitor=monitor, comp=comp, min_delta=min_delta, reset_on_fit=reset_on_fit)
         self.patience = patience
@@ -61,7 +62,7 @@ class EarlyStoppingCallback(TrackerCallback):
 # Cell
 class SaveModelCallback(TrackerCallback):
     "A `TrackerCallback` that saves the model's best during training and loads it at the end."
-    _only_train_loop = True
+    _only_train_loop,order = True,TrackerCallback.order+1
     def __init__(self, monitor='valid_loss', comp=None, min_delta=0., fname='model', every_epoch=False, at_end=False,
                  with_opt=False, reset_on_fit=True):
         super().__init__(monitor=monitor, comp=comp, min_delta=min_delta, reset_on_fit=reset_on_fit)
@@ -89,6 +90,7 @@ class SaveModelCallback(TrackerCallback):
 # Cell
 class ReduceLROnPlateau(TrackerCallback):
     "A `TrackerCallback` that reduces learning rate when a metric has stopped improving."
+    order=TrackerCallback.order+2
     def __init__(self, monitor='valid_loss', comp=None, min_delta=0., patience=1, factor=10., min_lr=0, reset_on_fit=True):
         super().__init__(monitor=monitor, comp=comp, min_delta=min_delta, reset_on_fit=reset_on_fit)
         self.patience,self.factor,self.min_lr = patience,factor,min_lr
