@@ -49,7 +49,9 @@ class TfmdDL(DataLoader):
 
     def _one_pass(self):
         b = self.do_batch([self.do_item(None)])
-        if self.device is not None: b = to_device(b, self.device)
+        # Since pickle doesn't support CUDA variable, we need to move data to CUDA in Learner.one_batch if process start method isn't a fork
+        if self.device is not None and multiprocessing.get_start_method().lower() == "fork":
+            b = to_device(b, self.device)
         its = self.after_batch(b)
         self._n_inp = 1 if not isinstance(its, (list,tuple)) or len(its)==1 else len(its)-1
         self._types = explode_types(its)

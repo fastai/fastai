@@ -180,7 +180,9 @@ class Learner(GetAttr):
 
     def one_batch(self, i, b):
         self.iter = i
-        self._split(b)
+        device = getattr(self.dls, 'device', default_device())
+        b_on_device = to_device(b, device)
+        self._split(b_on_device)
         self._with_events(self._do_one_batch, 'batch', CancelBatchException)
 
     def _do_epoch_train(self):
