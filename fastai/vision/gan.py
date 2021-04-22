@@ -148,8 +148,8 @@ class GANTrainer(Callback):
 
     def before_fit(self):
         "Initialize smootheners."
-        self.generator,self.critic = self.model.generator,self.model.critic
-        self.gen_mode = self.gen_first
+        self.learn.generator,self.learn.critic = self.model.generator,self.model.critic
+        self.learn.gen_mode = self.gen_first
         self.switch(self.gen_mode)
         self.crit_losses,self.gen_losses = [],[]
         self.gen_loss.reset() ; self.crit_loss.reset()
@@ -198,7 +198,7 @@ class GANTrainer(Callback):
 
     def switch(self, gen_mode=None):
         "Switch the model and loss function, if `gen_mode` is provided, in the desired mode."
-        self.gen_mode = (not self.gen_mode) if gen_mode is None else gen_mode
+        self.learn.gen_mode = (not self.gen_mode) if gen_mode is None else gen_mode
         self._set_trainable()
         self.model.switch(gen_mode)
         self.loss_func.switch(gen_mode)
