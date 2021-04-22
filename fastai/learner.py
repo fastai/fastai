@@ -178,8 +178,15 @@ class Learner(GetAttr):
         self._with_events(self.opt.step, 'step', CancelStepException)
         self.opt.zero_grad()
 
+    def _set_device(self, b):
+        model_device = torch.device(torch.cuda.current_device()) if next(self.model.parameters()).is_cuda else torch.device('cpu')
+        dls_device = getattr(self.dls, 'device', default_device())
+        if model_device == dls_device: return to_device(b, dls_device)
+        else: return to_device(b, model_device)
+
     def one_batch(self, i, b):
         self.iter = i
+        b = self._set_device(b)
         self._split(b)
         self._with_events(self._do_one_batch, 'batch', CancelBatchException)
 
