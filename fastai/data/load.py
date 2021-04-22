@@ -107,9 +107,7 @@ class DataLoader(GetAttr):
         self.before_iter()
         self.__idxs=self.get_idxs() # called in context of main process (not workers/subprocesses)
         for b in _loaders[self.fake_l.num_workers==0](self.fake_l):
-            # If process start method isn't fork, the data will be copied to cuda in Learner.one_batch
-            if self.device is not None and multiprocessing.get_start_method().lower() == "fork":
-                b = to_device(b, self.device)
+            b = to_device(b, self.device)
             yield self.after_batch(b)
         self.after_iter()
         if hasattr(self, 'it'): del(self.it)
