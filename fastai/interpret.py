@@ -25,7 +25,7 @@ class Interpretation():
     @classmethod
     def from_learner(cls, learn, ds_idx=1, dl=None, act=None):
         "Construct interpretation object from a learner"
-        if dl is None: dl = learn.dls[ds_idx]
+        if dl is None: dl = learn.dls[ds_idx].new(shuffled=False, drop_last=False)
         return cls(dl, *learn.get_preds(dl=dl, with_input=True, with_loss=True, with_decoded=True, act=None))
 
     def top_losses(self, k=None, largest=True):
