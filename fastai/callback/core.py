@@ -65,7 +65,8 @@ class TrainEvalCallback(Callback):
         "Set the iter and epoch counters to 0, put the model and the right device"
         self.learn.epoch,self.learn.loss = 0,tensor(0.)
         self.learn.train_iter,self.learn.pct_train = 0,0.
-        if hasattr(self.dls, 'device'): self.model.to(self.dls.device)
+        device = getattr(self.dls, 'device', default_device())
+        self.model.to(device)
         if hasattr(self.model, 'reset'): self.model.reset()
 
     def after_batch(self):

@@ -3,7 +3,6 @@
 __all__ = ['AzureMLCallback']
 
 # Cell
-import tempfile
 from ..basics import *
 from ..learner import Callback
 
@@ -15,11 +14,15 @@ class AzureMLCallback(Callback):
     "Log losses, metrics, model architecture summary to AzureML"
     order = Recorder.order+1
 
-    def before_fit(self):
-        self.run = Run.get_context()
+    def __init__(self, azurerun=None):
+        if azurerun:
+            self.azurerun = azurerun
+        else:
+            self.azurerun = Run.get_context()
 
-        self.run.log("n_epoch", self.learn.n_epoch)
-        self.run.log("model_class", str(type(self.learn.model)))
+    def before_fit(self):
+        self.azurerun.log("n_epoch", self.learn.n_epoch)
+        self.azurerun.log("model_class", str(type(self.learn.model)))
 
         try:
             summary_file = Path("outputs") / 'model_summary.txt'
@@ -31,17 +34,19 @@ class AzureMLCallback(Callback):
     def after_batch(self):
         # log loss and opt.hypers
         if self.learn.training:
-            # self.run.log('batch__smooth_loss', self.learn.smooth_loss)
-            self.run.log('batch__loss', self.learn.loss)
-            self.run.log('batch__train_iter', self.learn.train_iter)
+            self.azurerun.log('batch__loss', self.learn.loss.item())
+            self.azurerun.log('batch__train_iter', self.learn.train_iter)
             for i, h in enumerate(self.learn.opt.hypers):
                 for k, v in h.items():
-                    self.run.log(f'batch__opt.hypers.{k}', v)
+                    self.azurerun.log(f'batch__opt.hypers.{k}', v)
 
     def after_epoch(self):
         # log metrics
         for n, v in zip(self.learn.recorder.metric_names, self.learn.recorder.log):
             if n not in ['epoch', 'time']:
-                self.run.log(f'epoch__{n}', v)
+                self.azurerun.log(f'epoch__{n}', v)
             if n == 'time':
-                self.run.log(f'epoch__{n}', str(v))
+                # split elapsed time string, then convert into 'seconds' to log
+                m, s = str(v).split(':')
+                elapsed = int(m)*60 + int(s)
+                self.azurerun.log(f'epoch__{n}', elapsed)
