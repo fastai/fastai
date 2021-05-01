@@ -381,7 +381,8 @@ def as_dict(self:DcmDataset, px_summ=True, window=dicom_windows.brain):
     return res
 
 # Cell
-def _dcm2dict(fn, **kwargs): return fn.dcmread().as_dict(**kwargs)
+def _dcm2dict(fn, window=dicom_windows.brain, px_summ=True, **kwargs):
+    return fn.dcmread().as_dict(window=window, px_summ=px_summ, **kwargs)
 
 # Cell
 @delegates(parallel)

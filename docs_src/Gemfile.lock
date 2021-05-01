@@ -42,16 +42,18 @@ GEM
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
     mercenary (0.4.0)
-    mini_portile2 (2.4.0)
-    nokogiri (1.10.8)
-      mini_portile2 (~> 2.4.0)
+    mini_portile2 (2.5.0)
+    nokogiri (1.11.0)
+      mini_portile2 (~> 2.5.0)
+      racc (~> 1.4)
     pathutil (0.16.2)
       forwardable-extended (~> 2.6)
     public_suffix (4.0.5)
+    racc (1.5.2)
     rb-fsevent (0.10.4)
     rb-inotify (0.10.1)
       ffi (~> 1.0)
-    rexml (3.2.4)
+    rexml (3.2.5)
     rouge (3.22.0)
     safe_yaml (1.0.5)
     sassc (2.4.0)
@@ -66,7 +68,7 @@ PLATFORMS
 DEPENDENCIES
   jekyll (>= 3.7)
   kramdown (>= 2.3.0)
-  nokogiri (< 1.10.9)
+  nokogiri (< 1.11.1)
 
 BUNDLED WITH
    2.1.4

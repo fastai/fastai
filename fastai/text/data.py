@@ -92,6 +92,7 @@ class LMDataLoader(TfmdDL):
         return idxs
 
     def create_item(self, seq):
+        if seq is None: seq = 0
         if seq>=self.n: raise IndexError
         sl = self.last_len if seq//self.bs==self.n_batches-1 else self.seq_len
         st = (seq%self.bs)*self.bl + (seq//self.bs)*self.seq_len
@@ -248,7 +249,7 @@ class TextDataLoaders(DataLoaders):
                     tok_tfm=None, seq_len=72, backwards=False, **kwargs):
         "Create from imagenet style dataset in `path` with `train` and `valid` subfolders (or provide `valid_pct`)"
         splitter = GrandparentSplitter(train_name=train, valid_name=valid) if valid_pct is None else RandomSplitter(valid_pct, seed=seed)
-        blocks = [TextBlock.from_folder(path, text_vocab, is_lm, seq_len, backwards) if tok_tfm is None else TextBlock(tok_tfm, text_vocab, is_lm, seq_len, backwards)]
+        blocks = [TextBlock.from_folder(path, text_vocab, is_lm, seq_len, backwards, tok=tok_tfm)]
         if not is_lm: blocks.append(CategoryBlock(vocab=vocab))
         get_items = partial(get_text_files, folders=[train,valid]) if valid_pct is None else get_text_files
         dblock = DataBlock(blocks=blocks,
@@ -260,15 +261,15 @@ class TextDataLoaders(DataLoaders):
     @classmethod
     @delegates(DataLoaders.from_dblock)
     def from_df(cls, df, path='.', valid_pct=0.2, seed=None, text_col=0, label_col=1, label_delim=None, y_block=None,
-                text_vocab=None, is_lm=False, valid_col=None, tok_tfm=None, seq_len=72, backwards=False, **kwargs):
+                text_vocab=None, is_lm=False, valid_col=None, tok_tfm=None, tok_text_col="text", seq_len=72, backwards=False, **kwargs):
         "Create from `df` in `path` with `valid_pct`"
-        blocks = [TextBlock.from_df(text_col, text_vocab, is_lm, seq_len, backwards) if tok_tfm is None else TextBlock(tok_tfm, text_vocab, is_lm, seq_len, backwards)]
+        blocks = [TextBlock.from_df(text_col, text_vocab, is_lm, seq_len, backwards, tok=tok_tfm)]
         if y_block is None and not is_lm:
             blocks.append(MultiCategoryBlock if is_listy(label_col) and len(label_col) > 1 else CategoryBlock)
         if y_block is not None and not is_lm: blocks += (y_block if is_listy(y_block) else [y_block])
         splitter = RandomSplitter(valid_pct, seed=seed) if valid_col is None else ColSplitter(valid_col)
         dblock = DataBlock(blocks=blocks,
-                           get_x=ColReader("text"),
+                           get_x=ColReader(tok_text_col),
                            get_y=None if is_lm else ColReader(label_col, label_delim=label_delim),
                            splitter=splitter)
         return cls.from_dblock(dblock, df, path=path, seq_len=seq_len, **kwargs)

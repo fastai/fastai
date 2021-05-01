@@ -2,6 +2,93 @@
 
 <!-- do not remove -->
 
+## 2.3.0
+### Breaking Changes
+
+- fix optimwrapper to work with `param_groups` ([#3241](https://github.com/fastai/fastai/pull/3241)), thanks to [@tmabraham](https://github.com/tmabraham)
+  - OptimWrapper now has a different constructor signature, which makes it easier to wrap PyTorch optimizers
+
+### New Features
+
+- Support discriminative learning with OptimWrapper ([#2829](https://github.com/fastai/fastai/issues/2829))
+
+### Bugs Squashed
+
+- Updated to support adding transforms to multiple dataloaders ([#3268](https://github.com/fastai/fastai/pull/3268)), thanks to [@marii-moe](https://github.com/marii-moe)
+  - This fixes an issue in 2.2.7 which resulted in incorrect validation metrics when using Normalization
+
+
+## 2.2.7
+
+### Bugs Squashed
+
+- Regression fix: Ensure `add_datepart` adds elapsed as numeric column ([#3230](https://github.com/fastai/fastai/pull/3230)), thanks to [@aberres](https://github.com/aberres)
+
+
+## 2.2.6
+
+### Bugs Squashed
+
+- 2.2.5 was not released correctly - it was actually 2.2.3
+
+## 2.2.5
+
+### New Features
+
+- Enhancement: Let TextDataLoaders take in a custom `tok_text_col` ([#3208](https://github.com/fastai/fastai/pull/3208)), thanks to [@muellerzr](https://github.com/muellerzr)
+- Changed dataloaders arguments to have consistent overrides ([#3178](https://github.com/fastai/fastai/pull/3178)), thanks to [@marii-moe](https://github.com/marii-moe)
+- Better support for iterable datasets ([#3173](https://github.com/fastai/fastai/pull/3173)), thanks to [@jcaw](https://github.com/jcaw)
+
+### Bugs Squashed
+
+- BrokenProcessPool in `download_images()` on Windows ([#3196](https://github.com/fastai/fastai/issues/3196))
+- error on predict() or using interp with resnet and MixUp ([#3180](https://github.com/fastai/fastai/issues/3180))
+- Fix 'cat' attribute with pandas dataframe: `AttributeError: Can only use .cat accessor with a 'category' dtype` ([#3165](https://github.com/fastai/fastai/pull/3165)), thanks to [@dreamflasher](https://github.com/dreamflasher)
+- `cont_cat_split` does not support pandas types ([#3156](https://github.com/fastai/fastai/issues/3156))
+- `DataBlock.dataloaders` does not support the advertised "shuffle" argument ([#3133](https://github.com/fastai/fastai/issues/3133))
+
+
+## 2.2.3
+
+### New Features
+
+- Calculate correct `nf` in `create_head` based on `concat_pool` ([#3115](https://github.com/fastai/fastai/pull/3115)), thanks to [@muellerzr](https://github.com/muellerzr)
+
+### Bugs Squashed
+
+- wandb integration failing with latest wandb library ([#3066](https://github.com/fastai/fastai/issues/3066))
+- `Learner.load` and `LRFinder` not functioning properly for the optimizer states ([#2892](https://github.com/fastai/fastai/issues/2892))
+
+
+## 2.2.2
+
+### Bugs Squashed
+
+- tensorboard and wandb can not access `smooth_loss` ([#3131](https://github.com/fastai/fastai/issues/3131))
+
+
+## 2.2.0
+### Breaking Changes
+
+- Promote `NativeMixedPrecision` to default `MixedPrecision` (and similar for `Learner.to_fp16`); old `MixedPrecision` is now called `NonNativeMixedPrecision` ([#3127](https://github.com/fastai/fastai/issues/3127))
+  - Use the new `GradientClip` callback instead of the `clip` parameter to use gradient clipping
+- Adding a `Callback` which has the same name as an attribute no longer raises an exception ([#3109](https://github.com/fastai/fastai/issues/3109))
+- RNN training now requires `RNNCallback`, but does not require `RNNRegularizer`; `out` and `raw_out` have moved to `RNNRegularizer` ([#3108](https://github.com/fastai/fastai/issues/3108))
+  - Call `rnn_cbs` to get all callbacks needed for RNN training, optionally with regularization
+- replace callback `run_after` with `order`; do not run `after` cbs on exception ([#3101](https://github.com/fastai/fastai/issues/3101))
+
+### New Features
+
+- Add `GradientClip` callback ([#3107](https://github.com/fastai/fastai/issues/3107))
+- Make `Flatten` cast to `TensorBase` to simplify type compatibility ([#3106](https://github.com/fastai/fastai/issues/3106))
+- make flattened metrics compatible with all tensor subclasses ([#3105](https://github.com/fastai/fastai/issues/3105))
+- New class method `TensorBase.register_func` to register types for `__torch_function__` ([#3097](https://github.com/fastai/fastai/issues/3097))
+- new `dynamic` flag for controlling dynamic loss scaling in `NativeMixedPrecision` ([#3096](https://github.com/fastai/fastai/issues/3096))
+- remove need to call `to_native_fp32` before `predict`; set `skipped` in NativeMixedPrecision after NaN from dynamic loss scaling ([#3095](https://github.com/fastai/fastai/issues/3095))
+- make native fp16 extensible with callbacks ([#3094](https://github.com/fastai/fastai/issues/3094))
+- Calculate correct `nf` in `create_head` based on `concat_pool` ([#3115](https://github.com/fastai/fastai/pull/3115)) thanks to [@muellerzr](https://github.com/muellerzr)
+
+
 ## 2.1.10
 
 ### New Features
@@ -219,5 +306,4 @@ The next version of fastai will be 2.1. It will require PyTorch 1.7, which has s
 ## Version 2.0.0
 
 - Initial release of v2
-
 

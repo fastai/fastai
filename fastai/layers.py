@@ -372,7 +372,11 @@ class PixelShuffle_ICNR(nn.Sequential):
         nf = ifnone(nf, ni)
         layers = [ConvLayer(ni, nf*(scale**2), ks=1, norm_type=norm_type, act_cls=act_cls, bias_std=0),
                   nn.PixelShuffle(scale)]
-        layers[0][0].weight.data.copy_(icnr_init(layers[0][0].weight.data))
+        if norm_type == NormType.Weight:
+            layers[0][0].weight_v.data.copy_(icnr_init(layers[0][0].weight_v.data))
+            layers[0][0].weight_g.data.copy_(((layers[0][0].weight_v.data**2).sum(dim=[1,2,3])**0.5)[:,None,None,None])
+        else:
+            layers[0][0].weight.data.copy_(icnr_init(layers[0][0].weight.data))
         if blur: layers += [nn.ReplicationPad2d((1,0,1,0)), nn.AvgPool2d(2, stride=1)]
         super().__init__(*layers)
 

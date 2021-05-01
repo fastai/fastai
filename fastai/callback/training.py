@@ -19,7 +19,7 @@ class ShortEpochCallback(Callback):
 # Cell
 class GradientAccumulation(Callback):
     "Accumulate gradients before updating weights"
-    order,run_valid = NativeMixedPrecision.order-4,False
+    order,run_valid = MixedPrecision.order-4,False
     def __init__(self, n_acc=32): store_attr()
     def before_fit(self): self.count=0
     def after_loss(self): self.learn.loss_grad /= self.n_acc/find_bs(self.learn.yb)
@@ -33,7 +33,7 @@ class GradientAccumulation(Callback):
 # Cell
 class GradientClip(Callback):
     "Clip norm of gradients"
-    order=NativeMixedPrecision.order+1
+    order=MixedPrecision.order+1
     def __init__(self,max_norm:float=1., norm_type:float=2.0): store_attr()
     def before_step(self): nn.utils.clip_grad_norm_(self.parameters(), self.max_norm, self.norm_type)
 

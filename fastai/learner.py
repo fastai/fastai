@@ -178,8 +178,15 @@ class Learner(GetAttr):
         self._with_events(self.opt.step, 'step', CancelStepException)
         self.opt.zero_grad()
 
+    def _set_device(self, b):
+        model_device = torch.device(torch.cuda.current_device()) if next(self.model.parameters()).is_cuda else torch.device('cpu')
+        dls_device = getattr(self.dls, 'device', default_device())
+        if model_device == dls_device: return to_device(b, dls_device)
+        else: return to_device(b, model_device)
+
     def one_batch(self, i, b):
         self.iter = i
+        b = self._set_device(b)
         self._split(b)
         self._with_events(self._do_one_batch, 'batch', CancelBatchException)
 
@@ -228,7 +235,7 @@ class Learner(GetAttr):
     @delegates(GatherPredsCallback.__init__)
     def get_preds(self, ds_idx=1, dl=None, with_input=False, with_decoded=False, with_loss=False, act=None,
                   inner=False, reorder=True, cbs=None, **kwargs):
-        if dl is None: dl = self.dls[ds_idx].new(shuffled=False, drop_last=False)
+        if dl is None: dl = self.dls[ds_idx].new(shuffle=False, drop_last=False)
         else:
             try: len(dl)
             except TypeError as e:

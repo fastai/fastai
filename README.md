@@ -90,3 +90,17 @@ Before submitting a PR, check that the local library and notebooks match. The sc
 ## Docker Containers
 
 For those interested in official docker containers for this project, they can be found [here](https://github.com/fastai/docker-containers#fastai).
+
+## Windows Support
+
+Now, you can run fastai and make contribution with Notebook on Windows!
+All notebooks in [fastai](https://github.com/fastai/fastai), [nbdev](https://github.com/fastai/nbdev), [fastcore](https://github.com/fastai/fastcore) have been tested on Windows.
+
+### Limitation
+Due to the well known python multiprocessing issue on Jupyter Notebook and Windows, num_workers of Dataloader is reset to 0 automatically to avoid hang in Notebook.
+You could reduce the sample data size or iteration number to decrease training time on NoteBook.
+
+This limitation doesn't exist if you use fastai API with script.
+You could refer [this example](https://github.com/fastai/fastai/blob/master/nbs/examples/dataloader_spawn.py) to fully leverage fastai API on Windows.
+
+

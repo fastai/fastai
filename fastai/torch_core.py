@@ -114,6 +114,10 @@ def __array_eq__(self:Tensor,b):
 # Cell
 def _array2tensor(x):
     if x.dtype==np.uint16: x = x.astype(np.float32)
+    # windows default numpy int dytpe is int32, while torch tensor default int dtype is int64
+    # https://github.com/numpy/numpy/issues/9464
+    if sys.platform == "win32":
+        if x.dtype==np.int: x = x.astype(np.int64)
     return torch.from_numpy(x)
 
 # Cell
@@ -340,6 +344,11 @@ class TensorBase(Tensor):
         res = self.as_subclass(Tensor).new() if x is None else self.as_subclass(Tensor).new(x)
         return res.as_subclass(cls)
 
+    def requires_grad_(self, requires_grad=True):
+        # Workaround https://github.com/pytorch/pytorch/issues/50219
+        self.requires_grad = requires_grad
+        return self
+
 # Cell
 class TensorImageBase(TensorBase):
     _show_args = ArrayImageBase._show_args
@@ -358,11 +367,11 @@ class TensorMask(TensorImageBase):
 
     def show(self, ctx=None, **kwargs):
         codes = getattr(self, 'codes', None)
-        if codes is not None: kwargs = merge({'vmin': 1, 'vmax': len(codes)}, kwargs)
+        if codes is not None: kwargs = merge({'vmin': 0, 'vmax': len(codes)}, kwargs)
         return super().show(ctx=ctx, **kwargs)
 
 # Cell
-for o in Tensor.add,Tensor.sub,Tensor.mul,Tensor.div,Tensor.__rsub__,Tensor.__radd__,Tensor.matmul,Tensor.bmm:
+for o in Tensor.__ne__,Tensor.__eq__,Tensor.add,Tensor.sub,Tensor.mul,Tensor.div,Tensor.__rsub__,Tensor.__radd__,Tensor.matmul,Tensor.bmm:
     TensorBase.register_func(o, TensorMask, TensorImageBase)
     TensorBase.register_func(o, TensorImageBase, TensorMask)
 

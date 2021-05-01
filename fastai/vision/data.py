@@ -7,16 +7,23 @@ __all__ = ['get_grid', 'clip_remove_empty', 'bb_pad', 'ImageBlock', 'MaskBlock',
 from ..torch_basics import *
 from ..data.all import *
 from .core import *
+import types
 
 # Cell
 @delegates(subplots)
-def get_grid(n, nrows=None, ncols=None, add_vert=0, figsize=None, double=False, title=None, return_fig=False, **kwargs):
+def get_grid(n, nrows=None, ncols=None, add_vert=0, figsize=None, double=False, title=None, return_fig=False,
+             flatten=True, **kwargs):
     "Return a grid of `n` axes, `rows` by `cols`"
-    nrows = nrows or int(math.sqrt(n))
-    ncols = ncols or int(np.ceil(n/nrows))
+    if nrows:
+        ncols = ncols or int(np.ceil(n/nrows))
+    elif ncols:
+        nrows = nrows or int(np.ceil(n/ncols))
+    else:
+        nrows = int(math.sqrt(n))
+        ncols = int(np.ceil(n/nrows))
     if double: ncols*=2 ; n*=2
     fig,axs = subplots(nrows, ncols, figsize=figsize, **kwargs)
-    axs = [ax if i<n else ax.set_axis_off() for i, ax in enumerate(axs.flatten())][:n]
+    if flatten: axs = [ax if i<n else ax.set_axis_off() for i, ax in enumerate(axs.flatten())][:n]
     if title is not None: fig.suptitle(title, weight='bold', size=14)
     return (fig,axs) if return_fig else axs
 
@@ -107,6 +114,9 @@ class ImageDataLoaders(DataLoaders):
     @classmethod
     def from_name_func(cls, path, fnames, label_func, **kwargs):
         "Create from the name attrs of `fnames` in `path`s with `label_func`"
+        if sys.platform == 'win32' and isinstance(label_func, types.LambdaType) and label_func.__name__ == '<lambda>':
+            # https://medium.com/@jwnx/multiprocessing-serialization-in-python-with-pickle-9844f6fa1812
+            raise ValueError("label_func couldn't be lambda function on Windows")
         f = using_attr(label_func, 'name')
         return cls.from_path_func(path, fnames, f, **kwargs)
 

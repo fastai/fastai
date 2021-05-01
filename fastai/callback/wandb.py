@@ -15,7 +15,7 @@ import wandb
 # Cell
 class WandbCallback(Callback):
     "Saves model topology, losses & metrics"
-    toward_end,remove_on_fetch,run_after = True,True,FetchPredsCallback
+    remove_on_fetch,order = True,Recorder.order+1
     # Record if watch has been called previously (even in another instance)
     _wandb_watch_called = False
 
@@ -120,7 +120,8 @@ class WandbCallback(Callback):
                 log_model(self.save_model.last_saved_path, metadata=metadata)
         self.run = True
         if self.log_preds: self.remove_cb(FetchPredsCallback)
-        wandb.log({}) # ensure sync of last step
+        wandb.log({})  # ensure sync of last step
+        self._wandb_step += 1
 
 # Cell
 @patch

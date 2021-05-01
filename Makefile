@@ -37,10 +37,10 @@ release: pypi
 	sleep 3
 	fastrelease_conda_package --upload_user fastai
 	fastrelease_bump_version
+	nbdev_build_lib | tail
 
 conda_release:
-	fastrelease_conda_package --upload_user fastai
-	nbdev_bump_version
+	fastrelease_conda_package --mambabuild --upload_user fastai
 
 pypi: dist
 	twine upload --repository pypi dist/*

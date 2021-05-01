@@ -244,7 +244,7 @@ class PointScaler(Transform):
     def _get_sz(self, x): return getattr(x, 'img_size') if self.sz is None else self.sz
 
     def setups(self, dl):
-        res = first(dl.do_item(0), risinstance(TensorPoint))
+        res = first(dl.do_item(None), risinstance(TensorPoint))
         if res is not None: self.c = res.numel()
 
     def encodes(self, x:(PILBase,TensorImageBase)): return self._grab_sz(x)

@@ -15,6 +15,8 @@ from .external import *
 
 from sklearn.model_selection import train_test_split
 
+import posixpath
+
 # Cell
 def _get_files(p, fs, extensions=None):
     p = Path(p)
@@ -178,7 +180,8 @@ class RegexLabeller():
         self.matcher = self.pat.match if match else self.pat.search
 
     def __call__(self, o):
-        res = self.matcher(str(o))
+        o = str(o).replace(os.sep, posixpath.sep)
+        res = self.matcher(o)
         assert res,f'Failed to find "{self.pat}" in "{o}"'
         return res.group(1)
 
@@ -191,7 +194,7 @@ class ColReader(DisplayedTransform):
         self.cols = L(cols)
 
     def _do_one(self, r, c):
-        o = r[c] if isinstance(c, int) else r[c] if c=='name' else getattr(r, c)
+        o = r[c] if isinstance(c, int) else r[c] if c=='name' or c=='cat' else getattr(r, c)
         if len(self.pref)==0 and len(self.suff)==0 and self.label_delim is None: return o
         if self.label_delim is None: return f'{self.pref}{o}{self.suff}'
         else: return o.split(self.label_delim) if len(o)>0 else []
