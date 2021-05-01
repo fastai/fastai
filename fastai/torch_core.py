@@ -247,11 +247,14 @@ def default_device(use_cuda=-1):
     return torch.device(torch.cuda.current_device()) if use else torch.device('cpu')
 
 # Cell
-def to_device(b, device=None):
+def to_device(b, device=None, non_blocking=False):
     "Recursively put `b` on `device`."
     if defaults.use_cuda==False: device='cpu'
     elif device is None: device=default_device()
-    def _inner(o): return o.to(device, non_blocking=True) if isinstance(o,Tensor) else o.to_device(device) if hasattr(o, "to_device") else o
+    def _inner(o):
+        if isinstance(o,Tensor): return o.to(device, non_blocking=non_blocking)
+#         if hasattr(o, "to_device"): return o.to_device(device)
+        return o
     return apply(_inner, b)
 
 # Cell
