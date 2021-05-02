@@ -576,7 +576,7 @@ add_docs(Learner,
 @patch
 def tta(self:Learner, ds_idx=1, dl=None, n=4, item_tfms=None, batch_tfms=None, beta=0.25, use_max=False):
     "Return predictions on the `ds_idx` dataset or `dl` using Test Time Augmentation"
-    if dl is None: dl = self.dls[ds_idx]
+    if dl is None: dl = self.dls[ds_idx].new(shuffled=False, drop_last=False)
     if item_tfms is not None or batch_tfms is not None: dl = dl.new(after_item=item_tfms, after_batch=batch_tfms)
     try:
         self(_before_epoch)
