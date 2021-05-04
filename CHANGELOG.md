@@ -2,6 +2,44 @@
 
 <!-- do not remove -->
 
+## 2.3.1
+
+### New Features
+
+- Add support for pytorch 1.8 ([#3349](https://github.com/fastai/fastai/issues/3349))
+- Add support for spacy3 ([#3348](https://github.com/fastai/fastai/issues/3348))
+- Add support for Windows. Big thanks to Microsoft for many contributions to get this working
+- Timedistributed layer and Image Sequence Tutorial ([#3124](https://github.com/fastai/fastai/pull/3124)), thanks to [@tcapelle](https://github.com/tcapelle)
+- Add interactive run logging to AzureMLCallback ([#3341](https://github.com/fastai/fastai/pull/3341)), thanks to [@yijinlee](https://github.com/yijinlee)
+- Batch support for more than one image ([#3339](https://github.com/fastai/fastai/issues/3339))
+- Have interp use ds_idx, add tests ([#3332](https://github.com/fastai/fastai/pull/3332)), thanks to [@muellerzr](https://github.com/muellerzr)
+- Automatically have fastai determine the right device, even with torch DataLoaders ([#3330](https://github.com/fastai/fastai/pull/3330)), thanks to [@muellerzr](https://github.com/muellerzr)
+- Add `at_end` feature to `SaveModelCallback` ([#3296](https://github.com/fastai/fastai/pull/3296)), thanks to [@tmabraham](https://github.com/tmabraham)
+- Improve inplace params in Tabular's new and allow for new and test_dl to be in place ([#3292](https://github.com/fastai/fastai/pull/3292)), thanks to [@muellerzr](https://github.com/muellerzr)
+- Update VSCode & Codespaces dev container ([#3280](https://github.com/fastai/fastai/pull/3280)), thanks to [@bamurtaugh](https://github.com/bamurtaugh)
+- Add max_scale param to RandomResizedCrop(GPU) ([#3252](https://github.com/fastai/fastai/pull/3252)), thanks to [@kai-tub](https://github.com/kai-tub)
+- Increase testing granularity for speedup ([#3242](https://github.com/fastai/fastai/pull/3242)), thanks to [@ddobrinskiy](https://github.com/ddobrinskiy)
+
+### Bugs Squashed
+
+- Make TTA turn shuffle and drop_last off when using ds_idx ([#3347](https://github.com/fastai/fastai/pull/3347)), thanks to [@muellerzr](https://github.com/muellerzr)
+- Add order to TrackerCallback derived classes ([#3346](https://github.com/fastai/fastai/pull/3346)), thanks to [@muellerzr](https://github.com/muellerzr)
+- Prevent schedule from crashing close to the end of training ([#3335](https://github.com/fastai/fastai/pull/3335)), thanks to [@Lewington-pitsos](https://github.com/Lewington-pitsos)
+- Fix ability to use raw pytorch DataLoaders ([#3328](https://github.com/fastai/fastai/pull/3328)), thanks to [@hamelsmu](https://github.com/hamelsmu)
+- Fix PixelShuffle_icnr weight ([#3322](https://github.com/fastai/fastai/pull/3322)), thanks to [@pratX](https://github.com/pratX)
+- Creation of new DataLoader in Learner.get_preds has wrong keyword ([#3316](https://github.com/fastai/fastai/pull/3316)), thanks to [@tcapelle](https://github.com/tcapelle)
+- Correct layers order in tabular learner ([#3314](https://github.com/fastai/fastai/pull/3314)), thanks to [@gradientsky](https://github.com/gradientsky)
+- Fix vmin parameter default ([#3305](https://github.com/fastai/fastai/pull/3305)), thanks to [@tcapelle](https://github.com/tcapelle)
+- Ensure call to `one_batch` places data on the right device ([#3298](https://github.com/fastai/fastai/pull/3298)), thanks to [@tcapelle](https://github.com/tcapelle)
+- Fix Cutmix Augmentation ([#3259](https://github.com/fastai/fastai/pull/3259)), thanks to [@MrRobot2211](https://github.com/MrRobot2211)
+- Fix custom tokenizers for DataLoaders ([#3256](https://github.com/fastai/fastai/pull/3256)), thanks to [@iskode](https://github.com/iskode)
+- fix error setting  'tok_tfm' parameter in TextDataloaders.from_folder
+- Fix lighting augmentation ([#3255](https://github.com/fastai/fastai/pull/3255)), thanks to [@kai-tub](https://github.com/kai-tub)
+- Fix CUDA variable serialization ([#3253](https://github.com/fastai/fastai/pull/3253)), thanks to [@mszhanyi](https://github.com/mszhanyi)
+- change batch tfms to have the correct dimensionality ([#3251](https://github.com/fastai/fastai/pull/3251)), thanks to [@trdvangraft](https://github.com/trdvangraft)
+- Ensure add_datepart adds elapsed as numeric column ([#3230](https://github.com/fastai/fastai/pull/3230)), thanks to [@aberres](https://github.com/aberres)
+
+
 ## 2.3.0
 ### Breaking Changes
 
