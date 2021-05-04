@@ -2,27 +2,27 @@
 > fastai simplifies training fast and accurate neural nets using modern best practices
 
 
-**Important**: This documentation covers fastai v2, which is a from-scratch rewrite of fastai. The v1 documentation has moved to [fastai1.fast.ai](https://fastai1.fast.ai). To stop fastai from updating to v2, run in your terminal `echo 'fastai 1.*' >> $CONDA_PREFIX/conda-meta/pinned` (if you use conda).
-
 ![CI](https://github.com/fastai/fastai/workflows/CI/badge.svg) [![PyPI](https://img.shields.io/pypi/v/fastai?color=blue&label=pypi%20version)](https://pypi.org/project/fastai/#description) [![Conda (channel only)](https://img.shields.io/conda/vn/fastai/fastai?color=seagreen&label=conda%20version)](https://anaconda.org/fastai/fastai) [![Build fastai images](https://github.com/fastai/docker-containers/workflows/Build%20fastai%20images/badge.svg)](https://github.com/fastai/docker-containers) ![docs](https://github.com/fastai/fastai/workflows/docs/badge.svg)
 
 ## Installing
 
 You can use fastai without any installation by using [Google Colab](https://colab.research.google.com/). In fact, every page of this documentation is also available as an interactive notebook - click "Open in colab" at the top of any page to open it (be sure to change the Colab runtime to "GPU" to have it run fast!) See the fast.ai documentation on [Using Colab](https://course.fast.ai/start_colab) for more information.
 
-You can install fastai on your own machines with conda (highly recommended). If you're using [Anaconda](https://www.anaconda.com/products/individual) then run:
+You can install fastai on your own machines with conda (highly recommended), as long as you're running Linux or Windows (NB: Mac is not supported). For Windows, please see the "Running on Windows" for important notes.
+
+If you're using [miniconda](https://docs.conda.io/en/latest/miniconda.html) (recommended) then run (note that if you replace `conda` with [mamba](https://github.com/mamba-org/mamba) the install process will be much faster and more reliable):
 ```bash
-conda install -c fastai -c pytorch -c anaconda fastai gh anaconda
+conda install -c fastchan fastai
 ```
 
-...or if you're using [miniconda](https://docs.conda.io/en/latest/miniconda.html)) then run:
+...or if you're using [Anaconda](https://www.anaconda.com/products/individual) then run:
 ```bash
-conda install -c fastai -c pytorch fastai
+conda install -c fastchan fastai anaconda
 ```
 
 To install with pip, use: `pip install fastai`. If you install with pip, you should install PyTorch first by following the PyTorch [installation instructions](https://pytorch.org/get-started/locally/).
 
-If you plan to develop fastai yourself, or want to be on the cutting edge, you can use an editable install (if you do this, you should also use an editable install of [fastcore](https://github.com/fastai/fastcore) to go with it.):
+If you plan to develop fastai yourself, or want to be on the cutting edge, you can use an editable install (if you do this, you should also use an editable install of [fastcore](https://github.com/fastai/fastcore) to go with it.) First install PyTorch, and then:
 
 ``` 
 git clone https://github.com/fastai/fastai
@@ -63,6 +63,14 @@ It's very easy to migrate from plain PyTorch, Ignite, or any other PyTorch-based
 - [Lightning](https://docs.fast.ai/migrating_lightning)
 - [Catalyst](https://docs.fast.ai/migrating_catalyst)
 
+## Windows Support
+
+When installing with `mamba` or `conda` replace `-c fastchan` in the installation with `-c pytorch -c nvidia -c fastai`, since fastchan is not currently supported on Windows.
+
+Due to python multiprocessing issues on Jupyter and Windows, `num_workers` of `Dataloader` is reset to 0 automatically to avoid Jupyter hanging. This makes tasks such as computer vision in Jupyter on Windows many times slower than on Linux. This limitation doesn't exist if you use fastai from a script.
+
+See [this example](https://github.com/fastai/fastai/blob/master/nbs/examples/dataloader_spawn.py) to fully leverage the fastai API on Windows.
+
 ## Tests
 
 To run the tests in parallel, launch:
@@ -90,17 +98,3 @@ Before submitting a PR, check that the local library and notebooks match. The sc
 ## Docker Containers
 
 For those interested in official docker containers for this project, they can be found [here](https://github.com/fastai/docker-containers#fastai).
-
-## Windows Support
-
-Now, you can run fastai and make contribution with Notebook on Windows!
-All notebooks in [fastai](https://github.com/fastai/fastai), [nbdev](https://github.com/fastai/nbdev), [fastcore](https://github.com/fastai/fastcore) have been tested on Windows.
-
-### Limitation
-Due to the well known python multiprocessing issue on Jupyter Notebook and Windows, num_workers of Dataloader is reset to 0 automatically to avoid hang in Notebook.
-You could reduce the sample data size or iteration number to decrease training time on NoteBook.
-
-This limitation doesn't exist if you use fastai API with script.
-You could refer [this example](https://github.com/fastai/fastai/blob/master/nbs/examples/dataloader_spawn.py) to fully leverage fastai API on Windows.
-
-
