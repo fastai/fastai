@@ -114,7 +114,7 @@ class SpacyTokenizer():
     "Spacy tokenizer for `lang`"
     def __init__(self, lang='en', special_toks=None, buf_sz=5000):
         self.special_toks = ifnone(special_toks, defaults.text_spec_tok)
-        nlp = spacy.blank(lang, disable=["parser", "tagger", "ner"])
+        nlp = spacy.blank(lang)
         for w in self.special_toks: nlp.tokenizer.add_special_case(w, [{ORTH: w}])
         self.pipe,self.buf_sz = nlp.pipe,buf_sz
 
