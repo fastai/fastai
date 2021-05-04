@@ -2,11 +2,11 @@
 
 __all__ = ['AccumMetric', 'skm_to_fastai', 'optim_metric', 'accuracy', 'error_rate', 'top_k_accuracy', 'APScoreBinary',
            'BalancedAccuracy', 'BrierScore', 'CohenKappa', 'F1Score', 'FBeta', 'HammingLoss', 'Jaccard', 'Precision',
-           'Recall', 'RocAuc', 'RocAucBinary', 'MatthewsCorrCoef', 'Perplexity', 'perplexity', 'accuracy_multi',
-           'APScoreMulti', 'BrierScoreMulti', 'F1ScoreMulti', 'FBetaMulti', 'HammingLossMulti', 'JaccardMulti',
-           'MatthewsCorrCoefMulti', 'PrecisionMulti', 'RecallMulti', 'RocAucMulti', 'mse', 'rmse', 'mae', 'msle',
-           'exp_rmspe', 'ExplainedVariance', 'R2Score', 'PearsonCorrCoef', 'SpearmanCorrCoef', 'foreground_acc', 'Dice',
-           'DiceMulti', 'JaccardCoeff', 'CorpusBLEUMetric', 'LossMetric', 'LossMetrics']
+           'Recall', 'RocAuc', 'RocAucBinary', 'MatthewsCorrCoef', 'accuracy_multi', 'APScoreMulti', 'BrierScoreMulti',
+           'F1ScoreMulti', 'FBetaMulti', 'HammingLossMulti', 'JaccardMulti', 'MatthewsCorrCoefMulti', 'PrecisionMulti',
+           'RecallMulti', 'RocAucMulti', 'mse', 'rmse', 'mae', 'msle', 'exp_rmspe', 'ExplainedVariance', 'R2Score',
+           'PearsonCorrCoef', 'SpearmanCorrCoef', 'foreground_acc', 'Dice', 'DiceMulti', 'JaccardCoeff',
+           'CorpusBLEUMetric', 'Perplexity', 'perplexity', 'LossMetric', 'LossMetrics']
 
 # Cell
 from .data.all import *
@@ -188,16 +188,6 @@ def RocAucBinary(axis=-1, average='macro', sample_weight=None, max_fpr=None, mul
 def MatthewsCorrCoef(sample_weight=None, **kwargs):
     "Matthews correlation coefficient for single-label classification problems"
     return skm_to_fastai(skm.matthews_corrcoef, sample_weight=sample_weight, **kwargs)
-
-# Cell
-class Perplexity(AvgLoss):
-    "Perplexity (exponential of cross-entropy loss) for Language Models"
-    @property
-    def value(self): return torch.exp(self.total/self.count) if self.count != 0 else None
-    @property
-    def name(self):  return "perplexity"
-
-perplexity = Perplexity()
 
 # Cell
 def accuracy_multi(inp, targ, thresh=0.5, sigmoid=True):
@@ -432,6 +422,16 @@ class CorpusBLEUMetric(Metric):
             precs = [c/t for c,t in zip(self.corrects,self.counts)]
             len_penalty = math.exp(1 - self.targ_len/self.pred_len) if self.pred_len < self.targ_len else 1
             return len_penalty * ((precs[0]*precs[1]*precs[2]*precs[3]) ** 0.25)
+
+# Cell
+class Perplexity(AvgLoss):
+    "Perplexity (exponential of cross-entropy loss) for Language Models"
+    @property
+    def value(self): return torch.exp(self.total/self.count) if self.count != 0 else None
+    @property
+    def name(self):  return "perplexity"
+
+perplexity = Perplexity()
 
 # Cell
 class LossMetric(AvgMetric):
