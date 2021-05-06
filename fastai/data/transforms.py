@@ -18,15 +18,17 @@ from sklearn.model_selection import train_test_split
 import posixpath
 
 # Cell
-def _get_files(p, fs, extensions=None):
+def _get_files(p, fs, extensions=None,pct=1.):
     p = Path(p)
+    assert 0.<=pct<=1., f"pct of files should be a floating between 0. and 1."
     res = [p/f for f in fs if not f.startswith('.')
-           and ((not extensions) or f'.{f.split(".")[-1].lower()}' in extensions)]
+           and ((not extensions) or f'.{f.split(".")[-1].lower()}' in extensions)
+           and torch.bernoulli(tensor(pct))]
     return res
 
 # Cell
-def get_files(path, extensions=None, recurse=True, folders=None, followlinks=True):
-    "Get all the files in `path` with optional `extensions`, optionally with `recurse`, only in `folders`, if specified."
+def get_files(path, extensions=None, recurse=True, folders=None, followlinks=True,pct=1.):
+    "Get `pct` fraction of files (all files by default) in `path` with optional `extensions`, optionally with `recurse`, only in `folders`, if specified."
     path = Path(path)
     folders=L(folders)
     extensions = setify(extensions)
@@ -37,37 +39,37 @@ def get_files(path, extensions=None, recurse=True, folders=None, followlinks=Tru
             if len(folders) !=0 and i==0: d[:] = [o for o in d if o in folders]
             else:                         d[:] = [o for o in d if not o.startswith('.')]
             if len(folders) !=0 and i==0 and '.' not in folders: continue
-            res += _get_files(p, f, extensions)
+            res += _get_files(p, f, extensions,pct=pct)
     else:
         f = [o.name for o in os.scandir(path) if o.is_file()]
-        res = _get_files(path, f, extensions)
+        res = _get_files(path, f, extensions,pct=pct)
     return L(res)
 
 # Cell
-def FileGetter(suf='', extensions=None, recurse=True, folders=None):
+def FileGetter(suf='', extensions=None, recurse=True, folders=None,pct=1.):
     "Create `get_files` partial function that searches path suffix `suf`, only in `folders`, if specified, and passes along args"
-    def _inner(o, extensions=extensions, recurse=recurse, folders=folders):
-        return get_files(o/suf, extensions, recurse, folders)
+    def _inner(o, extensions=extensions, recurse=recurse, folders=folders,pct=pct):
+        return get_files(o/suf, extensions, recurse, folders,pct=pct)
     return _inner
 
 # Cell
 image_extensions = set(k for k,v in mimetypes.types_map.items() if v.startswith('image/'))
 
 # Cell
-def get_image_files(path, recurse=True, folders=None):
-    "Get image files in `path` recursively, only in `folders`, if specified."
-    return get_files(path, extensions=image_extensions, recurse=recurse, folders=folders)
+def get_image_files(path, recurse=True, folders=None,pct=1.):
+    "Get `pct` fraction of files(all by default) image files in `path` recursively, only in `folders`, if specified."
+    return get_files(path, extensions=image_extensions, recurse=recurse, folders=folders,pct=pct)
 
 # Cell
-def ImageGetter(suf='', recurse=True, folders=None):
+def ImageGetter(suf='', recurse=True, folders=None, pct=1.):
     "Create `get_image_files` partial that searches suffix `suf` and passes along `kwargs`, only in `folders`, if specified"
-    def _inner(o, recurse=recurse, folders=folders): return get_image_files(o/suf, recurse, folders)
+    def _inner(o, recurse=recurse, folders=folders,pct=pct): return get_image_files(o/suf, recurse, folders,pct=pct)
     return _inner
 
 # Cell
-def get_text_files(path, recurse=True, folders=None):
-    "Get text files in `path` recursively, only in `folders`, if specified."
-    return get_files(path, extensions=['.txt'], recurse=recurse, folders=folders)
+def get_text_files(path, recurse=True, folders=None,pct=1.):
+    "Get `pct` fraction of (all by defualt) text files in `path` recursively, only in `folders`, if specified."
+    return get_files(path, extensions=['.txt'], recurse=recurse, folders=folders, pct=pct)
 
 # Cell
 class ItemGetter(ItemTransform):
