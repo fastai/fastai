@@ -322,7 +322,7 @@ def SpearmanCorrCoef(dim_argmax=None, axis=0, nan_policy='propagate', **kwargs):
 # Cell
 def foreground_acc(inp, targ, bkg_idx=0, axis=1):
     "Computes non-background accuracy for multiclass segmentation"
-    targ = cast(targ, Tensor).squeeze(1)
+    targ = cast(targ.squeeze(1), TensorBase)
     mask = targ != bkg_idx
     return (inp.argmax(dim=axis)[mask]==targ[mask]).float().mean()
 
