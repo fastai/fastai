@@ -108,6 +108,7 @@ class WandbCallback(Callback):
                 self.log_predictions(self.learn.fetch_preds.preds)
             except Exception as e:
                 self.log_preds = False
+                self.remove_cb(FetchPredsCallback)
                 print(f'WandbCallback was not able to get prediction samples -> {e}')
         wandb.log({n:s for n,s in zip(self.recorder.metric_names, self.recorder.log) if n not in ['train_loss', 'epoch', 'time']}, step=self._wandb_step)
 
