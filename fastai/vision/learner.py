@@ -155,7 +155,7 @@ def _add_norm(dls, meta, pretrained):
     stats = meta.get('stats')
     if stats is None: return
     if not dls.after_batch.fs.filter(risinstance(Normalize)):
-    dls.add_tfms([Normalize.from_stats(*stats)],'after_batch')
+        dls.add_tfms([Normalize.from_stats(*stats)],'after_batch')
 
 # Cell
 @delegates(create_cnn_model)
