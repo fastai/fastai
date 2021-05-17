@@ -75,7 +75,8 @@ class SaveModelCallback(TrackerCallback):
 
     def after_epoch(self):
         "Compare the value monitored to its best score and save if best."
-        if self.every_epoch: self._save(f'{self.fname}_{self.epoch}')
+        if self.every_epoch:
+            if (self.epoch%self.every_epoch) == 0: self._save(f'{self.fname}_{self.epoch}')
         else: #every improvement
             super().after_epoch()
             if self.new_best:
