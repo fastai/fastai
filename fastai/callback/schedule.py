@@ -64,9 +64,9 @@ def combine_scheds(pcts, scheds):
     pcts = tensor([0] + L(pcts))
     assert torch.all(pcts >= 0)
     pcts = torch.cumsum(pcts, 0)
+    pct_lim = len(pcts) - 2
     def _inner(pos):
-        if int(pos) == 1: return scheds[-1](1.)
-        idx = (pos >= pcts).nonzero().max()
+        idx = min((pos >= pcts).nonzero().max(), pct_lim)
         actual_pos = (pos-pcts[idx]) / (pcts[idx+1]-pcts[idx])
         return scheds[idx](actual_pos.item())
     return _inner
