@@ -284,7 +284,7 @@ def lr_find(self:Learner, start_lr=1e-7, end_lr=10, num_it=100, stop_div=True, s
     if suggest_funcs is not None:
         lrs, losses = tensor(self.recorder.lrs[num_it//10:-5]), tensor(self.recorder.losses[num_it//10:-5])
         _suggestions, nms = [], []
-        for func in suggest_funcs:
+        for func in tuplify(suggest_funcs):
             nms.append(func.__name__ if not isinstance(func, partial) else func.func.__name__) # deal with partials
             _suggestions.append(func(lrs, losses, num_it))
 
