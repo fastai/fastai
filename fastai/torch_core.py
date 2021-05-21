@@ -11,7 +11,7 @@ __all__ = ['progress_bar', 'master_bar', 'subplots', 'show_image', 'show_titled_
            'norm_bias_params', 'batch_to_samples', 'logit', 'num_distrib', 'rank_distrib', 'distrib_barrier',
            'base_doc', 'doc', 'nested_reorder', 'make_cross_image', 'show_image_batch', 'requires_grad', 'init_default',
            'cond_init', 'apply_leaf', 'apply_init', 'script_use_ctx', 'script_save_ctx', 'script_fwd', 'script_bwd',
-           'grad_module', 'flatten_check']
+           'grad_module']
 
 # Cell
 from .imports import *
@@ -303,6 +303,13 @@ def _torch_handled(args, opt, func):
         if all(isinstance(arg,ok) for arg,ok in zip(args,oks) if ok): return True
 
 # Cell
+# from https://github.com/pytorch/pytorch/blob/13c975684a220ec096216ec6468ccd0dc90ff50a/torch/_tensor.py#L34
+def _rebuild_from_type(func, type, args, dict):
+    ret = func(*args).as_subclass(type)
+    ret.__dict__ = dict
+    return ret
+
+# Cell
 class TensorBase(Tensor):
     "A `Tensor` which support subclass pickling, and maintains metadata when casting or after methods"
     debug,_opt = False,defaultdict(list)
@@ -319,8 +326,9 @@ class TensorBase(Tensor):
         torch.utils.hooks.warn_if_has_hooks(self)
         args = (type(self), self.storage(), self.storage_offset(), tuple(self.size()), self.stride())
         if self.is_quantized: args = args + (self.q_scale(), self.q_zero_point())
+        args = args + (self.requires_grad, OrderedDict())
         f = _fa_rebuild_qtensor if self.is_quantized else  _fa_rebuild_tensor
-        return (f, args + (self.requires_grad, OrderedDict()))
+        return (_rebuild_from_type, (f, type(self), args, self.__dict__))
 
     @classmethod
     def register_func(cls, func, *oks): cls._opt[func].append(oks)
@@ -796,10 +804,3 @@ def grad_module(cls):
     class _c(nn.Module):
         def forward(self, *args, **kwargs): return cls.apply(*args, **kwargs)
     return _c
-
-# Comes from 13b_metrics.ipynb, cell
-def flatten_check(inp, targ):
-    "Check that `out` and `targ` have the same number of elements and flatten them."
-    inp,targ = TensorBase(inp.contiguous()).view(-1),TensorBase(targ.contiguous()).view(-1)
-    test_eq(len(inp), len(targ))
-    return inp,targ
