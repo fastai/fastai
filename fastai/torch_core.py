@@ -324,10 +324,10 @@ class TensorBase(Tensor):
 
     def __reduce_ex__(self,proto):
         torch.utils.hooks.warn_if_has_hooks(self)
-        args = (type(self), self.storage(), self.storage_offset(), tuple(self.size()), self.stride())
+        args = (self.storage(), self.storage_offset(), tuple(self.size()), self.stride())
         if self.is_quantized: args = args + (self.q_scale(), self.q_zero_point())
         args = args + (self.requires_grad, OrderedDict())
-        f = _fa_rebuild_qtensor if self.is_quantized else  _fa_rebuild_tensor
+        f = torch._utils._rebuild_qtensor if self.is_quantized else  torch._utils._rebuild_tensor_v2
         return (_rebuild_from_type, (f, type(self), args, self.__dict__))
 
     @classmethod
