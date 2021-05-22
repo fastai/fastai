@@ -11,7 +11,7 @@ __all__ = ['progress_bar', 'master_bar', 'subplots', 'show_image', 'show_titled_
            'norm_bias_params', 'batch_to_samples', 'logit', 'num_distrib', 'rank_distrib', 'distrib_barrier',
            'base_doc', 'doc', 'nested_reorder', 'make_cross_image', 'show_image_batch', 'requires_grad', 'init_default',
            'cond_init', 'apply_leaf', 'apply_init', 'script_use_ctx', 'script_save_ctx', 'script_fwd', 'script_bwd',
-           'grad_module']
+           'grad_module', 'flatten_check']
 
 # Cell
 from .imports import *
@@ -804,3 +804,10 @@ def grad_module(cls):
     class _c(nn.Module):
         def forward(self, *args, **kwargs): return cls.apply(*args, **kwargs)
     return _c
+
+# Comes from 13b_metrics.ipynb, cell
+def flatten_check(inp, targ):
+    "Check that `out` and `targ` have the same number of elements and flatten them."
+    inp,targ = TensorBase(inp.contiguous()).view(-1),TensorBase(targ.contiguous()).view(-1)
+    test_eq(len(inp), len(targ))
+    return inp,targ
