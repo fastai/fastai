@@ -138,7 +138,7 @@ class DiceLoss:
     def __init__(self, axis=1, smooth=1):
         store_attr()
     def __call__(self, pred, targ):
-        targ = _one_hot(targ, pred.shape[1])
+        targ = _one_hot(targ, pred.shape[self.axis])
         pred, targ = flatten_check(self.activation(pred), targ)
         inter = (pred*targ).sum()
         union = (pred+targ).sum()
