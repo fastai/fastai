@@ -302,7 +302,7 @@ class GANLearner(Learner):
                  switch_eval=True, show_img=True, clip=None, cbs=None, metrics=None, **kwargs):
         gan = GANModule(generator, critic)
         loss_func = GANLoss(gen_loss_func, crit_loss_func, gan)
-        if switcher is None: switcher = FixedGANSwitcher(n_crit=5, n_gen=1)
+        if switcher is None: switcher = FixedGANSwitcher()
         trainer = GANTrainer(clip=clip, switch_eval=switch_eval, gen_first=gen_first, show_img=show_img)
         cbs = L(cbs) + L(trainer, switcher)
         metrics = L(metrics) + L(*LossMetrics('gen_loss,crit_loss'))
@@ -317,6 +317,7 @@ class GANLearner(Learner):
     @classmethod
     def wgan(cls, dls, generator, critic, switcher=None, clip=0.01, switch_eval=False, **kwargs):
         "Create a WGAN from `data`, `generator` and `critic`."
+        if switcher is None: switcher = FixedGANSwitcher(n_crit=5, n_gen=1)
         return cls(dls, generator, critic, _tk_mean, _tk_diff, switcher=switcher, clip=clip, switch_eval=switch_eval, **kwargs)
 
 GANLearner.from_learners = delegates(to=GANLearner.__init__)(GANLearner.from_learners)
