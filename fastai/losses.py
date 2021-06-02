@@ -34,6 +34,9 @@ class BaseLoss():
         if self.flatten: inp = inp.view(-1,inp.shape[-1]) if self.is_2d else inp.view(-1)
         return self.func.__call__(inp, targ.view(-1) if self.flatten else targ, **kwargs)
 
+    def to(self, device):
+        if isinstance(self.func, nn.Module): self.func.to(device)
+
 # Cell
 @delegates()
 class CrossEntropyLossFlat(BaseLoss):
