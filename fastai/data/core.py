@@ -179,14 +179,18 @@ class DataLoaders(GetAttr):
     def cpu(self):  return self.to(device=torch.device('cpu'))
 
     @classmethod
-    def from_dsets(cls, *ds, path='.',  bs=64, device=None, dl_type=TfmdDL, **kwargs):
-        default = (True,) + (False,) * (len(ds)-1)
-        defaults = {'shuffle': default, 'drop_last': default}
-        for nm in _batch_tfms:
-            if nm in kwargs: kwargs[nm] = Pipeline(kwargs[nm])
-        kwargs = merge(defaults, {k: tuplify(v, match=ds) for k,v in kwargs.items()})
-        kwargs = [{k: v[i] for k,v in kwargs.items()} for i in range_of(ds)]
-        return cls(*[dl_type(d, bs=bs, **k) for d,k in zip(ds, kwargs)], path=path, device=device)
+    def from_dsets(cls, *ds, bs=64, val_bs=None, shuffle=True, val_shuffle=False, path='.',
+                   dl_type=TfmdDL, device=None, **kwargs):
+        if device is None: device=default_device()
+        drop_last = kwargs.get('drop_last', shuffle)
+        if val_bs is None: val_bs=bs
+        val_kwargs={k[4:]:kwargs.pop(k) for k in list(kwargs.keys()) if k.startswith('val_')}
+        def_kwargs = {'bs':bs,'shuffle':shuffle,'drop_last':drop_last,'device':device}
+        dl = dl_type(ds[0], **merge(def_kwargs, kwargs))
+        def_kwargs = {'bs':bs if val_bs is None else val_bs,'shuffle':val_shuffle,'drop_last':False}
+        dls = [dl] + [dl.new(ds[i], **merge(def_kwargs,kwargs,val_kwargs))
+                      for i in range(1,len(ds))]
+        return cls(*dls, path=path, device=device)
 
     @classmethod
     def from_dblock(cls, dblock, source, path='.',  bs=64, val_bs=None, shuffle=True, device=None, **kwargs):
@@ -202,6 +206,7 @@ class DataLoaders(GetAttr):
                cuda="Use the gpu if available",
                cpu="Use the cpu",
                new_empty="Create a new empty version of `self` with the same transforms",
+               from_dsets="Create dataloaders from custom datasets `ds`",
                from_dblock="Create a dataloaders from a given `dblock`")
 
 # Cell
