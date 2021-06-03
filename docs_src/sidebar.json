@@ -4,126 +4,127 @@
         "Quick Start": "/quick_start.html"
     },
     "Tutorials": {
-        "Overview": "/tutorial",
+        "Overview": "/tutorial.html",
         "": {
             "Beginner": {
-                "Vision Tutorial": "/tutorial.vision",
-                "Text Tutorial": "/tutorial.text",
-                "Tabular Tutorial": "/tutorial.tabular",
-                "Collab Tutorial": "/tutorial.collab"
+                "Vision Tutorial": "/tutorial.vision.html",
+                "Text Tutorial": "/tutorial.text.html",
+                "Tabular Tutorial": "/tutorial.tabular.html",
+                "Collab Tutorial": "/tutorial.collab.html"
             }
         },
         "empty1": {
             "Intermediate": {
-                "DataBlock Tutorial": "/tutorial.datablock",
-                "Imagenette Tutorial": "/tutorial.imagenette",
-                "Medical Imaging Tutorial": "/tutorial.medical_imaging",
-                "Pets Tutorial": "/tutorial.pets",
-                "Transformers Tutorial": "/tutorial.transformers",
-                "Wikitext Tutorial": "/tutorial.wikitext"
+                "DataBlock Tutorial": "/tutorial.datablock.html",
+                "Imagenette Tutorial": "/tutorial.imagenette.html",
+                "Medical Imaging Tutorial": "/tutorial.medical_imaging.html",
+                "Pets Tutorial": "/tutorial.pets.html",
+                "Transformers Tutorial": "/tutorial.transformers.html",
+                "Wikitext Tutorial": "/tutorial.wikitext.html"
             }
         },
         "empty2": {
             "Advanced": {
-                "Albumentations Tutorial": "/tutorial.albumentations",
-                "Siamese Tutorial": "/tutorial.siamese"
+                "Albumentations Tutorial": "/tutorial.albumentations.html",
+                "Siamese Tutorial": "/tutorial.siamese.html",
+                "Performance Tips and Tricks": "/dev/performance.html"
             }
         },
         "empty3": {
             "Migrating from Other Libraries": {
-                "Plain PyTorch": "/migrating_pytorch",
-                "Ignite": "/migrating_ignite",
-                "Lightning": "/migrating_lightning",
-                "Catalyst": "/migrating_catalyst"
+                "Plain PyTorch": "/migrating_pytorch.html",
+                "Ignite": "/migrating_ignite.html",
+                "Lightning": "/migrating_lightning.html",
+                "Catalyst": "/migrating_catalyst.html"
             }
         }
     },
     "Training": {
-        "Training Loop": "/learner",
-        "Optimizer": "/optimizer",
-        "Metrics": "/metrics",
-        "Interpretation": "/interpret",
-        "Distributed": "/distributed",
+        "Training Loop": "/learner.html",
+        "Optimizer": "/optimizer.html",
+        "Metrics": "/metrics.html",
+        "Interpretation": "/interpret.html",
+        "Distributed": "/distributed.html",
         "": {
             "Callbacks": {
-                "Core": "/callback.core",
-                "Hooks": "/callback.hook",
-                "Progress": "/callback.hook",
-                "Schedulers": "/callback.schedule",
-                "CutMix": "/callback.cutmix",
-                "Data": "/callback.data",
-                "Mixed Precision": "/callback.fp16",
-                "MixUp": "/callback.mixup",
-                "Predictions": "/callback.preds",
-                "RNN": "/callback.rnn",
-                "Tracker": "/callback.tracker",
-                "Training": "/callback.training"
+                "Core": "/callback.core.html",
+                "Hooks": "/callback.hook.html",
+                "Progress": "/callback.progress.html",
+                "Schedulers": "/callback.schedule.html",
+                "Data": "/callback.data.html",
+                "Mixed Precision": "/callback.fp16.html",
+                "MixUp and Friends": "/callback.mixup.html",
+                "Predictions": "/callback.preds.html",
+                "RNN": "/callback.rnn.html",
+                "Tracker": "/callback.tracker.html",
+                "Training": "/callback.training.html"
             }
         }
     },
     "Data": {
-        "Blocks": "/data.block",
-        "Core": "/data.core",
-        "DataLoader": "/data.load",
-        "External": "/data.external",
-        "Transforms": "/data.transforms"
+        "Blocks": "/data.block.html",
+        "Core": "/data.core.html",
+        "DataLoader": "/data.load.html",
+        "External": "/data.external.html",
+        "Transforms": "/data.transforms.html"
     },
     "Core": {
-        "PyTorch Core": "/torch_core",
-        "Layers": "/layers",
-        "Loss Functions": "/losses"
+        "PyTorch Core": "/torch_core.html",
+        "Layers": "/layers.html",
+        "Loss Functions": "/losses.html"
     },
-    
+
     "Vision": {
-        "Core": "/vision.core",
-        "Data": "/vision.data",
-        "Data Augmentation": "/vision.augment",
-        "Learner": "/vision.learner",
+        "Core": "/vision.core.html",
+        "Data": "/vision.data.html",
+        "Data Augmentation": "/vision.augment.html",
+        "Learner": "/vision.learner.html",
         "": {
             "Models": {
-                "XResnet": "/vision.models.xresnet",
-                "Unet": "/vision.models.unet"
+                "XResnet": "/vision.models.xresnet.html",
+                "Unet": "/vision.models.unet.html"
             }
-        },        
-        "GAN": "/vision.gan",
-        "Utilities": "/vision.utils",
-        "Widgets": "/vision.widgets"
+        },
+        "GAN": "/vision.gan.html",
+        "Utilities": "/vision.utils.html",
+        "Widgets": "/vision.widgets.html"
     },
     "Text": {
-        "Core": "/text.core",
-        "Data": "/text.data",
-        "Learner": "/text.learner",
+        "Core": "/text.core.html",
+        "Data": "/text.data.html",
+        "Learner": "/text.learner.html",
         "": {
             "Models": {
-                "Core": "/text.models.core",
-                "AWD LSTM": "/text.models.awdlstm",
-                "QRNN": "/text.models.qrnn"
+                "Core": "/text.models.core.html",
+                "AWD LSTM": "/text.models.awdlstm.html",
+                "QRNN": "/text.models.qrnn.html"
             }
         }
     },
     "Tabular": {
-        "Core": "/tabular.core",
-        "Data": "/tabular.data",
-        "Learner": "/tabular.learner",
-        "Model": "/tabular.model",
-        "Collab": "/collab"
+        "Core": "/tabular.core.html",
+        "Data": "/tabular.data.html",
+        "Learner": "/tabular.learner.html",
+        "Model": "/tabular.model.html",
+        "Collab": "/collab.html"
     },
     "Medical": {
-        "Imagery": "/medical.imaging",
-        "Text": "/medical.text"
+        "Imagery": "/medical.imaging.html",
+        "Text": "/medical.text.html"
     },
-    
+
     "Integrations": {
-        "Neptune": "/callback.neptune",
-        "TensorBoard": "/callback.tensorboard",
-        "Weights & Biases": "/callback.wandb"
+        "Captum": "/callback.captum.html",
+        "Weights & Biases": "/callback.wandb.html",
+        "Neptune": "/callback.neptune.html",
+        "TensorBoard": "/callback.tensorboard.html"
     },
     "fastai Development": {
-        "Developers Guide": "/dev-setup",
-        "Abbreviation Guide": "/dev/abbr",
-        "Style Guide": "/dev/style",
-        "GPU Notes": "/dev/gpu",
-        "Git Notes": "/dev/git",
-        "Notes": "/dev/develop"
+        "Developers Guide": "/dev-setup.html",
+        "Abbreviation Guide": "/dev/abbr.html",
+        "Style Guide": "/dev/style.html",
+        "GPU Notes": "/dev/gpu.html",
+        "Git Notes": "/dev/git.html",
+        "Notes": "/dev/develop.html"
     }
 }

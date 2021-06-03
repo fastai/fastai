@@ -8,3 +8,4 @@ from .schedule import *
 from .tracker import *
 from .rnn import *
 from .training import *
+from .preds import *

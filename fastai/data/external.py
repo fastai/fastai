@@ -137,6 +137,7 @@ class URLs():
     # Medical Imaging datasets
     #SKIN_LESION        = f'{S3_IMAGELOC}skin_lesion.tgz'
     SIIM_SMALL         = f'{S3_IMAGELOC}siim_small.tgz'
+    TCGA_SMALL         = f'{S3_IMAGELOC}tcga_small.tgz'
 
     #Pretrained models
     OPENAI_TRANSFORMER = f'{S3_MODEL}transformer.tgz'
@@ -185,11 +186,11 @@ def download_url(url, dest, overwrite=False, pbar=None, show_progress=True, chun
                   f' And re-run your code once the download is successful\n')
 
 # Cell
-def download_data(url, fname=None, c_key='archive', force_download=False):
+def download_data(url, fname=None, c_key='archive', force_download=False, timeout=4):
     "Download `url` to `fname`."
     fname = Path(fname or URLs.path(url, c_key=c_key))
     fname.parent.mkdir(parents=True, exist_ok=True)
-    if not fname.exists() or force_download: download_url(url, fname, overwrite=force_download)
+    if not fname.exists() or force_download: download_url(url, fname, overwrite=force_download, timeout=timeout)
     return fname
 
 # Cell
@@ -240,7 +241,7 @@ def rename_extracted(dest):
     if not (extracted.name == dest.name): extracted.rename(dest)
 
 # Cell
-def untar_data(url, fname=None, dest=None, c_key='data', force_download=False, extract_func=file_extract):
+def untar_data(url, fname=None, dest=None, c_key='data', force_download=False, extract_func=file_extract, timeout=4):
     "Download `url` to `fname` if `dest` doesn't exist, and un-tgz or unzip to folder `dest`."
     default_dest = URLs.path(url, c_key=c_key).with_suffix('')
     dest = default_dest if dest is None else Path(dest)/default_dest.name
@@ -253,7 +254,7 @@ def untar_data(url, fname=None, dest=None, c_key='data', force_download=False, e
         if dest.exists(): shutil.rmtree(dest)
     if not dest.exists(): _try_from_storage(dest, URLs.path(url, c_key='storage').with_suffix(''))
     if not dest.exists():
-        fname = download_data(url, fname=fname, c_key=c_key)
+        fname = download_data(url, fname=fname, c_key=c_key, timeout=timeout)
         if _get_check(url) and _check_file(fname) != _get_check(url):
             print(f"File downloaded is broken. Remove {fname} and try again.")
         extract_func(fname, dest.parent)

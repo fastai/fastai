@@ -2,11 +2,11 @@
 
 __all__ = ['AccumMetric', 'skm_to_fastai', 'optim_metric', 'accuracy', 'error_rate', 'top_k_accuracy', 'APScoreBinary',
            'BalancedAccuracy', 'BrierScore', 'CohenKappa', 'F1Score', 'FBeta', 'HammingLoss', 'Jaccard', 'Precision',
-           'Recall', 'RocAuc', 'RocAucBinary', 'MatthewsCorrCoef', 'Perplexity', 'perplexity', 'accuracy_multi',
-           'APScoreMulti', 'BrierScoreMulti', 'F1ScoreMulti', 'FBetaMulti', 'HammingLossMulti', 'JaccardMulti',
-           'MatthewsCorrCoefMulti', 'PrecisionMulti', 'RecallMulti', 'RocAucMulti', 'mse', 'rmse', 'mae', 'msle',
-           'exp_rmspe', 'ExplainedVariance', 'R2Score', 'PearsonCorrCoef', 'SpearmanCorrCoef', 'foreground_acc', 'Dice',
-           'JaccardCoeff', 'CorpusBLEUMetric', 'LossMetric', 'LossMetrics']
+           'Recall', 'RocAuc', 'RocAucBinary', 'MatthewsCorrCoef', 'accuracy_multi', 'APScoreMulti', 'BrierScoreMulti',
+           'F1ScoreMulti', 'FBetaMulti', 'HammingLossMulti', 'JaccardMulti', 'MatthewsCorrCoefMulti', 'PrecisionMulti',
+           'RecallMulti', 'RocAucMulti', 'mse', 'rmse', 'mae', 'msle', 'exp_rmspe', 'ExplainedVariance', 'R2Score',
+           'PearsonCorrCoef', 'SpearmanCorrCoef', 'foreground_acc', 'Dice', 'DiceMulti', 'JaccardCoeff',
+           'CorpusBLEUMetric', 'Perplexity', 'perplexity', 'LossMetric', 'LossMetrics']
 
 # Cell
 from .data.all import *
@@ -15,8 +15,6 @@ from .learner import *
 
 # Cell
 import sklearn.metrics as skm
-
-# Cell
 import scipy.stats as scs
 
 # Cell
@@ -192,16 +190,6 @@ def MatthewsCorrCoef(sample_weight=None, **kwargs):
     return skm_to_fastai(skm.matthews_corrcoef, sample_weight=sample_weight, **kwargs)
 
 # Cell
-class Perplexity(AvgLoss):
-    "Perplexity (exponential of cross-entropy loss) for Language Models"
-    @property
-    def value(self): return torch.exp(self.total/self.count) if self.count != 0 else None
-    @property
-    def name(self):  return "perplexity"
-
-perplexity = Perplexity()
-
-# Cell
 def accuracy_multi(inp, targ, thresh=0.5, sigmoid=True):
     "Compute accuracy when `inp` and `targ` are the same size."
     inp,targ = flatten_check(inp,targ)
@@ -352,6 +340,32 @@ class Dice(Metric):
     def value(self): return 2. * self.inter/self.union if self.union > 0 else None
 
 # Cell
+class DiceMulti(Metric):
+    "Averaged Dice metric (Macro F1) for multiclass target in segmentation"
+    def __init__(self, axis=1): self.axis = axis
+    def reset(self): self.inter,self.union = {},{}
+    def accumulate(self, learn):
+        pred,targ = flatten_check(learn.pred.argmax(dim=self.axis), learn.y)
+        for c in range(learn.pred.shape[self.axis]):
+            p = torch.where(pred == c, 1, 0)
+            t = torch.where(targ == c, 1, 0)
+            c_inter = (p*t).float().sum().item()
+            c_union = (p+t).float().sum().item()
+            if c in self.inter:
+                self.inter[c] += c_inter
+                self.union[c] += c_union
+            else:
+                self.inter[c] = c_inter
+                self.union[c] = c_union
+
+    @property
+    def value(self):
+        binary_dice_scores = np.array([])
+        for c in self.inter:
+            binary_dice_scores = np.append(binary_dice_scores, 2.*self.inter[c]/self.union[c] if self.union[c] > 0 else np.nan)
+        return np.nanmean(binary_dice_scores)
+
+# Cell
 class JaccardCoeff(Dice):
     "Implementation of the Jaccard coefficient that is lighter in RAM"
     @property
@@ -408,6 +422,16 @@ class CorpusBLEUMetric(Metric):
             precs = [c/t for c,t in zip(self.corrects,self.counts)]
             len_penalty = math.exp(1 - self.targ_len/self.pred_len) if self.pred_len < self.targ_len else 1
             return len_penalty * ((precs[0]*precs[1]*precs[2]*precs[3]) ** 0.25)
+
+# Cell
+class Perplexity(AvgLoss):
+    "Perplexity (exponential of cross-entropy loss) for Language Models"
+    @property
+    def value(self): return torch.exp(self.total/self.count) if self.count != 0 else None
+    @property
+    def name(self):  return "perplexity"
+
+perplexity = Perplexity()
 
 # Cell
 class LossMetric(AvgMetric):

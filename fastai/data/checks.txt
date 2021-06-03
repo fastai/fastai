@@ -172,11 +172,11 @@
     "1efd84215ea3e30d90e4c33764b889db"
   ],
   "https://s3.amazonaws.com/fast-ai-imageclas/imagenette2.tgz": [
-    1556914727,
-    "5103dc075392e9e6a7bc92653a88c3cd"
+    1557161267,
+    "2c774ecb40005b35d7937d50f5d42336"
   ],
   "https://s3.amazonaws.com/fast-ai-imageclas/imagenette2-160.tgz": [
-    98948031,
+    8388608,
     "e28cd4207d545c64f2372bcb64753d01"
   ],
   "https://s3.amazonaws.com/fast-ai-imageclas/imagenette2-320.tgz": [
@@ -184,16 +184,16 @@
     "55496feff4562875a3246d819d094b2b"
   ],
   "https://s3.amazonaws.com/fast-ai-imageclas/imagewoof2.tgz": [
-    1343482285,
-    "7314775a4af7c979910455baec7e6c46"
+    1343715595,
+    "2cc1c1e36e20cb6fd24ffb978edcb487"
   ],
   "https://s3.amazonaws.com/fast-ai-imageclas/imagewoof2-160.tgz": [
-    92560471,
-    "8cd8964848106c00af3c087330af9057"
+    92612825,
+    "3559b194123981a540b87132dbda412f"
   ],
   "https://s3.amazonaws.com/fast-ai-imageclas/imagewoof2-320.tgz": [
-    328288506,
-    "e24c62362b2594f2d1f3ce5f9e7ee18d"
+    328387740,
+    "7a1fd92672a559a85de76e4810a20c21"
   ],
   "https://s3.amazonaws.com/fast-ai-imageclas/imagewang-160.tgz": [
     191498213,
@@ -278,5 +278,9 @@
   "https://s3.amazonaws.com/fast-ai-sample/dogscats.tgz": [
     839285364,
     "3e483c8d6ef2175e9d395a6027eb92b7"
+  ],
+  "https://s3.amazonaws.com/fast-ai-imagelocal/tcga_small.tgz": [
+    14744474,
+    "3ceffe7cf522cb1c60e93dc555d8817f"
   ]
 }

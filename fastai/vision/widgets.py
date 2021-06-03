@@ -59,14 +59,14 @@ class ImagesCleaner:
     def values(self): return L(self.widget.children).itemgot(1).attrgot('value')
     def delete(self): return self.values().argwhere(eq('<Delete>'))
     def change(self):
-        idxs = self.values().argwhere(negate_func(in_(['<Delete>','<Keep>'])))
+        idxs = self.values().argwhere(not_(in_(['<Delete>','<Keep>'])))
         return idxs.zipwith(self.values()[idxs])
 
 # Cell
 def _get_iw_info(learn, ds_idx=0):
     dl = learn.dls[ds_idx].new(shuffle=False, drop_last=False)
-    inp,probs,targs,preds,losses = learn.get_preds(dl=dl, with_input=True, with_loss=True, with_decoded=True)
-    inp,targs = L(zip(*dl.decode_batch((inp,targs), max_n=9999)))
+    probs,targs,preds,losses = learn.get_preds(dl=dl, with_input=False, with_loss=True, with_decoded=True)
+    targs = [dl.vocab[t] for t in targs]
     return L([dl.dataset.items,targs,losses]).zip()
 
 # Cell

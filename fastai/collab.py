@@ -87,7 +87,6 @@ class EmbeddingNN(TabularModel):
         super().__init__(emb_szs=emb_szs, n_cont=0, out_sz=1, layers=layers, **kwargs)
 
 # Cell
-@log_args(to_return=True, but_as=Learner.__init__)
 @delegates(Learner.__init__)
 def collab_learner(dls, n_factors=50, use_nn=False, emb_szs=None, layers=None, config=None, y_range=None, loss_func=None, **kwargs):
     "Create a Learner for collaborative filtering on `dls`."

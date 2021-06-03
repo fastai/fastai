@@ -1,3 +1,6 @@
+collect_env.py
+tmp*
+Untitled*.ipynb
 *.bak
 token
 .idea/

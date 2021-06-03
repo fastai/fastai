@@ -6,22 +6,36 @@ __all__ = ['download_images', 'resize_to', 'verify_image', 'verify_images', 'res
 from ..torch_basics import *
 from ..data.all import *
 from .core import *
+from pathlib import Path
 
 # Cell
-def _download_image_inner(dest, inp, timeout=4):
+def _get_downloaded_image_filename(dest, name, suffix):
+    start_index = 1
+    candidate_name = name
+
+    while (dest/f"{candidate_name}{suffix}").is_file():
+        candidate_name = f"{candidate_name}{start_index}"
+        start_index += 1
+
+    return candidate_name
+
+# Cell
+def _download_image_inner(dest, inp, timeout=4, preserve_filename=False):
     i,url = inp
-    suffix = re.findall(r'\.\w+?(?=(?:\?|$))', url)
-    suffix = suffix[0] if len(suffix)>0  else '.jpg'
-    try: download_url(url, dest/f"{i:08d}{suffix}", overwrite=True, show_progress=False, timeout=timeout)
+    url_path = Path(url)
+    suffix = url_path.suffix if url_path.suffix else '.jpg'
+    name = _get_downloaded_image_filename(dest, url_path.stem, suffix) if preserve_filename else f"{i:08d}"
+    try: download_url(url, dest/f"{name}{suffix}", overwrite=True, show_progress=False, timeout=timeout)
     except Exception as e: f"Couldn't download {url}."
 
 # Cell
-def download_images(dest, url_file=None, urls=None, max_pics=1000, n_workers=8, timeout=4):
+def download_images(dest, url_file=None, urls=None, max_pics=1000, n_workers=8, timeout=4, preserve_filename=False):
     "Download images listed in text file `url_file` to path `dest`, at most `max_pics`"
-    if urls is None: urls = url_file.read().strip().split("\n")[:max_pics]
+    if urls is None: urls = url_file.read_text().strip().split("\n")[:max_pics]
     dest = Path(dest)
     dest.mkdir(exist_ok=True)
-    parallel(partial(_download_image_inner, dest, timeout=timeout), list(enumerate(urls)), n_workers=n_workers)
+    parallel(partial(_download_image_inner, dest, timeout=timeout, preserve_filename=preserve_filename),
+             list(enumerate(urls)), n_workers=n_workers, threadpool=True)
 
 # Cell
 def resize_to(img, targ_sz, use_min=False):

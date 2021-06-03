@@ -35,7 +35,6 @@ def show_results(x, y, samples, outs, ctxs=None, max_n=9, **kwargs):
 _batch_tfms = ('after_item','before_batch','after_batch')
 
 # Cell
-@log_args(but_as=DataLoader.__init__)
 @delegates()
 class TfmdDL(DataLoader):
     "Transformed `DataLoader`"
@@ -49,7 +48,7 @@ class TfmdDL(DataLoader):
                 kwargs[nm].setup(self)
 
     def _one_pass(self):
-        b = self.do_batch([self.do_item(0)])
+        b = self.do_batch([self.do_item(None)])
         if self.device is not None: b = to_device(b, self.device)
         its = self.after_batch(b)
         self._n_inp = 1 if not isinstance(its, (list,tuple)) or len(its)==1 else len(its)-1
@@ -77,12 +76,13 @@ class TfmdDL(DataLoader):
             f = getattr(self,nm)
             if isinstance(f,Pipeline): f.split_idx=split_idx
 
-    def decode(self, b): return self.before_batch.decode(to_cpu(self.after_batch.decode(self._retain_dl(b))))
+    def decode(self, b): return to_cpu(self.after_batch.decode(self._retain_dl(b)))
     def decode_batch(self, b, max_n=9, full=True): return self._decode_batch(self.decode(b), max_n, full)
 
     def _decode_batch(self, b, max_n=9, full=True):
         f = self.after_item.decode
-        f = compose(f, partial(getattr(self.dataset,'decode',noop), full = full))
+        f1 = self.before_batch.decode
+        f = compose(f1, f, partial(getattr(self.dataset,'decode',noop), full = full))
         return L(batch_to_samples(b, max_n=max_n)).map(f)
 
     def _pre_show_batch(self, b, max_n=9):
@@ -162,6 +162,19 @@ class DataLoaders(GetAttr):
         self.device = device
         return self
 
+    def _add_tfms(self, tfms, event, dl_idx):
+        "Adds `tfms` to `event` on `dl`"
+        if(isinstance(dl_idx,str)): dl_idx = 0 if(dl_idx=='train') else 1
+        dl_tfms = getattr(self[dl_idx], event)
+        apply(dl_tfms.add, tfms)
+
+    def add_tfms(self,tfms,event,loaders=None):
+        "Adds `tfms` to `events` on `loaders`"
+        if(loaders is None): loaders=range(len(self.loaders))
+        if not is_listy(loaders): loaders = listify(loaders)
+        for loader in loaders:
+            self._add_tfms(tfms,event,loader)
+
     def cuda(self): return self.to(device=default_device())
     def cpu(self):  return self.to(device=torch.device('cpu'))
 
@@ -176,8 +189,8 @@ class DataLoaders(GetAttr):
         return cls(*[dl_type(d, bs=bs, **k) for d,k in zip(ds, kwargs)], path=path, device=device)
 
     @classmethod
-    def from_dblock(cls, dblock, source, path='.',  bs=64, val_bs=None, shuffle_train=True, device=None, **kwargs):
-        return dblock.dataloaders(source, path=path, bs=bs, val_bs=val_bs, shuffle_train=shuffle_train, device=device, **kwargs)
+    def from_dblock(cls, dblock, source, path='.',  bs=64, val_bs=None, shuffle=True, device=None, **kwargs):
+        return dblock.dataloaders(source, path=path, bs=bs, val_bs=val_bs, shuffle=shuffle, device=device, **kwargs)
 
     _docs=dict(__getitem__="Retrieve `DataLoader` at `i` (`0` is training, `1` is validation)",
                train="Training `DataLoader`",
@@ -185,6 +198,7 @@ class DataLoaders(GetAttr):
                train_ds="Training `Dataset`",
                valid_ds="Validation `Dataset`",
                to="Use `device`",
+               add_tfms="Add `tfms` to `loaders` for `event",
                cuda="Use the gpu if available",
                cpu="Use the cpu",
                new_empty="Create a new empty version of `self` with the same transforms",
@@ -204,16 +218,21 @@ class FilteredBase:
     def _new(self, items, **kwargs): return super()._new(items, splits=self.splits, **kwargs)
     def subset(self): raise NotImplemented
 
-    def dataloaders(self, bs=64, val_bs=None, shuffle_train=True, n=None, path='.', dl_type=None, dl_kwargs=None,
-                    device=None, **kwargs):
+    def dataloaders(self, bs=64, shuffle_train=None, shuffle=True, val_shuffle=False,n=None, path='.', dl_type=None, dl_kwargs=None,
+                    device=None,drop_last=None,val_bs=None, **kwargs):
+        if shuffle_train is not None:
+            shuffle=shuffle_train
+            warnings.warn('`shuffle_train` is deprecated. Use `shuffle` instead.',DeprecationWarning)
         if device is None: device=default_device()
         if dl_kwargs is None: dl_kwargs = [{}] * self.n_subsets
         if dl_type is None: dl_type = self._dl_type
-        drop_last = kwargs.pop('drop_last', shuffle_train)
-        dl = dl_type(self.subset(0), bs=bs, shuffle=shuffle_train, drop_last=drop_last, n=n, device=device,
-                     **merge(kwargs, dl_kwargs[0]))
-        dls = [dl] + [dl.new(self.subset(i), bs=(bs if val_bs is None else val_bs), shuffle=False, drop_last=False,
-                             n=None, **dl_kwargs[i]) for i in range(1, self.n_subsets)]
+        if drop_last is None: drop_last = shuffle
+        val_kwargs={k[4:]:v for k,v in kwargs.items() if k.startswith('val_')}
+        def_kwargs = {'bs':bs,'shuffle':shuffle,'drop_last':drop_last,'n':n,'device':device}
+        dl = dl_type(self.subset(0), **merge(kwargs,def_kwargs, dl_kwargs[0]))
+        def_kwargs = {'bs':bs if val_bs is None else val_bs,'shuffle':val_shuffle,'n':None,'drop_last':False}
+        dls = [dl] + [dl.new(self.subset(i), **merge(kwargs,def_kwargs,val_kwargs,dl_kwargs[i]))
+                      for i in range(1, self.n_subsets)]
         return self._dbunch_type(*dls, path=path, device=device)
 
 FilteredBase.train,FilteredBase.valid = add_props(lambda i,x: x.subset(i))
@@ -374,8 +393,8 @@ def test_set(dsets, test_items, rm_tfms=None, with_labels=False):
     else: raise Exception(f"This method requires using the fastai library to assemble your data. Expected a `Datasets` or a `TfmdLists` but got {dsets.__class__.__name__}")
 
 # Cell
-@delegates(TfmdDL.__init__)
 @patch
+@delegates(TfmdDL.__init__)
 def test_dl(self:DataLoaders, test_items, rm_type_tfms=None, with_labels=False, **kwargs):
     "Create a test dataloader from `test_items` using validation transforms of `dls`"
     test_ds = test_set(self.valid_ds, test_items, rm_tfms=rm_type_tfms, with_labels=with_labels

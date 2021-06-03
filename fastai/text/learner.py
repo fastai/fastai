@@ -81,13 +81,12 @@ def load_model_text(file, model, opt, with_opt=None, device=None, strict=True):
     elif with_opt: warn("Saved filed doesn't contain an optimizer state.")
 
 # Cell
-@log_args(but_as=Learner.__init__)
 @delegates(Learner.__init__)
 class TextLearner(Learner):
     "Basic class for a `Learner` in NLP."
     def __init__(self, dls, model, alpha=2., beta=1., moms=(0.8,0.7,0.8), **kwargs):
         super().__init__(dls, model, moms=moms, **kwargs)
-        self.add_cbs([ModelResetter(), RNNRegularizer(alpha=alpha, beta=beta)])
+        self.add_cbs(rnn_cbs())
 
     def save_encoder(self, file):
         "Save the encoder to `file` in the model directory"
@@ -109,7 +108,7 @@ class TextLearner(Learner):
 
     def load_pretrained(self, wgts_fname, vocab_fname, model=None):
         "Load a pretrained model and adapt it to the data vocabulary."
-        old_vocab = Path(vocab_fname).load()
+        old_vocab = load_pickle(vocab_fname)
         new_vocab = _get_text_vocab(self.dls)
         distrib_barrier()
         wgts = torch.load(wgts_fname, map_location = lambda storage,loc: storage)
@@ -150,7 +149,6 @@ def decode_spec_tokens(tokens):
     return new_toks
 
 # Cell
-@log_args(but_as=TextLearner.__init__)
 class LMLearner(TextLearner):
     "Add functionality to `TextLearner` when dealing with a language model"
     def predict(self, text, n_words=1, no_unk=True, temperature=1., min_p=None, no_bar=False,
@@ -190,7 +188,6 @@ def _get_text_vocab(dls):
     return vocab
 
 # Cell
-@log_args(to_return=True, but_as=Learner.__init__)
 @delegates(Learner.__init__)
 def language_model_learner(dls, arch, config=None, drop_mult=1., backwards=False, pretrained=True, pretrained_fnames=None, **kwargs):
     "Create a `Learner` with a language model from `dls` and `arch`."
@@ -213,7 +210,6 @@ def language_model_learner(dls, arch, config=None, drop_mult=1., backwards=False
     return learn
 
 # Cell
-@log_args(to_return=True, but_as=Learner.__init__)
 @delegates(Learner.__init__)
 def text_classifier_learner(dls, arch, seq_len=72, config=None, backwards=False, pretrained=True, drop_mult=0.5, n_out=None,
                             lin_ftrs=None, ps=None, max_len=72*20, y_range=None, **kwargs):

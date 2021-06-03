@@ -9,7 +9,7 @@ from ..basics import *
 @docs
 class ProgressCallback(Callback):
     "A `Callback` to handle the display of progress bars"
-    run_after=Recorder
+    order,_stateattrs = 60,('mbar','pbar')
 
     def before_fit(self):
         assert hasattr(self.learn, 'recorder')
@@ -69,10 +69,11 @@ def no_bar(self:Learner):
 # Cell
 class ShowGraphCallback(Callback):
     "Update a graph of training and validation loss"
-    run_after,run_valid=ProgressCallback,False
+    order,run_valid=65,False
 
     def before_fit(self):
         self.run = not hasattr(self.learn, 'lr_finder') and not hasattr(self, "gather_preds")
+        if not(self.run): return
         self.nb_batches = []
         assert hasattr(self.learn, 'progress')
 
@@ -80,6 +81,7 @@ class ShowGraphCallback(Callback):
 
     def after_epoch(self):
         "Plot validation loss in the pbar graph"
+        if not self.nb_batches: return
         rec = self.learn.recorder
         iters = range_of(rec.losses)
         val_losses = [v[1] for v in rec.values]
@@ -89,8 +91,8 @@ class ShowGraphCallback(Callback):
 
 # Cell
 class CSVLogger(Callback):
-    run_after=Recorder
     "Log the results displayed in `learn.path/fname`"
+    order=60
     def __init__(self, fname='history.csv', append=False):
         self.fname,self.append = Path(fname),append
 
@@ -100,6 +102,7 @@ class CSVLogger(Callback):
 
     def before_fit(self):
         "Prepare file with metric names."
+        if hasattr(self, "gather_preds"): return
         self.path.parent.mkdir(parents=True, exist_ok=True)
         self.file = (self.path/self.fname).open('a' if self.append else 'w')
         self.file.write(','.join(self.recorder.metric_names) + '\n')
@@ -108,9 +111,12 @@ class CSVLogger(Callback):
     def _write_line(self, log):
         "Write a line with `log` and call the old logger."
         self.file.write(','.join([str(t) for t in log]) + '\n')
+        self.file.flush()
+        os.fsync(self.file.fileno())
         self.old_logger(log)
 
     def after_fit(self):
         "Close the file and clean up."
+        if hasattr(self, "gather_preds"): return
         self.file.close()
         self.learn.logger = self.old_logger

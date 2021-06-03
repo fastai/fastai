@@ -6,9 +6,9 @@ __all__ = ['module', 'Identity', 'Lambda', 'PartialLambda', 'Flatten', 'View', '
            'sigmoid_', 'vleaky_relu', 'init_default', 'init_linear', 'ConvLayer', 'AdaptiveAvgPool', 'MaxPool',
            'AvgPool', 'trunc_normal_', 'Embedding', 'SelfAttention', 'PooledSelfAttention2d', 'SimpleSelfAttention',
            'icnr_init', 'PixelShuffle_ICNR', 'sequential', 'SequentialEx', 'MergeLayer', 'Cat', 'SimpleCNN',
-           'ProdLayer', 'inplace_relu', 'SEModule', 'ResBlock', 'SEBlock', 'SEResNeXtBlock', 'SeparableBlock', 'swish',
-           'Swish', 'MishJitAutoFn', 'mish', 'Mish', 'ParameterModule', 'children_and_parameters', 'flatten_model',
-           'NoneReduce', 'in_channels']
+           'ProdLayer', 'inplace_relu', 'SEModule', 'ResBlock', 'SEBlock', 'SEResNeXtBlock', 'SeparableBlock',
+           'TimeDistributed', 'swish', 'Swish', 'MishJitAutoFn', 'mish', 'Mish', 'ParameterModule',
+           'children_and_parameters', 'has_children', 'flatten_model', 'NoneReduce', 'in_channels']
 
 # Cell
 from .imports import *
@@ -66,7 +66,7 @@ class PartialLambda(Lambda):
 @module(full=False)
 def Flatten(self, x):
     "Flatten `x` to a single dimension, e.g. at end of a model. `full` for rank-1 tensor"
-    return x.view(-1) if self.full else x.view(x.size(0), -1)
+    return TensorBase(x.view(-1) if self.full else x.view(x.size(0), -1))
 
 # Cell
 class View(Module):
@@ -280,9 +280,9 @@ def trunc_normal_(x, mean=0., std=1.):
 # Cell
 class Embedding(nn.Embedding):
     "Embedding layer with truncated normal initialization"
-    def __init__(self, ni, nf):
+    def __init__(self, ni, nf, std=0.01):
         super().__init__(ni, nf)
-        trunc_normal_(self.weight.data, std=0.01)
+        trunc_normal_(self.weight.data, std=std)
 
 # Cell
 class SelfAttention(Module):
@@ -372,7 +372,11 @@ class PixelShuffle_ICNR(nn.Sequential):
         nf = ifnone(nf, ni)
         layers = [ConvLayer(ni, nf*(scale**2), ks=1, norm_type=norm_type, act_cls=act_cls, bias_std=0),
                   nn.PixelShuffle(scale)]
-        layers[0][0].weight.data.copy_(icnr_init(layers[0][0].weight.data))
+        if norm_type == NormType.Weight:
+            layers[0][0].weight_v.data.copy_(icnr_init(layers[0][0].weight_v.data))
+            layers[0][0].weight_g.data.copy_(((layers[0][0].weight_v.data**2).sum(dim=[1,2,3])**0.5)[:,None,None,None])
+        else:
+            layers[0][0].weight.data.copy_(icnr_init(layers[0][0].weight.data))
         if blur: layers += [nn.ReplicationPad2d((1,0,1,0)), nn.AvgPool2d(2, stride=1)]
         super().__init__(*layers)
 
@@ -396,7 +400,7 @@ class SequentialEx(Module):
             res.orig = x
             nres = l(res)
             # We have to remove res.orig to avoid hanging refs and therefore memory leaks
-            res.orig = None
+            res.orig, nres.orig = None, None
             res = nres
         return res
 
@@ -492,6 +496,48 @@ def SeparableBlock(expansion, ni, nf, reduction=16, stride=1, base_width=4, **kw
     return ResBlock(expansion, ni, nf, stride=stride, reduction=reduction, nh2=nf*2, dw=True, **kwargs)
 
 # Cell
+def _stack_tups(tuples, stack_dim=1):
+    "Stack tuple of tensors along `stack_dim`"
+    return tuple(torch.stack([t[i] for t in tuples], dim=stack_dim) for i in range_of(tuples[0]))
+
+# Cell
+class TimeDistributed(Module):
+    "Applies `module` over `tdim` identically for each step, use `low_mem` to compute one at a time."
+    def __init__(self, module, low_mem=False, tdim=1):
+        store_attr()
+
+    def forward(self, *tensors, **kwargs):
+        "input x with shape:(bs,seq_len,channels,width,height)"
+        if self.low_mem or self.tdim!=1:
+            return self.low_mem_forward(*tensors, **kwargs)
+        else:
+            #only support tdim=1
+            inp_shape = tensors[0].shape
+            bs, seq_len = inp_shape[0], inp_shape[1]
+            out = self.module(*[x.view(bs*seq_len, *x.shape[2:]) for x in tensors], **kwargs)
+        return self.format_output(out, bs, seq_len)
+
+    def low_mem_forward(self, *tensors, **kwargs):
+        "input x with shape:(bs,seq_len,channels,width,height)"
+        seq_len = tensors[0].shape[self.tdim]
+        args_split = [torch.unbind(x, dim=self.tdim) for x in tensors]
+        out = []
+        for i in range(seq_len):
+            out.append(self.module(*[args[i] for args in args_split]), **kwargs)
+        if isinstance(out[0], tuple):
+            return _stack_tups(out, stack_dim=self.tdim)
+        return torch.stack(out, dim=self.tdim)
+
+    def format_output(self, out, bs, seq_len):
+        "unstack from batchsize outputs"
+        if isinstance(out, tuple):
+            return tuple(out_i.view(bs, seq_len, *out_i.shape[1:]) for out_i in out)
+        return out.view(bs, seq_len,*out.shape[1:])
+
+    def __repr__(self):
+        return f'TimeDistributed({self.module})'
+
+# Cell
 from torch.jit import script
 
 # Cell
@@ -568,17 +614,15 @@ def children_and_parameters(m):
     return children
 
 # Cell
-def _has_children(m:nn.Module):
+def has_children(m):
     try: next(m.children())
     except StopIteration: return False
     return True
 
-nn.Module.has_children = property(_has_children)
-
 # Cell
 def flatten_model(m):
     "Return the list of all submodules and parameters of `m`"
-    return sum(map(flatten_model,children_and_parameters(m)),[]) if m.has_children else [m]
+    return sum(map(flatten_model,children_and_parameters(m)),[]) if has_children(m) else [m]
 
 # Cell
 class NoneReduce():

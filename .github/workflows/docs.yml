@@ -1,11 +1,11 @@
 name: docs
 on: 
   workflow_dispatch:
-  workflow_run:
-    workflows: ["CI"]
-    branches: [master]
-    types: 
-      - completed
+#   workflow_run:
+#     workflows: ["CI"]
+#     branches: [master]
+#     types: 
+#       - completed
   push:
     branches: 
       - master
@@ -27,3 +27,13 @@ jobs:
         hostname: ps625762.dreamhostps.com
         dest_path: docs.fast.ai
         ssh_key: ${{ secrets.DH_KEY }}
+        delete: 'yes'
+    - name: check for broken links
+      if: github.event == 'workflow_dispatch'
+      run: |
+        pip install fastlinkcheck
+        link_check "docs/_site" --host "docs.fast.ai" 2> err || true
+        export GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
+        if [[ -z $(gh issue list -l "broken-link") && -s err ]]; then
+          gh issue create -t "Broken links found" -b "$(< err)" -l "broken-link" -R "${{ github.repository }}"
+        fi

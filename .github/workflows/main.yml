@@ -31,7 +31,7 @@ jobs:
         
   filter:
     runs-on: ubuntu-latest
-    if: (github.event_name == 'push' && github.event.head_commit.author.username == 'jph00') || github.event_name != 'push'
+    if: true # (github.event_name == 'push' && github.event.head_commit.author.username == 'jph00') || github.event_name != 'push'
     steps:
       - run: |
           echo "passed filter"
@@ -59,13 +59,14 @@ jobs:
       caching: "true"
     strategy:
       matrix:
-        nb: ['[0-2]','[3-5]','[6-9]']
+        nb_dec : ['[0-2]','[3-5]','[6-9]']
+        nb_unit: ['[0-2]','[3-5]','[6-9]']
     steps:        
     - name: checkout contents of PR
       uses: actions/checkout@v2
     - name: Install libraries
       run: |
-        pip install -Uq fastcore fastscript fastprogress
+        pip install -Uq fastcore fastprogress
         pip install -Uqe .[dev]
     
     - name: check for cache hit
@@ -82,6 +83,6 @@ jobs:
         ipython /root/download_testdata.py
         mkdir -p $HOME/.fastai/data
         find $HOME/.fastai/archive/ -name "*.tgz" -exec tar -xzvf {} -C $HOME/.fastai/data \;
-    - name: Test notebooks batch ${{matrix.nb}}
-      run: nbdev_test_nbs --flags '' --n_workers 3 --pause 1.0 --fname "nbs/[0-9]${{matrix.nb}}*.ipynb"
+    - name: Test notebooks batch ${{matrix.nb_dec}}${{matrix.nb_unit}}
+      run: nbdev_test_nbs --flags '' --n_workers 3 --pause 1.0 --fname "nbs/${{matrix.nb_dec}}${{matrix.nb_unit}}*.ipynb"
   

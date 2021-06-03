@@ -144,15 +144,24 @@ def total_params(m):
 # Cell
 def layer_info(learn, *xb):
     "Return layer infos of `model` on `xb` (only support batch first inputs)"
-    def _track(m, i, o): return (m.__class__.__name__,)+total_params(m)+(apply(lambda x:x.shape, o),)
+    def _track(m, i, o):
+        params, trainable, shape = '', '', ''
+        same = any((x[0].shape[1:] == x[1].shape for x in zip(i, o)))
+        if hasattr(m, 'weight'): # non activation layer
+            params, trainable = total_params(m)
+            shape = apply(lambda x: x.shape, o)
+        return (type(m).__name__, params, trainable, shape, same)
+
     with Hooks(flatten_model(learn.model), _track) as h:
         batch = apply(lambda o:o[:1], xb)
-        with learn: r = learn.get_preds(dl=[batch], inner=True, reorder=False)
+        train_only_cbs = [cb for cb in learn.cbs if hasattr(cb, '_only_train_loop')]
+        with learn.removed_cbs(train_only_cbs), learn.no_logging(), learn as l:
+            r = l.get_preds(dl=[batch], inner=True, reorder=False)
         return h.stored
 
 # Cell
 def _print_shapes(o, bs):
-    if isinstance(o, torch.Size): return ' x '.join([str(bs)] + [str(t) for t in o[1:]])
+    if isinstance(o, (torch.Size,tuple)): return ' x '.join([str(bs)] + [str(t) for t in o[1:]])
     else: return str([_print_shapes(x, bs) for x in o])
 
 # Cell
@@ -162,20 +171,27 @@ def module_summary(learn, *xb):
     #  thus are not counted inside the summary
     #TODO: find a way to have them counted in param number somehow
     infos = layer_info(learn, *xb)
-    n,bs = 64,find_bs(xb)
+    n,bs = 76,find_bs(xb)
     inp_sz = _print_shapes(apply(lambda x:x.shape, xb), bs)
-    res = f"{learn.model.__class__.__name__} (Input shape: {inp_sz})\n"
+    res = f"{type(learn.model).__name__} (Input shape: {inp_sz})\n"
     res += "=" * n + "\n"
     res += f"{'Layer (type)':<20} {'Output Shape':<20} {'Param #':<10} {'Trainable':<10}\n"
-    res += "=" * n + "\n"
-    ps,trn_ps = 0,0
+    res += "=" * n
+    ps,trn_ps,j = 0,0,0
     infos = [o for o in infos if o is not None] #see comment in previous cell
-    for typ,np,trn,sz in infos:
+    prev_sz = None
+    for typ,np,trn,sz,chnged in infos:
         if sz is None: continue
-        ps += np
-        if trn: trn_ps += np
-        res += f"{typ:<20} {_print_shapes(sz, bs)[:19]:<20} {np:<10,} {str(trn):<10}\n"
-        res += "_" * n + "\n"
+        if j == 0:
+            res += f'\n{"":<20} {_print_shapes(sz, bs)[:19]:<20}' # to avoid a double line at the top
+        if not chnged and not prev_sz == sz and j > 0: res += "\n" + "_" * n + "\n" + f'{"":<20} {_print_shapes(sz, bs)[:19]:<20}'
+        j = 1
+        res += f"\n{typ:<20} {'':<20} {np:<10} {str(trn):<10}"
+        if np != '':
+            ps += np
+            if trn: trn_ps += np
+        prev_sz = sz
+    res += "\n" + "_" * n + "\n"
     res += f"\nTotal params: {ps:,}\n"
     res += f"Total trainable params: {trn_ps:,}\n"
     res += f"Total non-trainable params: {ps - trn_ps:,}\n\n"
@@ -190,14 +206,14 @@ def summary(self:Learner):
     res += f"Optimizer used: {self.opt_func}\nLoss function: {self.loss_func}\n\n"
     if self.opt is not None:
         res += f"Model " + ("unfrozen\n\n" if self.opt.frozen_idx==0 else f"frozen up to parameter group #{self.opt.frozen_idx}\n\n")
-    res += "Callbacks:\n" + '\n'.join(f"  - {cb}" for cb in sort_by_run(self.cbs))
+    res += "Callbacks:\n" + '\n'.join(f"  - {cb}" for cb in self.cbs.sorted('order'))
     return PrettyString(res)
 
 # Cell
 @delegates()
 class ActivationStats(HookCallback):
     "Callback that record the mean and std of activations."
-    run_before=TrainEvalCallback
+    order=-20
     def __init__(self, with_hist=False, **kwargs):
         super().__init__(**kwargs)
         self.with_hist = with_hist
@@ -208,11 +224,28 @@ class ActivationStats(HookCallback):
         self.stats = L()
 
     def hook(self, m, i, o):
+        if isinstance(o, tuple): return self.hook_multi_ouput(o)
         o = o.float()
         res = {'mean': o.mean().item(), 'std': o.std().item(),
                'near_zero': (o<=0.05).long().sum().item()/o.numel()}
         if self.with_hist: res['hist'] = o.histc(40,0,10)
         return res
+
+    def hook_multi_ouput(self,o_tuple):
+        "For outputs of RNN which are [nested] tuples of tensors"
+        res = []
+        for o in self._flatten_tuple(o_tuple):
+            if not(isinstance(o, Tensor)): continue
+            res.append(self.hook(None, None, o))
+        return res
+
+    def _flatten_tuple(self, o_tuple):
+        "Recursively flatten a [nested] tuple"
+        res = []
+        for it in o_tuple:
+            if isinstance(it, tuple): res += self._flatten_tuple(it)
+            else: res += [it]
+        return tuple(res)
 
     def after_batch(self):
         "Take the stored results and puts it in `self.stats`"
