@@ -187,7 +187,7 @@ class DataLoaders(GetAttr):
         val_kwargs={k[4:]:kwargs.pop(k) for k in list(kwargs.keys()) if k.startswith('val_')}
         def_kwargs = {'bs':bs,'shuffle':shuffle,'drop_last':drop_last,'device':device}
         dl = dl_type(ds[0], **merge(def_kwargs, kwargs))
-        def_kwargs = {'bs':bs if val_bs is None else val_bs,'shuffle':val_shuffle,'drop_last':False}
+        def_kwargs = {'bs':val_bs,'shuffle':val_shuffle,'drop_last':False}
         dls = [dl] + [dl.new(ds[i], **merge(def_kwargs,kwargs,val_kwargs))
                       for i in range(1,len(ds))]
         return cls(*dls, path=path, device=device)
