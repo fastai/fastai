@@ -175,10 +175,6 @@
     1557161267,
     "2c774ecb40005b35d7937d50f5d42336"
   ],
-  "https://s3.amazonaws.com/fast-ai-imageclas/imagenette2-160.tgz": [
-    8388608,
-    "e28cd4207d545c64f2372bcb64753d01"
-  ],
   "https://s3.amazonaws.com/fast-ai-imageclas/imagenette2-320.tgz": [
     341553947,
     "55496feff4562875a3246d819d094b2b"
@@ -282,5 +278,9 @@
   "https://s3.amazonaws.com/fast-ai-imagelocal/tcga_small.tgz": [
     14744474,
     "3ceffe7cf522cb1c60e93dc555d8817f"
+  ],
+  "https://s3.amazonaws.com/fast-ai-imageclas/imagenette2-160.tgz": [
+    99003388,
+    "c475f8f7617a200ba35b9facc48443c3"
   ]
 }
