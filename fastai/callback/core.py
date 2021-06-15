@@ -7,6 +7,7 @@ __all__ = ['CancelStepException', 'CancelFitException', 'CancelEpochException', 
 # Cell
 from ..data.all import *
 from ..optimizer import *
+from ..losses import BaseLoss
 
 # Cell
 #nbdev_comment _all_ = ['CancelStepException','CancelFitException','CancelEpochException','CancelTrainException','CancelValidException','CancelBatchException']
@@ -67,6 +68,7 @@ class TrainEvalCallback(Callback):
         self.learn.train_iter,self.learn.pct_train = 0,0.
         device = getattr(self.dls, 'device', default_device())
         self.model.to(device)
+        if isinstance(self.loss_func, (nn.Module, BaseLoss)): self.loss_func.to(device)
         if hasattr(self.model, 'reset'): self.model.reset()
 
     def after_batch(self):
