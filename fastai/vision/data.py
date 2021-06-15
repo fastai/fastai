@@ -32,7 +32,7 @@ def clip_remove_empty(bbox, label):
     "Clip bounding boxes with image border and label background the empty ones"
     bbox = torch.clamp(bbox, -1, 1)
     empty = ((bbox[...,2] - bbox[...,0])*(bbox[...,3] - bbox[...,1]) <= 0.)
-    return (bbox[~empty], label[~empty])
+    return (bbox[~empty], label[TensorBase(~empty)])
 
 # Cell
 def bb_pad(samples, pad_idx=0):
