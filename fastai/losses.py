@@ -130,7 +130,7 @@ class LabelSmoothingCrossEntropyFlat(BaseLoss):
 # Cell
 def _one_hot(x, classes, axis=1):
     "Target mask to one hot"
-    return torch.stack([torch.where(x==c, 1,0) for c in range(classes)], axis=axis)
+    return torch.stack([torch.where(x==c, 1, 0) for c in range(classes)], axis=axis)
 
 # Cell
 class DiceLoss:
