@@ -2,6 +2,22 @@
 
 <!-- do not remove -->
 
+## 2.3.2
+
+### New Features
+
+- send self.loss_func to device if it is an instance of nn.Module ([#3395](https://github.com/fastai/fastai/pull/3395)), thanks to [@arampacha](https://github.com/arampacha)
+- Improved LR Suggestions ([#3377](https://github.com/fastai/fastai/pull/3377)), thanks to [@muellerzr](https://github.com/muellerzr)
+- SaveModelCallback every nth epoch ([#3375](https://github.com/fastai/fastai/pull/3375)), thanks to [@KeremTurgutlu](https://github.com/KeremTurgutlu)
+- Batch support for more than one image ([#3339](https://github.com/fastai/fastai/issues/3339))
+- Changable tfmdlists for TransformBlock, Datasets, DataBlock ([#3327](https://github.com/fastai/fastai/issues/3327))
+
+### Bugs Squashed
+
+- convert TensorBBox to TensorBase during compare ([#3388](https://github.com/fastai/fastai/pull/3388)), thanks to [@kevinbird15](https://github.com/kevinbird15)
+- Check if normalize exists on `_add_norm` ([#3371](https://github.com/fastai/fastai/pull/3371)), thanks to [@renato145](https://github.com/renato145)
+
+
 ## 2.3.1
 
 ### New Features
