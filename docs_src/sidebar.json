@@ -96,8 +96,7 @@
         "": {
             "Models": {
                 "Core": "/text.models.core.html",
-                "AWD LSTM": "/text.models.awdlstm.html",
-                "QRNN": "/text.models.qrnn.html"
+                "AWD LSTM": "/text.models.awdlstm.html"
             }
         }
     },

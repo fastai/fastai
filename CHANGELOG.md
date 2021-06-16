@@ -2,13 +2,18 @@
 
 <!-- do not remove -->
 
-## 2.3.2
+## 2.4
+
+### Breaking changes
+
+- QRNN module removed, due to incompatibility with PyTorch 1.9, and lack of utilization of QRNN in the deep learning community. QRNN was our only module that wasn't pure Python, so with this change fastai is now a pure Python package.
 
 ### New Features
 
-- send self.loss_func to device if it is an instance of nn.Module ([#3395](https://github.com/fastai/fastai/pull/3395)), thanks to [@arampacha](https://github.com/arampacha)
+- Support for PyTorch 1.9
 - Improved LR Suggestions ([#3377](https://github.com/fastai/fastai/pull/3377)), thanks to [@muellerzr](https://github.com/muellerzr)
 - SaveModelCallback every nth epoch ([#3375](https://github.com/fastai/fastai/pull/3375)), thanks to [@KeremTurgutlu](https://github.com/KeremTurgutlu)
+- Send self.loss_func to device if it is an instance of nn.Module ([#3395](https://github.com/fastai/fastai/pull/3395)), thanks to [@arampacha](https://github.com/arampacha)
 - Batch support for more than one image ([#3339](https://github.com/fastai/fastai/issues/3339))
 - Changable tfmdlists for TransformBlock, Datasets, DataBlock ([#3327](https://github.com/fastai/fastai/issues/3327))
 
