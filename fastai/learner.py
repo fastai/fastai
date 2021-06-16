@@ -146,6 +146,9 @@ class Learner(GetAttr):
 
     def _bn_bias_state(self, with_bias): return norm_bias_params(self.model, with_bias).map(self.opt.state)
     def create_opt(self):
+        if isinstance(self.opt_func, partial):
+            if 'lr' in self.opt_func.keywords:
+                self.lr = self.opt_func.keywords['lr']
         self.opt = self.opt_func(self.splitter(self.model), lr=self.lr)
         if not self.wd_bn_bias:
             for p in self._bn_bias_state(True ): p['do_wd'] = False
