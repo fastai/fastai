@@ -87,6 +87,7 @@ class DynamicUnet(SequentialEx):
         apply_init(nn.Sequential(layers[3], layers[-2]), init)
         #apply_init(nn.Sequential(layers[2]), init)
         if y_range is not None: layers.append(SigmoidRange(*y_range))
+        layers.append(ToTensorBase())
         super().__init__(*layers)
 
     def __del__(self):
