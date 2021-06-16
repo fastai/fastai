@@ -303,6 +303,13 @@ def _torch_handled(args, opt, func):
         if all(isinstance(arg,ok) for arg,ok in zip(args,oks) if ok): return True
 
 # Cell
+# from https://github.com/pytorch/pytorch/blob/13c975684a220ec096216ec6468ccd0dc90ff50a/torch/_tensor.py#L34
+def _rebuild_from_type(func, type, args, dict):
+    ret = func(*args).as_subclass(type)
+    ret.__dict__ = dict
+    return ret
+
+# Cell
 class TensorBase(Tensor):
     "A `Tensor` which support subclass pickling, and maintains metadata when casting or after methods"
     debug,_opt = False,defaultdict(list)
@@ -317,10 +324,11 @@ class TensorBase(Tensor):
 
     def __reduce_ex__(self,proto):
         torch.utils.hooks.warn_if_has_hooks(self)
-        args = (type(self), self.storage(), self.storage_offset(), tuple(self.size()), self.stride())
+        args = (self.storage(), self.storage_offset(), tuple(self.size()), self.stride())
         if self.is_quantized: args = args + (self.q_scale(), self.q_zero_point())
-        f = _fa_rebuild_qtensor if self.is_quantized else  _fa_rebuild_tensor
-        return (f, args + (self.requires_grad, OrderedDict()))
+        args = args + (self.requires_grad, OrderedDict())
+        f = torch._utils._rebuild_qtensor if self.is_quantized else  torch._utils._rebuild_tensor_v2
+        return (_rebuild_from_type, (f, type(self), args, self.__dict__))
 
     @classmethod
     def register_func(cls, func, *oks): cls._opt[func].append(oks)
