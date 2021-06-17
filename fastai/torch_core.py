@@ -382,7 +382,7 @@ class TensorMask(TensorImageBase):
         return super().show(ctx=ctx, **kwargs)
 
 # Cell
-for o in Tensor.__ne__,Tensor.__eq__,Tensor.add,Tensor.sub,Tensor.mul,Tensor.div,Tensor.__rsub__,Tensor.__radd__,Tensor.matmul,Tensor.bmm:
+for o in Tensor.__getitem__, Tensor.__ne__,Tensor.__eq__,Tensor.add,Tensor.sub,Tensor.mul,Tensor.div,Tensor.__rsub__,Tensor.__radd__,Tensor.matmul,Tensor.bmm:
     TensorBase.register_func(o, TensorMask, TensorImageBase)
     TensorBase.register_func(o, TensorImageBase, TensorMask)
 
@@ -395,6 +395,8 @@ TensorImage.register_func(F.grid_sample, TensorImageBase, TensorFlowField)
 
 # Cell
 class TensorCategory(TensorBase): pass
+
+TensorBase.register_func(Tensor.__getitem__, TensorImageBase, TensorCategory)
 
 # Cell
 class TensorMultiCategory(TensorCategory): pass
