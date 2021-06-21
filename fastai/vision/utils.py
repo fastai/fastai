@@ -22,6 +22,7 @@ def _get_downloaded_image_filename(dest, name, suffix):
 # Cell
 def _download_image_inner(dest, inp, timeout=4, preserve_filename=False):
     i,url = inp
+    url = url.split("?")[0]
     url_path = Path(url)
     suffix = url_path.suffix if url_path.suffix else '.jpg'
     name = _get_downloaded_image_filename(dest, url_path.stem, suffix) if preserve_filename else f"{i:08d}"
