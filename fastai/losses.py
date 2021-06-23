@@ -140,7 +140,7 @@ class DiceLoss:
         return 1 - (2. * inter + self.smooth)/(union + self.smooth)
     @staticmethod
     def _one_hot(x, classes, axis=1):
-        "Target mask to one hot"
+        "Creates one binay mask per class"
         return torch.stack([torch.where(x==c, 1, 0) for c in range(classes)], axis=axis)
     def activation(self, x): return F.softmax(x, dim=self.axis)
     def decodes(self, x):    return x.argmax(dim=self.axis)
