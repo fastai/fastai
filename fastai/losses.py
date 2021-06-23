@@ -128,21 +128,19 @@ class LabelSmoothingCrossEntropyFlat(BaseLoss):
     def decodes(self, out):    return out.argmax(dim=-1)
 
 # Cell
-def _one_hot(x, classes, axis=1):
-    "Target mask to one hot"
-    return torch.stack([torch.where(x==c, 1, 0) for c in range(classes)], axis=axis)
-
-# Cell
 class DiceLoss:
     "Dice loss for segmentation"
     def __init__(self, axis=1, smooth=1):
         store_attr()
     def __call__(self, pred, targ):
-        targ = _one_hot(targ, pred.shape[self.axis])
+        targ = self._one_hot(targ, pred.shape[self.axis])
         pred, targ = flatten_check(self.activation(pred), targ)
         inter = (pred*targ).sum()
         union = (pred+targ).sum()
         return 1 - (2. * inter + self.smooth)/(union + self.smooth)
-
+    @staticmethod
+    def _one_hot(x, classes, axis=1):
+        "Target mask to one hot"
+        return torch.stack([torch.where(x==c, 1, 0) for c in range(classes)], axis=axis)
     def activation(self, x): return F.softmax(x, dim=self.axis)
     def decodes(self, x):    return x.argmax(dim=self.axis)
