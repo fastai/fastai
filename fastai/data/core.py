@@ -182,9 +182,8 @@ class DataLoaders(GetAttr):
     def from_dsets(cls, *ds, path='.',  bs=64, device=None, dl_type=TfmdDL, **kwargs):
         default = (True,) + (False,) * (len(ds)-1)
         defaults = {'shuffle': default, 'drop_last': default}
-        for nm in _batch_tfms:
-            if nm in kwargs: kwargs[nm] = Pipeline(kwargs[nm])
-        kwargs = merge(defaults, {k: tuplify(v, match=ds) for k,v in kwargs.items()})
+        tfms = {k:tuple(Pipeline(kwargs[k]) for i in range_of(ds)) for k in _batch_tfms if k in kwargs}
+        kwargs = merge(defaults, {k: tuplify(v, match=ds) for k,v in kwargs.items() if k not in _batch_tfms}, tfms)
         kwargs = [{k: v[i] for k,v in kwargs.items()} for i in range_of(ds)]
         return cls(*[dl_type(d, bs=bs, **k) for d,k in zip(ds, kwargs)], path=path, device=device)
 
