@@ -2,10 +2,11 @@
 
 __all__ = ['get_files', 'FileGetter', 'image_extensions', 'get_image_files', 'ImageGetter', 'get_text_files',
            'ItemGetter', 'AttrGetter', 'RandomSplitter', 'TrainTestSplitter', 'IndexSplitter', 'GrandparentSplitter',
-           'FuncSplitter', 'MaskSplitter', 'FileSplitter', 'ColSplitter', 'RandomSubsetSplitter', 'parent_label',
-           'RegexLabeller', 'ColReader', 'CategoryMap', 'Categorize', 'Category', 'MultiCategorize', 'MultiCategory',
-           'OneHotEncode', 'EncodedMultiCategorize', 'RegressionSetup', 'get_c', 'ToTensor', 'IntToFloatTensor',
-           'broadcast_vec', 'Normalize']
+           'FuncSplitter', 'MaskSplitter', 'FileSplitter', 'ColSplitter', 'RandomSubsetSplitter',
+           'GroupedDataframeSplitter', 'GroupedListSplitter', 'parent_label', 'RegexLabeller', 'ColReader',
+           'CategoryMap', 'Categorize', 'Category', 'MultiCategorize', 'MultiCategory', 'OneHotEncode',
+           'EncodedMultiCategorize', 'RegressionSetup', 'get_c', 'ToTensor', 'IntToFloatTensor', 'broadcast_vec',
+           'Normalize']
 
 # Cell
 from ..torch_basics import *
@@ -165,6 +166,56 @@ def RandomSubsetSplitter(train_sz, valid_sz, seed=None):
         train_len,valid_len = int(len(o)*train_sz),int(len(o)*valid_sz)
         idxs = L(list(torch.randperm(len(o)).numpy()))
         return idxs[:train_len],idxs[train_len:train_len+valid_len]
+    return _inner
+
+# Cell
+def _grouped_dataframe_splitter(df,group_col,valid_pct=0.2,seed=None,n_tries=3):
+    r_state=np.random.RandomState(seed)
+    desired_valid=round(len(df)*valid_pct)
+    gk=df.groupby(group_col).count()#make a table of groups and their counts
+    def one_shuffle():
+        shuffled_gk=gk.sample(frac=1,random_state=r_state) #shuffle the groups
+        cumsum=shuffled_gk.cumsum()
+        abs_diff=abs(cumsum-desired_valid)
+        split_goodness=-abs_diff.min().iat[0] #find the best split point for this shuffle
+        valid_rows=abs_diff.iloc[:,0].argmin()+1 #(the groups included in val for that split)
+        return shuffled_gk,split_goodness,valid_rows
+    def n_shuffles(n): #finding the closest possible split to valid_pct is NP hard so instead we just take the best of a few tries
+        best_shuffled,best_goodness,best_rows=one_shuffle()
+        for _ in range(n-1):
+            if best_goodness==0: return best_shuffled,best_goodness,best_rows #perfect split, return early
+            sh,g,r=one_shuffle()
+            if g>best_goodness:
+                best_shuffled,best_goodness,best_rows=sh,g,r
+        return best_shuffled,best_goodness,best_rows
+    shuffled_gk,split_goodness,valid_rows=n_shuffles(n_tries)
+    shuffled_gk['is_valid']=([True] * valid_rows +
+                             [False]*(len(shuffled_gk) - valid_rows))
+    split_df=df.join(shuffled_gk.loc[:,'is_valid'],on=group_col) #apply the group split to the actual items
+    return ColSplitter()(split_df)
+
+# Cell
+def GroupedDataframeSplitter(group_col,colval2groupname=None,valid_pct=0.2,seed=None,n_tries=3):
+    "Splits items randomly without breaking up groups, to help ensure generalizability to unseen groups. Groups are defined by `group_col` with optional extra function `colval2groupname`"
+    def _inner(o):
+        assert isinstance(o,pd.DataFrame), 'This splitter is meant for Dataframes, please use GroupedListSplitter'
+        assert group_col in o, "`group_col` is not a valid column name in the DataFrame o"
+        df=pd.DataFrame(o)
+        if callable(colval2groupname):
+            df['group_keys']=df[group_col].apply(colval2groupname)
+            return _grouped_dataframe_splitter(df,'group_keys',valid_pct,seed,n_tries)
+        return _grouped_dataframe_splitter(df,group_col,valid_pct,seed,n_tries)
+    return _inner
+
+# Cell
+def GroupedListSplitter(item2group,valid_pct=0.2,seed=None,n_tries=3):
+    "Splits items randomly without breaking up groups, to help ensure generalizability to unseen groups. `itemtogroup` should be a function (eg a regex) that returns the group name for each item."
+    def _inner(o):
+        assert not isinstance(o,pd.DataFrame), 'Please use GroupedDataframeSplitter instead'
+        assert callable(item2group), "You must pass in a callable `item2group` that extracts a group name from each item"
+        df=pd.DataFrame(o)
+        df['group_keys']=df.applymap(item2group)
+        return _grouped_dataframe_splitter(df,'group_keys',valid_pct,seed,n_tries)
     return _inner
 
 # Cell
