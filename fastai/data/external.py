@@ -80,7 +80,7 @@ class URLs():
     IMDB                = f'{S3_NLP}imdb.tgz'
     IMDB_SAMPLE         = f'{URL}imdb_sample.tgz'
     ML_SAMPLE           = f'{URL}movie_lens_sample.tgz'
-    ML_100k             = 'https://files.grouplens.org/datasets/movielens/ml-100k.zip'
+    ML_100k             = 'http://files.grouplens.org/datasets/movielens/ml-100k.zip'
     MNIST_SAMPLE        = f'{URL}mnist_sample.tgz'
     MNIST_TINY          = f'{URL}mnist_tiny.tgz'
     MNIST_VAR_SIZE_TINY = f'{S3_IMAGE}mnist_var_size_tiny.tgz'

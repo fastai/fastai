@@ -218,7 +218,7 @@ def valley(lrs:list, losses:list, num_it:int):
     sections = (max_end - max_start) / 3
     idx = max_start + int(sections) + int(sections/2)
 
-    return lrs[idx], (lrs[idx], losses[idx])
+    return lrs[idx].item(), (lrs[idx].item(), losses[idx])
 
 # Cell
 def slide(lrs:list, losses:list, num_it:int, lr_diff:int=15, thresh:float=.005, adjust_value:float=1.):
@@ -234,7 +234,7 @@ def slide(lrs:list, losses:list, num_it:int, lr_diff:int=15, thresh:float=.005, 
         r_idx -= 1
         l_idx -= 1
 
-    suggestion = local_min_lr * adjust_value
+    suggestion = local_min_lr.item() * adjust_value
     idx = np.interp(np.log10(suggestion), np.log10(lrs), losses)
     return suggestion, (suggestion, idx)
 
