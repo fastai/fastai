@@ -138,8 +138,8 @@ class GANTrainer(Callback):
         self.gen_loss,self.crit_loss = AvgSmoothLoss(beta=beta),AvgSmoothLoss(beta=beta)
 
     def _set_trainable(self):
-        train_model = self.generator if     self.gen_mode else self.critic
-        loss_model  = self.generator if not self.gen_mode else self.critic
+        train_model = self.gan_generator if     self.gan_gen_mode else self.gan_critic
+        loss_model  = self.gan_generator if not self.gan_gen_mode else self.gan_critic
         set_freeze_model(train_model, True)
         set_freeze_model(loss_model, False)
         if self.switch_eval:
@@ -148,9 +148,9 @@ class GANTrainer(Callback):
 
     def before_fit(self):
         "Initialize smootheners."
-        self.generator,self.critic = self.model.generator,self.model.critic
-        self.gen_mode = self.gen_first
-        self.switch(self.gen_mode)
+        self.gan_generator,self.gan_critic = self.model.generator,self.model.critic
+        self.learn.gan_gen_mode = self.gen_first
+        self.switch(self.gan_gen_mode)
         self.crit_losses,self.gen_losses = [],[]
         self.gen_loss.reset() ; self.crit_loss.reset()
         #self.recorder.no_val=True
@@ -165,13 +165,13 @@ class GANTrainer(Callback):
         "Clamp the weights with `self.clip` if it's not None, set the correct input/target."
         if self.training and self.clip is not None:
             for p in self.critic.parameters(): p.data.clamp_(-self.clip, self.clip)
-        if not self.gen_mode:
+        if not self.gan_gen_mode:
             (self.learn.xb,self.learn.yb) = (self.yb,self.xb)
 
     def after_batch(self):
         "Record `last_loss` in the proper list."
         if not self.training: return
-        if self.gen_mode:
+        if self.gan_gen_mode:
             self.gen_loss.accumulate(self.learn)
             self.gen_losses.append(self.gen_loss.value)
             self.last_gen = self.learn.to_detach(self.pred)
@@ -181,7 +181,7 @@ class GANTrainer(Callback):
 
     def before_epoch(self):
         "Put the critic or the generator back to eval if necessary."
-        self.switch(self.gen_mode)
+        self.switch(self.gan_gen_mode)
 
     #def after_epoch(self):
     #    "Show a sample image."
@@ -198,7 +198,7 @@ class GANTrainer(Callback):
 
     def switch(self, gen_mode=None):
         "Switch the model and loss function, if `gen_mode` is provided, in the desired mode."
-        self.gen_mode = (not self.gen_mode) if gen_mode is None else gen_mode
+        self.learn.gan_gen_mode = (not self.gen_mode) if gen_mode is None else gen_mode
         self._set_trainable()
         self.model.switch(gen_mode)
         self.loss_func.switch(gen_mode)
