@@ -71,11 +71,11 @@ def add_elapsed_times(df, field_names, date_field, base_field):
         work_df = work_df.set_index(date_field)
         tmp = (work_df[[base_field] + field_names].sort_index(ascending=a)
                       .groupby(base_field).rolling(7, min_periods=1).sum())
-        tmp.drop(base_field,1,inplace=True)
+        if base_field in tmp: tmp.drop(base_field, axis=1,inplace=True)
         tmp.reset_index(inplace=True)
         work_df.reset_index(inplace=True)
         work_df = work_df.merge(tmp, 'left', [date_field, base_field], suffixes=['', s])
-    work_df.drop(field_names,1,inplace=True)
+    work_df.drop(field_names, axis=1, inplace=True)
     return df.merge(work_df, 'left', [date_field, base_field])
 
 # Cell
