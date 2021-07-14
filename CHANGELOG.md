@@ -2,6 +2,17 @@
 
 <!-- do not remove -->
 
+## 2.4.1
+
+### New Features
+
+- add DiceLoss ([#3386](https://github.com/fastai/fastai/pull/3386)), thanks to [@tcapelle](https://github.com/tcapelle)
+- TabularPandas data transform reproducibility ([#2826](https://github.com/fastai/fastai/issues/2826))
+
+### Bugs Squashed
+
+- Latest Pillow v8.3.0 breaks conversion Image to Tensor ([#3416](https://github.com/fastai/fastai/issues/3416))
+
 
 ## 2.4
 
