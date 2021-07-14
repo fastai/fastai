@@ -1,7 +1,7 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    addressable (2.7.0)
+    addressable (2.8.0)
       public_suffix (>= 2.0.2, < 5.0)
     colorator (1.1.0)
     concurrent-ruby (1.1.7)
@@ -48,7 +48,7 @@ GEM
       racc (~> 1.4)
     pathutil (0.16.2)
       forwardable-extended (~> 2.6)
-    public_suffix (4.0.5)
+    public_suffix (4.0.6)
     racc (1.5.2)
     rb-fsevent (0.10.4)
     rb-inotify (0.10.1)
@@ -66,6 +66,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  addressable (>= 2.8.0)
   jekyll (>= 3.7)
   kramdown (>= 2.3.0)
   nokogiri (< 1.11.5)
