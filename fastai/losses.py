@@ -134,10 +134,10 @@ class DiceLoss:
         store_attr()
     def __call__(self, pred, targ):
         targ = self._one_hot(targ, pred.shape[self.axis])
-        pred, targ = flatten_check(self.activation(pred), targ)
-        inter = (pred*targ).sum()
-        union = (pred+targ).sum()
-        return 1 - (2. * inter + self.smooth)/(union + self.smooth)
+        inter = (pred*targ).sum(axis=-1).sum(axis=-1)
+        union = (pred**2+targ**2).sum(axis=-1).sum(axis=-1)
+        dice_score = (2. * inter + self.smooth)/(union + self.smooth)
+        return 1 - dice_score.flatten().mean()
     @staticmethod
     def _one_hot(x, classes, axis=1):
         "Creates one binay mask per class"
