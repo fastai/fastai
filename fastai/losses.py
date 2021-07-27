@@ -130,14 +130,23 @@ class LabelSmoothingCrossEntropyFlat(BaseLoss):
 # Cell
 class DiceLoss:
     "Dice loss for segmentation"
-    def __init__(self, axis=1, smooth=1):
+    def __init__(self, axis=1, smooth=1, reduction="mean", square_in_union=True):
         store_attr()
     def __call__(self, pred, targ):
         targ = self._one_hot(targ, pred.shape[self.axis])
-        inter = (pred*targ).sum(axis=-1).sum(axis=-1)
-        union = (pred**2+targ**2).sum(axis=-1).sum(axis=-1)
+        inter = torch.sum(pred*targ, dim=[-1,-2])
+        if self.square_in_union:
+            union = (pred**2+targ**2).sum(axis=-1).sum(axis=-1)
+        else:
+            union = (pred+targ).sum(axis=-1).sum(axis=-1)
         dice_score = (2. * inter + self.smooth)/(union + self.smooth)
-        return 1 - dice_score.flatten().mean()
+        if self.reduction == "mean":
+            loss = (1-dice_score).flatten().mean()
+        elif self.reduction == "sum":
+            loss = (1-dice_score).flatten().sum()
+        else:
+            raise ValueError("self.reduction needs to be either 'mean' or 'sum'!")
+        return loss
     @staticmethod
     def _one_hot(x, classes, axis=1):
         "Creates one binay mask per class"
