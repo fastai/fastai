@@ -134,11 +134,13 @@ class DiceLoss:
         store_attr()
     def __call__(self, pred, targ):
         targ = self._one_hot(targ, pred.shape[self.axis])
-        inter = torch.sum(pred*targ, dim=[-1,-2])
+        pred = self.activation(pred)
+        sum_dims = list(range(2, len(pred.shape)))
+        inter = torch.sum(pred*targ, dim=sum_dims)
         if self.square_in_union:
-            union = (pred**2+targ**2).sum(axis=-1).sum(axis=-1)
+            union = torch.sum(pred**2+targ**2, dim=sum_dims)
         else:
-            union = (pred+targ).sum(axis=-1).sum(axis=-1)
+            union = torch.sum(pred+targ, dim=sum_dims)
         dice_score = (2. * inter + self.smooth)/(union + self.smooth)
         if self.reduction == "mean":
             loss = (1-dice_score).flatten().mean()
