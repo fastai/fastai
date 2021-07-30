@@ -595,10 +595,10 @@ class MishJitAutoFn(torch.autograd.Function):
         return _mish_jit_bwd(x, grad_output)
 
 # Cell
-def mish(x): 
+def mish(x):
     if torch.__version__ >= '1.9':
         return F.mish(x)
-    else:    
+    else:
         return MishJitAutoFn.apply(x)
 
 # Cell

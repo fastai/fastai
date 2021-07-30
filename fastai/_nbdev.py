@@ -882,7 +882,4 @@ doc_url = "https://docs.fast.ai/"
 
 git_url = "https://github.com/fastai/fastai/tree/master/"
 
-def custom_doc_links(name):
-    from nbdev.showdoc import try_external_doc_link
-    return try_external_doc_link(name, ['fastcore', 'nbdev'])
-
+def custom_doc_links(name): return None
