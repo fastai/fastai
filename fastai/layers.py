@@ -595,11 +595,14 @@ class MishJitAutoFn(torch.autograd.Function):
         return _mish_jit_bwd(x, grad_output)
 
 # Cell
-def mish(x): return MishJitAutoFn.apply(x)
+def mish(x): return F.mish(x) if torch.__version__ >= '1.9' else MishJitAutoFn.apply(x)
 
 # Cell
 class Mish(Module):
     def forward(self, x): return MishJitAutoFn.apply(x)
+
+# Cell
+if torch.__version__ >= '1.9': Mish = nn.Mish
 
 # Cell
 for o in swish,Swish,mish,Mish: o.__default_init__ = kaiming_uniform_
