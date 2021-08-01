@@ -2,7 +2,6 @@ include settings.ini
 include CONTRIBUTING.md
 include LICENSE
 include README.md
-include fastai/data/checks.txt
 include fastai/text/models/*.cu
 include fastai/text/models/*.cpp
 
