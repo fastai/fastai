@@ -267,7 +267,7 @@ def plot_lr_find(self:Recorder, skip_end=5, return_fig=True, suggestions=None, n
     if suggestions:
         colors = plt.rcParams['axes.prop_cycle'].by_key()['color'][1:]
         for (val, idx), nm, color in zip(suggestions, nms, colors):
-            ax.plot(val, idx, 'ro', label=nm, c=color)
+            ax.plot(val, idx, label=nm, color=color, marker='o')
         ax.legend(loc='best')
 
 # Cell
