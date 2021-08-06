@@ -2,6 +2,18 @@
 
 <!-- do not remove -->
 
+## 2.5.0
+
+### Breaking changes
+
+- `config.yml` has been renamed to `config.ini`, and is now in `ConfigParser` format instead of YAML
+- THe `_path` suffixes in `config.ini` have been removed
+
+### Bugs Squashed
+
+- Training with `learn.to_fp16(`) fails with PyTorch 1.9 / Cuda 11.4 ([#3438](https://github.com/fastai/fastai/issues/3438))
+- pandas 1.3.0 breaks `add_elapsed_times` ([#3431](https://github.com/fastai/fastai/issues/3431))
+
 
 ## 2.4.1
 
