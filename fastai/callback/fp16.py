@@ -20,7 +20,7 @@ class MixedPrecision(Callback):
     def before_batch(self): self.autocast.__enter__()
     def after_pred(self):
         if listify(self.pred)[0].dtype==torch.float16: self.learn.pred = to_float(self.pred)
-    def after_loss(self): self.autocast.__exit__()
+    def after_loss(self): self.autocast.__exit__(None, None, None)
     def before_backward(self): self.learn.loss_grad = self.scaler.scale(self.loss_grad)
     def before_step(self):
         self.skipped=True
