@@ -46,7 +46,7 @@ Here are some ways that you can learn a lot about the library, whilst also contr
 
 ## How to submit notebook PRs?
 
-Please run [`nbdev_install_git_hooks`](https://nbdev.fast.ai/cli#nbdev_install_git_hooks) in your terminal after cloning the repository. This sets up git hooks, which clean up the notebooks to remove the extraneous stuff stored in the notebooks (e.g. which cells you ran) which causes unnecessary merge conflicts.
+Please run [`nbdev_install_git_hooks`](https://nbdev.fast.ai/cli#nbdev_install_git_hooks) in your terminal after cloning and [installation] (https://docs.fast.ai/dev/develop.html) of the repository. This sets up git hooks, which clean up the notebooks to remove the extraneous stuff stored in the notebooks (e.g. which cells you ran) which causes unnecessary merge conflicts.
 
 Before submitting a PR, check that the local library and notebooks match. The script [`nbdev_diff_nbs`](https://nbdev.fast.ai/sync#nbdev_diff_nbs) can let you know if there is a difference between the local library and the notebooks.
 
