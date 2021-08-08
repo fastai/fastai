@@ -201,7 +201,7 @@ def module_summary(learn, *xb):
 @patch
 def summary(self:Learner):
     "Print a summary of the model, optimizer and loss function."
-    xb = self.dls.train.one_batch()[:self.dls.train.n_inp]
+    xb = self.dls.train.one_batch()[:getattr(self.dls.train, "n_inp", 1)]
     res = module_summary(self, *xb)
     res += f"Optimizer used: {self.opt_func}\nLoss function: {self.loss_func}\n\n"
     if self.opt is not None:
