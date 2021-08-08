@@ -6,6 +6,7 @@ __all__ = ['download_images', 'resize_to', 'verify_image', 'verify_images', 'res
 from ..torch_basics import *
 from ..data.all import *
 from .core import *
+from fastdownload import download_url
 from pathlib import Path
 
 # Cell
@@ -26,7 +27,7 @@ def _download_image_inner(dest, inp, timeout=4, preserve_filename=False):
     url_path = Path(url)
     suffix = url_path.suffix if url_path.suffix else '.jpg'
     name = _get_downloaded_image_filename(dest, url_path.stem, suffix) if preserve_filename else f"{i:08d}"
-    try: download_url(url, dest/f"{name}{suffix}", overwrite=True, show_progress=False, timeout=timeout)
+    try: download_url(url, dest/f"{name}{suffix}", show_progress=False, timeout=timeout)
     except Exception as e: f"Couldn't download {url}."
 
 # Cell
