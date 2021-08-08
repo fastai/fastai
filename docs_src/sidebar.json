@@ -37,6 +37,11 @@
                 "Lightning": "/migrating_lightning.html",
                 "Catalyst": "/migrating_catalyst.html"
             }
+        },
+        "empty4": {
+            "Production": {
+                "Inference": "/tutorial.inference.html"
+            }
         }
     },
     "Training": {
