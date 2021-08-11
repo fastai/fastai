@@ -2,6 +2,11 @@
 
 <!-- do not remove -->
 
+## 2.5.1
+
+- Import `download_url` from fastdownload
+
+
 ## 2.5.0
 
 ### Breaking changes
