@@ -26,7 +26,7 @@ class MixHandler(Callback):
         if self.stack_y: self.learn.loss_func = self.old_lf
 
     def after_cancel_train(self):
-        if self.stack_y: self.learn.loss_func = self.old_lf
+        self.after_train()
 
     def lf(self, pred, *yb):
         if not self.training: return self.old_lf(pred, *yb)
