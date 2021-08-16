@@ -33,6 +33,7 @@
         "empty3": {
             "Migrating from Other Libraries": {
                 "Plain PyTorch": "/migrating_pytorch.html",
+                "Plain PyTorch (Verbose)": "/migrating_pytorch_verbose.html",
                 "Ignite": "/migrating_ignite.html",
                 "Lightning": "/migrating_lightning.html",
                 "Catalyst": "/migrating_catalyst.html"
