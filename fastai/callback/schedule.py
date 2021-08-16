@@ -278,6 +278,7 @@ mk_class("SuggestionMethod", **{o.__name__.capitalize():o for o in [valley,slide
 @patch
 def lr_find(self:Learner, start_lr=1e-7, end_lr=10, num_it=100, stop_div=True, show_plot=True, suggest_funcs=(SuggestionMethod.Valley)):
     "Launch a mock training to find a good learning rate and return suggestions based on `suggest_funcs` as a named tuple"
+    num_it = 6 if num_it < 6 else num_it
     n_epoch = num_it//len(self.dls.train) + 1
     cb=LRFinder(start_lr=start_lr, end_lr=end_lr, num_it=num_it, stop_div=stop_div)
     with self.no_logging(): self.fit(n_epoch, cbs=cb)
