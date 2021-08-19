@@ -165,9 +165,9 @@ def fine_tune(self:Learner, epochs, base_lr=2e-3, freeze_epochs=1, lr_mult=100,
 class LRFinder(ParamScheduler):
     "Training with exponentially growing learning rate"
     def __init__(self, start_lr=1e-7, end_lr=10, num_it=100, stop_div=True):
-        if is_listy(start_lr):
-            self.scheds = {'lr': [SchedExp(s, e) for (s,e) in zip(start_lr,end_lr)]}
-        else: self.scheds = {'lr': SchedExp(start_lr, end_lr)}
+        if num_it < 6: num_it = 6
+        self.scheds = {'lr': [SchedExp(s, e) for (s,e) in zip(start_lr,end_lr)
+                             ] if is_listy(start_lr) else SchedExp(start_lr, end_lr)}
         self.num_it,self.stop_div = num_it,stop_div
 
     def before_fit(self):
@@ -175,8 +175,7 @@ class LRFinder(ParamScheduler):
         self.learn.save('_tmp')
         self.best_loss = float('inf')
 
-    def before_batch(self):
-        self._update_val(self.train_iter/self.num_it)
+    def before_batch(self): self._update_val(self.train_iter/self.num_it)
 
     def after_batch(self):
         super().after_batch()
@@ -187,7 +186,7 @@ class LRFinder(ParamScheduler):
     def before_validate(self): raise CancelValidException()
 
     def after_fit(self):
-        self.learn.opt.zero_grad() #Need to zero the gradients of the model before detaching the optimizer for future fits
+        self.learn.opt.zero_grad() # Needed before detaching the optimizer for future fits
         tmp_f = self.path/self.model_dir/'_tmp.pth'
         if tmp_f.exists():
             self.learn.load('_tmp', with_opt=True)
