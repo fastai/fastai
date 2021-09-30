@@ -68,9 +68,9 @@ def create_body(arch, n_in=3, pretrained=True, cut=None):
     if cut is None:
         ll = list(enumerate(model.children()))
         cut = next(i for i,o in reversed(ll) if has_pool_type(o))
-    if   isinstance(cut, int):      return nn.Sequential(*list(model.children())[:cut])
+    if   isinstance(cut, int): return nn.Sequential(*list(model.children())[:cut])
     elif callable(cut): return cut(model)
-    else:                           raise NamedError("cut must be either integer or a function")
+    else: raise NameError("cut must be either integer or a function")
 
 # Cell
 def create_head(nf, n_out, lin_ftrs=None, ps=0.5, concat_pool=True, first_bn=True, bn_final=False,
