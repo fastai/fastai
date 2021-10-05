@@ -353,10 +353,16 @@ def _cast_dicom_special(x):
     if cls.__base__ == object: return x
     return cls.__base__(x)
 
-def _split_elem(res,k,v):
-    if not isinstance(v,DcmMultiValue): return
-    res[f'Multi{k}'] = 1
-    for i,o in enumerate(v): res[f'{k}{"" if i==0 else i}']=o
+def _split_elem(vals):
+    res = dict()
+    for val in vals:
+        k, v = val.keyword, val.value
+        if not isinstance(v,DcmMultiValue):
+            res[k] = v
+            continue
+        res[f'Multi{k}'] = 1
+        for i,o in enumerate(v): res[f'{k}{"" if i==0 else i}'] = o
+    return {k: _cast_dicom_special(v) for k, v in res.items()}
 
 # Cell
 @patch
@@ -364,10 +370,8 @@ def as_dict(self:DcmDataset, px_summ=True, window=dicom_windows.brain):
     "Convert the header of a dicom into a dictionary"
     pxdata = (0x7fe0,0x0010)
     vals = [self[o] for o in self.keys() if o != pxdata]
-    its = [(v.keyword,v.value) for v in vals]
-    res = dict(its)
+    res = _split_elem(vals)
     res['fname'] = self.filename
-    for k,v in its: _split_elem(res,k,v)
     if not px_summ: return res
     stats = 'min','max','mean','std'
     try:
@@ -377,7 +381,6 @@ def as_dict(self:DcmDataset, px_summ=True, window=dicom_windows.brain):
     except Exception as e:
         for f in stats: res['img_'+f] = 0
         print(res,e)
-    for k in res: res[k] = _cast_dicom_special(res[k])
     return res
 
 # Cell
