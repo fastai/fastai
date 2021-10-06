@@ -18,10 +18,11 @@ class AzureMLCallback(Callback):
 
     If `log_offline` is False, will only log if actually running on AzureML.
     A custom AzureML `Run` class can be passed as `azurerun`.
+    If `log_to_parent` is True, will also log to the parent run, if exists (e.g. in AzureML pipelines).
     """
     order = Recorder.order+1
 
-    def __init__(self, azurerun=None):
+    def __init__(self, azurerun=None, log_to_parent=True):
         if azurerun:
             self.azurerun = azurerun
         else:
@@ -31,6 +32,7 @@ class AzureMLCallback(Callback):
                 # running locally
                 self.azurerun = None
                 warnings.warn("Not running on AzureML and no azurerun passed, AzureMLCallback will be disabled.")
+        self.log_to_parent = log_to_parent
 
     def before_fit(self):
         self._log("n_epoch", self.learn.n_epoch)
@@ -66,3 +68,5 @@ class AzureMLCallback(Callback):
     def _log(self, metric, value):
         if self.azurerun is not None:
             self.azurerun.log(metric, value)
+            if self.log_to_parent and self.azurerun.parent is not None:
+                self.azurerun.parent.log(metric, value)
