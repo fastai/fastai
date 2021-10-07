@@ -27,6 +27,7 @@
             "Advanced": {
                 "Albumentations Tutorial": "/tutorial.albumentations.html",
                 "Siamese Tutorial": "/tutorial.siamese.html",
+                "Image Sequences/Video Tutorial": "/tutorial.image_sequence.html",
                 "Performance Tips and Tricks": "/dev/performance.html"
             }
         },
