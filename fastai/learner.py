@@ -542,7 +542,8 @@ class Recorder(Callback):
         plt.plot(list(range(skip_start, len(self.losses))), self.losses[skip_start:], label='train')
         if with_valid:
             idx = (np.array(self.iters)<skip_start).sum()
-            plt.plot(self.iters[idx:], L(self.values[idx:]).itemgot(1), label='valid')
+            valid_col = self.metric_names.index('valid_loss') - 1
+            plt.plot(self.iters[idx:], L(self.values[idx:]).itemgot(valid_col), label='valid')
             plt.legend()
 
 # Cell
