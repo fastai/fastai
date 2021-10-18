@@ -107,13 +107,13 @@ class HookCallback(Callback):
     "`Callback` that can be used to register hooks on `modules`"
     _methods = ["hook"]
     hook = noops
-    def __init__(self, modules=None, every=None, remove_end=True, is_forward=True, detach=True, cpu=True, **kwargs):
-        store_attr('modules,every,remove_end,is_forward,detach,cpu')
+    def __init__(self, modules=None, every=None, remove_end=True, is_forward=True, detach=True, cpu=True, include_paramless=False , **kwargs):
+        store_attr('modules,every,remove_end,is_forward,detach,cpu, include_paramless')
         assert not kwargs
 
     def before_fit(self):
         "Register the `Hooks` on `self.modules`."
-        if self.modules is None: self.modules = [m for m in flatten_model(self.model) if has_params(m)]
+        if self.modules is None: self.modules = [m for m in flatten_model(self.model) if self.include_paramless or has_params(m)]
         if self.every is None: self._register()
 
     def before_batch(self):
