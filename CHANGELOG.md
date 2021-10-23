@@ -2,6 +2,17 @@
 
 <!-- do not remove -->
 
+## 2.5.3
+
+### New Features
+
+- add `at_end` feature to `SaveModelCallback` ([#3296](https://github.com/fastai/fastai/pull/3296)), thanks to [@tmabraham](https://github.com/tmabraham)
+
+### Bugs Squashed
+
+- fix fp16 test ([#3284](https://github.com/fastai/fastai/pull/3284)), thanks to [@tmabraham](https://github.com/tmabraham)
+
+
 ## 2.5.1
 
 - Import `download_url` from fastdownload
