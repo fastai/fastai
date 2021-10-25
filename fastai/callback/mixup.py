@@ -28,6 +28,9 @@ class MixHandler(Callback):
     def after_cancel_train(self):
         self.after_train()
 
+    def after_cancel_fit(self):
+        self.after_train()
+
     def lf(self, pred, *yb):
         if not self.training: return self.old_lf(pred, *yb)
         with NoneReduce(self.old_lf) as lf:
