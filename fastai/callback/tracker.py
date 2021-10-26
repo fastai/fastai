@@ -19,7 +19,7 @@ class TerminateOnNaNCallback(Callback):
 # Cell
 class TrackerCallback(Callback):
     "A `Callback` that keeps track of the best value in `monitor`."
-    order,remove_on_fetch = 60,True
+    order,remove_on_fetch,_only_train_loop = 60,True,True
     def __init__(self, monitor='valid_loss', comp=None, min_delta=0., reset_on_fit=True):
         if comp is None: comp = np.less if 'loss' in monitor or 'error' in monitor else np.greater
         if comp == np.less: min_delta *= -1
@@ -62,7 +62,7 @@ class EarlyStoppingCallback(TrackerCallback):
 # Cell
 class SaveModelCallback(TrackerCallback):
     "A `TrackerCallback` that saves the model's best during training and loads it at the end."
-    _only_train_loop,order = True,TrackerCallback.order+1
+    order = TrackerCallback.order+1
     def __init__(self, monitor='valid_loss', comp=None, min_delta=0., fname='model', every_epoch=False, at_end=False,
                  with_opt=False, reset_on_fit=True):
         super().__init__(monitor=monitor, comp=comp, min_delta=min_delta, reset_on_fit=reset_on_fit)
