@@ -522,7 +522,7 @@ if not hasattr(pd.DataFrame,'_old_init'): pd.DataFrame._old_init = pd.DataFrame.
 
 # Cell
 @patch
-def __init__(self:pd.DataFrame, data=None, index=None, columns=None, dtype=None, copy=False):
+def __init__(self:pd.DataFrame, data=None, index=None, columns=None, dtype=None, copy=None):
     if data is not None and isinstance(data, Tensor): data = to_np(data)
     self._old_init(data, index=index, columns=columns, dtype=dtype, copy=copy)
 
