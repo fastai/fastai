@@ -298,11 +298,7 @@ def _grid_sample(x, coords, mode='bilinear', padding_mode='reflection', align_co
         d = min(x.shape[-2]/coords.shape[-2], x.shape[-1]/coords.shape[-1])/2
         # If we're resizing up by >200%, and we're zooming less than that, interpolate first
         if d>1 and d>z:
-            # Pytorch > v1.4.x needs an extra argument when calling nn.functional.interpolate to preserve previous behaviour
-            if (int(torch.__version__[0:4].replace(".", "")) > 14):
-                x = F.interpolate(x, scale_factor=1/d, mode='area', recompute_scale_factor=True)
-            else:
-                x = F.interpolate(x, scale_factor=1/d, mode='area')
+            x = F.interpolate(x, scale_factor=1/d, mode='area', recompute_scale_factor=True)
     return F.grid_sample(x, coords, mode=mode, padding_mode=padding_mode, align_corners=align_corners)
 
 # Cell
@@ -596,6 +592,16 @@ class Zoom(AffineCoordTfm):
         aff_fs = partial(zoom_mat, min_zoom=min_zoom, max_zoom=max_zoom, p=p, draw=draw, draw_x=draw_x, draw_y=draw_y, batch=batch)
         super().__init__(aff_fs, size=size, mode=mode, pad_mode=pad_mode, align_corners=align_corners)
 
+# Internal Cell
+def _linalg_solve(A,B):
+    return torch.linalg.solve(A,B)
+
+def _solve(A,B):
+    return torch.solve(B,A)[0]
+
+if torch.__version__ >= '1.9': solve = _linalg_solve
+else: solve = _solve
+
 # Cell
 def find_coeffs(p1, p2):
     "Find coefficients for warp tfm from `p1` to `p2`"
@@ -608,7 +614,7 @@ def find_coeffs(p1, p2):
     #The 8 scalars we seek are solution of AX = B
     A = stack(m).permute(2, 0, 1)
     B = p1.view(p1.shape[0], 8, 1)
-    return torch.solve(B,A)[0]
+    return solve(A,B)
 
 # Cell
 def apply_perspective(coords, coeffs):
