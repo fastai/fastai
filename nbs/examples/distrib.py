@@ -11,6 +11,6 @@ dls = DataBlock(
     batch_tfms=Normalize.from_stats(*imagenet_stats)
 ).dataloaders(path, path=path, bs=64)
 
-learn = Learner(dls, xresnet50(n_out=10), metrics=[accuracy,top_k_accuracy]).to_native_fp16()
+learn = Learner(dls, xresnet50(n_out=10), metrics=[accuracy,top_k_accuracy]).to_fp16()
 with learn.distrib_ctx(): learn.fit_flat_cos(2, 1e-3, cbs=MixUp(0.1))
 
