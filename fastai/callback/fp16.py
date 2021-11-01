@@ -19,7 +19,7 @@ class MixedPrecision(Callback):
     def before_fit(self): self.learn.scaler,self.scales = GradScaler(**self.kwargs),L()
     def before_batch(self): self.autocast.__enter__()
     def after_pred(self):
-        if listify(self.pred)[0].dtype==torch.float16: self.learn.pred = to_float(self.pred)
+        if next(flatten(self.pred)).dtype==torch.float16: self.learn.pred = to_float(self.pred)
     def after_loss(self): self.autocast.__exit__(None, None, None)
     def before_backward(self): self.learn.loss_grad = self.scaler.scale(self.loss_grad)
     def before_step(self):
@@ -37,7 +37,7 @@ class MixedPrecision(Callback):
 class FP16TestCallback(Callback):
     "Asserts that predictions are `float16` values"
     order = 9
-    def after_pred(self): assert listify(self.pred)[0].dtype==torch.float16
+    def after_pred(self): assert listify(flatten(self.pred))[0].dtype==torch.float16
 
 # Cell
 @patch
