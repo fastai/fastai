@@ -602,7 +602,7 @@ class Mish(Module):
     def forward(self, x): return MishJitAutoFn.apply(x)
 
 # Cell
-if torch.__version__ >= '1.9': Mish = nn.Mish
+if ismin_torch('1.9'): Mish = nn.Mish
 
 # Cell
 for o in swish,Swish,mish,Mish: o.__default_init__ = kaiming_uniform_
