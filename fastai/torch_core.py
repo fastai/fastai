@@ -16,6 +16,7 @@ __all__ = ['progress_bar', 'master_bar', 'subplots', 'show_image', 'show_titled_
 # Cell
 from .imports import *
 from .torch_imports import *
+from packaging.version import parse
 
 # Cell
 #nbdev_comment _all_ = ['progress_bar','master_bar']
@@ -810,12 +811,12 @@ def grad_module(cls):
 # Cell
 def ismin_torch(min_version):
     "Check if `torch.__version__` >= `min_version` using packaging.version"
-    return ismin_version(min_version, torch.__version__)
+    return parse(torch.__version__) >= parse(min_version)
 
 # Cell
 def notmax_torch(max_version):
     "Check if `torch.__version__` < `max_version` using packaging.version"
-    return notmax_version(max_version, torch.__version__)
+    return parse(torch.__version__) < parse(max_version)
 
 # Comes from 13b_metrics.ipynb, cell
 def flatten_check(inp, targ):
