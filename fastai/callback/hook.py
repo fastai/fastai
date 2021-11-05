@@ -160,7 +160,10 @@ def layer_info(learn, *xb):
         return h.stored
 
 # Cell
-def _get_shapes(o, bs): return ' x '.join([str(bs)] + [str(t) for t in o[1:]])
+def _get_shapes(o, bs):
+    inp = o[first(o)] if (isinstance(o, dict)) else o
+    return ' x '.join([str(bs)] + [str(t) for t in inp[1:]])
+
 def _print_shapes(o, bs):
     if isinstance(o, torch.Size): return _get_shapes(o, bs)
     elif isinstance(o, tuple): return _get_shapes(o[0], bs)
