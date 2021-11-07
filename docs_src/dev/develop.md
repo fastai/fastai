@@ -31,8 +31,8 @@ You don't need to do anything else.
 
 ### Editable Install Explained
 
-If you're new to editable install, refer to [Editable installs](https://pip.pypa.io/en/stable/reference/pip_install/#editable-installs)
-and its [examples](https://pip.pypa.io/en/stable/reference/pip_install/#examples).
+If you're new to editable install, refer to [Editable installs](https://pip.pypa.io/en/stable/cli/pip_install/#editable-installs)
+and its [examples](https://pip.pypa.io/en/stable/cli/pip_install/#pip-install-examples).
 
 This section will demonstrate how the editable installs works with `fastai`, including some important nuances that are important to understand.
 
