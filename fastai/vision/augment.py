@@ -599,7 +599,7 @@ def _linalg_solve(A,B):
 def _solve(A,B):
     return torch.solve(B,A)[0]
 
-if torch.__version__ >= '1.9': solve = _linalg_solve
+if ismin_torch('1.9'): solve = _linalg_solve
 else: solve = _solve
 
 # Cell

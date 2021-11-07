@@ -11,11 +11,12 @@ __all__ = ['progress_bar', 'master_bar', 'subplots', 'show_image', 'show_titled_
            'norm_bias_params', 'batch_to_samples', 'logit', 'num_distrib', 'rank_distrib', 'distrib_barrier',
            'base_doc', 'doc', 'nested_reorder', 'make_cross_image', 'show_image_batch', 'requires_grad', 'init_default',
            'cond_init', 'apply_leaf', 'apply_init', 'script_use_ctx', 'script_save_ctx', 'script_fwd', 'script_bwd',
-           'grad_module', 'flatten_check']
+           'grad_module', 'ismin_torch', 'notmax_torch', 'flatten_check']
 
 # Cell
 from .imports import *
 from .torch_imports import *
+from packaging.version import parse
 
 # Cell
 #nbdev_comment _all_ = ['progress_bar','master_bar']
@@ -806,6 +807,16 @@ def grad_module(cls):
     class _c(nn.Module):
         def forward(self, *args, **kwargs): return cls.apply(*args, **kwargs)
     return _c
+
+# Cell
+def ismin_torch(min_version):
+    "Check if `torch.__version__` >= `min_version` using packaging.version"
+    return parse(torch.__version__) >= parse(min_version)
+
+# Cell
+def notmax_torch(max_version):
+    "Check if `torch.__version__` < `max_version` using packaging.version"
+    return parse(torch.__version__) < parse(max_version)
 
 # Comes from 13b_metrics.ipynb, cell
 def flatten_check(inp, targ):
