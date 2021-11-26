@@ -175,7 +175,11 @@ class LRFinder(ParamScheduler):
 
     def before_fit(self):
         super().before_fit()
-        self.learn.save('_tmp')
+        path = self.path/self.model_dir
+        path.mkdir(parents=True, exist_ok=True)
+        self.tmp_d = tempfile.TemporaryDirectory(dir=path)
+        self.tmp_p = Path(self.tmp_d.name).stem
+        self.learn.save(f'{self.tmp_p}/_tmp')
         self.best_loss = float('inf')
 
     def before_batch(self): self._update_val(self.train_iter/self.num_it)
@@ -190,10 +194,10 @@ class LRFinder(ParamScheduler):
 
     def after_fit(self):
         self.learn.opt.zero_grad() # Needed before detaching the optimizer for future fits
-        tmp_f = self.path/self.model_dir/'_tmp.pth'
+        tmp_f = self.path/self.model_dir/self.tmp_p/'_tmp.pth'
         if tmp_f.exists():
-            self.learn.load('_tmp', with_opt=True)
-            os.remove(tmp_f)
+            self.learn.load(f'{self.tmp_p}/_tmp', with_opt=True)
+            self.tmp_d.cleanup()
 
     _docs = {"before_fit": "Initialize container for hyper-parameters and save the model",
              "before_batch": "Set the proper hyper-parameters in the optimizer",
