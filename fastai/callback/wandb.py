@@ -95,7 +95,7 @@ class WandbCallback(Callback):
         inp,preds,targs,out = preds
         b = tuplify(inp) + tuplify(targs)
         x,y,its,outs = self.valid_dl.show_results(b, out, show=False, max_n=self.n_preds)
-        wandb.log(wandb_process(x, y, its, outs), step=self._wandb_step)
+        wandb.log(wandb_process(x, y, its, outs, preds), step=self._wandb_step)
 
     def after_epoch(self):
         "Log validation loss and custom metrics & log prediction samples"
@@ -224,7 +224,7 @@ def log_model(path, name=None, metadata={}, description='trained model'):
 
 # Cell
 @typedispatch
-def wandb_process(x:TensorImage, y, samples, outs):
+def wandb_process(x:TensorImage, y, samples, outs, preds):
     "Process `sample` and `out` depending on the type of `x/y`"
     res_input, res_pred, res_label = [],[],[]
     for s,o in zip(samples, outs):
@@ -240,35 +240,47 @@ def wandb_process(x:TensorImage, y, samples, outs):
     return {"Inputs":res_input, "Predictions":res_pred, "Ground Truth":res_label}
 
 # Cell
-@typedispatch
-def wandb_process(x:TensorImage, y:(TensorCategory,TensorMultiCategory), samples, outs):
-    return {"Prediction Samples": [wandb.Image(s[0].permute(1,2,0), caption=f'Ground Truth: {s[1]}\nPrediction: {o[0]}')
-            for s,o in zip(samples,outs)]}
+def _unlist(l):
+    "get element of lists of lenght 1"
+    if isinstance(l, (list, tuple)):
+        if len(l) == 1: return l[0]
+    else: return l
 
 # Cell
 @typedispatch
-def wandb_process(x:TensorImage, y:TensorMask, samples, outs):
+def wandb_process(x:TensorImage, y:(TensorCategory,TensorMultiCategory), samples, outs, preds):
+    table = wandb.Table(columns=["Input image", "Ground Truth", "Predictions"])
+    for (image, label), pred_label in zip(samples,outs):
+        table.add_data(wandb.Image(image.permute(1,2,0)), label, _unlist(pred_label))
+    return {"Prediction Samples": table}
+
+# Cell
+@typedispatch
+def wandb_process(x:TensorImage, y:TensorMask, samples, outs, preds):
     res = []
-    codes = getattr(y, 'codes', None)
-    class_labels = {i:f'{c}' for i,c in enumerate(codes)} if codes is not None else None
-    for s,o in zip(samples, outs):
-        img = s[0].permute(1,2,0)
-        masks = {}
-        for t, capt in ((o[0], "Prediction"), (s[1], "Ground Truth")):
-            masks[capt] = {'mask_data':t.numpy().astype(np.uint8)}
-            if class_labels: masks[capt]['class_labels'] = class_labels
-        res.append(wandb.Image(img, masks=masks))
-    return {"Prediction Samples":res}
+    codes = getattr(outs[0][0], 'codes', None)
+    if codes is not None:
+        class_labels = [{'name': name, 'id': id}  for id, name in enumerate(codes)]
+    else:
+        class_labels = [{'name': i, 'id': i} for i in range(preds.shape[1])]
+    table = wandb.Table(columns=["Input Image", "Ground Truth", "Predictions"])
+    for (image, label), pred_label in zip(samples, outs):
+        img = image.permute(1,2,0)
+        table.add_data(wandb.Image(img),
+                       wandb.Image(img, masks={"Ground Truth": {'mask_data': label.numpy().astype(np.uint8)}}, classes=class_labels),
+                       wandb.Image(img, masks={"Prediction":   {'mask_data': pred_label[0].numpy().astype(np.uint8)}}, classes=class_labels)
+                      )
+    return {"Prediction Samples": table}
 
 # Cell
 @typedispatch
-def wandb_process(x:TensorText, y:(TensorCategory,TensorMultiCategory), samples, outs):
+def wandb_process(x:TensorText, y:(TensorCategory,TensorMultiCategory), samples, outs, preds):
     data = [[s[0], s[1], o[0]] for s,o in zip(samples,outs)]
     return {"Prediction Samples": wandb.Table(data=data, columns=["Text", "Target", "Prediction"])}
 
 # Cell
 @typedispatch
-def wandb_process(x:Tabular, y:Tabular, samples, outs):
+def wandb_process(x:Tabular, y:Tabular, samples, outs, preds):
     df = x.all_cols
     for n in x.y_names: df[n+'_pred'] = y[n].values
     return {"Prediction Samples": wandb.Table(dataframe=df)}
