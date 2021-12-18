@@ -4,6 +4,7 @@ __all__ = ['CollectDataCallback', 'WeightedDL', 'PartialDL']
 
 # Cell
 from ..basics import *
+from ..vision.all import ImageBlock
 
 # Cell
 class CollectDataCallback(Callback):
