@@ -15,8 +15,9 @@ from torch.cuda.amp.grad_scaler import OptState
 class MixedPrecision(Callback):
     "Mixed precision training using Pytorch's `autocast` and `GradScaler`"
     order = 10
-    def __init__(self, **kwargs): self.kwargs,self.autocast = kwargs,autocast()
-    def before_fit(self): self.learn.scaler,self.scales = GradScaler(**self.kwargs),L()
+    def __init__(self, **kwargs): self.kwargs = kwargs
+    def before_fit(self):
+        self.autocast,self.learn.scaler,self.scales = autocast(),GradScaler(**self.kwargs),L()
     def before_batch(self): self.autocast.__enter__()
     def after_pred(self):
         if next(flatten(self.pred)).dtype==torch.float16: self.learn.pred = to_float(self.pred)
@@ -32,6 +33,7 @@ class MixedPrecision(Callback):
     @property # pretend to be an optimizer for `GradScaler`
     def param_groups(self): return self.opt.param_groups
     def step(self, *args, **kwargs): self.skipped=False
+    def after_fit(self): self.autocast,self.learn.scaler,self.scales = None,None,None
 
 # Cell
 class FP16TestCallback(Callback):
