@@ -516,7 +516,7 @@ class AvgSmoothMetric(Metric):
         if self.to_np: self.pred,self.targ = learn.to_detach(self.pred).numpy(),learn.to_detach(self.targ).numpy()
         val = self.func(self.targ, self.pred, **self.fkwargs) if self.invert_arg else self.func(self.pred, self.targ, **self.fkwargs)
         if self.to_np: self.val = self.val*self.beta + val*(1-self.beta)
-        else: self.val = torch.lerp(val, self.val, self.beta)
+        else: self.val = torch.lerp(to_detach(val, gather=False), self.val, self.beta)
         self.count += 1
 
     @property
