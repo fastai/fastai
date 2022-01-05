@@ -74,7 +74,7 @@ def accuracy(inp, targ, axis=-1):
 @delegates(Metric)
 def Accuracy(axis=-1, metric_type=MetricType.Avg, log_metric=LogMetric.Valid, **kwargs):
     "Compute accuracy with `targ` when `pred` is bs * n_classes"
-    return func_to_metric(accuracy, metric_type, True, axis=axis, **kwargs)
+    return func_to_metric(accuracy, metric_type, True, axis=axis, log_metric=log_metric, **kwargs)
 
 # Internal Cell
 def error_rate(inp, targ, axis=-1):
@@ -85,7 +85,7 @@ def error_rate(inp, targ, axis=-1):
 @delegates(Metric)
 def ErrorRate(axis=-1, metric_type=MetricType.Avg, log_metric=LogMetric.Valid, **kwargs):
     "Compute 1 - accuracy with `targ` when `pred` is bs * n_classes"
-    return func_to_metric(error_rate, metric_type, True, axis=axis, **kwargs)
+    return func_to_metric(error_rate, metric_type, True, axis=axis, log_metric=log_metric, **kwargs)
 
 # Internal Cell
 def top_k_accuracy(inp, targ, k=5, axis=-1):
@@ -98,7 +98,8 @@ def top_k_accuracy(inp, targ, k=5, axis=-1):
 @delegates(Metric)
 def TopKAccuracy(k=5, axis=-1, metric_type=MetricType.Avg, log_metric=LogMetric.Valid, **kwargs):
     "Computes the Top-k accuracy (`targ` is in the top `k` predictions of `inp`)"
-    return func_to_metric(partial(top_k_accuracy, k=k, axis=axis), metric_type, False, **kwargs)
+    return func_to_metric(partial(top_k_accuracy, k=k, axis=axis), metric_type, False,
+                          log_metric=log_metric, **kwargs)
 
 # Cell
 @delegates(skm.average_precision_score)
