@@ -83,12 +83,17 @@ class WandbCallback(Callback):
                 self.log_preds = False
                 print(f'WandbCallback was not able to prepare a DataLoader for logging prediction samples -> {e}')
 
+        # log smooth training metrics
+        self.log_smooth = len(self.recorder.smooth_names) > 0
+
     def after_batch(self):
         "Log hyper-parameters and training loss"
         if self.training:
             self._wandb_step += 1
             self._wandb_epoch += 1/self.n_iter
             hypers = {f'{k}_{i}':v for i,h in enumerate(self.opt.hypers) for k,v in h.items()}
+            if self.log_smooth:
+                for n,m in zip(self.recorder.smooth_names, self.recorder.smooth_mets): hypers[n]=m.value
             wandb.log({'epoch': self._wandb_epoch, 'train_loss': to_detach(self.smooth_loss.clone()), 'raw_loss': to_detach(self.loss.clone()), **hypers}, step=self._wandb_step)
 
     def log_predictions(self, preds):
@@ -110,7 +115,7 @@ class WandbCallback(Callback):
                 self.log_preds = False
                 self.remove_cb(FetchPredsCallback)
                 print(f'WandbCallback was not able to get prediction samples -> {e}')
-        wandb.log({n:s for n,s in zip(self.recorder.metric_names, self.recorder.log) if n not in ['train_loss', 'epoch', 'time']}, step=self._wandb_step)
+        wandb.log({n:s for n,s in zip(self.recorder.metric_names, self.recorder.log) if n not in ['train_loss', 'epoch', 'time']+self.recorder.smooth_names}, step=self._wandb_step)
 
     def after_fit(self):
         if self.log_model:

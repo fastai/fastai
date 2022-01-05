@@ -818,7 +818,7 @@ def notmax_torch(max_version):
     "Check if `torch.__version__` < `max_version` using packaging.version"
     return parse(torch.__version__) < parse(max_version)
 
-# Comes from 13b_metrics.ipynb, cell
+# Comes from 13a_learner.ipynb, cell
 def flatten_check(inp, targ):
     "Check that `out` and `targ` have the same number of elements and flatten them."
     inp,targ = TensorBase(inp.contiguous()).view(-1),TensorBase(targ.contiguous()).view(-1)
