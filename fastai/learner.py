@@ -276,7 +276,7 @@ class Learner(GetAttr):
         if dl is None: dl = self.dls[ds_idx].new(shuffle=shuffle)
         b = dl.one_batch()
         _,_,preds = self.get_preds(dl=[b], with_decoded=True)
-        self.dls.show_results(b, preds, max_n=max_n, **kwargs)
+        dl.show_results(b, preds, max_n=max_n, **kwargs)
 
     def show_training_loop(self):
         indent = 0
