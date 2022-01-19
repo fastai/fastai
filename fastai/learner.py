@@ -3,7 +3,7 @@
 __all__ = ['CancelStepException', 'CancelFitException', 'CancelEpochException', 'CancelTrainException',
            'CancelValidException', 'CancelBatchException', 'LogMetric', 'MetricType', 'ActivationType',
            'replacing_yield', 'verify_metric', 'save_model', 'load_model', 'Learner', 'before_batch_cb', 'load_learner',
-           'to_detach_from_dl', 'Metric', 'AvgMetric', 'AvgLoss', 'AvgSmoothLoss', 'AvgSmoothMetric', 'AccumMetric',
+           'to_detach_from_dl', 'Metric', 'AvgMetric', 'AccumMetric', 'AvgSmoothMetric', 'AvgLoss', 'AvgSmoothLoss',
            'ValueMetric', 'Recorder']
 
 # Cell
@@ -277,7 +277,7 @@ class Learner(GetAttr):
         if dl is None: dl = self.dls[ds_idx].new(shuffle=shuffle)
         b = dl.one_batch()
         _,_,preds = self.get_preds(dl=[b], with_decoded=True)
-        self.dls.show_results(b, preds, max_n=max_n, **kwargs)
+        dl.show_results(b, preds, max_n=max_n, **kwargs)
 
     def show_training_loop(self):
         indent = 0
@@ -477,55 +477,6 @@ class AvgMetric(Metric):
         else:          return self.func.func.__name__ if hasattr(self.func, 'func') else  self.func.__name__
 
 # Cell
-class AvgLoss(Metric):
-    "Average the losses taking into account potential different batch sizes"
-    def reset(self): self.total,self.count = 0.,0
-    def accumulate(self, learn):
-        bs = find_bs(learn.yb)
-        self.total += learn.to_detach(learn.loss.mean())*bs
-        self.count += bs
-    @property
-    def value(self): return self.total/self.count if self.count != 0 else None
-    @property
-    def name(self):  return "loss"
-
-# Cell
-class AvgSmoothLoss(Metric):
-    "Smooth average of the losses (exponentially weighted with `beta`)"
-    def __init__(self, beta=0.98): self.beta = beta
-    def reset(self):               self.count,self.val = 0,tensor(0.)
-    def accumulate(self, learn):
-        self.count += 1
-        self.val = torch.lerp(to_detach(learn.loss.mean(), gather=False), self.val, self.beta)
-    @property
-    def value(self): return self.val/(1-self.beta**self.count)
-
-# Cell
-@delegates(Metric)
-class AvgSmoothMetric(Metric):
-    "Smooth average the values of `func` (exponentially weighted with `beta`)"
-    def __init__(self, func, beta=0.98, **kwargs):
-        super().__init__(**self._split_kwargs(Metric.__init__, **kwargs))
-        self.func, self.fkwargs = func, self._split_kwargs(func, **kwargs)
-        self.beta, self.log_metric = beta, LogMetric.Train
-
-    def reset(self): self.count,self.val = 0,tensor(0.)
-
-    def accumulate(self, learn):
-        super().accumulate(learn)
-        if self.to_np: self.pred,self.targ = learn.to_detach(self.pred).numpy(),learn.to_detach(self.targ).numpy()
-        val = self.func(self.targ, self.pred, **self.fkwargs) if self.invert_arg else self.func(self.pred, self.targ, **self.fkwargs)
-        if self.to_np: self.val = self.val*self.beta + val*(1-self.beta)
-        else: self.val = torch.lerp(to_detach(val, gather=False), self.val, self.beta)
-        self.count += 1
-
-    @property
-    def value(self): return self.val/(1-self.beta**self.count) if self.count != 0 else None
-
-    @property
-    def name(self): return self.func.func.__name__ if hasattr(self.func, 'func') else  self.func.__name__
-
-# Cell
 @delegates(Metric)
 class AccumMetric(Metric):
     "Stores predictions and targets on CPU in accumulate to perform final calculations with `func`."
@@ -565,6 +516,57 @@ class AccumMetric(Metric):
 
     @property
     def name(self):  return self.func.func.__name__ if hasattr(self.func, 'func') else  self.func.__name__
+
+# Cell
+@delegates(Metric)
+class AvgSmoothMetric(Metric):
+    "Smooth average the values of `func` (exponentially weighted with `beta`)"
+    def __init__(self, func, beta=0.98, **kwargs):
+        super().__init__(**self._split_kwargs(Metric.__init__, **kwargs))
+        self.func, self.fkwargs = func, self._split_kwargs(func, **kwargs)
+        self.beta, self.log_metric = beta, LogMetric.Train
+
+    def reset(self): self.count,self.val = 0,tensor(0.)
+
+    def accumulate(self, learn):
+        super().accumulate(learn)
+        if self.to_np: self.pred,self.targ = learn.to_detach(self.pred).numpy(),learn.to_detach(self.targ).numpy()
+        val = self.func(self.targ, self.pred, **self.fkwargs) if self.invert_arg else self.func(self.pred, self.targ, **self.fkwargs)
+        if self.to_np: self.val = self.val*self.beta + val*(1-self.beta)
+        else: self.val = torch.lerp(to_detach(val, gather=False), self.val, self.beta)
+        self.count += 1
+
+    @property
+    def value(self): return self.val/(1-self.beta**self.count) if self.count != 0 else None
+
+    @property
+    def name(self):
+        if self._name: return self._name
+        else:          return self.func.func.__name__ if hasattr(self.func, 'func') else  self.func.__name__
+
+# Cell
+class AvgLoss(Metric):
+    "Average the losses taking into account potential different batch sizes"
+    def reset(self): self.total,self.count = 0.,0
+    def accumulate(self, learn):
+        bs = find_bs(learn.yb)
+        self.total += learn.to_detach(learn.loss.mean())*bs
+        self.count += bs
+    @property
+    def value(self): return self.total/self.count if self.count != 0 else None
+    @property
+    def name(self):  return "loss"
+
+# Cell
+class AvgSmoothLoss(Metric):
+    "Smooth average of the losses (exponentially weighted with `beta`)"
+    def __init__(self, beta=0.98): self.beta = beta
+    def reset(self):               self.count,self.val = 0,tensor(0.)
+    def accumulate(self, learn):
+        self.count += 1
+        self.val = torch.lerp(to_detach(learn.loss.mean(), gather=False), self.val, self.beta)
+    @property
+    def value(self): return self.val/(1-self.beta**self.count)
 
 # Cell
 class ValueMetric(Metric):
