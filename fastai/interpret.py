@@ -6,6 +6,7 @@ __all__ = ['plot_top_losses', 'Interpretation', 'ClassificationInterpretation', 
 from .data.all import *
 from .optimizer import *
 from .learner import *
+from .tabular.core import *
 import sklearn.metrics as skm
 
 # Cell
@@ -19,33 +20,56 @@ def plot_top_losses(x, y, *args, **kwargs):
 # Cell
 class Interpretation():
     "Interpretation base class, can be inherited for task specific Interpretation classes"
-    def __init__(self, dl, inputs, preds, targs, decoded, losses):
-        store_attr("dl,inputs,preds,targs,decoded,losses")
+    def __init__(self, learn, dl, losses, act=None):
+        store_attr()
+
+    def __getitem__(self, idxs):
+        "Return inputs, preds, targs, decoded outputs, and losses at `idxs`"
+        if isinstance(idxs, Tensor): idxs = idxs.tolist()
+        if not is_listy(idxs): idxs = [idxs]
+        items = getattr(self.dl.items, 'iloc', L(self.dl.items))[idxs]
+        tmp_dl = self.learn.dls.test_dl(items, with_labels=True, process=not isinstance(self.dl, TabDataLoader))
+        inps,preds,targs,decoded = self.learn.get_preds(dl=tmp_dl, with_input=True, with_loss=False,
+                                                        with_decoded=True, act=self.act, reorder=False)
+        return inps, preds, targs, decoded, self.losses[idxs]
 
     @classmethod
     def from_learner(cls, learn, ds_idx=1, dl=None, act=None):
         "Construct interpretation object from a learner"
         if dl is None: dl = learn.dls[ds_idx].new(shuffled=False, drop_last=False)
-        return cls(dl, *learn.get_preds(dl=dl, with_input=True, with_loss=True, with_decoded=True, act=None))
+        _,_,losses = learn.get_preds(dl=dl, with_input=False, with_loss=True, with_decoded=False,
+                                     with_preds=False, with_targs=False, act=act)
+        return cls(learn, dl, losses, act)
 
-    def top_losses(self, k=None, largest=True):
-        "`k` largest(/smallest) losses and indexes, defaulting to all losses (sorted by `largest`)."
-        return self.losses.topk(ifnone(k, len(self.losses)), largest=largest)
+    def top_losses(self, k=None, largest=True, items=False):
+        "`k` largest(/smallest) losses and indexes, defaulting to all losses (sorted by `largest`). Optionally include items."
+        losses, idx = self.losses.topk(ifnone(k, len(self.losses)), largest=largest)
+        if items: return losses, idx, getattr(self.dl.items, 'iloc', L(self.dl.items))[idx]
+        else:     return losses, idx
 
     def plot_top_losses(self, k, largest=True, **kwargs):
-        losses,idx = self.top_losses(k, largest)
-        if not isinstance(self.inputs, tuple): self.inputs = (self.inputs,)
-        if isinstance(self.inputs[0], Tensor): inps = tuple(o[idx] for o in self.inputs)
-        else: inps = self.dl.create_batch(self.dl.before_batch([tuple(o[i] for o in self.inputs) for i in idx]))
-        b = inps + tuple(o[idx] for o in (self.targs if is_listy(self.targs) else (self.targs,)))
-        x,y,its = self.dl._pre_show_batch(b, max_n=k)
-        b_out = inps + tuple(o[idx] for o in (self.decoded if is_listy(self.decoded) else (self.decoded,)))
-        x1,y1,outs = self.dl._pre_show_batch(b_out, max_n=k)
+        "Show `k` largest(/smallest) preds and losses. `k` may be int, list, or `range` of desired results."
+        if is_listy(k) or isinstance(k, range):
+            losses, idx = (o[k] for o in self.top_losses(None, largest))
+        else:
+            losses, idx = self.top_losses(k, largest)
+        inps, preds, targs, decoded, _ = self[idx]
+        inps, targs, decoded = tuplify(inps), tuplify(targs), tuplify(decoded)
+        x, y, its = self.dl._pre_show_batch(inps+targs)
+        x1, y1, outs = self.dl._pre_show_batch(inps+decoded, max_n=len(idx))
         if its is not None:
-            plot_top_losses(x, y, its, outs.itemgot(slice(len(inps), None)), self.preds[idx], losses,  **kwargs)
+            plot_top_losses(x, y, its, outs.itemgot(slice(len(inps), None)), preds, losses, **kwargs)
         #TODO: figure out if this is needed
         #its None means that a batch knows how to show itself as a whole, so we pass x, x1
         #else: show_results(x, x1, its, ctxs=ctxs, max_n=max_n, **kwargs)
+
+    def show_results(self, idxs, **kwargs):
+        "Show predictions and targets of `idxs`"
+        if isinstance(idxs, Tensor): idxs = idxs.tolist()
+        if not is_listy(idxs): idxs = [idxs]
+        inps, _, targs, decoded, _ = self[idxs]
+        b = tuplify(inps)+tuplify(targs)
+        self.dl.show_results(b, tuplify(decoded), max_n=len(idxs), **kwargs)
 
 # Cell
 class ClassificationInterpretation(Interpretation):
