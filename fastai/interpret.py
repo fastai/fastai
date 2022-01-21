@@ -36,7 +36,7 @@ class Interpretation():
     @classmethod
     def from_learner(cls, learn, ds_idx=1, dl=None, act=None):
         "Construct interpretation object from a learner"
-        if dl is None: dl = learn.dls[ds_idx].new(shuffled=False, drop_last=False)
+        if dl is None: dl = learn.dls[ds_idx].new(shuffle=False, drop_last=False)
         _,_,losses = learn.get_preds(dl=dl, with_input=False, with_loss=True, with_decoded=False,
                                      with_preds=False, with_targs=False, act=act)
         return cls(learn, dl, losses, act)
