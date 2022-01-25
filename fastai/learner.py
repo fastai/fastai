@@ -382,8 +382,10 @@ def load_learner(fname, cpu=True, pickle_module=pickle):
     "Load a `Learner` object in `fname`, optionally putting it on the `cpu`"
     distrib_barrier()
     res = torch.load(fname, map_location='cpu' if cpu else None, pickle_module=pickle_module)
-    if hasattr(res, 'to_fp32'): res = res.to_fp32()
-    if cpu: res.dls.cpu()
+    if cpu:
+        res.dls.cpu()
+        if hasattr(res, 'mixed_precision'): res = res.to_fp32()
+        elif hasattr(res, 'non_native_mixed_precision'): res = res.to_non_native_fp32()
     return res
 
 # Cell
