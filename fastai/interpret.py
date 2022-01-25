@@ -75,15 +75,17 @@ class Interpretation():
 class ClassificationInterpretation(Interpretation):
     "Interpretation methods for classification models."
 
-    def __init__(self, dl, inputs, preds, targs, decoded, losses):
-        super().__init__(dl, inputs, preds, targs, decoded, losses)
+    def __init__(self, learn, dl, losses, act=None):
+        super().__init__(learn, dl, losses, act)
         self.vocab = self.dl.vocab
         if is_listy(self.vocab): self.vocab = self.vocab[-1]
 
     def confusion_matrix(self):
         "Confusion matrix as an `np.ndarray`."
         x = torch.arange(0, len(self.vocab))
-        d,t = flatten_check(self.decoded, self.targs)
+        _,targs,decoded = self.learn.get_preds(dl=self.dl, with_decoded=True, with_preds=True,
+                                               with_targs=True, act=self.act)
+        d,t = flatten_check(decoded, targs)
         cm = ((d==x[:,None]) & (t==x[:,None,None])).long().sum(2)
         return to_np(cm)
 
@@ -124,7 +126,9 @@ class ClassificationInterpretation(Interpretation):
 
     def print_classification_report(self):
         "Print scikit-learn classification report"
-        d,t = flatten_check(self.decoded, self.targs)
+        _,targs,decoded = self.learn.get_preds(dl=self.dl, with_decoded=True, with_preds=True,
+                                               with_targs=True, act=self.act)
+        d,t = flatten_check(decoded, targs)
         print(skm.classification_report(t, d, labels=list(self.vocab.o2i.values()), target_names=[str(v) for v in self.vocab]))
 
 # Cell
