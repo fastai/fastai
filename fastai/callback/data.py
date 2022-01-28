@@ -15,6 +15,7 @@ class CollectDataCallback(Callback):
 # Cell
 @delegates()
 class WeightedDL(TfmdDL):
+    "Weighted dataloader where `wgts` is used for the training set only"
     def __init__(self, dataset=None, bs=None, wgts=None, **kwargs):
         super().__init__(dataset=dataset, bs=bs, **kwargs)
         wgts = array([1.]*len(dataset) if wgts is None else wgts)
@@ -29,6 +30,7 @@ class WeightedDL(TfmdDL):
 @patch
 @delegates(Datasets.dataloaders)
 def weighted_dataloaders(self:Datasets, wgts, bs=64, **kwargs):
+    "Create a weighted dataloader `WeightedDL` with `wgts` for the training set"
     xtra_kwargs = [{}] * (self.n_subsets-1)
     return self.dataloaders(bs=bs, dl_type=WeightedDL, dl_kwargs=({'wgts':wgts}, *xtra_kwargs), **kwargs)
 
