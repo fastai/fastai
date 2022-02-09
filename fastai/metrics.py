@@ -25,8 +25,9 @@ mk_class('ActivationType', **{o:o.lower() for o in ['No', 'Sigmoid', 'Softmax', 
 class AccumMetric(Metric):
     "Stores predictions and targets on CPU in accumulate to perform final calculations with `func`."
     def __init__(self, func, dim_argmax=None, activation=ActivationType.No, thresh=None, to_np=False,
-                 invert_arg=False, flatten=True, **kwargs):
+                 invert_arg=False, flatten=True, name=None, **kwargs):
         store_attr('func,dim_argmax,activation,thresh,flatten')
+        self._name = ifnone(name, self.func.func.__name__ if hasattr(self.func, 'func') else  self.func.__name__)
         self.to_np,self.invert_args,self.kwargs = to_np,invert_arg,kwargs
 
     def reset(self):
@@ -67,7 +68,10 @@ class AccumMetric(Metric):
         return self.func(targs, preds, **self.kwargs) if self.invert_args else self.func(preds, targs, **self.kwargs)
 
     @property
-    def name(self):  return self.func.func.__name__ if hasattr(self.func, 'func') else  self.func.__name__
+    def name(self):  return self._name
+
+    @name.setter
+    def name(self, value): self._name = name
 
 # Cell
 def skm_to_fastai(func, is_class=True, thresh=None, axis=-1, activation=None, **kwargs):
