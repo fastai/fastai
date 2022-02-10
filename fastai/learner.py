@@ -2,7 +2,7 @@
 
 __all__ = ['CancelStepException', 'CancelFitException', 'CancelEpochException', 'CancelTrainException',
            'CancelValidException', 'CancelBatchException', 'LogMetric', 'MetricType', 'ActivationType',
-           'replacing_yield', 'verify_metric', 'save_model', 'load_model', 'Learner', 'before_batch_cb', 'load_learner',
+           'replacing_yield', 'save_model', 'load_model', 'Learner', 'before_batch_cb', 'load_learner',
            'to_detach_from_dl', 'Metric', 'AvgMetric', 'AccumMetric', 'AvgSmoothMetric', 'AvgLoss', 'AvgSmoothLoss',
            'ValueMetric', 'Recorder']
 
@@ -25,10 +25,10 @@ def replacing_yield(o, attr, val):
     try:     yield setattr(o,attr,val)
     finally: setattr(o,attr,old)
 
-# Cell
+# Internal Cell
 def verify_metric(m):
     "Verify `m` is a `Metric`"
-    if not isinstance(m, Metric): raise ValueError(f'{m} is not a fast.ai Metric')
+    if not isinstance(m, Metric): raise ValueError(f'{m} is not a fastai Metric')
     else: return m
 
 # Cell
@@ -525,7 +525,7 @@ class AccumMetric(Metric):
 # Cell
 @delegates(Metric, but='log_metric')
 class AvgSmoothMetric(Metric):
-    "Smooth average the values of `func` (exponentially weighted with `beta`). Only records training set."
+    "Smooth average the values of `func` (exponentially weighted with `beta`). Only computed on training set."
     def __init__(self, func, beta=0.98, to_np=False, invert_arg=False, **kwargs):
         super().__init__(**self._split_kwargs(Metric.__init__, **kwargs))
         self.func, self.fkwargs = func, self._split_kwargs(func, **kwargs)
@@ -565,8 +565,10 @@ class AvgLoss(Metric):
 # Cell
 class AvgSmoothLoss(Metric):
     "Smooth average of the losses (exponentially weighted with `beta`)"
-    def __init__(self, beta=0.98): self.beta = beta
-    def reset(self):               self.count,self.val = 0,tensor(0.)
+    def __init__(self, beta=0.98):
+        self.beta, self.log_metric = beta, LogMetric.Train
+    def reset(self):
+        self.count,self.val = 0,tensor(0.)
     def accumulate(self, learn):
         self.count += 1
         self.val = torch.lerp(to_detach(learn.loss.mean(), gather=False), self.val, self.beta)
@@ -576,13 +578,15 @@ class AvgSmoothLoss(Metric):
 # Cell
 class ValueMetric(Metric):
     "Use to include a pre-calculated metric value (for instance calculated in a `Callback`) and returned by `func`"
-    def __init__(self, func, metric_name=None): store_attr('func, metric_name')
+    def __init__(self, func, name=None, log_metric=None):
+        super().__init__(log_metric=log_metric)
+        self.func, self._name = func, name
 
     @property
     def value(self): return self.func()
 
     @property
-    def name(self): return self.metric_name if self.metric_name else self.func.__name__
+    def name(self): return self._name if self._name else self.func.__name__
 
 # Cell
 from fastprogress.fastprogress import format_time
@@ -600,9 +604,10 @@ def _dedup_metric_names(metrics, names):
     dups = L(set([o[1] for o in zip(log, names) if o in dup or dup.add(o)]))
     indices = names.argwhere(lambda o: o in dups)
     for i in indices:
-        if isinstance(metrics[i], AvgMetric): names[i] = f'avg_{names[i]}'
-        elif isinstance(metrics[i], AccumMetric): names[i] = f'accm_{names[i]}'
-        elif isinstance(metrics[i], AvgSmoothMetric): names[i] = f'smth_{names[i]}'
+        if metrics[i]._name is None: # only deduplicate default metric names
+            if isinstance(metrics[i], AvgMetric): names[i] = f'avg_{names[i]}'
+            elif isinstance(metrics[i], AccumMetric): names[i] = f'accm_{names[i]}'
+            elif isinstance(metrics[i], AvgSmoothMetric): names[i] = f'smth_{names[i]}'
     return names
 
 # Cell
@@ -624,7 +629,7 @@ class Recorder(Callback):
         self.metric_names = 'epoch'+names
         self.smooth_loss.reset()
         self.loss.reset()
-        self._train_smooth_mets.map(Self.reset())
+        self.smooth_mets.map(Self.reset())
 
     def after_batch(self):
         "Update all metrics and records lr and smooth loss in training"
@@ -667,12 +672,6 @@ class Recorder(Callback):
         if getattr(self, 'cancel_valid', False): return L()
         return L(self.loss) + self._valid_mets
 
-    @property
-    def smooth_mets(self): return self._train_smooth_mets
-
-    @property
-    def smooth_names(self): return self._train_smooth_names
-
     def plot_loss(self, skip_start=5, with_valid=True):
         plt.plot(list(range(skip_start, len(self.losses))), self.losses[skip_start:], label='train')
         if with_valid:
@@ -682,7 +681,7 @@ class Recorder(Callback):
             plt.legend()
 
     def _setup_metrics(self):
-        "Returns train_names & valid_names, deduping if neccesary. Sets up train/valid smooth_mets, smooth_names, and reset_mets"
+        "Sets up train_names & valid_names, train smooth_mets & smooth_names, and _train_reset_mets."
         names = self.metrics.attrgot('name')
         if len(names.unique()) != len(names): names = _dedup_metric_names(self.metrics, names)
 
@@ -695,7 +694,7 @@ class Recorder(Callback):
             train_names, valid_names = train_names.map('train_{}'), valid_names.map('valid_{}')
 
         smooth = self._train_mets.argwhere(lambda o: isinstance(o, (AvgSmoothLoss, AvgSmoothMetric)))
-        self._train_smooth_mets, self._train_smooth_names = self._train_mets[smooth], train_names[smooth]
+        self.smooth_mets, self.smooth_names = self._train_mets[smooth], train_names[smooth]
 
         self._train_reset_mets = self._train_mets.filter(lambda o: not isinstance(o, (AvgSmoothLoss, AvgSmoothMetric)))
 
