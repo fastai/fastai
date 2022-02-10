@@ -33,4 +33,4 @@ services:
      && pip install .
      && nbdev_build_docs && cd docs
      && bundle i
-     && chmod -R u+rwx . && bundle exec jekyll serve --host 0.0.0.0"
+     && bundle exec jekyll serve --host 0.0.0.0"
