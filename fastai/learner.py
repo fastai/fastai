@@ -413,7 +413,7 @@ class Metric():
     def __init__(self, dim_argmax=None, activation=ActivationType.No, thresh=None, log_metric=None, name=None):
         store_attr(but='log_metric, name')
         self.log_metric = ifnone(log_metric, self.log_metric)
-        self._name = name
+        self._name = ifnone(name, class2attr(self, 'Metric'))
 
     def reset(self): pass
 
@@ -430,9 +430,10 @@ class Metric():
     def value(self): raise NotImplementedError
 
     @property
-    def name(self):
-        if self._name: return self._name
-        else:          return class2attr(self, 'Metric')
+    def name(self): return self._name
+
+    @name.setter
+    def name(self, value): self._name = name
 
     def _split_kwargs(self, method, **kwargs):
         args = [k for k,v in inspect.signature(method).parameters.items() if v.default != inspect.Parameter.empty]
@@ -460,6 +461,7 @@ class AvgMetric(Metric):
         super().__init__(**self._split_kwargs(Metric.__init__, **kwargs))
         self.func, self.fkwargs = func, self._split_kwargs(func, **kwargs)
         self.to_np, self.invert_arg = to_np, invert_arg
+        self._name = ifnone(kwargs.get('name', None), self.func.func.__name__ if hasattr(self.func, 'func') else self.func.__name__)
 
     def reset(self): self.total,self.count = 0.,0
 
@@ -473,11 +475,6 @@ class AvgMetric(Metric):
     @property
     def value(self): return self.total/self.count if self.count != 0 else None
 
-    @property
-    def name(self):
-        if self._name: return self._name
-        else:          return self.func.func.__name__ if hasattr(self.func, 'func') else  self.func.__name__
-
 # Cell
 @delegates(Metric)
 class AccumMetric(Metric):
@@ -486,6 +483,7 @@ class AccumMetric(Metric):
         super().__init__(**self._split_kwargs(Metric.__init__, **kwargs))
         self.flatten, self.func, self.fkwargs = flatten, func, self._split_kwargs(func, **kwargs)
         self.to_np, self.invert_arg = to_np, invert_arg
+        self._name = ifnone(kwargs.get('name', None), self.func.func.__name__ if hasattr(self.func, 'func') else self.func.__name__)
 
     def reset(self):
         "Clear all targs and preds"
@@ -517,11 +515,6 @@ class AccumMetric(Metric):
         if self.to_np: preds,targs = preds.numpy(),targs.numpy()
         return self.func(targs, preds, **self.fkwargs) if self.invert_arg else self.func(preds, targs, **self.fkwargs)
 
-    @property
-    def name(self):
-        if self._name: return self._name
-        else:          return self.func.func.__name__ if hasattr(self.func, 'func') else  self.func.__name__
-
 # Cell
 @delegates(Metric, but='log_metric')
 class AvgSmoothMetric(Metric):
@@ -530,6 +523,7 @@ class AvgSmoothMetric(Metric):
         super().__init__(**self._split_kwargs(Metric.__init__, **kwargs))
         self.func, self.fkwargs = func, self._split_kwargs(func, **kwargs)
         self.beta, self.log_metric, self.to_np, self.invert_arg = beta, LogMetric.Train, to_np, invert_arg
+        self._name = ifnone(kwargs.get('name', None), self.func.func.__name__ if hasattr(self.func, 'func') else self.func.__name__)
 
     def reset(self): self.count,self.val = 0,tensor(0.)
 
@@ -543,11 +537,6 @@ class AvgSmoothMetric(Metric):
 
     @property
     def value(self): return self.val/(1-self.beta**self.count) if self.count != 0 else None
-
-    @property
-    def name(self):
-        if self._name: return self._name
-        else:          return self.func.func.__name__ if hasattr(self.func, 'func') else  self.func.__name__
 
 # Cell
 class AvgLoss(Metric):
@@ -580,13 +569,11 @@ class ValueMetric(Metric):
     "Use to include a pre-calculated metric value (for instance calculated in a `Callback`) and returned by `func`"
     def __init__(self, func, name=None, log_metric=None):
         super().__init__(log_metric=log_metric)
-        self.func, self._name = func, name
+        self.func = func
+        self._name = ifnone(name, self.func.func.__name__ if hasattr(self.func, 'func') else self.func.__name__)
 
     @property
     def value(self): return self.func()
-
-    @property
-    def name(self): return self._name if self._name else self.func.__name__
 
 # Cell
 from fastprogress.fastprogress import format_time
@@ -604,7 +591,8 @@ def _dedup_metric_names(metrics, names):
     dups = L(set([o[1] for o in zip(log, names) if o in dup or dup.add(o)]))
     indices = names.argwhere(lambda o: o in dups)
     for i in indices:
-        if metrics[i]._name is None: # only deduplicate default metric names
+        name = metrics[i].func.func.__name__ if hasattr(metrics[i].func, 'func') else metrics[i].func.__name__
+        if metrics[i].name == name: # only deduplicate default metric names
             if isinstance(metrics[i], AvgMetric): names[i] = f'avg_{names[i]}'
             elif isinstance(metrics[i], AccumMetric): names[i] = f'accm_{names[i]}'
             elif isinstance(metrics[i], AvgSmoothMetric): names[i] = f'smth_{names[i]}'
