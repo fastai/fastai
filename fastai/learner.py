@@ -410,8 +410,7 @@ mk_class('ActivationType', **{o:o.lower() for o in ['No', 'Sigmoid', 'Softmax', 
 class Metric():
     "Blueprint for defining a metric with accumulate"
     log_metric=LogMetric.Valid
-    def __init__(self, dim_argmax=None, activation=ActivationType.No, thresh=None,
-                 to_np=False, invert_arg=False, log_metric=None, name=None):
+    def __init__(self, dim_argmax=None, activation=ActivationType.No, thresh=None, log_metric=None, name=None):
         store_attr(but='log_metric, name')
         self.log_metric = ifnone(log_metric, self.log_metric)
         self._name = name
@@ -457,9 +456,10 @@ def _maybe_reduce(val):
 @delegates(Metric)
 class AvgMetric(Metric):
     "Average the values of `func` taking into account potential different batch sizes"
-    def __init__(self, func, **kwargs):
+    def __init__(self, func, to_np=False, invert_arg=False, **kwargs):
         super().__init__(**self._split_kwargs(Metric.__init__, **kwargs))
         self.func, self.fkwargs = func, self._split_kwargs(func, **kwargs)
+        self.to_np, self.invert_arg = to_np, invert_arg
 
     def reset(self): self.total,self.count = 0.,0
 
@@ -482,9 +482,10 @@ class AvgMetric(Metric):
 @delegates(Metric)
 class AccumMetric(Metric):
     "Stores predictions and targets on CPU in accumulate to perform final calculations with `func`."
-    def __init__(self, func, flatten=True, **kwargs):
+    def __init__(self, func, to_np=False, invert_arg=False, flatten=True, **kwargs):
         super().__init__(**self._split_kwargs(Metric.__init__, **kwargs))
         self.flatten, self.func, self.fkwargs = flatten, func, self._split_kwargs(func, **kwargs)
+        self.to_np, self.invert_arg = to_np, invert_arg
 
     def reset(self):
         "Clear all targs and preds"
@@ -517,16 +518,18 @@ class AccumMetric(Metric):
         return self.func(targs, preds, **self.fkwargs) if self.invert_arg else self.func(preds, targs, **self.fkwargs)
 
     @property
-    def name(self):  return self.func.func.__name__ if hasattr(self.func, 'func') else  self.func.__name__
+    def name(self):
+        if self._name: return self._name
+        else:          return self.func.func.__name__ if hasattr(self.func, 'func') else  self.func.__name__
 
 # Cell
-@delegates(Metric)
+@delegates(Metric, but='log_metric')
 class AvgSmoothMetric(Metric):
-    "Smooth average the values of `func` (exponentially weighted with `beta`)"
-    def __init__(self, func, beta=0.98, **kwargs):
+    "Smooth average the values of `func` (exponentially weighted with `beta`). Only records training set."
+    def __init__(self, func, beta=0.98, to_np=False, invert_arg=False, **kwargs):
         super().__init__(**self._split_kwargs(Metric.__init__, **kwargs))
         self.func, self.fkwargs = func, self._split_kwargs(func, **kwargs)
-        self.beta, self.log_metric = beta, LogMetric.Train
+        self.beta, self.log_metric, self.to_np, self.invert_arg = beta, LogMetric.Train, to_np, invert_arg
 
     def reset(self): self.count,self.val = 0,tensor(0.)
 
@@ -602,11 +605,6 @@ def _dedup_metric_names(metrics, names):
         elif isinstance(metrics[i], AvgSmoothMetric): names[i] = f'smth_{names[i]}'
     return names
 
-# Internal Cell
-def _smooth_metrics_and_names(metrics, names):
-    smooth = metrics.argwhere(lambda o: isinstance(o, (AvgSmoothLoss, AvgSmoothMetric)))
-    return metrics[smooth], names[smooth]
-
 # Cell
 class Recorder(Callback):
     "Callback that registers statistics (lr, loss and metrics) during training"
@@ -620,8 +618,8 @@ class Recorder(Callback):
     def before_fit(self):
         "Prepare state for training"
         self.lrs,self.iters,self.losses,self.values = [],[],[],[]
-        train_names, valid_names = self._setup_metrics()
-        names = L('train_loss') + train_names + L('valid_loss') + valid_names
+        self._setup_metrics()
+        names = self.train_names + self.valid_names
         if self.add_time: names.append('time')
         self.metric_names = 'epoch'+names
         self.smooth_loss.reset()
@@ -696,10 +694,12 @@ class Recorder(Callback):
         if len(self._train_mets) > 0:
             train_names, valid_names = train_names.map('train_{}'), valid_names.map('valid_{}')
 
-        self._train_smooth_mets, self._train_smooth_names = _smooth_metrics_and_names(self._train_mets, train_names)
+        smooth = self._train_mets.argwhere(lambda o: isinstance(o, (AvgSmoothLoss, AvgSmoothMetric)))
+        self._train_smooth_mets, self._train_smooth_names = self._train_mets[smooth], train_names[smooth]
+
         self._train_reset_mets = self._train_mets.filter(lambda o: not isinstance(o, (AvgSmoothLoss, AvgSmoothMetric)))
 
-        return train_names, valid_names
+        self.train_names, self.valid_names = L('train_loss') + train_names, L('valid_loss') + valid_names
 
 # Cell
 add_docs(Recorder,

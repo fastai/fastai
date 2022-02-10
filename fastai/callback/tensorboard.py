@@ -57,15 +57,21 @@ class TensorBoardCallback(TensorBoardBaseCallback):
             b = self.dls.one_batch()
             self.learn._split(b)
             self.writer.add_graph(self.model, *self.xb)
+        # log smooth training metrics
+        self.log_smooth = len(self.recorder.smooth_names) > 0
 
     def after_batch(self):
         self.writer.add_scalar('train_loss', self.smooth_loss, self.train_iter)
         for i,h in enumerate(self.opt.hypers):
             for k,v in h.items(): self.writer.add_scalar(f'{k}_{i}', v, self.train_iter)
+        if self.log_smooth:
+            for k,v in zip(self.recorder.smooth_names, self.recorder.smooth_mets):
+                self.writer.add_scalar(f'{k}', v, self.train_iter)
 
     def after_epoch(self):
         for n,v in zip(self.recorder.metric_names[2:-1], self.recorder.log[2:-1]):
-            self.writer.add_scalar(n, v, self.train_iter)
+            if n not in ['train_loss', 'time']+self.recorder.smooth_names:
+                self.writer.add_scalar(n, v, self.train_iter)
         if self.log_preds:
             b = self.dls.valid.one_batch()
             self.learn.one_batch(0, b)

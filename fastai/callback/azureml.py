@@ -45,6 +45,9 @@ class AzureMLCallback(Callback):
         except:
             print('Did not log model summary. Check if your model is PyTorch model.')
 
+        # log smooth training metrics
+        self.log_smooth = len(self.recorder.smooth_names) > 0
+
     def after_batch(self):
         # log loss and opt.hypers
         if self.learn.training:
@@ -53,11 +56,14 @@ class AzureMLCallback(Callback):
             for i, h in enumerate(self.learn.opt.hypers):
                 for k, v in h.items():
                     self._log(f'batch__opt.hypers.{k}', v)
+            if self.log_smooth:
+                for k,v in zip(self.recorder.smooth_names, self.recorder.smooth_mets):
+                    self._log(f'batch__{k}', v)
 
     def after_epoch(self):
         # log metrics
         for n, v in zip(self.learn.recorder.metric_names, self.learn.recorder.log):
-            if n not in ['epoch', 'time']:
+            if n not in ['epoch', 'time']+self.recorder.smooth_names:
                 self._log(f'epoch__{n}', v)
             if n == 'time':
                 # split elapsed time string, then convert into 'seconds' to log

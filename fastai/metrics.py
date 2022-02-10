@@ -19,7 +19,7 @@ import scipy.stats as scs
 
 # Cell
 @delegates(Metric)
-def func_to_metric(func, metric_type, is_class, thresh=None, axis=-1, activation=None, log_metric=None, **kwargs):
+def func_to_metric(func, metric_type, is_class, thresh=None, axis=-1, activation=None, log_metric=LogMetric.Valid, **kwargs):
     "Convert `func` metric to a fastai metric"
 
     dim_argmax = axis if is_class and thresh is None else None
@@ -33,18 +33,17 @@ def func_to_metric(func, metric_type, is_class, thresh=None, axis=-1, activation
         return AvgMetric(func, dim_argmax=dim_argmax, activation=activation,
                          thresh=thresh, log_metric=log_metric, **kwargs)
     elif metric_type==MetricType.Smooth:
-        if log_metric==LogMetric.Both:
+        if log_metric!=LogMetric.Train:
             name = func.func.__name__ if hasattr(func, 'func') else  func.__name__
-            raise ValueError(f'Error with {name}: AvgSmoothMetric must be Valid or Train. To run on both, duplicate metric.')
-        return AvgSmoothMetric(func, dim_argmax=dim_argmax, activation=activation,
-                               thresh=thresh, log_metric=log_metric, **kwargs)
+            raise ValueError(f'Error with {name}: AvgSmoothMetric can only run on train. Set `log_metric` to LogMetric.Train.')
+        return AvgSmoothMetric(func, dim_argmax=dim_argmax, activation=activation, thresh=thresh, **kwargs)
     else:
         name = func.func.__name__ if hasattr(func, 'func') else  func.__name__
         raise ValueError(f"Unsupported `metric_type` {metric_type} for metric {name}.")
 
 # Cell
 @delegates(Metric)
-def skm_to_fastai(func, is_class=True, thresh=None, axis=-1, activation=None, log_metric=None, **kwargs):
+def skm_to_fastai(func, is_class=True, thresh=None, axis=-1, activation=None, log_metric=LogMetric.Valid, **kwargs):
     "Convert `func` from sklearn.metrics to a fastai metric"
     return func_to_metric(func, MetricType.Accum, is_class, thresh, axis, activation,
                           log_metric, to_np=True, invert_arg=True, **kwargs)
@@ -65,24 +64,22 @@ def optim_metric(f, argname, bounds, tol=0.01, do_neg=True, get_x=False):
     return _f
 
 # Internal Cell
-def accuracy(inp, targ, axis=-1):
+def accuracy(inp, targ):
     "Compute accuracy with `targ` when `pred` is bs * n_classes"
     pred,targ = flatten_check(inp, targ)
     return (pred == targ).float().mean()
 
 # Cell
-@delegates(Metric)
 def Accuracy(axis=-1, metric_type=MetricType.Avg, log_metric=LogMetric.Valid, **kwargs):
     "Compute accuracy with `targ` when `pred` is bs * n_classes"
     return func_to_metric(accuracy, metric_type, True, axis=axis, log_metric=log_metric, **kwargs)
 
 # Internal Cell
-def error_rate(inp, targ, axis=-1):
+def error_rate(inp, targ):
     "1 - `accuracy`"
-    return 1 - accuracy(inp, targ, axis=axis)
+    return 1 - accuracy(inp, targ)
 
 # Cell
-@delegates(Metric)
 def ErrorRate(axis=-1, metric_type=MetricType.Avg, log_metric=LogMetric.Valid, **kwargs):
     "Compute 1 - accuracy with `targ` when `pred` is bs * n_classes"
     return func_to_metric(error_rate, metric_type, True, axis=axis, log_metric=log_metric, **kwargs)
@@ -95,14 +92,12 @@ def top_k_accuracy(inp, targ, k=5, axis=-1):
     return (inp == targ).sum(dim=-1).float().mean()
 
 # Cell
-@delegates(Metric)
 def TopKAccuracy(k=5, axis=-1, metric_type=MetricType.Avg, log_metric=LogMetric.Valid, **kwargs):
     "Computes the Top-k accuracy (`targ` is in the top `k` predictions of `inp`)"
     return func_to_metric(partial(top_k_accuracy, k=k, axis=axis), metric_type, False,
                           log_metric=log_metric, **kwargs)
 
 # Cell
-@delegates(skm.average_precision_score)
 def APScoreBinary(axis=-1, average='macro', pos_label=1, sample_weight=None, log_metric=LogMetric.Valid, **kwargs):
     "Average Precision for single-label binary classification problems"
     return skm_to_fastai(skm.average_precision_score, axis=axis, activation=ActivationType.BinarySoftmax,
@@ -110,35 +105,30 @@ def APScoreBinary(axis=-1, average='macro', pos_label=1, sample_weight=None, log
                          **kwargs)
 
 # Cell
-@delegates(skm.balanced_accuracy_score)
 def BalancedAccuracy(axis=-1, sample_weight=None, adjusted=False, log_metric=LogMetric.Valid, **kwargs):
     "Balanced Accuracy for single-label binary classification problems"
     return skm_to_fastai(skm.balanced_accuracy_score, axis=axis,
                          sample_weight=sample_weight, adjusted=adjusted, log_metric=log_metric, **kwargs)
 
 # Cell
-@delegates(skm.brier_score_loss)
 def BrierScore(axis=-1, sample_weight=None, pos_label=None, log_metric=LogMetric.Valid, **kwargs):
     "Brier score for single-label classification problems"
     return skm_to_fastai(skm.brier_score_loss, axis=axis,
                          sample_weight=sample_weight, pos_label=pos_label, log_metric=log_metric, **kwargs)
 
 # Cell
-@delegates(skm.cohen_kappa_score)
 def CohenKappa(axis=-1, labels=None, weights=None, sample_weight=None, log_metric=LogMetric.Valid, **kwargs):
     "Cohen kappa for single-label classification problems"
     return skm_to_fastai(skm.cohen_kappa_score, axis=axis, labels=labels, weights=weights,
                          sample_weight=sample_weight, log_metric=log_metric, **kwargs)
 
 # Cell
-@delegates(skm.f1_score)
 def F1Score(axis=-1, labels=None, pos_label=1, average='binary', sample_weight=None, log_metric=LogMetric.Valid, **kwargs):
     "F1 score for single-label classification problems"
     return skm_to_fastai(skm.f1_score, axis=axis, labels=labels, pos_label=pos_label,
                          average=average, sample_weight=sample_weight, log_metric=log_metric, **kwargs)
 
 # Cell
-@delegates(skm.fbeta_score)
 def FBeta(beta, axis=-1, labels=None, pos_label=1, average='binary', sample_weight=None,
           log_metric=LogMetric.Valid, **kwargs):
     "FBeta score with `beta` for single-label classification problems"
@@ -146,14 +136,12 @@ def FBeta(beta, axis=-1, labels=None, pos_label=1, average='binary', sample_weig
                          average=average, sample_weight=sample_weight, log_metric=log_metric, **kwargs)
 
 # Cell
-@delegates(skm.hamming_loss)
 def HammingLoss(axis=-1, sample_weight=None, log_metric=LogMetric.Valid, **kwargs):
     "Hamming loss for single-label classification problems"
     return skm_to_fastai(skm.hamming_loss, axis=axis,
                          sample_weight=sample_weight, log_metric=log_metric, **kwargs)
 
 # Cell
-@delegates(skm.jaccard_score)
 def Jaccard(axis=-1, labels=None, pos_label=1, average='binary', sample_weight=None,
             log_metric=LogMetric.Valid, **kwargs):
     "Jaccard score for single-label classification problems"
@@ -161,7 +149,6 @@ def Jaccard(axis=-1, labels=None, pos_label=1, average='binary', sample_weight=N
                          average=average, sample_weight=sample_weight, log_metric=log_metric, **kwargs)
 
 # Cell
-@delegates(skm.precision_score)
 def Precision(axis=-1, labels=None, pos_label=1, average='binary', sample_weight=None,
               log_metric=LogMetric.Valid, **kwargs):
     "Precision for single-label classification problems"
@@ -169,7 +156,6 @@ def Precision(axis=-1, labels=None, pos_label=1, average='binary', sample_weight
                          average=average, sample_weight=sample_weight, log_metric=log_metric, **kwargs)
 
 # Cell
-@delegates(skm.recall_score)
 def Recall(axis=-1, labels=None, pos_label=1, average='binary', sample_weight=None,
            log_metric=LogMetric.Valid, **kwargs):
     "Recall for single-label classification problems"
@@ -177,7 +163,6 @@ def Recall(axis=-1, labels=None, pos_label=1, average='binary', sample_weight=No
                          average=average, sample_weight=sample_weight, log_metric=log_metric, **kwargs)
 
 # Cell
-@delegates(skm.roc_auc_score)
 def RocAuc(axis=-1, average='macro', sample_weight=None, max_fpr=None, multi_class='ovr',
            log_metric=LogMetric.Valid, **kwargs):
     "Area Under the Receiver Operating Characteristic Curve for single-label multiclass classification problems"
@@ -187,7 +172,6 @@ def RocAuc(axis=-1, average='macro', sample_weight=None, max_fpr=None, multi_cla
                          log_metric=log_metric, **kwargs)
 
 # Cell
-@delegates(skm.roc_auc_score)
 def RocAucBinary(axis=-1, average='macro', sample_weight=None, max_fpr=None, multi_class='raise',
                  log_metric=LogMetric.Valid, **kwargs):
     "Area Under the Receiver Operating Characteristic Curve for single-label binary classification problems"
@@ -196,7 +180,6 @@ def RocAucBinary(axis=-1, average='macro', sample_weight=None, max_fpr=None, mul
                          log_metric=log_metric, **kwargs)
 
 # Cell
-@delegates(skm.matthews_corrcoef)
 def MatthewsCorrCoef(sample_weight=None, log_metric=LogMetric.Valid, **kwargs):
     "Matthews correlation coefficient for single-label classification problems"
     return skm_to_fastai(skm.matthews_corrcoef, sample_weight=sample_weight, log_metric=log_metric, **kwargs)
@@ -208,7 +191,6 @@ def accuracy_multi(inp, targ):
     return (inp==targ.bool()).float().mean()
 
 # Cell
-@delegates(Metric)
 def AccuracyMulti(thresh=0.5, sigmoid=True, metric_type=MetricType.Avg, log_metric=LogMetric.Valid, **kwargs):
     "Compute accuracy when `inp` and `targ` are the same size."
     activation = ActivationType.Sigmoid if sigmoid else ActivationType.No
@@ -216,7 +198,6 @@ def AccuracyMulti(thresh=0.5, sigmoid=True, metric_type=MetricType.Avg, log_metr
                           log_metric=log_metric, **kwargs)
 
 # Cell
-@delegates(skm.average_precision_score)
 def APScoreMulti(sigmoid=True, average='macro', pos_label=1, sample_weight=None,
                  log_metric=LogMetric.Valid, **kwargs):
     "Average Precision for multi-label classification problems"
@@ -226,7 +207,6 @@ def APScoreMulti(sigmoid=True, average='macro', pos_label=1, sample_weight=None,
                          log_metric=log_metric, **kwargs)
 
 # Cell
-@delegates(skm.brier_score_loss)
 def BrierScoreMulti(thresh=0.5, sigmoid=True, sample_weight=None, pos_label=None,
                     log_metric=LogMetric.Valid, **kwargs):
     "Brier score for multi-label classification problems"
@@ -235,7 +215,6 @@ def BrierScoreMulti(thresh=0.5, sigmoid=True, sample_weight=None, pos_label=None
                          sample_weight=sample_weight, pos_label=pos_label, log_metric=log_metric, **kwargs)
 
 # Cell
-@delegates(skm.f1_score)
 def F1ScoreMulti(thresh=0.5, sigmoid=True, labels=None, pos_label=1, average='macro', sample_weight=None,
                  log_metric=LogMetric.Valid, **kwargs):
     "F1 score for multi-label classification problems"
@@ -245,7 +224,6 @@ def F1ScoreMulti(thresh=0.5, sigmoid=True, labels=None, pos_label=1, average='ma
                          log_metric=log_metric, **kwargs)
 
 # Cell
-@delegates(skm.fbeta_score)
 def FBetaMulti(beta, thresh=0.5, sigmoid=True, labels=None, pos_label=1, average='macro', sample_weight=None,
                log_metric=LogMetric.Valid, **kwargs):
     "FBeta score with `beta` for multi-label classification problems"
@@ -255,7 +233,6 @@ def FBetaMulti(beta, thresh=0.5, sigmoid=True, labels=None, pos_label=1, average
                 log_metric=log_metric, **kwargs)
 
 # Cell
-@delegates(skm.hamming_loss)
 def HammingLossMulti(thresh=0.5, sigmoid=True, labels=None, sample_weight=None,
                      log_metric=LogMetric.Valid, **kwargs):
     "Hamming loss for multi-label classification problems"
@@ -264,7 +241,6 @@ def HammingLossMulti(thresh=0.5, sigmoid=True, labels=None, sample_weight=None,
                          sample_weight=sample_weight, log_metric=log_metric, **kwargs)
 
 # Cell
-@delegates(skm.jaccard_score)
 def JaccardMulti(thresh=0.5, sigmoid=True, labels=None, pos_label=1, average='macro', sample_weight=None,
                  log_metric=LogMetric.Valid, **kwargs):
     "Jaccard score for multi-label classification problems"
@@ -274,7 +250,6 @@ def JaccardMulti(thresh=0.5, sigmoid=True, labels=None, pos_label=1, average='ma
                          log_metric=log_metric, **kwargs)
 
 # Cell
-@delegates(skm.matthews_corrcoef)
 def MatthewsCorrCoefMulti(thresh=0.5, sigmoid=True, sample_weight=None, log_metric=LogMetric.Valid, **kwargs):
     "Matthews correlation coefficient for multi-label classification problems"
     activation = ActivationType.Sigmoid if sigmoid else ActivationType.No
@@ -282,7 +257,6 @@ def MatthewsCorrCoefMulti(thresh=0.5, sigmoid=True, sample_weight=None, log_metr
                          sample_weight=sample_weight, log_metric=log_metric, **kwargs)
 
 # Cell
-@delegates(skm.precision_score)
 def PrecisionMulti(thresh=0.5, sigmoid=True, labels=None, pos_label=1, average='macro', sample_weight=None,
                    log_metric=LogMetric.Valid, **kwargs):
     "Precision for multi-label classification problems"
@@ -292,7 +266,6 @@ def PrecisionMulti(thresh=0.5, sigmoid=True, labels=None, pos_label=1, average='
                          log_metric=log_metric, **kwargs)
 
 # Cell
-@delegates(skm.recall_score)
 def RecallMulti(thresh=0.5, sigmoid=True, labels=None, pos_label=1, average='macro', sample_weight=None,
                 log_metric=LogMetric.Valid, **kwargs):
     "Recall for multi-label classification problems"
@@ -302,7 +275,6 @@ def RecallMulti(thresh=0.5, sigmoid=True, labels=None, pos_label=1, average='mac
                          log_metric=log_metric, **kwargs)
 
 # Cell
-@delegates(skm.roc_auc_score)
 def RocAucMulti(sigmoid=True, average='macro', sample_weight=None, max_fpr=None, log_metric=LogMetric.Valid, **kwargs):
     "Area Under the Receiver Operating Characteristic Curve for multi-label binary classification problems"
     activation = ActivationType.Sigmoid if sigmoid else ActivationType.No
@@ -315,7 +287,6 @@ def mse(inp,targ):
     return F.mse_loss(*flatten_check(inp,targ))
 
 # Cell
-@delegates(Metric)
 def MSE(metric_type=MetricType.Avg, log_metric=LogMetric.Valid, **kwargs):
     "Mean squared error between `inp` and `targ`."
     return func_to_metric(mse, metric_type, False, log_metric=log_metric, **kwargs)
@@ -325,7 +296,6 @@ def rmse(inp, targ):
     return torch.sqrt(F.mse_loss(inp, targ))
 
 # Cell
-@delegates(Metric)
 def RMSE(log_metric=LogMetric.Valid, **kwargs):
     "Mean squared error between `inp` and `targ`."
     return func_to_metric(rmse, MetricType.Accum, False, log_metric=log_metric, **kwargs)
@@ -337,7 +307,6 @@ def mae(inp,targ):
     return torch.abs(inp - targ).mean()
 
 # Cell
-@delegates(Metric)
 def MAE(metric_type=MetricType.Avg, log_metric=LogMetric.Valid, **kwargs):
     "Mean absolute error between `inp` and `targ`."
     return func_to_metric(mae, metric_type, False, log_metric=log_metric, **kwargs)
@@ -349,7 +318,6 @@ def msle(inp, targ):
     return F.mse_loss(torch.log(1 + inp), torch.log(1 + targ))
 
 # Cell
-@delegates(Metric)
 def MSLE(metric_type=MetricType.Avg, log_metric=LogMetric.Valid, **kwargs):
     "Mean squared logarithmic error between `inp` and `targ`."
     return func_to_metric(msle, metric_type, False, log_metric=log_metric, **kwargs)
@@ -360,7 +328,6 @@ def exp_rmspe(inp,targ):
     return torch.sqrt(((targ - inp)/targ).pow(2).mean())
 
 # Cell
-@delegates(Metric)
 def ExpRMSE(log_metric=LogMetric.Valid, **kwargs):
     "Root mean square percentage error of the exponential of  predictions and targets"
     return func_to_metric(exp_rmspe, MetricType.Accum, False, log_metric=log_metric, **kwargs)
@@ -378,7 +345,6 @@ def R2Score(sample_weight=None, log_metric=LogMetric.Valid, **kwargs):
                          log_metric=log_metric, **kwargs)
 
 # Cell
-@delegates(AccumMetric)
 def PearsonCorrCoef(dim_argmax=None, log_metric=LogMetric.Valid, **kwargs):
     "Pearson correlation coefficient for regression problem"
     def pearsonr(x,y): return scs.pearsonr(x,y)[0]
@@ -386,7 +352,6 @@ def PearsonCorrCoef(dim_argmax=None, log_metric=LogMetric.Valid, **kwargs):
                        log_metric=log_metric, **kwargs)
 
 # Cell
-@delegates(AccumMetric)
 def SpearmanCorrCoef(dim_argmax=None, axis=0, nan_policy='propagate', log_metric=LogMetric.Valid, **kwargs):
     "Spearman correlation coefficient for regression problem"
     def spearmanr(a,b=None,**kwargs): return scs.spearmanr(a,b,**kwargs)[0]
@@ -401,14 +366,12 @@ def foreground_acc(inp, targ, bkg_idx=0, axis=1):
     return (inp[mask]==targ[mask]).float().mean()
 
 # Cell
-@delegates(Metric)
 def ForegroundAcc(bkg_idx=0, axis=1, metric_type=MetricType.Avg, log_metric=LogMetric.Valid, **kwargs):
     "Computes non-background accuracy for multiclass segmentation"
     return func_to_metric(foreground_acc, metric_type, True, bkg_idx=bkg_idx, axis=axis,
                           log_metric=log_metric, **kwargs)
 
 # Cell
-@delegates(Metric)
 class Dice(Metric):
     "Dice coefficient metric for binary target in segmentation"
     def __init__(self, axis=1, log_metric=LogMetric.Valid, **kwargs):
@@ -424,7 +387,6 @@ class Dice(Metric):
     def value(self): return 2. * self.inter/self.union if self.union > 0 else None
 
 # Cell
-@delegates(Metric)
 class DiceMulti(Metric):
     "Averaged Dice metric (Macro F1) for multiclass target in segmentation"
     def __init__(self, axis=1, log_metric=LogMetric.Valid, **kwargs):
@@ -453,14 +415,12 @@ class DiceMulti(Metric):
         return np.nanmean(binary_dice_scores)
 
 # Cell
-@delegates(Metric)
 class JaccardCoeff(Dice):
     "Implementation of the Jaccard coefficient that is lighter in RAM"
     @property
     def value(self): return self.inter/(self.union-self.inter) if self.union > 0 else None
 
 # Cell
-@delegates(Metric)
 class CorpusBLEUMetric(Metric):
     "BLEU Metric calculated over the validation corpus"
     def __init__(self, vocab_sz=5000, axis=-1, log_metric=LogMetric.Valid, name='CorpusBLEU', **kwargs):
