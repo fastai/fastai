@@ -26,7 +26,7 @@ services:
     <<: *fastai
     command: watchmedo shell-command --command nbdev_build_docs --pattern *.ipynb --recursive --drop
     network_mode: host # for GitHub Codespaces https://github.com/features/codespaces/
-
+ 
   jekyll:
     <<: *fastai
     ports:
