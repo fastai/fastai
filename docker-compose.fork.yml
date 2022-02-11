@@ -1,0 +1,39 @@
+version: "3"
+services:
+  fastai: &fastai
+    restart: unless-stopped
+    working_dir: /data
+    image: fastai/codespaces
+    logging:
+      driver: json-file
+      options:
+        max-size: 50m
+    stdin_open: true
+    tty: true
+    volumes:
+      - .:/data/
+
+  notebook:
+    <<: *fastai
+    command: >
+     bash -c "pip install -e \".[dev]\" 
+     && nbdev_install_git_hooks
+     && jupyter notebook --allow-root --no-browser --ip=0.0.0.0 --port=8080 --NotebookApp.token='' --NotebookApp.password=''"
+    ports:
+      - "9999:8080"
+
+  watcher:
+    <<: *fastai
+    command: watchmedo shell-command --command nbdev_build_docs --pattern *.ipynb --recursive --drop
+    network_mode: host # for GitHub Codespaces https://github.com/features/codespaces/
+
+  jekyll:
+    <<: *fastai
+    ports:
+     - "4000:4000"
+    command: >
+     bash -c "cp -r docs_src docs
+     && pip install .
+     && nbdev_build_docs && cd docs
+     && bundle i
+     && bundle exec jekyll serve --host 0.0.0.0"
