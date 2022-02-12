@@ -591,7 +591,10 @@ def _dedup_metric_names(metrics, names):
     dups = L(set([o[1] for o in zip(log, names) if o in dup or dup.add(o)]))
     indices = names.argwhere(lambda o: o in dups)
     for i in indices:
-        name = metrics[i].func.func.__name__ if hasattr(metrics[i].func, 'func') else metrics[i].func.__name__
+        if hasattr(metrics[i], 'func'):
+            name = metrics[i].func.func.__name__ if hasattr(metrics[i].func, 'func') else metrics[i].func.__name__
+        else:
+            name = class2attr(metrics[i], 'Metric')
         if metrics[i].name == name: # only deduplicate default metric names
             if isinstance(metrics[i], AvgMetric): names[i] = f'avg_{names[i]}'
             elif isinstance(metrics[i], AccumMetric): names[i] = f'accm_{names[i]}'
