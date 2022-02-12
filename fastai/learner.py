@@ -243,6 +243,7 @@ class Learner(GetAttr):
             try: len(dl)
             except TypeError as e:
                 raise TypeError("`dl` is something other than a single `DataLoader` object")
+        if dl.drop_last: dl = dl.new(shuffle=False, drop_last=False)
         if reorder and hasattr(dl, 'get_idxs'):
             idxs = dl.get_idxs()
             dl = dl.new(get_idxs = _ConstantFunc(idxs))
