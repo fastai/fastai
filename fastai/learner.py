@@ -240,9 +240,11 @@ class Learner(GetAttr):
                   inner=False, reorder=True, cbs=None, **kwargs):
         if dl is None: dl = self.dls[ds_idx].new(shuffle=False, drop_last=False)
         else:
-            try: len(dl)
-            except TypeError as e:
-                raise TypeError("`dl` is something other than a single `DataLoader` object")
+            #If it isn't a Dataloader, let's turn it into a dl
+            if isinstance(dl, list):
+                dl = DataLoader(dl)
+            if not isinstance(dl, DataLoader):
+                raise TypeError(f"`dl` is {type(dl)} rather than a single `DataLoader` object")
         if dl.drop_last: dl = dl.new(shuffle=False, drop_last=False)
         if reorder and hasattr(dl, 'get_idxs'):
             idxs = dl.get_idxs()
