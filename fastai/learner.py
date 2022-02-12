@@ -611,10 +611,25 @@ class Recorder(Callback):
     def before_fit(self):
         "Prepare state for training"
         self.lrs,self.iters,self.losses,self.values = [],[],[],[]
-        self._setup_metrics()
-        names = self.train_names + self.valid_names
-        if self.add_time: names.append('time')
-        self.metric_names = 'epoch'+names
+        names = self.metrics.attrgot('name')
+        if len(names.unique()) != len(names):
+            names = _dedup_metric_names(self.metrics, names)
+        train = self.metrics.argwhere(lambda o: o.log_metric != LogMetric.Valid)
+        valid = self.metrics.argwhere(lambda o: o.log_metric != LogMetric.Train)
+        self._train_mets = self.metrics[train]
+        self._valid_mets = self.metrics[valid]
+        train_names = names[train]
+        valid_names = names[valid]
+        if len(self._train_mets) > 0:
+            train_names = train_names.map('train_{}')
+            valid_names = valid_names.map('valid_{}')
+        smooth = self._train_mets.argwhere(lambda o: isinstance(o, (AvgSmoothLoss, AvgSmoothMetric)))
+        self.smooth_mets  = self._train_mets[smooth]
+        self.smooth_names = train_names[smooth]
+        self.train_names = L('train_loss') + train_names
+        self.valid_names = L('valid_loss') + valid_names
+        self.metric_names = L('epoch') + self.train_names + self.valid_names
+        if self.add_time: self.metric_names.append('time')
         self.smooth_loss.reset()
         self.loss.reset()
         self.smooth_mets.map(Self.reset())
@@ -635,7 +650,8 @@ class Recorder(Callback):
         if self.add_time: self.start_epoch = time.time()
         self.log = L(getattr(self, 'epoch', 0))
 
-    def before_train   (self): self._train_reset_mets.map(Self.reset())
+    def before_train(self):
+        self._train_mets.filter(lambda o: not isinstance(o, (AvgSmoothLoss, AvgSmoothMetric))).map(Self.reset())
     def before_validate(self): self.valid_mets.map(Self.reset())
     def after_train   (self): self.log += self.train_mets.map(_maybe_item)
     def after_validate(self): self.log += self.valid_mets.map(_maybe_item)
@@ -667,26 +683,6 @@ class Recorder(Callback):
             valid_col = self.metric_names.index('valid_loss') - 1
             plt.plot(self.iters[idx:], L(self.values[idx:]).itemgot(valid_col), label='valid')
             plt.legend()
-
-    def _setup_metrics(self):
-        "Sets up train_names & valid_names, train smooth_mets & smooth_names, and _train_reset_mets."
-        names = self.metrics.attrgot('name')
-        if len(names.unique()) != len(names): names = _dedup_metric_names(self.metrics, names)
-
-        train = self.metrics.argwhere(lambda o: o.log_metric != LogMetric.Valid)
-        valid = self.metrics.argwhere(lambda o: o.log_metric != LogMetric.Train)
-        self._train_mets, self._valid_mets = self.metrics[train], self.metrics[valid]
-        train_names, valid_names= names[train].copy(), names[valid].copy()
-
-        if len(self._train_mets) > 0:
-            train_names, valid_names = train_names.map('train_{}'), valid_names.map('valid_{}')
-
-        smooth = self._train_mets.argwhere(lambda o: isinstance(o, (AvgSmoothLoss, AvgSmoothMetric)))
-        self.smooth_mets, self.smooth_names = self._train_mets[smooth], train_names[smooth]
-
-        self._train_reset_mets = self._train_mets.filter(lambda o: not isinstance(o, (AvgSmoothLoss, AvgSmoothMetric)))
-
-        self.train_names, self.valid_names = L('train_loss') + train_names, L('valid_loss') + valid_names
 
 # Cell
 add_docs(Recorder,
