@@ -142,6 +142,7 @@ class DataLoaders(GetAttr):
         if device is not None or hasattr(loaders[0],'to'): self.device = device
 
     def __getitem__(self, i): return self.loaders[i]
+    def __len__(self): return len(self.loaders)
     def new_empty(self):
         loaders = [dl.new(dl.dataset.new_empty()) for dl in self.loaders]
         return type(self)(*loaders, path=self.path, device=self.device)
