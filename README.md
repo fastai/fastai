@@ -32,4 +32,5 @@ Be sure to check the active [issues](https://github.com/muellerzr/fastai-docment
 
 Once you are ready, open a "Pull Request" in the repo pointing to your fork, and write a clean Pull Request from the template describing what you docmented!
 
+
 For a full video guide of this in-depth, please follow this link (LINK WILL BE LIVE POST STREAM)
