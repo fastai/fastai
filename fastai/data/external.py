@@ -10,13 +10,15 @@ import fastai.data
 
 # Cell
 @lru_cache(maxsize=None)
-def fastai_cfg():
+def fastai_cfg() -> Config: # Config that contains default download paths for `'data', 'model', 'storage' and 'archive'`
     "`Config` object for fastai's `config.ini`"
     return Config(Path(os.getenv('FASTAI_HOME', '~/.fastai')), 'config.ini', create=dict(
         data = 'data', archive = 'archive', storage = 'tmp', model = 'models'))
 
 # Cell
-def fastai_path(folder):
+def fastai_path(
+    folder # Name of a folder in `fastai_cfg`. Should be one of [`'data', 'archive', 'storage', 'model'`]
+) -> Path: # Path to folder
     "Path to `folder` in `fastai_cfg`"
     return fastai_cfg().path(folder)
 
@@ -110,7 +112,10 @@ class URLs():
     WT103_FWD          = f'{S3_MODEL}wt103-fwd.tgz'
     WT103_BWD          = f'{S3_MODEL}wt103-bwd.tgz'
 
-    def path(url='.', c_key='archive'):
+    def path(
+        url='.', # URL of file to download
+        c_key='archive' # Name of a folder in `fastai_cfg` to save the file. Should be one of [`'data', 'archive', 'storage', 'model'`]
+    ) -> Path: # Path containing where the file will be downloaded to
         "Return local path where to download based on `c_key`"
         fname = url.split('/')[-1]
         local_path = URLs.LOCAL_PATH/('models' if c_key=='models' else 'data')/fname
@@ -118,7 +123,13 @@ class URLs():
         return fastai_path(c_key)/fname
 
 # Cell
-def untar_data(url, archive=None, data=None, c_key='data', force_download=False):#, extract_func=file_extract, timeout=4):
+def untar_data(
+    url, # URL of file to download
+    archive=None, # Value for `'archive'` in `fastai_cfg`. If `None`, default value from `config.ini` is used
+    data=None, # Value for `'data'` in `fastai_cfg`. If `None`, default value from `config.ini` is used
+    c_key='data', # Folder where to extract file. Should be one of [`'data', 'archive', 'storage', 'model'`]
+    force_download=False # Setting to `True` will overwrite any existing copy of data
+) -> Path: # Path to extracted file(s)
     "Download `url` to `fname` if `dest` doesn't exist, and extract to folder `dest`"
     d = FastDownload(fastai_cfg(), module=fastai.data, archive=archive, data=data, base='~/.fastai')
     return d.get(url, force=force_download, extract_key=c_key)
