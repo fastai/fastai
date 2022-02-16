@@ -125,7 +125,7 @@ class URLs():
 # Cell
 def untar_data(
     url, # URL of file to download
-    archive=None, # Value for `'archive'` in `fastai_cfg`. If `None`, default value from `config.ini` is used
+    archive=None, # Optional override for `Config`'s `archive` key
     data=None, # Value for `'data'` in `fastai_cfg`. If `None`, default value from `config.ini` is used
     c_key='data', # Folder where to extract file. Should be one of [`'data', 'archive', 'storage', 'model'`]
     force_download=False # Setting to `True` will overwrite any existing copy of data
