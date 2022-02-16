@@ -16,10 +16,8 @@ def fastai_cfg() -> Config: # Config that contains default download paths for `'
         data = 'data', archive = 'archive', storage = 'tmp', model = 'models'))
 
 # Cell
-def fastai_path(
-    folder # Name of a folder in `fastai_cfg`. Should be one of [`'data', 'archive', 'storage', 'model'`]
-) -> Path: # Path to folder
-    "Path to `folder` in `fastai_cfg`"
+def fastai_path(folder:str) -> Path:
+    "Local path to `folder` in `Config`"
     return fastai_cfg().path(folder)
 
 # Cell
@@ -113,10 +111,10 @@ class URLs():
     WT103_BWD          = f'{S3_MODEL}wt103-bwd.tgz'
 
     def path(
-        url='.', # URL of file to download
-        c_key='archive' # Name of a folder in `fastai_cfg` to save the file. Should be one of [`'data', 'archive', 'storage', 'model'`]
-    ) -> Path: # Path containing where the file will be downloaded to
-        "Return local path where to download based on `c_key`"
+        url:str='.', # File to download
+        c_key:str='archive' # Key in `Config` where to save URL
+    ) -> Path:
+        "Local path where to download based on `c_key`"
         fname = url.split('/')[-1]
         local_path = URLs.LOCAL_PATH/('models' if c_key=='models' else 'data')/fname
         if local_path.exists(): return local_path
@@ -124,11 +122,11 @@ class URLs():
 
 # Cell
 def untar_data(
-    url, # URL of file to download
-    archive=None, # Optional override for `Config`'s `archive` key
-    data=None, # Value for `'data'` in `fastai_cfg`. If `None`, default value from `config.ini` is used
-    c_key='data', # Folder where to extract file. Should be one of [`'data', 'archive', 'storage', 'model'`]
-    force_download=False # Setting to `True` will overwrite any existing copy of data
+    url:str, # File to download
+    archive:Path=None, # Optional override for `Config`'s `archive` key
+    data:Path=None, # Optional override for `Config`'s `data` key
+    c_key:str='data', # Key in `Config` where to extract file
+    force_download:bool=False # Setting to `True` will overwrite any existing copy of data
 ) -> Path: # Path to extracted file(s)
     "Download `url` to `fname` if `dest` doesn't exist, and extract to folder `dest`"
     d = FastDownload(fastai_cfg(), module=fastai.data, archive=archive, data=data, base='~/.fastai')
