@@ -10,7 +10,7 @@ import fastai.data
 
 # Cell
 @lru_cache(maxsize=None)
-def fastai_cfg() -> Config: # Config that contains default download paths for `'data', 'model', 'storage' and 'archive'`
+def fastai_cfg() -> Config: # Config that contains default download paths for `data`, `model`, `storage` and `archive`
     "`Config` object for fastai's `config.ini`"
     return Config(Path(os.getenv('FASTAI_HOME', '~/.fastai')), 'config.ini', create=dict(
         data = 'data', archive = 'archive', storage = 'tmp', model = 'models'))
