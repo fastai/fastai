@@ -32,7 +32,11 @@ class RandTransform(DisplayedTransform):
         super().__init__(**kwargs)
         self.before_call = ifnone(before_call,self.before_call)
 
-    def before_call(self, b, split_idx):
+    def before_call(
+        self,
+        b,
+        split_idx:int, # Index of the dataset, if matches with self.idx Transform will be applied
+    ):
         "Set `self.do` based on `self.p`"
         self.do = self.p==1. or random.random() < self.p
 
