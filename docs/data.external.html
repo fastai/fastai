@@ -337,9 +337,9 @@ All future downloads occur at the paths defined in the config file based on the 
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="fastai_path" class="doc_header"><code>fastai_path</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/external.py#L19" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>fastai_path</code>(<strong><code>folder</code></strong>)</p>
+<h4 id="fastai_path" class="doc_header"><code>fastai_path</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/external.py#L19" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>fastai_path</code>(<strong><code>folder</code></strong>:<code>str</code>)</p>
 </blockquote>
-<p>Path to <code>folder</code> in <a href="/data.external.html#fastai_cfg"><code>fastai_cfg</code></a></p>
+<p>Local path to <code>folder</code> in <a href="https://fastcore.fast.ai/foundation#Config"><code>Config</code></a></p>
 
 </div>
 
@@ -425,7 +425,7 @@ All future downloads occur at the paths defined in the config file based on the 
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The default local path is at <code>~/.fastai/archive/</code> but this can be updated by passing a different <code>c_key</code>. Note: <code>c_key</code> should be one of <code>'archive'', 'data', 'model', 'storage'</code>.</p>
+<p>The default local path is at <code>~/.fastai/archive/</code> but this can be updated by passing a different <code>c_key</code>. Note: <code>c_key</code> should be one of <code>'archive', 'data', 'model', 'storage'</code>.</p>
 
 </div>
 </div>
@@ -512,50 +512,9 @@ All future downloads occur at the paths defined in the config file based on the 
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="untar_data" class="doc_header"><code>untar_data</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/external.py#L121" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>untar_data</code>(<strong><code>url</code></strong>, <strong><code>archive</code></strong>=<em><code>None</code></em>, <strong><code>data</code></strong>=<em><code>None</code></em>, <strong><code>c_key</code></strong>=<em><code>'data'</code></em>, <strong><code>force_download</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="untar_data" class="doc_header"><code>untar_data</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/external.py#L124" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>untar_data</code>(<strong><code>url</code></strong>:<code>str</code>, <strong><code>archive</code></strong>:<code>Path</code>=<em><code>None</code></em>, <strong><code>data</code></strong>:<code>Path</code>=<em><code>None</code></em>, <strong><code>c_key</code></strong>:<code>str</code>=<em><code>'data'</code></em>, <strong><code>force_download</code></strong>:<code>bool</code>=<em><code>False</code></em>)</p>
 </blockquote>
 <p>Download <code>url</code> to <code>fname</code> if <code>dest</code> doesn't exist, and extract to folder <code>dest</code></p>
-<table>
-<thead><tr>
-<th></th>
-<th>Type</th>
-<th>Default</th>
-<th>Details</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong><code>url</code></strong></td>
-<td></td>
-<td></td>
-<td><em>No Content</em></td>
-</tr>
-<tr>
-<td><strong><code>archive</code></strong></td>
-<td><code>NoneType</code></td>
-<td><code>None</code></td>
-<td><em>No Content</em></td>
-</tr>
-<tr>
-<td><strong><code>data</code></strong></td>
-<td><code>NoneType</code></td>
-<td><code>None</code></td>
-<td><em>No Content</em></td>
-</tr>
-<tr>
-<td><strong><code>c_key</code></strong></td>
-<td><code>str</code></td>
-<td><code>data</code></td>
-<td><em>No Content</em></td>
-</tr>
-<tr>
-<td><strong><code>force_download</code></strong></td>
-<td><code>bool</code></td>
-<td><code>False</code></td>
-<td>, extract_func=file_extract, timeout=4):</td>
-</tr>
-</tbody>
-</table>
 
 </div>
 
@@ -602,6 +561,7 @@ All future downloads occur at the paths defined in the config file based on the 
 
 
 <div class="output_html rendered_html output_subarea ">
+
     <div>
         <style>
             /* Turns off some styling */
@@ -618,7 +578,8 @@ All future downloads occur at the paths defined in the config file based on the 
       <progress value='3219456' class='' max='3214948' style='width:300px; height:20px; vertical-align: middle;'></progress>
       100.14% [3219456/3214948 00:02<00:00]
     </div>
-    </div>
+    
+</div>
 
 </div>
 
