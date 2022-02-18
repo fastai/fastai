@@ -144,10 +144,8 @@ pip install -e "fastai[dev]"</code></pre>
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>To run the tests in parallel, launch:</p>
 <p><a href="https://nbdev.fast.ai/test#nbdev_test_nbs"><code>nbdev_test_nbs</code></a> or <code>make test</code></p>
-<p>For all the tests to pass, you'll need to install the following optional dependencies:</p>
-
-<pre><code>pip install "sentencepiece&lt;0.1.90" wandb tensorboard albumentations pydicom opencv-python scikit-image pyarrow kornia \
-    catalyst captum neptune-cli</code></pre>
+<p>For all the tests to pass, you'll need to install the dependencies specified as part of dev_requirements in settings.ini</p>
+<p><code>pip install -e .[dev]</code></p>
 <p>Tests are written using <code>nbdev</code>, for example see the documentation for <a href="https://fastcore.fast.ai/test#test_eq"><code>test_eq</code></a>.</p>
 
 </div>
