@@ -24,7 +24,7 @@ class RandTransform(DisplayedTransform):
     def __init__(self,
         p:float=1., # Probability of applying Transform
         nm:str=None,
-        before_call=None, # Optional batch preprocessing function
+        before_call=None, # Optional batchwise preprocessing function
         **kwargs
     ):
         store_attr('p')
@@ -71,14 +71,12 @@ class FlipItem(RandTransform):
 
 # Internal Cell
 @patch
-def dihedral(
-    x:PILImage,
+def dihedral(x:PILImage,
     k:int, # Dihedral transformation to apply
 ):
     return x if k==0 else x.transpose(k-1)
 @patch
-def dihedral(
-    x:TensorImage,
+def dihedral(x:TensorImage,
     k:int, # Dihedral transformation to apply
 ):
     if k in [1,3,4,7]: x = x.flip(-1)
@@ -86,8 +84,7 @@ def dihedral(
     if k in [3,5,6,7]: x = x.transpose(-1,-2)
     return x
 @patch
-def dihedral(
-    x:TensorPoint,
+def dihedral(x:TensorPoint,
     k:int, # Dihedral transformation to apply
 ):
     if k in [1,3,4,7]: x = _neg_axis(x, 0)
@@ -95,8 +92,7 @@ def dihedral(
     if k in [3,5,6,7]: x = x.flip(1)
     return x
 @patch
-def dihedral(
-    x:TensorBBox,
+def dihedral(x:TensorBBox,
     k:int, #Dihedral transformation to apply
 ):
     pnts = TensorPoint(x.view(-1,2)).dihedral(k).view(-1,2,2)
