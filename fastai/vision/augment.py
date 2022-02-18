@@ -33,14 +33,14 @@ class RandTransform(DisplayedTransform):
 
     def before_call(self,
         b,
-        split_idx:int, # Index of dataset when called
+        split_idx:int, # Index of the train/valid dataset
     ):
         "Set `self.do` based on `self.p`"
         self.do = self.p==1. or random.random() < self.p
 
     def __call__(self,
         b,
-        split_idx:int=None, # Index of the dataset, if matches with self.idx Transform will be applied
+        split_idx:int=None, # Index of the train/valid dataset
         **kwargs
     ):
         self.before_call(b, split_idx=split_idx)
@@ -152,14 +152,13 @@ def _do_crop_pad(x:TensorBBox, sz, tl, orig_sz, pad_mode=PadMode.Zeros, resize_t
     return TensorBBox(bbox, img_size=x.img_size)
 
 @patch
-def crop_pad(
-    x:(TensorBBox,TensorPoint,Image.Image),
-    sz:(int, (int,int)), # Size of the cropped image, squared image if only one value specified
-    tl:(int,int)=None, # Optinal Top-left's coordinate of the crop, if not set then center crop
-    orig_sz:(int,int)=None, # Original size of the image
-    pad_mode:PadMode=PadMode.Zeros,
-    resize_mode=Image.BILINEAR, # `Image` resize mode
-    resize_to:(int,int)=None # Optinal resize image
+def crop_pad(x:(TensorBBox,TensorPoint,Image.Image),
+    sz:(int, (int,int)), # Crop/pad size of input, duplicated if one value is specified
+    tl:(int,int)=None, # Optional top-left coordinate of the crop/pad, if `None` center crop
+    orig_sz:(int,int)=None, # Original size of input
+    pad_mode:PadMode=PadMode.Zeros, # Fastai padding mode
+    resize_mode=Image.BILINEAR, # Pillow `Image` resize mode
+    resize_to:(int,int)=None # Optional post crop/pad resize of input
 ):
     if isinstance(sz,int): sz = (sz,sz)
     orig_sz = fastuple(_get_sz(x) if orig_sz is None else orig_sz)
