@@ -71,7 +71,7 @@ Adds two numbers together
 
 ## Additional Style Examples
 
-When docmenting a class method with self, keep self on the method definition. Types are placed before the default values, if applicable:
+When docmenting a class method with `self` or `cls`, keep self on the method definition. Types are placed before the default values, if applicable:
 
 ```python
 class Math:
