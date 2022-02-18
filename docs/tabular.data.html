@@ -105,9 +105,9 @@ nb_path: "nbs/41_tabular.data.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="TabularDataLoaders.from_df" class="doc_header"><code>TabularDataLoaders.from_df</code><a href="https://github.com/fastai/fastai/tree/master/fastai/tabular/data.py#L13" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>TabularDataLoaders.from_df</code>(<strong><code>df</code></strong>, <strong><code>path</code></strong>=<em><code>'.'</code></em>, <strong><code>procs</code></strong>=<em><code>None</code></em>, <strong><code>cat_names</code></strong>=<em><code>None</code></em>, <strong><code>cont_names</code></strong>=<em><code>None</code></em>, <strong><code>y_names</code></strong>=<em><code>None</code></em>, <strong><code>y_block</code></strong>=<em><code>None</code></em>, <strong><code>valid_idx</code></strong>=<em><code>None</code></em>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>shuffle_train</code></strong>=<em><code>None</code></em>, <strong><code>shuffle</code></strong>=<em><code>True</code></em>, <strong><code>val_shuffle</code></strong>=<em><code>False</code></em>, <strong><code>n</code></strong>=<em><code>None</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>drop_last</code></strong>=<em><code>None</code></em>, <strong><code>val_bs</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="TabularDataLoaders.from_df" class="doc_header"><code>TabularDataLoaders.from_df</code><a href="https://github.com/fastai/fastai/tree/master/fastai/tabular/data.py#L13" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>TabularDataLoaders.from_df</code>(<strong><code>df</code></strong>:<code>DataFrame</code>, <strong><code>path</code></strong>:<code>str</code>=<em><code>'.'</code></em>, <strong><code>procs</code></strong>:<a href="/tabular.core.html#TabularProc"><code>TabularProc</code></a>=<em><code>None</code></em>, <strong><code>cat_names</code></strong>:<code>list</code>=<em><code>None</code></em>, <strong><code>cont_names</code></strong>:<code>list</code>=<em><code>None</code></em>, <strong><code>y_names</code></strong>:<code>list</code>=<em><code>None</code></em>, <strong><code>y_block</code></strong>:<a href="/data.block.html#TransformBlock"><code>TransformBlock</code></a>=<em><code>None</code></em>, <strong><code>valid_idx</code></strong>:<code>list</code>=<em><code>None</code></em>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>shuffle_train</code></strong>=<em><code>None</code></em>, <strong><code>shuffle</code></strong>=<em><code>True</code></em>, <strong><code>val_shuffle</code></strong>=<em><code>False</code></em>, <strong><code>n</code></strong>=<em><code>None</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>drop_last</code></strong>=<em><code>None</code></em>, <strong><code>val_bs</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
-<p>Create from <code>df</code> in <code>path</code> using <code>procs</code></p>
+<p>Create <a href="/data.core.html#DataLoaders"><code>DataLoaders</code></a> from <code>df</code> in <code>path</code> using <code>procs</code></p>
 
 </div>
 
@@ -148,7 +148,8 @@ nb_path: "nbs/41_tabular.data.ipynb"
 <div class="output_area">
 
 
-<div class="output_html rendered_html output_subarea output_execute_result"><div>
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
 <style scoped>
     .dataframe tbody tr th:only-of-type {
         vertical-align: middle;
@@ -276,7 +277,8 @@ nb_path: "nbs/41_tabular.data.ipynb"
     </tr>
   </tbody>
 </table>
-</div></div>
+</div>
+</div>
 
 </div>
 
@@ -343,7 +345,8 @@ nb_path: "nbs/41_tabular.data.ipynb"
 <div class="output_area">
 
 
-<div class="output_html rendered_html output_subarea "><table border="1" class="dataframe">
+<div class="output_html rendered_html output_subarea ">
+<table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
       <th></th>
@@ -364,145 +367,146 @@ nb_path: "nbs/41_tabular.data.ipynb"
     <tr>
       <th>0</th>
       <td>Private</td>
-      <td>11th</td>
-      <td>Separated</td>
-      <td>Adm-clerical</td>
+      <td>Some-college</td>
+      <td>Widowed</td>
+      <td>Sales</td>
       <td>Unmarried</td>
-      <td>Black</td>
+      <td>White</td>
       <td>False</td>
-      <td>55.0</td>
-      <td>213894.000562</td>
-      <td>7.0</td>
-      <td>&lt;50k</td>
+      <td>66.0</td>
+      <td>174275.999917</td>
+      <td>10.0</td>
+      <td>&gt;=50k</td>
     </tr>
     <tr>
       <th>1</th>
       <td>Private</td>
-      <td>HS-grad</td>
-      <td>Married-civ-spouse</td>
-      <td>Machine-op-inspct</td>
-      <td>Husband</td>
-      <td>White</td>
+      <td>Some-college</td>
+      <td>Separated</td>
+      <td>Sales</td>
+      <td>Unmarried</td>
+      <td>Black</td>
       <td>False</td>
-      <td>53.0</td>
-      <td>228500.001385</td>
-      <td>9.0</td>
-      <td>&gt;=50k</td>
+      <td>48.0</td>
+      <td>398842.996374</td>
+      <td>10.0</td>
+      <td>&lt;50k</td>
     </tr>
     <tr>
       <th>2</th>
-      <td>Private</td>
-      <td>HS-grad</td>
+      <td>?</td>
+      <td>Assoc-voc</td>
       <td>Married-civ-spouse</td>
-      <td>Tech-support</td>
-      <td>Husband</td>
-      <td>White</td>
+      <td>?</td>
+      <td>Wife</td>
+      <td>Amer-Indian-Eskimo</td>
       <td>False</td>
-      <td>38.0</td>
-      <td>256864.000909</td>
-      <td>9.0</td>
+      <td>27.0</td>
+      <td>129660.998042</td>
+      <td>11.0</td>
       <td>&gt;=50k</td>
     </tr>
     <tr>
       <th>3</th>
       <td>Private</td>
-      <td>Bachelors</td>
-      <td>Married-civ-spouse</td>
-      <td>Tech-support</td>
-      <td>Husband</td>
+      <td>Doctorate</td>
+      <td>Divorced</td>
+      <td>Sales</td>
+      <td>Not-in-family</td>
       <td>White</td>
       <td>False</td>
-      <td>40.0</td>
-      <td>247879.997190</td>
-      <td>13.0</td>
+      <td>33.0</td>
+      <td>170769.000734</td>
+      <td>16.0</td>
       <td>&gt;=50k</td>
     </tr>
     <tr>
       <th>4</th>
       <td>Private</td>
       <td>Some-college</td>
-      <td>Divorced</td>
-      <td>Craft-repair</td>
-      <td>Not-in-family</td>
-      <td>White</td>
+      <td>Never-married</td>
+      <td>Adm-clerical</td>
+      <td>Own-child</td>
+      <td>Asian-Pac-Islander</td>
       <td>False</td>
-      <td>41.0</td>
-      <td>40151.001925</td>
+      <td>39.0</td>
+      <td>63909.998650</td>
       <td>10.0</td>
-      <td>&gt;=50k</td>
+      <td>&lt;50k</td>
     </tr>
     <tr>
       <th>5</th>
       <td>Private</td>
       <td>HS-grad</td>
-      <td>Married-civ-spouse</td>
-      <td>Sales</td>
-      <td>Husband</td>
-      <td>White</td>
+      <td>Divorced</td>
+      <td>Transport-moving</td>
+      <td>Own-child</td>
+      <td>Black</td>
       <td>False</td>
-      <td>37.0</td>
-      <td>110713.001599</td>
+      <td>30.0</td>
+      <td>374454.005818</td>
       <td>9.0</td>
-      <td>&gt;=50k</td>
+      <td>&lt;50k</td>
     </tr>
     <tr>
       <th>6</th>
-      <td>Private</td>
-      <td>Bachelors</td>
+      <td>Self-emp-not-inc</td>
+      <td>Assoc-voc</td>
       <td>Married-civ-spouse</td>
-      <td>Exec-managerial</td>
+      <td>Craft-repair</td>
       <td>Husband</td>
       <td>White</td>
       <td>False</td>
-      <td>38.0</td>
-      <td>278924.000902</td>
-      <td>13.0</td>
-      <td>&gt;=50k</td>
+      <td>34.0</td>
+      <td>181087.000357</td>
+      <td>11.0</td>
+      <td>&lt;50k</td>
     </tr>
     <tr>
       <th>7</th>
-      <td>Self-emp-not-inc</td>
-      <td>11th</td>
+      <td>Private</td>
+      <td>Some-college</td>
       <td>Married-civ-spouse</td>
-      <td>Farming-fishing</td>
+      <td>Craft-repair</td>
       <td>Husband</td>
       <td>White</td>
       <td>False</td>
-      <td>60.0</td>
-      <td>220341.999356</td>
-      <td>7.0</td>
+      <td>45.0</td>
+      <td>149640.000354</td>
+      <td>10.0</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
       <th>8</th>
-      <td>?</td>
-      <td>9th</td>
-      <td>Never-married</td>
-      <td>?</td>
-      <td>Not-in-family</td>
+      <td>Private</td>
+      <td>Assoc-voc</td>
+      <td>Married-civ-spouse</td>
+      <td>Tech-support</td>
+      <td>Wife</td>
       <td>White</td>
       <td>False</td>
-      <td>30.0</td>
-      <td>104965.001013</td>
-      <td>5.0</td>
-      <td>&lt;50k</td>
+      <td>33.0</td>
+      <td>26972.997070</td>
+      <td>11.0</td>
+      <td>&gt;=50k</td>
     </tr>
     <tr>
       <th>9</th>
-      <td>?</td>
-      <td>HS-grad</td>
+      <td>Private</td>
+      <td>Masters</td>
       <td>Never-married</td>
-      <td>?</td>
+      <td>Adm-clerical</td>
       <td>Not-in-family</td>
       <td>White</td>
       <td>False</td>
-      <td>21.0</td>
-      <td>105311.997415</td>
-      <td>9.0</td>
-      <td>&lt;50k</td>
+      <td>38.0</td>
+      <td>353263.002503</td>
+      <td>14.0</td>
+      <td>&gt;=50k</td>
     </tr>
   </tbody>
-</table></div>
+</table>
+</div>
 
 </div>
 
@@ -523,9 +527,9 @@ nb_path: "nbs/41_tabular.data.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="TabularDataLoaders.from_csv" class="doc_header"><code>TabularDataLoaders.from_csv</code><a href="https://github.com/fastai/fastai/tree/master/fastai/tabular/data.py#L24" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>TabularDataLoaders.from_csv</code>(<strong><code>csv</code></strong>, <strong><code>skipinitialspace</code></strong>=<em><code>True</code></em>, <strong><code>path</code></strong>=<em><code>'.'</code></em>, <strong><code>procs</code></strong>=<em><code>None</code></em>, <strong><code>cat_names</code></strong>=<em><code>None</code></em>, <strong><code>cont_names</code></strong>=<em><code>None</code></em>, <strong><code>y_names</code></strong>=<em><code>None</code></em>, <strong><code>y_block</code></strong>=<em><code>None</code></em>, <strong><code>valid_idx</code></strong>=<em><code>None</code></em>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>shuffle_train</code></strong>=<em><code>None</code></em>, <strong><code>shuffle</code></strong>=<em><code>True</code></em>, <strong><code>val_shuffle</code></strong>=<em><code>False</code></em>, <strong><code>n</code></strong>=<em><code>None</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>drop_last</code></strong>=<em><code>None</code></em>, <strong><code>val_bs</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="TabularDataLoaders.from_csv" class="doc_header"><code>TabularDataLoaders.from_csv</code><a href="https://github.com/fastai/fastai/tree/master/fastai/tabular/data.py#L32" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>TabularDataLoaders.from_csv</code>(<strong><code>csv</code></strong>:<code>str</code>, <strong><code>skipinitialspace</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>path</code></strong>:<code>str</code>=<em><code>'.'</code></em>, <strong><code>procs</code></strong>:<a href="/tabular.core.html#TabularProc"><code>TabularProc</code></a>=<em><code>None</code></em>, <strong><code>cat_names</code></strong>:<code>list</code>=<em><code>None</code></em>, <strong><code>cont_names</code></strong>:<code>list</code>=<em><code>None</code></em>, <strong><code>y_names</code></strong>:<code>list</code>=<em><code>None</code></em>, <strong><code>y_block</code></strong>:<a href="/data.block.html#TransformBlock"><code>TransformBlock</code></a>=<em><code>None</code></em>, <strong><code>valid_idx</code></strong>:<code>list</code>=<em><code>None</code></em>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>shuffle_train</code></strong>=<em><code>None</code></em>, <strong><code>shuffle</code></strong>=<em><code>True</code></em>, <strong><code>val_shuffle</code></strong>=<em><code>False</code></em>, <strong><code>n</code></strong>=<em><code>None</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>drop_last</code></strong>=<em><code>None</code></em>, <strong><code>val_bs</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
-<p>Create from <code>csv</code> file in <code>path</code> using <code>procs</code></p>
+<p>Create <a href="/data.core.html#DataLoaders"><code>DataLoaders</code></a> from <code>csv</code> file in <code>path</code> using <code>procs</code></p>
 
 </div>
 
