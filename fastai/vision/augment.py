@@ -21,27 +21,24 @@ from torch.distributions.bernoulli import Bernoulli
 class RandTransform(DisplayedTransform):
     "A transform that before_call its state at each `__call__`"
     do,nm,supports,split_idx = True,None,[],0
-    def __init__(
-        self,
-        p:float=1., # Probability that Transform'd be applied
+    def __init__(self,
+        p:float=1., # Probability of applying Transform
         nm:str=None,
-        before_call=None, # Set up function that executed before __call__
+        before_call=None, # Optional batch preprocessing function
         **kwargs
     ):
         store_attr('p')
         super().__init__(**kwargs)
         self.before_call = ifnone(before_call,self.before_call)
 
-    def before_call(
-        self,
+    def before_call(self,
         b,
-        split_idx:int, # Index of the dataset, if matches with self.idx Transform will be applied
+        split_idx:int, # Index of dataset when called
     ):
         "Set `self.do` based on `self.p`"
         self.do = self.p==1. or random.random() < self.p
 
-    def __call__(
-        self,
+    def __call__(self,
         b,
         split_idx:int=None, # Index of the dataset, if matches with self.idx Transform will be applied
         **kwargs
@@ -76,13 +73,13 @@ class FlipItem(RandTransform):
 @patch
 def dihedral(
     x:PILImage,
-    k:int, # Order of Dihedral Transformation from 0 to 7
+    k:int, # Dihedral transformation to apply
 ):
     return x if k==0 else x.transpose(k-1)
 @patch
 def dihedral(
     x:TensorImage,
-    k:int, # Order of Dihedral Transformation from 0 to 7
+    k:int, # Dihedral transformation to apply
 ):
     if k in [1,3,4,7]: x = x.flip(-1)
     if k in [2,4,5,7]: x = x.flip(-2)
@@ -91,7 +88,7 @@ def dihedral(
 @patch
 def dihedral(
     x:TensorPoint,
-    k:int, # Order of Dihedral Transformation from 0 to 7
+    k:int, # Dihedral transformation to apply
 ):
     if k in [1,3,4,7]: x = _neg_axis(x, 0)
     if k in [2,4,5,7]: x = _neg_axis(x, 1)
@@ -100,7 +97,7 @@ def dihedral(
 @patch
 def dihedral(
     x:TensorBBox,
-    k:int, # Order of Dihedral Transformation from 0 to 7
+    k:int, #Dihedral transformation to apply
 ):
     pnts = TensorPoint(x.view(-1,2)).dihedral(k).view(-1,2,2)
     tl,br = pnts.min(dim=1)[0],pnts.max(dim=1)[0]
@@ -157,12 +154,12 @@ def _do_crop_pad(x:TensorBBox, sz, tl, orig_sz, pad_mode=PadMode.Zeros, resize_t
 @patch
 def crop_pad(
     x:(TensorBBox,TensorPoint,Image.Image),
-    sz:(int, (int,int)), # Size of the output Image, squared Image if one value specified
-    tl=None,
-    orig_sz=None,
-    pad_mode=PadMode.Zeros,
-    resize_mode=Image.BILINEAR,
-    resize_to=None
+    sz:(int, (int,int)), # Size of the cropped image, squared image if only one value specified
+    tl:(int,int)=None, # Optinal Top-left's coordinate of the crop, if not set then center crop
+    orig_sz:(int,int)=None, # Original size of the image
+    pad_mode:PadMode=PadMode.Zeros,
+    resize_mode=Image.BILINEAR, # `Image` resize mode
+    resize_to:(int,int)=None # Optinal resize image
 ):
     if isinstance(sz,int): sz = (sz,sz)
     orig_sz = fastuple(_get_sz(x) if orig_sz is None else orig_sz)
