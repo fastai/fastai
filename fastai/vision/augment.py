@@ -35,7 +35,7 @@ class RandTransform(DisplayedTransform):
         b,
         split_idx:int, # Index of the train/valid dataset
     ):
-        "Set `self.do` based on `self.p`"
+        "This function can be overridden. Set `self.do` based on `self.p`"
         self.do = self.p==1. or random.random() < self.p
 
     def __call__(self,
