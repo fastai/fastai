@@ -30,19 +30,18 @@ This is a practical design choice, aiming for less key-strokes while still being
 
 ## Documenting functions and classes
 
-Typically you want to aim for one-line docstrings unless it is *absolutely* necessary. And if it is, then consider that a function should be 
-rewritten or split into smaller functions to be easier to read and explain. 
+Typically you want to aim for one-line docstrings unless it is *absolutely* necessary.
 
 Along with this, you combine more explainability into a function through [docments](https://fastcore.fast.ai/docments). These are
 comments next to each input variable allowing for us to describe how each variable should be written.
 
-As an example, here is a "well documented" function definition v.s. a "poorly documented" one:
+As an example, here is a "well documented" function definition:
 
 ```python
 def addition(
     a:(int, float), # The first number to be added
     b:(int, float), # The second number to be added
-) -> (int, float): # The sum of `a` and `b`
+) -> (int, float):
     "Adds two numbers together"
     return a+b
 ```
@@ -67,5 +66,33 @@ Adds two numbers together
 |---|---|---|---|
 |**`a`**|`(int, float)`||The first number to be added|
 |**`b`**|`(int, float)`||The second number to be added|
-|**Returns**|`(int, float)`||The sum of `a` and `b`|
+|**Returns**|`(int, float)`|||
 
+## Additional Style Examples
+
+When docmenting a class method with `self` or `cls`, keep self on the method definition. Types are placed before the default values, if applicable:
+
+```python
+class Math:
+    ...
+
+    def addition(self,
+        a:(int, float)=4, # The first number to be added
+        b:(int, float)=2, # The second number to be added
+    ) -> (int, float):
+        "Adds two numbers together"
+        return a+b
+```
+
+If a method returns itself, such as a transform patch, there is no need to add the return type:
+
+```python
+@patch
+def dihedral(x:TensorImage,
+    k:int, # Dihedral transformation to apply
+):
+    if k in [1,3,4,7]: x = x.flip(-1)
+    if k in [2,4,5,7]: x = x.flip(-2)
+    if k in [3,5,6,7]: x = x.transpose(-1,-2)
+    return x
+```
