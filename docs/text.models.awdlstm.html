@@ -253,7 +253,7 @@ nb_path: "nbs/32_text.models.awdlstm.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="EmbeddingDropout" class="doc_header"><code>class</code> <code>EmbeddingDropout</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/models/awdlstm.py#L73" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>EmbeddingDropout</code>(<strong><code>emb</code></strong>:<a href="/layers.html#Embedding"><code>Embedding</code></a>, <strong><code>embed_p</code></strong>:<code>float</code>) :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
+<h3 id="EmbeddingDropout" class="doc_header"><code>class</code> <code>EmbeddingDropout</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/models/awdlstm.py#L72" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>EmbeddingDropout</code>(<strong><code>emb</code></strong>:<a href="/layers.html#Embedding"><code>Embedding</code></a>, <strong><code>embed_p</code></strong>:<code>float</code>) :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
 </blockquote>
 <p>Apply dropout with probability <code>embed_p</code> to an embedding layer <code>emb</code>.</p>
 
@@ -307,7 +307,7 @@ nb_path: "nbs/32_text.models.awdlstm.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="AWD_LSTM" class="doc_header"><code>class</code> <code>AWD_LSTM</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/models/awdlstm.py#L94" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>AWD_LSTM</code>(<strong><code>vocab_sz</code></strong>:<code>int</code>, <strong><code>emb_sz</code></strong>:<code>int</code>, <strong><code>n_hid</code></strong>:<code>int</code>, <strong><code>n_layers</code></strong>:<code>int</code>, <strong><code>pad_token</code></strong>:<code>int</code>=<em><code>1</code></em>, <strong><code>hidden_p</code></strong>:<code>float</code>=<em><code>0.2</code></em>, <strong><code>input_p</code></strong>:<code>float</code>=<em><code>0.6</code></em>, <strong><code>embed_p</code></strong>:<code>float</code>=<em><code>0.1</code></em>, <strong><code>weight_p</code></strong>:<code>float</code>=<em><code>0.5</code></em>, <strong><code>bidir</code></strong>:<code>bool</code>=<em><code>False</code></em>) :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
+<h3 id="AWD_LSTM" class="doc_header"><code>class</code> <code>AWD_LSTM</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/models/awdlstm.py#L92" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>AWD_LSTM</code>(<strong><code>vocab_sz</code></strong>:<code>int</code>, <strong><code>emb_sz</code></strong>:<code>int</code>, <strong><code>n_hid</code></strong>:<code>int</code>, <strong><code>n_layers</code></strong>:<code>int</code>, <strong><code>pad_token</code></strong>:<code>int</code>=<em><code>1</code></em>, <strong><code>hidden_p</code></strong>:<code>float</code>=<em><code>0.2</code></em>, <strong><code>input_p</code></strong>:<code>float</code>=<em><code>0.6</code></em>, <strong><code>embed_p</code></strong>:<code>float</code>=<em><code>0.1</code></em>, <strong><code>weight_p</code></strong>:<code>float</code>=<em><code>0.5</code></em>, <strong><code>bidir</code></strong>:<code>bool</code>=<em><code>False</code></em>) :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
 </blockquote>
 <p>AWD-LSTM inspired by <a href="https://arxiv.org/abs/1708.02182">https://arxiv.org/abs/1708.02182</a></p>
 
@@ -384,7 +384,7 @@ nb_path: "nbs/32_text.models.awdlstm.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="awd_lstm_lm_split" class="doc_header"><code>awd_lstm_lm_split</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/models/awdlstm.py#L163" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>awd_lstm_lm_split</code>(<strong><code>model</code></strong>:<a href="/torch_core.html#Module"><code>Module</code></a>)</p>
+<h4 id="awd_lstm_lm_split" class="doc_header"><code>awd_lstm_lm_split</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/models/awdlstm.py#L160" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>awd_lstm_lm_split</code>(<strong><code>model</code></strong>:<a href="/torch_core.html#Module"><code>Module</code></a>)</p>
 </blockquote>
 <p>Split a RNN <code>model</code> in groups for differential learning rates.</p>
 
@@ -423,7 +423,7 @@ nb_path: "nbs/32_text.models.awdlstm.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="awd_lstm_clas_split" class="doc_header"><code>awd_lstm_clas_split</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/models/awdlstm.py#L174" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>awd_lstm_clas_split</code>(<strong><code>model</code></strong>:<a href="/torch_core.html#Module"><code>Module</code></a>)</p>
+<h4 id="awd_lstm_clas_split" class="doc_header"><code>awd_lstm_clas_split</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/models/awdlstm.py#L171" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>awd_lstm_clas_split</code>(<strong><code>model</code></strong>:<a href="/torch_core.html#Module"><code>Module</code></a>)</p>
 </blockquote>
 <p>Split a RNN <code>model</code> in groups for differential learning rates.</p>
 
