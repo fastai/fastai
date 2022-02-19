@@ -42,7 +42,7 @@ class TabularDataLoaders(DataLoaders):
                 test_items, # Items to create new test dataset based on training data
                 rm_type_tfms=None, # Number of `Transform`s to be removed from `procs`
                 process:bool=True, # Apply validation `TabularProc`s (non-lazy `Transform`s) on `test_items` if `True`
-                inplace:bool=False, # Keep separate copy of original `test_items` in memory if `True`
+                inplace:bool=False, # Keep separate copy of original `test_items` in memory if `False`
                 **kwargs):
         "Create Test `DataLoader` from `test_items` using `procs`"
         to = self.train_ds.new(test_items, inplace=inplace)
