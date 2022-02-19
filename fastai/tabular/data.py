@@ -22,7 +22,7 @@ class TabularDataLoaders(DataLoaders):
                 y_block:TransformBlock=None, # `TransformBlock` to use for the Target
                 valid_idx:list=None, # List of indices to use for the Validation set (defaults to a random split otherwise)
                 **kwargs):
-        "Create `DataLoaders` from `df` in `path` using `procs`"
+        "Create `TabularDataLoaders` from `df` in `path` using a list of `TabularProc`s"
         if cat_names is None: cat_names = []
         if cont_names is None: cont_names = list(set(df)-set(L(cat_names))-set(L(y_names)))
         splits = RandomSplitter()(df) if valid_idx is None else IndexSplitter(valid_idx)(df)
