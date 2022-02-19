@@ -30,8 +30,7 @@ This is a practical design choice, aiming for less key-strokes while still being
 
 ## Documenting functions and classes
 
-Typically you want to aim for one-line docstrings unless it is *absolutely* necessary. And if it is, then consider that a function should be 
-rewritten or split into smaller functions to be easier to read and explain. 
+Typically you want to aim for one-line docstrings unless it is *absolutely* necessary.
 
 Along with this, you combine more explainability into a function through [docments](https://fastcore.fast.ai/docments). These are
 comments next to each input variable allowing for us to describe how each variable should be written.
