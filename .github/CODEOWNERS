@@ -2,7 +2,7 @@
 # These owners will be the default owners for everything in the repo. Unless a later match takes precedence, @jph00 will 
 # be requested for review when someone opens a pull request.
 
-* @jph00
+# * @jph00
 
 # This is the folder GitHub Actions are located in
-.github/workflows @hamelsmu
+# .github/workflows @hamelsmu

@@ -5,7 +5,7 @@ Untitled*.ipynb
 *.bak
 token
 .idea/
-docs/
+#docs/
 conda/
 tmp/
 
