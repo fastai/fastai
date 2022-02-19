@@ -47,9 +47,50 @@ nb_path: "nbs/06_data.block.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TransformBlock" class="doc_header"><code>class</code> <code>TransformBlock</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/block.py#L13" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TransformBlock</code>(<strong><code>type_tfms</code></strong>=<em><code>None</code></em>, <strong><code>item_tfms</code></strong>=<em><code>None</code></em>, <strong><code>batch_tfms</code></strong>=<em><code>None</code></em>, <strong><code>dl_type</code></strong>=<em><code>None</code></em>, <strong><code>dls_kwargs</code></strong>=<em><code>None</code></em>)</p>
+<h2 id="TransformBlock" class="doc_header"><code>class</code> <code>TransformBlock</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/block.py#L13" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TransformBlock</code>(<strong><code>type_tfms</code></strong>:<code>list</code>=<em><code>None</code></em>, <strong><code>item_tfms</code></strong>:<code>list</code>=<em><code>None</code></em>, <strong><code>batch_tfms</code></strong>:<code>list</code>=<em><code>None</code></em>, <strong><code>dl_type</code></strong>:<a href="/data.core.html#TfmdDL"><code>TfmdDL</code></a>=<em><code>None</code></em>, <strong><code>dls_kwargs</code></strong>:<code>dict</code>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>A basic wrapper that links defaults transforms for the data block API</p>
+<table>
+<thead><tr>
+<th></th>
+<th>Type</th>
+<th>Default</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>type_tfms</code></strong></td>
+<td><code>list</code></td>
+<td><code>None</code></td>
+<td>List of type transforms</td>
+</tr>
+<tr>
+<td><strong><code>item_tfms</code></strong></td>
+<td><code>list</code></td>
+<td><code>None</code></td>
+<td>List of item transforms</td>
+</tr>
+<tr>
+<td><strong><code>batch_tfms</code></strong></td>
+<td><code>list</code></td>
+<td><code>None</code></td>
+<td>List of batch transforms</td>
+</tr>
+<tr>
+<td><strong><code>dl_type</code></strong></td>
+<td><code>TfmdDL</code></td>
+<td><code>None</code></td>
+<td><code>TfmdDL</code> Dataloader class</td>
+</tr>
+<tr>
+<td><strong><code>dls_kwargs</code></strong></td>
+<td><code>dict</code></td>
+<td><code>None</code></td>
+<td>Additional arguments to be passed to <code>TfmdDL</code></td>
+</tr>
+</tbody>
+</table>
 
 </div>
 
@@ -79,9 +120,38 @@ nb_path: "nbs/06_data.block.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="CategoryBlock" class="doc_header"><code>CategoryBlock</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/block.py#L22" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>CategoryBlock</code>(<strong><code>vocab</code></strong>=<em><code>None</code></em>, <strong><code>sort</code></strong>=<em><code>True</code></em>, <strong><code>add_na</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="CategoryBlock" class="doc_header"><code>CategoryBlock</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/block.py#L28" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>CategoryBlock</code>(<strong><code>vocab</code></strong>:<code>Series'&gt;)</code>=<em><code>None</code></em>, <strong><code>sort</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>add_na</code></strong>:<code>bool</code>=<em><code>False</code></em>)</p>
 </blockquote>
 <p><a href="/data.block.html#TransformBlock"><code>TransformBlock</code></a> for single-label categorical targets</p>
+<table>
+<thead><tr>
+<th></th>
+<th>Type</th>
+<th>Default</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>vocab</code></strong></td>
+<td><code>(list, Series)</code></td>
+<td><code>None</code></td>
+<td>List of unique values, or a pandas series with categorical or unique values</td>
+</tr>
+<tr>
+<td><strong><code>sort</code></strong></td>
+<td><code>bool</code></td>
+<td><code>True</code></td>
+<td>Sort the category values?</td>
+</tr>
+<tr>
+<td><strong><code>add_na</code></strong></td>
+<td><code>bool</code></td>
+<td><code>False</code></td>
+<td>Add NA as a category?</td>
+</tr>
+</tbody>
+</table>
 
 </div>
 
@@ -111,9 +181,38 @@ nb_path: "nbs/06_data.block.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="MultiCategoryBlock" class="doc_header"><code>MultiCategoryBlock</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/block.py#L27" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>MultiCategoryBlock</code>(<strong><code>encoded</code></strong>=<em><code>False</code></em>, <strong><code>vocab</code></strong>=<em><code>None</code></em>, <strong><code>add_na</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="MultiCategoryBlock" class="doc_header"><code>MultiCategoryBlock</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/block.py#L37" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>MultiCategoryBlock</code>(<strong><code>encoded</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>vocab</code></strong>:<code>Series'&gt;)</code>=<em><code>None</code></em>, <strong><code>add_na</code></strong>:<code>bool</code>=<em><code>False</code></em>)</p>
 </blockquote>
 <p><a href="/data.block.html#TransformBlock"><code>TransformBlock</code></a> for multi-label categorical targets</p>
+<table>
+<thead><tr>
+<th></th>
+<th>Type</th>
+<th>Default</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>encoded</code></strong></td>
+<td><code>bool</code></td>
+<td><code>False</code></td>
+<td>Use one-hot encoding?</td>
+</tr>
+<tr>
+<td><strong><code>vocab</code></strong></td>
+<td><code>(list, Series)</code></td>
+<td><code>None</code></td>
+<td>List of unique values, or a pandas series with categorical or unique values</td>
+</tr>
+<tr>
+<td><strong><code>add_na</code></strong></td>
+<td><code>bool</code></td>
+<td><code>False</code></td>
+<td>Add NA as a category?</td>
+</tr>
+</tbody>
+</table>
 
 </div>
 
@@ -143,9 +242,26 @@ nb_path: "nbs/06_data.block.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="RegressionBlock" class="doc_header"><code>RegressionBlock</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/block.py#L33" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>RegressionBlock</code>(<strong><code>n_out</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="RegressionBlock" class="doc_header"><code>RegressionBlock</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/block.py#L47" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>RegressionBlock</code>(<strong><code>n_out</code></strong>:<code>int</code>=<em><code>None</code></em>)</p>
 </blockquote>
 <p><a href="/data.block.html#TransformBlock"><code>TransformBlock</code></a> for float targets</p>
+<table>
+<thead><tr>
+<th></th>
+<th>Type</th>
+<th>Default</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>n_out</code></strong></td>
+<td><code>int</code></td>
+<td><code>None</code></td>
+<td>Number of output values</td>
+</tr>
+</tbody>
+</table>
 
 </div>
 
@@ -220,7 +336,7 @@ nb_path: "nbs/06_data.block.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="DataBlock" class="doc_header"><code>class</code> <code>DataBlock</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/block.py#L56" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>DataBlock</code>(<strong><code>blocks</code></strong>=<em><code>None</code></em>, <strong><code>dl_type</code></strong>=<em><code>None</code></em>, <strong><code>getters</code></strong>=<em><code>None</code></em>, <strong><code>n_inp</code></strong>=<em><code>None</code></em>, <strong><code>item_tfms</code></strong>=<em><code>None</code></em>, <strong><code>batch_tfms</code></strong>=<em><code>None</code></em>, <strong><code>get_items</code></strong>=<em><code>None</code></em>, <strong><code>splitter</code></strong>=<em><code>None</code></em>, <strong><code>get_y</code></strong>=<em><code>None</code></em>, <strong><code>get_x</code></strong>=<em><code>None</code></em>)</p>
+<h2 id="DataBlock" class="doc_header"><code>class</code> <code>DataBlock</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/block.py#L72" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>DataBlock</code>(<strong><code>blocks</code></strong>=<em><code>None</code></em>, <strong><code>dl_type</code></strong>=<em><code>None</code></em>, <strong><code>getters</code></strong>=<em><code>None</code></em>, <strong><code>n_inp</code></strong>=<em><code>None</code></em>, <strong><code>item_tfms</code></strong>=<em><code>None</code></em>, <strong><code>batch_tfms</code></strong>=<em><code>None</code></em>, <strong><code>get_items</code></strong>=<em><code>None</code></em>, <strong><code>splitter</code></strong>=<em><code>None</code></em>, <strong><code>get_y</code></strong>=<em><code>None</code></em>, <strong><code>get_x</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Generic container to quickly build <a href="/data.core.html#Datasets"><code>Datasets</code></a> and <a href="/data.core.html#DataLoaders"><code>DataLoaders</code></a></p>
 
@@ -260,7 +376,7 @@ nb_path: "nbs/06_data.block.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="DataBlock.datasets" class="doc_header"><code>DataBlock.datasets</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/block.py#L105" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>DataBlock.datasets</code>(<strong><code>source</code></strong>, <strong><code>verbose</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="DataBlock.datasets" class="doc_header"><code>DataBlock.datasets</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/block.py#L121" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>DataBlock.datasets</code>(<strong><code>source</code></strong>, <strong><code>verbose</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 <p>Create a <a href="/data.core.html#Datasets"><code>Datasets</code></a> object from <code>source</code></p>
 
@@ -285,7 +401,7 @@ nb_path: "nbs/06_data.block.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="DataBlock.dataloaders" class="doc_header"><code>DataBlock.dataloaders</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/block.py#L112" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>DataBlock.dataloaders</code>(<strong><code>source</code></strong>, <strong><code>path</code></strong>=<em><code>'.'</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>shuffle</code></strong>=<em><code>False</code></em>, <strong><code>num_workers</code></strong>=<em><code>None</code></em>, <strong><code>do_setup</code></strong>=<em><code>True</code></em>, <strong><code>pin_memory</code></strong>=<em><code>False</code></em>, <strong><code>timeout</code></strong>=<em><code>0</code></em>, <strong><code>batch_size</code></strong>=<em><code>None</code></em>, <strong><code>drop_last</code></strong>=<em><code>False</code></em>, <strong><code>indexed</code></strong>=<em><code>None</code></em>, <strong><code>n</code></strong>=<em><code>None</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>persistent_workers</code></strong>=<em><code>False</code></em>, <strong><code>wif</code></strong>=<em><code>None</code></em>, <strong><code>before_iter</code></strong>=<em><code>None</code></em>, <strong><code>after_item</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_iter</code></strong>=<em><code>None</code></em>, <strong><code>create_batches</code></strong>=<em><code>None</code></em>, <strong><code>create_item</code></strong>=<em><code>None</code></em>, <strong><code>create_batch</code></strong>=<em><code>None</code></em>, <strong><code>retain</code></strong>=<em><code>None</code></em>, <strong><code>get_idxs</code></strong>=<em><code>None</code></em>, <strong><code>sample</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_fn</code></strong>=<em><code>None</code></em>, <strong><code>do_batch</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="DataBlock.dataloaders" class="doc_header"><code>DataBlock.dataloaders</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/block.py#L128" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>DataBlock.dataloaders</code>(<strong><code>source</code></strong>, <strong><code>path</code></strong>=<em><code>'.'</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>shuffle</code></strong>=<em><code>False</code></em>, <strong><code>num_workers</code></strong>=<em><code>None</code></em>, <strong><code>do_setup</code></strong>=<em><code>True</code></em>, <strong><code>pin_memory</code></strong>=<em><code>False</code></em>, <strong><code>timeout</code></strong>=<em><code>0</code></em>, <strong><code>batch_size</code></strong>=<em><code>None</code></em>, <strong><code>drop_last</code></strong>=<em><code>False</code></em>, <strong><code>indexed</code></strong>=<em><code>None</code></em>, <strong><code>n</code></strong>=<em><code>None</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>persistent_workers</code></strong>=<em><code>False</code></em>, <strong><code>wif</code></strong>=<em><code>None</code></em>, <strong><code>before_iter</code></strong>=<em><code>None</code></em>, <strong><code>after_item</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_iter</code></strong>=<em><code>None</code></em>, <strong><code>create_batches</code></strong>=<em><code>None</code></em>, <strong><code>create_item</code></strong>=<em><code>None</code></em>, <strong><code>create_batch</code></strong>=<em><code>None</code></em>, <strong><code>retain</code></strong>=<em><code>None</code></em>, <strong><code>get_idxs</code></strong>=<em><code>None</code></em>, <strong><code>sample</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_fn</code></strong>=<em><code>None</code></em>, <strong><code>do_batch</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Create a <a href="/data.core.html#DataLoaders"><code>DataLoaders</code></a> object from <code>source</code></p>
 
@@ -385,7 +501,7 @@ nb_path: "nbs/06_data.block.ipynb"
 
 
 <div class="output_png output_subarea ">
-<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHsAAACLCAYAAABBVeZmAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAALEgAACxIB0t1+/AAAADh0RVh0U29mdHdhcmUAbWF0cGxvdGxpYiB2ZXJzaW9uMy4yLjIsIGh0dHA6Ly9tYXRwbG90bGliLm9yZy+WH4yJAAAE3klEQVR4nO2dTyh0axzHf4/srpAkpRQJCTvkioQsbBSykO4srGSDsvRnIVvq9a+s2Chyy07dEq5YKSlFKVnpXlLcu7DAuav3NL/nvWbMOzPnnJnv91PqfJs508On3/l5znPOGeM4jhAMMvweAPEOygaCsoGgbCAoGwjKBoKygYCSbYz51/p5N8Z883tcXpHp9wC8xHGcrO/bxphfROQvEdn2b0TeAlXZFn0i8reI/On3QLwCWXZIRDYcoPPFBuh3dTHGFIvIrYiUOY5z6/d4vAK1sn8TkWMk0SLYstf9HoTXwB3GjTG/isgfIlLoOM4/fo/HSxArOyQiv6OJFgGsbGQQKxsWygaCsoGgbCAoG4hoq178Vz31MJ+9wMoGgrKBoGwgKBsIygaCsoGgbCAoGwjKBoKygaBsICgbCMoGgrKBoGwgKBsIygaCsoGgbCAoGwjKBoKygaBsICgbCMoGgrKBSNmH3r29val8fn6ucn19vcoFBQXu9sTEhHrt+vpa5bW1NZXb2tpU7urqim2wFrW1tSq3t7e72xkZyas/VjYQlA0EZQMR7QE6gbll9/n5WeWRkRGVNzc3vRxOQnl4eHC38/Ly4v043rJLKBsKygYisPPs19dXlZubm1W+vLyM6fNmZmbc7c7OzojvXVxcVPn09FTl29v4nm+bn5+vcmamNxpY2UBQNhCUDURgerbdo4eHh1WO1qON0dPLoaEhlcfGxtztrKwsiURDQ4PKLy8vKu/v76vc29sb8fNsenp6VM7Ozo5p/5+FlQ0EZQNB2UAE5tz43d2dyqWlpTHt39TUpPLR0VHcY/rOwcGByoODgyrf399H3L+oqEjlw8NDlUtKSn5+cD/Cc+OEsqGgbCACM8/Ozc1VORQKqby+rr+GK3zeLCIyOzubnIGJyO7ursrRerTN1taWygnu0V+GlQ0EZQNB2UAEZp5t8/HxobJ9nbh9fXU8a8L232B6elrlubm5iO+3mZycVHlqakrlZF4bLpxnExHKhiKwh/Fk8v7+rrJ9arWjoyPi/vZyaktLi8r2EqjH8DBOKBsKygYCsmff3NyoXFFREdP+ZWVlKtu3/PoMezahbCgoG4jALHEmm8fHR3d7ZWUlpn2Li4tVPj4+TsiYvIaVDQRlA0HZQKTtPNteEh0YGHC3d3Z2Iu5rXzZk9+jCwsI4R5dUOM8mlA0FZQORNvNs+zKm8fFxlaP16XD29vZUDniP/jKsbCAoGwjKBiJtevb29rbKS0tLn77XPte9sLCgcqy3C6cKrGwgKBsIygYiZXu23aPDz31Ho66uTuXu7u6EjCnosLKBoGwgKBuIlFnPvrq6UrmxsVFl+5GTNqOjo+62fUut/YiPFIfr2YSyoaBsIALbs+1HTre2tqr89PQUcf+amhqVwx9JmWY92oY9m1A2FJQNRGB6dvhXFIqIVFdXqxx+r9b/UVlZqfLJyYnKOTk5cYwupWDPJpQNRWCWOJeXl1WOdtiuqqpSeXV1VWWgw/aXYWUDQdlAUDYQvvXss7Mzlefn52Pav6+vT2X723/Ij7CygaBsICgbCN96dnl5ucr2oy0uLi5U3tjYULm/vz85A0tjWNlAUDYQlA1EYJY4ScLgEiehbCgoG4ho8+xPj/8k9WBlA0HZQFA2EJQNBGUDQdlA/AdDRSN/yb0OvgAAAABJRU5ErkJggg==
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHsAAACLCAYAAABBVeZmAAAAOXRFWHRTb2Z0d2FyZQBNYXRwbG90bGliIHZlcnNpb24zLjUuMCwgaHR0cHM6Ly9tYXRwbG90bGliLm9yZy8/fFQqAAAACXBIWXMAAAsTAAALEwEAmpwYAAAEbklEQVR4nO2dPUscURSGz1ULMSuKWAiBrYIgNloIEkRQQawl9aawsRARRBC0EOwF3c5GsggKQvAHqKDZRrFVtFHsTLRQEvBznRTBJecmrqvO1933fUCYlxl3z/p458zHzozxPE8IBmVRF0DCg7KBoGwgKBsIygaCsoGgbCCgZBtjflk/OWNMOuq6wqIi6gLCxPO8xOO0MeadiHwXkZXoKgoXqJFt8UlEfojIt6gLCQtk2Z9FJOMBHS82QJ81jzEmKSLHIvLB87zjqOsJC9SRnRKRLJJoEWzZX6IuImzgZBtjPorIewHaCn8ETrb82TD76nnez6gLCRvIDTRUEEc2LJQNBGUDQdlAUDYQz5314qa6e5inZnBkA0HZQFA2EJQNBGUDQdlAUDYQlA0EZQNB2UBQNhCUDQRlA0HZQFA2EJQNBGUDQdlAUDYQlA0EZQNB2UBQNhCUDQRlA0HZQDhz07v9/X2VM5mMysvLyypXVOiPNjw8nJ8eGRlR81paWlTu7e19ZZX/x3697u5uX1+/WDiygaBsICgbiOduoBObS3YHBgZUXlhYiKiSl9PU1KTy3t5ekG/HS3YJZUNB2UA407M3NzdV7uvrU/nm5ibMcl5EQ0ODyoeHhypXV1f7+Xbs2YSyoaBsIJzp2TaXl5cqr6+vq3xyclL0a9n7vc3NzSpfXFyoPD09rbL9NzRGt822tjaVt7e3i67tFbBnE8qGgrKBcOZ8tk1NTY3K/f39gb2X3aNt7B5tn79eXFz0vabXwJENBGUDQdlAONuzg+T+/l7lpaWlgsvX1taqnEqlVK6vr/elrrfCkQ0EZQNB2UCwZ8u/x7ZHR0dVPjg4KPj7Kyv6SY89PT3+FOYzHNlAUDYQkKtxe9fK/lpyOp0u+PszMzMqR3U5z0vhyAaCsoGgbCCc/VrSW8hmsyp3dnYWXD6RSKh8enqqclVVlT+F+QO/lkQoGwrKBgJmP/vo6Cg/3dXVVXBZu0dvbW2pHLMeXTQc2UBQNhCUDUTJ9uyrqyuVBwcH89O5XE7NKyvT//N2j7ZvneUqHNlAUDYQlA1Eyfbs8fFxldfW1p5cdmhoSOVS6dE2HNlAUDYQlA1EyZzP3t3dVbm9vV3lh4eH/HRHR4eat7GxobJ9+2rH4PlsQtlQUDYQzjanu7s7lcfGxlT+u0eLiCSTyfz07Oysmud4jy4ajmwgKBsIygbC2WZlP67JvkV1eXm5ynNzc/np1tbWwOqKMxzZQFA2EJQNhDPHxu1bStuPT7q+vlbZvgXlxMREMIXFDx4bJ5QNBWUDEduefXt7q7J9DfXOzo7Kjl1DHSTs2YSyoYjt4dL5+XmV7dW2zerqqspAq+2i4cgGgrKBoGwgYrPrdX5+rnJjY6PK9lPzJicnVZ6amlLZvgwXCO56EcqGgrKBiE3PPjs7U9nu2XV1dSrbT8atrKwMpjD3YM8mlA0FZQMRm55NfIM9m1A2FJQNxHPns59c/xP34MgGgrKBoGwgKBsIygaCsoH4Dd9p/n3ENZhPAAAAAElFTkSuQmCC
 "
 >
 </div>
@@ -528,7 +644,7 @@ nb_path: "nbs/06_data.block.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="DataBlock.summary" class="doc_header"><code>DataBlock.summary</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/block.py#L156" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>DataBlock.summary</code>(<strong><code>source</code></strong>, <strong><code>bs</code></strong>=<em><code>4</code></em>, <strong><code>show_batch</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="DataBlock.summary" class="doc_header"><code>DataBlock.summary</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/block.py#L172" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>DataBlock.summary</code>(<strong><code>source</code></strong>, <strong><code>bs</code></strong>=<em><code>4</code></em>, <strong><code>show_batch</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Steps through the transform pipeline for one batch, and optionally calls <code>show_batch(**kwargs)</code> on the transient <code>Dataloaders</code>.</p>
 

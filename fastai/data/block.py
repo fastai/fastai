@@ -12,25 +12,41 @@ from .transforms import *
 # Cell
 class TransformBlock():
     "A basic wrapper that links defaults transforms for the data block API"
-    def __init__(self, type_tfms=None, item_tfms=None, batch_tfms=None, dl_type=None, dls_kwargs=None):
+    def __init__(self,
+                 type_tfms:list=None, # List of type transforms
+                 item_tfms:list=None, # List of item transforms
+                 batch_tfms:list=None, # List of batch transforms
+                 dl_type:TfmdDL=None, # `TfmdDL` Dataloader class
+                 dls_kwargs:dict=None  # Additional arguments to be passed to `TfmdDL`
+    ):
         self.type_tfms  =            L(type_tfms)
         self.item_tfms  = ToTensor + L(item_tfms)
         self.batch_tfms =            L(batch_tfms)
         self.dl_type,self.dls_kwargs = dl_type,({} if dls_kwargs is None else dls_kwargs)
 
 # Cell
-def CategoryBlock(vocab=None, sort=True, add_na=False):
+def CategoryBlock(
+    vocab:(list, pd.Series)=None, # List of unique values, or a pandas series with categorical or unique values
+    sort:bool=True,  # Sort the category values?
+    add_na:bool=False # Add NA as a category?
+):
     "`TransformBlock` for single-label categorical targets"
     return TransformBlock(type_tfms=Categorize(vocab=vocab, sort=sort, add_na=add_na))
 
 # Cell
-def MultiCategoryBlock(encoded=False, vocab=None, add_na=False):
+def MultiCategoryBlock(
+    encoded:bool=False, # Use one-hot encoding?
+    vocab:(list,pd.Series)=None, # List of unique values, or a pandas series with categorical or unique values
+    add_na:bool=False # Add NA as a category?
+):
     "`TransformBlock` for multi-label categorical targets"
     tfm = EncodedMultiCategorize(vocab=vocab) if encoded else [MultiCategorize(vocab=vocab, add_na=add_na), OneHotEncode]
     return TransformBlock(type_tfms=tfm)
 
 # Cell
-def RegressionBlock(n_out=None):
+def RegressionBlock(
+    n_out:int=None # Number of output values
+):
     "`TransformBlock` for float targets"
     return TransformBlock(type_tfms=RegressionSetup(c=n_out))
 
