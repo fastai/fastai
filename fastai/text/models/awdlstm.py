@@ -6,16 +6,21 @@ __all__ = ['dropout_mask', 'RNNDropout', 'WeightDropout', 'EmbeddingDropout', 'A
 # Cell
 from ...data.all import *
 from ..core import *
+from typing import Sequence, Generator
 
 # Cell
-def dropout_mask(x, sz, p):
+def dropout_mask(
+    x:Tensor, # source tensor, output will be of the same type as `x`
+    sz:Sequence[int], # size of the dropout mask
+    p:float # dropout probability
+) -> Tensor: # multiplicative dropout mask
     "Return a dropout mask of the same type as `x`, size `sz`, with probability `p` to cancel an element."
     return x.new_empty(*sz).bernoulli_(1-p).div_(1-p)
 
 # Cell
 class RNNDropout(Module):
     "Dropout with probability `p` that is consistent on the seq_len dimension."
-    def __init__(self, p=0.5): self.p=p
+    def __init__(self, p:float=0.5): self.p=p
 
     def forward(self, x):
         if not self.training or self.p == 0.: return x
@@ -25,7 +30,12 @@ class RNNDropout(Module):
 class WeightDropout(Module):
     "A module that wraps another layer in which some weights will be replaced by 0 during training."
 
-    def __init__(self, module, weight_p, layer_names='weight_hh_l0'):
+    def __init__(
+        self,
+        module:nn.Module, # wrapped module
+        weight_p:float, # weight dropout probability
+        layer_names:(str,Sequence[str])='weight_hh_l0' # names of the parameters to apply dropout to
+    ):
         self.module,self.weight_p,self.layer_names = module,weight_p,L(layer_names)
         for layer in self.layer_names:
             #Makes a copy of the weights of the selected layers.
@@ -63,7 +73,11 @@ class WeightDropout(Module):
 class EmbeddingDropout(Module):
     "Apply dropout with probability `embed_p` to an embedding layer `emb`."
 
-    def __init__(self, emb, embed_p):
+    def __init__(
+        self,
+        emb:nn.Embedding, # wrapped embedding layer
+        embed_p:float # embdedding <word> dropout probability
+    ):
         self.emb,self.embed_p = emb,embed_p
 
     def forward(self, words, scale=None):
@@ -81,8 +95,19 @@ class AWD_LSTM(Module):
     "AWD-LSTM inspired by https://arxiv.org/abs/1708.02182"
     initrange=0.1
 
-    def __init__(self, vocab_sz, emb_sz, n_hid, n_layers, pad_token=1, hidden_p=0.2, input_p=0.6, embed_p=0.1,
-                 weight_p=0.5, bidir=False):
+    def __init__(
+        self,
+        vocab_sz:int, # size of the vocabulary
+        emb_sz:int, # size of embedding vector
+        n_hid:int, # number of features in hidden state
+        n_layers:int, # number of LSTM layers
+        pad_token:int=1, # padding token id
+        hidden_p:float=0.2, # dropout probability for hidden state between layers
+        input_p:float=0.6, # dropout probability for LSTM stack input
+        embed_p:float=0.1, # embedding <word> dropout probabillity
+        weight_p:float=0.5, # hidden-to-hidden wight dropout probability for LSTM layers
+        bidir:bool=False # if `True` uses bidirectional LSTM layers
+    ):
         store_attr('emb_sz,n_hid,n_layers,pad_token')
         self.bs = 1
         self.n_dir = 2 if bidir else 1
@@ -95,7 +120,7 @@ class AWD_LSTM(Module):
         self.hidden_dps = nn.ModuleList([RNNDropout(hidden_p) for l in range(n_layers)])
         self.reset()
 
-    def forward(self, inp, from_embeds=False):
+    def forward(self, inp:Tensor, from_embeds:bool=False):
         bs,sl = inp.shape[:2] if from_embeds else inp.shape
         if bs!=self.bs: self._change_hidden(bs)
 
@@ -135,7 +160,7 @@ class AWD_LSTM(Module):
         self.hidden = [self._one_hidden(l) for l in range(self.n_layers)]
 
 # Cell
-def awd_lstm_lm_split(model):
+def awd_lstm_lm_split(model:nn.Module) -> Generator: # generator over parameter groups
     "Split a RNN `model` in groups for differential learning rates."
     groups = [nn.Sequential(rnn, dp) for rnn, dp in zip(model[0].rnns, model[0].hidden_dps)]
     groups = L(groups + [nn.Sequential(model[0].encoder, model[0].encoder_dp, model[1])])
@@ -146,7 +171,7 @@ awd_lstm_lm_config = dict(emb_sz=400, n_hid=1152, n_layers=3, pad_token=1, bidir
                           hidden_p=0.15, input_p=0.25, embed_p=0.02, weight_p=0.2, tie_weights=True, out_bias=True)
 
 # Cell
-def awd_lstm_clas_split(model):
+def awd_lstm_clas_split(model:nn.Module) -> Generator: # generator over parameter groups
     "Split a RNN `model` in groups for differential learning rates."
     groups = [nn.Sequential(model[0].module.encoder, model[0].module.encoder_dp)]
     groups += [nn.Sequential(rnn, dp) for rnn, dp in zip(model[0].module.rnns, model[0].module.hidden_dps)]
