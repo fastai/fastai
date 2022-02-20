@@ -84,8 +84,86 @@ nb_path: "nbs/00_torch_core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="subplots" class="doc_header"><code>subplots</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L32" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>subplots</code>(<strong><code>nrows</code></strong>=<em><code>1</code></em>, <strong><code>ncols</code></strong>=<em><code>1</code></em>, <strong><code>figsize</code></strong>=<em><code>None</code></em>, <strong><code>imsize</code></strong>=<em><code>3</code></em>, <strong><code>suptitle</code></strong>=<em><code>None</code></em>, <strong><code>sharex</code></strong>=<em><code>False</code></em>, <strong><code>sharey</code></strong>=<em><code>False</code></em>, <strong><code>squeeze</code></strong>=<em><code>True</code></em>, <strong><code>subplot_kw</code></strong>=<em><code>None</code></em>, <strong><code>gridspec_kw</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="subplots" class="doc_header"><code>subplots</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L32" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>subplots</code>(<strong><code>nrows</code></strong>:<code>int</code>=<em><code>1</code></em>, <strong><code>ncols</code></strong>:<code>int</code>=<em><code>1</code></em>, <strong><code>figsize</code></strong>:<code>tuple</code>=<em><code>None</code></em>, <strong><code>imsize</code></strong>:<code>int</code>=<em><code>3</code></em>, <strong><code>suptitle</code></strong>=<em><code>None</code></em>, <strong><code>sharex</code></strong>=<em><code>False</code></em>, <strong><code>sharey</code></strong>=<em><code>False</code></em>, <strong><code>squeeze</code></strong>=<em><code>True</code></em>, <strong><code>subplot_kw</code></strong>=<em><code>None</code></em>, <strong><code>gridspec_kw</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
+<p>Returns a figure and set of subplots to display images of <code>imsize</code></p>
+<table>
+<thead><tr>
+<th></th>
+<th>Type</th>
+<th>Default</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>nrows</code></strong></td>
+<td><code>int</code></td>
+<td><code>1</code></td>
+<td>Number of rows in returned axes grid</td>
+</tr>
+<tr>
+<td><strong><code>ncols</code></strong></td>
+<td><code>int</code></td>
+<td><code>1</code></td>
+<td>Number of columns in returned axes grid</td>
+</tr>
+<tr>
+<td><strong><code>figsize</code></strong></td>
+<td><code>tuple</code></td>
+<td><code>None</code></td>
+<td>Width, height in inches of the returned figure</td>
+</tr>
+<tr>
+<td><strong><code>imsize</code></strong></td>
+<td><code>int</code></td>
+<td><code>3</code></td>
+<td>Size (in inches) of images that will be displayed in the returned figure</td>
+</tr>
+<tr>
+<td><strong><code>suptitle</code></strong></td>
+<td><code>NoneType</code></td>
+<td><code>None</code></td>
+<td>Title to be set to reutrned figure</td>
+</tr>
+<tr>
+<td><strong><code>sharex</code></strong></td>
+<td><code>bool</code></td>
+<td><code>False</code></td>
+<td><em>No Content</em></td>
+</tr>
+<tr>
+<td><strong><code>sharey</code></strong></td>
+<td><code>bool</code></td>
+<td><code>False</code></td>
+<td><em>No Content</em></td>
+</tr>
+<tr>
+<td><strong><code>squeeze</code></strong></td>
+<td><code>bool</code></td>
+<td><code>True</code></td>
+<td><em>No Content</em></td>
+</tr>
+<tr>
+<td><strong><code>subplot_kw</code></strong></td>
+<td><code>NoneType</code></td>
+<td><code>None</code></td>
+<td><em>No Content</em></td>
+</tr>
+<tr>
+<td><strong><code>gridspec_kw</code></strong></td>
+<td><code>NoneType</code></td>
+<td><code>None</code></td>
+<td><em>No Content</em></td>
+</tr>
+<tr>
+<td><strong><code>kwargs</code></strong></td>
+<td></td>
+<td></td>
+<td><em>No Content</em></td>
+</tr>
+</tbody>
+</table>
 
 </div>
 
@@ -104,6 +182,13 @@ nb_path: "nbs/00_torch_core.ipynb"
 </div>
     {% endraw %}
 
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This is used in <a href="/vision.data.html#get_grid"><code>get_grid</code></a>. <code>suptitle</code>, <code>sharex</code>, <code>sharey</code>, <code>squeeze</code>, <code>subplot_kw</code> and <code>gridspec_kw</code> are all passed down to <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.subplots.html#matplotlib-pyplot-subplots">plt.subplots</a>.</p>
+
+</div>
+</div>
+</div>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -122,7 +207,7 @@ nb_path: "nbs/00_torch_core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="show_image" class="doc_header"><code>show_image</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L48" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>show_image</code>(<strong><code>im</code></strong>, <strong><code>ax</code></strong>=<em><code>None</code></em>, <strong><code>figsize</code></strong>=<em><code>None</code></em>, <strong><code>title</code></strong>=<em><code>None</code></em>, <strong><code>ctx</code></strong>=<em><code>None</code></em>, <strong><code>cmap</code></strong>=<em><code>None</code></em>, <strong><code>norm</code></strong>=<em><code>None</code></em>, <strong><code>aspect</code></strong>=<em><code>None</code></em>, <strong><code>interpolation</code></strong>=<em><code>None</code></em>, <strong><code>alpha</code></strong>=<em><code>None</code></em>, <strong><code>vmin</code></strong>=<em><code>None</code></em>, <strong><code>vmax</code></strong>=<em><code>None</code></em>, <strong><code>origin</code></strong>=<em><code>None</code></em>, <strong><code>extent</code></strong>=<em><code>None</code></em>, <strong><code>interpolation_stage</code></strong>=<em><code>None</code></em>, <strong><code>filternorm</code></strong>=<em><code>True</code></em>, <strong><code>filterrad</code></strong>=<em><code>4.0</code></em>, <strong><code>resample</code></strong>=<em><code>None</code></em>, <strong><code>url</code></strong>=<em><code>None</code></em>, <strong><code>data</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="show_image" class="doc_header"><code>show_image</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L56" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>show_image</code>(<strong><code>im</code></strong>, <strong><code>ax</code></strong>=<em><code>None</code></em>, <strong><code>figsize</code></strong>=<em><code>None</code></em>, <strong><code>title</code></strong>=<em><code>None</code></em>, <strong><code>ctx</code></strong>=<em><code>None</code></em>, <strong><code>cmap</code></strong>=<em><code>None</code></em>, <strong><code>norm</code></strong>=<em><code>None</code></em>, <strong><code>aspect</code></strong>=<em><code>None</code></em>, <strong><code>interpolation</code></strong>=<em><code>None</code></em>, <strong><code>alpha</code></strong>=<em><code>None</code></em>, <strong><code>vmin</code></strong>=<em><code>None</code></em>, <strong><code>vmax</code></strong>=<em><code>None</code></em>, <strong><code>origin</code></strong>=<em><code>None</code></em>, <strong><code>extent</code></strong>=<em><code>None</code></em>, <strong><code>interpolation_stage</code></strong>=<em><code>None</code></em>, <strong><code>filternorm</code></strong>=<em><code>True</code></em>, <strong><code>filterrad</code></strong>=<em><code>4.0</code></em>, <strong><code>resample</code></strong>=<em><code>None</code></em>, <strong><code>url</code></strong>=<em><code>None</code></em>, <strong><code>data</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Show a PIL or PyTorch image on <code>ax</code>.</p>
 
@@ -280,7 +365,7 @@ nb_path: "nbs/00_torch_core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="show_titled_image" class="doc_header"><code>show_titled_image</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L68" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>show_titled_image</code>(<strong><code>o</code></strong>, <strong><code>ax</code></strong>=<em><code>None</code></em>, <strong><code>figsize</code></strong>=<em><code>None</code></em>, <strong><code>title</code></strong>=<em><code>None</code></em>, <strong><code>ctx</code></strong>=<em><code>None</code></em>, <strong><code>cmap</code></strong>=<em><code>None</code></em>, <strong><code>norm</code></strong>=<em><code>None</code></em>, <strong><code>aspect</code></strong>=<em><code>None</code></em>, <strong><code>interpolation</code></strong>=<em><code>None</code></em>, <strong><code>alpha</code></strong>=<em><code>None</code></em>, <strong><code>vmin</code></strong>=<em><code>None</code></em>, <strong><code>vmax</code></strong>=<em><code>None</code></em>, <strong><code>origin</code></strong>=<em><code>None</code></em>, <strong><code>extent</code></strong>=<em><code>None</code></em>, <strong><code>interpolation_stage</code></strong>=<em><code>None</code></em>, <strong><code>filternorm</code></strong>=<em><code>True</code></em>, <strong><code>filterrad</code></strong>=<em><code>4.0</code></em>, <strong><code>resample</code></strong>=<em><code>None</code></em>, <strong><code>url</code></strong>=<em><code>None</code></em>, <strong><code>data</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="show_titled_image" class="doc_header"><code>show_titled_image</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L76" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>show_titled_image</code>(<strong><code>o</code></strong>, <strong><code>ax</code></strong>=<em><code>None</code></em>, <strong><code>figsize</code></strong>=<em><code>None</code></em>, <strong><code>title</code></strong>=<em><code>None</code></em>, <strong><code>ctx</code></strong>=<em><code>None</code></em>, <strong><code>cmap</code></strong>=<em><code>None</code></em>, <strong><code>norm</code></strong>=<em><code>None</code></em>, <strong><code>aspect</code></strong>=<em><code>None</code></em>, <strong><code>interpolation</code></strong>=<em><code>None</code></em>, <strong><code>alpha</code></strong>=<em><code>None</code></em>, <strong><code>vmin</code></strong>=<em><code>None</code></em>, <strong><code>vmax</code></strong>=<em><code>None</code></em>, <strong><code>origin</code></strong>=<em><code>None</code></em>, <strong><code>extent</code></strong>=<em><code>None</code></em>, <strong><code>interpolation_stage</code></strong>=<em><code>None</code></em>, <strong><code>filternorm</code></strong>=<em><code>True</code></em>, <strong><code>filterrad</code></strong>=<em><code>4.0</code></em>, <strong><code>resample</code></strong>=<em><code>None</code></em>, <strong><code>url</code></strong>=<em><code>None</code></em>, <strong><code>data</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Call <a href="/torch_core.html#show_image"><code>show_image</code></a> destructuring <code>o</code> to <code>(img,title)</code></p>
 
@@ -353,7 +438,7 @@ nb_path: "nbs/00_torch_core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="show_images" class="doc_header"><code>show_images</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L74" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>show_images</code>(<strong><code>ims</code></strong>, <strong><code>nrows</code></strong>=<em><code>1</code></em>, <strong><code>ncols</code></strong>=<em><code>None</code></em>, <strong><code>titles</code></strong>=<em><code>None</code></em>, <strong><code>figsize</code></strong>=<em><code>None</code></em>, <strong><code>imsize</code></strong>=<em><code>3</code></em>, <strong><code>suptitle</code></strong>=<em><code>None</code></em>, <strong><code>sharex</code></strong>=<em><code>False</code></em>, <strong><code>sharey</code></strong>=<em><code>False</code></em>, <strong><code>squeeze</code></strong>=<em><code>True</code></em>, <strong><code>subplot_kw</code></strong>=<em><code>None</code></em>, <strong><code>gridspec_kw</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="show_images" class="doc_header"><code>show_images</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L82" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>show_images</code>(<strong><code>ims</code></strong>, <strong><code>nrows</code></strong>=<em><code>1</code></em>, <strong><code>ncols</code></strong>=<em><code>None</code></em>, <strong><code>titles</code></strong>=<em><code>None</code></em>, <strong><code>figsize</code></strong>:<code>tuple</code>=<em><code>None</code></em>, <strong><code>imsize</code></strong>:<code>int</code>=<em><code>3</code></em>, <strong><code>suptitle</code></strong>=<em><code>None</code></em>, <strong><code>sharex</code></strong>=<em><code>False</code></em>, <strong><code>sharey</code></strong>=<em><code>False</code></em>, <strong><code>squeeze</code></strong>=<em><code>True</code></em>, <strong><code>subplot_kw</code></strong>=<em><code>None</code></em>, <strong><code>gridspec_kw</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Show all images <code>ims</code> as subplots with <code>rows</code> using <code>titles</code>.</p>
 
@@ -426,7 +511,7 @@ nb_path: "nbs/00_torch_core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ArrayBase" class="doc_header"><code>class</code> <code>ArrayBase</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L83" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ArrayBase</code>() :: <code>ndarray</code></p>
+<h2 id="ArrayBase" class="doc_header"><code>class</code> <code>ArrayBase</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L91" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ArrayBase</code>() :: <code>ndarray</code></p>
 </blockquote>
 <p>An <code>ndarray</code> that can modify casting behavior</p>
 
@@ -458,7 +543,7 @@ nb_path: "nbs/00_torch_core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ArrayImageBase" class="doc_header"><code>class</code> <code>ArrayImageBase</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L89" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ArrayImageBase</code>() :: <a href="/torch_core.html#ArrayBase"><code>ArrayBase</code></a></p>
+<h2 id="ArrayImageBase" class="doc_header"><code>class</code> <code>ArrayImageBase</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L97" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ArrayImageBase</code>() :: <a href="/torch_core.html#ArrayBase"><code>ArrayBase</code></a></p>
 </blockquote>
 <p>Base class for arrays representing images</p>
 
@@ -490,7 +575,7 @@ nb_path: "nbs/00_torch_core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ArrayImage" class="doc_header"><code>class</code> <code>ArrayImage</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L96" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ArrayImage</code>() :: <a href="/torch_core.html#ArrayImageBase"><code>ArrayImageBase</code></a></p>
+<h2 id="ArrayImage" class="doc_header"><code>class</code> <code>ArrayImage</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L104" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ArrayImage</code>() :: <a href="/torch_core.html#ArrayImageBase"><code>ArrayImageBase</code></a></p>
 </blockquote>
 <p>An array representing an image</p>
 
@@ -522,7 +607,7 @@ nb_path: "nbs/00_torch_core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ArrayImageBW" class="doc_header"><code>class</code> <code>ArrayImageBW</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L101" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ArrayImageBW</code>() :: <a href="/torch_core.html#ArrayImage"><code>ArrayImage</code></a></p>
+<h2 id="ArrayImageBW" class="doc_header"><code>class</code> <code>ArrayImageBW</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L109" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ArrayImageBW</code>() :: <a href="/torch_core.html#ArrayImage"><code>ArrayImage</code></a></p>
 </blockquote>
 <p>An array representing an image</p>
 
@@ -554,7 +639,7 @@ nb_path: "nbs/00_torch_core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ArrayMask" class="doc_header"><code>class</code> <code>ArrayMask</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L106" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ArrayMask</code>() :: <a href="/torch_core.html#ArrayImageBase"><code>ArrayImageBase</code></a></p>
+<h2 id="ArrayMask" class="doc_header"><code>class</code> <code>ArrayMask</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L114" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ArrayMask</code>() :: <a href="/torch_core.html#ArrayImageBase"><code>ArrayImageBase</code></a></p>
 </blockquote>
 <p>An array representing an image mask</p>
 
@@ -678,7 +763,7 @@ nb_path: "nbs/00_torch_core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Tensor.__array_eq__" class="doc_header"><code>Tensor.__array_eq__</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L111" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Tensor.__array_eq__</code>(<strong><code>b</code></strong>)</p>
+<h4 id="Tensor.__array_eq__" class="doc_header"><code>Tensor.__array_eq__</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L119" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Tensor.__array_eq__</code>(<strong><code>b</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -716,7 +801,7 @@ nb_path: "nbs/00_torch_core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="tensor" class="doc_header"><code>tensor</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L125" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>tensor</code>(<strong><code>x</code></strong>, <strong>*<code>rest</code></strong>, <strong><code>dtype</code></strong>=<em><code>None</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>requires_grad</code></strong>=<em><code>False</code></em>, <strong><code>pin_memory</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="tensor" class="doc_header"><code>tensor</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L133" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>tensor</code>(<strong><code>x</code></strong>, <strong>*<code>rest</code></strong>, <strong><code>dtype</code></strong>=<em><code>None</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>requires_grad</code></strong>=<em><code>False</code></em>, <strong><code>pin_memory</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 <p>Like <code>torch.as_tensor</code>, but handle lists too, and can pass multiple vector elements directly.</p>
 
@@ -775,7 +860,7 @@ nb_path: "nbs/00_torch_core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="set_seed" class="doc_header"><code>set_seed</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L141" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>set_seed</code>(<strong><code>s</code></strong>, <strong><code>reproducible</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="set_seed" class="doc_header"><code>set_seed</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L149" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>set_seed</code>(<strong><code>s</code></strong>, <strong><code>reproducible</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 <p>Set random seed for <code>random</code>, <code>torch</code>, and <code>numpy</code> (where available)</p>
 
@@ -881,7 +966,7 @@ b&#39;s: 0.154 0.498 0.071
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_random_states" class="doc_header"><code>get_random_states</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L155" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_random_states</code>()</p>
+<h4 id="get_random_states" class="doc_header"><code>get_random_states</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L163" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_random_states</code>()</p>
 </blockquote>
 <p>Gets states for <code>random</code>, <code>torch</code>, and <code>numpy</code> random number generators</p>
 
@@ -913,7 +998,7 @@ b&#39;s: 0.154 0.498 0.071
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="set_random_states" class="doc_header"><code>set_random_states</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L165" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>set_random_states</code>(<strong><code>random_state</code></strong>, <strong><code>numpy_state</code></strong>, <strong><code>torch_state</code></strong>, <strong><code>torch_cuda_state</code></strong>, <strong><code>torch_deterministic</code></strong>, <strong><code>torch_benchmark</code></strong>)</p>
+<h4 id="set_random_states" class="doc_header"><code>set_random_states</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L173" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>set_random_states</code>(<strong><code>random_state</code></strong>, <strong><code>numpy_state</code></strong>, <strong><code>torch_state</code></strong>, <strong><code>torch_cuda_state</code></strong>, <strong><code>torch_deterministic</code></strong>, <strong><code>torch_benchmark</code></strong>)</p>
 </blockquote>
 <p>Set states for <code>random</code>, <code>torch</code>, and <code>numpy</code> random number generators</p>
 
@@ -1019,7 +1104,7 @@ rewinds: 0.435 0.134 0.023
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="no_random" class="doc_header"><code>no_random</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L175" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>no_random</code>(<strong><code>seed</code></strong>=<em><code>42</code></em>, <strong><code>reproducible</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="no_random" class="doc_header"><code>no_random</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L183" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>no_random</code>(<strong><code>seed</code></strong>=<em><code>42</code></em>, <strong><code>reproducible</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 <p>Stores and retrieves state of random number generators. Sets random seed for <code>random</code>, <code>torch</code>, and <code>numpy</code>.</p>
 
@@ -1149,7 +1234,7 @@ rewinds: 0.246 0.363 0.227
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="unsqueeze" class="doc_header"><code>unsqueeze</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L186" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>unsqueeze</code>(<strong><code>x</code></strong>, <strong><code>dim</code></strong>=<em><code>-1</code></em>, <strong><code>n</code></strong>=<em><code>1</code></em>)</p>
+<h4 id="unsqueeze" class="doc_header"><code>unsqueeze</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L194" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>unsqueeze</code>(<strong><code>x</code></strong>, <strong><code>dim</code></strong>=<em><code>-1</code></em>, <strong><code>n</code></strong>=<em><code>1</code></em>)</p>
 </blockquote>
 <p>Same as <code>torch.unsqueeze</code> but can add <code>n</code> dims</p>
 
@@ -1200,7 +1285,7 @@ rewinds: 0.246 0.363 0.227
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="unsqueeze_" class="doc_header"><code>unsqueeze_</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L192" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>unsqueeze_</code>(<strong><code>x</code></strong>, <strong><code>dim</code></strong>=<em><code>-1</code></em>, <strong><code>n</code></strong>=<em><code>1</code></em>)</p>
+<h4 id="unsqueeze_" class="doc_header"><code>unsqueeze_</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L200" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>unsqueeze_</code>(<strong><code>x</code></strong>, <strong><code>dim</code></strong>=<em><code>-1</code></em>, <strong><code>n</code></strong>=<em><code>1</code></em>)</p>
 </blockquote>
 <p>Same as <code>torch.unsqueeze_</code> but can add <code>n</code> dims</p>
 
@@ -1258,7 +1343,7 @@ rewinds: 0.246 0.363 0.227
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="apply" class="doc_header"><code>apply</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L202" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>apply</code>(<strong><code>func</code></strong>, <strong><code>x</code></strong>, <strong>*<code>args</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="apply" class="doc_header"><code>apply</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L210" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>apply</code>(<strong><code>func</code></strong>, <strong><code>x</code></strong>, <strong>*<code>args</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Apply <code>func</code> recursively to <code>x</code>, passing on args</p>
 
@@ -1290,7 +1375,7 @@ rewinds: 0.246 0.363 0.227
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="maybe_gather" class="doc_header"><code>maybe_gather</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L210" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>maybe_gather</code>(<strong><code>x</code></strong>, <strong><code>axis</code></strong>=<em><code>0</code></em>)</p>
+<h4 id="maybe_gather" class="doc_header"><code>maybe_gather</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L218" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>maybe_gather</code>(<strong><code>x</code></strong>, <strong><code>axis</code></strong>=<em><code>0</code></em>)</p>
 </blockquote>
 <p>Gather copies of <code>x</code> on <code>axis</code> (if training is distributed)</p>
 
@@ -1322,7 +1407,7 @@ rewinds: 0.246 0.363 0.227
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="to_detach" class="doc_header"><code>to_detach</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L219" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>to_detach</code>(<strong><code>b</code></strong>, <strong><code>cpu</code></strong>=<em><code>True</code></em>, <strong><code>gather</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="to_detach" class="doc_header"><code>to_detach</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L227" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>to_detach</code>(<strong><code>b</code></strong>, <strong><code>cpu</code></strong>=<em><code>True</code></em>, <strong><code>gather</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 <p>Recursively detach lists of tensors in <code>b</code>; put them on the CPU if <code>cpu=True</code>.</p>
 
@@ -1361,7 +1446,7 @@ rewinds: 0.246 0.363 0.227
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="to_half" class="doc_header"><code>to_half</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L229" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>to_half</code>(<strong><code>b</code></strong>)</p>
+<h4 id="to_half" class="doc_header"><code>to_half</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L237" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>to_half</code>(<strong><code>b</code></strong>)</p>
 </blockquote>
 <p>Recursively map lists of tensors in <code>b</code> to FP16.</p>
 
@@ -1393,7 +1478,7 @@ rewinds: 0.246 0.363 0.227
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="to_float" class="doc_header"><code>to_float</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L234" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>to_float</code>(<strong><code>b</code></strong>)</p>
+<h4 id="to_float" class="doc_header"><code>to_float</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L242" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>to_float</code>(<strong><code>b</code></strong>)</p>
 </blockquote>
 <p>Recursively map lists of int tensors in <code>b</code> to float.</p>
 
@@ -1432,7 +1517,7 @@ rewinds: 0.246 0.363 0.227
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="default_device" class="doc_header"><code>default_device</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L243" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>default_device</code>(<strong><code>use_cuda</code></strong>=<em><code>-1</code></em>)</p>
+<h4 id="default_device" class="doc_header"><code>default_device</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L251" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>default_device</code>(<strong><code>use_cuda</code></strong>=<em><code>-1</code></em>)</p>
 </blockquote>
 <p>Return or set default device; <code>use_cuda</code>: None - CUDA if available; True - error if not available; False - CPU</p>
 
@@ -1487,7 +1572,7 @@ rewinds: 0.246 0.363 0.227
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="to_device" class="doc_header"><code>to_device</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L251" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>to_device</code>(<strong><code>b</code></strong>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>non_blocking</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="to_device" class="doc_header"><code>to_device</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L259" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>to_device</code>(<strong><code>b</code></strong>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>non_blocking</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 <p>Recursively put <code>b</code> on <code>device</code>.</p>
 
@@ -1557,7 +1642,7 @@ rewinds: 0.246 0.363 0.227
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="to_cpu" class="doc_header"><code>to_cpu</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L262" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>to_cpu</code>(<strong><code>b</code></strong>)</p>
+<h4 id="to_cpu" class="doc_header"><code>to_cpu</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L270" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>to_cpu</code>(<strong><code>b</code></strong>)</p>
 </blockquote>
 <p>Recursively map lists of tensors in <code>b</code> to the cpu.</p>
 
@@ -1608,7 +1693,7 @@ rewinds: 0.246 0.363 0.227
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="to_np" class="doc_header"><code>to_np</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L267" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>to_np</code>(<strong><code>x</code></strong>)</p>
+<h4 id="to_np" class="doc_header"><code>to_np</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L275" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>to_np</code>(<strong><code>x</code></strong>)</p>
 </blockquote>
 <p>Convert a tensor to a numpy array.</p>
 
@@ -1659,7 +1744,7 @@ rewinds: 0.246 0.363 0.227
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="to_concat" class="doc_header"><code>to_concat</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L272" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>to_concat</code>(<strong><code>xs</code></strong>, <strong><code>dim</code></strong>=<em><code>0</code></em>)</p>
+<h4 id="to_concat" class="doc_header"><code>to_concat</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L280" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>to_concat</code>(<strong><code>xs</code></strong>, <strong><code>dim</code></strong>=<em><code>0</code></em>)</p>
 </blockquote>
 <p>Concat the element in <code>xs</code> (recursively if they are tuples/lists of tensors)</p>
 
@@ -1737,7 +1822,7 @@ rewinds: 0.246 0.363 0.227
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Tensor.set_meta" class="doc_header"><code>Tensor.set_meta</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L284" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Tensor.set_meta</code>(<strong><code>x</code></strong>, <strong><code>as_copy</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="Tensor.set_meta" class="doc_header"><code>Tensor.set_meta</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L292" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Tensor.set_meta</code>(<strong><code>x</code></strong>, <strong><code>as_copy</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 <p>Set all metadata in <code>__dict__</code></p>
 
@@ -1776,7 +1861,7 @@ rewinds: 0.246 0.363 0.227
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Tensor.as_subclass" class="doc_header"><code>Tensor.as_subclass</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L295" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Tensor.as_subclass</code>(<strong><code>typ</code></strong>)</p>
+<h4 id="Tensor.as_subclass" class="doc_header"><code>Tensor.as_subclass</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L303" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Tensor.as_subclass</code>(<strong><code>typ</code></strong>)</p>
 </blockquote>
 <p>Cast to <code>typ</code> and include <code>__dict__</code> and meta</p>
 
@@ -1852,7 +1937,7 @@ rewinds: 0.246 0.363 0.227
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TensorBase" class="doc_header"><code>class</code> <code>TensorBase</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L314" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TensorBase</code>(<strong><code>x</code></strong>, <strong>**<code>kwargs</code></strong>) :: <code>Tensor</code></p>
+<h2 id="TensorBase" class="doc_header"><code>class</code> <code>TensorBase</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L322" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TensorBase</code>(<strong><code>x</code></strong>, <strong>**<code>kwargs</code></strong>) :: <code>Tensor</code></p>
 </blockquote>
 <p>A <code>Tensor</code> which support subclass pickling, and maintains metadata when casting or after methods</p>
 
@@ -2052,7 +2137,7 @@ rewinds: 0.246 0.363 0.227
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TensorImageBase" class="doc_header"><code>class</code> <code>TensorImageBase</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L365" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TensorImageBase</code>(<strong><code>x</code></strong>, <strong>**<code>kwargs</code></strong>) :: <a href="/torch_core.html#TensorBase"><code>TensorBase</code></a></p>
+<h2 id="TensorImageBase" class="doc_header"><code>class</code> <code>TensorImageBase</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L373" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TensorImageBase</code>(<strong><code>x</code></strong>, <strong>**<code>kwargs</code></strong>) :: <a href="/torch_core.html#TensorBase"><code>TensorBase</code></a></p>
 </blockquote>
 <p>A <code>Tensor</code> which support subclass pickling, and maintains metadata when casting or after methods</p>
 
@@ -2084,7 +2169,7 @@ rewinds: 0.246 0.363 0.227
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TensorImage" class="doc_header"><code>class</code> <code>TensorImage</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L371" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TensorImage</code>(<strong><code>x</code></strong>, <strong>**<code>kwargs</code></strong>) :: <a href="/torch_core.html#TensorImageBase"><code>TensorImageBase</code></a></p>
+<h2 id="TensorImage" class="doc_header"><code>class</code> <code>TensorImage</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L379" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TensorImage</code>(<strong><code>x</code></strong>, <strong>**<code>kwargs</code></strong>) :: <a href="/torch_core.html#TensorImageBase"><code>TensorImageBase</code></a></p>
 </blockquote>
 <p>A <code>Tensor</code> which support subclass pickling, and maintains metadata when casting or after methods</p>
 
@@ -2116,7 +2201,7 @@ rewinds: 0.246 0.363 0.227
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TensorImageBW" class="doc_header"><code>class</code> <code>TensorImageBW</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L374" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TensorImageBW</code>(<strong><code>x</code></strong>, <strong>**<code>kwargs</code></strong>) :: <a href="/torch_core.html#TensorImage"><code>TensorImage</code></a></p>
+<h2 id="TensorImageBW" class="doc_header"><code>class</code> <code>TensorImageBW</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L382" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TensorImageBW</code>(<strong><code>x</code></strong>, <strong>**<code>kwargs</code></strong>) :: <a href="/torch_core.html#TensorImage"><code>TensorImage</code></a></p>
 </blockquote>
 <p>A <code>Tensor</code> which support subclass pickling, and maintains metadata when casting or after methods</p>
 
@@ -2148,7 +2233,7 @@ rewinds: 0.246 0.363 0.227
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TensorMask" class="doc_header"><code>class</code> <code>TensorMask</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L377" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TensorMask</code>(<strong><code>x</code></strong>, <strong>**<code>kwargs</code></strong>) :: <a href="/torch_core.html#TensorImageBase"><code>TensorImageBase</code></a></p>
+<h2 id="TensorMask" class="doc_header"><code>class</code> <code>TensorMask</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L385" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TensorMask</code>(<strong><code>x</code></strong>, <strong>**<code>kwargs</code></strong>) :: <a href="/torch_core.html#TensorImageBase"><code>TensorImageBase</code></a></p>
 </blockquote>
 <p>A <code>Tensor</code> which support subclass pickling, and maintains metadata when casting or after methods</p>
 
@@ -2304,7 +2389,7 @@ rewinds: 0.246 0.363 0.227
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TensorFlowField" class="doc_header"><code>class</code> <code>TensorFlowField</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L394" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TensorFlowField</code>(<strong><code>x</code></strong>, <strong>**<code>kwargs</code></strong>) :: <a href="/torch_core.html#TensorBase"><code>TensorBase</code></a></p>
+<h2 id="TensorFlowField" class="doc_header"><code>class</code> <code>TensorFlowField</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L402" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TensorFlowField</code>(<strong><code>x</code></strong>, <strong>**<code>kwargs</code></strong>) :: <a href="/torch_core.html#TensorBase"><code>TensorBase</code></a></p>
 </blockquote>
 <p>A <code>Tensor</code> which support subclass pickling, and maintains metadata when casting or after methods</p>
 
@@ -2355,7 +2440,7 @@ rewinds: 0.246 0.363 0.227
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TensorCategory" class="doc_header"><code>class</code> <code>TensorCategory</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L398" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TensorCategory</code>(<strong><code>x</code></strong>, <strong>**<code>kwargs</code></strong>) :: <a href="/torch_core.html#TensorBase"><code>TensorBase</code></a></p>
+<h2 id="TensorCategory" class="doc_header"><code>class</code> <code>TensorCategory</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L406" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TensorCategory</code>(<strong><code>x</code></strong>, <strong>**<code>kwargs</code></strong>) :: <a href="/torch_core.html#TensorBase"><code>TensorBase</code></a></p>
 </blockquote>
 <p>A <code>Tensor</code> which support subclass pickling, and maintains metadata when casting or after methods</p>
 
@@ -2408,7 +2493,7 @@ rewinds: 0.246 0.363 0.227
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TensorMultiCategory" class="doc_header"><code>class</code> <code>TensorMultiCategory</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L403" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TensorMultiCategory</code>(<strong><code>x</code></strong>, <strong>**<code>kwargs</code></strong>) :: <a href="/torch_core.html#TensorCategory"><code>TensorCategory</code></a></p>
+<h2 id="TensorMultiCategory" class="doc_header"><code>class</code> <code>TensorMultiCategory</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L411" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TensorMultiCategory</code>(<strong><code>x</code></strong>, <strong>**<code>kwargs</code></strong>) :: <a href="/torch_core.html#TensorCategory"><code>TensorCategory</code></a></p>
 </blockquote>
 <p>A <code>Tensor</code> which support subclass pickling, and maintains metadata when casting or after methods</p>
 
@@ -2440,7 +2525,7 @@ rewinds: 0.246 0.363 0.227
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TitledTensorScalar" class="doc_header"><code>class</code> <code>TitledTensorScalar</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L406" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TitledTensorScalar</code>(<strong><code>x</code></strong>, <strong>**<code>kwargs</code></strong>) :: <a href="/torch_core.html#TensorBase"><code>TensorBase</code></a></p>
+<h2 id="TitledTensorScalar" class="doc_header"><code>class</code> <code>TitledTensorScalar</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L414" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TitledTensorScalar</code>(<strong><code>x</code></strong>, <strong>**<code>kwargs</code></strong>) :: <a href="/torch_core.html#TensorBase"><code>TensorBase</code></a></p>
 </blockquote>
 <p>A tensor containing a scalar that has a <code>show</code> method</p>
 
@@ -2479,7 +2564,7 @@ rewinds: 0.246 0.363 0.227
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="L.tensored" class="doc_header"><code>L.tensored</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L411" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>L.tensored</code>()</p>
+<h4 id="L.tensored" class="doc_header"><code>L.tensored</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L419" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>L.tensored</code>()</p>
 </blockquote>
 <p><code>mapped(tensor)</code></p>
 
@@ -2529,7 +2614,7 @@ rewinds: 0.246 0.363 0.227
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="L.stack" class="doc_header"><code>L.stack</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L415" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>L.stack</code>(<strong><code>dim</code></strong>=<em><code>0</code></em>)</p>
+<h4 id="L.stack" class="doc_header"><code>L.stack</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L423" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>L.stack</code>(<strong><code>dim</code></strong>=<em><code>0</code></em>)</p>
 </blockquote>
 <p>Same as <code>torch.stack</code></p>
 
@@ -2571,7 +2656,7 @@ rewinds: 0.246 0.363 0.227
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="L.cat" class="doc_header"><code>L.cat</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L419" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>L.cat</code>(<strong><code>dim</code></strong>=<em><code>0</code></em>)</p>
+<h4 id="L.cat" class="doc_header"><code>L.cat</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L427" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>L.cat</code>(<strong><code>dim</code></strong>=<em><code>0</code></em>)</p>
 </blockquote>
 <p>Same as <code>torch.cat</code></p>
 
@@ -2619,9 +2704,9 @@ rewinds: 0.246 0.363 0.227
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="concat" class="doc_header"><code>concat</code><a href="https://github.com/fastai/fastcore/tree/master/fastcore/basics.py#L431" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>concat</code>(<strong><code>colls</code></strong>)</p>
+<h4 id="concat" class="doc_header"><code>concat</code><a href="https://github.com/fastai/fastcore/tree/master/fastcore/basics.py#L423" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>concat</code>(<strong><code>colls</code></strong>)</p>
 </blockquote>
-<p>Concatenate all collections and items as a list</p>
+<p>Concatenate all collections in <code>colls</code></p>
 
 </div>
 
@@ -2676,7 +2761,7 @@ rewinds: 0.246 0.363 0.227
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Chunks" class="doc_header"><code>class</code> <code>Chunks</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L438" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Chunks</code>(<strong><code>chunks</code></strong>, <strong><code>lens</code></strong>=<em><code>None</code></em>)</p>
+<h2 id="Chunks" class="doc_header"><code>class</code> <code>Chunks</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L446" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Chunks</code>(<strong><code>chunks</code></strong>, <strong><code>lens</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Slice and int indexing into a list of lists</p>
 
@@ -2785,7 +2870,7 @@ rewinds: 0.246 0.363 0.227
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="show_title" class="doc_header"><code>show_title</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L466" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>show_title</code>(<strong><code>o</code></strong>, <strong><code>ax</code></strong>=<em><code>None</code></em>, <strong><code>ctx</code></strong>=<em><code>None</code></em>, <strong><code>label</code></strong>=<em><code>None</code></em>, <strong><code>color</code></strong>=<em><code>'black'</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="show_title" class="doc_header"><code>show_title</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L474" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>show_title</code>(<strong><code>o</code></strong>, <strong><code>ax</code></strong>=<em><code>None</code></em>, <strong><code>ctx</code></strong>=<em><code>None</code></em>, <strong><code>label</code></strong>=<em><code>None</code></em>, <strong><code>color</code></strong>=<em><code>'black'</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Set title of <code>ax</code> to <code>o</code>, or print <code>o</code> if <code>ax</code> is <code>None</code></p>
 
@@ -2836,7 +2921,7 @@ rewinds: 0.246 0.363 0.227
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ShowTitle" class="doc_header"><code>class</code> <code>ShowTitle</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L480" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ShowTitle</code>()</p>
+<h2 id="ShowTitle" class="doc_header"><code>class</code> <code>ShowTitle</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L488" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ShowTitle</code>()</p>
 </blockquote>
 <p>Base class that adds a simple <code>show</code></p>
 
@@ -2868,7 +2953,7 @@ rewinds: 0.246 0.363 0.227
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="TitledInt" class="doc_header"><code>class</code> <code>TitledInt</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L487" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>TitledInt</code>() :: <a href="https://fastcore.fast.ai/basics#Int"><code>Int</code></a></p>
+<h3 id="TitledInt" class="doc_header"><code>class</code> <code>TitledInt</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L495" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>TitledInt</code>() :: <a href="https://fastcore.fast.ai/basics#Int"><code>Int</code></a></p>
 </blockquote>
 <p>An <code>int</code> with <code>show</code></p>
 
@@ -2893,7 +2978,7 @@ rewinds: 0.246 0.363 0.227
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="TitledStr" class="doc_header"><code>class</code> <code>TitledStr</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L499" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>TitledStr</code>() :: <a href="https://fastcore.fast.ai/basics#Str"><code>Str</code></a></p>
+<h3 id="TitledStr" class="doc_header"><code>class</code> <code>TitledStr</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L507" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>TitledStr</code>() :: <a href="https://fastcore.fast.ai/basics#Str"><code>Str</code></a></p>
 </blockquote>
 <p>An <code>str</code> with <code>show</code></p>
 
@@ -2918,7 +3003,7 @@ rewinds: 0.246 0.363 0.227
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="TitledFloat" class="doc_header"><code>class</code> <code>TitledFloat</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L493" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>TitledFloat</code>(<strong><code>x</code></strong>=<em><code>0</code></em>) :: <a href="https://fastcore.fast.ai/basics#Float"><code>Float</code></a></p>
+<h3 id="TitledFloat" class="doc_header"><code>class</code> <code>TitledFloat</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L501" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>TitledFloat</code>(<strong><code>x</code></strong>=<em><code>0</code></em>) :: <a href="https://fastcore.fast.ai/basics#Float"><code>Float</code></a></p>
 </blockquote>
 <p>A <code>float</code> with <code>show</code></p>
 
@@ -2961,7 +3046,7 @@ rewinds: 0.246 0.363 0.227
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="TitledTuple" class="doc_header"><code>class</code> <code>TitledTuple</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L505" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>TitledTuple</code>(<strong><code>x</code></strong>=<em><code>None</code></em>, <strong>*<code>rest</code></strong>) :: <a href="https://fastcore.fast.ai/basics#fastuple"><code>fastuple</code></a></p>
+<h3 id="TitledTuple" class="doc_header"><code>class</code> <code>TitledTuple</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L513" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>TitledTuple</code>(<strong><code>x</code></strong>=<em><code>None</code></em>, <strong>*<code>rest</code></strong>) :: <a href="https://fastcore.fast.ai/basics#fastuple"><code>fastuple</code></a></p>
 </blockquote>
 <p>A <a href="https://fastcore.fast.ai/basics#fastuple"><code>fastuple</code></a> with <code>show</code></p>
 
@@ -2986,7 +3071,7 @@ rewinds: 0.246 0.363 0.227
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="TitledStr.truncate" class="doc_header"><code>TitledStr.truncate</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L515" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>TitledStr.truncate</code>(<strong><code>n</code></strong>)</p>
+<h4 id="TitledStr.truncate" class="doc_header"><code>TitledStr.truncate</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L523" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>TitledStr.truncate</code>(<strong><code>n</code></strong>)</p>
 </blockquote>
 <p>Truncate self to <code>n</code></p>
 
@@ -3031,7 +3116,7 @@ rewinds: 0.246 0.363 0.227
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="DataFrame.__init__" class="doc_header"><code>DataFrame.__init__</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L525" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>DataFrame.__init__</code>(<strong><code>data</code></strong>=<em><code>None</code></em>, <strong><code>index</code></strong>=<em><code>None</code></em>, <strong><code>columns</code></strong>=<em><code>None</code></em>, <strong><code>dtype</code></strong>=<em><code>None</code></em>, <strong><code>copy</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="DataFrame.__init__" class="doc_header"><code>DataFrame.__init__</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L533" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>DataFrame.__init__</code>(<strong><code>data</code></strong>=<em><code>None</code></em>, <strong><code>index</code></strong>=<em><code>None</code></em>, <strong><code>columns</code></strong>=<em><code>None</code></em>, <strong><code>dtype</code></strong>=<em><code>None</code></em>, <strong><code>copy</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 
 </div>
@@ -3062,7 +3147,7 @@ rewinds: 0.246 0.363 0.227
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_empty_df" class="doc_header"><code>get_empty_df</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L531" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_empty_df</code>(<strong><code>n</code></strong>)</p>
+<h4 id="get_empty_df" class="doc_header"><code>get_empty_df</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L539" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_empty_df</code>(<strong><code>n</code></strong>)</p>
 </blockquote>
 <p>Return <code>n</code> empty rows of a dataframe</p>
 
@@ -3094,7 +3179,7 @@ rewinds: 0.246 0.363 0.227
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="display_df" class="doc_header"><code>display_df</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L537" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>display_df</code>(<strong><code>df</code></strong>)</p>
+<h4 id="display_df" class="doc_header"><code>display_df</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L545" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>display_df</code>(<strong><code>df</code></strong>)</p>
 </blockquote>
 <p>Display <code>df</code> in a notebook or defaults to print</p>
 
@@ -3126,7 +3211,7 @@ rewinds: 0.246 0.363 0.227
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_first" class="doc_header"><code>get_first</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L544" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_first</code>(<strong><code>c</code></strong>)</p>
+<h4 id="get_first" class="doc_header"><code>get_first</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L552" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_first</code>(<strong><code>c</code></strong>)</p>
 </blockquote>
 <p>Get the first element of c, even if c is a dataframe</p>
 
@@ -3158,7 +3243,7 @@ rewinds: 0.246 0.363 0.227
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="one_param" class="doc_header"><code>one_param</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L549" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>one_param</code>(<strong><code>m</code></strong>)</p>
+<h4 id="one_param" class="doc_header"><code>one_param</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L557" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>one_param</code>(<strong><code>m</code></strong>)</p>
 </blockquote>
 <p>First parameter in <code>m</code></p>
 
@@ -3190,7 +3275,7 @@ rewinds: 0.246 0.363 0.227
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="item_find" class="doc_header"><code>item_find</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L554" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>item_find</code>(<strong><code>x</code></strong>, <strong><code>idx</code></strong>=<em><code>0</code></em>)</p>
+<h4 id="item_find" class="doc_header"><code>item_find</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L562" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>item_find</code>(<strong><code>x</code></strong>, <strong><code>idx</code></strong>=<em><code>0</code></em>)</p>
 </blockquote>
 <p>Recursively takes the <code>idx</code>-th element of <code>x</code></p>
 
@@ -3222,7 +3307,7 @@ rewinds: 0.246 0.363 0.227
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="find_device" class="doc_header"><code>find_device</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L563" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>find_device</code>(<strong><code>b</code></strong>)</p>
+<h4 id="find_device" class="doc_header"><code>find_device</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L571" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>find_device</code>(<strong><code>b</code></strong>)</p>
 </blockquote>
 <p>Recursively search the device of <code>b</code>.</p>
 
@@ -3276,7 +3361,7 @@ rewinds: 0.246 0.363 0.227
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="find_bs" class="doc_header"><code>find_bs</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L568" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>find_bs</code>(<strong><code>b</code></strong>)</p>
+<h4 id="find_bs" class="doc_header"><code>find_bs</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L576" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>find_bs</code>(<strong><code>b</code></strong>)</p>
 </blockquote>
 <p>Recursively search the batch size of <code>b</code>.</p>
 
@@ -3329,7 +3414,7 @@ rewinds: 0.246 0.363 0.227
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="np_func" class="doc_header"><code>np_func</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L573" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>np_func</code>(<strong><code>f</code></strong>)</p>
+<h4 id="np_func" class="doc_header"><code>np_func</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L581" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>np_func</code>(<strong><code>f</code></strong>)</p>
 </blockquote>
 <p>Convert a function taking and returning numpy arrays to one taking and returning tensors</p>
 
@@ -3415,7 +3500,7 @@ rewinds: 0.246 0.363 0.227
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="Module" class="doc_header"><code>class</code> <code>Module</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L582" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>Module</code>() :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
+<h3 id="Module" class="doc_header"><code>class</code> <code>Module</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L590" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>Module</code>() :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
 </blockquote>
 <p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
 
@@ -3485,7 +3570,7 @@ rewinds: 0.246 0.363 0.227
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_model" class="doc_header"><code>get_model</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L591" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_model</code>(<strong><code>model</code></strong>)</p>
+<h4 id="get_model" class="doc_header"><code>get_model</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L599" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_model</code>(<strong><code>model</code></strong>)</p>
 </blockquote>
 <p>Return the model maybe wrapped inside <code>model</code>.</p>
 
@@ -3517,7 +3602,7 @@ rewinds: 0.246 0.363 0.227
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="one_hot" class="doc_header"><code>one_hot</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L596" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>one_hot</code>(<strong><code>x</code></strong>, <strong><code>c</code></strong>)</p>
+<h4 id="one_hot" class="doc_header"><code>one_hot</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L604" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>one_hot</code>(<strong><code>x</code></strong>, <strong><code>c</code></strong>)</p>
 </blockquote>
 <p>One-hot encode <code>x</code> with <code>c</code> classes.</p>
 
@@ -3568,7 +3653,7 @@ rewinds: 0.246 0.363 0.227
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="one_hot_decode" class="doc_header"><code>one_hot_decode</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L604" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>one_hot_decode</code>(<strong><code>x</code></strong>, <strong><code>vocab</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="one_hot_decode" class="doc_header"><code>one_hot_decode</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L612" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>one_hot_decode</code>(<strong><code>x</code></strong>, <strong><code>vocab</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 
 </div>
@@ -3618,7 +3703,7 @@ rewinds: 0.246 0.363 0.227
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="params" class="doc_header"><code>params</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L608" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>params</code>(<strong><code>m</code></strong>)</p>
+<h4 id="params" class="doc_header"><code>params</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L616" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>params</code>(<strong><code>m</code></strong>)</p>
 </blockquote>
 <p>Return all parameters of <code>m</code></p>
 
@@ -3650,7 +3735,7 @@ rewinds: 0.246 0.363 0.227
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="trainable_params" class="doc_header"><code>trainable_params</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L613" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>trainable_params</code>(<strong><code>m</code></strong>)</p>
+<h4 id="trainable_params" class="doc_header"><code>trainable_params</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L621" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>trainable_params</code>(<strong><code>m</code></strong>)</p>
 </blockquote>
 <p>Return all trainable parameters of <code>m</code></p>
 
@@ -3709,7 +3794,7 @@ rewinds: 0.246 0.363 0.227
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="norm_bias_params" class="doc_header"><code>norm_bias_params</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L621" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>norm_bias_params</code>(<strong><code>m</code></strong>, <strong><code>with_bias</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="norm_bias_params" class="doc_header"><code>norm_bias_params</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L629" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>norm_bias_params</code>(<strong><code>m</code></strong>, <strong><code>with_bias</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 <p>Return all bias and BatchNorm parameters</p>
 
@@ -3764,7 +3849,7 @@ rewinds: 0.246 0.363 0.227
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="batch_to_samples" class="doc_header"><code>batch_to_samples</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L629" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>batch_to_samples</code>(<strong><code>b</code></strong>, <strong><code>max_n</code></strong>=<em><code>10</code></em>)</p>
+<h4 id="batch_to_samples" class="doc_header"><code>batch_to_samples</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L637" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>batch_to_samples</code>(<strong><code>b</code></strong>, <strong><code>max_n</code></strong>=<em><code>10</code></em>)</p>
 </blockquote>
 <p>'Transposes' a batch to (at most <code>max_n</code>) samples</p>
 
@@ -3824,7 +3909,7 @@ rewinds: 0.246 0.363 0.227
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Tensor.interp_1d" class="doc_header"><code>Tensor.interp_1d</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L637" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Tensor.interp_1d</code>(<strong><code>x</code></strong>:<code>Tensor</code>, <strong><code>xp</code></strong>, <strong><code>fp</code></strong>)</p>
+<h4 id="Tensor.interp_1d" class="doc_header"><code>Tensor.interp_1d</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L645" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Tensor.interp_1d</code>(<strong><code>x</code></strong>:<code>Tensor</code>, <strong><code>xp</code></strong>, <strong><code>fp</code></strong>)</p>
 </blockquote>
 <p>Same as <code>np.interp</code></p>
 
@@ -3900,7 +3985,7 @@ rewinds: 0.246 0.363 0.227
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Tensor.pca" class="doc_header"><code>Tensor.pca</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L647" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Tensor.pca</code>(<strong><code>x</code></strong>:<code>Tensor</code>, <strong><code>k</code></strong>=<em><code>2</code></em>)</p>
+<h4 id="Tensor.pca" class="doc_header"><code>Tensor.pca</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L655" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Tensor.pca</code>(<strong><code>x</code></strong>:<code>Tensor</code>, <strong><code>k</code></strong>=<em><code>2</code></em>)</p>
 </blockquote>
 <p>Compute PCA of <code>x</code> with <code>k</code> dimensions.</p>
 
@@ -3932,7 +4017,7 @@ rewinds: 0.246 0.363 0.227
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="logit" class="doc_header"><code>logit</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L655" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>logit</code>(<strong><code>x</code></strong>)</p>
+<h4 id="logit" class="doc_header"><code>logit</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L663" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>logit</code>(<strong><code>x</code></strong>)</p>
 </blockquote>
 <p>Logit of <code>x</code>, clamped to avoid inf.</p>
 
@@ -3964,7 +4049,7 @@ rewinds: 0.246 0.363 0.227
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="num_distrib" class="doc_header"><code>num_distrib</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L661" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>num_distrib</code>()</p>
+<h4 id="num_distrib" class="doc_header"><code>num_distrib</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L669" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>num_distrib</code>()</p>
 </blockquote>
 <p>Return the number of processes in distributed training (if applicable).</p>
 
@@ -3996,7 +4081,7 @@ rewinds: 0.246 0.363 0.227
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="rank_distrib" class="doc_header"><code>rank_distrib</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L666" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>rank_distrib</code>()</p>
+<h4 id="rank_distrib" class="doc_header"><code>rank_distrib</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L674" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>rank_distrib</code>()</p>
 </blockquote>
 <p>Return the distributed rank of this process (if applicable).</p>
 
@@ -4028,7 +4113,7 @@ rewinds: 0.246 0.363 0.227
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="distrib_barrier" class="doc_header"><code>distrib_barrier</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L671" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>distrib_barrier</code>()</p>
+<h4 id="distrib_barrier" class="doc_header"><code>distrib_barrier</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L679" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>distrib_barrier</code>()</p>
 </blockquote>
 <p>Place a synchronization barrier in distributed training</p>
 
@@ -4081,7 +4166,7 @@ rewinds: 0.246 0.363 0.227
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Path.save_array" class="doc_header"><code>Path.save_array</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L684" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Path.save_array</code>(<strong><code>p</code></strong>:<code>Path</code>, <strong><code>o</code></strong>, <strong><code>complib</code></strong>=<em><code>'lz4'</code></em>, <strong><code>lvl</code></strong>=<em><code>3</code></em>)</p>
+<h4 id="Path.save_array" class="doc_header"><code>Path.save_array</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L692" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Path.save_array</code>(<strong><code>p</code></strong>:<code>Path</code>, <strong><code>o</code></strong>, <strong><code>complib</code></strong>=<em><code>'lz4'</code></em>, <strong><code>lvl</code></strong>=<em><code>3</code></em>)</p>
 </blockquote>
 <p>Save numpy array to a compressed <code>pytables</code> file, using compression level <code>lvl</code></p>
 
@@ -4120,7 +4205,7 @@ rewinds: 0.246 0.363 0.227
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Path.load_array" class="doc_header"><code>Path.load_array</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L691" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Path.load_array</code>(<strong><code>p</code></strong>:<code>Path</code>)</p>
+<h4 id="Path.load_array" class="doc_header"><code>Path.load_array</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L699" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Path.load_array</code>(<strong><code>p</code></strong>:<code>Path</code>)</p>
 </blockquote>
 <p>Save numpy array to a <code>pytables</code> file</p>
 
@@ -4152,7 +4237,7 @@ rewinds: 0.246 0.363 0.227
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="base_doc" class="doc_header"><code>base_doc</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L697" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>base_doc</code>(<strong><code>elt</code></strong>)</p>
+<h4 id="base_doc" class="doc_header"><code>base_doc</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L705" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>base_doc</code>(<strong><code>elt</code></strong>)</p>
 </blockquote>
 <p>Print a base documentation of <code>elt</code></p>
 
@@ -4184,7 +4269,7 @@ rewinds: 0.246 0.363 0.227
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="doc" class="doc_header"><code>doc</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L704" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>doc</code>(<strong><code>elt</code></strong>)</p>
+<h4 id="doc" class="doc_header"><code>doc</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L712" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>doc</code>(<strong><code>elt</code></strong>)</p>
 </blockquote>
 <p>Try to use doc form nbdev and fall back to <a href="/torch_core.html#base_doc"><code>base_doc</code></a></p>
 
@@ -4216,7 +4301,7 @@ rewinds: 0.246 0.363 0.227
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="nested_reorder" class="doc_header"><code>nested_reorder</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L712" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>nested_reorder</code>(<strong><code>t</code></strong>, <strong><code>idxs</code></strong>)</p>
+<h4 id="nested_reorder" class="doc_header"><code>nested_reorder</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L720" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>nested_reorder</code>(<strong><code>t</code></strong>, <strong><code>idxs</code></strong>)</p>
 </blockquote>
 <p>Reorder all tensors in <code>t</code> using <code>idxs</code></p>
 
@@ -4277,7 +4362,7 @@ rewinds: 0.246 0.363 0.227
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="make_cross_image" class="doc_header"><code>make_cross_image</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L720" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>make_cross_image</code>(<strong><code>bw</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="make_cross_image" class="doc_header"><code>make_cross_image</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L728" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>make_cross_image</code>(<strong><code>bw</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 <p>Create a tensor containing a cross image, either <code>bw</code> (True) or color</p>
 
@@ -4377,7 +4462,7 @@ rewinds: 0.246 0.363 0.227
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="show_image_batch" class="doc_header"><code>show_image_batch</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L733" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>show_image_batch</code>(<strong><code>b</code></strong>, <strong><code>show</code></strong>=<em><code>show_titled_image</code></em>, <strong><code>items</code></strong>=<em><code>9</code></em>, <strong><code>cols</code></strong>=<em><code>3</code></em>, <strong><code>figsize</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="show_image_batch" class="doc_header"><code>show_image_batch</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L741" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>show_image_batch</code>(<strong><code>b</code></strong>, <strong><code>show</code></strong>=<em><code>show_titled_image</code></em>, <strong><code>items</code></strong>=<em><code>9</code></em>, <strong><code>cols</code></strong>=<em><code>3</code></em>, <strong><code>figsize</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Display batch <code>b</code> in a grid of size <code>items</code> with <code>cols</code> width</p>
 
@@ -4449,7 +4534,7 @@ rewinds: 0.246 0.363 0.227
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="requires_grad" class="doc_header"><code>requires_grad</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L742" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>requires_grad</code>(<strong><code>m</code></strong>)</p>
+<h4 id="requires_grad" class="doc_header"><code>requires_grad</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L750" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>requires_grad</code>(<strong><code>m</code></strong>)</p>
 </blockquote>
 <p>Check if the first parameter of <code>m</code> requires grad or not</p>
 
@@ -4501,7 +4586,7 @@ rewinds: 0.246 0.363 0.227
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="init_default" class="doc_header"><code>init_default</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L748" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>init_default</code>(<strong><code>m</code></strong>, <strong><code>func</code></strong>=<em><code>kaiming_normal_</code></em>)</p>
+<h4 id="init_default" class="doc_header"><code>init_default</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L756" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>init_default</code>(<strong><code>m</code></strong>, <strong><code>func</code></strong>=<em><code>kaiming_normal_</code></em>)</p>
 </blockquote>
 <p>Initialize <code>m</code> weights with <code>func</code> and set <code>bias</code> to 0.</p>
 
@@ -4555,7 +4640,7 @@ rewinds: 0.246 0.363 0.227
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="cond_init" class="doc_header"><code>cond_init</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L756" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>cond_init</code>(<strong><code>m</code></strong>, <strong><code>func</code></strong>)</p>
+<h4 id="cond_init" class="doc_header"><code>cond_init</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L764" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>cond_init</code>(<strong><code>m</code></strong>, <strong><code>func</code></strong>)</p>
 </blockquote>
 <p>Apply <a href="/layers.html#init_default"><code>init_default</code></a> to <code>m</code> unless it's a batchnorm module</p>
 
@@ -4615,7 +4700,7 @@ rewinds: 0.246 0.363 0.227
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="apply_leaf" class="doc_header"><code>apply_leaf</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L761" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>apply_leaf</code>(<strong><code>m</code></strong>, <strong><code>f</code></strong>)</p>
+<h4 id="apply_leaf" class="doc_header"><code>apply_leaf</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L769" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>apply_leaf</code>(<strong><code>m</code></strong>, <strong><code>f</code></strong>)</p>
 </blockquote>
 <p>Apply <code>f</code> to children of <code>m</code>.</p>
 
@@ -4667,7 +4752,7 @@ rewinds: 0.246 0.363 0.227
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="apply_init" class="doc_header"><code>apply_init</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L768" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>apply_init</code>(<strong><code>m</code></strong>, <strong><code>func</code></strong>=<em><code>kaiming_normal_</code></em>)</p>
+<h4 id="apply_init" class="doc_header"><code>apply_init</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L776" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>apply_init</code>(<strong><code>m</code></strong>, <strong><code>func</code></strong>=<em><code>kaiming_normal_</code></em>)</p>
 </blockquote>
 <p>Initialize all non-batchnorm layers of <code>m</code> with <code>func</code>.</p>
 
@@ -4728,7 +4813,7 @@ rewinds: 0.246 0.363 0.227
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="script_use_ctx" class="doc_header"><code>script_use_ctx</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L773" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>script_use_ctx</code>(<strong><code>f</code></strong>)</p>
+<h4 id="script_use_ctx" class="doc_header"><code>script_use_ctx</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L781" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>script_use_ctx</code>(<strong><code>f</code></strong>)</p>
 </blockquote>
 <p>Decorator: create jit script and pass everything in <code>ctx.saved_variables to</code>f<code>, after</code>*args`</p>
 
@@ -4760,7 +4845,7 @@ rewinds: 0.246 0.363 0.227
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="script_save_ctx" class="doc_header"><code>script_save_ctx</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L780" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>script_save_ctx</code>(<strong><code>static</code></strong>, <strong>*<code>argidx</code></strong>)</p>
+<h4 id="script_save_ctx" class="doc_header"><code>script_save_ctx</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L788" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>script_save_ctx</code>(<strong><code>static</code></strong>, <strong>*<code>argidx</code></strong>)</p>
 </blockquote>
 <p>Decorator: create jit script and save args with indices <code>argidx</code> using <code>ctx.save_for_backward</code></p>
 
@@ -4792,7 +4877,7 @@ rewinds: 0.246 0.363 0.227
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="script_fwd" class="doc_header"><code>script_fwd</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L795" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>script_fwd</code>(<strong>*<code>argidx</code></strong>)</p>
+<h4 id="script_fwd" class="doc_header"><code>script_fwd</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L803" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>script_fwd</code>(<strong>*<code>argidx</code></strong>)</p>
 </blockquote>
 <p>Decorator: create static jit script and save args with indices <code>argidx</code> using <code>ctx.save_for_backward</code></p>
 
@@ -4824,7 +4909,7 @@ rewinds: 0.246 0.363 0.227
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="script_bwd" class="doc_header"><code>script_bwd</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L800" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>script_bwd</code>(<strong><code>f</code></strong>)</p>
+<h4 id="script_bwd" class="doc_header"><code>script_bwd</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L808" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>script_bwd</code>(<strong><code>f</code></strong>)</p>
 </blockquote>
 <p>Decorator: create static jit script and pass everything in <code>ctx.saved_variables to</code>f<code>, after</code>*args`</p>
 
@@ -4856,7 +4941,7 @@ rewinds: 0.246 0.363 0.227
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="grad_module" class="doc_header"><code>grad_module</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L805" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>grad_module</code>()</p>
+<h4 id="grad_module" class="doc_header"><code>grad_module</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L813" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>grad_module</code>()</p>
 </blockquote>
 <p>Decorator: convert <code>cls</code> into an autograd function</p>
 
@@ -4888,7 +4973,7 @@ rewinds: 0.246 0.363 0.227
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ismin_torch" class="doc_header"><code>ismin_torch</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L812" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ismin_torch</code>(<strong><code>min_version</code></strong>)</p>
+<h4 id="ismin_torch" class="doc_header"><code>ismin_torch</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L820" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ismin_torch</code>(<strong><code>min_version</code></strong>)</p>
 </blockquote>
 <p>Check if <code>torch.__version__</code> &gt;= <code>min_version</code> using packaging.version</p>
 
@@ -4920,7 +5005,7 @@ rewinds: 0.246 0.363 0.227
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="notmax_torch" class="doc_header"><code>notmax_torch</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L817" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>notmax_torch</code>(<strong><code>max_version</code></strong>)</p>
+<h4 id="notmax_torch" class="doc_header"><code>notmax_torch</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L825" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>notmax_torch</code>(<strong><code>max_version</code></strong>)</p>
 </blockquote>
 <p>Check if <code>torch.__version__</code> &lt; <code>max_version</code> using packaging.version</p>
 

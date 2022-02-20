@@ -60,9 +60,116 @@ nb_path: "nbs/08_vision.data.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_grid" class="doc_header"><code>get_grid</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/data.py#L13" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_grid</code>(<strong><code>n</code></strong>, <strong><code>nrows</code></strong>=<em><code>None</code></em>, <strong><code>ncols</code></strong>=<em><code>None</code></em>, <strong><code>add_vert</code></strong>=<em><code>0</code></em>, <strong><code>figsize</code></strong>=<em><code>None</code></em>, <strong><code>double</code></strong>=<em><code>False</code></em>, <strong><code>title</code></strong>=<em><code>None</code></em>, <strong><code>return_fig</code></strong>=<em><code>False</code></em>, <strong><code>flatten</code></strong>=<em><code>True</code></em>, <strong><code>imsize</code></strong>=<em><code>3</code></em>, <strong><code>suptitle</code></strong>=<em><code>None</code></em>, <strong><code>sharex</code></strong>=<em><code>False</code></em>, <strong><code>sharey</code></strong>=<em><code>False</code></em>, <strong><code>squeeze</code></strong>=<em><code>True</code></em>, <strong><code>subplot_kw</code></strong>=<em><code>None</code></em>, <strong><code>gridspec_kw</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="get_grid" class="doc_header"><code>get_grid</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/data.py#L13" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_grid</code>(<strong><code>n</code></strong>:<code>int</code>, <strong><code>nrows</code></strong>:<code>int</code>=<em><code>None</code></em>, <strong><code>ncols</code></strong>:<code>int</code>=<em><code>None</code></em>, <strong><code>add_vert</code></strong>=<em><code>0</code></em>, <strong><code>figsize</code></strong>:<code>tuple</code>=<em><code>None</code></em>, <strong><code>double</code></strong>=<em><code>False</code></em>, <strong><code>title</code></strong>:<code>str</code>=<em><code>None</code></em>, <strong><code>return_fig</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>flatten</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>imsize</code></strong>:<code>int</code>=<em><code>3</code></em>, <strong><code>suptitle</code></strong>=<em><code>None</code></em>, <strong><code>sharex</code></strong>=<em><code>False</code></em>, <strong><code>sharey</code></strong>=<em><code>False</code></em>, <strong><code>squeeze</code></strong>=<em><code>True</code></em>, <strong><code>subplot_kw</code></strong>=<em><code>None</code></em>, <strong><code>gridspec_kw</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Return a grid of <code>n</code> axes, <code>rows</code> by <code>cols</code></p>
+<table>
+<thead><tr>
+<th></th>
+<th>Type</th>
+<th>Default</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>n</code></strong></td>
+<td><code>int</code></td>
+<td></td>
+<td>Number of axes in the returned grid</td>
+</tr>
+<tr>
+<td><strong><code>nrows</code></strong></td>
+<td><code>int</code></td>
+<td><code>None</code></td>
+<td>Number of rows in the returned grid, defaulting to <code>int(math.sqrt(n))</code></td>
+</tr>
+<tr>
+<td><strong><code>ncols</code></strong></td>
+<td><code>int</code></td>
+<td><code>None</code></td>
+<td>Number of columns in the returned grid, defaulting to <code>ceil(n/rows)</code></td>
+</tr>
+<tr>
+<td><strong><code>add_vert</code></strong></td>
+<td><code>int</code></td>
+<td><code>0</code></td>
+<td><em>No Content</em></td>
+</tr>
+<tr>
+<td><strong><code>figsize</code></strong></td>
+<td><code>tuple</code></td>
+<td><code>None</code></td>
+<td>Width, height in inches of the returned figure</td>
+</tr>
+<tr>
+<td><strong><code>double</code></strong></td>
+<td><code>bool</code></td>
+<td><code>False</code></td>
+<td>Whether to double the number of columns and <code>n</code></td>
+</tr>
+<tr>
+<td><strong><code>title</code></strong></td>
+<td><code>str</code></td>
+<td><code>None</code></td>
+<td>If passed, title set to the figure</td>
+</tr>
+<tr>
+<td><strong><code>return_fig</code></strong></td>
+<td><code>bool</code></td>
+<td><code>False</code></td>
+<td>Whether to return the figure created by <code>subplots</code></td>
+</tr>
+<tr>
+<td><strong><code>flatten</code></strong></td>
+<td><code>bool</code></td>
+<td><code>True</code></td>
+<td>Whether to flatten the matplot axes such that they can be iterated over with a single loop</td>
+</tr>
+<tr>
+<td><strong><code>imsize</code></strong></td>
+<td><code>int</code></td>
+<td><code>3</code></td>
+<td><em>No Content</em></td>
+</tr>
+<tr>
+<td><strong><code>suptitle</code></strong></td>
+<td><code>NoneType</code></td>
+<td><code>None</code></td>
+<td><em>No Content</em></td>
+</tr>
+<tr>
+<td><strong><code>sharex</code></strong></td>
+<td><code>bool</code></td>
+<td><code>False</code></td>
+<td><em>No Content</em></td>
+</tr>
+<tr>
+<td><strong><code>sharey</code></strong></td>
+<td><code>bool</code></td>
+<td><code>False</code></td>
+<td><em>No Content</em></td>
+</tr>
+<tr>
+<td><strong><code>squeeze</code></strong></td>
+<td><code>bool</code></td>
+<td><code>True</code></td>
+<td><em>No Content</em></td>
+</tr>
+<tr>
+<td><strong><code>subplot_kw</code></strong></td>
+<td><code>NoneType</code></td>
+<td><code>None</code></td>
+<td><em>No Content</em></td>
+</tr>
+<tr>
+<td><strong><code>gridspec_kw</code></strong></td>
+<td><code>NoneType</code></td>
+<td><code>None</code></td>
+<td><em>No Content</em></td>
+</tr>
+</tbody>
+</table>
 
 </div>
 
@@ -83,7 +190,7 @@ nb_path: "nbs/08_vision.data.ipynb"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>This is used by the type-dispatched versions of <code>show_batch</code> and <code>show_results</code> for the vision application. By default, there will be <code>int(math.sqrt(n))</code> rows and <code>ceil(n/rows)</code> columns. <code>double</code> will double the number of columns and <code>n</code>. The default <code>figsize</code> is <code>(cols*imsize, rows*imsize+add_vert)</code>. If a <code>title</code> is passed it is set to the figure. <code>sharex</code>, <code>sharey</code>, <code>squeeze</code>, <code>subplot_kw</code> and <code>gridspec_kw</code> are all passed down to <code>plt.subplots</code>. If <code>return_fig</code> is <code>True</code>, returns <code>fig,axs</code>, otherwise just <code>axs</code>. <a href="https://fastcore.fast.ai/basics#flatten"><code>flatten</code></a> will flatten the matplot axes such that they can be iterated over with a single loop.</p>
+<p>This is used by the type-dispatched versions of <code>show_batch</code> and <code>show_results</code> for the vision application. The default <code>figsize</code> is <code>(cols*imsize, rows*imsize+0.6)</code>. <code>imsize</code> is passed down to <a href="/torch_core.html#subplots"><code>subplots</code></a>. <code>suptitle</code>, <code>sharex</code>, <code>sharey</code>, <code>squeeze</code>, <code>subplot_kw</code> and <code>gridspec_kw</code> are all passed down to <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.subplots.html#matplotlib-pyplot-subplots">plt.subplots</a>. If <code>return_fig</code> is <code>True</code>, returns <code>fig,axs</code>, otherwise just <code>axs</code>.</p>
 
 </div>
 </div>
@@ -99,9 +206,32 @@ nb_path: "nbs/08_vision.data.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="clip_remove_empty" class="doc_header"><code>clip_remove_empty</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/data.py#L31" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>clip_remove_empty</code>(<strong><code>bbox</code></strong>, <strong><code>label</code></strong>)</p>
+<h4 id="clip_remove_empty" class="doc_header"><code>clip_remove_empty</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/data.py#L41" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>clip_remove_empty</code>(<strong><code>bbox</code></strong>:<a href="/vision.core.html#TensorBBox"><code>TensorBBox</code></a>, <strong><code>label</code></strong>:<a href="/torch_core.html#TensorMultiCategory"><code>TensorMultiCategory</code></a>)</p>
 </blockquote>
-<p>Clip bounding boxes with image border and label background the empty ones</p>
+<p>Clip bounding boxes with image border and remove empty boxes along with corresponding labels</p>
+<table>
+<thead><tr>
+<th></th>
+<th>Type</th>
+<th>Default</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>bbox</code></strong></td>
+<td><code>TensorBBox</code></td>
+<td></td>
+<td>Coordinates of bounding boxes</td>
+</tr>
+<tr>
+<td><strong><code>label</code></strong></td>
+<td><code>TensorMultiCategory</code></td>
+<td></td>
+<td>Labels of the bounding boxes</td>
+</tr>
+</tbody>
+</table>
 
 </div>
 
@@ -120,6 +250,13 @@ nb_path: "nbs/08_vision.data.ipynb"
 </div>
     {% endraw %}
 
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This is used in <a href="/vision.data.html#bb_pad"><code>bb_pad</code></a></p>
+
+</div>
+</div>
+</div>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -151,9 +288,32 @@ nb_path: "nbs/08_vision.data.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="bb_pad" class="doc_header"><code>bb_pad</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/data.py#L38" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>bb_pad</code>(<strong><code>samples</code></strong>, <strong><code>pad_idx</code></strong>=<em><code>0</code></em>)</p>
+<h4 id="bb_pad" class="doc_header"><code>bb_pad</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/data.py#L51" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>bb_pad</code>(<strong><code>samples</code></strong>, <strong><code>pad_idx</code></strong>=<em><code>0</code></em>)</p>
 </blockquote>
-<p>Function that collect <code>samples</code> of labelled bboxes and adds padding with <code>pad_idx</code>.</p>
+<p>Function that collects <code>samples</code> of labelled bboxes and adds padding with <code>pad_idx</code>.</p>
+<table>
+<thead><tr>
+<th></th>
+<th>Type</th>
+<th>Default</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>samples</code></strong></td>
+<td></td>
+<td></td>
+<td>List of 3-tuples like (image, bounding_boxes, labels)</td>
+</tr>
+<tr>
+<td><strong><code>pad_idx</code></strong></td>
+<td><code>int</code></td>
+<td><code>0</code></td>
+<td>Label that will be used to pad each list of labels</td>
+</tr>
+</tbody>
+</table>
 
 </div>
 
@@ -172,6 +332,13 @@ nb_path: "nbs/08_vision.data.ipynb"
 </div>
     {% endraw %}
 
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This is used in <a href="/vision.data.html#BBoxBlock"><code>BBoxBlock</code></a></p>
+
+</div>
+</div>
+</div>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -240,7 +407,7 @@ nb_path: "nbs/08_vision.data.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ImageBlock" class="doc_header"><code>ImageBlock</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/data.py#L64" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ImageBlock</code>()</p>
+<h4 id="ImageBlock" class="doc_header"><code>ImageBlock</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/data.py#L80" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ImageBlock</code>()</p>
 </blockquote>
 <p>A <a href="/data.block.html#TransformBlock"><code>TransformBlock</code></a> for images of <code>cls</code></p>
 
@@ -272,7 +439,7 @@ nb_path: "nbs/08_vision.data.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="MaskBlock" class="doc_header"><code>MaskBlock</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/data.py#L69" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>MaskBlock</code>(<strong><code>codes</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="MaskBlock" class="doc_header"><code>MaskBlock</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/data.py#L85" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>MaskBlock</code>(<strong><code>codes</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>A <a href="/data.block.html#TransformBlock"><code>TransformBlock</code></a> for segmentation masks, potentially with <code>codes</code></p>
 
@@ -357,7 +524,7 @@ nb_path: "nbs/08_vision.data.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="BBoxLblBlock" class="doc_header"><code>BBoxLblBlock</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/data.py#L81" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>BBoxLblBlock</code>(<strong><code>vocab</code></strong>=<em><code>None</code></em>, <strong><code>add_na</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="BBoxLblBlock" class="doc_header"><code>BBoxLblBlock</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/data.py#L97" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>BBoxLblBlock</code>(<strong><code>vocab</code></strong>=<em><code>None</code></em>, <strong><code>add_na</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 <p>A <a href="/data.block.html#TransformBlock"><code>TransformBlock</code></a> for labeled bounding boxes, potentially with <code>vocab</code></p>
 
@@ -396,7 +563,7 @@ nb_path: "nbs/08_vision.data.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ImageDataLoaders" class="doc_header"><code>class</code> <code>ImageDataLoaders</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/data.py#L86" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ImageDataLoaders</code>(<strong>*<code>loaders</code></strong>, <strong><code>path</code></strong>=<em><code>'.'</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>) :: <a href="/data.core.html#DataLoaders"><code>DataLoaders</code></a></p>
+<h2 id="ImageDataLoaders" class="doc_header"><code>class</code> <code>ImageDataLoaders</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/data.py#L102" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ImageDataLoaders</code>(<strong>*<code>loaders</code></strong>, <strong><code>path</code></strong>=<em><code>'.'</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>) :: <a href="/data.core.html#DataLoaders"><code>DataLoaders</code></a></p>
 </blockquote>
 <p>Basic wrapper around several <a href="/data.load.html#DataLoader"><code>DataLoader</code></a>s with factory methods for computer vision problems</p>
 
@@ -443,7 +610,7 @@ nb_path: "nbs/08_vision.data.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ImageDataLoaders.from_folder" class="doc_header"><code>ImageDataLoaders.from_folder</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/data.py#L88" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ImageDataLoaders.from_folder</code>(<strong><code>path</code></strong>, <strong><code>train</code></strong>=<em><code>'train'</code></em>, <strong><code>valid</code></strong>=<em><code>'valid'</code></em>, <strong><code>valid_pct</code></strong>=<em><code>None</code></em>, <strong><code>seed</code></strong>=<em><code>None</code></em>, <strong><code>vocab</code></strong>=<em><code>None</code></em>, <strong><code>item_tfms</code></strong>=<em><code>None</code></em>, <strong><code>batch_tfms</code></strong>=<em><code>None</code></em>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>val_bs</code></strong>=<em><code>None</code></em>, <strong><code>shuffle</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="ImageDataLoaders.from_folder" class="doc_header"><code>ImageDataLoaders.from_folder</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/data.py#L104" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ImageDataLoaders.from_folder</code>(<strong><code>path</code></strong>, <strong><code>train</code></strong>=<em><code>'train'</code></em>, <strong><code>valid</code></strong>=<em><code>'valid'</code></em>, <strong><code>valid_pct</code></strong>=<em><code>None</code></em>, <strong><code>seed</code></strong>=<em><code>None</code></em>, <strong><code>vocab</code></strong>=<em><code>None</code></em>, <strong><code>item_tfms</code></strong>=<em><code>None</code></em>, <strong><code>batch_tfms</code></strong>=<em><code>None</code></em>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>val_bs</code></strong>=<em><code>None</code></em>, <strong><code>shuffle</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Create from imagenet style dataset in <code>path</code> with <code>train</code> and <code>valid</code> subfolders (or provide <code>valid_pct</code>)</p>
 
@@ -537,7 +704,7 @@ nb_path: "nbs/08_vision.data.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ImageDataLoaders.from_path_func" class="doc_header"><code>ImageDataLoaders.from_path_func</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/data.py#L103" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ImageDataLoaders.from_path_func</code>(<strong><code>path</code></strong>, <strong><code>fnames</code></strong>, <strong><code>label_func</code></strong>, <strong><code>valid_pct</code></strong>=<em><code>0.2</code></em>, <strong><code>seed</code></strong>=<em><code>None</code></em>, <strong><code>item_tfms</code></strong>=<em><code>None</code></em>, <strong><code>batch_tfms</code></strong>=<em><code>None</code></em>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>val_bs</code></strong>=<em><code>None</code></em>, <strong><code>shuffle</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="ImageDataLoaders.from_path_func" class="doc_header"><code>ImageDataLoaders.from_path_func</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/data.py#L119" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ImageDataLoaders.from_path_func</code>(<strong><code>path</code></strong>, <strong><code>fnames</code></strong>, <strong><code>label_func</code></strong>, <strong><code>valid_pct</code></strong>=<em><code>0.2</code></em>, <strong><code>seed</code></strong>=<em><code>None</code></em>, <strong><code>item_tfms</code></strong>=<em><code>None</code></em>, <strong><code>batch_tfms</code></strong>=<em><code>None</code></em>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>val_bs</code></strong>=<em><code>None</code></em>, <strong><code>shuffle</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Create from list of <code>fnames</code> in <code>path</code>s with <code>label_func</code></p>
 
@@ -596,7 +763,7 @@ nb_path: "nbs/08_vision.data.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ImageDataLoaders.from_path_re" class="doc_header"><code>ImageDataLoaders.from_path_re</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/data.py#L123" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ImageDataLoaders.from_path_re</code>(<strong><code>path</code></strong>, <strong><code>fnames</code></strong>, <strong><code>pat</code></strong>, <strong><code>valid_pct</code></strong>=<em><code>0.2</code></em>, <strong><code>seed</code></strong>=<em><code>None</code></em>, <strong><code>item_tfms</code></strong>=<em><code>None</code></em>, <strong><code>batch_tfms</code></strong>=<em><code>None</code></em>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>val_bs</code></strong>=<em><code>None</code></em>, <strong><code>shuffle</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="ImageDataLoaders.from_path_re" class="doc_header"><code>ImageDataLoaders.from_path_re</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/data.py#L139" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ImageDataLoaders.from_path_re</code>(<strong><code>path</code></strong>, <strong><code>fnames</code></strong>, <strong><code>pat</code></strong>, <strong><code>valid_pct</code></strong>=<em><code>0.2</code></em>, <strong><code>seed</code></strong>=<em><code>None</code></em>, <strong><code>item_tfms</code></strong>=<em><code>None</code></em>, <strong><code>batch_tfms</code></strong>=<em><code>None</code></em>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>val_bs</code></strong>=<em><code>None</code></em>, <strong><code>shuffle</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Create from list of <code>fnames</code> in <code>path</code>s with re expression <code>pat</code></p>
 
@@ -647,7 +814,7 @@ nb_path: "nbs/08_vision.data.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ImageDataLoaders.from_name_func" class="doc_header"><code>ImageDataLoaders.from_name_func</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/data.py#L114" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ImageDataLoaders.from_name_func</code>(<strong><code>path</code></strong>, <strong><code>fnames</code></strong>, <strong><code>label_func</code></strong>, <strong><code>valid_pct</code></strong>=<em><code>0.2</code></em>, <strong><code>seed</code></strong>=<em><code>None</code></em>, <strong><code>item_tfms</code></strong>=<em><code>None</code></em>, <strong><code>batch_tfms</code></strong>=<em><code>None</code></em>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>val_bs</code></strong>=<em><code>None</code></em>, <strong><code>shuffle</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="ImageDataLoaders.from_name_func" class="doc_header"><code>ImageDataLoaders.from_name_func</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/data.py#L130" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ImageDataLoaders.from_name_func</code>(<strong><code>path</code></strong>, <strong><code>fnames</code></strong>, <strong><code>label_func</code></strong>, <strong><code>valid_pct</code></strong>=<em><code>0.2</code></em>, <strong><code>seed</code></strong>=<em><code>None</code></em>, <strong><code>item_tfms</code></strong>=<em><code>None</code></em>, <strong><code>batch_tfms</code></strong>=<em><code>None</code></em>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>val_bs</code></strong>=<em><code>None</code></em>, <strong><code>shuffle</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Create from the name attrs of <code>fnames</code> in <code>path</code>s with <code>label_func</code></p>
 
@@ -679,7 +846,7 @@ nb_path: "nbs/08_vision.data.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ImageDataLoaders.from_name_re" class="doc_header"><code>ImageDataLoaders.from_name_re</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/data.py#L128" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ImageDataLoaders.from_name_re</code>(<strong><code>path</code></strong>, <strong><code>fnames</code></strong>, <strong><code>pat</code></strong>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>val_bs</code></strong>=<em><code>None</code></em>, <strong><code>shuffle</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="ImageDataLoaders.from_name_re" class="doc_header"><code>ImageDataLoaders.from_name_re</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/data.py#L144" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ImageDataLoaders.from_name_re</code>(<strong><code>path</code></strong>, <strong><code>fnames</code></strong>, <strong><code>pat</code></strong>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>val_bs</code></strong>=<em><code>None</code></em>, <strong><code>shuffle</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Create from the name attrs of <code>fnames</code> in <code>path</code>s with re expression <code>pat</code></p>
 
@@ -711,7 +878,7 @@ nb_path: "nbs/08_vision.data.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ImageDataLoaders.from_df" class="doc_header"><code>ImageDataLoaders.from_df</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/data.py#L134" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ImageDataLoaders.from_df</code>(<strong><code>df</code></strong>, <strong><code>path</code></strong>=<em><code>'.'</code></em>, <strong><code>valid_pct</code></strong>=<em><code>0.2</code></em>, <strong><code>seed</code></strong>=<em><code>None</code></em>, <strong><code>fn_col</code></strong>=<em><code>0</code></em>, <strong><code>folder</code></strong>=<em><code>None</code></em>, <strong><code>suff</code></strong>=<em><code>''</code></em>, <strong><code>label_col</code></strong>=<em><code>1</code></em>, <strong><code>label_delim</code></strong>=<em><code>None</code></em>, <strong><code>y_block</code></strong>=<em><code>None</code></em>, <strong><code>valid_col</code></strong>=<em><code>None</code></em>, <strong><code>item_tfms</code></strong>=<em><code>None</code></em>, <strong><code>batch_tfms</code></strong>=<em><code>None</code></em>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>val_bs</code></strong>=<em><code>None</code></em>, <strong><code>shuffle</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="ImageDataLoaders.from_df" class="doc_header"><code>ImageDataLoaders.from_df</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/data.py#L150" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ImageDataLoaders.from_df</code>(<strong><code>df</code></strong>, <strong><code>path</code></strong>=<em><code>'.'</code></em>, <strong><code>valid_pct</code></strong>=<em><code>0.2</code></em>, <strong><code>seed</code></strong>=<em><code>None</code></em>, <strong><code>fn_col</code></strong>=<em><code>0</code></em>, <strong><code>folder</code></strong>=<em><code>None</code></em>, <strong><code>suff</code></strong>=<em><code>''</code></em>, <strong><code>label_col</code></strong>=<em><code>1</code></em>, <strong><code>label_delim</code></strong>=<em><code>None</code></em>, <strong><code>y_block</code></strong>=<em><code>None</code></em>, <strong><code>valid_col</code></strong>=<em><code>None</code></em>, <strong><code>item_tfms</code></strong>=<em><code>None</code></em>, <strong><code>batch_tfms</code></strong>=<em><code>None</code></em>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>val_bs</code></strong>=<em><code>None</code></em>, <strong><code>shuffle</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Create from <code>df</code> using <code>fn_col</code> and <code>label_col</code></p>
 
@@ -971,7 +1138,7 @@ nb_path: "nbs/08_vision.data.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ImageDataLoaders.from_csv" class="doc_header"><code>ImageDataLoaders.from_csv</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/data.py#L152" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ImageDataLoaders.from_csv</code>(<strong><code>path</code></strong>, <strong><code>csv_fname</code></strong>=<em><code>'labels.csv'</code></em>, <strong><code>header</code></strong>=<em><code>'infer'</code></em>, <strong><code>delimiter</code></strong>=<em><code>None</code></em>, <strong><code>valid_pct</code></strong>=<em><code>0.2</code></em>, <strong><code>seed</code></strong>=<em><code>None</code></em>, <strong><code>fn_col</code></strong>=<em><code>0</code></em>, <strong><code>folder</code></strong>=<em><code>None</code></em>, <strong><code>suff</code></strong>=<em><code>''</code></em>, <strong><code>label_col</code></strong>=<em><code>1</code></em>, <strong><code>label_delim</code></strong>=<em><code>None</code></em>, <strong><code>y_block</code></strong>=<em><code>None</code></em>, <strong><code>valid_col</code></strong>=<em><code>None</code></em>, <strong><code>item_tfms</code></strong>=<em><code>None</code></em>, <strong><code>batch_tfms</code></strong>=<em><code>None</code></em>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>val_bs</code></strong>=<em><code>None</code></em>, <strong><code>shuffle</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="ImageDataLoaders.from_csv" class="doc_header"><code>ImageDataLoaders.from_csv</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/data.py#L168" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ImageDataLoaders.from_csv</code>(<strong><code>path</code></strong>, <strong><code>csv_fname</code></strong>=<em><code>'labels.csv'</code></em>, <strong><code>header</code></strong>=<em><code>'infer'</code></em>, <strong><code>delimiter</code></strong>=<em><code>None</code></em>, <strong><code>valid_pct</code></strong>=<em><code>0.2</code></em>, <strong><code>seed</code></strong>=<em><code>None</code></em>, <strong><code>fn_col</code></strong>=<em><code>0</code></em>, <strong><code>folder</code></strong>=<em><code>None</code></em>, <strong><code>suff</code></strong>=<em><code>''</code></em>, <strong><code>label_col</code></strong>=<em><code>1</code></em>, <strong><code>label_delim</code></strong>=<em><code>None</code></em>, <strong><code>y_block</code></strong>=<em><code>None</code></em>, <strong><code>valid_col</code></strong>=<em><code>None</code></em>, <strong><code>item_tfms</code></strong>=<em><code>None</code></em>, <strong><code>batch_tfms</code></strong>=<em><code>None</code></em>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>val_bs</code></strong>=<em><code>None</code></em>, <strong><code>shuffle</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Create from <code>path/csv_fname</code> using <code>fn_col</code> and <code>label_col</code></p>
 
@@ -1021,7 +1188,7 @@ nb_path: "nbs/08_vision.data.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ImageDataLoaders.from_lists" class="doc_header"><code>ImageDataLoaders.from_lists</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/data.py#L158" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ImageDataLoaders.from_lists</code>(<strong><code>path</code></strong>, <strong><code>fnames</code></strong>, <strong><code>labels</code></strong>, <strong><code>valid_pct</code></strong>=<em><code>0.2</code></em>, <strong><code>seed</code></strong>:<code>int</code>=<em><code>None</code></em>, <strong><code>y_block</code></strong>=<em><code>None</code></em>, <strong><code>item_tfms</code></strong>=<em><code>None</code></em>, <strong><code>batch_tfms</code></strong>=<em><code>None</code></em>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>val_bs</code></strong>=<em><code>None</code></em>, <strong><code>shuffle</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="ImageDataLoaders.from_lists" class="doc_header"><code>ImageDataLoaders.from_lists</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/data.py#L174" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ImageDataLoaders.from_lists</code>(<strong><code>path</code></strong>, <strong><code>fnames</code></strong>, <strong><code>labels</code></strong>, <strong><code>valid_pct</code></strong>=<em><code>0.2</code></em>, <strong><code>seed</code></strong>:<code>int</code>=<em><code>None</code></em>, <strong><code>y_block</code></strong>=<em><code>None</code></em>, <strong><code>item_tfms</code></strong>=<em><code>None</code></em>, <strong><code>batch_tfms</code></strong>=<em><code>None</code></em>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>val_bs</code></strong>=<em><code>None</code></em>, <strong><code>shuffle</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Create from list of <code>fnames</code> and <code>labels</code> in <code>path</code></p>
 
@@ -1073,7 +1240,7 @@ nb_path: "nbs/08_vision.data.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="SegmentationDataLoaders" class="doc_header"><code>class</code> <code>SegmentationDataLoaders</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/data.py#L178" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SegmentationDataLoaders</code>(<strong>*<code>loaders</code></strong>, <strong><code>path</code></strong>=<em><code>'.'</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>) :: <a href="/data.core.html#DataLoaders"><code>DataLoaders</code></a></p>
+<h2 id="SegmentationDataLoaders" class="doc_header"><code>class</code> <code>SegmentationDataLoaders</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/data.py#L194" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SegmentationDataLoaders</code>(<strong>*<code>loaders</code></strong>, <strong><code>path</code></strong>=<em><code>'.'</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>) :: <a href="/data.core.html#DataLoaders"><code>DataLoaders</code></a></p>
 </blockquote>
 <p>Basic wrapper around several <a href="/data.load.html#DataLoader"><code>DataLoader</code></a>s with factory methods for segmentation problems</p>
 
@@ -1105,7 +1272,7 @@ nb_path: "nbs/08_vision.data.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="SegmentationDataLoaders.from_label_func" class="doc_header"><code>SegmentationDataLoaders.from_label_func</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/data.py#L180" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>SegmentationDataLoaders.from_label_func</code>(<strong><code>path</code></strong>, <strong><code>fnames</code></strong>, <strong><code>label_func</code></strong>, <strong><code>valid_pct</code></strong>=<em><code>0.2</code></em>, <strong><code>seed</code></strong>=<em><code>None</code></em>, <strong><code>codes</code></strong>=<em><code>None</code></em>, <strong><code>item_tfms</code></strong>=<em><code>None</code></em>, <strong><code>batch_tfms</code></strong>=<em><code>None</code></em>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>val_bs</code></strong>=<em><code>None</code></em>, <strong><code>shuffle</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="SegmentationDataLoaders.from_label_func" class="doc_header"><code>SegmentationDataLoaders.from_label_func</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/data.py#L196" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>SegmentationDataLoaders.from_label_func</code>(<strong><code>path</code></strong>, <strong><code>fnames</code></strong>, <strong><code>label_func</code></strong>, <strong><code>valid_pct</code></strong>=<em><code>0.2</code></em>, <strong><code>seed</code></strong>=<em><code>None</code></em>, <strong><code>codes</code></strong>=<em><code>None</code></em>, <strong><code>item_tfms</code></strong>=<em><code>None</code></em>, <strong><code>batch_tfms</code></strong>=<em><code>None</code></em>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>val_bs</code></strong>=<em><code>None</code></em>, <strong><code>shuffle</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Create from list of <code>fnames</code> in <code>path</code>s with <code>label_func</code>.</p>
 
