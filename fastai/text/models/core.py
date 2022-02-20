@@ -7,7 +7,6 @@ __all__ = ['LinearDecoder', 'SequentialRNN', 'get_language_model', 'SentenceEnco
 from ...data.all import *
 from ..core import *
 from .awdlstm import *
-from typing import List
 
 # Cell
 _model_meta = {AWD_LSTM: {'hid_name':'emb_sz', 'url':URLs.WT103_FWD, 'url_bwd':URLs.WT103_BWD,
@@ -50,7 +49,7 @@ class SequentialRNN(nn.Sequential):
 
 # Cell
 def get_language_model(
-    arch:type, # Class defining language model architecture
+    arch:callable, # Function or class that can generate a language model architecture
     vocab_sz:int, # Size of the vocabulary
     config:dict=None, # Model configuration dictionary
     drop_mult:float=1. # Multiplicative factor to scale all dropout probabilities in `config`
@@ -81,7 +80,9 @@ class SentenceEncoder(Module):
         module:nn.Module, # Wrapped module
         pad_idx:int=1, # Padding token id
         max_len:int=None # Maximal output length
-    ): store_attr('bptt,module,pad_idx,max_len')
+    ):
+        store_attr('bptt,module,pad_idx,max_len')
+
     def reset(self): getattr(self.module, 'reset', noop)()
 
     def forward(self, input):
@@ -103,9 +104,9 @@ class SentenceEncoder(Module):
 # Cell
 def masked_concat_pool(
     output:Tensor, # Output of sentence encoder
-    mask:Tensor, # Boolian mask as returned by sentence encoder
+    mask:Tensor, # Boolean mask as returned by sentence encoder
     bptt:int # Backpropagation through time
-) -> Tensor: # Concattenation of [last_hidden, max_pool, avg_pool]
+) -> Tensor: # Concatenation of [last_hidden, max_pool, avg_pool]
     "Pool `MultiBatchEncoder` outputs into one vector [last_hidden, max_pool, avg_pool]"
     lens = output.shape[1] - mask.long().sum(dim=1)
     last_lens = mask[:,-bptt:].long().sum(dim=1)
@@ -119,8 +120,8 @@ def masked_concat_pool(
 class PoolingLinearClassifier(Module):
     "Create a linear classifier with pooling"
     def __init__(self,
-        dims:List[int], # List of hidden sizes for MLP
-        ps:List[float], # List of dropout probabilities
+        dims:list, # List of hidden sizes for MLP as `int`s
+        ps:list, # List of dropout probabilities as `float`s
         bptt:int, # Backpropagation through time
         y_range:tuple=None # Tuple of (low, high) output value bounds
      ):
@@ -139,14 +140,14 @@ class PoolingLinearClassifier(Module):
 
 # Cell
 def get_text_classifier(
-    arch:type, # Class defining language model architecture
+    arch:callable, # Function or class that can generate a language model architecture
     vocab_sz:int, # Size of the vocabulary
     n_class:int, # Number of classes
     seq_len:int=72, # Backpropagation through time
     config:dict=None, # Encoder configuration dictionary
     drop_mult:float=1., # Multiplicative factor to scale all dropout probabilities in `config`
-    lin_ftrs:List[int]=None, # List of hidden sizes for classifier head
-    ps:List[float]=None, # List of dropout probabilities for classifier head
+    lin_ftrs:list=None, # List of hidden sizes for classifier head as `int`s
+    ps:list=None, # List of dropout probabilities for classifier head as `float`s
     pad_idx:int=1, # Padding token id
     max_len:int=72*20, # Maximal output length for `SentenceEncoder`
     y_range:tuple=None # Tuple of (low, high) output value bounds
