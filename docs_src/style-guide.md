@@ -96,3 +96,11 @@ def dihedral(x:TensorImage,
     if k in [3,5,6,7]: x = x.transpose(-1,-2)
     return x
 ```
+
+## Notes
+
+* Don't use `typing` library.
+* All arguments should be aligned with method name column.
+* Only `cls` and `self` should be on same line of method name and first argument of `@patch` like `x` on `dihedral` sample.
+* Closing parenthesis should be aligned with `def`.
+* Keyword arguments (`**kwags`) should not be documented. (NOTE: not needed for the sprint, but see if `@delegates` can be used to automatically document keyword args).
