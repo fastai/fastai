@@ -13,8 +13,8 @@ class TabularDataLoaders(DataLoaders):
     @classmethod
     @delegates(Tabular.dataloaders, but=["dl_type", "dl_kwargs"])
     def from_df(cls,
-                df:pd.DataFrame, # A Dataframe object
-                path:str='.', # Location of `df` (defaults to current working directory otherwise)
+                df:pd.DataFrame,
+                path:(str,Path)='.', # Location of `df` (defaults to current working directory otherwise)
                 procs:TabularProc=None, # List of `TabularProc`s (non-lazy `Transform`s) applied on object inplace
                 cat_names:list=None, # Column names pertaining to Categorical variables
                 cont_names:list=None, # Column names pertaining to Continuous variables
@@ -22,7 +22,7 @@ class TabularDataLoaders(DataLoaders):
                 y_block:TransformBlock=None, # `TransformBlock` to use for the Target
                 valid_idx:list=None, # List of indices to use for the Validation set (defaults to a random split otherwise)
                 **kwargs):
-        "Create `TabularDataLoaders` from `df` in `path` using a list of `TabularProc`s"
+        "Create `TabularDataLoaders` from `df` in `path` using `procs`"
         if cat_names is None: cat_names = []
         if cont_names is None: cont_names = list(set(df)-set(L(cat_names))-set(L(y_names)))
         splits = RandomSplitter()(df) if valid_idx is None else IndexSplitter(valid_idx)(df)
@@ -31,10 +31,10 @@ class TabularDataLoaders(DataLoaders):
 
     @classmethod
     def from_csv(cls,
-                 csv:str, # Location of a `csv` file
+                 csv:(str,Path,io.BufferedReader), # str, path object or file-like object
                  skipinitialspace:bool=True, # Skip spaces after delimiter
                  **kwargs):
-        "Create `DataLoaders` from `csv` file in `path` using `procs`"
+        "Create `TabularDataLoaders` from `csv` file in `path` using `procs`"
         return cls.from_df(pd.read_csv(csv, skipinitialspace=skipinitialspace), **kwargs)
 
     @delegates(TabDataLoader.__init__)
@@ -44,7 +44,7 @@ class TabularDataLoaders(DataLoaders):
                 process:bool=True, # Apply validation `TabularProc`s (non-lazy `Transform`s) on `test_items` if `True`
                 inplace:bool=False, # Keep separate copy of original `test_items` in memory if `False`
                 **kwargs):
-        "Create Test `DataLoader` from `test_items` using `procs`"
+        "Create Test `TabDataLoader` from `test_items` using validation `procs`"
         to = self.train_ds.new(test_items, inplace=inplace)
         if process: to.process()
         return self.valid.new(to, **kwargs)
