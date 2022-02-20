@@ -68,9 +68,44 @@ nb_path: "nbs/20_interpret.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="Interpretation" class="doc_header"><code>class</code> <code>Interpretation</code><a href="https://github.com/fastai/fastai/tree/master/fastai/interpret.py#L21" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>Interpretation</code>(<strong><code>learn</code></strong>, <strong><code>dl</code></strong>, <strong><code>losses</code></strong>, <strong><code>act</code></strong>=<em><code>None</code></em>)</p>
+<h3 id="Interpretation" class="doc_header"><code>class</code> <code>Interpretation</code><a href="https://github.com/fastai/fastai/tree/master/fastai/interpret.py#L21" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>Interpretation</code>(<strong><code>learn</code></strong>, <strong><code>dl</code></strong>:<a href="/data.load.html#DataLoader"><code>DataLoader</code></a>, <strong><code>losses</code></strong>:<a href="/torch_core.html#TensorBase"><code>TensorBase</code></a>, <strong><code>act</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Interpretation base class, can be inherited for task specific Interpretation classes</p>
+<table>
+<thead><tr>
+<th></th>
+<th>Type</th>
+<th>Default</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>learn</code></strong></td>
+<td></td>
+<td></td>
+<td>Model to be interpreted</td>
+</tr>
+<tr>
+<td><strong><code>dl</code></strong></td>
+<td><a href="/data.load.html#DataLoader"><code>DataLoader</code></a></td>
+<td></td>
+<td><a href="/data.load.html#DataLoader"><code>DataLoader</code></a> for the model</td>
+</tr>
+<tr>
+<td><strong><a href="/losses.html"><code>losses</code></a></strong></td>
+<td><a href="/torch_core.html#TensorBase"><code>TensorBase</code></a></td>
+<td></td>
+<td>Losses calculated from the model</td>
+</tr>
+<tr>
+<td><strong><code>act</code></strong></td>
+<td><code>NoneType</code></td>
+<td><code>None</code></td>
+<td>Activation function for prediction</td>
+</tr>
+</tbody>
+</table>
 
 </div>
 
@@ -101,9 +136,44 @@ nb_path: "nbs/20_interpret.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="Interpretation.from_learner" class="doc_header"><code>Interpretation.from_learner</code><a href="https://github.com/fastai/fastai/tree/master/fastai/interpret.py#L36" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>Interpretation.from_learner</code>(<strong><code>learn</code></strong>, <strong><code>ds_idx</code></strong>=<em><code>1</code></em>, <strong><code>dl</code></strong>=<em><code>None</code></em>, <strong><code>act</code></strong>=<em><code>None</code></em>)</p>
+<h3 id="Interpretation.from_learner" class="doc_header"><code>Interpretation.from_learner</code><a href="https://github.com/fastai/fastai/tree/master/fastai/interpret.py#L41" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>Interpretation.from_learner</code>(<strong><code>learn</code></strong>, <strong><code>ds_idx</code></strong>:<code>int</code>=<em><code>1</code></em>, <strong><code>dl</code></strong>:<a href="/data.load.html#DataLoader"><code>DataLoader</code></a>=<em><code>None</code></em>, <strong><code>act</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Construct interpretation object from a learner</p>
+<table>
+<thead><tr>
+<th></th>
+<th>Type</th>
+<th>Default</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>learn</code></strong></td>
+<td></td>
+<td></td>
+<td>Model used to create interpretation</td>
+</tr>
+<tr>
+<td><strong><code>ds_idx</code></strong></td>
+<td><code>int</code></td>
+<td><code>1</code></td>
+<td>Index of <a href="/data.load.html#DataLoader"><code>DataLoader</code></a> when dl is None</td>
+</tr>
+<tr>
+<td><strong><code>dl</code></strong></td>
+<td><a href="/data.load.html#DataLoader"><code>DataLoader</code></a></td>
+<td><code>None</code></td>
+<td><code>Dataloader</code> used to make predictions</td>
+</tr>
+<tr>
+<td><strong><code>act</code></strong></td>
+<td><code>NoneType</code></td>
+<td><code>None</code></td>
+<td>Activation function for prediction</td>
+</tr>
+</tbody>
+</table>
 
 </div>
 
@@ -126,9 +196,44 @@ nb_path: "nbs/20_interpret.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="Interpretation.top_losses" class="doc_header"><code>Interpretation.top_losses</code><a href="https://github.com/fastai/fastai/tree/master/fastai/interpret.py#L44" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>Interpretation.top_losses</code>(<strong><code>k</code></strong>=<em><code>None</code></em>, <strong><code>largest</code></strong>=<em><code>True</code></em>, <strong><code>items</code></strong>=<em><code>False</code></em>)</p>
+<h3 id="Interpretation.top_losses" class="doc_header"><code>Interpretation.top_losses</code><a href="https://github.com/fastai/fastai/tree/master/fastai/interpret.py#L54" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>Interpretation.top_losses</code>(<strong><code>k</code></strong>:<code>(&lt;class 'int'&gt;, None)</code>=<em><code>None</code></em>, <strong><code>largest</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>items</code></strong>:<code>bool</code>=<em><code>False</code></em>)</p>
 </blockquote>
-<p><code>k</code> largest(/smallest) losses and indexes, defaulting to all losses (sorted by <code>largest</code>). Optionally include items.</p>
+<p><code>k</code> largest(/smallest) losses and indexes, defaulting to all losses.</p>
+<table>
+<thead><tr>
+<th></th>
+<th>Type</th>
+<th>Default</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>k</code></strong></td>
+<td><code>(int, None)</code></td>
+<td><code>None</code></td>
+<td>Number of losses and None for entire <code>Dataset</code>'s losses</td>
+</tr>
+<tr>
+<td><strong><code>largest</code></strong></td>
+<td><code>bool</code></td>
+<td><code>True</code></td>
+<td>Sort losses by largest or smallest</td>
+</tr>
+<tr>
+<td><strong><code>items</code></strong></td>
+<td><code>bool</code></td>
+<td><code>False</code></td>
+<td>Whether to return input item for each loss</td>
+</tr>
+<tr>
+<td><strong>Returns</strong></td>
+<td><code>tuple</code></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
 
 </div>
 
@@ -158,9 +263,38 @@ nb_path: "nbs/20_interpret.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="Interpretation.plot_top_losses" class="doc_header"><code>Interpretation.plot_top_losses</code><a href="https://github.com/fastai/fastai/tree/master/fastai/interpret.py#L50" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>Interpretation.plot_top_losses</code>(<strong><code>k</code></strong>, <strong><code>largest</code></strong>=<em><code>True</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h3 id="Interpretation.plot_top_losses" class="doc_header"><code>Interpretation.plot_top_losses</code><a href="https://github.com/fastai/fastai/tree/master/fastai/interpret.py#L64" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>Interpretation.plot_top_losses</code>(<strong><code>k</code></strong>:<code>(&lt;class 'int'&gt;, [&lt;class 'int'&gt;])</code>, <strong><code>largest</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
-<p>Show <code>k</code> largest(/smallest) preds and losses. <code>k</code> may be int, list, or <code>range</code> of desired results.</p>
+<p>Show <code>k</code> largest(/smallest) preds and losses. Implementation based on type dispatch</p>
+<table>
+<thead><tr>
+<th></th>
+<th>Type</th>
+<th>Default</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>k</code></strong></td>
+<td><code>(int, [&lt;class 'int'&gt;])</code></td>
+<td></td>
+<td>Number of losses to plot</td>
+</tr>
+<tr>
+<td><strong><code>largest</code></strong></td>
+<td><code>bool</code></td>
+<td><code>True</code></td>
+<td>Sort losses by largest or smallest</td>
+</tr>
+<tr>
+<td><strong><code>kwargs</code></strong></td>
+<td></td>
+<td></td>
+<td><em>No Content</em></td>
+</tr>
+</tbody>
+</table>
 
 </div>
 
@@ -196,9 +330,32 @@ nb_path: "nbs/20_interpret.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="Interpretation.show_results" class="doc_header"><code>Interpretation.show_results</code><a href="https://github.com/fastai/fastai/tree/master/fastai/interpret.py#L66" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>Interpretation.show_results</code>(<strong><code>idxs</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
+<h3 id="Interpretation.show_results" class="doc_header"><code>Interpretation.show_results</code><a href="https://github.com/fastai/fastai/tree/master/fastai/interpret.py#L84" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>Interpretation.show_results</code>(<strong><code>idxs</code></strong>:<code>TensorBase'&gt;, &lt;class 'list'&gt;)</code>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Show predictions and targets of <code>idxs</code></p>
+<table>
+<thead><tr>
+<th></th>
+<th>Type</th>
+<th>Default</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>idxs</code></strong></td>
+<td><code>(TensorBase, list)</code></td>
+<td></td>
+<td>Index of predictions and targets</td>
+</tr>
+<tr>
+<td><strong><code>kwargs</code></strong></td>
+<td></td>
+<td></td>
+<td><em>No Content</em></td>
+</tr>
+</tbody>
+</table>
 
 </div>
 
@@ -228,7 +385,7 @@ nb_path: "nbs/20_interpret.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ClassificationInterpretation" class="doc_header"><code>class</code> <code>ClassificationInterpretation</code><a href="https://github.com/fastai/fastai/tree/master/fastai/interpret.py#L75" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ClassificationInterpretation</code>(<strong><code>learn</code></strong>, <strong><code>dl</code></strong>, <strong><code>losses</code></strong>, <strong><code>act</code></strong>=<em><code>None</code></em>) :: <a href="/interpret.html#Interpretation"><code>Interpretation</code></a></p>
+<h2 id="ClassificationInterpretation" class="doc_header"><code>class</code> <code>ClassificationInterpretation</code><a href="https://github.com/fastai/fastai/tree/master/fastai/interpret.py#L96" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ClassificationInterpretation</code>(<strong><code>learn</code></strong>, <strong><code>dl</code></strong>, <strong><code>losses</code></strong>, <strong><code>act</code></strong>=<em><code>None</code></em>) :: <a href="/interpret.html#Interpretation"><code>Interpretation</code></a></p>
 </blockquote>
 <p>Interpretation methods for classification models.</p>
 
@@ -260,9 +417,44 @@ nb_path: "nbs/20_interpret.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="SegmentationInterpretation" class="doc_header"><code>class</code> <code>SegmentationInterpretation</code><a href="https://github.com/fastai/fastai/tree/master/fastai/interpret.py#L135" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SegmentationInterpretation</code>(<strong><code>learn</code></strong>, <strong><code>dl</code></strong>, <strong><code>losses</code></strong>, <strong><code>act</code></strong>=<em><code>None</code></em>) :: <a href="/interpret.html#Interpretation"><code>Interpretation</code></a></p>
+<h2 id="SegmentationInterpretation" class="doc_header"><code>class</code> <code>SegmentationInterpretation</code><a href="https://github.com/fastai/fastai/tree/master/fastai/interpret.py#L156" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SegmentationInterpretation</code>(<strong><code>learn</code></strong>, <strong><code>dl</code></strong>:<a href="/data.load.html#DataLoader"><code>DataLoader</code></a>, <strong><code>losses</code></strong>:<a href="/torch_core.html#TensorBase"><code>TensorBase</code></a>, <strong><code>act</code></strong>=<em><code>None</code></em>) :: <a href="/interpret.html#Interpretation"><code>Interpretation</code></a></p>
 </blockquote>
 <p>Interpretation methods for segmentation models.</p>
+<table>
+<thead><tr>
+<th></th>
+<th>Type</th>
+<th>Default</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>learn</code></strong></td>
+<td></td>
+<td></td>
+<td>Model to be interpreted</td>
+</tr>
+<tr>
+<td><strong><code>dl</code></strong></td>
+<td><a href="/data.load.html#DataLoader"><code>DataLoader</code></a></td>
+<td></td>
+<td><a href="/data.load.html#DataLoader"><code>DataLoader</code></a> for the model</td>
+</tr>
+<tr>
+<td><strong><a href="/losses.html"><code>losses</code></a></strong></td>
+<td><a href="/torch_core.html#TensorBase"><code>TensorBase</code></a></td>
+<td></td>
+<td>Losses calculated from the model</td>
+</tr>
+<tr>
+<td><strong><code>act</code></strong></td>
+<td><code>NoneType</code></td>
+<td><code>None</code></td>
+<td>Activation function for prediction</td>
+</tr>
+</tbody>
+</table>
 
 </div>
 
