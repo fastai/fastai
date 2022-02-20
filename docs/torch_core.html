@@ -84,9 +84,9 @@ nb_path: "nbs/00_torch_core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="subplots" class="doc_header"><code>subplots</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L32" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>subplots</code>(<strong><code>nrows</code></strong>:<code>int</code>=<em><code>1</code></em>, <strong><code>ncols</code></strong>:<code>int</code>=<em><code>1</code></em>, <strong><code>figsize</code></strong>:<code>tuple</code>=<em><code>None</code></em>, <strong><code>imsize</code></strong>:<code>int</code>=<em><code>3</code></em>, <strong><code>suptitle</code></strong>=<em><code>None</code></em>, <strong><code>sharex</code></strong>=<em><code>False</code></em>, <strong><code>sharey</code></strong>=<em><code>False</code></em>, <strong><code>squeeze</code></strong>=<em><code>True</code></em>, <strong><code>subplot_kw</code></strong>=<em><code>None</code></em>, <strong><code>gridspec_kw</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="subplots" class="doc_header"><code>subplots</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L32" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>subplots</code>(<strong><code>nrows</code></strong>=<em><code>1</code></em>, <strong><code>ncols</code></strong>=<em><code>1</code></em>, <strong><code>figsize</code></strong>=<em><code>None</code></em>, <strong><code>imsize</code></strong>=<em><code>3</code></em>, <strong><code>suptitle</code></strong>=<em><code>None</code></em>, <strong><code>sharex</code></strong>=<em><code>False</code></em>, <strong><code>sharey</code></strong>=<em><code>False</code></em>, <strong><code>squeeze</code></strong>=<em><code>True</code></em>, <strong><code>subplot_kw</code></strong>=<em><code>None</code></em>, <strong><code>gridspec_kw</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
-<p>Returns a figure and set of subplots to display images of <code>imsize</code></p>
+<p>Returns a figure and set of subplots to display images of <code>imsize</code> inches</p>
 <table>
 <thead><tr>
 <th></th>
@@ -110,7 +110,7 @@ nb_path: "nbs/00_torch_core.ipynb"
 </tr>
 <tr>
 <td><strong><code>figsize</code></strong></td>
-<td><code>tuple</code></td>
+<td><code>NoneType</code></td>
 <td><code>None</code></td>
 <td>Width, height in inches of the returned figure</td>
 </tr>
@@ -124,7 +124,7 @@ nb_path: "nbs/00_torch_core.ipynb"
 <td><strong><code>suptitle</code></strong></td>
 <td><code>NoneType</code></td>
 <td><code>None</code></td>
-<td>Title to be set to reutrned figure</td>
+<td>Title to be set to returned figure</td>
 </tr>
 <tr>
 <td><strong><code>sharex</code></strong></td>
@@ -438,7 +438,7 @@ nb_path: "nbs/00_torch_core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="show_images" class="doc_header"><code>show_images</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L82" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>show_images</code>(<strong><code>ims</code></strong>, <strong><code>nrows</code></strong>=<em><code>1</code></em>, <strong><code>ncols</code></strong>=<em><code>None</code></em>, <strong><code>titles</code></strong>=<em><code>None</code></em>, <strong><code>figsize</code></strong>:<code>tuple</code>=<em><code>None</code></em>, <strong><code>imsize</code></strong>:<code>int</code>=<em><code>3</code></em>, <strong><code>suptitle</code></strong>=<em><code>None</code></em>, <strong><code>sharex</code></strong>=<em><code>False</code></em>, <strong><code>sharey</code></strong>=<em><code>False</code></em>, <strong><code>squeeze</code></strong>=<em><code>True</code></em>, <strong><code>subplot_kw</code></strong>=<em><code>None</code></em>, <strong><code>gridspec_kw</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="show_images" class="doc_header"><code>show_images</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L82" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>show_images</code>(<strong><code>ims</code></strong>, <strong><code>nrows</code></strong>=<em><code>1</code></em>, <strong><code>ncols</code></strong>=<em><code>None</code></em>, <strong><code>titles</code></strong>=<em><code>None</code></em>, <strong><code>figsize</code></strong>=<em><code>None</code></em>, <strong><code>imsize</code></strong>=<em><code>3</code></em>, <strong><code>suptitle</code></strong>=<em><code>None</code></em>, <strong><code>sharex</code></strong>=<em><code>False</code></em>, <strong><code>sharey</code></strong>=<em><code>False</code></em>, <strong><code>squeeze</code></strong>=<em><code>True</code></em>, <strong><code>subplot_kw</code></strong>=<em><code>None</code></em>, <strong><code>gridspec_kw</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Show all images <code>ims</code> as subplots with <code>rows</code> using <code>titles</code>.</p>
 
