@@ -156,6 +156,13 @@ so need a mechanism to get this dynamic loss scale larger if it's safe to do so.
     
 <div class="cell border-box-sizing code_cell rendered">
 
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
 <div class="output_wrapper">
 <div class="output">
 
@@ -181,13 +188,6 @@ so need a mechanism to get this dynamic loss scale larger if it's safe to do so.
     
 <div class="cell border-box-sizing code_cell rendered">
 
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
 <div class="output_wrapper">
 <div class="output">
 
@@ -195,7 +195,7 @@ so need a mechanism to get this dynamic loss scale larger if it's safe to do so.
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="FP16TestCallback" class="doc_header"><code>class</code> <code>FP16TestCallback</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/fp16.py#L39" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FP16TestCallback</code>(<strong><code>after_create</code></strong>=<em><code>None</code></em>, <strong><code>before_fit</code></strong>=<em><code>None</code></em>, <strong><code>before_epoch</code></strong>=<em><code>None</code></em>, <strong><code>before_train</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_pred</code></strong>=<em><code>None</code></em>, <strong><code>after_loss</code></strong>=<em><code>None</code></em>, <strong><code>before_backward</code></strong>=<em><code>None</code></em>, <strong><code>before_step</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_step</code></strong>=<em><code>None</code></em>, <strong><code>after_step</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_train</code></strong>=<em><code>None</code></em>, <strong><code>after_train</code></strong>=<em><code>None</code></em>, <strong><code>before_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_epoch</code></strong>=<em><code>None</code></em>, <strong><code>after_epoch</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_fit</code></strong>=<em><code>None</code></em>, <strong><code>after_fit</code></strong>=<em><code>None</code></em>) :: <a href="/callback.core.html#Callback"><code>Callback</code></a></p>
+<h2 id="FP16TestCallback" class="doc_header"><code>class</code> <code>FP16TestCallback</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/fp16.py#L44" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FP16TestCallback</code>(<strong><code>after_create</code></strong>=<em><code>None</code></em>, <strong><code>before_fit</code></strong>=<em><code>None</code></em>, <strong><code>before_epoch</code></strong>=<em><code>None</code></em>, <strong><code>before_train</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_pred</code></strong>=<em><code>None</code></em>, <strong><code>after_loss</code></strong>=<em><code>None</code></em>, <strong><code>before_backward</code></strong>=<em><code>None</code></em>, <strong><code>before_step</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_step</code></strong>=<em><code>None</code></em>, <strong><code>after_step</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_train</code></strong>=<em><code>None</code></em>, <strong><code>after_train</code></strong>=<em><code>None</code></em>, <strong><code>before_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_epoch</code></strong>=<em><code>None</code></em>, <strong><code>after_epoch</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_fit</code></strong>=<em><code>None</code></em>, <strong><code>after_fit</code></strong>=<em><code>None</code></em>) :: <a href="/callback.core.html#Callback"><code>Callback</code></a></p>
 </blockquote>
 <p>Asserts that predictions are <code>float16</code> values</p>
 
@@ -242,7 +242,8 @@ so need a mechanism to get this dynamic loss scale larger if it's safe to do so.
 <div class="output_area">
 
 
-<div class="output_html rendered_html output_subarea "><table border="1" class="dataframe">
+<div class="output_html rendered_html output_subarea ">
+<table border="1" class="dataframe">
   <thead>
     <tr style="text-align: left;">
       <th>epoch</th>
@@ -271,7 +272,8 @@ so need a mechanism to get this dynamic loss scale larger if it's safe to do so.
       <td>00:00</td>
     </tr>
   </tbody>
-</table></div>
+</table>
+</div>
 
 </div>
 
@@ -292,7 +294,7 @@ so need a mechanism to get this dynamic loss scale larger if it's safe to do so.
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Learner.to_fp16" class="doc_header"><code>Learner.to_fp16</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/fp16.py#L45" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.to_fp16</code>(<strong><code>init_scale</code></strong>=<em><code>65536.0</code></em>, <strong><code>growth_factor</code></strong>=<em><code>2.0</code></em>, <strong><code>backoff_factor</code></strong>=<em><code>0.5</code></em>, <strong><code>growth_interval</code></strong>=<em><code>2000</code></em>, <strong><code>enabled</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="Learner.to_fp16" class="doc_header"><code>Learner.to_fp16</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/fp16.py#L50" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.to_fp16</code>(<strong><code>init_scale</code></strong>=<em><code>65536.0</code></em>, <strong><code>growth_factor</code></strong>=<em><code>2.0</code></em>, <strong><code>backoff_factor</code></strong>=<em><code>0.5</code></em>, <strong><code>growth_interval</code></strong>=<em><code>2000</code></em>, <strong><code>enabled</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 
 </div>
@@ -323,7 +325,7 @@ so need a mechanism to get this dynamic loss scale larger if it's safe to do so.
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Learner.to_fp32" class="doc_header"><code>Learner.to_fp32</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/fp16.py#L50" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.to_fp32</code>()</p>
+<h4 id="Learner.to_fp32" class="doc_header"><code>Learner.to_fp32</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/fp16.py#L55" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.to_fp32</code>()</p>
 </blockquote>
 
 </div>
@@ -442,8 +444,9 @@ so need a mechanism to get this dynamic loss scale larger if it's safe to do so.
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_master" class="doc_header"><code>get_master</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/fp16.py#L60" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_master</code>(<strong><code>opt</code></strong>, <strong><code>flat_master</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="get_master" class="doc_header"><code>get_master</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/fp16.py#L65" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_master</code>(<strong><code>opt</code></strong>:<a href="/optimizer.html#Optimizer"><code>Optimizer</code></a>, <strong><code>flat_master</code></strong>:<code>bool</code>=<em><code>False</code></em>)</p>
 </blockquote>
+<p>Creates fp16 model params given an initialized <a href="/optimizer.html#Optimizer"><code>Optimizer</code></a>, also returning fp32 model params.</p>
 
 </div>
 
@@ -486,8 +489,9 @@ so need a mechanism to get this dynamic loss scale larger if it's safe to do so.
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="to_master_grads" class="doc_header"><code>to_master_grads</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/fp16.py#L74" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>to_master_grads</code>(<strong><code>model_pgs</code></strong>, <strong><code>master_pgs</code></strong>, <strong><code>flat_master</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="to_master_grads" class="doc_header"><code>to_master_grads</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/fp16.py#L82" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>to_master_grads</code>(<strong><code>model_pgs</code></strong>:<code>Parameter'&gt;]]</code>, <strong><code>master_pgs</code></strong>:<code>Parameter'&gt;]]</code>, <strong><code>flat_master</code></strong>:<code>bool</code>=<em><code>False</code></em>)</p>
 </blockquote>
+<p>Move fp16 model gradients to fp32 master gradients</p>
 
 </div>
 
@@ -530,8 +534,9 @@ so need a mechanism to get this dynamic loss scale larger if it's safe to do so.
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="to_model_params" class="doc_header"><code>to_model_params</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/fp16.py#L79" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>to_model_params</code>(<strong><code>model_pgs</code></strong>, <strong><code>master_pgs</code></strong>, <strong><code>flat_master</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="to_model_params" class="doc_header"><code>to_model_params</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/fp16.py#L91" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>to_model_params</code>(<strong><code>model_pgs</code></strong>:<code>Parameter'&gt;]]</code>, <strong><code>master_pgs</code></strong>:<code>Parameter'&gt;]]</code>, <strong><code>flat_master</code></strong>:<code>bool</code>=<em><code>False</code></em>)</p>
 </blockquote>
+<p>Copy updated fp32 master params to fp16 model params after gradient step.</p>
 
 </div>
 
@@ -574,8 +579,9 @@ so need a mechanism to get this dynamic loss scale larger if it's safe to do so.
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="test_overflow" class="doc_header"><code>test_overflow</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/fp16.py#L84" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>test_overflow</code>(<strong><code>x</code></strong>)</p>
+<h4 id="test_overflow" class="doc_header"><code>test_overflow</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/fp16.py#L100" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>test_overflow</code>(<strong><code>x</code></strong>:<code>Tensor</code>)</p>
 </blockquote>
+<p>Tests whether fp16 gradients have overflowed.</p>
 
 </div>
 
@@ -632,8 +638,9 @@ so need a mechanism to get this dynamic loss scale larger if it's safe to do so.
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="grad_overflow" class="doc_header"><code>grad_overflow</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/fp16.py#L89" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>grad_overflow</code>(<strong><code>pgs</code></strong>)</p>
+<h4 id="grad_overflow" class="doc_header"><code>grad_overflow</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/fp16.py#L107" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>grad_overflow</code>(<strong><code>pgs</code></strong>:<code>Parameter'&gt;]]</code>)</p>
 </blockquote>
+<p>Tests all fp16 parameters in pgs for gradient overflow</p>
 
 </div>
 
@@ -663,7 +670,7 @@ so need a mechanism to get this dynamic loss scale larger if it's safe to do so.
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="copy_clone" class="doc_header"><code>copy_clone</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/fp16.py#L96" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>copy_clone</code>(<strong><code>d</code></strong>)</p>
+<h4 id="copy_clone" class="doc_header"><code>copy_clone</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/fp16.py#L116" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>copy_clone</code>(<strong><code>d</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -701,7 +708,7 @@ so need a mechanism to get this dynamic loss scale larger if it's safe to do so.
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ModelToHalf" class="doc_header"><code>class</code> <code>ModelToHalf</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/fp16.py#L106" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ModelToHalf</code>(<strong><code>after_create</code></strong>=<em><code>None</code></em>, <strong><code>before_fit</code></strong>=<em><code>None</code></em>, <strong><code>before_epoch</code></strong>=<em><code>None</code></em>, <strong><code>before_train</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_pred</code></strong>=<em><code>None</code></em>, <strong><code>after_loss</code></strong>=<em><code>None</code></em>, <strong><code>before_backward</code></strong>=<em><code>None</code></em>, <strong><code>before_step</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_step</code></strong>=<em><code>None</code></em>, <strong><code>after_step</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_train</code></strong>=<em><code>None</code></em>, <strong><code>after_train</code></strong>=<em><code>None</code></em>, <strong><code>before_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_epoch</code></strong>=<em><code>None</code></em>, <strong><code>after_epoch</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_fit</code></strong>=<em><code>None</code></em>, <strong><code>after_fit</code></strong>=<em><code>None</code></em>) :: <a href="/callback.core.html#Callback"><code>Callback</code></a></p>
+<h2 id="ModelToHalf" class="doc_header"><code>class</code> <code>ModelToHalf</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/fp16.py#L126" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ModelToHalf</code>(<strong><code>after_create</code></strong>=<em><code>None</code></em>, <strong><code>before_fit</code></strong>=<em><code>None</code></em>, <strong><code>before_epoch</code></strong>=<em><code>None</code></em>, <strong><code>before_train</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_pred</code></strong>=<em><code>None</code></em>, <strong><code>after_loss</code></strong>=<em><code>None</code></em>, <strong><code>before_backward</code></strong>=<em><code>None</code></em>, <strong><code>before_step</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_step</code></strong>=<em><code>None</code></em>, <strong><code>after_step</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_train</code></strong>=<em><code>None</code></em>, <strong><code>after_train</code></strong>=<em><code>None</code></em>, <strong><code>before_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_epoch</code></strong>=<em><code>None</code></em>, <strong><code>after_epoch</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_fit</code></strong>=<em><code>None</code></em>, <strong><code>after_fit</code></strong>=<em><code>None</code></em>) :: <a href="/callback.core.html#Callback"><code>Callback</code></a></p>
 </blockquote>
 <p>Use with NonNativeMixedPrecision callback (but it needs to run at the very beginning)</p>
 
@@ -733,7 +740,7 @@ so need a mechanism to get this dynamic loss scale larger if it's safe to do so.
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="NonNativeMixedPrecision" class="doc_header"><code>class</code> <code>NonNativeMixedPrecision</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/fp16.py#L113" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>NonNativeMixedPrecision</code>(<strong><code>loss_scale</code></strong>=<em><code>512</code></em>, <strong><code>flat_master</code></strong>=<em><code>False</code></em>, <strong><code>dynamic</code></strong>=<em><code>True</code></em>, <strong><code>max_loss_scale</code></strong>=<em><code>16777216.0</code></em>, <strong><code>div_factor</code></strong>=<em><code>2.0</code></em>, <strong><code>scale_wait</code></strong>=<em><code>500</code></em>, <strong><code>clip</code></strong>=<em><code>None</code></em>) :: <a href="/callback.core.html#Callback"><code>Callback</code></a></p>
+<h2 id="NonNativeMixedPrecision" class="doc_header"><code>class</code> <code>NonNativeMixedPrecision</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/fp16.py#L133" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>NonNativeMixedPrecision</code>(<strong><code>loss_scale</code></strong>:<code>int</code>=<em><code>512</code></em>, <strong><code>flat_master</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>dynamic</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>max_loss_scale</code></strong>:<code>float</code>=<em><code>16777216.0</code></em>, <strong><code>div_factor</code></strong>:<code>float</code>=<em><code>2.0</code></em>, <strong><code>scale_wait</code></strong>:<code>int</code>=<em><code>500</code></em>, <strong><code>clip</code></strong>:<code>float</code>=<em><code>None</code></em>) :: <a href="/callback.core.html#Callback"><code>Callback</code></a></p>
 </blockquote>
 <p>Run training in mixed precision</p>
 
@@ -765,7 +772,7 @@ so need a mechanism to get this dynamic loss scale larger if it's safe to do so.
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Learner.to_non_native_fp16" class="doc_header"><code>Learner.to_non_native_fp16</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/fp16.py#L181" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.to_non_native_fp16</code>(<strong><code>loss_scale</code></strong>=<em><code>512</code></em>, <strong><code>flat_master</code></strong>=<em><code>False</code></em>, <strong><code>dynamic</code></strong>=<em><code>True</code></em>, <strong><code>max_loss_scale</code></strong>=<em><code>16777216.0</code></em>, <strong><code>div_factor</code></strong>=<em><code>2.0</code></em>, <strong><code>scale_wait</code></strong>=<em><code>500</code></em>, <strong><code>clip</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="Learner.to_non_native_fp16" class="doc_header"><code>Learner.to_non_native_fp16</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/fp16.py#L211" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.to_non_native_fp16</code>(<strong><code>loss_scale</code></strong>:<code>int</code>=<em><code>512</code></em>, <strong><code>flat_master</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>dynamic</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>max_loss_scale</code></strong>:<code>float</code>=<em><code>16777216.0</code></em>, <strong><code>div_factor</code></strong>:<code>float</code>=<em><code>2.0</code></em>, <strong><code>scale_wait</code></strong>:<code>int</code>=<em><code>500</code></em>, <strong><code>clip</code></strong>:<code>float</code>=<em><code>None</code></em>)</p>
 </blockquote>
 
 </div>
@@ -812,7 +819,8 @@ so need a mechanism to get this dynamic loss scale larger if it's safe to do so.
 <div class="output_area">
 
 
-<div class="output_html rendered_html output_subarea "><table border="1" class="dataframe">
+<div class="output_html rendered_html output_subarea ">
+<table border="1" class="dataframe">
   <thead>
     <tr style="text-align: left;">
       <th>epoch</th>
@@ -841,7 +849,8 @@ so need a mechanism to get this dynamic loss scale larger if it's safe to do so.
       <td>00:00</td>
     </tr>
   </tbody>
-</table></div>
+</table>
+</div>
 
 </div>
 
@@ -862,7 +871,7 @@ so need a mechanism to get this dynamic loss scale larger if it's safe to do so.
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Learner.to_non_native_fp32" class="doc_header"><code>Learner.to_non_native_fp32</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/fp16.py#L186" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.to_non_native_fp32</code>()</p>
+<h4 id="Learner.to_non_native_fp32" class="doc_header"><code>Learner.to_non_native_fp32</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/fp16.py#L216" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.to_non_native_fp32</code>()</p>
 </blockquote>
 
 </div>

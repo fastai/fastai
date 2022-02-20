@@ -24,16 +24,20 @@ class MixedPrecision(Callback):
     def after_loss(self): self.autocast.__exit__(None, None, None)
     def before_backward(self): self.learn.loss_grad = self.scaler.scale(self.loss_grad)
     def before_step(self):
-        "Prepare to use `self` as a fake optimizer"
+        "Use `self` as a fake optimizer. `self.skipped` will be set to True `after_step` if gradients overflow. "
         self.skipped=True
         self.scaler.step(self)
         if self.skipped: raise CancelStepException()
         self.scales.append(self.scaler.get_scale())
     def after_step(self): self.learn.scaler.update()
 
-    @property # pretend to be an optimizer for `GradScaler`
-    def param_groups(self): return self.opt.param_groups
-    def step(self, *args, **kwargs): self.skipped=False
+    @property
+    def param_groups(self):
+        "Pretend to be an optimizer for `GradScaler`"
+        return self.opt.param_groups
+    def step(self, *args, **kwargs):
+        "Fake optimizer step to detect whether this batch was skipped from `GradScaler`"
+        self.skipped=False
     def after_fit(self): self.autocast,self.learn.scaler,self.scales = None,None,None
 
 # Cell
@@ -59,8 +63,8 @@ from torch.nn.utils import parameters_to_vector
 
 # Cell
 def get_master(opt:Optimizer, # Optimizer from which to retrieve model params
-               flat_master:bool=False, # flatten fp32 params into a vector for better performance
-              ) -> [[[nn.Parameter]],[[nn.Parameter]]]: # list of fp16 params, and list of fp32 params
+    flat_master:bool=False, # Flatten fp32 params into a vector for better performance
+    ) -> [[[nn.Parameter]],[[nn.Parameter]]]: # list of fp16 params, and list of fp32 params
     "Creates fp16 model params given an initialized `Optimizer`, also returning fp32 model params. "
     model_params = [[param for param in pg if getattr(param, 'requires_grad', False) and hasattr(param, 'data')] for pg in opt.param_lists]
     if flat_master:
@@ -75,19 +79,19 @@ def get_master(opt:Optimizer, # Optimizer from which to retrieve model params
     return model_params, master_params
 
 # Cell
-def to_master_grads( model_pgs:[[nn.Parameter]], # fp16 model parameters to copy gradients from
-                    master_pgs:[[nn.Parameter]], # fp32 model parameters to copt gradients to
-                    flat_master:bool=False, # Whether or not fp32 parameters were previously flattened
-                   ):
+def to_master_grads( model_pgs:[[nn.Parameter]], # Fp16 model parameters to copy gradients from
+    master_pgs:[[nn.Parameter]], # Fp32 model parameters to copt gradients to
+    flat_master:bool=False, # Whether or not fp32 parameters were previously flattened
+    ):
     "Move fp16 model gradients to fp32 master gradients"
     for (model_params,master_params) in zip(model_pgs,master_pgs):
         model_grads_to_master_grads(model_params, master_params, flat_master=flat_master)
 
 # Cell
 def to_model_params(model_pgs:[[nn.Parameter]], # fp16 model params to copy to
-                    master_pgs:[[nn.Parameter]], # fp32 master params to copy from
-                    flat_master:bool=False # Whether master_pgs was previously flattened
-                   )->None:
+    master_pgs:[[nn.Parameter]], # fp32 master params to copy from
+    flat_master:bool=False # Whether master_pgs was previously flattened
+    )->None:
     "Copy updated fp32 master params to fp16 model params after gradient step. "
     for (model_params,master_params) in zip(model_pgs,master_pgs):
         master_params_to_model_params(model_params, master_params, flat_master=flat_master)
@@ -101,7 +105,7 @@ def test_overflow(x:torch.Tensor # fp16 gradients
 
 # Cell
 def grad_overflow(pgs:[[nn.Parameter]] # fp16 parameter groups to test for overflow
-                 )->bool:
+    )->bool:
     "Tests all fp16 parameters in pgs for gradient overflow"
     for pg in pgs:
         for p in pg:
@@ -131,13 +135,13 @@ class NonNativeMixedPrecision(Callback):
     "Run training in mixed precision"
     order=10
     def __init__(self,
-                 loss_scale:int=512, # loss scale to use if not using dynamic
-                 flat_master:bool=False, # whether to flatten fp32 parameters for performance
-                 dynamic:bool=True, # Whther to automatically determine loss scaling
-                 max_loss_scale:float=2.**24, # Starting value for dynamic loss scaling
-                 div_factor:float=2., # Divide by this on overflow, multiply by this after scale_wait batches
-                 scale_wait:int=500, # Number of batches to wait for increasing loss scale
-                 clip:float=None): # max_norm, value to clip gradients at, as in `nn.utils.clip_grad_norm_`
+        loss_scale:int=512, # loss scale to use if not using dynamic
+        flat_master:bool=False, # whether to flatten fp32 parameters for performance
+        dynamic:bool=True, # Whther to automatically determine loss scaling
+        max_loss_scale:float=2.**24, # Starting value for dynamic loss scaling
+        div_factor:float=2., # Divide by this on overflow, multiply by this after scale_wait batches
+        scale_wait:int=500, # Number of batches to wait for increasing loss scale
+        clip:float=None): # max_norm, value to clip gradients at, as in `nn.utils.clip_grad_norm_`
         assert torch.backends.cudnn.enabled, "Mixed precision training requires cudnn."
         self.flat_master,self.dynamic,self.max_loss_scale = flat_master,dynamic,max_loss_scale
         self.div_factor,self.scale_wait,self.clip = div_factor,scale_wait,clip
