@@ -105,8 +105,16 @@ for c,d in _ex_docs.items(): mk_class(c,sup=Exception,doc=d)
 class GatherPredsCallback(Callback):
     "`Callback` that returns all predictions and targets, optionally `with_input` or `with_loss`"
     _stateattrs=('preds','targets','inputs','losses')
-    def __init__(self, with_input=False, with_loss=False, save_preds=None, save_targs=None,
-                 with_preds=True, with_targs=True, concat_dim=0, pickle_protocol=2):
+    def __init__(self,
+    with_input:bool=False, # Whether to gather and return the inputs
+    with_loss:bool=False, # Whether to gather and return the losses
+    save_preds:(str, os.PathLike)=None, # Path to save the predictions
+    save_targs:(str, os.PathLike)=None, # Path to save the targets
+    with_preds:bool=True, # Whether to gather and return the predictions
+    with_targs:bool=True, # Whether to gather and return the targets
+    concat_dim:int=0, # The dimension on which to concatenate all the tensors
+    pickle_protocol:int=2 # The pickle protocol to use for saving the predictions and targets
+    ):
         store_attr()
 
     def before_batch(self):
@@ -142,6 +150,7 @@ class GatherPredsCallback(Callback):
         if self.with_loss:  self.losses  = to_concat(self.losses)
 
     def all_tensors(self):
+        "Returns all recorded tensors in the order (inputs, preds, targets, losses)"
         res = [self.preds if self.with_preds else None, self.targets if self.with_targs else None]
         if self.with_input: res = [self.inputs] + res
         if self.with_loss:  res.append(self.losses)
@@ -151,7 +160,14 @@ class GatherPredsCallback(Callback):
 class FetchPredsCallback(Callback):
     "A callback to fetch predictions during the training loop"
     remove_on_fetch = True
-    def __init__(self, ds_idx=1, dl=None, with_input=False, with_decoded=False, cbs=None, reorder=True):
+    def __init__(self,
+        ds_idx:int=1, # Store and specify the index of the databunchset used in fetching `Learner` predictions if `dl` is not present
+        dl:DataLoader=None, # Store and specify the `DataLoader` used in fetching `Learner` predictions
+        with_input:bool=False, # Store and specify whether to gather inputs in `GatherPredsCallback`
+        with_decoded:bool=False, # Store and specify whether to return decoded predictions returned by the `decodes` method from the `Learner` loss function
+        cbs:list=None, # Initialize the `Learner` with this `Callback` list
+        reorder:bool=True # Store and specify whether to sort the prediction results or not
+        ):
         self.cbs = L(cbs)
         store_attr('ds_idx,dl,with_input,with_decoded,reorder')
 
