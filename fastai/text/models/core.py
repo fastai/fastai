@@ -7,6 +7,7 @@ __all__ = ['LinearDecoder', 'SequentialRNN', 'get_language_model', 'SentenceEnco
 from ...data.all import *
 from ..core import *
 from .awdlstm import *
+from typing import List
 
 # Cell
 _model_meta = {AWD_LSTM: {'hid_name':'emb_sz', 'url':URLs.WT103_FWD, 'url_bwd':URLs.WT103_BWD,
@@ -24,7 +25,13 @@ class LinearDecoder(Module):
     "To go on top of a RNNCore module and create a Language Model."
     initrange=0.1
 
-    def __init__(self, n_out, n_hid, output_p=0.1, tie_encoder=None, bias=True):
+    def __init__(self,
+        n_out:int, # Number of output channels
+        n_hid:int, # Number of features in encoder last layer output
+        output_p:float=0.1, # Input dropout probability
+        tie_encoder:nn.Module=None, # If module is supplied will tie decoder weight to `tie_encoder.weight`
+        bias:bool=True # If `False` the layer will not learn additive bias
+    ):
         self.decoder = nn.Linear(n_hid, n_out, bias=bias)
         self.decoder.weight.data.uniform_(-self.initrange, self.initrange)
         self.output_dp = RNNDropout(output_p)
@@ -42,7 +49,12 @@ class SequentialRNN(nn.Sequential):
         for c in self.children(): getattr(c, 'reset', noop)()
 
 # Cell
-def get_language_model(arch, vocab_sz, config=None, drop_mult=1.):
+def get_language_model(
+    arch:type, # Class defining language model architecture
+    vocab_sz:int, # Size of the vocabulary
+    config:dict=None, # Model configuration dictionary
+    drop_mult:float=1. # Multiplicative factor to scale all dropout probabilities in `config`
+) -> SequentialRNN: # Language model with `arch` encoder and linear decoder
     "Create a language model from `arch` and its `config`."
     meta = _model_meta[arch]
     config = ifnone(config, meta['config_lm']).copy()
@@ -57,14 +69,19 @@ def get_language_model(arch, vocab_sz, config=None, drop_mult=1.):
     return model if init is None else model.apply(init)
 
 # Cell
-def _pad_tensor(t, bs):
+def _pad_tensor(t:Tensor, bs:int) -> Tensor:
     if t.size(0) < bs: return torch.cat([t, t.new_zeros(bs-t.size(0), *t.shape[1:])])
     return t
 
 # Cell
 class SentenceEncoder(Module):
     "Create an encoder over `module` that can process a full sentence."
-    def __init__(self, bptt, module, pad_idx=1, max_len=None): store_attr('bptt,module,pad_idx,max_len')
+    def __init__(self,
+        bptt:int, # Backpropagation through time
+        module:nn.Module, # Wrapped module
+        pad_idx:int=1, # Padding token id
+        max_len:int=None # Maximal output length
+    ): store_attr('bptt,module,pad_idx,max_len')
     def reset(self): getattr(self.module, 'reset', noop)()
 
     def forward(self, input):
@@ -84,7 +101,11 @@ class SentenceEncoder(Module):
         return outs,mask
 
 # Cell
-def masked_concat_pool(output, mask, bptt):
+def masked_concat_pool(
+    output:Tensor, # Output of sentence encoder
+    mask:Tensor, # Boolian mask as returned by sentence encoder
+    bptt:int # Backpropagation through time
+) -> Tensor: # Concattenation of [last_hidden, max_pool, avg_pool]
     "Pool `MultiBatchEncoder` outputs into one vector [last_hidden, max_pool, avg_pool]"
     lens = output.shape[1] - mask.long().sum(dim=1)
     last_lens = mask[:,-bptt:].long().sum(dim=1)
@@ -97,7 +118,12 @@ def masked_concat_pool(output, mask, bptt):
 # Cell
 class PoolingLinearClassifier(Module):
     "Create a linear classifier with pooling"
-    def __init__(self, dims, ps, bptt, y_range=None):
+    def __init__(self,
+        dims:List[int], # List of hidden sizes for MLP
+        ps:List[float], # List of dropout probabilities
+        bptt:int, # Backpropagation through time
+        y_range:tuple=None # Tuple of (low, high) output value bounds
+     ):
         if len(ps) != len(dims)-1: raise ValueError("Number of layers and dropout values do not match.")
         acts = [nn.ReLU(inplace=True)] * (len(dims) - 2) + [None]
         layers = [LinBnDrop(i, o, p=p, act=a) for i,o,p,a in zip(dims[:-1], dims[1:], ps, acts)]
@@ -112,8 +138,19 @@ class PoolingLinearClassifier(Module):
         return x, out, out
 
 # Cell
-def get_text_classifier(arch, vocab_sz, n_class, seq_len=72, config=None, drop_mult=1., lin_ftrs=None,
-                        ps=None, pad_idx=1, max_len=72*20, y_range=None):
+def get_text_classifier(
+    arch:type, # Class defining language model architecture
+    vocab_sz:int, # Size of the vocabulary
+    n_class:int, # Number of classes
+    seq_len:int=72, # Backpropagation through time
+    config:dict=None, # Encoder configuration dictionary
+    drop_mult:float=1., # Multiplicative factor to scale all dropout probabilities in `config`
+    lin_ftrs:List[int]=None, # List of hidden sizes for classifier head
+    ps:List[float]=None, # List of dropout probabilities for classifier head
+    pad_idx:int=1, # Padding token id
+    max_len:int=72*20, # Maximal output length for `SentenceEncoder`
+    y_range:tuple=None # Tuple of (low, high) output value bounds
+):
     "Create a text classifier from `arch` and its `config`, maybe `pretrained`"
     meta = _model_meta[arch]
     config = ifnone(config, meta['config_clas']).copy()
