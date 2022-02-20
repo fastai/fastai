@@ -63,6 +63,41 @@ nb_path: "nbs/32_text.models.awdlstm.ipynb"
 <h4 id="dropout_mask" class="doc_header"><code>dropout_mask</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/models/awdlstm.py#L12" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>dropout_mask</code>(<strong><code>x</code></strong>:<code>Tensor</code>, <strong><code>sz</code></strong>:<code>Sequence</code>[<code>int</code>], <strong><code>p</code></strong>:<code>float</code>)</p>
 </blockquote>
 <p>Return a dropout mask of the same type as <code>x</code>, size <code>sz</code>, with probability <code>p</code> to cancel an element.</p>
+<table>
+<thead><tr>
+<th></th>
+<th>Type</th>
+<th>Default</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>x</code></strong></td>
+<td><code>Tensor</code></td>
+<td></td>
+<td>Source tensor, output will be of the same type as <code>x</code></td>
+</tr>
+<tr>
+<td><strong><code>sz</code></strong></td>
+<td><code>Sequence[int]</code></td>
+<td></td>
+<td>Size of the dropout mask</td>
+</tr>
+<tr>
+<td><strong><code>p</code></strong></td>
+<td><code>float</code></td>
+<td></td>
+<td>Dropout probability</td>
+</tr>
+<tr>
+<td><strong>Returns</strong></td>
+<td><code>Tensor</code></td>
+<td></td>
+<td>Multiplicative dropout mask</td>
+</tr>
+</tbody>
+</table>
 
 </div>
 
@@ -193,6 +228,35 @@ nb_path: "nbs/32_text.models.awdlstm.ipynb"
 <h3 id="WeightDropout" class="doc_header"><code>class</code> <code>WeightDropout</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/models/awdlstm.py#L30" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>WeightDropout</code>(<strong><code>module</code></strong>:<a href="/torch_core.html#Module"><code>Module</code></a>, <strong><code>weight_p</code></strong>:<code>float</code>, <strong><code>layer_names</code></strong>:<code>Sequence[str])</code>=<em><code>'weight_hh_l0'</code></em>) :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
 </blockquote>
 <p>A module that wraps another layer in which some weights will be replaced by 0 during training.</p>
+<table>
+<thead><tr>
+<th></th>
+<th>Type</th>
+<th>Default</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><a href="/layers.html#module"><code>module</code></a></strong></td>
+<td><a href="/torch_core.html#Module"><code>Module</code></a></td>
+<td></td>
+<td>Wrapped module</td>
+</tr>
+<tr>
+<td><strong><code>weight_p</code></strong></td>
+<td><code>float</code></td>
+<td></td>
+<td>Weight dropout probability</td>
+</tr>
+<tr>
+<td><strong><code>layer_names</code></strong></td>
+<td><code>Sequence[str])</code></td>
+<td><code>weight_hh_l0</code></td>
+<td>Names of the parameters to apply dropout to</td>
+</tr>
+</tbody>
+</table>
 
 </div>
 
@@ -256,6 +320,29 @@ nb_path: "nbs/32_text.models.awdlstm.ipynb"
 <h3 id="EmbeddingDropout" class="doc_header"><code>class</code> <code>EmbeddingDropout</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/models/awdlstm.py#L72" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>EmbeddingDropout</code>(<strong><code>emb</code></strong>:<a href="/layers.html#Embedding"><code>Embedding</code></a>, <strong><code>embed_p</code></strong>:<code>float</code>) :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
 </blockquote>
 <p>Apply dropout with probability <code>embed_p</code> to an embedding layer <code>emb</code>.</p>
+<table>
+<thead><tr>
+<th></th>
+<th>Type</th>
+<th>Default</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>emb</code></strong></td>
+<td><a href="/layers.html#Embedding"><code>Embedding</code></a></td>
+<td></td>
+<td>Wrapped embedding layer</td>
+</tr>
+<tr>
+<td><strong><code>embed_p</code></strong></td>
+<td><code>float</code></td>
+<td></td>
+<td>Embdedding <word> dropout probability</td>
+</tr>
+</tbody>
+</table>
 
 </div>
 
@@ -310,6 +397,77 @@ nb_path: "nbs/32_text.models.awdlstm.ipynb"
 <h3 id="AWD_LSTM" class="doc_header"><code>class</code> <code>AWD_LSTM</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/models/awdlstm.py#L92" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>AWD_LSTM</code>(<strong><code>vocab_sz</code></strong>:<code>int</code>, <strong><code>emb_sz</code></strong>:<code>int</code>, <strong><code>n_hid</code></strong>:<code>int</code>, <strong><code>n_layers</code></strong>:<code>int</code>, <strong><code>pad_token</code></strong>:<code>int</code>=<em><code>1</code></em>, <strong><code>hidden_p</code></strong>:<code>float</code>=<em><code>0.2</code></em>, <strong><code>input_p</code></strong>:<code>float</code>=<em><code>0.6</code></em>, <strong><code>embed_p</code></strong>:<code>float</code>=<em><code>0.1</code></em>, <strong><code>weight_p</code></strong>:<code>float</code>=<em><code>0.5</code></em>, <strong><code>bidir</code></strong>:<code>bool</code>=<em><code>False</code></em>) :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
 </blockquote>
 <p>AWD-LSTM inspired by <a href="https://arxiv.org/abs/1708.02182">https://arxiv.org/abs/1708.02182</a></p>
+<table>
+<thead><tr>
+<th></th>
+<th>Type</th>
+<th>Default</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>vocab_sz</code></strong></td>
+<td><code>int</code></td>
+<td></td>
+<td>Size of the vocabulary</td>
+</tr>
+<tr>
+<td><strong><code>emb_sz</code></strong></td>
+<td><code>int</code></td>
+<td></td>
+<td>Size of embedding vector</td>
+</tr>
+<tr>
+<td><strong><code>n_hid</code></strong></td>
+<td><code>int</code></td>
+<td></td>
+<td>Number of features in hidden state</td>
+</tr>
+<tr>
+<td><strong><code>n_layers</code></strong></td>
+<td><code>int</code></td>
+<td></td>
+<td>Number of LSTM layers</td>
+</tr>
+<tr>
+<td><strong><code>pad_token</code></strong></td>
+<td><code>int</code></td>
+<td><code>1</code></td>
+<td>Padding token id</td>
+</tr>
+<tr>
+<td><strong><code>hidden_p</code></strong></td>
+<td><code>float</code></td>
+<td><code>0.2</code></td>
+<td>Dropout probability for hidden state between layers</td>
+</tr>
+<tr>
+<td><strong><code>input_p</code></strong></td>
+<td><code>float</code></td>
+<td><code>0.6</code></td>
+<td>Dropout probability for LSTM stack input</td>
+</tr>
+<tr>
+<td><strong><code>embed_p</code></strong></td>
+<td><code>float</code></td>
+<td><code>0.1</code></td>
+<td>Embedding <word> dropout probabillity</td>
+</tr>
+<tr>
+<td><strong><code>weight_p</code></strong></td>
+<td><code>float</code></td>
+<td><code>0.5</code></td>
+<td>Hidden-to-hidden wight dropout probability for LSTM layers</td>
+</tr>
+<tr>
+<td><strong><code>bidir</code></strong></td>
+<td><code>bool</code></td>
+<td><code>False</code></td>
+<td>If set to <code>True</code> uses bidirectional LSTM layers</td>
+</tr>
+</tbody>
+</table>
 
 </div>
 
@@ -387,6 +545,29 @@ nb_path: "nbs/32_text.models.awdlstm.ipynb"
 <h4 id="awd_lstm_lm_split" class="doc_header"><code>awd_lstm_lm_split</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/models/awdlstm.py#L160" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>awd_lstm_lm_split</code>(<strong><code>model</code></strong>:<a href="/torch_core.html#Module"><code>Module</code></a>)</p>
 </blockquote>
 <p>Split a RNN <code>model</code> in groups for differential learning rates.</p>
+<table>
+<thead><tr>
+<th></th>
+<th>Type</th>
+<th>Default</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>model</code></strong></td>
+<td><a href="/torch_core.html#Module"><code>Module</code></a></td>
+<td></td>
+<td><em>No Content</em></td>
+</tr>
+<tr>
+<td><strong>Returns</strong></td>
+<td><code>Generator</code></td>
+<td></td>
+<td>Generator over parameter groups</td>
+</tr>
+</tbody>
+</table>
 
 </div>
 
@@ -426,6 +607,29 @@ nb_path: "nbs/32_text.models.awdlstm.ipynb"
 <h4 id="awd_lstm_clas_split" class="doc_header"><code>awd_lstm_clas_split</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/models/awdlstm.py#L171" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>awd_lstm_clas_split</code>(<strong><code>model</code></strong>:<a href="/torch_core.html#Module"><code>Module</code></a>)</p>
 </blockquote>
 <p>Split a RNN <code>model</code> in groups for differential learning rates.</p>
+<table>
+<thead><tr>
+<th></th>
+<th>Type</th>
+<th>Default</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>model</code></strong></td>
+<td><a href="/torch_core.html#Module"><code>Module</code></a></td>
+<td></td>
+<td><em>No Content</em></td>
+</tr>
+<tr>
+<td><strong>Returns</strong></td>
+<td><code>Generator</code></td>
+<td></td>
+<td>Generator over parameter groups</td>
+</tr>
+</tbody>
+</table>
 
 </div>
 
