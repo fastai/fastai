@@ -11,12 +11,23 @@ from .torch_basics import *
 # Cell
 class _BaseOptimizer():
     "Common functionality between `Optimizer` and `OptimWrapper`"
-    def all_params(self, n=slice(None), with_grad=False):
+    def all_params(self,
+        n=slice(None), # Where to slice the model or all as default
+        with_grad=False # Get all param tuples. If `True` select only those with a gradient
+    ):
         res = L((p,pg,self.state[p],hyper) for pg,hyper in zip(self.param_lists[n],self.hypers[n]) for p in pg)
         return L(o for o in res if hasattr(o[0], 'grad') and o[0].grad is not None) if with_grad else res
 
-    def _set_require_grad(self, rg, p,pg,state,h): p.requires_grad_(rg or state.get('force_train', False))
-    def freeze_to(self, n):
+    def _set_require_grad(self,
+        rg: bool, # requires grad if `True` sets gradient for parameters, else uses state `force_train` flag
+        p: Tensor, # Parameters
+        pg, # Param groups (unused but needed because unpack *o)
+        state: dict, # state
+        h # hyper parameter (unused but needed because unpack *o)
+    ): p.requires_grad_(rg or state.get('force_train', False))
+    def freeze_to(self,
+        n # up to `n` layer to freeze
+    ):
         self.frozen_idx = n if n >= 0 else len(self.param_lists) + n
         if self.frozen_idx >= len(self.param_lists):
             warn(f"Freezing {self.frozen_idx} groups; model has {len(self.param_lists)}; whole model is frozen.")
@@ -27,15 +38,27 @@ class _BaseOptimizer():
         assert(len(self.param_lists)>1)
         self.freeze_to(-1)
 
-    def set_freeze(self, n, rg, ignore_force_train=False):
+    def set_freeze(self,
+        n: int, # layer `n` to un/freeze
+        rg: bool, # requires gradient
+        ignore_force_train=False  # overwrites "force_train" or batch norm always train even if freezed
+    ):
         for p in self.param_lists[n]: p.requires_grad_(rg or (state.get('force_train', False) and not ignore_force_train))
 
     def unfreeze(self): self.freeze_to(0)
-    def set_hypers(self, **kwargs): L(kwargs.items()).starmap(self.set_hyper)
-    def _set_hyper(self, k, v):
+    def set_hypers(self,
+        **kwargs  # list of hyper parameters to set with shape `(requires gradient, parameters, param group, state, hyper parameter)`
+    ): L(kwargs.items()).starmap(self.set_hyper)
+    def _set_hyper(self,
+        k, # hyper parameter key
+        v # hyper parameter value
+    ):
         for v_,h in zip(v, self.hypers): h[k] = v_
 
-    def set_hyper(self, k, v):
+    def set_hyper(self,
+        k, # hyper parameter key or slice of keys
+        v # hyper parameter value or slice of values
+    ):
         if isinstance(v, slice):
             if v.start: v = even_mults(v.start, v.stop, len(self.param_lists))
             else: v = [v.stop/10]*(len(self.param_lists)-1) + [v.stop]
@@ -47,14 +70,18 @@ class _BaseOptimizer():
     @property
     def param_groups(self): return [{**{'params': pg}, **hp} for pg,hp in zip(self.param_lists, self.hypers)]
     @param_groups.setter
-    def param_groups(self, v):
+    def param_groups(self,
+        v  # list of dicts to set `params` and other hyper parameters
+    ):
         for pg,v_ in zip(self.param_lists,v): pg = v_['params']
         for hyper,v_ in zip(self.hypers,v):
             for k,t in v_.items():
                 if k != 'params': hyper[k] = t
 
 # Cell
-def _update(state, new=None):
+def _update(state,
+    new=None  # new values to update `state` dict
+):
     if new is None: return state
     if isinstance(new, dict): state.update(new)
     return state
@@ -63,7 +90,12 @@ def _update(state, new=None):
 class Optimizer(_BaseOptimizer):
     "Base optimizer class for the fastai library, updating `params` with `cbs`"
     _keep_on_clear = ['force_train', 'do_wd']
-    def __init__(self, params, cbs, train_bn=True, **defaults):
+    def __init__(self,
+        params,  # parameters and hyper parameters
+        cbs,  # list of callbacks for the optimizer
+        train_bn=True,  # allow batchnorml to be trained even if freeze
+        **defaults  # default values to set on hyper parameters
+    ):
         params = L(params)
         self.cbs,self.state,self.train_bn = L(cbs),defaultdict(dict),train_bn
         defaults = merge(*self.cbs.attrgot('defaults'), defaults)
@@ -90,7 +122,9 @@ class Optimizer(_BaseOptimizer):
         state = [self.state[p] for p,*_ in self.all_params()]
         return {'state': state, 'hypers': self.hypers}
 
-    def load_state_dict(self, sd):
+    def load_state_dict(self,
+        sd  # state dict with `hypers` and `state` to load on the optimizer
+    ):
         assert len(sd["hypers"]) == len(self.param_lists)
         assert len(sd["state"])  == sum([len(pg) for pg in self.param_lists])
         self.hypers = sd['hypers']
