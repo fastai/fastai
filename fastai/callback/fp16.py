@@ -64,7 +64,7 @@ from torch.nn.utils import parameters_to_vector
 # Cell
 def get_master(opt:Optimizer, # Optimizer from which to retrieve model params
     flat_master:bool=False, # Flatten fp32 params into a vector for better performance
-    ) -> [[[nn.Parameter]],[[nn.Parameter]]]: # list of fp16 params, and list of fp32 params
+) -> [[[nn.Parameter]],[[nn.Parameter]]]: # list of fp16 params, and list of fp32 params
     "Creates fp16 model params given an initialized `Optimizer`, also returning fp32 model params. "
     model_params = [[param for param in pg if getattr(param, 'requires_grad', False) and hasattr(param, 'data')] for pg in opt.param_lists]
     if flat_master:
@@ -82,7 +82,7 @@ def get_master(opt:Optimizer, # Optimizer from which to retrieve model params
 def to_master_grads( model_pgs:[[nn.Parameter]], # Fp16 model parameters to copy gradients from
     master_pgs:[[nn.Parameter]], # Fp32 model parameters to copt gradients to
     flat_master:bool=False, # Whether or not fp32 parameters were previously flattened
-    ):
+):
     "Move fp16 model gradients to fp32 master gradients"
     for (model_params,master_params) in zip(model_pgs,master_pgs):
         model_grads_to_master_grads(model_params, master_params, flat_master=flat_master)
@@ -91,21 +91,21 @@ def to_master_grads( model_pgs:[[nn.Parameter]], # Fp16 model parameters to copy
 def to_model_params(model_pgs:[[nn.Parameter]], # fp16 model params to copy to
     master_pgs:[[nn.Parameter]], # fp32 master params to copy from
     flat_master:bool=False # Whether master_pgs was previously flattened
-    )->None:
+)->None:
     "Copy updated fp32 master params to fp16 model params after gradient step. "
     for (model_params,master_params) in zip(model_pgs,master_pgs):
         master_params_to_model_params(model_params, master_params, flat_master=flat_master)
 
 # Cell
 def test_overflow(x:torch.Tensor # fp16 gradients
-                 ):
+):
     "Tests whether fp16 gradients have overflowed."
     s = float(x.float().sum())
     return (s == float('inf') or s == float('-inf') or s != s)
 
 # Cell
 def grad_overflow(pgs:[[nn.Parameter]] # fp16 parameter groups to test for overflow
-    )->bool:
+)->bool:
     "Tests all fp16 parameters in pgs for gradient overflow"
     for pg in pgs:
         for p in pg:
