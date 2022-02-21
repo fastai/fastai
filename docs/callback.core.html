@@ -740,7 +740,7 @@ nb_path: "nbs/13_callback.core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="GatherPredsCallback" class="doc_header"><code>class</code> <code>GatherPredsCallback</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/core.py#L105" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>GatherPredsCallback</code>(<strong><code>with_input</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>with_loss</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>save_preds</code></strong>:<code>PathLike'&gt;)</code>=<em><code>None</code></em>, <strong><code>save_targs</code></strong>:<code>PathLike'&gt;)</code>=<em><code>None</code></em>, <strong><code>with_preds</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>with_targs</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>concat_dim</code></strong>:<code>int</code>=<em><code>0</code></em>, <strong><code>pickle_protocol</code></strong>:<code>int</code>=<em><code>2</code></em>) :: <a href="/callback.core.html#Callback"><code>Callback</code></a></p>
+<h3 id="GatherPredsCallback" class="doc_header"><code>class</code> <code>GatherPredsCallback</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/core.py#L105" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>GatherPredsCallback</code>(<strong><code>with_input</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>with_loss</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>save_preds</code></strong>:<code>Path</code>=<em><code>None</code></em>, <strong><code>save_targs</code></strong>:<code>Path</code>=<em><code>None</code></em>, <strong><code>with_preds</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>with_targs</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>concat_dim</code></strong>:<code>int</code>=<em><code>0</code></em>, <strong><code>pickle_protocol</code></strong>:<code>int</code>=<em><code>2</code></em>) :: <a href="/callback.core.html#Callback"><code>Callback</code></a></p>
 </blockquote>
 <p><a href="/callback.core.html#Callback"><code>Callback</code></a> that returns all predictions and targets, optionally <code>with_input</code> or <code>with_loss</code></p>
 <table>
@@ -756,49 +756,49 @@ nb_path: "nbs/13_callback.core.ipynb"
 <td><strong><code>with_input</code></strong></td>
 <td><code>bool</code></td>
 <td><code>False</code></td>
-<td>Whether to gather and return the inputs</td>
+<td>Whether to return inputs</td>
 </tr>
 <tr>
 <td><strong><code>with_loss</code></strong></td>
 <td><code>bool</code></td>
 <td><code>False</code></td>
-<td>Whether to gather and return the losses</td>
+<td>Whether to return losses</td>
 </tr>
 <tr>
 <td><strong><code>save_preds</code></strong></td>
-<td><code>(str, PathLike)</code></td>
+<td><code>Path</code></td>
 <td><code>None</code></td>
-<td>Path to save the predictions</td>
+<td>Path to save predictions</td>
 </tr>
 <tr>
 <td><strong><code>save_targs</code></strong></td>
-<td><code>(str, PathLike)</code></td>
+<td><code>Path</code></td>
 <td><code>None</code></td>
-<td>Path to save the targets</td>
+<td>Path to save targets</td>
 </tr>
 <tr>
 <td><strong><code>with_preds</code></strong></td>
 <td><code>bool</code></td>
 <td><code>True</code></td>
-<td>Whether to gather and return the predictions</td>
+<td>Whether to return predictions</td>
 </tr>
 <tr>
 <td><strong><code>with_targs</code></strong></td>
 <td><code>bool</code></td>
 <td><code>True</code></td>
-<td>Whether to gather and return the targets</td>
+<td>Whether to return targets</td>
 </tr>
 <tr>
 <td><strong><code>concat_dim</code></strong></td>
 <td><code>int</code></td>
 <td><code>0</code></td>
-<td>The dimension on which to concatenate all the tensors</td>
+<td>Dimension to concatenate returned tensors</td>
 </tr>
 <tr>
 <td><strong><code>pickle_protocol</code></strong></td>
 <td><code>int</code></td>
 <td><code>2</code></td>
-<td>The pickle protocol to use for saving the predictions and targets</td>
+<td>Pickle protocol used to save predictions and targets</td>
 </tr>
 </tbody>
 </table>
@@ -831,7 +831,7 @@ nb_path: "nbs/13_callback.core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="FetchPredsCallback" class="doc_header"><code>class</code> <code>FetchPredsCallback</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/core.py#L160" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>FetchPredsCallback</code>(<strong><code>ds_idx</code></strong>:<code>int</code>=<em><code>1</code></em>, <strong><code>dl</code></strong>:<a href="/data.load.html#DataLoader"><code>DataLoader</code></a>=<em><code>None</code></em>, <strong><code>with_input</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>with_decoded</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>cbs</code></strong>:<code>list</code>=<em><code>None</code></em>, <strong><code>reorder</code></strong>:<code>bool</code>=<em><code>True</code></em>) :: <a href="/callback.core.html#Callback"><code>Callback</code></a></p>
+<h3 id="FetchPredsCallback" class="doc_header"><code>class</code> <code>FetchPredsCallback</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/core.py#L161" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>FetchPredsCallback</code>(<strong><code>ds_idx</code></strong>:<code>int</code>=<em><code>1</code></em>, <strong><code>dl</code></strong>:<a href="/data.load.html#DataLoader"><code>DataLoader</code></a>=<em><code>None</code></em>, <strong><code>with_input</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>with_decoded</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>cbs</code></strong>:<code>list</code>=<em><code>None</code></em>, <strong><code>reorder</code></strong>:<code>bool</code>=<em><code>True</code></em>) :: <a href="/callback.core.html#Callback"><code>Callback</code></a></p>
 </blockquote>
 <p>A callback to fetch predictions during the training loop</p>
 <table>
@@ -847,37 +847,37 @@ nb_path: "nbs/13_callback.core.ipynb"
 <td><strong><code>ds_idx</code></strong></td>
 <td><code>int</code></td>
 <td><code>1</code></td>
-<td>Store and specify the index of the databunchset used in fetching <code>Learner</code> predictions if <code>dl</code> is not present</td>
+<td>Index of databunchset in fetching <code>Learner</code> predictions if <code>dl</code> is not present</td>
 </tr>
 <tr>
 <td><strong><code>dl</code></strong></td>
 <td><code>DataLoader</code></td>
 <td><code>None</code></td>
-<td>Store and specify the <code>DataLoader</code> used in fetching <code>Learner</code> predictions</td>
+<td><code>DataLoader</code> in fetching <code>Learner</code> predictions</td>
 </tr>
 <tr>
 <td><strong><code>with_input</code></strong></td>
 <td><code>bool</code></td>
 <td><code>False</code></td>
-<td>Store and specify whether to gather inputs in <code>GatherPredsCallback</code></td>
+<td>Whether to return inputs in <code>GatherPredsCallback</code></td>
 </tr>
 <tr>
 <td><strong><code>with_decoded</code></strong></td>
 <td><code>bool</code></td>
 <td><code>False</code></td>
-<td>Store and specify whether to return decoded predictions returned by the <code>decodes</code> method from the <code>Learner</code> loss function</td>
+<td>Whether to return decoded predictions from <code>decodes</code> method of <code>Learner</code> loss function</td>
 </tr>
 <tr>
 <td><strong><code>cbs</code></strong></td>
 <td><code>list</code></td>
 <td><code>None</code></td>
-<td>Initialize the <code>Learner</code> with this <code>Callback</code> list</td>
+<td><code>Callback</code> list for the <code>Learner</code></td>
 </tr>
 <tr>
 <td><strong><code>reorder</code></strong></td>
 <td><code>bool</code></td>
 <td><code>True</code></td>
-<td>Store and specify whether to sort the prediction results or not</td>
+<td>Whether to sort prediction results</td>
 </tr>
 </tbody>
 </table>

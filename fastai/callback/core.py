@@ -106,18 +106,19 @@ class GatherPredsCallback(Callback):
     "`Callback` that returns all predictions and targets, optionally `with_input` or `with_loss`"
     _stateattrs=('preds','targets','inputs','losses')
     def __init__(self,
-    with_input:bool=False, # Whether to gather and return the inputs
-    with_loss:bool=False, # Whether to gather and return the losses
-    save_preds:(str, os.PathLike)=None, # Path to save the predictions
-    save_targs:(str, os.PathLike)=None, # Path to save the targets
-    with_preds:bool=True, # Whether to gather and return the predictions
-    with_targs:bool=True, # Whether to gather and return the targets
-    concat_dim:int=0, # The dimension on which to concatenate all the tensors
-    pickle_protocol:int=2 # The pickle protocol to use for saving the predictions and targets
+        with_input:bool=False, # Whether to return inputs
+        with_loss:bool=False, # Whether to return losses
+        save_preds:Path=None, # Path to save predictions
+        save_targs:Path=None, # Path to save targets
+        with_preds:bool=True, # Whether to return predictions
+        with_targs:bool=True, # Whether to return targets
+        concat_dim:int=0, # Dimension to concatenate returned tensors
+        pickle_protocol:int=2 # Pickle protocol used to save predictions and targets
     ):
         store_attr()
 
     def before_batch(self):
+        "If `with_input`, detach batch inputs"
         if self.with_input: self.inputs.append((self.learn.to_detach(self.xb)))
 
     def before_validate(self):
@@ -161,17 +162,18 @@ class FetchPredsCallback(Callback):
     "A callback to fetch predictions during the training loop"
     remove_on_fetch = True
     def __init__(self,
-        ds_idx:int=1, # Store and specify the index of the databunchset used in fetching `Learner` predictions if `dl` is not present
-        dl:DataLoader=None, # Store and specify the `DataLoader` used in fetching `Learner` predictions
-        with_input:bool=False, # Store and specify whether to gather inputs in `GatherPredsCallback`
-        with_decoded:bool=False, # Store and specify whether to return decoded predictions returned by the `decodes` method from the `Learner` loss function
-        cbs:list=None, # Initialize the `Learner` with this `Callback` list
-        reorder:bool=True # Store and specify whether to sort the prediction results or not
-        ):
+        ds_idx:int=1, # Index of databunchset in fetching `Learner` predictions if `dl` is not present
+        dl:DataLoader=None, # `DataLoader` in fetching `Learner` predictions
+        with_input:bool=False, # Whether to return inputs in `GatherPredsCallback`
+        with_decoded:bool=False, # Whether to return decoded predictions from `decodes` method of `Learner` loss function
+        cbs:list=None, # `Callback` list for the `Learner`
+        reorder:bool=True # Whether to sort prediction results
+    ):
         self.cbs = L(cbs)
         store_attr('ds_idx,dl,with_input,with_decoded,reorder')
 
     def after_validate(self):
+        "Fetch predictions from `Learner`"
         to_rm = L(cb for cb in self.learn.cbs if getattr(cb, 'remove_on_fetch', False))
         with self.learn.removed_cbs(to_rm + self.cbs) as learn:
             self.preds = learn.get_preds(ds_idx=self.ds_idx, dl=self.dl,
