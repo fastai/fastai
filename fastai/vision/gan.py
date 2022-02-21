@@ -180,8 +180,9 @@ class GANTrainer(Callback):
         clip:(None, float)=None, # How much to clip the weights
         beta:float=0.98, # Exponentially weighted smoothing of the losses `beta`
         gen_first:bool=False, # Whether or not we start with generator training
+        show_img:bool=True, # Whether to show example generated images during training
     ):
-        store_attr('switch_eval,clip,gen_first')
+        store_attr('switch_eval,clip,gen_first,show_img')
         self.gen_loss,self.crit_loss = AvgSmoothLoss(beta=beta),AvgSmoothLoss(beta=beta)
 
     def _set_trainable(self):
@@ -201,7 +202,9 @@ class GANTrainer(Callback):
         self.switch(self.gen_mode)
         self.crit_losses,self.gen_losses = [],[]
         self.gen_loss.reset() ; self.crit_loss.reset()
-        self.imgs,self.titles = [],[]
+        #self.recorder.no_val=True
+        #self.recorder.add_metric_names(['gen_loss', 'disc_loss'])
+        #self.imgs,self.titles = [],[]
 
     def before_validate(self):
         "Switch in generator mode for showing results."
@@ -228,6 +231,19 @@ class GANTrainer(Callback):
     def before_epoch(self):
         "Put the critic or the generator back to eval if necessary."
         self.switch(self.gen_mode)
+
+    #def after_epoch(self):
+    #    "Show a sample image."
+    #    if not hasattr(self, 'last_gen') or not self.show_img: return
+    #    data = self.learn.data
+    #    img = self.last_gen[0]
+    #    norm = getattr(data,'norm',False)
+    #    if norm and norm.keywords.get('do_y',False): img = data.denorm(img)
+    #    img = data.train_ds.y.reconstruct(img)
+    #    self.imgs.append(img)
+    #    self.titles.append(f'Epoch {epoch}')
+    #    pbar.show_imgs(self.imgs, self.titles)
+    #    return add_metrics(last_metrics, [getattr(self.smoothenerG,'smooth',None),getattr(self.smoothenerC,'smooth',None)])
 
     def switch(self, gen_mode=None):
         "Switch the model and loss function, if `gen_mode` is provided, in the desired mode."
@@ -357,6 +373,7 @@ class GANLearner(Learner):
         switcher:(Callback,None)=None, # Callback for switching between generator and critic training (`FixedGANSwitcher` is used if set to `None`)
         gen_first:bool=False, # Whether or not we start with generator training
         switch_eval:bool=True, # Whether or not the model should be set to eval mode when calculating loss
+        show_img:bool=True, # Whether to show example generated images during training
         clip:(None, float)=None, # How much to clip the weights
         cbs:(Callback, None, list)=None, # Additional callbacks
         metrics:(None, list, callable)=None, # Metrics
@@ -365,7 +382,7 @@ class GANLearner(Learner):
         gan = GANModule(generator, critic)
         loss_func = GANLoss(gen_loss_func, crit_loss_func, gan)
         if switcher is None: switcher = FixedGANSwitcher()
-        trainer = GANTrainer(clip=clip, switch_eval=switch_eval, gen_first=gen_first)
+        trainer = GANTrainer(clip=clip, switch_eval=switch_eval, gen_first=gen_first, show_img=show_img)
         cbs = L(cbs) + L(trainer, switcher)
         metrics = L(metrics) + L(*LossMetrics('gen_loss,crit_loss'))
         super().__init__(dls, gan, loss_func=loss_func, cbs=cbs, metrics=metrics, **kwargs)
