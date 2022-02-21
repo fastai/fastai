@@ -20,7 +20,7 @@ class TabularDataLoaders(DataLoaders):
         cont_names:list=None, # Column names pertaining to continuous variables
         y_names:list=None, # Names of the dependent variables
         y_block:TransformBlock=None, # `TransformBlock` to use for the target(s)
-        valid_idx:list=None, # List of indices to use for the Validation set, defaults to a random split
+        valid_idx:list=None, # List of indices to use for the validation set, defaults to a random split
         **kwargs
     ):
         "Create `TabularDataLoaders` from `df` in `path` using `procs`"
@@ -32,7 +32,7 @@ class TabularDataLoaders(DataLoaders):
 
     @classmethod
     def from_csv(cls,
-        csv:(str,Path,io.BufferedReader), # str, path object or file-like object
+        csv:(str,Path,io.BufferedReader), # A csv from which features/targets are inferred
         skipinitialspace:bool=True, # Skip spaces after delimiter
         **kwargs
     ):
