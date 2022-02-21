@@ -63,25 +63,25 @@ nb_path: "nbs/06_data.block.ipynb"
 <td><strong><code>type_tfms</code></strong></td>
 <td><code>list</code></td>
 <td><code>None</code></td>
-<td>List of type transforms</td>
+<td>List of <code>Transform</code>s</td>
 </tr>
 <tr>
 <td><strong><code>item_tfms</code></strong></td>
 <td><code>list</code></td>
 <td><code>None</code></td>
-<td>List of item transforms</td>
+<td>List of <code>ItemTransform</code>s, applied on an item</td>
 </tr>
 <tr>
 <td><strong><code>batch_tfms</code></strong></td>
 <td><code>list</code></td>
 <td><code>None</code></td>
-<td>List of batch transforms</td>
+<td>List of <code>Transform</code>s or <code>RandTransform</code>s, applied by batch</td>
 </tr>
 <tr>
 <td><strong><code>dl_type</code></strong></td>
 <td><code>TfmdDL</code></td>
 <td><code>None</code></td>
-<td><code>TfmdDL</code> Dataloader class</td>
+<td>Specific class that inherits <code>TfmdDL</code></td>
 </tr>
 <tr>
 <td><strong><code>dls_kwargs</code></strong></td>
@@ -136,19 +136,19 @@ nb_path: "nbs/06_data.block.ipynb"
 <td><strong><code>vocab</code></strong></td>
 <td><code>(list, Series)</code></td>
 <td><code>None</code></td>
-<td>List of unique values, or a pandas series with categorical or unique values</td>
+<td>List of unique class names</td>
 </tr>
 <tr>
 <td><strong><code>sort</code></strong></td>
 <td><code>bool</code></td>
 <td><code>True</code></td>
-<td>Sort the category values?</td>
+<td>Sort the classes alphabetically</td>
 </tr>
 <tr>
 <td><strong><code>add_na</code></strong></td>
 <td><code>bool</code></td>
 <td><code>False</code></td>
-<td>Add NA as a category?</td>
+<td>Add <code>#na#</code> to <code>vocab</code></td>
 </tr>
 </tbody>
 </table>
@@ -197,19 +197,19 @@ nb_path: "nbs/06_data.block.ipynb"
 <td><strong><code>encoded</code></strong></td>
 <td><code>bool</code></td>
 <td><code>False</code></td>
-<td>Use one-hot encoding?</td>
+<td>Whether the data comes in one-hot encoded</td>
 </tr>
 <tr>
 <td><strong><code>vocab</code></strong></td>
 <td><code>(list, Series)</code></td>
 <td><code>None</code></td>
-<td>List of unique values, or a pandas series with categorical or unique values</td>
+<td>List of unique class names</td>
 </tr>
 <tr>
 <td><strong><code>add_na</code></strong></td>
 <td><code>bool</code></td>
 <td><code>False</code></td>
-<td>Add NA as a category?</td>
+<td>Add <code>#na#</code> to <code>vocab</code></td>
 </tr>
 </tbody>
 </table>
