@@ -105,8 +105,7 @@ def test_overflow(x:torch.Tensor # Fp16 gradients
     return (s == float('inf') or s == float('-inf') or s != s)
 
 # Cell
-def grad_overflow(pgs:[[nn.Parameter]] # Fp16 parameter groups to test for overflow
-)->bool:
+def grad_overflow(pgs:[[nn.Parameter]])->bool:
     "Tests all fp16 parameters in pgs for gradient overflow"
     for pg in pgs:
         for p in pg:
