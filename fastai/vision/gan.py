@@ -13,10 +13,10 @@ from .all import *
 class GANModule(Module):
     "Wrapper around a `generator` and a `critic` to create a GAN."
     def __init__(self,
-                 generator:nn.Module=None, # the generator PyTorch module
-                 critic:nn.Module=None,  # the discriminator PyTorch module
-                 gen_mode:(None,bool)=False # whether or not the GAN should be set to generator mode
-                ):
+        generator:nn.Module=None, # The generator PyTorch module
+        critic:nn.Module=None,  # The discriminator PyTorch module
+        gen_mode:(None,bool)=False # Whether or not the GAN should be set to generator mode
+    ):
         if generator is not None: self.generator=generator
         if critic    is not None: self.critic   =critic
         store_attr('gen_mode')
@@ -25,20 +25,21 @@ class GANModule(Module):
         return self.generator(*args) if self.gen_mode else self.critic(*args)
 
     def switch(self,
-               gen_mode:(None,bool)=None # whether or not the GAN should be set to generator mode
-              ):
+        gen_mode:(None,bool)=None # Whether or not the GAN should be set to generator mode
+    ):
         "Put the module in generator mode if `gen_mode` is `True`, in critic mode otherwise."
         self.gen_mode = (not self.gen_mode) if gen_mode is None else gen_mode
 
 # Cell
 @delegates(ConvLayer.__init__)
-def basic_critic(in_size:int, # input size for the critic (same as the output size of the generator)
-                 n_channels:int, # number of channels of the input for the critic
-                 n_features:int=64, # number of features used in the critic
-                 n_extra_layers:int=0, # number of extra hidden layers in the critic
-                 norm_type:NormType=NormType.Batch, # Type of normalization to use in the critic
-                 **kwargs
-                ) -> nn.Sequential:
+def basic_critic(
+    in_size:int, # Input size for the critic (same as the output size of the generator)
+    n_channels:int, # Number of channels of the input for the critic
+    n_features:int=64, # Number of features used in the critic
+    n_extra_layers:int=0, # Number of extra hidden layers in the critic
+    norm_type:NormType=NormType.Batch, # Type of normalization to use in the critic
+    **kwargs
+) -> nn.Sequential:
     "A basic critic for images `n_channels` x `in_size` x `in_size`."
     layers = [ConvLayer(n_channels, n_features, 4, 2, 1, norm_type=None, **kwargs)]
     cur_size, cur_ftrs = in_size//2, n_features
@@ -58,13 +59,14 @@ class AddChannels(Module):
 
 # Cell
 @delegates(ConvLayer.__init__)
-def basic_generator(out_size, # output size for the generator (same as the input size for the critic)
-                    n_channels, # number of channels of the output of the generator
-                    in_sz=100, # size of the input noise vector for the generator
-                    n_features=64, # number of features used in the generator
-                    n_extra_layers=0, # number of extra hidden layers in the generator
-                    **kwargs
-                    ) -> nn.Sequential:
+def basic_generator(
+    out_size:int, # Output size for the generator (same as the input size for the critic)
+    n_channels:int, # Number of channels of the output of the generator
+    in_sz:int=100, # Size of the input noise vector for the generator
+    n_features:int=64, # Number of features used in the generator
+    n_extra_layers:int=0, # Number of extra hidden layers in the generator
+    **kwargs
+) -> nn.Sequential:
     "A basic generator from `in_sz` to images `n_channels` x `out_size` x `out_size`."
     cur_size, cur_ftrs = 4, n_features//2
     while cur_size < out_size:  cur_size *= 2; cur_ftrs *= 2
@@ -86,20 +88,23 @@ def _conv(ni, nf, ks=3, stride=1, self_attention=False, **kwargs):
 
 # Cell
 @delegates(ConvLayer)
-def DenseResBlock(nf, # number of features
-                  norm_type=NormType.Batch, # normalization type
-                  **kwargs):
+def DenseResBlock(
+    nf:int, # Number of features
+    norm_type:NormType=NormType.Batch, # Normalization type
+    **kwargs
+) -> SequentialEx:
     "Resnet block of `nf` features. `conv_kwargs` are passed to `conv_layer`."
     return SequentialEx(ConvLayer(nf, nf, norm_type=norm_type, **kwargs),
                         ConvLayer(nf, nf, norm_type=norm_type, **kwargs),
                         MergeLayer(dense=True))
 
 # Cell
-def gan_critic(n_channels=3, # number of channels of the input for the critic
-               nf=128, # number of features for the critic
-               n_blocks=3, # number of ResNet blocks within the critic
-               p=0.15 # Amount of dropout in the critic
-              ) -> nn.Sequential:
+def gan_critic(
+    n_channels:int=3, # Number of channels of the input for the critic
+    nf:int=128, # Number of features for the critic
+    n_blocks:int=3, # Number of ResNet blocks within the critic
+    p:float=0.15 # Amount of dropout in the critic
+) -> nn.Sequential:
     "Critic to train a `GAN`."
     layers = [
         _conv(n_channels, nf, ks=4, stride=2),
@@ -120,26 +125,26 @@ def gan_critic(n_channels=3, # number of channels of the input for the critic
 class GANLoss(GANModule):
     "Wrapper around `crit_loss_func` and `gen_loss_func`"
     def __init__(self,
-                 gen_loss_func:callable, # the generator loss function as described below
-                 crit_loss_func:callable, # the critic loss function as described below
-                 gan_model:GANModule # the GAN model
-                ):
+        gen_loss_func:callable, # Generator loss function
+        crit_loss_func:callable, # Critic loss function
+        gan_model:GANModule # The GAN model
+    ):
         super().__init__()
         store_attr('gen_loss_func,crit_loss_func,gan_model')
 
     def generator(self,
-                  output, # generator outputs
-                  target # real images
-                 ):
+        output, # Generator outputs
+        target # Real images
+    ):
         "Evaluate the `output` with the critic then uses `self.gen_loss_func` to evaluate how well the critic was fooled by `output`"
         fake_pred = self.gan_model.critic(output)
         self.gen_loss = self.gen_loss_func(fake_pred, output, target)
         return self.gen_loss
 
     def critic(self,
-               real_pred, # critic predictions for real iimages
-               input # input noise vector to pass into generator
-              ):
+        real_pred, # Critic predictions for real images
+        input # Input noise vector to pass into generator
+    ):
         "Create some `fake_pred` with the generator from `input` and compare them to `real_pred` in `self.crit_loss_func`."
         fake = self.gan_model.generator(input).requires_grad_(False)
         fake_pred = self.gan_model.critic(fake)
@@ -161,7 +166,7 @@ def accuracy_thresh_expand(y_pred, y_true, thresh=0.5, sigmoid=True):
 
 # Cell
 def set_freeze_model(
-    m:nn.Module, # model to freeze/unfreeze
+    m:nn.Module, # Model to freeze/unfreeze
     rg:bool # `True` for freeze, `False` for unfreeze
 ):
     for p in m.parameters(): p.requires_grad_(rg)
@@ -171,11 +176,11 @@ class GANTrainer(Callback):
     "Callback to handle GAN Training."
     run_after = TrainEvalCallback
     def __init__(self,
-                 switch_eval:bool=False, # Whether or not the model should be set to eval mode when calculating loss
-                 clip:(None, float)=None, # How much to clip the weights
-                 beta:float=0.98, # Exponentially weighted smoothing of the losses `beta`
-                 gen_first:bool=False, # Whether or not we start with generator training
-                ):
+        switch_eval:bool=False, # Whether or not the model should be set to eval mode when calculating loss
+        clip:(None, float)=None, # How much to clip the weights
+        beta:float=0.98, # Exponentially weighted smoothing of the losses `beta`
+        gen_first:bool=False, # Whether or not we start with generator training
+    ):
         store_attr('switch_eval,clip,gen_first')
         self.gen_loss,self.crit_loss = AvgSmoothLoss(beta=beta),AvgSmoothLoss(beta=beta)
 
@@ -236,9 +241,9 @@ class FixedGANSwitcher(Callback):
     "Switcher to do `n_crit` iterations of the critic then `n_gen` iterations of the generator."
     run_after = GANTrainer
     def __init__(self,
-                 n_crit=1, # how many steps of critic training before switching to generator
-                 n_gen=1 # how many steps of generator training before switching to critic
-                ):
+        n_crit:int=1, # How many steps of critic training before switching to generator
+        n_gen:int=1 # How many steps of generator training before switching to critic
+    ):
         store_attr('n_crit,n_gen')
 
     def before_train(self): self.n_c,self.n_g = 0,0
@@ -262,9 +267,9 @@ class AdaptiveGANSwitcher(Callback):
     "Switcher that goes back to generator/critic when the loss goes below `gen_thresh`/`crit_thresh`."
     run_after = GANTrainer
     def __init__(self,
-                 gen_thresh=None, # loss threshold for generator
-                 critic_thresh=None # loss threshold for critic
-                ):
+        gen_thresh:(None, float)=None, # Loss threshold for generator
+        critic_thresh:(None, float)=None # Loss threshold for critic
+    ):
         store_attr('gen_thresh,critic_thresh')
 
     def after_batch(self):
@@ -295,10 +300,11 @@ class InvisibleTensor(TensorBase):
     def show(self, ctx=None, **kwargs): return ctx
 
 # Cell
-def generate_noise(fn, # dummy argument so it works with `DataBlock`
-                   size=100 # size of returned noise vector
-                  ) -> InvisibleTensor:
-    "generate noise vector"
+def generate_noise(
+    fn, # Dummy argument so it works with `DataBlock`
+    size=100 # Size of returned noise vector
+) -> InvisibleTensor:
+    "Generate noise vector."
     return cast(torch.randn(size), InvisibleTensor)
 
 # Cell
@@ -317,10 +323,10 @@ def show_results(x:InvisibleTensor, y:TensorImage, samples, outs, ctxs=None, max
 
 # Cell
 def gan_loss_from_func(
-    loss_gen, # A loss function for the generator. It should take in the generator output images and target real images and provide an evaluation.
-    loss_crit, # A loss function for the critic. It should take in the images, real or fake, and also labels indicating if it's real or fake, and provide an evaluation.
-    weights_gen:(None, list, tuple)=None # weights for the generator and critic loss function
-    ):
+    loss_gen:callable, # A loss function for the generator. It should take in the generator output images and target real images and provide an evaluation.
+    loss_crit:callable, # A loss function for the critic. It should take in the images, real or fake, and also labels indicating if it's real or fake, and provide an evaluation.
+    weights_gen:(None, list, tuple)=None # Weights for the generator and critic loss function
+):
     "Define loss functions for a GAN from `loss_gen` and `loss_crit`."
     def _loss_G(fake_pred, output, target, weights_gen=weights_gen):
         ones = fake_pred.new_ones(fake_pred.shape[0])
@@ -343,18 +349,19 @@ def _tk_diff(real_pred, fake_pred): return real_pred.mean() - fake_pred.mean()
 class GANLearner(Learner):
     "A `Learner` suitable for GANs."
     def __init__(self,
-                 dls:DataLoaders, # DataLoaders object for GAN data
-                 generator:nn.Module, # Generator model
-                 critic:nn.Module, # Critic model
-                 gen_loss_func, # Generator loss function
-                 crit_loss_func, # Critic loss function
-                 switcher:(Callback,None)=None, # Callback for switching between generator and critic training (`FixedGANSwitcher` is used if set to `None`)
-                 gen_first=False, # Whether or not we start with generator training
-                 switch_eval=True, # Whether or not the model should be set to eval mode when calculating loss
-                 clip:(None, float)=None, # How much to clip the weights
-                 cbs:(Callback, None, list)=None, # Additional callbacks
-                 metrics:(None, list, callable)=None, # Metrics
-                 **kwargs):
+        dls:DataLoaders, # DataLoaders object for GAN data
+        generator:nn.Module, # Generator model
+        critic:nn.Module, # Critic model
+        gen_loss_func:callable, # Generator loss function
+        crit_loss_func:callable, # Critic loss function
+        switcher:(Callback,None)=None, # Callback for switching between generator and critic training (`FixedGANSwitcher` is used if set to `None`)
+        gen_first:bool=False, # Whether or not we start with generator training
+        switch_eval:bool=True, # Whether or not the model should be set to eval mode when calculating loss
+        clip:(None, float)=None, # How much to clip the weights
+        cbs:(Callback, None, list)=None, # Additional callbacks
+        metrics:(None, list, callable)=None, # Metrics
+        **kwargs
+    ):
         gan = GANModule(generator, critic)
         loss_func = GANLoss(gen_loss_func, crit_loss_func, gan)
         if switcher is None: switcher = FixedGANSwitcher()
@@ -365,26 +372,26 @@ class GANLearner(Learner):
 
     @classmethod
     def from_learners(cls,
-                      gen_learn:Learner, # A `Learner` object that has the generator
-                      crit_learn:Learner, # A `Learner` object that has the critic
-                      switcher:(Callback,None)=None, # Callback for switching between generator and critic training (`FixedGANSwitcher` is used if set to `None`)
-                      weights_gen=None, # weights for the generator and critic loss function
-                      **kwargs
-                     ):
+        gen_learn:Learner, # A `Learner` object that has the generator
+        crit_learn:Learner, # A `Learner` object that has the critic
+        switcher:(Callback,None)=None, # Callback for switching between generator and critic training (`FixedGANSwitcher` is used if set to `None`)
+        weights_gen:(None, list, tuple)=None, # Weights for the generator and critic loss function
+        **kwargs
+    ):
         "Create a GAN from `learn_gen` and `learn_crit`."
         losses = gan_loss_from_func(gen_learn.loss_func, crit_learn.loss_func, weights_gen=weights_gen)
         return cls(gen_learn.dls, gen_learn.model, crit_learn.model, *losses, switcher=switcher, **kwargs)
 
     @classmethod
     def wgan(cls,
-             dls:DataLoaders, # DataLoaders object for GAN data
-             generator:nn.Module, # Generator model
-             critic:nn.Module, # Critic model
-             switcher:(Callback,None)=None, # Callback for switching between generator and critic training (`FixedGANSwitcher(n_crit=5, n_gen=1)` is used if set to `None`)
-             clip:(None, float)=0.01, # How much to clip the weights
-             switch_eval=False, # Whether or not the model should be set to eval mode when calculating loss
-             **kwargs
-            ):
+        dls:DataLoaders, # DataLoaders object for GAN data
+        generator:nn.Module, # Generator model
+        critic:nn.Module, # Critic model
+        switcher:(Callback,None)=None, # Callback for switching between generator and critic training (`FixedGANSwitcher(n_crit=5, n_gen=1)` is used if set to `None`)
+        clip:(None, float)=0.01, # How much to clip the weights
+        switch_eval:bool=False, # Whether or not the model should be set to eval mode when calculating loss
+        **kwargs
+    ):
         "Create a WGAN from `dls`, `generator` and `critic`."
         if switcher is None: switcher = FixedGANSwitcher(n_crit=5, n_gen=1)
         return cls(dls, generator, critic, _tk_mean, _tk_diff, switcher=switcher, clip=clip, switch_eval=switch_eval, **kwargs)
