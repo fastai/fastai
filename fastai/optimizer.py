@@ -46,8 +46,9 @@ class _BaseOptimizer():
     ):
         for p in self.param_lists[n]: p.requires_grad_(rg or (state.get('force_train', False) and not ignore_force_train))
 
+    @delegates(_BaseOptimizer.set_hyper)
     def set_hypers(self,
-        **kwargs # list of hyper parameters to set with shape `(requires gradient, parameters, param group, state, hyper parameter)
+        **kwargs
     ):
         L(kwargs.items()).starmap(self.set_hyper)
     def _set_hyper(self,
