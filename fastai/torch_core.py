@@ -36,7 +36,7 @@ def subplots(
     figsize=None, # Width, height in inches of the returned figure
     imsize=3, # Size (in inches) of images that will be displayed in the returned figure
     suptitle=None, # Title to be set to returned figure
-    **kwargs # Keyword args passed to plt.subplots
+    **kwargs
 ):
     "Returns a figure and set of subplots to display images of `imsize` inches"
     if figsize is None:

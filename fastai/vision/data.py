@@ -21,7 +21,7 @@ def get_grid(
     title=None, # If passed, title set to the figure
     return_fig=False, # Whether to return the figure created by `subplots`
     flatten=True, # Whether to flatten the matplot axes such that they can be iterated over with a single loop
-    **kwargs, # Keyword argurments passsed to `subplots`
+    **kwargs
 ):
     "Return a grid of `n` axes, `rows` by `cols`"
     if nrows:
