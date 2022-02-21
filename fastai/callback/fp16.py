@@ -62,7 +62,8 @@ from ..fp16_utils import convert_network, model_grads_to_master_grads, master_pa
 from torch.nn.utils import parameters_to_vector
 
 # Cell
-def get_master(opt:Optimizer, # Optimizer from which to retrieve model params
+def get_master(
+    opt:Optimizer, # Optimizer from which to retrieve model params
     flat_master:bool=False, # Flatten fp32 params into a vector for better performance
 ) -> [[[nn.Parameter]],[[nn.Parameter]]]: # List of fp16 params, and list of fp32 params
     "Creates fp16 model params given an initialized `Optimizer`, also returning fp32 model params. "
