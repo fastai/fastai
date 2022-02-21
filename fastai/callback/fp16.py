@@ -62,8 +62,7 @@ from ..fp16_utils import convert_network, model_grads_to_master_grads, master_pa
 from torch.nn.utils import parameters_to_vector
 
 # Cell
-def get_master(
-    opt:Optimizer, # Optimizer from which to retrieve model params
+def get_master(opt:Optimizer, # Optimizer from which to retrieve model params
     flat_master:bool=False, # Flatten fp32 params into a vector for better performance
 ) -> [[[nn.Parameter]],[[nn.Parameter]]]: # List of fp16 params, and list of fp32 params
     "Creates fp16 model params given an initialized `Optimizer`, also returning fp32 model params. "
@@ -80,8 +79,7 @@ def get_master(
     return model_params, master_params
 
 # Cell
-def to_master_grads(
-    model_pgs:[[nn.Parameter]], # Fp16 model parameters to copy gradients from
+def to_master_grads( model_pgs:[[nn.Parameter]], # Fp16 model parameters to copy gradients from
     master_pgs:[[nn.Parameter]], # Fp32 model parameters to copt gradients to
     flat_master:bool=False, # Whether or not fp32 parameters were previously flattened
 ):
@@ -90,8 +88,7 @@ def to_master_grads(
         model_grads_to_master_grads(model_params, master_params, flat_master=flat_master)
 
 # Cell
-def to_model_params(
-    model_pgs:[[nn.Parameter]], # Fp16 model params to copy to
+def to_model_params(model_pgs:[[nn.Parameter]], # Fp16 model params to copy to
     master_pgs:[[nn.Parameter]], # Fp32 master params to copy from
     flat_master:bool=False # Whether master_pgs was previously flattened
 )->None:
@@ -100,13 +97,15 @@ def to_model_params(
         master_params_to_model_params(model_params, master_params, flat_master=flat_master)
 
 # Cell
-def test_overflow(x:torch.Tensor):
+def test_overflow(x:torch.Tensor # Fp16 gradients
+):
     "Tests whether fp16 gradients have overflowed."
     s = float(x.float().sum())
     return (s == float('inf') or s == float('-inf') or s != s)
 
 # Cell
-def grad_overflow(pgs:[[nn.Parameter]])->bool:
+def grad_overflow(pgs:[[nn.Parameter]] # Fp16 parameter groups to test for overflow
+)->bool:
     "Tests all fp16 parameters in pgs for gradient overflow"
     for pg in pgs:
         for p in pg:
@@ -143,7 +142,7 @@ class NonNativeMixedPrecision(Callback):
         div_factor:float=2., # Divide by this on overflow, multiply by this after scale_wait batches
         scale_wait:int=500, # Number of batches to wait for increasing loss scale
         clip:float=None, # Value to clip gradients at, max_norm, as in `nn.utils.clip_grad_norm_`
-    ):
+):
         assert torch.backends.cudnn.enabled, "Mixed precision training requires cudnn."
         self.flat_master,self.dynamic,self.max_loss_scale = flat_master,dynamic,max_loss_scale
         self.div_factor,self.scale_wait,self.clip = div_factor,scale_wait,clip
