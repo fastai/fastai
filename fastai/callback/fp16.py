@@ -80,7 +80,8 @@ def get_master(
     return model_params, master_params
 
 # Cell
-def to_master_grads( model_pgs:[[nn.Parameter]], # Fp16 model parameters to copy gradients from
+def to_master_grads(
+    model_pgs:[[nn.Parameter]], # Fp16 model parameters to copy gradients from
     master_pgs:[[nn.Parameter]], # Fp32 model parameters to copt gradients to
     flat_master:bool=False, # Whether or not fp32 parameters were previously flattened
 ):
@@ -89,7 +90,8 @@ def to_master_grads( model_pgs:[[nn.Parameter]], # Fp16 model parameters to copy
         model_grads_to_master_grads(model_params, master_params, flat_master=flat_master)
 
 # Cell
-def to_model_params(model_pgs:[[nn.Parameter]], # Fp16 model params to copy to
+def to_model_params(
+    model_pgs:[[nn.Parameter]], # Fp16 model params to copy to
     master_pgs:[[nn.Parameter]], # Fp32 master params to copy from
     flat_master:bool=False # Whether master_pgs was previously flattened
 )->None:
@@ -98,8 +100,7 @@ def to_model_params(model_pgs:[[nn.Parameter]], # Fp16 model params to copy to
         master_params_to_model_params(model_params, master_params, flat_master=flat_master)
 
 # Cell
-def test_overflow(x:torch.Tensor # Fp16 gradients
-):
+def test_overflow(x:torch.Tensor):
     "Tests whether fp16 gradients have overflowed."
     s = float(x.float().sum())
     return (s == float('inf') or s == float('-inf') or s != s)
