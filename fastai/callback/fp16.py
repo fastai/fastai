@@ -142,7 +142,7 @@ class NonNativeMixedPrecision(Callback):
         div_factor:float=2., # Divide by this on overflow, multiply by this after scale_wait batches
         scale_wait:int=500, # Number of batches to wait for increasing loss scale
         clip:float=None, # Value to clip gradients at, max_norm, as in `nn.utils.clip_grad_norm_`
-):
+    ):
         assert torch.backends.cudnn.enabled, "Mixed precision training requires cudnn."
         self.flat_master,self.dynamic,self.max_loss_scale = flat_master,dynamic,max_loss_scale
         self.div_factor,self.scale_wait,self.clip = div_factor,scale_wait,clip
