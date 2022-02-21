@@ -17,7 +17,10 @@ services:
 
   notebook:
     <<: *fastai
-    command: bash -c "pip install -e $$LIB_INSTALL_TYPE && nbdev_install_git_hooks && jupyter notebook --allow-root --no-browser --ip=0.0.0.0 --port=8080 --NotebookApp.token='' --NotebookApp.password=''"
+    command: >
+     bash -c "pip install -e $$LIB_INSTALL_TYPE 
+     && nbdev_install_git_hooks 
+     && jupyter notebook --allow-root --no-browser --ip=0.0.0.0 --port=8080 --NotebookApp.token='' --NotebookApp.password=''"
     ports:
       - "8080:8080"
 
