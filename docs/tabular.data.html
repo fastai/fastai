@@ -105,7 +105,7 @@ nb_path: "nbs/41_tabular.data.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="TabularDataLoaders.from_df" class="doc_header"><code>TabularDataLoaders.from_df</code><a href="https://github.com/fastai/fastai/tree/master/fastai/tabular/data.py#L13" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>TabularDataLoaders.from_df</code>(<strong><code>df</code></strong>:<code>DataFrame</code>, <strong><code>path</code></strong>:<code>Path'&gt;)</code>=<em><code>'.'</code></em>, <strong><code>procs</code></strong>:<a href="/tabular.core.html#TabularProc"><code>TabularProc</code></a>=<em><code>None</code></em>, <strong><code>cat_names</code></strong>:<code>list</code>=<em><code>None</code></em>, <strong><code>cont_names</code></strong>:<code>list</code>=<em><code>None</code></em>, <strong><code>y_names</code></strong>:<code>list</code>=<em><code>None</code></em>, <strong><code>y_block</code></strong>:<a href="/data.block.html#TransformBlock"><code>TransformBlock</code></a>=<em><code>None</code></em>, <strong><code>valid_idx</code></strong>:<code>list</code>=<em><code>None</code></em>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>shuffle_train</code></strong>=<em><code>None</code></em>, <strong><code>shuffle</code></strong>=<em><code>True</code></em>, <strong><code>val_shuffle</code></strong>=<em><code>False</code></em>, <strong><code>n</code></strong>=<em><code>None</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>drop_last</code></strong>=<em><code>None</code></em>, <strong><code>val_bs</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="TabularDataLoaders.from_df" class="doc_header"><code>TabularDataLoaders.from_df</code><a href="https://github.com/fastai/fastai/tree/master/fastai/tabular/data.py#L13" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>TabularDataLoaders.from_df</code>(<strong><code>df</code></strong>:<code>DataFrame</code>, <strong><code>path</code></strong>:<code>Path'&gt;)</code>=<em><code>'.'</code></em>, <strong><code>procs</code></strong>:<code>list</code>=<em><code>None</code></em>, <strong><code>cat_names</code></strong>:<code>list</code>=<em><code>None</code></em>, <strong><code>cont_names</code></strong>:<code>list</code>=<em><code>None</code></em>, <strong><code>y_names</code></strong>:<code>list</code>=<em><code>None</code></em>, <strong><code>y_block</code></strong>:<a href="/data.block.html#TransformBlock"><code>TransformBlock</code></a>=<em><code>None</code></em>, <strong><code>valid_idx</code></strong>:<code>list</code>=<em><code>None</code></em>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>shuffle_train</code></strong>=<em><code>None</code></em>, <strong><code>shuffle</code></strong>=<em><code>True</code></em>, <strong><code>val_shuffle</code></strong>=<em><code>False</code></em>, <strong><code>n</code></strong>=<em><code>None</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>drop_last</code></strong>=<em><code>None</code></em>, <strong><code>val_bs</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Create <a href="/tabular.data.html#TabularDataLoaders"><code>TabularDataLoaders</code></a> from <code>df</code> in <code>path</code> using <code>procs</code></p>
 
@@ -367,141 +367,141 @@ nb_path: "nbs/41_tabular.data.ipynb"
     <tr>
       <th>0</th>
       <td>Private</td>
-      <td>Some-college</td>
-      <td>Divorced</td>
-      <td>Adm-clerical</td>
-      <td>Unmarried</td>
-      <td>Other</td>
-      <td>False</td>
-      <td>38.000000</td>
-      <td>165301.999966</td>
-      <td>10.0</td>
-      <td>&lt;50k</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>Local-gov</td>
       <td>Bachelors</td>
-      <td>Widowed</td>
+      <td>Never-married</td>
       <td>Prof-specialty</td>
       <td>Not-in-family</td>
       <td>White</td>
       <td>False</td>
-      <td>55.000000</td>
-      <td>135438.998932</td>
+      <td>34.0</td>
+      <td>1.796410e+05</td>
       <td>13.0</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
+      <th>1</th>
+      <td>Private</td>
+      <td>HS-grad</td>
+      <td>Married-spouse-absent</td>
+      <td>#na#</td>
+      <td>Own-child</td>
+      <td>Black</td>
+      <td>True</td>
+      <td>29.0</td>
+      <td>1.268339e+06</td>
+      <td>10.0</td>
+      <td>&lt;50k</td>
+    </tr>
+    <tr>
       <th>2</th>
-      <td>Private</td>
-      <td>9th</td>
-      <td>Married-civ-spouse</td>
-      <td>Craft-repair</td>
-      <td>Husband</td>
-      <td>White</td>
-      <td>False</td>
-      <td>39.000000</td>
-      <td>174342.999235</td>
-      <td>5.0</td>
-      <td>&lt;50k</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>Private</td>
-      <td>11th</td>
-      <td>Separated</td>
-      <td>Craft-repair</td>
-      <td>Not-in-family</td>
-      <td>White</td>
-      <td>False</td>
-      <td>22.000000</td>
-      <td>291978.999478</td>
-      <td>7.0</td>
-      <td>&lt;50k</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>Self-emp-not-inc</td>
-      <td>Doctorate</td>
-      <td>Married-civ-spouse</td>
-      <td>Prof-specialty</td>
-      <td>Husband</td>
-      <td>White</td>
-      <td>False</td>
-      <td>66.999999</td>
-      <td>217891.998553</td>
-      <td>16.0</td>
-      <td>&gt;=50k</td>
-    </tr>
-    <tr>
-      <th>5</th>
-      <td>Private</td>
-      <td>11th</td>
-      <td>Widowed</td>
-      <td>Other-service</td>
-      <td>Unmarried</td>
-      <td>White</td>
-      <td>False</td>
-      <td>45.000000</td>
-      <td>289468.001617</td>
-      <td>7.0</td>
-      <td>&lt;50k</td>
-    </tr>
-    <tr>
-      <th>6</th>
-      <td>Private</td>
-      <td>Some-college</td>
+      <td>Self-emp-inc</td>
+      <td>Assoc-voc</td>
       <td>Married-civ-spouse</td>
       <td>Exec-managerial</td>
       <td>Husband</td>
       <td>White</td>
       <td>False</td>
-      <td>50.000000</td>
-      <td>44368.006228</td>
-      <td>10.0</td>
+      <td>39.0</td>
+      <td>1.880690e+05</td>
+      <td>11.0</td>
+      <td>&gt;=50k</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Private</td>
+      <td>HS-grad</td>
+      <td>Divorced</td>
+      <td>Transport-moving</td>
+      <td>Not-in-family</td>
+      <td>White</td>
+      <td>False</td>
+      <td>34.0</td>
+      <td>1.734950e+05</td>
+      <td>9.0</td>
+      <td>&lt;50k</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Private</td>
+      <td>HS-grad</td>
+      <td>Married-civ-spouse</td>
+      <td>Handlers-cleaners</td>
+      <td>Husband</td>
+      <td>Black</td>
+      <td>False</td>
+      <td>35.0</td>
+      <td>3.397720e+05</td>
+      <td>9.0</td>
+      <td>&lt;50k</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>Private</td>
+      <td>HS-grad</td>
+      <td>Separated</td>
+      <td>Craft-repair</td>
+      <td>Unmarried</td>
+      <td>Black</td>
+      <td>False</td>
+      <td>47.0</td>
+      <td>2.804830e+05</td>
+      <td>9.0</td>
+      <td>&lt;50k</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>Private</td>
+      <td>11th</td>
+      <td>Married-civ-spouse</td>
+      <td>Craft-repair</td>
+      <td>Husband</td>
+      <td>White</td>
+      <td>False</td>
+      <td>24.0</td>
+      <td>1.897490e+05</td>
+      <td>7.0</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
       <th>7</th>
       <td>Private</td>
       <td>HS-grad</td>
-      <td>Never-married</td>
-      <td>Other-service</td>
-      <td>Unmarried</td>
-      <td>Black</td>
+      <td>Divorced</td>
+      <td>Sales</td>
+      <td>Other-relative</td>
+      <td>White</td>
       <td>False</td>
-      <td>32.000000</td>
-      <td>172415.000280</td>
+      <td>46.0</td>
+      <td>6.279300e+04</td>
       <td>9.0</td>
       <td>&lt;50k</td>
     </tr>
     <tr>
       <th>8</th>
-      <td>?</td>
+      <td>Private</td>
       <td>Some-college</td>
       <td>Married-civ-spouse</td>
-      <td>?</td>
+      <td>Protective-serv</td>
       <td>Husband</td>
       <td>White</td>
       <td>False</td>
-      <td>70.000000</td>
-      <td>148065.000063</td>
+      <td>57.0</td>
+      <td>1.919830e+05</td>
       <td>10.0</td>
-      <td>&gt;=50k</td>
+      <td>&lt;50k</td>
     </tr>
     <tr>
       <th>9</th>
       <td>Private</td>
-      <td>Bachelors</td>
-      <td>Divorced</td>
-      <td>#na#</td>
-      <td>Not-in-family</td>
+      <td>HS-grad</td>
+      <td>Never-married</td>
+      <td>Prof-specialty</td>
+      <td>Own-child</td>
       <td>White</td>
-      <td>True</td>
-      <td>47.000000</td>
-      <td>161949.998692</td>
-      <td>10.0</td>
+      <td>False</td>
+      <td>22.0</td>
+      <td>2.229930e+05</td>
+      <td>9.0</td>
       <td>&lt;50k</td>
     </tr>
   </tbody>
@@ -527,7 +527,7 @@ nb_path: "nbs/41_tabular.data.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="TabularDataLoaders.from_csv" class="doc_header"><code>TabularDataLoaders.from_csv</code><a href="https://github.com/fastai/fastai/tree/master/fastai/tabular/data.py#L32" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>TabularDataLoaders.from_csv</code>(<strong><code>csv</code></strong>:<code>BufferedReader'&gt;)</code>, <strong><code>skipinitialspace</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>path</code></strong>:<code>Path'&gt;)</code>=<em><code>'.'</code></em>, <strong><code>procs</code></strong>:<a href="/tabular.core.html#TabularProc"><code>TabularProc</code></a>=<em><code>None</code></em>, <strong><code>cat_names</code></strong>:<code>list</code>=<em><code>None</code></em>, <strong><code>cont_names</code></strong>:<code>list</code>=<em><code>None</code></em>, <strong><code>y_names</code></strong>:<code>list</code>=<em><code>None</code></em>, <strong><code>y_block</code></strong>:<a href="/data.block.html#TransformBlock"><code>TransformBlock</code></a>=<em><code>None</code></em>, <strong><code>valid_idx</code></strong>:<code>list</code>=<em><code>None</code></em>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>shuffle_train</code></strong>=<em><code>None</code></em>, <strong><code>shuffle</code></strong>=<em><code>True</code></em>, <strong><code>val_shuffle</code></strong>=<em><code>False</code></em>, <strong><code>n</code></strong>=<em><code>None</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>drop_last</code></strong>=<em><code>None</code></em>, <strong><code>val_bs</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="TabularDataLoaders.from_csv" class="doc_header"><code>TabularDataLoaders.from_csv</code><a href="https://github.com/fastai/fastai/tree/master/fastai/tabular/data.py#L33" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>TabularDataLoaders.from_csv</code>(<strong><code>csv</code></strong>:<code>BufferedReader'&gt;)</code>, <strong><code>skipinitialspace</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>path</code></strong>:<code>Path'&gt;)</code>=<em><code>'.'</code></em>, <strong><code>procs</code></strong>:<code>list</code>=<em><code>None</code></em>, <strong><code>cat_names</code></strong>:<code>list</code>=<em><code>None</code></em>, <strong><code>cont_names</code></strong>:<code>list</code>=<em><code>None</code></em>, <strong><code>y_names</code></strong>:<code>list</code>=<em><code>None</code></em>, <strong><code>y_block</code></strong>:<a href="/data.block.html#TransformBlock"><code>TransformBlock</code></a>=<em><code>None</code></em>, <strong><code>valid_idx</code></strong>:<code>list</code>=<em><code>None</code></em>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>shuffle_train</code></strong>=<em><code>None</code></em>, <strong><code>shuffle</code></strong>=<em><code>True</code></em>, <strong><code>val_shuffle</code></strong>=<em><code>False</code></em>, <strong><code>n</code></strong>=<em><code>None</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>drop_last</code></strong>=<em><code>None</code></em>, <strong><code>val_bs</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Create <a href="/tabular.data.html#TabularDataLoaders"><code>TabularDataLoaders</code></a> from <code>csv</code> file in <code>path</code> using <code>procs</code></p>
 
@@ -573,9 +573,9 @@ nb_path: "nbs/41_tabular.data.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="TabularDataLoaders.test_dl" class="doc_header"><code>TabularDataLoaders.test_dl</code><a href="https://github.com/fastai/fastai/tree/master/fastai/tabular/data.py#L40" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>TabularDataLoaders.test_dl</code>(<strong><code>test_items</code></strong>, <strong><code>rm_type_tfms</code></strong>=<em><code>None</code></em>, <strong><code>process</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>inplace</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>bs</code></strong>=<em><code>16</code></em>, <strong><code>shuffle</code></strong>=<em><code>False</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>num_workers</code></strong>=<em><code>0</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>, <strong><code>do_setup</code></strong>=<em><code>True</code></em>, <strong><code>pin_memory</code></strong>=<em><code>False</code></em>, <strong><code>timeout</code></strong>=<em><code>0</code></em>, <strong><code>batch_size</code></strong>=<em><code>None</code></em>, <strong><code>drop_last</code></strong>=<em><code>False</code></em>, <strong><code>indexed</code></strong>=<em><code>None</code></em>, <strong><code>n</code></strong>=<em><code>None</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>persistent_workers</code></strong>=<em><code>False</code></em>, <strong><code>wif</code></strong>=<em><code>None</code></em>, <strong><code>before_iter</code></strong>=<em><code>None</code></em>, <strong><code>after_item</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_iter</code></strong>=<em><code>None</code></em>, <strong><code>create_batches</code></strong>=<em><code>None</code></em>, <strong><code>create_item</code></strong>=<em><code>None</code></em>, <strong><code>create_batch</code></strong>=<em><code>None</code></em>, <strong><code>retain</code></strong>=<em><code>None</code></em>, <strong><code>get_idxs</code></strong>=<em><code>None</code></em>, <strong><code>sample</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_fn</code></strong>=<em><code>None</code></em>, <strong><code>do_batch</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="TabularDataLoaders.test_dl" class="doc_header"><code>TabularDataLoaders.test_dl</code><a href="https://github.com/fastai/fastai/tree/master/fastai/tabular/data.py#L42" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>TabularDataLoaders.test_dl</code>(<strong><code>test_items</code></strong>, <strong><code>rm_type_tfms</code></strong>=<em><code>None</code></em>, <strong><code>process</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>inplace</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>bs</code></strong>=<em><code>16</code></em>, <strong><code>shuffle</code></strong>=<em><code>False</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>num_workers</code></strong>=<em><code>0</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>, <strong><code>do_setup</code></strong>=<em><code>True</code></em>, <strong><code>pin_memory</code></strong>=<em><code>False</code></em>, <strong><code>timeout</code></strong>=<em><code>0</code></em>, <strong><code>batch_size</code></strong>=<em><code>None</code></em>, <strong><code>drop_last</code></strong>=<em><code>False</code></em>, <strong><code>indexed</code></strong>=<em><code>None</code></em>, <strong><code>n</code></strong>=<em><code>None</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>persistent_workers</code></strong>=<em><code>False</code></em>, <strong><code>wif</code></strong>=<em><code>None</code></em>, <strong><code>before_iter</code></strong>=<em><code>None</code></em>, <strong><code>after_item</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_iter</code></strong>=<em><code>None</code></em>, <strong><code>create_batches</code></strong>=<em><code>None</code></em>, <strong><code>create_item</code></strong>=<em><code>None</code></em>, <strong><code>create_batch</code></strong>=<em><code>None</code></em>, <strong><code>retain</code></strong>=<em><code>None</code></em>, <strong><code>get_idxs</code></strong>=<em><code>None</code></em>, <strong><code>sample</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_fn</code></strong>=<em><code>None</code></em>, <strong><code>do_batch</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
-<p>Create Test <a href="/tabular.core.html#TabDataLoader"><code>TabDataLoader</code></a> from <code>test_items</code> using validation <code>procs</code></p>
+<p>Create test <a href="/tabular.core.html#TabDataLoader"><code>TabDataLoader</code></a> from <code>test_items</code> using validation <code>procs</code></p>
 
 </div>
 

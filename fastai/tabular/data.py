@@ -13,15 +13,16 @@ class TabularDataLoaders(DataLoaders):
     @classmethod
     @delegates(Tabular.dataloaders, but=["dl_type", "dl_kwargs"])
     def from_df(cls,
-                df:pd.DataFrame,
-                path:(str,Path)='.', # Location of `df` (defaults to current working directory otherwise)
-                procs:TabularProc=None, # List of `TabularProc`s (non-lazy `Transform`s) applied on object inplace
-                cat_names:list=None, # Column names pertaining to Categorical variables
-                cont_names:list=None, # Column names pertaining to Continuous variables
-                y_names:list=None, # Names of the Dependent variables
-                y_block:TransformBlock=None, # `TransformBlock` to use for the Target
-                valid_idx:list=None, # List of indices to use for the Validation set (defaults to a random split otherwise)
-                **kwargs):
+        df:pd.DataFrame,
+        path:(str,Path)='.', # Location of `df`, defaults to current working directory
+        procs:list=None, # List of `TabularProc`s
+        cat_names:list=None, # Column names pertaining to categorical variables
+        cont_names:list=None, # Column names pertaining to continuous variables
+        y_names:list=None, # Names of the dependent variables
+        y_block:TransformBlock=None, # `TransformBlock` to use for the target(s)
+        valid_idx:list=None, # List of indices to use for the Validation set, defaults to a random split
+        **kwargs
+    ):
         "Create `TabularDataLoaders` from `df` in `path` using `procs`"
         if cat_names is None: cat_names = []
         if cont_names is None: cont_names = list(set(df)-set(L(cat_names))-set(L(y_names)))
@@ -31,20 +32,22 @@ class TabularDataLoaders(DataLoaders):
 
     @classmethod
     def from_csv(cls,
-                 csv:(str,Path,io.BufferedReader), # str, path object or file-like object
-                 skipinitialspace:bool=True, # Skip spaces after delimiter
-                 **kwargs):
+        csv:(str,Path,io.BufferedReader), # str, path object or file-like object
+        skipinitialspace:bool=True, # Skip spaces after delimiter
+        **kwargs
+    ):
         "Create `TabularDataLoaders` from `csv` file in `path` using `procs`"
         return cls.from_df(pd.read_csv(csv, skipinitialspace=skipinitialspace), **kwargs)
 
     @delegates(TabDataLoader.__init__)
     def test_dl(self,
-                test_items, # Items to create new test dataset based on training data
-                rm_type_tfms=None, # Number of `Transform`s to be removed from `procs`
-                process:bool=True, # Apply validation `TabularProc`s (non-lazy `Transform`s) on `test_items` if `True`
-                inplace:bool=False, # Keep separate copy of original `test_items` in memory if `False`
-                **kwargs):
-        "Create Test `TabDataLoader` from `test_items` using validation `procs`"
+        test_items, # Items to create new test `TabDataLoader` formatted the same as the training data
+        rm_type_tfms=None, # Number of `Transform`s to be removed from `procs`
+        process:bool=True, # Apply validation `TabularProc`s to `test_items` immediately
+        inplace:bool=False, # Keep separate copy of original `test_items` in memory if `False`
+        **kwargs
+    ):
+        "Create test `TabDataLoader` from `test_items` using validation `procs`"
         to = self.train_ds.new(test_items, inplace=inplace)
         if process: to.process()
         return self.valid.new(to, **kwargs)
