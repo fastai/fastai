@@ -19,14 +19,15 @@ class _BaseOptimizer():
         return L(o for o in res if hasattr(o[0], 'grad') and o[0].grad is not None) if with_grad else res
 
     def _set_require_grad(self,
-        rg: bool, # requires grad if `True` sets gradient for parameters, else uses state `force_train` flag
-        p: Tensor, # Parameters
+        rg:bool, # Requires grad if `True` sets gradient for parameters, else uses state `state["force_train"]`
+        p:Tensor, # Parameters
         pg, # Param groups (unused but needed because unpack *o)
-        state: dict, # state
-        h # hyper parameter (unused but needed because unpack *o)
-    ): p.requires_grad_(rg or state.get('force_train', False))
+        state: dict,
+        h # Hyper parameter (unused but needed because unpack *o)
+    ):
+        p.requires_grad_(rg or state.get('force_train', False))
     def freeze_to(self,
-        n # up to `n` layer to freeze
+        n # Freeze up to `n` layers
     ):
         self.frozen_idx = n if n >= 0 else len(self.param_lists) + n
         if self.frozen_idx >= len(self.param_lists):
@@ -39,25 +40,24 @@ class _BaseOptimizer():
         self.freeze_to(-1)
 
     def set_freeze(self,
-        n: int, # layer `n` to un/freeze
-        rg: bool, # requires gradient
-        ignore_force_train=False  # overwrites "force_train" or batch norm always train even if freezed
+        n:int,
+        rg:bool, # Gradient flag for layer `n`
+        ignore_force_train=False  # Overwrites "force_train" or batch norm always trains even if frozen
     ):
         for p in self.param_lists[n]: p.requires_grad_(rg or (state.get('force_train', False) and not ignore_force_train))
 
-    def unfreeze(self): self.freeze_to(0)
     def set_hypers(self,
-        **kwargs  # list of hyper parameters to set with shape `(requires gradient, parameters, param group, state, hyper parameter)`
-    ): L(kwargs.items()).starmap(self.set_hyper)
+        **kwargs # list of hyper parameters to set with shape `(requires gradient, parameters, param group, state, hyper parameter)
+    ):
+        L(kwargs.items()).starmap(self.set_hyper)
     def _set_hyper(self,
-        k, # hyper parameter key
-        v # hyper parameter value
+        k, # Hyper parameter key
+        v # Hyper parameter value
     ):
         for v_,h in zip(v, self.hypers): h[k] = v_
-
     def set_hyper(self,
-        k, # hyper parameter key or slice of keys
-        v # hyper parameter value or slice of values
+        k, # Hyper parameter key or slice of keys
+        v # Hyper parameter value or slice of values
     ):
         if isinstance(v, slice):
             if v.start: v = even_mults(v.start, v.stop, len(self.param_lists))
@@ -67,11 +67,12 @@ class _BaseOptimizer():
         assert len(v) == len(self.hypers), f"Trying to set {len(v)} values for {k} but there are {len(self.param_lists)} parameter groups."
         self._set_hyper(k, v)
 
+    def unfreeze(self): self.freeze_to(0)
     @property
     def param_groups(self): return [{**{'params': pg}, **hp} for pg,hp in zip(self.param_lists, self.hypers)]
     @param_groups.setter
     def param_groups(self,
-        v  # list of dicts to set `params` and other hyper parameters
+        v  # List of dicts to set `params` and other hyper parameters
     ):
         for pg,v_ in zip(self.param_lists,v): pg = v_['params']
         for hyper,v_ in zip(self.hypers,v):
@@ -79,8 +80,9 @@ class _BaseOptimizer():
                 if k != 'params': hyper[k] = t
 
 # Cell
-def _update(state,
-    new=None  # new values to update `state` dict
+def _update(
+    state:dict,
+    new=None  # New values to update `state` dict
 ):
     if new is None: return state
     if isinstance(new, dict): state.update(new)
@@ -91,10 +93,10 @@ class Optimizer(_BaseOptimizer):
     "Base optimizer class for the fastai library, updating `params` with `cbs`"
     _keep_on_clear = ['force_train', 'do_wd']
     def __init__(self,
-        params,  # parameters and hyper parameters
-        cbs,  # list of callbacks for the optimizer
-        train_bn=True,  # allow batchnorml to be trained even if freeze
-        **defaults  # default values to set on hyper parameters
+        params,  # Parameters and hyper parameters
+        cbs,  # List of callbacks for the optimizer
+        train_bn=True,  # Batch normalization is always trained
+        **defaults  # Default values to set on hyper parameters
     ):
         params = L(params)
         self.cbs,self.state,self.train_bn = L(cbs),defaultdict(dict),train_bn
