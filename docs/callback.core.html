@@ -847,13 +847,13 @@ nb_path: "nbs/13_callback.core.ipynb"
 <td><strong><code>ds_idx</code></strong></td>
 <td><code>int</code></td>
 <td><code>1</code></td>
-<td>Index of databunchset in fetching <code>Learner</code> predictions if <code>dl</code> is not present</td>
+<td>Index of dataset, 0 for train, 1 for valid, used if <code>dl</code> is not present</td>
 </tr>
 <tr>
 <td><strong><code>dl</code></strong></td>
 <td><code>DataLoader</code></td>
 <td><code>None</code></td>
-<td><code>DataLoader</code> in fetching <code>Learner</code> predictions</td>
+<td><code>DataLoader</code> used for fetching <code>Learner</code> predictions</td>
 </tr>
 <tr>
 <td><strong><code>with_input</code></strong></td>
@@ -865,13 +865,13 @@ nb_path: "nbs/13_callback.core.ipynb"
 <td><strong><code>with_decoded</code></strong></td>
 <td><code>bool</code></td>
 <td><code>False</code></td>
-<td>Whether to return decoded predictions from <code>decodes</code> method of <code>Learner</code> loss function</td>
+<td>Whether to return predicted classes</td>
 </tr>
 <tr>
 <td><strong><code>cbs</code></strong></td>
 <td><code>list</code></td>
 <td><code>None</code></td>
-<td><code>Callback</code> list for the <code>Learner</code></td>
+<td><code>Callback</code> list to add to the <code>Learner</code></td>
 </tr>
 <tr>
 <td><strong><code>reorder</code></strong></td>

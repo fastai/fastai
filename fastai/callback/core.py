@@ -162,11 +162,11 @@ class FetchPredsCallback(Callback):
     "A callback to fetch predictions during the training loop"
     remove_on_fetch = True
     def __init__(self,
-        ds_idx:int=1, # Index of databunchset in fetching `Learner` predictions if `dl` is not present
-        dl:DataLoader=None, # `DataLoader` in fetching `Learner` predictions
+        ds_idx:int=1, # Index of dataset, 0 for train, 1 for valid, used if `dl` is not present
+        dl:DataLoader=None, # `DataLoader` used for fetching `Learner` predictions
         with_input:bool=False, # Whether to return inputs in `GatherPredsCallback`
-        with_decoded:bool=False, # Whether to return decoded predictions from `decodes` method of `Learner` loss function
-        cbs:list=None, # `Callback` list for the `Learner`
+        with_decoded:bool=False, # Whether to return predicted classes
+        cbs:list=None, # `Callback` list to add to the `Learner`
         reorder:bool=True # Whether to sort prediction results
     ):
         self.cbs = L(cbs)
