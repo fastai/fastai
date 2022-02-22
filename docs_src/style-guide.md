@@ -103,4 +103,4 @@ def dihedral(x:TensorImage,
 * Arguments should have one indent relative to method definition.
 * Only `cls` and `self` should be on same line of method name and first argument of `@patch` like `x` on `dihedral` sample.
 * Closing parenthesis should be aligned with `def`.
-* Keyword arguments (`**kwags`) should not be documented. (NOTE: not needed for the sprint, but see if `@delegates` can be used to automatically document keyword args).
+* Keyword arguments (`**kwags`) should not be documented.
