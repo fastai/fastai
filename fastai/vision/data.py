@@ -12,17 +12,17 @@ import types
 # Cell
 @delegates(subplots)
 def get_grid(
-    n, # Number of axes in the returned grid
-    nrows=None, # Number of rows in the returned grid, defaulting to `int(math.sqrt(n))`
-    ncols=None, # Number of columns in the returned grid, defaulting to `ceil(n/rows)`
+    n:int, # Number of axes in the returned grid
+    nrows:int=None, # Number of rows in the returned grid, defaulting to `int(math.sqrt(n))`
+    ncols:int=None, # Number of columns in the returned grid, defaulting to `ceil(n/rows)`
     add_vert=0,
-    figsize=None, # Width, height in inches of the returned figure
-    double=False, # Whether to double the number of columns and `n`
-    title=None, # If passed, title set to the figure
-    return_fig=False, # Whether to return the figure created by `subplots`
-    flatten=True, # Whether to flatten the matplot axes such that they can be iterated over with a single loop
-    **kwargs
-):
+    figsize:tuple=None, # Width, height in inches of the returned figure
+    double:bool=False, # Whether to double the number of columns and `n`
+    title:str=None, # If passed, title set to the figure
+    return_fig:bool=False, # Whether to return the figure created by `subplots`
+    flatten:bool=True, # Whether to flatten the matplot axes such that they can be iterated over with a single loop
+    **kwargs,
+) -> (tuple[plt.Figure, plt.Axes], plt.Axes):
     "Return a grid of `n` axes, `rows` by `cols`"
     if nrows:
         ncols = ncols or int(np.ceil(n/nrows))
@@ -39,8 +39,8 @@ def get_grid(
 
 # Cell
 def clip_remove_empty(
-    bbox, # Coordinates of bounding boxes
-    label # Labels of the bounding boxes
+    bbox:TensorBBox, # Coordinates of bounding boxes
+    label:TensorMultiCategory # Labels of the bounding boxes
 ):
     "Clip bounding boxes with image border and remove empty boxes along with corresponding labels"
     bbox = torch.clamp(bbox, -1, 1)
@@ -49,8 +49,8 @@ def clip_remove_empty(
 
 # Cell
 def bb_pad(
-    samples, # List of 3-tuples like (image, bounding_boxes, labels)
-    pad_idx=0 # Label that will be used to pad each list of labels
+    samples:list, # List of 3-tuples like (image, bounding_boxes, labels)
+    pad_idx:int=0 # Label that will be used to pad each list of labels
 ):
     "Function that collects `samples` of labelled bboxes and adds padding with `pad_idx`."
     samples = [(s[0], *clip_remove_empty(*s[1:])) for s in samples]

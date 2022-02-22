@@ -31,13 +31,13 @@ if torch.cuda.is_available():
 # Cell
 @delegates(plt.subplots, keep=True)
 def subplots(
-    nrows=1, # Number of rows in returned axes grid
-    ncols=1, # Number of columns in returned axes grid
-    figsize=None, # Width, height in inches of the returned figure
-    imsize=3, # Size (in inches) of images that will be displayed in the returned figure
-    suptitle=None, # Title to be set to returned figure
+    nrows:int=1, # Number of rows in returned axes grid
+    ncols:int=1, # Number of columns in returned axes grid
+    figsize:tuple=None, # Width, height in inches of the returned figure
+    imsize:int=3, # Size (in inches) of images that will be displayed in the returned figure
+    suptitle:str=None, # Title to be set to returned figure
     **kwargs
-):
+) -> tuple[plt.Figure, plt.Axes]:
     "Returns a figure and set of subplots to display images of `imsize` inches"
     if figsize is None:
         h=nrows*imsize if suptitle is None or imsize>2 else nrows*imsize+0.6 #https://github.com/matplotlib/matplotlib/issues/5355

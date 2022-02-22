@@ -26,6 +26,25 @@ nb_path: "nbs/08_vision.data.ipynb"
     
 <div class="cell border-box-sizing code_cell rendered">
 
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>/home/c/miniconda3/lib/python3.9/site-packages/torch/cuda/__init__.py:143: UserWarning: 
+NVIDIA GeForce RTX 3060 Laptop GPU with CUDA capability sm_86 is not compatible with the current PyTorch installation.
+The current PyTorch install supports CUDA capabilities sm_37 sm_50 sm_60 sm_70.
+If you want to use the NVIDIA GeForce RTX 3060 Laptop GPU GPU with PyTorch, please check the instructions at https://pytorch.org/get-started/locally/
+
+  warnings.warn(incompatible_device_warn.format(device_name, capability, &#34; &#34;.join(arch_list), device_name))
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
 </div>
     {% endraw %}
 
@@ -60,7 +79,7 @@ nb_path: "nbs/08_vision.data.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_grid" class="doc_header"><code>get_grid</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/data.py#L13" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_grid</code>(<strong><code>n</code></strong>, <strong><code>nrows</code></strong>=<em><code>None</code></em>, <strong><code>ncols</code></strong>=<em><code>None</code></em>, <strong><code>add_vert</code></strong>=<em><code>0</code></em>, <strong><code>figsize</code></strong>=<em><code>None</code></em>, <strong><code>double</code></strong>=<em><code>False</code></em>, <strong><code>title</code></strong>=<em><code>None</code></em>, <strong><code>return_fig</code></strong>=<em><code>False</code></em>, <strong><code>flatten</code></strong>=<em><code>True</code></em>, <strong><code>imsize</code></strong>=<em><code>3</code></em>, <strong><code>suptitle</code></strong>=<em><code>None</code></em>, <strong><code>sharex</code></strong>=<em><code>False</code></em>, <strong><code>sharey</code></strong>=<em><code>False</code></em>, <strong><code>squeeze</code></strong>=<em><code>True</code></em>, <strong><code>subplot_kw</code></strong>=<em><code>None</code></em>, <strong><code>gridspec_kw</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="get_grid" class="doc_header"><code>get_grid</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/data.py#L13" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_grid</code>(<strong><code>n</code></strong>:<code>int</code>, <strong><code>nrows</code></strong>:<code>int</code>=<em><code>None</code></em>, <strong><code>ncols</code></strong>:<code>int</code>=<em><code>None</code></em>, <strong><code>add_vert</code></strong>=<em><code>0</code></em>, <strong><code>figsize</code></strong>:<code>tuple</code>=<em><code>None</code></em>, <strong><code>double</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>title</code></strong>:<code>str</code>=<em><code>None</code></em>, <strong><code>return_fig</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>flatten</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>imsize</code></strong>:<code>int</code>=<em><code>3</code></em>, <strong><code>suptitle</code></strong>:<code>str</code>=<em><code>None</code></em>, <strong><code>sharex</code></strong>=<em><code>False</code></em>, <strong><code>sharey</code></strong>=<em><code>False</code></em>, <strong><code>squeeze</code></strong>=<em><code>True</code></em>, <strong><code>subplot_kw</code></strong>=<em><code>None</code></em>, <strong><code>gridspec_kw</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Return a grid of <code>n</code> axes, <code>rows</code> by <code>cols</code></p>
 <table>
@@ -74,19 +93,19 @@ nb_path: "nbs/08_vision.data.ipynb"
 <tbody>
 <tr>
 <td><strong><code>n</code></strong></td>
-<td></td>
+<td><code>int</code></td>
 <td></td>
 <td>Number of axes in the returned grid</td>
 </tr>
 <tr>
 <td><strong><code>nrows</code></strong></td>
-<td><code>NoneType</code></td>
+<td><code>int</code></td>
 <td><code>None</code></td>
 <td>Number of rows in the returned grid, defaulting to <code>int(math.sqrt(n))</code></td>
 </tr>
 <tr>
 <td><strong><code>ncols</code></strong></td>
-<td><code>NoneType</code></td>
+<td><code>int</code></td>
 <td><code>None</code></td>
 <td>Number of columns in the returned grid, defaulting to <code>ceil(n/rows)</code></td>
 </tr>
@@ -98,7 +117,7 @@ nb_path: "nbs/08_vision.data.ipynb"
 </tr>
 <tr>
 <td><strong><code>figsize</code></strong></td>
-<td><code>NoneType</code></td>
+<td><code>tuple</code></td>
 <td><code>None</code></td>
 <td>Width, height in inches of the returned figure</td>
 </tr>
@@ -110,7 +129,7 @@ nb_path: "nbs/08_vision.data.ipynb"
 </tr>
 <tr>
 <td><strong><code>title</code></strong></td>
-<td><code>NoneType</code></td>
+<td><code>str</code></td>
 <td><code>None</code></td>
 <td>If passed, title set to the figure</td>
 </tr>
@@ -134,7 +153,7 @@ nb_path: "nbs/08_vision.data.ipynb"
 </tr>
 <tr>
 <td><strong><code>suptitle</code></strong></td>
-<td><code>NoneType</code></td>
+<td><code>str</code></td>
 <td><code>None</code></td>
 <td><em>No Content</em></td>
 </tr>
@@ -167,6 +186,12 @@ nb_path: "nbs/08_vision.data.ipynb"
 <td><code>NoneType</code></td>
 <td><code>None</code></td>
 <td><em>No Content</em></td>
+</tr>
+<tr>
+<td><strong>Returns</strong></td>
+<td><code>Axes], Axes)</code></td>
+<td></td>
+<td></td>
 </tr>
 </tbody>
 </table>
@@ -206,7 +231,7 @@ nb_path: "nbs/08_vision.data.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="clip_remove_empty" class="doc_header"><code>clip_remove_empty</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/data.py#L41" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>clip_remove_empty</code>(<strong><code>bbox</code></strong>, <strong><code>label</code></strong>)</p>
+<h4 id="clip_remove_empty" class="doc_header"><code>clip_remove_empty</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/data.py#L41" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>clip_remove_empty</code>(<strong><code>bbox</code></strong>:<a href="/vision.core.html#TensorBBox"><code>TensorBBox</code></a>, <strong><code>label</code></strong>:<a href="/torch_core.html#TensorMultiCategory"><code>TensorMultiCategory</code></a>)</p>
 </blockquote>
 <p>Clip bounding boxes with image border and remove empty boxes along with corresponding labels</p>
 <table>
@@ -220,13 +245,13 @@ nb_path: "nbs/08_vision.data.ipynb"
 <tbody>
 <tr>
 <td><strong><code>bbox</code></strong></td>
-<td></td>
+<td><code>TensorBBox</code></td>
 <td></td>
 <td>Coordinates of bounding boxes</td>
 </tr>
 <tr>
 <td><strong><code>label</code></strong></td>
-<td></td>
+<td><code>TensorMultiCategory</code></td>
 <td></td>
 <td>Labels of the bounding boxes</td>
 </tr>
@@ -288,7 +313,7 @@ nb_path: "nbs/08_vision.data.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="bb_pad" class="doc_header"><code>bb_pad</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/data.py#L51" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>bb_pad</code>(<strong><code>samples</code></strong>, <strong><code>pad_idx</code></strong>=<em><code>0</code></em>)</p>
+<h4 id="bb_pad" class="doc_header"><code>bb_pad</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/data.py#L51" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>bb_pad</code>(<strong><code>samples</code></strong>:<code>list</code>, <strong><code>pad_idx</code></strong>:<code>int</code>=<em><code>0</code></em>)</p>
 </blockquote>
 <p>Function that collects <code>samples</code> of labelled bboxes and adds padding with <code>pad_idx</code>.</p>
 <table>
@@ -302,7 +327,7 @@ nb_path: "nbs/08_vision.data.ipynb"
 <tbody>
 <tr>
 <td><strong><code>samples</code></strong></td>
-<td></td>
+<td><code>list</code></td>
 <td></td>
 <td>List of 3-tuples like (image, bounding_boxes, labels)</td>
 </tr>
