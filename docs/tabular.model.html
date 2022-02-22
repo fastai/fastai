@@ -53,9 +53,32 @@ nb_path: "nbs/42_tabular.model.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="emb_sz_rule" class="doc_header"><code>emb_sz_rule</code><a href="https://github.com/fastai/fastai/tree/master/fastai/tabular/model.py#L10" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>emb_sz_rule</code>(<strong><code>n_cat</code></strong>)</p>
+<h4 id="emb_sz_rule" class="doc_header"><code>emb_sz_rule</code><a href="https://github.com/fastai/fastai/tree/master/fastai/tabular/model.py#L10" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>emb_sz_rule</code>(<strong><code>n_cat</code></strong>:<code>int</code>)</p>
 </blockquote>
 <p>Rule of thumb to pick embedding size corresponding to <code>n_cat</code></p>
+<table>
+<thead><tr>
+<th></th>
+<th>Type</th>
+<th>Default</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>n_cat</code></strong></td>
+<td><code>int</code></td>
+<td></td>
+<td>Number of categories in the data</td>
+</tr>
+<tr>
+<td><strong>Returns</strong></td>
+<td><code>int</code></td>
+<td></td>
+<td>Returns embedding size</td>
+</tr>
+</tbody>
+</table>
 
 </div>
 
@@ -104,9 +127,38 @@ nb_path: "nbs/42_tabular.model.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_emb_sz" class="doc_header"><code>get_emb_sz</code><a href="https://github.com/fastai/fastai/tree/master/fastai/tabular/model.py#L23" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_emb_sz</code>(<strong><code>to</code></strong>, <strong><code>sz_dict</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="get_emb_sz" class="doc_header"><code>get_emb_sz</code><a href="https://github.com/fastai/fastai/tree/master/fastai/tabular/model.py#L25" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_emb_sz</code>(<strong><code>to</code></strong>:<code>(Tabular, TabularPandas)</code>, <strong><code>sz_dict</code></strong>:<code>dict</code>=<em><code>None</code></em>)</p>
 </blockquote>
-<p>Get default embedding size from <code>TabularPreprocessor</code> <code>proc</code> or the ones in <code>sz_dict</code></p>
+<p>Get embedding size for each cat_name in <a href="/tabular.core.html#Tabular"><code>Tabular</code></a> or <a href="/tabular.core.html#TabularPandas"><code>TabularPandas</code></a>, or populate embedding size manually using sz_dict</p>
+<table>
+<thead><tr>
+<th></th>
+<th>Type</th>
+<th>Default</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>to</code></strong></td>
+<td><code>(Tabular, TabularPandas)</code></td>
+<td></td>
+<td>Tabular or TabularPandas object</td>
+</tr>
+<tr>
+<td><strong><code>sz_dict</code></strong></td>
+<td><code>dict</code></td>
+<td>``</td>
+<td>Dict containing embedding sizes to override default emb_sz_rule (i.e. {'catclass1':100})</td>
+</tr>
+<tr>
+<td><strong>Returns</strong></td>
+<td><code>list</code></td>
+<td></td>
+<td>List of embedding sizes for each category</td>
+</tr>
+</tbody>
+</table>
 
 </div>
 
@@ -136,9 +188,92 @@ nb_path: "nbs/42_tabular.model.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TabularModel" class="doc_header"><code>class</code> <code>TabularModel</code><a href="https://github.com/fastai/fastai/tree/master/fastai/tabular/model.py#L28" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TabularModel</code>(<strong><code>emb_szs</code></strong>, <strong><code>n_cont</code></strong>, <strong><code>out_sz</code></strong>, <strong><code>layers</code></strong>, <strong><code>ps</code></strong>=<em><code>None</code></em>, <strong><code>embed_p</code></strong>=<em><code>0.0</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>, <strong><code>use_bn</code></strong>=<em><code>True</code></em>, <strong><code>bn_final</code></strong>=<em><code>False</code></em>, <strong><code>bn_cont</code></strong>=<em><code>True</code></em>, <strong><code>act_cls</code></strong>=<em><code>ReLU(inplace=True)</code></em>, <strong><code>lin_first</code></strong>=<em><code>True</code></em>) :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
+<h2 id="TabularModel" class="doc_header"><code>class</code> <code>TabularModel</code><a href="https://github.com/fastai/fastai/tree/master/fastai/tabular/model.py#L33" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TabularModel</code>(<strong><code>emb_szs</code></strong>:<code>list</code>, <strong><code>n_cont</code></strong>:<code>int</code>, <strong><code>out_sz</code></strong>:<code>int</code>, <strong><code>layers</code></strong>:<code>list</code>, <strong><code>ps</code></strong>:<code>list</code>=<em><code>None</code></em>, <strong><code>embed_p</code></strong>:<code>float</code>=<em><code>0.0</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>, <strong><code>use_bn</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>bn_final</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>bn_cont</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>act_cls</code></strong>=<em><code>ReLU(inplace=True)</code></em>, <strong><code>lin_first</code></strong>:<code>bool</code>=<em><code>True</code></em>) :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
 </blockquote>
 <p>Basic model for tabular data.</p>
+<table>
+<thead><tr>
+<th></th>
+<th>Type</th>
+<th>Default</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>emb_szs</code></strong></td>
+<td><code>list</code></td>
+<td></td>
+<td>Sequence of (num_embeddings, embedding_dim) for each categorical variable</td>
+</tr>
+<tr>
+<td><strong><code>n_cont</code></strong></td>
+<td><code>int</code></td>
+<td></td>
+<td>Number of continuous variables</td>
+</tr>
+<tr>
+<td><strong><code>out_sz</code></strong></td>
+<td><code>int</code></td>
+<td></td>
+<td>Number of outputs for final <a href="/layers.html#LinBnDrop"><code>LinBnDrop</code></a> layer</td>
+</tr>
+<tr>
+<td><strong><a href="/layers.html"><code>layers</code></a></strong></td>
+<td><code>list</code></td>
+<td></td>
+<td>Sequence of ints used to specify the input and output of each <a href="/layers.html#LinBnDrop"><code>LinBnDrop</code></a> layer</td>
+</tr>
+<tr>
+<td><strong><code>ps</code></strong></td>
+<td><code>list</code></td>
+<td>``</td>
+<td>Sequence of dropout probabilities (can be a single value)</td>
+</tr>
+<tr>
+<td><strong><code>embed_p</code></strong></td>
+<td><code>float</code></td>
+<td><code>0</code></td>
+<td>Dropout probability for <a href="/layers.html#Embedding"><code>Embedding</code></a> layer</td>
+</tr>
+<tr>
+<td><strong><code>y_range</code></strong></td>
+<td><code>NoneType</code></td>
+<td>``</td>
+<td>Low and high for <a href="/layers.html#SigmoidRange"><code>SigmoidRange</code></a> activation</td>
+</tr>
+<tr>
+<td><strong><code>use_bn</code></strong></td>
+<td><code>bool</code></td>
+<td><code>True</code></td>
+<td>Use batch norm in <a href="/layers.html#LinBnDrop"><code>LinBnDrop</code></a> layers</td>
+</tr>
+<tr>
+<td><strong><code>bn_final</code></strong></td>
+<td><code>bool</code></td>
+<td><code>False</code></td>
+<td>Use batch norm on final layer</td>
+</tr>
+<tr>
+<td><strong><code>bn_cont</code></strong></td>
+<td><code>bool</code></td>
+<td><code>True</code></td>
+<td>Use batch norm on continuous variables</td>
+</tr>
+<tr>
+<td><strong><code>act_cls</code></strong></td>
+<td><code>ReLU</code></td>
+<td><code>ReLU(inplace=True)</code></td>
+<td>Activation type for <a href="/layers.html#LinBnDrop"><code>LinBnDrop</code></a> layers</td>
+</tr>
+<tr>
+<td><strong><code>lin_first</code></strong></td>
+<td><code>bool</code></td>
+<td><code>True</code></td>
+<td>Linear layer is first in <a href="/layers.html#LinBnDrop"><code>LinBnDrop</code></a> layers (if False, it is last)</td>
+</tr>
+</tbody>
+</table>
 
 </div>
 
@@ -196,7 +331,7 @@ nb_path: "nbs/42_tabular.model.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="tabular_config" class="doc_header"><code>tabular_config</code><a href="https://github.com/fastai/fastai/tree/master/fastai/tabular/model.py#L58" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>tabular_config</code>(<strong><code>ps</code></strong>=<em><code>None</code></em>, <strong><code>embed_p</code></strong>=<em><code>0.0</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>, <strong><code>use_bn</code></strong>=<em><code>True</code></em>, <strong><code>bn_final</code></strong>=<em><code>False</code></em>, <strong><code>bn_cont</code></strong>=<em><code>True</code></em>, <strong><code>act_cls</code></strong>=<em><code>ReLU(inplace=True)</code></em>, <strong><code>lin_first</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="tabular_config" class="doc_header"><code>tabular_config</code><a href="https://github.com/fastai/fastai/tree/master/fastai/tabular/model.py#L74" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>tabular_config</code>(<strong><code>ps</code></strong>:<code>list</code>=<em><code>None</code></em>, <strong><code>embed_p</code></strong>:<code>float</code>=<em><code>0.0</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>, <strong><code>use_bn</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>bn_final</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>bn_cont</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>act_cls</code></strong>=<em><code>ReLU(inplace=True)</code></em>, <strong><code>lin_first</code></strong>:<code>bool</code>=<em><code>True</code></em>)</p>
 </blockquote>
 <p>Convenience function to easily create a config for <a href="/tabular.model.html#TabularModel"><code>TabularModel</code></a></p>
 

@@ -7,7 +7,9 @@ from ..torch_basics import *
 from .core import *
 
 # Cell
-def emb_sz_rule(n_cat):
+def emb_sz_rule(
+    n_cat:int # Number of categories in the data
+) -> int: # Returns embedding size
     "Rule of thumb to pick embedding size corresponding to `n_cat`"
     return min(600, round(1.6 * n_cat**0.56))
 
@@ -20,16 +22,30 @@ def _one_emb_sz(classes, n, sz_dict=None):
     return n_cat,sz
 
 # Cell
-def get_emb_sz(to, sz_dict=None):
-    "Get default embedding size from `TabularPreprocessor` `proc` or the ones in `sz_dict`"
+def get_emb_sz(
+    to:(Tabular, TabularPandas), # Tabular or TabularPandas object
+    sz_dict:dict=None # Dict containing embedding sizes to override default emb_sz_rule (i.e. {'catclass1':100})
+) -> list: # List of embedding sizes for each category
+    "Get embedding size for each cat_name in `Tabular` or `TabularPandas`, or populate embedding size manually using sz_dict"
     return [_one_emb_sz(to.classes, n, sz_dict) for n in to.cat_names]
 
 # Cell
 class TabularModel(Module):
     "Basic model for tabular data."
-    def __init__(self, emb_szs, n_cont, out_sz, layers, ps=None, embed_p=0.,
-                 y_range=None, use_bn=True, bn_final=False, bn_cont=True, act_cls=nn.ReLU(inplace=True),
-                 lin_first=True):
+    def __init__(self,
+        emb_szs:list, # Sequence of (num_embeddings, embedding_dim) for each categorical variable
+        n_cont:int, # Number of continuous variables
+        out_sz:int, # Number of outputs for final `LinBnDrop` layer
+        layers:list, # Sequence of ints used to specify the input and output of each `LinBnDrop` layer
+        ps:list=None, # Sequence of dropout probabilities (can be a single value)
+        embed_p:float=0., # Dropout probability for `Embedding` layer
+        y_range=None, # Low and high for `SigmoidRange` activation
+        use_bn:bool=True, # Use batch norm in `LinBnDrop` layers
+        bn_final:bool=False, # Use batch norm on final layer
+        bn_cont:bool=True, # Use batch norm on continuous variables
+        act_cls=nn.ReLU(inplace=True), # Activation type for `LinBnDrop` layers
+        lin_first:bool=True # Linear layer is first in `LinBnDrop` layers (if False, it is last)
+    ):
         ps = ifnone(ps, [0]*len(layers))
         if not is_listy(ps): ps = [ps]*len(layers)
         self.embeds = nn.ModuleList([Embedding(ni, nf) for ni,nf in emb_szs])
