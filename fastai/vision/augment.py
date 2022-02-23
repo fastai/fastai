@@ -149,10 +149,10 @@ def _do_crop_pad(x:TensorBBox, sz, tl, orig_sz, pad_mode=PadMode.Zeros, resize_t
 
 @patch
 def crop_pad(x:(TensorBBox,TensorPoint,Image.Image),
-    sz:(int, (int,int)), # Crop/pad size of input, duplicated if one value is specified
+    sz:(int, tuple), # Size to crop or pad to, duplicated if one value is specified
     tl:(int,int)=None, # Optional top-left coordinate of the crop/pad, if `None` center crop
     orig_sz:(int,int)=None, # Original size of input
-    pad_mode:PadMode=PadMode.Zeros, # Fastai padding mode
+    pad_mode:PadMode=PadMode.Zeros, # A `PadMode`
     resize_mode=Image.BILINEAR, # Pillow `Image` resize mode
     resize_to:(int,int)=None # Optional post crop/pad resize of input
 ):
@@ -174,11 +174,11 @@ def _get_sz(x):
 # Cell
 @delegates()
 class CropPad(DisplayedTransform):
-    "Center crop/pad an image to `size`"
+    "Center crop or pad an image to `size`"
     order = 0
     def __init__(self,
-        size:(int, (int,int)), # Crop/pad size of input, duplicated if one value is specified,
-        pad_mode:PadMode=PadMode.Zeros, # Fastai padding mode
+        size:(int, tuple), # Size to crop or pad to, duplicated if one value is specified
+        pad_mode:PadMode=PadMode.Zeros, # A `PadMode`
         **kwargs
     ):
         size = _process_sz(size)
@@ -196,7 +196,7 @@ class RandomCrop(RandTransform):
     "Randomly crop an image to `size`"
     split_idx,order = None,1
     def __init__(self,
-        size:(int, (int,int)), # Crop size of input, duplicated if one value is specified,
+        size:(int, tuple), # Size to crop to, duplicated if one value is specified
         **kwargs
     ):
         size = _process_sz(size)
@@ -241,9 +241,9 @@ class Resize(RandTransform):
     split_idx,mode,mode_mask,order = None,Image.BILINEAR,Image.NEAREST,1
     "Resize image to `size` using `method`"
     def __init__(self,
-        size:(int, (int,int)), # Size to resize, duplicated if one value is specified,,
-        method:ResizeMethod=ResizeMethod.Crop, # Fastai `ResizeMethod`
-        pad_mode:PadMode=PadMode.Reflection, # Fastai `PadMode`
+        size:(int, tuple), # Size to resize to, duplicated if one value is specified
+        method:ResizeMethod=ResizeMethod.Crop, # A `ResizeMethod`
+        pad_mode:PadMode=PadMode.Reflection, # A `PadMode`
         resamples=(Image.BILINEAR, Image.NEAREST), # Pillow `Image` resamples mode, resamples[1] for mask
         **kwargs
     ):
@@ -279,12 +279,12 @@ class RandomResizedCrop(RandTransform):
     "Picks a random scaled crop of an image and resize it to `size`"
     split_idx,order = None,1
     def __init__(self,
-         size:(int, (int,int)), # Final size (after crop and resize), duplicated if one value is specified,,
-         min_scale:float=0.08, # Min scale of the crop
-         ratio:(float, float)=(3/4, 4/3), # Range of width/height of the output
+         size:(int, tuple), # Final size, duplicated if one value is specified,,
+         min_scale:float=0.08, # Minimum scale of the crop
+         ratio:(float, float)=(3/4, 4/3), # Range of width over height of the output
          resamples=(Image.BILINEAR, Image.NEAREST), # Pillow `Image` resample mode, resamples[1] for mask
          val_xtra:float=0.14, # Ratio of extra pixels in the validation set
-         max_scale:float=1., # Max scale of the crop
+         max_scale:float=1., # Maximum scale of the crop
          **kwargs
     ):
         size = _process_sz(size)
