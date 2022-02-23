@@ -17,7 +17,7 @@ class TransformBlock():
         item_tfms:list=None, # List of `ItemTransform`s, applied on an item
         batch_tfms:list=None, # List of `Transform`s or `RandTransform`s, applied by batch
         dl_type:TfmdDL=None, # Specific class that inherits `TfmdDL`
-        dls_kwargs:dict=None, # Additional arguments to be passed to `TfmdDL`
+        dls_kwargs:dict=None, # Additional arguments to be passed to `DataLoaders`
     ):
         self.type_tfms  =            L(type_tfms)
         self.item_tfms  = ToTensor + L(item_tfms)
