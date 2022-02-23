@@ -22,7 +22,7 @@ def get_grid(
     return_fig:bool=False, # Whether to return the figure created by `subplots`
     flatten:bool=True, # Whether to flatten the matplot axes such that they can be iterated over with a single loop
     **kwargs,
-) -> (tuple[plt.Figure, plt.Axes], plt.Axes):
+) -> (typing.Tuple[plt.Figure, plt.Axes], plt.Axes):
     "Return a grid of `n` axes, `rows` by `cols`"
     if nrows:
         ncols = ncols or int(np.ceil(n/nrows))

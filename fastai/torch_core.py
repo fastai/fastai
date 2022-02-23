@@ -37,7 +37,7 @@ def subplots(
     imsize:int=3, # Size (in inches) of images that will be displayed in the returned figure
     suptitle:str=None, # Title to be set to returned figure
     **kwargs
-) -> tuple[plt.Figure, plt.Axes]:
+) -> typing.Tuple[plt.Figure, plt.Axes]:
     "Returns a figure and set of subplots to display images of `imsize` inches"
     if figsize is None:
         h=nrows*imsize if suptitle is None or imsize>2 else nrows*imsize+0.6 #https://github.com/matplotlib/matplotlib/issues/5355
