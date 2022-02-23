@@ -9,7 +9,7 @@ from torch.distributions.beta import Beta
 # Cell
 def reduce_loss(
     loss:Tensor,
-    reduction:(str, None)='mean' # Loss reduction type
+    reduction:str='mean' # PyTorch loss reduction
 )->Tensor:
     "Reduce the loss based on `reduction`"
     return loss.mean() if reduction == 'mean' else loss.sum() if reduction == 'sum' else loss
@@ -36,11 +36,8 @@ class MixHandler(Callback):
     def after_cancel_fit(self):
         self.after_train()
 
-    def lf(self,
-        pred,
-        *yb
-    ):
-        "lf is a loss function"
+    def lf(self, pred, *yb):
+        "lf is a loss function that applies the original loss function on both outputs based on `self.lam`"
         if not self.training: return self.old_lf(pred, *yb)
         with NoneReduce(self.old_lf) as lf:
             loss = torch.lerp(lf(pred,*self.yb1), lf(pred,*yb), self.lam)
