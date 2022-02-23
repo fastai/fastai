@@ -32,7 +32,7 @@ class TabularDataLoaders(DataLoaders):
 
     @classmethod
     def from_csv(cls,
-        csv:(str,Path,io.BufferedReader), # A csv from which features/targets are inferred
+        csv:(str,Path,io.BufferedReader), # A csv of training data
         skipinitialspace:bool=True, # Skip spaces after delimiter
         **kwargs
     ):
