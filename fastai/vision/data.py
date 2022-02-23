@@ -113,11 +113,11 @@ class ImageDataLoaders(DataLoaders):
 
     @classmethod
     def from_name_func(cls,
-                       path:(str, Path), # Set the default path to a directory that a `Learner` can use to save files like models
-                       fnames:list, # A list of `os.Pathlike`'s to individual image files
-                       label_func:callable, # A function that receives a string (the file name) and outputs a label
-                       **kwargs
-                   ) -> DataLoaders:
+        path:(str, Path), # Set the default path to a directory that a `Learner` can use to save files like models
+        fnames:list, # A list of `os.Pathlike`'s to individual image files
+        label_func:callable, # A function that receives a string (the file name) and outputs a label
+        **kwargs
+    ) -> DataLoaders:
         "Create from the name attrs of `fnames` in `path`s with `label_func`"
         if sys.platform == 'win32' and isinstance(label_func, types.LambdaType) and label_func.__name__ == '<lambda>':
             # https://medium.com/@jwnx/multiprocessing-serialization-in-python-with-pickle-9844f6fa1812
