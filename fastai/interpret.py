@@ -43,7 +43,7 @@ class Interpretation():
         learn, # Model used to create interpretation
         ds_idx:int=1, # Index of `learn.dls` when `dl` is None
         dl:DataLoader=None, # `Dataloader` used to make predictions
-        act=None # Activation function for prediction
+        act=None # Override default or set prediction activation function
     ):
         "Construct interpretation object from a learner"
         if dl is None: dl = learn.dls[ds_idx].new(shuffle=False, drop_last=False)
@@ -52,9 +52,9 @@ class Interpretation():
         return cls(learn, dl, losses, act)
 
     def top_losses(self,
-        k:(int,None)=None, # Number of losses and None for entire `Dataset`'s losses
+        k:(int,None)=None, # Return `k` losses, defaults to all
         largest:bool=True, # Sort losses by largest or smallest
-        items:bool=False # Whether to return input item for each loss
+        items:bool=False # Whether to return input items
     ):
         "`k` largest(/smallest) losses and indexes, defaulting to all losses."
         losses, idx = self.losses.topk(ifnone(k, len(self.losses)), largest=largest)
@@ -82,7 +82,7 @@ class Interpretation():
         #else: show_results(x, x1, its, ctxs=ctxs, max_n=max_n, **kwargs)
 
     def show_results(self,
-        idxs:(TensorBase,list), # Index of predictions and targets
+        idxs:list, # Indices of predictions and targets
         **kwargs
     ):
         "Show predictions and targets of `idxs`"
@@ -96,7 +96,12 @@ class Interpretation():
 class ClassificationInterpretation(Interpretation):
     "Interpretation methods for classification models."
 
-    def __init__(self, learn, dl, losses, act=None):
+    def __init__(self,
+        learn:Learner,
+        dl:DataLoader, # `DataLoader` to run inference over
+        losses:TensorBase, # Losses calculated from `dl`
+        act=None # Activation function for prediction
+    ):
         super().__init__(learn, dl, losses, act)
         self.vocab = self.dl.vocab
         if is_listy(self.vocab): self.vocab = self.vocab[-1]
@@ -110,8 +115,14 @@ class ClassificationInterpretation(Interpretation):
         cm = ((d==x[:,None]) & (t==x[:,None,None])).long().sum(2)
         return to_np(cm)
 
-    def plot_confusion_matrix(self, normalize=False, title='Confusion matrix', cmap="Blues", norm_dec=2,
-                              plot_txt=True, **kwargs):
+    def plot_confusion_matrix(self,
+        normalize:bool=False, # Wether to normalize occurrences in matrix
+        title:str='Confusion matrix', # Title of plot
+        cmap:str="Blues", # Colormap from Matplotlib
+        norm_dec=2, # Number of decimal places of normalized occurrences
+        plot_txt=True, # Display occurrences in matrix
+        **kwargs
+    ):
         "Plot the confusion matrix, with `title` and using `cmap`."
         # This function is mainly copied from the sklearn docs
         cm = self.confusion_matrix()
@@ -137,7 +148,9 @@ class ClassificationInterpretation(Interpretation):
         plt.xlabel('Predicted')
         plt.grid(False)
 
-    def most_confused(self, min_val=1):
+    def most_confused(self,
+        min_val:int=1 # omit occurrences less than `min_val`
+    ):
         "Sorted descending list of largest non-diagonal entries of confusion matrix, presented as actual, predicted, number of occurrences."
         cm = self.confusion_matrix()
         np.fill_diagonal(cm, 0)
