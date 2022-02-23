@@ -30,7 +30,15 @@ if torch.cuda.is_available():
 
 # Cell
 @delegates(plt.subplots, keep=True)
-def subplots(nrows=1, ncols=1, figsize=None, imsize=3,suptitle=None, **kwargs):
+def subplots(
+    nrows:int=1, # Number of rows in returned axes grid
+    ncols:int=1, # Number of columns in returned axes grid
+    figsize:tuple=None, # Width, height in inches of the returned figure
+    imsize:int=3, # Size (in inches) of images that will be displayed in the returned figure
+    suptitle:str=None, # Title to be set to returned figure
+    **kwargs
+) -> (plt.Figure, plt.Axes): # Returns both fig and ax as a tuple
+    "Returns a figure and set of subplots to display images of `imsize` inches"
     if figsize is None:
         h=nrows*imsize if suptitle is None or imsize>2 else nrows*imsize+0.6 #https://github.com/matplotlib/matplotlib/issues/5355
         figsize=(ncols*imsize, h)
