@@ -77,7 +77,7 @@ class SentenceEncoder(Module):
     "Create an encoder over `module` that can process a full sentence."
     def __init__(self,
         bptt:int, # Backpropagation through time
-        module:nn.Module, # Wrapped module
+        module:nn.Module, # A module that can process up to [`bs`, `bptt`] tokens
         pad_idx:int=1, # Padding token id
         max_len:int=None # Maximal output length
     ):
