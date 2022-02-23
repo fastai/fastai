@@ -9,7 +9,7 @@ from .core import *
 # Cell
 def emb_sz_rule(
     n_cat:int # Number of categories in the data
-) -> int: # Returns embedding size
+) -> int:
     "Rule of thumb to pick embedding size corresponding to `n_cat`"
     return min(600, round(1.6 * n_cat**0.56))
 
@@ -23,8 +23,8 @@ def _one_emb_sz(classes, n, sz_dict=None):
 
 # Cell
 def get_emb_sz(
-    to:(Tabular, TabularPandas), # Tabular or TabularPandas object
-    sz_dict:dict=None # Dict containing embedding sizes to override default emb_sz_rule (i.e. {'catclass1':100})
+    to:(Tabular, TabularPandas),
+    sz_dict:dict=None # Dictionary of {'class_name' : size, ...} to override default `emb_sz_rule`
 ) -> list: # List of embedding sizes for each category
     "Get embedding size for each cat_name in `Tabular` or `TabularPandas`, or populate embedding size manually using sz_dict"
     return [_one_emb_sz(to.classes, n, sz_dict) for n in to.cat_names]
@@ -36,15 +36,15 @@ class TabularModel(Module):
         emb_szs:list, # Sequence of (num_embeddings, embedding_dim) for each categorical variable
         n_cont:int, # Number of continuous variables
         out_sz:int, # Number of outputs for final `LinBnDrop` layer
-        layers:list, # Sequence of ints used to specify the input and output of each `LinBnDrop` layer
-        ps:list=None, # Sequence of dropout probabilities (can be a single value)
+        layers:list, # Sequence of ints used to specify the input and output size of each `LinBnDrop` layer
+        ps:(float, list)=None, # Sequence of dropout probabilities for `LinBnDrop`
         embed_p:float=0., # Dropout probability for `Embedding` layer
         y_range=None, # Low and high for `SigmoidRange` activation
-        use_bn:bool=True, # Use batch norm in `LinBnDrop` layers
-        bn_final:bool=False, # Use batch norm on final layer
-        bn_cont:bool=True, # Use batch norm on continuous variables
+        use_bn:bool=True, # Use `BatchNorm1d` in `LinBnDrop` layers
+        bn_final:bool=False, # Use `BatchNorm1d` on final layer
+        bn_cont:bool=True, # Use `BatchNorm1d` on continuous variables
         act_cls=nn.ReLU(inplace=True), # Activation type for `LinBnDrop` layers
-        lin_first:bool=True # Linear layer is first in `LinBnDrop` layers (if False, it is last)
+        lin_first:bool=True # Linear layer is first or last in `LinBnDrop` layers
     ):
         ps = ifnone(ps, [0]*len(layers))
         if not is_listy(ps): ps = [ps]*len(layers)
