@@ -85,7 +85,7 @@ nb_path: "nbs/12_optimizer.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Optimizer" class="doc_header"><code>class</code> <code>Optimizer</code><a href="https://github.com/fastai/fastai/tree/master/fastai/optimizer.py#L92" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Optimizer</code>(<strong><code>params</code></strong>, <strong><code>cbs</code></strong>, <strong><code>train_bn</code></strong>=<em><code>True</code></em>, <strong>**<code>defaults</code></strong>) :: <code>_BaseOptimizer</code></p>
+<h2 id="Optimizer" class="doc_header"><code>class</code> <code>Optimizer</code><a href="https://github.com/fastai/fastai/tree/master/fastai/optimizer.py#L89" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Optimizer</code>(<strong><code>params</code></strong>:<code>Tensor</code>, <strong><code>cbs</code></strong>, <strong><code>train_bn</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong>**<code>defaults</code></strong>) :: <code>_BaseOptimizer</code></p>
 </blockquote>
 <p>Base optimizer class for the fastai library, updating <code>params</code> with <code>cbs</code></p>
 <table>
@@ -99,7 +99,7 @@ nb_path: "nbs/12_optimizer.ipynb"
 <tbody>
 <tr>
 <td><strong><code>params</code></strong></td>
-<td></td>
+<td><code>Tensor</code></td>
 <td></td>
 <td>Parameters and hyper parameters</td>
 </tr>
@@ -107,7 +107,7 @@ nb_path: "nbs/12_optimizer.ipynb"
 <td><strong><code>cbs</code></strong></td>
 <td></td>
 <td></td>
-<td>List of callbacks for the optimizer</td>
+<td><code>Callback</code> list for the optimizer</td>
 </tr>
 <tr>
 <td><strong><code>train_bn</code></strong></td>
@@ -300,7 +300,7 @@ nb_path: "nbs/12_optimizer.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="sgd_step" class="doc_header"><code>sgd_step</code><a href="https://github.com/fastai/fastai/tree/master/fastai/optimizer.py#L136" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>sgd_step</code>(<strong><code>p</code></strong>, <strong><code>lr</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="sgd_step" class="doc_header"><code>sgd_step</code><a href="https://github.com/fastai/fastai/tree/master/fastai/optimizer.py#L133" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>sgd_step</code>(<strong><code>p</code></strong>, <strong><code>lr</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -372,7 +372,7 @@ nb_path: "nbs/12_optimizer.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="weight_decay" class="doc_header"><code>weight_decay</code><a href="https://github.com/fastai/fastai/tree/master/fastai/optimizer.py#L140" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>weight_decay</code>(<strong><code>p</code></strong>, <strong><code>lr</code></strong>, <strong><code>wd</code></strong>, <strong><code>do_wd</code></strong>=<em><code>True</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="weight_decay" class="doc_header"><code>weight_decay</code><a href="https://github.com/fastai/fastai/tree/master/fastai/optimizer.py#L137" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>weight_decay</code>(<strong><code>p</code></strong>, <strong><code>lr</code></strong>, <strong><code>wd</code></strong>, <strong><code>do_wd</code></strong>=<em><code>True</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Weight decay as decaying <code>p</code> with <code>lr*wd</code></p>
 
@@ -424,7 +424,7 @@ nb_path: "nbs/12_optimizer.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="l2_reg" class="doc_header"><code>l2_reg</code><a href="https://github.com/fastai/fastai/tree/master/fastai/optimizer.py#L147" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>l2_reg</code>(<strong><code>p</code></strong>, <strong><code>lr</code></strong>, <strong><code>wd</code></strong>, <strong><code>do_wd</code></strong>=<em><code>True</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="l2_reg" class="doc_header"><code>l2_reg</code><a href="https://github.com/fastai/fastai/tree/master/fastai/optimizer.py#L144" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>l2_reg</code>(<strong><code>p</code></strong>, <strong><code>lr</code></strong>, <strong><code>wd</code></strong>, <strong><code>do_wd</code></strong>=<em><code>True</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>L2 regularization as adding <code>wd*p</code> to <code>p.grad</code></p>
 
@@ -489,7 +489,7 @@ nb_path: "nbs/12_optimizer.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Optimizer.step" class="doc_header"><code>Optimizer.step</code><a href="https://github.com/fastai/fastai/tree/master/fastai/optimizer.py#L114" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Optimizer.step</code>()</p>
+<h4 id="Optimizer.step" class="doc_header"><code>Optimizer.step</code><a href="https://github.com/fastai/fastai/tree/master/fastai/optimizer.py#L111" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Optimizer.step</code>()</p>
 </blockquote>
 
 </div>
@@ -605,7 +605,7 @@ nb_path: "nbs/12_optimizer.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Optimizer.zero_grad" class="doc_header"><code>Optimizer.zero_grad</code><a href="https://github.com/fastai/fastai/tree/master/fastai/optimizer.py#L109" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Optimizer.zero_grad</code>()</p>
+<h4 id="Optimizer.zero_grad" class="doc_header"><code>Optimizer.zero_grad</code><a href="https://github.com/fastai/fastai/tree/master/fastai/optimizer.py#L106" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Optimizer.zero_grad</code>()</p>
 </blockquote>
 
 </div>
@@ -696,7 +696,7 @@ nb_path: "nbs/12_optimizer.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="average_grad" class="doc_header"><code>average_grad</code><a href="https://github.com/fastai/fastai/tree/master/fastai/optimizer.py#L154" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>average_grad</code>(<strong><code>p</code></strong>, <strong><code>mom</code></strong>, <strong><code>dampening</code></strong>=<em><code>False</code></em>, <strong><code>grad_avg</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="average_grad" class="doc_header"><code>average_grad</code><a href="https://github.com/fastai/fastai/tree/master/fastai/optimizer.py#L151" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>average_grad</code>(<strong><code>p</code></strong>, <strong><code>mom</code></strong>, <strong><code>dampening</code></strong>=<em><code>False</code></em>, <strong><code>grad_avg</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Keeps track of the avg grads of <code>p</code> in <code>state</code> with <code>mom</code>.</p>
 
@@ -769,7 +769,7 @@ nb_path: "nbs/12_optimizer.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="average_sqr_grad" class="doc_header"><code>average_sqr_grad</code><a href="https://github.com/fastai/fastai/tree/master/fastai/optimizer.py#L164" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>average_sqr_grad</code>(<strong><code>p</code></strong>, <strong><code>sqr_mom</code></strong>, <strong><code>dampening</code></strong>=<em><code>True</code></em>, <strong><code>sqr_avg</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="average_sqr_grad" class="doc_header"><code>average_sqr_grad</code><a href="https://github.com/fastai/fastai/tree/master/fastai/optimizer.py#L161" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>average_sqr_grad</code>(<strong><code>p</code></strong>, <strong><code>sqr_mom</code></strong>, <strong><code>dampening</code></strong>=<em><code>True</code></em>, <strong><code>sqr_avg</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -871,7 +871,7 @@ nb_path: "nbs/12_optimizer.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Optimizer.freeze_to" class="doc_header"><code>Optimizer.freeze_to</code><a href="https://github.com/fastai/fastai/tree/master/fastai/optimizer.py#L29" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Optimizer.freeze_to</code>(<strong><code>n</code></strong>)</p>
+<h4 id="Optimizer.freeze_to" class="doc_header"><code>Optimizer.freeze_to</code><a href="https://github.com/fastai/fastai/tree/master/fastai/optimizer.py#L29" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Optimizer.freeze_to</code>(<strong><code>n</code></strong>:<code>int</code>)</p>
 </blockquote>
 <table>
 <thead><tr>
@@ -884,7 +884,7 @@ nb_path: "nbs/12_optimizer.ipynb"
 <tbody>
 <tr>
 <td><strong><code>n</code></strong></td>
-<td></td>
+<td><code>int</code></td>
 <td></td>
 <td>Freeze up to <code>n</code> layers</td>
 </tr>
@@ -912,7 +912,7 @@ nb_path: "nbs/12_optimizer.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Optimizer.unfreeze" class="doc_header"><code>Optimizer.unfreeze</code><a href="https://github.com/fastai/fastai/tree/master/fastai/optimizer.py#L70" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Optimizer.unfreeze</code>()</p>
+<h4 id="Optimizer.unfreeze" class="doc_header"><code>Optimizer.unfreeze</code><a href="https://github.com/fastai/fastai/tree/master/fastai/optimizer.py#L67" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Optimizer.unfreeze</code>()</p>
 </blockquote>
 
 </div>
@@ -1001,7 +1001,7 @@ nb_path: "nbs/12_optimizer.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Optimizer.state_dict" class="doc_header"><code>Optimizer.state_dict</code><a href="https://github.com/fastai/fastai/tree/master/fastai/optimizer.py#L123" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Optimizer.state_dict</code>()</p>
+<h4 id="Optimizer.state_dict" class="doc_header"><code>Optimizer.state_dict</code><a href="https://github.com/fastai/fastai/tree/master/fastai/optimizer.py#L120" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Optimizer.state_dict</code>()</p>
 </blockquote>
 
 </div>
@@ -1025,7 +1025,7 @@ nb_path: "nbs/12_optimizer.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Optimizer.load_state_dict" class="doc_header"><code>Optimizer.load_state_dict</code><a href="https://github.com/fastai/fastai/tree/master/fastai/optimizer.py#L127" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Optimizer.load_state_dict</code>(<strong><code>sd</code></strong>)</p>
+<h4 id="Optimizer.load_state_dict" class="doc_header"><code>Optimizer.load_state_dict</code><a href="https://github.com/fastai/fastai/tree/master/fastai/optimizer.py#L124" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Optimizer.load_state_dict</code>(<strong><code>sd</code></strong>:<code>dict</code>)</p>
 </blockquote>
 <table>
 <thead><tr>
@@ -1038,9 +1038,9 @@ nb_path: "nbs/12_optimizer.ipynb"
 <tbody>
 <tr>
 <td><strong><code>sd</code></strong></td>
+<td><code>dict</code></td>
 <td></td>
-<td></td>
-<td>state dict with <code>hypers</code> and <code>state</code> to load on the optimizer</td>
+<td>State dict with <code>hypers</code> and <code>state</code> to load on the optimizer</td>
 </tr>
 </tbody>
 </table>
@@ -1096,7 +1096,7 @@ nb_path: "nbs/12_optimizer.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Optimizer.clear_state" class="doc_header"><code>Optimizer.clear_state</code><a href="https://github.com/fastai/fastai/tree/master/fastai/optimizer.py#L119" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Optimizer.clear_state</code>()</p>
+<h4 id="Optimizer.clear_state" class="doc_header"><code>Optimizer.clear_state</code><a href="https://github.com/fastai/fastai/tree/master/fastai/optimizer.py#L116" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Optimizer.clear_state</code>()</p>
 </blockquote>
 
 </div>
@@ -1156,7 +1156,7 @@ nb_path: "nbs/12_optimizer.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="momentum_step" class="doc_header"><code>momentum_step</code><a href="https://github.com/fastai/fastai/tree/master/fastai/optimizer.py#L173" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>momentum_step</code>(<strong><code>p</code></strong>, <strong><code>lr</code></strong>, <strong><code>grad_avg</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="momentum_step" class="doc_header"><code>momentum_step</code><a href="https://github.com/fastai/fastai/tree/master/fastai/optimizer.py#L170" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>momentum_step</code>(<strong><code>p</code></strong>, <strong><code>lr</code></strong>, <strong><code>grad_avg</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Step for SGD with momentum with <code>lr</code></p>
 
@@ -1188,7 +1188,7 @@ nb_path: "nbs/12_optimizer.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="SGD" class="doc_header"><code>SGD</code><a href="https://github.com/fastai/fastai/tree/master/fastai/optimizer.py#L178" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>SGD</code>(<strong><code>params</code></strong>, <strong><code>lr</code></strong>, <strong><code>mom</code></strong>=<em><code>0.0</code></em>, <strong><code>wd</code></strong>=<em><code>0.0</code></em>, <strong><code>decouple_wd</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="SGD" class="doc_header"><code>SGD</code><a href="https://github.com/fastai/fastai/tree/master/fastai/optimizer.py#L175" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>SGD</code>(<strong><code>params</code></strong>, <strong><code>lr</code></strong>, <strong><code>mom</code></strong>=<em><code>0.0</code></em>, <strong><code>wd</code></strong>=<em><code>0.0</code></em>, <strong><code>decouple_wd</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 <p>A <a href="/optimizer.html#Optimizer"><code>Optimizer</code></a> for SGD with <code>lr</code> and <code>mom</code> and <code>params</code></p>
 
@@ -1314,7 +1314,7 @@ nb_path: "nbs/12_optimizer.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="rms_prop_step" class="doc_header"><code>rms_prop_step</code><a href="https://github.com/fastai/fastai/tree/master/fastai/optimizer.py#L186" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>rms_prop_step</code>(<strong><code>p</code></strong>, <strong><code>lr</code></strong>, <strong><code>sqr_avg</code></strong>, <strong><code>eps</code></strong>, <strong><code>grad_avg</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="rms_prop_step" class="doc_header"><code>rms_prop_step</code><a href="https://github.com/fastai/fastai/tree/master/fastai/optimizer.py#L183" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>rms_prop_step</code>(<strong><code>p</code></strong>, <strong><code>lr</code></strong>, <strong><code>sqr_avg</code></strong>, <strong><code>eps</code></strong>, <strong><code>grad_avg</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Step for SGD with momentum with <code>lr</code></p>
 
@@ -1346,7 +1346,7 @@ nb_path: "nbs/12_optimizer.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="RMSProp" class="doc_header"><code>RMSProp</code><a href="https://github.com/fastai/fastai/tree/master/fastai/optimizer.py#L194" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>RMSProp</code>(<strong><code>params</code></strong>, <strong><code>lr</code></strong>, <strong><code>sqr_mom</code></strong>=<em><code>0.99</code></em>, <strong><code>mom</code></strong>=<em><code>0.0</code></em>, <strong><code>wd</code></strong>=<em><code>0.0</code></em>, <strong><code>decouple_wd</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="RMSProp" class="doc_header"><code>RMSProp</code><a href="https://github.com/fastai/fastai/tree/master/fastai/optimizer.py#L191" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>RMSProp</code>(<strong><code>params</code></strong>, <strong><code>lr</code></strong>, <strong><code>sqr_mom</code></strong>=<em><code>0.99</code></em>, <strong><code>mom</code></strong>=<em><code>0.0</code></em>, <strong><code>wd</code></strong>=<em><code>0.0</code></em>, <strong><code>decouple_wd</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 <p>A <a href="/optimizer.html#Optimizer"><code>Optimizer</code></a> for RMSProp with <code>lr</code>, <code>sqr_mom</code>, <code>mom</code> and <code>params</code></p>
 
@@ -1437,7 +1437,7 @@ nb_path: "nbs/12_optimizer.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="step_stat" class="doc_header"><code>step_stat</code><a href="https://github.com/fastai/fastai/tree/master/fastai/optimizer.py#L202" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>step_stat</code>(<strong><code>p</code></strong>, <strong><code>step</code></strong>=<em><code>0</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="step_stat" class="doc_header"><code>step_stat</code><a href="https://github.com/fastai/fastai/tree/master/fastai/optimizer.py#L199" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>step_stat</code>(<strong><code>p</code></strong>, <strong><code>step</code></strong>=<em><code>0</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Register the number of steps done in <code>state</code> for <code>p</code></p>
 
@@ -1491,7 +1491,7 @@ nb_path: "nbs/12_optimizer.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="debias" class="doc_header"><code>debias</code><a href="https://github.com/fastai/fastai/tree/master/fastai/optimizer.py#L208" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>debias</code>(<strong><code>mom</code></strong>, <strong><code>damp</code></strong>, <strong><code>step</code></strong>)</p>
+<h4 id="debias" class="doc_header"><code>debias</code><a href="https://github.com/fastai/fastai/tree/master/fastai/optimizer.py#L205" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>debias</code>(<strong><code>mom</code></strong>, <strong><code>damp</code></strong>, <strong><code>step</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -1522,7 +1522,7 @@ nb_path: "nbs/12_optimizer.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="adam_step" class="doc_header"><code>adam_step</code><a href="https://github.com/fastai/fastai/tree/master/fastai/optimizer.py#L211" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>adam_step</code>(<strong><code>p</code></strong>, <strong><code>lr</code></strong>, <strong><code>mom</code></strong>, <strong><code>step</code></strong>, <strong><code>sqr_mom</code></strong>, <strong><code>grad_avg</code></strong>, <strong><code>sqr_avg</code></strong>, <strong><code>eps</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="adam_step" class="doc_header"><code>adam_step</code><a href="https://github.com/fastai/fastai/tree/master/fastai/optimizer.py#L208" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>adam_step</code>(<strong><code>p</code></strong>, <strong><code>lr</code></strong>, <strong><code>mom</code></strong>, <strong><code>step</code></strong>, <strong><code>sqr_mom</code></strong>, <strong><code>grad_avg</code></strong>, <strong><code>sqr_avg</code></strong>, <strong><code>eps</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Step for Adam with <code>lr</code> on <code>p</code></p>
 
@@ -1554,7 +1554,7 @@ nb_path: "nbs/12_optimizer.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Adam" class="doc_header"><code>Adam</code><a href="https://github.com/fastai/fastai/tree/master/fastai/optimizer.py#L221" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Adam</code>(<strong><code>params</code></strong>, <strong><code>lr</code></strong>, <strong><code>mom</code></strong>=<em><code>0.9</code></em>, <strong><code>sqr_mom</code></strong>=<em><code>0.99</code></em>, <strong><code>eps</code></strong>=<em><code>1e-05</code></em>, <strong><code>wd</code></strong>=<em><code>0.01</code></em>, <strong><code>decouple_wd</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="Adam" class="doc_header"><code>Adam</code><a href="https://github.com/fastai/fastai/tree/master/fastai/optimizer.py#L218" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Adam</code>(<strong><code>params</code></strong>, <strong><code>lr</code></strong>, <strong><code>mom</code></strong>=<em><code>0.9</code></em>, <strong><code>sqr_mom</code></strong>=<em><code>0.99</code></em>, <strong><code>eps</code></strong>=<em><code>1e-05</code></em>, <strong><code>wd</code></strong>=<em><code>0.01</code></em>, <strong><code>decouple_wd</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 <p>A <a href="/optimizer.html#Optimizer"><code>Optimizer</code></a> for Adam with <code>lr</code>, <code>mom</code>, <code>sqr_mom</code>, <code>eps</code> and <code>params</code></p>
 
@@ -1632,7 +1632,7 @@ nb_path: "nbs/12_optimizer.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="radam_step" class="doc_header"><code>radam_step</code><a href="https://github.com/fastai/fastai/tree/master/fastai/optimizer.py#L228" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>radam_step</code>(<strong><code>p</code></strong>, <strong><code>lr</code></strong>, <strong><code>mom</code></strong>, <strong><code>step</code></strong>, <strong><code>sqr_mom</code></strong>, <strong><code>grad_avg</code></strong>, <strong><code>sqr_avg</code></strong>, <strong><code>eps</code></strong>, <strong><code>beta</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="radam_step" class="doc_header"><code>radam_step</code><a href="https://github.com/fastai/fastai/tree/master/fastai/optimizer.py#L225" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>radam_step</code>(<strong><code>p</code></strong>, <strong><code>lr</code></strong>, <strong><code>mom</code></strong>, <strong><code>step</code></strong>, <strong><code>sqr_mom</code></strong>, <strong><code>grad_avg</code></strong>, <strong><code>sqr_avg</code></strong>, <strong><code>eps</code></strong>, <strong><code>beta</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Step for RAdam with <code>lr</code> on <code>p</code></p>
 
@@ -1664,7 +1664,7 @@ nb_path: "nbs/12_optimizer.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="RAdam" class="doc_header"><code>RAdam</code><a href="https://github.com/fastai/fastai/tree/master/fastai/optimizer.py#L246" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>RAdam</code>(<strong><code>params</code></strong>, <strong><code>lr</code></strong>, <strong><code>mom</code></strong>=<em><code>0.9</code></em>, <strong><code>sqr_mom</code></strong>=<em><code>0.99</code></em>, <strong><code>eps</code></strong>=<em><code>1e-05</code></em>, <strong><code>wd</code></strong>=<em><code>0.0</code></em>, <strong><code>beta</code></strong>=<em><code>0.0</code></em>, <strong><code>decouple_wd</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="RAdam" class="doc_header"><code>RAdam</code><a href="https://github.com/fastai/fastai/tree/master/fastai/optimizer.py#L243" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>RAdam</code>(<strong><code>params</code></strong>, <strong><code>lr</code></strong>, <strong><code>mom</code></strong>=<em><code>0.9</code></em>, <strong><code>sqr_mom</code></strong>=<em><code>0.99</code></em>, <strong><code>eps</code></strong>=<em><code>1e-05</code></em>, <strong><code>wd</code></strong>=<em><code>0.0</code></em>, <strong><code>beta</code></strong>=<em><code>0.0</code></em>, <strong><code>decouple_wd</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 <p>A <a href="/optimizer.html#Optimizer"><code>Optimizer</code></a> for Adam with <code>lr</code>, <code>mom</code>, <code>sqr_mom</code>, <code>eps</code> and <code>params</code></p>
 
@@ -1794,7 +1794,7 @@ nb_path: "nbs/12_optimizer.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="qhadam_step" class="doc_header"><code>qhadam_step</code><a href="https://github.com/fastai/fastai/tree/master/fastai/optimizer.py#L253" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>qhadam_step</code>(<strong><code>p</code></strong>, <strong><code>lr</code></strong>, <strong><code>mom</code></strong>, <strong><code>sqr_mom</code></strong>, <strong><code>sqr_avg</code></strong>, <strong><code>nu_1</code></strong>, <strong><code>nu_2</code></strong>, <strong><code>step</code></strong>, <strong><code>grad_avg</code></strong>, <strong><code>eps</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="qhadam_step" class="doc_header"><code>qhadam_step</code><a href="https://github.com/fastai/fastai/tree/master/fastai/optimizer.py#L250" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>qhadam_step</code>(<strong><code>p</code></strong>, <strong><code>lr</code></strong>, <strong><code>mom</code></strong>, <strong><code>sqr_mom</code></strong>, <strong><code>sqr_avg</code></strong>, <strong><code>nu_1</code></strong>, <strong><code>nu_2</code></strong>, <strong><code>step</code></strong>, <strong><code>grad_avg</code></strong>, <strong><code>eps</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -1825,7 +1825,7 @@ nb_path: "nbs/12_optimizer.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="QHAdam" class="doc_header"><code>QHAdam</code><a href="https://github.com/fastai/fastai/tree/master/fastai/optimizer.py#L264" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>QHAdam</code>(<strong><code>params</code></strong>, <strong><code>lr</code></strong>, <strong><code>mom</code></strong>=<em><code>0.999</code></em>, <strong><code>sqr_mom</code></strong>=<em><code>0.999</code></em>, <strong><code>nu_1</code></strong>=<em><code>0.7</code></em>, <strong><code>nu_2</code></strong>=<em><code>1.0</code></em>, <strong><code>eps</code></strong>=<em><code>1e-08</code></em>, <strong><code>wd</code></strong>=<em><code>0.0</code></em>, <strong><code>decouple_wd</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="QHAdam" class="doc_header"><code>QHAdam</code><a href="https://github.com/fastai/fastai/tree/master/fastai/optimizer.py#L261" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>QHAdam</code>(<strong><code>params</code></strong>, <strong><code>lr</code></strong>, <strong><code>mom</code></strong>=<em><code>0.999</code></em>, <strong><code>sqr_mom</code></strong>=<em><code>0.999</code></em>, <strong><code>nu_1</code></strong>=<em><code>0.7</code></em>, <strong><code>nu_2</code></strong>=<em><code>1.0</code></em>, <strong><code>eps</code></strong>=<em><code>1e-08</code></em>, <strong><code>wd</code></strong>=<em><code>0.0</code></em>, <strong><code>decouple_wd</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 <p>An <a href="/optimizer.html#Optimizer"><code>Optimizer</code></a> for Adam with <code>lr</code>, <code>mom</code>, <code>sqr_mom</code>, <code>nus</code>, eps<code>and</code>params`</p>
 
@@ -1887,7 +1887,7 @@ nb_path: "nbs/12_optimizer.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="larc_layer_lr" class="doc_header"><code>larc_layer_lr</code><a href="https://github.com/fastai/fastai/tree/master/fastai/optimizer.py#L272" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>larc_layer_lr</code>(<strong><code>p</code></strong>, <strong><code>lr</code></strong>, <strong><code>trust_coeff</code></strong>, <strong><code>wd</code></strong>, <strong><code>eps</code></strong>, <strong><code>clip</code></strong>=<em><code>True</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="larc_layer_lr" class="doc_header"><code>larc_layer_lr</code><a href="https://github.com/fastai/fastai/tree/master/fastai/optimizer.py#L269" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>larc_layer_lr</code>(<strong><code>p</code></strong>, <strong><code>lr</code></strong>, <strong><code>trust_coeff</code></strong>, <strong><code>wd</code></strong>, <strong><code>eps</code></strong>, <strong><code>clip</code></strong>=<em><code>True</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Computes the local lr before weight decay is applied</p>
 
@@ -1919,7 +1919,7 @@ nb_path: "nbs/12_optimizer.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="larc_step" class="doc_header"><code>larc_step</code><a href="https://github.com/fastai/fastai/tree/master/fastai/optimizer.py#L281" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>larc_step</code>(<strong><code>p</code></strong>, <strong><code>local_lr</code></strong>, <strong><code>grad_avg</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="larc_step" class="doc_header"><code>larc_step</code><a href="https://github.com/fastai/fastai/tree/master/fastai/optimizer.py#L278" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>larc_step</code>(<strong><code>p</code></strong>, <strong><code>local_lr</code></strong>, <strong><code>grad_avg</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Step for LARC <code>local_lr</code> on <code>p</code></p>
 
@@ -1951,7 +1951,7 @@ nb_path: "nbs/12_optimizer.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Larc" class="doc_header"><code>Larc</code><a href="https://github.com/fastai/fastai/tree/master/fastai/optimizer.py#L286" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Larc</code>(<strong><code>params</code></strong>, <strong><code>lr</code></strong>, <strong><code>mom</code></strong>=<em><code>0.9</code></em>, <strong><code>clip</code></strong>=<em><code>True</code></em>, <strong><code>trust_coeff</code></strong>=<em><code>0.02</code></em>, <strong><code>eps</code></strong>=<em><code>1e-08</code></em>, <strong><code>wd</code></strong>=<em><code>0.0</code></em>, <strong><code>decouple_wd</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="Larc" class="doc_header"><code>Larc</code><a href="https://github.com/fastai/fastai/tree/master/fastai/optimizer.py#L283" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Larc</code>(<strong><code>params</code></strong>, <strong><code>lr</code></strong>, <strong><code>mom</code></strong>=<em><code>0.9</code></em>, <strong><code>clip</code></strong>=<em><code>True</code></em>, <strong><code>trust_coeff</code></strong>=<em><code>0.02</code></em>, <strong><code>eps</code></strong>=<em><code>1e-08</code></em>, <strong><code>wd</code></strong>=<em><code>0.0</code></em>, <strong><code>decouple_wd</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 <p>A <a href="/optimizer.html#Optimizer"><code>Optimizer</code></a> for Adam with <code>lr</code>, <code>mom</code>, <code>sqr_mom</code>, <code>eps</code> and <code>params</code></p>
 
@@ -2046,7 +2046,7 @@ nb_path: "nbs/12_optimizer.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="lamb_step" class="doc_header"><code>lamb_step</code><a href="https://github.com/fastai/fastai/tree/master/fastai/optimizer.py#L294" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>lamb_step</code>(<strong><code>p</code></strong>, <strong><code>lr</code></strong>, <strong><code>mom</code></strong>, <strong><code>step</code></strong>, <strong><code>sqr_mom</code></strong>, <strong><code>grad_avg</code></strong>, <strong><code>sqr_avg</code></strong>, <strong><code>eps</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="lamb_step" class="doc_header"><code>lamb_step</code><a href="https://github.com/fastai/fastai/tree/master/fastai/optimizer.py#L291" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>lamb_step</code>(<strong><code>p</code></strong>, <strong><code>lr</code></strong>, <strong><code>mom</code></strong>, <strong><code>step</code></strong>, <strong><code>sqr_mom</code></strong>, <strong><code>grad_avg</code></strong>, <strong><code>sqr_avg</code></strong>, <strong><code>eps</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Step for LAMB with <code>lr</code> on <code>p</code></p>
 
@@ -2078,7 +2078,7 @@ nb_path: "nbs/12_optimizer.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Lamb" class="doc_header"><code>Lamb</code><a href="https://github.com/fastai/fastai/tree/master/fastai/optimizer.py#L307" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Lamb</code>(<strong><code>params</code></strong>, <strong><code>lr</code></strong>, <strong><code>mom</code></strong>=<em><code>0.9</code></em>, <strong><code>sqr_mom</code></strong>=<em><code>0.99</code></em>, <strong><code>eps</code></strong>=<em><code>1e-05</code></em>, <strong><code>wd</code></strong>=<em><code>0.0</code></em>, <strong><code>decouple_wd</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="Lamb" class="doc_header"><code>Lamb</code><a href="https://github.com/fastai/fastai/tree/master/fastai/optimizer.py#L304" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Lamb</code>(<strong><code>params</code></strong>, <strong><code>lr</code></strong>, <strong><code>mom</code></strong>=<em><code>0.9</code></em>, <strong><code>sqr_mom</code></strong>=<em><code>0.99</code></em>, <strong><code>eps</code></strong>=<em><code>1e-05</code></em>, <strong><code>wd</code></strong>=<em><code>0.0</code></em>, <strong><code>decouple_wd</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 <p>A <a href="/optimizer.html#Optimizer"><code>Optimizer</code></a> for Adam with <code>lr</code>, <code>mom</code>, <code>sqr_mom</code>, <code>eps</code> and <code>params</code></p>
 
@@ -2145,7 +2145,7 @@ nb_path: "nbs/12_optimizer.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Lookahead" class="doc_header"><code>class</code> <code>Lookahead</code><a href="https://github.com/fastai/fastai/tree/master/fastai/optimizer.py#L314" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Lookahead</code>(<strong><code>opt</code></strong>, <strong><code>k</code></strong>=<em><code>6</code></em>, <strong><code>alpha</code></strong>=<em><code>0.5</code></em>) :: <a href="/optimizer.html#Optimizer"><code>Optimizer</code></a></p>
+<h2 id="Lookahead" class="doc_header"><code>class</code> <code>Lookahead</code><a href="https://github.com/fastai/fastai/tree/master/fastai/optimizer.py#L311" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Lookahead</code>(<strong><code>opt</code></strong>, <strong><code>k</code></strong>=<em><code>6</code></em>, <strong><code>alpha</code></strong>=<em><code>0.5</code></em>) :: <a href="/optimizer.html#Optimizer"><code>Optimizer</code></a></p>
 </blockquote>
 <p>Wrap <code>opt</code> in a lookahead optimizer</p>
 
@@ -2202,7 +2202,7 @@ nb_path: "nbs/12_optimizer.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ranger" class="doc_header"><code>ranger</code><a href="https://github.com/fastai/fastai/tree/master/fastai/optimizer.py#L354" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ranger</code>(<strong><code>p</code></strong>, <strong><code>lr</code></strong>, <strong><code>mom</code></strong>=<em><code>0.95</code></em>, <strong><code>wd</code></strong>=<em><code>0.01</code></em>, <strong><code>eps</code></strong>=<em><code>1e-06</code></em>, <strong><code>sqr_mom</code></strong>=<em><code>0.99</code></em>, <strong><code>beta</code></strong>=<em><code>0.0</code></em>, <strong><code>decouple_wd</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="ranger" class="doc_header"><code>ranger</code><a href="https://github.com/fastai/fastai/tree/master/fastai/optimizer.py#L351" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ranger</code>(<strong><code>p</code></strong>, <strong><code>lr</code></strong>, <strong><code>mom</code></strong>=<em><code>0.95</code></em>, <strong><code>wd</code></strong>=<em><code>0.01</code></em>, <strong><code>eps</code></strong>=<em><code>1e-06</code></em>, <strong><code>sqr_mom</code></strong>=<em><code>0.99</code></em>, <strong><code>beta</code></strong>=<em><code>0.0</code></em>, <strong><code>decouple_wd</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 <p>Convenience method for <a href="/optimizer.html#Lookahead"><code>Lookahead</code></a> with <a href="/optimizer.html#RAdam"><code>RAdam</code></a></p>
 
@@ -2241,7 +2241,7 @@ nb_path: "nbs/12_optimizer.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="detuplify_pg" class="doc_header"><code>detuplify_pg</code><a href="https://github.com/fastai/fastai/tree/master/fastai/optimizer.py#L360" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>detuplify_pg</code>(<strong><code>d</code></strong>)</p>
+<h4 id="detuplify_pg" class="doc_header"><code>detuplify_pg</code><a href="https://github.com/fastai/fastai/tree/master/fastai/optimizer.py#L357" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>detuplify_pg</code>(<strong><code>d</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -2292,7 +2292,7 @@ nb_path: "nbs/12_optimizer.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="set_item_pg" class="doc_header"><code>set_item_pg</code><a href="https://github.com/fastai/fastai/tree/master/fastai/optimizer.py#L369" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>set_item_pg</code>(<strong><code>pg</code></strong>, <strong><code>k</code></strong>, <strong><code>v</code></strong>)</p>
+<h4 id="set_item_pg" class="doc_header"><code>set_item_pg</code><a href="https://github.com/fastai/fastai/tree/master/fastai/optimizer.py#L366" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>set_item_pg</code>(<strong><code>pg</code></strong>, <strong><code>k</code></strong>, <strong><code>v</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -2357,7 +2357,7 @@ nb_path: "nbs/12_optimizer.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="OptimWrapper" class="doc_header"><code>class</code> <code>OptimWrapper</code><a href="https://github.com/fastai/fastai/tree/master/fastai/optimizer.py#L388" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>OptimWrapper</code>(<strong><code>params</code></strong>, <strong><code>opt</code></strong>, <strong><code>hp_map</code></strong>=<em><code>None</code></em>, <strong><code>convert_groups</code></strong>=<em><code>True</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>_BaseOptimizer</code></p>
+<h2 id="OptimWrapper" class="doc_header"><code>class</code> <code>OptimWrapper</code><a href="https://github.com/fastai/fastai/tree/master/fastai/optimizer.py#L385" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>OptimWrapper</code>(<strong><code>params</code></strong>, <strong><code>opt</code></strong>, <strong><code>hp_map</code></strong>=<em><code>None</code></em>, <strong><code>convert_groups</code></strong>=<em><code>True</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>_BaseOptimizer</code></p>
 </blockquote>
 <p>A wrapper class for existing PyTorch optimizers</p>
 
