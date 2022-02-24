@@ -280,11 +280,11 @@ class RandomResizedCrop(RandTransform):
     split_idx,order = None,1
     def __init__(self,
          size:(int, tuple), # Final size, duplicated if one value is specified,,
-         min_scale:float=0.08, # Minimum scale of the crop
+         min_scale:float=0.08, # Minimum scale of the crop, in relation to image area
          ratio:(float, float)=(3/4, 4/3), # Range of width over height of the output
          resamples=(Image.BILINEAR, Image.NEAREST), # Pillow `Image` resample mode, resamples[1] for mask
-         val_xtra:float=0.14, # Ratio of extra pixels in the validation set
-         max_scale:float=1., # Maximum scale of the crop
+         val_xtra:float=0.14, # The ratio of size at the edge cropped out in the validation set
+         max_scale:float=1., # Maximum scale of the crop, in relation to image area
          **kwargs
     ):
         size = _process_sz(size)
