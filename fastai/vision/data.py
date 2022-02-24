@@ -11,7 +11,7 @@ import types
 
 # Cell
 @delegates(subplots)
-def get_grid(n, nrows=None, ncols=None, add_vert=0, figsize=None, double=False, title=None, return_fig=False,
+def get_grid(n, nrows=None, ncols=None, figsize=None, double=False, title=None, return_fig=False,
              flatten=True, **kwargs):
     "Return a grid of `n` axes, `rows` by `cols`"
     if nrows:
