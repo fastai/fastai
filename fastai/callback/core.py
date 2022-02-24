@@ -47,6 +47,7 @@ class Callback(Stateful,GetAttr):
         return res
 
     def __setattr__(self, name, value):
+        "Set an attribute for a `Callback`"
         if hasattr(self.learn,name):
             warn(f"You are shadowing an attribute ({name}) that exists in the learner. Use `self.learn.{name}` to avoid this")
         super().__setattr__(name, value)
@@ -77,13 +78,13 @@ class TrainEvalCallback(Callback):
         self.learn.train_iter += 1
 
     def before_train(self):
-        "Set the model in training mode"
+        "Set the model to training mode"
         self.learn.pct_train=self.epoch/self.n_epoch
         self.model.train()
         self.learn.training=True
 
     def before_validate(self):
-        "Set the model in validation mode"
+        "Set the model to validation mode"
         self.model.eval()
         self.learn.training=False
 
@@ -150,8 +151,8 @@ class GatherPredsCallback(Callback):
         if self.with_targs: self.targets = detuplify(to_concat(self.targets, dim=self.concat_dim))
         if self.with_loss:  self.losses  = to_concat(self.losses)
 
-    def all_tensors(self):
-        "Returns all recorded tensors in the order (inputs, preds, targets, losses)"
+    def all_tensors(self) -> (Tensor, list):
+        "Returns all recorded tensors in the order [inputs, preds, targets, losses]"
         res = [self.preds if self.with_preds else None, self.targets if self.with_targs else None]
         if self.with_input: res = [self.inputs] + res
         if self.with_loss:  res.append(self.losses)
@@ -165,15 +166,15 @@ class FetchPredsCallback(Callback):
         ds_idx:int=1, # Index of dataset, 0 for train, 1 for valid, used if `dl` is not present
         dl:DataLoader=None, # `DataLoader` used for fetching `Learner` predictions
         with_input:bool=False, # Whether to return inputs in `GatherPredsCallback`
-        with_decoded:bool=False, # Whether to return predicted classes
-        cbs:list=None, # `Callback` list to add to the `Learner`
+        with_decoded:bool=False, # Whether to return decoded predictions
+        cbs:(Callback,list)=None, # `Callback` to temporarily remove from `Learner`
         reorder:bool=True # Whether to sort prediction results
     ):
         self.cbs = L(cbs)
         store_attr('ds_idx,dl,with_input,with_decoded,reorder')
 
     def after_validate(self):
-        "Fetch predictions from `Learner`"
+        "Fetch predictions from `Learner` without `self.cbs` and `remove_on_fetch` callbacks"
         to_rm = L(cb for cb in self.learn.cbs if getattr(cb, 'remove_on_fetch', False))
         with self.learn.removed_cbs(to_rm + self.cbs) as learn:
             self.preds = learn.get_preds(ds_idx=self.ds_idx, dl=self.dl,
