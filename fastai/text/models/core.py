@@ -49,7 +49,7 @@ class SequentialRNN(nn.Sequential):
 
 # Cell
 def get_language_model(
-    arch:callable, # Function or class that can generate a language model architecture
+    arch, # Function or class that can generate a language model architecture
     vocab_sz:int, # Size of the vocabulary
     config:dict=None, # Model configuration dictionary
     drop_mult:float=1. # Multiplicative factor to scale all dropout probabilities in `config`
