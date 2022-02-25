@@ -24,16 +24,20 @@ class MixHandler(Callback):
         self.distrib = Beta(tensor(alpha), tensor(alpha))
 
     def before_train(self):
+        "Determine whether to stack y"
         self.stack_y = getattr(self.learn.loss_func, 'y_int', False)
         if self.stack_y: self.old_lf,self.learn.loss_func = self.learn.loss_func,self.lf
 
     def after_train(self):
+        "Set the loss function back to the previous loss"
         if self.stack_y: self.learn.loss_func = self.old_lf
 
     def after_cancel_train(self):
+        "If training is canceled, still set the loss function back"
         self.after_train()
 
     def after_cancel_fit(self):
+        "If fit is canceled, still set the loss function back"
         self.after_train()
 
     def lf(self, pred, *yb):
@@ -52,6 +56,7 @@ class MixUp(MixHandler):
         super().__init__(alpha)
 
     def before_batch(self):
+        "Blend xb and yb with another random item in a second batch (xb1,yb1) with `lam` weights"
         lam = self.distrib.sample((self.y.size(0),)).squeeze().to(self.x.device)
         lam = torch.stack([lam, 1-lam], 1)
         self.lam = lam.max(1)[0]
@@ -73,6 +78,7 @@ class CutMix(MixHandler):
         super().__init__(alpha)
 
     def before_batch(self):
+        "Add `rand_bbox` patches with size based on `lam` and location chosen randomly."
         bs, _, H, W = self.x.size()
         self.lam = self.distrib.sample((1,)).to(self.x.device)
         shuffle = torch.randperm(bs).to(self.x.device)
@@ -89,6 +95,7 @@ class CutMix(MixHandler):
         H:int, # Height bbox will be
         lam:Tensor # lambda sample from Beta distribution i.e tensor([0.3647])
     )->tuple: # Represents the top-left pixel location and the bottom-right pixel location
+        "Give a bounding box location based on the size of the im and a weight"
         cut_rat = torch.sqrt(1. - lam).to(self.x.device)
         cut_w = torch.round(W * cut_rat).type(torch.long).to(self.x.device)
         cut_h = torch.round(H * cut_rat).type(torch.long).to(self.x.device)
