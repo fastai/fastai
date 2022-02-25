@@ -20,7 +20,12 @@ def plot_top_losses(x, y, *args, **kwargs):
 # Cell
 class Interpretation():
     "Interpretation base class, can be inherited for task specific Interpretation classes"
-    def __init__(self, learn, dl, losses, act=None):
+    def __init__(self,
+        learn:Learner,
+        dl:DataLoader, # `DataLoader` to run inference over
+        losses:TensorBase, # Losses calculated from `dl`
+        act=None # Activation function for prediction
+    ):
         store_attr()
 
     def __getitem__(self, idxs):
@@ -34,21 +39,34 @@ class Interpretation():
         return inps, preds, targs, decoded, self.losses[idxs]
 
     @classmethod
-    def from_learner(cls, learn, ds_idx=1, dl=None, act=None):
+    def from_learner(cls,
+        learn, # Model used to create interpretation
+        ds_idx:int=1, # Index of `learn.dls` when `dl` is None
+        dl:DataLoader=None, # `Dataloader` used to make predictions
+        act=None # Override default or set prediction activation function
+    ):
         "Construct interpretation object from a learner"
         if dl is None: dl = learn.dls[ds_idx].new(shuffle=False, drop_last=False)
         _,_,losses = learn.get_preds(dl=dl, with_input=False, with_loss=True, with_decoded=False,
                                      with_preds=False, with_targs=False, act=act)
         return cls(learn, dl, losses, act)
 
-    def top_losses(self, k=None, largest=True, items=False):
-        "`k` largest(/smallest) losses and indexes, defaulting to all losses (sorted by `largest`). Optionally include items."
+    def top_losses(self,
+        k:(int,None)=None, # Return `k` losses, defaults to all
+        largest:bool=True, # Sort losses by largest or smallest
+        items:bool=False # Whether to return input items
+    ):
+        "`k` largest(/smallest) losses and indexes, defaulting to all losses."
         losses, idx = self.losses.topk(ifnone(k, len(self.losses)), largest=largest)
         if items: return losses, idx, getattr(self.dl.items, 'iloc', L(self.dl.items))[idx]
         else:     return losses, idx
 
-    def plot_top_losses(self, k, largest=True, **kwargs):
-        "Show `k` largest(/smallest) preds and losses. `k` may be int, list, or `range` of desired results."
+    def plot_top_losses(self,
+        k:(int,list), # Number of losses to plot
+        largest:bool=True, # Sort losses by largest or smallest
+        **kwargs
+    ):
+        "Show `k` largest(/smallest) preds and losses. Implementation based on type dispatch"
         if is_listy(k) or isinstance(k, range):
             losses, idx = (o[k] for o in self.top_losses(None, largest))
         else:
@@ -63,7 +81,10 @@ class Interpretation():
         #its None means that a batch knows how to show itself as a whole, so we pass x, x1
         #else: show_results(x, x1, its, ctxs=ctxs, max_n=max_n, **kwargs)
 
-    def show_results(self, idxs, **kwargs):
+    def show_results(self,
+        idxs:list, # Indices of predictions and targets
+        **kwargs
+    ):
         "Show predictions and targets of `idxs`"
         if isinstance(idxs, Tensor): idxs = idxs.tolist()
         if not is_listy(idxs): idxs = [idxs]
@@ -75,7 +96,12 @@ class Interpretation():
 class ClassificationInterpretation(Interpretation):
     "Interpretation methods for classification models."
 
-    def __init__(self, learn, dl, losses, act=None):
+    def __init__(self,
+        learn:Learner,
+        dl:DataLoader, # `DataLoader` to run inference over
+        losses:TensorBase, # Losses calculated from `dl`
+        act=None # Activation function for prediction
+    ):
         super().__init__(learn, dl, losses, act)
         self.vocab = self.dl.vocab
         if is_listy(self.vocab): self.vocab = self.vocab[-1]
@@ -89,8 +115,14 @@ class ClassificationInterpretation(Interpretation):
         cm = ((d==x[:,None]) & (t==x[:,None,None])).long().sum(2)
         return to_np(cm)
 
-    def plot_confusion_matrix(self, normalize=False, title='Confusion matrix', cmap="Blues", norm_dec=2,
-                              plot_txt=True, **kwargs):
+    def plot_confusion_matrix(self,
+        normalize:bool=False, # Wether to normalize occurrences in matrix
+        title:str='Confusion matrix', # Title of plot
+        cmap:str="Blues", # Colormap from Matplotlib
+        norm_dec=2, # Number of decimal places of normalized occurrences
+        plot_txt=True, # Display occurrences in matrix
+        **kwargs
+    ):
         "Plot the confusion matrix, with `title` and using `cmap`."
         # This function is mainly copied from the sklearn docs
         cm = self.confusion_matrix()
@@ -116,7 +148,9 @@ class ClassificationInterpretation(Interpretation):
         plt.xlabel('Predicted')
         plt.grid(False)
 
-    def most_confused(self, min_val=1):
+    def most_confused(self,
+        min_val:int=1 # omit occurrences less than `min_val`
+    ):
         "Sorted descending list of largest non-diagonal entries of confusion matrix, presented as actual, predicted, number of occurrences."
         cm = self.confusion_matrix()
         np.fill_diagonal(cm, 0)
