@@ -93,7 +93,7 @@ class ImagesCleaner:
 
 # Cell
 def _get_iw_info(
-    learn, # CNN `Learner`
+    learn,
     ds_idx:int=0 # 0 for `train`, 1 for `valid`
 )->list:
     "For every image in `dls` `zip` it's `Path`, target and loss"
