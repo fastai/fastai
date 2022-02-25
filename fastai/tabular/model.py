@@ -8,7 +8,7 @@ from .core import *
 
 # Cell
 def emb_sz_rule(
-    n_cat:int # Number of categories in the data
+    n_cat:int # Cardinality of a category
 ) -> int:
     "Rule of thumb to pick embedding size corresponding to `n_cat`"
     return min(600, round(1.6 * n_cat**0.56))
