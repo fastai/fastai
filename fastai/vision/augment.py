@@ -149,12 +149,12 @@ def _do_crop_pad(x:TensorBBox, sz, tl, orig_sz, pad_mode=PadMode.Zeros, resize_t
 
 @patch
 def crop_pad(x:(TensorBBox,TensorPoint,Image.Image),
-    sz:(int, (int,int)), # Crop/pad size of input, duplicated if one value is specified
-    tl:(int,int)=None, # Optional top-left coordinate of the crop/pad, if `None` center crop
-    orig_sz:(int,int)=None, # Original size of input
+    sz:(int, tuple), # Crop/pad size of input, duplicated if one value is specified
+    tl:tuple=None, # Optional top-left coordinate of the crop/pad, if `None` center crop
+    orig_sz:tuple=None, # Original size of input
     pad_mode:PadMode=PadMode.Zeros, # Fastai padding mode
     resize_mode=Image.BILINEAR, # Pillow `Image` resize mode
-    resize_to:(int,int)=None # Optional post crop/pad resize of input
+    resize_to:tuple=None # Optional post crop/pad resize of input
 ):
     if isinstance(sz,int): sz = (sz,sz)
     orig_sz = fastuple(_get_sz(x) if orig_sz is None else orig_sz)
