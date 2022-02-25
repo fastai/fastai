@@ -37,7 +37,7 @@ def _update_children(
 
 # Cell
 def carousel(
-    children:(list,tuple)=(), # `Box` objects to display in a carousel
+    children:tuple=(), # `Box` objects to display in a carousel
     **layout
 ) -> Box: # An `ipywidget`'s carousel
     "A horizontally scrolling carousel"
