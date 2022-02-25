@@ -11,8 +11,18 @@ import types
 
 # Cell
 @delegates(subplots)
-def get_grid(n, nrows=None, ncols=None, add_vert=0, figsize=None, double=False, title=None, return_fig=False,
-             flatten=True, **kwargs):
+def get_grid(
+    n:int, # Number of axes in the returned grid
+    nrows:int=None, # Number of rows in the returned grid, defaulting to `int(math.sqrt(n))`
+    ncols:int=None, # Number of columns in the returned grid, defaulting to `ceil(n/rows)`
+    add_vert=0,
+    figsize:tuple=None, # Width, height in inches of the returned figure
+    double:bool=False, # Whether to double the number of columns and `n`
+    title:str=None, # If passed, title set to the figure
+    return_fig:bool=False, # Whether to return the figure created by `subplots`
+    flatten:bool=True, # Whether to flatten the matplot axes such that they can be iterated over with a single loop
+    **kwargs,
+) -> (plt.Figure, plt.Axes): # Returns just `axs` by default, and (`fig`, `axs`) if `return_fig` is set to True
     "Return a grid of `n` axes, `rows` by `cols`"
     if nrows:
         ncols = ncols or int(np.ceil(n/nrows))
@@ -28,15 +38,21 @@ def get_grid(n, nrows=None, ncols=None, add_vert=0, figsize=None, double=False, 
     return (fig,axs) if return_fig else axs
 
 # Cell
-def clip_remove_empty(bbox, label):
-    "Clip bounding boxes with image border and label background the empty ones"
+def clip_remove_empty(
+    bbox:TensorBBox, # Coordinates of bounding boxes
+    label:TensorMultiCategory # Labels of the bounding boxes
+):
+    "Clip bounding boxes with image border and remove empty boxes along with corresponding labels"
     bbox = torch.clamp(bbox, -1, 1)
     empty = ((bbox[...,2] - bbox[...,0])*(bbox[...,3] - bbox[...,1]) <= 0.)
     return (bbox[~empty], label[TensorBase(~empty)])
 
 # Cell
-def bb_pad(samples, pad_idx=0):
-    "Function that collect `samples` of labelled bboxes and adds padding with `pad_idx`."
+def bb_pad(
+    samples:list, # List of 3-tuples like (image, bounding_boxes, labels)
+    pad_idx:int=0 # Label that will be used to pad each list of labels
+):
+    "Function that collects `samples` of labelled bboxes and adds padding with `pad_idx`."
     samples = [(s[0], *clip_remove_empty(*s[1:])) for s in samples]
     max_len = max([len(s[2]) for s in samples])
     def _f(img,bbox,lbl):
@@ -112,7 +128,12 @@ class ImageDataLoaders(DataLoaders):
         return cls.from_dblock(dblock, fnames, path=path, **kwargs)
 
     @classmethod
-    def from_name_func(cls, path, fnames, label_func, **kwargs):
+    def from_name_func(cls,
+        path:(str, Path), # Set the default path to a directory that a `Learner` can use to save files like models
+        fnames:list, # A list of `os.Pathlike`'s to individual image files
+        label_func:callable, # A function that receives a string (the file name) and outputs a label
+        **kwargs
+    ) -> DataLoaders:
         "Create from the name attrs of `fnames` in `path`s with `label_func`"
         if sys.platform == 'win32' and isinstance(label_func, types.LambdaType) and label_func.__name__ == '<lambda>':
             # https://medium.com/@jwnx/multiprocessing-serialization-in-python-with-pickle-9844f6fa1812
