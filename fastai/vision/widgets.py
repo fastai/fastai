@@ -119,6 +119,6 @@ class ImageClassifierCleaner(GetAttr):
 
     def _ipython_display_(self): display(self.widget)
     def on_change_ds(self,change=None):
-        "Toggle between training set view and validation set view"
+        "Toggle between training validation set view"
         info = L(o for o in self.iwis[self.dd_ds.index] if o[1]==self.dd_cats.value)
         self.iw.set_fns(info.sorted(2, reverse=True).itemgot(0))
