@@ -17,11 +17,7 @@ from ipywidgets import HBox,VBox,widgets,Button,Checkbox,Dropdown,Layout,Box,Out
 def __getitem__(self:Box, i): return self.children[i]
 
 # Cell
-def widget(
-    im, # An object IPython can display to be converted into a widget
-    *args,
-    **layout
-) -> Output: # A context manager to display output as a widget
+def widget(im,*args,**layout)-> Output:
     "Convert anything that can be `display`ed by `IPython` into a widget"
     o = Output(layout=merge(*args, layout))
     with o: display(im)
