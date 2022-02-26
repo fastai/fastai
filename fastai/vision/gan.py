@@ -339,8 +339,8 @@ def show_results(x:InvisibleTensor, y:TensorImage, samples, outs, ctxs=None, max
 
 # Cell
 def gan_loss_from_func(
-    loss_gen:callable, # A loss function for the generator. It should take in the generator output images and target real images and provide an evaluation.
-    loss_crit:callable, # A loss function for the critic. It should take in the images, real or fake, and also labels indicating if it's real or fake, and provide an evaluation.
+    loss_gen:callable, # A loss function for the generator. Evaluates generator output images and target real images
+    loss_crit:callable, # A loss function for the critic. Evaluates predictions of real and fake images.
     weights_gen:(None, list, tuple)=None # Weights for the generator and critic loss function
 ):
     "Define loss functions for a GAN from `loss_gen` and `loss_crit`."
