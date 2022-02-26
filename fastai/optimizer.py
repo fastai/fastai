@@ -12,7 +12,7 @@ from .torch_basics import *
 class _BaseOptimizer():
     "Common functionality between `Optimizer` and `OptimWrapper`"
     def all_params(self,
-        n:slice=slice(None), # Extended slicing over the optimizer `param_lists`
+        n:(slice, int)=slice(None), # Extended slicing over the optimizer `param_lists`
         with_grad:bool=False # Get all param tuples. If `True` select only those with a gradient
     ):
         res = L((p,pg,self.state[p],hyper) for pg,hyper in zip(self.param_lists[n],self.hypers[n]) for p in pg)
@@ -23,7 +23,7 @@ class _BaseOptimizer():
         p:Tensor, # Parameters to set gradient
         pg, # Param groups (unused but needed because unpack *o)
         state: dict,
-        h # Hyper parameter (unused but needed because unpack *o)
+        h # Hyperparameter (unused but needed because unpack *o)
     ):
         p.requires_grad_(rg or state.get('force_train', False))
     def freeze_to(self,
@@ -91,7 +91,7 @@ class Optimizer(_BaseOptimizer):
     _keep_on_clear = ['force_train', 'do_wd']
     def __init__(self,
         params:Tensor, # Parameters and hyper parameters
-        cbs, # `Callback` list for the optimizer
+        cbs: (list), # `Optimizer` callbacks
         train_bn:bool=True, # Batch normalization is always trained
         **defaults # Default values to set on hyper parameters
     ):

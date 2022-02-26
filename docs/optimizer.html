@@ -26,6 +26,25 @@ nb_path: "nbs/12_optimizer.ipynb"
     
 <div class="cell border-box-sizing code_cell rendered">
 
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>/home/tyoc213/miniconda3/envs/fastai2/lib/python3.8/site-packages/torch/cuda/__init__.py:143: UserWarning: 
+NVIDIA GeForce RTX 3090 with CUDA capability sm_86 is not compatible with the current PyTorch installation.
+The current PyTorch install supports CUDA capabilities sm_37 sm_50 sm_60 sm_70.
+If you want to use the NVIDIA GeForce RTX 3090 GPU with PyTorch, please check the instructions at https://pytorch.org/get-started/locally/
+
+  warnings.warn(incompatible_device_warn.format(device_name, capability, &#34; &#34;.join(arch_list), device_name))
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
 </div>
     {% endraw %}
 
@@ -85,7 +104,7 @@ nb_path: "nbs/12_optimizer.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Optimizer" class="doc_header"><code>class</code> <code>Optimizer</code><a href="https://github.com/fastai/fastai/tree/master/fastai/optimizer.py#L89" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Optimizer</code>(<strong><code>params</code></strong>:<code>Tensor</code>, <strong><code>cbs</code></strong>, <strong><code>train_bn</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong>**<code>defaults</code></strong>) :: <code>_BaseOptimizer</code></p>
+<h2 id="Optimizer" class="doc_header"><code>class</code> <code>Optimizer</code><a href="https://github.com/fastai/fastai/tree/master/fastai/optimizer.py#L89" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Optimizer</code>(<strong><code>params</code></strong>:<code>Tensor</code>, <strong><code>cbs</code></strong>:<code>list</code>, <strong><code>train_bn</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong>**<code>defaults</code></strong>) :: <code>_BaseOptimizer</code></p>
 </blockquote>
 <p>Base optimizer class for the fastai library, updating <code>params</code> with <code>cbs</code></p>
 <table>
@@ -105,9 +124,9 @@ nb_path: "nbs/12_optimizer.ipynb"
 </tr>
 <tr>
 <td><strong><code>cbs</code></strong></td>
+<td><code>list</code></td>
 <td></td>
-<td></td>
-<td><code>Callback</code> list for the optimizer</td>
+<td><code>Optimizer</code> callbacks</td>
 </tr>
 <tr>
 <td><strong><code>train_bn</code></strong></td>
