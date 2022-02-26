@@ -47,9 +47,62 @@ nb_path: "nbs/01a_losses.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="BaseLoss" class="doc_header"><code>class</code> <code>BaseLoss</code><a href="https://github.com/fastai/fastai/tree/master/fastai/losses.py#L13" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>BaseLoss</code>(<strong><code>loss_cls</code></strong>, <strong>*<code>args</code></strong>, <strong><code>axis</code></strong>=<em><code>-1</code></em>, <strong><code>flatten</code></strong>=<em><code>True</code></em>, <strong><code>floatify</code></strong>=<em><code>False</code></em>, <strong><code>is_2d</code></strong>=<em><code>True</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h3 id="BaseLoss" class="doc_header"><code>class</code> <code>BaseLoss</code><a href="https://github.com/fastai/fastai/tree/master/fastai/losses.py#L13" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>BaseLoss</code>(<strong><code>loss_cls</code></strong>, <strong>*<code>args</code></strong>, <strong><code>axis</code></strong>:<code>int</code>=<em><code>-1</code></em>, <strong><code>flatten</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>floatify</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>is_2d</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Same as <code>loss_cls</code>, but flattens input and target.</p>
+<table>
+<thead><tr>
+<th></th>
+<th>Type</th>
+<th>Default</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>loss_cls</code></strong></td>
+<td></td>
+<td></td>
+<td>A general loss function</td>
+</tr>
+<tr>
+<td><strong><code>args</code></strong></td>
+<td></td>
+<td></td>
+<td><em>No Content</em></td>
+</tr>
+<tr>
+<td><strong><code>axis</code></strong></td>
+<td><code>int</code></td>
+<td><code>-1</code></td>
+<td><em>No Content</em></td>
+</tr>
+<tr>
+<td><strong><code>flatten</code></strong></td>
+<td><code>bool</code></td>
+<td><code>True</code></td>
+<td><em>No Content</em></td>
+</tr>
+<tr>
+<td><strong><code>floatify</code></strong></td>
+<td><code>bool</code></td>
+<td><code>False</code></td>
+<td><em>No Content</em></td>
+</tr>
+<tr>
+<td><strong><code>is_2d</code></strong></td>
+<td><code>bool</code></td>
+<td><code>True</code></td>
+<td><em>No Content</em></td>
+</tr>
+<tr>
+<td><strong><code>kwargs</code></strong></td>
+<td></td>
+<td></td>
+<td><em>No Content</em></td>
+</tr>
+</tbody>
+</table>
 
 </div>
 
@@ -98,7 +151,7 @@ nb_path: "nbs/01a_losses.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="CrossEntropyLossFlat" class="doc_header"><code>class</code> <code>CrossEntropyLossFlat</code><a href="https://github.com/fastai/fastai/tree/master/fastai/losses.py#L42" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>CrossEntropyLossFlat</code>(<strong>*<code>args</code></strong>, <strong><code>axis</code></strong>=<em><code>-1</code></em>, <strong><code>weight</code></strong>=<em><code>None</code></em>, <strong><code>ignore_index</code></strong>=<em><code>-100</code></em>, <strong><code>reduction</code></strong>=<em><code>'mean'</code></em>, <strong><code>flatten</code></strong>=<em><code>True</code></em>, <strong><code>floatify</code></strong>=<em><code>False</code></em>, <strong><code>is_2d</code></strong>=<em><code>True</code></em>) :: <a href="/losses.html#BaseLoss"><code>BaseLoss</code></a></p>
+<h3 id="CrossEntropyLossFlat" class="doc_header"><code>class</code> <code>CrossEntropyLossFlat</code><a href="https://github.com/fastai/fastai/tree/master/fastai/losses.py#L58" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>CrossEntropyLossFlat</code>(<strong>*<code>args</code></strong>, <strong><code>axis</code></strong>:<code>int</code>=<em><code>-1</code></em>, <strong><code>weight</code></strong>=<em><code>None</code></em>, <strong><code>ignore_index</code></strong>=<em><code>-100</code></em>, <strong><code>reduction</code></strong>=<em><code>'mean'</code></em>, <strong><code>flatten</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>floatify</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>is_2d</code></strong>:<code>bool</code>=<em><code>True</code></em>) :: <a href="/losses.html#BaseLoss"><code>BaseLoss</code></a></p>
 </blockquote>
 <p>Same as <code>nn.CrossEntropyLoss</code>, but flattens input and target.</p>
 
@@ -187,9 +240,38 @@ nb_path: "nbs/01a_losses.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="FocalLoss" class="doc_header"><code>class</code> <code>FocalLoss</code><a href="https://github.com/fastai/fastai/tree/master/fastai/losses.py#L51" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>FocalLoss</code>(<strong><code>gamma</code></strong>:<code>float</code>=<em><code>2.0</code></em>, <strong><code>weight</code></strong>=<em><code>None</code></em>, <strong><code>reduction</code></strong>:<code>str</code>=<em><code>'mean'</code></em>) :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
+<h3 id="FocalLoss" class="doc_header"><code>class</code> <code>FocalLoss</code><a href="https://github.com/fastai/fastai/tree/master/fastai/losses.py#L71" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>FocalLoss</code>(<strong><code>gamma</code></strong>:<code>float</code>=<em><code>2.0</code></em>, <strong><code>weight</code></strong>:<code>float</code>=<em><code>None</code></em>, <strong><code>reduction</code></strong>:<code>str</code>=<em><code>'mean'</code></em>) :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
 </blockquote>
 <p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
+<table>
+<thead><tr>
+<th></th>
+<th>Type</th>
+<th>Default</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>gamma</code></strong></td>
+<td><code>float</code></td>
+<td><code>2.0</code></td>
+<td>Focusing parameter to down-weight easy-to-classify observations at higher values (0=CrossEntropy)</td>
+</tr>
+<tr>
+<td><strong><code>weight</code></strong></td>
+<td><code>float</code></td>
+<td><code>None</code></td>
+<td>Weighting factor to address class imbalance</td>
+</tr>
+<tr>
+<td><strong><code>reduction</code></strong></td>
+<td><code>str</code></td>
+<td><code>mean</code></td>
+<td>PyTorch reduction equivalence ('mean', 'sum', 'none')</td>
+</tr>
+</tbody>
+</table>
 
 </div>
 
@@ -212,7 +294,7 @@ nb_path: "nbs/01a_losses.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="FocalLossFlat" class="doc_header"><code>class</code> <code>FocalLossFlat</code><a href="https://github.com/fastai/fastai/tree/master/fastai/losses.py#L67" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>FocalLossFlat</code>(<strong>*<code>args</code></strong>, <strong><code>gamma</code></strong>=<em><code>2.0</code></em>, <strong><code>axis</code></strong>=<em><code>-1</code></em>, <strong><code>weight</code></strong>=<em><code>None</code></em>, <strong><code>reduction</code></strong>=<em><code>'mean'</code></em>, <strong>**<code>kwargs</code></strong>) :: <a href="/losses.html#BaseLoss"><code>BaseLoss</code></a></p>
+<h3 id="FocalLossFlat" class="doc_header"><code>class</code> <code>FocalLossFlat</code><a href="https://github.com/fastai/fastai/tree/master/fastai/losses.py#L93" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>FocalLossFlat</code>(<strong>*<code>args</code></strong>, <strong><code>gamma</code></strong>:<code>float</code>=<em><code>2.0</code></em>, <strong><code>axis</code></strong>:<code>int</code>=<em><code>-1</code></em>, <strong><code>weight</code></strong>=<em><code>None</code></em>, <strong><code>reduction</code></strong>=<em><code>'mean'</code></em>, <strong>**<code>kwargs</code></strong>) :: <a href="/losses.html#BaseLoss"><code>BaseLoss</code></a></p>
 </blockquote>
 <p>Same as CrossEntropyLossFlat but with focal paramter, <code>gamma</code>. Focal loss is introduced by Lin et al.
 <a href="https://arxiv.org/pdf/1708.02002.pdf">https://arxiv.org/pdf/1708.02002.pdf</a>. Note the class weighting factor in the paper, alpha, can be
@@ -293,7 +375,7 @@ implemented through pytorch <code>weight</code> argument passed through to F.cro
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="BCEWithLogitsLossFlat" class="doc_header"><code>class</code> <code>BCEWithLogitsLossFlat</code><a href="https://github.com/fastai/fastai/tree/master/fastai/losses.py#L84" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>BCEWithLogitsLossFlat</code>(<strong>*<code>args</code></strong>, <strong><code>axis</code></strong>=<em><code>-1</code></em>, <strong><code>floatify</code></strong>=<em><code>True</code></em>, <strong><code>thresh</code></strong>=<em><code>0.5</code></em>, <strong><code>weight</code></strong>=<em><code>None</code></em>, <strong><code>reduction</code></strong>=<em><code>'mean'</code></em>, <strong><code>pos_weight</code></strong>=<em><code>None</code></em>, <strong><code>flatten</code></strong>=<em><code>True</code></em>, <strong><code>is_2d</code></strong>=<em><code>True</code></em>) :: <a href="/losses.html#BaseLoss"><code>BaseLoss</code></a></p>
+<h3 id="BCEWithLogitsLossFlat" class="doc_header"><code>class</code> <code>BCEWithLogitsLossFlat</code><a href="https://github.com/fastai/fastai/tree/master/fastai/losses.py#L119" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>BCEWithLogitsLossFlat</code>(<strong>*<code>args</code></strong>, <strong><code>axis</code></strong>:<code>int</code>=<em><code>-1</code></em>, <strong><code>floatify</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>thresh</code></strong>:<code>float</code>=<em><code>0.5</code></em>, <strong><code>weight</code></strong>=<em><code>None</code></em>, <strong><code>reduction</code></strong>=<em><code>'mean'</code></em>, <strong><code>pos_weight</code></strong>=<em><code>None</code></em>, <strong><code>flatten</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>is_2d</code></strong>:<code>bool</code>=<em><code>True</code></em>) :: <a href="/losses.html#BaseLoss"><code>BaseLoss</code></a></p>
 </blockquote>
 <p>Same as <code>nn.BCEWithLogitsLoss</code>, but flattens input and target.</p>
 
@@ -361,7 +443,7 @@ implemented through pytorch <code>weight</code> argument passed through to F.cro
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="BCELossFlat" class="doc_header"><code>BCELossFlat</code><a href="https://github.com/fastai/fastai/tree/master/fastai/losses.py#L98" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>BCELossFlat</code>(<strong>*<code>args</code></strong>, <strong><code>axis</code></strong>=<em><code>-1</code></em>, <strong><code>floatify</code></strong>=<em><code>True</code></em>, <strong><code>weight</code></strong>=<em><code>None</code></em>, <strong><code>reduction</code></strong>=<em><code>'mean'</code></em>)</p>
+<h4 id="BCELossFlat" class="doc_header"><code>BCELossFlat</code><a href="https://github.com/fastai/fastai/tree/master/fastai/losses.py#L144" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>BCELossFlat</code>(<strong>*<code>args</code></strong>, <strong><code>axis</code></strong>=<em><code>-1</code></em>, <strong><code>floatify</code></strong>=<em><code>True</code></em>, <strong><code>weight</code></strong>=<em><code>None</code></em>, <strong><code>reduction</code></strong>=<em><code>'mean'</code></em>)</p>
 </blockquote>
 <p>Same as <code>nn.BCELoss</code>, but flattens input and target.</p>
 
@@ -414,7 +496,7 @@ implemented through pytorch <code>weight</code> argument passed through to F.cro
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="MSELossFlat" class="doc_header"><code>MSELossFlat</code><a href="https://github.com/fastai/fastai/tree/master/fastai/losses.py#L104" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>MSELossFlat</code>(<strong>*<code>args</code></strong>, <strong><code>axis</code></strong>=<em><code>-1</code></em>, <strong><code>floatify</code></strong>=<em><code>True</code></em>, <strong><code>reduction</code></strong>=<em><code>'mean'</code></em>)</p>
+<h4 id="MSELossFlat" class="doc_header"><code>MSELossFlat</code><a href="https://github.com/fastai/fastai/tree/master/fastai/losses.py#L150" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>MSELossFlat</code>(<strong>*<code>args</code></strong>, <strong><code>axis</code></strong>=<em><code>-1</code></em>, <strong><code>floatify</code></strong>=<em><code>True</code></em>, <strong><code>reduction</code></strong>=<em><code>'mean'</code></em>)</p>
 </blockquote>
 <p>Same as <code>nn.MSELoss</code>, but flattens input and target.</p>
 
@@ -467,7 +549,7 @@ implemented through pytorch <code>weight</code> argument passed through to F.cro
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="L1LossFlat" class="doc_header"><code>L1LossFlat</code><a href="https://github.com/fastai/fastai/tree/master/fastai/losses.py#L110" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>L1LossFlat</code>(<strong>*<code>args</code></strong>, <strong><code>axis</code></strong>=<em><code>-1</code></em>, <strong><code>floatify</code></strong>=<em><code>True</code></em>, <strong><code>reduction</code></strong>=<em><code>'mean'</code></em>)</p>
+<h4 id="L1LossFlat" class="doc_header"><code>L1LossFlat</code><a href="https://github.com/fastai/fastai/tree/master/fastai/losses.py#L156" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>L1LossFlat</code>(<strong>*<code>args</code></strong>, <strong><code>axis</code></strong>=<em><code>-1</code></em>, <strong><code>floatify</code></strong>=<em><code>True</code></em>, <strong><code>reduction</code></strong>=<em><code>'mean'</code></em>)</p>
 </blockquote>
 <p>Same as <code>nn.L1Loss</code>, but flattens input and target.</p>
 
@@ -499,7 +581,7 @@ implemented through pytorch <code>weight</code> argument passed through to F.cro
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="LabelSmoothingCrossEntropy" class="doc_header"><code>class</code> <code>LabelSmoothingCrossEntropy</code><a href="https://github.com/fastai/fastai/tree/master/fastai/losses.py#L116" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>LabelSmoothingCrossEntropy</code>(<strong><code>eps</code></strong>:<code>float</code>=<em><code>0.1</code></em>, <strong><code>weight</code></strong>=<em><code>None</code></em>, <strong><code>reduction</code></strong>=<em><code>'mean'</code></em>) :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
+<h3 id="LabelSmoothingCrossEntropy" class="doc_header"><code>class</code> <code>LabelSmoothingCrossEntropy</code><a href="https://github.com/fastai/fastai/tree/master/fastai/losses.py#L162" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>LabelSmoothingCrossEntropy</code>(<strong><code>eps</code></strong>:<code>float</code>=<em><code>0.1</code></em>, <strong><code>weight</code></strong>=<em><code>None</code></em>, <strong><code>reduction</code></strong>=<em><code>'mean'</code></em>) :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
 </blockquote>
 <p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
 
@@ -564,7 +646,7 @@ implemented through pytorch <code>weight</code> argument passed through to F.cro
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="LabelSmoothingCrossEntropyFlat" class="doc_header"><code>class</code> <code>LabelSmoothingCrossEntropyFlat</code><a href="https://github.com/fastai/fastai/tree/master/fastai/losses.py#L135" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>LabelSmoothingCrossEntropyFlat</code>(<strong>*<code>args</code></strong>, <strong><code>axis</code></strong>=<em><code>-1</code></em>, <strong><code>eps</code></strong>=<em><code>0.1</code></em>, <strong><code>reduction</code></strong>=<em><code>'mean'</code></em>, <strong><code>flatten</code></strong>=<em><code>True</code></em>, <strong><code>floatify</code></strong>=<em><code>False</code></em>, <strong><code>is_2d</code></strong>=<em><code>True</code></em>) :: <a href="/losses.html#BaseLoss"><code>BaseLoss</code></a></p>
+<h3 id="LabelSmoothingCrossEntropyFlat" class="doc_header"><code>class</code> <code>LabelSmoothingCrossEntropyFlat</code><a href="https://github.com/fastai/fastai/tree/master/fastai/losses.py#L181" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>LabelSmoothingCrossEntropyFlat</code>(<strong>*<code>args</code></strong>, <strong><code>axis</code></strong>=<em><code>-1</code></em>, <strong><code>eps</code></strong>=<em><code>0.1</code></em>, <strong><code>reduction</code></strong>=<em><code>'mean'</code></em>, <strong><code>flatten</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>floatify</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>is_2d</code></strong>:<code>bool</code>=<em><code>True</code></em>) :: <a href="/losses.html#BaseLoss"><code>BaseLoss</code></a></p>
 </blockquote>
 <p>Same as <a href="/losses.html#LabelSmoothingCrossEntropy"><code>LabelSmoothingCrossEntropy</code></a>, but flattens input and target.</p>
 
@@ -603,7 +685,7 @@ implemented through pytorch <code>weight</code> argument passed through to F.cro
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="DiceLoss" class="doc_header"><code>class</code> <code>DiceLoss</code><a href="https://github.com/fastai/fastai/tree/master/fastai/losses.py#L144" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>DiceLoss</code>(<strong><code>axis</code></strong>=<em><code>1</code></em>, <strong><code>smooth</code></strong>=<em><code>1e-06</code></em>, <strong><code>reduction</code></strong>=<em><code>'sum'</code></em>, <strong><code>square_in_union</code></strong>=<em><code>False</code></em>)</p>
+<h3 id="DiceLoss" class="doc_header"><code>class</code> <code>DiceLoss</code><a href="https://github.com/fastai/fastai/tree/master/fastai/losses.py#L190" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>DiceLoss</code>(<strong><code>axis</code></strong>=<em><code>1</code></em>, <strong><code>smooth</code></strong>=<em><code>1e-06</code></em>, <strong><code>reduction</code></strong>=<em><code>'sum'</code></em>, <strong><code>square_in_union</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 <p>Dice loss for segmentation</p>
 
@@ -724,24 +806,6 @@ implemented through pytorch <code>weight</code> argument passed through to F.cro
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-
-<div class="output_png output_subarea ">
-<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPsAAAD7CAYAAACscuKmAAAAOXRFWHRTb2Z0d2FyZQBNYXRwbG90bGliIHZlcnNpb24zLjQuMywgaHR0cHM6Ly9tYXRwbG90bGliLm9yZy/MnkTPAAAACXBIWXMAAAsTAAALEwEAmpwYAAALi0lEQVR4nO3bf6jd9X3H8efL3PwwkTWJW0OayJKhtEjBWu6s4hjDtMy5rvqHFLsywhDyj1ttK7Rx+6Psvwml1j9GIdOVMFyrS2WKlBaX6h/7Y5mxyqqJ1iyumhB/jGlbhMWkfe+P+3XcZZF7cu85997s/XzA5d7vj5Pz5kOe93zPNyepKiT9/3fBUg8gaXEYu9SEsUtNGLvUhLFLTRi71MSCYk9yfZIXkhxJsntcQ0kav8z339mTrAB+DHwCOAY8CXymqg6NbzxJ4zK1gMdeBRypqqMASb4N3Ai8Z+yrsrrWsG7OPzhrVnNy4xQUrP7PU9TJdxYwpuZt3YWs3/Zz1l5wkmPH3s8Fb7691BNpDv/F27xTJ3O2YwuJfQvwyqztY8DHzjwpyS5gF8Aa1vKx7JjzD16x7VKO/uH7yS9g+9+d4BdHXlrAmJqv+sgV/MFfP8FvXniUO3bfxkUP/vNSj6Q5HKj973ls4jfoqmpPVU1X1fRKVk/66SS9h4XEfhy4ZNb21mGfpGVoIbE/CVyWZHuSVcAtwCPjGUvSuM37PXtVnU7yJ8D3gRXA31TVc2ObTNJYLeQGHVX1XeC7Y5pF0gT5CTqpCWOXmjB2qQljl5owdqkJY5eaMHapCWOXmjB2qQljl5owdqkJY5eaMHapCWOXmjB2qQljl5owdqkJY5eaMHapCWOXmjB2qQljl5owdqkJY5eaMHapCWOXmjB2qQljl5owdqkJY5eaMHapCWOXmjB2qQljl5owdqmJOWNPckmSx5McSvJcktuH/RuTPJbkxeH7hsmPK2m+RnllPw3cUVWXA1cDtyW5HNgN7K+qy4D9w7akZWrO2KvqRFX9cPj558BhYAtwI7B3OG0vcNOEZpQ0BlPncnKSbcCVwAFgU1WdGA69Cmx6j8fsAnYBrGHtvAeVtDAj36BLchHwHeDzVfWz2ceqqoA62+Oqak9VTVfV9EpWL2hYSfM3UuxJVjIT+v1V9dCw+7Ukm4fjm4HXJzOipHEY5W58gPuAw1X1tVmHHgF2Dj/vBB4e/3iSxmWU9+zXAn8E/CjJM8O+PwP+Engwya3AT4BPT2RCSWMxZ+xV9U9A3uPwjvGOI2lS/ASd1ISxS00Yu9SEsUtNGLvUhLFLTRi71ISxS00Yu9SEsUtNGLvUhLFLTRi71ISxS00Yu9SEsUtNGLvUhLFLTRi71ISxS00Yu9SEsUtNGLvUhLFLTRi71ISxS00Yu9SEsUtNGLvUhLFLTRi71ISxS00Yu9SEsUtNjBx7khVJnk7y6LC9PcmBJEeSPJBk1eTGlLRQ5/LKfjtweNb2XcDdVXUp8CZw6zgHkzReI8WeZCvw+8C9w3aA64B9wyl7gZsmMJ+kMRn1lf3rwJeAXw7bFwNvVdXpYfsYsOVsD0yyK8nBJAdPcXIhs0pagDljT/JJ4PWqemo+T1BVe6pquqqmV7J6Pn+EpDGYGuGca4FPJbkBWAP8CnAPsD7J1PDqvhU4PrkxJS3UnK/sVXVnVW2tqm3ALcAPquqzwOPAzcNpO4GHJzalpAVbyL+zfxn4YpIjzLyHv288I0mahFEu4/9HVT0BPDH8fBS4avwjSZoEP0EnNWHsUhPGLjVh7FITxi41YexSE8YuNWHsUhPGLjVh7FITxi41YexSE8YuNWHsUhPGLjVh7FITxi41YexSE8YuNWHsUhPGLjVh7FITxi41YexSE8YuNWHsUhPGLjVh7FITxi41YexSE8YuNWHsUhPGLjVh7FITxi41MVLsSdYn2Zfk+SSHk1yTZGOSx5K8OHzfMOlhJc3fqK/s9wDfq6oPAVcAh4HdwP6qugzYP2xLWqbmjD3J+4DfBu4DqKp3quot4EZg73DaXuCmyYwoaRxGeWXfDrwBfDPJ00nuTbIO2FRVJ4ZzXgU2ne3BSXYlOZjk4ClOjmdqSedslNingI8C36iqK4G3OeOSvaoKqLM9uKr2VNV0VU2vZPVC55U0T6PEfgw4VlUHhu19zMT/WpLNAMP31yczoqRxmDP2qnoVeCXJB4ddO4BDwCPAzmHfTuDhiUwoaSymRjzvT4H7k6wCjgJ/zMwvigeT3Ar8BPj0ZEaUNA4jxV5VzwDTZzm0Y6zTSJoYP0EnNWHsUhPGLjVh7FITxi41YexSE8YuNWHsUhPGLjVh7FITxi41YexSE8YuNWHsUhPGLjVh7FITxi41YexSE8YuNWHsUhPGLjVh7FITxi41YexSE8YuNWHsUhPGLjVh7FITxi41YexSE8YuNWHsUhPGLjVh7FITI8We5AtJnkvybJJvJVmTZHuSA0mOJHkgyapJDytp/uaMPckW4HPAdFV9GFgB3ALcBdxdVZcCbwK3TnJQSQsz6mX8FHBhkilgLXACuA7YNxzfC9w09ukkjc2csVfVceCrwMvMRP5T4Cngrao6PZx2DNhytscn2ZXkYJKDpzg5nqklnbNRLuM3ADcC24EPAOuA60d9gqraU1XTVTW9ktXzHlTSwoxyGf9x4KWqeqOqTgEPAdcC64fLeoCtwPEJzShpDEaJ/WXg6iRrkwTYARwCHgduHs7ZCTw8mREljcMo79kPMHMj7ofAj4bH7AG+DHwxyRHgYuC+Cc4paYGm5j4FquorwFfO2H0UuGrsE0maCD9BJzVh7FITxi41YexSE8YuNWHsUhPGLjVh7FITxi41YexSE8YuNWHsUhPGLjVh7FITxi41YexSE8YuNWHsUhPGLjVh7FITxi41YexSE8YuNWHsUhPGLjVh7FITxi41YexSE8YuNWHsUhPGLjVh7FITxi41YexSE8YuNWHsUhPGLjWRqlq8J0veAN4G/mPRnnRhfpXzZ1Y4v+Y9n2aF82feX6+qXzvbgUWNHSDJwaqaXtQnnafzaVY4v+Y9n2aF82/es/EyXmrC2KUmliL2PUvwnPN1Ps0K59e859OscP7N+38s+nt2SUvDy3ipCWOXmli02JNcn+SFJEeS7F6s5x1VkkuSPJ7kUJLnktw+7N+Y5LEkLw7fNyz1rO9KsiLJ00keHba3JzkwrPEDSVYt9YzvSrI+yb4kzyc5nOSa5bq2Sb4w/B14Nsm3kqxZzms7qkWJPckK4K+A3wMuBz6T5PLFeO5zcBq4o6ouB64Gbhtm3A3sr6rLgP3D9nJxO3B41vZdwN1VdSnwJnDrkkx1dvcA36uqDwFXMDP3slvbJFuAzwHTVfVhYAVwC8t7bUdTVRP/Aq4Bvj9r+07gzsV47gXM/DDwCeAFYPOwbzPwwlLPNsyylZlArgMeBcLMJ7ymzrbmSzzr+4CXGG4Iz9q/7NYW2AK8AmwEpoa1/d3lurbn8rVYl/HvLuC7jg37lqUk24ArgQPApqo6MRx6Fdi0VHOd4evAl4BfDtsXA29V1elhezmt8XbgDeCbw9uOe5OsYxmubVUdB74KvAycAH4KPMXyXduReYPuDEkuAr4DfL6qfjb7WM38Wl/yf6tM8kng9ap6aqlnGdEU8FHgG1V1JTP/P+J/XbIvo7XdANzIzC+oDwDrgOuXdKgxWazYjwOXzNreOuxbVpKsZCb0+6vqoWH3a0k2D8c3A68v1XyzXAt8Ksm/A99m5lL+HmB9kqnhnOW0xseAY1V1YNjex0z8y3FtPw68VFVvVNUp4CFm1nu5ru3IFiv2J4HLhjuaq5i54fHIIj33SJIEuA84XFVfm3XoEWDn8PNOZt7LL6mqurOqtlbVNmbW8gdV9VngceDm4bRlMStAVb0KvJLkg8OuHcAhluHaMnP5fnWStcPfiXdnXZZre04W8cbHDcCPgX8D/nypb1acZb7fYuYy8l+BZ4avG5h5L7wfeBH4R2DjUs96xty/Azw6/PwbwL8AR4C/B1Yv9Xyz5vwIcHBY338ANizXtQX+AngeeBb4W2D1cl7bUb/8uKzUhDfopCaMXWrC2KUmjF1qwtilJoxdasLYpSb+G9HFpXNpMw8DAAAAAElFTkSuQmCC
-"
->
-</div>
-
-</div>
-
 </div>
 </div>
 

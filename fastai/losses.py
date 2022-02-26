@@ -13,7 +13,15 @@ from .layers import *
 class BaseLoss():
     "Same as `loss_cls`, but flattens input and target."
     activation=decodes=noops
-    def __init__(self, loss_cls, *args, axis=-1, flatten=True, floatify=False, is_2d=True, **kwargs):
+    def __init__(self,
+        loss_cls, # A general loss function
+        *args, # Any extra positional arguments that `loss_cls` needs
+        axis:int=-1, # The axis on which to reduce
+        flatten:bool=True, # Whether incoming losses need to be flattened
+        floatify:bool=False, # Whether incoming targets need to be converted to floats
+        is_2d:bool=True, # Determines whether flatten keeps one or two channels when flatten is applied
+        **kwargs # Any extra keyword arguments that `loss_cls` needs
+    ):
         store_attr("axis,flatten,floatify,is_2d")
         self.func = loss_cls(*args,**kwargs)
         functools.update_wrapper(self, self.func)
@@ -22,38 +30,60 @@ class BaseLoss():
     @property
     def reduction(self): return self.func.reduction
     @reduction.setter
-    def reduction(self, v): self.func.reduction = v
+    def reduction(self, v:str ):
+        "Sets the reduction style (typically 'mean', 'sum', or 'none')"
+        self.func.reduction = v
 
-    def _contiguous(self,x):
+    def _contiguous(self,x:Tensor):
+        "Move `self.axis` to the last dimension and ensure tensor is contigous for `Tensor` otherwise just return"
         return TensorBase(x.transpose(self.axis,-1).contiguous()) if isinstance(x,torch.Tensor) else x
 
-    def __call__(self, inp, targ, **kwargs):
+    def __call__(self,
+        inp, # Predictions from a `Learner`
+        targ, # Actual y label
+        **kwargs
+    )->Tensor: # Loss value based on the `inp` and `targ`
         inp,targ  = map(self._contiguous, (inp,targ))
         if self.floatify and targ.dtype!=torch.float16: targ = targ.float()
         if targ.dtype in [torch.int8, torch.int16, torch.int32]: targ = targ.long()
         if self.flatten: inp = inp.view(-1,inp.shape[-1]) if self.is_2d else inp.view(-1)
         return self.func.__call__(inp, targ.view(-1) if self.flatten else targ, **kwargs)
 
-    def to(self, device):
+    def to(self, device:torch.device):
+        "Move the loss function to a specified `device`"
         if isinstance(self.func, nn.Module): self.func.to(device)
 
 # Cell
 @delegates()
 class CrossEntropyLossFlat(BaseLoss):
     "Same as `nn.CrossEntropyLoss`, but flattens input and target."
-    y_int = True
+    y_int = True # y interpolation
     @use_kwargs_dict(keep=True, weight=None, ignore_index=-100, reduction='mean')
-    def __init__(self, *args, axis=-1, **kwargs): super().__init__(nn.CrossEntropyLoss, *args, axis=axis, **kwargs)
-    def decodes(self, x):    return x.argmax(dim=self.axis)
-    def activation(self, x): return F.softmax(x, dim=self.axis)
+    def __init__(self,
+        *args,
+        axis:int=-1, #  Determines which axis on which self.decodes and self.activation occurs
+        **kwargs
+    ): super().__init__(nn.CrossEntropyLoss, *args, axis=axis, **kwargs)
+    def decodes(self, x):
+        "Used on predictions in inference"
+        return x.argmax(dim=self.axis)
+    def activation(self, x):
+        "Last layer's activation"
+        return F.softmax(x, dim=self.axis)
 
 # Cell
 class FocalLoss(Module):
-    y_int=True
-    def __init__(self, gamma: float = 2.0, weight=None, reduction: str = 'mean') -> None:
+    y_int=True # y interpolation
+    def __init__(self,
+        gamma:float=2.0, # Focusing parameter to down-weight easy-to-classify observations at higher values (0=CrossEntropy)
+        weight:float=None, # Weighting factor to address class imbalance
+        reduction:str = 'mean' # PyTorch reduction equivalence ('mean', 'sum', 'none')
+    ) -> None:
+        "Applies Focal Loss: https://arxiv.org/pdf/1708.02002.pdf"
         store_attr()
 
-    def forward(self, inp: torch.Tensor, targ: torch.Tensor):
+    def forward(self, inp:Tensor, targ:Tensor):
+        "Applies focal loss based on https://arxiv.org/pdf/1708.02002.pdf"
         ce_loss = F.cross_entropy(inp, targ, weight=self.weight, reduction="none")
         p_t = torch.exp(-ce_loss)
         loss = (1 - p_t)**self.gamma * ce_loss
@@ -70,13 +100,22 @@ class FocalLossFlat(BaseLoss):
     https://arxiv.org/pdf/1708.02002.pdf. Note the class weighting factor in the paper, alpha, can be
     implemented through pytorch `weight` argument passed through to F.cross_entropy.
     """
-    y_int = True
+    y_int = True # y interpolation
     @use_kwargs_dict(keep=True, weight=None, reduction='mean')
-    def __init__(self, *args, gamma=2.0, axis=-1, **kwargs):
+    def __init__(self,
+        *args,
+        gamma:float=2.0, # Weighting factor to address class imbalance
+        axis:int=-1, # Determines which axis on which self.decodes and self.activation occurs
+        **kwargs
+    ):
         super().__init__(FocalLoss, *args, gamma=gamma, axis=axis, **kwargs)
 
-    def decodes(self, x): return x.argmax(dim=self.axis)
-    def activation(self, x): return F.softmax(x, dim=self.axis)
+    def decodes(self, x:Tensor):
+        "Used on predictions in inference"
+        return x.argmax(dim=self.axis)
+    def activation(self, x:Tensor):
+        "Last layer's activation"
+        return F.softmax(x, dim=self.axis)
 
 
 # Cell
@@ -84,15 +123,26 @@ class FocalLossFlat(BaseLoss):
 class BCEWithLogitsLossFlat(BaseLoss):
     "Same as `nn.BCEWithLogitsLoss`, but flattens input and target."
     @use_kwargs_dict(keep=True, weight=None, reduction='mean', pos_weight=None)
-    def __init__(self, *args, axis=-1, floatify=True, thresh=0.5, **kwargs):
+    def __init__(self,
+        *args,
+        axis:int=-1, # The demension that has the dimension
+        floatify:bool=True, # Whether `targ` need to be converted to float
+        thresh:float=0.5, # The threshold on which to predict
+        **kwargs
+    ):
         if kwargs.get('pos_weight', None) is not None and kwargs.get('flatten', None) is True:
             raise ValueError("`flatten` must be False when using `pos_weight` to avoid a RuntimeError due to shape mismatch")
         if kwargs.get('pos_weight', None) is not None: kwargs['flatten'] = False
         super().__init__(nn.BCEWithLogitsLoss, *args, axis=axis, floatify=floatify, is_2d=False, **kwargs)
         self.thresh = thresh
 
-    def decodes(self, x):    return x>self.thresh
-    def activation(self, x): return torch.sigmoid(x)
+    def decodes(self, x:Tensor):
+        "Used on predictions in inference"
+        return x>self.thresh
+
+    def activation(self, x:Tensor):
+        "Last layer's activation"
+        return torch.sigmoid(x)
 
 # Cell
 @use_kwargs_dict(weight=None, reduction='mean')
