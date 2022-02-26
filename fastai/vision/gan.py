@@ -14,8 +14,8 @@ class GANModule(Module):
     "Wrapper around a `generator` and a `critic` to create a GAN."
     def __init__(self,
         generator:nn.Module=None, # The generator PyTorch module
-        critic:nn.Module=None,  # The discriminator PyTorch module
-        gen_mode:(None,bool)=False # Whether or not the GAN should be set to generator mode
+        critic:nn.Module=None, # The discriminator PyTorch module
+        gen_mode:(None,bool)=False # Whether the GAN should be set to generator mode
     ):
         if generator is not None: self.generator=generator
         if critic    is not None: self.critic   =critic
