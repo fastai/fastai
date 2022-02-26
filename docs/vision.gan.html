@@ -131,7 +131,7 @@ nb_path: "nbs/24_vision.gan.ipynb"
 <td><strong><code>gen_mode</code></strong></td>
 <td><code>(None, bool)</code></td>
 <td><code>False</code></td>
-<td>Whether or not the GAN should be set to generator mode</td>
+<td>Whether the GAN should be set to generator mode</td>
 </tr>
 </tbody>
 </table>
@@ -1644,13 +1644,13 @@ nb_path: "nbs/24_vision.gan.ipynb"
 <td><strong><code>loss_gen</code></strong></td>
 <td><code>callable</code></td>
 <td></td>
-<td>A loss function for the generator. It should take in the generator output images and target real images and provide an evaluation.</td>
+<td>A loss function for the generator. Evaluates generator output images and target real images</td>
 </tr>
 <tr>
 <td><strong><code>loss_crit</code></strong></td>
 <td><code>callable</code></td>
 <td></td>
-<td>A loss function for the critic. It should take in the images, real or fake, and also labels indicating if it's real or fake, and provide an evaluation.</td>
+<td>A loss function for the critic. Evaluates predictions of real and fake images.</td>
 </tr>
 <tr>
 <td><strong><code>weights_gen</code></strong></td>
@@ -1742,7 +1742,7 @@ nb_path: "nbs/24_vision.gan.ipynb"
 <td><strong><code>switcher</code></strong></td>
 <td><code>(Callback, None)</code></td>
 <td><code>None</code></td>
-<td>Callback for switching between generator and critic training (<code>FixedGANSwitcher</code> is used if set to <code>None</code>)</td>
+<td>Callback for switching between generator and critic training, defaults to <code>FixedGANSwitcher</code></td>
 </tr>
 <tr>
 <td><strong><code>gen_first</code></strong></td>
@@ -1789,7 +1789,7 @@ nb_path: "nbs/24_vision.gan.ipynb"
 <tr>
 <td><strong><code>opt_func</code></strong></td>
 <td><code>function</code></td>
-<td><code>&lt;function Adam at 0x7f75261f4c20&gt;</code></td>
+<td><code>&lt;function Adam at 0x7f0621652c20&gt;</code></td>
 <td><em>No Content</em></td>
 </tr>
 <tr>
@@ -1801,7 +1801,7 @@ nb_path: "nbs/24_vision.gan.ipynb"
 <tr>
 <td><strong><code>splitter</code></strong></td>
 <td><code>function</code></td>
-<td><code>&lt;function trainable_params at 0x7f7532a99ef0&gt;</code></td>
+<td><code>&lt;function trainable_params at 0x7f0629ef9ef0&gt;</code></td>
 <td><em>No Content</em></td>
 </tr>
 <tr>
@@ -1952,7 +1952,7 @@ nb_path: "nbs/24_vision.gan.ipynb"
 <tr>
 <td><strong><code>opt_func</code></strong></td>
 <td><code>function</code></td>
-<td><code>&lt;function Adam at 0x7f75261f4c20&gt;</code></td>
+<td><code>&lt;function Adam at 0x7f0621652c20&gt;</code></td>
 <td><em>No Content</em></td>
 </tr>
 <tr>
@@ -1964,7 +1964,7 @@ nb_path: "nbs/24_vision.gan.ipynb"
 <tr>
 <td><strong><code>splitter</code></strong></td>
 <td><code>function</code></td>
-<td><code>&lt;function trainable_params at 0x7f7532a99ef0&gt;</code></td>
+<td><code>&lt;function trainable_params at 0x7f0629ef9ef0&gt;</code></td>
 <td><em>No Content</em></td>
 </tr>
 <tr>
@@ -2108,7 +2108,7 @@ nb_path: "nbs/24_vision.gan.ipynb"
 <tr>
 <td><strong><code>opt_func</code></strong></td>
 <td><code>function</code></td>
-<td><code>&lt;function Adam at 0x7f75261f4c20&gt;</code></td>
+<td><code>&lt;function Adam at 0x7f0621652c20&gt;</code></td>
 <td><em>No Content</em></td>
 </tr>
 <tr>
@@ -2120,7 +2120,7 @@ nb_path: "nbs/24_vision.gan.ipynb"
 <tr>
 <td><strong><code>splitter</code></strong></td>
 <td><code>function</code></td>
-<td><code>&lt;function trainable_params at 0x7f7532a99ef0&gt;</code></td>
+<td><code>&lt;function trainable_params at 0x7f0629ef9ef0&gt;</code></td>
 <td><em>No Content</em></td>
 </tr>
 <tr>
