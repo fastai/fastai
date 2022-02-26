@@ -101,7 +101,7 @@ def to_model_params(
 
 # Cell
 def test_overflow(x:torch.Tensor):
-    "Tests whether fp16 gradients have overflowed."
+    "Tests whether fp16 gradients have overflown."
     s = float(x.float().sum())
     return (s == float('inf') or s == float('-inf') or s != s)
 
