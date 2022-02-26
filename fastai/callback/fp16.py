@@ -65,7 +65,7 @@ from torch.nn.utils import parameters_to_vector
 def get_master(
     opt:Optimizer, # Optimizer from which to retrieve model params
     flat_master:bool=False, # Flatten fp32 params into a vector for better performance
-) -> [[[nn.Parameter]],[[nn.Parameter]]]: # List of fp16 params, and list of fp32 params
+) -> list: # List of fp16 params, and list of fp32 params
     "Creates fp16 model params given an initialized `Optimizer`, also returning fp32 model params. "
     model_params = [[param for param in pg if getattr(param, 'requires_grad', False) and hasattr(param, 'data')] for pg in opt.param_lists]
     if flat_master:
@@ -81,8 +81,8 @@ def get_master(
 
 # Cell
 def to_master_grads(
-    model_pgs:[[nn.Parameter]], # Fp16 model parameters to copy gradients from
-    master_pgs:[[nn.Parameter]], # Fp32 model parameters to copt gradients to
+    model_pgs:list, # Fp16 model parameters to copy gradients from
+    master_pgs:list, # Fp32 model parameters to copy gradients to
     flat_master:bool=False, # Whether or not fp32 parameters were previously flattened
 ):
     "Move fp16 model gradients to fp32 master gradients"
@@ -91,8 +91,8 @@ def to_master_grads(
 
 # Cell
 def to_model_params(
-    model_pgs:[[nn.Parameter]], # Fp16 model params to copy to
-    master_pgs:[[nn.Parameter]], # Fp32 master params to copy from
+    model_pgs:list, # Fp16 model params to copy to
+    master_pgs:list, # Fp32 master params to copy from
     flat_master:bool=False # Whether master_pgs was previously flattened
 )->None:
     "Copy updated fp32 master params to fp16 model params after gradient step. "
@@ -106,7 +106,7 @@ def test_overflow(x:torch.Tensor):
     return (s == float('inf') or s == float('-inf') or s != s)
 
 # Cell
-def grad_overflow(pgs:[[nn.Parameter]])->bool:
+def grad_overflow(pgs:list)->bool:
     "Tests all fp16 parameters in pgs for gradient overflow"
     for pg in pgs:
         for p in pg:
@@ -136,7 +136,7 @@ class NonNativeMixedPrecision(Callback):
     "Run training in mixed precision"
     order=10
     def __init__(self,
-        loss_scale:int=512, # Loss scale to use if not using dynamic
+        loss_scale:int=512, # Non-dynamic loss scale, used to avoid underflow of gradients.
         flat_master:bool=False, # Whether to flatten fp32 parameters for performance
         dynamic:bool=True, # Whether to automatically determine loss scaling
         max_loss_scale:float=2.**24, # Starting value for dynamic loss scaling

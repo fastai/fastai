@@ -242,8 +242,7 @@ so need a mechanism to get this dynamic loss scale larger if it's safe to do so.
 <div class="output_area">
 
 
-<div class="output_html rendered_html output_subarea ">
-<table border="1" class="dataframe">
+<div class="output_html rendered_html output_subarea "><table border="1" class="dataframe">
   <thead>
     <tr style="text-align: left;">
       <th>epoch</th>
@@ -272,8 +271,7 @@ so need a mechanism to get this dynamic loss scale larger if it's safe to do so.
       <td>00:00</td>
     </tr>
   </tbody>
-</table>
-</div>
+</table></div>
 
 </div>
 
@@ -447,6 +445,35 @@ so need a mechanism to get this dynamic loss scale larger if it's safe to do so.
 <h4 id="get_master" class="doc_header"><code>get_master</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/fp16.py#L65" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_master</code>(<strong><code>opt</code></strong>:<a href="/optimizer.html#Optimizer"><code>Optimizer</code></a>, <strong><code>flat_master</code></strong>:<code>bool</code>=<em><code>False</code></em>)</p>
 </blockquote>
 <p>Creates fp16 model params given an initialized <a href="/optimizer.html#Optimizer"><code>Optimizer</code></a>, also returning fp32 model params.</p>
+<table>
+<thead><tr>
+<th></th>
+<th>Type</th>
+<th>Default</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>opt</code></strong></td>
+<td><a href="/optimizer.html#Optimizer"><code>Optimizer</code></a></td>
+<td></td>
+<td>Optimizer from which to retrieve model params</td>
+</tr>
+<tr>
+<td><strong><code>flat_master</code></strong></td>
+<td><code>bool</code></td>
+<td><code>False</code></td>
+<td>Flatten fp32 params into a vector for better performance</td>
+</tr>
+<tr>
+<td><strong>Returns</strong></td>
+<td><code>list</code></td>
+<td></td>
+<td>List of fp16 params, and list of fp32 params</td>
+</tr>
+</tbody>
+</table>
 
 </div>
 
@@ -489,9 +516,38 @@ so need a mechanism to get this dynamic loss scale larger if it's safe to do so.
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="to_master_grads" class="doc_header"><code>to_master_grads</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/fp16.py#L83" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>to_master_grads</code>(<strong><code>model_pgs</code></strong>:<code>Parameter'&gt;]]</code>, <strong><code>master_pgs</code></strong>:<code>Parameter'&gt;]]</code>, <strong><code>flat_master</code></strong>:<code>bool</code>=<em><code>False</code></em>)</p>
+<h4 id="to_master_grads" class="doc_header"><code>to_master_grads</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/fp16.py#L83" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>to_master_grads</code>(<strong><code>model_pgs</code></strong>:<code>list</code>, <strong><code>master_pgs</code></strong>:<code>list</code>, <strong><code>flat_master</code></strong>:<code>bool</code>=<em><code>False</code></em>)</p>
 </blockquote>
 <p>Move fp16 model gradients to fp32 master gradients</p>
+<table>
+<thead><tr>
+<th></th>
+<th>Type</th>
+<th>Default</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>model_pgs</code></strong></td>
+<td><code>list</code></td>
+<td></td>
+<td>Fp16 model parameters to copy gradients from</td>
+</tr>
+<tr>
+<td><strong><code>master_pgs</code></strong></td>
+<td><code>list</code></td>
+<td></td>
+<td>Fp32 model parameters to copy gradients to</td>
+</tr>
+<tr>
+<td><strong><code>flat_master</code></strong></td>
+<td><code>bool</code></td>
+<td><code>False</code></td>
+<td>Whether or not fp32 parameters were previously flattened</td>
+</tr>
+</tbody>
+</table>
 
 </div>
 
@@ -534,9 +590,38 @@ so need a mechanism to get this dynamic loss scale larger if it's safe to do so.
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="to_model_params" class="doc_header"><code>to_model_params</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/fp16.py#L93" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>to_model_params</code>(<strong><code>model_pgs</code></strong>:<code>Parameter'&gt;]]</code>, <strong><code>master_pgs</code></strong>:<code>Parameter'&gt;]]</code>, <strong><code>flat_master</code></strong>:<code>bool</code>=<em><code>False</code></em>)</p>
+<h4 id="to_model_params" class="doc_header"><code>to_model_params</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/fp16.py#L93" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>to_model_params</code>(<strong><code>model_pgs</code></strong>:<code>list</code>, <strong><code>master_pgs</code></strong>:<code>list</code>, <strong><code>flat_master</code></strong>:<code>bool</code>=<em><code>False</code></em>)</p>
 </blockquote>
 <p>Copy updated fp32 master params to fp16 model params after gradient step.</p>
+<table>
+<thead><tr>
+<th></th>
+<th>Type</th>
+<th>Default</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>model_pgs</code></strong></td>
+<td><code>list</code></td>
+<td></td>
+<td>Fp16 model params to copy to</td>
+</tr>
+<tr>
+<td><strong><code>master_pgs</code></strong></td>
+<td><code>list</code></td>
+<td></td>
+<td>Fp32 master params to copy from</td>
+</tr>
+<tr>
+<td><strong><code>flat_master</code></strong></td>
+<td><code>bool</code></td>
+<td><code>False</code></td>
+<td>Whether master_pgs was previously flattened</td>
+</tr>
+</tbody>
+</table>
 
 </div>
 
@@ -638,7 +723,7 @@ so need a mechanism to get this dynamic loss scale larger if it's safe to do so.
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="grad_overflow" class="doc_header"><code>grad_overflow</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/fp16.py#L109" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>grad_overflow</code>(<strong><code>pgs</code></strong>:<code>Parameter'&gt;]]</code>)</p>
+<h4 id="grad_overflow" class="doc_header"><code>grad_overflow</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/fp16.py#L109" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>grad_overflow</code>(<strong><code>pgs</code></strong>:<code>list</code>)</p>
 </blockquote>
 <p>Tests all fp16 parameters in pgs for gradient overflow</p>
 
@@ -743,6 +828,59 @@ so need a mechanism to get this dynamic loss scale larger if it's safe to do so.
 <h2 id="NonNativeMixedPrecision" class="doc_header"><code>class</code> <code>NonNativeMixedPrecision</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/fp16.py#L134" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>NonNativeMixedPrecision</code>(<strong><code>loss_scale</code></strong>:<code>int</code>=<em><code>512</code></em>, <strong><code>flat_master</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>dynamic</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>max_loss_scale</code></strong>:<code>float</code>=<em><code>16777216.0</code></em>, <strong><code>div_factor</code></strong>:<code>float</code>=<em><code>2.0</code></em>, <strong><code>scale_wait</code></strong>:<code>int</code>=<em><code>500</code></em>, <strong><code>clip</code></strong>:<code>float</code>=<em><code>None</code></em>) :: <a href="/callback.core.html#Callback"><code>Callback</code></a></p>
 </blockquote>
 <p>Run training in mixed precision</p>
+<table>
+<thead><tr>
+<th></th>
+<th>Type</th>
+<th>Default</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>loss_scale</code></strong></td>
+<td><code>int</code></td>
+<td><code>512</code></td>
+<td>Non-dynamic loss scale, used to avoid underflow of gradients.</td>
+</tr>
+<tr>
+<td><strong><code>flat_master</code></strong></td>
+<td><code>bool</code></td>
+<td><code>False</code></td>
+<td>Whether to flatten fp32 parameters for performance</td>
+</tr>
+<tr>
+<td><strong><code>dynamic</code></strong></td>
+<td><code>bool</code></td>
+<td><code>True</code></td>
+<td>Whether to automatically determine loss scaling</td>
+</tr>
+<tr>
+<td><strong><code>max_loss_scale</code></strong></td>
+<td><code>float</code></td>
+<td><code>0</code></td>
+<td>Starting value for dynamic loss scaling</td>
+</tr>
+<tr>
+<td><strong><code>div_factor</code></strong></td>
+<td><code>float</code></td>
+<td><code>0</code></td>
+<td>Divide by this on overflow, multiply by this after scale_wait batches</td>
+</tr>
+<tr>
+<td><strong><code>scale_wait</code></strong></td>
+<td><code>int</code></td>
+<td><code>500</code></td>
+<td>Number of batches to wait for increasing loss scale</td>
+</tr>
+<tr>
+<td><strong><code>clip</code></strong></td>
+<td><code>float</code></td>
+<td>``</td>
+<td>Value to clip gradients at, max_norm, as in <code>nn.utils.clip_grad_norm_</code></td>
+</tr>
+</tbody>
+</table>
 
 </div>
 
@@ -819,8 +957,7 @@ so need a mechanism to get this dynamic loss scale larger if it's safe to do so.
 <div class="output_area">
 
 
-<div class="output_html rendered_html output_subarea ">
-<table border="1" class="dataframe">
+<div class="output_html rendered_html output_subarea "><table border="1" class="dataframe">
   <thead>
     <tr style="text-align: left;">
       <th>epoch</th>
@@ -849,8 +986,7 @@ so need a mechanism to get this dynamic loss scale larger if it's safe to do so.
       <td>00:00</td>
     </tr>
   </tbody>
-</table>
-</div>
+</table></div>
 
 </div>
 
