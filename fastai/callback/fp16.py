@@ -185,7 +185,7 @@ class NonNativeMixedPrecision(Callback):
                 self.loss_scale *= self.div_factor
 
     def after_step(self):
-        "Zero grads and update fp16 params user fp32 params. "
+        "Zero fp16 grads and update fp16 params with fp32 params. "
         self.model.zero_grad() #Zero the gradients of the model manually (optimizer disconnected)
         to_model_params(self.model_pgs, self.master_pgs, self.flat_master)
 
