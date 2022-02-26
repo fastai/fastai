@@ -370,7 +370,7 @@ class GANLearner(Learner):
         critic:nn.Module, # Critic model
         gen_loss_func:callable, # Generator loss function
         crit_loss_func:callable, # Critic loss function
-        switcher:(Callback,None)=None, # Callback for switching between generator and critic training (`FixedGANSwitcher` is used if set to `None`)
+        switcher:(Callback,None)=None, # Callback for switching between generator and critic training, defaults to `FixedGANSwitcher`
         gen_first:bool=False, # Whether or not we start with generator training
         switch_eval:bool=True, # Whether or not the model should be set to eval mode when calculating loss
         show_img:bool=True, # Whether to show example generated images during training
