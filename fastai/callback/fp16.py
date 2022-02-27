@@ -150,7 +150,6 @@ class NonNativeMixedPrecision(Callback):
         self.loss_scale = max_loss_scale if dynamic else loss_scale
 
     def before_fit(self):
-        "Sets up fp16 weights for model"
         assert self.dls.device.type == 'cuda', "Mixed-precision training requires a GPU, remove the call `to_fp16`"
         if self.learn.opt is None: self.learn.create_opt()
         self.model_pgs,self.master_pgs = get_master(self.opt, self.flat_master)
@@ -164,7 +163,6 @@ class NonNativeMixedPrecision(Callback):
     def before_backward(self): self.learn.loss_grad *= self.loss_scale
 
     def before_step(self):
-        "Update and apply dynamic loss scaling, move gradients to fp32, apply gradient clipping"
         #First, check for an overflow
         if self.dynamic and grad_overflow(self.model_pgs):
             self.loss_scale /= self.div_factor
@@ -185,14 +183,12 @@ class NonNativeMixedPrecision(Callback):
                 self.loss_scale *= self.div_factor
 
     def after_step(self):
-        "Zero fp16 grads and update fp16 params with fp32 params. "
         self.model.zero_grad() #Zero the gradients of the model manually (optimizer disconnected)
         to_model_params(self.model_pgs, self.master_pgs, self.flat_master)
 
     def after_batch(self):
         if self.training: self.learn.loss_grad /= self.loss_scale  #Log correct loss
     def after_fit(self):
-        "Clean up fp16 specific changes to optimizer and param groups. "
         if not hasattr(self,'master_pgs'): return
         _copy_state(self.learn.opt, self.master_pgs, self.model_pgs)
         self.learn.opt.param_lists  = self.old_pgs
@@ -204,8 +200,8 @@ class NonNativeMixedPrecision(Callback):
                  before_batch="Put the input in FP16",
                  after_pred="Put the output back to FP32 so that the loss is computed in FP32",
                  before_backward="Apply loss scaling to avoid gradient underflow",
-                 before_step="Copy the gradients to the master param and undo the loss scaling",
-                 after_step="Copy the master params to the model params",
+                 before_step="Update and apply dynamic loss scaling, move gradients to fp32, apply gradient clipping",
+                 after_step="Zero fp16 grads and update fp16 params with fp32 params. ",
                  after_batch="Ensure loss is logged correctly",
                  after_fit="Put the model back in FP32")
 
