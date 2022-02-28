@@ -26,25 +26,6 @@ nb_path: "nbs/08_vision.data.ipynb"
     
 <div class="cell border-box-sizing code_cell rendered">
 
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-<div class="output_subarea output_stream output_stderr output_text">
-<pre>/home/c/miniconda3/lib/python3.9/site-packages/torch/cuda/__init__.py:143: UserWarning: 
-NVIDIA GeForce RTX 3060 Laptop GPU with CUDA capability sm_86 is not compatible with the current PyTorch installation.
-The current PyTorch install supports CUDA capabilities sm_37 sm_50 sm_60 sm_70.
-If you want to use the NVIDIA GeForce RTX 3060 Laptop GPU GPU with PyTorch, please check the instructions at https://pytorch.org/get-started/locally/
-
-  warnings.warn(incompatible_device_warn.format(device_name, capability, &#34; &#34;.join(arch_list), device_name))
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
 </div>
     {% endraw %}
 
@@ -189,9 +170,9 @@ If you want to use the NVIDIA GeForce RTX 3060 Laptop GPU GPU with PyTorch, plea
 </tr>
 <tr>
 <td><strong>Returns</strong></td>
-<td><code>Axes], Axes)</code></td>
+<td><code>(Figure, Axes)</code></td>
 <td></td>
-<td></td>
+<td>Returns just <code>axs</code> by default, and (<code>fig</code>, <code>axs</code>) if <code>return_fig</code> is set to True</td>
 </tr>
 </tbody>
 </table>
@@ -432,9 +413,26 @@ If you want to use the NVIDIA GeForce RTX 3060 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ImageBlock" class="doc_header"><code>ImageBlock</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/data.py#L80" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ImageBlock</code>()</p>
+<h4 id="ImageBlock" class="doc_header"><code>ImageBlock</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/data.py#L80" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ImageBlock</code>(<strong><code>clss</code></strong>=<em><code>PILImage</code></em>)</p>
 </blockquote>
-<p>A <a href="/data.block.html#TransformBlock"><code>TransformBlock</code></a> for images of <code>cls</code></p>
+<p>A <a href="/data.block.html#TransformBlock"><code>TransformBlock</code></a> for images of <code>clss</code></p>
+<table>
+<thead><tr>
+<th></th>
+<th>Type</th>
+<th>Default</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>clss</code></strong></td>
+<td><code>BypassNewMeta</code></td>
+<td><code>&lt;class 'fastai.vision.core.PILImage'&gt;</code></td>
+<td>A class that inherits from <code>PILBase</code></td>
+</tr>
+</tbody>
+</table>
 
 </div>
 
@@ -464,9 +462,26 @@ If you want to use the NVIDIA GeForce RTX 3060 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="MaskBlock" class="doc_header"><code>MaskBlock</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/data.py#L85" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>MaskBlock</code>(<strong><code>codes</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="MaskBlock" class="doc_header"><code>MaskBlock</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/data.py#L87" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>MaskBlock</code>(<strong><code>codes</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>A <a href="/data.block.html#TransformBlock"><code>TransformBlock</code></a> for segmentation masks, potentially with <code>codes</code></p>
+<table>
+<thead><tr>
+<th></th>
+<th>Type</th>
+<th>Default</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>codes</code></strong></td>
+<td><code>NoneType</code></td>
+<td><code>None</code></td>
+<td>List of classes where <code>codes[i]</code> corresponds to an <code>i</code> valued pixel in a segmentation mask</td>
+</tr>
+</tbody>
+</table>
 
 </div>
 
@@ -549,9 +564,32 @@ If you want to use the NVIDIA GeForce RTX 3060 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="BBoxLblBlock" class="doc_header"><code>BBoxLblBlock</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/data.py#L97" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>BBoxLblBlock</code>(<strong><code>vocab</code></strong>=<em><code>None</code></em>, <strong><code>add_na</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="BBoxLblBlock" class="doc_header"><code>BBoxLblBlock</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/data.py#L101" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>BBoxLblBlock</code>(<strong><code>vocab</code></strong>=<em><code>None</code></em>, <strong><code>add_na</code></strong>:<code>bool</code>=<em><code>True</code></em>)</p>
 </blockquote>
 <p>A <a href="/data.block.html#TransformBlock"><code>TransformBlock</code></a> for labeled bounding boxes, potentially with <code>vocab</code></p>
+<table>
+<thead><tr>
+<th></th>
+<th>Type</th>
+<th>Default</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>vocab</code></strong></td>
+<td><code>NoneType</code></td>
+<td><code>None</code></td>
+<td>List of possible labels for bounding boxes</td>
+</tr>
+<tr>
+<td><strong><code>add_na</code></strong></td>
+<td><code>bool</code></td>
+<td><code>True</code></td>
+<td>If <code>True</code>, a new category is added for NaN (that will represent the background class)</td>
+</tr>
+</tbody>
+</table>
 
 </div>
 
@@ -570,13 +608,6 @@ If you want to use the NVIDIA GeForce RTX 3060 Laptop GPU GPU with PyTorch, plea
 </div>
     {% endraw %}
 
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>If <code>add_na</code> is <code>True</code>, a new category is added for NaN (that will represent the background class).</p>
-
-</div>
-</div>
-</div>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -588,7 +619,7 @@ If you want to use the NVIDIA GeForce RTX 3060 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ImageDataLoaders" class="doc_header"><code>class</code> <code>ImageDataLoaders</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/data.py#L102" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ImageDataLoaders</code>(<strong>*<code>loaders</code></strong>, <strong><code>path</code></strong>=<em><code>'.'</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>) :: <a href="/data.core.html#DataLoaders"><code>DataLoaders</code></a></p>
+<h2 id="ImageDataLoaders" class="doc_header"><code>class</code> <code>ImageDataLoaders</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/data.py#L109" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ImageDataLoaders</code>(<strong>*<code>loaders</code></strong>, <strong><code>path</code></strong>=<em><code>'.'</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>) :: <a href="/data.core.html#DataLoaders"><code>DataLoaders</code></a></p>
 </blockquote>
 <p>Basic wrapper around several <a href="/data.load.html#DataLoader"><code>DataLoader</code></a>s with factory methods for computer vision problems</p>
 
@@ -635,7 +666,7 @@ If you want to use the NVIDIA GeForce RTX 3060 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ImageDataLoaders.from_folder" class="doc_header"><code>ImageDataLoaders.from_folder</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/data.py#L104" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ImageDataLoaders.from_folder</code>(<strong><code>path</code></strong>, <strong><code>train</code></strong>=<em><code>'train'</code></em>, <strong><code>valid</code></strong>=<em><code>'valid'</code></em>, <strong><code>valid_pct</code></strong>=<em><code>None</code></em>, <strong><code>seed</code></strong>=<em><code>None</code></em>, <strong><code>vocab</code></strong>=<em><code>None</code></em>, <strong><code>item_tfms</code></strong>=<em><code>None</code></em>, <strong><code>batch_tfms</code></strong>=<em><code>None</code></em>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>val_bs</code></strong>=<em><code>None</code></em>, <strong><code>shuffle</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="ImageDataLoaders.from_folder" class="doc_header"><code>ImageDataLoaders.from_folder</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/data.py#L111" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ImageDataLoaders.from_folder</code>(<strong><code>path</code></strong>, <strong><code>train</code></strong>=<em><code>'train'</code></em>, <strong><code>valid</code></strong>=<em><code>'valid'</code></em>, <strong><code>valid_pct</code></strong>=<em><code>None</code></em>, <strong><code>seed</code></strong>=<em><code>None</code></em>, <strong><code>vocab</code></strong>=<em><code>None</code></em>, <strong><code>item_tfms</code></strong>=<em><code>None</code></em>, <strong><code>batch_tfms</code></strong>=<em><code>None</code></em>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>val_bs</code></strong>=<em><code>None</code></em>, <strong><code>shuffle</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Create from imagenet style dataset in <code>path</code> with <code>train</code> and <code>valid</code> subfolders (or provide <code>valid_pct</code>)</p>
 
@@ -729,7 +760,7 @@ If you want to use the NVIDIA GeForce RTX 3060 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ImageDataLoaders.from_path_func" class="doc_header"><code>ImageDataLoaders.from_path_func</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/data.py#L119" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ImageDataLoaders.from_path_func</code>(<strong><code>path</code></strong>, <strong><code>fnames</code></strong>, <strong><code>label_func</code></strong>, <strong><code>valid_pct</code></strong>=<em><code>0.2</code></em>, <strong><code>seed</code></strong>=<em><code>None</code></em>, <strong><code>item_tfms</code></strong>=<em><code>None</code></em>, <strong><code>batch_tfms</code></strong>=<em><code>None</code></em>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>val_bs</code></strong>=<em><code>None</code></em>, <strong><code>shuffle</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="ImageDataLoaders.from_path_func" class="doc_header"><code>ImageDataLoaders.from_path_func</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/data.py#L126" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ImageDataLoaders.from_path_func</code>(<strong><code>path</code></strong>, <strong><code>fnames</code></strong>, <strong><code>label_func</code></strong>, <strong><code>valid_pct</code></strong>=<em><code>0.2</code></em>, <strong><code>seed</code></strong>=<em><code>None</code></em>, <strong><code>item_tfms</code></strong>=<em><code>None</code></em>, <strong><code>batch_tfms</code></strong>=<em><code>None</code></em>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>val_bs</code></strong>=<em><code>None</code></em>, <strong><code>shuffle</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Create from list of <code>fnames</code> in <code>path</code>s with <code>label_func</code></p>
 
@@ -788,7 +819,7 @@ If you want to use the NVIDIA GeForce RTX 3060 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ImageDataLoaders.from_path_re" class="doc_header"><code>ImageDataLoaders.from_path_re</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/data.py#L139" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ImageDataLoaders.from_path_re</code>(<strong><code>path</code></strong>, <strong><code>fnames</code></strong>, <strong><code>pat</code></strong>, <strong><code>valid_pct</code></strong>=<em><code>0.2</code></em>, <strong><code>seed</code></strong>=<em><code>None</code></em>, <strong><code>item_tfms</code></strong>=<em><code>None</code></em>, <strong><code>batch_tfms</code></strong>=<em><code>None</code></em>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>val_bs</code></strong>=<em><code>None</code></em>, <strong><code>shuffle</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="ImageDataLoaders.from_path_re" class="doc_header"><code>ImageDataLoaders.from_path_re</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/data.py#L146" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ImageDataLoaders.from_path_re</code>(<strong><code>path</code></strong>, <strong><code>fnames</code></strong>, <strong><code>pat</code></strong>, <strong><code>valid_pct</code></strong>=<em><code>0.2</code></em>, <strong><code>seed</code></strong>=<em><code>None</code></em>, <strong><code>item_tfms</code></strong>=<em><code>None</code></em>, <strong><code>batch_tfms</code></strong>=<em><code>None</code></em>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>val_bs</code></strong>=<em><code>None</code></em>, <strong><code>shuffle</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Create from list of <code>fnames</code> in <code>path</code>s with re expression <code>pat</code></p>
 
@@ -839,7 +870,7 @@ If you want to use the NVIDIA GeForce RTX 3060 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ImageDataLoaders.from_name_func" class="doc_header"><code>ImageDataLoaders.from_name_func</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/data.py#L130" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ImageDataLoaders.from_name_func</code>(<strong><code>path</code></strong>, <strong><code>fnames</code></strong>, <strong><code>label_func</code></strong>, <strong><code>valid_pct</code></strong>=<em><code>0.2</code></em>, <strong><code>seed</code></strong>=<em><code>None</code></em>, <strong><code>item_tfms</code></strong>=<em><code>None</code></em>, <strong><code>batch_tfms</code></strong>=<em><code>None</code></em>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>val_bs</code></strong>=<em><code>None</code></em>, <strong><code>shuffle</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="ImageDataLoaders.from_name_func" class="doc_header"><code>ImageDataLoaders.from_name_func</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/data.py#L137" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ImageDataLoaders.from_name_func</code>(<strong><code>path</code></strong>, <strong><code>fnames</code></strong>, <strong><code>label_func</code></strong>, <strong><code>valid_pct</code></strong>=<em><code>0.2</code></em>, <strong><code>seed</code></strong>=<em><code>None</code></em>, <strong><code>item_tfms</code></strong>=<em><code>None</code></em>, <strong><code>batch_tfms</code></strong>=<em><code>None</code></em>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>val_bs</code></strong>=<em><code>None</code></em>, <strong><code>shuffle</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Create from the name attrs of <code>fnames</code> in <code>path</code>s with <code>label_func</code></p>
 
@@ -871,7 +902,7 @@ If you want to use the NVIDIA GeForce RTX 3060 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ImageDataLoaders.from_name_re" class="doc_header"><code>ImageDataLoaders.from_name_re</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/data.py#L144" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ImageDataLoaders.from_name_re</code>(<strong><code>path</code></strong>, <strong><code>fnames</code></strong>, <strong><code>pat</code></strong>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>val_bs</code></strong>=<em><code>None</code></em>, <strong><code>shuffle</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="ImageDataLoaders.from_name_re" class="doc_header"><code>ImageDataLoaders.from_name_re</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/data.py#L151" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ImageDataLoaders.from_name_re</code>(<strong><code>path</code></strong>, <strong><code>fnames</code></strong>, <strong><code>pat</code></strong>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>val_bs</code></strong>=<em><code>None</code></em>, <strong><code>shuffle</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Create from the name attrs of <code>fnames</code> in <code>path</code>s with re expression <code>pat</code></p>
 
@@ -903,7 +934,7 @@ If you want to use the NVIDIA GeForce RTX 3060 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ImageDataLoaders.from_df" class="doc_header"><code>ImageDataLoaders.from_df</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/data.py#L150" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ImageDataLoaders.from_df</code>(<strong><code>df</code></strong>, <strong><code>path</code></strong>=<em><code>'.'</code></em>, <strong><code>valid_pct</code></strong>=<em><code>0.2</code></em>, <strong><code>seed</code></strong>=<em><code>None</code></em>, <strong><code>fn_col</code></strong>=<em><code>0</code></em>, <strong><code>folder</code></strong>=<em><code>None</code></em>, <strong><code>suff</code></strong>=<em><code>''</code></em>, <strong><code>label_col</code></strong>=<em><code>1</code></em>, <strong><code>label_delim</code></strong>=<em><code>None</code></em>, <strong><code>y_block</code></strong>=<em><code>None</code></em>, <strong><code>valid_col</code></strong>=<em><code>None</code></em>, <strong><code>item_tfms</code></strong>=<em><code>None</code></em>, <strong><code>batch_tfms</code></strong>=<em><code>None</code></em>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>val_bs</code></strong>=<em><code>None</code></em>, <strong><code>shuffle</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="ImageDataLoaders.from_df" class="doc_header"><code>ImageDataLoaders.from_df</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/data.py#L157" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ImageDataLoaders.from_df</code>(<strong><code>df</code></strong>, <strong><code>path</code></strong>=<em><code>'.'</code></em>, <strong><code>valid_pct</code></strong>=<em><code>0.2</code></em>, <strong><code>seed</code></strong>=<em><code>None</code></em>, <strong><code>fn_col</code></strong>=<em><code>0</code></em>, <strong><code>folder</code></strong>=<em><code>None</code></em>, <strong><code>suff</code></strong>=<em><code>''</code></em>, <strong><code>label_col</code></strong>=<em><code>1</code></em>, <strong><code>label_delim</code></strong>=<em><code>None</code></em>, <strong><code>y_block</code></strong>=<em><code>None</code></em>, <strong><code>valid_col</code></strong>=<em><code>None</code></em>, <strong><code>item_tfms</code></strong>=<em><code>None</code></em>, <strong><code>batch_tfms</code></strong>=<em><code>None</code></em>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>val_bs</code></strong>=<em><code>None</code></em>, <strong><code>shuffle</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Create from <code>df</code> using <code>fn_col</code> and <code>label_col</code></p>
 
@@ -1163,7 +1194,7 @@ If you want to use the NVIDIA GeForce RTX 3060 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ImageDataLoaders.from_csv" class="doc_header"><code>ImageDataLoaders.from_csv</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/data.py#L168" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ImageDataLoaders.from_csv</code>(<strong><code>path</code></strong>, <strong><code>csv_fname</code></strong>=<em><code>'labels.csv'</code></em>, <strong><code>header</code></strong>=<em><code>'infer'</code></em>, <strong><code>delimiter</code></strong>=<em><code>None</code></em>, <strong><code>valid_pct</code></strong>=<em><code>0.2</code></em>, <strong><code>seed</code></strong>=<em><code>None</code></em>, <strong><code>fn_col</code></strong>=<em><code>0</code></em>, <strong><code>folder</code></strong>=<em><code>None</code></em>, <strong><code>suff</code></strong>=<em><code>''</code></em>, <strong><code>label_col</code></strong>=<em><code>1</code></em>, <strong><code>label_delim</code></strong>=<em><code>None</code></em>, <strong><code>y_block</code></strong>=<em><code>None</code></em>, <strong><code>valid_col</code></strong>=<em><code>None</code></em>, <strong><code>item_tfms</code></strong>=<em><code>None</code></em>, <strong><code>batch_tfms</code></strong>=<em><code>None</code></em>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>val_bs</code></strong>=<em><code>None</code></em>, <strong><code>shuffle</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="ImageDataLoaders.from_csv" class="doc_header"><code>ImageDataLoaders.from_csv</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/data.py#L175" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ImageDataLoaders.from_csv</code>(<strong><code>path</code></strong>, <strong><code>csv_fname</code></strong>=<em><code>'labels.csv'</code></em>, <strong><code>header</code></strong>=<em><code>'infer'</code></em>, <strong><code>delimiter</code></strong>=<em><code>None</code></em>, <strong><code>valid_pct</code></strong>=<em><code>0.2</code></em>, <strong><code>seed</code></strong>=<em><code>None</code></em>, <strong><code>fn_col</code></strong>=<em><code>0</code></em>, <strong><code>folder</code></strong>=<em><code>None</code></em>, <strong><code>suff</code></strong>=<em><code>''</code></em>, <strong><code>label_col</code></strong>=<em><code>1</code></em>, <strong><code>label_delim</code></strong>=<em><code>None</code></em>, <strong><code>y_block</code></strong>=<em><code>None</code></em>, <strong><code>valid_col</code></strong>=<em><code>None</code></em>, <strong><code>item_tfms</code></strong>=<em><code>None</code></em>, <strong><code>batch_tfms</code></strong>=<em><code>None</code></em>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>val_bs</code></strong>=<em><code>None</code></em>, <strong><code>shuffle</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Create from <code>path/csv_fname</code> using <code>fn_col</code> and <code>label_col</code></p>
 
@@ -1213,7 +1244,7 @@ If you want to use the NVIDIA GeForce RTX 3060 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ImageDataLoaders.from_lists" class="doc_header"><code>ImageDataLoaders.from_lists</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/data.py#L174" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ImageDataLoaders.from_lists</code>(<strong><code>path</code></strong>, <strong><code>fnames</code></strong>, <strong><code>labels</code></strong>, <strong><code>valid_pct</code></strong>=<em><code>0.2</code></em>, <strong><code>seed</code></strong>:<code>int</code>=<em><code>None</code></em>, <strong><code>y_block</code></strong>=<em><code>None</code></em>, <strong><code>item_tfms</code></strong>=<em><code>None</code></em>, <strong><code>batch_tfms</code></strong>=<em><code>None</code></em>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>val_bs</code></strong>=<em><code>None</code></em>, <strong><code>shuffle</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="ImageDataLoaders.from_lists" class="doc_header"><code>ImageDataLoaders.from_lists</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/data.py#L181" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ImageDataLoaders.from_lists</code>(<strong><code>path</code></strong>, <strong><code>fnames</code></strong>, <strong><code>labels</code></strong>, <strong><code>valid_pct</code></strong>=<em><code>0.2</code></em>, <strong><code>seed</code></strong>:<code>int</code>=<em><code>None</code></em>, <strong><code>y_block</code></strong>=<em><code>None</code></em>, <strong><code>item_tfms</code></strong>=<em><code>None</code></em>, <strong><code>batch_tfms</code></strong>=<em><code>None</code></em>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>val_bs</code></strong>=<em><code>None</code></em>, <strong><code>shuffle</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Create from list of <code>fnames</code> and <code>labels</code> in <code>path</code></p>
 
@@ -1265,7 +1296,7 @@ If you want to use the NVIDIA GeForce RTX 3060 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="SegmentationDataLoaders" class="doc_header"><code>class</code> <code>SegmentationDataLoaders</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/data.py#L194" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SegmentationDataLoaders</code>(<strong>*<code>loaders</code></strong>, <strong><code>path</code></strong>=<em><code>'.'</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>) :: <a href="/data.core.html#DataLoaders"><code>DataLoaders</code></a></p>
+<h2 id="SegmentationDataLoaders" class="doc_header"><code>class</code> <code>SegmentationDataLoaders</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/data.py#L201" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SegmentationDataLoaders</code>(<strong>*<code>loaders</code></strong>, <strong><code>path</code></strong>=<em><code>'.'</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>) :: <a href="/data.core.html#DataLoaders"><code>DataLoaders</code></a></p>
 </blockquote>
 <p>Basic wrapper around several <a href="/data.load.html#DataLoader"><code>DataLoader</code></a>s with factory methods for segmentation problems</p>
 
@@ -1297,7 +1328,7 @@ If you want to use the NVIDIA GeForce RTX 3060 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="SegmentationDataLoaders.from_label_func" class="doc_header"><code>SegmentationDataLoaders.from_label_func</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/data.py#L196" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>SegmentationDataLoaders.from_label_func</code>(<strong><code>path</code></strong>, <strong><code>fnames</code></strong>, <strong><code>label_func</code></strong>, <strong><code>valid_pct</code></strong>=<em><code>0.2</code></em>, <strong><code>seed</code></strong>=<em><code>None</code></em>, <strong><code>codes</code></strong>=<em><code>None</code></em>, <strong><code>item_tfms</code></strong>=<em><code>None</code></em>, <strong><code>batch_tfms</code></strong>=<em><code>None</code></em>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>val_bs</code></strong>=<em><code>None</code></em>, <strong><code>shuffle</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="SegmentationDataLoaders.from_label_func" class="doc_header"><code>SegmentationDataLoaders.from_label_func</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/data.py#L203" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>SegmentationDataLoaders.from_label_func</code>(<strong><code>path</code></strong>, <strong><code>fnames</code></strong>, <strong><code>label_func</code></strong>, <strong><code>valid_pct</code></strong>=<em><code>0.2</code></em>, <strong><code>seed</code></strong>=<em><code>None</code></em>, <strong><code>codes</code></strong>=<em><code>None</code></em>, <strong><code>item_tfms</code></strong>=<em><code>None</code></em>, <strong><code>batch_tfms</code></strong>=<em><code>None</code></em>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>val_bs</code></strong>=<em><code>None</code></em>, <strong><code>shuffle</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Create from list of <code>fnames</code> in <code>path</code>s with <code>label_func</code>.</p>
 

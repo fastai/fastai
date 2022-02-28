@@ -77,12 +77,16 @@ def show_batch(x:TensorImage, y:TensorImage, samples, ctxs=None, max_n=10, nrows
     return ctxs
 
 # Cell
-def ImageBlock(cls=PILImage):
-    "A `TransformBlock` for images of `cls`"
-    return TransformBlock(type_tfms=cls.create, batch_tfms=IntToFloatTensor)
+def ImageBlock(
+    clss=PILImage # A class that inherits from `PILBase`
+):
+    "A `TransformBlock` for images of `clss`"
+    return TransformBlock(type_tfms=clss.create, batch_tfms=IntToFloatTensor)
 
 # Cell
-def MaskBlock(codes=None):
+def MaskBlock(
+    codes=None # List of classes where `codes[i]` corresponds to an `i` valued pixel in a segmentation mask
+):
     "A `TransformBlock` for segmentation masks, potentially with `codes`"
     return TransformBlock(type_tfms=PILMask.create, item_tfms=AddMaskCodes(codes=codes), batch_tfms=IntToFloatTensor)
 
@@ -94,7 +98,10 @@ PointBlock.__doc__ = "A `TransformBlock` for points in an image"
 BBoxBlock.__doc__  = "A `TransformBlock` for bounding boxes in an image"
 
 # Cell
-def BBoxLblBlock(vocab=None, add_na=True):
+def BBoxLblBlock(
+    vocab=None, # List of possible labels for bounding boxes
+    add_na:bool=True # If `True`, a new category is added for NaN (that will represent the background class)
+):
     "A `TransformBlock` for labeled bounding boxes, potentially with `vocab`"
     return TransformBlock(type_tfms=MultiCategorize(vocab=vocab, add_na=add_na), item_tfms=BBoxLabeler)
 
