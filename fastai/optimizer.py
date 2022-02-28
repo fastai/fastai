@@ -91,7 +91,7 @@ class Optimizer(_BaseOptimizer):
     _keep_on_clear = ['force_train', 'do_wd']
     def __init__(self,
         params:Tensor, # Parameters and hyper parameters
-        cbs: (list), # `Optimizer` callbacks
+        cbs:list, # `Optimizer` callbacks
         train_bn:bool=True, # Batch normalization is always trained
         **defaults # Default values to set on hyper parameters
     ):
