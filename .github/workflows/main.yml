@@ -1,4 +1,4 @@
-name: CI
+name: CI # This is a test
 on: 
   workflow_dispatch: #allows repo admins to trigger this workflow from the Actions tab
   pull_request:
