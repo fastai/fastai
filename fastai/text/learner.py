@@ -13,7 +13,11 @@ from ..callback.rnn import *
 from ..callback.progress import *
 
 # Cell
-def match_embeds(old_wgts, old_vocab, new_vocab):
+def match_embeds(
+    old_wgts:dict, # Embedding Weights
+    old_vocab:list, # Vocabulary of corpus used for pre-training
+    new_vocab:list # Current Corpus Vocabulary
+)->dict:
     "Convert the embedding in `old_wgts` to go from `old_vocab` to `new_vocab`."
     bias, wgts = old_wgts.get('1.decoder.bias', None), old_wgts['0.encoder.weight']
     wgts_m = wgts.mean(0)
@@ -33,20 +37,24 @@ def match_embeds(old_wgts, old_vocab, new_vocab):
     return old_wgts
 
 # Cell
-def _get_text_vocab(dls):
+def _get_text_vocab(dls:DataLoaders)->list:
+    "Get vocabulary from `DataLoaders`"
     vocab = dls.vocab
     if isinstance(vocab, L): vocab = vocab[0]
     return vocab
 
 # Cell
-def load_ignore_keys(model, wgts):
+def load_ignore_keys(
+    model, # Model Architecture
+    wgts:dict # Model Weights
+)->tuple:
     "Load `wgts` in `model` ignoring the names of the keys, just taking parameters in order"
     sd = model.state_dict()
     for k1,k2 in zip(sd.keys(), wgts.keys()): sd[k1].data = wgts[k2].data.clone()
     return model.load_state_dict(sd)
 
 # Cell
-def _rm_module(n):
+def _rm_module(n:str):
     t = n.split('.')
     for i in range(len(t)-1, -1, -1):
         if t[i] == 'module':
@@ -56,7 +64,7 @@ def _rm_module(n):
 
 # Cell
 #For previous versions compatibility, remove for release
-def clean_raw_keys(wgts):
+def clean_raw_keys(wgts:dict):
     keys = list(wgts.keys())
     for k in keys:
         t = k.split('.module')
@@ -65,7 +73,14 @@ def clean_raw_keys(wgts):
 
 # Cell
 #For previous versions compatibility, remove for release
-def load_model_text(file, model, opt, with_opt=None, device=None, strict=True):
+def load_model_text(
+    file:str, # File name of saved text model
+    model, # Model Architecture
+    opt:Optimizer, # `Optimizer` used to fit the model
+    with_opt:bool=None, # enable to load `Optimizer` state
+    device:(int,str,torch.device)=None, # Sets the device, uses 'cpu' if unspecified
+    strict:bool=True # Ensure the keys of state dict strictly matches with the model that you are loading into and throws error if not identical
+):
     "Load `model` from `file` along with `opt` (if available, and if `with_opt`)"
     distrib_barrier()
     if isinstance(device, int): device = torch.device('cuda', device)
@@ -84,18 +99,29 @@ def load_model_text(file, model, opt, with_opt=None, device=None, strict=True):
 @delegates(Learner.__init__)
 class TextLearner(Learner):
     "Basic class for a `Learner` in NLP."
-    def __init__(self, dls, model, alpha=2., beta=1., moms=(0.8,0.7,0.8), **kwargs):
+    def __init__(self,
+        dls:DataLoaders, # Text `DataLoaders`
+        model, # Pretrained Model Checkpoint or Custom Model used to train
+        alpha:float=2., # Param for `RNNRegularizer`
+        beta:float=1., # Param for `RNNRegularizer`
+        moms:tuple=(0.8,0.7,0.8), # Momentum for `Cosine Annealing Scheduler`
+        **kwargs):
         super().__init__(dls, model, moms=moms, **kwargs)
         self.add_cbs(rnn_cbs())
 
-    def save_encoder(self, file):
+    def save_encoder(self,
+        file:str # Filename for Encoder
+    ):
         "Save the encoder to `file` in the model directory"
         if rank_distrib(): return # don't save if child proc
         encoder = get_model(self.model)[0]
         if hasattr(encoder, 'module'): encoder = encoder.module
         torch.save(encoder.state_dict(), join_path_file(file, self.path/self.model_dir, ext='.pth'))
 
-    def load_encoder(self, file, device=None):
+    def load_encoder(self,
+        file:str, # Filename of the saved encoder
+        device:(int,str,torch.device)=None # Device used to load, uses device from `dls` if unspecified
+    ):
         "Load the encoder `file` from the model directory, optionally ensuring it's on `device`"
         encoder = get_model(self.model)[0]
         if device is None: device = self.dls.device
@@ -106,7 +132,11 @@ class TextLearner(Learner):
         self.freeze()
         return self
 
-    def load_pretrained(self, wgts_fname, vocab_fname, model=None):
+    def load_pretrained(self,
+        wgts_fname:str, # Filename of saved weights
+        vocab_fname:str, # Saved Vocabulary filename in pickle format
+        model=None # Model to load parameters from or uses `Learner` model attribute if unspecified
+        ):
         "Load a pretrained model and adapt it to the data vocabulary."
         old_vocab = load_pickle(vocab_fname)
         new_vocab = _get_text_vocab(self.dls)
@@ -120,7 +150,11 @@ class TextLearner(Learner):
 
     #For previous versions compatibility. Remove at release
     @delegates(load_model_text)
-    def load(self, file, with_opt=None, device=None, **kwargs):
+    def load(self,
+        file:str, # Filename of saved model
+        with_opt:bool=None, # Enable to load `Optimizer` state
+        device:(int,str,torch.device)=None, # Device used to load, uses device from `dls` if unspecified
+        **kwargs):
         if device is None: device = self.dls.device
         if self.opt is None: self.create_opt()
         file = join_path_file(file, self.path/self.model_dir, ext='.pth')

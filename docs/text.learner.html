@@ -67,9 +67,38 @@ nb_path: "nbs/37_text.learner.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="match_embeds" class="doc_header"><code>match_embeds</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/learner.py#L16" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>match_embeds</code>(<strong><code>old_wgts</code></strong>, <strong><code>old_vocab</code></strong>, <strong><code>new_vocab</code></strong>)</p>
+<h4 id="match_embeds" class="doc_header"><code>match_embeds</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/learner.py#L16" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>match_embeds</code>(<strong><code>old_wgts</code></strong>:<code>dict</code>, <strong><code>old_vocab</code></strong>:<code>list</code>, <strong><code>new_vocab</code></strong>:<code>list</code>)</p>
 </blockquote>
 <p>Convert the embedding in <code>old_wgts</code> to go from <code>old_vocab</code> to <code>new_vocab</code>.</p>
+<table>
+<thead><tr>
+<th></th>
+<th>Type</th>
+<th>Default</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>old_wgts</code></strong></td>
+<td><code>dict</code></td>
+<td></td>
+<td>Embedding Weights</td>
+</tr>
+<tr>
+<td><strong><code>old_vocab</code></strong></td>
+<td><code>list</code></td>
+<td></td>
+<td>Vocabulary of corpus used for pre-training</td>
+</tr>
+<tr>
+<td><strong><code>new_vocab</code></strong></td>
+<td><code>list</code></td>
+<td></td>
+<td>Current Corpus Vocabulary</td>
+</tr>
+</tbody>
+</table>
 
 </div>
 
@@ -136,9 +165,32 @@ nb_path: "nbs/37_text.learner.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="load_ignore_keys" class="doc_header"><code>load_ignore_keys</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/learner.py#L42" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>load_ignore_keys</code>(<strong><code>model</code></strong>, <strong><code>wgts</code></strong>)</p>
+<h4 id="load_ignore_keys" class="doc_header"><code>load_ignore_keys</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/learner.py#L47" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>load_ignore_keys</code>(<strong><code>model</code></strong>, <strong><code>wgts</code></strong>:<code>dict</code>)</p>
 </blockquote>
 <p>Load <code>wgts</code> in <code>model</code> ignoring the names of the keys, just taking parameters in order</p>
+<table>
+<thead><tr>
+<th></th>
+<th>Type</th>
+<th>Default</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>model</code></strong></td>
+<td></td>
+<td></td>
+<td>Model Architecture</td>
+</tr>
+<tr>
+<td><strong><code>wgts</code></strong></td>
+<td><code>dict</code></td>
+<td></td>
+<td>Model Weights</td>
+</tr>
+</tbody>
+</table>
 
 </div>
 
@@ -175,7 +227,7 @@ nb_path: "nbs/37_text.learner.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="clean_raw_keys" class="doc_header"><code>clean_raw_keys</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/learner.py#L59" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>clean_raw_keys</code>(<strong><code>wgts</code></strong>)</p>
+<h4 id="clean_raw_keys" class="doc_header"><code>clean_raw_keys</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/learner.py#L67" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>clean_raw_keys</code>(<strong><code>wgts</code></strong>:<code>dict</code>)</p>
 </blockquote>
 
 </div>
@@ -206,9 +258,56 @@ nb_path: "nbs/37_text.learner.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="load_model_text" class="doc_header"><code>load_model_text</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/learner.py#L68" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>load_model_text</code>(<strong><code>file</code></strong>, <strong><code>model</code></strong>, <strong><code>opt</code></strong>, <strong><code>with_opt</code></strong>=<em><code>None</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>strict</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="load_model_text" class="doc_header"><code>load_model_text</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/learner.py#L76" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>load_model_text</code>(<strong><code>file</code></strong>:<code>str</code>, <strong><code>model</code></strong>, <strong><code>opt</code></strong>:<a href="/optimizer.html#Optimizer"><code>Optimizer</code></a>, <strong><code>with_opt</code></strong>:<code>bool</code>=<em><code>None</code></em>, <strong><code>device</code></strong>:<code>(int, str, device)</code>=<em><code>None</code></em>, <strong><code>strict</code></strong>:<code>bool</code>=<em><code>True</code></em>)</p>
 </blockquote>
 <p>Load <code>model</code> from <code>file</code> along with <code>opt</code> (if available, and if <code>with_opt</code>)</p>
+<table>
+<thead><tr>
+<th></th>
+<th>Type</th>
+<th>Default</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>file</code></strong></td>
+<td><code>str</code></td>
+<td></td>
+<td>File name of saved text model</td>
+</tr>
+<tr>
+<td><strong><code>model</code></strong></td>
+<td></td>
+<td></td>
+<td>Model Architecture</td>
+</tr>
+<tr>
+<td><strong><code>opt</code></strong></td>
+<td><a href="/optimizer.html#Optimizer"><code>Optimizer</code></a></td>
+<td></td>
+<td><a href="/optimizer.html#Optimizer"><code>Optimizer</code></a> used to fit the model</td>
+</tr>
+<tr>
+<td><strong><code>with_opt</code></strong></td>
+<td><code>bool</code></td>
+<td><code>None</code></td>
+<td>enable to load <a href="/optimizer.html#Optimizer"><code>Optimizer</code></a> state</td>
+</tr>
+<tr>
+<td><strong><code>device</code></strong></td>
+<td><code>(int, str, device)</code></td>
+<td><code>None</code></td>
+<td>Sets the device, uses 'cpu' if unspecified</td>
+</tr>
+<tr>
+<td><strong><code>strict</code></strong></td>
+<td><code>bool</code></td>
+<td><code>True</code></td>
+<td>Ensure the keys of state dict strictly matches with the model that you are loading into and throws error if not identical</td>
+</tr>
+</tbody>
+</table>
 
 </div>
 
@@ -238,9 +337,56 @@ nb_path: "nbs/37_text.learner.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TextLearner" class="doc_header"><code>class</code> <code>TextLearner</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/learner.py#L84" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TextLearner</code>(<strong><code>dls</code></strong>, <strong><code>model</code></strong>, <strong><code>alpha</code></strong>=<em><code>2.0</code></em>, <strong><code>beta</code></strong>=<em><code>1.0</code></em>, <strong><code>moms</code></strong>=<em><code>(0.8, 0.7, 0.8)</code></em>, <strong><code>loss_func</code></strong>=<em><code>None</code></em>, <strong><code>opt_func</code></strong>=<em><code>Adam</code></em>, <strong><code>lr</code></strong>=<em><code>0.001</code></em>, <strong><code>splitter</code></strong>=<em><code>trainable_params</code></em>, <strong><code>cbs</code></strong>=<em><code>None</code></em>, <strong><code>metrics</code></strong>=<em><code>None</code></em>, <strong><code>path</code></strong>=<em><code>None</code></em>, <strong><code>model_dir</code></strong>=<em><code>'models'</code></em>, <strong><code>wd</code></strong>=<em><code>None</code></em>, <strong><code>wd_bn_bias</code></strong>=<em><code>False</code></em>, <strong><code>train_bn</code></strong>=<em><code>True</code></em>) :: <a href="/learner.html#Learner"><code>Learner</code></a></p>
+<h2 id="TextLearner" class="doc_header"><code>class</code> <code>TextLearner</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/learner.py#L100" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TextLearner</code>(<strong><code>dls</code></strong>:<a href="/data.core.html#DataLoaders"><code>DataLoaders</code></a>, <strong><code>model</code></strong>, <strong><code>alpha</code></strong>:<code>float</code>=<em><code>2.0</code></em>, <strong><code>beta</code></strong>:<code>float</code>=<em><code>1.0</code></em>, <strong><code>moms</code></strong>:<code>tuple</code>=<em><code>(0.8, 0.7, 0.8)</code></em>, <strong><code>loss_func</code></strong>=<em><code>None</code></em>, <strong><code>opt_func</code></strong>=<em><code>Adam</code></em>, <strong><code>lr</code></strong>=<em><code>0.001</code></em>, <strong><code>splitter</code></strong>=<em><code>trainable_params</code></em>, <strong><code>cbs</code></strong>=<em><code>None</code></em>, <strong><code>metrics</code></strong>=<em><code>None</code></em>, <strong><code>path</code></strong>=<em><code>None</code></em>, <strong><code>model_dir</code></strong>=<em><code>'models'</code></em>, <strong><code>wd</code></strong>=<em><code>None</code></em>, <strong><code>wd_bn_bias</code></strong>=<em><code>False</code></em>, <strong><code>train_bn</code></strong>=<em><code>True</code></em>) :: <a href="/learner.html#Learner"><code>Learner</code></a></p>
 </blockquote>
 <p>Basic class for a <a href="/learner.html#Learner"><code>Learner</code></a> in NLP.</p>
+<table>
+<thead><tr>
+<th></th>
+<th>Type</th>
+<th>Default</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>dls</code></strong></td>
+<td><a href="/data.core.html#DataLoaders"><code>DataLoaders</code></a></td>
+<td></td>
+<td>Text <a href="/data.core.html#DataLoaders"><code>DataLoaders</code></a></td>
+</tr>
+<tr>
+<td><strong><code>model</code></strong></td>
+<td></td>
+<td></td>
+<td>Pretrained Model Checkpoint or Custom Model used to train</td>
+</tr>
+<tr>
+<td><strong><code>alpha</code></strong></td>
+<td><code>float</code></td>
+<td><code>0</code></td>
+<td>Param for <a href="/callback.rnn.html#RNNRegularizer"><code>RNNRegularizer</code></a></td>
+</tr>
+<tr>
+<td><strong><code>beta</code></strong></td>
+<td><code>float</code></td>
+<td><code>0</code></td>
+<td>Param for <a href="/callback.rnn.html#RNNRegularizer"><code>RNNRegularizer</code></a></td>
+</tr>
+<tr>
+<td><strong><code>moms</code></strong></td>
+<td><code>tuple</code></td>
+<td><code>8)</code></td>
+<td>Momentum for <code>Cosine Annealing Scheduler</code></td>
+</tr>
+<tr>
+<td><strong><code>kwargs</code></strong></td>
+<td></td>
+<td></td>
+<td><em>No Content</em></td>
+</tr>
+</tbody>
+</table>
 
 </div>
 
@@ -278,9 +424,38 @@ nb_path: "nbs/37_text.learner.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="TextLearner.load_pretrained" class="doc_header"><code>TextLearner.load_pretrained</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/learner.py#L109" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>TextLearner.load_pretrained</code>(<strong><code>wgts_fname</code></strong>, <strong><code>vocab_fname</code></strong>, <strong><code>model</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="TextLearner.load_pretrained" class="doc_header"><code>TextLearner.load_pretrained</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/learner.py#L135" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>TextLearner.load_pretrained</code>(<strong><code>wgts_fname</code></strong>:<code>str</code>, <strong><code>vocab_fname</code></strong>:<code>str</code>, <strong><code>model</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Load a pretrained model and adapt it to the data vocabulary.</p>
+<table>
+<thead><tr>
+<th></th>
+<th>Type</th>
+<th>Default</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>wgts_fname</code></strong></td>
+<td><code>str</code></td>
+<td></td>
+<td>Filename of saved weights</td>
+</tr>
+<tr>
+<td><strong><code>vocab_fname</code></strong></td>
+<td><code>str</code></td>
+<td></td>
+<td>Saved Vocabulary filename in pickle format</td>
+</tr>
+<tr>
+<td><strong><code>model</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>Model to load parameters from or uses <a href="/learner.html#Learner"><code>Learner</code></a> model attribute if unspecified</td>
+</tr>
+</tbody>
+</table>
 
 </div>
 
@@ -310,9 +485,26 @@ nb_path: "nbs/37_text.learner.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="TextLearner.save_encoder" class="doc_header"><code>TextLearner.save_encoder</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/learner.py#L91" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>TextLearner.save_encoder</code>(<strong><code>file</code></strong>)</p>
+<h4 id="TextLearner.save_encoder" class="doc_header"><code>TextLearner.save_encoder</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/learner.py#L112" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>TextLearner.save_encoder</code>(<strong><code>file</code></strong>:<code>str</code>)</p>
 </blockquote>
 <p>Save the encoder to <code>file</code> in the model directory</p>
+<table>
+<thead><tr>
+<th></th>
+<th>Type</th>
+<th>Default</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>file</code></strong></td>
+<td><code>str</code></td>
+<td></td>
+<td>Filename for Encoder</td>
+</tr>
+</tbody>
+</table>
 
 </div>
 
@@ -342,9 +534,32 @@ nb_path: "nbs/37_text.learner.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="TextLearner.load_encoder" class="doc_header"><code>TextLearner.load_encoder</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/learner.py#L98" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>TextLearner.load_encoder</code>(<strong><code>file</code></strong>, <strong><code>device</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="TextLearner.load_encoder" class="doc_header"><code>TextLearner.load_encoder</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/learner.py#L121" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>TextLearner.load_encoder</code>(<strong><code>file</code></strong>:<code>str</code>, <strong><code>device</code></strong>:<code>(int, str, device)</code>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Load the encoder <code>file</code> from the model directory, optionally ensuring it's on <code>device</code></p>
+<table>
+<thead><tr>
+<th></th>
+<th>Type</th>
+<th>Default</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>file</code></strong></td>
+<td><code>str</code></td>
+<td></td>
+<td>Filename of the saved encoder</td>
+</tr>
+<tr>
+<td><strong><code>device</code></strong></td>
+<td><code>(int, str, device)</code></td>
+<td><code>None</code></td>
+<td>Device used to load, uses device from <code>dls</code> if unspecified</td>
+</tr>
+</tbody>
+</table>
 
 </div>
 
@@ -380,7 +595,7 @@ nb_path: "nbs/37_text.learner.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="decode_spec_tokens" class="doc_header"><code>decode_spec_tokens</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/learner.py#L131" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>decode_spec_tokens</code>(<strong><code>tokens</code></strong>)</p>
+<h4 id="decode_spec_tokens" class="doc_header"><code>decode_spec_tokens</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/learner.py#L165" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>decode_spec_tokens</code>(<strong><code>tokens</code></strong>)</p>
 </blockquote>
 <p>Decode the special tokens in <code>tokens</code></p>
 
@@ -439,9 +654,56 @@ nb_path: "nbs/37_text.learner.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="LMLearner" class="doc_header"><code>class</code> <code>LMLearner</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/learner.py#L152" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>LMLearner</code>(<strong><code>dls</code></strong>, <strong><code>model</code></strong>, <strong><code>alpha</code></strong>=<em><code>2.0</code></em>, <strong><code>beta</code></strong>=<em><code>1.0</code></em>, <strong><code>moms</code></strong>=<em><code>(0.8, 0.7, 0.8)</code></em>, <strong><code>loss_func</code></strong>=<em><code>None</code></em>, <strong><code>opt_func</code></strong>=<em><code>Adam</code></em>, <strong><code>lr</code></strong>=<em><code>0.001</code></em>, <strong><code>splitter</code></strong>=<em><code>trainable_params</code></em>, <strong><code>cbs</code></strong>=<em><code>None</code></em>, <strong><code>metrics</code></strong>=<em><code>None</code></em>, <strong><code>path</code></strong>=<em><code>None</code></em>, <strong><code>model_dir</code></strong>=<em><code>'models'</code></em>, <strong><code>wd</code></strong>=<em><code>None</code></em>, <strong><code>wd_bn_bias</code></strong>=<em><code>False</code></em>, <strong><code>train_bn</code></strong>=<em><code>True</code></em>) :: <a href="/text.learner.html#TextLearner"><code>TextLearner</code></a></p>
+<h3 id="LMLearner" class="doc_header"><code>class</code> <code>LMLearner</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/learner.py#L186" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>LMLearner</code>(<strong><code>dls</code></strong>:<a href="/data.core.html#DataLoaders"><code>DataLoaders</code></a>, <strong><code>model</code></strong>, <strong><code>alpha</code></strong>:<code>float</code>=<em><code>2.0</code></em>, <strong><code>beta</code></strong>:<code>float</code>=<em><code>1.0</code></em>, <strong><code>moms</code></strong>:<code>tuple</code>=<em><code>(0.8, 0.7, 0.8)</code></em>, <strong><code>loss_func</code></strong>=<em><code>None</code></em>, <strong><code>opt_func</code></strong>=<em><code>Adam</code></em>, <strong><code>lr</code></strong>=<em><code>0.001</code></em>, <strong><code>splitter</code></strong>=<em><code>trainable_params</code></em>, <strong><code>cbs</code></strong>=<em><code>None</code></em>, <strong><code>metrics</code></strong>=<em><code>None</code></em>, <strong><code>path</code></strong>=<em><code>None</code></em>, <strong><code>model_dir</code></strong>=<em><code>'models'</code></em>, <strong><code>wd</code></strong>=<em><code>None</code></em>, <strong><code>wd_bn_bias</code></strong>=<em><code>False</code></em>, <strong><code>train_bn</code></strong>=<em><code>True</code></em>) :: <a href="/text.learner.html#TextLearner"><code>TextLearner</code></a></p>
 </blockquote>
 <p>Add functionality to <a href="/text.learner.html#TextLearner"><code>TextLearner</code></a> when dealing with a language model</p>
+<table>
+<thead><tr>
+<th></th>
+<th>Type</th>
+<th>Default</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>dls</code></strong></td>
+<td><a href="/data.core.html#DataLoaders"><code>DataLoaders</code></a></td>
+<td></td>
+<td>Text <a href="/data.core.html#DataLoaders"><code>DataLoaders</code></a></td>
+</tr>
+<tr>
+<td><strong><code>model</code></strong></td>
+<td></td>
+<td></td>
+<td>Pretrained Model Checkpoint or Custom Model used to train</td>
+</tr>
+<tr>
+<td><strong><code>alpha</code></strong></td>
+<td><code>float</code></td>
+<td><code>0</code></td>
+<td>Param for <a href="/callback.rnn.html#RNNRegularizer"><code>RNNRegularizer</code></a></td>
+</tr>
+<tr>
+<td><strong><code>beta</code></strong></td>
+<td><code>float</code></td>
+<td><code>0</code></td>
+<td>Param for <a href="/callback.rnn.html#RNNRegularizer"><code>RNNRegularizer</code></a></td>
+</tr>
+<tr>
+<td><strong><code>moms</code></strong></td>
+<td><code>tuple</code></td>
+<td><code>8)</code></td>
+<td>Momentum for <code>Cosine Annealing Scheduler</code></td>
+</tr>
+<tr>
+<td><strong><code>kwargs</code></strong></td>
+<td></td>
+<td></td>
+<td><em>No Content</em></td>
+</tr>
+</tbody>
+</table>
 
 </div>
 
@@ -464,7 +726,7 @@ nb_path: "nbs/37_text.learner.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="LMLearner.predict" class="doc_header"><code>LMLearner.predict</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/learner.py#L154" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>LMLearner.predict</code>(<strong><code>text</code></strong>, <strong><code>n_words</code></strong>=<em><code>1</code></em>, <strong><code>no_unk</code></strong>=<em><code>True</code></em>, <strong><code>temperature</code></strong>=<em><code>1.0</code></em>, <strong><code>min_p</code></strong>=<em><code>None</code></em>, <strong><code>no_bar</code></strong>=<em><code>False</code></em>, <strong><code>decoder</code></strong>=<em><code>decode_spec_tokens</code></em>, <strong><code>only_last_word</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="LMLearner.predict" class="doc_header"><code>LMLearner.predict</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/learner.py#L188" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>LMLearner.predict</code>(<strong><code>text</code></strong>, <strong><code>n_words</code></strong>=<em><code>1</code></em>, <strong><code>no_unk</code></strong>=<em><code>True</code></em>, <strong><code>temperature</code></strong>=<em><code>1.0</code></em>, <strong><code>min_p</code></strong>=<em><code>None</code></em>, <strong><code>no_bar</code></strong>=<em><code>False</code></em>, <strong><code>decoder</code></strong>=<em><code>decode_spec_tokens</code></em>, <strong><code>only_last_word</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 <p>Return <code>text</code> and the <code>n_words</code> that come after</p>
 
@@ -516,7 +778,7 @@ nb_path: "nbs/37_text.learner.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="language_model_learner" class="doc_header"><code>language_model_learner</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/learner.py#L191" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>language_model_learner</code>(<strong><code>dls</code></strong>, <strong><code>arch</code></strong>, <strong><code>config</code></strong>=<em><code>None</code></em>, <strong><code>drop_mult</code></strong>=<em><code>1.0</code></em>, <strong><code>backwards</code></strong>=<em><code>False</code></em>, <strong><code>pretrained</code></strong>=<em><code>True</code></em>, <strong><code>pretrained_fnames</code></strong>=<em><code>None</code></em>, <strong><code>loss_func</code></strong>=<em><code>None</code></em>, <strong><code>opt_func</code></strong>=<em><code>Adam</code></em>, <strong><code>lr</code></strong>=<em><code>0.001</code></em>, <strong><code>splitter</code></strong>=<em><code>trainable_params</code></em>, <strong><code>cbs</code></strong>=<em><code>None</code></em>, <strong><code>metrics</code></strong>=<em><code>None</code></em>, <strong><code>path</code></strong>=<em><code>None</code></em>, <strong><code>model_dir</code></strong>=<em><code>'models'</code></em>, <strong><code>wd</code></strong>=<em><code>None</code></em>, <strong><code>wd_bn_bias</code></strong>=<em><code>False</code></em>, <strong><code>train_bn</code></strong>=<em><code>True</code></em>, <strong><code>moms</code></strong>=<em><code>(0.95, 0.85, 0.95)</code></em>)</p>
+<h4 id="language_model_learner" class="doc_header"><code>language_model_learner</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/learner.py#L225" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>language_model_learner</code>(<strong><code>dls</code></strong>, <strong><code>arch</code></strong>, <strong><code>config</code></strong>=<em><code>None</code></em>, <strong><code>drop_mult</code></strong>=<em><code>1.0</code></em>, <strong><code>backwards</code></strong>=<em><code>False</code></em>, <strong><code>pretrained</code></strong>=<em><code>True</code></em>, <strong><code>pretrained_fnames</code></strong>=<em><code>None</code></em>, <strong><code>loss_func</code></strong>=<em><code>None</code></em>, <strong><code>opt_func</code></strong>=<em><code>Adam</code></em>, <strong><code>lr</code></strong>=<em><code>0.001</code></em>, <strong><code>splitter</code></strong>=<em><code>trainable_params</code></em>, <strong><code>cbs</code></strong>=<em><code>None</code></em>, <strong><code>metrics</code></strong>=<em><code>None</code></em>, <strong><code>path</code></strong>=<em><code>None</code></em>, <strong><code>model_dir</code></strong>=<em><code>'models'</code></em>, <strong><code>wd</code></strong>=<em><code>None</code></em>, <strong><code>wd_bn_bias</code></strong>=<em><code>False</code></em>, <strong><code>train_bn</code></strong>=<em><code>True</code></em>, <strong><code>moms</code></strong>=<em><code>(0.95, 0.85, 0.95)</code></em>)</p>
 </blockquote>
 <p>Create a <a href="/learner.html#Learner"><code>Learner</code></a> with a language model from <code>dls</code> and <code>arch</code>.</p>
 
@@ -571,15 +833,6 @@ nb_path: "nbs/37_text.learner.ipynb"
 
 </div>
 
-<div class="output_area">
-
-<div class="output_subarea output_stream output_stderr output_text">
-<pre>/home/jhoward/anaconda3/lib/python3.7/site-packages/numpy/core/_asarray.py:83: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify &#39;dtype=object&#39; when creating the ndarray
-  return array(a, dtype, copy=False, order=order)
-</pre>
-</div>
-</div>
-
 </div>
 </div>
 
@@ -622,7 +875,7 @@ nb_path: "nbs/37_text.learner.ipynb"
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>&#39;This movie is about a couple of years distant , but Lucas tells the story of a boy who wants her to become&#39;</pre>
+<pre>&#39;This movie is about its own suicide by Ray King . If so , it might be a classic .&#39;</pre>
 </div>
 
 </div>
@@ -669,7 +922,7 @@ nb_path: "nbs/37_text.learner.ipynb"
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>&#39;This movie is about a mature parent and the final nine - minded , and other uses their work with Diary of the&#39;</pre>
+<pre>&#39;This movie is about a mindless wild introduced under average each developing in addition to Trick , the band . Design&#39;</pre>
 </div>
 
 </div>
@@ -691,7 +944,7 @@ nb_path: "nbs/37_text.learner.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="text_classifier_learner" class="doc_header"><code>text_classifier_learner</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/learner.py#L213" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>text_classifier_learner</code>(<strong><code>dls</code></strong>, <strong><code>arch</code></strong>, <strong><code>seq_len</code></strong>=<em><code>72</code></em>, <strong><code>config</code></strong>=<em><code>None</code></em>, <strong><code>backwards</code></strong>=<em><code>False</code></em>, <strong><code>pretrained</code></strong>=<em><code>True</code></em>, <strong><code>drop_mult</code></strong>=<em><code>0.5</code></em>, <strong><code>n_out</code></strong>=<em><code>None</code></em>, <strong><code>lin_ftrs</code></strong>=<em><code>None</code></em>, <strong><code>ps</code></strong>=<em><code>None</code></em>, <strong><code>max_len</code></strong>=<em><code>1440</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>, <strong><code>loss_func</code></strong>=<em><code>None</code></em>, <strong><code>opt_func</code></strong>=<em><code>Adam</code></em>, <strong><code>lr</code></strong>=<em><code>0.001</code></em>, <strong><code>splitter</code></strong>=<em><code>trainable_params</code></em>, <strong><code>cbs</code></strong>=<em><code>None</code></em>, <strong><code>metrics</code></strong>=<em><code>None</code></em>, <strong><code>path</code></strong>=<em><code>None</code></em>, <strong><code>model_dir</code></strong>=<em><code>'models'</code></em>, <strong><code>wd</code></strong>=<em><code>None</code></em>, <strong><code>wd_bn_bias</code></strong>=<em><code>False</code></em>, <strong><code>train_bn</code></strong>=<em><code>True</code></em>, <strong><code>moms</code></strong>=<em><code>(0.95, 0.85, 0.95)</code></em>)</p>
+<h4 id="text_classifier_learner" class="doc_header"><code>text_classifier_learner</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/learner.py#L247" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>text_classifier_learner</code>(<strong><code>dls</code></strong>, <strong><code>arch</code></strong>, <strong><code>seq_len</code></strong>=<em><code>72</code></em>, <strong><code>config</code></strong>=<em><code>None</code></em>, <strong><code>backwards</code></strong>=<em><code>False</code></em>, <strong><code>pretrained</code></strong>=<em><code>True</code></em>, <strong><code>drop_mult</code></strong>=<em><code>0.5</code></em>, <strong><code>n_out</code></strong>=<em><code>None</code></em>, <strong><code>lin_ftrs</code></strong>=<em><code>None</code></em>, <strong><code>ps</code></strong>=<em><code>None</code></em>, <strong><code>max_len</code></strong>=<em><code>1440</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>, <strong><code>loss_func</code></strong>=<em><code>None</code></em>, <strong><code>opt_func</code></strong>=<em><code>Adam</code></em>, <strong><code>lr</code></strong>=<em><code>0.001</code></em>, <strong><code>splitter</code></strong>=<em><code>trainable_params</code></em>, <strong><code>cbs</code></strong>=<em><code>None</code></em>, <strong><code>metrics</code></strong>=<em><code>None</code></em>, <strong><code>path</code></strong>=<em><code>None</code></em>, <strong><code>model_dir</code></strong>=<em><code>'models'</code></em>, <strong><code>wd</code></strong>=<em><code>None</code></em>, <strong><code>wd_bn_bias</code></strong>=<em><code>False</code></em>, <strong><code>train_bn</code></strong>=<em><code>True</code></em>, <strong><code>moms</code></strong>=<em><code>(0.95, 0.85, 0.95)</code></em>)</p>
 </blockquote>
 <p>Create a <a href="/learner.html#Learner"><code>Learner</code></a> with a text classifier from <code>dls</code> and <code>arch</code>.</p>
 
@@ -746,15 +999,6 @@ nb_path: "nbs/37_text.learner.ipynb"
 
 <div class="output_html rendered_html output_subarea "></div>
 
-</div>
-
-<div class="output_area">
-
-<div class="output_subarea output_stream output_stderr output_text">
-<pre>/home/jhoward/anaconda3/lib/python3.7/site-packages/numpy/core/_asarray.py:83: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify &#39;dtype=object&#39; when creating the ndarray
-  return array(a, dtype, copy=False, order=order)
-</pre>
-</div>
 </div>
 
 </div>
