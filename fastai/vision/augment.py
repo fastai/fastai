@@ -207,7 +207,7 @@ class RandomCrop(RandTransform):
         b,
         split_idx:int # Index of the train/valid dataset
     ):
-        "Randomly positioning crop if train dataset (split_idx=0) else center crop"
+        "Randomly positioning crop if train dataset else center crop"
         self.orig_sz = _get_sz(b)
         if split_idx: self.tl = (self.orig_sz-self.size)//2
         else:
