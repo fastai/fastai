@@ -60,9 +60,50 @@ nb_path: "nbs/33_text.models.core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="LinearDecoder" class="doc_header"><code>class</code> <code>LinearDecoder</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/models/core.py#L23" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>LinearDecoder</code>(<strong><code>n_out</code></strong>, <strong><code>n_hid</code></strong>, <strong><code>output_p</code></strong>=<em><code>0.1</code></em>, <strong><code>tie_encoder</code></strong>=<em><code>None</code></em>, <strong><code>bias</code></strong>=<em><code>True</code></em>) :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
+<h3 id="LinearDecoder" class="doc_header"><code>class</code> <code>LinearDecoder</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/models/core.py#L23" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>LinearDecoder</code>(<strong><code>n_out</code></strong>:<code>int</code>, <strong><code>n_hid</code></strong>:<code>int</code>, <strong><code>output_p</code></strong>:<code>float</code>=<em><code>0.1</code></em>, <strong><code>tie_encoder</code></strong>:<a href="/torch_core.html#Module"><code>Module</code></a>=<em><code>None</code></em>, <strong><code>bias</code></strong>:<code>bool</code>=<em><code>True</code></em>) :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
 </blockquote>
 <p>To go on top of a RNNCore module and create a Language Model.</p>
+<table>
+<thead><tr>
+<th></th>
+<th>Type</th>
+<th>Default</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>n_out</code></strong></td>
+<td><code>int</code></td>
+<td></td>
+<td>Number of output channels</td>
+</tr>
+<tr>
+<td><strong><code>n_hid</code></strong></td>
+<td><code>int</code></td>
+<td></td>
+<td>Number of features in encoder last layer output</td>
+</tr>
+<tr>
+<td><strong><code>output_p</code></strong></td>
+<td><code>float</code></td>
+<td><code>0.1</code></td>
+<td>Input dropout probability</td>
+</tr>
+<tr>
+<td><strong><code>tie_encoder</code></strong></td>
+<td><a href="/torch_core.html#Module"><code>Module</code></a></td>
+<td><code>None</code></td>
+<td>If module is supplied will tie decoder weight to <code>tie_encoder.weight</code></td>
+</tr>
+<tr>
+<td><strong><code>bias</code></strong></td>
+<td><code>bool</code></td>
+<td><code>True</code></td>
+<td>If <code>False</code> the layer will not learn additive bias</td>
+</tr>
+</tbody>
+</table>
 
 </div>
 
@@ -137,7 +178,7 @@ nb_path: "nbs/33_text.models.core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="SequentialRNN" class="doc_header"><code>class</code> <code>SequentialRNN</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/models/core.py#L39" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>SequentialRNN</code>(<strong>*<code>args</code></strong>) :: <code>Sequential</code></p>
+<h3 id="SequentialRNN" class="doc_header"><code>class</code> <code>SequentialRNN</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/models/core.py#L45" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>SequentialRNN</code>(<strong>*<code>args</code></strong>) :: <code>Sequential</code></p>
 </blockquote>
 <p>A sequential module that passes the reset call to its children.</p>
 
@@ -190,9 +231,50 @@ nb_path: "nbs/33_text.models.core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_language_model" class="doc_header"><code>get_language_model</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/models/core.py#L45" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_language_model</code>(<strong><code>arch</code></strong>, <strong><code>vocab_sz</code></strong>, <strong><code>config</code></strong>=<em><code>None</code></em>, <strong><code>drop_mult</code></strong>=<em><code>1.0</code></em>)</p>
+<h4 id="get_language_model" class="doc_header"><code>get_language_model</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/models/core.py#L51" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_language_model</code>(<strong><code>arch</code></strong>, <strong><code>vocab_sz</code></strong>:<code>int</code>, <strong><code>config</code></strong>:<code>dict</code>=<em><code>None</code></em>, <strong><code>drop_mult</code></strong>:<code>float</code>=<em><code>1.0</code></em>)</p>
 </blockquote>
 <p>Create a language model from <code>arch</code> and its <code>config</code>.</p>
+<table>
+<thead><tr>
+<th></th>
+<th>Type</th>
+<th>Default</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>arch</code></strong></td>
+<td></td>
+<td></td>
+<td>Function or class that can generate a language model architecture</td>
+</tr>
+<tr>
+<td><strong><code>vocab_sz</code></strong></td>
+<td><code>int</code></td>
+<td></td>
+<td>Size of the vocabulary</td>
+</tr>
+<tr>
+<td><strong><code>config</code></strong></td>
+<td><code>dict</code></td>
+<td><code>None</code></td>
+<td>Model configuration dictionary</td>
+</tr>
+<tr>
+<td><strong><code>drop_mult</code></strong></td>
+<td><code>float</code></td>
+<td><code>1.0</code></td>
+<td>Multiplicative factor to scale all dropout probabilities in <code>config</code></td>
+</tr>
+<tr>
+<td><strong>Returns</strong></td>
+<td><a href="/text.models.core.html#SequentialRNN"><code>SequentialRNN</code></a></td>
+<td></td>
+<td>Language model with <code>arch</code> encoder and linear decoder</td>
+</tr>
+</tbody>
+</table>
 
 </div>
 
@@ -290,9 +372,44 @@ nb_path: "nbs/33_text.models.core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="SentenceEncoder" class="doc_header"><code>class</code> <code>SentenceEncoder</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/models/core.py#L65" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>SentenceEncoder</code>(<strong><code>bptt</code></strong>, <strong><code>module</code></strong>, <strong><code>pad_idx</code></strong>=<em><code>1</code></em>, <strong><code>max_len</code></strong>=<em><code>None</code></em>) :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
+<h3 id="SentenceEncoder" class="doc_header"><code>class</code> <code>SentenceEncoder</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/models/core.py#L76" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>SentenceEncoder</code>(<strong><code>bptt</code></strong>:<code>int</code>, <strong><code>module</code></strong>:<a href="/torch_core.html#Module"><code>Module</code></a>, <strong><code>pad_idx</code></strong>:<code>int</code>=<em><code>1</code></em>, <strong><code>max_len</code></strong>:<code>int</code>=<em><code>None</code></em>) :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
 </blockquote>
 <p>Create an encoder over <code>module</code> that can process a full sentence.</p>
+<table>
+<thead><tr>
+<th></th>
+<th>Type</th>
+<th>Default</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>bptt</code></strong></td>
+<td><code>int</code></td>
+<td></td>
+<td>Backpropagation through time</td>
+</tr>
+<tr>
+<td><strong><a href="/layers.html#module"><code>module</code></a></strong></td>
+<td><a href="/torch_core.html#Module"><code>Module</code></a></td>
+<td></td>
+<td>A module that can process up to [<code>bs</code>, <code>bptt</code>] tokens</td>
+</tr>
+<tr>
+<td><strong><code>pad_idx</code></strong></td>
+<td><code>int</code></td>
+<td><code>1</code></td>
+<td>Padding token id</td>
+</tr>
+<tr>
+<td><strong><code>max_len</code></strong></td>
+<td><code>int</code></td>
+<td><code>None</code></td>
+<td>Maximal output length</td>
+</tr>
+</tbody>
+</table>
 
 </div>
 
@@ -354,9 +471,44 @@ nb_path: "nbs/33_text.models.core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="masked_concat_pool" class="doc_header"><code>masked_concat_pool</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/models/core.py#L87" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>masked_concat_pool</code>(<strong><code>output</code></strong>, <strong><code>mask</code></strong>, <strong><code>bptt</code></strong>)</p>
+<h4 id="masked_concat_pool" class="doc_header"><code>masked_concat_pool</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/models/core.py#L105" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>masked_concat_pool</code>(<strong><code>output</code></strong>:<code>Tensor</code>, <strong><code>mask</code></strong>:<code>Tensor</code>, <strong><code>bptt</code></strong>:<code>int</code>)</p>
 </blockquote>
 <p>Pool <code>MultiBatchEncoder</code> outputs into one vector [last_hidden, max_pool, avg_pool]</p>
+<table>
+<thead><tr>
+<th></th>
+<th>Type</th>
+<th>Default</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>output</code></strong></td>
+<td><code>Tensor</code></td>
+<td></td>
+<td>Output of sentence encoder</td>
+</tr>
+<tr>
+<td><strong><code>mask</code></strong></td>
+<td><code>Tensor</code></td>
+<td></td>
+<td>Boolean mask as returned by sentence encoder</td>
+</tr>
+<tr>
+<td><strong><code>bptt</code></strong></td>
+<td><code>int</code></td>
+<td></td>
+<td>Backpropagation through time</td>
+</tr>
+<tr>
+<td><strong>Returns</strong></td>
+<td><code>Tensor</code></td>
+<td></td>
+<td>Concatenation of [last_hidden, max_pool, avg_pool]</td>
+</tr>
+</tbody>
+</table>
 
 </div>
 
@@ -433,9 +585,44 @@ nb_path: "nbs/33_text.models.core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="PoolingLinearClassifier" class="doc_header"><code>class</code> <code>PoolingLinearClassifier</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/models/core.py#L98" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>PoolingLinearClassifier</code>(<strong><code>dims</code></strong>, <strong><code>ps</code></strong>, <strong><code>bptt</code></strong>, <strong><code>y_range</code></strong>=<em><code>None</code></em>) :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
+<h3 id="PoolingLinearClassifier" class="doc_header"><code>class</code> <code>PoolingLinearClassifier</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/models/core.py#L120" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>PoolingLinearClassifier</code>(<strong><code>dims</code></strong>:<code>list</code>, <strong><code>ps</code></strong>:<code>list</code>, <strong><code>bptt</code></strong>:<code>int</code>, <strong><code>y_range</code></strong>:<code>tuple</code>=<em><code>None</code></em>) :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
 </blockquote>
 <p>Create a linear classifier with pooling</p>
+<table>
+<thead><tr>
+<th></th>
+<th>Type</th>
+<th>Default</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>dims</code></strong></td>
+<td><code>list</code></td>
+<td></td>
+<td>List of hidden sizes for MLP as <code>int</code>s</td>
+</tr>
+<tr>
+<td><strong><code>ps</code></strong></td>
+<td><code>list</code></td>
+<td></td>
+<td>List of dropout probabilities as <code>float</code>s</td>
+</tr>
+<tr>
+<td><strong><code>bptt</code></strong></td>
+<td><code>int</code></td>
+<td></td>
+<td>Backpropagation through time</td>
+</tr>
+<tr>
+<td><strong><code>y_range</code></strong></td>
+<td><code>tuple</code></td>
+<td><code>None</code></td>
+<td>Tuple of (low, high) output value bounds</td>
+</tr>
+</tbody>
+</table>
 
 </div>
 
@@ -490,9 +677,86 @@ nb_path: "nbs/33_text.models.core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_text_classifier" class="doc_header"><code>get_text_classifier</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/models/core.py#L115" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_text_classifier</code>(<strong><code>arch</code></strong>, <strong><code>vocab_sz</code></strong>, <strong><code>n_class</code></strong>, <strong><code>seq_len</code></strong>=<em><code>72</code></em>, <strong><code>config</code></strong>=<em><code>None</code></em>, <strong><code>drop_mult</code></strong>=<em><code>1.0</code></em>, <strong><code>lin_ftrs</code></strong>=<em><code>None</code></em>, <strong><code>ps</code></strong>=<em><code>None</code></em>, <strong><code>pad_idx</code></strong>=<em><code>1</code></em>, <strong><code>max_len</code></strong>=<em><code>1440</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="get_text_classifier" class="doc_header"><code>get_text_classifier</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/models/core.py#L142" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_text_classifier</code>(<strong><code>arch</code></strong>:<code>callable</code>, <strong><code>vocab_sz</code></strong>:<code>int</code>, <strong><code>n_class</code></strong>:<code>int</code>, <strong><code>seq_len</code></strong>:<code>int</code>=<em><code>72</code></em>, <strong><code>config</code></strong>:<code>dict</code>=<em><code>None</code></em>, <strong><code>drop_mult</code></strong>:<code>float</code>=<em><code>1.0</code></em>, <strong><code>lin_ftrs</code></strong>:<code>list</code>=<em><code>None</code></em>, <strong><code>ps</code></strong>:<code>list</code>=<em><code>None</code></em>, <strong><code>pad_idx</code></strong>:<code>int</code>=<em><code>1</code></em>, <strong><code>max_len</code></strong>:<code>int</code>=<em><code>1440</code></em>, <strong><code>y_range</code></strong>:<code>tuple</code>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Create a text classifier from <code>arch</code> and its <code>config</code>, maybe <code>pretrained</code></p>
+<table>
+<thead><tr>
+<th></th>
+<th>Type</th>
+<th>Default</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>arch</code></strong></td>
+<td><code>callable</code></td>
+<td></td>
+<td>Function or class that can generate a language model architecture</td>
+</tr>
+<tr>
+<td><strong><code>vocab_sz</code></strong></td>
+<td><code>int</code></td>
+<td></td>
+<td>Size of the vocabulary</td>
+</tr>
+<tr>
+<td><strong><code>n_class</code></strong></td>
+<td><code>int</code></td>
+<td></td>
+<td>Number of classes</td>
+</tr>
+<tr>
+<td><strong><code>seq_len</code></strong></td>
+<td><code>int</code></td>
+<td><code>72</code></td>
+<td>Backpropagation through time</td>
+</tr>
+<tr>
+<td><strong><code>config</code></strong></td>
+<td><code>dict</code></td>
+<td><code>None</code></td>
+<td>Encoder configuration dictionary</td>
+</tr>
+<tr>
+<td><strong><code>drop_mult</code></strong></td>
+<td><code>float</code></td>
+<td><code>1.0</code></td>
+<td>Multiplicative factor to scale all dropout probabilities in <code>config</code></td>
+</tr>
+<tr>
+<td><strong><code>lin_ftrs</code></strong></td>
+<td><code>list</code></td>
+<td><code>None</code></td>
+<td>List of hidden sizes for classifier head as <code>int</code>s</td>
+</tr>
+<tr>
+<td><strong><code>ps</code></strong></td>
+<td><code>list</code></td>
+<td><code>None</code></td>
+<td>List of dropout probabilities for classifier head as <code>float</code>s</td>
+</tr>
+<tr>
+<td><strong><code>pad_idx</code></strong></td>
+<td><code>int</code></td>
+<td><code>1</code></td>
+<td>Padding token id</td>
+</tr>
+<tr>
+<td><strong><code>max_len</code></strong></td>
+<td><code>int</code></td>
+<td><code>1440</code></td>
+<td>Maximal output length for <a href="/text.models.core.html#SentenceEncoder"><code>SentenceEncoder</code></a></td>
+</tr>
+<tr>
+<td><strong><code>y_range</code></strong></td>
+<td><code>tuple</code></td>
+<td><code>None</code></td>
+<td>Tuple of (low, high) output value bounds</td>
+</tr>
+</tbody>
+</table>
 
 </div>
 
