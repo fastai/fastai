@@ -12,25 +12,41 @@ from .transforms import *
 # Cell
 class TransformBlock():
     "A basic wrapper that links defaults transforms for the data block API"
-    def __init__(self, type_tfms=None, item_tfms=None, batch_tfms=None, dl_type=None, dls_kwargs=None):
+    def __init__(self,
+        type_tfms:list=None, # List of `Transform`s
+        item_tfms:list=None, # List of `ItemTransform`s, applied on an item
+        batch_tfms:list=None, # List of `Transform`s or `RandTransform`s, applied by batch
+        dl_type:TfmdDL=None, # Specific class that inherits `TfmdDL`
+        dls_kwargs:dict=None, # Additional arguments to be passed to `DataLoaders`
+    ):
         self.type_tfms  =            L(type_tfms)
         self.item_tfms  = ToTensor + L(item_tfms)
         self.batch_tfms =            L(batch_tfms)
         self.dl_type,self.dls_kwargs = dl_type,({} if dls_kwargs is None else dls_kwargs)
 
 # Cell
-def CategoryBlock(vocab=None, sort=True, add_na=False):
+def CategoryBlock(
+    vocab:(list, pd.Series)=None, # List of unique class names
+    sort:bool=True, # Sort the classes alphabetically
+    add_na:bool=False, # Add `#na#` to `vocab`
+):
     "`TransformBlock` for single-label categorical targets"
     return TransformBlock(type_tfms=Categorize(vocab=vocab, sort=sort, add_na=add_na))
 
 # Cell
-def MultiCategoryBlock(encoded=False, vocab=None, add_na=False):
+def MultiCategoryBlock(
+    encoded:bool=False, # Whether the data comes in one-hot encoded
+    vocab:(list,pd.Series)=None, # List of unique class names
+    add_na:bool=False, # Add `#na#` to `vocab`
+):
     "`TransformBlock` for multi-label categorical targets"
     tfm = EncodedMultiCategorize(vocab=vocab) if encoded else [MultiCategorize(vocab=vocab, add_na=add_na), OneHotEncode]
     return TransformBlock(type_tfms=tfm)
 
 # Cell
-def RegressionBlock(n_out=None):
+def RegressionBlock(
+    n_out:int=None, # Number of output values
+):
     "`TransformBlock` for float targets"
     return TransformBlock(type_tfms=RegressionSetup(c=n_out))
 
