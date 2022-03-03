@@ -24,7 +24,7 @@ class RandTransform(DisplayedTransform):
     def __init__(self,
         p:float=1., # Probability of applying Transform
         nm:str=None,
-        before_call=None, # Optional batchwise preprocessing function
+        before_call:callable=None, # Optional batchwise preprocessing function
         **kwargs
     ):
         store_attr('p')
@@ -176,7 +176,11 @@ def _get_sz(x):
 class CropPad(DisplayedTransform):
     "Center crop or pad an image to `size`"
     order = 0
-    def __init__(self, size, pad_mode=PadMode.Zeros, **kwargs):
+    def __init__(self,
+        size:(int, tuple), # Size to crop or pad to, duplicated if one value is specified
+        pad_mode:PadMode=PadMode.Zeros, # A `PadMode`
+        **kwargs
+    ):
         size = _process_sz(size)
         store_attr()
         super().__init__(**kwargs)
@@ -191,12 +195,19 @@ class CropPad(DisplayedTransform):
 class RandomCrop(RandTransform):
     "Randomly crop an image to `size`"
     split_idx,order = None,1
-    def __init__(self, size, **kwargs):
+    def __init__(self,
+        size:(int, tuple), # Size to crop to, duplicated if one value is specified
+        **kwargs
+    ):
         size = _process_sz(size)
         store_attr()
         super().__init__(**kwargs)
 
-    def before_call(self, b, split_idx):
+    def before_call(self,
+        b,
+        split_idx:int # Index of the train/valid dataset
+    ):
+        "Randomly positioning crop if train dataset else center crop"
         self.orig_sz = _get_sz(b)
         if split_idx: self.tl = (self.orig_sz-self.size)//2
         else:
@@ -229,14 +240,22 @@ mk_class('ResizeMethod', **{o:o.lower() for o in ['Squish', 'Crop', 'Pad']},
 class Resize(RandTransform):
     split_idx,mode,mode_mask,order = None,Image.BILINEAR,Image.NEAREST,1
     "Resize image to `size` using `method`"
-    def __init__(self, size, method=ResizeMethod.Crop, pad_mode=PadMode.Reflection,
-                 resamples=(Image.BILINEAR, Image.NEAREST), **kwargs):
+    def __init__(self,
+        size:(int, tuple), # Size to resize to, duplicated if one value is specified
+        method:ResizeMethod=ResizeMethod.Crop, # A `ResizeMethod`
+        pad_mode:PadMode=PadMode.Reflection, # A `PadMode`
+        resamples=(Image.BILINEAR, Image.NEAREST), # Pillow `Image` resamples mode, resamples[1] for mask
+        **kwargs
+    ):
         size = _process_sz(size)
         store_attr()
         super().__init__(**kwargs)
         self.mode,self.mode_mask = resamples
 
-    def before_call(self, b, split_idx):
+    def before_call(self,
+        b,
+        split_idx:int # Index of the train/valid dataset
+    ):
         if self.method==ResizeMethod.Squish: return
         self.pcts = (0.5,0.5) if split_idx else (random.random(),random.random())
 
@@ -259,14 +278,24 @@ class Resize(RandTransform):
 class RandomResizedCrop(RandTransform):
     "Picks a random scaled crop of an image and resize it to `size`"
     split_idx,order = None,1
-    def __init__(self, size, min_scale=0.08, ratio=(3/4, 4/3), resamples=(Image.BILINEAR, Image.NEAREST),
-                 val_xtra=0.14, max_scale=1., **kwargs):
+    def __init__(self,
+         size:(int, tuple), # Final size, duplicated if one value is specified,,
+         min_scale:float=0.08, # Minimum scale of the crop, in relation to image area
+         ratio:(float, float)=(3/4, 4/3), # Range of width over height of the output
+         resamples=(Image.BILINEAR, Image.NEAREST), # Pillow `Image` resample mode, resamples[1] for mask
+         val_xtra:float=0.14, # The ratio of size at the edge cropped out in the validation set
+         max_scale:float=1., # Maximum scale of the crop, in relation to image area
+         **kwargs
+    ):
         size = _process_sz(size)
         store_attr()
         super().__init__(**kwargs)
         self.mode,self.mode_mask = resamples
 
-    def before_call(self, b, split_idx):
+    def before_call(self,
+        b,
+        split_idx # Index of the train/valid dataset
+    ):
         w,h = self.orig_sz = _get_sz(b)
         if split_idx:
             xtra = math.ceil(max(*self.size[:2])*self.val_xtra/8)*8
@@ -298,7 +327,11 @@ class RandomResizedCrop(RandTransform):
 class RatioResize(DisplayedTransform):
     'Resizes the biggest dimension of an image to `max_sz` maintaining the aspect ratio'
     order = 1
-    def __init__(self, max_sz, resamples=(Image.BILINEAR, Image.NEAREST), **kwargs):
+    def __init__(self,
+        max_sz: int, # Biggest dimension of the resized image
+        resamples=(Image.BILINEAR, Image.NEAREST), # Pillow `Image` resample mode, resamples[1] for mask
+        **kwargs
+    ):
         store_attr()
         super().__init__(**kwargs)
 
