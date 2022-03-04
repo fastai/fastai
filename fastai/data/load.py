@@ -9,6 +9,7 @@ _loaders = (_MultiProcessingDataLoaderIter,_SingleProcessDataLoaderIter)
 
 # Cell
 def _wif(worker_id):
+    "Worker Intitialization Function, run before dataloading in subprocesses to set seeds and pass multiprocessing info to `DataLoader`. "
     set_num_threads(1)
     info = get_worker_info()
     ds = info.dataset.d
@@ -23,7 +24,14 @@ class _FakeLoader:
     _index_sampler,generator,prefetch_factor  = Inf.count,None,2
     dataset_kind = _dataset_kind = _DatasetKind.Iterable
 
-    def __init__(self, d, pin_memory, num_workers, timeout, persistent_workers):
+    def __init__(self,
+            d, # DataLoader that is using this FakeLoader
+            pin_memory:bool, # Whether to pin memory to improve performance.
+            num_workers:int, # How many subprocesses to use for data loading. 0 means that the data will be loaded in the main process.
+            timeout:float, # Timeout value in seconds for collecting a batch from workers.
+            persistent_workers:bool # Do not shutdown workers after dataset is consumed.
+    ):
+        "Fake pytorch dataloader passed to `_loaders` that accesses the `DataLoader` d to retrieve batches. "
         self.dataset,self.default,self.worker_init_fn = self,d,_wif
         store_attr('d,pin_memory,num_workers,timeout,persistent_workers')
 
@@ -34,6 +42,7 @@ class _FakeLoader:
 
     @contextmanager
     def no_multiproc(self):
+        "Context manager for temporarily turning off multiprocessing. "
         old_num_workers = self.num_workers
         try:
             self.num_workers = 0
@@ -70,8 +79,20 @@ class DataLoader(GetAttr):
     _methods = _noop_methods + 'create_batches create_item create_batch retain \
         get_idxs sample shuffle_fn do_batch create_batch'.split()
     _default = 'dataset'
-    def __init__(self, dataset=None, bs=None, num_workers=0, pin_memory=False, timeout=0, batch_size=None,
-                 shuffle=False, drop_last=False, indexed=None, n=None, device=None, persistent_workers=False, **kwargs):
+    def __init__(self,
+            dataset=None, # Dataset from which to load the data. Can be either map-style or iterable-style dataset.
+            bs:int=None, # How many samples per batch to load. If bs=None, then it is assumed that dataset.__getitem__ returns a batch
+            num_workers:int=0, # How many subprocesses to use for data loading. 0 means that the data will be loaded in the main process.
+            pin_memory:bool=False, # Can improve performance by removing a data copy in RAM.
+            timeout:float=0, # Timeout value in seconds for collecting a batch from workers.
+            batch_size:int=None, # Only provided for PyTorch compatibility. Use bs
+            shuffle:bool=False, # If True, then data is shuffled every time dataloader is fully read/iterated.
+            drop_last:bool=False, # Whether to discard the last incomplete batch in an epoch.
+            indexed:bool=None, # Whether the dataset can be indexed like an array. By default Dataloader checks if dataset has a __get_item__ attribute.
+            n:int=None, # Defaults to len(dataset). If you are using iterable-style dataset, you can specify the size with n.
+            device:torch.device=None, # Defaults to default_device() which is CUDA by default. You can specify device as torch.device('cpu')
+            persistent_workers:bool=False, # Do not shutdown workers after dataset is consumed.
+            **kwargs):
         if batch_size is not None: bs = batch_size # PyTorch compatibility
         assert not (bs is None and drop_last)
         if indexed is None: indexed = (hasattr(dataset,'__getitem__')
