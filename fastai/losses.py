@@ -233,14 +233,15 @@ class LabelSmoothingCrossEntropyFlat(BaseLoss):
 class DiceLoss:
     "Dice loss for segmentation"
     def __init__(self,
-        axis=1,
-        smooth=1e-6,
-        reduction="sum",
-        square_in_union=False
+        axis:int=1, # Axis self.decodes and self.activation occurs on
+        smooth:float=1e-6, # Helps with numerical stabilities in the IoU division
+        reduction:str="sum", # PyTorch reduction equivalence ('mean', 'sum', 'none')
+        square_in_union:bool=False # Squares predictions to increase slope of gradients
     ):
         store_attr()
 
-    def __call__(self, pred, targ):
+    def __call__(self, pred:Tensor, targ:Tensor):
+        "One-hot encodes targ, then runs IoU calculation then takes 1-dice value"
         targ = self._one_hot(targ, pred.shape[self.axis])
         pred, targ = TensorBase(pred), TensorBase(targ)
         assert pred.shape == targ.shape, 'input and target dimensions differ, DiceLoss expects non one-hot targs'
@@ -252,9 +253,20 @@ class DiceLoss:
         dice_score = (2. * inter + self.smooth)/(union + self.smooth)
         return ((1-dice_score).flatten().mean() if self.reduction == "mean"
             else (1-dice_score).flatten().sum())
+
     @staticmethod
-    def _one_hot(x, classes, axis=1):
+    def _one_hot(
+        x:Tensor, # Non one-hot encoded targs
+        classes:int, # The number of classes
+        axis=1 # The axis to stack for encoding (class dimension)
+    ):
         "Creates one binary mask per class"
         return torch.stack([torch.where(x==c, 1, 0) for c in range(classes)], axis=axis)
-    def activation(self, x): return F.softmax(x, dim=self.axis)
-    def decodes(self, x):    return x.argmax(dim=self.axis)
+
+    def activation(self, x:Tensor):
+        "Last layer's activation"
+        return F.softmax(x, dim=self.axis)
+
+    def decodes(self, x:Tensor):
+        "Used on predictions in inference"
+        return x.argmax(dim=self.axis)
