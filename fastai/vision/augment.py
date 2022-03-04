@@ -985,14 +985,21 @@ class Hue(HSVTfm):
         super().__init__(_Hue(max_hue, p, draw, batch))
 
 # Cell
-def cutout_gaussian(x, areas):
+def cutout_gaussian(
+    x:Tensor, # Input image
+    areas:list # List of areas to cutout. Order rl,rh,cl,ch
+):
     "Replace all `areas` in `x` with N(0,1) noise"
     chan,img_h,img_w = x.shape[-3:]
     for rl,rh,cl,ch in areas: x[..., rl:rh, cl:ch].normal_()
     return x
 
 # Cell
-def norm_apply_denorm(x, f, nrm):
+def norm_apply_denorm(
+    x:Tensor, # Input Image
+    f:callable, # Function to apply
+    nrm:callable # Normalization transformation
+):
     "Normalize `x` with `nrm`, then apply `f`, then denormalize"
     y = f(nrm(x.clone()))
     return nrm.decode(y).clamp(0,1)
@@ -1007,7 +1014,13 @@ def _slice(area, sz):
 class RandomErasing(RandTransform):
     "Randomly selects a rectangle region in an image and randomizes its pixels."
     order = 100 # After Normalize
-    def __init__(self, p=0.5, sl=0., sh=0.3, min_aspect=0.3, max_count=1):
+    def __init__(self,
+        p:float=0.5, # Probability of appying Random Erasing
+        sl:float=0., # Minimum proportion of erased area
+        sh:float=0.3, # Maximum proportion of erased area
+        min_aspect:float=0.3, # Minimum aspect ratio of erased area
+        max_count:int=1 # Maximum number of erasing blocks per image, area per box is scaled by count
+    ):
         store_attr()
         super().__init__(p=p)
         self.log_ratio = (math.log(min_aspect), math.log(1/min_aspect))
@@ -1045,9 +1058,25 @@ def setup_aug_tfms(tfms):
     return res + others
 
 # Cell
-def aug_transforms(mult=1.0, do_flip=True, flip_vert=False, max_rotate=10., min_zoom=1., max_zoom=1.1,
-                   max_lighting=0.2, max_warp=0.2, p_affine=0.75, p_lighting=0.75, xtra_tfms=None, size=None,
-                   mode='bilinear', pad_mode=PadMode.Reflection, align_corners=True, batch=False, min_scale=1.):
+def aug_transforms(
+    mult:float=1.0, # Multiplication applying to `max_rotate`,`max_lighting`,`max_warp`
+    do_flip:bool=True, # Random flipping
+    flip_vert:bool=False, # Flip vertically
+    max_rotate:float=10., # Maximum degree of rotation
+    min_zoom:float=1., # Minimum zoom
+    max_zoom:float=1.1, # Maximum zoom
+    max_lighting:float=0.2, # Maximum scale of changing brightness
+    max_warp:float=0.2, # Maximum value of changing warp per
+    p_affine:float=0.75, # Probability of applying affine transformation
+    p_lighting:float=0.75, # Probability of changing brightnest and contrast
+    xtra_tfms:[callable]=None, # Custom Transformations
+    size:(int,tuple)=None, # Output size, duplicated if one value is specified
+    mode:str='bilinear', # `F.grid_sample` mode ( 'bilinear', 'nearest', 'bicubic')
+    pad_mode=PadMode.Reflection, # A `PadMode`
+    align_corners=True, # `F.grid_sample` align_corners
+    batch=False, # Same behavior for the whole batch if `True`
+    min_scale=1. # Minimum scale of the crop, in relation to image area
+):
     "Utility func to easily create a list of flip, rotate, zoom, warp, lighting transforms."
     res,tkw = [],dict(size=size if min_scale==1. else None, mode=mode, pad_mode=pad_mode, batch=batch, align_corners=align_corners)
     max_rotate,max_lighting,max_warp = array([max_rotate,max_lighting,max_warp])*mult
