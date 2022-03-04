@@ -1,4 +1,3 @@
-
 # Welcome to the Official `fastai` docment Sprint!
 
 
