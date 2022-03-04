@@ -13,7 +13,7 @@ def show_batch(
     x, # Input(s) in the batch
     y, # Target(s) in the batch
     samples:list, # List of (`x`, `y`) pairs of length `max_n`
-    ctxs=None, # List of `ctx` objects to show data. Could be matplotlib axis, DataFrame etc.
+    ctxs=None, # List of `ctx` objects to show data. Could be matplotlib axis, DataFrame etc
     max_n:int=9, # Maximum number of `samples` to show
     **kwargs
 ):
@@ -32,7 +32,7 @@ def show_results(
     y, # Target(s) in the batch
     samples:list, # List of (`x`, `y`) pairs of length `max_n`
     outs:list, # List of predicted output(s) from the model
-    ctxs=None, # List of `ctx` objects to show data. Could be matplotlib axis, DataFrame etc.
+    ctxs=None, # List of `ctx` objects to show data. Could be matplotlib axis, DataFrame etc
     max_n:int=9, # Maximum number of `samples` to show
     **kwargs
 ):
@@ -110,7 +110,7 @@ class TfmdDL(DataLoader):
     def decode_batch(self,
         b, # Batch to decode
         max_n:int=9, # Maximum number of items to decode
-        full:bool=True # Whether to decode all transforms. If `False`, decode up to the point the item knows how to show itself.
+        full:bool=True # Whether to decode all transforms. If `False`, decode up to the point the item knows how to show itself
     ): return self._decode_batch(self.decode(b), max_n, full)
 
     def _decode_batch(self, b, max_n=9, full=True):
@@ -130,7 +130,7 @@ class TfmdDL(DataLoader):
     def show_batch(self,
         b=None, # Batch to show
         max_n:int=9, # Maximum number of items to show
-        ctxs=None, # List of `ctx` objects to show data. Could be matplotlib axis, DataFrame etc.
+        ctxs=None, # List of `ctx` objects to show data. Could be matplotlib axis, DataFrame etc
         show:bool=True, # Whether to display data
         unique:bool=False, # Whether to show only one
         **kwargs
@@ -147,7 +147,7 @@ class TfmdDL(DataLoader):
         b, # Batch to show results for
         out, # Predicted output from model for the batch
         max_n:int=9, # Maximum number of items to show
-        ctxs=None, # List of `ctx` objects to show data. Could be matplotlib axis, DataFrame etc.
+        ctxs=None, # List of `ctx` objects to show data. Could be matplotlib axis, DataFrame etc
         show:bool=True, # Whether to display data
         **kwargs
     ):
