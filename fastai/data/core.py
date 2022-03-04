@@ -338,7 +338,7 @@ class TfmdLists(FilteredBase, L, GetAttr):
     _default='tfms'
     def __init__(self,
         items, # List of items to apply `Transform`s to
-        tfms, # `Transform`s to be applied
+        tfms, # List of `Transform`(s) or `Pipeline` to apply
         use_list:bool=None, # Whether to use `list` in `L`
         do_setup:bool=True, # Whether to call `setup()` for `Transform`
         split_idx:int=None, # Whether to apply `Transform`(s) to training or validation set. `0` for training set and `1` for validation set
