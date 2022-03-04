@@ -351,7 +351,14 @@ def show_at(o, idx, **kwargs):
 @delegates(TfmdLists)
 class Datasets(FilteredBase):
     "A dataset that creates a tuple from each `tfms`"
-    def __init__(self, items=None, tfms=None, tls=None, n_inp=None, dl_type=None, **kwargs):
+    def __init__(self,
+        items=None, # List of items to create `Datasets`
+        tfms=None, # List of `Transform`(s) or `Pipeline` to apply
+        tls=None, # A `TfmdLists` object
+        n_inp:int=None, # Number of elements in `Datasets` tuple that should be considered part of input
+        dl_type=None, # Type of `DataLoader`
+        **kwargs
+    ):
         super().__init__(dl_type=dl_type)
         self.tls = L(tls if tls else [TfmdLists(items, t, **kwargs) for t in L(ifnone(tfms,[None]))])
         self.n_inp = ifnone(n_inp, max(1, len(self.tls)-1))
