@@ -111,7 +111,8 @@ class TfmdDL(DataLoader):
         b, # Batch to decode
         max_n:int=9, # Maximum number of items to decode
         full:bool=True # Whether to decode all transforms. If `False`, decode up to the point the item knows how to show itself
-    ): return self._decode_batch(self.decode(b), max_n, full)
+    ):
+        return self._decode_batch(self.decode(b), max_n, full)
 
     def _decode_batch(self, b, max_n=9, full=True):
         f = self.after_item.decode
