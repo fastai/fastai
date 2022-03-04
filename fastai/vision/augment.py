@@ -737,17 +737,26 @@ def lighting(x: TensorImage, func): return torch.sigmoid(func(logit(x)))
 class SpaceTfm(RandTransform):
     "Apply `fs` to the logits"
     order = 40
-    def __init__(self, fs, space_fn, **kwargs):
+    def __init__(self,
+        fs:(callable,[callable]), # Transformation functions applying in a space
+        space_fn:callable, # Function converting rgb to a space and back to rgb after appying `fs`
+        **kwargs
+    ):
         super().__init__(**kwargs)
         self.space_fn=space_fn
         self.fs=L(fs)
 
-    def before_call(self, b, split_idx):
+    def before_call(self,
+        b,
+        split_idx:int, # Index of the train/valid dataset
+    ):
         self.do = True
         while isinstance(b, tuple): b = b[0]
         for t in self.fs: t.before_call(b)
 
-    def compose(self, tfm):
+    def compose(self,
+        tfm:callable # Transformation function to compose
+    ):
         "Compose `self` with another `LightingTransform`"
         self.fs += tfm.fs
 
@@ -757,12 +766,21 @@ class SpaceTfm(RandTransform):
 class LightingTfm(SpaceTfm):
     "Apply `fs` to the logits"
     order = 40
-    def __init__(self, fs, **kwargs):
+    def __init__(self,
+        fs:(callable,[callable]), # Transformation functions applying in logit space,
+        **kwargs
+    ):
         super().__init__(fs, TensorImage.lighting, **kwargs)
 
 # Cell
 class _BrightnessLogit():
-    def __init__(self, max_lighting=0.2, p=0.75, draw=None, batch=False): store_attr()
+    def __init__(self,
+        max_lighting:float=0.2, # Maximum scale of changing brightness
+        p:float=0.75, # Probability of appying transformation
+        draw:(int, [int], callable)=None, # User defined behavior of batch transformation
+        batch=False # Same behavior for the whole batch if `True`
+    ):
+        store_attr()
 
     def _def_draw(self, x):
         if not self.batch: return x.new_empty(x.size(0)).uniform_(0.5*(1-self.max_lighting), 0.5*(1+self.max_lighting))
@@ -783,7 +801,12 @@ def brightness(x: TensorImage, **kwargs):
 
 # Cell
 class Brightness(LightingTfm):
-    def __init__(self, max_lighting=0.2, p=0.75, draw=None, batch=False):
+    def __init__(self,
+        max_lighting:float=0.2, # Maximum scale of changing brightness
+        p:float=0.75, # Probability of appying transformation
+        draw:(int, [int], callable)=None, # User defined behavior of batch transformation
+        batch=False # Same behavior for the whole batch if `True`
+    ):
         "Apply change in brightness of `max_lighting` to batch of images with probability `p`."
         store_attr()
         super().__init__(_BrightnessLogit(max_lighting, p, draw, batch))
