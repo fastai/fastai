@@ -258,7 +258,7 @@ class DiceLoss:
     def _one_hot(
         x:Tensor, # Non one-hot encoded targs
         classes:int, # The number of classes
-        axis=1 # The axis to stack for encoding (class dimension)
+        axis:int=1 # The axis to stack for encoding (class dimension)
     ):
         "Creates one binary mask per class"
         return torch.stack([torch.where(x==c, 1, 0) for c in range(classes)], axis=axis)
