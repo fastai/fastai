@@ -177,7 +177,7 @@ class DataLoaders(GetAttr):
         apply(dl_tfms.add, tfms)
 
     def add_tfms(self,
-        tfms, # List of `Transform`s to add
+        tfms, # List of `Transform`(s) or `Pipeline` to apply
         event, # When to run `Transform`. Events mentioned in `TfmdDL`
         loaders=None # List of `DataLoader` objects to add `tfms` to
     ):
