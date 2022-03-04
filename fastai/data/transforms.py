@@ -204,7 +204,7 @@ class ColReader(DisplayedTransform):
         self.cols = L(cols)
 
     def _do_one(self, r, c):
-        o = r[c] if isinstance(c, int) else r[c] if c=='name' or c=='cat' else getattr(r, c)
+        o = r[c] if isinstance(c, int) or not c in getattr(r, '_fields', []) else getattr(r, c)
         if len(self.pref)==0 and len(self.suff)==0 and self.label_delim is None: return o
         if self.label_delim is None: return f'{self.pref}{o}{self.suff}'
         else: return o.split(self.label_delim) if len(o)>0 else []
