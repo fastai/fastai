@@ -774,13 +774,7 @@ class LightingTfm(SpaceTfm):
 
 # Cell
 class _BrightnessLogit():
-    def __init__(self,
-        max_lighting:float=0.2, # Maximum scale of changing brightness
-        p:float=0.75, # Probability of appying transformation
-        draw:(int, [int], callable)=None, # User defined behavior of batch transformation
-        batch=False # Same behavior for the whole batch if `True`
-    ):
-        store_attr()
+    def __init__(self, max_lighting=0.2, p=0.75, draw=None, batch=False): store_attr()
 
     def _def_draw(self, x):
         if not self.batch: return x.new_empty(x.size(0)).uniform_(0.5*(1-self.max_lighting), 0.5*(1+self.max_lighting))
@@ -804,7 +798,7 @@ class Brightness(LightingTfm):
     def __init__(self,
         max_lighting:float=0.2, # Maximum scale of changing brightness
         p:float=0.75, # Probability of appying transformation
-        draw:(int, [int], callable)=None, # User defined behavior of batch transformation
+        draw:(float, [float], callable)=None, # User defined behavior of batch transformation
         batch=False # Same behavior for the whole batch if `True`
     ):
         "Apply change in brightness of `max_lighting` to batch of images with probability `p`."
@@ -836,7 +830,12 @@ def contrast(x: TensorImage, **kwargs):
 # Cell
 class Contrast(LightingTfm):
     "Apply change in contrast of `max_lighting` to batch of images with probability `p`."
-    def __init__(self,max_lighting=0.2, p=0.75, draw=None, batch=False):
+    def __init__(self,
+        max_lighting=0.2, # Maximum scale of changing contrast
+        p=0.75, # Probability of appying transformation
+        draw:(float, [float], callable)=None, # User defined behavior of batch transformation
+        batch=False
+    ):
         store_attr()
         super().__init__(_ContrastLogit(max_lighting, p, draw, batch))
 
@@ -876,12 +875,19 @@ def saturation(x: TensorImage, **kwargs):
 class Saturation(LightingTfm):
     "Apply change in saturation of `max_lighting` to batch of images with probability `p`."
     # Ref: https://pytorch.org/docs/stable/torchvision/transforms.html#torchvision.transforms.functional.adjust_saturation
-    def __init__(self,max_lighting=0.2, p=0.75, draw=None, batch=False):
+    def __init__(self,
+        max_lighting:float=0.2, # Maximum scale of changing brightness
+        p:float=0.75, # Probability of appying transformation
+        draw:(float, [float], callable)=None, # User defined behavior of batch transformation
+        batch:bool=False # Same behavior for the whole batch if `True`
+    ):
         store_attr()
         super().__init__(_SaturationLogit(max_lighting, p, draw, batch))
 
 # Cell
-def rgb2hsv(img):
+def rgb2hsv(
+    img:Tensor # Batch of images `Tensor`in RGB
+):
     "Converts a RGB image to an HSV image. Note: Will not work on logit space images."
     r, g, b = img.unbind(1)
     # temp commented out due to https://github.com/pytorch/pytorch/issues/47069
@@ -907,7 +913,9 @@ def rgb2hsv(img):
     return torch.stack((h, s, maxc),dim=1)
 
 # Cell
-def hsv2rgb(img):
+def hsv2rgb(
+    img:Tensor, # Batch of images `Tensor in HSV`
+):
     "Converts a HSV image to an RGB image."
     h, s, v = img.unbind(1)
     i = torch.floor(h * 6.0)
@@ -968,7 +976,12 @@ def hue(x: TensorImage, **kwargs):
 class Hue(HSVTfm):
     "Apply change in hue of `max_hue` to batch of images with probability `p`."
     # Ref: https://pytorch.org/docs/stable/torchvision/transforms.html#torchvision.transforms.functional.adjust_hue
-    def __init__(self,max_hue=0.1, p=0.75, draw=None, batch=False):
+    def __init__(self,
+        max_hue:float=0.1, # Maximum scale of changing Hue
+        p:float=0.75, # Probability of appying transformation
+        draw:(float, [float], callable)=None, # User defined behavior of batch transformation
+        batch=False # Same behavior for the whole batch if `True`
+    ):
         super().__init__(_Hue(max_hue, p, draw, batch))
 
 # Cell
