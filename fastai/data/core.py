@@ -137,7 +137,11 @@ add_docs(TfmdDL,
 class DataLoaders(GetAttr):
     "Basic wrapper around several `DataLoader`s."
     _default='train'
-    def __init__(self, *loaders, path='.', device=None):
+    def __init__(self,
+        *loaders, # `DataLoader` objects to combine
+        path:(str,Path)='.', # Path to `DataLoader` objects
+        device=None # Device to put `DataLoaders`
+    ):
         self.loaders,self.path = list(loaders),Path(path)
         if device is not None or hasattr(loaders[0],'to'): self.device = device
 
@@ -154,11 +158,15 @@ class DataLoaders(GetAttr):
     def device(self): return self._device
 
     @device.setter
-    def device(self, d):
+    def device(self,
+        d # Device to put `DataLoaders`
+    ):
         for dl in self.loaders: dl.to(d)
         self._device = d
 
-    def to(self, device):
+    def to(self,
+        device # Device to put `DataLoaders`
+    ):
         self.device = device
         return self
 
@@ -168,7 +176,11 @@ class DataLoaders(GetAttr):
         dl_tfms = getattr(self[dl_idx], event)
         apply(dl_tfms.add, tfms)
 
-    def add_tfms(self,tfms,event,loaders=None):
+    def add_tfms(self,
+        tfms, # List of `Transform`s to add
+        event, # When to run `Transform`. Events mentioned in `TfmdDL`
+        loaders=None # List of `DataLoader` objects to add `tfms` to
+    ):
         "Adds `tfms` to `events` on `loaders`"
         if(loaders is None): loaders=range(len(self.loaders))
         if not is_listy(loaders): loaders = listify(loaders)
@@ -179,7 +191,14 @@ class DataLoaders(GetAttr):
     def cpu(self):  return self.to(device=torch.device('cpu'))
 
     @classmethod
-    def from_dsets(cls, *ds, path='.',  bs=64, device=None, dl_type=TfmdDL, **kwargs):
+    def from_dsets(cls,
+        *ds, # `Datasets` object(s)
+        path:(str,Path)='.', # Path to put `DataLoaders`
+        bs:int=64, # Size of batch
+        device=None, # Device to put `DataLoaders`
+        dl_type=TfmdDL, # Type of `DataLoader`
+        **kwargs
+    ):
         default = (True,) + (False,) * (len(ds)-1)
         defaults = {'shuffle': default, 'drop_last': default}
         tfms = {k:tuple(Pipeline(kwargs[k]) for i in range_of(ds)) for k in _batch_tfms if k in kwargs}
@@ -188,7 +207,16 @@ class DataLoaders(GetAttr):
         return cls(*[dl_type(d, bs=bs, **k) for d,k in zip(ds, kwargs)], path=path, device=device)
 
     @classmethod
-    def from_dblock(cls, dblock, source, path='.',  bs=64, val_bs=None, shuffle=True, device=None, **kwargs):
+    def from_dblock(cls,
+        dblock, # `DataBlock` object
+        source, # Source of data. Can be `Path` to files
+        path:(str, Path)='.', # Path to put `DataLoaders`
+        bs:int=64, # Size of batch
+        val_bs:int=None, # Size of batch for validation `DataLoader`
+        shuffle:bool=True, # Whether to shuffle data
+        device=None, # Device to put `DataLoaders`
+        **kwargs
+    ):
         return dblock.dataloaders(source, path=path, bs=bs, val_bs=val_bs, shuffle=shuffle, device=device, **kwargs)
 
     _docs=dict(__getitem__="Retrieve `DataLoader` at `i` (`0` is training, `1` is validation)",
