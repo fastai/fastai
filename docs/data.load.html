@@ -85,7 +85,7 @@ nb_path: "nbs/02_data.load.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="fa_collate" class="doc_header"><code>fa_collate</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/load.py#L60" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>fa_collate</code>(<strong><code>t</code></strong>:<code>list</code>)</p>
+<h4 id="fa_collate" class="doc_header"><code>fa_collate</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/load.py#L46" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>fa_collate</code>(<strong><code>t</code></strong>)</p>
 </blockquote>
 <p>A replacement for PyTorch <code>default_collate</code> which maintains types and handles <code>Sequence</code>s</p>
 
@@ -141,7 +141,7 @@ nb_path: "nbs/02_data.load.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="fa_convert" class="doc_header"><code>fa_convert</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/load.py#L68" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>fa_convert</code>(<strong><code>t</code></strong>:<code>Mapping | str</code>)</p>
+<h4 id="fa_convert" class="doc_header"><code>fa_convert</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/load.py#L54" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>fa_convert</code>(<strong><code>t</code></strong>)</p>
 </blockquote>
 <p>A replacement for PyTorch <code>default_convert</code> which maintains types and handles <code>Sequence</code>s</p>
 
@@ -201,7 +201,7 @@ nb_path: "nbs/02_data.load.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="SkipItemException" class="doc_header"><code>class</code> <code>SkipItemException</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/load.py#L75" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>SkipItemException</code>() :: <code>Exception</code></p>
+<h3 id="SkipItemException" class="doc_header"><code>class</code> <code>SkipItemException</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/load.py#L61" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>SkipItemException</code>() :: <code>Exception</code></p>
 </blockquote>
 <p>Raised to notify <a href="/data.load.html#DataLoader"><code>DataLoader</code></a> to skip an item</p>
 
@@ -226,176 +226,9 @@ nb_path: "nbs/02_data.load.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="DataLoader" class="doc_header"><code>class</code> <code>DataLoader</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/load.py#L80" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>DataLoader</code>(<strong><code>dataset</code></strong>=<em><code>None</code></em>, <strong><code>bs</code></strong>:<code>int</code>=<em><code>None</code></em>, <strong><code>num_workers</code></strong>:<code>int</code>=<em><code>0</code></em>, <strong><code>pin_memory</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>timeout</code></strong>:<code>float</code>=<em><code>0</code></em>, <strong><code>batch_size</code></strong>:<code>int</code>=<em><code>None</code></em>, <strong><code>shuffle</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>drop_last</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>indexed</code></strong>:<code>bool</code>=<em><code>None</code></em>, <strong><code>n</code></strong>:<code>int</code>=<em><code>None</code></em>, <strong><code>device</code></strong>:<code>device</code>=<em><code>None</code></em>, <strong><code>persistent_workers</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>wif</code></strong>=<em><code>None</code></em>, <strong><code>before_iter</code></strong>=<em><code>None</code></em>, <strong><code>after_item</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_iter</code></strong>=<em><code>None</code></em>, <strong><code>create_batches</code></strong>=<em><code>None</code></em>, <strong><code>create_item</code></strong>=<em><code>None</code></em>, <strong><code>create_batch</code></strong>=<em><code>None</code></em>, <strong><code>retain</code></strong>=<em><code>None</code></em>, <strong><code>get_idxs</code></strong>=<em><code>None</code></em>, <strong><code>sample</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_fn</code></strong>=<em><code>None</code></em>, <strong><code>do_batch</code></strong>=<em><code>None</code></em>) :: <a href="https://fastcore.fast.ai/basics#GetAttr"><code>GetAttr</code></a></p>
+<h2 id="DataLoader" class="doc_header"><code>class</code> <code>DataLoader</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/load.py#L66" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>DataLoader</code>(<strong><code>dataset</code></strong>=<em><code>None</code></em>, <strong><code>bs</code></strong>=<em><code>None</code></em>, <strong><code>num_workers</code></strong>=<em><code>0</code></em>, <strong><code>pin_memory</code></strong>=<em><code>False</code></em>, <strong><code>timeout</code></strong>=<em><code>0</code></em>, <strong><code>batch_size</code></strong>=<em><code>None</code></em>, <strong><code>shuffle</code></strong>=<em><code>False</code></em>, <strong><code>drop_last</code></strong>=<em><code>False</code></em>, <strong><code>indexed</code></strong>=<em><code>None</code></em>, <strong><code>n</code></strong>=<em><code>None</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>persistent_workers</code></strong>=<em><code>False</code></em>, <strong><code>wif</code></strong>=<em><code>None</code></em>, <strong><code>before_iter</code></strong>=<em><code>None</code></em>, <strong><code>after_item</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_iter</code></strong>=<em><code>None</code></em>, <strong><code>create_batches</code></strong>=<em><code>None</code></em>, <strong><code>create_item</code></strong>=<em><code>None</code></em>, <strong><code>create_batch</code></strong>=<em><code>None</code></em>, <strong><code>retain</code></strong>=<em><code>None</code></em>, <strong><code>get_idxs</code></strong>=<em><code>None</code></em>, <strong><code>sample</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_fn</code></strong>=<em><code>None</code></em>, <strong><code>do_batch</code></strong>=<em><code>None</code></em>) :: <a href="https://fastcore.fast.ai/basics#GetAttr"><code>GetAttr</code></a></p>
 </blockquote>
 <p>API compatible with PyTorch DataLoader, with a lot more callbacks and flexibility</p>
-<table>
-<thead><tr>
-<th></th>
-<th>Type</th>
-<th>Default</th>
-<th>Details</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong><code>dataset</code></strong></td>
-<td><code>NoneType</code></td>
-<td>``</td>
-<td>Dataset from which to load the data. Can be either map-style or iterable-style dataset.</td>
-</tr>
-<tr>
-<td><strong><code>bs</code></strong></td>
-<td><code>int</code></td>
-<td>``</td>
-<td>How many samples per batch to load. If bs=None, then it is assumed that dataset.<strong>getitem</strong> returns a batch</td>
-</tr>
-<tr>
-<td><strong><code>num_workers</code></strong></td>
-<td><code>int</code></td>
-<td><code>0</code></td>
-<td>How many subprocesses to use for data loading. 0 means that the data will be loaded in the main process.</td>
-</tr>
-<tr>
-<td><strong><code>pin_memory</code></strong></td>
-<td><code>bool</code></td>
-<td><code>False</code></td>
-<td>Can improve performance by removing a data copy in RAM.</td>
-</tr>
-<tr>
-<td><strong><code>timeout</code></strong></td>
-<td><code>float</code></td>
-<td><code>0</code></td>
-<td>Timeout value in seconds for collecting a batch from workers.</td>
-</tr>
-<tr>
-<td><strong><code>batch_size</code></strong></td>
-<td><code>int</code></td>
-<td>``</td>
-<td>Only provided for PyTorch compatibility. Use bs</td>
-</tr>
-<tr>
-<td><strong><code>shuffle</code></strong></td>
-<td><code>bool</code></td>
-<td><code>False</code></td>
-<td>If True, then data is shuffled every time dataloader is fully read/iterated.</td>
-</tr>
-<tr>
-<td><strong><code>drop_last</code></strong></td>
-<td><code>bool</code></td>
-<td><code>False</code></td>
-<td>Whether to discard the last incomplete batch in an epoch.</td>
-</tr>
-<tr>
-<td><strong><code>indexed</code></strong></td>
-<td><code>bool</code></td>
-<td>``</td>
-<td>Whether the dataset can be indexed like an array. By default Dataloader checks if dataset has a <strong>get_item</strong> attribute.</td>
-</tr>
-<tr>
-<td><strong><code>n</code></strong></td>
-<td><code>int</code></td>
-<td>``</td>
-<td>Defaults to len(dataset). If you are using iterable-style dataset, you can specify the size with n.</td>
-</tr>
-<tr>
-<td><strong><code>device</code></strong></td>
-<td><code>device</code></td>
-<td>``</td>
-<td>Defaults to default_device() which is CUDA by default. You can specify device as torch.device('cpu')</td>
-</tr>
-<tr>
-<td><strong><code>persistent_workers</code></strong></td>
-<td><code>bool</code></td>
-<td><code>False</code></td>
-<td>Do not shutdown workers after dataset is consumed.</td>
-</tr>
-<tr>
-<td><strong><code>wif</code></strong></td>
-<td><code>NoneType</code></td>
-<td>``</td>
-<td><em>No Content</em></td>
-</tr>
-<tr>
-<td><strong><code>before_iter</code></strong></td>
-<td><code>NoneType</code></td>
-<td>``</td>
-<td><em>No Content</em></td>
-</tr>
-<tr>
-<td><strong><code>after_item</code></strong></td>
-<td><code>NoneType</code></td>
-<td>``</td>
-<td><em>No Content</em></td>
-</tr>
-<tr>
-<td><strong><code>before_batch</code></strong></td>
-<td><code>NoneType</code></td>
-<td>``</td>
-<td><em>No Content</em></td>
-</tr>
-<tr>
-<td><strong><code>after_batch</code></strong></td>
-<td><code>NoneType</code></td>
-<td>``</td>
-<td><em>No Content</em></td>
-</tr>
-<tr>
-<td><strong><code>after_iter</code></strong></td>
-<td><code>NoneType</code></td>
-<td>``</td>
-<td><em>No Content</em></td>
-</tr>
-<tr>
-<td><strong><code>create_batches</code></strong></td>
-<td><code>NoneType</code></td>
-<td>``</td>
-<td><em>No Content</em></td>
-</tr>
-<tr>
-<td><strong><code>create_item</code></strong></td>
-<td><code>NoneType</code></td>
-<td>``</td>
-<td><em>No Content</em></td>
-</tr>
-<tr>
-<td><strong><code>create_batch</code></strong></td>
-<td><code>NoneType</code></td>
-<td>``</td>
-<td><em>No Content</em></td>
-</tr>
-<tr>
-<td><strong><code>retain</code></strong></td>
-<td><code>NoneType</code></td>
-<td>``</td>
-<td><em>No Content</em></td>
-</tr>
-<tr>
-<td><strong><code>get_idxs</code></strong></td>
-<td><code>NoneType</code></td>
-<td>``</td>
-<td><em>No Content</em></td>
-</tr>
-<tr>
-<td><strong><code>sample</code></strong></td>
-<td><code>NoneType</code></td>
-<td>``</td>
-<td><em>No Content</em></td>
-</tr>
-<tr>
-<td><strong><code>shuffle_fn</code></strong></td>
-<td><code>NoneType</code></td>
-<td>``</td>
-<td><em>No Content</em></td>
-</tr>
-<tr>
-<td><strong><code>do_batch</code></strong></td>
-<td><code>NoneType</code></td>
-<td>``</td>
-<td><em>No Content</em></td>
-</tr>
-</tbody>
-</table>
 
 </div>
 
@@ -475,7 +308,7 @@ nb_path: "nbs/02_data.load.ipynb"
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>(#6) [0.7598790889434599,0.737830437962572,0.8812522989587296,0.5550182475688314,0.14080305138266858,0.8079941273466205]</pre>
+<pre>(#1) [0.8184584259771384]</pre>
 </div>
 
 </div>
@@ -508,7 +341,7 @@ nb_path: "nbs/02_data.load.ipynb"
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>(#2) [4,4]</pre>
+<pre>(#9) [4,4,4,4,4,4,4,4,4]</pre>
 </div>
 
 </div>
@@ -542,7 +375,7 @@ nb_path: "nbs/02_data.load.ipynb"
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>(#13) [4,4,4,4,4,4,4,4,4,4...]</pre>
+<pre>(#16) [4,4,4,4,4,4,4,4,4,4...]</pre>
 </div>
 
 </div>
@@ -601,7 +434,7 @@ nb_path: "nbs/02_data.load.ipynb"
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>(#6) [0.05147992949452129,0.9089726530746309,0.5259472882135795,0.5759717955727046,0.87333957485045,0.8574913478248201]</pre>
+<pre>(#15) [0.09997947451517075,0.9406352068577291,0.7365644613807534,0.03467093036515401,0.33835398224425894,0.8449277297768522,0.38410576483536174,0.6763438764319878,0.748649743338762,0.27015475248670817...]</pre>
 </div>
 
 </div>
@@ -781,12 +614,12 @@ nb_path: "nbs/02_data.load.ipynb"
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>CPU times: user 8.64 ms, sys: 0 ns, total: 8.64 ms
-Wall time: 274 ms
-CPU times: user 13.8 ms, sys: 26.7 ms, total: 40.5 ms
-Wall time: 169 ms
-CPU times: user 22.8 ms, sys: 30 ms, total: 52.8 ms
-Wall time: 122 ms
+<pre>CPU times: user 4.27 ms, sys: 1.05 ms, total: 5.32 ms
+Wall time: 316 ms
+CPU times: user 12.7 ms, sys: 11.9 ms, total: 24.5 ms
+Wall time: 197 ms
+CPU times: user 14.5 ms, sys: 16.2 ms, total: 30.7 ms
+Wall time: 127 ms
 </pre>
 </div>
 </div>
@@ -796,7 +629,7 @@ Wall time: 122 ms
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>(#26) [&#39;g&#39;,&#39;r&#39;,&#39;l&#39;,&#39;v&#39;,&#39;h&#39;,&#39;d&#39;,&#39;j&#39;,&#39;q&#39;,&#39;i&#39;,&#39;u&#39;...]</pre>
+<pre>(#26) [&#39;r&#39;,&#39;c&#39;,&#39;q&#39;,&#39;n&#39;,&#39;j&#39;,&#39;s&#39;,&#39;l&#39;,&#39;p&#39;,&#39;b&#39;,&#39;y&#39;...]</pre>
 </div>
 
 </div>
@@ -841,8 +674,8 @@ Wall time: 122 ms
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>CPU times: user 31.3 ms, sys: 22.4 ms, total: 53.7 ms
-Wall time: 121 ms
+<pre>CPU times: user 12 ms, sys: 22.3 ms, total: 34.3 ms
+Wall time: 130 ms
 </pre>
 </div>
 </div>
@@ -903,9 +736,9 @@ Wall time: 121 ms
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>[tensor([35, 43, 28, 22,  8,  4, 31, 30, 40, 18, 42, 48,  5, 49, 34, 12,  3, 25,
-          7, 47, 26, 20, 10,  6, 37, 41,  1, 11,  0, 13, 29, 17]),
- tensor([14, 36, 15, 16,  2, 38,  9, 44, 19, 24, 46, 21, 27, 33, 39, 32, 45, 23])]</pre>
+<pre>[tensor([16, 14,  5,  1, 39, 49, 10, 40,  7, 36, 28, 42, 32, 24, 43, 46,  4,  3,
+         11, 48, 26, 35, 15, 25, 23,  8, 44, 47,  0, 34, 21, 17]),
+ tensor([45, 41,  6, 20, 38, 19, 29, 37, 13, 18,  2, 27, 30, 12, 33, 22,  9, 31])]</pre>
 </div>
 
 </div>
