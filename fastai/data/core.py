@@ -314,7 +314,7 @@ class FilteredBase:
         drop_last:bool=None, # Whether to drop last incomplete batch
         val_bs:int=None, # Size of batch for validation `DataLoader`
         **kwargs
-    ):
+    ) -> DataLoaders:
         if shuffle_train is not None:
             shuffle=shuffle_train
             warnings.warn('`shuffle_train` is deprecated. Use `shuffle` instead.',DeprecationWarning)
