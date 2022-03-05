@@ -354,7 +354,7 @@ class Datasets(FilteredBase):
     def __init__(self,
         items:list=None, # List of items to create `Datasets`
         tfms:(list,Pipeline)=None, # List of `Transform`(s) or `Pipeline` to apply
-        tls:TfmdLists=None, # If None, self.tls is generated from `items` and `tfms`
+        tls:TfmdLists=None, # If None, `self.tls` is generated from `items` and `tfms`
         n_inp:int=None, # Number of elements in `Datasets` tuple that should be considered part of input
         dl_type=None, # Type of `DataLoader`
         **kwargs
