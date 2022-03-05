@@ -134,7 +134,7 @@ class TextLearner(Learner):
 
     def load_pretrained(self,
         wgts_fname:str, # Filename of saved weights
-        vocab_fname:str, # Saved Vocabulary filename in pickle format
+        vocab_fname:str, # Saved vocabulary filename in pickle format
         model=None # Model to load parameters from or uses `Learner` model attribute if unspecified
         ):
         "Load a pretrained model and adapt it to the data vocabulary."
