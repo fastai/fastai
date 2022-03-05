@@ -14,29 +14,29 @@ class BaseLoss():
     "Same as `loss_cls`, but flattens input and target."
     activation=decodes=noops
     def __init__(self,
-        loss_cls, # A general loss function
-        *args, # Any extra positional arguments that `loss_cls` needs
+        loss_cls, # Uninitialized PyTorch-compatible loss
+        *args,
         axis:int=-1, # Reduction axis
-        flatten:bool=True, # Whether incoming losses need to be flattened
-        floatify:bool=False, # Coerce `targ` to float?
-        is_2d:bool=True, # Whether flatten keeps one or two channels when applied
-        **kwargs # Any extra keyword arguments that `loss_cls` needs
+        flatten:bool=True, # Flatten `inp` and `targ` before calculating loss
+        floatify:bool=False, # Convert `targ` to `float`
+        is_2d:bool=True, # Whether `flatten` keeps one or two channels when applied
+        **kwargs
     ):
         store_attr("axis,flatten,floatify,is_2d")
         self.func = loss_cls(*args,**kwargs)
         functools.update_wrapper(self, self.func)
 
-    def __repr__(self): return f"FlattenedLoss of {self.func}"
+    def __repr__(self) -> str: return f"FlattenedLoss of {self.func}"
 
     @property
-    def reduction(self): return self.func.reduction
+    def reduction(self) -> str: return self.func.reduction
 
     @reduction.setter
-    def reduction(self, v:str ):
+    def reduction(self, v:str):
         "Sets the reduction style (typically 'mean', 'sum', or 'none')"
         self.func.reduction = v
 
-    def _contiguous(self,x:Tensor):
+    def _contiguous(self, x:Tensor) -> TensorBase:
         "Move `self.axis` to the last dimension and ensure tensor is contigous for `Tensor` otherwise just return"
         return TensorBase(x.transpose(self.axis,-1).contiguous()) if isinstance(x,torch.Tensor) else x
 
@@ -44,7 +44,7 @@ class BaseLoss():
         inp:(Tensor,list), # Predictions from a `Learner`
         targ:(Tensor,list), # Actual y label
         **kwargs
-    )->Tensor: # Loss value based on the `inp` and `targ`
+    ) -> TensorBase: # `loss_cls` calculated on `inp` and `targ`
         inp,targ  = map(self._contiguous, (inp,targ))
         if self.floatify and targ.dtype!=torch.float16: targ = targ.float()
         if targ.dtype in [torch.int8, torch.int16, torch.int32]: targ = targ.long()
@@ -63,30 +63,31 @@ class CrossEntropyLossFlat(BaseLoss):
     @use_kwargs_dict(keep=True, weight=None, ignore_index=-100, reduction='mean')
     def __init__(self,
         *args,
-        axis:int=-1, #  Axis self.decodes and self.activation occurs on
+        axis:int=-1, #  Class axis
         **kwargs
-    ): super().__init__(nn.CrossEntropyLoss, *args, axis=axis, **kwargs)
+    ):
+        super().__init__(nn.CrossEntropyLoss, *args, axis=axis, **kwargs)
 
-    def decodes(self, x):
-        "Converts raw predictions/probabilities to class predictions"
+    def decodes(self, x:Tensor) -> Tensor:
+        "Converts model output to target format"
         return x.argmax(dim=self.axis)
 
-    def activation(self, x):
-        "Last layer's activation"
+    def activation(self, x:Tensor) -> Tensor:
+        "Activation function applied on model output"
         return F.softmax(x, dim=self.axis)
 
 # Cell
 class FocalLoss(Module):
     y_int=True # y interpolation
     def __init__(self,
-        gamma:float=2.0, # Focusing parameter to down-weight easy-to-classify observations at higher values (0=CrossEntropy)
-        weight:float=None, # Weighting factor to address class imbalance
-        reduction:str = 'mean' # PyTorch reduction equivalence ('mean', 'sum', 'none')
-    ) -> None:
+        gamma:float=2.0, # Focusing parameter. Higher values down-weight easy examples' contribution to loss
+        weight:Tensor=None, # Manual rescaling weight given to each class
+        reduction:str='mean' # PyTorch reduction to apply to the output
+    ):
         "Applies Focal Loss: https://arxiv.org/pdf/1708.02002.pdf"
         store_attr()
 
-    def forward(self, inp:Tensor, targ:Tensor):
+    def forward(self, inp:Tensor, targ:Tensor) -> Tensor:
         "Applies focal loss based on https://arxiv.org/pdf/1708.02002.pdf"
         ce_loss = F.cross_entropy(inp, targ, weight=self.weight, reduction="none")
         p_t = torch.exp(-ce_loss)
@@ -108,18 +109,18 @@ class FocalLossFlat(BaseLoss):
     @use_kwargs_dict(keep=True, weight=None, reduction='mean')
     def __init__(self,
         *args,
-        gamma:float=2.0, # Weighting factor to address class imbalance
-        axis:int=-1, # Axis self.decodes and self.activation occurs on
+        gamma:float=2.0, # Focusing parameter. Higher values down-weight easy examples' contribution to loss
+        axis:int=-1, # Class axis
         **kwargs
     ):
         super().__init__(FocalLoss, *args, gamma=gamma, axis=axis, **kwargs)
 
-    def decodes(self, x:Tensor):
-        "Converts raw predictions/probabilities to class predictions"
+    def decodes(self, x:Tensor) -> Tensor:
+        "Converts model output to target format"
         return x.argmax(dim=self.axis)
 
-    def activation(self, x:Tensor):
-        "Last layer's activation"
+    def activation(self, x:Tensor) -> Tensor:
+        "Activation function applied on model output"
         return F.softmax(x, dim=self.axis)
 
 # Cell
@@ -129,8 +130,8 @@ class BCEWithLogitsLossFlat(BaseLoss):
     @use_kwargs_dict(keep=True, weight=None, reduction='mean', pos_weight=None)
     def __init__(self,
         *args,
-        axis:int=-1, # Axis self.decodes and self.activation occurs on
-        floatify:bool=True, # Coerce `targ` to float?
+        axis:int=-1, # Class axis
+        floatify:bool=True, # Convert `targ` to `float`
         thresh:float=0.5, # The threshold on which to predict
         **kwargs
     ):
@@ -140,20 +141,20 @@ class BCEWithLogitsLossFlat(BaseLoss):
         super().__init__(nn.BCEWithLogitsLoss, *args, axis=axis, floatify=floatify, is_2d=False, **kwargs)
         self.thresh = thresh
 
-    def decodes(self, x:Tensor):
-        "Converts raw predictions/probabilities to class predictions"
+    def decodes(self, x:Tensor) -> Tensor:
+        "Converts model output to target format"
         return x>self.thresh
 
-    def activation(self, x:Tensor):
-        "Last layer's activation"
+    def activation(self, x:Tensor) -> Tensor:
+        "Activation function applied on model output"
         return torch.sigmoid(x)
 
 # Cell
 @use_kwargs_dict(weight=None, reduction='mean')
 def BCELossFlat(
     *args,
-    axis:int=-1, # Axis self.decodes and self.activation occurs on
-    floatify:bool=True, # Coerce `targ` to float?
+    axis:int=-1, # Class axis
+    floatify:bool=True, # Convert `targ` to `float`
     **kwargs
 ):
     "Same as `nn.BCELoss`, but flattens input and target."
@@ -163,8 +164,8 @@ def BCELossFlat(
 @use_kwargs_dict(reduction='mean')
 def MSELossFlat(
     *args,
-    axis:int=-1, # Axis self.decodes and self.activation occurs on
-    floatify:bool=True, # Coerce `targ` to float?
+    axis:int=-1, # Class axis
+    floatify:bool=True, # Convert `targ` to `float`
     **kwargs
 ):
     "Same as `nn.MSELoss`, but flattens input and target."
@@ -174,8 +175,8 @@ def MSELossFlat(
 @use_kwargs_dict(reduction='mean')
 def L1LossFlat(
     *args,
-    axis=-1, # Axis self.decodes and self.activation occurs on
-    floatify=True, # Coerce `targ` to float?
+    axis=-1, # Class axis
+    floatify=True, # Convert `targ` to `float`
     **kwargs
 ):
     "Same as `nn.L1Loss`, but flattens input and target."
@@ -187,11 +188,11 @@ class LabelSmoothingCrossEntropy(Module):
     def __init__(self,
         eps:float=0.1, # The weight for the interpolation formula
         weight:Tensor=None, # Manual rescaling weight given to each class passed to `F.nll_loss`
-        reduction:str='mean' # PyTorch reduction equivalence ('mean', 'sum', 'none')
+        reduction:str='mean' # PyTorch reduction to apply to the output
     ):
         store_attr()
 
-    def forward(self, output:Tensor, target:Tensor):
+    def forward(self, output:Tensor, target:Tensor) -> Tensor:
         "Apply `F.log_softmax` on output then blend the loss/num_classes(`c`) with the `F.nll_loss`"
         c = output.size()[1]
         log_preds = F.log_softmax(output, dim=1)
@@ -201,12 +202,12 @@ class LabelSmoothingCrossEntropy(Module):
             if self.reduction=='mean':  loss = loss.mean()
         return loss*self.eps/c + (1-self.eps) * F.nll_loss(log_preds, target.long(), weight=self.weight, reduction=self.reduction)
 
-    def activation(self, out):
-        "Last layer's activation"
+    def activation(self, out:Tensor) -> Tensor:
+        "Activation function applied on model output"
         return F.softmax(out, dim=-1)
 
-    def decodes(self, out):
-        "Converts raw predictions/probabilities to class predictions"
+    def decodes(self, out:Tensor) -> Tensor:
+        "Converts model output to target format"
         return out.argmax(dim=-1)
 
 # Cell
@@ -217,30 +218,30 @@ class LabelSmoothingCrossEntropyFlat(BaseLoss):
     @use_kwargs_dict(keep=True, eps=0.1, reduction='mean')
     def __init__(self,
         *args,
-        axis:int=-1, # Axis self.decodes and self.activation occurs on
+        axis:int=-1, # Class axis
         **kwargs
     ):
         super().__init__(LabelSmoothingCrossEntropy, *args, axis=axis, **kwargs)
-    def activation(self, out):
-        "Last layer's activation"
+    def activation(self, out:Tensor) -> Tensor:
+        "Activation function applied on model output"
         return F.softmax(out, dim=-1)
 
-    def decodes(self, out):
-        "Converts raw predictions/probabilities to class predictions"
+    def decodes(self, out:Tensor) -> Tensor:
+        "Converts model output to target format"
         return out.argmax(dim=-1)
 
 # Cell
 class DiceLoss:
     "Dice loss for segmentation"
     def __init__(self,
-        axis:int=1, # Axis self.decodes and self.activation occurs on
+        axis:int=1, # Class axis
         smooth:float=1e-6, # Helps with numerical stabilities in the IoU division
-        reduction:str="sum", # PyTorch reduction equivalence ('mean', 'sum', 'none')
+        reduction:str="sum", # PyTorch reduction to apply to the output
         square_in_union:bool=False # Squares predictions to increase slope of gradients
     ):
         store_attr()
 
-    def __call__(self, pred:Tensor, targ:Tensor):
+    def __call__(self, pred:Tensor, targ:Tensor) -> Tensor:
         "One-hot encodes targ, then runs IoU calculation then takes 1-dice value"
         targ = self._one_hot(targ, pred.shape[self.axis])
         pred, targ = TensorBase(pred), TensorBase(targ)
@@ -259,14 +260,14 @@ class DiceLoss:
         x:Tensor, # Non one-hot encoded targs
         classes:int, # The number of classes
         axis:int=1 # The axis to stack for encoding (class dimension)
-    ):
+    ) -> Tensor:
         "Creates one binary mask per class"
         return torch.stack([torch.where(x==c, 1, 0) for c in range(classes)], axis=axis)
 
-    def activation(self, x:Tensor):
-        "Last layer's activation"
+    def activation(self, x:Tensor) -> Tensor:
+        "Activation function applied on model output"
         return F.softmax(x, dim=self.axis)
 
-    def decodes(self, x:Tensor):
-        "Converts raw predictions/probabilities to class predictions"
+    def decodes(self, x:Tensor) -> Tensor:
+        "Converts model output to target format"
         return x.argmax(dim=self.axis)
