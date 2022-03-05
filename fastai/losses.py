@@ -18,7 +18,7 @@ class BaseLoss():
         *args, # Any extra positional arguments that `loss_cls` needs
         axis:int=-1, # Reduction axis
         flatten:bool=True, # Whether incoming losses need to be flattened
-        floatify:bool=False, # Whether incoming targets need to be converted to floats
+        floatify:bool=False, # Coerce `targ` to float?
         is_2d:bool=True, # Whether flatten keeps one or two channels when applied
         **kwargs # Any extra keyword arguments that `loss_cls` needs
     ):
@@ -68,7 +68,7 @@ class CrossEntropyLossFlat(BaseLoss):
     ): super().__init__(nn.CrossEntropyLoss, *args, axis=axis, **kwargs)
 
     def decodes(self, x):
-        "Used on predictions in inference"
+        "Converts raw predictions/probabilities to class predictions"
         return x.argmax(dim=self.axis)
 
     def activation(self, x):
@@ -115,7 +115,7 @@ class FocalLossFlat(BaseLoss):
         super().__init__(FocalLoss, *args, gamma=gamma, axis=axis, **kwargs)
 
     def decodes(self, x:Tensor):
-        "Used on predictions in inference"
+        "Converts raw predictions/probabilities to class predictions"
         return x.argmax(dim=self.axis)
 
     def activation(self, x:Tensor):
@@ -130,7 +130,7 @@ class BCEWithLogitsLossFlat(BaseLoss):
     def __init__(self,
         *args,
         axis:int=-1, # Axis self.decodes and self.activation occurs on
-        floatify:bool=True, # Whether `targ` need to be converted to float
+        floatify:bool=True, # Coerce `targ` to float?
         thresh:float=0.5, # The threshold on which to predict
         **kwargs
     ):
@@ -141,7 +141,7 @@ class BCEWithLogitsLossFlat(BaseLoss):
         self.thresh = thresh
 
     def decodes(self, x:Tensor):
-        "Used on predictions in inference"
+        "Converts raw predictions/probabilities to class predictions"
         return x>self.thresh
 
     def activation(self, x:Tensor):
@@ -153,7 +153,7 @@ class BCEWithLogitsLossFlat(BaseLoss):
 def BCELossFlat(
     *args,
     axis:int=-1, # Axis self.decodes and self.activation occurs on
-    floatify:bool=True, # Whether `targ` need to be converted to float
+    floatify:bool=True, # Coerce `targ` to float?
     **kwargs
 ):
     "Same as `nn.BCELoss`, but flattens input and target."
@@ -164,7 +164,7 @@ def BCELossFlat(
 def MSELossFlat(
     *args,
     axis:int=-1, # Axis self.decodes and self.activation occurs on
-    floatify:bool=True, # Whether `targ` need to be converted to float
+    floatify:bool=True, # Coerce `targ` to float?
     **kwargs
 ):
     "Same as `nn.MSELoss`, but flattens input and target."
@@ -175,7 +175,7 @@ def MSELossFlat(
 def L1LossFlat(
     *args,
     axis=-1, # Axis self.decodes and self.activation occurs on
-    floatify=True, # Whether `targ` need to be converted to float
+    floatify=True, # Coerce `targ` to float?
     **kwargs
 ):
     "Same as `nn.L1Loss`, but flattens input and target."
@@ -206,7 +206,7 @@ class LabelSmoothingCrossEntropy(Module):
         return F.softmax(out, dim=-1)
 
     def decodes(self, out):
-        "Used on predictions in inference"
+        "Converts raw predictions/probabilities to class predictions"
         return out.argmax(dim=-1)
 
 # Cell
@@ -226,7 +226,7 @@ class LabelSmoothingCrossEntropyFlat(BaseLoss):
         return F.softmax(out, dim=-1)
 
     def decodes(self, out):
-        "Used on predictions in inference"
+        "Converts raw predictions/probabilities to class predictions"
         return out.argmax(dim=-1)
 
 # Cell
@@ -268,5 +268,5 @@ class DiceLoss:
         return F.softmax(x, dim=self.axis)
 
     def decodes(self, x:Tensor):
-        "Used on predictions in inference"
+        "Converts raw predictions/probabilities to class predictions"
         return x.argmax(dim=self.axis)
