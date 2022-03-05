@@ -303,14 +303,14 @@ class FilteredBase:
 
     def dataloaders(self,
         bs:int=64, # Size of batch
-        shuffle_train:bool=None, # Whether to shuffle training `DataLoader`
+        shuffle_train:bool=None, # (Deprecated, use `shuffle`) Whether to shuffle training `DataLoader`
         shuffle:bool=True, # Whether to shuffle training `DataLoader`
         val_shuffle:bool=False, # Whether to shuffle validation `DataLoader`
         n:int=None, # Size of `Datasets` used to create `DataLoader`
-        path:(str, Path)='.', # Path to put `DataLoaders`
-        dl_type=None, # Type of `DataLoader`
-        dl_kwargs=None, # Keyword arguments for individual `DataLoader`s
-        device=None, # Device to put `DataLoaders`
+        path:(str, Path)='.', # Path to put in `DataLoaders`
+        dl_type:TfmdDL=None, # Type of `DataLoader`
+        dl_kwargs:list=None, # list of kwargs to pass to individual `DataLoader`s
+        device:torch.device=None, # Device to put `DataLoaders`
         drop_last:bool=None, # Whether to drop last incomplete batch
         val_bs:int=None, # Size of batch for validation `DataLoader`
         **kwargs
@@ -337,8 +337,8 @@ class TfmdLists(FilteredBase, L, GetAttr):
     "A `Pipeline` of `tfms` applied to a collection of `items`"
     _default='tfms'
     def __init__(self,
-        items, # List of items to apply `Transform`s to
-        tfms, # List of `Transform`(s) or `Pipeline` to apply
+        items:list, # List of items to apply `Transform`s to
+        tfms:(list,Pipeline), # List of `Transform`(s) or `Pipeline` to apply
         use_list:bool=None, # Whether to use `list` in `L`
         do_setup:bool=True, # Whether to call `setup()` for `Transform`
         split_idx:int=None, # Whether to apply `Transform`(s) to training or validation set. `0` for training set and `1` for validation set
@@ -346,7 +346,7 @@ class TfmdLists(FilteredBase, L, GetAttr):
         splits:list=None, # List of indexs for for training and validation sets
         types=None, # Types of data in `items`
         verbose:bool=False, # Whether to print verbose output
-        dl_type=None # Type of `DataLoader`
+        dl_type:TfmdDL=None # Type of `DataLoader`
     ):
         super().__init__(items, use_list=use_list)
         if dl_type is not None: self._dl_type = dl_type
