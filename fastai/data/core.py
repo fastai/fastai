@@ -57,7 +57,7 @@ class TfmdDL(DataLoader):
         dataset, # Map- or iterable-style dataset from which to load the data
         bs:int=64, # Size of batch
         shuffle:bool=False, # Whether to shuffle data
-        num_workers:int=None, # Number of CPU cores to use in parallel (default: All available up to 16) 
+        num_workers:int=None, # Number of CPU cores to use in parallel (default: All available up to 16)
         verbose:bool=False, # Whether to print verbose logs
         do_setup:bool=True, # Whether to run `setup()` for batch transform(s)
         **kwargs
