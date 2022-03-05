@@ -73,7 +73,7 @@ class CrossEntropyLossFlat(BaseLoss):
         return x.argmax(dim=self.axis)
 
     def activation(self, x:Tensor) -> Tensor:
-        "Activation function applied on model output"
+        "`nn.CrossEntropyLoss`'s fused activation function used to process model output"
         return F.softmax(x, dim=self.axis)
 
 # Cell
@@ -120,7 +120,7 @@ class FocalLossFlat(BaseLoss):
         return x.argmax(dim=self.axis)
 
     def activation(self, x:Tensor) -> Tensor:
-        "Activation function applied on model output"
+        "`F.cross_entropy`'s fused activation function used to process model output"
         return F.softmax(x, dim=self.axis)
 
 # Cell
@@ -146,7 +146,7 @@ class BCEWithLogitsLossFlat(BaseLoss):
         return x>self.thresh
 
     def activation(self, x:Tensor) -> Tensor:
-        "Activation function applied on model output"
+        "`nn.BCEWithLogitsLoss`'s fused activation function used to process model output"
         return torch.sigmoid(x)
 
 # Cell
@@ -203,7 +203,7 @@ class LabelSmoothingCrossEntropy(Module):
         return loss*self.eps/c + (1-self.eps) * F.nll_loss(log_preds, target.long(), weight=self.weight, reduction=self.reduction)
 
     def activation(self, out:Tensor) -> Tensor:
-        "Activation function applied on model output"
+        "`F.log_softmax`'s fused activation function used to process model output"
         return F.softmax(out, dim=-1)
 
     def decodes(self, out:Tensor) -> Tensor:
@@ -223,7 +223,7 @@ class LabelSmoothingCrossEntropyFlat(BaseLoss):
     ):
         super().__init__(LabelSmoothingCrossEntropy, *args, axis=axis, **kwargs)
     def activation(self, out:Tensor) -> Tensor:
-        "Activation function applied on model output"
+        "`LabelSmoothingCrossEntropy`'s fused activation function used to process model output"
         return F.softmax(out, dim=-1)
 
     def decodes(self, out:Tensor) -> Tensor:
@@ -265,7 +265,7 @@ class DiceLoss:
         return torch.stack([torch.where(x==c, 1, 0) for c in range(classes)], axis=axis)
 
     def activation(self, x:Tensor) -> Tensor:
-        "Activation function applied on model output"
+        "Activation function used to process model output"
         return F.softmax(x, dim=self.axis)
 
     def decodes(self, x:Tensor) -> Tensor:
