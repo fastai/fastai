@@ -138,8 +138,8 @@ class DataLoaders(GetAttr):
     "Basic wrapper around several `DataLoader`s."
     _default='train'
     def __init__(self,
-        *loaders, # `DataLoader` objects to combine
-        path:(str,Path)='.', # Path to `DataLoader` objects
+        *loaders, # `DataLoader` objects to wrap
+        path:(str,Path)='.', # Path to store export objects
         device=None # Device to put `DataLoaders`
     ):
         self.loaders,self.path = list(loaders),Path(path)
@@ -193,7 +193,7 @@ class DataLoaders(GetAttr):
     @classmethod
     def from_dsets(cls,
         *ds, # `Datasets` object(s)
-        path:(str,Path)='.', # Path to put `DataLoaders`
+        path:(str,Path)='.', # Path to put in `DataLoaders`
         bs:int=64, # Size of batch
         device=None, # Device to put `DataLoaders`
         dl_type=TfmdDL, # Type of `DataLoader`
@@ -210,7 +210,7 @@ class DataLoaders(GetAttr):
     def from_dblock(cls,
         dblock, # `DataBlock` object
         source, # Source of data. Can be `Path` to files
-        path:(str, Path)='.', # Path to put `DataLoaders`
+        path:(str, Path)='.', # Path to put in `DataLoaders`
         bs:int=64, # Size of batch
         val_bs:int=None, # Size of batch for validation `DataLoader`
         shuffle:bool=True, # Whether to shuffle data
