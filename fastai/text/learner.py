@@ -14,9 +14,9 @@ from ..callback.progress import *
 
 # Cell
 def match_embeds(
-    old_wgts:dict, # Embedding Weights
+    old_wgts:dict, # Embedding weights
     old_vocab:list, # Vocabulary of corpus used for pre-training
-    new_vocab:list # Current Corpus Vocabulary
+    new_vocab:list # Current corpus vocabulary
 )->dict:
     "Convert the embedding in `old_wgts` to go from `old_vocab` to `new_vocab`."
     bias, wgts = old_wgts.get('1.decoder.bias', None), old_wgts['0.encoder.weight']
@@ -45,8 +45,8 @@ def _get_text_vocab(dls:DataLoaders)->list:
 
 # Cell
 def load_ignore_keys(
-    model, # Model Architecture
-    wgts:dict # Model Weights
+    model, # Model architecture
+    wgts:dict # Model weights
 )->tuple:
     "Load `wgts` in `model` ignoring the names of the keys, just taking parameters in order"
     sd = model.state_dict()
@@ -75,11 +75,11 @@ def clean_raw_keys(wgts:dict):
 #For previous versions compatibility, remove for release
 def load_model_text(
     file:str, # File name of saved text model
-    model, # Model Architecture
+    model, # Model architecture
     opt:Optimizer, # `Optimizer` used to fit the model
     with_opt:bool=None, # enable to load `Optimizer` state
     device:(int,str,torch.device)=None, # Sets the device, uses 'cpu' if unspecified
-    strict:bool=True # Ensure the keys of state dict strictly matches with the model that you are loading into and throws error if not identical
+    strict:bool=True # Whether to strictly enforce the keys of `file`s state dict match with the model `Module.state_dict`
 ):
     "Load `model` from `file` along with `opt` (if available, and if `with_opt`)"
     distrib_barrier()
@@ -101,7 +101,7 @@ class TextLearner(Learner):
     "Basic class for a `Learner` in NLP."
     def __init__(self,
         dls:DataLoaders, # Text `DataLoaders`
-        model, # Pretrained Model Checkpoint or Custom Model used to train
+        model, # A standard PyTorch model
         alpha:float=2., # Param for `RNNRegularizer`
         beta:float=1., # Param for `RNNRegularizer`
         moms:tuple=(0.8,0.7,0.8), # Momentum for `Cosine Annealing Scheduler`
@@ -110,7 +110,7 @@ class TextLearner(Learner):
         self.add_cbs(rnn_cbs())
 
     def save_encoder(self,
-        file:str # Filename for Encoder
+        file:str # Filename for `Encoder`
     ):
         "Save the encoder to `file` in the model directory"
         if rank_distrib(): return # don't save if child proc
