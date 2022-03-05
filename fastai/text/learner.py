@@ -77,7 +77,7 @@ def load_model_text(
     file:str, # File name of saved text model
     model, # Model architecture
     opt:Optimizer, # `Optimizer` used to fit the model
-    with_opt:bool=None, # enable to load `Optimizer` state
+    with_opt:bool=None, # Enable to load `Optimizer` state
     device:(int,str,torch.device)=None, # Sets the device, uses 'cpu' if unspecified
     strict:bool=True # Whether to strictly enforce the keys of `file`s state dict match with the model `Module.state_dict`
 ):
