@@ -54,10 +54,10 @@ _batch_tfms = ('after_item','before_batch','after_batch')
 class TfmdDL(DataLoader):
     "Transformed `DataLoader`"
     def __init__(self,
-        dataset, # `Datasets` object
+        dataset, # Map- or iterable-style dataset from which to load the data
         bs:int=64, # Size of batch
         shuffle:bool=False, # Whether to shuffle data
-        num_workers:int=None, # Number of CPU cores to use in parallel
+        num_workers:int=None, # Number of CPU cores to use in parallel (default: All available up to 16) 
         verbose:bool=False, # Whether to print verbose logs
         do_setup:bool=True, # Whether to run `setup()` for batch transform(s)
         **kwargs
@@ -83,7 +83,7 @@ class TfmdDL(DataLoader):
 
     @delegates(DataLoader.new)
     def new(self,
-        dataset=None, # `Datasets` object
+        dataset=None, # Map- or iterable-style dataset from which to load the data
         cls=None, # Class of the newly created `DataLoader` object
         **kwargs
     ):
