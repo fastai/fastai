@@ -410,7 +410,12 @@ class Datasets(FilteredBase):
     )
 
 # Cell
-def test_set(dsets, test_items, rm_tfms=None, with_labels=False):
+def test_set(
+    dsets:(Datasets, TfmdLists), # Map- or iterable-style dataset from which to load the data
+    test_items, # Items in test dataset
+    rm_tfms=None, # Start index of `Transform`(s) from validation set in `dsets` to apply
+    with_labels:bool=False # Whether the test items contain labels
+):
     "Create a test set from `test_items` using validation transforms of `dsets`"
     if isinstance(dsets, Datasets):
         tls = dsets.tls if with_labels else dsets.tls[:dsets.n_inp]
@@ -429,7 +434,12 @@ def test_set(dsets, test_items, rm_tfms=None, with_labels=False):
 # Cell
 @patch
 @delegates(TfmdDL.__init__)
-def test_dl(self:DataLoaders, test_items, rm_type_tfms=None, with_labels=False, **kwargs):
+def test_dl(self:DataLoaders,
+    test_items, # Items in test dataset
+    rm_type_tfms=None, # Start index of `Transform`(s) from validation set in `dsets` to apply
+    with_labels:bool=False, # Whether the test items contain labels
+    **kwargs
+):
     "Create a test dataloader from `test_items` using validation transforms of `dls`"
     test_ds = test_set(self.valid_ds, test_items, rm_tfms=rm_type_tfms, with_labels=with_labels
                       ) if isinstance(self.valid_ds, (Datasets, TfmdLists)) else test_items
