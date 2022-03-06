@@ -454,8 +454,8 @@ class AffineCoordTfm(RandTransform):
     "Combine and apply affine and coord transforms"
     order,split_idx = 30,None
     def __init__(self,
-        aff_fs:(callable,[callable])=None, # Affine transformations function for a batch
-        coord_fs:(callable,[callable])=None, # Coordinate transformations function for a batch
+        aff_fs:(callable,list)=None, # Affine transformations function for a batch
+        coord_fs:(callable,list)=None, # Coordinate transformations function for a batch
         size:(int, tuple)=None, # Output size, duplicated if one value is specified
         mode='bilinear', # `F.grid_sample` mode ( 'bilinear', 'nearest', 'bicubic')
         pad_mode=PadMode.Reflection, # A `PadMode`
@@ -911,7 +911,7 @@ class SpaceTfm(RandTransform):
     "Apply `fs` to the logits"
     order = 40
     def __init__(self,
-        fs:(callable,[callable]), # Transformation functions applying in a space
+        fs:(callable,list), # Transformation functions applying in a space
         space_fn:callable, # Function converting rgb to a space and back to rgb after appying `fs`
         **kwargs
     ):
@@ -940,7 +940,7 @@ class LightingTfm(SpaceTfm):
     "Apply `fs` to the logits"
     order = 40
     def __init__(self,
-        fs:(callable,[callable]), # Transformation functions applying in logit space,
+        fs:(callable,list), # Transformation functions applying in logit space,
         **kwargs
     ):
         super().__init__(fs, TensorImage.lighting, **kwargs)
