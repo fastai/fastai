@@ -16,7 +16,7 @@ class BaseLoss():
     def __init__(self,
         loss_cls, # Uninitialized PyTorch-compatible loss
         *args,
-        axis:int=-1, # Reduction axis
+        axis:int=-1, # Input label axis
         flatten:bool=True, # Flatten `inp` and `targ` before calculating loss
         floatify:bool=False, # Convert `targ` to `float`
         is_2d:bool=True, # Whether `flatten` keeps one or two channels when applied
@@ -63,7 +63,7 @@ class CrossEntropyLossFlat(BaseLoss):
     @use_kwargs_dict(keep=True, weight=None, ignore_index=-100, reduction='mean')
     def __init__(self,
         *args,
-        axis:int=-1, #  Class axis
+        axis:int=-1, # Input label axis
         **kwargs
     ):
         super().__init__(nn.CrossEntropyLoss, *args, axis=axis, **kwargs)
@@ -73,7 +73,7 @@ class CrossEntropyLossFlat(BaseLoss):
         return x.argmax(dim=self.axis)
 
     def activation(self, x:Tensor) -> Tensor:
-        "`nn.CrossEntropyLoss`'s fused activation function used to process model output"
+        "`nn.CrossEntropyLoss`'s fused activation function applied to model output"
         return F.softmax(x, dim=self.axis)
 
 # Cell
@@ -110,7 +110,7 @@ class FocalLossFlat(BaseLoss):
     def __init__(self,
         *args,
         gamma:float=2.0, # Focusing parameter. Higher values down-weight easy examples' contribution to loss
-        axis:int=-1, # Class axis
+        axis:int=-1, # Input label axis
         **kwargs
     ):
         super().__init__(FocalLoss, *args, gamma=gamma, axis=axis, **kwargs)
@@ -120,7 +120,7 @@ class FocalLossFlat(BaseLoss):
         return x.argmax(dim=self.axis)
 
     def activation(self, x:Tensor) -> Tensor:
-        "`F.cross_entropy`'s fused activation function used to process model output"
+        "`F.cross_entropy`'s fused activation function applied to model output"
         return F.softmax(x, dim=self.axis)
 
 # Cell
@@ -130,7 +130,7 @@ class BCEWithLogitsLossFlat(BaseLoss):
     @use_kwargs_dict(keep=True, weight=None, reduction='mean', pos_weight=None)
     def __init__(self,
         *args,
-        axis:int=-1, # Class axis
+        axis:int=-1, # Input label axis
         floatify:bool=True, # Convert `targ` to `float`
         thresh:float=0.5, # The threshold on which to predict
         **kwargs
@@ -146,14 +146,14 @@ class BCEWithLogitsLossFlat(BaseLoss):
         return x>self.thresh
 
     def activation(self, x:Tensor) -> Tensor:
-        "`nn.BCEWithLogitsLoss`'s fused activation function used to process model output"
+        "`nn.BCEWithLogitsLoss`'s fused activation function applied to model output"
         return torch.sigmoid(x)
 
 # Cell
 @use_kwargs_dict(weight=None, reduction='mean')
 def BCELossFlat(
     *args,
-    axis:int=-1, # Class axis
+    axis:int=-1, # Input label axis
     floatify:bool=True, # Convert `targ` to `float`
     **kwargs
 ):
@@ -164,7 +164,7 @@ def BCELossFlat(
 @use_kwargs_dict(reduction='mean')
 def MSELossFlat(
     *args,
-    axis:int=-1, # Class axis
+    axis:int=-1, # Input label axis
     floatify:bool=True, # Convert `targ` to `float`
     **kwargs
 ):
@@ -175,7 +175,7 @@ def MSELossFlat(
 @use_kwargs_dict(reduction='mean')
 def L1LossFlat(
     *args,
-    axis=-1, # Class axis
+    axis=-1, # Input label axis
     floatify=True, # Convert `targ` to `float`
     **kwargs
 ):
@@ -203,7 +203,7 @@ class LabelSmoothingCrossEntropy(Module):
         return loss*self.eps/c + (1-self.eps) * F.nll_loss(log_preds, target.long(), weight=self.weight, reduction=self.reduction)
 
     def activation(self, out:Tensor) -> Tensor:
-        "`F.log_softmax`'s fused activation function used to process model output"
+        "`F.log_softmax`'s fused activation function applied to model output"
         return F.softmax(out, dim=-1)
 
     def decodes(self, out:Tensor) -> Tensor:
@@ -218,12 +218,12 @@ class LabelSmoothingCrossEntropyFlat(BaseLoss):
     @use_kwargs_dict(keep=True, eps=0.1, reduction='mean')
     def __init__(self,
         *args,
-        axis:int=-1, # Class axis
+        axis:int=-1, # Input label axis
         **kwargs
     ):
         super().__init__(LabelSmoothingCrossEntropy, *args, axis=axis, **kwargs)
     def activation(self, out:Tensor) -> Tensor:
-        "`LabelSmoothingCrossEntropy`'s fused activation function used to process model output"
+        "`LabelSmoothingCrossEntropy`'s fused activation function applied to model output"
         return F.softmax(out, dim=-1)
 
     def decodes(self, out:Tensor) -> Tensor:
@@ -234,7 +234,7 @@ class LabelSmoothingCrossEntropyFlat(BaseLoss):
 class DiceLoss:
     "Dice loss for segmentation"
     def __init__(self,
-        axis:int=1, # Class axis
+        axis:int=1, # Input label axis
         smooth:float=1e-6, # Helps with numerical stabilities in the IoU division
         reduction:str="sum", # PyTorch reduction to apply to the output
         square_in_union:bool=False # Squares predictions to increase slope of gradients
@@ -265,7 +265,7 @@ class DiceLoss:
         return torch.stack([torch.where(x==c, 1, 0) for c in range(classes)], axis=axis)
 
     def activation(self, x:Tensor) -> Tensor:
-        "Activation function used to process model output"
+        "Activation function applied to model output"
         return F.softmax(x, dim=self.axis)
 
     def decodes(self, x:Tensor) -> Tensor:
