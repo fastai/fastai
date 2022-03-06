@@ -363,7 +363,7 @@ def _grid_sample(x, coords, mode='bilinear', padding_mode='reflection', align_co
 
 # Cell
 def affine_grid(
-    theta:Tensor, # Transformation `Tensor`
+    theta:Tensor, # A batch of Affine transformation matrices
     size:tuple, # Output size
     align_corners:bool=None # `F.grid_sample` align_corners
 ):
@@ -373,7 +373,7 @@ def affine_grid(
 # Internal Cell
 @patch
 def affine_coord(x: TensorImage,
-     mat:Tensor=None, # Affine transformation matrice
+     mat:Tensor=None, # A batch of Affine transformation matrices
      coord_tfm:callable=None, # Coordinates transformation function
      sz:(int, tuple)=None, # Output size, duplicated if one value is specified
      mode:str='bilinear', # `F.grid_sample` mode ( 'bilinear', 'nearest', 'bicubic')
@@ -390,7 +390,7 @@ def affine_coord(x: TensorImage,
 
 @patch
 def affine_coord(x: TensorMask,
-    mat:Tensor=None, # Affine transformation matrice
+    mat:Tensor=None, # A batch of Affine transformation matrices
     coord_tfm:callable=None, # Coordinates transformation function
     sz:(int, tuple)=None, # Output size, duplicated if one value is specified
     mode='nearest', # `F.grid_sample` mode ( 'bilinear', 'nearest', 'bicubic')
@@ -406,7 +406,7 @@ def affine_coord(x: TensorMask,
 
 @patch
 def affine_coord(x: TensorPoint,
-    mat:Tensor=None, # Affine transformation matrice
+    mat:Tensor=None, # A batch of Affine transformation matrices
     coord_tfm=None, # Coordinates transformation function
     sz=None, # Output size, duplicated if one value is specified
     mode='nearest', # `F.grid_sample` mode ( 'bilinear', 'nearest', 'bicubic')
@@ -424,7 +424,7 @@ def affine_coord(x: TensorPoint,
 
 @patch
 def affine_coord(x: TensorBBox,
-    mat=None, # Affine transformation matrice
+    mat=None, # A batch of Affine transformation matrices
     coord_tfm=None, # Coordinates transformation function
     sz=None, # Output size, duplicated if one value is specified
     mode='nearest', # `F.grid_sample` mode ( 'bilinear', 'nearest', 'bicubic')
