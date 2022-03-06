@@ -16,7 +16,7 @@ class BaseLoss():
     def __init__(self,
         loss_cls, # Uninitialized PyTorch-compatible loss
         *args,
-        axis:int=-1, # Input label axis
+        axis:int=-1, # Label axis
         flatten:bool=True, # Flatten `inp` and `targ` before calculating loss
         floatify:bool=False, # Convert `targ` to `float`
         is_2d:bool=True, # Whether `flatten` keeps one or two channels when applied
@@ -63,7 +63,7 @@ class CrossEntropyLossFlat(BaseLoss):
     @use_kwargs_dict(keep=True, weight=None, ignore_index=-100, reduction='mean')
     def __init__(self,
         *args,
-        axis:int=-1, # Input label axis
+        axis:int=-1, # Label axis
         **kwargs
     ):
         super().__init__(nn.CrossEntropyLoss, *args, axis=axis, **kwargs)
@@ -110,7 +110,7 @@ class FocalLossFlat(BaseLoss):
     def __init__(self,
         *args,
         gamma:float=2.0, # Focusing parameter. Higher values down-weight easy examples' contribution to loss
-        axis:int=-1, # Input label axis
+        axis:int=-1, # Label axis
         **kwargs
     ):
         super().__init__(FocalLoss, *args, gamma=gamma, axis=axis, **kwargs)
@@ -130,7 +130,7 @@ class BCEWithLogitsLossFlat(BaseLoss):
     @use_kwargs_dict(keep=True, weight=None, reduction='mean', pos_weight=None)
     def __init__(self,
         *args,
-        axis:int=-1, # Input label axis
+        axis:int=-1, # Label axis
         floatify:bool=True, # Convert `targ` to `float`
         thresh:float=0.5, # The threshold on which to predict
         **kwargs
@@ -153,7 +153,7 @@ class BCEWithLogitsLossFlat(BaseLoss):
 @use_kwargs_dict(weight=None, reduction='mean')
 def BCELossFlat(
     *args,
-    axis:int=-1, # Input label axis
+    axis:int=-1, # Label axis
     floatify:bool=True, # Convert `targ` to `float`
     **kwargs
 ):
@@ -164,7 +164,7 @@ def BCELossFlat(
 @use_kwargs_dict(reduction='mean')
 def MSELossFlat(
     *args,
-    axis:int=-1, # Input label axis
+    axis:int=-1, # Label axis
     floatify:bool=True, # Convert `targ` to `float`
     **kwargs
 ):
@@ -175,7 +175,7 @@ def MSELossFlat(
 @use_kwargs_dict(reduction='mean')
 def L1LossFlat(
     *args,
-    axis=-1, # Input label axis
+    axis=-1, # Label axis
     floatify=True, # Convert `targ` to `float`
     **kwargs
 ):
@@ -218,7 +218,7 @@ class LabelSmoothingCrossEntropyFlat(BaseLoss):
     @use_kwargs_dict(keep=True, eps=0.1, reduction='mean')
     def __init__(self,
         *args,
-        axis:int=-1, # Input label axis
+        axis:int=-1, # Label axis
         **kwargs
     ):
         super().__init__(LabelSmoothingCrossEntropy, *args, axis=axis, **kwargs)
@@ -234,7 +234,7 @@ class LabelSmoothingCrossEntropyFlat(BaseLoss):
 class DiceLoss:
     "Dice loss for segmentation"
     def __init__(self,
-        axis:int=1, # Input label axis
+        axis:int=1, # Label axis
         smooth:float=1e-6, # Helps with numerical stabilities in the IoU division
         reduction:str="sum", # PyTorch reduction to apply to the output
         square_in_union:bool=False # Squares predictions to increase slope of gradients
