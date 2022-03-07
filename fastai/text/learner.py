@@ -17,7 +17,7 @@ def match_embeds(
     old_wgts:dict, # Embedding weights
     old_vocab:list, # Vocabulary of corpus used for pre-training
     new_vocab:list # Current corpus vocabulary
-)->dict:
+) -> dict:
     "Convert the embedding in `old_wgts` to go from `old_vocab` to `new_vocab`."
     bias, wgts = old_wgts.get('1.decoder.bias', None), old_wgts['0.encoder.weight']
     wgts_m = wgts.mean(0)
@@ -37,7 +37,7 @@ def match_embeds(
     return old_wgts
 
 # Cell
-def _get_text_vocab(dls:DataLoaders)->list:
+def _get_text_vocab(dls:DataLoaders) -> list:
     "Get vocabulary from `DataLoaders`"
     vocab = dls.vocab
     if isinstance(vocab, L): vocab = vocab[0]
@@ -47,7 +47,7 @@ def _get_text_vocab(dls:DataLoaders)->list:
 def load_ignore_keys(
     model, # Model architecture
     wgts:dict # Model weights
-)->tuple:
+) -> tuple:
     "Load `wgts` in `model` ignoring the names of the keys, just taking parameters in order"
     sd = model.state_dict()
     for k1,k2 in zip(sd.keys(), wgts.keys()): sd[k1].data = wgts[k2].data.clone()
