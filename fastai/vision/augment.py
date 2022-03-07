@@ -178,7 +178,7 @@ class CropPad(DisplayedTransform):
     order = 0
     def __init__(self,
         size:(int, tuple), # Size to crop or pad to, duplicated if one value is specified
-        pad_mode:PadMode=PadMode.Zeros, # A `PadMode`
+        pad_mode:PadMode=PadMode.Zeros, # # A `PadMode`
         **kwargs
     ):
         size = _process_sz(size)
@@ -363,9 +363,9 @@ def _grid_sample(x, coords, mode='bilinear', padding_mode='reflection', align_co
 
 # Cell
 def affine_grid(
-    theta:Tensor, # A batch of Affine transformation matrices
+    theta:Tensor, # Batch of affine transformation matrices
     size:tuple, # Output size
-    align_corners:bool=None # `F.grid_sample` align_corners
+    align_corners:bool=None # PyTorch `F.grid_sample` align_corners
 ):
     " Generates `TensorFlowField` from a transformation affine matrices `theta`"
     return TensorFlowField(F.affine_grid(theta, size, align_corners=align_corners))
@@ -373,14 +373,14 @@ def affine_grid(
 # Internal Cell
 @patch
 def affine_coord(x: TensorImage,
-     mat:Tensor=None, # A batch of Affine transformation matrices
-     coord_tfm:callable=None, # Coordinates transformation function
+     mat:Tensor=None, # Batch of affine transformation matrices
+     coord_tfm:callable=None, # Partial function of composable coordinate transforms
      sz:(int, tuple)=None, # Output size, duplicated if one value is specified
-     mode:str='bilinear', # `F.grid_sample` mode ( 'bilinear', 'nearest', 'bicubic')
-     pad_mode=PadMode.Reflection, # A `PadMode`
-     align_corners=True # `F.grid_sample` align_corners
+     mode:str='bilinear', # PyTorch `F.grid_sample` interpolation applied to `TensorImage`
+     pad_mode=PadMode.Reflection, # Padding applied to `TensorImage`
+     align_corners=True # PyTorch `F.grid_sample` align_corners
 ):
-    "Applying affine transformation matrice to `TensorImage`"
+    "Apply affine and coordinate transforms to `TensorImage`"
     if mat is None and coord_tfm is None and sz is None: return x
     size = tuple(x.shape[-2:]) if sz is None else (sz,sz) if isinstance(sz,int) else tuple(sz)
     if mat is None: mat = _init_mat(x)[:,:2]
@@ -390,14 +390,14 @@ def affine_coord(x: TensorImage,
 
 @patch
 def affine_coord(x: TensorMask,
-    mat:Tensor=None, # A batch of Affine transformation matrices
-    coord_tfm:callable=None, # Coordinates transformation function
+    mat:Tensor=None, # Batch of affine transformation matrices
+    coord_tfm:callable=None, # Partial function of composable coordinate transforms
     sz:(int, tuple)=None, # Output size, duplicated if one value is specified
-    mode='nearest', # `F.grid_sample` mode ( 'bilinear', 'nearest', 'bicubic')
-    pad_mode=PadMode.Reflection, # A `PadMode`
-    align_corners=True # `F.grid_sample` align_corners
+    mode='nearest', # PyTorch `F.grid_sample` interpolation applied to `TensorMask`
+    pad_mode=PadMode.Reflection, # Padding applied to `TensorMask`
+    align_corners=True # PyTorch `F.grid_sample` align_corners
 ):
-    "Applying affine transformation matrice to `TensorMask`"
+    "Apply affine and coordinate transforms to `TensorMask`"
     add_dim = (x.ndim==3)
     if add_dim: x = x[:,None]
     res = TensorImage.affine_coord(x.float(), mat, coord_tfm, sz, mode, pad_mode, align_corners).long()
@@ -406,14 +406,14 @@ def affine_coord(x: TensorMask,
 
 @patch
 def affine_coord(x: TensorPoint,
-    mat:Tensor=None, # A batch of Affine transformation matrices
-    coord_tfm=None, # Coordinates transformation function
+    mat:Tensor=None, # Batch of affine transformation matrices
+    coord_tfm=None, # Partial function of composable coordinate transforms
     sz=None, # Output size, duplicated if one value is specified
-    mode='nearest', # `F.grid_sample` mode ( 'bilinear', 'nearest', 'bicubic')
-    pad_mode=PadMode.Zeros, # A `PadMode`
-    align_corners=True # `F.grid_sample` align_corners
+    mode='nearest', # PyTorch `F.grid_sample` interpolation applied to `TensorPoint`
+    pad_mode=PadMode.Zeros, # Padding applied to `TensorPoint`
+    align_corners=True # PyTorch `F.grid_sample` align_corners
 ):
-    "Applying affine transformation matrice to `TensorPoint`"
+    "Apply affine and coordinate transforms to `TensorPoint`"
     #assert pad_mode==PadMode.Zeros, "Only zero padding is supported for `TensorPoint` and `TensorBBox`"
     if sz is None: sz = getattr(x, "img_size", None)
     if coord_tfm is not None: x = coord_tfm(x, invert=True)
@@ -424,14 +424,14 @@ def affine_coord(x: TensorPoint,
 
 @patch
 def affine_coord(x: TensorBBox,
-    mat=None, # A batch of Affine transformation matrices
-    coord_tfm=None, # Coordinates transformation function
+    mat=None, # Batch of affine transformation matrices
+    coord_tfm=None, # Partial function of composable coordinate transforms
     sz=None, # Output size, duplicated if one value is specified
-    mode='nearest', # `F.grid_sample` mode ( 'bilinear', 'nearest', 'bicubic')
-    pad_mode=PadMode.Zeros, # A `PadMode`
-    align_corners=True # `F.grid_sample` align_corners
+    mode='nearest', # PyTorch `F.grid_sample` interpolation applied to `TensorBBox`
+    pad_mode=PadMode.Zeros, # Padding applied to `TensorBBox`
+    align_corners=True # PyTorch `F.grid_sample` align_corners
 ):
-    "Applying affine transformation matrice to `TensorBBox`"
+    "Apply affine and coordinate transforms to `TensorBBox`"
     if mat is None and coord_tfm is None: return x
     if sz is None: sz = getattr(x, "img_size", None)
     bs,n = x.shape[:2]
@@ -457,10 +457,10 @@ class AffineCoordTfm(RandTransform):
         aff_fs:(callable,list)=None, # Affine transformations function for a batch
         coord_fs:(callable,list)=None, # Coordinate transformations function for a batch
         size:(int, tuple)=None, # Output size, duplicated if one value is specified
-        mode='bilinear', # `F.grid_sample` mode ( 'bilinear', 'nearest', 'bicubic')
+        mode='bilinear', # PyTorch `F.grid_sample` interpolation
         pad_mode=PadMode.Reflection, # A `PadMode`
         mode_mask='nearest', # Resample mode for mask
-        align_corners=None, # `F.grid_sample` align_corners
+        align_corners=None, # PyTorch `F.grid_sample` align_corners
         **kwargs
     ):
         store_attr(but=['aff_fs','coord_fs'])
@@ -508,7 +508,7 @@ class RandomResizedCropGPU(RandTransform):
         size, # Final size, duplicated if one value is specified
         min_scale=0.08, # Minimum scale of the crop, in relation to image area
         ratio=(3/4, 4/3), # Range of width over height of the output
-        mode='bilinear', # `F.grid_sample` mode ( 'bilinear', 'nearest', 'bicubic')
+        mode='bilinear', # PyTorch `F.grid_sample` interpolation
         valid_scale=1., # Scale of the crop for the validation set, in relation to image area
         max_scale=1., # Maximum scale of the crop, in relation to image area
         **kwargs
@@ -543,9 +543,9 @@ class RandomResizedCropGPU(RandTransform):
 # Cell
 def mask_tensor(
     x:Tensor, # Input `Tensor`
-    p=0.5, # Propability of not masking an element of `x`
-    neutral=0., # The mask value
-    batch=False # Same behavior for the whole batch if `True`
+    p=0.5, # Probability of not applying mask
+    neutral=0., # Mask value
+    batch=False # Apply identical mask to entire batch
 ):
     "Mask elements of `x` with `neutral` with probability `1-p`"
     if p==1.: return x
@@ -577,8 +577,8 @@ def affine_mat(*ms):
 def flip_mat(
     x:Tensor, # The input Tensor
     p=0.5, # Probability of appying transformation
-    draw:(int, [int], callable)=None, # User defined behavior of batch transformation
-    batch:bool=False # Same behavior for the whole batch if `True`
+    draw:(int, [int], callable)=None, # Custom flips instead of random
+    batch:bool=False # Apply identical flip to entire batch
 ):
     "Return a random flip matrix"
     def _def_draw(x): return x.new_ones(x.size(0))
@@ -596,13 +596,13 @@ def _get_default(x, mode=None, pad_mode=None):
 # Internal Cell
 @patch
 def flip_batch(x: (TensorImage,TensorMask,TensorPoint,TensorBBox),
-    p=0.5, # Probability of applying transformation
-    draw:(int, [int], callable)=None, # User defined behavior of applying batch transformation
+    p=0.5, # Probability of applying flip
+    draw:(int, [int], callable)=None, # Custom flips instead of random
     size:(int, tuple)=None, # Output size, duplicated if one value is specified
-    mode=None, # `F.grid_sample` mode ( 'bilinear', 'nearest', 'bicubic')
-    pad_mode=None, # A `PadMode`
-    align_corners=True, # `F.grid_sample` align_corners
-    batch=False # Same behavior for the whole batch if `True`
+    mode=None, # PyTorch `F.grid_sample` interpolation applied to `x`
+    pad_mode=None, # Padding applied to `x`
+    align_corners=True, # PyTorch `F.grid_sample` align_corners
+    batch=False # Apply identical flip to entire batch
 ):
     x0,mode,pad_mode = _get_default(x, mode, pad_mode)
     mat=flip_mat(x0, p=p, draw=draw, batch=batch)
@@ -612,13 +612,13 @@ def flip_batch(x: (TensorImage,TensorMask,TensorPoint,TensorBBox),
 class Flip(AffineCoordTfm):
     "Randomly flip a batch of images with a probability `p`"
     def __init__(self,
-        p=0.5, # Probability of applying transformation
-        draw:(int, [int], callable)=None, # User defined behavior of applying batch transformation
+        p=0.5, # Probability of applying flip
+        draw:(int, [int], callable)=None, # Custom flips instead of random
         size:(int, tuple)=None, # Output size, duplicated if one value is specified
-        mode:str='bilinear', # `F.grid_sample` mode ( 'bilinear', 'nearest', 'bicubic')
+        mode:str='bilinear', # PyTorch `F.grid_sample` interpolation
         pad_mode=PadMode.Reflection, # A `PadMode`
-        align_corners=True, # `F.grid_sample` align_corners
-        batch=False # Same behavior for the whole batch if `True`
+        align_corners=True, # PyTorch `F.grid_sample` align_corners
+        batch=False # Apply identical flip to entire batch
     ):
         aff_fs = partial(flip_mat, p=p, draw=draw, batch=batch)
         super().__init__(aff_fs, size=size, mode=mode, pad_mode=pad_mode, align_corners=align_corners, p=p)
@@ -636,19 +636,19 @@ class DeterministicFlip(Flip):
     "Flip the batch every other call"
     def __init__(self,
         size:(int, tuple)=None, # Output size, duplicated if one value is specified
-        mode:str='bilinear', # `F.grid_sample` mode ( 'bilinear', 'nearest', 'bicubic')
+        mode:str='bilinear', # PyTorch `F.grid_sample` interpolation
         pad_mode=PadMode.Reflection, # A `PadMode`
-        align_corners=True, # `F.grid_sample` align_corners
+        align_corners=True, # PyTorch `F.grid_sample` align_corners
         **kwargs
     ):
-        super().__init__(p=1., size=size, draw=DeterministicDraw([0,1]), mode=mode, pad_mode=pad_mode, align_corners=align_corners, **kwargs)
+        super().__init__(p=1., draw=DeterministicDraw([0,1]), mode=mode, pad_mode=pad_mode, align_corners=align_corners, **kwargs)
 
 # Cell
 def dihedral_mat(
     x:Tensor, # Input `Tensor`
     p:float=0.5, # Probability of staying unchanged
-    draw:(int, [int], callable)=None, # User defined behavior of applying batch transformation
-    batch:bool=False # Same behavior for the whole batch if `True`
+    draw:(int, [int], callable)=None, # Custom dihedrals instead of random
+    batch:bool=False # Apply identical dihedral to entire batch
 ):
     "Return a random dihedral matrix"
     def _def_draw(x):   return torch.randint(0,8, (x.size(0),), device=x.device)
@@ -664,13 +664,13 @@ def dihedral_mat(
 # Internal Cell
 @patch
 def dihedral_batch(x: (TensorImage,TensorMask,TensorPoint,TensorBBox),
-    p=0.5, # Probability of applying transformation
-    draw:(int, [int], callable)=None, # User defined behavior of applying batch transformation
+    p=0.5, # Probability of applying dihedral
+    draw:(int, [int], callable)=None, # Custom dihedrals instead of random
     size:(int, tuple)=None, # Output size, duplicated if one value is specified
-    mode:str='bilinear', # `F.grid_sample` mode ( 'bilinear', 'nearest', 'bicubic')
-    pad_mode=None, # A `PadMode`
-    batch=False, # Same behavior for the whole batch if `True`
-    align_corners=True # `F.grid_sample` align_corners
+    mode:str='bilinear', # PyTorch `F.grid_sample` interpolation applied to `x`
+    pad_mode=None, # Padding applied to `x`
+    batch=False, # Apply identical dihedral to entire batch
+    align_corners=True # PyTorch `F.grid_sample` align_corners
 ):
     x0,mode,pad_mode = _get_default(x, mode, pad_mode)
     mat = _prepare_mat(x, dihedral_mat(x0, p=p, draw=draw, batch=batch))
@@ -680,13 +680,13 @@ def dihedral_batch(x: (TensorImage,TensorMask,TensorPoint,TensorBBox),
 class Dihedral(AffineCoordTfm):
     "Apply a random dihedral transformation to a batch of images with a probability `p`"
     def __init__(self,
-        p=0.5, # Probability of applying transformation
-        draw:(int, [int], callable)=None, # User defined behavior of applying batch transformation
+        p=0.5, # Probability of applying dihedral
+        draw:(int, [int], callable)=None, # Custom dihedrals instead of random
         size:(int, tuple)=None, # Output size, duplicated if one value is specified
-        mode:str='bilinear', # `F.grid_sample` mode ( 'bilinear', 'nearest', 'bicubic')
+        mode:str='bilinear', # PyTorch `F.grid_sample` interpolation
         pad_mode=PadMode.Reflection, # A `PadMode`
-        batch=False, # Same behavior for the whole batch if `True`
-        align_corners=True # `F.grid_sample` align_corners
+        batch=False, # Apply identical dihedral to entire batch
+        align_corners=True # PyTorch `F.grid_sample` align_corners
     ):
         f = partial(dihedral_mat, p=p, draw=draw, batch=batch)
         super().__init__(aff_fs=f, size=size, mode=mode, pad_mode=pad_mode, align_corners=align_corners)
@@ -695,20 +695,20 @@ class Dihedral(AffineCoordTfm):
 class DeterministicDihedral(Dihedral):
     def __init__(self,
         size:(int, tuple)=None, # Output size, duplicated if one value is specified
-        mode:str='bilinear', # `F.grid_sample` mode ( 'bilinear', 'nearest', 'bicubic')
+        mode:str='bilinear', # PyTorch `F.grid_sample` interpolation
         pad_mode=PadMode.Reflection, # A `PadMode`
-        align_corners=None # `F.grid_sample` align_corners
+        align_corners=None # PyTorch `F.grid_sample` align_corners
     ):
         "Flip the batch every other call"
-        super().__init__(p=1., size=size, draw=DeterministicDraw(list(range(8))), pad_mode=pad_mode, align_corners=align_corners)
+        super().__init__(p=1., draw=DeterministicDraw(list(range(8))), pad_mode=pad_mode, align_corners=align_corners)
 
 # Cell
 def rotate_mat(
     x:Tensor, # Input `Tensor`
     max_deg:int=10, # Maximum degree of rotation
-    p:float=0.5, # Probability of applying transformation
-    draw:(int, [int], callable)=None, # User defined behavior of batch transformation
-    batch:bool=False # Same behavior for the whole batch if `True`
+    p:float=0.5, # Probability of applying rotate
+    draw:(int, [int], callable)=None, # Custom rotates instead of random
+    batch:bool=False # Apply identical rotate to entire batch
 ):
     "Return a random rotation matrix with `max_deg` and `p`"
     def _def_draw(x):   return x.new_empty(x.size(0)).uniform_(-max_deg, max_deg)
@@ -722,9 +722,9 @@ def rotate_mat(
 @delegates(rotate_mat)
 def rotate(x: (TensorImage,TensorMask,TensorPoint,TensorBBox),
     size:(int, tuple)=None, # Output size, duplicated if one value is specified
-    mode:str=None, # `F.grid_sample` mode ( 'bilinear', 'nearest', 'bicubic')
-    pad_mode=None, # A `PadMode`
-    align_corners:bool=True, # `F.grid_sample` align_corners
+    mode:str=None, # PyTorch `F.grid_sample` interpolation applied to `x`
+    pad_mode=None, # Padding applied to `x`
+    align_corners:bool=True, # PyTorch `F.grid_sample` align_corners
     **kwargs
 ):
     x0,mode,pad_mode = _get_default(x, mode, pad_mode)
@@ -736,13 +736,13 @@ class Rotate(AffineCoordTfm):
     "Apply a random rotation of at most `max_deg` with probability `p` to a batch of images"
     def __init__(self,
         max_deg:int=10, # Maximum degree of rotation
-        p:float=0.5, # Probability of applying transformation
-        draw:(int, [int], callable)=None, # User defined behavior of batch transformation
+        p:float=0.5, # Probability of applying rotate
+        draw:(int, [int], callable)=None, # Custom rotates instead of random
         size:(int, tuple)=None, # Output size, duplicated if one value is specified
-        mode:str='bilinear', # `F.grid_sample` mode ( 'bilinear', 'nearest', 'bicubic')
+        mode:str='bilinear', # PyTorch `F.grid_sample` interpolation
         pad_mode=PadMode.Reflection, # A `PadMode`
-        align_corners:bool=True, # `F.grid_sample` align_corners
-        batch:bool=False # Same behavior for the whole batch if `True`
+        align_corners:bool=True, # PyTorch `F.grid_sample` align_corners
+        batch:bool=False # Apply identical rotate to entire batch
     ):
         aff_fs = partial(rotate_mat, max_deg=max_deg, p=p, draw=draw, batch=batch)
         super().__init__(aff_fs=aff_fs, size=size, mode=mode, pad_mode=pad_mode, align_corners=align_corners)
@@ -752,11 +752,11 @@ def zoom_mat(
     x:Tensor, # Input `Tensor`
     min_zoom:float=1., # Minimum zoom
     max_zoom:float=1.1, # Maximum zoom
-    p:float=0.5, # Probability of applying transformation
+    p:float=0.5, # Probability of applying zoom
     draw:(float, [float], callable)=None, # User defined scale of the zoom
     draw_x:(float, [float], callable)=None, # User defined center of the zoom in x
     draw_y:(float, [float], callable)=None, # User defined center of the zoom in y
-    batch:bool=False # Same behavior for the whole batch if `True`
+    batch:bool=False # Apply identical zoom to entire batch
 ):
     "Return a random zoom matrix with `max_zoom` and `p`"
     def _def_draw(x):       return x.new_empty(x.size(0)).uniform_(min_zoom, max_zoom)
@@ -778,9 +778,9 @@ def zoom_mat(
 @delegates(zoom_mat)
 def zoom(x: (TensorImage,TensorMask,TensorPoint,TensorBBox),
     size:(int, tuple)=None, # Output size, duplicated if one value is specified
-    mode:str='bilinear', # `F.grid_sample` mode ( 'bilinear', 'nearest', 'bicubic')
-    pad_mode=PadMode.Reflection, # A `PadMode`
-    align_corners:bool=True, # `F.grid_sample` align_corners
+    mode:str='bilinear', # PyTorch `F.grid_sample` interpolation applied to `x`
+    pad_mode=PadMode.Reflection, # Padding applied to `x`
+    align_corners:bool=True, # PyTorch `F.grid_sample` align_corners
     **kwargs
 ):
     x0,mode,pad_mode = _get_default(x, mode, pad_mode)
@@ -792,15 +792,15 @@ class Zoom(AffineCoordTfm):
     def __init__(self,
         min_zoom:float=1., # Minimum zoom
         max_zoom:float=1.1, # Maximum zoom
-        p:float=0.5, # Probability of applying transformation
+        p:float=0.5, # Probability of applying zoom
         draw:(float, [float], callable)=None, # User defined scale of the zoom
         draw_x:(float, [float], callable)=None, # User defined center of the zoom in x
         draw_y:(float, [float], callable)=None, # User defined center of the zoom in y
         size:(int, tuple)=None, # Output size, duplicated if one value is specified
-        mode='bilinear', # `F.grid_sample` mode ( 'bilinear', 'nearest', 'bicubic')
+        mode='bilinear', # PyTorch `F.grid_sample` interpolation
         pad_mode=PadMode.Reflection, # A `PadMode`
-        batch=False, # Same behavior for the whole batch if `True`
-        align_corners=True # `F.grid_sample` align_corners
+        batch=False, # Apply identical zoom to entire batch
+        align_corners=True # PyTorch `F.grid_sample` align_corners
     ):
         aff_fs = partial(zoom_mat, min_zoom=min_zoom, max_zoom=max_zoom, p=p, draw=draw, draw_x=draw_x, draw_y=draw_y, batch=batch)
         super().__init__(aff_fs, size=size, mode=mode, pad_mode=pad_mode, align_corners=align_corners)
@@ -874,9 +874,9 @@ class _WarpCoord():
 @delegates(_WarpCoord.__init__)
 def warp(x:(TensorImage,TensorMask,TensorPoint,TensorBBox),
     size:(int,tuple)=None, # Output size, duplicated if one value is specified
-    mode:str='bilinear', # `F.grid_sample` mode ( 'bilinear', 'nearest', 'bicubic')
-    pad_mode=PadMode.Reflection, # A `PadMode`
-    align_corners:bool=True, # `F.grid_sample` align_corners
+    mode:str='bilinear', # PyTorch `F.grid_sample` interpolation applied to `x`
+    pad_mode=PadMode.Reflection, # Padding applied to `x`
+    align_corners:bool=True, # PyTorch `F.grid_sample` align_corners
     **kwargs
 ):
     x0,mode,pad_mode = _get_default(x, mode, pad_mode)
@@ -889,14 +889,14 @@ class Warp(AffineCoordTfm):
     "Apply perspective warping with `magnitude` and `p` on a batch of matrices"
     def __init__(self,
         magnitude:float=0.2, # The default warping magnitude
-        p:float=0.5, # Probability of applying transformation
+        p:float=0.5, # Probability of applying warp
         draw_x:(float,[float],callable)=None, # User defined warping magnitude in x
         draw_y:(float,[float],callable)=None, # User defined warping magnitude in y
         size:(int,tuple)=None, # Output size, duplicated if one value is specified
-        mode:str='bilinear', # `F.grid_sample` mode ( 'bilinear', 'nearest', 'bicubic')
+        mode:str='bilinear', # PyTorch `F.grid_sample` interpolation
         pad_mode=PadMode.Reflection, # A `PadMode`
-        batch:bool=False, # Same behavior for the whole batch if `True`
-        align_corners:bool=True # `F.grid_sample` align_corners
+        batch:bool=False, # Apply identical warp to entire batch
+        align_corners:bool=True # PyTorch `F.grid_sample` align_corners
     ):
         store_attr()
         coord_fs = _WarpCoord(magnitude=magnitude, p=p, draw_x=draw_x, draw_y=draw_y, batch=batch)
@@ -972,7 +972,7 @@ class Brightness(LightingTfm):
         max_lighting:float=0.2, # Maximum scale of changing brightness
         p:float=0.75, # Probability of appying transformation
         draw:(float, [float], callable)=None, # User defined behavior of batch transformation
-        batch=False # Same behavior for the whole batch if `True`
+        batch=False # Apply identical brightness to entire batch
     ):
         "Apply change in brightness of `max_lighting` to batch of images with probability `p`."
         store_attr()
@@ -1052,7 +1052,7 @@ class Saturation(LightingTfm):
         max_lighting:float=0.2, # Maximum scale of changing brightness
         p:float=0.75, # Probability of appying transformation
         draw:(float, [float], callable)=None, # User defined behavior of batch transformation
-        batch:bool=False # Same behavior for the whole batch if `True`
+        batch:bool=False # Apply identical saturation to entire batch
     ):
         store_attr()
         super().__init__(_SaturationLogit(max_lighting, p, draw, batch))
@@ -1153,7 +1153,7 @@ class Hue(HSVTfm):
         max_hue:float=0.1, # Maximum scale of changing Hue
         p:float=0.75, # Probability of appying transformation
         draw:(float, [float], callable)=None, # User defined behavior of batch transformation
-        batch=False # Same behavior for the whole batch if `True`
+        batch=False # Apply identical Hue to entire batch
     ):
         super().__init__(_Hue(max_hue, p, draw, batch))
 
@@ -1244,10 +1244,10 @@ def aug_transforms(
     p_lighting:float=0.75, # Probability of changing brightnest and contrast
     xtra_tfms:[callable]=None, # Custom Transformations
     size:(int,tuple)=None, # Output size, duplicated if one value is specified
-    mode:str='bilinear', # `F.grid_sample` mode ( 'bilinear', 'nearest', 'bicubic')
+    mode:str='bilinear', # PyTorch `F.grid_sample` interpolation
     pad_mode=PadMode.Reflection, # A `PadMode`
-    align_corners=True, # `F.grid_sample` align_corners
-    batch=False, # Same behavior for the whole batch if `True`
+    align_corners=True, # PyTorch `F.grid_sample` align_corners
+    batch=False, # Apply identical transformation to entire batch
     min_scale=1. # Minimum scale of the crop, in relation to image area
 ):
     "Utility func to easily create a list of flip, rotate, zoom, warp, lighting transforms."
