@@ -78,10 +78,10 @@ def show_batch(x:TensorImage, y:TensorImage, samples, ctxs=None, max_n=10, nrows
 
 # Cell
 def ImageBlock(
-    cls=PILImage # A class that inherits from `PILBase`
+    clss=PILImage # A class that inherits from `PILBase`
 ):
-    "A `TransformBlock` for images of `cls`"
-    return TransformBlock(type_tfms=cls.create, batch_tfms=IntToFloatTensor)
+    "A `TransformBlock` for images of `clss`"
+    return TransformBlock(type_tfms=clss.create, batch_tfms=IntToFloatTensor)
 
 # Cell
 def MaskBlock(
