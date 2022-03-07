@@ -91,7 +91,7 @@ class ImagesCleaner:
 def _get_iw_info(
     learn,
     ds_idx:int=0 # Index in `learn.dls`
-)->list:
+) -> list:
     "For every image in `dls` `zip` it's `Path`, target and loss"
     dl = learn.dls[ds_idx].new(shuffle=False, drop_last=False)
     probs,targs,preds,losses = learn.get_preds(dl=dl, with_input=False, with_loss=True, with_decoded=True)
