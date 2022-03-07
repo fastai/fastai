@@ -116,11 +116,11 @@ class ClassificationInterpretation(Interpretation):
         return to_np(cm)
 
     def plot_confusion_matrix(self,
-        normalize:bool=False, # Wether to normalize occurrences in matrix
+        normalize:bool=False, # Whether to normalize occurrences
         title:str='Confusion matrix', # Title of plot
-        cmap:str="Blues", # Colormap from Matplotlib
-        norm_dec=2, # Number of decimal places of normalized occurrences
-        plot_txt=True, # Display occurrences in matrix
+        cmap:str="Blues", # Colormap from matplotlib
+        norm_dec:int=2, # Decimal places for normalized occurrences
+        plot_txt:bool=True, # Display occurrence in matrix
         **kwargs
     ):
         "Plot the confusion matrix, with `title` and using `cmap`."
@@ -149,7 +149,7 @@ class ClassificationInterpretation(Interpretation):
         plt.grid(False)
 
     def most_confused(self,
-        min_val:int=1 # omit occurrences less than `min_val`
+        min_val:int=1 # Omit occurrences less than `min_val`
     ):
         "Sorted descending list of largest non-diagonal entries of confusion matrix, presented as actual, predicted, number of occurrences."
         cm = self.confusion_matrix()
