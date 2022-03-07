@@ -123,3 +123,6 @@ venv.bak/
 
 # Mac stuff
 .DS_Store
+
+# docker related files
+docker.compose.fork.yml
