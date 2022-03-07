@@ -17,7 +17,7 @@ from ipywidgets import HBox,VBox,widgets,Button,Checkbox,Dropdown,Layout,Box,Out
 def __getitem__(self:Box, i): return self.children[i]
 
 # Cell
-def widget(im,*args,**layout)-> Output:
+def widget(im, *args, **layout) -> Output:
     "Convert anything that can be `display`ed by `IPython` into a widget"
     o = Output(layout=merge(*args, layout))
     with o: display(im)
@@ -33,7 +33,7 @@ def _update_children(
 
 # Cell
 def carousel(
-    children:tuple=(), # `Box` objects to display in a carousel
+    children:(tuple,list)=(), # `Box` objects to display in a carousel
     **layout
 ) -> Box: # An `ipywidget`'s carousel
     "A horizontally scrolling carousel"
@@ -45,10 +45,10 @@ def carousel(
 
 # Cell
 def _open_thumb(
-    fn, # A path of an image
+    fn:(Path, str), # A path of an image
     h:int, # Thumbnail Height
     w:int # Thumbnail Width
-)-> Image: # `PIL` image to display
+) -> Image: # `PIL` image to display
     "Opens an image path and returns the thumbnail of the image"
     return Image.open(fn).to_thumb(h, w).convert('RGBA')
 
@@ -57,9 +57,9 @@ class ImagesCleaner:
     "A widget that displays all images in `fns` along with a `Dropdown`"
     def __init__(self,
         opts:tuple=(), # Options for the `Dropdown` menu
-        height=128, # Thumbnail Height
-        width=256, # Thumbnail Width
-        max_n=30 # Max number of images to display
+        height:int=128, # Thumbnail Height
+        width:int=256, # Thumbnail Width
+        max_n:int=30 # Max number of images to display
     ):
         opts = ('<Keep>', '<Delete>')+tuple(opts)
         store_attr('opts,height,width,max_n')
@@ -76,13 +76,13 @@ class ImagesCleaner:
             options=self.opts, layout={'width': 'max-content'})]) for im in ims]
 
     def _ipython_display_(self): display(self.widget)
-    def values(self)->list:
+    def values(self) -> list:
         "Current values of `Dropdown` for each `VBox`"
         return L(self.widget.children).itemgot(1).attrgot('value')
-    def delete(self)->list:
+    def delete(self) -> list:
         "Indices of items to delete"
         return self.values().argwhere(eq('<Delete>'))
-    def change(self)->list:
+    def change(self) -> list:
         "Tuples of the form (index of item to change, new class)"
         idxs = self.values().argwhere(not_(in_(['<Delete>','<Keep>'])))
         return idxs.zipwith(self.values()[idxs])
@@ -102,7 +102,7 @@ def _get_iw_info(
 @delegates(ImagesCleaner)
 class ImageClassifierCleaner(GetAttr):
     "A widget that provides an `ImagesCleaner` for a CNN `Learner`"
-    def __init__(self,learn,**kwargs):
+    def __init__(self, learn, **kwargs):
         vocab = learn.dls.vocab
         self.default = self.iw = ImagesCleaner(vocab, **kwargs)
         self.dd_cats = Dropdown(options=vocab)
