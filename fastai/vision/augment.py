@@ -178,7 +178,7 @@ class CropPad(DisplayedTransform):
     order = 0
     def __init__(self,
         size:(int, tuple), # Size to crop or pad to, duplicated if one value is specified
-        pad_mode:PadMode=PadMode.Zeros, # # A `PadMode`
+        pad_mode:PadMode=PadMode.Zeros, # A `PadMode`
         **kwargs
     ):
         size = _process_sz(size)
