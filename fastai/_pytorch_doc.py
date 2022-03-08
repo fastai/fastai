@@ -11,7 +11,7 @@ PYTORCH_URL = 'https://pytorch.org/docs/stable/'
 # Cell
 def _mod2page(
     mod:ModuleType, # A pytorch module
-) -> str :
+) -> str:
     "Get the web page name for a pytorch module"
     if mod == Tensor: return 'tensors.html'
     name = mod.__name__
