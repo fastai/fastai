@@ -12,7 +12,7 @@ PYTORCH_URL = 'https://pytorch.org/docs/stable/'
 def _mod2page(
     mod:ModuleType, # A PyTorch module
 ) -> str:
-    "Get the web page name for a pytorch module"
+    "Get the webpage name for a PyTorch module"
     if mod == Tensor: return 'tensors.html'
     name = mod.__name__
     name = name.replace('torch.', '').replace('utils.', '')
