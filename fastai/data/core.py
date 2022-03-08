@@ -13,7 +13,7 @@ def show_batch(
     x, # Input(s) in the batch
     y, # Target(s) in the batch
     samples, # List of (`x`, `y`) pairs of length `max_n`
-    ctxs=None, # List of `ctx` objects to show data. Could be matplotlib axis, DataFrame etc
+    ctxs=None, # List of `ctx` objects to show data. Could be a matplotlib axis, DataFrame, etc.
     max_n=9, # Maximum number of `samples` to show
     **kwargs
 ):
@@ -32,7 +32,7 @@ def show_results(
     y, # Target(s) in the batch
     samples, # List of (`x`, `y`) pairs of length `max_n`
     outs, # List of predicted output(s) from the model
-    ctxs=None, # List of `ctx` objects to show data. Could be matplotlib axis, DataFrame etc
+    ctxs=None, # List of `ctx` objects to show data. Could be a matplotlib axis, DataFrame, etc.
     max_n=9, # Maximum number of `samples` to show
     **kwargs
 ):
