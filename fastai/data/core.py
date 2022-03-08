@@ -17,6 +17,7 @@ def show_batch(
     max_n=9, # Maximum number of `samples` to show
     **kwargs
 ):
+    "Show `max_n` input(s) and target(s) from the batch."
     if ctxs is None: ctxs = Inf.nones
     if hasattr(samples[0], 'show'):
         ctxs = [s.show(ctx=c, **kwargs) for s,c,_ in zip(samples,ctxs,range(max_n))]
@@ -36,6 +37,7 @@ def show_results(
     max_n=9, # Maximum number of `samples` to show
     **kwargs
 ):
+    "Show `max_n` results with input(s), target(s) and prediction(s)."
     if ctxs is None: ctxs = Inf.nones
     for i in range(len(samples[0])):
         ctxs = [b.show(ctx=c, **kwargs) for b,c,_ in zip(samples.itemgot(i),ctxs,range(max_n))]
@@ -136,6 +138,7 @@ class TfmdDL(DataLoader):
         unique:bool=False, # Whether to show only one
         **kwargs
     ):
+        "Show `max_n` input(s) and target(s) from the batch."
         if unique:
             old_get_idxs = self.get_idxs
             self.get_idxs = lambda: Inf.zeros
@@ -152,6 +155,7 @@ class TfmdDL(DataLoader):
         show:bool=True, # Whether to display data
         **kwargs
     ):
+        "Show `max_n` results with input(s), target(s) and prediction(s)."
         x,y,its = self.show_batch(b, max_n=max_n, show=False)
         b_out = type(b)(b[:self.n_inp] + (tuple(out) if is_listy(out) else (out,)))
         x1,y1,outs = self.show_batch(b_out, max_n=max_n, show=False)
@@ -161,6 +165,7 @@ class TfmdDL(DataLoader):
 
     @property
     def n_inp(self) -> int:
+        "Number of elements in `Datasets` or `TfmdDL` tuple to be considered part of input."
         if hasattr(self.dataset, 'n_inp'): return self.dataset.n_inp
         if not hasattr(self, '_n_inp'): self._one_pass()
         return self._n_inp
