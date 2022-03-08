@@ -63,25 +63,25 @@ nb_path: "nbs/06_data.block.ipynb"
 <td><strong><code>type_tfms</code></strong></td>
 <td><code>list</code></td>
 <td>``</td>
-<td>List of <a href="https://fastcore.fast.ai/transform#Transform"><code>Transform</code></a>s</td>
+<td>One or more <a href="https://fastcore.fast.ai/transform#Transform"><code>Transform</code></a>s</td>
 </tr>
 <tr>
 <td><strong><code>item_tfms</code></strong></td>
 <td><code>list</code></td>
 <td>``</td>
-<td>List of <a href="https://fastcore.fast.ai/transform#ItemTransform"><code>ItemTransform</code></a>s, applied on an item</td>
+<td><a href="https://fastcore.fast.ai/transform#ItemTransform"><code>ItemTransform</code></a>s, applied on an item</td>
 </tr>
 <tr>
 <td><strong><code>batch_tfms</code></strong></td>
 <td><code>list</code></td>
 <td>``</td>
-<td>List of <a href="https://fastcore.fast.ai/transform#Transform"><code>Transform</code></a>s or <a href="/vision.augment.html#RandTransform"><code>RandTransform</code></a>s, applied by batch</td>
+<td><a href="https://fastcore.fast.ai/transform#Transform"><code>Transform</code></a>s or <a href="/vision.augment.html#RandTransform"><code>RandTransform</code></a>s, applied by batch</td>
 </tr>
 <tr>
 <td><strong><code>dl_type</code></strong></td>
 <td><a href="/data.core.html#TfmdDL"><code>TfmdDL</code></a></td>
 <td>``</td>
-<td>Specific class that inherits <a href="/data.core.html#TfmdDL"><code>TfmdDL</code></a></td>
+<td>Task specific <a href="/data.core.html#TfmdDL"><code>TfmdDL</code></a>, defaults to <a href="/data.core.html#TfmdDL"><code>TfmdDL</code></a> if none specified</td>
 </tr>
 <tr>
 <td><strong><code>dls_kwargs</code></strong></td>
@@ -352,19 +352,19 @@ nb_path: "nbs/06_data.block.ipynb"
 <td><strong><code>blocks</code></strong></td>
 <td><code>list</code></td>
 <td>``</td>
-<td>List of <a href="/data.block.html#TransformBlock"><code>TransformBlock</code></a>s</td>
+<td>One or more <a href="/data.block.html#TransformBlock"><code>TransformBlock</code></a>s</td>
 </tr>
 <tr>
 <td><strong><code>dl_type</code></strong></td>
 <td><a href="/data.core.html#TfmdDL"><code>TfmdDL</code></a></td>
 <td>``</td>
-<td>Specific class that inherits <a href="/data.core.html#TfmdDL"><code>TfmdDL</code></a></td>
+<td>Task specific <a href="/data.core.html#TfmdDL"><code>TfmdDL</code></a>, defaults to <code>block</code>'s dl_type or<a href="/data.core.html#TfmdDL"><code>TfmdDL</code></a> if none specified</td>
 </tr>
 <tr>
 <td><strong><code>getters</code></strong></td>
 <td><code>list</code></td>
 <td>``</td>
-<td>List of getter functions</td>
+<td>Getter functions applied to results of <code>get_items</code></td>
 </tr>
 <tr>
 <td><strong><code>n_inp</code></strong></td>
@@ -376,13 +376,13 @@ nb_path: "nbs/06_data.block.ipynb"
 <td><strong><code>item_tfms</code></strong></td>
 <td><code>list</code></td>
 <td>``</td>
-<td>List of <a href="https://fastcore.fast.ai/transform#ItemTransform"><code>ItemTransform</code></a>s, applied on an item</td>
+<td><a href="https://fastcore.fast.ai/transform#ItemTransform"><code>ItemTransform</code></a>s, applied on an item</td>
 </tr>
 <tr>
 <td><strong><code>batch_tfms</code></strong></td>
 <td><code>list</code></td>
 <td>``</td>
-<td>List of <a href="https://fastcore.fast.ai/transform#Transform"><code>Transform</code></a>s or <a href="/vision.augment.html#RandTransform"><code>RandTransform</code></a>s, applied by batch</td>
+<td><a href="https://fastcore.fast.ai/transform#Transform"><code>Transform</code></a>s or <a href="/vision.augment.html#RandTransform"><code>RandTransform</code></a>s, applied by batch</td>
 </tr>
 <tr>
 <td><strong><code>get_items</code></strong></td>
@@ -517,7 +517,7 @@ nb_path: "nbs/06_data.block.ipynb"
 <td><strong><code>path</code></strong></td>
 <td><code>str</code></td>
 <td>``</td>
-<td>The path to the data source</td>
+<td>Data source and default <a href="/learner.html#Learner"><code>Learner</code></a> path</td>
 </tr>
 <tr>
 <td><strong><code>verbose</code></strong></td>
@@ -686,6 +686,12 @@ nb_path: "nbs/06_data.block.ipynb"
 <td><code>NoneType</code></td>
 <td>``</td>
 <td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong>Returns</strong></td>
+<td><a href="/data.core.html#DataLoaders"><code>DataLoaders</code></a></td>
+<td></td>
+<td></td>
 </tr>
 </tbody>
 </table>

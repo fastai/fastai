@@ -13,10 +13,10 @@ from .transforms import *
 class TransformBlock():
     "A basic wrapper that links defaults transforms for the data block API"
     def __init__(self,
-        type_tfms:list=None, # List of `Transform`s
-        item_tfms:list=None, # List of `ItemTransform`s, applied on an item
-        batch_tfms:list=None, # List of `Transform`s or `RandTransform`s, applied by batch
-        dl_type:TfmdDL=None, # Specific class that inherits `TfmdDL`
+        type_tfms:list=None, # One or more `Transform`s
+        item_tfms:list=None, # `ItemTransform`s, applied on an item
+        batch_tfms:list=None, # `Transform`s or `RandTransform`s, applied by batch
+        dl_type:TfmdDL=None, # Task specific `TfmdDL`, defaults to `TfmdDL` if none specified
         dls_kwargs:dict=None, # Additional arguments to be passed to `DataLoaders`
     ):
         self.type_tfms  =            L(type_tfms)
@@ -78,12 +78,12 @@ class DataBlock():
     _methods = 'get_items splitter get_y get_x'.split()
     _msg = "If you wanted to compose several transforms in your getter don't forget to wrap them in a `Pipeline`."
     def __init__(self,
-        blocks:list=None, # List of `TransformBlock`s
-        dl_type:TfmdDL=None, # Specific class that inherits `TfmdDL`
-        getters:list=None, # List of getter functions
+        blocks:list=None, # One or more `TransformBlock`s
+        dl_type:TfmdDL=None, # Task specific `TfmdDL`, defaults to `block`'s dl_type or`TfmdDL` if none specified
+        getters:list=None, # Getter functions applied to results of `get_items`
         n_inp:int=None, # Number of inputs
-        item_tfms:list=None, # List of `ItemTransform`s, applied on an item
-        batch_tfms:list=None, # List of `Transform`s or `RandTransform`s, applied by batch
+        item_tfms:list=None, # `ItemTransform`s, applied on an item
+        batch_tfms:list=None, # `Transform`s or `RandTransform`s, applied by batch
         **kwargs,
     ):
         blocks = L(self.blocks if blocks is None else blocks)
@@ -116,8 +116,8 @@ class DataBlock():
         lambda g,tt: (g.fs if isinstance(g, Pipeline) else L(g)) + tt)
 
     def new(self,
-        item_tfms:list=None,  # List of `ItemTransform`s, applied on an item
-        batch_tfms:list=None, # List of `Transform`s or `RandTransform`s, applied by batch
+        item_tfms:list=None, # `ItemTransform`s, applied on an item
+        batch_tfms:list=None, # `Transform`s or `RandTransform`s, applied by batch
     ):
         self.item_tfms  = _merge_tfms(self.default_item_tfms,  item_tfms)
         self.batch_tfms = _merge_tfms(self.default_batch_tfms, batch_tfms)
@@ -125,8 +125,8 @@ class DataBlock():
 
     @classmethod
     def from_columns(cls,
-        blocks:list =None, # List of `TransformBlock`s
-        getters:list =None, # List of getter functions
+        blocks:list =None, # One or more `TransformBlock`s
+        getters:list =None, # Getter functions applied to results of `get_items`
         get_items:callable=None, # A function to get items
         **kwargs,
     ):
@@ -137,7 +137,7 @@ class DataBlock():
     def datasets(self,
         source, # The data source
         verbose:bool=False, # Show verbose messages
-    ):
+    ) -> Datasets:
         self.source = source                     ; pv(f"Collecting items from {source}", verbose)
         items = (self.get_items or noop)(source) ; pv(f"Found {len(items)} items", verbose)
         splits = (self.splitter or RandomSplitter())(items)
@@ -145,11 +145,11 @@ class DataBlock():
         return Datasets(items, tfms=self._combine_type_tfms(), splits=splits, dl_type=self.dl_type, n_inp=self.n_inp, verbose=verbose)
 
     def dataloaders(self,
-        source,  # The data source
-        path:str='.', # The path to the data source
+        source, # The data source
+        path:str='.', # Data source and default `Learner` path
         verbose:bool=False, # Show verbose messages
         **kwargs
-    ):
+    ) -> DataLoaders:
         dsets = self.datasets(source, verbose=verbose)
         kwargs = {**self.dls_kwargs, **kwargs, 'verbose': verbose}
         return dsets.dataloaders(path=path, after_item=self.item_tfms, after_batch=self.batch_tfms, **kwargs)
@@ -194,7 +194,7 @@ def _find_fail_collate(s):
 
 # Cell
 @patch
-def summary(self: DataBlock,
+def summary(self:DataBlock,
     source, # The data source
     bs:int=4, # The batch size
     show_batch:bool=False, # Call `show_batch` after the summary
