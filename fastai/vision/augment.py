@@ -577,7 +577,7 @@ def affine_mat(*ms):
 def flip_mat(
     x:Tensor, # The input Tensor
     p=0.5, # Probability of appying transformation
-    draw:(int, [int], callable)=None, # Custom flips instead of random
+    draw:(int, list, callable)=None, # Custom flips instead of random
     batch:bool=False # Apply identical flip to entire batch
 ):
     "Return a random flip matrix"
@@ -597,7 +597,7 @@ def _get_default(x, mode=None, pad_mode=None):
 @patch
 def flip_batch(x: (TensorImage,TensorMask,TensorPoint,TensorBBox),
     p=0.5, # Probability of applying flip
-    draw:(int, [int], callable)=None, # Custom flips instead of random
+    draw:(int, list, callable)=None, # Custom flips instead of random
     size:(int, tuple)=None, # Output size, duplicated if one value is specified
     mode=None, # PyTorch `F.grid_sample` interpolation applied to `x`
     pad_mode=None, # Padding applied to `x`
@@ -613,7 +613,7 @@ class Flip(AffineCoordTfm):
     "Randomly flip a batch of images with a probability `p`"
     def __init__(self,
         p=0.5, # Probability of applying flip
-        draw:(int, [int], callable)=None, # Custom flips instead of random
+        draw:(int, list, callable)=None, # Custom flips instead of random
         size:(int, tuple)=None, # Output size, duplicated if one value is specified
         mode:str='bilinear', # PyTorch `F.grid_sample` interpolation
         pad_mode=PadMode.Reflection, # A `PadMode`
@@ -647,7 +647,7 @@ class DeterministicFlip(Flip):
 def dihedral_mat(
     x:Tensor, # Input `Tensor`
     p:float=0.5, # Probability of staying unchanged
-    draw:(int, [int], callable)=None, # Custom dihedrals instead of random
+    draw:(int, list, callable)=None, # Custom dihedrals instead of random
     batch:bool=False # Apply identical dihedral to entire batch
 ):
     "Return a random dihedral matrix"
@@ -665,7 +665,7 @@ def dihedral_mat(
 @patch
 def dihedral_batch(x: (TensorImage,TensorMask,TensorPoint,TensorBBox),
     p=0.5, # Probability of applying dihedral
-    draw:(int, [int], callable)=None, # Custom dihedrals instead of random
+    draw:(int, list, callable)=None, # Custom dihedrals instead of random
     size:(int, tuple)=None, # Output size, duplicated if one value is specified
     mode:str='bilinear', # PyTorch `F.grid_sample` interpolation applied to `x`
     pad_mode=None, # Padding applied to `x`
@@ -681,7 +681,7 @@ class Dihedral(AffineCoordTfm):
     "Apply a random dihedral transformation to a batch of images with a probability `p`"
     def __init__(self,
         p=0.5, # Probability of applying dihedral
-        draw:(int, [int], callable)=None, # Custom dihedrals instead of random
+        draw:(int, list, callable)=None, # Custom dihedrals instead of random
         size:(int, tuple)=None, # Output size, duplicated if one value is specified
         mode:str='bilinear', # PyTorch `F.grid_sample` interpolation
         pad_mode=PadMode.Reflection, # A `PadMode`
@@ -707,7 +707,7 @@ def rotate_mat(
     x:Tensor, # Input `Tensor`
     max_deg:int=10, # Maximum degree of rotation
     p:float=0.5, # Probability of applying rotate
-    draw:(int, [int], callable)=None, # Custom rotates instead of random
+    draw:(int, list, callable)=None, # Custom rotates instead of random
     batch:bool=False # Apply identical rotate to entire batch
 ):
     "Return a random rotation matrix with `max_deg` and `p`"
@@ -737,7 +737,7 @@ class Rotate(AffineCoordTfm):
     def __init__(self,
         max_deg:int=10, # Maximum degree of rotation
         p:float=0.5, # Probability of applying rotate
-        draw:(int, [int], callable)=None, # Custom rotates instead of random
+        draw:(int, list, callable)=None, # Custom rotates instead of random
         size:(int, tuple)=None, # Output size, duplicated if one value is specified
         mode:str='bilinear', # PyTorch `F.grid_sample` interpolation
         pad_mode=PadMode.Reflection, # A `PadMode`
@@ -753,9 +753,9 @@ def zoom_mat(
     min_zoom:float=1., # Minimum zoom
     max_zoom:float=1.1, # Maximum zoom
     p:float=0.5, # Probability of applying zoom
-    draw:(float, [float], callable)=None, # User defined scale of the zoom
-    draw_x:(float, [float], callable)=None, # User defined center of the zoom in x
-    draw_y:(float, [float], callable)=None, # User defined center of the zoom in y
+    draw:(float, list, callable)=None, # User defined scale of the zoom
+    draw_x:(float, list, callable)=None, # User defined center of the zoom in x
+    draw_y:(float, list, callable)=None, # User defined center of the zoom in y
     batch:bool=False # Apply identical zoom to entire batch
 ):
     "Return a random zoom matrix with `max_zoom` and `p`"
@@ -793,9 +793,9 @@ class Zoom(AffineCoordTfm):
         min_zoom:float=1., # Minimum zoom
         max_zoom:float=1.1, # Maximum zoom
         p:float=0.5, # Probability of applying zoom
-        draw:(float, [float], callable)=None, # User defined scale of the zoom
-        draw_x:(float, [float], callable)=None, # User defined center of the zoom in x
-        draw_y:(float, [float], callable)=None, # User defined center of the zoom in y
+        draw:(float, list, callable)=None, # User defined scale of the zoom
+        draw_x:(float, list, callable)=None, # User defined center of the zoom in x
+        draw_y:(float, list, callable)=None, # User defined center of the zoom in y
         size:(int, tuple)=None, # Output size, duplicated if one value is specified
         mode='bilinear', # PyTorch `F.grid_sample` interpolation
         pad_mode=PadMode.Reflection, # A `PadMode`
@@ -890,8 +890,8 @@ class Warp(AffineCoordTfm):
     def __init__(self,
         magnitude:float=0.2, # The default warping magnitude
         p:float=0.5, # Probability of applying warp
-        draw_x:(float,[float],callable)=None, # User defined warping magnitude in x
-        draw_y:(float,[float],callable)=None, # User defined warping magnitude in y
+        draw_x:(float,list,callable)=None, # User defined warping magnitude in x
+        draw_y:(float,list,callable)=None, # User defined warping magnitude in y
         size:(int,tuple)=None, # Output size, duplicated if one value is specified
         mode:str='bilinear', # PyTorch `F.grid_sample` interpolation
         pad_mode=PadMode.Reflection, # A `PadMode`
@@ -971,7 +971,7 @@ class Brightness(LightingTfm):
     def __init__(self,
         max_lighting:float=0.2, # Maximum scale of changing brightness
         p:float=0.75, # Probability of appying transformation
-        draw:(float, [float], callable)=None, # User defined behavior of batch transformation
+        draw:(float, list, callable)=None, # User defined behavior of batch transformation
         batch=False # Apply identical brightness to entire batch
     ):
         "Apply change in brightness of `max_lighting` to batch of images with probability `p`."
@@ -1006,7 +1006,7 @@ class Contrast(LightingTfm):
     def __init__(self,
         max_lighting=0.2, # Maximum scale of changing contrast
         p=0.75, # Probability of appying transformation
-        draw:(float, [float], callable)=None, # User defined behavior of batch transformation
+        draw:(float, list, callable)=None, # User defined behavior of batch transformation
         batch=False
     ):
         store_attr()
@@ -1051,7 +1051,7 @@ class Saturation(LightingTfm):
     def __init__(self,
         max_lighting:float=0.2, # Maximum scale of changing brightness
         p:float=0.75, # Probability of appying transformation
-        draw:(float, [float], callable)=None, # User defined behavior of batch transformation
+        draw:(float, list, callable)=None, # User defined behavior of batch transformation
         batch:bool=False # Apply identical saturation to entire batch
     ):
         store_attr()
@@ -1152,7 +1152,7 @@ class Hue(HSVTfm):
     def __init__(self,
         max_hue:float=0.1, # Maximum scale of changing Hue
         p:float=0.75, # Probability of appying transformation
-        draw:(float, [float], callable)=None, # User defined behavior of batch transformation
+        draw:(float, list, callable)=None, # User defined behavior of batch transformation
         batch=False # Apply identical Hue to entire batch
     ):
         super().__init__(_Hue(max_hue, p, draw, batch))
