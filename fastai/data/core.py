@@ -356,7 +356,7 @@ class Datasets(FilteredBase):
         tfms:(list,Pipeline)=None, # List of `Transform`(s) or `Pipeline` to apply
         tls:TfmdLists=None, # If None, `self.tls` is generated from `items` and `tfms`
         n_inp:int=None, # Number of elements in `Datasets` tuple that should be considered part of input
-        dl_type=None, # Type of `DataLoader`
+        dl_type=None, # Default type of `DataLoader` used when function `FilteredBase.dataloaders` is called. 
         **kwargs
     ):
         super().__init__(dl_type=dl_type)
