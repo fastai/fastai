@@ -81,7 +81,7 @@ nb_path: "nbs/06_data.block.ipynb"
 <td><strong><code>dl_type</code></strong></td>
 <td><a href="/data.core.html#TfmdDL"><code>TfmdDL</code></a></td>
 <td>``</td>
-<td>Task specific <a href="/data.core.html#TfmdDL"><code>TfmdDL</code></a>, defaults to <a href="/data.core.html#TfmdDL"><code>TfmdDL</code></a> if none specified</td>
+<td>Task specific <a href="/data.core.html#TfmdDL"><code>TfmdDL</code></a>, defaults to <a href="/data.core.html#TfmdDL"><code>TfmdDL</code></a></td>
 </tr>
 <tr>
 <td><strong><code>dls_kwargs</code></strong></td>
@@ -358,7 +358,7 @@ nb_path: "nbs/06_data.block.ipynb"
 <td><strong><code>dl_type</code></strong></td>
 <td><a href="/data.core.html#TfmdDL"><code>TfmdDL</code></a></td>
 <td>``</td>
-<td>Task specific <a href="/data.core.html#TfmdDL"><code>TfmdDL</code></a>, defaults to <code>block</code>'s dl_type or<a href="/data.core.html#TfmdDL"><code>TfmdDL</code></a> if none specified</td>
+<td>Task specific <a href="/data.core.html#TfmdDL"><code>TfmdDL</code></a>, defaults to <code>block</code>'s dl_type or<a href="/data.core.html#TfmdDL"><code>TfmdDL</code></a></td>
 </tr>
 <tr>
 <td><strong><code>getters</code></strong></td>
@@ -781,24 +781,6 @@ nb_path: "nbs/06_data.block.ipynb"
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-
-<div class="output_png output_subarea ">
-<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHsAAACLCAYAAABBVeZmAAAAOXRFWHRTb2Z0d2FyZQBNYXRwbG90bGliIHZlcnNpb24zLjUuMCwgaHR0cHM6Ly9tYXRwbG90bGliLm9yZy8/fFQqAAAACXBIWXMAAAsTAAALEwEAmpwYAAAEbklEQVR4nO2dPUscURSGz1ULMSuKWAiBrYIgNloIEkRQQawl9aawsRARRBC0EOwF3c5GsggKQvAHqKDZRrFVtFHsTLRQEvBznRTBJecmrqvO1933fUCYlxl3z/p458zHzozxPE8IBmVRF0DCg7KBoGwgKBsIygaCsoGgbCCgZBtjflk/OWNMOuq6wqIi6gLCxPO8xOO0MeadiHwXkZXoKgoXqJFt8UlEfojIt6gLCQtk2Z9FJOMBHS82QJ81jzEmKSLHIvLB87zjqOsJC9SRnRKRLJJoEWzZX6IuImzgZBtjPorIewHaCn8ETrb82TD76nnez6gLCRvIDTRUEEc2LJQNBGUDQdlAUDYQz5314qa6e5inZnBkA0HZQFA2EJQNBGUDQdlAUDYQlA0EZQNB2UBQNhCUDQRlA0HZQFA2EJQNBGUDQdlAUDYQlA0EZQNB2UBQNhCUDQRlA0HZQDhz07v9/X2VM5mMysvLyypXVOiPNjw8nJ8eGRlR81paWlTu7e19ZZX/x3697u5uX1+/WDiygaBsICgbiOduoBObS3YHBgZUXlhYiKiSl9PU1KTy3t5ekG/HS3YJZUNB2UA407M3NzdV7uvrU/nm5ibMcl5EQ0ODyoeHhypXV1f7+Xbs2YSyoaBsIJzp2TaXl5cqr6+vq3xyclL0a9n7vc3NzSpfXFyoPD09rbL9NzRGt822tjaVt7e3i67tFbBnE8qGgrKBcOZ8tk1NTY3K/f39gb2X3aNt7B5tn79eXFz0vabXwJENBGUDQdlAONuzg+T+/l7lpaWlgsvX1taqnEqlVK6vr/elrrfCkQ0EZQNB2UCwZ8u/x7ZHR0dVPjg4KPj7Kyv6SY89PT3+FOYzHNlAUDYQkKtxe9fK/lpyOp0u+PszMzMqR3U5z0vhyAaCsoGgbCCc/VrSW8hmsyp3dnYWXD6RSKh8enqqclVVlT+F+QO/lkQoGwrKBgJmP/vo6Cg/3dXVVXBZu0dvbW2pHLMeXTQc2UBQNhCUDUTJ9uyrqyuVBwcH89O5XE7NKyvT//N2j7ZvneUqHNlAUDYQlA1Eyfbs8fFxldfW1p5cdmhoSOVS6dE2HNlAUDYQlA1EyZzP3t3dVbm9vV3lh4eH/HRHR4eat7GxobJ9+2rH4PlsQtlQUDYQzjanu7s7lcfGxlT+u0eLiCSTyfz07Oysmud4jy4ajmwgKBsIygbC2WZlP67JvkV1eXm5ynNzc/np1tbWwOqKMxzZQFA2EJQNhDPHxu1bStuPT7q+vlbZvgXlxMREMIXFDx4bJ5QNBWUDEduefXt7q7J9DfXOzo7Kjl1DHSTs2YSyoYjt4dL5+XmV7dW2zerqqspAq+2i4cgGgrKBoGwgYrPrdX5+rnJjY6PK9lPzJicnVZ6amlLZvgwXCO56EcqGgrKBiE3PPjs7U9nu2XV1dSrbT8atrKwMpjD3YM8mlA0FZQMRm55NfIM9m1A2FJQNxHPns59c/xP34MgGgrKBoGwgKBsIygaCsoH4Dd9p/n3ENZhPAAAAAElFTkSuQmCC
-"
->
-</div>
-
-</div>
-
 </div>
 </div>
 

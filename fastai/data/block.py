@@ -16,7 +16,7 @@ class TransformBlock():
         type_tfms:list=None, # One or more `Transform`s
         item_tfms:list=None, # `ItemTransform`s, applied on an item
         batch_tfms:list=None, # `Transform`s or `RandTransform`s, applied by batch
-        dl_type:TfmdDL=None, # Task specific `TfmdDL`, defaults to `TfmdDL` if none specified
+        dl_type:TfmdDL=None, # Task specific `TfmdDL`, defaults to `TfmdDL`
         dls_kwargs:dict=None, # Additional arguments to be passed to `DataLoaders`
     ):
         self.type_tfms  =            L(type_tfms)
@@ -79,7 +79,7 @@ class DataBlock():
     _msg = "If you wanted to compose several transforms in your getter don't forget to wrap them in a `Pipeline`."
     def __init__(self,
         blocks:list=None, # One or more `TransformBlock`s
-        dl_type:TfmdDL=None, # Task specific `TfmdDL`, defaults to `block`'s dl_type or`TfmdDL` if none specified
+        dl_type:TfmdDL=None, # Task specific `TfmdDL`, defaults to `block`'s dl_type or`TfmdDL`
         getters:list=None, # Getter functions applied to results of `get_items`
         n_inp:int=None, # Number of inputs
         item_tfms:list=None, # `ItemTransform`s, applied on an item
