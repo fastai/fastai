@@ -13,10 +13,10 @@ from .transforms import *
 class TransformBlock():
     "A basic wrapper that links defaults transforms for the data block API"
     def __init__(self,
-        type_tfms:list=None, # List of `Transform`s
-        item_tfms:list=None, # List of `ItemTransform`s, applied on an item
-        batch_tfms:list=None, # List of `Transform`s or `RandTransform`s, applied by batch
-        dl_type:TfmdDL=None, # Specific class that inherits `TfmdDL`
+        type_tfms:list=None, # One or more `Transform`s
+        item_tfms:list=None, # `ItemTransform`s, applied on an item
+        batch_tfms:list=None, # `Transform`s or `RandTransform`s, applied by batch
+        dl_type:TfmdDL=None, # Task specific `TfmdDL`, defaults to `TfmdDL`
         dls_kwargs:dict=None, # Additional arguments to be passed to `DataLoaders`
     ):
         self.type_tfms  =            L(type_tfms)
@@ -77,7 +77,15 @@ class DataBlock():
     blocks,dl_type = (TransformBlock,TransformBlock),TfmdDL
     _methods = 'get_items splitter get_y get_x'.split()
     _msg = "If you wanted to compose several transforms in your getter don't forget to wrap them in a `Pipeline`."
-    def __init__(self, blocks=None, dl_type=None, getters=None, n_inp=None, item_tfms=None, batch_tfms=None, **kwargs):
+    def __init__(self,
+        blocks:list=None, # One or more `TransformBlock`s
+        dl_type:TfmdDL=None, # Task specific `TfmdDL`, defaults to `block`'s dl_type or`TfmdDL`
+        getters:list=None, # Getter functions applied to results of `get_items`
+        n_inp:int=None, # Number of inputs
+        item_tfms:list=None, # `ItemTransform`s, applied on an item
+        batch_tfms:list=None, # `Transform`s or `RandTransform`s, applied by batch
+        **kwargs,
+    ):
         blocks = L(self.blocks if blocks is None else blocks)
         blocks = L(b() if callable(b) else b for b in blocks)
         self.type_tfms = blocks.attrgot('type_tfms', L())
@@ -107,25 +115,41 @@ class DataBlock():
     def _combine_type_tfms(self): return L([self.getters, self.type_tfms]).map_zip(
         lambda g,tt: (g.fs if isinstance(g, Pipeline) else L(g)) + tt)
 
-    def new(self, item_tfms=None, batch_tfms=None):
+    def new(self,
+        item_tfms:list=None, # `ItemTransform`s, applied on an item
+        batch_tfms:list=None, # `Transform`s or `RandTransform`s, applied by batch
+    ):
         self.item_tfms  = _merge_tfms(self.default_item_tfms,  item_tfms)
         self.batch_tfms = _merge_tfms(self.default_batch_tfms, batch_tfms)
         return self
 
     @classmethod
-    def from_columns(cls, blocks=None, getters=None, get_items=None, **kwargs):
+    def from_columns(cls,
+        blocks:list =None, # One or more `TransformBlock`s
+        getters:list =None, # Getter functions applied to results of `get_items`
+        get_items:callable=None, # A function to get items
+        **kwargs,
+    ):
         if getters is None: getters = L(ItemGetter(i) for i in range(2 if blocks is None else len(L(blocks))))
         get_items = _zip if get_items is None else compose(get_items, _zip)
         return cls(blocks=blocks, getters=getters, get_items=get_items, **kwargs)
 
-    def datasets(self, source, verbose=False):
+    def datasets(self,
+        source, # The data source
+        verbose:bool=False, # Show verbose messages
+    ) -> Datasets:
         self.source = source                     ; pv(f"Collecting items from {source}", verbose)
         items = (self.get_items or noop)(source) ; pv(f"Found {len(items)} items", verbose)
         splits = (self.splitter or RandomSplitter())(items)
         pv(f"{len(splits)} datasets of sizes {','.join([str(len(s)) for s in splits])}", verbose)
         return Datasets(items, tfms=self._combine_type_tfms(), splits=splits, dl_type=self.dl_type, n_inp=self.n_inp, verbose=verbose)
 
-    def dataloaders(self, source, path='.', verbose=False, **kwargs):
+    def dataloaders(self,
+        source, # The data source
+        path:str='.', # Data source and default `Learner` path
+        verbose:bool=False, # Show verbose messages
+        **kwargs
+    ) -> DataLoaders:
         dsets = self.datasets(source, verbose=verbose)
         kwargs = {**self.dls_kwargs, **kwargs, 'verbose': verbose}
         return dsets.dataloaders(path=path, after_item=self.item_tfms, after_batch=self.batch_tfms, **kwargs)
@@ -170,7 +194,12 @@ def _find_fail_collate(s):
 
 # Cell
 @patch
-def summary(self: DataBlock, source, bs=4, show_batch=False, **kwargs):
+def summary(self:DataBlock,
+    source, # The data source
+    bs:int=4, # The batch size
+    show_batch:bool=False, # Call `show_batch` after the summary
+    **kwargs, # Additional keyword arguments to `show_batch`
+):
     "Steps through the transform pipeline for one batch, and optionally calls `show_batch(**kwargs)` on the transient `Dataloaders`."
     print(f"Setting-up type transforms pipelines")
     dsets = self.datasets(source, verbose=True)
