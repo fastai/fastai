@@ -105,7 +105,8 @@ class TextLearner(Learner):
         alpha:float=2., # Param for `RNNRegularizer`
         beta:float=1., # Param for `RNNRegularizer`
         moms:tuple=(0.8,0.7,0.8), # Momentum for `Cosine Annealing Scheduler`
-        **kwargs):
+        **kwargs
+    ):
         super().__init__(dls, model, moms=moms, **kwargs)
         self.add_cbs(rnn_cbs())
 
@@ -135,8 +136,8 @@ class TextLearner(Learner):
     def load_pretrained(self,
         wgts_fname:str, # Filename of saved weights
         vocab_fname:str, # Saved vocabulary filename in pickle format
-        model=None # Model to load parameters from or uses `Learner` model attribute if unspecified
-        ):
+        model=None # Model to load parameters from, defaults to `Learner.model`
+    ):
         "Load a pretrained model and adapt it to the data vocabulary."
         old_vocab = load_pickle(vocab_fname)
         new_vocab = _get_text_vocab(self.dls)
@@ -154,7 +155,8 @@ class TextLearner(Learner):
         file:str, # Filename of saved model
         with_opt:bool=None, # Enable to load `Optimizer` state
         device:(int,str,torch.device)=None, # Device used to load, uses device from `dls` if unspecified
-        **kwargs):
+        **kwargs
+    ):
         if device is None: device = self.dls.device
         if self.opt is None: self.create_opt()
         file = join_path_file(file, self.path/self.model_dir, ext='.pth')
