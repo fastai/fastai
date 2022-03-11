@@ -26,7 +26,7 @@ import importlib
 def pytorch_doc_link(
     name:str, # Name of a PyTorch module, class or function
 ) -> (str, None):
-    "Get the URL to the documentation of a pytorch module, class or function"
+    "Get the URL to the documentation of a PyTorch module, class or function"
     if name.startswith('F'): name = 'torch.nn.functional' + name[1:]
     if not name.startswith('torch.'): name = 'torch.' + name
     if name == 'torch.Tensor': return f'{PYTORCH_URL}tensors.html'
