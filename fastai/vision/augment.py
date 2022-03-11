@@ -1242,7 +1242,7 @@ def aug_transforms(
     max_warp:float=0.2, # Maximum value of changing warp per
     p_affine:float=0.75, # Probability of applying affine transformation
     p_lighting:float=0.75, # Probability of changing brightnest and contrast
-    xtra_tfms:[callable]=None, # Custom Transformations
+    xtra_tfms:list=None, # Custom Transformations
     size:(int,tuple)=None, # Output size, duplicated if one value is specified
     mode:str='bilinear', # PyTorch `F.grid_sample` interpolation
     pad_mode=PadMode.Reflection, # A `PadMode`
