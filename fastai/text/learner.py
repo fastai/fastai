@@ -121,7 +121,7 @@ class TextLearner(Learner):
 
     def load_encoder(self,
         file:str, # Filename of the saved encoder
-        device:(int,str,torch.device)=None # Device used to load, uses device from `dls` if unspecified
+        device:(int,str,torch.device)=None # Device used to load, defaults to `dls` device
     ):
         "Load the encoder `file` from the model directory, optionally ensuring it's on `device`"
         encoder = get_model(self.model)[0]
@@ -154,7 +154,7 @@ class TextLearner(Learner):
     def load(self,
         file:str, # Filename of saved model
         with_opt:bool=None, # Enable to load `Optimizer` state
-        device:(int,str,torch.device)=None, # Device used to load, uses device from `dls` if unspecified
+        device:(int,str,torch.device)=None, # Device used to load, defaults to `dls` device
         **kwargs
     ):
         if device is None: device = self.dls.device
