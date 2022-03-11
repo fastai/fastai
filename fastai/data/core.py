@@ -351,7 +351,14 @@ def show_at(o, idx, **kwargs):
 @delegates(TfmdLists)
 class Datasets(FilteredBase):
     "A dataset that creates a tuple from each `tfms`"
-    def __init__(self, items=None, tfms=None, tls=None, n_inp=None, dl_type=None, **kwargs):
+    def __init__(self,
+        items:list=None, # List of items to create `Datasets`
+        tfms:(list,Pipeline)=None, # List of `Transform`(s) or `Pipeline` to apply
+        tls:TfmdLists=None, # If None, `self.tls` is generated from `items` and `tfms`
+        n_inp:int=None, # Number of elements in `Datasets` tuple that should be considered part of input
+        dl_type=None, # Default type of `DataLoader` used when function `FilteredBase.dataloaders` is called
+        **kwargs
+    ):
         super().__init__(dl_type=dl_type)
         self.tls = L(tls if tls else [TfmdLists(items, t, **kwargs) for t in L(ifnone(tfms,[None]))])
         self.n_inp = ifnone(n_inp, max(1, len(self.tls)-1))
@@ -403,7 +410,12 @@ class Datasets(FilteredBase):
     )
 
 # Cell
-def test_set(dsets, test_items, rm_tfms=None, with_labels=False):
+def test_set(
+    dsets:(Datasets, TfmdLists), # Map- or iterable-style dataset from which to load the data
+    test_items, # Items in test dataset
+    rm_tfms=None, # Start index of `Transform`(s) from validation set in `dsets` to apply
+    with_labels:bool=False # Whether the test items contain labels
+):
     "Create a test set from `test_items` using validation transforms of `dsets`"
     if isinstance(dsets, Datasets):
         tls = dsets.tls if with_labels else dsets.tls[:dsets.n_inp]
@@ -422,7 +434,12 @@ def test_set(dsets, test_items, rm_tfms=None, with_labels=False):
 # Cell
 @patch
 @delegates(TfmdDL.__init__)
-def test_dl(self:DataLoaders, test_items, rm_type_tfms=None, with_labels=False, **kwargs):
+def test_dl(self:DataLoaders,
+    test_items, # Items in test dataset
+    rm_type_tfms=None, # Start index of `Transform`(s) from validation set in `dsets` to apply
+    with_labels:bool=False, # Whether the test items contain labels
+    **kwargs
+):
     "Create a test dataloader from `test_items` using validation transforms of `dls`"
     test_ds = test_set(self.valid_ds, test_items, rm_tfms=rm_type_tfms, with_labels=with_labels
                       ) if isinstance(self.valid_ds, (Datasets, TfmdLists)) else test_items
