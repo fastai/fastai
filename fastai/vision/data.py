@@ -83,7 +83,7 @@ def ImageBlock(cls:PILBase=PILImage):
 
 # Cell
 def MaskBlock(
-    codes=None # List of classes where `codes[i]` corresponds to an `i` valued pixel in a segmentation mask
+    codes:list=None # Vocab labels for segmentation masks
 ):
     "A `TransformBlock` for segmentation masks, potentially with `codes`"
     return TransformBlock(type_tfms=PILMask.create, item_tfms=AddMaskCodes(codes=codes), batch_tfms=IntToFloatTensor)
