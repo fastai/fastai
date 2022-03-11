@@ -303,7 +303,7 @@ class FilteredBase:
 
     def dataloaders(self,
         bs:int=64, # Batch size
-        shuffle_train:bool=None, # (Deprecated, use `shuffle`) Whether to shuffle training `DataLoader`
+        shuffle_train:bool=None, # (Deprecated, use `shuffle`) Shuffle training `DataLoader`
         shuffle:bool=True, # Shuffle training `DataLoader`
         val_shuffle:bool=False, # Shuffle validation `DataLoader`
         n:int=None, # Size of `Datasets` used to create `DataLoader`
@@ -337,15 +337,15 @@ class TfmdLists(FilteredBase, L, GetAttr):
     "A `Pipeline` of `tfms` applied to a collection of `items`"
     _default='tfms'
     def __init__(self,
-        items:list, # List of items to apply `Transform`s to
-        tfms:(list,Pipeline), # List of `Transform`(s) or `Pipeline` to apply
-        use_list:bool=None, # Whether to use `list` in `L`
-        do_setup:bool=True, # Whether to call `setup()` for `Transform`
-        split_idx:int=None, # Whether to apply `Transform`(s) to training or validation set. `0` for training set and `1` for validation set
-        train_setup:bool=True, # Whether to apply `Transform`(s) only on training `DataLoader`
-        splits:list=None, # List of indexs for for training and validation sets
+        items:list, # Items to apply `Transform`s to
+        tfms:(list,Pipeline), # `Transform`(s) or `Pipeline` to apply
+        use_list:bool=None, # Use `list` in `L`
+        do_setup:bool=True, # Call `setup()` for `Transform`
+        split_idx:int=None, # Apply `Transform`(s) to training or validation set. `0` for training set and `1` for validation set
+        train_setup:bool=True, # Apply `Transform`(s) only on training `DataLoader`
+        splits:list=None, # Indices for training and validation sets
         types=None, # Types of data in `items`
-        verbose:bool=False, # Whether to print verbose output
+        verbose:bool=False, # Print verbose output
         dl_type:TfmdDL=None # Type of `DataLoader`
     ):
         super().__init__(items, use_list=use_list)
@@ -373,7 +373,7 @@ class TfmdLists(FilteredBase, L, GetAttr):
     def new_empty(self): return self._new([])
 
     def setup(self,
-        train_setup:bool=True # Whether to apply `Transform`(s) only on training `DataLoader`
+        train_setup:bool=True # Apply `Transform`(s) only on training `DataLoader`
     ):
         self.tfms.setup(self, train_setup)
         if len(self) != 0:
