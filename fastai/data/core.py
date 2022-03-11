@@ -302,17 +302,17 @@ class FilteredBase:
     def subset(self): raise NotImplemented
 
     def dataloaders(self,
-        bs:int=64, # Size of batch
+        bs:int=64, # Batch size
         shuffle_train:bool=None, # (Deprecated, use `shuffle`) Whether to shuffle training `DataLoader`
-        shuffle:bool=True, # Whether to shuffle training `DataLoader`
-        val_shuffle:bool=False, # Whether to shuffle validation `DataLoader`
+        shuffle:bool=True, # Shuffle training `DataLoader`
+        val_shuffle:bool=False, # Shuffle validation `DataLoader`
         n:int=None, # Size of `Datasets` used to create `DataLoader`
         path:(str, Path)='.', # Path to put in `DataLoaders`
         dl_type:TfmdDL=None, # Type of `DataLoader`
-        dl_kwargs:list=None, # list of kwargs to pass to individual `DataLoader`s
+        dl_kwargs:list=None, # List of kwargs to pass to individual `DataLoader`s
         device:torch.device=None, # Device to put `DataLoaders`
-        drop_last:bool=None, # Whether to drop last incomplete batch
-        val_bs:int=None, # Size of batch for validation `DataLoader`
+        drop_last:bool=None, # Drop last incomplete batch, defaults to `shuffle`
+        val_bs:int=None, # Validation batch size, defaults to `bs`
         **kwargs
     ) -> DataLoaders:
         if shuffle_train is not None:
