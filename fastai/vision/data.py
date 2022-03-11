@@ -97,8 +97,8 @@ BBoxBlock.__doc__  = "A `TransformBlock` for bounding boxes in an image"
 
 # Cell
 def BBoxLblBlock(
-    vocab=None, # List of possible labels for bounding boxes
-    add_na:bool=True # If `True`, a new category is added for NaN (that will represent the background class)
+    vocab:list=None, # Vocab labels for bounding boxes
+    add_na:bool=True # Add NaN as a background class
 ):
     "A `TransformBlock` for labeled bounding boxes, potentially with `vocab`"
     return TransformBlock(type_tfms=MultiCategorize(vocab=vocab, add_na=add_na), item_tfms=BBoxLabeler)
