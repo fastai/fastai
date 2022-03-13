@@ -9,7 +9,15 @@ from .load import *
 
 # Cell
 @typedispatch
-def show_batch(x, y, samples, ctxs=None, max_n=9, **kwargs):
+def show_batch(
+    x, # Input(s) in the batch
+    y, # Target(s) in the batch
+    samples, # List of (`x`, `y`) pairs of length `max_n`
+    ctxs=None, # List of `ctx` objects to show data. Could be a matplotlib axis, DataFrame, etc.
+    max_n=9, # Maximum number of `samples` to show
+    **kwargs
+):
+    "Show `max_n` input(s) and target(s) from the batch."
     if ctxs is None: ctxs = Inf.nones
     if hasattr(samples[0], 'show'):
         ctxs = [s.show(ctx=c, **kwargs) for s,c,_ in zip(samples,ctxs,range(max_n))]
@@ -20,7 +28,16 @@ def show_batch(x, y, samples, ctxs=None, max_n=9, **kwargs):
 
 # Cell
 @typedispatch
-def show_results(x, y, samples, outs, ctxs=None, max_n=9, **kwargs):
+def show_results(
+    x, # Input(s) in the batch
+    y, # Target(s) in the batch
+    samples, # List of (`x`, `y`) pairs of length `max_n`
+    outs, # List of predicted output(s) from the model
+    ctxs=None, # List of `ctx` objects to show data. Could be a matplotlib axis, DataFrame, etc.
+    max_n=9, # Maximum number of `samples` to show
+    **kwargs
+):
+    "Show `max_n` results with input(s), target(s) and prediction(s)."
     if ctxs is None: ctxs = Inf.nones
     for i in range(len(samples[0])):
         ctxs = [b.show(ctx=c, **kwargs) for b,c,_ in zip(samples.itemgot(i),ctxs,range(max_n))]
@@ -38,7 +55,15 @@ _batch_tfms = ('after_item','before_batch','after_batch')
 @delegates()
 class TfmdDL(DataLoader):
     "Transformed `DataLoader`"
-    def __init__(self, dataset, bs=64, shuffle=False, num_workers=None, verbose=False, do_setup=True, **kwargs):
+    def __init__(self,
+        dataset, # Map- or iterable-style dataset from which to load the data
+        bs:int=64, # Size of batch
+        shuffle:bool=False, # Whether to shuffle data
+        num_workers:int=None, # Number of CPU cores to use in parallel (default: All available up to 16)
+        verbose:bool=False, # Whether to print verbose logs
+        do_setup:bool=True, # Whether to run `setup()` for batch transform(s)
+        **kwargs
+    ):
         if num_workers is None: num_workers = min(16, defaults.cpus)
         for nm in _batch_tfms: kwargs[nm] = Pipeline(kwargs.get(nm,None))
         super().__init__(dataset, bs=bs, shuffle=shuffle, num_workers=num_workers, **kwargs)
@@ -59,7 +84,11 @@ class TfmdDL(DataLoader):
         return retain_types(b, typs=self._types)
 
     @delegates(DataLoader.new)
-    def new(self, dataset=None, cls=None, **kwargs):
+    def new(self,
+        dataset=None, # Map- or iterable-style dataset from which to load the data
+        cls=None, # Class of the newly created `DataLoader` object
+        **kwargs
+    ):
         res = super().new(dataset, cls, do_setup=False, **kwargs)
         if not hasattr(self, '_n_inp') or not hasattr(self, '_types'):
             try:
@@ -76,8 +105,16 @@ class TfmdDL(DataLoader):
             f = getattr(self,nm)
             if isinstance(f,Pipeline): f.split_idx=split_idx
 
-    def decode(self, b): return to_cpu(self.after_batch.decode(self._retain_dl(b)))
-    def decode_batch(self, b, max_n=9, full=True): return self._decode_batch(self.decode(b), max_n, full)
+    def decode(self,
+        b # Batch to decode
+    ):
+        return to_cpu(self.after_batch.decode(self._retain_dl(b)))
+    def decode_batch(self,
+        b, # Batch to decode
+        max_n:int=9, # Maximum number of items to decode
+        full:bool=True # Whether to decode all transforms. If `False`, decode up to the point the item knows how to show itself
+    ):
+        return self._decode_batch(self.decode(b), max_n, full)
 
     def _decode_batch(self, b, max_n=9, full=True):
         f = self.after_item.decode
@@ -93,7 +130,15 @@ class TfmdDL(DataLoader):
         if not is_listy(b): b,its = [b],L((o,) for o in its)
         return detuplify(b[:self.n_inp]),detuplify(b[self.n_inp:]),its
 
-    def show_batch(self, b=None, max_n=9, ctxs=None, show=True, unique=False, **kwargs):
+    def show_batch(self,
+        b=None, # Batch to show
+        max_n:int=9, # Maximum number of items to show
+        ctxs=None, # List of `ctx` objects to show data. Could be matplotlib axis, DataFrame etc
+        show:bool=True, # Whether to display data
+        unique:bool=False, # Whether to show only one
+        **kwargs
+    ):
+        "Show `max_n` input(s) and target(s) from the batch."
         if unique:
             old_get_idxs = self.get_idxs
             self.get_idxs = lambda: Inf.zeros
@@ -102,7 +147,15 @@ class TfmdDL(DataLoader):
         show_batch(*self._pre_show_batch(b, max_n=max_n), ctxs=ctxs, max_n=max_n, **kwargs)
         if unique: self.get_idxs = old_get_idxs
 
-    def show_results(self, b, out, max_n=9, ctxs=None, show=True, **kwargs):
+    def show_results(self,
+        b, # Batch to show results for
+        out, # Predicted output from model for the batch
+        max_n:int=9, # Maximum number of items to show
+        ctxs=None, # List of `ctx` objects to show data. Could be matplotlib axis, DataFrame etc
+        show:bool=True, # Whether to display data
+        **kwargs
+    ):
+        "Show `max_n` results with input(s), target(s) and prediction(s)."
         x,y,its = self.show_batch(b, max_n=max_n, show=False)
         b_out = type(b)(b[:self.n_inp] + (tuple(out) if is_listy(out) else (out,)))
         x1,y1,outs = self.show_batch(b_out, max_n=max_n, show=False)
@@ -111,12 +164,15 @@ class TfmdDL(DataLoader):
         show_results(*res, ctxs=ctxs, max_n=max_n, **kwargs)
 
     @property
-    def n_inp(self):
+    def n_inp(self) -> int:
+        "Number of elements in `Datasets` or `TfmdDL` tuple to be considered part of input."
         if hasattr(self.dataset, 'n_inp'): return self.dataset.n_inp
         if not hasattr(self, '_n_inp'): self._one_pass()
         return self._n_inp
 
-    def to(self, device):
+    def to(self,
+        device # Device to put `DataLoader` and transforms
+    ):
         self.device = device
         for tfm in self.after_batch.fs:
             for a in L(getattr(tfm, 'parameters', None)): setattr(tfm, a, getattr(tfm, a).to(device))
