@@ -167,7 +167,7 @@ def accuracy_thresh_expand(y_pred:Tensor, y_true:Tensor, thresh:float=0.5, sigmo
 # Cell
 def set_freeze_model(
     m:nn.Module, # Model to freeze/unfreeze
-    rg:bool # `True` for freeze, `False` for unfreeze
+    rg:bool # `Requires grad` argument. `True` for freeze
 ):
     for p in m.parameters(): p.requires_grad_(rg)
 
