@@ -389,7 +389,7 @@ class GANLearner(Learner):
 
     @classmethod
     def from_learners(cls,
-        gen_learn:Learner, # A `Learner` object that has the generator
+        gen_learn:Learner, # A `Learner` object that contains the generator
         crit_learn:Learner, # A `Learner` object that has the critic
         switcher:(Callback,None)=None, # Callback for switching between generator and critic training, defaults to `FixedGANSwitcher`
         weights_gen:(None, list, tuple)=None, # Weights for the generator and critic loss function
