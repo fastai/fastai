@@ -3,10 +3,16 @@
 __all__ = ['PYTORCH_URL', 'pytorch_doc_link']
 
 # Cell
+from types import ModuleType
+
+# Cell
 PYTORCH_URL = 'https://pytorch.org/docs/stable/'
 
 # Cell
-def _mod2page(mod):
+def _mod2page(
+    mod:ModuleType, # A PyTorch module
+) -> str:
+    "Get the webpage name for a PyTorch module"
     if mod == Tensor: return 'tensors.html'
     name = mod.__name__
     name = name.replace('torch.', '').replace('utils.', '')
@@ -17,7 +23,10 @@ def _mod2page(mod):
 import importlib
 
 # Cell
-def pytorch_doc_link(name):
+def pytorch_doc_link(
+    name:str # Name of a PyTorch module, class or function
+) -> (str, None):
+    "Get the URL to the documentation of a PyTorch module, class or function"
     if name.startswith('F'): name = 'torch.nn.functional' + name[1:]
     if not name.startswith('torch.'): name = 'torch.' + name
     if name == 'torch.Tensor': return f'{PYTORCH_URL}tensors.html'
