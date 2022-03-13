@@ -77,12 +77,14 @@ def show_batch(x:TensorImage, y:TensorImage, samples, ctxs=None, max_n=10, nrows
     return ctxs
 
 # Cell
-def ImageBlock(cls=PILImage):
+def ImageBlock(cls:PILBase=PILImage):
     "A `TransformBlock` for images of `cls`"
     return TransformBlock(type_tfms=cls.create, batch_tfms=IntToFloatTensor)
 
 # Cell
-def MaskBlock(codes=None):
+def MaskBlock(
+    codes:list=None # Vocab labels for segmentation masks
+):
     "A `TransformBlock` for segmentation masks, potentially with `codes`"
     return TransformBlock(type_tfms=PILMask.create, item_tfms=AddMaskCodes(codes=codes), batch_tfms=IntToFloatTensor)
 
@@ -94,7 +96,10 @@ PointBlock.__doc__ = "A `TransformBlock` for points in an image"
 BBoxBlock.__doc__  = "A `TransformBlock` for bounding boxes in an image"
 
 # Cell
-def BBoxLblBlock(vocab=None, add_na=True):
+def BBoxLblBlock(
+    vocab:list=None, # Vocab labels for bounding boxes
+    add_na:bool=True # Add NaN as a background class
+):
     "A `TransformBlock` for labeled bounding boxes, potentially with `vocab`"
     return TransformBlock(type_tfms=MultiCategorize(vocab=vocab, add_na=add_na), item_tfms=BBoxLabeler)
 
