@@ -159,7 +159,7 @@ class AdaptiveLoss(Module):
         return self.crit(output, target[:,None].expand_as(output).float())
 
 # Cell
-def accuracy_thresh_expand(y_pred, y_true, thresh=0.5, sigmoid=True):
+def accuracy_thresh_expand(y_pred:Tensor, y_true:Tensor, thresh:float=0.5, sigmoid:bool=True):
     "Compute thresholded accuracy after expanding `y_true` to the size of `y_pred`."
     if sigmoid: y_pred = y_pred.sigmoid()
     return ((y_pred>thresh).byte()==y_true[:,None].expand_as(y_pred).byte()).float().mean()
