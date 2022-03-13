@@ -376,7 +376,7 @@ class GANLearner(Learner):
         show_img:bool=True, # Whether to show example generated images during training
         clip:(None, float)=None, # How much to clip the weights
         cbs:(Callback, None, list)=None, # Additional callbacks
-        metrics:(None, list, callable)=None, # Metrics
+        metrics:(None, list, callable)=None, # `Metrics`
         **kwargs
     ):
         gan = GANModule(generator, critic)
