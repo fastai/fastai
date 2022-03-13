@@ -301,8 +301,20 @@ class FilteredBase:
     def _new(self, items, **kwargs): return super()._new(items, splits=self.splits, **kwargs)
     def subset(self): raise NotImplemented
 
-    def dataloaders(self, bs=64, shuffle_train=None, shuffle=True, val_shuffle=False,n=None, path='.', dl_type=None, dl_kwargs=None,
-                    device=None,drop_last=None,val_bs=None, **kwargs):
+    def dataloaders(self,
+        bs:int=64, # Batch size
+        shuffle_train:bool=None, # (Deprecated, use `shuffle`) Shuffle training `DataLoader`
+        shuffle:bool=True, # Shuffle training `DataLoader`
+        val_shuffle:bool=False, # Shuffle validation `DataLoader`
+        n:int=None, # Size of `Datasets` used to create `DataLoader`
+        path:(str, Path)='.', # Path to put in `DataLoaders`
+        dl_type:TfmdDL=None, # Type of `DataLoader`
+        dl_kwargs:list=None, # List of kwargs to pass to individual `DataLoader`s
+        device:torch.device=None, # Device to put `DataLoaders`
+        drop_last:bool=None, # Drop last incomplete batch, defaults to `shuffle`
+        val_bs:int=None, # Validation batch size, defaults to `bs`
+        **kwargs
+    ) -> DataLoaders:
         if shuffle_train is not None:
             shuffle=shuffle_train
             warnings.warn('`shuffle_train` is deprecated. Use `shuffle` instead.',DeprecationWarning)
@@ -324,8 +336,18 @@ FilteredBase.train,FilteredBase.valid = add_props(lambda i,x: x.subset(i))
 class TfmdLists(FilteredBase, L, GetAttr):
     "A `Pipeline` of `tfms` applied to a collection of `items`"
     _default='tfms'
-    def __init__(self, items, tfms, use_list=None, do_setup=True, split_idx=None, train_setup=True,
-                 splits=None, types=None, verbose=False, dl_type=None):
+    def __init__(self,
+        items:list, # Items to apply `Transform`s to
+        tfms:(list,Pipeline), # `Transform`(s) or `Pipeline` to apply
+        use_list:bool=None, # Use `list` in `L`
+        do_setup:bool=True, # Call `setup()` for `Transform`
+        split_idx:int=None, # Apply `Transform`(s) to training or validation set. `0` for training set and `1` for validation set
+        train_setup:bool=True, # Apply `Transform`(s) only on training `DataLoader`
+        splits:list=None, # Indices for training and validation sets
+        types=None, # Types of data in `items`
+        verbose:bool=False, # Print verbose output
+        dl_type:TfmdDL=None # Type of `DataLoader`
+    ):
         super().__init__(items, use_list=use_list)
         if dl_type is not None: self._dl_type = dl_type
         self.splits = L([slice(None),[]] if splits is None else splits).map(mask2idxs)
@@ -350,7 +372,9 @@ class TfmdLists(FilteredBase, L, GetAttr):
     def overlapping_splits(self): return L(Counter(self.splits.concat()).values()).filter(gt(1))
     def new_empty(self): return self._new([])
 
-    def setup(self, train_setup=True):
+    def setup(self,
+        train_setup:bool=True # Apply `Transform`(s) only on training `DataLoader`
+    ):
         self.tfms.setup(self, train_setup)
         if len(self) != 0:
             x = super().__getitem__(0) if self.splits is None else super().__getitem__(self.splits[0])[0]
