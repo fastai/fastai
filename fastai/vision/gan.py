@@ -154,8 +154,8 @@ class GANLoss(GANModule):
 # Cell
 class AdaptiveLoss(Module):
     "Expand the `target` to match the `output` size before applying `crit`."
-    def __init__(self, crit): self.crit = crit
-    def forward(self, output, target):
+    def __init__(self, crit:callable): self.crit = crit
+    def forward(self, output:Tensor, target:Tensor):
         return self.crit(output, target[:,None].expand_as(output).float())
 
 # Cell
@@ -313,6 +313,7 @@ class GANDiscriminativeLR(Callback):
 
 # Cell
 class InvisibleTensor(TensorBase):
+    "TensorBase but show method does nothing"
     def show(self, ctx=None, **kwargs): return ctx
 
 # Cell
@@ -376,7 +377,7 @@ class GANLearner(Learner):
         show_img:bool=True, # Whether to show example generated images during training
         clip:(None, float)=None, # How much to clip the weights
         cbs:(Callback, None, list)=None, # Additional callbacks
-        metrics:(None, list, callable)=None, # `Metrics`
+        metrics:(None, list, callable)=None, # Metrics
         **kwargs
     ):
         gan = GANModule(generator, critic)
@@ -409,7 +410,7 @@ class GANLearner(Learner):
         switch_eval:bool=False, # Whether the model should be set to eval mode when calculating loss
         **kwargs
     ):
-        "Create a WGAN from `dls`, `generator` and `critic`."
+        "Create a [WGAN](https://arxiv.org/abs/1701.07875) from `dls`, `generator` and `critic`."
         if switcher is None: switcher = FixedGANSwitcher(n_crit=5, n_gen=1)
         return cls(dls, generator, critic, _tk_mean, _tk_diff, switcher=switcher, clip=clip, switch_eval=switch_eval, **kwargs)
 

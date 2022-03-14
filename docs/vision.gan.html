@@ -103,7 +103,7 @@ nb_path: "nbs/24_vision.gan.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="GANModule" class="doc_header"><code>class</code> <code>GANModule</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/gan.py#L13" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>GANModule</code>(<strong><code>generator</code></strong>:<a href="/torch_core.html#Module"><code>Module</code></a>=<em><code>None</code></em>, <strong><code>critic</code></strong>:<a href="/torch_core.html#Module"><code>Module</code></a>=<em><code>None</code></em>, <strong><code>gen_mode</code></strong>:<code>(None, &lt;class 'bool'&gt;)</code>=<em><code>False</code></em>) :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
+<h3 id="GANModule" class="doc_header"><code>class</code> <code>GANModule</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/gan.py#L13" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>GANModule</code>(<strong><code>generator</code></strong>:<a href="/torch_core.html#Module"><code>Module</code></a>=<em><code>None</code></em>, <strong><code>critic</code></strong>:<a href="/torch_core.html#Module"><code>Module</code></a>=<em><code>None</code></em>, <strong><code>gen_mode</code></strong>:<code>(None, bool)</code>=<em><code>False</code></em>) :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
 </blockquote>
 <p>Wrapper around a <code>generator</code> and a <code>critic</code> to create a GAN.</p>
 <table>
@@ -117,13 +117,13 @@ nb_path: "nbs/24_vision.gan.ipynb"
 <tbody>
 <tr>
 <td><strong><code>generator</code></strong></td>
-<td><code>Module</code></td>
+<td><a href="/torch_core.html#Module"><code>Module</code></a></td>
 <td><code>None</code></td>
 <td>The generator PyTorch module</td>
 </tr>
 <tr>
 <td><strong><code>critic</code></strong></td>
-<td><code>Module</code></td>
+<td><a href="/torch_core.html#Module"><code>Module</code></a></td>
 <td><code>None</code></td>
 <td>The discriminator PyTorch module</td>
 </tr>
@@ -171,7 +171,7 @@ nb_path: "nbs/24_vision.gan.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="GANModule.switch" class="doc_header"><code>GANModule.switch</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/gan.py#L27" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>GANModule.switch</code>(<strong><code>gen_mode</code></strong>:<code>(None, &lt;class 'bool'&gt;)</code>=<em><code>None</code></em>)</p>
+<h4 id="GANModule.switch" class="doc_header"><code>GANModule.switch</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/gan.py#L27" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>GANModule.switch</code>(<strong><code>gen_mode</code></strong>:<code>(None, bool)</code>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Put the module in generator mode if <code>gen_mode</code> is <code>True</code>, in critic mode otherwise.</p>
 <table>
@@ -220,7 +220,7 @@ nb_path: "nbs/24_vision.gan.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="basic_critic" class="doc_header"><code>basic_critic</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/gan.py#L34" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>basic_critic</code>(<strong><code>in_size</code></strong>:<code>int</code>, <strong><code>n_channels</code></strong>:<code>int</code>, <strong><code>n_features</code></strong>:<code>int</code>=<em><code>64</code></em>, <strong><code>n_extra_layers</code></strong>:<code>int</code>=<em><code>0</code></em>, <strong><code>norm_type</code></strong>:<a href="/layers.html#NormType"><code>NormType</code></a>=<em><code>&lt;NormType.Batch: 1&gt;</code></em>, <strong><code>ks</code></strong>=<em><code>3</code></em>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>padding</code></strong>=<em><code>None</code></em>, <strong><code>bias</code></strong>=<em><code>None</code></em>, <strong><code>ndim</code></strong>=<em><code>2</code></em>, <strong><code>bn_1st</code></strong>=<em><code>True</code></em>, <strong><code>act_cls</code></strong>=<em><code>ReLU</code></em>, <strong><code>transpose</code></strong>=<em><code>False</code></em>, <strong><code>init</code></strong>=<em><code>'auto'</code></em>, <strong><code>xtra</code></strong>=<em><code>None</code></em>, <strong><code>bias_std</code></strong>=<em><code>0.01</code></em>, <strong><code>dilation</code></strong>:<code>Union</code>[<code>int</code>, <code>Tuple</code>[<code>int</code>, <code>int</code>]]=<em><code>1</code></em>, <strong><code>groups</code></strong>:<code>int</code>=<em><code>1</code></em>, <strong><code>padding_mode</code></strong>:<code>str</code>=<em><code>'zeros'</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>dtype</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="basic_critic" class="doc_header"><code>basic_critic</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/gan.py#L34" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>basic_critic</code>(<strong><code>in_size</code></strong>:<code>int</code>, <strong><code>n_channels</code></strong>:<code>int</code>, <strong><code>n_features</code></strong>:<code>int</code>=<em><code>64</code></em>, <strong><code>n_extra_layers</code></strong>:<code>int</code>=<em><code>0</code></em>, <strong><code>norm_type</code></strong>:<code>InstanceZero)</code>=<em><code>&lt;NormType.Batch: 1&gt;</code></em>, <strong><code>ks</code></strong>=<em><code>3</code></em>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>padding</code></strong>=<em><code>None</code></em>, <strong><code>bias</code></strong>=<em><code>None</code></em>, <strong><code>ndim</code></strong>=<em><code>2</code></em>, <strong><code>bn_1st</code></strong>=<em><code>True</code></em>, <strong><code>act_cls</code></strong>=<em><code>ReLU</code></em>, <strong><code>transpose</code></strong>=<em><code>False</code></em>, <strong><code>init</code></strong>=<em><code>'auto'</code></em>, <strong><code>xtra</code></strong>=<em><code>None</code></em>, <strong><code>bias_std</code></strong>=<em><code>0.01</code></em>, <strong><code>dilation</code></strong>:<code>Union</code>[<code>int</code>, Tuple[int, int]<code>\]=*</code>1<code>*, **</code>groups<code>**:</code>int<code>=*</code>1<code>*, **</code>padding_mode<code>**:</code>str<code>=*</code>'zeros'<code>*, **</code>device<code>**=*</code>None<code>*, **</code>dtype<code>**=*</code>None`*)</p>
 </blockquote>
 <p>A basic critic for images <code>n_channels</code> x <code>in_size</code> x <code>in_size</code>.</p>
 <table>
@@ -259,104 +259,110 @@ nb_path: "nbs/24_vision.gan.ipynb"
 <tr>
 <td><strong><code>norm_type</code></strong></td>
 <td><code>InstanceZero)</code></td>
-<td><code>NormType.Batch</code></td>
+<td><code>Batch</code></td>
 <td>Type of normalization to use in the critic</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td><strong>Valid Keyword Arguments</strong></td>
+<td></td>
 </tr>
 <tr>
 <td><strong><code>ks</code></strong></td>
 <td><code>int</code></td>
 <td><code>3</code></td>
-<td><em>No Content</em></td>
+<td>Argument passed to <a href="/layers.html#ConvLayer.__init__"><code>ConvLayer.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>stride</code></strong></td>
 <td><code>int</code></td>
 <td><code>1</code></td>
-<td><em>No Content</em></td>
+<td>Argument passed to <a href="/layers.html#ConvLayer.__init__"><code>ConvLayer.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>padding</code></strong></td>
-<td><code>NoneType</code></td>
+<td></td>
 <td><code>None</code></td>
-<td><em>No Content</em></td>
+<td>Argument passed to <a href="/layers.html#ConvLayer.__init__"><code>ConvLayer.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>bias</code></strong></td>
-<td><code>NoneType</code></td>
+<td></td>
 <td><code>None</code></td>
-<td><em>No Content</em></td>
+<td>Argument passed to <a href="/layers.html#ConvLayer.__init__"><code>ConvLayer.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>ndim</code></strong></td>
 <td><code>int</code></td>
 <td><code>2</code></td>
-<td><em>No Content</em></td>
+<td>Argument passed to <a href="/layers.html#ConvLayer.__init__"><code>ConvLayer.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>bn_1st</code></strong></td>
 <td><code>bool</code></td>
 <td><code>True</code></td>
-<td><em>No Content</em></td>
+<td>Argument passed to <a href="/layers.html#ConvLayer.__init__"><code>ConvLayer.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>act_cls</code></strong></td>
 <td><code>type</code></td>
-<td><code>&lt;class 'torch.nn.modules.activation.ReLU'&gt;</code></td>
-<td><em>No Content</em></td>
+<td><code>ReLU</code></td>
+<td>Argument passed to <a href="/layers.html#ConvLayer.__init__"><code>ConvLayer.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>transpose</code></strong></td>
 <td><code>bool</code></td>
 <td><code>False</code></td>
-<td><em>No Content</em></td>
+<td>Argument passed to <a href="/layers.html#ConvLayer.__init__"><code>ConvLayer.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>init</code></strong></td>
 <td><code>str</code></td>
 <td><code>auto</code></td>
-<td><em>No Content</em></td>
+<td>Argument passed to <a href="/layers.html#ConvLayer.__init__"><code>ConvLayer.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>xtra</code></strong></td>
-<td><code>NoneType</code></td>
+<td></td>
 <td><code>None</code></td>
-<td><em>No Content</em></td>
+<td>Argument passed to <a href="/layers.html#ConvLayer.__init__"><code>ConvLayer.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>bias_std</code></strong></td>
 <td><code>float</code></td>
-<td><code>0.01</code></td>
-<td><em>No Content</em></td>
+<td><code>01</code></td>
+<td>Argument passed to <a href="/layers.html#ConvLayer.__init__"><code>ConvLayer.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>dilation</code></strong></td>
 <td><code>Tuple[int, int]]</code></td>
 <td><code>1</code></td>
-<td><em>No Content</em></td>
+<td>Argument passed to <a href="/layers.html#ConvLayer.__init__"><code>ConvLayer.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>groups</code></strong></td>
 <td><code>int</code></td>
 <td><code>1</code></td>
-<td><em>No Content</em></td>
+<td>Argument passed to <a href="/layers.html#ConvLayer.__init__"><code>ConvLayer.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>padding_mode</code></strong></td>
 <td><code>str</code></td>
 <td><code>zeros</code></td>
-<td><em>No Content</em></td>
+<td>Argument passed to <a href="/layers.html#ConvLayer.__init__"><code>ConvLayer.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>device</code></strong></td>
-<td><code>NoneType</code></td>
+<td></td>
 <td><code>None</code></td>
-<td><em>No Content</em></td>
+<td>Argument passed to <a href="/layers.html#ConvLayer.__init__"><code>ConvLayer.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>dtype</code></strong></td>
-<td><code>NoneType</code></td>
+<td></td>
 <td><code>None</code></td>
-<td><em>No Content</em></td>
+<td>Argument passed to <a href="/layers.html#ConvLayer.__init__"><code>ConvLayer.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong>Returns</strong></td>
@@ -427,7 +433,7 @@ nb_path: "nbs/24_vision.gan.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="basic_generator" class="doc_header"><code>basic_generator</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/gan.py#L61" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>basic_generator</code>(<strong><code>out_size</code></strong>:<code>int</code>, <strong><code>n_channels</code></strong>:<code>int</code>, <strong><code>in_sz</code></strong>:<code>int</code>=<em><code>100</code></em>, <strong><code>n_features</code></strong>:<code>int</code>=<em><code>64</code></em>, <strong><code>n_extra_layers</code></strong>:<code>int</code>=<em><code>0</code></em>, <strong><code>ks</code></strong>=<em><code>3</code></em>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>padding</code></strong>=<em><code>None</code></em>, <strong><code>bias</code></strong>=<em><code>None</code></em>, <strong><code>ndim</code></strong>=<em><code>2</code></em>, <strong><code>norm_type</code></strong>=<em><code>&lt;NormType.Batch: 1&gt;</code></em>, <strong><code>bn_1st</code></strong>=<em><code>True</code></em>, <strong><code>act_cls</code></strong>=<em><code>ReLU</code></em>, <strong><code>transpose</code></strong>=<em><code>False</code></em>, <strong><code>init</code></strong>=<em><code>'auto'</code></em>, <strong><code>xtra</code></strong>=<em><code>None</code></em>, <strong><code>bias_std</code></strong>=<em><code>0.01</code></em>, <strong><code>dilation</code></strong>:<code>Union</code>[<code>int</code>, <code>Tuple</code>[<code>int</code>, <code>int</code>]]=<em><code>1</code></em>, <strong><code>groups</code></strong>:<code>int</code>=<em><code>1</code></em>, <strong><code>padding_mode</code></strong>:<code>str</code>=<em><code>'zeros'</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>dtype</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="basic_generator" class="doc_header"><code>basic_generator</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/gan.py#L61" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>basic_generator</code>(<strong><code>out_size</code></strong>:<code>int</code>, <strong><code>n_channels</code></strong>:<code>int</code>, <strong><code>in_sz</code></strong>:<code>int</code>=<em><code>100</code></em>, <strong><code>n_features</code></strong>:<code>int</code>=<em><code>64</code></em>, <strong><code>n_extra_layers</code></strong>:<code>int</code>=<em><code>0</code></em>, <strong><code>ks</code></strong>=<em><code>3</code></em>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>padding</code></strong>=<em><code>None</code></em>, <strong><code>bias</code></strong>=<em><code>None</code></em>, <strong><code>ndim</code></strong>=<em><code>2</code></em>, <strong><code>norm_type</code></strong>=<em><code>&lt;NormType.Batch: 1&gt;</code></em>, <strong><code>bn_1st</code></strong>=<em><code>True</code></em>, <strong><code>act_cls</code></strong>=<em><code>ReLU</code></em>, <strong><code>transpose</code></strong>=<em><code>False</code></em>, <strong><code>init</code></strong>=<em><code>'auto'</code></em>, <strong><code>xtra</code></strong>=<em><code>None</code></em>, <strong><code>bias_std</code></strong>=<em><code>0.01</code></em>, <strong><code>dilation</code></strong>:<code>Union</code>[<code>int</code>, Tuple[int, int]<code>\]=*</code>1<code>*, **</code>groups<code>**:</code>int<code>=*</code>1<code>*, **</code>padding_mode<code>**:</code>str<code>=*</code>'zeros'<code>*, **</code>device<code>**=*</code>None<code>*, **</code>dtype<code>**=*</code>None`*)</p>
 </blockquote>
 <p>A basic generator from <code>in_sz</code> to images <code>n_channels</code> x <code>out_size</code> x <code>out_size</code>.</p>
 <table>
@@ -470,106 +476,112 @@ nb_path: "nbs/24_vision.gan.ipynb"
 <td>Number of extra hidden layers in the generator</td>
 </tr>
 <tr>
+<td></td>
+<td></td>
+<td><strong>Valid Keyword Arguments</strong></td>
+<td></td>
+</tr>
+<tr>
 <td><strong><code>ks</code></strong></td>
 <td><code>int</code></td>
 <td><code>3</code></td>
-<td><em>No Content</em></td>
+<td>Argument passed to <a href="/layers.html#ConvLayer.__init__"><code>ConvLayer.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>stride</code></strong></td>
 <td><code>int</code></td>
 <td><code>1</code></td>
-<td><em>No Content</em></td>
+<td>Argument passed to <a href="/layers.html#ConvLayer.__init__"><code>ConvLayer.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>padding</code></strong></td>
-<td><code>NoneType</code></td>
+<td></td>
 <td><code>None</code></td>
-<td><em>No Content</em></td>
+<td>Argument passed to <a href="/layers.html#ConvLayer.__init__"><code>ConvLayer.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>bias</code></strong></td>
-<td><code>NoneType</code></td>
+<td></td>
 <td><code>None</code></td>
-<td><em>No Content</em></td>
+<td>Argument passed to <a href="/layers.html#ConvLayer.__init__"><code>ConvLayer.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>ndim</code></strong></td>
 <td><code>int</code></td>
 <td><code>2</code></td>
-<td><em>No Content</em></td>
+<td>Argument passed to <a href="/layers.html#ConvLayer.__init__"><code>ConvLayer.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>norm_type</code></strong></td>
 <td><code>InstanceZero)</code></td>
-<td><code>NormType.Batch</code></td>
-<td><em>No Content</em></td>
+<td><code>Batch</code></td>
+<td>Argument passed to <a href="/layers.html#ConvLayer.__init__"><code>ConvLayer.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>bn_1st</code></strong></td>
 <td><code>bool</code></td>
 <td><code>True</code></td>
-<td><em>No Content</em></td>
+<td>Argument passed to <a href="/layers.html#ConvLayer.__init__"><code>ConvLayer.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>act_cls</code></strong></td>
 <td><code>type</code></td>
-<td><code>&lt;class 'torch.nn.modules.activation.ReLU'&gt;</code></td>
-<td><em>No Content</em></td>
+<td><code>ReLU</code></td>
+<td>Argument passed to <a href="/layers.html#ConvLayer.__init__"><code>ConvLayer.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>transpose</code></strong></td>
 <td><code>bool</code></td>
 <td><code>False</code></td>
-<td><em>No Content</em></td>
+<td>Argument passed to <a href="/layers.html#ConvLayer.__init__"><code>ConvLayer.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>init</code></strong></td>
 <td><code>str</code></td>
 <td><code>auto</code></td>
-<td><em>No Content</em></td>
+<td>Argument passed to <a href="/layers.html#ConvLayer.__init__"><code>ConvLayer.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>xtra</code></strong></td>
-<td><code>NoneType</code></td>
+<td></td>
 <td><code>None</code></td>
-<td><em>No Content</em></td>
+<td>Argument passed to <a href="/layers.html#ConvLayer.__init__"><code>ConvLayer.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>bias_std</code></strong></td>
 <td><code>float</code></td>
-<td><code>0.01</code></td>
-<td><em>No Content</em></td>
+<td><code>01</code></td>
+<td>Argument passed to <a href="/layers.html#ConvLayer.__init__"><code>ConvLayer.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>dilation</code></strong></td>
 <td><code>Tuple[int, int]]</code></td>
 <td><code>1</code></td>
-<td><em>No Content</em></td>
+<td>Argument passed to <a href="/layers.html#ConvLayer.__init__"><code>ConvLayer.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>groups</code></strong></td>
 <td><code>int</code></td>
 <td><code>1</code></td>
-<td><em>No Content</em></td>
+<td>Argument passed to <a href="/layers.html#ConvLayer.__init__"><code>ConvLayer.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>padding_mode</code></strong></td>
 <td><code>str</code></td>
 <td><code>zeros</code></td>
-<td><em>No Content</em></td>
+<td>Argument passed to <a href="/layers.html#ConvLayer.__init__"><code>ConvLayer.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>device</code></strong></td>
-<td><code>NoneType</code></td>
+<td></td>
 <td><code>None</code></td>
-<td><em>No Content</em></td>
+<td>Argument passed to <a href="/layers.html#ConvLayer.__init__"><code>ConvLayer.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>dtype</code></strong></td>
-<td><code>NoneType</code></td>
+<td></td>
 <td><code>None</code></td>
-<td><em>No Content</em></td>
+<td>Argument passed to <a href="/layers.html#ConvLayer.__init__"><code>ConvLayer.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong>Returns</strong></td>
@@ -646,7 +658,7 @@ nb_path: "nbs/24_vision.gan.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="DenseResBlock" class="doc_header"><code>DenseResBlock</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/gan.py#L90" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>DenseResBlock</code>(<strong><code>nf</code></strong>:<code>int</code>, <strong><code>norm_type</code></strong>:<a href="/layers.html#NormType"><code>NormType</code></a>=<em><code>&lt;NormType.Batch: 1&gt;</code></em>, <strong><code>ks</code></strong>=<em><code>3</code></em>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>padding</code></strong>=<em><code>None</code></em>, <strong><code>bias</code></strong>=<em><code>None</code></em>, <strong><code>ndim</code></strong>=<em><code>2</code></em>, <strong><code>bn_1st</code></strong>=<em><code>True</code></em>, <strong><code>act_cls</code></strong>=<em><code>ReLU</code></em>, <strong><code>transpose</code></strong>=<em><code>False</code></em>, <strong><code>init</code></strong>=<em><code>'auto'</code></em>, <strong><code>xtra</code></strong>=<em><code>None</code></em>, <strong><code>bias_std</code></strong>=<em><code>0.01</code></em>, <strong><code>dilation</code></strong>:<code>Union</code>[<code>int</code>, <code>Tuple</code>[<code>int</code>, <code>int</code>]]=<em><code>1</code></em>, <strong><code>groups</code></strong>:<code>int</code>=<em><code>1</code></em>, <strong><code>padding_mode</code></strong>:<code>str</code>=<em><code>'zeros'</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>dtype</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="DenseResBlock" class="doc_header"><code>DenseResBlock</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/gan.py#L90" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>DenseResBlock</code>(<strong><code>nf</code></strong>:<code>int</code>, <strong><code>norm_type</code></strong>:<code>InstanceZero)</code>=<em><code>&lt;NormType.Batch: 1&gt;</code></em>, <strong><code>ks</code></strong>=<em><code>3</code></em>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>padding</code></strong>=<em><code>None</code></em>, <strong><code>bias</code></strong>=<em><code>None</code></em>, <strong><code>ndim</code></strong>=<em><code>2</code></em>, <strong><code>bn_1st</code></strong>=<em><code>True</code></em>, <strong><code>act_cls</code></strong>=<em><code>ReLU</code></em>, <strong><code>transpose</code></strong>=<em><code>False</code></em>, <strong><code>init</code></strong>=<em><code>'auto'</code></em>, <strong><code>xtra</code></strong>=<em><code>None</code></em>, <strong><code>bias_std</code></strong>=<em><code>0.01</code></em>, <strong><code>dilation</code></strong>:<code>Union</code>[<code>int</code>, Tuple[int, int]<code>\]=*</code>1<code>*, **</code>groups<code>**:</code>int<code>=*</code>1<code>*, **</code>padding_mode<code>**:</code>str<code>=*</code>'zeros'<code>*, **</code>device<code>**=*</code>None<code>*, **</code>dtype<code>**=*</code>None`*)</p>
 </blockquote>
 <p>Resnet block of <code>nf</code> features. <code>conv_kwargs</code> are passed to <code>conv_layer</code>.</p>
 <table>
@@ -667,104 +679,110 @@ nb_path: "nbs/24_vision.gan.ipynb"
 <tr>
 <td><strong><code>norm_type</code></strong></td>
 <td><code>InstanceZero)</code></td>
-<td><code>NormType.Batch</code></td>
+<td><code>Batch</code></td>
 <td>Normalization type</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td><strong>Valid Keyword Arguments</strong></td>
+<td></td>
 </tr>
 <tr>
 <td><strong><code>ks</code></strong></td>
 <td><code>int</code></td>
 <td><code>3</code></td>
-<td><em>No Content</em></td>
+<td>Argument passed to <a href="/layers.html#ConvLayer.__init__"><code>ConvLayer.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>stride</code></strong></td>
 <td><code>int</code></td>
 <td><code>1</code></td>
-<td><em>No Content</em></td>
+<td>Argument passed to <a href="/layers.html#ConvLayer.__init__"><code>ConvLayer.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>padding</code></strong></td>
-<td><code>NoneType</code></td>
+<td></td>
 <td><code>None</code></td>
-<td><em>No Content</em></td>
+<td>Argument passed to <a href="/layers.html#ConvLayer.__init__"><code>ConvLayer.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>bias</code></strong></td>
-<td><code>NoneType</code></td>
+<td></td>
 <td><code>None</code></td>
-<td><em>No Content</em></td>
+<td>Argument passed to <a href="/layers.html#ConvLayer.__init__"><code>ConvLayer.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>ndim</code></strong></td>
 <td><code>int</code></td>
 <td><code>2</code></td>
-<td><em>No Content</em></td>
+<td>Argument passed to <a href="/layers.html#ConvLayer.__init__"><code>ConvLayer.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>bn_1st</code></strong></td>
 <td><code>bool</code></td>
 <td><code>True</code></td>
-<td><em>No Content</em></td>
+<td>Argument passed to <a href="/layers.html#ConvLayer.__init__"><code>ConvLayer.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>act_cls</code></strong></td>
 <td><code>type</code></td>
-<td><code>&lt;class 'torch.nn.modules.activation.ReLU'&gt;</code></td>
-<td><em>No Content</em></td>
+<td><code>ReLU</code></td>
+<td>Argument passed to <a href="/layers.html#ConvLayer.__init__"><code>ConvLayer.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>transpose</code></strong></td>
 <td><code>bool</code></td>
 <td><code>False</code></td>
-<td><em>No Content</em></td>
+<td>Argument passed to <a href="/layers.html#ConvLayer.__init__"><code>ConvLayer.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>init</code></strong></td>
 <td><code>str</code></td>
 <td><code>auto</code></td>
-<td><em>No Content</em></td>
+<td>Argument passed to <a href="/layers.html#ConvLayer.__init__"><code>ConvLayer.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>xtra</code></strong></td>
-<td><code>NoneType</code></td>
+<td></td>
 <td><code>None</code></td>
-<td><em>No Content</em></td>
+<td>Argument passed to <a href="/layers.html#ConvLayer.__init__"><code>ConvLayer.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>bias_std</code></strong></td>
 <td><code>float</code></td>
-<td><code>0.01</code></td>
-<td><em>No Content</em></td>
+<td><code>01</code></td>
+<td>Argument passed to <a href="/layers.html#ConvLayer.__init__"><code>ConvLayer.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>dilation</code></strong></td>
 <td><code>Tuple[int, int]]</code></td>
 <td><code>1</code></td>
-<td><em>No Content</em></td>
+<td>Argument passed to <a href="/layers.html#ConvLayer.__init__"><code>ConvLayer.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>groups</code></strong></td>
 <td><code>int</code></td>
 <td><code>1</code></td>
-<td><em>No Content</em></td>
+<td>Argument passed to <a href="/layers.html#ConvLayer.__init__"><code>ConvLayer.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>padding_mode</code></strong></td>
 <td><code>str</code></td>
 <td><code>zeros</code></td>
-<td><em>No Content</em></td>
+<td>Argument passed to <a href="/layers.html#ConvLayer.__init__"><code>ConvLayer.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>device</code></strong></td>
-<td><code>NoneType</code></td>
+<td></td>
 <td><code>None</code></td>
-<td><em>No Content</em></td>
+<td>Argument passed to <a href="/layers.html#ConvLayer.__init__"><code>ConvLayer.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>dtype</code></strong></td>
-<td><code>NoneType</code></td>
+<td></td>
 <td><code>None</code></td>
-<td><em>No Content</em></td>
+<td>Argument passed to <a href="/layers.html#ConvLayer.__init__"><code>ConvLayer.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong>Returns</strong></td>
@@ -836,14 +854,8 @@ nb_path: "nbs/24_vision.gan.ipynb"
 <tr>
 <td><strong><code>p</code></strong></td>
 <td><code>float</code></td>
-<td><code>0.15</code></td>
+<td><code>15</code></td>
 <td>Amount of dropout in the critic</td>
-</tr>
-<tr>
-<td><strong>Returns</strong></td>
-<td><code>Sequential</code></td>
-<td></td>
-<td></td>
 </tr>
 </tbody>
 </table>
@@ -902,7 +914,7 @@ nb_path: "nbs/24_vision.gan.ipynb"
 </tr>
 <tr>
 <td><strong><code>gan_model</code></strong></td>
-<td><code>GANModule</code></td>
+<td><a href="/vision.gan.html#GANModule"><code>GANModule</code></a></td>
 <td></td>
 <td>The GAN model</td>
 </tr>
@@ -1047,9 +1059,26 @@ nb_path: "nbs/24_vision.gan.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="AdaptiveLoss" class="doc_header"><code>class</code> <code>AdaptiveLoss</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/gan.py#L155" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>AdaptiveLoss</code>(<strong><code>crit</code></strong>) :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
+<h3 id="AdaptiveLoss" class="doc_header"><code>class</code> <code>AdaptiveLoss</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/gan.py#L155" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>AdaptiveLoss</code>(<strong><code>crit</code></strong>:<code>callable</code>) :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
 </blockquote>
 <p>Expand the <code>target</code> to match the <code>output</code> size before applying <code>crit</code>.</p>
+<table>
+<thead><tr>
+<th></th>
+<th>Type</th>
+<th>Default</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>crit</code></strong></td>
+<td><code>callable</code></td>
+<td></td>
+<td>loss criterion function</td>
+</tr>
+</tbody>
+</table>
 
 </div>
 
@@ -1079,9 +1108,44 @@ nb_path: "nbs/24_vision.gan.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="accuracy_thresh_expand" class="doc_header"><code>accuracy_thresh_expand</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/gan.py#L162" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>accuracy_thresh_expand</code>(<strong><code>y_pred</code></strong>, <strong><code>y_true</code></strong>, <strong><code>thresh</code></strong>=<em><code>0.5</code></em>, <strong><code>sigmoid</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="accuracy_thresh_expand" class="doc_header"><code>accuracy_thresh_expand</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/gan.py#L169" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>accuracy_thresh_expand</code>(<strong><code>y_pred</code></strong>:<code>Tensor</code>, <strong><code>y_true</code></strong>:<code>Tensor</code>, <strong><code>thresh</code></strong>:<code>float</code>=<em><code>0.5</code></em>, <strong><code>sigmoid</code></strong>:<code>bool</code>=<em><code>True</code></em>)</p>
 </blockquote>
 <p>Compute thresholded accuracy after expanding <code>y_true</code> to the size of <code>y_pred</code>.</p>
+<table>
+<thead><tr>
+<th></th>
+<th>Type</th>
+<th>Default</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>y_pred</code></strong></td>
+<td><code>Tensor</code></td>
+<td></td>
+<td>model predictions</td>
+</tr>
+<tr>
+<td><strong><code>y_true</code></strong></td>
+<td><code>Tensor</code></td>
+<td></td>
+<td>targets for accuracy calculation</td>
+</tr>
+<tr>
+<td><strong><code>thresh</code></strong></td>
+<td><code>float</code></td>
+<td><code>5</code></td>
+<td>threshold for model prediction</td>
+</tr>
+<tr>
+<td><strong><code>sigmoid</code></strong></td>
+<td><code>bool</code></td>
+<td><code>True</code></td>
+<td>whether to apply sigmoid to model prediction</td>
+</tr>
+</tbody>
+</table>
 
 </div>
 
@@ -1117,7 +1181,7 @@ nb_path: "nbs/24_vision.gan.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="set_freeze_model" class="doc_header"><code>set_freeze_model</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/gan.py#L168" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>set_freeze_model</code>(<strong><code>m</code></strong>:<a href="/torch_core.html#Module"><code>Module</code></a>, <strong><code>rg</code></strong>:<code>bool</code>)</p>
+<h4 id="set_freeze_model" class="doc_header"><code>set_freeze_model</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/gan.py#L180" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>set_freeze_model</code>(<strong><code>m</code></strong>:<a href="/torch_core.html#Module"><code>Module</code></a>, <strong><code>rg</code></strong>:<code>bool</code>)</p>
 </blockquote>
 <table>
 <thead><tr>
@@ -1130,7 +1194,7 @@ nb_path: "nbs/24_vision.gan.ipynb"
 <tbody>
 <tr>
 <td><strong><code>m</code></strong></td>
-<td><code>Module</code></td>
+<td><a href="/torch_core.html#Module"><code>Module</code></a></td>
 <td></td>
 <td>Model to freeze/unfreeze</td>
 </tr>
@@ -1138,7 +1202,7 @@ nb_path: "nbs/24_vision.gan.ipynb"
 <td><strong><code>rg</code></strong></td>
 <td><code>bool</code></td>
 <td></td>
-<td><code>True</code> for freeze, <code>False</code> for unfreeze</td>
+<td><code>Requires grad</code> argument. <code>True</code> for freeze</td>
 </tr>
 </tbody>
 </table>
@@ -1171,7 +1235,7 @@ nb_path: "nbs/24_vision.gan.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="GANTrainer" class="doc_header"><code>class</code> <code>GANTrainer</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/gan.py#L175" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>GANTrainer</code>(<strong><code>switch_eval</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>clip</code></strong>:<code>(None, &lt;class 'float'&gt;)</code>=<em><code>None</code></em>, <strong><code>beta</code></strong>:<code>float</code>=<em><code>0.98</code></em>, <strong><code>gen_first</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>show_img</code></strong>:<code>bool</code>=<em><code>True</code></em>) :: <a href="/callback.core.html#Callback"><code>Callback</code></a></p>
+<h3 id="GANTrainer" class="doc_header"><code>class</code> <code>GANTrainer</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/gan.py#L187" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>GANTrainer</code>(<strong><code>switch_eval</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>clip</code></strong>:<code>(None, float)</code>=<em><code>None</code></em>, <strong><code>beta</code></strong>:<code>float</code>=<em><code>0.98</code></em>, <strong><code>gen_first</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>show_img</code></strong>:<code>bool</code>=<em><code>True</code></em>) :: <a href="/callback.core.html#Callback"><code>Callback</code></a></p>
 </blockquote>
 <p>Callback to handle GAN Training.</p>
 <table>
@@ -1198,7 +1262,7 @@ nb_path: "nbs/24_vision.gan.ipynb"
 <tr>
 <td><strong><code>beta</code></strong></td>
 <td><code>float</code></td>
-<td><code>0.98</code></td>
+<td><code>98</code></td>
 <td>Exponentially weighted smoothing of the losses <code>beta</code></td>
 </tr>
 <tr>
@@ -1251,7 +1315,7 @@ nb_path: "nbs/24_vision.gan.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="FixedGANSwitcher" class="doc_header"><code>class</code> <code>FixedGANSwitcher</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/gan.py#L256" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>FixedGANSwitcher</code>(<strong><code>n_crit</code></strong>:<code>int</code>=<em><code>1</code></em>, <strong><code>n_gen</code></strong>:<code>int</code>=<em><code>1</code></em>) :: <a href="/callback.core.html#Callback"><code>Callback</code></a></p>
+<h3 id="FixedGANSwitcher" class="doc_header"><code>class</code> <code>FixedGANSwitcher</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/gan.py#L268" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>FixedGANSwitcher</code>(<strong><code>n_crit</code></strong>:<code>int</code>=<em><code>1</code></em>, <strong><code>n_gen</code></strong>:<code>int</code>=<em><code>1</code></em>) :: <a href="/callback.core.html#Callback"><code>Callback</code></a></p>
 </blockquote>
 <p>Switcher to do <code>n_crit</code> iterations of the critic then <code>n_gen</code> iterations of the generator.</p>
 <table>
@@ -1306,7 +1370,7 @@ nb_path: "nbs/24_vision.gan.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="AdaptiveGANSwitcher" class="doc_header"><code>class</code> <code>AdaptiveGANSwitcher</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/gan.py#L282" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>AdaptiveGANSwitcher</code>(<strong><code>gen_thresh</code></strong>:<code>(None, &lt;class 'float'&gt;)</code>=<em><code>None</code></em>, <strong><code>critic_thresh</code></strong>:<code>(None, &lt;class 'float'&gt;)</code>=<em><code>None</code></em>) :: <a href="/callback.core.html#Callback"><code>Callback</code></a></p>
+<h3 id="AdaptiveGANSwitcher" class="doc_header"><code>class</code> <code>AdaptiveGANSwitcher</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/gan.py#L294" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>AdaptiveGANSwitcher</code>(<strong><code>gen_thresh</code></strong>:<code>(None, float)</code>=<em><code>None</code></em>, <strong><code>critic_thresh</code></strong>:<code>(None, float)</code>=<em><code>None</code></em>) :: <a href="/callback.core.html#Callback"><code>Callback</code></a></p>
 </blockquote>
 <p>Switcher that goes back to generator/critic when the loss goes below <code>gen_thresh</code>/<code>crit_thresh</code>.</p>
 <table>
@@ -1361,7 +1425,7 @@ nb_path: "nbs/24_vision.gan.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="GANDiscriminativeLR" class="doc_header"><code>class</code> <code>GANDiscriminativeLR</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/gan.py#L300" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>GANDiscriminativeLR</code>(<strong><code>mult_lr</code></strong>=<em><code>5.0</code></em>) :: <a href="/callback.core.html#Callback"><code>Callback</code></a></p>
+<h3 id="GANDiscriminativeLR" class="doc_header"><code>class</code> <code>GANDiscriminativeLR</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/gan.py#L312" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>GANDiscriminativeLR</code>(<strong><code>mult_lr</code></strong>=<em><code>5.0</code></em>) :: <a href="/callback.core.html#Callback"><code>Callback</code></a></p>
 </blockquote>
 <p><a href="/callback.core.html#Callback"><code>Callback</code></a> that handles multiplying the learning rate by <code>mult_lr</code> for the critic.</p>
 
@@ -1399,9 +1463,9 @@ nb_path: "nbs/24_vision.gan.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="InvisibleTensor" class="doc_header"><code>class</code> <code>InvisibleTensor</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/gan.py#L315" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>InvisibleTensor</code>(<strong><code>x</code></strong>, <strong>**<code>kwargs</code></strong>) :: <a href="/torch_core.html#TensorBase"><code>TensorBase</code></a></p>
+<h3 id="InvisibleTensor" class="doc_header"><code>class</code> <code>InvisibleTensor</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/gan.py#L327" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>InvisibleTensor</code>(<strong><code>x</code></strong>, <strong>**<code>kwargs</code></strong>) :: <a href="/torch_core.html#TensorBase"><code>TensorBase</code></a></p>
 </blockquote>
-<p>A <code>Tensor</code> which support subclass pickling, and maintains metadata when casting or after methods</p>
+<p>TensorBase but show method does nothing</p>
 
 </div>
 
@@ -1431,7 +1495,7 @@ nb_path: "nbs/24_vision.gan.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="generate_noise" class="doc_header"><code>generate_noise</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/gan.py#L319" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>generate_noise</code>(<strong><code>fn</code></strong>, <strong><code>size</code></strong>=<em><code>100</code></em>)</p>
+<h4 id="generate_noise" class="doc_header"><code>generate_noise</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/gan.py#L332" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>generate_noise</code>(<strong><code>fn</code></strong>, <strong><code>size</code></strong>=<em><code>100</code></em>)</p>
 </blockquote>
 <p>Generate noise vector.</p>
 <table>
@@ -1447,19 +1511,13 @@ nb_path: "nbs/24_vision.gan.ipynb"
 <td><strong><code>fn</code></strong></td>
 <td></td>
 <td></td>
-<td>Dummy argument so it works with <code>DataBlock</code></td>
+<td>Dummy argument so it works with <a href="/data.block.html#DataBlock"><code>DataBlock</code></a></td>
 </tr>
 <tr>
 <td><strong><code>size</code></strong></td>
 <td><code>int</code></td>
 <td><code>100</code></td>
 <td>Size of returned noise vector</td>
-</tr>
-<tr>
-<td><strong>Returns</strong></td>
-<td><code>InvisibleTensor</code></td>
-<td></td>
-<td></td>
 </tr>
 </tbody>
 </table>
@@ -1628,7 +1686,7 @@ nb_path: "nbs/24_vision.gan.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="gan_loss_from_func" class="doc_header"><code>gan_loss_from_func</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/gan.py#L341" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>gan_loss_from_func</code>(<strong><code>loss_gen</code></strong>:<code>callable</code>, <strong><code>loss_crit</code></strong>:<code>callable</code>, <strong><code>weights_gen</code></strong>:<code>(None, &lt;class 'list'&gt;, &lt;class 'tuple'&gt;)</code>=<em><code>None</code></em>)</p>
+<h4 id="gan_loss_from_func" class="doc_header"><code>gan_loss_from_func</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/gan.py#L354" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>gan_loss_from_func</code>(<strong><code>loss_gen</code></strong>:<code>callable</code>, <strong><code>loss_crit</code></strong>:<code>callable</code>, <strong><code>weights_gen</code></strong>:<code>(None, list, tuple)</code>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Define loss functions for a GAN from <code>loss_gen</code> and <code>loss_crit</code>.</p>
 <table>
@@ -1696,7 +1754,7 @@ nb_path: "nbs/24_vision.gan.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="GANLearner" class="doc_header"><code>class</code> <code>GANLearner</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/gan.py#L365" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>GANLearner</code>(<strong><code>dls</code></strong>:<a href="/data.core.html#DataLoaders"><code>DataLoaders</code></a>, <strong><code>generator</code></strong>:<a href="/torch_core.html#Module"><code>Module</code></a>, <strong><code>critic</code></strong>:<a href="/torch_core.html#Module"><code>Module</code></a>, <strong><code>gen_loss_func</code></strong>:<code>callable</code>, <strong><code>crit_loss_func</code></strong>:<code>callable</code>, <strong><code>switcher</code></strong>:<code>Callback'&gt;, None)</code>=<em><code>None</code></em>, <strong><code>gen_first</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>switch_eval</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>show_img</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>clip</code></strong>:<code>(None, &lt;class 'float'&gt;)</code>=<em><code>None</code></em>, <strong><code>cbs</code></strong>:<code>Callback'&gt;, None, &lt;class 'list'&gt;)</code>=<em><code>None</code></em>, <strong><code>metrics</code></strong>:<code>(None, &lt;class 'list'&gt;, &lt;built-in function callable&gt;)</code>=<em><code>None</code></em>, <strong><code>loss_func</code></strong>=<em><code>None</code></em>, <strong><code>opt_func</code></strong>=<em><code>Adam</code></em>, <strong><code>lr</code></strong>=<em><code>0.001</code></em>, <strong><code>splitter</code></strong>=<em><code>trainable_params</code></em>, <strong><code>path</code></strong>=<em><code>None</code></em>, <strong><code>model_dir</code></strong>=<em><code>'models'</code></em>, <strong><code>wd</code></strong>=<em><code>None</code></em>, <strong><code>wd_bn_bias</code></strong>=<em><code>False</code></em>, <strong><code>train_bn</code></strong>=<em><code>True</code></em>, <strong><code>moms</code></strong>=<em><code>(0.95, 0.85, 0.95)</code></em>) :: <a href="/learner.html#Learner"><code>Learner</code></a></p>
+<h3 id="GANLearner" class="doc_header"><code>class</code> <code>GANLearner</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/gan.py#L377" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>GANLearner</code>(<strong><code>dls</code></strong>:<a href="/data.core.html#DataLoaders"><code>DataLoaders</code></a>, <strong><code>generator</code></strong>:<a href="/torch_core.html#Module"><code>Module</code></a>, <strong><code>critic</code></strong>:<a href="/torch_core.html#Module"><code>Module</code></a>, <strong><code>gen_loss_func</code></strong>:<code>callable</code>, <strong><code>crit_loss_func</code></strong>:<code>callable</code>, <strong><code>switcher</code></strong>:<code>(Callback, None)</code>=<em><code>None</code></em>, <strong><code>gen_first</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>switch_eval</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>show_img</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>clip</code></strong>:<code>(None, float)</code>=<em><code>None</code></em>, <strong><code>cbs</code></strong>:<code>(Callback, None, list)</code>=<em><code>None</code></em>, <strong><code>metrics</code></strong>:<code>(None, list, callable)</code>=<em><code>None</code></em>, <strong><code>loss_func</code></strong>=<em><code>None</code></em>, <strong><code>opt_func</code></strong>=<em><code>Adam</code></em>, <strong><code>lr</code></strong>=<em><code>0.001</code></em>, <strong><code>splitter</code></strong>=<em><code>trainable_params</code></em>, <strong><code>path</code></strong>=<em><code>None</code></em>, <strong><code>model_dir</code></strong>=<em><code>'models'</code></em>, <strong><code>wd</code></strong>=<em><code>None</code></em>, <strong><code>wd_bn_bias</code></strong>=<em><code>False</code></em>, <strong><code>train_bn</code></strong>=<em><code>True</code></em>, <strong><code>moms</code></strong>=<em><code>(0.95, 0.85, 0.95)</code></em>) :: <a href="/learner.html#Learner"><code>Learner</code></a></p>
 </blockquote>
 <p>A <a href="/learner.html#Learner"><code>Learner</code></a> suitable for GANs.</p>
 <table>
@@ -1710,19 +1768,19 @@ nb_path: "nbs/24_vision.gan.ipynb"
 <tbody>
 <tr>
 <td><strong><code>dls</code></strong></td>
-<td><code>DataLoaders</code></td>
+<td><a href="/data.core.html#DataLoaders"><code>DataLoaders</code></a></td>
 <td></td>
 <td>DataLoaders object for GAN data</td>
 </tr>
 <tr>
 <td><strong><code>generator</code></strong></td>
-<td><code>Module</code></td>
+<td><a href="/torch_core.html#Module"><code>Module</code></a></td>
 <td></td>
 <td>Generator model</td>
 </tr>
 <tr>
 <td><strong><code>critic</code></strong></td>
-<td><code>Module</code></td>
+<td><a href="/torch_core.html#Module"><code>Module</code></a></td>
 <td></td>
 <td>Critic model</td>
 </tr>
@@ -1742,7 +1800,7 @@ nb_path: "nbs/24_vision.gan.ipynb"
 <td><strong><code>switcher</code></strong></td>
 <td><code>(Callback, None)</code></td>
 <td><code>None</code></td>
-<td>Callback for switching between generator and critic training, defaults to <code>FixedGANSwitcher</code></td>
+<td>Callback for switching between generator and critic training, defaults to <a href="/vision.gan.html#FixedGANSwitcher"><code>FixedGANSwitcher</code></a></td>
 </tr>
 <tr>
 <td><strong><code>gen_first</code></strong></td>
@@ -1781,64 +1839,70 @@ nb_path: "nbs/24_vision.gan.ipynb"
 <td>Metrics</td>
 </tr>
 <tr>
+<td></td>
+<td></td>
+<td><strong>Valid Keyword Arguments</strong></td>
+<td></td>
+</tr>
+<tr>
 <td><strong><code>loss_func</code></strong></td>
-<td><code>NoneType</code></td>
+<td></td>
 <td><code>None</code></td>
-<td><em>No Content</em></td>
+<td>Argument passed to <a href="/learner.html#Learner.__init__"><code>Learner.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>opt_func</code></strong></td>
 <td><code>function</code></td>
-<td><code>&lt;function Adam at 0x7f3be6f84b00&gt;</code></td>
-<td><em>No Content</em></td>
+<td><a href="/optimizer.html#Adam"><code>Adam</code></a></td>
+<td>Argument passed to <a href="/learner.html#Learner.__init__"><code>Learner.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>lr</code></strong></td>
 <td><code>float</code></td>
-<td><code>0.001</code></td>
-<td><em>No Content</em></td>
+<td><code>001</code></td>
+<td>Argument passed to <a href="/learner.html#Learner.__init__"><code>Learner.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>splitter</code></strong></td>
 <td><code>function</code></td>
-<td><code>&lt;function trainable_params at 0x7f3bf382cdd0&gt;</code></td>
-<td><em>No Content</em></td>
+<td><a href="/torch_core.html#trainable_params"><code>trainable_params</code></a></td>
+<td>Argument passed to <a href="/learner.html#Learner.__init__"><code>Learner.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>path</code></strong></td>
-<td><code>NoneType</code></td>
+<td></td>
 <td><code>None</code></td>
-<td><em>No Content</em></td>
+<td>Argument passed to <a href="/learner.html#Learner.__init__"><code>Learner.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>model_dir</code></strong></td>
 <td><code>str</code></td>
 <td><code>models</code></td>
-<td><em>No Content</em></td>
+<td>Argument passed to <a href="/learner.html#Learner.__init__"><code>Learner.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>wd</code></strong></td>
-<td><code>NoneType</code></td>
+<td></td>
 <td><code>None</code></td>
-<td><em>No Content</em></td>
+<td>Argument passed to <a href="/learner.html#Learner.__init__"><code>Learner.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>wd_bn_bias</code></strong></td>
 <td><code>bool</code></td>
 <td><code>False</code></td>
-<td><em>No Content</em></td>
+<td>Argument passed to <a href="/learner.html#Learner.__init__"><code>Learner.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>train_bn</code></strong></td>
 <td><code>bool</code></td>
 <td><code>True</code></td>
-<td><em>No Content</em></td>
+<td>Argument passed to <a href="/learner.html#Learner.__init__"><code>Learner.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>moms</code></strong></td>
 <td><code>tuple</code></td>
-<td><code>(0.95, 0.85, 0.95)</code></td>
-<td><em>No Content</em></td>
+<td><code>95)</code></td>
+<td>Argument passed to <a href="/learner.html#Learner.__init__"><code>Learner.__init__</code></a></td>
 </tr>
 </tbody>
 </table>
@@ -1871,7 +1935,7 @@ nb_path: "nbs/24_vision.gan.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="GANLearner.from_learners" class="doc_header"><code>GANLearner.from_learners</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/gan.py#L390" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>GANLearner.from_learners</code>(<strong><code>gen_learn</code></strong>:<a href="/learner.html#Learner"><code>Learner</code></a>, <strong><code>crit_learn</code></strong>:<a href="/learner.html#Learner"><code>Learner</code></a>, <strong><code>switcher</code></strong>:<code>Callback'&gt;, None)</code>=<em><code>None</code></em>, <strong><code>weights_gen</code></strong>:<code>(None, &lt;class 'list'&gt;, &lt;class 'tuple'&gt;)</code>=<em><code>None</code></em>, <strong><code>gen_first</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>switch_eval</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>show_img</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>clip</code></strong>:<code>(None, &lt;class 'float'&gt;)</code>=<em><code>None</code></em>, <strong><code>cbs</code></strong>:<code>Callback'&gt;, None, &lt;class 'list'&gt;)</code>=<em><code>None</code></em>, <strong><code>metrics</code></strong>:<code>(None, &lt;class 'list'&gt;, &lt;built-in function callable&gt;)</code>=<em><code>None</code></em>, <strong><code>loss_func</code></strong>=<em><code>None</code></em>, <strong><code>opt_func</code></strong>=<em><code>Adam</code></em>, <strong><code>lr</code></strong>=<em><code>0.001</code></em>, <strong><code>splitter</code></strong>=<em><code>trainable_params</code></em>, <strong><code>path</code></strong>=<em><code>None</code></em>, <strong><code>model_dir</code></strong>=<em><code>'models'</code></em>, <strong><code>wd</code></strong>=<em><code>None</code></em>, <strong><code>wd_bn_bias</code></strong>=<em><code>False</code></em>, <strong><code>train_bn</code></strong>=<em><code>True</code></em>, <strong><code>moms</code></strong>=<em><code>(0.95, 0.85, 0.95)</code></em>)</p>
+<h4 id="GANLearner.from_learners" class="doc_header"><code>GANLearner.from_learners</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/gan.py#L403" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>GANLearner.from_learners</code>(<strong><code>gen_learn</code></strong>:<a href="/learner.html#Learner"><code>Learner</code></a>, <strong><code>crit_learn</code></strong>:<a href="/learner.html#Learner"><code>Learner</code></a>, <strong><code>switcher</code></strong>:<code>(Callback, None)</code>=<em><code>None</code></em>, <strong><code>weights_gen</code></strong>:<code>(None, list, tuple)</code>=<em><code>None</code></em>, <strong><code>gen_first</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>switch_eval</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>show_img</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>clip</code></strong>:<code>(None, float)</code>=<em><code>None</code></em>, <strong><code>cbs</code></strong>:<code>(Callback, None, list)</code>=<em><code>None</code></em>, <strong><code>metrics</code></strong>:<code>(None, list, callable)</code>=<em><code>None</code></em>, <strong><code>loss_func</code></strong>=<em><code>None</code></em>, <strong><code>opt_func</code></strong>=<em><code>Adam</code></em>, <strong><code>lr</code></strong>=<em><code>0.001</code></em>, <strong><code>splitter</code></strong>=<em><code>trainable_params</code></em>, <strong><code>path</code></strong>=<em><code>None</code></em>, <strong><code>model_dir</code></strong>=<em><code>'models'</code></em>, <strong><code>wd</code></strong>=<em><code>None</code></em>, <strong><code>wd_bn_bias</code></strong>=<em><code>False</code></em>, <strong><code>train_bn</code></strong>=<em><code>True</code></em>, <strong><code>moms</code></strong>=<em><code>(0.95, 0.85, 0.95)</code></em>)</p>
 </blockquote>
 <p>Create a GAN from <code>learn_gen</code> and <code>learn_crit</code>.</p>
 <table>
@@ -1885,21 +1949,21 @@ nb_path: "nbs/24_vision.gan.ipynb"
 <tbody>
 <tr>
 <td><strong><code>gen_learn</code></strong></td>
-<td><code>Learner</code></td>
+<td><a href="/learner.html#Learner"><code>Learner</code></a></td>
 <td></td>
-<td>A <code>Learner</code> object that has the generator</td>
+<td>A <a href="/learner.html#Learner"><code>Learner</code></a> object that contains the generator</td>
 </tr>
 <tr>
 <td><strong><code>crit_learn</code></strong></td>
-<td><code>Learner</code></td>
+<td><a href="/learner.html#Learner"><code>Learner</code></a></td>
 <td></td>
-<td>A <code>Learner</code> object that has the critic</td>
+<td>A <a href="/learner.html#Learner"><code>Learner</code></a> object that contains the critic</td>
 </tr>
 <tr>
 <td><strong><code>switcher</code></strong></td>
 <td><code>(Callback, None)</code></td>
 <td><code>None</code></td>
-<td>Callback for switching between generator and critic training, defaults to <code>FixedGANSwitcher</code></td>
+<td>Callback for switching between generator and critic training, defaults to <a href="/vision.gan.html#FixedGANSwitcher"><code>FixedGANSwitcher</code></a></td>
 </tr>
 <tr>
 <td><strong><code>weights_gen</code></strong></td>
@@ -1908,100 +1972,106 @@ nb_path: "nbs/24_vision.gan.ipynb"
 <td>Weights for the generator and critic loss function</td>
 </tr>
 <tr>
+<td></td>
+<td></td>
+<td><strong>Valid Keyword Arguments</strong></td>
+<td></td>
+</tr>
+<tr>
 <td><strong><code>gen_first</code></strong></td>
 <td><code>bool</code></td>
 <td><code>False</code></td>
-<td><em>No Content</em></td>
+<td>Whether we start with generator training passed to <a href="/vision.gan.html#GANLearner.__init__"><code>GANLearner.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>switch_eval</code></strong></td>
 <td><code>bool</code></td>
 <td><code>True</code></td>
-<td><em>No Content</em></td>
+<td>Whether the model should be set to eval mode when calculating loss passed to <a href="/vision.gan.html#GANLearner.__init__"><code>GANLearner.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>show_img</code></strong></td>
 <td><code>bool</code></td>
 <td><code>True</code></td>
-<td><em>No Content</em></td>
+<td>Whether to show example generated images during training passed to <a href="/vision.gan.html#GANLearner.__init__"><code>GANLearner.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>clip</code></strong></td>
 <td><code>(None, float)</code></td>
 <td><code>None</code></td>
-<td><em>No Content</em></td>
+<td>How much to clip the weights passed to <a href="/vision.gan.html#GANLearner.__init__"><code>GANLearner.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>cbs</code></strong></td>
 <td><code>(Callback, None, list)</code></td>
 <td><code>None</code></td>
-<td><em>No Content</em></td>
+<td>Additional callbacks passed to <a href="/vision.gan.html#GANLearner.__init__"><code>GANLearner.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>metrics</code></strong></td>
 <td><code>(None, list, callable)</code></td>
 <td><code>None</code></td>
-<td><em>No Content</em></td>
+<td>Metrics passed to <a href="/vision.gan.html#GANLearner.__init__"><code>GANLearner.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>loss_func</code></strong></td>
-<td><code>NoneType</code></td>
+<td></td>
 <td><code>None</code></td>
-<td><em>No Content</em></td>
+<td>Argument passed to <a href="/vision.gan.html#GANLearner.__init__"><code>GANLearner.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>opt_func</code></strong></td>
 <td><code>function</code></td>
-<td><code>&lt;function Adam at 0x7f3be6f84b00&gt;</code></td>
-<td><em>No Content</em></td>
+<td><a href="/optimizer.html#Adam"><code>Adam</code></a></td>
+<td>Argument passed to <a href="/vision.gan.html#GANLearner.__init__"><code>GANLearner.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>lr</code></strong></td>
 <td><code>float</code></td>
-<td><code>0.001</code></td>
-<td><em>No Content</em></td>
+<td><code>001</code></td>
+<td>Argument passed to <a href="/vision.gan.html#GANLearner.__init__"><code>GANLearner.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>splitter</code></strong></td>
 <td><code>function</code></td>
-<td><code>&lt;function trainable_params at 0x7f3bf382cdd0&gt;</code></td>
-<td><em>No Content</em></td>
+<td><a href="/torch_core.html#trainable_params"><code>trainable_params</code></a></td>
+<td>Argument passed to <a href="/vision.gan.html#GANLearner.__init__"><code>GANLearner.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>path</code></strong></td>
-<td><code>NoneType</code></td>
+<td></td>
 <td><code>None</code></td>
-<td><em>No Content</em></td>
+<td>Argument passed to <a href="/vision.gan.html#GANLearner.__init__"><code>GANLearner.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>model_dir</code></strong></td>
 <td><code>str</code></td>
 <td><code>models</code></td>
-<td><em>No Content</em></td>
+<td>Argument passed to <a href="/vision.gan.html#GANLearner.__init__"><code>GANLearner.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>wd</code></strong></td>
-<td><code>NoneType</code></td>
+<td></td>
 <td><code>None</code></td>
-<td><em>No Content</em></td>
+<td>Argument passed to <a href="/vision.gan.html#GANLearner.__init__"><code>GANLearner.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>wd_bn_bias</code></strong></td>
 <td><code>bool</code></td>
 <td><code>False</code></td>
-<td><em>No Content</em></td>
+<td>Argument passed to <a href="/vision.gan.html#GANLearner.__init__"><code>GANLearner.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>train_bn</code></strong></td>
 <td><code>bool</code></td>
 <td><code>True</code></td>
-<td><em>No Content</em></td>
+<td>Argument passed to <a href="/vision.gan.html#GANLearner.__init__"><code>GANLearner.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>moms</code></strong></td>
 <td><code>tuple</code></td>
-<td><code>(0.95, 0.85, 0.95)</code></td>
-<td><em>No Content</em></td>
+<td><code>95)</code></td>
+<td>Argument passed to <a href="/vision.gan.html#GANLearner.__init__"><code>GANLearner.__init__</code></a></td>
 </tr>
 </tbody>
 </table>
@@ -2027,9 +2097,9 @@ nb_path: "nbs/24_vision.gan.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="GANLearner.wgan" class="doc_header"><code>GANLearner.wgan</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/gan.py#L402" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>GANLearner.wgan</code>(<strong><code>dls</code></strong>:<a href="/data.core.html#DataLoaders"><code>DataLoaders</code></a>, <strong><code>generator</code></strong>:<a href="/torch_core.html#Module"><code>Module</code></a>, <strong><code>critic</code></strong>:<a href="/torch_core.html#Module"><code>Module</code></a>, <strong><code>switcher</code></strong>:<code>Callback'&gt;, None)</code>=<em><code>None</code></em>, <strong><code>clip</code></strong>:<code>(None, &lt;class 'float'&gt;)</code>=<em><code>0.01</code></em>, <strong><code>switch_eval</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>gen_first</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>show_img</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>cbs</code></strong>:<code>Callback'&gt;, None, &lt;class 'list'&gt;)</code>=<em><code>None</code></em>, <strong><code>metrics</code></strong>:<code>(None, &lt;class 'list'&gt;, &lt;built-in function callable&gt;)</code>=<em><code>None</code></em>, <strong><code>loss_func</code></strong>=<em><code>None</code></em>, <strong><code>opt_func</code></strong>=<em><code>Adam</code></em>, <strong><code>lr</code></strong>=<em><code>0.001</code></em>, <strong><code>splitter</code></strong>=<em><code>trainable_params</code></em>, <strong><code>path</code></strong>=<em><code>None</code></em>, <strong><code>model_dir</code></strong>=<em><code>'models'</code></em>, <strong><code>wd</code></strong>=<em><code>None</code></em>, <strong><code>wd_bn_bias</code></strong>=<em><code>False</code></em>, <strong><code>train_bn</code></strong>=<em><code>True</code></em>, <strong><code>moms</code></strong>=<em><code>(0.95, 0.85, 0.95)</code></em>)</p>
+<h4 id="GANLearner.wgan" class="doc_header"><code>GANLearner.wgan</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/gan.py#L415" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>GANLearner.wgan</code>(<strong><code>dls</code></strong>:<a href="/data.core.html#DataLoaders"><code>DataLoaders</code></a>, <strong><code>generator</code></strong>:<a href="/torch_core.html#Module"><code>Module</code></a>, <strong><code>critic</code></strong>:<a href="/torch_core.html#Module"><code>Module</code></a>, <strong><code>switcher</code></strong>:<code>(Callback, None)</code>=<em><code>None</code></em>, <strong><code>clip</code></strong>:<code>(None, float)</code>=<em><code>0.01</code></em>, <strong><code>switch_eval</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>gen_first</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>show_img</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>cbs</code></strong>:<code>(Callback, None, list)</code>=<em><code>None</code></em>, <strong><code>metrics</code></strong>:<code>(None, list, callable)</code>=<em><code>None</code></em>, <strong><code>loss_func</code></strong>=<em><code>None</code></em>, <strong><code>opt_func</code></strong>=<em><code>Adam</code></em>, <strong><code>lr</code></strong>=<em><code>0.001</code></em>, <strong><code>splitter</code></strong>=<em><code>trainable_params</code></em>, <strong><code>path</code></strong>=<em><code>None</code></em>, <strong><code>model_dir</code></strong>=<em><code>'models'</code></em>, <strong><code>wd</code></strong>=<em><code>None</code></em>, <strong><code>wd_bn_bias</code></strong>=<em><code>False</code></em>, <strong><code>train_bn</code></strong>=<em><code>True</code></em>, <strong><code>moms</code></strong>=<em><code>(0.95, 0.85, 0.95)</code></em>)</p>
 </blockquote>
-<p>Create a WGAN from <code>dls</code>, <code>generator</code> and <code>critic</code>.</p>
+<p>Create a <a href="https://arxiv.org/abs/1701.07875">WGAN</a> from <code>dls</code>, <code>generator</code> and <code>critic</code>.</p>
 <table>
 <thead><tr>
 <th></th>
@@ -2041,19 +2111,19 @@ nb_path: "nbs/24_vision.gan.ipynb"
 <tbody>
 <tr>
 <td><strong><code>dls</code></strong></td>
-<td><code>DataLoaders</code></td>
+<td><a href="/data.core.html#DataLoaders"><code>DataLoaders</code></a></td>
 <td></td>
 <td>DataLoaders object for GAN data</td>
 </tr>
 <tr>
 <td><strong><code>generator</code></strong></td>
-<td><code>Module</code></td>
+<td><a href="/torch_core.html#Module"><code>Module</code></a></td>
 <td></td>
 <td>Generator model</td>
 </tr>
 <tr>
 <td><strong><code>critic</code></strong></td>
-<td><code>Module</code></td>
+<td><a href="/torch_core.html#Module"><code>Module</code></a></td>
 <td></td>
 <td>Critic model</td>
 </tr>
@@ -2066,7 +2136,7 @@ nb_path: "nbs/24_vision.gan.ipynb"
 <tr>
 <td><strong><code>clip</code></strong></td>
 <td><code>(None, float)</code></td>
-<td><code>0.01</code></td>
+<td><code>01</code></td>
 <td>How much to clip the weights</td>
 </tr>
 <tr>
@@ -2076,88 +2146,94 @@ nb_path: "nbs/24_vision.gan.ipynb"
 <td>Whether the model should be set to eval mode when calculating loss</td>
 </tr>
 <tr>
+<td></td>
+<td></td>
+<td><strong>Valid Keyword Arguments</strong></td>
+<td></td>
+</tr>
+<tr>
 <td><strong><code>gen_first</code></strong></td>
 <td><code>bool</code></td>
 <td><code>False</code></td>
-<td><em>No Content</em></td>
+<td>Whether we start with generator training passed to <a href="/vision.gan.html#GANLearner.__init__"><code>GANLearner.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>show_img</code></strong></td>
 <td><code>bool</code></td>
 <td><code>True</code></td>
-<td><em>No Content</em></td>
+<td>Whether to show example generated images during training passed to <a href="/vision.gan.html#GANLearner.__init__"><code>GANLearner.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>cbs</code></strong></td>
 <td><code>(Callback, None, list)</code></td>
 <td><code>None</code></td>
-<td><em>No Content</em></td>
+<td>Additional callbacks passed to <a href="/vision.gan.html#GANLearner.__init__"><code>GANLearner.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>metrics</code></strong></td>
 <td><code>(None, list, callable)</code></td>
 <td><code>None</code></td>
-<td><em>No Content</em></td>
+<td>Metrics passed to <a href="/vision.gan.html#GANLearner.__init__"><code>GANLearner.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>loss_func</code></strong></td>
-<td><code>NoneType</code></td>
+<td></td>
 <td><code>None</code></td>
-<td><em>No Content</em></td>
+<td>Argument passed to <a href="/vision.gan.html#GANLearner.__init__"><code>GANLearner.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>opt_func</code></strong></td>
 <td><code>function</code></td>
-<td><code>&lt;function Adam at 0x7f3be6f84b00&gt;</code></td>
-<td><em>No Content</em></td>
+<td><a href="/optimizer.html#Adam"><code>Adam</code></a></td>
+<td>Argument passed to <a href="/vision.gan.html#GANLearner.__init__"><code>GANLearner.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>lr</code></strong></td>
 <td><code>float</code></td>
-<td><code>0.001</code></td>
-<td><em>No Content</em></td>
+<td><code>001</code></td>
+<td>Argument passed to <a href="/vision.gan.html#GANLearner.__init__"><code>GANLearner.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>splitter</code></strong></td>
 <td><code>function</code></td>
-<td><code>&lt;function trainable_params at 0x7f3bf382cdd0&gt;</code></td>
-<td><em>No Content</em></td>
+<td><a href="/torch_core.html#trainable_params"><code>trainable_params</code></a></td>
+<td>Argument passed to <a href="/vision.gan.html#GANLearner.__init__"><code>GANLearner.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>path</code></strong></td>
-<td><code>NoneType</code></td>
+<td></td>
 <td><code>None</code></td>
-<td><em>No Content</em></td>
+<td>Argument passed to <a href="/vision.gan.html#GANLearner.__init__"><code>GANLearner.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>model_dir</code></strong></td>
 <td><code>str</code></td>
 <td><code>models</code></td>
-<td><em>No Content</em></td>
+<td>Argument passed to <a href="/vision.gan.html#GANLearner.__init__"><code>GANLearner.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>wd</code></strong></td>
-<td><code>NoneType</code></td>
+<td></td>
 <td><code>None</code></td>
-<td><em>No Content</em></td>
+<td>Argument passed to <a href="/vision.gan.html#GANLearner.__init__"><code>GANLearner.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>wd_bn_bias</code></strong></td>
 <td><code>bool</code></td>
 <td><code>False</code></td>
-<td><em>No Content</em></td>
+<td>Argument passed to <a href="/vision.gan.html#GANLearner.__init__"><code>GANLearner.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>train_bn</code></strong></td>
 <td><code>bool</code></td>
 <td><code>True</code></td>
-<td><em>No Content</em></td>
+<td>Argument passed to <a href="/vision.gan.html#GANLearner.__init__"><code>GANLearner.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>moms</code></strong></td>
 <td><code>tuple</code></td>
-<td><code>(0.95, 0.85, 0.95)</code></td>
-<td><em>No Content</em></td>
+<td><code>95)</code></td>
+<td>Argument passed to <a href="/vision.gan.html#GANLearner.__init__"><code>GANLearner.__init__</code></a></td>
 </tr>
 </tbody>
 </table>
