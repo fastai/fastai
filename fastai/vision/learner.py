@@ -231,14 +231,14 @@ def unet_learner(dls, arch, normalize=True, n_out=None, pretrained=True, config=
 # Cell
 @typedispatch
 def show_results(x:TensorImage, y, samples, outs, ctxs=None, max_n=10, nrows=None, ncols=None, figsize=None, **kwargs):
-    if ctxs is None: ctxs = get_grid(min(len(samples), max_n), nrows=nrows, ncols=ncols, add_vert=1, figsize=figsize)
+    if ctxs is None: ctxs = get_grid(min(len(samples), max_n), nrows=nrows, ncols=ncols, figsize=figsize)
     ctxs = show_results[object](x, y, samples, outs, ctxs=ctxs, max_n=max_n, **kwargs)
     return ctxs
 
 # Cell
 @typedispatch
 def show_results(x:TensorImage, y:TensorCategory, samples, outs, ctxs=None, max_n=10, nrows=None, ncols=None, figsize=None, **kwargs):
-    if ctxs is None: ctxs = get_grid(min(len(samples), max_n), nrows=nrows, ncols=ncols, add_vert=1, figsize=figsize)
+    if ctxs is None: ctxs = get_grid(min(len(samples), max_n), nrows=nrows, ncols=ncols, figsize=figsize)
     for i in range(2):
         ctxs = [b.show(ctx=c, **kwargs) for b,c,_ in zip(samples.itemgot(i),ctxs,range(max_n))]
     ctxs = [r.show(ctx=c, color='green' if b==r else 'red', **kwargs)
@@ -249,7 +249,7 @@ def show_results(x:TensorImage, y:TensorCategory, samples, outs, ctxs=None, max_
 @typedispatch
 def show_results(x:TensorImage, y:(TensorMask, TensorPoint, TensorBBox), samples, outs, ctxs=None, max_n=6,
                  nrows=None, ncols=1, figsize=None, **kwargs):
-    if ctxs is None: ctxs = get_grid(min(len(samples), max_n), nrows=nrows, ncols=ncols, add_vert=1, figsize=figsize, double=True,
+    if ctxs is None: ctxs = get_grid(min(len(samples), max_n), nrows=nrows, ncols=ncols, figsize=figsize, double=True,
                                      title='Target/Prediction')
     for i in range(2):
         ctxs[::2] = [b.show(ctx=c, **kwargs) for b,c,_ in zip(samples.itemgot(i),ctxs[::2],range(2*max_n))]
@@ -269,7 +269,7 @@ def show_results(x:TensorImage, y:TensorImage, samples, outs, ctxs=None, max_n=1
 # Cell
 @typedispatch
 def plot_top_losses(x: TensorImage, y:TensorCategory, samples, outs, raws, losses, nrows=None, ncols=None, figsize=None, **kwargs):
-    axs = get_grid(len(samples), nrows=nrows, ncols=ncols, add_vert=1, figsize=figsize, title='Prediction/Actual/Loss/Probability')
+    axs = get_grid(len(samples), nrows=nrows, ncols=ncols, figsize=figsize, title='Prediction/Actual/Loss/Probability')
     for ax,s,o,r,l in zip(axs, samples, outs, raws, losses):
         s[0].show(ctx=ax, **kwargs)
         ax.set_title(f'{o[0]}/{s[1]} / {l.item():.2f} / {r.max().item():.2f}')
@@ -277,7 +277,7 @@ def plot_top_losses(x: TensorImage, y:TensorCategory, samples, outs, raws, losse
 # Cell
 @typedispatch
 def plot_top_losses(x: TensorImage, y:TensorMultiCategory, samples, outs, raws, losses, nrows=None, ncols=None, figsize=None, **kwargs):
-    axs = get_grid(len(samples), nrows=nrows, ncols=ncols, add_vert=1, figsize=figsize)
+    axs = get_grid(len(samples), nrows=nrows, ncols=ncols, figsize=figsize)
     for i,(ax,s) in enumerate(zip(axs, samples)): s[0].show(ctx=ax, title=f'Image {i}', **kwargs)
     rows = get_empty_df(len(samples))
     outs = L(s[1:] + o + (TitledStr(r), TitledFloat(l.item())) for s,o,r,l in zip(samples, outs, raws, losses))
@@ -288,7 +288,7 @@ def plot_top_losses(x: TensorImage, y:TensorMultiCategory, samples, outs, raws, 
 # Cell
 @typedispatch
 def plot_top_losses(x:TensorImage, y:TensorMask, samples, outs, raws, losses, nrows=None, ncols=None, figsize=None, **kwargs):
-    axes = get_grid(len(samples)*3, nrows=len(samples), ncols=3, add_vert=1, figsize=figsize, flatten=False, title="Input | Target | Prediction")
+    axes = get_grid(len(samples)*3, nrows=len(samples), ncols=3, figsize=figsize, flatten=False, title="Input | Target | Prediction")
     if axes.ndim == 1: axes = (axes,)
     titles = ["input", "target", "pred"]
     for axs,s,o,l in zip(axes, samples, outs, losses):

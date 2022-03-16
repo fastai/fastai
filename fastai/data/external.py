@@ -113,7 +113,7 @@ class URLs():
     def path(url='.', c_key='archive'):
         "Return local path where to download based on `c_key`"
         fname = url.split('/')[-1]
-        local_path = URLs.LOCAL_PATH/('models' if c_key=='models' else 'data')/fname
+        local_path = URLs.LOCAL_PATH/('models' if c_key=='model' else 'data')/fname
         if local_path.exists(): return local_path
         return fastai_path(c_key)/fname
 

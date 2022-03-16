@@ -11,7 +11,7 @@ import types
 
 # Cell
 @delegates(subplots)
-def get_grid(n, nrows=None, ncols=None, add_vert=0, figsize=None, double=False, title=None, return_fig=False,
+def get_grid(n, nrows=None, ncols=None, figsize=None, double=False, title=None, return_fig=False,
              flatten=True, **kwargs):
     "Return a grid of `n` axes, `rows` by `cols`"
     if nrows:
@@ -55,7 +55,7 @@ def show_batch(x:TensorImage, y, samples, ctxs=None, max_n=10, nrows=None, ncols
 # Cell
 @typedispatch
 def show_batch(x:TensorImage, y:TensorImage, samples, ctxs=None, max_n=10, nrows=None, ncols=None, figsize=None, **kwargs):
-    if ctxs is None: ctxs = get_grid(min(len(samples), max_n), nrows=nrows, ncols=ncols, add_vert=1, figsize=figsize, double=True)
+    if ctxs is None: ctxs = get_grid(min(len(samples), max_n), nrows=nrows, ncols=ncols, figsize=figsize, double=True)
     for i in range(2):
         ctxs[i::2] = [b.show(ctx=c, **kwargs) for b,c,_ in zip(samples.itemgot(i),ctxs[i::2],range(max_n))]
     return ctxs
