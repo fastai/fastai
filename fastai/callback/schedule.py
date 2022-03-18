@@ -105,15 +105,16 @@ class ParamScheduler(Callback):
 
 # Cell
 @patch
+@delegates(Learner.fit)
 def fit_one_cycle(self:Learner, n_epoch, lr_max=None, div=25., div_final=1e5, pct_start=0.25, wd=None,
-                  moms=None, cbs=None, reset_opt=False):
+                  moms=None, cbs=None, reset_opt=False, **kwargs):
     "Fit `self.model` for `n_epoch` using the 1cycle policy."
     if self.opt is None: self.create_opt()
     self.opt.set_hyper('lr', self.lr if lr_max is None else lr_max)
     lr_max = np.array([h['lr'] for h in self.opt.hypers])
     scheds = {'lr': combined_cos(pct_start, lr_max/div, lr_max, lr_max/div_final),
               'mom': combined_cos(pct_start, *(self.moms if moms is None else moms))}
-    self.fit(n_epoch, cbs=ParamScheduler(scheds)+L(cbs), reset_opt=reset_opt, wd=wd)
+    self.fit(n_epoch, cbs=ParamScheduler(scheds)+L(cbs), reset_opt=reset_opt, wd=wd, **kwargs)
 
 # Cell
 @patch
@@ -129,18 +130,20 @@ def plot_sched(self:Recorder, keys=None, figsize=None):
 
 # Cell
 @patch
+@delegates(Learner.fit)
 def fit_flat_cos(self:Learner, n_epoch, lr=None, div_final=1e5, pct_start=0.75, wd=None,
-                 cbs=None, reset_opt=False):
+                 cbs=None, reset_opt=False, **kwargs):
     "Fit `self.model` for `n_epoch` at flat `lr` before a cosine annealing."
     if self.opt is None: self.create_opt()
     self.opt.set_hyper('lr', self.lr if lr is None else lr)
     lr = np.array([h['lr'] for h in self.opt.hypers])
     scheds = {'lr': combined_cos(pct_start, lr, lr, lr/div_final)}
-    self.fit(n_epoch, cbs=ParamScheduler(scheds)+L(cbs), reset_opt=reset_opt, wd=wd)
+    self.fit(n_epoch, cbs=ParamScheduler(scheds)+L(cbs), reset_opt=reset_opt, wd=wd, **kwargs)
 
 # Cell
 @patch
-def fit_sgdr(self:Learner, n_cycles, cycle_len, lr_max=None, cycle_mult=2, cbs=None, reset_opt=False, wd=None):
+@delegates(Learner.fit)
+def fit_sgdr(self:Learner, n_cycles, cycle_len, lr_max=None, cycle_mult=2, cbs=None, reset_opt=False, wd=None, **kwargs):
     "Fit `self.model` for `n_cycles` of `cycle_len` using SGDR."
     if self.opt is None: self.create_opt()
     self.opt.set_hyper('lr', self.lr if lr_max is None else lr_max)
@@ -149,7 +152,7 @@ def fit_sgdr(self:Learner, n_cycles, cycle_len, lr_max=None, cycle_mult=2, cbs=N
     pcts = [cycle_len * cycle_mult**i / n_epoch for i in range(n_cycles)]
     scheds = [SchedCos(lr_max, 0) for _ in range(n_cycles)]
     scheds = {'lr': combine_scheds(pcts, scheds)}
-    self.fit(n_epoch, cbs=ParamScheduler(scheds)+L(cbs), reset_opt=reset_opt, wd=wd)
+    self.fit(n_epoch, cbs=ParamScheduler(scheds)+L(cbs), reset_opt=reset_opt, wd=wd, **kwargs)
 
 # Cell
 @patch
@@ -286,7 +289,7 @@ def lr_find(self:Learner, start_lr=1e-7, end_lr=10, num_it=100, stop_div=True, s
     "Launch a mock training to find a good learning rate and return suggestions based on `suggest_funcs` as a named tuple"
     n_epoch = num_it//len(self.dls.train) + 1
     cb=LRFinder(start_lr=start_lr, end_lr=end_lr, num_it=num_it, stop_div=stop_div)
-    with self.no_logging(): self.fit(n_epoch, cbs=cb)
+    with self.no_logging(): self.fit(n_epoch, cbs=cb, state=LearnerState.LRFind)
     if suggest_funcs is not None:
         lrs, losses = tensor(self.recorder.lrs[num_it//10:-5]), tensor(self.recorder.losses[num_it//10:-5])
         nan_idxs = torch.nonzero(torch.isnan(losses.view(-1)))

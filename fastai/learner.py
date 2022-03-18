@@ -2,8 +2,8 @@
 
 __all__ = ['CancelStepException', 'CancelFitException', 'CancelEpochException', 'CancelTrainException',
            'CancelValidException', 'CancelBatchException', 'replacing_yield', 'mk_metric', 'save_model', 'load_model',
-           'Learner', 'before_batch_cb', 'load_learner', 'to_detach_from_dl', 'Metric', 'AvgMetric', 'AvgLoss',
-           'AvgSmoothLoss', 'ValueMetric', 'Recorder']
+           'LearnerState', 'Learner', 'before_batch_cb', 'load_learner', 'to_detach_from_dl', 'Metric', 'AvgMetric',
+           'AvgLoss', 'AvgSmoothLoss', 'ValueMetric', 'Recorder']
 
 # Cell
 from .data.all import *
@@ -80,6 +80,12 @@ _loop = ['Start Fit', 'before_fit', 'Start Epoch Loop', 'before_epoch', 'Start T
          'after_cancel_fit', 'after_fit']
 
 # Cell
+mk_class('LearnerState', **{o:o.lower() for o in ['Fit', 'Eval', 'LRFind', 'Idle']},
+         doc="All built in states for `Learner")
+
+#nbdev_comment _all_ = ['LearnerState']
+
+# Cell
 class Learner(GetAttr):
     _default='model'
     def __init__(self, dls, model, loss_func=None, opt_func=Adam, lr=defaults.lr, splitter=trainable_params, cbs=None,
@@ -94,6 +100,7 @@ class Learner(GetAttr):
         self.training,self.create_mbar,self.logger,self.opt,self.cbs = False,True,print,None,L()
         self.add_cbs(L(defaults.callbacks)+L(cbs))
         self("after_create")
+        self.state=LearnerState.Idle
 
     @property
     def metrics(self): return self._metrics
@@ -211,8 +218,8 @@ class Learner(GetAttr):
             self.epoch=epoch
             self._with_events(self._do_epoch, 'epoch', CancelEpochException)
 
-    def fit(self, n_epoch, lr=None, wd=None, cbs=None, reset_opt=False):
-        with self.added_cbs(cbs):
+    def fit(self, n_epoch, lr=None, wd=None, cbs=None, reset_opt=False, state=LearnerState.Fit):
+        with self.added_cbs(cbs), self.set_state(state):
             if reset_opt or not self.opt: self.create_opt()
             if wd is None: wd = self.wd
             if wd is not None: self.opt.set_hypers(wd=wd)
@@ -224,20 +231,20 @@ class Learner(GetAttr):
     def __enter__(self): self(_before_epoch); return self
     def __exit__(self, exc_type, exc_value, tb): self(_after_epoch)
 
-    def validation_context(self, cbs=None, inner=False):
-        cms = [self.no_logging(),self.no_mbar()]
+    def validation_context(self, cbs=None, inner=False, state=LearnerState.Eval):
+        cms = [self.no_logging(),self.no_mbar(),self.set_state(state)]
         if cbs: cms.append(self.added_cbs(cbs))
         if not inner: cms.append(self)
         return ContextManagers(cms)
 
-    def validate(self, ds_idx=1, dl=None, cbs=None):
+    def validate(self, ds_idx=1, dl=None, cbs=None, state=LearnerState.Eval):
         if dl is None: dl = self.dls[ds_idx]
-        with self.validation_context(cbs=cbs): self._do_epoch_validate(ds_idx, dl)
+        with self.validation_context(cbs=cbs,state=state): self._do_epoch_validate(ds_idx, dl)
         return getattr(self, 'final_record', None)
 
     @delegates(GatherPredsCallback.__init__)
     def get_preds(self, ds_idx=1, dl=None, with_input=False, with_decoded=False, with_loss=False, act=None,
-                  inner=False, reorder=True, cbs=None, **kwargs):
+                  inner=False, reorder=True, cbs=None, state=LearnerState.Eval, **kwargs):
         if dl is None: dl = self.dls[ds_idx].new(shuffle=False, drop_last=False)
         else:
             try: len(dl)
@@ -249,7 +256,7 @@ class Learner(GetAttr):
             idxs = dl.get_idxs()
             dl = dl.new(get_idxs = _ConstantFunc(idxs))
         cb = GatherPredsCallback(with_input=with_input, with_loss=with_loss, **kwargs)
-        ctx_mgrs = self.validation_context(cbs=L(cbs)+[cb], inner=inner)
+        ctx_mgrs = self.validation_context(cbs=L(cbs)+[cb], inner=inner, state=state)
         if with_loss: ctx_mgrs.append(self.loss_not_reduced())
         with ContextManagers(ctx_mgrs):
             self._do_epoch_validate(dl=dl)
@@ -293,6 +300,9 @@ class Learner(GetAttr):
     def no_mbar(self):    return replacing_yield(self, 'create_mbar', False)
 
     @contextmanager
+    def set_state(self, state): return replacing_yield(self, 'state', state)
+
+    @contextmanager
     def loss_not_reduced(self):
         if hasattr(self.loss_func, 'reduction'): return replacing_yield(self.loss_func, 'reduction', 'none')
         else: return replacing_yield(self, 'loss_func', partial(self.loss_func, reduction='none'))
@@ -323,6 +333,7 @@ add_docs(Learner, "Group together a `model`, some `dls` and a `loss_func` to han
     show_training_loop="Show each step in the training loop",
     no_logging="Context manager to temporarily remove `logger`",
     no_mbar="Context manager to temporarily prevent the master progress bar from being created",
+    set_state="Context manager to temporarily set `Learner.state`",
     loss_not_reduced="A context manager to evaluate `loss_func` with reduction set to none.",
     to_detach="Calls `to_detach` if `self.dl` provides a `.to_detach` function otherwise calls global `to_detach`",
     __call__="Call `event_name` for all `Callback`s in `self.cbs`"
