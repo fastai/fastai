@@ -107,6 +107,8 @@ class DataLoader(GetAttr):
         self.before_iter()
         self.__idxs=self.get_idxs() # called in context of main process (not workers/subprocesses)
         for b in _loaders[self.fake_l.num_workers==0](self.fake_l):
+            # pin_memory causes tuples to be converted to lists, so convert them back to tuples
+            if self.pin_memory and type(b) == list: b = tuple(b)
             if self.device is not None: b = to_device(b, self.device)
             yield self.after_batch(b)
         self.after_iter()
