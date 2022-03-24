@@ -550,8 +550,6 @@ class AvgLoss(Metric):
         self.count += bs
     @property
     def value(self): return self.total/self.count if self.count != 0 else None
-    @property
-    def name(self):  return "loss"
 
 # Cell
 class AvgSmoothLoss(Metric):
