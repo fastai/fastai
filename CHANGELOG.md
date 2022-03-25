@@ -2,10 +2,11 @@
 
 <!-- do not remove -->
 
-## 2.5.4
+## 2.5.5
 
+### New Features
 
-
+- Update fastcore dep
 
 ## 2.5.4
 
