@@ -46,7 +46,7 @@ class Callback(Stateful,GetAttr):
             try: res = getattr(self, event_name, noop)()
             except Exception as e:
                 e.args = [f'Exception occured in `{self.__class__.__name__}` when calling event `{event_name}`:\n\t{e.args[0]}']
-                raise e
+                raise
         if event_name=='after_fit': self.run=True #Reset self.run to True at each end of fit
         return res
 

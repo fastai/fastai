@@ -67,7 +67,7 @@ class TfmdDL(DataLoader):
                 res._n_inp,res._types = self._n_inp,self._types
             except Exception as e:
                 print("Could not do one pass in your dataloader, there is something wrong in it. Please see the stack trace below:")
-                raise e
+                raise
         else: res._n_inp,res._types = self._n_inp,self._types
         return res
 
