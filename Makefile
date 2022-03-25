@@ -35,12 +35,12 @@ testall:
 
 release: pypi
 	sleep 3
-	fastrelease_conda_package --mambabuild --upload_user fastai
+	fastrelease_conda_package --mambabuild --upload_user fastai --build_args '-c pytorch -c nvidia'
 	fastrelease_bump_version
 	nbdev_build_lib | tail
 
 conda_release:
-	fastrelease_conda_package --mambabuild --upload_user fastai
+	fastrelease_conda_package --mambabuild --upload_user fastai --build_args '-c pytorch -c nvidia'
 
 pypi: dist
 	twine upload --repository pypi dist/*
