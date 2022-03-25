@@ -142,7 +142,11 @@ class DataLoader(GetAttr):
         if self.indexed: return self.dataset[s or 0]
         elif s is None:  return next(self.it)
         else: raise IndexError("Cannot index an iterable dataset numerically - must use `None`.")
-    def create_batch(self, b): return (fa_collate,fa_convert)[self.prebatched](b)
+    def create_batch(self, b):
+        try: return (fa_collate,fa_convert)[self.prebatched](b)
+        except Exception as e:
+            if not self.prebatched: collate_error(e,b)
+            raise
     def do_batch(self, b): return self.retain(self.create_batch(self.before_batch(b)), b)
     def to(self, device): self.device = device
     def one_batch(self):
