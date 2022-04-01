@@ -2,6 +2,40 @@
 
 <!-- do not remove -->
 
+## 2.5.5
+
+### New Features
+
+- Update fastcore dep
+
+## 2.5.4
+
+### New Features
+
+- Support py3.10 annotations ([#3601](https://github.com/fastai/fastai/issues/3601))
+
+### Bugs Squashed
+
+- Fix pin_memory=True breaking (batch) Transforms ([#3606](https://github.com/fastai/fastai/pull/3606)), thanks to [@johan12345](https://github.com/johan12345)
+- Add Python 3.9 to `setup.py` for PyPI ([#3604](https://github.com/fastai/fastai/pull/3604)), thanks to [@nzw0301](https://github.com/nzw0301)
+- removes add_vert from get_grid calls ([#3593](https://github.com/fastai/fastai/pull/3593)), thanks to [@kevinbird15](https://github.com/kevinbird15)
+- Making `loss_not_reduced` work with DiceLoss ([#3583](https://github.com/fastai/fastai/pull/3583)), thanks to [@hiromis](https://github.com/hiromis)
+- Fix bug in URLs.path() in 04_data.external ([#3582](https://github.com/fastai/fastai/pull/3582)), thanks to [@malligaraj](https://github.com/malligaraj)
+- Custom name for metrics ([#3573](https://github.com/fastai/fastai/pull/3573)), thanks to [@bdsaglam](https://github.com/bdsaglam)
+- Update import for show_install ([#3568](https://github.com/fastai/fastai/pull/3568)), thanks to [@fr1ll](https://github.com/fr1ll)
+- Fix Classification Interpretation ([#3563](https://github.com/fastai/fastai/pull/3563)), thanks to [@warner-benjamin](https://github.com/warner-benjamin)
+- Updates Interpretation class to be memory efficient ([#3558](https://github.com/fastai/fastai/pull/3558)), thanks to [@warner-benjamin](https://github.com/warner-benjamin)
+- Learner.show_results uses passed dataloader via dl_idx or dl arguments ([#3554](https://github.com/fastai/fastai/pull/3554)), thanks to [@warner-benjamin](https://github.com/warner-benjamin)
+- Fix learn.export pickle error with MixedPrecision Callback ([#3544](https://github.com/fastai/fastai/pull/3544)), thanks to [@warner-benjamin](https://github.com/warner-benjamin)
+- Fix concurrent LRFinder instances overwriting each other by using tempfile ([#3528](https://github.com/fastai/fastai/pull/3528)), thanks to [@warner-benjamin](https://github.com/warner-benjamin)
+- Fix _get_shapes to work with dictionaries ([#3520](https://github.com/fastai/fastai/pull/3520)), thanks to [@ohmeow](https://github.com/ohmeow)
+- Fix torch version checks, remove clip_grad_norm check ([#3518](https://github.com/fastai/fastai/pull/3518)), thanks to [@warner-benjamin](https://github.com/warner-benjamin)
+- Fix nested tensors predictions compatibility with fp16 ([#3516](https://github.com/fastai/fastai/pull/3516)), thanks to [@tcapelle](https://github.com/tcapelle)
+- Learning rate passed via OptimWrapper not updated in Learner ([#3337](https://github.com/fastai/fastai/issues/3337))
+- Different results after running `lr_find()` at different times ([#3295](https://github.com/fastai/fastai/issues/3295))
+- lr_find() may fail if run in parallel from the same directory ([#3240](https://github.com/fastai/fastai/issues/3240))
+
+
 ## 2.5.3
 
 ### New Features

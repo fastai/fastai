@@ -65,7 +65,9 @@ class TfmdDL(DataLoader):
             try:
                 self._one_pass()
                 res._n_inp,res._types = self._n_inp,self._types
-            except: print("Could not do one pass in your dataloader, there is something wrong in it")
+            except Exception as e:
+                print("Could not do one pass in your dataloader, there is something wrong in it. Please see the stack trace below:")
+                raise
         else: res._n_inp,res._types = self._n_inp,self._types
         return res
 
@@ -256,7 +258,10 @@ class TfmdLists(FilteredBase, L, GetAttr):
 
     def _new(self, items, split_idx=None, **kwargs):
         split_idx = ifnone(split_idx,self.split_idx)
-        return super()._new(items, tfms=self.tfms, do_setup=False, types=self.types, split_idx=split_idx, **kwargs)
+        try: return super()._new(items, tfms=self.tfms, do_setup=False, types=self.types, split_idx=split_idx, **kwargs)
+        except IndexError as e:
+            e.args = [f"Tried to grab subset {i} in the Dataset, but it contained no items.\n\t{e.args[0]}"]
+            raise
     def subset(self, i): return self._new(self._get(self.splits[i]), split_idx=i)
     def _after_item(self, o): return self.tfms(o)
     def __repr__(self): return f"{self.__class__.__name__}: {self.items}\ntfms - {self.tfms.fs}"
