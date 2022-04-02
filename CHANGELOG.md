@@ -2,6 +2,18 @@
 
 <!-- do not remove -->
 
+## 2.5.6
+
+### New Features
+
+- support pytorch 1.11 ([#3618](https://github.com/fastai/fastai/issues/3618))
+- Add in exceptions and verbose errors ([#3611](https://github.com/fastai/fastai/pull/3611)), thanks to [@muellerzr](https://github.com/muellerzr)
+
+### Bugs Squashed
+
+- Fix name conflicts in `ColReader` ([#3602](https://github.com/fastai/fastai/pull/3602)), thanks to [@hiromis](https://github.com/hiromis)
+
+
 ## 2.5.5
 
 ### New Features
