@@ -149,7 +149,7 @@ from ..vision.data import *
 # Cell
 @typedispatch
 def tensorboard_log(x:TensorImage, y: TensorCategory, samples, outs, writer, step):
-    fig,axs = get_grid(len(samples), add_vert=1, return_fig=True)
+    fig,axs = get_grid(len(samples), return_fig=True)
     for i in range(2):
         axs = [b.show(ctx=c) for b,c in zip(samples.itemgot(i),axs)]
     axs = [r.show(ctx=c, color='green' if b==r else 'red')
@@ -162,7 +162,7 @@ from ..vision.core import TensorPoint,TensorBBox
 # Cell
 @typedispatch
 def tensorboard_log(x:TensorImage, y: (TensorImageBase, TensorPoint, TensorBBox), samples, outs, writer, step):
-    fig,axs = get_grid(len(samples), add_vert=1, return_fig=True, double=True)
+    fig,axs = get_grid(len(samples), return_fig=True, double=True)
     for i in range(2):
         axs[::2] = [b.show(ctx=c) for b,c in zip(samples.itemgot(i),axs[::2])]
     for x in [samples,outs]:

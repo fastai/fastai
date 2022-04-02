@@ -15,7 +15,6 @@ def get_grid(
     n:int, # Number of axes in the returned grid
     nrows:int=None, # Number of rows in the returned grid, defaulting to `int(math.sqrt(n))`
     ncols:int=None, # Number of columns in the returned grid, defaulting to `ceil(n/rows)`
-    add_vert=0,
     figsize:tuple=None, # Width, height in inches of the returned figure
     double:bool=False, # Whether to double the number of columns and `n`
     title:str=None, # If passed, title set to the figure
@@ -71,7 +70,7 @@ def show_batch(x:TensorImage, y, samples, ctxs=None, max_n=10, nrows=None, ncols
 # Cell
 @typedispatch
 def show_batch(x:TensorImage, y:TensorImage, samples, ctxs=None, max_n=10, nrows=None, ncols=None, figsize=None, **kwargs):
-    if ctxs is None: ctxs = get_grid(min(len(samples), max_n), nrows=nrows, ncols=ncols, add_vert=1, figsize=figsize, double=True)
+    if ctxs is None: ctxs = get_grid(min(len(samples), max_n), nrows=nrows, ncols=ncols, figsize=figsize, double=True)
     for i in range(2):
         ctxs[i::2] = [b.show(ctx=c, **kwargs) for b,c,_ in zip(samples.itemgot(i),ctxs[i::2],range(max_n))]
     return ctxs

@@ -22,7 +22,7 @@ licenses = {
 }
 statuses = [ '1 - Planning', '2 - Pre-Alpha', '3 - Alpha',
     '4 - Beta', '5 - Production/Stable', '6 - Mature', '7 - Inactive' ]
-py_versions = '2.0 2.1 2.2 2.3 2.4 2.5 2.6 2.7 3.0 3.1 3.2 3.3 3.4 3.5 3.6 3.7 3.8'.split()
+py_versions = '2.0 2.1 2.2 2.3 2.4 2.5 2.6 2.7 3.0 3.1 3.2 3.3 3.4 3.5 3.6 3.7 3.8 3.9 3.10'.split()
 min_python = cfg['min_python']
 lic = licenses[cfg['license']]
 
@@ -57,4 +57,3 @@ setuptools.setup(
     zip_safe = False,
     entry_points = { 'console_scripts': cfg.get('console_scripts','').split() },
     **setup_cfg)
-

@@ -28,6 +28,17 @@ mk_class('event', **_events.map_dict(),
 _inner_loop = "before_batch after_pred after_loss before_backward before_step after_step after_cancel_batch after_batch".split()
 
 # Cell
+_ex_docs = dict(
+    CancelBatchException="Skip the rest of this batch and go to `after_batch`",
+    CancelTrainException="Skip the rest of the training part of the epoch and go to `after_train`",
+    CancelValidException="Skip the rest of the validation part of the epoch and go to `after_validate`",
+    CancelEpochException="Skip the rest of this epoch and go to `after_epoch`",
+    CancelStepException ="Skip stepping the optimizer",
+    CancelFitException  ="Interrupts training and go to `after_fit`")
+
+for c,d in _ex_docs.items(): mk_class(c,sup=Exception,doc=d)
+
+# Cell
 @funcs_kwargs(as_method=True)
 class Callback(Stateful,GetAttr):
     "Basic class handling tweaks of the training loop by changing a `Learner` in various events"
@@ -42,7 +53,12 @@ class Callback(Stateful,GetAttr):
         _run = (event_name not in _inner_loop or (self.run_train and getattr(self, 'training', True)) or
                (self.run_valid and not getattr(self, 'training', False)))
         res = None
-        if self.run and _run: res = getattr(self, event_name, noop)()
+        if self.run and _run:
+            try: res = getattr(self, event_name, noop)()
+            except (CancelBatchException, CancelEpochException, CancelFitException, CancelStepException, CancelTrainException, CancelValidException): raise
+            except Exception as e:
+                e.args = [f'Exception occured in `{self.__class__.__name__}` when calling event `{event_name}`:\n\t{e.args[0]}']
+                raise
         if event_name=='after_fit': self.run=True #Reset self.run to True at each end of fit
         return res
 
@@ -90,17 +106,6 @@ class TrainEvalCallback(Callback):
 
 # Cell
 if not hasattr(defaults, 'callbacks'): defaults.callbacks = [TrainEvalCallback]
-
-# Cell
-_ex_docs = dict(
-    CancelBatchException="Skip the rest of this batch and go to `after_batch`",
-    CancelTrainException="Skip the rest of the training part of the epoch and go to `after_train`",
-    CancelValidException="Skip the rest of the validation part of the epoch and go to `after_validate`",
-    CancelEpochException="Skip the rest of this epoch and go to `after_epoch`",
-    CancelStepException ="Skip stepping the optimizer",
-    CancelFitException  ="Interrupts training and go to `after_fit`")
-
-for c,d in _ex_docs.items(): mk_class(c,sup=Exception,doc=d)
 
 # Cell
 class GatherPredsCallback(Callback):
