@@ -65,7 +65,6 @@ jobs:
       uses: actions/setup-python@v3
       with:
         python-version: '3.9'
-        cache: 'pip'
     - name: checkout contents of PR
       uses: actions/checkout@v3
     - name: Install libraries
