@@ -118,8 +118,7 @@
         "Captum": "/callback.captum.html",
         "Weights & Biases": "/callback.wandb.html",
         "Neptune": "/callback.neptune.html",
-        "TensorBoard": "/callback.tensorboard.html",
-        "Azure ML": "/callback.azureml.html"
+        "TensorBoard": "/callback.tensorboard.html"
     },
     "fastai Development": {
         "Developers Guide": "/dev-setup.html",
