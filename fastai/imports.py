@@ -12,7 +12,7 @@ from multiprocessing import Lock,Process,Queue,queues
 from datetime import datetime
 from contextlib import redirect_stdout,contextmanager
 from collections.abc import Iterable,Iterator,Generator,Sequence
-from typing import Union,Optional
+from typing import Union,Optional,TypeVar,Callable,Any
 from types import SimpleNamespace
 from pathlib import Path
 from collections import OrderedDict,defaultdict,Counter,namedtuple
@@ -87,3 +87,9 @@ def equals(a,b):
 
 def pv(text, verbose):
     if verbose: print(text)
+
+
+# Custom fastai type aliases
+T = TypeVar('T')
+listy = Union[Iterable[T], L, fastuple]
+listified = Union[T, Iterable[T], L, fastuple]
