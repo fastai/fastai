@@ -94,7 +94,9 @@ class TfmdDL(DataLoader):
             try:
                 self._one_pass()
                 res._n_inp,res._types = self._n_inp,self._types
-            except: print("Could not do one pass in your dataloader, there is something wrong in it")
+            except Exception as e:
+                print("Could not do one pass in your dataloader, there is something wrong in it. Please see the stack trace below:")
+                raise
         else: res._n_inp,res._types = self._n_inp,self._types
         return res
 
@@ -202,6 +204,7 @@ class DataLoaders(GetAttr):
         if device is not None or hasattr(loaders[0],'to'): self.device = device
 
     def __getitem__(self, i): return self.loaders[i]
+    def __len__(self): return len(self.loaders)
     def new_empty(self):
         loaders = [dl.new(dl.dataset.new_empty()) for dl in self.loaders]
         return type(self)(*loaders, path=self.path, device=self.device)
@@ -361,7 +364,10 @@ class TfmdLists(FilteredBase, L, GetAttr):
 
     def _new(self, items, split_idx=None, **kwargs):
         split_idx = ifnone(split_idx,self.split_idx)
-        return super()._new(items, tfms=self.tfms, do_setup=False, types=self.types, split_idx=split_idx, **kwargs)
+        try: return super()._new(items, tfms=self.tfms, do_setup=False, types=self.types, split_idx=split_idx, **kwargs)
+        except IndexError as e:
+            e.args = [f"Tried to grab subset {i} in the Dataset, but it contained no items.\n\t{e.args[0]}"]
+            raise
     def subset(self, i): return self._new(self._get(self.splits[i]), split_idx=i)
     def _after_item(self, o): return self.tfms(o)
     def __repr__(self): return f"{self.__class__.__name__}: {self.items}\ntfms - {self.tfms.fs}"

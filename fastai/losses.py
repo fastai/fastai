@@ -252,9 +252,12 @@ class DiceLoss:
         union = (torch.sum(pred**2+targ, dim=sum_dims) if self.square_in_union
             else torch.sum(pred+targ, dim=sum_dims))
         dice_score = (2. * inter + self.smooth)/(union + self.smooth)
-        return ((1-dice_score).flatten().mean() if self.reduction == "mean"
-            else (1-dice_score).flatten().sum())
-
+        loss = 1- dice_score
+        if self.reduction == 'mean':
+            loss = loss.mean()
+        elif self.reduction == 'sum':
+            loss = loss.sum()
+        return loss
     @staticmethod
     def _one_hot(
         x:Tensor, # Non one-hot encoded targs

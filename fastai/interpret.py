@@ -138,7 +138,8 @@ class ClassificationInterpretation(Interpretation):
             thresh = cm.max() / 2.
             for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
                 coeff = f'{cm[i, j]:.{norm_dec}f}' if normalize else f'{cm[i, j]}'
-                plt.text(j, i, coeff, horizontalalignment="center", verticalalignment="center", color="white" if cm[i, j] > thresh else "black")
+                plt.text(j, i, coeff, horizontalalignment="center", verticalalignment="center", color="white"
+                         if cm[i, j] > thresh else "black")
 
         ax = fig.gca()
         ax.set_ylim(len(self.vocab)-.5,-.5)
@@ -148,14 +149,11 @@ class ClassificationInterpretation(Interpretation):
         plt.xlabel('Predicted')
         plt.grid(False)
 
-    def most_confused(self,
-        min_val:int=1 # Omit occurrences less than `min_val`
-    ):
-        "Sorted descending list of largest non-diagonal entries of confusion matrix, presented as actual, predicted, number of occurrences."
+    def most_confused(self, min_val=1):
+        "Sorted descending largest non-diagonal entries of confusion matrix (actual, predicted, # occurrences"
         cm = self.confusion_matrix()
         np.fill_diagonal(cm, 0)
-        res = [(self.vocab[i],self.vocab[j],cm[i,j])
-                for i,j in zip(*np.where(cm>=min_val))]
+        res = [(self.vocab[i],self.vocab[j],cm[i,j]) for i,j in zip(*np.where(cm>=min_val))]
         return sorted(res, key=itemgetter(2), reverse=True)
 
     def print_classification_report(self):
@@ -163,7 +161,8 @@ class ClassificationInterpretation(Interpretation):
         _,targs,decoded = self.learn.get_preds(dl=self.dl, with_decoded=True, with_preds=True,
                                                with_targs=True, act=self.act)
         d,t = flatten_check(decoded, targs)
-        print(skm.classification_report(t, d, labels=list(self.vocab.o2i.values()), target_names=[str(v) for v in self.vocab]))
+        names = [str(v) for v in self.vocab]
+        print(skm.classification_report(t, d, labels=list(self.vocab.o2i.values()), target_names=names))
 
 # Cell
 class SegmentationInterpretation(Interpretation):
