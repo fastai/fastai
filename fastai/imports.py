@@ -93,3 +93,4 @@ def pv(text, verbose):
 T = TypeVar('T')
 listy = Union[Iterable[T], L, fastuple]
 listified = Union[T, Iterable[T], L, fastuple]
+Number = Union[int, float]
