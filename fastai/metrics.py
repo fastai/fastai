@@ -71,7 +71,7 @@ class AccumMetric(Metric):
     def name(self):  return self._name
 
     @name.setter
-    def name(self, value): self._name = name
+    def name(self, value): self._name = value
 
 # Cell
 def skm_to_fastai(func, is_class=True, thresh=None, axis=-1, activation=None, **kwargs):
