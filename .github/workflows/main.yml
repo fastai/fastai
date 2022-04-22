@@ -45,9 +45,7 @@ jobs:
     - name: checkout contents of PR
       uses: actions/checkout@v2
     - name: Install libraries
-      run: |
-        python -m ensurepip --upgrade
-        pip install -Uqe .
+      run: pip install -Uqe .
     - name: check if notebooks are synced and cleaned
       uses: fastai/workflows/nb@master
 
