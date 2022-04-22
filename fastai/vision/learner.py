@@ -84,7 +84,7 @@ def create_body(arch, n_in=3, pretrained=True, cut=None):
 def create_head(nf, n_out, lin_ftrs=None, ps=0.5, pool=True, concat_pool=True, first_bn=True, bn_final=False,
                 lin_first=False, y_range=None):
     "Model head that takes `nf` features, runs through `lin_ftrs`, and out `n_out` classes."
-    if concat_pool: nf *= 2
+    if pool and concat_pool: nf *= 2
     lin_ftrs = [nf, 512, n_out] if lin_ftrs is None else [nf] + lin_ftrs + [n_out]
     bns = [first_bn] + [True]*len(lin_ftrs[1:])
     ps = L(ps)
