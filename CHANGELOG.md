@@ -2,6 +2,19 @@
 
 <!-- do not remove -->
 
+## 2.6.0
+
+### New Features
+
+- add support for Ross Wightman's Pytorch Image Models (timm) library ([#3624](https://github.com/fastai/fastai/issues/3624))
+- rename `cnn_learner` to `vision_learner` since we now support models other than CNNs too ([#3625](https://github.com/fastai/fastai/issues/3625))
+
+### Bugs Squashed
+
+- Fix AccumMetric name.setter ([#3621](https://github.com/fastai/fastai/pull/3621)), thanks to [@warner-benjamin](https://github.com/warner-benjamin)
+- Fix Classification Interpretation ([#3563](https://github.com/fastai/fastai/pull/3563)), thanks to [@warner-benjamin](https://github.com/warner-benjamin)
+
+
 ## 2.5.6
 
 ### New Features
