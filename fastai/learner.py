@@ -392,6 +392,7 @@ def load_learner(fname, cpu=True, pickle_module=pickle):
         res.dls.cpu()
         if hasattr(res, 'mixed_precision'): res = res.to_fp32()
         elif hasattr(res, 'non_native_mixed_precision'): res = res.to_non_native_fp32()
+    res.lock = threading.Lock()
     return res
 
 # Cell

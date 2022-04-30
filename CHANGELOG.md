@@ -2,7 +2,7 @@
 
 <!-- do not remove -->
 
-## 2.6.1
+## 2.6.2
 
 ### Bugs Squashed
 
