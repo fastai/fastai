@@ -9,7 +9,7 @@ __all__ = ['CancelStepException', 'CancelFitException', 'CancelEpochException', 
 from .data.all import *
 from .optimizer import *
 from .callback.core import *
-import pickle
+import pickle,threading
 
 # Cell
 #nbdev_comment _all_ = ['CancelStepException','CancelFitException','CancelEpochException','CancelTrainException','CancelValidException','CancelBatchException']
@@ -93,6 +93,7 @@ class Learner(GetAttr):
         store_attr(but='dls,model,cbs')
         self.training,self.create_mbar,self.logger,self.opt,self.cbs = False,True,print,None,L()
         self.add_cbs(L(defaults.callbacks)+L(cbs))
+        self.lock = threading.Lock()
         self("after_create")
 
     @property
@@ -225,7 +226,7 @@ class Learner(GetAttr):
     def __exit__(self, exc_type, exc_value, tb): self(_after_epoch)
 
     def validation_context(self, cbs=None, inner=False):
-        cms = [self.no_logging(),self.no_mbar()]
+        cms = [self.no_logging(),self.no_mbar(), self.lock]
         if cbs: cms.append(self.added_cbs(cbs))
         if not inner: cms.append(self)
         return ContextManagers(cms)
