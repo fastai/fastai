@@ -2,6 +2,13 @@
 
 <!-- do not remove -->
 
+## 2.6.1
+
+### Bugs Squashed
+
+- Race condition: `'Tensor' object has no attribute 'append'` ([#3385](https://github.com/fastai/fastai/issues/3385))
+
+
 ## 2.6.0
 
 ### New Features
