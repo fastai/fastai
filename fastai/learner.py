@@ -301,6 +301,11 @@ class Learner(GetAttr):
     def to_detach(self,b,cpu=True,gather=True):
         return self.dl.to_detach(b,cpu,gather) if hasattr(getattr(self,'dl',None),'to_detach') else to_detach(b,cpu,gather)
 
+    def __getstate__(self): return {k:v for k,v in self.__dict__.items() if k!='lock'}
+    def __setstate__(self, state):
+        self.__dict__.update(state)
+        self.lock = threading.Lock()
+
 Learner.x,Learner.y = add_props(lambda i,x: detuplify((x.xb,x.yb)[i]))
 
 # Cell
@@ -392,7 +397,6 @@ def load_learner(fname, cpu=True, pickle_module=pickle):
         res.dls.cpu()
         if hasattr(res, 'mixed_precision'): res = res.to_fp32()
         elif hasattr(res, 'non_native_mixed_precision'): res = res.to_non_native_fp32()
-    res.lock = threading.Lock()
     return res
 
 # Cell

@@ -2,6 +2,14 @@
 
 <!-- do not remove -->
 
+
+## 2.6.3
+
+### Bugs Squashed
+
+- Fix `Learner` pickling problem introduced in v2.6.2
+
+
 ## 2.6.2
 
 ### Bugs Squashed
