@@ -145,22 +145,25 @@ model_meta = {
     models.alexnet:{**_alexnet_meta}}
 
 # Cell
-def add_head(body, nf, n_out, init=nn.init.kaiming_normal_, head=None, concat_pool=True, pool=True, **kwargs):
+def add_head(body, nf, n_out, init=nn.init.kaiming_normal_, head=None, concat_pool=True, pool=True,
+                lin_ftrs=None, ps=0.5, first_bn=True, bn_final=False, lin_first=False, y_range=None):
     "Add a head to a vision body"
-    if head is None: head = create_head(nf, n_out, concat_pool=concat_pool, pool=pool, **kwargs)
+    if head is None:
+        head = create_head(nf, n_out, concat_pool=concat_pool, pool=pool,
+                           lin_ftrs=lin_ftrs, ps=ps, first_bn=first_bn, bn_final=bn_final, lin_first=lin_first, y_range=y_range)
     model = nn.Sequential(body, head)
     if init is not None: apply_init(model[1], init)
     return model
 
 # Cell
-@delegates(create_head)
 def create_vision_model(arch, n_out, pretrained=True, cut=None, n_in=3, init=nn.init.kaiming_normal_, custom_head=None,
-                     concat_pool=True, **kwargs):
+                        concat_pool=True, pool=True, lin_ftrs=None, ps=0.5, first_bn=True, bn_final=False, lin_first=False, y_range=None):
     "Create custom vision architecture"
     meta = model_meta.get(arch, _default_meta)
     body = create_body(arch, n_in, pretrained, ifnone(cut, meta['cut']))
     nf = num_features_model(nn.Sequential(*body.children())) if custom_head is None else None
-    return add_head(body, nf, n_out, init=init, head=custom_head, concat_pool=concat_pool, **kwargs)
+    return add_head(body, nf, n_out, init=init, head=custom_head, concat_pool=concat_pool, pool=pool,
+                    lin_ftrs=lin_ftrs, ps=ps, first_bn=first_bn, bn_final=bn_final, lin_first=lin_first, y_range=y_range)
 
 # Cell
 class TimmBody(nn.Module):
@@ -170,16 +173,16 @@ class TimmBody(nn.Module):
         self.needs_pool = model.default_cfg.get('pool_size', None)
         self.model = model if cut is None else cut_model(model, cut)
 
-    def forward(self,x):
-        return self.model.forward_features(x) if self.needs_pool else self.model(x)
+    def forward(self,x): return self.model.forward_features(x) if self.needs_pool else self.model(x)
 
 # Cell
 def create_timm_model(arch:str, n_out, cut=None, pretrained=True, n_in=3, init=nn.init.kaiming_normal_, custom_head=None,
-                     concat_pool=True, **kwargs):
+                     concat_pool=True, pool=True, lin_ftrs=None, ps=0.5, first_bn=True, bn_final=False, lin_first=False, y_range=None, **kwargs):
     "Create custom architecture using `arch`, `n_in` and `n_out` from the `timm` library"
     body = TimmBody(arch, pretrained, None, n_in)
     nf = body.model.num_features
-    return add_head(body, nf, n_out, init=init, head=custom_head, concat_pool=concat_pool, pool=body.needs_pool, **kwargs)
+    return add_head(body, nf, n_out, init=init, head=custom_head, concat_pool=concat_pool, pool=body.needs_pool,
+                    lin_ftrs=lin_ftrs, ps=ps, first_bn=first_bn, bn_final=bn_final, lin_first=lin_first, y_range=y_range, **kwargs)
 
 # Cell
 def _add_norm(dls, meta, pretrained):
@@ -192,17 +195,21 @@ def _add_norm(dls, meta, pretrained):
 # Cell
 @delegates(create_vision_model)
 def vision_learner(dls, arch, normalize=True, n_out=None, pretrained=True,
-                # learner args
-                loss_func=None, opt_func=Adam, lr=defaults.lr, splitter=None, cbs=None, metrics=None, path=None,
-                model_dir='models', wd=None, wd_bn_bias=False, train_bn=True, moms=(0.95,0.85,0.95),
-                **kwargs):
+        # learner args
+        loss_func=None, opt_func=Adam, lr=defaults.lr, splitter=None, cbs=None, metrics=None, path=None,
+        model_dir='models', wd=None, wd_bn_bias=False, train_bn=True, moms=(0.95,0.85,0.95),
+        # model & head args
+        cut=None, init=nn.init.kaiming_normal_, custom_head=None, concat_pool=True, pool=True,
+        lin_ftrs=None, ps=0.5, first_bn=True, bn_final=False, lin_first=False, y_range=None, **kwargs):
     "Build a vision learner from `dls` and `arch`"
     if n_out is None: n_out = get_c(dls)
     assert n_out, "`n_out` is not defined, and could not be inferred from data, set `dls.c` or pass `n_out`"
     meta = model_meta.get(arch, _default_meta)
+    model_args = dict(init=init, custom_head=custom_head, concat_pool=concat_pool, pool=pool, lin_ftrs=lin_ftrs, ps=ps,
+                      first_bn=first_bn, bn_final=bn_final, lin_first=lin_first, y_range=y_range, **kwargs)
     if normalize: _add_norm(dls, meta, pretrained)
-    if isinstance(arch, str): model = create_timm_model(arch, n_out, default_split, pretrained, **kwargs)
-    else: model = create_vision_model(arch, n_out, pretrained=pretrained, **kwargs)
+    if isinstance(arch, str): model = create_timm_model(arch, n_out, default_split, pretrained, **model_args)
+    else: model = create_vision_model(arch, n_out, pretrained=pretrained, **model_args)
 
     splitter=ifnone(splitter, meta['split'])
     learn = Learner(dls=dls, model=model, loss_func=loss_func, opt_func=opt_func, lr=lr, splitter=splitter, cbs=cbs,
@@ -226,9 +233,7 @@ def create_unet_model(arch, n_out, img_size, pretrained=True, cut=None, n_in=3, 
 def unet_learner(dls, arch, normalize=True, n_out=None, pretrained=True, config=None,
                  # learner args
                  loss_func=None, opt_func=Adam, lr=defaults.lr, splitter=None, cbs=None, metrics=None, path=None,
-                 model_dir='models', wd=None, wd_bn_bias=False, train_bn=True, moms=(0.95,0.85,0.95),
-                 # other model args
-                 **kwargs):
+                 model_dir='models', wd=None, wd_bn_bias=False, train_bn=True, moms=(0.95,0.85,0.95), **kwargs):
     "Build a unet learner from `dls` and `arch`"
 
     if config:
