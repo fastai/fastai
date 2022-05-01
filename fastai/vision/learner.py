@@ -167,9 +167,9 @@ def create_vision_model(arch, n_out, pretrained=True, cut=None, n_in=3, init=nn.
 
 # Cell
 class TimmBody(nn.Module):
-    def __init__(self, arch:str, pretrained:bool=True, cut=None, n_in:int=3):
+    def __init__(self, arch:str, pretrained:bool=True, cut=None, n_in:int=3, **kwargs):
         super().__init__()
-        model = timm.create_model(arch, pretrained=pretrained, num_classes=0, in_chans=n_in)
+        model = timm.create_model(arch, pretrained=pretrained, num_classes=0, in_chans=n_in, **kwargs)
         self.needs_pool = model.default_cfg.get('pool_size', None)
         self.model = model if cut is None else cut_model(model, cut)
 
@@ -179,10 +179,10 @@ class TimmBody(nn.Module):
 def create_timm_model(arch:str, n_out, cut=None, pretrained=True, n_in=3, init=nn.init.kaiming_normal_, custom_head=None,
                      concat_pool=True, pool=True, lin_ftrs=None, ps=0.5, first_bn=True, bn_final=False, lin_first=False, y_range=None, **kwargs):
     "Create custom architecture using `arch`, `n_in` and `n_out` from the `timm` library"
-    body = TimmBody(arch, pretrained, None, n_in)
+    body = TimmBody(arch, pretrained, None, n_in, **kwargs)
     nf = body.model.num_features
     return add_head(body, nf, n_out, init=init, head=custom_head, concat_pool=concat_pool, pool=body.needs_pool,
-                    lin_ftrs=lin_ftrs, ps=ps, first_bn=first_bn, bn_final=bn_final, lin_first=lin_first, y_range=y_range, **kwargs)
+                    lin_ftrs=lin_ftrs, ps=ps, first_bn=first_bn, bn_final=bn_final, lin_first=lin_first, y_range=y_range)
 
 # Cell
 def _add_norm(dls, meta, pretrained):
