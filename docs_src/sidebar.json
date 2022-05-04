@@ -118,7 +118,8 @@
         "Captum": "/callback.captum.html",
         "Weights & Biases": "/callback.wandb.html",
         "Neptune": "/callback.neptune.html",
-        "TensorBoard": "/callback.tensorboard.html"
+        "TensorBoard": "/callback.tensorboard.html",
+        "Hugging Face Hub": "/huggingface.html"
     },
     "fastai Development": {
         "Developers Guide": "/dev-setup.html",
