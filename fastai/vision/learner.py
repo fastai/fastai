@@ -2,8 +2,8 @@
 
 __all__ = ['has_pool_type', 'cut_model', 'create_body', 'create_head', 'default_split', 'model_meta', 'add_head',
            'create_vision_model', 'TimmBody', 'create_timm_model', 'timm_get_module_names',
-           'timm_get_layers_from_names', 'timm_split', 'vision_learner', 'create_unet_model', 'unet_learner',
-           'create_cnn_model', 'cnn_learner']
+           'timm_get_layers_from_names', 'timm_split', 'timm_default_split', 'timm_resnet_split', 'timm_vit_split',
+           'get_timm_split', 'vision_learner', 'create_unet_model', 'unet_learner', 'create_cnn_model', 'cnn_learner']
 
 # Cell
 from ..basics import *
@@ -208,6 +208,16 @@ def timm_split(m, cut=-1):
     module_names = timm_get_module_names(body)
     groups = L(module_names[0:cut], module_names[cut:]).map(partial(timm_get_layers_from_names, m=body))
     return [g.map(params).concat() for g in groups] + [params(head)]
+
+# Cell
+def timm_default_split(m): return timm_split(m)
+def timm_resnet_split(m):  return timm_split(m, cut=-1)
+def timm_vit_split(m):     return timm_split(m, cut=-3) # maybe more, don't know....
+
+def get_timm_split(arch):
+    if "vit" in arch: return timm_vit_split
+    elif "res" in arch: return timm_resnet_split
+    else: return timm_default_split
 
 # Cell
 def _add_norm(dls, meta, pretrained):
