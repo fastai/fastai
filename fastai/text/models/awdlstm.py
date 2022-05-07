@@ -60,21 +60,21 @@ class WeightDropout(Module):
     def _do_nothing(self): pass
 
 # Cell
-class EmbeddingDropout(Module):
-    "Apply dropout with probability `embed_p` to an embedding layer `emb`."
-
-    def __init__(self, emb, embed_p):
-        self.emb,self.embed_p = emb,embed_p
+class EmbeddingDropout(nn.Embedding):
+    "Apply dropout with probability `embed_p` to an embedding layer."
+    def __init__(self, *args, embed_p, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.embed_p = embed_p
 
     def forward(self, words, scale=None):
         if self.training and self.embed_p != 0:
-            size = (self.emb.weight.size(0),1)
-            mask = dropout_mask(self.emb.weight.data, size, self.embed_p)
-            masked_embed = self.emb.weight * mask
-        else: masked_embed = self.emb.weight
+            size = (self.weight.size(0),1)
+            mask = dropout_mask(self.weight.data, size, self.embed_p)
+            masked_embed = self.weight * mask
+        else: masked_embed = self.weight
         if scale: masked_embed.mul_(scale)
-        return F.embedding(words, masked_embed, ifnone(self.emb.padding_idx, -1), self.emb.max_norm,
-                           self.emb.norm_type, self.emb.scale_grad_by_freq, self.emb.sparse)
+        return F.embedding(words, masked_embed, ifnone(self.padding_idx, -1), self.max_norm,
+                       self.norm_type, self.scale_grad_by_freq, self.sparse)
 
 # Cell
 class AWD_LSTM(Module):
@@ -86,11 +86,11 @@ class AWD_LSTM(Module):
         store_attr('emb_sz,n_hid,n_layers,pad_token')
         self.bs = 1
         self.n_dir = 2 if bidir else 1
-        self.encoder = nn.Embedding(vocab_sz, emb_sz, padding_idx=pad_token)
-        self.encoder_dp = EmbeddingDropout(self.encoder, embed_p)
+        self.encoder = EmbeddingDropout(vocab_sz, emb_sz, embed_p=embed_p, padding_idx=pad_token)
+        self.encoder_dp = self.encoder
+        self.encoder.weight.data.uniform_(-self.initrange, self.initrange)
         self.rnns = nn.ModuleList([self._one_rnn(emb_sz if l == 0 else n_hid, (n_hid if l != n_layers - 1 else emb_sz)//self.n_dir,
                                                  bidir, weight_p, l) for l in range(n_layers)])
-        self.encoder.weight.data.uniform_(-self.initrange, self.initrange)
         self.input_dp = RNNDropout(input_p)
         self.hidden_dps = nn.ModuleList([RNNDropout(hidden_p) for l in range(n_layers)])
         self.reset()
@@ -138,7 +138,7 @@ class AWD_LSTM(Module):
 def awd_lstm_lm_split(model):
     "Split a RNN `model` in groups for differential learning rates."
     groups = [nn.Sequential(rnn, dp) for rnn, dp in zip(model[0].rnns, model[0].hidden_dps)]
-    groups = L(groups + [nn.Sequential(model[0].encoder, model[0].encoder_dp, model[1])])
+    groups = L(groups + [nn.Sequential(model[0].encoder, model[0].encoder, model[1])])
     return groups.map(params)
 
 # Cell
@@ -148,7 +148,7 @@ awd_lstm_lm_config = dict(emb_sz=400, n_hid=1152, n_layers=3, pad_token=1, bidir
 # Cell
 def awd_lstm_clas_split(model):
     "Split a RNN `model` in groups for differential learning rates."
-    groups = [nn.Sequential(model[0].module.encoder, model[0].module.encoder_dp)]
+    groups = [nn.Sequential(model[0].module.encoder, model[0].module.encoder)]
     groups += [nn.Sequential(rnn, dp) for rnn, dp in zip(model[0].module.rnns, model[0].module.hidden_dps)]
     groups = L(groups + [model[1]])
     return groups.map(params)
