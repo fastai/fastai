@@ -245,7 +245,7 @@ def vision_learner(dls, arch, normalize=True, n_out=None, pretrained=True,
     if normalize: _add_norm(dls, meta, pretrained)
     if isinstance(arch, str):
         model = create_timm_model(arch, n_out, default_split, pretrained, **model_args)
-        splitter = get_timm_split(arch)
+        splitter = ifnone(splitter, get_timm_split(arch))
     else:
         model = create_vision_model(arch, n_out, pretrained=pretrained, **model_args)
         splitter=ifnone(splitter, meta['split'])
