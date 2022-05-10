@@ -6,6 +6,6 @@ tds = Datasets(items, [PILImageBW.create, [parent_label, Categorize()]], splits=
 
 if __name__ == '__main__':
     data = tds.dataloaders(bs=256, after_item=[ToTensor(), IntToFloatTensor()]).cuda()
-    learn = cnn_learner(data, resnet18)
+    learn = vision_learner(data, resnet18)
     learn.fit_one_cycle(1, 1e-2)
 
