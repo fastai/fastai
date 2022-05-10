@@ -87,10 +87,3 @@ def equals(a,b):
 
 def pv(text, verbose):
     if verbose: print(text)
-
-
-# Custom fastai type aliases
-T = TypeVar('T')
-listy = Union[Iterable[T], L, fastuple]
-listified = Union[T, Iterable[T], L, fastuple]
-Number = Union[int, float]
