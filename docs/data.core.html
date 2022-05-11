@@ -26,6 +26,25 @@ nb_path: "nbs/03_data.core.ipynb"
     
 <div class="cell border-box-sizing code_cell rendered">
 
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>/opt/conda/lib/python3.9/site-packages/torch/cuda/__init__.py:145: UserWarning: 
+NVIDIA GeForce RTX 3070 Laptop GPU with CUDA capability sm_86 is not compatible with the current PyTorch installation.
+The current PyTorch install supports CUDA capabilities sm_37 sm_50 sm_60 sm_70.
+If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, please check the instructions at https://pytorch.org/get-started/locally/
+
+  warnings.warn(incompatible_device_warn.format(device_name, capability, &#34; &#34;.join(arch_list), device_name))
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
 </div>
     {% endraw %}
 
@@ -96,9 +115,194 @@ nb_path: "nbs/03_data.core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TfmdDL" class="doc_header"><code>class</code> <code>TfmdDL</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/core.py#L39" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TfmdDL</code>(<strong><code>dataset</code></strong>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>shuffle</code></strong>=<em><code>False</code></em>, <strong><code>num_workers</code></strong>=<em><code>None</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>, <strong><code>do_setup</code></strong>=<em><code>True</code></em>, <strong><code>pin_memory</code></strong>=<em><code>False</code></em>, <strong><code>timeout</code></strong>=<em><code>0</code></em>, <strong><code>batch_size</code></strong>=<em><code>None</code></em>, <strong><code>drop_last</code></strong>=<em><code>False</code></em>, <strong><code>indexed</code></strong>=<em><code>None</code></em>, <strong><code>n</code></strong>=<em><code>None</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>persistent_workers</code></strong>=<em><code>False</code></em>, <strong><code>wif</code></strong>=<em><code>None</code></em>, <strong><code>before_iter</code></strong>=<em><code>None</code></em>, <strong><code>after_item</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_iter</code></strong>=<em><code>None</code></em>, <strong><code>create_batches</code></strong>=<em><code>None</code></em>, <strong><code>create_item</code></strong>=<em><code>None</code></em>, <strong><code>create_batch</code></strong>=<em><code>None</code></em>, <strong><code>retain</code></strong>=<em><code>None</code></em>, <strong><code>get_idxs</code></strong>=<em><code>None</code></em>, <strong><code>sample</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_fn</code></strong>=<em><code>None</code></em>, <strong><code>do_batch</code></strong>=<em><code>None</code></em>) :: <a href="/data.load.html#DataLoader"><code>DataLoader</code></a></p>
+<h2 id="TfmdDL" class="doc_header"><code>class</code> <code>TfmdDL</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/core.py#L55" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TfmdDL</code>(<strong><code>dataset</code></strong>, <strong><code>bs</code></strong>:<code>int</code>=<em><code>64</code></em>, <strong><code>shuffle</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>num_workers</code></strong>:<code>int</code>=<em><code>None</code></em>, <strong><code>verbose</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>do_setup</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>pin_memory</code></strong>=<em><code>False</code></em>, <strong><code>timeout</code></strong>=<em><code>0</code></em>, <strong><code>batch_size</code></strong>=<em><code>None</code></em>, <strong><code>drop_last</code></strong>=<em><code>False</code></em>, <strong><code>indexed</code></strong>=<em><code>None</code></em>, <strong><code>n</code></strong>=<em><code>None</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>persistent_workers</code></strong>=<em><code>False</code></em>, <strong><code>wif</code></strong>=<em><code>None</code></em>, <strong><code>before_iter</code></strong>=<em><code>None</code></em>, <strong><code>after_item</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_iter</code></strong>=<em><code>None</code></em>, <strong><code>create_batches</code></strong>=<em><code>None</code></em>, <strong><code>create_item</code></strong>=<em><code>None</code></em>, <strong><code>create_batch</code></strong>=<em><code>None</code></em>, <strong><code>retain</code></strong>=<em><code>None</code></em>, <strong><code>get_idxs</code></strong>=<em><code>None</code></em>, <strong><code>sample</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_fn</code></strong>=<em><code>None</code></em>, <strong><code>do_batch</code></strong>=<em><code>None</code></em>) :: <a href="/data.load.html#DataLoader"><code>DataLoader</code></a></p>
 </blockquote>
 <p>Transformed <a href="/data.load.html#DataLoader"><code>DataLoader</code></a></p>
+<table>
+<thead><tr>
+<th></th>
+<th>Type</th>
+<th>Default</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>dataset</code></strong></td>
+<td></td>
+<td></td>
+<td>Map- or iterable-style dataset from which to load the data</td>
+</tr>
+<tr>
+<td><strong><code>bs</code></strong></td>
+<td><code>int</code></td>
+<td><code>64</code></td>
+<td>Size of batch</td>
+</tr>
+<tr>
+<td><strong><code>shuffle</code></strong></td>
+<td><code>bool</code></td>
+<td><code>False</code></td>
+<td>Whether to shuffle data</td>
+</tr>
+<tr>
+<td><strong><code>num_workers</code></strong></td>
+<td><code>int</code></td>
+<td><code>None</code></td>
+<td>Number of CPU cores to use in parallel (default: All available up to 16)</td>
+</tr>
+<tr>
+<td><strong><code>verbose</code></strong></td>
+<td><code>bool</code></td>
+<td><code>False</code></td>
+<td>Whether to print verbose logs</td>
+</tr>
+<tr>
+<td><strong><code>do_setup</code></strong></td>
+<td><code>bool</code></td>
+<td><code>True</code></td>
+<td>Whether to run <code>setup()</code> for batch transform(s)</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td><strong>Valid Keyword Arguments</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><strong><code>pin_memory</code></strong></td>
+<td><code>bool</code></td>
+<td><code>False</code></td>
+<td>Argument passed to <a href="/data.load.html#DataLoader.__init__"><code>DataLoader.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>timeout</code></strong></td>
+<td><code>int</code></td>
+<td><code>0</code></td>
+<td>Argument passed to <a href="/data.load.html#DataLoader.__init__"><code>DataLoader.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>batch_size</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>Argument passed to <a href="/data.load.html#DataLoader.__init__"><code>DataLoader.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>drop_last</code></strong></td>
+<td><code>bool</code></td>
+<td><code>False</code></td>
+<td>Argument passed to <a href="/data.load.html#DataLoader.__init__"><code>DataLoader.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>indexed</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>Argument passed to <a href="/data.load.html#DataLoader.__init__"><code>DataLoader.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>n</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>Argument passed to <a href="/data.load.html#DataLoader.__init__"><code>DataLoader.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>device</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>Argument passed to <a href="/data.load.html#DataLoader.__init__"><code>DataLoader.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>persistent_workers</code></strong></td>
+<td><code>bool</code></td>
+<td><code>False</code></td>
+<td>Argument passed to <a href="/data.load.html#DataLoader.__init__"><code>DataLoader.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>wif</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>Argument passed to <a href="/data.load.html#DataLoader.__init__"><code>DataLoader.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>before_iter</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>Argument passed to <a href="/data.load.html#DataLoader.__init__"><code>DataLoader.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>after_item</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>Argument passed to <a href="/data.load.html#DataLoader.__init__"><code>DataLoader.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>before_batch</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>Argument passed to <a href="/data.load.html#DataLoader.__init__"><code>DataLoader.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>after_batch</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>Argument passed to <a href="/data.load.html#DataLoader.__init__"><code>DataLoader.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>after_iter</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>Argument passed to <a href="/data.load.html#DataLoader.__init__"><code>DataLoader.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>create_batches</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>Argument passed to <a href="/data.load.html#DataLoader.__init__"><code>DataLoader.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>create_item</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>Argument passed to <a href="/data.load.html#DataLoader.__init__"><code>DataLoader.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>create_batch</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>Argument passed to <a href="/data.load.html#DataLoader.__init__"><code>DataLoader.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>retain</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>Argument passed to <a href="/data.load.html#DataLoader.__init__"><code>DataLoader.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>get_idxs</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>Argument passed to <a href="/data.load.html#DataLoader.__init__"><code>DataLoader.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>sample</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>Argument passed to <a href="/data.load.html#DataLoader.__init__"><code>DataLoader.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>shuffle_fn</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>Argument passed to <a href="/data.load.html#DataLoader.__init__"><code>DataLoader.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>do_batch</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>Argument passed to <a href="/data.load.html#DataLoader.__init__"><code>DataLoader.__init__</code></a></td>
+</tr>
+</tbody>
+</table>
 
 </div>
 
@@ -285,7 +489,7 @@ nb_path: "nbs/03_data.core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="DataLoader.one_batch" class="doc_header"><code>DataLoader.one_batch</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/load.py#L146" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>DataLoader.one_batch</code>()</p>
+<h4 id="DataLoader.one_batch" class="doc_header"><code>DataLoader.one_batch</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/load.py#L168" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>DataLoader.one_batch</code>()</p>
 </blockquote>
 <p>Return one batch from <a href="/data.load.html#DataLoader"><code>DataLoader</code></a>.</p>
 
@@ -346,9 +550,26 @@ nb_path: "nbs/03_data.core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="TfmdDL.decode" class="doc_header"><code>TfmdDL.decode</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/core.py#L79" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>TfmdDL.decode</code>(<strong><code>b</code></strong>)</p>
+<h4 id="TfmdDL.decode" class="doc_header"><code>TfmdDL.decode</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/core.py#L110" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>TfmdDL.decode</code>(<strong><code>b</code></strong>)</p>
 </blockquote>
 <p>Decode <code>b</code> using <code>tfms</code></p>
+<table>
+<thead><tr>
+<th></th>
+<th>Type</th>
+<th>Default</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>b</code></strong></td>
+<td></td>
+<td></td>
+<td>Batch to decode</td>
+</tr>
+</tbody>
+</table>
 
 </div>
 
@@ -388,9 +609,38 @@ nb_path: "nbs/03_data.core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="TfmdDL.decode_batch" class="doc_header"><code>TfmdDL.decode_batch</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/core.py#L80" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>TfmdDL.decode_batch</code>(<strong><code>b</code></strong>, <strong><code>max_n</code></strong>=<em><code>9</code></em>, <strong><code>full</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="TfmdDL.decode_batch" class="doc_header"><code>TfmdDL.decode_batch</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/core.py#L114" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>TfmdDL.decode_batch</code>(<strong><code>b</code></strong>, <strong><code>max_n</code></strong>:<code>int</code>=<em><code>9</code></em>, <strong><code>full</code></strong>:<code>bool</code>=<em><code>True</code></em>)</p>
 </blockquote>
 <p>Decode <code>b</code> entirely</p>
+<table>
+<thead><tr>
+<th></th>
+<th>Type</th>
+<th>Default</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>b</code></strong></td>
+<td></td>
+<td></td>
+<td>Batch to decode</td>
+</tr>
+<tr>
+<td><strong><code>max_n</code></strong></td>
+<td><code>int</code></td>
+<td><code>9</code></td>
+<td>Maximum number of items to decode</td>
+</tr>
+<tr>
+<td><strong><code>full</code></strong></td>
+<td><code>bool</code></td>
+<td><code>True</code></td>
+<td>Whether to decode all transforms. If <code>False</code>, decode up to the point the item knows how to show itself</td>
+</tr>
+</tbody>
+</table>
 
 </div>
 
@@ -430,9 +680,56 @@ nb_path: "nbs/03_data.core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="TfmdDL.show_batch" class="doc_header"><code>TfmdDL.show_batch</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/core.py#L96" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>TfmdDL.show_batch</code>(<strong><code>b</code></strong>=<em><code>None</code></em>, <strong><code>max_n</code></strong>=<em><code>9</code></em>, <strong><code>ctxs</code></strong>=<em><code>None</code></em>, <strong><code>show</code></strong>=<em><code>True</code></em>, <strong><code>unique</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="TfmdDL.show_batch" class="doc_header"><code>TfmdDL.show_batch</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/core.py#L135" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>TfmdDL.show_batch</code>(<strong><code>b</code></strong>=<em><code>None</code></em>, <strong><code>max_n</code></strong>:<code>int</code>=<em><code>9</code></em>, <strong><code>ctxs</code></strong>=<em><code>None</code></em>, <strong><code>show</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>unique</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Show <code>b</code> (defaults to <code>one_batch</code>), a list of lists of pipeline outputs (i.e. output of a <a href="/data.load.html#DataLoader"><code>DataLoader</code></a>)</p>
+<table>
+<thead><tr>
+<th></th>
+<th>Type</th>
+<th>Default</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>b</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>Batch to show</td>
+</tr>
+<tr>
+<td><strong><code>max_n</code></strong></td>
+<td><code>int</code></td>
+<td><code>9</code></td>
+<td>Maximum number of items to show</td>
+</tr>
+<tr>
+<td><strong><code>ctxs</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>List of <code>ctx</code> objects to show data. Could be matplotlib axis, DataFrame etc</td>
+</tr>
+<tr>
+<td><strong><code>show</code></strong></td>
+<td><code>bool</code></td>
+<td><code>True</code></td>
+<td>Whether to display data</td>
+</tr>
+<tr>
+<td><strong><code>unique</code></strong></td>
+<td><code>bool</code></td>
+<td><code>False</code></td>
+<td>Whether to show only one</td>
+</tr>
+<tr>
+<td><strong><code>kwargs</code></strong></td>
+<td></td>
+<td></td>
+<td><em>No Content</em></td>
+</tr>
+</tbody>
+</table>
 
 </div>
 
@@ -455,9 +752,26 @@ nb_path: "nbs/03_data.core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="TfmdDL.to" class="doc_header"><code>TfmdDL.to</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/core.py#L119" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>TfmdDL.to</code>(<strong><code>device</code></strong>)</p>
+<h4 id="TfmdDL.to" class="doc_header"><code>TfmdDL.to</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/core.py#L175" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>TfmdDL.to</code>(<strong><code>device</code></strong>)</p>
 </blockquote>
 <p>Put self and its transforms state on <code>device</code></p>
+<table>
+<thead><tr>
+<th></th>
+<th>Type</th>
+<th>Default</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>device</code></strong></td>
+<td></td>
+<td></td>
+<td>Device to put <a href="/data.load.html#DataLoader"><code>DataLoader</code></a> and transforms</td>
+</tr>
+</tbody>
+</table>
 
 </div>
 
@@ -480,7 +794,7 @@ nb_path: "nbs/03_data.core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="DataLoaders" class="doc_header"><code>class</code> <code>DataLoaders</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/core.py#L193" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>DataLoaders</code>(<strong>*<code>loaders</code></strong>, <strong><code>path</code></strong>=<em><code>'.'</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>) :: <a href="https://fastcore.fast.ai/basics#GetAttr"><code>GetAttr</code></a></p>
+<h2 id="DataLoaders" class="doc_header"><code>class</code> <code>DataLoaders</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/core.py#L194" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>DataLoaders</code>(<strong>*<code>loaders</code></strong>, <strong><code>path</code></strong>:<code>(str, Path)</code>=<em><code>'.'</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>) :: <a href="https://fastcore.fast.ai/basics#GetAttr"><code>GetAttr</code></a></p>
 </blockquote>
 <p>Basic wrapper around several <a href="/data.load.html#DataLoader"><code>DataLoader</code></a>s.</p>
 
@@ -614,7 +928,7 @@ nb_path: "nbs/03_data.core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="DataLoaders.__getitem__" class="doc_header"><code>DataLoaders.__getitem__</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/core.py#L200" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>DataLoaders.__getitem__</code>(<strong><code>i</code></strong>)</p>
+<h4 id="DataLoaders.__getitem__" class="doc_header"><code>DataLoaders.__getitem__</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/core.py#L206" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>DataLoaders.__getitem__</code>(<strong><code>i</code></strong>)</p>
 </blockquote>
 <p>Retrieve <a href="/data.load.html#DataLoader"><code>DataLoader</code></a> at <code>i</code> (<code>0</code> is training, <code>1</code> is validation)</p>
 
@@ -690,7 +1004,7 @@ nb_path: "nbs/03_data.core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="DataLoaders.train" class="doc_header"><code>DataLoaders.train</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/core.py#L206" class="source_link" style="float:right">[source]</a></h4><p>Training <a href="/data.load.html#DataLoader"><code>DataLoader</code></a></p>
+<h4 id="DataLoaders.train" class="doc_header"><code>DataLoaders.train</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/core.py#L213" class="source_link" style="float:right">[source]</a></h4><p>Training <a href="/data.load.html#DataLoader"><code>DataLoader</code></a></p>
 
 </div>
 
@@ -713,7 +1027,7 @@ nb_path: "nbs/03_data.core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="DataLoaders.valid" class="doc_header"><code>DataLoaders.valid</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/core.py#L206" class="source_link" style="float:right">[source]</a></h4><p>Validation <a href="/data.load.html#DataLoader"><code>DataLoader</code></a></p>
+<h4 id="DataLoaders.valid" class="doc_header"><code>DataLoaders.valid</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/core.py#L213" class="source_link" style="float:right">[source]</a></h4><p>Validation <a href="/data.load.html#DataLoader"><code>DataLoader</code></a></p>
 
 </div>
 
@@ -736,7 +1050,7 @@ nb_path: "nbs/03_data.core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="DataLoaders.train_ds" class="doc_header"><code>DataLoaders.train_ds</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/core.py#L207" class="source_link" style="float:right">[source]</a></h4><p>Training <code>Dataset</code></p>
+<h4 id="DataLoaders.train_ds" class="doc_header"><code>DataLoaders.train_ds</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/core.py#L214" class="source_link" style="float:right">[source]</a></h4><p>Training <code>Dataset</code></p>
 
 </div>
 
@@ -759,7 +1073,7 @@ nb_path: "nbs/03_data.core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="DataLoaders.valid_ds" class="doc_header"><code>DataLoaders.valid_ds</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/core.py#L207" class="source_link" style="float:right">[source]</a></h4><p>Validation <code>Dataset</code></p>
+<h4 id="DataLoaders.valid_ds" class="doc_header"><code>DataLoaders.valid_ds</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/core.py#L214" class="source_link" style="float:right">[source]</a></h4><p>Validation <code>Dataset</code></p>
 
 </div>
 
@@ -782,7 +1096,7 @@ nb_path: "nbs/03_data.core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="FilteredBase" class="doc_header"><code>class</code> <code>FilteredBase</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/core.py#L263" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FilteredBase</code>(<strong>*<code>args</code></strong>, <strong><code>dl_type</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h2 id="FilteredBase" class="doc_header"><code>class</code> <code>FilteredBase</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/core.py#L294" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FilteredBase</code>(<strong>*<code>args</code></strong>, <strong><code>dl_type</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Base class for lists with subsets</p>
 
@@ -814,9 +1128,230 @@ nb_path: "nbs/03_data.core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="FilteredBase.dataloaders" class="doc_header"><code>FilteredBase.dataloaders</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/core.py#L276" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>FilteredBase.dataloaders</code>(<strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>shuffle_train</code></strong>=<em><code>None</code></em>, <strong><code>shuffle</code></strong>=<em><code>True</code></em>, <strong><code>val_shuffle</code></strong>=<em><code>False</code></em>, <strong><code>n</code></strong>=<em><code>None</code></em>, <strong><code>path</code></strong>=<em><code>'.'</code></em>, <strong><code>dl_type</code></strong>=<em><code>None</code></em>, <strong><code>dl_kwargs</code></strong>=<em><code>None</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>drop_last</code></strong>=<em><code>None</code></em>, <strong><code>val_bs</code></strong>=<em><code>None</code></em>, <strong><code>num_workers</code></strong>:<code>int</code>=<em><code>None</code></em>, <strong><code>verbose</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>do_setup</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>pin_memory</code></strong>=<em><code>False</code></em>, <strong><code>timeout</code></strong>=<em><code>0</code></em>, <strong><code>batch_size</code></strong>=<em><code>None</code></em>, <strong><code>indexed</code></strong>=<em><code>None</code></em>, <strong><code>persistent_workers</code></strong>=<em><code>False</code></em>, <strong><code>wif</code></strong>=<em><code>None</code></em>, <strong><code>before_iter</code></strong>=<em><code>None</code></em>, <strong><code>after_item</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_iter</code></strong>=<em><code>None</code></em>, <strong><code>create_batches</code></strong>=<em><code>None</code></em>, <strong><code>create_item</code></strong>=<em><code>None</code></em>, <strong><code>create_batch</code></strong>=<em><code>None</code></em>, <strong><code>retain</code></strong>=<em><code>None</code></em>, <strong><code>get_idxs</code></strong>=<em><code>None</code></em>, <strong><code>sample</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_fn</code></strong>=<em><code>None</code></em>, <strong><code>do_batch</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="FilteredBase.dataloaders" class="doc_header"><code>FilteredBase.dataloaders</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/core.py#L307" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>FilteredBase.dataloaders</code>(<strong><code>bs</code></strong>:<code>int</code>=<em><code>64</code></em>, <strong><code>shuffle_train</code></strong>:<code>bool</code>=<em><code>None</code></em>, <strong><code>shuffle</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>val_shuffle</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>n</code></strong>:<code>int</code>=<em><code>None</code></em>, <strong><code>path</code></strong>:<code>(str, Path)</code>=<em><code>'.'</code></em>, <strong><code>dl_type</code></strong>:<a href="/data.core.html#TfmdDL"><code>TfmdDL</code></a>=<em><code>None</code></em>, <strong><code>dl_kwargs</code></strong>:<code>list</code>=<em><code>None</code></em>, <strong><code>device</code></strong>:<code>device</code>=<em><code>None</code></em>, <strong><code>drop_last</code></strong>:<code>bool</code>=<em><code>None</code></em>, <strong><code>val_bs</code></strong>:<code>int</code>=<em><code>None</code></em>, <strong><code>num_workers</code></strong>:<code>int</code>=<em><code>None</code></em>, <strong><code>verbose</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>do_setup</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>pin_memory</code></strong>=<em><code>False</code></em>, <strong><code>timeout</code></strong>=<em><code>0</code></em>, <strong><code>batch_size</code></strong>=<em><code>None</code></em>, <strong><code>indexed</code></strong>=<em><code>None</code></em>, <strong><code>persistent_workers</code></strong>=<em><code>False</code></em>, <strong><code>wif</code></strong>=<em><code>None</code></em>, <strong><code>before_iter</code></strong>=<em><code>None</code></em>, <strong><code>after_item</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_iter</code></strong>=<em><code>None</code></em>, <strong><code>create_batches</code></strong>=<em><code>None</code></em>, <strong><code>create_item</code></strong>=<em><code>None</code></em>, <strong><code>create_batch</code></strong>=<em><code>None</code></em>, <strong><code>retain</code></strong>=<em><code>None</code></em>, <strong><code>get_idxs</code></strong>=<em><code>None</code></em>, <strong><code>sample</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_fn</code></strong>=<em><code>None</code></em>, <strong><code>do_batch</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Get a <a href="/data.core.html#DataLoaders"><code>DataLoaders</code></a></p>
+<table>
+<thead><tr>
+<th></th>
+<th>Type</th>
+<th>Default</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>bs</code></strong></td>
+<td><code>int</code></td>
+<td><code>64</code></td>
+<td>Batch size</td>
+</tr>
+<tr>
+<td><strong><code>shuffle_train</code></strong></td>
+<td><code>bool</code></td>
+<td><code>None</code></td>
+<td>(Deprecated, use <code>shuffle</code>) Shuffle training <a href="/data.load.html#DataLoader"><code>DataLoader</code></a></td>
+</tr>
+<tr>
+<td><strong><code>shuffle</code></strong></td>
+<td><code>bool</code></td>
+<td><code>True</code></td>
+<td>Shuffle training <a href="/data.load.html#DataLoader"><code>DataLoader</code></a></td>
+</tr>
+<tr>
+<td><strong><code>val_shuffle</code></strong></td>
+<td><code>bool</code></td>
+<td><code>False</code></td>
+<td>Shuffle validation <a href="/data.load.html#DataLoader"><code>DataLoader</code></a></td>
+</tr>
+<tr>
+<td><strong><code>n</code></strong></td>
+<td><code>int</code></td>
+<td><code>None</code></td>
+<td>Size of <a href="/data.core.html#Datasets"><code>Datasets</code></a> used to create <a href="/data.load.html#DataLoader"><code>DataLoader</code></a></td>
+</tr>
+<tr>
+<td><strong><code>path</code></strong></td>
+<td><code>(str, Path)</code></td>
+<td><code>.</code></td>
+<td>Path to put in <a href="/data.core.html#DataLoaders"><code>DataLoaders</code></a></td>
+</tr>
+<tr>
+<td><strong><code>dl_type</code></strong></td>
+<td><a href="/data.core.html#TfmdDL"><code>TfmdDL</code></a></td>
+<td><code>None</code></td>
+<td>Type of <a href="/data.load.html#DataLoader"><code>DataLoader</code></a></td>
+</tr>
+<tr>
+<td><strong><code>dl_kwargs</code></strong></td>
+<td><code>list</code></td>
+<td><code>None</code></td>
+<td>List of kwargs to pass to individual <a href="/data.load.html#DataLoader"><code>DataLoader</code></a>s</td>
+</tr>
+<tr>
+<td><strong><code>device</code></strong></td>
+<td><code>device</code></td>
+<td><code>None</code></td>
+<td>Device to put <a href="/data.core.html#DataLoaders"><code>DataLoaders</code></a></td>
+</tr>
+<tr>
+<td><strong><code>drop_last</code></strong></td>
+<td><code>bool</code></td>
+<td><code>None</code></td>
+<td>Drop last incomplete batch, defaults to <code>shuffle</code></td>
+</tr>
+<tr>
+<td><strong><code>val_bs</code></strong></td>
+<td><code>int</code></td>
+<td><code>None</code></td>
+<td>Validation batch size, defaults to <code>bs</code></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td><strong>Valid Keyword Arguments</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><strong><code>num_workers</code></strong></td>
+<td><code>int</code></td>
+<td><code>None</code></td>
+<td>Number of CPU cores to use in parallel (default: All available up to 16) passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>verbose</code></strong></td>
+<td><code>bool</code></td>
+<td><code>False</code></td>
+<td>Whether to print verbose logs passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>do_setup</code></strong></td>
+<td><code>bool</code></td>
+<td><code>True</code></td>
+<td>Whether to run <code>setup()</code> for batch transform(s) passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>pin_memory</code></strong></td>
+<td><code>bool</code></td>
+<td><code>False</code></td>
+<td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>timeout</code></strong></td>
+<td><code>int</code></td>
+<td><code>0</code></td>
+<td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>batch_size</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>indexed</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>persistent_workers</code></strong></td>
+<td><code>bool</code></td>
+<td><code>False</code></td>
+<td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>wif</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>before_iter</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>after_item</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>before_batch</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>after_batch</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>after_iter</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>create_batches</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>create_item</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>create_batch</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>retain</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>get_idxs</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>sample</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>shuffle_fn</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>do_batch</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong>Returns</strong></td>
+<td><code>DataLoaders</code></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
 
 </div>
 
@@ -839,9 +1374,80 @@ nb_path: "nbs/03_data.core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TfmdLists" class="doc_header"><code>class</code> <code>TfmdLists</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/core.py#L296" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TfmdLists</code>(<strong><code>items</code></strong>=<em><code>None</code></em>, <strong>*<code>rest</code></strong>, <strong><code>use_list</code></strong>=<em><code>False</code></em>, <strong><code>match</code></strong>=<em><code>None</code></em>) :: <a href="/data.core.html#FilteredBase"><code>FilteredBase</code></a></p>
+<h2 id="TfmdLists" class="doc_header"><code>class</code> <code>TfmdLists</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/core.py#L339" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TfmdLists</code>(<strong><code>items</code></strong>=<em><code>None</code></em>, <strong>*<code>rest</code></strong>, <strong><code>use_list</code></strong>=<em><code>False</code></em>, <strong><code>match</code></strong>=<em><code>None</code></em>) :: <a href="/data.core.html#FilteredBase"><code>FilteredBase</code></a></p>
 </blockquote>
 <p>A <a href="https://fastcore.fast.ai/transform#Pipeline"><code>Pipeline</code></a> of <code>tfms</code> applied to a collection of <code>items</code></p>
+<table>
+<thead><tr>
+<th></th>
+<th>Type</th>
+<th>Default</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>items</code></strong></td>
+<td><code>list</code></td>
+<td></td>
+<td>Items to apply <a href="https://fastcore.fast.ai/transform#Transform"><code>Transform</code></a>s to</td>
+</tr>
+<tr>
+<td><strong><code>tfms</code></strong></td>
+<td><code>(list, Pipeline)</code></td>
+<td></td>
+<td><a href="https://fastcore.fast.ai/transform#Transform"><code>Transform</code></a>(s) or <a href="https://fastcore.fast.ai/transform#Pipeline"><code>Pipeline</code></a> to apply</td>
+</tr>
+<tr>
+<td><strong><code>use_list</code></strong></td>
+<td><code>bool</code></td>
+<td><code>None</code></td>
+<td>Use <code>list</code> in <a href="https://fastcore.fast.ai/foundation#L"><code>L</code></a></td>
+</tr>
+<tr>
+<td><strong><code>do_setup</code></strong></td>
+<td><code>bool</code></td>
+<td><code>True</code></td>
+<td>Call <code>setup()</code> for <a href="https://fastcore.fast.ai/transform#Transform"><code>Transform</code></a></td>
+</tr>
+<tr>
+<td><strong><code>split_idx</code></strong></td>
+<td><code>int</code></td>
+<td><code>None</code></td>
+<td>Apply <a href="https://fastcore.fast.ai/transform#Transform"><code>Transform</code></a>(s) to training or validation set. <code>0</code> for training set and <code>1</code> for validation set</td>
+</tr>
+<tr>
+<td><strong><code>train_setup</code></strong></td>
+<td><code>bool</code></td>
+<td><code>True</code></td>
+<td>Apply <a href="https://fastcore.fast.ai/transform#Transform"><code>Transform</code></a>(s) only on training <a href="/data.load.html#DataLoader"><code>DataLoader</code></a></td>
+</tr>
+<tr>
+<td><strong><code>splits</code></strong></td>
+<td><code>list</code></td>
+<td><code>None</code></td>
+<td>Indices for training and validation sets</td>
+</tr>
+<tr>
+<td><strong><code>types</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>Types of data in <code>items</code></td>
+</tr>
+<tr>
+<td><strong><code>verbose</code></strong></td>
+<td><code>bool</code></td>
+<td><code>False</code></td>
+<td>Print verbose output</td>
+</tr>
+<tr>
+<td><strong><code>dl_type</code></strong></td>
+<td><a href="/data.core.html#TfmdDL"><code>TfmdDL</code></a></td>
+<td><code>None</code></td>
+<td>Type of <a href="/data.load.html#DataLoader"><code>DataLoader</code></a></td>
+</tr>
+</tbody>
+</table>
 
 </div>
 
@@ -878,7 +1484,7 @@ nb_path: "nbs/03_data.core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="decode_at" class="doc_header"><code>decode_at</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/core.py#L368" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>decode_at</code>(<strong><code>o</code></strong>, <strong><code>idx</code></strong>)</p>
+<h4 id="decode_at" class="doc_header"><code>decode_at</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/core.py#L426" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>decode_at</code>(<strong><code>o</code></strong>, <strong><code>idx</code></strong>)</p>
 </blockquote>
 <p>Decoded item at <code>idx</code></p>
 
@@ -922,7 +1528,7 @@ nb_path: "nbs/03_data.core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="show_at" class="doc_header"><code>show_at</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/core.py#L373" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>show_at</code>(<strong><code>o</code></strong>, <strong><code>idx</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="show_at" class="doc_header"><code>show_at</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/core.py#L431" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>show_at</code>(<strong><code>o</code></strong>, <strong><code>idx</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -1242,7 +1848,7 @@ tfms - []
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="TfmdLists.subset" class="doc_header"><code>TfmdLists.subset</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/core.py#L315" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>TfmdLists.subset</code>(<strong><code>i</code></strong>)</p>
+<h4 id="TfmdLists.subset" class="doc_header"><code>TfmdLists.subset</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/core.py#L371" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>TfmdLists.subset</code>(<strong><code>i</code></strong>)</p>
 </blockquote>
 <p>New <a href="/data.core.html#TfmdLists"><code>TfmdLists</code></a> with same tfms that only includes items in <code>i</code>th split</p>
 
@@ -1267,7 +1873,7 @@ tfms - []
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="TfmdLists.infer_idx" class="doc_header"><code>TfmdLists.infer_idx</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/core.py#L337" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>TfmdLists.infer_idx</code>(<strong><code>x</code></strong>)</p>
+<h4 id="TfmdLists.infer_idx" class="doc_header"><code>TfmdLists.infer_idx</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/core.py#L395" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>TfmdLists.infer_idx</code>(<strong><code>x</code></strong>)</p>
 </blockquote>
 <p>Finds the index where <code>self.tfms</code> can be applied to <code>x</code>, depending on the type of <code>x</code></p>
 
@@ -1292,7 +1898,7 @@ tfms - []
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="TfmdLists.infer" class="doc_header"><code>TfmdLists.infer</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/core.py#L348" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>TfmdLists.infer</code>(<strong><code>x</code></strong>)</p>
+<h4 id="TfmdLists.infer" class="doc_header"><code>TfmdLists.infer</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/core.py#L406" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>TfmdLists.infer</code>(<strong><code>x</code></strong>)</p>
 </blockquote>
 <p>Apply <code>self.tfms</code> to <code>x</code> starting at the right tfm depending on the type of <code>x</code></p>
 
@@ -1347,9 +1953,56 @@ tfms - []
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Datasets" class="doc_header"><code>class</code> <code>Datasets</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/core.py#L380" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Datasets</code>(<strong><code>items</code></strong>=<em><code>None</code></em>, <strong><code>tfms</code></strong>=<em><code>None</code></em>, <strong><code>tls</code></strong>=<em><code>None</code></em>, <strong><code>n_inp</code></strong>=<em><code>None</code></em>, <strong><code>dl_type</code></strong>=<em><code>None</code></em>, <strong><code>use_list</code></strong>=<em><code>None</code></em>, <strong><code>do_setup</code></strong>=<em><code>True</code></em>, <strong><code>split_idx</code></strong>=<em><code>None</code></em>, <strong><code>train_setup</code></strong>=<em><code>True</code></em>, <strong><code>splits</code></strong>=<em><code>None</code></em>, <strong><code>types</code></strong>=<em><code>None</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>) :: <a href="/data.core.html#FilteredBase"><code>FilteredBase</code></a></p>
+<h2 id="Datasets" class="doc_header"><code>class</code> <code>Datasets</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/core.py#L436" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Datasets</code>(<strong><code>items</code></strong>:<code>list</code>=<em><code>None</code></em>, <strong><code>tfms</code></strong>:<code>(list, Pipeline)</code>=<em><code>None</code></em>, <strong><code>tls</code></strong>:<a href="/data.core.html#TfmdLists"><code>TfmdLists</code></a>=<em><code>None</code></em>, <strong><code>n_inp</code></strong>:<code>int</code>=<em><code>None</code></em>, <strong><code>dl_type</code></strong>=<em><code>None</code></em>, <strong><code>use_list</code></strong>:<code>bool</code>=<em><code>None</code></em>, <strong><code>do_setup</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>split_idx</code></strong>:<code>int</code>=<em><code>None</code></em>, <strong><code>train_setup</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>splits</code></strong>:<code>list</code>=<em><code>None</code></em>, <strong><code>types</code></strong>=<em><code>None</code></em>, <strong><code>verbose</code></strong>:<code>bool</code>=<em><code>False</code></em>) :: <a href="/data.core.html#FilteredBase"><code>FilteredBase</code></a></p>
 </blockquote>
 <p>A dataset that creates a tuple from each <code>tfms</code></p>
+<table>
+<thead><tr>
+<th></th>
+<th>Type</th>
+<th>Default</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>items</code></strong></td>
+<td><code>list</code></td>
+<td><code>None</code></td>
+<td>List of items to create <a href="/data.core.html#Datasets"><code>Datasets</code></a></td>
+</tr>
+<tr>
+<td><strong><code>tfms</code></strong></td>
+<td><code>(list, Pipeline)</code></td>
+<td><code>None</code></td>
+<td>List of <a href="https://fastcore.fast.ai/transform#Transform"><code>Transform</code></a>(s) or <a href="https://fastcore.fast.ai/transform#Pipeline"><code>Pipeline</code></a> to apply</td>
+</tr>
+<tr>
+<td><strong><code>tls</code></strong></td>
+<td><a href="/data.core.html#TfmdLists"><code>TfmdLists</code></a></td>
+<td><code>None</code></td>
+<td>If None, <code>self.tls</code> is generated from <code>items</code> and <code>tfms</code></td>
+</tr>
+<tr>
+<td><strong><code>n_inp</code></strong></td>
+<td><code>int</code></td>
+<td><code>None</code></td>
+<td>Number of elements in <a href="/data.core.html#Datasets"><code>Datasets</code></a> tuple that should be considered part of input</td>
+</tr>
+<tr>
+<td><strong><code>dl_type</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>Default type of <a href="/data.load.html#DataLoader"><code>DataLoader</code></a> used when function <a href="/data.core.html#FilteredBase.dataloaders"><code>FilteredBase.dataloaders</code></a> is called</td>
+</tr>
+<tr>
+<td><strong><code>kwargs</code></strong></td>
+<td></td>
+<td></td>
+<td><em>No Content</em></td>
+</tr>
+</tbody>
+</table>
 
 </div>
 
@@ -1841,9 +2494,230 @@ tfms - []
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Datasets.dataloaders" class="doc_header"><code>Datasets.dataloaders</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/core.py#L220" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Datasets.dataloaders</code>(<strong><code>bs</code></strong>:<code>int</code>=<em><code>64</code></em>, <strong><code>shuffle_train</code></strong>:<code>bool</code>=<em><code>None</code></em>, <strong><code>shuffle</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>val_shuffle</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>n</code></strong>:<code>int</code>=<em><code>None</code></em>, <strong><code>path</code></strong>:<code>Path'&gt;)</code>=<em><code>'.'</code></em>, <strong><code>dl_type</code></strong>:<a href="/data.core.html#TfmdDL"><code>TfmdDL</code></a>=<em><code>None</code></em>, <strong><code>dl_kwargs</code></strong>:<code>list</code>=<em><code>None</code></em>, <strong><code>device</code></strong>:<code>device</code>=<em><code>None</code></em>, <strong><code>drop_last</code></strong>:<code>bool</code>=<em><code>None</code></em>, <strong><code>val_bs</code></strong>:<code>int</code>=<em><code>None</code></em>, <strong><code>num_workers</code></strong>=<em><code>None</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>, <strong><code>do_setup</code></strong>=<em><code>True</code></em>, <strong><code>pin_memory</code></strong>=<em><code>False</code></em>, <strong><code>timeout</code></strong>=<em><code>0</code></em>, <strong><code>batch_size</code></strong>=<em><code>None</code></em>, <strong><code>indexed</code></strong>=<em><code>None</code></em>, <strong><code>persistent_workers</code></strong>=<em><code>False</code></em>, <strong><code>wif</code></strong>=<em><code>None</code></em>, <strong><code>before_iter</code></strong>=<em><code>None</code></em>, <strong><code>after_item</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_iter</code></strong>=<em><code>None</code></em>, <strong><code>create_batches</code></strong>=<em><code>None</code></em>, <strong><code>create_item</code></strong>=<em><code>None</code></em>, <strong><code>create_batch</code></strong>=<em><code>None</code></em>, <strong><code>retain</code></strong>=<em><code>None</code></em>, <strong><code>get_idxs</code></strong>=<em><code>None</code></em>, <strong><code>sample</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_fn</code></strong>=<em><code>None</code></em>, <strong><code>do_batch</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="Datasets.dataloaders" class="doc_header"><code>Datasets.dataloaders</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/core.py#L307" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Datasets.dataloaders</code>(<strong><code>bs</code></strong>:<code>int</code>=<em><code>64</code></em>, <strong><code>shuffle_train</code></strong>:<code>bool</code>=<em><code>None</code></em>, <strong><code>shuffle</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>val_shuffle</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>n</code></strong>:<code>int</code>=<em><code>None</code></em>, <strong><code>path</code></strong>:<code>(str, Path)</code>=<em><code>'.'</code></em>, <strong><code>dl_type</code></strong>:<a href="/data.core.html#TfmdDL"><code>TfmdDL</code></a>=<em><code>None</code></em>, <strong><code>dl_kwargs</code></strong>:<code>list</code>=<em><code>None</code></em>, <strong><code>device</code></strong>:<code>device</code>=<em><code>None</code></em>, <strong><code>drop_last</code></strong>:<code>bool</code>=<em><code>None</code></em>, <strong><code>val_bs</code></strong>:<code>int</code>=<em><code>None</code></em>, <strong><code>num_workers</code></strong>:<code>int</code>=<em><code>None</code></em>, <strong><code>verbose</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>do_setup</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>pin_memory</code></strong>=<em><code>False</code></em>, <strong><code>timeout</code></strong>=<em><code>0</code></em>, <strong><code>batch_size</code></strong>=<em><code>None</code></em>, <strong><code>indexed</code></strong>=<em><code>None</code></em>, <strong><code>persistent_workers</code></strong>=<em><code>False</code></em>, <strong><code>wif</code></strong>=<em><code>None</code></em>, <strong><code>before_iter</code></strong>=<em><code>None</code></em>, <strong><code>after_item</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_iter</code></strong>=<em><code>None</code></em>, <strong><code>create_batches</code></strong>=<em><code>None</code></em>, <strong><code>create_item</code></strong>=<em><code>None</code></em>, <strong><code>create_batch</code></strong>=<em><code>None</code></em>, <strong><code>retain</code></strong>=<em><code>None</code></em>, <strong><code>get_idxs</code></strong>=<em><code>None</code></em>, <strong><code>sample</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_fn</code></strong>=<em><code>None</code></em>, <strong><code>do_batch</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Get a <a href="/data.core.html#DataLoaders"><code>DataLoaders</code></a></p>
+<table>
+<thead><tr>
+<th></th>
+<th>Type</th>
+<th>Default</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>bs</code></strong></td>
+<td><code>int</code></td>
+<td><code>64</code></td>
+<td>Batch size</td>
+</tr>
+<tr>
+<td><strong><code>shuffle_train</code></strong></td>
+<td><code>bool</code></td>
+<td><code>None</code></td>
+<td>(Deprecated, use <code>shuffle</code>) Shuffle training <a href="/data.load.html#DataLoader"><code>DataLoader</code></a></td>
+</tr>
+<tr>
+<td><strong><code>shuffle</code></strong></td>
+<td><code>bool</code></td>
+<td><code>True</code></td>
+<td>Shuffle training <a href="/data.load.html#DataLoader"><code>DataLoader</code></a></td>
+</tr>
+<tr>
+<td><strong><code>val_shuffle</code></strong></td>
+<td><code>bool</code></td>
+<td><code>False</code></td>
+<td>Shuffle validation <a href="/data.load.html#DataLoader"><code>DataLoader</code></a></td>
+</tr>
+<tr>
+<td><strong><code>n</code></strong></td>
+<td><code>int</code></td>
+<td><code>None</code></td>
+<td>Size of <a href="/data.core.html#Datasets"><code>Datasets</code></a> used to create <a href="/data.load.html#DataLoader"><code>DataLoader</code></a></td>
+</tr>
+<tr>
+<td><strong><code>path</code></strong></td>
+<td><code>(str, Path)</code></td>
+<td><code>.</code></td>
+<td>Path to put in <a href="/data.core.html#DataLoaders"><code>DataLoaders</code></a></td>
+</tr>
+<tr>
+<td><strong><code>dl_type</code></strong></td>
+<td><a href="/data.core.html#TfmdDL"><code>TfmdDL</code></a></td>
+<td><code>None</code></td>
+<td>Type of <a href="/data.load.html#DataLoader"><code>DataLoader</code></a></td>
+</tr>
+<tr>
+<td><strong><code>dl_kwargs</code></strong></td>
+<td><code>list</code></td>
+<td><code>None</code></td>
+<td>List of kwargs to pass to individual <a href="/data.load.html#DataLoader"><code>DataLoader</code></a>s</td>
+</tr>
+<tr>
+<td><strong><code>device</code></strong></td>
+<td><code>device</code></td>
+<td><code>None</code></td>
+<td>Device to put <a href="/data.core.html#DataLoaders"><code>DataLoaders</code></a></td>
+</tr>
+<tr>
+<td><strong><code>drop_last</code></strong></td>
+<td><code>bool</code></td>
+<td><code>None</code></td>
+<td>Drop last incomplete batch, defaults to <code>shuffle</code></td>
+</tr>
+<tr>
+<td><strong><code>val_bs</code></strong></td>
+<td><code>int</code></td>
+<td><code>None</code></td>
+<td>Validation batch size, defaults to <code>bs</code></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td><strong>Valid Keyword Arguments</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><strong><code>num_workers</code></strong></td>
+<td><code>int</code></td>
+<td><code>None</code></td>
+<td>Number of CPU cores to use in parallel (default: All available up to 16) passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>verbose</code></strong></td>
+<td><code>bool</code></td>
+<td><code>False</code></td>
+<td>Whether to print verbose logs passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>do_setup</code></strong></td>
+<td><code>bool</code></td>
+<td><code>True</code></td>
+<td>Whether to run <code>setup()</code> for batch transform(s) passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>pin_memory</code></strong></td>
+<td><code>bool</code></td>
+<td><code>False</code></td>
+<td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>timeout</code></strong></td>
+<td><code>int</code></td>
+<td><code>0</code></td>
+<td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>batch_size</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>indexed</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>persistent_workers</code></strong></td>
+<td><code>bool</code></td>
+<td><code>False</code></td>
+<td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>wif</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>before_iter</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>after_item</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>before_batch</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>after_batch</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>after_iter</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>create_batches</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>create_item</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>create_batch</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>retain</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>get_idxs</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>sample</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>shuffle_fn</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>do_batch</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong>Returns</strong></td>
+<td><code>DataLoaders</code></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
 
 </div>
 
@@ -1873,7 +2747,7 @@ tfms - []
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Datasets.decode" class="doc_header"><code>Datasets.decode</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/core.py#L396" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Datasets.decode</code>(<strong><code>o</code></strong>, <strong><code>full</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="Datasets.decode" class="doc_header"><code>Datasets.decode</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/core.py#L461" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Datasets.decode</code>(<strong><code>o</code></strong>, <strong><code>full</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 <p>Compose <code>decode</code> of all <code>tuple_tfms</code> then all <code>tfms</code> on <code>i</code></p>
 
@@ -1916,7 +2790,7 @@ tfms - []
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Datasets.show" class="doc_header"><code>Datasets.show</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/core.py#L411" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Datasets.show</code>(<strong><code>o</code></strong>, <strong><code>ctx</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="Datasets.show" class="doc_header"><code>Datasets.show</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/core.py#L476" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Datasets.show</code>(<strong><code>o</code></strong>, <strong><code>ctx</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Show item <code>o</code> in <code>ctx</code></p>
 
@@ -1958,7 +2832,7 @@ tfms - []
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Datasets.new_empty" class="doc_header"><code>Datasets.new_empty</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/core.py#L400" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Datasets.new_empty</code>()</p>
+<h4 id="Datasets.new_empty" class="doc_header"><code>Datasets.new_empty</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/core.py#L465" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Datasets.new_empty</code>()</p>
 </blockquote>
 <p>Create a new empty version of the <code>self</code>, keeping only the transforms</p>
 
@@ -2033,9 +2907,44 @@ tfms - []
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="test_set" class="doc_header"><code>test_set</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/core.py#L434" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>test_set</code>(<strong><code>dsets</code></strong>, <strong><code>test_items</code></strong>, <strong><code>rm_tfms</code></strong>=<em><code>None</code></em>, <strong><code>with_labels</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="test_set" class="doc_header"><code>test_set</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/core.py#L499" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>test_set</code>(<strong><code>dsets</code></strong>:<code>(Datasets, TfmdLists)</code>, <strong><code>test_items</code></strong>, <strong><code>rm_tfms</code></strong>=<em><code>None</code></em>, <strong><code>with_labels</code></strong>:<code>bool</code>=<em><code>False</code></em>)</p>
 </blockquote>
 <p>Create a test set from <code>test_items</code> using validation transforms of <code>dsets</code></p>
+<table>
+<thead><tr>
+<th></th>
+<th>Type</th>
+<th>Default</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>dsets</code></strong></td>
+<td><code>(Datasets, TfmdLists)</code></td>
+<td></td>
+<td>Map- or iterable-style dataset from which to load the data</td>
+</tr>
+<tr>
+<td><strong><code>test_items</code></strong></td>
+<td></td>
+<td></td>
+<td>Items in test dataset</td>
+</tr>
+<tr>
+<td><strong><code>rm_tfms</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>Start index of <a href="https://fastcore.fast.ai/transform#Transform"><code>Transform</code></a>(s) from validation set in <code>dsets</code> to apply</td>
+</tr>
+<tr>
+<td><strong><code>with_labels</code></strong></td>
+<td><code>bool</code></td>
+<td><code>False</code></td>
+<td>Whether the test items contain labels</td>
+</tr>
+</tbody>
+</table>
 
 </div>
 
@@ -2092,9 +3001,206 @@ tfms - []
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="DataLoaders.test_dl" class="doc_header"><code>DataLoaders.test_dl</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/core.py#L451" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>DataLoaders.test_dl</code>(<strong><code>test_items</code></strong>, <strong><code>rm_type_tfms</code></strong>=<em><code>None</code></em>, <strong><code>with_labels</code></strong>=<em><code>False</code></em>, <strong><code>bs</code></strong>:<code>int</code>=<em><code>64</code></em>, <strong><code>shuffle</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>num_workers</code></strong>:<code>int</code>=<em><code>None</code></em>, <strong><code>verbose</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>do_setup</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>pin_memory</code></strong>=<em><code>False</code></em>, <strong><code>timeout</code></strong>=<em><code>0</code></em>, <strong><code>batch_size</code></strong>=<em><code>None</code></em>, <strong><code>drop_last</code></strong>=<em><code>False</code></em>, <strong><code>indexed</code></strong>=<em><code>None</code></em>, <strong><code>n</code></strong>=<em><code>None</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>persistent_workers</code></strong>=<em><code>False</code></em>, <strong><code>wif</code></strong>=<em><code>None</code></em>, <strong><code>before_iter</code></strong>=<em><code>None</code></em>, <strong><code>after_item</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_iter</code></strong>=<em><code>None</code></em>, <strong><code>create_batches</code></strong>=<em><code>None</code></em>, <strong><code>create_item</code></strong>=<em><code>None</code></em>, <strong><code>create_batch</code></strong>=<em><code>None</code></em>, <strong><code>retain</code></strong>=<em><code>None</code></em>, <strong><code>get_idxs</code></strong>=<em><code>None</code></em>, <strong><code>sample</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_fn</code></strong>=<em><code>None</code></em>, <strong><code>do_batch</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="DataLoaders.test_dl" class="doc_header"><code>DataLoaders.test_dl</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/core.py#L521" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>DataLoaders.test_dl</code>(<strong><code>test_items</code></strong>, <strong><code>rm_type_tfms</code></strong>=<em><code>None</code></em>, <strong><code>with_labels</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>bs</code></strong>:<code>int</code>=<em><code>64</code></em>, <strong><code>shuffle</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>num_workers</code></strong>:<code>int</code>=<em><code>None</code></em>, <strong><code>verbose</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>do_setup</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>pin_memory</code></strong>=<em><code>False</code></em>, <strong><code>timeout</code></strong>=<em><code>0</code></em>, <strong><code>batch_size</code></strong>=<em><code>None</code></em>, <strong><code>drop_last</code></strong>=<em><code>False</code></em>, <strong><code>indexed</code></strong>=<em><code>None</code></em>, <strong><code>n</code></strong>=<em><code>None</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>persistent_workers</code></strong>=<em><code>False</code></em>, <strong><code>wif</code></strong>=<em><code>None</code></em>, <strong><code>before_iter</code></strong>=<em><code>None</code></em>, <strong><code>after_item</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_iter</code></strong>=<em><code>None</code></em>, <strong><code>create_batches</code></strong>=<em><code>None</code></em>, <strong><code>create_item</code></strong>=<em><code>None</code></em>, <strong><code>create_batch</code></strong>=<em><code>None</code></em>, <strong><code>retain</code></strong>=<em><code>None</code></em>, <strong><code>get_idxs</code></strong>=<em><code>None</code></em>, <strong><code>sample</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_fn</code></strong>=<em><code>None</code></em>, <strong><code>do_batch</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Create a test dataloader from <code>test_items</code> using validation transforms of <code>dls</code></p>
+<table>
+<thead><tr>
+<th></th>
+<th>Type</th>
+<th>Default</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>test_items</code></strong></td>
+<td></td>
+<td></td>
+<td>Items in test dataset</td>
+</tr>
+<tr>
+<td><strong><code>rm_type_tfms</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>Start index of <a href="https://fastcore.fast.ai/transform#Transform"><code>Transform</code></a>(s) from validation set in <code>dsets</code> to apply</td>
+</tr>
+<tr>
+<td><strong><code>with_labels</code></strong></td>
+<td><code>bool</code></td>
+<td><code>False</code></td>
+<td>Whether the test items contain labels</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td><strong>Valid Keyword Arguments</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><strong><code>bs</code></strong></td>
+<td><code>int</code></td>
+<td><code>64</code></td>
+<td>Size of batch passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>shuffle</code></strong></td>
+<td><code>bool</code></td>
+<td><code>False</code></td>
+<td>Whether to shuffle data passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>num_workers</code></strong></td>
+<td><code>int</code></td>
+<td><code>None</code></td>
+<td>Number of CPU cores to use in parallel (default: All available up to 16) passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>verbose</code></strong></td>
+<td><code>bool</code></td>
+<td><code>False</code></td>
+<td>Whether to print verbose logs passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>do_setup</code></strong></td>
+<td><code>bool</code></td>
+<td><code>True</code></td>
+<td>Whether to run <code>setup()</code> for batch transform(s) passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>pin_memory</code></strong></td>
+<td><code>bool</code></td>
+<td><code>False</code></td>
+<td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>timeout</code></strong></td>
+<td><code>int</code></td>
+<td><code>0</code></td>
+<td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>batch_size</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>drop_last</code></strong></td>
+<td><code>bool</code></td>
+<td><code>False</code></td>
+<td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>indexed</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>n</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>device</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>persistent_workers</code></strong></td>
+<td><code>bool</code></td>
+<td><code>False</code></td>
+<td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>wif</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>before_iter</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>after_item</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>before_batch</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>after_batch</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>after_iter</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>create_batches</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>create_item</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>create_batch</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>retain</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>get_idxs</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>sample</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>shuffle_fn</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
+</tr>
+<tr>
+<td><strong><code>do_batch</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
+</tr>
+</tbody>
+</table>
 
 </div>
 

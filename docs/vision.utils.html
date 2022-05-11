@@ -26,6 +26,25 @@ nb_path: "nbs/09b_vision.utils.ipynb"
     
 <div class="cell border-box-sizing code_cell rendered">
 
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>/opt/conda/lib/python3.9/site-packages/torch/cuda/__init__.py:145: UserWarning: 
+NVIDIA GeForce RTX 3070 Laptop GPU with CUDA capability sm_86 is not compatible with the current PyTorch installation.
+The current PyTorch install supports CUDA capabilities sm_37 sm_50 sm_60 sm_70.
+If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, please check the instructions at https://pytorch.org/get-started/locally/
+
+  warnings.warn(incompatible_device_warn.format(device_name, capability, &#34; &#34;.join(arch_list), device_name))
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
 </div>
     {% endraw %}
 
@@ -288,7 +307,7 @@ nb_path: "nbs/09b_vision.utils.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="resize_image" class="doc_header"><code>resize_image</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/utils.py#L66" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>resize_image</code>(<strong><code>file</code></strong>, <strong><code>dest</code></strong>, <strong><code>max_size</code></strong>=<em><code>None</code></em>, <strong><code>n_channels</code></strong>=<em><code>3</code></em>, <strong><code>ext</code></strong>=<em><code>None</code></em>, <strong><code>img_format</code></strong>=<em><code>None</code></em>, <strong><code>resample</code></strong>=<em><code>2</code></em>, <strong><code>resume</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="resize_image" class="doc_header"><code>resize_image</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/utils.py#L66" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>resize_image</code>(<strong><code>file</code></strong>, <strong><code>dest</code></strong>, <strong><code>max_size</code></strong>=<em><code>None</code></em>, <strong><code>n_channels</code></strong>=<em><code>3</code></em>, <strong><code>ext</code></strong>=<em><code>None</code></em>, <strong><code>img_format</code></strong>=<em><code>None</code></em>, <strong><code>resample</code></strong>=<em><code>&lt;Resampling.BILINEAR: 2&gt;</code></em>, <strong><code>resume</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Resize file to dest to max_size</p>
 
@@ -342,7 +361,7 @@ nb_path: "nbs/09b_vision.utils.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="resize_images" class="doc_header"><code>resize_images</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/utils.py#L85" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>resize_images</code>(<strong><code>path</code></strong>, <strong><code>max_workers</code></strong>=<em><code>16</code></em>, <strong><code>max_size</code></strong>=<em><code>None</code></em>, <strong><code>recurse</code></strong>=<em><code>False</code></em>, <strong><code>dest</code></strong>=<em><code>Path('.')</code></em>, <strong><code>n_channels</code></strong>=<em><code>3</code></em>, <strong><code>ext</code></strong>=<em><code>None</code></em>, <strong><code>img_format</code></strong>=<em><code>None</code></em>, <strong><code>resample</code></strong>=<em><code>2</code></em>, <strong><code>resume</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="resize_images" class="doc_header"><code>resize_images</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/utils.py#L85" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>resize_images</code>(<strong><code>path</code></strong>, <strong><code>max_workers</code></strong>=<em><code>16</code></em>, <strong><code>max_size</code></strong>=<em><code>None</code></em>, <strong><code>recurse</code></strong>=<em><code>False</code></em>, <strong><code>dest</code></strong>=<em><code>Path('.')</code></em>, <strong><code>n_channels</code></strong>=<em><code>3</code></em>, <strong><code>ext</code></strong>=<em><code>None</code></em>, <strong><code>img_format</code></strong>=<em><code>None</code></em>, <strong><code>resample</code></strong>=<em><code>&lt;Resampling.BILINEAR: 2&gt;</code></em>, <strong><code>resume</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Resize files on path recursively to dest to max_size</p>
 

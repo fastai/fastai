@@ -32,8 +32,12 @@ nb_path: "nbs/09c_vision.widgets.ipynb"
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stderr output_text">
-<pre>/home/omer/miniconda3/lib/python3.9/site-packages/torch/cuda/__init__.py:52: UserWarning: CUDA initialization: Found no NVIDIA driver on your system. Please check that you have an NVIDIA GPU and installed a driver from http://www.nvidia.com/Download/index.aspx (Triggered internally at  /opt/conda/conda-bld/pytorch_1607370151529/work/c10/cuda/CUDAFunctions.cpp:100.)
-  return torch._C._cuda_getDeviceCount() &gt; 0
+<pre>/opt/conda/lib/python3.9/site-packages/torch/cuda/__init__.py:145: UserWarning: 
+NVIDIA GeForce RTX 3070 Laptop GPU with CUDA capability sm_86 is not compatible with the current PyTorch installation.
+The current PyTorch install supports CUDA capabilities sm_37 sm_50 sm_60 sm_70.
+If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, please check the instructions at https://pytorch.org/get-started/locally/
+
+  warnings.warn(incompatible_device_warn.format(device_name, capability, &#34; &#34;.join(arch_list), device_name))
 </pre>
 </div>
 </div>
@@ -102,7 +106,7 @@ nb_path: "nbs/09c_vision.widgets.ipynb"
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="widget" class="doc_header"><code>widget</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/widgets.py#L20" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>widget</code>(<strong><code>im</code></strong>, <strong>*<code>args</code></strong>, <strong>**<code>layout</code></strong>)</p>
 </blockquote>
-<p>Convert anything that can be <code>display</code>ed by IPython into a widget</p>
+<p>Convert anything that can be <code>display</code>ed by <code>IPython</code> into a widget</p>
 
 </div>
 
@@ -158,9 +162,32 @@ nb_path: "nbs/09c_vision.widgets.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="carousel" class="doc_header"><code>carousel</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/widgets.py#L32" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>carousel</code>(<strong><code>children</code></strong>=<em><code>()</code></em>, <strong>**<code>layout</code></strong>)</p>
+<h4 id="carousel" class="doc_header"><code>carousel</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/widgets.py#L35" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>carousel</code>(<strong><code>children</code></strong>:<code>(tuple, list)</code>=<em><code>()</code></em>, <strong>**<code>layout</code></strong>)</p>
 </blockquote>
 <p>A horizontally scrolling carousel</p>
+<table>
+<thead><tr>
+<th></th>
+<th>Type</th>
+<th>Default</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>children</code></strong></td>
+<td><code>(tuple, list)</code></td>
+<td><code>None</code></td>
+<td><code>Box</code> objects to display in a carousel</td>
+</tr>
+<tr>
+<td><strong><code>layout</code></strong></td>
+<td></td>
+<td></td>
+<td><em>No Content</em></td>
+</tr>
+</tbody>
+</table>
 
 </div>
 
@@ -217,9 +244,44 @@ nb_path: "nbs/09c_vision.widgets.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ImagesCleaner" class="doc_header"><code>class</code> <code>ImagesCleaner</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/widgets.py#L44" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ImagesCleaner</code>(<strong><code>opts</code></strong>=<em><code>()</code></em>, <strong><code>height</code></strong>=<em><code>128</code></em>, <strong><code>width</code></strong>=<em><code>256</code></em>, <strong><code>max_n</code></strong>=<em><code>30</code></em>)</p>
+<h2 id="ImagesCleaner" class="doc_header"><code>class</code> <code>ImagesCleaner</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/widgets.py#L56" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ImagesCleaner</code>(<strong><code>opts</code></strong>:<code>tuple</code>=<em><code>()</code></em>, <strong><code>height</code></strong>:<code>int</code>=<em><code>128</code></em>, <strong><code>width</code></strong>:<code>int</code>=<em><code>256</code></em>, <strong><code>max_n</code></strong>:<code>int</code>=<em><code>30</code></em>)</p>
 </blockquote>
 <p>A widget that displays all images in <code>fns</code> along with a <code>Dropdown</code></p>
+<table>
+<thead><tr>
+<th></th>
+<th>Type</th>
+<th>Default</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>opts</code></strong></td>
+<td><code>tuple</code></td>
+<td><code>None</code></td>
+<td>Options for the <code>Dropdown</code> menu</td>
+</tr>
+<tr>
+<td><strong><code>height</code></strong></td>
+<td><code>int</code></td>
+<td><code>128</code></td>
+<td>Thumbnail Height</td>
+</tr>
+<tr>
+<td><strong><code>width</code></strong></td>
+<td><code>int</code></td>
+<td><code>256</code></td>
+<td>Thumbnail Width</td>
+</tr>
+<tr>
+<td><strong><code>max_n</code></strong></td>
+<td><code>int</code></td>
+<td><code>30</code></td>
+<td>Max number of images to display</td>
+</tr>
+</tbody>
+</table>
 
 </div>
 
@@ -309,9 +371,9 @@ nb_path: "nbs/09c_vision.widgets.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ImageClassifierCleaner" class="doc_header"><code>class</code> <code>ImageClassifierCleaner</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/widgets.py#L73" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ImageClassifierCleaner</code>(<strong><code>learn</code></strong>, <strong><code>opts</code></strong>=<em><code>()</code></em>, <strong><code>height</code></strong>=<em><code>128</code></em>, <strong><code>width</code></strong>=<em><code>256</code></em>, <strong><code>max_n</code></strong>=<em><code>30</code></em>) :: <a href="https://fastcore.fast.ai/basics#GetAttr"><code>GetAttr</code></a></p>
+<h2 id="ImageClassifierCleaner" class="doc_header"><code>class</code> <code>ImageClassifierCleaner</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/widgets.py#L102" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ImageClassifierCleaner</code>(<strong><code>learn</code></strong>, <strong><code>opts</code></strong>:<code>tuple</code>=<em><code>()</code></em>, <strong><code>height</code></strong>:<code>int</code>=<em><code>128</code></em>, <strong><code>width</code></strong>:<code>int</code>=<em><code>256</code></em>, <strong><code>max_n</code></strong>:<code>int</code>=<em><code>30</code></em>) :: <a href="https://fastcore.fast.ai/basics#GetAttr"><code>GetAttr</code></a></p>
 </blockquote>
-<p>A widget that provides an <a href="/vision.widgets.html#ImagesCleaner"><code>ImagesCleaner</code></a> with a CNN <a href="/learner.html#Learner"><code>Learner</code></a></p>
+<p>A widget that provides an <a href="/vision.widgets.html#ImagesCleaner"><code>ImagesCleaner</code></a> for a CNN <a href="/learner.html#Learner"><code>Learner</code></a></p>
 
 </div>
 

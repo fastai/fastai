@@ -26,6 +26,25 @@ nb_path: "nbs/20_interpret.ipynb"
     
 <div class="cell border-box-sizing code_cell rendered">
 
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>/opt/conda/lib/python3.9/site-packages/torch/cuda/__init__.py:145: UserWarning: 
+NVIDIA GeForce RTX 3070 Laptop GPU with CUDA capability sm_86 is not compatible with the current PyTorch installation.
+The current PyTorch install supports CUDA capabilities sm_37 sm_50 sm_60 sm_70.
+If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, please check the instructions at https://pytorch.org/get-started/locally/
+
+  warnings.warn(incompatible_device_warn.format(device_name, capability, &#34; &#34;.join(arch_list), device_name))
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
 </div>
     {% endraw %}
 
@@ -93,14 +112,14 @@ nb_path: "nbs/20_interpret.ipynb"
 <td><a href="/data.load.html#DataLoader"><code>DataLoader</code></a> to run inference over</td>
 </tr>
 <tr>
-<td><strong><a href="/losses.html"><code>losses</code></a></strong></td>
+<td><strong><code>losses</code></strong></td>
 <td><a href="/torch_core.html#TensorBase"><code>TensorBase</code></a></td>
 <td></td>
 <td>Losses calculated from <code>dl</code></td>
 </tr>
 <tr>
 <td><strong><code>act</code></strong></td>
-<td><code>NoneType</code></td>
+<td></td>
 <td><code>None</code></td>
 <td>Activation function for prediction</td>
 </tr>
@@ -168,7 +187,7 @@ nb_path: "nbs/20_interpret.ipynb"
 </tr>
 <tr>
 <td><strong><code>act</code></strong></td>
-<td><code>NoneType</code></td>
+<td></td>
 <td><code>None</code></td>
 <td>Override default or set prediction activation function</td>
 </tr>
@@ -196,7 +215,7 @@ nb_path: "nbs/20_interpret.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="Interpretation.top_losses" class="doc_header"><code>Interpretation.top_losses</code><a href="https://github.com/fastai/fastai/tree/master/fastai/interpret.py#L54" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>Interpretation.top_losses</code>(<strong><code>k</code></strong>:<code>(&lt;class 'int'&gt;, None)</code>=<em><code>None</code></em>, <strong><code>largest</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>items</code></strong>:<code>bool</code>=<em><code>False</code></em>)</p>
+<h3 id="Interpretation.top_losses" class="doc_header"><code>Interpretation.top_losses</code><a href="https://github.com/fastai/fastai/tree/master/fastai/interpret.py#L54" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>Interpretation.top_losses</code>(<strong><code>k</code></strong>:<code>(int, None)</code>=<em><code>None</code></em>, <strong><code>largest</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>items</code></strong>:<code>bool</code>=<em><code>False</code></em>)</p>
 </blockquote>
 <p><code>k</code> largest(/smallest) losses and indexes, defaulting to all losses.</p>
 <table>
@@ -257,7 +276,7 @@ nb_path: "nbs/20_interpret.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="Interpretation.plot_top_losses" class="doc_header"><code>Interpretation.plot_top_losses</code><a href="https://github.com/fastai/fastai/tree/master/fastai/interpret.py#L64" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>Interpretation.plot_top_losses</code>(<strong><code>k</code></strong>:<code>(&lt;class 'int'&gt;, &lt;class 'list'&gt;)</code>, <strong><code>largest</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h3 id="Interpretation.plot_top_losses" class="doc_header"><code>Interpretation.plot_top_losses</code><a href="https://github.com/fastai/fastai/tree/master/fastai/interpret.py#L64" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>Interpretation.plot_top_losses</code>(<strong><code>k</code></strong>:<code>(int, list)</code>, <strong><code>largest</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Show <code>k</code> largest(/smallest) preds and losses. Implementation based on type dispatch</p>
 <table>
@@ -404,14 +423,14 @@ nb_path: "nbs/20_interpret.ipynb"
 <td><a href="/data.load.html#DataLoader"><code>DataLoader</code></a> to run inference over</td>
 </tr>
 <tr>
-<td><strong><a href="/losses.html"><code>losses</code></a></strong></td>
+<td><strong><code>losses</code></strong></td>
 <td><a href="/torch_core.html#TensorBase"><code>TensorBase</code></a></td>
 <td></td>
 <td>Losses calculated from <code>dl</code></td>
 </tr>
 <tr>
 <td><strong><code>act</code></strong></td>
-<td><code>NoneType</code></td>
+<td></td>
 <td><code>None</code></td>
 <td>Activation function for prediction</td>
 </tr>
@@ -446,7 +465,129 @@ nb_path: "nbs/20_interpret.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="SegmentationInterpretation" class="doc_header"><code>class</code> <code>SegmentationInterpretation</code><a href="https://github.com/fastai/fastai/tree/master/fastai/interpret.py#L169" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SegmentationInterpretation</code>(<strong><code>learn</code></strong>:<a href="/learner.html#Learner"><code>Learner</code></a>, <strong><code>dl</code></strong>:<a href="/data.load.html#DataLoader"><code>DataLoader</code></a>, <strong><code>losses</code></strong>:<a href="/torch_core.html#TensorBase"><code>TensorBase</code></a>, <strong><code>act</code></strong>=<em><code>None</code></em>) :: <a href="/interpret.html#Interpretation"><code>Interpretation</code></a></p>
+<h3 id="ClassificationInterpretation.confusion_matrix" class="doc_header"><code>ClassificationInterpretation.confusion_matrix</code><a href="https://github.com/fastai/fastai/tree/master/fastai/interpret.py#L109" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>ClassificationInterpretation.confusion_matrix</code>()</p>
+</blockquote>
+<p>Confusion matrix as an <code>np.ndarray</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h3 id="ClassificationInterpretation.plot_confusion_matrix" class="doc_header"><code>ClassificationInterpretation.plot_confusion_matrix</code><a href="https://github.com/fastai/fastai/tree/master/fastai/interpret.py#L118" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>ClassificationInterpretation.plot_confusion_matrix</code>(<strong><code>normalize</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>title</code></strong>:<code>str</code>=<em><code>'Confusion matrix'</code></em>, <strong><code>cmap</code></strong>:<code>str</code>=<em><code>'Blues'</code></em>, <strong><code>norm_dec</code></strong>:<code>int</code>=<em><code>2</code></em>, <strong><code>plot_txt</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+</blockquote>
+<p>Plot the confusion matrix, with <code>title</code> and using <code>cmap</code>.</p>
+<table>
+<thead><tr>
+<th></th>
+<th>Type</th>
+<th>Default</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>normalize</code></strong></td>
+<td><code>bool</code></td>
+<td><code>False</code></td>
+<td>Whether to normalize occurrences</td>
+</tr>
+<tr>
+<td><strong><code>title</code></strong></td>
+<td><code>str</code></td>
+<td><code>Confusion matrix</code></td>
+<td>Title of plot</td>
+</tr>
+<tr>
+<td><strong><code>cmap</code></strong></td>
+<td><code>str</code></td>
+<td><code>Blues</code></td>
+<td>Colormap from matplotlib</td>
+</tr>
+<tr>
+<td><strong><code>norm_dec</code></strong></td>
+<td><code>int</code></td>
+<td><code>2</code></td>
+<td>Decimal places for normalized occurrences</td>
+</tr>
+<tr>
+<td><strong><code>plot_txt</code></strong></td>
+<td><code>bool</code></td>
+<td><code>True</code></td>
+<td>Display occurrence in matrix</td>
+</tr>
+<tr>
+<td><strong><code>kwargs</code></strong></td>
+<td></td>
+<td></td>
+<td><em>No Content</em></td>
+</tr>
+</tbody>
+</table>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h3 id="ClassificationInterpretation.most_confused" class="doc_header"><code>ClassificationInterpretation.most_confused</code><a href="https://github.com/fastai/fastai/tree/master/fastai/interpret.py#L152" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>ClassificationInterpretation.most_confused</code>(<strong><code>min_val</code></strong>=<em><code>1</code></em>)</p>
+</blockquote>
+<p>Sorted descending largest non-diagonal entries of confusion matrix (actual, predicted, # occurrences</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="SegmentationInterpretation" class="doc_header"><code>class</code> <code>SegmentationInterpretation</code><a href="https://github.com/fastai/fastai/tree/master/fastai/interpret.py#L168" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SegmentationInterpretation</code>(<strong><code>learn</code></strong>:<a href="/learner.html#Learner"><code>Learner</code></a>, <strong><code>dl</code></strong>:<a href="/data.load.html#DataLoader"><code>DataLoader</code></a>, <strong><code>losses</code></strong>:<a href="/torch_core.html#TensorBase"><code>TensorBase</code></a>, <strong><code>act</code></strong>=<em><code>None</code></em>) :: <a href="/interpret.html#Interpretation"><code>Interpretation</code></a></p>
 </blockquote>
 <p>Interpretation methods for segmentation models.</p>
 <table>
@@ -471,14 +612,14 @@ nb_path: "nbs/20_interpret.ipynb"
 <td><a href="/data.load.html#DataLoader"><code>DataLoader</code></a> to run inference over</td>
 </tr>
 <tr>
-<td><strong><a href="/losses.html"><code>losses</code></a></strong></td>
+<td><strong><code>losses</code></strong></td>
 <td><a href="/torch_core.html#TensorBase"><code>TensorBase</code></a></td>
 <td></td>
 <td>Losses calculated from <code>dl</code></td>
 </tr>
 <tr>
 <td><strong><code>act</code></strong></td>
-<td><code>NoneType</code></td>
+<td></td>
 <td><code>None</code></td>
 <td>Activation function for prediction</td>
 </tr>

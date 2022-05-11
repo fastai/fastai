@@ -1,13 +1,13 @@
 ---
 
-title: Title
+title: DataLoaders
 
 
 keywords: fastai
 sidebar: home_sidebar
 
-
-
+summary: "The `DataLoader` class"
+description: "The `DataLoader` class"
 nb_path: "nbs/02_data.load.ipynb"
 ---
 <!--
@@ -25,6 +25,25 @@ nb_path: "nbs/02_data.load.ipynb"
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>/opt/conda/lib/python3.9/site-packages/torch/cuda/__init__.py:145: UserWarning: 
+NVIDIA GeForce RTX 3070 Laptop GPU with CUDA capability sm_86 is not compatible with the current PyTorch installation.
+The current PyTorch install supports CUDA capabilities sm_37 sm_50 sm_60 sm_70.
+If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, please check the instructions at https://pytorch.org/get-started/locally/
+
+  warnings.warn(incompatible_device_warn.format(device_name, capability, &#34; &#34;.join(arch_list), device_name))
+</pre>
+</div>
+</div>
+
+</div>
+</div>
 
 </div>
     {% endraw %}
@@ -226,7 +245,39 @@ nb_path: "nbs/02_data.load.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="DataLoader" class="doc_header"><code>class</code> <code>DataLoader</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/load.py#L66" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>DataLoader</code>(<strong><code>dataset</code></strong>=<em><code>None</code></em>, <strong><code>bs</code></strong>=<em><code>None</code></em>, <strong><code>num_workers</code></strong>=<em><code>0</code></em>, <strong><code>pin_memory</code></strong>=<em><code>False</code></em>, <strong><code>timeout</code></strong>=<em><code>0</code></em>, <strong><code>batch_size</code></strong>=<em><code>None</code></em>, <strong><code>shuffle</code></strong>=<em><code>False</code></em>, <strong><code>drop_last</code></strong>=<em><code>False</code></em>, <strong><code>indexed</code></strong>=<em><code>None</code></em>, <strong><code>n</code></strong>=<em><code>None</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>persistent_workers</code></strong>=<em><code>False</code></em>, <strong><code>wif</code></strong>=<em><code>None</code></em>, <strong><code>before_iter</code></strong>=<em><code>None</code></em>, <strong><code>after_item</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_iter</code></strong>=<em><code>None</code></em>, <strong><code>create_batches</code></strong>=<em><code>None</code></em>, <strong><code>create_item</code></strong>=<em><code>None</code></em>, <strong><code>create_batch</code></strong>=<em><code>None</code></em>, <strong><code>retain</code></strong>=<em><code>None</code></em>, <strong><code>get_idxs</code></strong>=<em><code>None</code></em>, <strong><code>sample</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_fn</code></strong>=<em><code>None</code></em>, <strong><code>do_batch</code></strong>=<em><code>None</code></em>) :: <a href="https://fastcore.fast.ai/basics#GetAttr"><code>GetAttr</code></a></p>
+<h4 id="collate_error" class="doc_header"><code>collate_error</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/load.py#L66" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>collate_error</code>(<strong><code>e</code></strong>:<code>Exception</code>, <strong><code>batch</code></strong>)</p>
+</blockquote>
+<p>Raises error when the batch could not collate, stating what items in the batch are different sizes and their types</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="DataLoader" class="doc_header"><code>class</code> <code>DataLoader</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/load.py#L82" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>DataLoader</code>(<strong><code>dataset</code></strong>=<em><code>None</code></em>, <strong><code>bs</code></strong>=<em><code>None</code></em>, <strong><code>num_workers</code></strong>=<em><code>0</code></em>, <strong><code>pin_memory</code></strong>=<em><code>False</code></em>, <strong><code>timeout</code></strong>=<em><code>0</code></em>, <strong><code>batch_size</code></strong>=<em><code>None</code></em>, <strong><code>shuffle</code></strong>=<em><code>False</code></em>, <strong><code>drop_last</code></strong>=<em><code>False</code></em>, <strong><code>indexed</code></strong>=<em><code>None</code></em>, <strong><code>n</code></strong>=<em><code>None</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>persistent_workers</code></strong>=<em><code>False</code></em>, <strong><code>wif</code></strong>=<em><code>None</code></em>, <strong><code>before_iter</code></strong>=<em><code>None</code></em>, <strong><code>after_item</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_iter</code></strong>=<em><code>None</code></em>, <strong><code>create_batches</code></strong>=<em><code>None</code></em>, <strong><code>create_item</code></strong>=<em><code>None</code></em>, <strong><code>create_batch</code></strong>=<em><code>None</code></em>, <strong><code>retain</code></strong>=<em><code>None</code></em>, <strong><code>get_idxs</code></strong>=<em><code>None</code></em>, <strong><code>sample</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_fn</code></strong>=<em><code>None</code></em>, <strong><code>do_batch</code></strong>=<em><code>None</code></em>) :: <a href="https://fastcore.fast.ai/basics#GetAttr"><code>GetAttr</code></a></p>
 </blockquote>
 <p>API compatible with PyTorch DataLoader, with a lot more callbacks and flexibility</p>
 
@@ -308,7 +359,7 @@ nb_path: "nbs/02_data.load.ipynb"
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>(#1) [0.8184584259771384]</pre>
+<pre>(#40) [0.6220516703202649,0.38347354268972134,0.36273911288359706,0.4314958642862322,0.48170868503127295,0.1755075234373844,0.26036103499878493,0.16037428323147251,0.8350911770957413,0.4347179239514216...]</pre>
 </div>
 
 </div>
@@ -341,7 +392,7 @@ nb_path: "nbs/02_data.load.ipynb"
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>(#9) [4,4,4,4,4,4,4,4,4]</pre>
+<pre>(#1) [4]</pre>
 </div>
 
 </div>
@@ -375,7 +426,7 @@ nb_path: "nbs/02_data.load.ipynb"
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>(#16) [4,4,4,4,4,4,4,4,4,4...]</pre>
+<pre>(#21) [4,4,4,4,4,4,4,4,4,4...]</pre>
 </div>
 
 </div>
@@ -434,7 +485,7 @@ nb_path: "nbs/02_data.load.ipynb"
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>(#15) [0.09997947451517075,0.9406352068577291,0.7365644613807534,0.03467093036515401,0.33835398224425894,0.8449277297768522,0.38410576483536174,0.6763438764319878,0.748649743338762,0.27015475248670817...]</pre>
+<pre>(#2) [0.6192763059885179,0.33021254121031707]</pre>
 </div>
 
 </div>

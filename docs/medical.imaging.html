@@ -32,8 +32,12 @@ nb_path: "nbs/60_medical.imaging.ipynb"
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stderr output_text">
-<pre>/opt/conda/lib/python3.9/site-packages/torchvision/io/image.py:11: UserWarning: Failed to load image Python extension: libc10_cuda.so: cannot open shared object file: No such file or directory
-  warn(f&#34;Failed to load image Python extension: {e}&#34;)
+<pre>/opt/conda/lib/python3.9/site-packages/torch/cuda/__init__.py:145: UserWarning: 
+NVIDIA GeForce RTX 3070 Laptop GPU with CUDA capability sm_86 is not compatible with the current PyTorch installation.
+The current PyTorch install supports CUDA capabilities sm_37 sm_50 sm_60 sm_70.
+If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, please check the instructions at https://pytorch.org/get-started/locally/
+
+  warnings.warn(incompatible_device_warn.format(device_name, capability, &#34; &#34;.join(arch_list), device_name))
 </pre>
 </div>
 </div>
@@ -1252,7 +1256,7 @@ directly.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Dataset.show" class="doc_header"><code>Dataset.show</code><a href="https://github.com/fastai/fastai/tree/master/fastai/medical/imaging.py#L178" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Dataset.show</code>(<strong><code>frames</code></strong>=<em><code>1</code></em>, <strong><code>scale</code></strong>=<em><code>True</code></em>, <strong><code>cmap</code></strong>=<em><code>&lt;matplotlib.colors.LinearSegmentedColormap object at 0x7fc5c643fc40&gt;</code></em>, <strong><code>min_px</code></strong>=<em><code>-1100</code></em>, <strong><code>max_px</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="Dataset.show" class="doc_header"><code>Dataset.show</code><a href="https://github.com/fastai/fastai/tree/master/fastai/medical/imaging.py#L178" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Dataset.show</code>(<strong><code>frames</code></strong>=<em><code>1</code></em>, <strong><code>scale</code></strong>=<em><code>True</code></em>, <strong><code>cmap</code></strong>=<em><code>&lt;matplotlib.colors.LinearSegmentedColormap object at 0x7efe1312e7c0&gt;</code></em>, <strong><code>min_px</code></strong>=<em><code>-1100</code></em>, <strong><code>max_px</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Adds functionality to view dicom images where each file may have more than 1 frame</p>
 
@@ -1364,7 +1368,7 @@ directly.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Dataset.show" class="doc_header"><code>Dataset.show</code><a href="https://github.com/fastai/fastai/tree/master/fastai/medical/imaging.py#L178" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Dataset.show</code>(<strong><code>frames</code></strong>=<em><code>1</code></em>, <strong><code>scale</code></strong>=<em><code>True</code></em>, <strong><code>cmap</code></strong>=<em><code>&lt;matplotlib.colors.LinearSegmentedColormap object at 0x7fc5c643fc40&gt;</code></em>, <strong><code>min_px</code></strong>=<em><code>-1100</code></em>, <strong><code>max_px</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="Dataset.show" class="doc_header"><code>Dataset.show</code><a href="https://github.com/fastai/fastai/tree/master/fastai/medical/imaging.py#L178" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Dataset.show</code>(<strong><code>frames</code></strong>=<em><code>1</code></em>, <strong><code>scale</code></strong>=<em><code>True</code></em>, <strong><code>cmap</code></strong>=<em><code>&lt;matplotlib.colors.LinearSegmentedColormap object at 0x7efe1312e7c0&gt;</code></em>, <strong><code>min_px</code></strong>=<em><code>-1100</code></em>, <strong><code>max_px</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Adds functionality to view dicom images where each file may have more than 1 frame</p>
 
@@ -2192,7 +2196,7 @@ directly.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Tensor.save_jpg" class="doc_header"><code>Tensor.save_jpg</code><a href="https://github.com/fastai/fastai/tree/master/fastai/medical/imaging.py#L298" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Tensor.save_jpg</code>(<strong><code>x</code></strong>:<code>Dataset'&gt;)</code>, <strong><code>path</code></strong>, <strong><code>wins</code></strong>, <strong><code>bins</code></strong>=<em><code>None</code></em>, <strong><code>quality</code></strong>=<em><code>90</code></em>)</p>
+<h4 id="Tensor.save_jpg" class="doc_header"><code>Tensor.save_jpg</code><a href="https://github.com/fastai/fastai/tree/master/fastai/medical/imaging.py#L298" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Tensor.save_jpg</code>(<strong><code>x</code></strong>:<code>(Tensor, Dataset)</code>, <strong><code>path</code></strong>, <strong><code>wins</code></strong>, <strong><code>bins</code></strong>=<em><code>None</code></em>, <strong><code>quality</code></strong>=<em><code>90</code></em>)</p>
 </blockquote>
 <p>Save tensor or dicom image into <code>jpg</code> format</p>
 
@@ -2217,7 +2221,7 @@ directly.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Dataset.save_jpg" class="doc_header"><code>Dataset.save_jpg</code><a href="https://github.com/fastai/fastai/tree/master/fastai/medical/imaging.py#L298" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Dataset.save_jpg</code>(<strong><code>x</code></strong>:<code>Dataset'&gt;)</code>, <strong><code>path</code></strong>, <strong><code>wins</code></strong>, <strong><code>bins</code></strong>=<em><code>None</code></em>, <strong><code>quality</code></strong>=<em><code>90</code></em>)</p>
+<h4 id="Dataset.save_jpg" class="doc_header"><code>Dataset.save_jpg</code><a href="https://github.com/fastai/fastai/tree/master/fastai/medical/imaging.py#L298" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Dataset.save_jpg</code>(<strong><code>x</code></strong>:<code>(Tensor, Dataset)</code>, <strong><code>path</code></strong>, <strong><code>wins</code></strong>, <strong><code>bins</code></strong>=<em><code>None</code></em>, <strong><code>quality</code></strong>=<em><code>90</code></em>)</p>
 </blockquote>
 <p>Save tensor or dicom image into <code>jpg</code> format</p>
 
@@ -2249,7 +2253,7 @@ directly.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Tensor.to_uint16" class="doc_header"><code>Tensor.to_uint16</code><a href="https://github.com/fastai/fastai/tree/master/fastai/medical/imaging.py#L307" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Tensor.to_uint16</code>(<strong><code>x</code></strong>:<code>Dataset'&gt;)</code>, <strong><code>bins</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="Tensor.to_uint16" class="doc_header"><code>Tensor.to_uint16</code><a href="https://github.com/fastai/fastai/tree/master/fastai/medical/imaging.py#L307" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Tensor.to_uint16</code>(<strong><code>x</code></strong>:<code>(Tensor, Dataset)</code>, <strong><code>bins</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Convert into a unit16 array</p>
 
@@ -2274,7 +2278,7 @@ directly.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Dataset.to_uint16" class="doc_header"><code>Dataset.to_uint16</code><a href="https://github.com/fastai/fastai/tree/master/fastai/medical/imaging.py#L307" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Dataset.to_uint16</code>(<strong><code>x</code></strong>:<code>Dataset'&gt;)</code>, <strong><code>bins</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="Dataset.to_uint16" class="doc_header"><code>Dataset.to_uint16</code><a href="https://github.com/fastai/fastai/tree/master/fastai/medical/imaging.py#L307" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Dataset.to_uint16</code>(<strong><code>x</code></strong>:<code>(Tensor, Dataset)</code>, <strong><code>bins</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Convert into a unit16 array</p>
 
@@ -2306,7 +2310,7 @@ directly.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Tensor.save_tif16" class="doc_header"><code>Tensor.save_tif16</code><a href="https://github.com/fastai/fastai/tree/master/fastai/medical/imaging.py#L314" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Tensor.save_tif16</code>(<strong><code>x</code></strong>:<code>Dataset'&gt;)</code>, <strong><code>path</code></strong>, <strong><code>bins</code></strong>=<em><code>None</code></em>, <strong><code>compress</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="Tensor.save_tif16" class="doc_header"><code>Tensor.save_tif16</code><a href="https://github.com/fastai/fastai/tree/master/fastai/medical/imaging.py#L314" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Tensor.save_tif16</code>(<strong><code>x</code></strong>:<code>(Tensor, Dataset)</code>, <strong><code>path</code></strong>, <strong><code>bins</code></strong>=<em><code>None</code></em>, <strong><code>compress</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 <p>Save tensor or dicom image into <code>tiff</code> format</p>
 
@@ -2331,7 +2335,7 @@ directly.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Dataset.save_tif16" class="doc_header"><code>Dataset.save_tif16</code><a href="https://github.com/fastai/fastai/tree/master/fastai/medical/imaging.py#L314" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Dataset.save_tif16</code>(<strong><code>x</code></strong>:<code>Dataset'&gt;)</code>, <strong><code>path</code></strong>, <strong><code>bins</code></strong>=<em><code>None</code></em>, <strong><code>compress</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="Dataset.save_tif16" class="doc_header"><code>Dataset.save_tif16</code><a href="https://github.com/fastai/fastai/tree/master/fastai/medical/imaging.py#L314" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Dataset.save_tif16</code>(<strong><code>x</code></strong>:<code>(Tensor, Dataset)</code>, <strong><code>path</code></strong>, <strong><code>bins</code></strong>=<em><code>None</code></em>, <strong><code>compress</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 <p>Save tensor or dicom image into <code>tiff</code> format</p>
 
@@ -2870,7 +2874,7 @@ directly.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="DicomSegmentationDataLoaders" class="doc_header"><code>class</code> <code>DicomSegmentationDataLoaders</code><a href="https://github.com/fastai/fastai/tree/master/fastai/medical/imaging.py#L397" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>DicomSegmentationDataLoaders</code>(<strong>*<code>loaders</code></strong>, <strong><code>path</code></strong>=<em><code>'.'</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>) :: <a href="/data.core.html#DataLoaders"><code>DataLoaders</code></a></p>
+<h2 id="DicomSegmentationDataLoaders" class="doc_header"><code>class</code> <code>DicomSegmentationDataLoaders</code><a href="https://github.com/fastai/fastai/tree/master/fastai/medical/imaging.py#L397" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>DicomSegmentationDataLoaders</code>(<strong>*<code>loaders</code></strong>, <strong><code>path</code></strong>:<code>(str, Path)</code>=<em><code>'.'</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>) :: <a href="/data.core.html#DataLoaders"><code>DataLoaders</code></a></p>
 </blockquote>
 <p>Basic wrapper around DICOM <a href="/data.core.html#DataLoaders"><code>DataLoaders</code></a> with factory methods for segmentation problems</p>
 

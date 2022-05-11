@@ -26,6 +26,25 @@ nb_path: "nbs/18a_callback.training.ipynb"
     
 <div class="cell border-box-sizing code_cell rendered">
 
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>/opt/conda/lib/python3.9/site-packages/torch/cuda/__init__.py:145: UserWarning: 
+NVIDIA GeForce RTX 3070 Laptop GPU with CUDA capability sm_86 is not compatible with the current PyTorch installation.
+The current PyTorch install supports CUDA capabilities sm_37 sm_50 sm_60 sm_70.
+If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, please check the instructions at https://pytorch.org/get-started/locally/
+
+  warnings.warn(incompatible_device_warn.format(device_name, capability, &#34; &#34;.join(arch_list), device_name))
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
 </div>
     {% endraw %}
 
@@ -47,7 +66,7 @@ nb_path: "nbs/18a_callback.training.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ShortEpochCallback" class="doc_header"><code>class</code> <code>ShortEpochCallback</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/training.py#L11" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ShortEpochCallback</code>(<strong><code>pct</code></strong>=<em><code>0.01</code></em>, <strong><code>short_valid</code></strong>=<em><code>True</code></em>) :: <a href="/callback.core.html#Callback"><code>Callback</code></a></p>
+<h2 id="ShortEpochCallback" class="doc_header"><code>class</code> <code>ShortEpochCallback</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/training.py#L12" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ShortEpochCallback</code>(<strong><code>pct</code></strong>=<em><code>0.01</code></em>, <strong><code>short_valid</code></strong>=<em><code>True</code></em>) :: <a href="/callback.core.html#Callback"><code>Callback</code></a></p>
 </blockquote>
 <p>Fit just <code>pct</code> of an epoch, then stop</p>
 
@@ -85,6 +104,26 @@ nb_path: "nbs/18a_callback.training.ipynb"
 
 <div class="output_wrapper">
 <div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea ">
+<style>
+    /* Turns off some styling */
+    progress {
+        /* gets rid of default border in Firefox and Opera. */
+        border: none;
+        /* Needs to be in here for Safari polyfill so background images work as expected. */
+        background-size: auto;
+    }
+    .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+        background: #F44336;
+    }
+</style>
+</div>
+
+</div>
 
 <div class="output_area">
 
@@ -135,6 +174,26 @@ nb_path: "nbs/18a_callback.training.ipynb"
 <div class="output_area">
 
 
+<div class="output_html rendered_html output_subarea ">
+<style>
+    /* Turns off some styling */
+    progress {
+        /* gets rid of default border in Firefox and Opera. */
+        border: none;
+        /* Needs to be in here for Safari polyfill so background images work as expected. */
+        background-size: auto;
+    }
+    .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+        background: #F44336;
+    }
+</style>
+</div>
+
+</div>
+
+<div class="output_area">
+
+
 <div class="output_html rendered_html output_subarea "><table border="1" class="dataframe">
   <thead>
     <tr style="text-align: left;">
@@ -147,7 +206,7 @@ nb_path: "nbs/18a_callback.training.ipynb"
   <tbody>
     <tr>
       <td>0</td>
-      <td>14.867975</td>
+      <td>8.432135</td>
       <td>00:00</td>
     </tr>
   </tbody>
@@ -172,7 +231,7 @@ nb_path: "nbs/18a_callback.training.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="GradientAccumulation" class="doc_header"><code>class</code> <code>GradientAccumulation</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/training.py#L20" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>GradientAccumulation</code>(<strong><code>n_acc</code></strong>=<em><code>32</code></em>) :: <a href="/callback.core.html#Callback"><code>Callback</code></a></p>
+<h2 id="GradientAccumulation" class="doc_header"><code>class</code> <code>GradientAccumulation</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/training.py#L21" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>GradientAccumulation</code>(<strong><code>n_acc</code></strong>=<em><code>32</code></em>) :: <a href="/callback.core.html#Callback"><code>Callback</code></a></p>
 </blockquote>
 <p>Accumulate gradients before updating weights</p>
 
@@ -223,6 +282,26 @@ nb_path: "nbs/18a_callback.training.ipynb"
 <div class="output_area">
 
 
+<div class="output_html rendered_html output_subarea ">
+<style>
+    /* Turns off some styling */
+    progress {
+        /* gets rid of default border in Firefox and Opera. */
+        border: none;
+        /* Needs to be in here for Safari polyfill so background images work as expected. */
+        background-size: auto;
+    }
+    .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+        background: #F44336;
+    }
+</style>
+</div>
+
+</div>
+
+<div class="output_area">
+
+
 <div class="output_html rendered_html output_subarea "><table border="1" class="dataframe">
   <thead>
     <tr style="text-align: left;">
@@ -235,8 +314,8 @@ nb_path: "nbs/18a_callback.training.ipynb"
   <tbody>
     <tr>
       <td>0</td>
-      <td>10.941168</td>
-      <td>10.280428</td>
+      <td>20.987558</td>
+      <td>26.849480</td>
       <td>00:00</td>
     </tr>
   </tbody>
@@ -261,7 +340,7 @@ nb_path: "nbs/18a_callback.training.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="GradientClip" class="doc_header"><code>class</code> <code>GradientClip</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/training.py#L34" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>GradientClip</code>(<strong><code>max_norm</code></strong>:<code>float</code>=<em><code>1.0</code></em>, <strong><code>norm_type</code></strong>:<code>float</code>=<em><code>2.0</code></em>) :: <a href="/callback.core.html#Callback"><code>Callback</code></a></p>
+<h2 id="GradientClip" class="doc_header"><code>class</code> <code>GradientClip</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/training.py#L35" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>GradientClip</code>(<strong><code>max_norm</code></strong>:<code>float</code>=<em><code>1.0</code></em>, <strong><code>norm_type</code></strong>:<code>float</code>=<em><code>2.0</code></em>) :: <a href="/callback.core.html#Callback"><code>Callback</code></a></p>
 </blockquote>
 <p>Clip norm of gradients</p>
 
@@ -328,6 +407,26 @@ nb_path: "nbs/18a_callback.training.ipynb"
 <div class="output_area">
 
 
+<div class="output_html rendered_html output_subarea ">
+<style>
+    /* Turns off some styling */
+    progress {
+        /* gets rid of default border in Firefox and Opera. */
+        border: none;
+        /* Needs to be in here for Safari polyfill so background images work as expected. */
+        background-size: auto;
+    }
+    .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+        background: #F44336;
+    }
+</style>
+</div>
+
+</div>
+
+<div class="output_area">
+
+
 <div class="output_html rendered_html output_subarea "><table border="1" class="dataframe">
   <thead>
     <tr style="text-align: left;">
@@ -340,20 +439,20 @@ nb_path: "nbs/18a_callback.training.ipynb"
   <tbody>
     <tr>
       <td>0</td>
-      <td>38.214169</td>
-      <td>25.269012</td>
+      <td>38.214138</td>
+      <td>25.269005</td>
       <td>00:00</td>
     </tr>
     <tr>
       <td>1</td>
-      <td>377.146088</td>
-      <td>890.011780</td>
+      <td>377.145508</td>
+      <td>890.010376</td>
       <td>00:00</td>
     </tr>
     <tr>
       <td>2</td>
-      <td>839.391907</td>
-      <td>9965.712891</td>
+      <td>839.392883</td>
+      <td>9965.747070</td>
       <td>00:00</td>
     </tr>
   </tbody>
@@ -396,6 +495,26 @@ nb_path: "nbs/18a_callback.training.ipynb"
 <div class="output_area">
 
 
+<div class="output_html rendered_html output_subarea ">
+<style>
+    /* Turns off some styling */
+    progress {
+        /* gets rid of default border in Firefox and Opera. */
+        border: none;
+        /* Needs to be in here for Safari polyfill so background images work as expected. */
+        background-size: auto;
+    }
+    .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+        background: #F44336;
+    }
+</style>
+</div>
+
+</div>
+
+<div class="output_area">
+
+
 <div class="output_html rendered_html output_subarea "><table border="1" class="dataframe">
   <thead>
     <tr style="text-align: left;">
@@ -408,20 +527,20 @@ nb_path: "nbs/18a_callback.training.ipynb"
   <tbody>
     <tr>
       <td>0</td>
-      <td>2.039427</td>
-      <td>2.372183</td>
+      <td>2.039428</td>
+      <td>2.372177</td>
       <td>00:00</td>
     </tr>
     <tr>
       <td>1</td>
-      <td>1.402424</td>
-      <td>0.300724</td>
+      <td>1.402425</td>
+      <td>0.300728</td>
       <td>00:00</td>
     </tr>
     <tr>
       <td>2</td>
-      <td>1.013551</td>
-      <td>0.332668</td>
+      <td>1.013548</td>
+      <td>0.332610</td>
       <td>00:00</td>
     </tr>
   </tbody>
@@ -452,7 +571,7 @@ nb_path: "nbs/18a_callback.training.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="set_bn_eval" class="doc_header"><code>set_bn_eval</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/training.py#L43" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>set_bn_eval</code>(<strong><code>m</code></strong>:<a href="/torch_core.html#Module"><code>Module</code></a>, <strong><code>use_eval</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="set_bn_eval" class="doc_header"><code>set_bn_eval</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/training.py#L44" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>set_bn_eval</code>(<strong><code>m</code></strong>:<a href="/torch_core.html#Module"><code>Module</code></a>, <strong><code>use_eval</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 <p>Set bn layers in eval mode for all recursive children of <code>m</code>.</p>
 
@@ -477,7 +596,7 @@ nb_path: "nbs/18a_callback.training.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="BnFreeze" class="doc_header"><code>class</code> <code>BnFreeze</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/training.py#L51" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>BnFreeze</code>(<strong><code>after_create</code></strong>=<em><code>None</code></em>, <strong><code>before_fit</code></strong>=<em><code>None</code></em>, <strong><code>before_epoch</code></strong>=<em><code>None</code></em>, <strong><code>before_train</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_pred</code></strong>=<em><code>None</code></em>, <strong><code>after_loss</code></strong>=<em><code>None</code></em>, <strong><code>before_backward</code></strong>=<em><code>None</code></em>, <strong><code>before_step</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_step</code></strong>=<em><code>None</code></em>, <strong><code>after_step</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_train</code></strong>=<em><code>None</code></em>, <strong><code>after_train</code></strong>=<em><code>None</code></em>, <strong><code>before_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_epoch</code></strong>=<em><code>None</code></em>, <strong><code>after_epoch</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_fit</code></strong>=<em><code>None</code></em>, <strong><code>after_fit</code></strong>=<em><code>None</code></em>) :: <a href="/callback.core.html#Callback"><code>Callback</code></a></p>
+<h2 id="BnFreeze" class="doc_header"><code>class</code> <code>BnFreeze</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/training.py#L52" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>BnFreeze</code>(<strong><code>after_create</code></strong>=<em><code>None</code></em>, <strong><code>before_fit</code></strong>=<em><code>None</code></em>, <strong><code>before_epoch</code></strong>=<em><code>None</code></em>, <strong><code>before_train</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_pred</code></strong>=<em><code>None</code></em>, <strong><code>after_loss</code></strong>=<em><code>None</code></em>, <strong><code>before_backward</code></strong>=<em><code>None</code></em>, <strong><code>before_step</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_step</code></strong>=<em><code>None</code></em>, <strong><code>after_step</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_train</code></strong>=<em><code>None</code></em>, <strong><code>after_train</code></strong>=<em><code>None</code></em>, <strong><code>before_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_epoch</code></strong>=<em><code>None</code></em>, <strong><code>after_epoch</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_fit</code></strong>=<em><code>None</code></em>, <strong><code>after_fit</code></strong>=<em><code>None</code></em>) :: <a href="/callback.core.html#Callback"><code>Callback</code></a></p>
 </blockquote>
 <p>Basic class handling tweaks of the training loop by changing a <a href="/learner.html#Learner"><code>Learner</code></a> in various events</p>
 
@@ -526,7 +645,7 @@ nb_path: "nbs/18a_callback.training.ipynb"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>We first demonstrate the mismatch of the running stats when using only <code>train_bn=False</code>, by creating a <a href="/learner.html#Learner"><code>Learner</code></a>...:</p>
+<p><a href="https://pytorch.org/tutorials/intermediate/memory_format_tutorial.htmlWe">https://pytorch.org/tutorials/intermediate/memory_format_tutorial.htmlWe</a> first demonstrate the mismatch of the running stats when using only <code>train_bn=False</code>, by creating a <a href="/learner.html#Learner"><code>Learner</code></a>...:</p>
 
 </div>
 </div>
@@ -538,7 +657,7 @@ nb_path: "nbs/18a_callback.training.ipynb"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn1</span> <span class="o">=</span> <span class="n">cnn_learner</span><span class="p">(</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">dls</span><span class="p">),</span> <span class="n">resnet18</span><span class="p">,</span> <span class="n">pretrained</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">train_bn</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn1</span> <span class="o">=</span> <span class="n">vision_learner</span><span class="p">(</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">dls</span><span class="p">),</span> <span class="n">resnet18</span><span class="p">,</span> <span class="n">pretrained</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">train_bn</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -600,6 +719,26 @@ nb_path: "nbs/18a_callback.training.ipynb"
 <div class="output_area">
 
 
+<div class="output_html rendered_html output_subarea ">
+<style>
+    /* Turns off some styling */
+    progress {
+        /* gets rid of default border in Firefox and Opera. */
+        border: none;
+        /* Needs to be in here for Safari polyfill so background images work as expected. */
+        background-size: auto;
+    }
+    .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+        background: #F44336;
+    }
+</style>
+</div>
+
+</div>
+
+<div class="output_area">
+
+
 <div class="output_html rendered_html output_subarea "><table border="1" class="dataframe">
   <thead>
     <tr style="text-align: left;">
@@ -612,9 +751,9 @@ nb_path: "nbs/18a_callback.training.ipynb"
   <tbody>
     <tr>
       <td>0</td>
-      <td>1.152701</td>
-      <td>0.468892</td>
-      <td>00:02</td>
+      <td>1.148303</td>
+      <td>0.739404</td>
+      <td>00:12</td>
     </tr>
   </tbody>
 </table></div>
@@ -641,7 +780,7 @@ nb_path: "nbs/18a_callback.training.ipynb"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn1</span> <span class="o">=</span> <span class="n">cnn_learner</span><span class="p">(</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">dls</span><span class="p">),</span> <span class="n">resnet18</span><span class="p">,</span> <span class="n">pretrained</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">train_bn</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">cbs</span><span class="o">=</span><span class="n">BnFreeze</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn1</span> <span class="o">=</span> <span class="n">vision_learner</span><span class="p">(</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">dls</span><span class="p">),</span> <span class="n">resnet18</span><span class="p">,</span> <span class="n">pretrained</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">train_bn</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">cbs</span><span class="o">=</span><span class="n">BnFreeze</span><span class="p">)</span>
 <span class="n">m</span> <span class="o">=</span> <span class="n">learn1</span><span class="o">.</span><span class="n">model</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">running_mean</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
 <span class="n">learn1</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.02</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">to_detach</span><span class="p">(</span><span class="n">learn1</span><span class="o">.</span><span class="n">model</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">running_mean</span><span class="p">),</span> <span class="n">m</span><span class="p">)</span>
@@ -653,6 +792,26 @@ nb_path: "nbs/18a_callback.training.ipynb"
 
 <div class="output_wrapper">
 <div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea ">
+<style>
+    /* Turns off some styling */
+    progress {
+        /* gets rid of default border in Firefox and Opera. */
+        border: none;
+        /* Needs to be in here for Safari polyfill so background images work as expected. */
+        background-size: auto;
+    }
+    .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+        background: #F44336;
+    }
+</style>
+</div>
+
+</div>
 
 <div class="output_area">
 
@@ -669,9 +828,9 @@ nb_path: "nbs/18a_callback.training.ipynb"
   <tbody>
     <tr>
       <td>0</td>
-      <td>0.488634</td>
-      <td>0.277683</td>
-      <td>00:02</td>
+      <td>0.478594</td>
+      <td>0.270772</td>
+      <td>00:10</td>
     </tr>
   </tbody>
 </table></div>
@@ -684,6 +843,122 @@ nb_path: "nbs/18a_callback.training.ipynb"
 </div>
     {% endraw %}
 
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Channels-Last">Channels Last<a class="anchor-link" href="#Channels-Last"> </a></h2><blockquote><p>[Beta] A simple callback to use channels last memory format</p>
+</blockquote>
+<p>This callback sets your model in <code>channels_last</code> memory format before training. This will enable speed ups in modern GPUs. You can read more about this beta feature on the PyTorch <a href="https://pytorch.org/tutorials/intermediate/memory_format_tutorial.html">docs</a>.</p>
+
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="ChannelsLast" class="doc_header"><code>class</code> <code>ChannelsLast</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/training.py#L59" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ChannelsLast</code>(<strong><code>after_create</code></strong>=<em><code>None</code></em>, <strong><code>before_fit</code></strong>=<em><code>None</code></em>, <strong><code>before_epoch</code></strong>=<em><code>None</code></em>, <strong><code>before_train</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_pred</code></strong>=<em><code>None</code></em>, <strong><code>after_loss</code></strong>=<em><code>None</code></em>, <strong><code>before_backward</code></strong>=<em><code>None</code></em>, <strong><code>before_step</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_step</code></strong>=<em><code>None</code></em>, <strong><code>after_step</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_train</code></strong>=<em><code>None</code></em>, <strong><code>after_train</code></strong>=<em><code>None</code></em>, <strong><code>before_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_epoch</code></strong>=<em><code>None</code></em>, <strong><code>after_epoch</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_fit</code></strong>=<em><code>None</code></em>, <strong><code>after_fit</code></strong>=<em><code>None</code></em>) :: <a href="/callback.core.html#Callback"><code>Callback</code></a></p>
+</blockquote>
+<p>Basic class handling tweaks of the training loop by changing a <a href="/learner.html#Learner"><code>Learner</code></a> in various events</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn1</span> <span class="o">=</span> <span class="n">vision_learner</span><span class="p">(</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">dls</span><span class="p">),</span> <span class="n">resnet18</span><span class="p">,</span> <span class="n">pretrained</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cbs</span><span class="o">=</span><span class="n">ChannelsLast</span><span class="p">())</span>
+<span class="n">learn1</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.02</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea ">
+<style>
+    /* Turns off some styling */
+    progress {
+        /* gets rid of default border in Firefox and Opera. */
+        border: none;
+        /* Needs to be in here for Safari polyfill so background images work as expected. */
+        background-size: auto;
+    }
+    .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+        background: #F44336;
+    }
+</style>
+</div>
+
+</div>
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea "><table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: left;">
+      <th>epoch</th>
+      <th>train_loss</th>
+      <th>valid_loss</th>
+      <th>time</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>0.698547</td>
+      <td>7.504092</td>
+      <td>00:29</td>
+    </tr>
+  </tbody>
+</table></div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>{% include note.html content='It works with most <code>timm</code> models' %}</p>
+
+</div>
+</div>
+</div>
 </div>
  
 

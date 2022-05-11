@@ -654,7 +654,7 @@ nb_path: "nbs/50_tutorial.datablock.ipynb"
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Our types become blocks: one for images (using the black and white <a href="/vision.core.html#PILImageBW"><code>PILImageBW</code></a> class) and one for categories. Searching subfolder for all image filenames is done by the <a href="/data.transforms.html#get_image_files"><code>get_image_files</code></a> function. The split training/validation is done by using a <a href="/data.transforms.html#GrandparentSplitter"><code>GrandparentSplitter</code></a>. And the function to get our targets (often called <code>y</code>) is <a href="/data.transforms.html#parent_label"><code>parent_label</code></a>.</p>
-<p>To get an idea of the objects the fastai library provides for reading, labelling or splitting, check the <code>data.transforms</code> module.</p>
+<p>To get an idea of the objects the fastai library provides for reading, labelling or splitting, check the <a href="/data.transforms.html"><code>data.transforms</code></a> module.</p>
 <p>In itself, a data block is just a blueprint. It does not do anything and does not check for errors. You have to feed it the source of the data to actually gather something. This is done with the <code>.dataloaders</code> method:</p>
 
 </div>

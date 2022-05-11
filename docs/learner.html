@@ -26,6 +26,25 @@ nb_path: "nbs/13a_learner.ipynb"
     
 <div class="cell border-box-sizing code_cell rendered">
 
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>/opt/conda/lib/python3.9/site-packages/torch/cuda/__init__.py:145: UserWarning: 
+NVIDIA GeForce RTX 3070 Laptop GPU with CUDA capability sm_86 is not compatible with the current PyTorch installation.
+The current PyTorch install supports CUDA capabilities sm_37 sm_50 sm_60 sm_70.
+If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, please check the instructions at https://pytorch.org/get-started/locally/
+
+  warnings.warn(incompatible_device_warn.format(device_name, capability, &#34; &#34;.join(arch_list), device_name))
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
 </div>
     {% endraw %}
 
@@ -367,7 +386,7 @@ nb_path: "nbs/13a_learner.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Learner.fit" class="doc_header"><code>Learner.fit</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L214" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.fit</code>(<strong><code>n_epoch</code></strong>, <strong><code>lr</code></strong>=<em><code>None</code></em>, <strong><code>wd</code></strong>=<em><code>None</code></em>, <strong><code>cbs</code></strong>=<em><code>None</code></em>, <strong><code>reset_opt</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="Learner.fit" class="doc_header"><code>Learner.fit</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L215" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.fit</code>(<strong><code>n_epoch</code></strong>, <strong><code>lr</code></strong>=<em><code>None</code></em>, <strong><code>wd</code></strong>=<em><code>None</code></em>, <strong><code>cbs</code></strong>=<em><code>None</code></em>, <strong><code>reset_opt</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 <p>Fit <code>self.model</code> for <code>n_epoch</code> using <code>cbs</code>. Optionally <code>reset_opt</code>.</p>
 
@@ -457,7 +476,7 @@ nb_path: "nbs/13a_learner.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Learner.one_batch" class="doc_header"><code>Learner.one_batch</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L190" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.one_batch</code>(<strong><code>i</code></strong>, <strong><code>b</code></strong>)</p>
+<h4 id="Learner.one_batch" class="doc_header"><code>Learner.one_batch</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L191" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.one_batch</code>(<strong><code>i</code></strong>, <strong><code>b</code></strong>)</p>
 </blockquote>
 <p>Train or evaluate <code>self.model</code> on batch <code>(xb,yb)</code></p>
 
@@ -513,7 +532,7 @@ nb_path: "nbs/13a_learner.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Learner.all_batches" class="doc_header"><code>Learner.all_batches</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L167" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.all_batches</code>()</p>
+<h4 id="Learner.all_batches" class="doc_header"><code>Learner.all_batches</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L168" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.all_batches</code>()</p>
 </blockquote>
 <p>Train or evaluate <code>self.model</code> on all the batches of <code>self.dl</code></p>
 
@@ -538,7 +557,7 @@ nb_path: "nbs/13a_learner.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Learner.create_opt" class="doc_header"><code>Learner.create_opt</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L148" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.create_opt</code>()</p>
+<h4 id="Learner.create_opt" class="doc_header"><code>Learner.create_opt</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L149" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.create_opt</code>()</p>
 </blockquote>
 <p>Create an optimizer with default hyper-parameters</p>
 
@@ -718,7 +737,7 @@ nb_path: "nbs/13a_learner.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Learner.__call__" class="doc_header"><code>Learner.__call__</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L141" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.__call__</code>(<strong><code>event_name</code></strong>)</p>
+<h4 id="Learner.__call__" class="doc_header"><code>Learner.__call__</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L142" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.__call__</code>(<strong><code>event_name</code></strong>)</p>
 </blockquote>
 <p>Call <code>event_name</code> for all <a href="/callback.core.html#Callback"><code>Callback</code></a>s in <code>self.cbs</code></p>
 
@@ -783,7 +802,7 @@ after_fit
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Learner.add_cb" class="doc_header"><code>Learner.add_cb</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L113" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.add_cb</code>(<strong><code>cb</code></strong>)</p>
+<h4 id="Learner.add_cb" class="doc_header"><code>Learner.add_cb</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L114" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.add_cb</code>(<strong><code>cb</code></strong>)</p>
 </blockquote>
 <p>Add <code>cb</code> to the list of <a href="/callback.core.html#Callback"><code>Callback</code></a> and register <code>self</code> as their learner</p>
 
@@ -829,7 +848,7 @@ after_fit
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Learner.add_cbs" class="doc_header"><code>Learner.add_cbs</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L105" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.add_cbs</code>(<strong><code>cbs</code></strong>)</p>
+<h4 id="Learner.add_cbs" class="doc_header"><code>Learner.add_cbs</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L106" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.add_cbs</code>(<strong><code>cbs</code></strong>)</p>
 </blockquote>
 <p>Add <code>cbs</code> to the list of <a href="/callback.core.html#Callback"><code>Callback</code></a> and register <code>self</code> as their learner</p>
 
@@ -872,7 +891,7 @@ after_fit
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Learner.added_cbs" class="doc_header"><code>Learner.added_cbs</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L128" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.added_cbs</code>(<strong><code>cbs</code></strong>)</p>
+<h4 id="Learner.added_cbs" class="doc_header"><code>Learner.added_cbs</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L129" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.added_cbs</code>(<strong><code>cbs</code></strong>)</p>
 </blockquote>
 <p>Context manage that temporarily adds <code>cbs</code></p>
 
@@ -917,7 +936,7 @@ after_fit
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Learner.ordered_cbs" class="doc_header"><code>Learner.ordered_cbs</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L140" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.ordered_cbs</code>(<strong><code>event</code></strong>)</p>
+<h4 id="Learner.ordered_cbs" class="doc_header"><code>Learner.ordered_cbs</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L141" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.ordered_cbs</code>(<strong><code>event</code></strong>)</p>
 </blockquote>
 <p>List of <a href="/callback.core.html#Callback"><code>Callback</code></a>s, in order, for an <code>event</code> in the training loop</p>
 
@@ -984,7 +1003,7 @@ after_fit
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Learner.remove_cb" class="doc_header"><code>Learner.remove_cb</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L120" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.remove_cb</code>(<strong><code>cb</code></strong>)</p>
+<h4 id="Learner.remove_cb" class="doc_header"><code>Learner.remove_cb</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L121" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.remove_cb</code>(<strong><code>cb</code></strong>)</p>
 </blockquote>
 <p>Add <code>cb</code> from the list of <a href="/callback.core.html#Callback"><code>Callback</code></a> and deregister <code>self</code> as their learner</p>
 
@@ -1060,7 +1079,7 @@ after_fit
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Learner.remove_cbs" class="doc_header"><code>Learner.remove_cbs</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L109" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.remove_cbs</code>(<strong><code>cbs</code></strong>)</p>
+<h4 id="Learner.remove_cbs" class="doc_header"><code>Learner.remove_cbs</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L110" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.remove_cbs</code>(<strong><code>cbs</code></strong>)</p>
 </blockquote>
 <p>Remove <code>cbs</code> from the list of <a href="/callback.core.html#Callback"><code>Callback</code></a> and deregister <code>self</code> as their learner</p>
 
@@ -1113,7 +1132,7 @@ after_fit
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Learner.removed_cbs" class="doc_header"><code>Learner.removed_cbs</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L134" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.removed_cbs</code>(<strong><code>cbs</code></strong>)</p>
+<h4 id="Learner.removed_cbs" class="doc_header"><code>Learner.removed_cbs</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L135" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.removed_cbs</code>(<strong><code>cbs</code></strong>)</p>
 </blockquote>
 <p>Context manage that temporarily removes <code>cbs</code></p>
 
@@ -1166,7 +1185,7 @@ after_fit
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Learner.show_training_loop" class="doc_header"><code>Learner.show_training_loop</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L281" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.show_training_loop</code>()</p>
+<h4 id="Learner.show_training_loop" class="doc_header"><code>Learner.show_training_loop</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L284" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.show_training_loop</code>()</p>
 </blockquote>
 <p>Show each step in the training loop</p>
 
@@ -1269,7 +1288,7 @@ End Fit
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="before_batch_cb" class="doc_header"><code>before_batch_cb</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L338" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>before_batch_cb</code>(<strong><code>f</code></strong>)</p>
+<h4 id="before_batch_cb" class="doc_header"><code>before_batch_cb</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L346" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>before_batch_cb</code>(<strong><code>f</code></strong>)</p>
 </blockquote>
 <p>Shortcut for creating a Callback on the <code>before_batch</code> event, which takes and returns <code>xb,yb</code></p>
 
@@ -1359,7 +1378,7 @@ End Fit
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Learner.save" class="doc_header"><code>Learner.save</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L343" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.save</code>(<strong><code>file</code></strong>, <strong><code>with_opt</code></strong>=<em><code>True</code></em>, <strong><code>pickle_protocol</code></strong>=<em><code>2</code></em>)</p>
+<h4 id="Learner.save" class="doc_header"><code>Learner.save</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L351" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.save</code>(<strong><code>file</code></strong>, <strong><code>with_opt</code></strong>=<em><code>True</code></em>, <strong><code>pickle_protocol</code></strong>=<em><code>2</code></em>)</p>
 </blockquote>
 <p>Save model and optimizer state (if <code>with_opt</code>) to <code>self.path/self.model_dir/file</code></p>
 
@@ -1398,7 +1417,7 @@ End Fit
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Learner.load" class="doc_header"><code>Learner.load</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L352" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.load</code>(<strong><code>file</code></strong>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>with_opt</code></strong>=<em><code>True</code></em>, <strong><code>strict</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="Learner.load" class="doc_header"><code>Learner.load</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L360" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.load</code>(<strong><code>file</code></strong>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>with_opt</code></strong>=<em><code>True</code></em>, <strong><code>strict</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 <p>Load model and optimizer state (if <code>with_opt</code>) from <code>self.path/self.model_dir/file</code> using <code>device</code></p>
 
@@ -1467,7 +1486,7 @@ End Fit
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Learner.export" class="doc_header"><code>Learner.export</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L363" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.export</code>(<strong><code>fname</code></strong>=<em><code>'export.pkl'</code></em>, <strong><code>pickle_module</code></strong>=<em><code>pickle</code></em>, <strong><code>pickle_protocol</code></strong>=<em><code>2</code></em>)</p>
+<h4 id="Learner.export" class="doc_header"><code>Learner.export</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L371" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.export</code>(<strong><code>fname</code></strong>=<em><code>'export.pkl'</code></em>, <strong><code>pickle_module</code></strong>=<em><code>pickle</code></em>, <strong><code>pickle_protocol</code></strong>=<em><code>2</code></em>)</p>
 </blockquote>
 <p>Export the content of <code>self</code> without the items and the optimizer state for inference</p>
 
@@ -1506,7 +1525,7 @@ End Fit
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="load_learner" class="doc_header"><code>load_learner</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L381" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>load_learner</code>(<strong><code>fname</code></strong>, <strong><code>cpu</code></strong>=<em><code>True</code></em>, <strong><code>pickle_module</code></strong>=<em><code>pickle</code></em>)</p>
+<h4 id="load_learner" class="doc_header"><code>load_learner</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L389" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>load_learner</code>(<strong><code>fname</code></strong>, <strong><code>cpu</code></strong>=<em><code>True</code></em>, <strong><code>pickle_module</code></strong>=<em><code>pickle</code></em>)</p>
 </blockquote>
 <p>Load a <a href="/learner.html#Learner"><code>Learner</code></a> object in <code>fname</code>, optionally putting it on the <code>cpu</code></p>
 
@@ -1554,7 +1573,7 @@ End Fit
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="to_detach_from_dl" class="doc_header"><code>to_detach_from_dl</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L392" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>to_detach_from_dl</code>(<strong><code>learn</code></strong>:<code>Learner'&gt;, &lt;class 'NoneType'&gt;)</code>, <strong><code>b</code></strong>:<code>object</code>, <strong><code>cpu</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>gather</code></strong>:<code>bool</code>=<em><code>True</code></em>)</p>
+<h4 id="to_detach_from_dl" class="doc_header"><code>to_detach_from_dl</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L403" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>to_detach_from_dl</code>(<strong><code>learn</code></strong>:<code>(Learner, NoneType)</code>, <strong><code>b</code></strong>:<code>object</code>, <strong><code>cpu</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>gather</code></strong>:<code>bool</code>=<em><code>True</code></em>)</p>
 </blockquote>
 
 </div>
@@ -1592,7 +1611,7 @@ End Fit
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="Metric" class="doc_header"><code>class</code> <code>Metric</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L396" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>Metric</code>()</p>
+<h3 id="Metric" class="doc_header"><code>class</code> <code>Metric</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L407" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>Metric</code>()</p>
 </blockquote>
 <p>Blueprint for defining a metric</p>
 
@@ -1625,7 +1644,7 @@ End Fit
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Metric.reset" class="doc_header"><code>Metric.reset</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L399" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Metric.reset</code>()</p>
+<h4 id="Metric.reset" class="doc_header"><code>Metric.reset</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L410" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Metric.reset</code>()</p>
 </blockquote>
 <p>Reset inner state to prepare for new computation</p>
 
@@ -1650,7 +1669,7 @@ End Fit
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Metric.accumulate" class="doc_header"><code>Metric.accumulate</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L400" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Metric.accumulate</code>(<strong><code>learn</code></strong>)</p>
+<h4 id="Metric.accumulate" class="doc_header"><code>Metric.accumulate</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L411" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Metric.accumulate</code>(<strong><code>learn</code></strong>)</p>
 </blockquote>
 <p>Use <code>learn</code> to update the state with new results</p>
 
@@ -1735,7 +1754,7 @@ End Fit
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="AvgMetric" class="doc_header"><code>class</code> <code>AvgMetric</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L422" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>AvgMetric</code>(<strong><code>func</code></strong>) :: <a href="/learner.html#Metric"><code>Metric</code></a></p>
+<h3 id="AvgMetric" class="doc_header"><code>class</code> <code>AvgMetric</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L433" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>AvgMetric</code>(<strong><code>func</code></strong>) :: <a href="/learner.html#Metric"><code>Metric</code></a></p>
 </blockquote>
 <p>Average the values of <code>func</code> taking into account potential different batch sizes</p>
 
@@ -1791,7 +1810,7 @@ End Fit
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="AvgLoss" class="doc_header"><code>class</code> <code>AvgLoss</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L436" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>AvgLoss</code>() :: <a href="/learner.html#Metric"><code>Metric</code></a></p>
+<h3 id="AvgLoss" class="doc_header"><code>class</code> <code>AvgLoss</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L447" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>AvgLoss</code>() :: <a href="/learner.html#Metric"><code>Metric</code></a></p>
 </blockquote>
 <p>Average the losses taking into account potential different batch sizes</p>
 
@@ -1846,7 +1865,7 @@ End Fit
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="AvgSmoothLoss" class="doc_header"><code>class</code> <code>AvgSmoothLoss</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L449" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>AvgSmoothLoss</code>(<strong><code>beta</code></strong>=<em><code>0.98</code></em>) :: <a href="/learner.html#Metric"><code>Metric</code></a></p>
+<h3 id="AvgSmoothLoss" class="doc_header"><code>class</code> <code>AvgSmoothLoss</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L460" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>AvgSmoothLoss</code>(<strong><code>beta</code></strong>=<em><code>0.98</code></em>) :: <a href="/learner.html#Metric"><code>Metric</code></a></p>
 </blockquote>
 <p>Smooth average of the losses (exponentially weighted with <code>beta</code>)</p>
 
@@ -1903,7 +1922,7 @@ End Fit
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="ValueMetric" class="doc_header"><code>class</code> <code>ValueMetric</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L460" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>ValueMetric</code>(<strong><code>func</code></strong>, <strong><code>metric_name</code></strong>=<em><code>None</code></em>) :: <a href="/learner.html#Metric"><code>Metric</code></a></p>
+<h3 id="ValueMetric" class="doc_header"><code>class</code> <code>ValueMetric</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L471" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>ValueMetric</code>(<strong><code>func</code></strong>, <strong><code>metric_name</code></strong>=<em><code>None</code></em>) :: <a href="/learner.html#Metric"><code>Metric</code></a></p>
 </blockquote>
 <p>Use to include a pre-calculated metric value (for instance calculated in a <a href="/callback.core.html#Callback"><code>Callback</code></a>) and returned by <code>func</code></p>
 
@@ -1966,7 +1985,7 @@ End Fit
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Recorder" class="doc_header"><code>class</code> <code>Recorder</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L480" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Recorder</code>(<strong><code>add_time</code></strong>=<em><code>True</code></em>, <strong><code>train_metrics</code></strong>=<em><code>False</code></em>, <strong><code>valid_metrics</code></strong>=<em><code>True</code></em>, <strong><code>beta</code></strong>=<em><code>0.98</code></em>) :: <a href="/callback.core.html#Callback"><code>Callback</code></a></p>
+<h2 id="Recorder" class="doc_header"><code>class</code> <code>Recorder</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L491" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Recorder</code>(<strong><code>add_time</code></strong>=<em><code>True</code></em>, <strong><code>train_metrics</code></strong>=<em><code>False</code></em>, <strong><code>valid_metrics</code></strong>=<em><code>True</code></em>, <strong><code>beta</code></strong>=<em><code>0.98</code></em>) :: <a href="/callback.core.html#Callback"><code>Callback</code></a></p>
 </blockquote>
 <p>Callback that registers statistics (lr, loss and metrics) during training</p>
 
@@ -2040,7 +2059,7 @@ End Fit
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Recorder.before_fit" class="doc_header"><code>Recorder.before_fit</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L489" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Recorder.before_fit</code>()</p>
+<h4 id="Recorder.before_fit" class="doc_header"><code>Recorder.before_fit</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L500" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Recorder.before_fit</code>()</p>
 </blockquote>
 <p>Prepare state for training</p>
 
@@ -2065,7 +2084,7 @@ End Fit
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Recorder.before_epoch" class="doc_header"><code>Recorder.before_epoch</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L512" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Recorder.before_epoch</code>()</p>
+<h4 id="Recorder.before_epoch" class="doc_header"><code>Recorder.before_epoch</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L523" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Recorder.before_epoch</code>()</p>
 </blockquote>
 <p>Set timer if <code>self.add_time=True</code></p>
 
@@ -2090,7 +2109,7 @@ End Fit
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Recorder.before_validate" class="doc_header"><code>Recorder.before_validate</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L519" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Recorder.before_validate</code>()</p>
+<h4 id="Recorder.before_validate" class="doc_header"><code>Recorder.before_validate</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L530" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Recorder.before_validate</code>()</p>
 </blockquote>
 <p>Reset loss and metrics state</p>
 
@@ -2115,7 +2134,7 @@ End Fit
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Recorder.after_batch" class="doc_header"><code>Recorder.after_batch</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L502" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Recorder.after_batch</code>()</p>
+<h4 id="Recorder.after_batch" class="doc_header"><code>Recorder.after_batch</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L513" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Recorder.after_batch</code>()</p>
 </blockquote>
 <p>Update all metrics and records lr and smooth loss in training</p>
 
@@ -2140,7 +2159,7 @@ End Fit
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Recorder.after_epoch" class="doc_header"><code>Recorder.after_epoch</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L525" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Recorder.after_epoch</code>()</p>
+<h4 id="Recorder.after_epoch" class="doc_header"><code>Recorder.after_epoch</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L536" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Recorder.after_epoch</code>()</p>
 </blockquote>
 <p>Store and log the loss/metric values</p>
 
@@ -2171,7 +2190,7 @@ End Fit
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Recorder.plot_loss" class="doc_header"><code>Recorder.plot_loss</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L543" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Recorder.plot_loss</code>(<strong><code>skip_start</code></strong>=<em><code>5</code></em>, <strong><code>with_valid</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="Recorder.plot_loss" class="doc_header"><code>Recorder.plot_loss</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L554" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Recorder.plot_loss</code>(<strong><code>skip_start</code></strong>=<em><code>5</code></em>, <strong><code>with_valid</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 <p>Plot the losses from <code>skip_start</code> and onward</p>
 
@@ -2202,7 +2221,7 @@ End Fit
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Learner.validate" class="doc_header"><code>Learner.validate</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L233" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.validate</code>(<strong><code>ds_idx</code></strong>=<em><code>1</code></em>, <strong><code>dl</code></strong>=<em><code>None</code></em>, <strong><code>cbs</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="Learner.validate" class="doc_header"><code>Learner.validate</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L234" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.validate</code>(<strong><code>ds_idx</code></strong>=<em><code>1</code></em>, <strong><code>dl</code></strong>=<em><code>None</code></em>, <strong><code>cbs</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Validate on <code>dl</code> with potential new <code>cbs</code>.</p>
 
@@ -2248,7 +2267,7 @@ End Fit
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Learner.get_preds" class="doc_header"><code>Learner.get_preds</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L238" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.get_preds</code>(<strong><code>ds_idx</code></strong>=<em><code>1</code></em>, <strong><code>dl</code></strong>=<em><code>None</code></em>, <strong><code>with_input</code></strong>=<em><code>False</code></em>, <strong><code>with_decoded</code></strong>=<em><code>False</code></em>, <strong><code>with_loss</code></strong>=<em><code>False</code></em>, <strong><code>act</code></strong>=<em><code>None</code></em>, <strong><code>inner</code></strong>=<em><code>False</code></em>, <strong><code>reorder</code></strong>=<em><code>True</code></em>, <strong><code>cbs</code></strong>=<em><code>None</code></em>, <strong><code>save_preds</code></strong>=<em><code>None</code></em>, <strong><code>save_targs</code></strong>=<em><code>None</code></em>, <strong><code>with_preds</code></strong>=<em><code>True</code></em>, <strong><code>with_targs</code></strong>=<em><code>True</code></em>, <strong><code>concat_dim</code></strong>=<em><code>0</code></em>, <strong><code>pickle_protocol</code></strong>=<em><code>2</code></em>)</p>
+<h4 id="Learner.get_preds" class="doc_header"><code>Learner.get_preds</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L239" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.get_preds</code>(<strong><code>ds_idx</code></strong>=<em><code>1</code></em>, <strong><code>dl</code></strong>=<em><code>None</code></em>, <strong><code>with_input</code></strong>=<em><code>False</code></em>, <strong><code>with_decoded</code></strong>=<em><code>False</code></em>, <strong><code>with_loss</code></strong>=<em><code>False</code></em>, <strong><code>act</code></strong>=<em><code>None</code></em>, <strong><code>inner</code></strong>=<em><code>False</code></em>, <strong><code>reorder</code></strong>=<em><code>True</code></em>, <strong><code>cbs</code></strong>=<em><code>None</code></em>, <strong><code>save_preds</code></strong>:<code>Path</code>=<em><code>None</code></em>, <strong><code>save_targs</code></strong>:<code>Path</code>=<em><code>None</code></em>, <strong><code>with_preds</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>with_targs</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>concat_dim</code></strong>:<code>int</code>=<em><code>0</code></em>, <strong><code>pickle_protocol</code></strong>:<code>int</code>=<em><code>2</code></em>)</p>
 </blockquote>
 <p>Get the predictions and targets on the <code>ds_idx</code>-th dbunchset or <code>dl</code>, optionally <code>with_input</code> and <code>with_loss</code></p>
 
@@ -2316,7 +2335,7 @@ End Fit
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Learner.predict" class="doc_header"><code>Learner.predict</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L264" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.predict</code>(<strong><code>item</code></strong>, <strong><code>rm_type_tfms</code></strong>=<em><code>None</code></em>, <strong><code>with_input</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="Learner.predict" class="doc_header"><code>Learner.predict</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L267" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.predict</code>(<strong><code>item</code></strong>, <strong><code>rm_type_tfms</code></strong>=<em><code>None</code></em>, <strong><code>with_input</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 <p>Prediction on <code>item</code>, fully decoded, loss function decoded and probabilities</p>
 
@@ -2397,7 +2416,7 @@ End Fit
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Learner.show_results" class="doc_header"><code>Learner.show_results</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L275" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.show_results</code>(<strong><code>ds_idx</code></strong>=<em><code>1</code></em>, <strong><code>dl</code></strong>=<em><code>None</code></em>, <strong><code>max_n</code></strong>=<em><code>9</code></em>, <strong><code>shuffle</code></strong>=<em><code>True</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="Learner.show_results" class="doc_header"><code>Learner.show_results</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L278" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.show_results</code>(<strong><code>ds_idx</code></strong>=<em><code>1</code></em>, <strong><code>dl</code></strong>=<em><code>None</code></em>, <strong><code>max_n</code></strong>=<em><code>9</code></em>, <strong><code>shuffle</code></strong>=<em><code>True</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Show some predictions on <code>ds_idx</code>-th dataset or <code>dl</code></p>
 
@@ -2437,7 +2456,7 @@ End Fit
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Learner.no_logging" class="doc_header"><code>Learner.no_logging</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L288" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.no_logging</code>()</p>
+<h4 id="Learner.no_logging" class="doc_header"><code>Learner.no_logging</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L291" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.no_logging</code>()</p>
 </blockquote>
 <p>Context manager to temporarily remove <code>logger</code></p>
 
@@ -2482,7 +2501,7 @@ End Fit
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Learner.loss_not_reduced" class="doc_header"><code>Learner.loss_not_reduced</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L293" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.loss_not_reduced</code>()</p>
+<h4 id="Learner.loss_not_reduced" class="doc_header"><code>Learner.loss_not_reduced</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L296" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.loss_not_reduced</code>()</p>
 </blockquote>
 <p>A context manager to evaluate <code>loss_func</code> with reduction set to none.</p>
 
@@ -2520,7 +2539,7 @@ End Fit
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Learner.freeze_to" class="doc_header"><code>Learner.freeze_to</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L564" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.freeze_to</code>(<strong><code>n</code></strong>)</p>
+<h4 id="Learner.freeze_to" class="doc_header"><code>Learner.freeze_to</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L575" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.freeze_to</code>(<strong><code>n</code></strong>)</p>
 </blockquote>
 <p>Freeze parameter groups up to <code>n</code></p>
 
@@ -2545,7 +2564,7 @@ End Fit
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Learner.freeze" class="doc_header"><code>Learner.freeze</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L570" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.freeze</code>()</p>
+<h4 id="Learner.freeze" class="doc_header"><code>Learner.freeze</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L581" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.freeze</code>()</p>
 </blockquote>
 <p>Freeze up to last parameter group</p>
 
@@ -2570,7 +2589,7 @@ End Fit
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Learner.unfreeze" class="doc_header"><code>Learner.unfreeze</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L573" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.unfreeze</code>()</p>
+<h4 id="Learner.unfreeze" class="doc_header"><code>Learner.unfreeze</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L584" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.unfreeze</code>()</p>
 </blockquote>
 <p>Unfreeze the entire model</p>
 
@@ -2608,7 +2627,7 @@ End Fit
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Learner.tta" class="doc_header"><code>Learner.tta</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L582" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.tta</code>(<strong><code>ds_idx</code></strong>=<em><code>1</code></em>, <strong><code>dl</code></strong>=<em><code>None</code></em>, <strong><code>n</code></strong>=<em><code>4</code></em>, <strong><code>item_tfms</code></strong>=<em><code>None</code></em>, <strong><code>batch_tfms</code></strong>=<em><code>None</code></em>, <strong><code>beta</code></strong>=<em><code>0.25</code></em>, <strong><code>use_max</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="Learner.tta" class="doc_header"><code>Learner.tta</code><a href="https://github.com/fastai/fastai/tree/master/fastai/learner.py#L593" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.tta</code>(<strong><code>ds_idx</code></strong>=<em><code>1</code></em>, <strong><code>dl</code></strong>=<em><code>None</code></em>, <strong><code>n</code></strong>=<em><code>4</code></em>, <strong><code>item_tfms</code></strong>=<em><code>None</code></em>, <strong><code>batch_tfms</code></strong>=<em><code>None</code></em>, <strong><code>beta</code></strong>=<em><code>0.25</code></em>, <strong><code>use_max</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 <p>Return predictions on the <code>ds_idx</code> dataset or <code>dl</code> using Test Time Augmentation</p>
 

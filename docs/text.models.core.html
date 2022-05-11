@@ -26,6 +26,25 @@ nb_path: "nbs/33_text.models.core.ipynb"
     
 <div class="cell border-box-sizing code_cell rendered">
 
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>/opt/conda/lib/python3.9/site-packages/torch/cuda/__init__.py:145: UserWarning: 
+NVIDIA GeForce RTX 3070 Laptop GPU with CUDA capability sm_86 is not compatible with the current PyTorch installation.
+The current PyTorch install supports CUDA capabilities sm_37 sm_50 sm_60 sm_70.
+If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, please check the instructions at https://pytorch.org/get-started/locally/
+
+  warnings.warn(incompatible_device_warn.format(device_name, capability, &#34; &#34;.join(arch_list), device_name))
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
 </div>
     {% endraw %}
 
@@ -267,12 +286,6 @@ nb_path: "nbs/33_text.models.core.ipynb"
 <td><code>1.0</code></td>
 <td>Multiplicative factor to scale all dropout probabilities in <code>config</code></td>
 </tr>
-<tr>
-<td><strong>Returns</strong></td>
-<td><a href="/text.models.core.html#SequentialRNN"><code>SequentialRNN</code></a></td>
-<td></td>
-<td>Language model with <code>arch</code> encoder and linear decoder</td>
-</tr>
 </tbody>
 </table>
 
@@ -391,7 +404,7 @@ nb_path: "nbs/33_text.models.core.ipynb"
 <td>Backpropagation through time</td>
 </tr>
 <tr>
-<td><strong><a href="/layers.html#module"><code>module</code></a></strong></td>
+<td><strong><code>module</code></strong></td>
 <td><a href="/torch_core.html#Module"><code>Module</code></a></td>
 <td></td>
 <td>A module that can process up to [<code>bs</code>, <code>bptt</code>] tokens</td>
@@ -500,12 +513,6 @@ nb_path: "nbs/33_text.models.core.ipynb"
 <td><code>int</code></td>
 <td></td>
 <td>Backpropagation through time</td>
-</tr>
-<tr>
-<td><strong>Returns</strong></td>
-<td><code>Tensor</code></td>
-<td></td>
-<td>Concatenation of [last_hidden, max_pool, avg_pool]</td>
 </tr>
 </tbody>
 </table>

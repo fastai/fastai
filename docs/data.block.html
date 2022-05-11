@@ -26,6 +26,25 @@ nb_path: "nbs/06_data.block.ipynb"
     
 <div class="cell border-box-sizing code_cell rendered">
 
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>/opt/conda/lib/python3.9/site-packages/torch/cuda/__init__.py:145: UserWarning: 
+NVIDIA GeForce RTX 3070 Laptop GPU with CUDA capability sm_86 is not compatible with the current PyTorch installation.
+The current PyTorch install supports CUDA capabilities sm_37 sm_50 sm_60 sm_70.
+If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, please check the instructions at https://pytorch.org/get-started/locally/
+
+  warnings.warn(incompatible_device_warn.format(device_name, capability, &#34; &#34;.join(arch_list), device_name))
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
 </div>
     {% endraw %}
 
@@ -62,31 +81,31 @@ nb_path: "nbs/06_data.block.ipynb"
 <tr>
 <td><strong><code>type_tfms</code></strong></td>
 <td><code>list</code></td>
-<td>``</td>
+<td><code>None</code></td>
 <td>One or more <a href="https://fastcore.fast.ai/transform#Transform"><code>Transform</code></a>s</td>
 </tr>
 <tr>
 <td><strong><code>item_tfms</code></strong></td>
 <td><code>list</code></td>
-<td>``</td>
+<td><code>None</code></td>
 <td><a href="https://fastcore.fast.ai/transform#ItemTransform"><code>ItemTransform</code></a>s, applied on an item</td>
 </tr>
 <tr>
 <td><strong><code>batch_tfms</code></strong></td>
 <td><code>list</code></td>
-<td>``</td>
+<td><code>None</code></td>
 <td><a href="https://fastcore.fast.ai/transform#Transform"><code>Transform</code></a>s or <a href="/vision.augment.html#RandTransform"><code>RandTransform</code></a>s, applied by batch</td>
 </tr>
 <tr>
 <td><strong><code>dl_type</code></strong></td>
 <td><a href="/data.core.html#TfmdDL"><code>TfmdDL</code></a></td>
-<td>``</td>
+<td><code>None</code></td>
 <td>Task specific <a href="/data.core.html#TfmdDL"><code>TfmdDL</code></a>, defaults to <a href="/data.core.html#TfmdDL"><code>TfmdDL</code></a></td>
 </tr>
 <tr>
 <td><strong><code>dls_kwargs</code></strong></td>
 <td><code>dict</code></td>
-<td>``</td>
+<td><code>None</code></td>
 <td>Additional arguments to be passed to <a href="/data.core.html#DataLoaders"><code>DataLoaders</code></a></td>
 </tr>
 </tbody>
@@ -135,7 +154,7 @@ nb_path: "nbs/06_data.block.ipynb"
 <tr>
 <td><strong><code>vocab</code></strong></td>
 <td><code>(list, Series)</code></td>
-<td>``</td>
+<td><code>None</code></td>
 <td>List of unique class names</td>
 </tr>
 <tr>
@@ -202,7 +221,7 @@ nb_path: "nbs/06_data.block.ipynb"
 <tr>
 <td><strong><code>vocab</code></strong></td>
 <td><code>(list, Series)</code></td>
-<td>``</td>
+<td><code>None</code></td>
 <td>List of unique class names</td>
 </tr>
 <tr>
@@ -257,7 +276,7 @@ nb_path: "nbs/06_data.block.ipynb"
 <tr>
 <td><strong><code>n_out</code></strong></td>
 <td><code>int</code></td>
-<td>``</td>
+<td><code>None</code></td>
 <td>Number of output values</td>
 </tr>
 </tbody>
@@ -351,61 +370,61 @@ nb_path: "nbs/06_data.block.ipynb"
 <tr>
 <td><strong><code>blocks</code></strong></td>
 <td><code>list</code></td>
-<td>``</td>
+<td><code>None</code></td>
 <td>One or more <a href="/data.block.html#TransformBlock"><code>TransformBlock</code></a>s</td>
 </tr>
 <tr>
 <td><strong><code>dl_type</code></strong></td>
 <td><a href="/data.core.html#TfmdDL"><code>TfmdDL</code></a></td>
-<td>``</td>
+<td><code>None</code></td>
 <td>Task specific <a href="/data.core.html#TfmdDL"><code>TfmdDL</code></a>, defaults to <code>block</code>'s dl_type or<a href="/data.core.html#TfmdDL"><code>TfmdDL</code></a></td>
 </tr>
 <tr>
 <td><strong><code>getters</code></strong></td>
 <td><code>list</code></td>
-<td>``</td>
+<td><code>None</code></td>
 <td>Getter functions applied to results of <code>get_items</code></td>
 </tr>
 <tr>
 <td><strong><code>n_inp</code></strong></td>
 <td><code>int</code></td>
-<td>``</td>
+<td><code>None</code></td>
 <td>Number of inputs</td>
 </tr>
 <tr>
 <td><strong><code>item_tfms</code></strong></td>
 <td><code>list</code></td>
-<td>``</td>
+<td><code>None</code></td>
 <td><a href="https://fastcore.fast.ai/transform#ItemTransform"><code>ItemTransform</code></a>s, applied on an item</td>
 </tr>
 <tr>
 <td><strong><code>batch_tfms</code></strong></td>
 <td><code>list</code></td>
-<td>``</td>
+<td><code>None</code></td>
 <td><a href="https://fastcore.fast.ai/transform#Transform"><code>Transform</code></a>s or <a href="/vision.augment.html#RandTransform"><code>RandTransform</code></a>s, applied by batch</td>
 </tr>
 <tr>
 <td><strong><code>get_items</code></strong></td>
-<td><code>NoneType</code></td>
-<td>``</td>
+<td></td>
+<td><code>None</code></td>
 <td><em>No Content</em></td>
 </tr>
 <tr>
 <td><strong><code>splitter</code></strong></td>
-<td><code>NoneType</code></td>
-<td>``</td>
+<td></td>
+<td><code>None</code></td>
 <td><em>No Content</em></td>
 </tr>
 <tr>
 <td><strong><code>get_y</code></strong></td>
-<td><code>NoneType</code></td>
-<td>``</td>
+<td></td>
+<td><code>None</code></td>
 <td><em>No Content</em></td>
 </tr>
 <tr>
 <td><strong><code>get_x</code></strong></td>
-<td><code>NoneType</code></td>
-<td>``</td>
+<td></td>
+<td><code>None</code></td>
 <td><em>No Content</em></td>
 </tr>
 </tbody>
@@ -495,7 +514,7 @@ nb_path: "nbs/06_data.block.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="DataBlock.dataloaders" class="doc_header"><code>DataBlock.dataloaders</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/block.py#L147" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>DataBlock.dataloaders</code>(<strong><code>source</code></strong>, <strong><code>path</code></strong>:<code>str</code>=<em><code>'.'</code></em>, <strong><code>verbose</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>shuffle</code></strong>=<em><code>False</code></em>, <strong><code>num_workers</code></strong>=<em><code>None</code></em>, <strong><code>do_setup</code></strong>=<em><code>True</code></em>, <strong><code>pin_memory</code></strong>=<em><code>False</code></em>, <strong><code>timeout</code></strong>=<em><code>0</code></em>, <strong><code>batch_size</code></strong>=<em><code>None</code></em>, <strong><code>drop_last</code></strong>=<em><code>False</code></em>, <strong><code>indexed</code></strong>=<em><code>None</code></em>, <strong><code>n</code></strong>=<em><code>None</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>persistent_workers</code></strong>=<em><code>False</code></em>, <strong><code>wif</code></strong>=<em><code>None</code></em>, <strong><code>before_iter</code></strong>=<em><code>None</code></em>, <strong><code>after_item</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_iter</code></strong>=<em><code>None</code></em>, <strong><code>create_batches</code></strong>=<em><code>None</code></em>, <strong><code>create_item</code></strong>=<em><code>None</code></em>, <strong><code>create_batch</code></strong>=<em><code>None</code></em>, <strong><code>retain</code></strong>=<em><code>None</code></em>, <strong><code>get_idxs</code></strong>=<em><code>None</code></em>, <strong><code>sample</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_fn</code></strong>=<em><code>None</code></em>, <strong><code>do_batch</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="DataBlock.dataloaders" class="doc_header"><code>DataBlock.dataloaders</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/block.py#L147" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>DataBlock.dataloaders</code>(<strong><code>source</code></strong>, <strong><code>path</code></strong>:<code>str</code>=<em><code>'.'</code></em>, <strong><code>verbose</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>bs</code></strong>:<code>int</code>=<em><code>64</code></em>, <strong><code>shuffle</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>num_workers</code></strong>:<code>int</code>=<em><code>None</code></em>, <strong><code>do_setup</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>pin_memory</code></strong>=<em><code>False</code></em>, <strong><code>timeout</code></strong>=<em><code>0</code></em>, <strong><code>batch_size</code></strong>=<em><code>None</code></em>, <strong><code>drop_last</code></strong>=<em><code>False</code></em>, <strong><code>indexed</code></strong>=<em><code>None</code></em>, <strong><code>n</code></strong>=<em><code>None</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>persistent_workers</code></strong>=<em><code>False</code></em>, <strong><code>wif</code></strong>=<em><code>None</code></em>, <strong><code>before_iter</code></strong>=<em><code>None</code></em>, <strong><code>after_item</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_iter</code></strong>=<em><code>None</code></em>, <strong><code>create_batches</code></strong>=<em><code>None</code></em>, <strong><code>create_item</code></strong>=<em><code>None</code></em>, <strong><code>create_batch</code></strong>=<em><code>None</code></em>, <strong><code>retain</code></strong>=<em><code>None</code></em>, <strong><code>get_idxs</code></strong>=<em><code>None</code></em>, <strong><code>sample</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_fn</code></strong>=<em><code>None</code></em>, <strong><code>do_batch</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Create a <a href="/data.core.html#DataLoaders"><code>DataLoaders</code></a> object from <code>source</code></p>
 <table>
@@ -516,7 +535,7 @@ nb_path: "nbs/06_data.block.ipynb"
 <tr>
 <td><strong><code>path</code></strong></td>
 <td><code>str</code></td>
-<td>``</td>
+<td><code>.</code></td>
 <td>Data source and default <a href="/learner.html#Learner"><code>Learner</code></a> path</td>
 </tr>
 <tr>
@@ -535,25 +554,25 @@ nb_path: "nbs/06_data.block.ipynb"
 <td><strong><code>bs</code></strong></td>
 <td><code>int</code></td>
 <td><code>64</code></td>
-<td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
+<td>Size of batch passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>shuffle</code></strong></td>
 <td><code>bool</code></td>
 <td><code>False</code></td>
-<td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
+<td>Whether to shuffle data passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>num_workers</code></strong></td>
-<td><code>NoneType</code></td>
-<td>``</td>
-<td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
+<td><code>int</code></td>
+<td><code>None</code></td>
+<td>Number of CPU cores to use in parallel (default: All available up to 16) passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>do_setup</code></strong></td>
 <td><code>bool</code></td>
 <td><code>True</code></td>
-<td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
+<td>Whether to run <code>setup()</code> for batch transform(s) passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>pin_memory</code></strong></td>
@@ -569,8 +588,8 @@ nb_path: "nbs/06_data.block.ipynb"
 </tr>
 <tr>
 <td><strong><code>batch_size</code></strong></td>
-<td><code>NoneType</code></td>
-<td>``</td>
+<td></td>
+<td><code>None</code></td>
 <td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
 </tr>
 <tr>
@@ -581,20 +600,20 @@ nb_path: "nbs/06_data.block.ipynb"
 </tr>
 <tr>
 <td><strong><code>indexed</code></strong></td>
-<td><code>NoneType</code></td>
-<td>``</td>
+<td></td>
+<td><code>None</code></td>
 <td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>n</code></strong></td>
-<td><code>NoneType</code></td>
-<td>``</td>
+<td></td>
+<td><code>None</code></td>
 <td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>device</code></strong></td>
-<td><code>NoneType</code></td>
-<td>``</td>
+<td></td>
+<td><code>None</code></td>
 <td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
 </tr>
 <tr>
@@ -605,91 +624,91 @@ nb_path: "nbs/06_data.block.ipynb"
 </tr>
 <tr>
 <td><strong><code>wif</code></strong></td>
-<td><code>NoneType</code></td>
-<td>``</td>
+<td></td>
+<td><code>None</code></td>
 <td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>before_iter</code></strong></td>
-<td><code>NoneType</code></td>
-<td>``</td>
+<td></td>
+<td><code>None</code></td>
 <td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>after_item</code></strong></td>
-<td><code>NoneType</code></td>
-<td>``</td>
+<td></td>
+<td><code>None</code></td>
 <td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>before_batch</code></strong></td>
-<td><code>NoneType</code></td>
-<td>``</td>
+<td></td>
+<td><code>None</code></td>
 <td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>after_batch</code></strong></td>
-<td><code>NoneType</code></td>
-<td>``</td>
+<td></td>
+<td><code>None</code></td>
 <td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>after_iter</code></strong></td>
-<td><code>NoneType</code></td>
-<td>``</td>
+<td></td>
+<td><code>None</code></td>
 <td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>create_batches</code></strong></td>
-<td><code>NoneType</code></td>
-<td>``</td>
+<td></td>
+<td><code>None</code></td>
 <td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>create_item</code></strong></td>
-<td><code>NoneType</code></td>
-<td>``</td>
+<td></td>
+<td><code>None</code></td>
 <td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>create_batch</code></strong></td>
-<td><code>NoneType</code></td>
-<td>``</td>
+<td></td>
+<td><code>None</code></td>
 <td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>retain</code></strong></td>
-<td><code>NoneType</code></td>
-<td>``</td>
+<td></td>
+<td><code>None</code></td>
 <td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>get_idxs</code></strong></td>
-<td><code>NoneType</code></td>
-<td>``</td>
+<td></td>
+<td><code>None</code></td>
 <td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>sample</code></strong></td>
-<td><code>NoneType</code></td>
-<td>``</td>
+<td></td>
+<td><code>None</code></td>
 <td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>shuffle_fn</code></strong></td>
-<td><code>NoneType</code></td>
-<td>``</td>
+<td></td>
+<td><code>None</code></td>
 <td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong><code>do_batch</code></strong></td>
-<td><code>NoneType</code></td>
-<td>``</td>
+<td></td>
+<td><code>None</code></td>
 <td>Argument passed to <a href="/data.core.html#TfmdDL.__init__"><code>TfmdDL.__init__</code></a></td>
 </tr>
 <tr>
 <td><strong>Returns</strong></td>
-<td><a href="/data.core.html#DataLoaders"><code>DataLoaders</code></a></td>
+<td><code>DataLoaders</code></td>
 <td></td>
 <td></td>
 </tr>
@@ -781,6 +800,24 @@ nb_path: "nbs/06_data.block.ipynb"
 </pre></div>
 
     </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea ">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHsAAACLCAYAAABBVeZmAAAAOXRFWHRTb2Z0d2FyZQBNYXRwbG90bGliIHZlcnNpb24zLjUuMCwgaHR0cHM6Ly9tYXRwbG90bGliLm9yZy8/fFQqAAAACXBIWXMAAAsTAAALEwEAmpwYAAAEbklEQVR4nO2dPUscURSGz1ULMSuKWAiBrYIgNloIEkRQQawl9aawsRARRBC0EOwF3c5GsggKQvAHqKDZRrFVtFHsTLRQEvBznRTBJecmrqvO1933fUCYlxl3z/p458zHzozxPE8IBmVRF0DCg7KBoGwgKBsIygaCsoGgbCCgZBtjflk/OWNMOuq6wqIi6gLCxPO8xOO0MeadiHwXkZXoKgoXqJFt8UlEfojIt6gLCQtk2Z9FJOMBHS82QJ81jzEmKSLHIvLB87zjqOsJC9SRnRKRLJJoEWzZX6IuImzgZBtjPorIewHaCn8ETrb82TD76nnez6gLCRvIDTRUEEc2LJQNBGUDQdlAUDYQz5314qa6e5inZnBkA0HZQFA2EJQNBGUDQdlAUDYQlA0EZQNB2UBQNhCUDQRlA0HZQFA2EJQNBGUDQdlAUDYQlA0EZQNB2UBQNhCUDQRlA0HZQDhz07v9/X2VM5mMysvLyypXVOiPNjw8nJ8eGRlR81paWlTu7e19ZZX/x3697u5uX1+/WDiygaBsICgbiOduoBObS3YHBgZUXlhYiKiSl9PU1KTy3t5ekG/HS3YJZUNB2UA407M3NzdV7uvrU/nm5ibMcl5EQ0ODyoeHhypXV1f7+Xbs2YSyoaBsIJzp2TaXl5cqr6+vq3xyclL0a9n7vc3NzSpfXFyoPD09rbL9NzRGt822tjaVt7e3i67tFbBnE8qGgrKBcOZ8tk1NTY3K/f39gb2X3aNt7B5tn79eXFz0vabXwJENBGUDQdlAONuzg+T+/l7lpaWlgsvX1taqnEqlVK6vr/elrrfCkQ0EZQNB2UCwZ8u/x7ZHR0dVPjg4KPj7Kyv6SY89PT3+FOYzHNlAUDYQkKtxe9fK/lpyOp0u+PszMzMqR3U5z0vhyAaCsoGgbCCc/VrSW8hmsyp3dnYWXD6RSKh8enqqclVVlT+F+QO/lkQoGwrKBgJmP/vo6Cg/3dXVVXBZu0dvbW2pHLMeXTQc2UBQNhCUDUTJ9uyrqyuVBwcH89O5XE7NKyvT//N2j7ZvneUqHNlAUDYQlA1Eyfbs8fFxldfW1p5cdmhoSOVS6dE2HNlAUDYQlA1EyZzP3t3dVbm9vV3lh4eH/HRHR4eat7GxobJ9+2rH4PlsQtlQUDYQzjanu7s7lcfGxlT+u0eLiCSTyfz07Oysmud4jy4ajmwgKBsIygbC2WZlP67JvkV1eXm5ynNzc/np1tbWwOqKMxzZQFA2EJQNhDPHxu1bStuPT7q+vlbZvgXlxMREMIXFDx4bJ5QNBWUDEduefXt7q7J9DfXOzo7Kjl1DHSTs2YSyoYjt4dL5+XmV7dW2zerqqspAq+2i4cgGgrKBoGwgYrPrdX5+rnJjY6PK9lPzJicnVZ6amlLZvgwXCO56EcqGgrKBiE3PPjs7U9nu2XV1dSrbT8atrKwMpjD3YM8mlA0FZQMRm55NfIM9m1A2FJQNxHPns59c/xP34MgGgrKBoGwgKBsIygaCsoH4Dd9p/n3ENZhPAAAAAElFTkSuQmCC
+"
+>
+</div>
+
+</div>
+
 </div>
 </div>
 

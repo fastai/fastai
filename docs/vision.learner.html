@@ -32,8 +32,12 @@ nb_path: "nbs/21_vision.learner.ipynb"
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stderr output_text">
-<pre>/opt/conda/lib/python3.9/site-packages/torchvision/io/image.py:11: UserWarning: Failed to load image Python extension: libc10_cuda.so: cannot open shared object file: No such file or directory
-  warn(f&#34;Failed to load image Python extension: {e}&#34;)
+<pre>/opt/conda/lib/python3.9/site-packages/torch/cuda/__init__.py:145: UserWarning: 
+NVIDIA GeForce RTX 3070 Laptop GPU with CUDA capability sm_86 is not compatible with the current PyTorch installation.
+The current PyTorch install supports CUDA capabilities sm_37 sm_50 sm_60 sm_70.
+If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, please check the instructions at https://pytorch.org/get-started/locally/
+
+  warnings.warn(incompatible_device_warn.format(device_name, capability, &#34; &#34;.join(arch_list), device_name))
 </pre>
 </div>
 </div>
@@ -53,7 +57,7 @@ nb_path: "nbs/21_vision.learner.ipynb"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The most important functions of this module are <a href="/vision.learner.html#cnn_learner"><code>cnn_learner</code></a> and <a href="/vision.learner.html#unet_learner"><code>unet_learner</code></a>. They will help you define a <a href="/learner.html#Learner"><code>Learner</code></a> using a pretrained model. See the <a href="http://docs.fast.ai/tutorial.vision">vision tutorial</a> for examples of use.</p>
+<p>The most important functions of this module are <a href="/vision.learner.html#vision_learner"><code>vision_learner</code></a> and <a href="/vision.learner.html#unet_learner"><code>unet_learner</code></a>. They will help you define a <a href="/learner.html#Learner"><code>Learner</code></a> using a pretrained model. See the <a href="http://docs.fast.ai/tutorial.vision">vision tutorial</a> for examples of use.</p>
 
 </div>
 </div>
@@ -89,7 +93,7 @@ nb_path: "nbs/21_vision.learner.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="has_pool_type" class="doc_header"><code>has_pool_type</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/learner.py#L17" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>has_pool_type</code>(<strong><code>m</code></strong>)</p>
+<h4 id="has_pool_type" class="doc_header"><code>has_pool_type</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/learner.py#L21" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>has_pool_type</code>(<strong><code>m</code></strong>)</p>
 </blockquote>
 <p>Return <code>True</code> if <code>m</code> is a pooling layer or has one in its children</p>
 
@@ -161,7 +165,39 @@ nb_path: "nbs/21_vision.learner.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="create_body" class="doc_header"><code>create_body</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/learner.py#L63" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>create_body</code>(<strong><code>arch</code></strong>, <strong><code>n_in</code></strong>=<em><code>3</code></em>, <strong><code>pretrained</code></strong>=<em><code>True</code></em>, <strong><code>cut</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="cut_model" class="doc_header"><code>cut_model</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/learner.py#L67" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>cut_model</code>(<strong><code>model</code></strong>, <strong><code>cut</code></strong>)</p>
+</blockquote>
+<p>Cut an instantiated model</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="create_body" class="doc_header"><code>create_body</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/learner.py#L74" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>create_body</code>(<strong><code>arch</code></strong>, <strong><code>n_in</code></strong>=<em><code>3</code></em>, <strong><code>pretrained</code></strong>=<em><code>True</code></em>, <strong><code>cut</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Cut off the body of a typically pretrained <code>arch</code> as determined by <code>cut</code></p>
 
@@ -235,7 +271,7 @@ nb_path: "nbs/21_vision.learner.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="create_head" class="doc_header"><code>create_head</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/learner.py#L76" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>create_head</code>(<strong><code>nf</code></strong>, <strong><code>n_out</code></strong>, <strong><code>lin_ftrs</code></strong>=<em><code>None</code></em>, <strong><code>ps</code></strong>=<em><code>0.5</code></em>, <strong><code>concat_pool</code></strong>=<em><code>True</code></em>, <strong><code>first_bn</code></strong>=<em><code>True</code></em>, <strong><code>bn_final</code></strong>=<em><code>False</code></em>, <strong><code>lin_first</code></strong>=<em><code>False</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="create_head" class="doc_header"><code>create_head</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/learner.py#L84" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>create_head</code>(<strong><code>nf</code></strong>, <strong><code>n_out</code></strong>, <strong><code>lin_ftrs</code></strong>=<em><code>None</code></em>, <strong><code>ps</code></strong>=<em><code>0.5</code></em>, <strong><code>pool</code></strong>=<em><code>True</code></em>, <strong><code>concat_pool</code></strong>=<em><code>True</code></em>, <strong><code>first_bn</code></strong>=<em><code>True</code></em>, <strong><code>bn_final</code></strong>=<em><code>False</code></em>, <strong><code>lin_first</code></strong>=<em><code>False</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Model head that takes <code>nf</code> features, runs through <code>lin_ftrs</code>, and out <code>n_out</code> classes.</p>
 
@@ -350,7 +386,7 @@ nb_path: "nbs/21_vision.learner.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="default_split" class="doc_header"><code>default_split</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/learner.py#L99" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>default_split</code>(<strong><code>m</code></strong>)</p>
+<h4 id="default_split" class="doc_header"><code>default_split</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/learner.py#L109" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>default_split</code>(<strong><code>m</code></strong>)</p>
 </blockquote>
 <p>Default split of a model between body and head</p>
 
@@ -396,6 +432,38 @@ nb_path: "nbs/21_vision.learner.ipynb"
     
 <div class="cell border-box-sizing code_cell rendered">
 
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="add_head" class="doc_header"><code>add_head</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/learner.py#L148" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>add_head</code>(<strong><code>body</code></strong>, <strong><code>nf</code></strong>, <strong><code>n_out</code></strong>, <strong><code>init</code></strong>=<em><code>kaiming_normal_</code></em>, <strong><code>head</code></strong>=<em><code>None</code></em>, <strong><code>concat_pool</code></strong>=<em><code>True</code></em>, <strong><code>pool</code></strong>=<em><code>True</code></em>, <strong><code>lin_ftrs</code></strong>=<em><code>None</code></em>, <strong><code>ps</code></strong>=<em><code>0.5</code></em>, <strong><code>first_bn</code></strong>=<em><code>True</code></em>, <strong><code>bn_final</code></strong>=<em><code>False</code></em>, <strong><code>lin_first</code></strong>=<em><code>False</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>)</p>
+</blockquote>
+<p>Add a head to a vision body</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
 </div>
     {% endraw %}
 
@@ -410,9 +478,9 @@ nb_path: "nbs/21_vision.learner.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="create_cnn_model" class="doc_header"><code>create_cnn_model</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/learner.py#L138" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>create_cnn_model</code>(<strong><code>arch</code></strong>, <strong><code>n_out</code></strong>, <strong><code>pretrained</code></strong>=<em><code>True</code></em>, <strong><code>cut</code></strong>=<em><code>None</code></em>, <strong><code>n_in</code></strong>=<em><code>3</code></em>, <strong><code>init</code></strong>=<em><code>kaiming_normal_</code></em>, <strong><code>custom_head</code></strong>=<em><code>None</code></em>, <strong><code>concat_pool</code></strong>=<em><code>True</code></em>, <strong><code>lin_ftrs</code></strong>=<em><code>None</code></em>, <strong><code>ps</code></strong>=<em><code>0.5</code></em>, <strong><code>first_bn</code></strong>=<em><code>True</code></em>, <strong><code>bn_final</code></strong>=<em><code>False</code></em>, <strong><code>lin_first</code></strong>=<em><code>False</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="create_vision_model" class="doc_header"><code>create_vision_model</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/learner.py#L159" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>create_vision_model</code>(<strong><code>arch</code></strong>, <strong><code>n_out</code></strong>, <strong><code>pretrained</code></strong>=<em><code>True</code></em>, <strong><code>cut</code></strong>=<em><code>None</code></em>, <strong><code>n_in</code></strong>=<em><code>3</code></em>, <strong><code>init</code></strong>=<em><code>kaiming_normal_</code></em>, <strong><code>custom_head</code></strong>=<em><code>None</code></em>, <strong><code>concat_pool</code></strong>=<em><code>True</code></em>, <strong><code>pool</code></strong>=<em><code>True</code></em>, <strong><code>lin_ftrs</code></strong>=<em><code>None</code></em>, <strong><code>ps</code></strong>=<em><code>0.5</code></em>, <strong><code>first_bn</code></strong>=<em><code>True</code></em>, <strong><code>bn_final</code></strong>=<em><code>False</code></em>, <strong><code>lin_first</code></strong>=<em><code>False</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
-<p>Create custom convnet architecture</p>
+<p>Create custom vision architecture</p>
 
 </div>
 
@@ -438,31 +506,60 @@ nb_path: "nbs/21_vision.learner.ipynb"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">tst</span> <span class="o">=</span> <span class="n">create_cnn_model</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">resnet18</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
-<span class="n">tst</span> <span class="o">=</span> <span class="n">create_cnn_model</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">resnet18</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">n_in</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">tst</span> <span class="o">=</span> <span class="n">create_vision_model</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">resnet18</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+<span class="n">tst</span> <span class="o">=</span> <span class="n">create_vision_model</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">resnet18</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">n_in</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 
     </div>
 </div>
 </div>
 
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
 <div class="output_wrapper">
 <div class="output">
 
 <div class="output_area">
 
-<div class="output_subarea output_stream output_stderr output_text">
-<pre>Downloading: &#34;https://download.pytorch.org/models/resnet18-f37072fd.pth&#34; to /home/tcapelle/.cache/torch/hub/checkpoints/resnet18-f37072fd.pth
-</pre>
-</div>
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="TimmBody" class="doc_header"><code>class</code> <code>TimmBody</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/learner.py#L169" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TimmBody</code>(<strong><code>arch</code></strong>:<code>str</code>, <strong><code>pretrained</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>cut</code></strong>=<em><code>None</code></em>, <strong><code>n_in</code></strong>:<code>int</code>=<em><code>3</code></em>, <strong>**<code>kwargs</code></strong>) :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
+</blockquote>
+<p>Base class for all neural network modules.</p>
+<p>Your models should also subclass this class.</p>
+<p>Modules can also contain other Modules, allowing to nest them in
+a tree structure. You can assign the submodules as regular attributes::</p>
+
+<pre><code>import torch.nn as nn
+import torch.nn.functional as F
+
+class Model(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.conv1 = nn.Conv2d(1, 20, 5)
+        self.conv2 = nn.Conv2d(20, 20, 5)
+
+    def forward(self, x):
+        x = F.relu(self.conv1(x))
+        return F.relu(self.conv2(x))
+
+</code></pre>
+<p>Submodules assigned in this way will be registered, and will have their
+parameters converted too when you call :meth:<code>to</code>, etc.</p>
+<p>.. note::
+    As per the example above, an <code>__init__()</code> call to the parent class
+    must be made before assignment on the child.</p>
+<p>:ivar training: Boolean represents whether this module is in training or
+                evaluation mode.
+:vartype training: bool</p>
+
 </div>
 
-<div class="output_area">
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>
-</pre>
-</div>
 </div>
 
 </div>
@@ -474,22 +571,38 @@ nb_path: "nbs/21_vision.learner.ipynb"
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
-<div class="input">
 
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">pets</span> <span class="o">=</span> <span class="n">DataBlock</span><span class="p">(</span><span class="n">blocks</span><span class="o">=</span><span class="p">(</span><span class="n">ImageBlock</span><span class="p">,</span> <span class="n">CategoryBlock</span><span class="p">),</span> 
-                 <span class="n">get_items</span><span class="o">=</span><span class="n">get_image_files</span><span class="p">,</span> 
-                 <span class="n">splitter</span><span class="o">=</span><span class="n">RandomSplitter</span><span class="p">(),</span>
-                 <span class="n">get_y</span><span class="o">=</span><span class="n">RegexLabeller</span><span class="p">(</span><span class="n">pat</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;/([^/]+)_\d+.jpg$&#39;</span><span class="p">))</span>
+</div>
+    {% endraw %}
 
-<span class="n">dls</span> <span class="o">=</span> <span class="n">pets</span><span class="o">.</span><span class="n">dataloaders</span><span class="p">(</span><span class="n">untar_data</span><span class="p">(</span><span class="n">URLs</span><span class="o">.</span><span class="n">PETS</span><span class="p">)</span><span class="o">/</span><span class="s2">&quot;images&quot;</span><span class="p">,</span> <span class="n">item_tfms</span><span class="o">=</span><span class="n">RandomResizedCrop</span><span class="p">(</span><span class="mi">300</span><span class="p">,</span> <span class="n">min_scale</span><span class="o">=</span><span class="mf">0.5</span><span class="p">),</span> <span class="n">bs</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span>
-                        <span class="n">batch_tfms</span><span class="o">=</span><span class="p">[</span><span class="o">*</span><span class="n">aug_transforms</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">224</span><span class="p">)])</span>
-</pre></div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 
-    </div>
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="create_timm_model" class="doc_header"><code>create_timm_model</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/learner.py#L179" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>create_timm_model</code>(<strong><code>arch</code></strong>:<code>str</code>, <strong><code>n_out</code></strong>, <strong><code>cut</code></strong>=<em><code>None</code></em>, <strong><code>pretrained</code></strong>=<em><code>True</code></em>, <strong><code>n_in</code></strong>=<em><code>3</code></em>, <strong><code>init</code></strong>=<em><code>kaiming_normal_</code></em>, <strong><code>custom_head</code></strong>=<em><code>None</code></em>, <strong><code>concat_pool</code></strong>=<em><code>True</code></em>, <strong><code>pool</code></strong>=<em><code>True</code></em>, <strong><code>lin_ftrs</code></strong>=<em><code>None</code></em>, <strong><code>ps</code></strong>=<em><code>0.5</code></em>, <strong><code>first_bn</code></strong>=<em><code>True</code></em>, <strong><code>bn_final</code></strong>=<em><code>False</code></em>, <strong><code>lin_first</code></strong>=<em><code>False</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+</blockquote>
+<p>Create custom architecture using <code>arch</code>, <code>n_in</code> and <code>n_out</code> from the <code>timm</code> library</p>
+
+</div>
+
+</div>
+
 </div>
 </div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}
@@ -518,9 +631,9 @@ nb_path: "nbs/21_vision.learner.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="cnn_learner" class="doc_header"><code>cnn_learner</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/learner.py#L161" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>cnn_learner</code>(<strong><code>dls</code></strong>, <strong><code>arch</code></strong>, <strong><code>normalize</code></strong>=<em><code>True</code></em>, <strong><code>n_out</code></strong>=<em><code>None</code></em>, <strong><code>pretrained</code></strong>=<em><code>True</code></em>, <strong><code>config</code></strong>=<em><code>None</code></em>, <strong><code>loss_func</code></strong>=<em><code>None</code></em>, <strong><code>opt_func</code></strong>=<em><code>Adam</code></em>, <strong><code>lr</code></strong>=<em><code>0.001</code></em>, <strong><code>splitter</code></strong>=<em><code>None</code></em>, <strong><code>cbs</code></strong>=<em><code>None</code></em>, <strong><code>metrics</code></strong>=<em><code>None</code></em>, <strong><code>path</code></strong>=<em><code>None</code></em>, <strong><code>model_dir</code></strong>=<em><code>'models'</code></em>, <strong><code>wd</code></strong>=<em><code>None</code></em>, <strong><code>wd_bn_bias</code></strong>=<em><code>False</code></em>, <strong><code>train_bn</code></strong>=<em><code>True</code></em>, <strong><code>moms</code></strong>=<em><code>(0.95, 0.85, 0.95)</code></em>, <strong><code>cut</code></strong>=<em><code>None</code></em>, <strong><code>n_in</code></strong>=<em><code>3</code></em>, <strong><code>init</code></strong>=<em><code>kaiming_normal_</code></em>, <strong><code>custom_head</code></strong>=<em><code>None</code></em>, <strong><code>concat_pool</code></strong>=<em><code>True</code></em>, <strong><code>lin_ftrs</code></strong>=<em><code>None</code></em>, <strong><code>ps</code></strong>=<em><code>0.5</code></em>, <strong><code>first_bn</code></strong>=<em><code>True</code></em>, <strong><code>bn_final</code></strong>=<em><code>False</code></em>, <strong><code>lin_first</code></strong>=<em><code>False</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="vision_learner" class="doc_header"><code>vision_learner</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/learner.py#L196" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>vision_learner</code>(<strong><code>dls</code></strong>, <strong><code>arch</code></strong>, <strong><code>normalize</code></strong>=<em><code>True</code></em>, <strong><code>n_out</code></strong>=<em><code>None</code></em>, <strong><code>pretrained</code></strong>=<em><code>True</code></em>, <strong><code>loss_func</code></strong>=<em><code>None</code></em>, <strong><code>opt_func</code></strong>=<em><code>Adam</code></em>, <strong><code>lr</code></strong>=<em><code>0.001</code></em>, <strong><code>splitter</code></strong>=<em><code>None</code></em>, <strong><code>cbs</code></strong>=<em><code>None</code></em>, <strong><code>metrics</code></strong>=<em><code>None</code></em>, <strong><code>path</code></strong>=<em><code>None</code></em>, <strong><code>model_dir</code></strong>=<em><code>'models'</code></em>, <strong><code>wd</code></strong>=<em><code>None</code></em>, <strong><code>wd_bn_bias</code></strong>=<em><code>False</code></em>, <strong><code>train_bn</code></strong>=<em><code>True</code></em>, <strong><code>moms</code></strong>=<em><code>(0.95, 0.85, 0.95)</code></em>, <strong><code>cut</code></strong>=<em><code>None</code></em>, <strong><code>init</code></strong>=<em><code>kaiming_normal_</code></em>, <strong><code>custom_head</code></strong>=<em><code>None</code></em>, <strong><code>concat_pool</code></strong>=<em><code>True</code></em>, <strong><code>pool</code></strong>=<em><code>True</code></em>, <strong><code>lin_ftrs</code></strong>=<em><code>None</code></em>, <strong><code>ps</code></strong>=<em><code>0.5</code></em>, <strong><code>first_bn</code></strong>=<em><code>True</code></em>, <strong><code>bn_final</code></strong>=<em><code>False</code></em>, <strong><code>lin_first</code></strong>=<em><code>False</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>, <strong><code>n_in</code></strong>=<em><code>3</code></em>)</p>
 </blockquote>
-<p>Build a convnet style learner from <code>dls</code> and <code>arch</code></p>
+<p>Build a vision learner from <code>dls</code> and <code>arch</code></p>
 <table>
 <thead><tr>
 <th></th>
@@ -537,45 +650,21 @@ nb_path: "nbs/21_vision.learner.ipynb"
 <td><em>No Content</em></td>
 </tr>
 <tr>
-<td><strong><code>arch</code></strong></td>
-<td></td>
-<td></td>
-<td><em>No Content</em></td>
-</tr>
-<tr>
 <td><strong><code>normalize</code></strong></td>
 <td><code>bool</code></td>
 <td><code>True</code></td>
 <td><em>No Content</em></td>
 </tr>
 <tr>
-<td><strong><code>n_out</code></strong></td>
-<td><code>NoneType</code></td>
-<td><code>None</code></td>
-<td><em>No Content</em></td>
-</tr>
-<tr>
-<td><strong><code>pretrained</code></strong></td>
-<td><code>bool</code></td>
-<td><code>True</code></td>
-<td><em>No Content</em></td>
-</tr>
-<tr>
-<td><strong><code>config</code></strong></td>
-<td><code>NoneType</code></td>
-<td><code>None</code></td>
-<td><em>No Content</em></td>
-</tr>
-<tr>
 <td><strong><code>loss_func</code></strong></td>
-<td><code>NoneType</code></td>
+<td></td>
 <td><code>None</code></td>
 <td><em>No Content</em></td>
 </tr>
 <tr>
 <td><strong><code>opt_func</code></strong></td>
 <td><code>function</code></td>
-<td><code>&lt;function Adam at 0x7f1951008550&gt;</code></td>
+<td><a href="/optimizer.html#Adam"><code>Adam</code></a></td>
 <td><em>No Content</em></td>
 </tr>
 <tr>
@@ -586,25 +675,25 @@ nb_path: "nbs/21_vision.learner.ipynb"
 </tr>
 <tr>
 <td><strong><code>splitter</code></strong></td>
-<td><code>NoneType</code></td>
+<td></td>
 <td><code>None</code></td>
 <td><em>No Content</em></td>
 </tr>
 <tr>
 <td><strong><code>cbs</code></strong></td>
-<td><code>NoneType</code></td>
+<td></td>
 <td><code>None</code></td>
 <td><em>No Content</em></td>
 </tr>
 <tr>
 <td><strong><code>metrics</code></strong></td>
-<td><code>NoneType</code></td>
+<td></td>
 <td><code>None</code></td>
 <td><em>No Content</em></td>
 </tr>
 <tr>
 <td><strong><code>path</code></strong></td>
-<td><code>NoneType</code></td>
+<td></td>
 <td><code>None</code></td>
 <td>learner args</td>
 </tr>
@@ -616,7 +705,7 @@ nb_path: "nbs/21_vision.learner.ipynb"
 </tr>
 <tr>
 <td><strong><code>wd</code></strong></td>
-<td><code>NoneType</code></td>
+<td></td>
 <td><code>None</code></td>
 <td><em>No Content</em></td>
 </tr>
@@ -639,70 +728,100 @@ nb_path: "nbs/21_vision.learner.ipynb"
 <td><em>No Content</em></td>
 </tr>
 <tr>
-<td><strong><code>cut</code></strong></td>
-<td><code>NoneType</code></td>
-<td><code>None</code></td>
-<td><em>No Content</em></td>
+<td><strong><code>pool</code></strong></td>
+<td><code>bool</code></td>
+<td><code>True</code></td>
+<td>model &amp; head args</td>
 </tr>
 <tr>
-<td><strong><code>n_in</code></strong></td>
-<td><code>int</code></td>
-<td><code>3</code></td>
-<td><em>No Content</em></td>
+<td></td>
+<td></td>
+<td><strong>Valid Keyword Arguments</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><strong><code>arch</code></strong></td>
+<td></td>
+<td></td>
+<td>Argument passed to <a href="/vision.learner.html#create_vision_model"><code>create_vision_model</code></a></td>
+</tr>
+<tr>
+<td><strong><code>n_out</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>Argument passed to <a href="/vision.learner.html#create_vision_model"><code>create_vision_model</code></a></td>
+</tr>
+<tr>
+<td><strong><code>pretrained</code></strong></td>
+<td><code>bool</code></td>
+<td><code>True</code></td>
+<td>Argument passed to <a href="/vision.learner.html#create_vision_model"><code>create_vision_model</code></a></td>
+</tr>
+<tr>
+<td><strong><code>cut</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>Argument passed to <a href="/vision.learner.html#create_vision_model"><code>create_vision_model</code></a></td>
 </tr>
 <tr>
 <td><strong><code>init</code></strong></td>
 <td><code>function</code></td>
-<td><code>&lt;function kaiming_normal_ at 0x7f19860b63a0&gt;</code></td>
-<td><em>No Content</em></td>
+<td><code>kaiming_normal_</code></td>
+<td>Argument passed to <a href="/vision.learner.html#create_vision_model"><code>create_vision_model</code></a></td>
 </tr>
 <tr>
 <td><strong><code>custom_head</code></strong></td>
-<td><code>NoneType</code></td>
+<td></td>
 <td><code>None</code></td>
-<td><em>No Content</em></td>
+<td>Argument passed to <a href="/vision.learner.html#create_vision_model"><code>create_vision_model</code></a></td>
 </tr>
 <tr>
 <td><strong><code>concat_pool</code></strong></td>
 <td><code>bool</code></td>
 <td><code>True</code></td>
-<td><em>No Content</em></td>
+<td>Argument passed to <a href="/vision.learner.html#create_vision_model"><code>create_vision_model</code></a></td>
 </tr>
 <tr>
 <td><strong><code>lin_ftrs</code></strong></td>
-<td><code>NoneType</code></td>
+<td></td>
 <td><code>None</code></td>
-<td><em>No Content</em></td>
+<td>Argument passed to <a href="/vision.learner.html#create_vision_model"><code>create_vision_model</code></a></td>
 </tr>
 <tr>
 <td><strong><code>ps</code></strong></td>
 <td><code>float</code></td>
 <td><code>0.5</code></td>
-<td><em>No Content</em></td>
+<td>Argument passed to <a href="/vision.learner.html#create_vision_model"><code>create_vision_model</code></a></td>
 </tr>
 <tr>
 <td><strong><code>first_bn</code></strong></td>
 <td><code>bool</code></td>
 <td><code>True</code></td>
-<td><em>No Content</em></td>
+<td>Argument passed to <a href="/vision.learner.html#create_vision_model"><code>create_vision_model</code></a></td>
 </tr>
 <tr>
 <td><strong><code>bn_final</code></strong></td>
 <td><code>bool</code></td>
 <td><code>False</code></td>
-<td><em>No Content</em></td>
+<td>Argument passed to <a href="/vision.learner.html#create_vision_model"><code>create_vision_model</code></a></td>
 </tr>
 <tr>
 <td><strong><code>lin_first</code></strong></td>
 <td><code>bool</code></td>
 <td><code>False</code></td>
-<td><em>No Content</em></td>
+<td>Argument passed to <a href="/vision.learner.html#create_vision_model"><code>create_vision_model</code></a></td>
 </tr>
 <tr>
 <td><strong><code>y_range</code></strong></td>
-<td><code>NoneType</code></td>
+<td></td>
 <td><code>None</code></td>
-<td><em>No Content</em></td>
+<td>Argument passed to <a href="/vision.learner.html#create_vision_model"><code>create_vision_model</code></a></td>
+</tr>
+<tr>
+<td><strong><code>n_in</code></strong></td>
+<td><code>int</code></td>
+<td><code>3</code></td>
+<td>Argument passed to <a href="/vision.learner.html#create_vision_model"><code>create_vision_model</code></a></td>
 </tr>
 </tbody>
 </table>
@@ -760,32 +879,34 @@ nb_path: "nbs/21_vision.learner.ipynb"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span> <span class="o">=</span> <span class="n">cnn_learner</span><span class="p">(</span><span class="n">dls</span><span class="p">,</span> <span class="n">models</span><span class="o">.</span><span class="n">resnet34</span><span class="p">,</span> <span class="n">loss_func</span><span class="o">=</span><span class="n">CrossEntropyLossFlat</span><span class="p">(),</span> <span class="n">ps</span><span class="o">=</span><span class="mf">0.25</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span> <span class="o">=</span> <span class="n">vision_learner</span><span class="p">(</span><span class="n">dls</span><span class="p">,</span> <span class="n">models</span><span class="o">.</span><span class="n">resnet18</span><span class="p">,</span> <span class="n">loss_func</span><span class="o">=</span><span class="n">CrossEntropyLossFlat</span><span class="p">(),</span> <span class="n">ps</span><span class="o">=</span><span class="mf">0.25</span><span class="p">)</span>
 </pre></div>
 
     </div>
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
+</div>
+    {% endraw %}
 
-<div class="output_area">
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>If you pass a <code>str</code> to <code>arch</code>, then a <a href="https://fastai.github.io/timmdocs/models">TIMM</a> model will be created:</p>
 
-<div class="output_subarea output_stream output_stderr output_text">
-<pre>Downloading: &#34;https://download.pytorch.org/models/resnet34-b627a593.pth&#34; to /home/tcapelle/.cache/torch/hub/checkpoints/resnet34-b627a593.pth
-</pre>
 </div>
 </div>
-
-<div class="output_area">
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>
-</pre>
 </div>
-</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
 
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span> <span class="o">=</span> <span class="n">vision_learner</span><span class="p">(</span><span class="n">dls</span><span class="p">,</span> <span class="s1">&#39;vit_tiny_patch16_224&#39;</span><span class="p">,</span> <span class="n">loss_func</span><span class="o">=</span><span class="n">CrossEntropyLossFlat</span><span class="p">(),</span> <span class="n">ps</span><span class="o">=</span><span class="mf">0.25</span><span class="p">)</span>
+</pre></div>
+
+    </div>
 </div>
 </div>
 
@@ -810,7 +931,7 @@ nb_path: "nbs/21_vision.learner.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="create_unet_model" class="doc_header"><code>create_unet_model</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/learner.py#L191" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>create_unet_model</code>(<strong><code>arch</code></strong>, <strong><code>n_out</code></strong>, <strong><code>img_size</code></strong>, <strong><code>pretrained</code></strong>=<em><code>True</code></em>, <strong><code>cut</code></strong>=<em><code>None</code></em>, <strong><code>n_in</code></strong>=<em><code>3</code></em>, <strong><code>blur</code></strong>=<em><code>False</code></em>, <strong><code>blur_final</code></strong>=<em><code>True</code></em>, <strong><code>self_attention</code></strong>=<em><code>False</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>, <strong><code>last_cross</code></strong>=<em><code>True</code></em>, <strong><code>bottle</code></strong>=<em><code>False</code></em>, <strong><code>act_cls</code></strong>=<em><code>ReLU</code></em>, <strong><code>init</code></strong>=<em><code>kaiming_normal_</code></em>, <strong><code>norm_type</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="create_unet_model" class="doc_header"><code>create_unet_model</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/learner.py#L223" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>create_unet_model</code>(<strong><code>arch</code></strong>, <strong><code>n_out</code></strong>, <strong><code>img_size</code></strong>, <strong><code>pretrained</code></strong>=<em><code>True</code></em>, <strong><code>cut</code></strong>=<em><code>None</code></em>, <strong><code>n_in</code></strong>=<em><code>3</code></em>, <strong><code>blur</code></strong>=<em><code>False</code></em>, <strong><code>blur_final</code></strong>=<em><code>True</code></em>, <strong><code>self_attention</code></strong>=<em><code>False</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>, <strong><code>last_cross</code></strong>=<em><code>True</code></em>, <strong><code>bottle</code></strong>=<em><code>False</code></em>, <strong><code>act_cls</code></strong>=<em><code>ReLU</code></em>, <strong><code>init</code></strong>=<em><code>kaiming_normal_</code></em>, <strong><code>norm_type</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Create custom unet architecture</p>
 
@@ -852,7 +973,7 @@ nb_path: "nbs/21_vision.learner.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="unet_learner" class="doc_header"><code>unet_learner</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/learner.py#L200" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>unet_learner</code>(<strong><code>dls</code></strong>, <strong><code>arch</code></strong>, <strong><code>normalize</code></strong>=<em><code>True</code></em>, <strong><code>n_out</code></strong>=<em><code>None</code></em>, <strong><code>pretrained</code></strong>=<em><code>True</code></em>, <strong><code>config</code></strong>=<em><code>None</code></em>, <strong><code>loss_func</code></strong>=<em><code>None</code></em>, <strong><code>opt_func</code></strong>=<em><code>Adam</code></em>, <strong><code>lr</code></strong>=<em><code>0.001</code></em>, <strong><code>splitter</code></strong>=<em><code>None</code></em>, <strong><code>cbs</code></strong>=<em><code>None</code></em>, <strong><code>metrics</code></strong>=<em><code>None</code></em>, <strong><code>path</code></strong>=<em><code>None</code></em>, <strong><code>model_dir</code></strong>=<em><code>'models'</code></em>, <strong><code>wd</code></strong>=<em><code>None</code></em>, <strong><code>wd_bn_bias</code></strong>=<em><code>False</code></em>, <strong><code>train_bn</code></strong>=<em><code>True</code></em>, <strong><code>moms</code></strong>=<em><code>(0.95, 0.85, 0.95)</code></em>, <strong><code>cut</code></strong>=<em><code>None</code></em>, <strong><code>n_in</code></strong>=<em><code>3</code></em>, <strong><code>blur</code></strong>=<em><code>False</code></em>, <strong><code>blur_final</code></strong>=<em><code>True</code></em>, <strong><code>self_attention</code></strong>=<em><code>False</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>, <strong><code>last_cross</code></strong>=<em><code>True</code></em>, <strong><code>bottle</code></strong>=<em><code>False</code></em>, <strong><code>act_cls</code></strong>=<em><code>ReLU</code></em>, <strong><code>init</code></strong>=<em><code>kaiming_normal_</code></em>, <strong><code>norm_type</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="unet_learner" class="doc_header"><code>unet_learner</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/learner.py#L232" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>unet_learner</code>(<strong><code>dls</code></strong>, <strong><code>arch</code></strong>, <strong><code>normalize</code></strong>=<em><code>True</code></em>, <strong><code>n_out</code></strong>=<em><code>None</code></em>, <strong><code>pretrained</code></strong>=<em><code>True</code></em>, <strong><code>config</code></strong>=<em><code>None</code></em>, <strong><code>loss_func</code></strong>=<em><code>None</code></em>, <strong><code>opt_func</code></strong>=<em><code>Adam</code></em>, <strong><code>lr</code></strong>=<em><code>0.001</code></em>, <strong><code>splitter</code></strong>=<em><code>None</code></em>, <strong><code>cbs</code></strong>=<em><code>None</code></em>, <strong><code>metrics</code></strong>=<em><code>None</code></em>, <strong><code>path</code></strong>=<em><code>None</code></em>, <strong><code>model_dir</code></strong>=<em><code>'models'</code></em>, <strong><code>wd</code></strong>=<em><code>None</code></em>, <strong><code>wd_bn_bias</code></strong>=<em><code>False</code></em>, <strong><code>train_bn</code></strong>=<em><code>True</code></em>, <strong><code>moms</code></strong>=<em><code>(0.95, 0.85, 0.95)</code></em>, <strong><code>cut</code></strong>=<em><code>None</code></em>, <strong><code>n_in</code></strong>=<em><code>3</code></em>, <strong><code>blur</code></strong>=<em><code>False</code></em>, <strong><code>blur_final</code></strong>=<em><code>True</code></em>, <strong><code>self_attention</code></strong>=<em><code>False</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>, <strong><code>last_cross</code></strong>=<em><code>True</code></em>, <strong><code>bottle</code></strong>=<em><code>False</code></em>, <strong><code>act_cls</code></strong>=<em><code>ReLU</code></em>, <strong><code>init</code></strong>=<em><code>kaiming_normal_</code></em>, <strong><code>norm_type</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Build a unet learner from <code>dls</code> and <code>arch</code></p>
 <table>
@@ -871,45 +992,27 @@ nb_path: "nbs/21_vision.learner.ipynb"
 <td><em>No Content</em></td>
 </tr>
 <tr>
-<td><strong><code>arch</code></strong></td>
-<td></td>
-<td></td>
-<td><em>No Content</em></td>
-</tr>
-<tr>
 <td><strong><code>normalize</code></strong></td>
 <td><code>bool</code></td>
 <td><code>True</code></td>
 <td><em>No Content</em></td>
 </tr>
 <tr>
-<td><strong><code>n_out</code></strong></td>
-<td><code>NoneType</code></td>
-<td><code>None</code></td>
-<td><em>No Content</em></td>
-</tr>
-<tr>
-<td><strong><code>pretrained</code></strong></td>
-<td><code>bool</code></td>
-<td><code>True</code></td>
-<td><em>No Content</em></td>
-</tr>
-<tr>
 <td><strong><code>config</code></strong></td>
-<td><code>NoneType</code></td>
+<td></td>
 <td><code>None</code></td>
 <td><em>No Content</em></td>
 </tr>
 <tr>
 <td><strong><code>loss_func</code></strong></td>
-<td><code>NoneType</code></td>
+<td></td>
 <td><code>None</code></td>
 <td><em>No Content</em></td>
 </tr>
 <tr>
 <td><strong><code>opt_func</code></strong></td>
 <td><code>function</code></td>
-<td><code>&lt;function Adam at 0x7f1951008550&gt;</code></td>
+<td><a href="/optimizer.html#Adam"><code>Adam</code></a></td>
 <td><em>No Content</em></td>
 </tr>
 <tr>
@@ -920,25 +1023,25 @@ nb_path: "nbs/21_vision.learner.ipynb"
 </tr>
 <tr>
 <td><strong><code>splitter</code></strong></td>
-<td><code>NoneType</code></td>
+<td></td>
 <td><code>None</code></td>
 <td><em>No Content</em></td>
 </tr>
 <tr>
 <td><strong><code>cbs</code></strong></td>
-<td><code>NoneType</code></td>
+<td></td>
 <td><code>None</code></td>
 <td><em>No Content</em></td>
 </tr>
 <tr>
 <td><strong><code>metrics</code></strong></td>
-<td><code>NoneType</code></td>
+<td></td>
 <td><code>None</code></td>
 <td><em>No Content</em></td>
 </tr>
 <tr>
 <td><strong><code>path</code></strong></td>
-<td><code>NoneType</code></td>
+<td></td>
 <td><code>None</code></td>
 <td>learner args</td>
 </tr>
@@ -950,7 +1053,7 @@ nb_path: "nbs/21_vision.learner.ipynb"
 </tr>
 <tr>
 <td><strong><code>wd</code></strong></td>
-<td><code>NoneType</code></td>
+<td></td>
 <td><code>None</code></td>
 <td><em>No Content</em></td>
 </tr>
@@ -973,70 +1076,94 @@ nb_path: "nbs/21_vision.learner.ipynb"
 <td><em>No Content</em></td>
 </tr>
 <tr>
-<td><strong><code>cut</code></strong></td>
-<td><code>NoneType</code></td>
+<td></td>
+<td></td>
+<td><strong>Valid Keyword Arguments</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><strong><code>arch</code></strong></td>
+<td></td>
+<td></td>
+<td>Argument passed to <a href="/vision.learner.html#create_unet_model"><code>create_unet_model</code></a></td>
+</tr>
+<tr>
+<td><strong><code>n_out</code></strong></td>
+<td></td>
 <td><code>None</code></td>
-<td><em>No Content</em></td>
+<td>Argument passed to <a href="/vision.learner.html#create_unet_model"><code>create_unet_model</code></a></td>
+</tr>
+<tr>
+<td><strong><code>pretrained</code></strong></td>
+<td><code>bool</code></td>
+<td><code>True</code></td>
+<td>Argument passed to <a href="/vision.learner.html#create_unet_model"><code>create_unet_model</code></a></td>
+</tr>
+<tr>
+<td><strong><code>cut</code></strong></td>
+<td></td>
+<td><code>None</code></td>
+<td>Argument passed to <a href="/vision.learner.html#create_unet_model"><code>create_unet_model</code></a></td>
 </tr>
 <tr>
 <td><strong><code>n_in</code></strong></td>
 <td><code>int</code></td>
 <td><code>3</code></td>
-<td><em>No Content</em></td>
+<td>Argument passed to <a href="/vision.learner.html#create_unet_model"><code>create_unet_model</code></a></td>
 </tr>
 <tr>
 <td><strong><code>blur</code></strong></td>
 <td><code>bool</code></td>
 <td><code>False</code></td>
-<td><em>No Content</em></td>
+<td>Argument passed to <a href="/vision.learner.html#create_unet_model"><code>create_unet_model</code></a></td>
 </tr>
 <tr>
 <td><strong><code>blur_final</code></strong></td>
 <td><code>bool</code></td>
 <td><code>True</code></td>
-<td><em>No Content</em></td>
+<td>Argument passed to <a href="/vision.learner.html#create_unet_model"><code>create_unet_model</code></a></td>
 </tr>
 <tr>
 <td><strong><code>self_attention</code></strong></td>
 <td><code>bool</code></td>
 <td><code>False</code></td>
-<td><em>No Content</em></td>
+<td>Argument passed to <a href="/vision.learner.html#create_unet_model"><code>create_unet_model</code></a></td>
 </tr>
 <tr>
 <td><strong><code>y_range</code></strong></td>
-<td><code>NoneType</code></td>
+<td></td>
 <td><code>None</code></td>
-<td><em>No Content</em></td>
+<td>Argument passed to <a href="/vision.learner.html#create_unet_model"><code>create_unet_model</code></a></td>
 </tr>
 <tr>
 <td><strong><code>last_cross</code></strong></td>
 <td><code>bool</code></td>
 <td><code>True</code></td>
-<td><em>No Content</em></td>
+<td>Argument passed to <a href="/vision.learner.html#create_unet_model"><code>create_unet_model</code></a></td>
 </tr>
 <tr>
 <td><strong><code>bottle</code></strong></td>
 <td><code>bool</code></td>
 <td><code>False</code></td>
-<td><em>No Content</em></td>
+<td>Argument passed to <a href="/vision.learner.html#create_unet_model"><code>create_unet_model</code></a></td>
 </tr>
 <tr>
 <td><strong><code>act_cls</code></strong></td>
 <td><code>type</code></td>
-<td><code>&lt;class 'torch.nn.modules.activation.ReLU'&gt;</code></td>
-<td><em>No Content</em></td>
+<td><code>ReLU</code></td>
+<td>Argument passed to <a href="/vision.learner.html#create_unet_model"><code>create_unet_model</code></a></td>
 </tr>
 <tr>
 <td><strong><code>init</code></strong></td>
 <td><code>function</code></td>
-<td><code>&lt;function kaiming_normal_ at 0x7f19860b63a0&gt;</code></td>
-<td><em>No Content</em></td>
+<td><code>kaiming_normal_</code></td>
+<td>Argument passed to <a href="/vision.learner.html#create_unet_model"><code>create_unet_model</code></a></td>
 </tr>
 <tr>
 <td><strong><code>norm_type</code></strong></td>
-<td><code>NoneType</code></td>
+<td></td>
 <td><code>None</code></td>
-<td><em>No Content</em></td>
+<td>Argument passed to <a href="/vision.learner.html#create_unet_model"><code>create_unet_model</code></a></td>
 </tr>
 </tbody>
 </table>
@@ -1086,6 +1213,21 @@ nb_path: "nbs/21_vision.learner.ipynb"
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>/opt/conda/lib/python3.7/site-packages/torch/_tensor.py:1051: UserWarning: __floordiv__ is deprecated, and its behavior will change in a future version of pytorch. It currently rounds toward 0 (like the &#39;trunc&#39; function NOT &#39;floor&#39;). This results in incorrect rounding for negative values. To keep the current behavior, use torch.div(a, b, rounding_mode=&#39;trunc&#39;), or for actual floor division, use torch.div(a, b, rounding_mode=&#39;floor&#39;).
+  ret = func(*args, **kwargs)
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
 </div>
     {% endraw %}
 
@@ -1102,6 +1244,70 @@ nb_path: "nbs/21_vision.learner.ipynb"
     </div>
 </div>
 </div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="create_cnn_model" class="doc_header"><code>create_cnn_model</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/learner.py#L262" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>create_cnn_model</code>(<strong>*<code>args</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
+</blockquote>
+<p>Deprecated name for <a href="/vision.learner.html#create_vision_model"><code>create_vision_model</code></a> -- do not use</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="cnn_learner" class="doc_header"><code>cnn_learner</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/learner.py#L268" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>cnn_learner</code>(<strong>*<code>args</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
+</blockquote>
+<p>Deprecated name for <a href="/vision.learner.html#vision_learner"><code>vision_learner</code></a> -- do not use</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}

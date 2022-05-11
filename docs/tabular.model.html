@@ -26,6 +26,25 @@ nb_path: "nbs/42_tabular.model.ipynb"
     
 <div class="cell border-box-sizing code_cell rendered">
 
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>/opt/conda/lib/python3.9/site-packages/torch/cuda/__init__.py:145: UserWarning: 
+NVIDIA GeForce RTX 3070 Laptop GPU with CUDA capability sm_86 is not compatible with the current PyTorch installation.
+The current PyTorch install supports CUDA capabilities sm_37 sm_50 sm_60 sm_70.
+If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, please check the instructions at https://pytorch.org/get-started/locally/
+
+  warnings.warn(incompatible_device_warn.format(device_name, capability, &#34; &#34;.join(arch_list), device_name))
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
 </div>
     {% endraw %}
 
@@ -70,12 +89,6 @@ nb_path: "nbs/42_tabular.model.ipynb"
 <td><code>int</code></td>
 <td></td>
 <td>Cardinality of a category</td>
-</tr>
-<tr>
-<td><strong>Returns</strong></td>
-<td><code>int</code></td>
-<td></td>
-<td></td>
 </tr>
 </tbody>
 </table>
@@ -148,14 +161,8 @@ nb_path: "nbs/42_tabular.model.ipynb"
 <tr>
 <td><strong><code>sz_dict</code></strong></td>
 <td><code>dict</code></td>
-<td>``</td>
+<td><code>None</code></td>
 <td>Dictionary of {'class_name' : size, ...} to override default <a href="/tabular.model.html#emb_sz_rule"><code>emb_sz_rule</code></a></td>
-</tr>
-<tr>
-<td><strong>Returns</strong></td>
-<td><code>list</code></td>
-<td></td>
-<td>List of embedding sizes for each category</td>
 </tr>
 </tbody>
 </table>
@@ -219,7 +226,7 @@ nb_path: "nbs/42_tabular.model.ipynb"
 <td>Number of outputs for final <a href="/layers.html#LinBnDrop"><code>LinBnDrop</code></a> layer</td>
 </tr>
 <tr>
-<td><strong><a href="/layers.html"><code>layers</code></a></strong></td>
+<td><strong><code>layers</code></strong></td>
 <td><code>list</code></td>
 <td></td>
 <td>Sequence of ints used to specify the input and output size of each <a href="/layers.html#LinBnDrop"><code>LinBnDrop</code></a> layer</td>
@@ -227,19 +234,19 @@ nb_path: "nbs/42_tabular.model.ipynb"
 <tr>
 <td><strong><code>ps</code></strong></td>
 <td><code>(float, list)</code></td>
-<td>``</td>
+<td><code>None</code></td>
 <td>Sequence of dropout probabilities for <a href="/layers.html#LinBnDrop"><code>LinBnDrop</code></a></td>
 </tr>
 <tr>
 <td><strong><code>embed_p</code></strong></td>
 <td><code>float</code></td>
-<td><code>0</code></td>
+<td><code>0.0</code></td>
 <td>Dropout probability for <a href="/layers.html#Embedding"><code>Embedding</code></a> layer</td>
 </tr>
 <tr>
 <td><strong><code>y_range</code></strong></td>
-<td><code>NoneType</code></td>
-<td>``</td>
+<td></td>
+<td><code>None</code></td>
 <td>Low and high for <a href="/layers.html#SigmoidRange"><code>SigmoidRange</code></a> activation</td>
 </tr>
 <tr>
@@ -370,22 +377,6 @@ nb_path: "nbs/42_tabular.model.ipynb"
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>{&#39;embed_p&#39;: 0.6, &#39;use_bn&#39;: False}</pre>
-</div>
-
-</div>
-
 </div>
 </div>
 

@@ -26,6 +26,25 @@ nb_path: "nbs/15_callback.hook.ipynb"
     
 <div class="cell border-box-sizing code_cell rendered">
 
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>/opt/conda/lib/python3.9/site-packages/torch/cuda/__init__.py:145: UserWarning: 
+NVIDIA GeForce RTX 3070 Laptop GPU with CUDA capability sm_86 is not compatible with the current PyTorch installation.
+The current PyTorch install supports CUDA capabilities sm_37 sm_50 sm_60 sm_70.
+If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, please check the instructions at https://pytorch.org/get-started/locally/
+
+  warnings.warn(incompatible_device_warn.format(device_name, capability, &#34; &#34;.join(arch_list), device_name))
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
 </div>
     {% endraw %}
 
@@ -93,13 +112,13 @@ nb_path: "nbs/15_callback.hook.ipynb"
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Linear(in_features=5, out_features=3, bias=True) (tensor([[-0.7487, -0.5879, -0.5319, -0.3080, -1.0268],
-        [-0.3987, -0.9263, -0.9486, -0.4070,  0.9790],
-        [-0.3519, -0.6336, -2.2617,  0.6636,  0.2626],
-        [ 1.0500, -1.3234,  0.1581,  0.4866, -1.2595]]),) tensor([[ 0.0179,  0.4064, -0.1843],
-        [-0.2548, -0.1191, -0.3833],
-        [-0.4946,  0.9474, -1.2664],
-        [-0.3220,  1.2831, -0.1166]], grad_fn=&lt;AddmmBackward0&gt;)
+<pre>Linear(in_features=5, out_features=3, bias=True) (tensor([[ 0.0117, -0.1157, -1.0055,  0.6962,  0.2329],
+        [-0.6184,  0.3594,  2.2896, -0.8758,  0.2538],
+        [-0.5746, -1.3166, -0.3460,  2.0481,  0.9366],
+        [ 0.6335,  0.7545, -2.2502,  0.2476,  0.0433]]),) tensor([[-0.4212,  0.4666,  0.3218],
+        [-0.2607,  0.3498, -0.4724],
+        [-0.0859,  0.9967,  0.6624],
+        [-0.6484,  0.2241,  0.2266]], grad_fn=&lt;AddmmBackward0&gt;)
 </pre>
 </div>
 </div>
@@ -144,14 +163,14 @@ nb_path: "nbs/15_callback.hook.ipynb"
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Linear(in_features=5, out_features=3, bias=True) (tensor([-0.1618,  0.2840, -0.1865]), None, tensor([[-0.0768,  0.1065,  0.0312],
-        [ 0.0761, -0.3147,  0.0291],
-        [ 0.1030, -0.1513,  0.1539],
-        [ 0.0551, -0.0978,  0.0182],
-        [-0.0336, -0.1903, -0.0547]])) (tensor([[-0.0047,  0.1571, -0.0039],
-        [-0.0800,  0.0675, -0.0910],
-        [-0.0473,  0.0637,  0.0063],
-        [-0.0299, -0.0042, -0.0979]]),)
+<pre>Linear(in_features=5, out_features=3, bias=True) (tensor([-0.3353,  0.0533,  0.1919]), None, tensor([[ 0.1835,  0.2476, -0.1970],
+        [ 0.2397,  0.0214, -0.1315],
+        [-0.0041, -0.2241,  0.0439],
+        [ 0.2395,  0.1597, -0.1938],
+        [ 0.3009,  0.1428, -0.1170]])) (tensor([[-0.0592,  0.0075,  0.0259],
+        [-0.1145, -0.0367,  0.0386],
+        [-0.1182, -0.0369,  0.1108],
+        [-0.0435,  0.1193,  0.0165]]),)
 </pre>
 </div>
 </div>
@@ -159,7 +178,7 @@ nb_path: "nbs/15_callback.hook.ipynb"
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stderr output_text">
-<pre>/home/wgilliam/miniconda3/envs/fastai/lib/python3.8/site-packages/torch/nn/modules/module.py:1025: UserWarning: Using a non-full backward hook when the forward contains multiple autograd Nodes is deprecated and will be removed in future versions. This hook will be missing some grad_input. Please use register_full_backward_hook to get the documented behavior.
+<pre>/home/jhoward/miniconda3/lib/python3.9/site-packages/torch/nn/modules/module.py:1033: UserWarning: Using a non-full backward hook when the forward contains multiple autograd Nodes is deprecated and will be removed in future versions. This hook will be missing some grad_input. Please use register_full_backward_hook to get the documented behavior.
   warnings.warn(&#34;Using a non-full backward hook when the forward contains multiple autograd Nodes &#34;
 </pre>
 </div>
@@ -1031,7 +1050,7 @@ Depending on <code>do_remove</code>, the hooks will be properly removed at the e
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>[0, 15.194612503051758, 12.082895278930664, &#39;00:00&#39;]
+<pre>[0, 7.570430278778076, 7.6170854568481445, &#39;00:00&#39;]
 </pre>
 </div>
 </div>
@@ -1039,7 +1058,7 @@ Depending on <code>do_remove</code>, the hooks will be properly removed at the e
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stderr output_text">
-<pre>/home/wgilliam/development/projects/fastai/nbs/fastai/callback/core.py:51: UserWarning: You are shadowing an attribute (modules) that exists in the learner. Use `self.learn.modules` to avoid this
+<pre>/home/jhoward/git/fastai/fastai/callback/core.py:67: UserWarning: You are shadowing an attribute (modules) that exists in the learner. Use `self.learn.modules` to avoid this
   warn(f&#34;You are shadowing an attribute ({name}) that exists in the learner. Use `self.learn.{name}` to avoid this&#34;)
 </pre>
 </div>
@@ -1080,7 +1099,7 @@ Depending on <code>do_remove</code>, the hooks will be properly removed at the e
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>[0, 1.9420239925384521, 1.7295372486114502, &#39;00:00&#39;]
+<pre>[0, 15.194129943847656, 15.124653816223145, &#39;00:00&#39;]
 </pre>
 </div>
 </div>
@@ -1383,7 +1402,7 @@ Total params: 251
 Total trainable params: 251
 Total non-trainable params: 0
 
-Optimizer used: functools.partial(&lt;function SGD at 0x7f1c21a2f8b0&gt;, mom=0.9)
+Optimizer used: functools.partial(&lt;function SGD at 0x7fcc42f28700&gt;, mom=0.9)
 Loss function: FlattenedLoss of MSELoss()
 
 Callbacks:
@@ -1402,13 +1421,6 @@ Callbacks:
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Activation-graphs">Activation graphs<a class="anchor-link" href="#Activation-graphs"> </a></h2>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>This is an example of a <a href="/callback.hook.html#HookCallback"><code>HookCallback</code></a>, that stores the mean, stds and histograms of activations that go through the network.</p>
-
 </div>
 </div>
 </div>
@@ -1440,78 +1452,6 @@ Callbacks:
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="nd">@delegates</span><span class="p">()</span>
-<span class="k">class</span> <span class="nc">ActivationStats</span><span class="p">(</span><span class="n">HookCallback</span><span class="p">):</span>
-    <span class="s2">&quot;Callback that record the mean and std of activations.&quot;</span>
-    <span class="n">order</span><span class="o">=-</span><span class="mi">20</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">with_hist</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">with_hist</span> <span class="o">=</span> <span class="n">with_hist</span>
-
-    <span class="k">def</span> <span class="nf">before_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="s2">&quot;Initialize stats.&quot;</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">before_fit</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">stats</span> <span class="o">=</span> <span class="n">L</span><span class="p">()</span>
-
-    <span class="k">def</span> <span class="nf">hook</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">o</span><span class="p">):</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">hook_multi_ouput</span><span class="p">(</span><span class="n">o</span><span class="p">)</span>
-        <span class="n">o</span> <span class="o">=</span> <span class="n">o</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
-        <span class="n">res</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;mean&#39;</span><span class="p">:</span> <span class="n">o</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">(),</span> <span class="s1">&#39;std&#39;</span><span class="p">:</span> <span class="n">o</span><span class="o">.</span><span class="n">std</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">(),</span>
-               <span class="s1">&#39;near_zero&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">o</span><span class="o">&lt;=</span><span class="mf">0.05</span><span class="p">)</span><span class="o">.</span><span class="n">long</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">()</span><span class="o">/</span><span class="n">o</span><span class="o">.</span><span class="n">numel</span><span class="p">()}</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">with_hist</span><span class="p">:</span> <span class="n">res</span><span class="p">[</span><span class="s1">&#39;hist&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">o</span><span class="o">.</span><span class="n">histc</span><span class="p">(</span><span class="mi">40</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">res</span>
-    
-    <span class="k">def</span> <span class="nf">hook_multi_ouput</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">o_tuple</span><span class="p">):</span>
-        <span class="s2">&quot;For outputs of RNN which are [nested] tuples of tensors&quot;</span>
-        <span class="n">res</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flatten_tuple</span><span class="p">(</span><span class="n">o_tuple</span><span class="p">):</span>
-            <span class="k">if</span> <span class="ow">not</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">Tensor</span><span class="p">)):</span> <span class="k">continue</span>
-            <span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hook</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">o</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">res</span>
-
-    <span class="k">def</span> <span class="nf">_flatten_tuple</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">o_tuple</span><span class="p">):</span>
-        <span class="s2">&quot;Recursively flatten a [nested] tuple&quot;</span>
-        <span class="n">res</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">it</span> <span class="ow">in</span> <span class="n">o_tuple</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">it</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span> <span class="n">res</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flatten_tuple</span><span class="p">(</span><span class="n">it</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span> <span class="n">res</span> <span class="o">+=</span> <span class="p">[</span><span class="n">it</span><span class="p">]</span>
-        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">after_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="s2">&quot;Take the stored results and puts it in `self.stats`&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">training</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">every</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_iter</span><span class="o">%</span><span class="k">self</span>.every == 0):
-            <span class="bp">self</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hooks</span><span class="o">.</span><span class="n">stored</span><span class="p">)</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">after_batch</span><span class="p">()</span>
-
-    <span class="k">def</span> <span class="nf">layer_stats</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">):</span>
-        <span class="n">lstats</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">itemgot</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">L</span><span class="p">(</span><span class="n">lstats</span><span class="o">.</span><span class="n">itemgot</span><span class="p">(</span><span class="n">o</span><span class="p">)</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span><span class="s1">&#39;std&#39;</span><span class="p">,</span><span class="s1">&#39;near_zero&#39;</span><span class="p">))</span>
-
-    <span class="k">def</span> <span class="nf">hist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">):</span>
-        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">itemgot</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span><span class="o">.</span><span class="n">itemgot</span><span class="p">(</span><span class="s1">&#39;hist&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">res</span><span class="p">))</span><span class="o">.</span><span class="n">t</span><span class="p">()</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">log1p</span><span class="p">()</span>
-
-    <span class="k">def</span> <span class="nf">color_dim</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="s2">&quot;The &#39;colorful dimension&#39; plot&quot;</span>
-        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="n">figsize</span><span class="p">)[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">)</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">plot_layer_stats</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">):</span>
-        <span class="n">_</span><span class="p">,</span><span class="n">axs</span> <span class="o">=</span> <span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
-        <span class="k">for</span> <span class="n">o</span><span class="p">,</span><span class="n">ax</span><span class="p">,</span><span class="n">title</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layer_stats</span><span class="p">(</span><span class="n">idx</span><span class="p">),</span><span class="n">axs</span><span class="p">,(</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span><span class="s1">&#39;std&#39;</span><span class="p">,</span><span class="s1">&#39;% near zero&#39;</span><span class="p">)):</span>
-            <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">o</span><span class="p">)</span>
-            <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
 
 </div>
     {% endraw %}
@@ -1537,7 +1477,7 @@ Callbacks:
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>[0, 7.0911030769348145, 7.362981796264648, &#39;00:00&#39;]
+<pre>[0, 9.915902137756348, 10.236139297485352, &#39;00:00&#39;]
 </pre>
 </div>
 </div>
@@ -1570,7 +1510,7 @@ Callbacks:
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>(#2) [[{&#39;mean&#39;: 1.1225931644439697, &#39;std&#39;: 0.06165130063891411, &#39;near_zero&#39;: 0.0}],[{&#39;mean&#39;: 1.1687103509902954, &#39;std&#39;: 0.09164517372846603, &#39;near_zero&#39;: 0.0}]]</pre>
+<pre>(#2) [[{&#39;mean&#39;: 1.0413528680801392, &#39;std&#39;: 0.4082348346710205, &#39;near_zero&#39;: 0.0}],[{&#39;mean&#39;: 0.7963836193084717, &#39;std&#39;: 0.3677118122577667, &#39;near_zero&#39;: 0.0}]]</pre>
 </div>
 
 </div>
@@ -1617,12 +1557,12 @@ Callbacks:
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>[0, 12.904561042785645, 10.325477600097656, &#39;00:00&#39;]
-[0, 17.693506240844727, 14.081195831298828, &#39;00:00&#39;]
-[0, 26.353797912597656, 18.434146881103516, &#39;00:00&#39;]
-[0, 13.517264366149902, 11.664457321166992, &#39;00:00&#39;]
-[0, 6.353066444396973, 7.012430191040039, &#39;00:00&#39;]
-[0, 26.239334106445312, 19.789249420166016, &#39;00:00&#39;]
+<pre>[0, 6.150048732757568, 4.771674156188965, &#39;00:00&#39;]
+[0, 17.470989227294922, 17.58202362060547, &#39;00:00&#39;]
+[0, 10.142230987548828, 9.362530708312988, &#39;00:00&#39;]
+[0, 3.4879150390625, 3.3121471405029297, &#39;00:00&#39;]
+[0, 14.660429000854492, 17.298110961914062, &#39;00:00&#39;]
+[0, 22.280864715576172, 18.45922088623047, &#39;00:00&#39;]
 </pre>
 </div>
 </div>

@@ -26,6 +26,25 @@ nb_path: "nbs/18_callback.fp16.ipynb"
     
 <div class="cell border-box-sizing code_cell rendered">
 
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>/opt/conda/lib/python3.9/site-packages/torch/cuda/__init__.py:145: UserWarning: 
+NVIDIA GeForce RTX 3070 Laptop GPU with CUDA capability sm_86 is not compatible with the current PyTorch installation.
+The current PyTorch install supports CUDA capabilities sm_37 sm_50 sm_60 sm_70.
+If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, please check the instructions at https://pytorch.org/get-started/locally/
+
+  warnings.warn(incompatible_device_warn.format(device_name, capability, &#34; &#34;.join(arch_list), device_name))
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
 </div>
     {% endraw %}
 
@@ -466,12 +485,6 @@ so need a mechanism to get this dynamic loss scale larger if it's safe to do so.
 <td><code>False</code></td>
 <td>Flatten fp32 params into a vector for better performance</td>
 </tr>
-<tr>
-<td><strong>Returns</strong></td>
-<td><code>list</code></td>
-<td></td>
-<td>List of fp16 params, and list of fp32 params</td>
-</tr>
 </tbody>
 </table>
 
@@ -858,13 +871,13 @@ so need a mechanism to get this dynamic loss scale larger if it's safe to do so.
 <tr>
 <td><strong><code>max_loss_scale</code></strong></td>
 <td><code>float</code></td>
-<td><code>0</code></td>
+<td><code>16777216.0</code></td>
 <td>Starting value for dynamic loss scaling</td>
 </tr>
 <tr>
 <td><strong><code>div_factor</code></strong></td>
 <td><code>float</code></td>
-<td><code>0</code></td>
+<td><code>2.0</code></td>
 <td>Divide by this on overflow, multiply by this after scale_wait batches</td>
 </tr>
 <tr>
@@ -876,7 +889,7 @@ so need a mechanism to get this dynamic loss scale larger if it's safe to do so.
 <tr>
 <td><strong><code>clip</code></strong></td>
 <td><code>float</code></td>
-<td>``</td>
+<td><code>None</code></td>
 <td>Value to clip gradients at, max_norm, as in <code>nn.utils.clip_grad_norm_</code></td>
 </tr>
 </tbody>

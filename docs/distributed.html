@@ -26,6 +26,25 @@ nb_path: "nbs/20a_distributed.ipynb"
     
 <div class="cell border-box-sizing code_cell rendered">
 
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>/opt/conda/lib/python3.9/site-packages/torch/cuda/__init__.py:145: UserWarning: 
+NVIDIA GeForce RTX 3070 Laptop GPU with CUDA capability sm_86 is not compatible with the current PyTorch installation.
+The current PyTorch install supports CUDA capabilities sm_37 sm_50 sm_60 sm_70.
+If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, please check the instructions at https://pytorch.org/get-started/locally/
+
+  warnings.warn(incompatible_device_warn.format(device_name, capability, &#34; &#34;.join(arch_list), device_name))
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
 </div>
     {% endraw %}
 
@@ -405,7 +424,7 @@ nb_path: "nbs/20a_distributed.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="DistributedTrainer" class="doc_header"><code>class</code> <code>DistributedTrainer</code><a href="https://github.com/fastai/fastai/tree/master/fastai/distributed.py#L124" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>DistributedTrainer</code>(<strong><code>cuda_id</code></strong>=<em><code>0</code></em>, <strong><code>sync_bn</code></strong>=<em><code>True</code></em>) :: <a href="/callback.core.html#Callback"><code>Callback</code></a></p>
+<h2 id="DistributedTrainer" class="doc_header"><code>class</code> <code>DistributedTrainer</code><a href="https://github.com/fastai/fastai/tree/master/fastai/distributed.py#L128" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>DistributedTrainer</code>(<strong><code>cuda_id</code></strong>=<em><code>0</code></em>, <strong><code>sync_bn</code></strong>=<em><code>True</code></em>) :: <a href="/callback.core.html#Callback"><code>Callback</code></a></p>
 </blockquote>
 <p>Wrap <code>model</code> in <code>DistributedDataParallel</code> and <code>dls</code> in <a href="/distributed.html#DistributedDL"><code>DistributedDL</code></a></p>
 
@@ -437,7 +456,7 @@ nb_path: "nbs/20a_distributed.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Learner.to_distributed" class="doc_header"><code>Learner.to_distributed</code><a href="https://github.com/fastai/fastai/tree/master/fastai/distributed.py#L143" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.to_distributed</code>(<strong><code>cuda_id</code></strong>, <strong><code>sync_bn</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="Learner.to_distributed" class="doc_header"><code>Learner.to_distributed</code><a href="https://github.com/fastai/fastai/tree/master/fastai/distributed.py#L147" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.to_distributed</code>(<strong><code>cuda_id</code></strong>, <strong><code>sync_bn</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 <p>Add <a href="/distributed.html#DistributedTrainer"><code>DistributedTrainer</code></a> to a learner</p>
 
@@ -469,7 +488,7 @@ nb_path: "nbs/20a_distributed.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Learner.detach_distributed" class="doc_header"><code>Learner.detach_distributed</code><a href="https://github.com/fastai/fastai/tree/master/fastai/distributed.py#L151" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.detach_distributed</code>()</p>
+<h4 id="Learner.detach_distributed" class="doc_header"><code>Learner.detach_distributed</code><a href="https://github.com/fastai/fastai/tree/master/fastai/distributed.py#L155" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.detach_distributed</code>()</p>
 </blockquote>
 <p>Remove <a href="/distributed.html#DistributedTrainer"><code>DistributedTrainer</code></a> from a learner</p>
 
@@ -507,7 +526,7 @@ nb_path: "nbs/20a_distributed.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Learner.distrib_ctx" class="doc_header"><code>Learner.distrib_ctx</code><a href="https://github.com/fastai/fastai/tree/master/fastai/distributed.py#L160" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.distrib_ctx</code>(<strong><code>cuda_id</code></strong>=<em><code>None</code></em>, <strong><code>sync_bn</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="Learner.distrib_ctx" class="doc_header"><code>Learner.distrib_ctx</code><a href="https://github.com/fastai/fastai/tree/master/fastai/distributed.py#L164" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.distrib_ctx</code>(<strong><code>cuda_id</code></strong>=<em><code>None</code></em>, <strong><code>sync_bn</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 <p>A context manager to adapt a learner to train in distributed data parallel mode.</p>
 
@@ -550,7 +569,7 @@ nb_path: "nbs/20a_distributed.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="rank0_first" class="doc_header"><code>rank0_first</code><a href="https://github.com/fastai/fastai/tree/master/fastai/distributed.py#L179" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>rank0_first</code>(<strong><code>func</code></strong>, <strong>*<code>args</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="rank0_first" class="doc_header"><code>rank0_first</code><a href="https://github.com/fastai/fastai/tree/master/fastai/distributed.py#L183" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>rank0_first</code>(<strong><code>func</code></strong>, <strong>*<code>args</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Execute <code>func</code> in the Rank-0 process first, then in other ranks in parallel.</p>
 
