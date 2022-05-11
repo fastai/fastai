@@ -134,7 +134,7 @@ class DistributedDL(TfmdDL):
 # Cell
 class DistributedTrainer(Callback):
     "Wrap `model` in `DistributedDataParallel` and `dls` in `DistributedDL`"
-    fup = None
+    fup,order = None,11
     @delegates(Accelerator)
     def __init__(self, sync_bn=True, **kwargs):
         store_attr()
