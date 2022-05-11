@@ -4,9 +4,9 @@
 from __future__ import annotations
 
 
-__all__ = ['CancelStepException', 'CancelFitException', 'CancelEpochException', 'CancelTrainException',
-           'CancelValidException', 'CancelBatchException', 'event', 'Callback', 'TrainEvalCallback',
-           'GatherPredsCallback', 'FetchPredsCallback']
+__all__ = ['CancelStepException', 'CancelBackwardException', 'CancelFitException', 'CancelEpochException',
+           'CancelTrainException', 'CancelValidException', 'CancelBatchException', 'event', 'Callback',
+           'TrainEvalCallback', 'GatherPredsCallback', 'FetchPredsCallback']
 
 # Cell
 #nbdev_comment from __future__ import annotations
@@ -15,13 +15,13 @@ from ..optimizer import *
 from ..losses import BaseLoss
 
 # Cell
-#nbdev_comment _all_ = ['CancelStepException','CancelFitException','CancelEpochException','CancelTrainException','CancelValidException','CancelBatchException']
+#nbdev_comment _all_ = ['CancelStepException','CancelBackwardException','CancelFitException','CancelEpochException','CancelTrainException','CancelValidException','CancelBatchException']
 
 # Cell
 _events = L.split('after_create before_fit before_epoch before_train before_batch after_pred after_loss \
-    before_backward before_step after_cancel_step after_step after_cancel_batch after_batch after_cancel_train \
-    after_train before_validate after_cancel_validate after_validate after_cancel_epoch \
-    after_epoch after_cancel_fit after_fit')
+    before_backward after_cancel_backward after_backward before_step after_cancel_step after_step \
+    after_cancel_batch after_batch after_cancel_train after_train before_validate after_cancel_validate \
+    after_validate after_cancel_epoch after_epoch after_cancel_fit after_fit')
 
 mk_class('event', **_events.map_dict(),
          doc="All possible events as attributes to get tab-completion and typo-proofing")
@@ -30,7 +30,7 @@ mk_class('event', **_events.map_dict(),
 #nbdev_comment _all_ = ['event']
 
 # Cell
-_inner_loop = "before_batch after_pred after_loss before_backward before_step after_step after_cancel_batch after_batch".split()
+_inner_loop = "before_batch after_pred after_loss before_backward after_cancel_backward after_backward before_step after_step after_cancel_batch after_batch".split()
 
 # Cell
 _ex_docs = dict(
@@ -39,6 +39,7 @@ _ex_docs = dict(
     CancelValidException="Skip the rest of the validation part of the epoch and go to `after_validate`",
     CancelEpochException="Skip the rest of this epoch and go to `after_epoch`",
     CancelStepException ="Skip stepping the optimizer",
+    CancelBackwardException="Skip the backward pass and go to `after_backward`",
     CancelFitException  ="Interrupts training and go to `after_fit`")
 
 for c,d in _ex_docs.items(): mk_class(c,sup=Exception,doc=d)
@@ -60,7 +61,7 @@ class Callback(Stateful,GetAttr):
         res = None
         if self.run and _run:
             try: res = getattr(self, event_name, noop)()
-            except (CancelBatchException, CancelEpochException, CancelFitException, CancelStepException, CancelTrainException, CancelValidException): raise
+            except (CancelBatchException, CancelBackwardException, CancelEpochException, CancelFitException, CancelStepException, CancelTrainException, CancelValidException): raise
             except Exception as e:
                 e.args = [f'Exception occured in `{self.__class__.__name__}` when calling event `{event_name}`:\n\t{e.args[0]}']
                 raise

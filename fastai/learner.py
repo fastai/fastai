@@ -4,10 +4,10 @@
 from __future__ import annotations
 
 
-__all__ = ['CancelStepException', 'CancelFitException', 'CancelEpochException', 'CancelTrainException',
-           'CancelValidException', 'CancelBatchException', 'replacing_yield', 'mk_metric', 'save_model', 'load_model',
-           'Learner', 'before_batch_cb', 'load_learner', 'Metric', 'AvgMetric', 'AvgLoss', 'AvgSmoothLoss',
-           'ValueMetric', 'Recorder']
+__all__ = ['CancelBackwardException', 'CancelStepException', 'CancelFitException', 'CancelEpochException',
+           'CancelTrainException', 'CancelValidException', 'CancelBatchException', 'replacing_yield', 'mk_metric',
+           'save_model', 'load_model', 'Learner', 'before_batch_cb', 'load_learner', 'Metric', 'AvgMetric', 'AvgLoss',
+           'AvgSmoothLoss', 'ValueMetric', 'Recorder']
 
 # Cell
 #nbdev_comment from __future__ import annotations
@@ -17,7 +17,7 @@ from .callback.core import *
 import pickle,threading
 
 # Cell
-#nbdev_comment _all_ = ['CancelStepException','CancelFitException','CancelEpochException','CancelTrainException','CancelValidException','CancelBatchException']
+#nbdev_comment _all_ = ['CancelBackwardException', 'CancelStepException','CancelFitException','CancelEpochException','CancelTrainException','CancelValidException','CancelBatchException']
 
 # Cell
 defaults.lr = 1e-3
@@ -182,8 +182,7 @@ class Learner(GetAttr):
             self.loss = self.loss_grad.clone()
         self('after_loss')
         if not self.training or not len(self.yb): return
-        self('before_backward')
-        self.loss_grad.backward()
+        self._with_events(self.loss_grad.backward, 'backward', CancelBackwardException)
         self._with_events(self.opt.step, 'step', CancelStepException)
         self.opt.zero_grad()
 
