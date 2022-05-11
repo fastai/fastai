@@ -77,12 +77,9 @@ To run the tests in parallel, launch:
 
 `nbdev_test_nbs` or `make test`
 
-For all the tests to pass, you'll need to install the following optional dependencies:
+For all the tests to pass, you'll need to install the dependencies specified as part of dev_requirements in settings.ini
 
-```
-pip install "sentencepiece<0.1.90" wandb tensorboard albumentations pydicom opencv-python scikit-image pyarrow kornia \
-    catalyst captum neptune-cli
-```
+`pip install -e .[dev]` 
 
 Tests are written using `nbdev`, for example see the documentation for `test_eq`.
 
