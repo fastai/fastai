@@ -62,7 +62,7 @@
 
     
 
-  <meta name="request-id" content="E45C:35D9:1F075D:3EE9E0:627AF621" data-pjax-transient="true"/><meta name="html-safe-nonce" content="9267af3a232eec169ca87d4dbe5825d5cd9b83a4c82690d3db0d814080b598df" data-pjax-transient="true"/><meta name="visitor-payload" content="eyJyZWZlcnJlciI6IiIsInJlcXVlc3RfaWQiOiJFNDVDOjM1RDk6MUYwNzVEOjNFRTlFMDo2MjdBRjYyMSIsInZpc2l0b3JfaWQiOiIyMDg0NzM5NTAzMjE3MTEyNjA5IiwicmVnaW9uX2VkZ2UiOiJpYWQiLCJyZWdpb25fcmVuZGVyIjoiaWFkIn0=" data-pjax-transient="true"/><meta name="visitor-hmac" content="14ff606416e963b461ce86ba02de77f183ab3aa6cee1737fe8aa6f60ffcfa7a7" data-pjax-transient="true"/>
+  <meta name="request-id" content="C2A4:3FA7:2DE4D8:543836:627B0230" data-pjax-transient="true"/><meta name="html-safe-nonce" content="4c9ace74b86e2f4d5c3fa9e4f5ce9af5ed0afd4b1e431e22a94f12d1e4f6023c" data-pjax-transient="true"/><meta name="visitor-payload" content="eyJyZWZlcnJlciI6IiIsInJlcXVlc3RfaWQiOiJDMkE0OjNGQTc6MkRFNEQ4OjU0MzgzNjo2MjdCMDIzMCIsInZpc2l0b3JfaWQiOiI3MzE4MTkwODEzMDUxODE0NDQ4IiwicmVnaW9uX2VkZ2UiOiJpYWQiLCJyZWdpb25fcmVuZGVyIjoiaWFkIn0=" data-pjax-transient="true"/><meta name="visitor-hmac" content="74128b1a5be87cace96c3ce8cadecfc882974f2c8a613bdc90ed1a8ba5dd646d" data-pjax-transient="true"/>
 
     <meta name="hovercard-subject-tag" content="repository:102973646" data-pjax-transient>
 
@@ -422,7 +422,7 @@
           spellcheck="false"
           autocomplete="off"
         >
-        <input type="hidden" data-csrf="true" class="js-data-jump-to-suggestions-path-csrf" value="PF/Cn0yQ3EMFMfeFBcwoApX8QZjbQ4WXddnveC2B+EgldpIzN+OmQ8WwJbjbG274zO3kWIblXR1aN1/wSDQ9yg==" />
+        <input type="hidden" data-csrf="true" class="js-data-jump-to-suggestions-path-csrf" value="/9+cmmPOHgzMrECw0eFcy1l13qV+lFeVN3TBjmZV+WSJV5rvT4LHr7wpPzJqEJQt2w0KQSQFR0bnimP4FR9sjQ==" />
         <input type="hidden" class="js-site-search-type-field" name="type" >
             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="20" aria-hidden="true" class="mr-1 header-search-key-slash"><path fill="none" stroke="#979A9C" opacity=".4" d="M3.5.5h12c1.7 0 3 1.3 3 3v13c0 1.7-1.3 3-3 3h-12c-1.7 0-3-1.3-3-3v-13c0-1.7 1.3-3 3-3z"></path><path fill="#979A9C" d="M11.8 6L8 15.1h-.9L10.8 6h1z"></path></svg>
 
@@ -1156,17 +1156,80 @@
     <include-fragment src="/fastai/fastai/spoofed_commit_check/f4a6ce2af146864bfa46096d9f5a27a527f66c1a" data-test-selector="spoofed-commit-check"></include-fragment>
 
     <div class="Box d-flex flex-column flex-shrink-0 mb-3">
-  <include-fragment src="/fastai/fastai/contributors/master/.github/CODEOWNERS" class="commit-loader">
-    <div class="Box-header d-flex flex-items-center">
-      <div class="Skeleton avatar avatar-user flex-shrink-0 ml-n1 mr-n1 mt-n1 mb-n1" style="width:24px;height:24px;"></div>
-      <div class="Skeleton Skeleton--text col-5 ml-2">&nbsp;</div>
-    </div>
+  
+  <div class="Box-header Details js-details-container">
+      <div class="d-flex flex-items-center">
+        <span class="flex-shrink-0 ml-n1 mr-n1 mt-n1 mb-n1">
+          <img class="avatar avatar-user" width="24" height="24" alt="" src="https://camo.githubusercontent.com/bf4bbf63472b556812d46a8be5f9c801680f94355c76c14f6602ce6a8f901fe0/68747470733a2f2f312e67726176617461722e636f6d2f6176617461722f66633537643031343239323665313539346333363465366564353631616234393f643d68747470732533412532462532466769746875622e6769746875626173736574732e636f6d253246696d6167657325324667726176617461727325324667726176617461722d757365722d3432302e706e6726723d6726733d313430" data-canonical-src="https://1.gravatar.com/avatar/fc57d0142926e1594c364e6ed561ab49?d=https%3A%2F%2Fgithub.githubassets.com%2Fimages%2Fgravatars%2Fgravatar-user-420.png&amp;r=g&amp;s=140" />
+        </span>
+        <div class="flex-1 d-flex flex-items-center ml-3 min-width-0">
+          <div class="css-truncate css-truncate-overflow">
+            <span class="text-bold Link--primary">Hamel Husain</span>
 
-    <div class="Box-body d-flex flex-items-center" >
-      <div class="Skeleton Skeleton--text col-1">&nbsp;</div>
-      <span class="color-fg-danger h6 loader-error">Cannot retrieve contributors at this time</span>
-    </div>
-</include-fragment></div>
+              <span class="markdown-title">
+                <a data-pjax="true" title="Create CODEOWNERS (#2668)" class="Link--secondary" href="/fastai/fastai/commit/b491ca8ca30ee85317b9a0b7f7cc5c978f69bd5a">Create CODEOWNERS (</a><a class="issue-link js-issue-link" data-error-text="Failed to load title" data-id="684703347" data-permission-text="Title is private" data-url="https://github.com/fastai/fastai/issues/2668" data-hovercard-type="pull_request" data-hovercard-url="/fastai/fastai/pull/2668/hovercard" href="https://github.com/fastai/fastai/pull/2668">#2668</a><a data-pjax="true" title="Create CODEOWNERS (#2668)" class="Link--secondary" href="/fastai/fastai/commit/b491ca8ca30ee85317b9a0b7f7cc5c978f69bd5a">)</a>
+              </span>
+          </div>
+
+
+          <span class="ml-2">
+            <include-fragment accept="text/fragment+html" src="/fastai/fastai/commit/b491ca8ca30ee85317b9a0b7f7cc5c978f69bd5a/rollup?direction=e" class="d-inline"></include-fragment>
+          </span>
+        </div>
+        <div class="ml-3 d-flex flex-shrink-0 flex-items-center flex-justify-end color-fg-muted no-wrap">
+          <span class="d-none d-md-inline">
+            <span>Latest commit</span>
+            <a class="text-small text-mono Link--secondary" href="/fastai/fastai/commit/b491ca8ca30ee85317b9a0b7f7cc5c978f69bd5a" data-pjax>b491ca8</a>
+            <span itemprop="dateModified"><relative-time datetime="2020-08-24T14:12:16Z" class="no-wrap">Aug 24, 2020</relative-time></span>
+          </span>
+
+          <a data-pjax href="/fastai/fastai/commits/master/.github/CODEOWNERS" class="ml-3 no-wrap Link--primary no-underline">
+            <svg text="gray" aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" class="octicon octicon-history">
+    <path fill-rule="evenodd" d="M1.643 3.143L.427 1.927A.25.25 0 000 2.104V5.75c0 .138.112.25.25.25h3.646a.25.25 0 00.177-.427L2.715 4.215a6.5 6.5 0 11-1.18 4.458.75.75 0 10-1.493.154 8.001 8.001 0 101.6-5.684zM7.75 4a.75.75 0 01.75.75v2.992l2.028.812a.75.75 0 01-.557 1.392l-2.5-1A.75.75 0 017 8.25v-3.5A.75.75 0 017.75 4z"></path>
+</svg>
+            <span class="d-none d-sm-inline">
+              <strong>History</strong>
+            </span>
+          </a>
+        </div>
+      </div>
+
+  </div>
+
+  <div class="Box-body d-flex flex-items-center flex-auto border-bottom-0 flex-wrap" >
+    <details class="details-reset details-overlay details-overlay-dark lh-default color-fg-default float-left mr-3" id="blob_contributors_box">
+      <summary class="Link--primary">
+        <svg text="gray" aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" class="octicon octicon-people">
+    <path fill-rule="evenodd" d="M5.5 3.5a2 2 0 100 4 2 2 0 000-4zM2 5.5a3.5 3.5 0 115.898 2.549 5.507 5.507 0 013.034 4.084.75.75 0 11-1.482.235 4.001 4.001 0 00-7.9 0 .75.75 0 01-1.482-.236A5.507 5.507 0 013.102 8.05 3.49 3.49 0 012 5.5zM11 4a.75.75 0 100 1.5 1.5 1.5 0 01.666 2.844.75.75 0 00-.416.672v.352a.75.75 0 00.574.73c1.2.289 2.162 1.2 2.522 2.372a.75.75 0 101.434-.44 5.01 5.01 0 00-2.56-3.012A3 3 0 0011 4z"></path>
+</svg>
+        <strong>0</strong>
+        
+        contributors
+      </summary>
+      <details-dialog
+        class="Box Box--overlay d-flex flex-column anim-fade-in fast"
+        aria-label="Users who have contributed to this file"
+        src="/fastai/fastai/contributors-list/master/.github/CODEOWNERS" preload>
+        <div class="Box-header">
+          <button class="Box-btn-octicon btn-octicon float-right" type="button" aria-label="Close dialog" data-close-dialog>
+            <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" class="octicon octicon-x">
+    <path fill-rule="evenodd" d="M3.72 3.72a.75.75 0 011.06 0L8 6.94l3.22-3.22a.75.75 0 111.06 1.06L9.06 8l3.22 3.22a.75.75 0 11-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 01-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 010-1.06z"></path>
+</svg>
+          </button>
+          <h3 class="Box-title">
+            Users who have contributed to this file
+          </h3>
+        </div>
+        <include-fragment>
+          <svg style="box-sizing: content-box; color: var(--color-icon-primary);" width="32" height="32" viewBox="0 0 16 16" fill="none" data-view-component="true" class="my-3 mx-auto d-block anim-rotate">
+  <circle cx="8" cy="8" r="7" stroke="currentColor" stroke-opacity="0.25" stroke-width="2" vector-effect="non-scaling-stroke" />
+  <path d="M15 8a7.002 7.002 0 00-7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" vector-effect="non-scaling-stroke" />
+</svg>
+        </include-fragment>
+      </details-dialog>
+    </details>
+  </div>
+</div>
 
 
 
