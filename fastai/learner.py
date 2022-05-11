@@ -6,8 +6,8 @@ from __future__ import annotations
 
 __all__ = ['CancelStepException', 'CancelFitException', 'CancelEpochException', 'CancelTrainException',
            'CancelValidException', 'CancelBatchException', 'replacing_yield', 'mk_metric', 'save_model', 'load_model',
-           'Learner', 'before_batch_cb', 'load_learner', 'to_detach_from_dl', 'Metric', 'AvgMetric', 'AvgLoss',
-           'AvgSmoothLoss', 'ValueMetric', 'Recorder']
+           'Learner', 'before_batch_cb', 'load_learner', 'Metric', 'AvgMetric', 'AvgLoss', 'AvgSmoothLoss',
+           'ValueMetric', 'Recorder']
 
 # Cell
 #nbdev_comment from __future__ import annotations
@@ -405,10 +405,6 @@ def load_learner(fname, cpu=True, pickle_module=pickle):
     return res
 
 # Cell
-def to_detach_from_dl(learn:(Learner,NoneType),b:object,cpu:bool=True,gather:bool=True):
-    return learn.dl.to_detach(b,cpu,gather) if hasattr(getattr(learn,'dl',None),'to_detach') else to_detach(b,cpu,gather)
-
-# Cell
 @docs
 class Metric():
     "Blueprint for defining a metric"
@@ -425,14 +421,6 @@ class Metric():
         name="Name of the `Metric`, camel-cased and with Metric removed",
         accumulate="Use `learn` to update the state with new results",
         value="The value of the metric")
-
-# Cell
-def _maybe_reduce(val):
-    if num_distrib()>1:
-        val = val.clone()
-        torch.distributed.all_reduce(val, op=torch.distributed.ReduceOp.SUM)
-        val /= num_distrib()
-    return val
 
 # Cell
 class AvgMetric(Metric):
