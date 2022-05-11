@@ -182,8 +182,7 @@ class Learner(GetAttr):
             self.loss = self.loss_grad.clone()
         self('after_loss')
         if not self.training or not len(self.yb): return
-        self('before_backward')
-        self.loss_grad.backward()
+        self._with_events(self.loss_grad.backward, 'backward', CancelBackwardException)
         self._with_events(self.opt.step, 'step', CancelStepException)
         self.opt.zero_grad()
 
