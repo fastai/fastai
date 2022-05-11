@@ -113,7 +113,8 @@ class Optimizer(_BaseOptimizer):
             p.grad.detach_()
             p.grad.zero_()
 
-    def step(self):
+    def step(self, closure=None):
+        if closure is not None: raise NotImplementedError("fastai optimizers currently do not support closure")
         for p,pg,state,hyper in self.all_params(with_grad=True):
             for cb in self.cbs: state = _update(state, cb(p, **{**state, **hyper}))
             self.state[p] = state
@@ -391,8 +392,19 @@ class OptimWrapper(_BaseOptimizer, GetAttr):
     "A wrapper class for existing PyTorch optimizers"
     _xtra=['zero_grad', 'step', 'state_dict', 'load_state_dict']
     _default='opt'
-    def __init__(self, params, opt, hp_map=None, convert_groups=True, **kwargs):
-        self.opt = opt(_convert_params(params), **kwargs) if convert_groups else opt(params, **kwargs)
+    def __init__(self,
+         params:list|dict=None, # Model parameters to pass to `opt`. If using an already built `opt`
+         opt:callable|torch.optim.Optimizer=None, # A torch optimizer constructor, or an already built optimizer
+         hp_map:dict=None, # A dictionary converting the keys of a built `opt` to the keys of fastai's Optimizer
+         convert_groups=True, # Whether to convert parameter groups
+         **kwargs
+    ):
+        if params is None and opt is None: raise ValueError("Both `params` and `opt` cannot be None.")
+        if callable(opt):
+            self.opt = opt(_convert_params(params), **kwargs) if convert_groups else opt(params, **kwargs)
+        else:
+            if params is not None: raise ValueError("Tried using both `params` and a built optimizer. Just pass in `opt`.")
+            self.opt = opt
         if hp_map is None: hp_map = pytorch_hp_map
         self.fwd_map = {k: hp_map[k] if k in hp_map else k for k in detuplify_pg(self.opt.param_groups[0]).keys()}
         self.bwd_map = {v:k for k,v in self.fwd_map.items()}
