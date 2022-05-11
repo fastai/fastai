@@ -147,7 +147,7 @@ class DistributedTrainer(Callback):
         )
         self.old_dls, self.old_opt = list(self.dls), self.opt
         self.learn.dls.loaders = [self._wrap_dl(dl) for dl in self.dls]
-        self.learn.opt = self._wrap_opt()
+        self._wrap_opt()
         if rank_distrib(): self.learn.logger=noop
 
     def _wrap_opt(self):
