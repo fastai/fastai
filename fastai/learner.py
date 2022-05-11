@@ -456,7 +456,7 @@ class AvgSmoothLoss(Metric):
     def reset(self):               self.count,self.val = 0,tensor(0.)
     def accumulate(self, learn):
         self.count += 1
-        self.val = torch.lerp(to_detach(learn.loss.mean(), gather=False), self.val, self.beta)
+        self.val = torch.lerp(to_detach(learn.loss.mean()), self.val, self.beta)
     @property
     def value(self): return self.val/(1-self.beta**self.count)
 
