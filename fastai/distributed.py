@@ -186,12 +186,12 @@ def detach_distributed(self: Learner):
 # Cell
 @patch
 @contextmanager
-@delegates(Accelerator)
 def distrib_ctx(self: Learner, cuda_id=None, sync_bn=True, **kwargs):
     "A context manager to adapt a learner to train in distributed data parallel mode."
     # Figure out the GPU to use from rank.  Create a dpg if none exists yet.
     if cuda_id is None: cuda_id = rank_distrib()
     if not torch.distributed.is_initialized():
+        print("Hello there!")
         setup_distrib(cuda_id)
         cleanup_dpg = torch.distributed.is_initialized()
     else: cleanup_dpg = False
