@@ -24,14 +24,14 @@ class WandbCallback(Callback):
     # Record if watch has been called previously (even in another instance)
     _wandb_watch_called = False
 
-    def __init__(self, log="gradients", log_preds=True, log_model=True, log_dataset=False, dataset_name=None, valid_dl=None, n_preds=36, seed=12345, reorder=True):
+    def __init__(self, log="gradients", log_preds=True, log_model=True, log_dataset=False, dataset_name=None, valid_dl=None, n_preds=36, seed=12345, reorder=True, compare=None):
         # Check if wandb.init has been called
         if wandb.run is None:
             raise ValueError('You must call wandb.init() before WandbCallback()')
         # W&B log step
         self._wandb_step = wandb.run.step - 1  # -1 except if the run has previously logged data (incremented at each batch)
         self._wandb_epoch = 0 if not(wandb.run.step) else math.ceil(wandb.run.summary['epoch']) # continue to next epoch
-        store_attr('log,log_preds,log_model,log_dataset,dataset_name,valid_dl,n_preds,seed,reorder')
+        store_attr('log,log_preds,log_model,log_dataset,dataset_name,valid_dl,n_preds,seed,reorder,compare')
 
     def before_fit(self):
         "Call watch method to log model topology, gradients & weights"
@@ -88,6 +88,12 @@ class WandbCallback(Callback):
                 self.log_preds = False
                 print(f'WandbCallback was not able to prepare a DataLoader for logging prediction samples -> {e}')
 
+        self.best_metrics = {}
+        if self.compare is None:
+            self.compare = [np.less if (('loss' in n) or ('error' in n)) else np.greater for n in self.recorder.metric_names[2:-1]]
+        elif not islisty(self.compare): self.compare = [self.compare]
+
+
     def after_batch(self):
         "Log hyper-parameters and training loss"
         if self.training:
@@ -115,7 +121,11 @@ class WandbCallback(Callback):
                 self.log_preds = False
                 self.remove_cb(FetchPredsCallback)
                 print(f'WandbCallback was not able to get prediction samples -> {e}')
-        wandb.log({n:s for n,s in zip(self.recorder.metric_names, self.recorder.log) if n not in ['train_loss', 'epoch', 'time']}, step=self._wandb_step)
+        metrics = {n:s for n,s in zip(self.recorder.metric_names, self.recorder.log) if n not in ['train_loss', 'epoch', 'time']}
+        wandb.log(metrics, step=self._wandb_step)
+        self.update_best(metrics)
+        wandb.log(self.best_metrics, step=self._wandb_step)
+
 
     def after_fit(self):
         if self.log_model:
@@ -128,6 +138,12 @@ class WandbCallback(Callback):
         if self.log_preds: self.remove_cb(FetchPredsCallback)
         wandb.log({})  # ensure sync of last step
         self._wandb_step += 1
+
+    def update_best(self, metrics):
+        for is_better, (n,v) in zip(self.compare, metrics.items()):
+            current_best = self.best_metrics.get(f'best_{n}', None)
+            if current_best is None or is_better(v, current_best):
+                self.best_metrics[f'best_{n}'] = v
 
 # Cell
 @patch
