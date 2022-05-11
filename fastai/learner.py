@@ -6,7 +6,6 @@ __all__ = ['CancelStepException', 'CancelFitException', 'CancelEpochException', 
            'ValueMetric', 'Recorder']
 
 # Cell
-from .torch_core import *
 from .data.all import *
 from .optimizer import *
 from .callback.core import *
