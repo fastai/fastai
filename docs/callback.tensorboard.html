@@ -26,25 +26,6 @@ nb_path: "nbs/71_callback.tensorboard.ipynb"
     
 <div class="cell border-box-sizing code_cell rendered">
 
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-<div class="output_subarea output_stream output_stderr output_text">
-<pre>/opt/conda/lib/python3.9/site-packages/torch/cuda/__init__.py:145: UserWarning: 
-NVIDIA GeForce RTX 3070 Laptop GPU with CUDA capability sm_86 is not compatible with the current PyTorch installation.
-The current PyTorch install supports CUDA capabilities sm_37 sm_50 sm_60 sm_70.
-If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, please check the instructions at https://pytorch.org/get-started/locally/
-
-  warnings.warn(incompatible_device_warn.format(device_name, capability, &#34; &#34;.join(arch_list), device_name))
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
 </div>
     {% endraw %}
 
@@ -208,7 +189,7 @@ projector_word_embeddings(layer=layer, vocab=vocab, limit=2000, start=2000)</cod
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TensorBoardBaseCallback" class="doc_header"><code>class</code> <code>TensorBoardBaseCallback</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/tensorboard.py#L16" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TensorBoardBaseCallback</code>() :: <a href="/callback.core.html#Callback"><code>Callback</code></a></p>
+<h2 id="TensorBoardBaseCallback" class="doc_header"><code>class</code> <code>TensorBoardBaseCallback</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/tensorboard.py#L21" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TensorBoardBaseCallback</code>() :: <a href="/callback.core.html#Callback"><code>Callback</code></a></p>
 </blockquote>
 <p>Basic class handling tweaks of the training loop by changing a <a href="/learner.html#Learner"><code>Learner</code></a> in various events</p>
 
@@ -240,7 +221,7 @@ projector_word_embeddings(layer=layer, vocab=vocab, limit=2000, start=2000)</cod
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TensorBoardCallback" class="doc_header"><code>class</code> <code>TensorBoardCallback</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/tensorboard.py#L44" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TensorBoardCallback</code>(<strong><code>log_dir</code></strong>=<em><code>None</code></em>, <strong><code>trace_model</code></strong>=<em><code>True</code></em>, <strong><code>log_preds</code></strong>=<em><code>True</code></em>, <strong><code>n_preds</code></strong>=<em><code>9</code></em>, <strong><code>projector</code></strong>=<em><code>False</code></em>, <strong><code>layer</code></strong>=<em><code>None</code></em>) :: <a href="/callback.tensorboard.html#TensorBoardBaseCallback"><code>TensorBoardBaseCallback</code></a></p>
+<h2 id="TensorBoardCallback" class="doc_header"><code>class</code> <code>TensorBoardCallback</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/tensorboard.py#L49" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TensorBoardCallback</code>(<strong><code>log_dir</code></strong>=<em><code>None</code></em>, <strong><code>trace_model</code></strong>=<em><code>True</code></em>, <strong><code>log_preds</code></strong>=<em><code>True</code></em>, <strong><code>n_preds</code></strong>=<em><code>9</code></em>, <strong><code>projector</code></strong>=<em><code>False</code></em>, <strong><code>layer</code></strong>=<em><code>None</code></em>) :: <a href="/callback.tensorboard.html#TensorBoardBaseCallback"><code>TensorBoardBaseCallback</code></a></p>
 </blockquote>
 <p>Saves model topology, losses &amp; metrics for tensorboard and tensorboard projector during training</p>
 
@@ -272,7 +253,7 @@ projector_word_embeddings(layer=layer, vocab=vocab, limit=2000, start=2000)</cod
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TensorBoardProjectorCallback" class="doc_header"><code>class</code> <code>TensorBoardProjectorCallback</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/tensorboard.py#L81" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TensorBoardProjectorCallback</code>(<strong><code>log_dir</code></strong>=<em><code>None</code></em>, <strong><code>layer</code></strong>=<em><code>None</code></em>) :: <a href="/callback.tensorboard.html#TensorBoardBaseCallback"><code>TensorBoardBaseCallback</code></a></p>
+<h2 id="TensorBoardProjectorCallback" class="doc_header"><code>class</code> <code>TensorBoardProjectorCallback</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/tensorboard.py#L86" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TensorBoardProjectorCallback</code>(<strong><code>log_dir</code></strong>=<em><code>None</code></em>, <strong><code>layer</code></strong>=<em><code>None</code></em>) :: <a href="/callback.tensorboard.html#TensorBoardBaseCallback"><code>TensorBoardBaseCallback</code></a></p>
 </blockquote>
 <p>Extracts and exports image featuers for tensorboard projector during inference</p>
 
@@ -339,7 +320,7 @@ projector_word_embeddings(layer=layer, vocab=vocab, limit=2000, start=2000)</cod
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="projector_word_embeddings" class="doc_header"><code>projector_word_embeddings</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/tensorboard.py#L132" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>projector_word_embeddings</code>(<strong><code>learn</code></strong>=<em><code>None</code></em>, <strong><code>layer</code></strong>=<em><code>None</code></em>, <strong><code>vocab</code></strong>=<em><code>None</code></em>, <strong><code>limit</code></strong>=<em><code>-1</code></em>, <strong><code>start</code></strong>=<em><code>0</code></em>, <strong><code>log_dir</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="projector_word_embeddings" class="doc_header"><code>projector_word_embeddings</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/tensorboard.py#L137" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>projector_word_embeddings</code>(<strong><code>learn</code></strong>=<em><code>None</code></em>, <strong><code>layer</code></strong>=<em><code>None</code></em>, <strong><code>vocab</code></strong>=<em><code>None</code></em>, <strong><code>limit</code></strong>=<em><code>-1</code></em>, <strong><code>start</code></strong>=<em><code>0</code></em>, <strong><code>log_dir</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Extracts and exports word embeddings from language models embedding layers</p>
 

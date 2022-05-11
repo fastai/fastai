@@ -26,25 +26,6 @@ nb_path: "nbs/32_text.models.awdlstm.ipynb"
     
 <div class="cell border-box-sizing code_cell rendered">
 
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-<div class="output_subarea output_stream output_stderr output_text">
-<pre>/opt/conda/lib/python3.9/site-packages/torch/cuda/__init__.py:145: UserWarning: 
-NVIDIA GeForce RTX 3070 Laptop GPU with CUDA capability sm_86 is not compatible with the current PyTorch installation.
-The current PyTorch install supports CUDA capabilities sm_37 sm_50 sm_60 sm_70.
-If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, please check the instructions at https://pytorch.org/get-started/locally/
-
-  warnings.warn(incompatible_device_warn.format(device_name, capability, &#34; &#34;.join(arch_list), device_name))
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
 </div>
     {% endraw %}
 
@@ -79,7 +60,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="dropout_mask" class="doc_header"><code>dropout_mask</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/models/awdlstm.py#L11" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>dropout_mask</code>(<strong><code>x</code></strong>:<code>Tensor</code>, <strong><code>sz</code></strong>:<code>list</code>, <strong><code>p</code></strong>:<code>float</code>)</p>
+<h4 id="dropout_mask" class="doc_header"><code>dropout_mask</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/models/awdlstm.py#L16" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>dropout_mask</code>(<strong><code>x</code></strong>:<code>Tensor</code>, <strong><code>sz</code></strong>:<code>list</code>, <strong><code>p</code></strong>:<code>float</code>)</p>
 </blockquote>
 <p>Return a dropout mask of the same type as <code>x</code>, size <code>sz</code>, with probability <code>p</code> to cancel an element.</p>
 <table>
@@ -159,7 +140,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="RNNDropout" class="doc_header"><code>class</code> <code>RNNDropout</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/models/awdlstm.py#L20" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>RNNDropout</code>(<strong><code>p</code></strong>:<code>float</code>=<em><code>0.5</code></em>) :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
+<h3 id="RNNDropout" class="doc_header"><code>class</code> <code>RNNDropout</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/models/awdlstm.py#L25" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>RNNDropout</code>(<strong><code>p</code></strong>:<code>float</code>=<em><code>0.5</code></em>) :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
 </blockquote>
 <p>Dropout with probability <code>p</code> that is consistent on the seq_len dimension.</p>
 
@@ -238,7 +219,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="WeightDropout" class="doc_header"><code>class</code> <code>WeightDropout</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/models/awdlstm.py#L29" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>WeightDropout</code>(<strong><code>module</code></strong>:<a href="/torch_core.html#Module"><code>Module</code></a>, <strong><code>weight_p</code></strong>:<code>float</code>, <strong><code>layer_names</code></strong>:<code>(str, list)</code>=<em><code>'weight_hh_l0'</code></em>) :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
+<h3 id="WeightDropout" class="doc_header"><code>class</code> <code>WeightDropout</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/models/awdlstm.py#L34" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>WeightDropout</code>(<strong><code>module</code></strong>:<code>nn.Module</code>, <strong><code>weight_p</code></strong>:<code>float</code>, <strong><code>layer_names</code></strong>:<code>(str, list)</code>=<em><code>'weight_hh_l0'</code></em>) :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
 </blockquote>
 <p>A module that wraps another layer in which some weights will be replaced by 0 during training.</p>
 <table>
@@ -252,7 +233,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 <tbody>
 <tr>
 <td><strong><code>module</code></strong></td>
-<td><a href="/torch_core.html#Module"><code>Module</code></a></td>
+<td><code>nn.Module</code></td>
 <td></td>
 <td>Wrapped module</td>
 </tr>
@@ -330,7 +311,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="EmbeddingDropout" class="doc_header"><code>class</code> <code>EmbeddingDropout</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/models/awdlstm.py#L71" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>EmbeddingDropout</code>(<strong><code>emb</code></strong>:<a href="/layers.html#Embedding"><code>Embedding</code></a>, <strong><code>embed_p</code></strong>:<code>float</code>) :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
+<h3 id="EmbeddingDropout" class="doc_header"><code>class</code> <code>EmbeddingDropout</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/models/awdlstm.py#L76" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>EmbeddingDropout</code>(<strong><code>emb</code></strong>:<code>nn.Embedding</code>, <strong><code>embed_p</code></strong>:<code>float</code>) :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
 </blockquote>
 <p>Apply dropout with probability <code>embed_p</code> to an embedding layer <code>emb</code>.</p>
 <table>
@@ -344,7 +325,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 <tbody>
 <tr>
 <td><strong><code>emb</code></strong></td>
-<td><a href="/layers.html#Embedding"><code>Embedding</code></a></td>
+<td><code>nn.Embedding</code></td>
 <td></td>
 <td>Wrapped embedding layer</td>
 </tr>
@@ -407,7 +388,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="AWD_LSTM" class="doc_header"><code>class</code> <code>AWD_LSTM</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/models/awdlstm.py#L91" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>AWD_LSTM</code>(<strong><code>vocab_sz</code></strong>:<code>int</code>, <strong><code>emb_sz</code></strong>:<code>int</code>, <strong><code>n_hid</code></strong>:<code>int</code>, <strong><code>n_layers</code></strong>:<code>int</code>, <strong><code>pad_token</code></strong>:<code>int</code>=<em><code>1</code></em>, <strong><code>hidden_p</code></strong>:<code>float</code>=<em><code>0.2</code></em>, <strong><code>input_p</code></strong>:<code>float</code>=<em><code>0.6</code></em>, <strong><code>embed_p</code></strong>:<code>float</code>=<em><code>0.1</code></em>, <strong><code>weight_p</code></strong>:<code>float</code>=<em><code>0.5</code></em>, <strong><code>bidir</code></strong>:<code>bool</code>=<em><code>False</code></em>) :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
+<h3 id="AWD_LSTM" class="doc_header"><code>class</code> <code>AWD_LSTM</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/models/awdlstm.py#L96" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>AWD_LSTM</code>(<strong><code>vocab_sz</code></strong>:<code>int</code>, <strong><code>emb_sz</code></strong>:<code>int</code>, <strong><code>n_hid</code></strong>:<code>int</code>, <strong><code>n_layers</code></strong>:<code>int</code>, <strong><code>pad_token</code></strong>:<code>int</code>=<em><code>1</code></em>, <strong><code>hidden_p</code></strong>:<code>float</code>=<em><code>0.2</code></em>, <strong><code>input_p</code></strong>:<code>float</code>=<em><code>0.6</code></em>, <strong><code>embed_p</code></strong>:<code>float</code>=<em><code>0.1</code></em>, <strong><code>weight_p</code></strong>:<code>float</code>=<em><code>0.5</code></em>, <strong><code>bidir</code></strong>:<code>bool</code>=<em><code>False</code></em>) :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
 </blockquote>
 <p>AWD-LSTM inspired by <a href="https://arxiv.org/abs/1708.02182">https://arxiv.org/abs/1708.02182</a></p>
 <table>
@@ -555,7 +536,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="awd_lstm_lm_split" class="doc_header"><code>awd_lstm_lm_split</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/models/awdlstm.py#L159" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>awd_lstm_lm_split</code>(<strong><code>model</code></strong>)</p>
+<h4 id="awd_lstm_lm_split" class="doc_header"><code>awd_lstm_lm_split</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/models/awdlstm.py#L164" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>awd_lstm_lm_split</code>(<strong><code>model</code></strong>)</p>
 </blockquote>
 <p>Split a RNN <code>model</code> in groups for differential learning rates.</p>
 
@@ -594,7 +575,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="awd_lstm_clas_split" class="doc_header"><code>awd_lstm_clas_split</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/models/awdlstm.py#L170" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>awd_lstm_clas_split</code>(<strong><code>model</code></strong>)</p>
+<h4 id="awd_lstm_clas_split" class="doc_header"><code>awd_lstm_clas_split</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/models/awdlstm.py#L175" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>awd_lstm_clas_split</code>(<strong><code>model</code></strong>)</p>
 </blockquote>
 <p>Split a RNN <code>model</code> in groups for differential learning rates.</p>
 

@@ -26,25 +26,6 @@ nb_path: "nbs/01a_losses.ipynb"
     
 <div class="cell border-box-sizing code_cell rendered">
 
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-<div class="output_subarea output_stream output_stderr output_text">
-<pre>/opt/conda/lib/python3.9/site-packages/torch/cuda/__init__.py:145: UserWarning: 
-NVIDIA GeForce RTX 3070 Laptop GPU with CUDA capability sm_86 is not compatible with the current PyTorch installation.
-The current PyTorch install supports CUDA capabilities sm_37 sm_50 sm_60 sm_70.
-If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, please check the instructions at https://pytorch.org/get-started/locally/
-
-  warnings.warn(incompatible_device_warn.format(device_name, capability, &#34; &#34;.join(arch_list), device_name))
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
 </div>
     {% endraw %}
 
@@ -66,7 +47,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="BaseLoss" class="doc_header"><code>class</code> <code>BaseLoss</code><a href="https://github.com/fastai/fastai/tree/master/fastai/losses.py#L13" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>BaseLoss</code>(<strong><code>loss_cls</code></strong>, <strong>*<code>args</code></strong>, <strong><code>axis</code></strong>:<code>int</code>=<em><code>-1</code></em>, <strong><code>flatten</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>floatify</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>is_2d</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h3 id="BaseLoss" class="doc_header"><code>class</code> <code>BaseLoss</code><a href="https://github.com/fastai/fastai/tree/master/fastai/losses.py#L18" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>BaseLoss</code>(<strong><code>loss_cls</code></strong>, <strong>*<code>args</code></strong>, <strong><code>axis</code></strong>:<code>int</code>=<em><code>-1</code></em>, <strong><code>flatten</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>floatify</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>is_2d</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Same as <code>loss_cls</code>, but flattens input and target.</p>
 <table>
@@ -170,7 +151,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="CrossEntropyLossFlat" class="doc_header"><code>class</code> <code>CrossEntropyLossFlat</code><a href="https://github.com/fastai/fastai/tree/master/fastai/losses.py#L59" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>CrossEntropyLossFlat</code>(<strong>*<code>args</code></strong>, <strong><code>axis</code></strong>:<code>int</code>=<em><code>-1</code></em>, <strong><code>weight</code></strong>=<em><code>None</code></em>, <strong><code>ignore_index</code></strong>=<em><code>-100</code></em>, <strong><code>reduction</code></strong>=<em><code>'mean'</code></em>, <strong><code>flatten</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>floatify</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>is_2d</code></strong>:<code>bool</code>=<em><code>True</code></em>) :: <a href="/losses.html#BaseLoss"><code>BaseLoss</code></a></p>
+<h3 id="CrossEntropyLossFlat" class="doc_header"><code>class</code> <code>CrossEntropyLossFlat</code><a href="https://github.com/fastai/fastai/tree/master/fastai/losses.py#L64" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>CrossEntropyLossFlat</code>(<strong>*<code>args</code></strong>, <strong><code>axis</code></strong>:<code>int</code>=<em><code>-1</code></em>, <strong><code>weight</code></strong>=<em><code>None</code></em>, <strong><code>ignore_index</code></strong>=<em><code>-100</code></em>, <strong><code>reduction</code></strong>=<em><code>'mean'</code></em>, <strong><code>flatten</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>floatify</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>is_2d</code></strong>:<code>bool</code>=<em><code>True</code></em>) :: <a href="/losses.html#BaseLoss"><code>BaseLoss</code></a></p>
 </blockquote>
 <p>Same as <code>nn.CrossEntropyLoss</code>, but flattens input and target.</p>
 
@@ -260,7 +241,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="FocalLoss" class="doc_header"><code>class</code> <code>FocalLoss</code><a href="https://github.com/fastai/fastai/tree/master/fastai/losses.py#L80" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>FocalLoss</code>(<strong><code>gamma</code></strong>:<code>float</code>=<em><code>2.0</code></em>, <strong><code>weight</code></strong>:<code>Tensor</code>=<em><code>None</code></em>, <strong><code>reduction</code></strong>:<code>str</code>=<em><code>'mean'</code></em>) :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
+<h3 id="FocalLoss" class="doc_header"><code>class</code> <code>FocalLoss</code><a href="https://github.com/fastai/fastai/tree/master/fastai/losses.py#L85" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>FocalLoss</code>(<strong><code>gamma</code></strong>:<code>float</code>=<em><code>2.0</code></em>, <strong><code>weight</code></strong>:<code>Tensor</code>=<em><code>None</code></em>, <strong><code>reduction</code></strong>:<code>str</code>=<em><code>'mean'</code></em>) :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
 </blockquote>
 <p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
 <table>
@@ -314,7 +295,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="FocalLossFlat" class="doc_header"><code>class</code> <code>FocalLossFlat</code><a href="https://github.com/fastai/fastai/tree/master/fastai/losses.py#L102" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>FocalLossFlat</code>(<strong>*<code>args</code></strong>, <strong><code>gamma</code></strong>:<code>float</code>=<em><code>2.0</code></em>, <strong><code>axis</code></strong>:<code>int</code>=<em><code>-1</code></em>, <strong><code>weight</code></strong>=<em><code>None</code></em>, <strong><code>reduction</code></strong>=<em><code>'mean'</code></em>, <strong>**<code>kwargs</code></strong>) :: <a href="/losses.html#BaseLoss"><code>BaseLoss</code></a></p>
+<h3 id="FocalLossFlat" class="doc_header"><code>class</code> <code>FocalLossFlat</code><a href="https://github.com/fastai/fastai/tree/master/fastai/losses.py#L107" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>FocalLossFlat</code>(<strong>*<code>args</code></strong>, <strong><code>gamma</code></strong>:<code>float</code>=<em><code>2.0</code></em>, <strong><code>axis</code></strong>:<code>int</code>=<em><code>-1</code></em>, <strong><code>weight</code></strong>=<em><code>None</code></em>, <strong><code>reduction</code></strong>=<em><code>'mean'</code></em>, <strong>**<code>kwargs</code></strong>) :: <a href="/losses.html#BaseLoss"><code>BaseLoss</code></a></p>
 </blockquote>
 <p>Same as CrossEntropyLossFlat but with focal paramter, <code>gamma</code>. Focal loss is introduced by Lin et al.
 <a href="https://arxiv.org/pdf/1708.02002.pdf">https://arxiv.org/pdf/1708.02002.pdf</a>. Note the class weighting factor in the paper, alpha, can be
@@ -395,7 +376,7 @@ implemented through pytorch <code>weight</code> argument passed through to F.cro
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="BCEWithLogitsLossFlat" class="doc_header"><code>class</code> <code>BCEWithLogitsLossFlat</code><a href="https://github.com/fastai/fastai/tree/master/fastai/losses.py#L127" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>BCEWithLogitsLossFlat</code>(<strong>*<code>args</code></strong>, <strong><code>axis</code></strong>:<code>int</code>=<em><code>-1</code></em>, <strong><code>floatify</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>thresh</code></strong>:<code>float</code>=<em><code>0.5</code></em>, <strong><code>weight</code></strong>=<em><code>None</code></em>, <strong><code>reduction</code></strong>=<em><code>'mean'</code></em>, <strong><code>pos_weight</code></strong>=<em><code>None</code></em>, <strong><code>flatten</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>is_2d</code></strong>:<code>bool</code>=<em><code>True</code></em>) :: <a href="/losses.html#BaseLoss"><code>BaseLoss</code></a></p>
+<h3 id="BCEWithLogitsLossFlat" class="doc_header"><code>class</code> <code>BCEWithLogitsLossFlat</code><a href="https://github.com/fastai/fastai/tree/master/fastai/losses.py#L132" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>BCEWithLogitsLossFlat</code>(<strong>*<code>args</code></strong>, <strong><code>axis</code></strong>:<code>int</code>=<em><code>-1</code></em>, <strong><code>floatify</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>thresh</code></strong>:<code>float</code>=<em><code>0.5</code></em>, <strong><code>weight</code></strong>=<em><code>None</code></em>, <strong><code>reduction</code></strong>=<em><code>'mean'</code></em>, <strong><code>pos_weight</code></strong>=<em><code>None</code></em>, <strong><code>flatten</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>is_2d</code></strong>:<code>bool</code>=<em><code>True</code></em>) :: <a href="/losses.html#BaseLoss"><code>BaseLoss</code></a></p>
 </blockquote>
 <p>Same as <code>nn.BCEWithLogitsLoss</code>, but flattens input and target.</p>
 
@@ -463,7 +444,7 @@ implemented through pytorch <code>weight</code> argument passed through to F.cro
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="BCELossFlat" class="doc_header"><code>BCELossFlat</code><a href="https://github.com/fastai/fastai/tree/master/fastai/losses.py#L153" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>BCELossFlat</code>(<strong>*<code>args</code></strong>, <strong><code>axis</code></strong>:<code>int</code>=<em><code>-1</code></em>, <strong><code>floatify</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>weight</code></strong>=<em><code>None</code></em>, <strong><code>reduction</code></strong>=<em><code>'mean'</code></em>)</p>
+<h4 id="BCELossFlat" class="doc_header"><code>BCELossFlat</code><a href="https://github.com/fastai/fastai/tree/master/fastai/losses.py#L158" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>BCELossFlat</code>(<strong>*<code>args</code></strong>, <strong><code>axis</code></strong>:<code>int</code>=<em><code>-1</code></em>, <strong><code>floatify</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>weight</code></strong>=<em><code>None</code></em>, <strong><code>reduction</code></strong>=<em><code>'mean'</code></em>)</p>
 </blockquote>
 <p>Same as <code>nn.BCELoss</code>, but flattens input and target.</p>
 
@@ -516,7 +497,7 @@ implemented through pytorch <code>weight</code> argument passed through to F.cro
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="MSELossFlat" class="doc_header"><code>MSELossFlat</code><a href="https://github.com/fastai/fastai/tree/master/fastai/losses.py#L164" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>MSELossFlat</code>(<strong>*<code>args</code></strong>, <strong><code>axis</code></strong>:<code>int</code>=<em><code>-1</code></em>, <strong><code>floatify</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>reduction</code></strong>=<em><code>'mean'</code></em>)</p>
+<h4 id="MSELossFlat" class="doc_header"><code>MSELossFlat</code><a href="https://github.com/fastai/fastai/tree/master/fastai/losses.py#L169" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>MSELossFlat</code>(<strong>*<code>args</code></strong>, <strong><code>axis</code></strong>:<code>int</code>=<em><code>-1</code></em>, <strong><code>floatify</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>reduction</code></strong>=<em><code>'mean'</code></em>)</p>
 </blockquote>
 <p>Same as <code>nn.MSELoss</code>, but flattens input and target.</p>
 
@@ -569,7 +550,7 @@ implemented through pytorch <code>weight</code> argument passed through to F.cro
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="L1LossFlat" class="doc_header"><code>L1LossFlat</code><a href="https://github.com/fastai/fastai/tree/master/fastai/losses.py#L175" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>L1LossFlat</code>(<strong>*<code>args</code></strong>, <strong><code>axis</code></strong>=<em><code>-1</code></em>, <strong><code>floatify</code></strong>=<em><code>True</code></em>, <strong><code>reduction</code></strong>=<em><code>'mean'</code></em>)</p>
+<h4 id="L1LossFlat" class="doc_header"><code>L1LossFlat</code><a href="https://github.com/fastai/fastai/tree/master/fastai/losses.py#L180" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>L1LossFlat</code>(<strong>*<code>args</code></strong>, <strong><code>axis</code></strong>=<em><code>-1</code></em>, <strong><code>floatify</code></strong>=<em><code>True</code></em>, <strong><code>reduction</code></strong>=<em><code>'mean'</code></em>)</p>
 </blockquote>
 <p>Same as <code>nn.L1Loss</code>, but flattens input and target.</p>
 
@@ -601,7 +582,7 @@ implemented through pytorch <code>weight</code> argument passed through to F.cro
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="LabelSmoothingCrossEntropy" class="doc_header"><code>class</code> <code>LabelSmoothingCrossEntropy</code><a href="https://github.com/fastai/fastai/tree/master/fastai/losses.py#L186" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>LabelSmoothingCrossEntropy</code>(<strong><code>eps</code></strong>:<code>float</code>=<em><code>0.1</code></em>, <strong><code>weight</code></strong>:<code>Tensor</code>=<em><code>None</code></em>, <strong><code>reduction</code></strong>:<code>str</code>=<em><code>'mean'</code></em>) :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
+<h3 id="LabelSmoothingCrossEntropy" class="doc_header"><code>class</code> <code>LabelSmoothingCrossEntropy</code><a href="https://github.com/fastai/fastai/tree/master/fastai/losses.py#L191" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>LabelSmoothingCrossEntropy</code>(<strong><code>eps</code></strong>:<code>float</code>=<em><code>0.1</code></em>, <strong><code>weight</code></strong>:<code>Tensor</code>=<em><code>None</code></em>, <strong><code>reduction</code></strong>:<code>str</code>=<em><code>'mean'</code></em>) :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
 </blockquote>
 <p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
 <table>
@@ -695,7 +676,7 @@ implemented through pytorch <code>weight</code> argument passed through to F.cro
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="LabelSmoothingCrossEntropyFlat" class="doc_header"><code>class</code> <code>LabelSmoothingCrossEntropyFlat</code><a href="https://github.com/fastai/fastai/tree/master/fastai/losses.py#L214" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>LabelSmoothingCrossEntropyFlat</code>(<strong>*<code>args</code></strong>, <strong><code>axis</code></strong>:<code>int</code>=<em><code>-1</code></em>, <strong><code>eps</code></strong>=<em><code>0.1</code></em>, <strong><code>reduction</code></strong>=<em><code>'mean'</code></em>, <strong><code>flatten</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>floatify</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>is_2d</code></strong>:<code>bool</code>=<em><code>True</code></em>) :: <a href="/losses.html#BaseLoss"><code>BaseLoss</code></a></p>
+<h3 id="LabelSmoothingCrossEntropyFlat" class="doc_header"><code>class</code> <code>LabelSmoothingCrossEntropyFlat</code><a href="https://github.com/fastai/fastai/tree/master/fastai/losses.py#L219" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>LabelSmoothingCrossEntropyFlat</code>(<strong>*<code>args</code></strong>, <strong><code>axis</code></strong>:<code>int</code>=<em><code>-1</code></em>, <strong><code>eps</code></strong>=<em><code>0.1</code></em>, <strong><code>reduction</code></strong>=<em><code>'mean'</code></em>, <strong><code>flatten</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>floatify</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>is_2d</code></strong>:<code>bool</code>=<em><code>True</code></em>) :: <a href="/losses.html#BaseLoss"><code>BaseLoss</code></a></p>
 </blockquote>
 <p>Same as <a href="/losses.html#LabelSmoothingCrossEntropy"><code>LabelSmoothingCrossEntropy</code></a>, but flattens input and target.</p>
 
@@ -755,7 +736,7 @@ implemented through pytorch <code>weight</code> argument passed through to F.cro
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="DiceLoss" class="doc_header"><code>class</code> <code>DiceLoss</code><a href="https://github.com/fastai/fastai/tree/master/fastai/losses.py#L234" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>DiceLoss</code>(<strong><code>axis</code></strong>:<code>int</code>=<em><code>1</code></em>, <strong><code>smooth</code></strong>:<code>float</code>=<em><code>1e-06</code></em>, <strong><code>reduction</code></strong>:<code>str</code>=<em><code>'sum'</code></em>, <strong><code>square_in_union</code></strong>:<code>bool</code>=<em><code>False</code></em>)</p>
+<h3 id="DiceLoss" class="doc_header"><code>class</code> <code>DiceLoss</code><a href="https://github.com/fastai/fastai/tree/master/fastai/losses.py#L239" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>DiceLoss</code>(<strong><code>axis</code></strong>:<code>int</code>=<em><code>1</code></em>, <strong><code>smooth</code></strong>:<code>float</code>=<em><code>1e-06</code></em>, <strong><code>reduction</code></strong>:<code>str</code>=<em><code>'sum'</code></em>, <strong><code>square_in_union</code></strong>:<code>bool</code>=<em><code>False</code></em>)</p>
 </blockquote>
 <p>Dice loss for segmentation</p>
 <table>

@@ -26,25 +26,6 @@ nb_path: "nbs/42_tabular.model.ipynb"
     
 <div class="cell border-box-sizing code_cell rendered">
 
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-<div class="output_subarea output_stream output_stderr output_text">
-<pre>/opt/conda/lib/python3.9/site-packages/torch/cuda/__init__.py:145: UserWarning: 
-NVIDIA GeForce RTX 3070 Laptop GPU with CUDA capability sm_86 is not compatible with the current PyTorch installation.
-The current PyTorch install supports CUDA capabilities sm_37 sm_50 sm_60 sm_70.
-If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, please check the instructions at https://pytorch.org/get-started/locally/
-
-  warnings.warn(incompatible_device_warn.format(device_name, capability, &#34; &#34;.join(arch_list), device_name))
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
 </div>
     {% endraw %}
 
@@ -72,7 +53,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="emb_sz_rule" class="doc_header"><code>emb_sz_rule</code><a href="https://github.com/fastai/fastai/tree/master/fastai/tabular/model.py#L10" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>emb_sz_rule</code>(<strong><code>n_cat</code></strong>:<code>int</code>)</p>
+<h4 id="emb_sz_rule" class="doc_header"><code>emb_sz_rule</code><a href="https://github.com/fastai/fastai/tree/master/fastai/tabular/model.py#L15" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>emb_sz_rule</code>(<strong><code>n_cat</code></strong>:<code>int</code>)</p>
 </blockquote>
 <p>Rule of thumb to pick embedding size corresponding to <code>n_cat</code></p>
 <table>
@@ -140,7 +121,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_emb_sz" class="doc_header"><code>get_emb_sz</code><a href="https://github.com/fastai/fastai/tree/master/fastai/tabular/model.py#L25" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_emb_sz</code>(<strong><code>to</code></strong>:<code>(Tabular, TabularPandas)</code>, <strong><code>sz_dict</code></strong>:<code>dict</code>=<em><code>None</code></em>)</p>
+<h4 id="get_emb_sz" class="doc_header"><code>get_emb_sz</code><a href="https://github.com/fastai/fastai/tree/master/fastai/tabular/model.py#L30" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_emb_sz</code>(<strong><code>to</code></strong>:<code>(Tabular, TabularPandas)</code>, <strong><code>sz_dict</code></strong>:<code>dict</code>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Get embedding size for each cat_name in <a href="/tabular.core.html#Tabular"><code>Tabular</code></a> or <a href="/tabular.core.html#TabularPandas"><code>TabularPandas</code></a>, or populate embedding size manually using sz_dict</p>
 <table>
@@ -195,7 +176,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TabularModel" class="doc_header"><code>class</code> <code>TabularModel</code><a href="https://github.com/fastai/fastai/tree/master/fastai/tabular/model.py#L33" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TabularModel</code>(<strong><code>emb_szs</code></strong>:<code>list</code>, <strong><code>n_cont</code></strong>:<code>int</code>, <strong><code>out_sz</code></strong>:<code>int</code>, <strong><code>layers</code></strong>:<code>list</code>, <strong><code>ps</code></strong>:<code>(float, list)</code>=<em><code>None</code></em>, <strong><code>embed_p</code></strong>:<code>float</code>=<em><code>0.0</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>, <strong><code>use_bn</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>bn_final</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>bn_cont</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>act_cls</code></strong>=<em><code>ReLU(inplace=True)</code></em>, <strong><code>lin_first</code></strong>:<code>bool</code>=<em><code>True</code></em>) :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
+<h2 id="TabularModel" class="doc_header"><code>class</code> <code>TabularModel</code><a href="https://github.com/fastai/fastai/tree/master/fastai/tabular/model.py#L38" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TabularModel</code>(<strong><code>emb_szs</code></strong>:<code>list</code>, <strong><code>n_cont</code></strong>:<code>int</code>, <strong><code>out_sz</code></strong>:<code>int</code>, <strong><code>layers</code></strong>:<code>list</code>, <strong><code>ps</code></strong>:<code>(float, list)</code>=<em><code>None</code></em>, <strong><code>embed_p</code></strong>:<code>float</code>=<em><code>0.0</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>, <strong><code>use_bn</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>bn_final</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>bn_cont</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>act_cls</code></strong>=<em><code>ReLU(inplace=True)</code></em>, <strong><code>lin_first</code></strong>:<code>bool</code>=<em><code>True</code></em>) :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
 </blockquote>
 <p>Basic model for tabular data.</p>
 <table>
@@ -338,7 +319,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="tabular_config" class="doc_header"><code>tabular_config</code><a href="https://github.com/fastai/fastai/tree/master/fastai/tabular/model.py#L74" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>tabular_config</code>(<strong><code>ps</code></strong>:<code>(float, list)</code>=<em><code>None</code></em>, <strong><code>embed_p</code></strong>:<code>float</code>=<em><code>0.0</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>, <strong><code>use_bn</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>bn_final</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>bn_cont</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>act_cls</code></strong>=<em><code>ReLU(inplace=True)</code></em>, <strong><code>lin_first</code></strong>:<code>bool</code>=<em><code>True</code></em>)</p>
+<h4 id="tabular_config" class="doc_header"><code>tabular_config</code><a href="https://github.com/fastai/fastai/tree/master/fastai/tabular/model.py#L79" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>tabular_config</code>(<strong><code>ps</code></strong>:<code>(float, list)</code>=<em><code>None</code></em>, <strong><code>embed_p</code></strong>:<code>float</code>=<em><code>0.0</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>, <strong><code>use_bn</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>bn_final</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>bn_cont</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>act_cls</code></strong>=<em><code>ReLU(inplace=True)</code></em>, <strong><code>lin_first</code></strong>:<code>bool</code>=<em><code>True</code></em>)</p>
 </blockquote>
 <p>Convenience function to easily create a config for <a href="/tabular.model.html#TabularModel"><code>TabularModel</code></a></p>
 

@@ -26,25 +26,6 @@ nb_path: "nbs/19_callback.mixup.ipynb"
     
 <div class="cell border-box-sizing code_cell rendered">
 
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-<div class="output_subarea output_stream output_stderr output_text">
-<pre>/opt/conda/lib/python3.9/site-packages/torch/cuda/__init__.py:145: UserWarning: 
-NVIDIA GeForce RTX 3070 Laptop GPU with CUDA capability sm_86 is not compatible with the current PyTorch installation.
-The current PyTorch install supports CUDA capabilities sm_37 sm_50 sm_60 sm_70.
-If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, please check the instructions at https://pytorch.org/get-started/locally/
-
-  warnings.warn(incompatible_device_warn.format(device_name, capability, &#34; &#34;.join(arch_list), device_name))
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
 </div>
     {% endraw %}
 
@@ -83,7 +64,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="reduce_loss" class="doc_header"><code>reduce_loss</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/mixup.py#L10" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>reduce_loss</code>(<strong><code>loss</code></strong>:<code>Tensor</code>, <strong><code>reduction</code></strong>:<code>str</code>=<em><code>'mean'</code></em>)</p>
+<h4 id="reduce_loss" class="doc_header"><code>reduce_loss</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/mixup.py#L15" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>reduce_loss</code>(<strong><code>loss</code></strong>:<code>Tensor</code>, <strong><code>reduction</code></strong>:<code>str</code>=<em><code>'mean'</code></em>)</p>
 </blockquote>
 <p>Reduce the loss based on <code>reduction</code></p>
 <table>
@@ -138,7 +119,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="MixHandler" class="doc_header"><code>class</code> <code>MixHandler</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/mixup.py#L18" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MixHandler</code>(<strong><code>alpha</code></strong>:<code>float</code>=<em><code>0.5</code></em>) :: <a href="/callback.core.html#Callback"><code>Callback</code></a></p>
+<h2 id="MixHandler" class="doc_header"><code>class</code> <code>MixHandler</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/mixup.py#L23" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MixHandler</code>(<strong><code>alpha</code></strong>:<code>float</code>=<em><code>0.5</code></em>) :: <a href="/callback.core.html#Callback"><code>Callback</code></a></p>
 </blockquote>
 <p>A handler class for implementing <a href="/callback.mixup.html#MixUp"><code>MixUp</code></a> style scheduling</p>
 <table>
@@ -194,7 +175,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="MixUp" class="doc_header"><code>class</code> <code>MixUp</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/mixup.py#L51" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MixUp</code>(<strong><code>alpha</code></strong>:<code>float</code>=<em><code>0.4</code></em>) :: <a href="/callback.mixup.html#MixHandler"><code>MixHandler</code></a></p>
+<h2 id="MixUp" class="doc_header"><code>class</code> <code>MixUp</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/mixup.py#L56" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MixUp</code>(<strong><code>alpha</code></strong>:<code>float</code>=<em><code>0.4</code></em>) :: <a href="/callback.mixup.html#MixHandler"><code>MixHandler</code></a></p>
 </blockquote>
 <p>Implementation of <a href="https://arxiv.org/abs/1710.09412">https://arxiv.org/abs/1710.09412</a></p>
 <table>
@@ -454,7 +435,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="CutMix" class="doc_header"><code>class</code> <code>CutMix</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/mixup.py#L73" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>CutMix</code>(<strong><code>alpha</code></strong>:<code>float</code>=<em><code>1.0</code></em>) :: <a href="/callback.mixup.html#MixHandler"><code>MixHandler</code></a></p>
+<h2 id="CutMix" class="doc_header"><code>class</code> <code>CutMix</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/mixup.py#L78" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>CutMix</code>(<strong><code>alpha</code></strong>:<code>float</code>=<em><code>1.0</code></em>) :: <a href="/callback.mixup.html#MixHandler"><code>MixHandler</code></a></p>
 </blockquote>
 <p>Implementation of <a href="https://arxiv.org/abs/1905.04899">https://arxiv.org/abs/1905.04899</a></p>
 <table>

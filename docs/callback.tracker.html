@@ -26,25 +26,6 @@ nb_path: "nbs/17_callback.tracker.ipynb"
     
 <div class="cell border-box-sizing code_cell rendered">
 
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-<div class="output_subarea output_stream output_stderr output_text">
-<pre>/opt/conda/lib/python3.9/site-packages/torch/cuda/__init__.py:145: UserWarning: 
-NVIDIA GeForce RTX 3070 Laptop GPU with CUDA capability sm_86 is not compatible with the current PyTorch installation.
-The current PyTorch install supports CUDA capabilities sm_37 sm_50 sm_60 sm_70.
-If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, please check the instructions at https://pytorch.org/get-started/locally/
-
-  warnings.warn(incompatible_device_warn.format(device_name, capability, &#34; &#34;.join(arch_list), device_name))
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
 </div>
     {% endraw %}
 
@@ -66,7 +47,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TerminateOnNaNCallback" class="doc_header"><code>class</code> <code>TerminateOnNaNCallback</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/tracker.py#L12" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TerminateOnNaNCallback</code>(<strong><code>after_create</code></strong>=<em><code>None</code></em>, <strong><code>before_fit</code></strong>=<em><code>None</code></em>, <strong><code>before_epoch</code></strong>=<em><code>None</code></em>, <strong><code>before_train</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_pred</code></strong>=<em><code>None</code></em>, <strong><code>after_loss</code></strong>=<em><code>None</code></em>, <strong><code>before_backward</code></strong>=<em><code>None</code></em>, <strong><code>before_step</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_step</code></strong>=<em><code>None</code></em>, <strong><code>after_step</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_train</code></strong>=<em><code>None</code></em>, <strong><code>after_train</code></strong>=<em><code>None</code></em>, <strong><code>before_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_epoch</code></strong>=<em><code>None</code></em>, <strong><code>after_epoch</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_fit</code></strong>=<em><code>None</code></em>, <strong><code>after_fit</code></strong>=<em><code>None</code></em>) :: <a href="/callback.core.html#Callback"><code>Callback</code></a></p>
+<h2 id="TerminateOnNaNCallback" class="doc_header"><code>class</code> <code>TerminateOnNaNCallback</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/tracker.py#L17" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TerminateOnNaNCallback</code>(<strong><code>after_create</code></strong>=<em><code>None</code></em>, <strong><code>before_fit</code></strong>=<em><code>None</code></em>, <strong><code>before_epoch</code></strong>=<em><code>None</code></em>, <strong><code>before_train</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_pred</code></strong>=<em><code>None</code></em>, <strong><code>after_loss</code></strong>=<em><code>None</code></em>, <strong><code>before_backward</code></strong>=<em><code>None</code></em>, <strong><code>before_step</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_step</code></strong>=<em><code>None</code></em>, <strong><code>after_step</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_train</code></strong>=<em><code>None</code></em>, <strong><code>after_train</code></strong>=<em><code>None</code></em>, <strong><code>before_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_epoch</code></strong>=<em><code>None</code></em>, <strong><code>after_epoch</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_fit</code></strong>=<em><code>None</code></em>, <strong><code>after_fit</code></strong>=<em><code>None</code></em>) :: <a href="/callback.core.html#Callback"><code>Callback</code></a></p>
 </blockquote>
 <p>A <a href="/callback.core.html#Callback"><code>Callback</code></a> that terminates training if loss is NaN.</p>
 
@@ -159,7 +140,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TrackerCallback" class="doc_header"><code>class</code> <code>TrackerCallback</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/tracker.py#L20" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TrackerCallback</code>(<strong><code>monitor</code></strong>=<em><code>'valid_loss'</code></em>, <strong><code>comp</code></strong>=<em><code>None</code></em>, <strong><code>min_delta</code></strong>=<em><code>0.0</code></em>, <strong><code>reset_on_fit</code></strong>=<em><code>True</code></em>) :: <a href="/callback.core.html#Callback"><code>Callback</code></a></p>
+<h2 id="TrackerCallback" class="doc_header"><code>class</code> <code>TrackerCallback</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/tracker.py#L25" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TrackerCallback</code>(<strong><code>monitor</code></strong>=<em><code>'valid_loss'</code></em>, <strong><code>comp</code></strong>=<em><code>None</code></em>, <strong><code>min_delta</code></strong>=<em><code>0.0</code></em>, <strong><code>reset_on_fit</code></strong>=<em><code>True</code></em>) :: <a href="/callback.core.html#Callback"><code>Callback</code></a></p>
 </blockquote>
 <p>A <a href="/callback.core.html#Callback"><code>Callback</code></a> that keeps track of the best value in <code>monitor</code>.</p>
 
@@ -199,7 +180,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="EarlyStoppingCallback" class="doc_header"><code>class</code> <code>EarlyStoppingCallback</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/tracker.py#L44" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>EarlyStoppingCallback</code>(<strong><code>monitor</code></strong>=<em><code>'valid_loss'</code></em>, <strong><code>comp</code></strong>=<em><code>None</code></em>, <strong><code>min_delta</code></strong>=<em><code>0.0</code></em>, <strong><code>patience</code></strong>=<em><code>1</code></em>, <strong><code>reset_on_fit</code></strong>=<em><code>True</code></em>) :: <a href="/callback.tracker.html#TrackerCallback"><code>TrackerCallback</code></a></p>
+<h2 id="EarlyStoppingCallback" class="doc_header"><code>class</code> <code>EarlyStoppingCallback</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/tracker.py#L49" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>EarlyStoppingCallback</code>(<strong><code>monitor</code></strong>=<em><code>'valid_loss'</code></em>, <strong><code>comp</code></strong>=<em><code>None</code></em>, <strong><code>min_delta</code></strong>=<em><code>0.0</code></em>, <strong><code>patience</code></strong>=<em><code>1</code></em>, <strong><code>reset_on_fit</code></strong>=<em><code>True</code></em>) :: <a href="/callback.tracker.html#TrackerCallback"><code>TrackerCallback</code></a></p>
 </blockquote>
 <p>A <a href="/callback.tracker.html#TrackerCallback"><code>TrackerCallback</code></a> that terminates training when monitored quantity stops improving.</p>
 
@@ -418,7 +399,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="SaveModelCallback" class="doc_header"><code>class</code> <code>SaveModelCallback</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/tracker.py#L63" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SaveModelCallback</code>(<strong><code>monitor</code></strong>=<em><code>'valid_loss'</code></em>, <strong><code>comp</code></strong>=<em><code>None</code></em>, <strong><code>min_delta</code></strong>=<em><code>0.0</code></em>, <strong><code>fname</code></strong>=<em><code>'model'</code></em>, <strong><code>every_epoch</code></strong>=<em><code>False</code></em>, <strong><code>at_end</code></strong>=<em><code>False</code></em>, <strong><code>with_opt</code></strong>=<em><code>False</code></em>, <strong><code>reset_on_fit</code></strong>=<em><code>True</code></em>) :: <a href="/callback.tracker.html#TrackerCallback"><code>TrackerCallback</code></a></p>
+<h2 id="SaveModelCallback" class="doc_header"><code>class</code> <code>SaveModelCallback</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/tracker.py#L68" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SaveModelCallback</code>(<strong><code>monitor</code></strong>=<em><code>'valid_loss'</code></em>, <strong><code>comp</code></strong>=<em><code>None</code></em>, <strong><code>min_delta</code></strong>=<em><code>0.0</code></em>, <strong><code>fname</code></strong>=<em><code>'model'</code></em>, <strong><code>every_epoch</code></strong>=<em><code>False</code></em>, <strong><code>at_end</code></strong>=<em><code>False</code></em>, <strong><code>with_opt</code></strong>=<em><code>False</code></em>, <strong><code>reset_on_fit</code></strong>=<em><code>True</code></em>) :: <a href="/callback.tracker.html#TrackerCallback"><code>TrackerCallback</code></a></p>
 </blockquote>
 <p>A <a href="/callback.tracker.html#TrackerCallback"><code>TrackerCallback</code></a> that saves the model's best during training and loads it at the end.</p>
 
@@ -649,7 +630,7 @@ Better model found at epoch 1 with valid_loss value: 5.445522308349609.
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ReduceLROnPlateau" class="doc_header"><code>class</code> <code>ReduceLROnPlateau</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/tracker.py#L92" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ReduceLROnPlateau</code>(<strong><code>monitor</code></strong>=<em><code>'valid_loss'</code></em>, <strong><code>comp</code></strong>=<em><code>None</code></em>, <strong><code>min_delta</code></strong>=<em><code>0.0</code></em>, <strong><code>patience</code></strong>=<em><code>1</code></em>, <strong><code>factor</code></strong>=<em><code>10.0</code></em>, <strong><code>min_lr</code></strong>=<em><code>0</code></em>, <strong><code>reset_on_fit</code></strong>=<em><code>True</code></em>) :: <a href="/callback.tracker.html#TrackerCallback"><code>TrackerCallback</code></a></p>
+<h2 id="ReduceLROnPlateau" class="doc_header"><code>class</code> <code>ReduceLROnPlateau</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/tracker.py#L97" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ReduceLROnPlateau</code>(<strong><code>monitor</code></strong>=<em><code>'valid_loss'</code></em>, <strong><code>comp</code></strong>=<em><code>None</code></em>, <strong><code>min_delta</code></strong>=<em><code>0.0</code></em>, <strong><code>patience</code></strong>=<em><code>1</code></em>, <strong><code>factor</code></strong>=<em><code>10.0</code></em>, <strong><code>min_lr</code></strong>=<em><code>0</code></em>, <strong><code>reset_on_fit</code></strong>=<em><code>True</code></em>) :: <a href="/callback.tracker.html#TrackerCallback"><code>TrackerCallback</code></a></p>
 </blockquote>
 <p>A <a href="/callback.tracker.html#TrackerCallback"><code>TrackerCallback</code></a> that reduces learning rate when a metric has stopped improving.</p>
 

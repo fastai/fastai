@@ -26,25 +26,6 @@ nb_path: "nbs/40_tabular.core.ipynb"
     
 <div class="cell border-box-sizing code_cell rendered">
 
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-<div class="output_subarea output_stream output_stderr output_text">
-<pre>/opt/conda/lib/python3.9/site-packages/torch/cuda/__init__.py:145: UserWarning: 
-NVIDIA GeForce RTX 3070 Laptop GPU with CUDA capability sm_86 is not compatible with the current PyTorch installation.
-The current PyTorch install supports CUDA capabilities sm_37 sm_50 sm_60 sm_70.
-If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, please check the instructions at https://pytorch.org/get-started/locally/
-
-  warnings.warn(incompatible_device_warn.format(device_name, capability, &#34; &#34;.join(arch_list), device_name))
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
 </div>
     {% endraw %}
 
@@ -79,7 +60,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="make_date" class="doc_header"><code>make_date</code><a href="https://github.com/fastai/fastai/tree/master/fastai/tabular/core.py#L15" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>make_date</code>(<strong><code>df</code></strong>, <strong><code>date_field</code></strong>)</p>
+<h4 id="make_date" class="doc_header"><code>make_date</code><a href="https://github.com/fastai/fastai/tree/master/fastai/tabular/core.py#L20" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>make_date</code>(<strong><code>df</code></strong>, <strong><code>date_field</code></strong>)</p>
 </blockquote>
 <p>Make sure <code>df[date_field]</code> is of the right date type.</p>
 
@@ -130,7 +111,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="add_datepart" class="doc_header"><code>add_datepart</code><a href="https://github.com/fastai/fastai/tree/master/fastai/tabular/core.py#L24" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>add_datepart</code>(<strong><code>df</code></strong>, <strong><code>field_name</code></strong>, <strong><code>prefix</code></strong>=<em><code>None</code></em>, <strong><code>drop</code></strong>=<em><code>True</code></em>, <strong><code>time</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="add_datepart" class="doc_header"><code>add_datepart</code><a href="https://github.com/fastai/fastai/tree/master/fastai/tabular/core.py#L29" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>add_datepart</code>(<strong><code>df</code></strong>, <strong><code>field_name</code></strong>, <strong><code>prefix</code></strong>=<em><code>None</code></em>, <strong><code>drop</code></strong>=<em><code>True</code></em>, <strong><code>time</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 <p>Helper function that adds columns relevant to a date in the column <code>field_name</code> of <code>df</code>.</p>
 
@@ -308,7 +289,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="add_elapsed_times" class="doc_header"><code>add_elapsed_times</code><a href="https://github.com/fastai/fastai/tree/master/fastai/tabular/core.py#L54" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>add_elapsed_times</code>(<strong><code>df</code></strong>, <strong><code>field_names</code></strong>, <strong><code>date_field</code></strong>, <strong><code>base_field</code></strong>)</p>
+<h4 id="add_elapsed_times" class="doc_header"><code>add_elapsed_times</code><a href="https://github.com/fastai/fastai/tree/master/fastai/tabular/core.py#L59" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>add_elapsed_times</code>(<strong><code>df</code></strong>, <strong><code>field_names</code></strong>, <strong><code>date_field</code></strong>, <strong><code>base_field</code></strong>)</p>
 </blockquote>
 <p>Add in <code>df</code> for each event in <code>field_names</code> the elapsed time according to <code>date_field</code> grouped by <code>base_field</code></p>
 
@@ -443,7 +424,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="cont_cat_split" class="doc_header"><code>cont_cat_split</code><a href="https://github.com/fastai/fastai/tree/master/fastai/tabular/core.py#L82" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>cont_cat_split</code>(<strong><code>df</code></strong>, <strong><code>max_card</code></strong>=<em><code>20</code></em>, <strong><code>dep_var</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="cont_cat_split" class="doc_header"><code>cont_cat_split</code><a href="https://github.com/fastai/fastai/tree/master/fastai/tabular/core.py#L87" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>cont_cat_split</code>(<strong><code>df</code></strong>, <strong><code>max_card</code></strong>=<em><code>20</code></em>, <strong><code>dep_var</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Helper function that returns column names of cont and cat variables from given <code>df</code>.</p>
 
@@ -595,7 +576,7 @@ cat_names: [&#39;cat1&#39;, &#39;d1_date&#39;, &#39;d1_Is_month_end&#39;, &#39;d
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="df_shrink_dtypes" class="doc_header"><code>df_shrink_dtypes</code><a href="https://github.com/fastai/fastai/tree/master/fastai/tabular/core.py#L95" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>df_shrink_dtypes</code>(<strong><code>df</code></strong>, <strong><code>skip</code></strong>=<em><code>[]</code></em>, <strong><code>obj2cat</code></strong>=<em><code>True</code></em>, <strong><code>int2uint</code></strong>=<em><code>False</code></em>)</p>
+<h3 id="df_shrink_dtypes" class="doc_header"><code>df_shrink_dtypes</code><a href="https://github.com/fastai/fastai/tree/master/fastai/tabular/core.py#L100" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>df_shrink_dtypes</code>(<strong><code>df</code></strong>, <strong><code>skip</code></strong>=<em><code>[]</code></em>, <strong><code>obj2cat</code></strong>=<em><code>True</code></em>, <strong><code>int2uint</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 <p>Return any possible smaller data types for DataFrame columns. Allows <code>object</code>-&gt;<code>category</code>, <code>int</code>-&gt;<code>uint</code>, and exclusion.</p>
 
@@ -714,7 +695,7 @@ dtype: object</pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="df_shrink" class="doc_header"><code>df_shrink</code><a href="https://github.com/fastai/fastai/tree/master/fastai/tabular/core.py#L124" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>df_shrink</code>(<strong><code>df</code></strong>, <strong><code>skip</code></strong>=<em><code>[]</code></em>, <strong><code>obj2cat</code></strong>=<em><code>True</code></em>, <strong><code>int2uint</code></strong>=<em><code>False</code></em>)</p>
+<h3 id="df_shrink" class="doc_header"><code>df_shrink</code><a href="https://github.com/fastai/fastai/tree/master/fastai/tabular/core.py#L129" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>df_shrink</code>(<strong><code>df</code></strong>, <strong><code>skip</code></strong>=<em><code>[]</code></em>, <strong><code>obj2cat</code></strong>=<em><code>True</code></em>, <strong><code>int2uint</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 <p>Reduce DataFrame memory usage, by casting to smaller types returned by <code>df_shrink_dtypes()</code>.</p>
 
@@ -945,7 +926,7 @@ Reduced Dataframe: 0.818329 megabytes
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Tabular" class="doc_header"><code>class</code> <code>Tabular</code><a href="https://github.com/fastai/fastai/tree/master/fastai/tabular/core.py#L142" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Tabular</code>(<strong><code>df</code></strong>, <strong><code>procs</code></strong>=<em><code>None</code></em>, <strong><code>cat_names</code></strong>=<em><code>None</code></em>, <strong><code>cont_names</code></strong>=<em><code>None</code></em>, <strong><code>y_names</code></strong>=<em><code>None</code></em>, <strong><code>y_block</code></strong>=<em><code>None</code></em>, <strong><code>splits</code></strong>=<em><code>None</code></em>, <strong><code>do_setup</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>inplace</code></strong>=<em><code>False</code></em>, <strong><code>reduce_memory</code></strong>=<em><code>True</code></em>) :: <a href="https://fastcore.fast.ai/foundation#CollBase"><code>CollBase</code></a></p>
+<h2 id="Tabular" class="doc_header"><code>class</code> <code>Tabular</code><a href="https://github.com/fastai/fastai/tree/master/fastai/tabular/core.py#L147" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Tabular</code>(<strong><code>df</code></strong>, <strong><code>procs</code></strong>=<em><code>None</code></em>, <strong><code>cat_names</code></strong>=<em><code>None</code></em>, <strong><code>cont_names</code></strong>=<em><code>None</code></em>, <strong><code>y_names</code></strong>=<em><code>None</code></em>, <strong><code>y_block</code></strong>=<em><code>None</code></em>, <strong><code>splits</code></strong>=<em><code>None</code></em>, <strong><code>do_setup</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>inplace</code></strong>=<em><code>False</code></em>, <strong><code>reduce_memory</code></strong>=<em><code>True</code></em>) :: <a href="https://fastcore.fast.ai/foundation#CollBase"><code>CollBase</code></a></p>
 </blockquote>
 <p>A <code>DataFrame</code> wrapper that knows which cols are cont/cat/y, and returns rows in <code>__getitem__</code></p>
 
@@ -998,7 +979,7 @@ Reduced Dataframe: 0.818329 megabytes
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TabularPandas" class="doc_header"><code>class</code> <code>TabularPandas</code><a href="https://github.com/fastai/fastai/tree/master/fastai/tabular/core.py#L197" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TabularPandas</code>(<strong><code>df</code></strong>, <strong><code>procs</code></strong>=<em><code>None</code></em>, <strong><code>cat_names</code></strong>=<em><code>None</code></em>, <strong><code>cont_names</code></strong>=<em><code>None</code></em>, <strong><code>y_names</code></strong>=<em><code>None</code></em>, <strong><code>y_block</code></strong>=<em><code>None</code></em>, <strong><code>splits</code></strong>=<em><code>None</code></em>, <strong><code>do_setup</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>inplace</code></strong>=<em><code>False</code></em>, <strong><code>reduce_memory</code></strong>=<em><code>True</code></em>) :: <a href="/tabular.core.html#Tabular"><code>Tabular</code></a></p>
+<h2 id="TabularPandas" class="doc_header"><code>class</code> <code>TabularPandas</code><a href="https://github.com/fastai/fastai/tree/master/fastai/tabular/core.py#L202" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TabularPandas</code>(<strong><code>df</code></strong>, <strong><code>procs</code></strong>=<em><code>None</code></em>, <strong><code>cat_names</code></strong>=<em><code>None</code></em>, <strong><code>cont_names</code></strong>=<em><code>None</code></em>, <strong><code>y_names</code></strong>=<em><code>None</code></em>, <strong><code>y_block</code></strong>=<em><code>None</code></em>, <strong><code>splits</code></strong>=<em><code>None</code></em>, <strong><code>do_setup</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>inplace</code></strong>=<em><code>False</code></em>, <strong><code>reduce_memory</code></strong>=<em><code>True</code></em>) :: <a href="/tabular.core.html#Tabular"><code>Tabular</code></a></p>
 </blockquote>
 <p>A <a href="/tabular.core.html#Tabular"><code>Tabular</code></a> object with transforms</p>
 
@@ -1037,7 +1018,7 @@ Reduced Dataframe: 0.818329 megabytes
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TabularProc" class="doc_header"><code>class</code> <code>TabularProc</code><a href="https://github.com/fastai/fastai/tree/master/fastai/tabular/core.py#L219" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TabularProc</code>(<strong><code>enc</code></strong>=<em><code>None</code></em>, <strong><code>dec</code></strong>=<em><code>None</code></em>, <strong><code>split_idx</code></strong>=<em><code>None</code></em>, <strong><code>order</code></strong>=<em><code>None</code></em>) :: <a href="https://fastcore.fast.ai/transform#InplaceTransform"><code>InplaceTransform</code></a></p>
+<h2 id="TabularProc" class="doc_header"><code>class</code> <code>TabularProc</code><a href="https://github.com/fastai/fastai/tree/master/fastai/tabular/core.py#L224" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TabularProc</code>(<strong><code>enc</code></strong>=<em><code>None</code></em>, <strong><code>dec</code></strong>=<em><code>None</code></em>, <strong><code>split_idx</code></strong>=<em><code>None</code></em>, <strong><code>order</code></strong>=<em><code>None</code></em>) :: <a href="https://fastcore.fast.ai/transform#InplaceTransform"><code>InplaceTransform</code></a></p>
 </blockquote>
 <p>Base class to write a non-lazy tabular processor for dataframes</p>
 
@@ -1090,7 +1071,7 @@ Reduced Dataframe: 0.818329 megabytes
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="Categorify" class="doc_header"><code>class</code> <code>Categorify</code><a href="https://github.com/fastai/fastai/tree/master/fastai/tabular/core.py#L237" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>Categorify</code>(<strong><code>enc</code></strong>=<em><code>None</code></em>, <strong><code>dec</code></strong>=<em><code>None</code></em>, <strong><code>split_idx</code></strong>=<em><code>None</code></em>, <strong><code>order</code></strong>=<em><code>None</code></em>) :: <a href="/tabular.core.html#TabularProc"><code>TabularProc</code></a></p>
+<h3 id="Categorify" class="doc_header"><code>class</code> <code>Categorify</code><a href="https://github.com/fastai/fastai/tree/master/fastai/tabular/core.py#L242" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>Categorify</code>(<strong><code>enc</code></strong>=<em><code>None</code></em>, <strong><code>dec</code></strong>=<em><code>None</code></em>, <strong><code>split_idx</code></strong>=<em><code>None</code></em>, <strong><code>order</code></strong>=<em><code>None</code></em>) :: <a href="/tabular.core.html#TabularProc"><code>TabularProc</code></a></p>
 </blockquote>
 <p>Transform the categorical variables to something similar to <code>pd.Categorical</code></p>
 
@@ -1224,7 +1205,7 @@ Reduced Dataframe: 0.818329 megabytes
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="FillStrategy" class="doc_header"><code>class</code> <code>FillStrategy</code><a href="https://github.com/fastai/fastai/tree/master/fastai/tabular/core.py#L286" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FillStrategy</code>()</p>
+<h2 id="FillStrategy" class="doc_header"><code>class</code> <code>FillStrategy</code><a href="https://github.com/fastai/fastai/tree/master/fastai/tabular/core.py#L291" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FillStrategy</code>()</p>
 </blockquote>
 <p>Namespace containing the various filling strategies.</p>
 
@@ -1270,7 +1251,7 @@ Reduced Dataframe: 0.818329 megabytes
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="FillMissing" class="doc_header"><code>class</code> <code>FillMissing</code><a href="https://github.com/fastai/fastai/tree/master/fastai/tabular/core.py#L293" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>FillMissing</code>(<strong><code>fill_strategy</code></strong>=<em><code>median</code></em>, <strong><code>add_col</code></strong>=<em><code>True</code></em>, <strong><code>fill_vals</code></strong>=<em><code>None</code></em>) :: <a href="/tabular.core.html#TabularProc"><code>TabularProc</code></a></p>
+<h3 id="FillMissing" class="doc_header"><code>class</code> <code>FillMissing</code><a href="https://github.com/fastai/fastai/tree/master/fastai/tabular/core.py#L298" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>FillMissing</code>(<strong><code>fill_strategy</code></strong>=<em><code>median</code></em>, <strong><code>add_col</code></strong>=<em><code>True</code></em>, <strong><code>fill_vals</code></strong>=<em><code>None</code></em>) :: <a href="/tabular.core.html#TabularProc"><code>TabularProc</code></a></p>
 </blockquote>
 <p>Fill the missing values in continuous columns.</p>
 
@@ -1302,7 +1283,7 @@ Reduced Dataframe: 0.818329 megabytes
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ReadTabBatch" class="doc_header"><code>class</code> <code>ReadTabBatch</code><a href="https://github.com/fastai/fastai/tree/master/fastai/tabular/core.py#L319" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ReadTabBatch</code>(<strong><code>to</code></strong>) :: <a href="https://fastcore.fast.ai/transform#ItemTransform"><code>ItemTransform</code></a></p>
+<h2 id="ReadTabBatch" class="doc_header"><code>class</code> <code>ReadTabBatch</code><a href="https://github.com/fastai/fastai/tree/master/fastai/tabular/core.py#L324" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ReadTabBatch</code>(<strong><code>to</code></strong>) :: <a href="https://fastcore.fast.ai/transform#ItemTransform"><code>ItemTransform</code></a></p>
 </blockquote>
 <p>Transform <a href="/tabular.core.html#TabularPandas"><code>TabularPandas</code></a> values into a <code>Tensor</code> with the ability to decode</p>
 
@@ -1341,7 +1322,7 @@ Reduced Dataframe: 0.818329 megabytes
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TabDataLoader" class="doc_header"><code>class</code> <code>TabDataLoader</code><a href="https://github.com/fastai/fastai/tree/master/fastai/tabular/core.py#L345" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TabDataLoader</code>(<strong><code>dataset</code></strong>, <strong><code>bs</code></strong>=<em><code>16</code></em>, <strong><code>shuffle</code></strong>=<em><code>False</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>num_workers</code></strong>=<em><code>0</code></em>, <strong><code>verbose</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>do_setup</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>pin_memory</code></strong>=<em><code>False</code></em>, <strong><code>timeout</code></strong>=<em><code>0</code></em>, <strong><code>batch_size</code></strong>=<em><code>None</code></em>, <strong><code>drop_last</code></strong>=<em><code>False</code></em>, <strong><code>indexed</code></strong>=<em><code>None</code></em>, <strong><code>n</code></strong>=<em><code>None</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>persistent_workers</code></strong>=<em><code>False</code></em>, <strong><code>wif</code></strong>=<em><code>None</code></em>, <strong><code>before_iter</code></strong>=<em><code>None</code></em>, <strong><code>after_item</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_iter</code></strong>=<em><code>None</code></em>, <strong><code>create_batches</code></strong>=<em><code>None</code></em>, <strong><code>create_item</code></strong>=<em><code>None</code></em>, <strong><code>create_batch</code></strong>=<em><code>None</code></em>, <strong><code>retain</code></strong>=<em><code>None</code></em>, <strong><code>get_idxs</code></strong>=<em><code>None</code></em>, <strong><code>sample</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_fn</code></strong>=<em><code>None</code></em>, <strong><code>do_batch</code></strong>=<em><code>None</code></em>) :: <a href="/data.core.html#TfmdDL"><code>TfmdDL</code></a></p>
+<h2 id="TabDataLoader" class="doc_header"><code>class</code> <code>TabDataLoader</code><a href="https://github.com/fastai/fastai/tree/master/fastai/tabular/core.py#L350" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TabDataLoader</code>(<strong><code>dataset</code></strong>, <strong><code>bs</code></strong>=<em><code>16</code></em>, <strong><code>shuffle</code></strong>=<em><code>False</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>num_workers</code></strong>=<em><code>0</code></em>, <strong><code>verbose</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>do_setup</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>pin_memory</code></strong>=<em><code>False</code></em>, <strong><code>timeout</code></strong>=<em><code>0</code></em>, <strong><code>batch_size</code></strong>=<em><code>None</code></em>, <strong><code>drop_last</code></strong>=<em><code>False</code></em>, <strong><code>indexed</code></strong>=<em><code>None</code></em>, <strong><code>n</code></strong>=<em><code>None</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>persistent_workers</code></strong>=<em><code>False</code></em>, <strong><code>wif</code></strong>=<em><code>None</code></em>, <strong><code>before_iter</code></strong>=<em><code>None</code></em>, <strong><code>after_item</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_iter</code></strong>=<em><code>None</code></em>, <strong><code>create_batches</code></strong>=<em><code>None</code></em>, <strong><code>create_item</code></strong>=<em><code>None</code></em>, <strong><code>create_batch</code></strong>=<em><code>None</code></em>, <strong><code>retain</code></strong>=<em><code>None</code></em>, <strong><code>get_idxs</code></strong>=<em><code>None</code></em>, <strong><code>sample</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_fn</code></strong>=<em><code>None</code></em>, <strong><code>do_batch</code></strong>=<em><code>None</code></em>) :: <a href="/data.core.html#TfmdDL"><code>TfmdDL</code></a></p>
 </blockquote>
 <p>A transformed <a href="/data.load.html#DataLoader"><code>DataLoader</code></a> for Tabular data</p>
 

@@ -26,25 +26,6 @@ nb_path: "nbs/13b_metrics.ipynb"
     
 <div class="cell border-box-sizing code_cell rendered">
 
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-<div class="output_subarea output_stream output_stderr output_text">
-<pre>/opt/conda/lib/python3.9/site-packages/torch/cuda/__init__.py:145: UserWarning: 
-NVIDIA GeForce RTX 3070 Laptop GPU with CUDA capability sm_86 is not compatible with the current PyTorch installation.
-The current PyTorch install supports CUDA capabilities sm_37 sm_50 sm_60 sm_70.
-If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, please check the instructions at https://pytorch.org/get-started/locally/
-
-  warnings.warn(incompatible_device_warn.format(device_name, capability, &#34; &#34;.join(arch_list), device_name))
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
 </div>
     {% endraw %}
 
@@ -86,7 +67,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="flatten_check" class="doc_header"><code>flatten_check</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L830" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>flatten_check</code>(<strong><code>inp</code></strong>, <strong><code>targ</code></strong>)</p>
+<h4 id="flatten_check" class="doc_header"><code>flatten_check</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L835" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>flatten_check</code>(<strong><code>inp</code></strong>, <strong><code>targ</code></strong>)</p>
 </blockquote>
 <p>Check that <code>out</code> and <code>targ</code> have the same number of elements and flatten them.</p>
 
@@ -147,7 +128,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="AccumMetric" class="doc_header"><code>class</code> <code>AccumMetric</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L25" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>AccumMetric</code>(<strong><code>func</code></strong>, <strong><code>dim_argmax</code></strong>=<em><code>None</code></em>, <strong><code>activation</code></strong>=<em><code>'no'</code></em>, <strong><code>thresh</code></strong>=<em><code>None</code></em>, <strong><code>to_np</code></strong>=<em><code>False</code></em>, <strong><code>invert_arg</code></strong>=<em><code>False</code></em>, <strong><code>flatten</code></strong>=<em><code>True</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <a href="/learner.html#Metric"><code>Metric</code></a></p>
+<h3 id="AccumMetric" class="doc_header"><code>class</code> <code>AccumMetric</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L30" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>AccumMetric</code>(<strong><code>func</code></strong>, <strong><code>dim_argmax</code></strong>=<em><code>None</code></em>, <strong><code>activation</code></strong>=<em><code>'no'</code></em>, <strong><code>thresh</code></strong>=<em><code>None</code></em>, <strong><code>to_np</code></strong>=<em><code>False</code></em>, <strong><code>invert_arg</code></strong>=<em><code>False</code></em>, <strong><code>flatten</code></strong>=<em><code>True</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <a href="/learner.html#Metric"><code>Metric</code></a></p>
 </blockquote>
 <p>Stores predictions and targets on CPU in accumulate to perform final calculations with <code>func</code>.</p>
 
@@ -283,7 +264,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="skm_to_fastai" class="doc_header"><code>skm_to_fastai</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L77" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>skm_to_fastai</code>(<strong><code>func</code></strong>, <strong><code>is_class</code></strong>=<em><code>True</code></em>, <strong><code>thresh</code></strong>=<em><code>None</code></em>, <strong><code>axis</code></strong>=<em><code>-1</code></em>, <strong><code>activation</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="skm_to_fastai" class="doc_header"><code>skm_to_fastai</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L82" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>skm_to_fastai</code>(<strong><code>func</code></strong>, <strong><code>is_class</code></strong>=<em><code>True</code></em>, <strong><code>thresh</code></strong>=<em><code>None</code></em>, <strong><code>axis</code></strong>=<em><code>-1</code></em>, <strong><code>activation</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Convert <code>func</code> from sklearn.metrics to a fastai metric</p>
 
@@ -405,7 +386,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="optim_metric" class="doc_header"><code>optim_metric</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L86" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>optim_metric</code>(<strong><code>f</code></strong>, <strong><code>argname</code></strong>, <strong><code>bounds</code></strong>, <strong><code>tol</code></strong>=<em><code>0.01</code></em>, <strong><code>do_neg</code></strong>=<em><code>True</code></em>, <strong><code>get_x</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="optim_metric" class="doc_header"><code>optim_metric</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L91" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>optim_metric</code>(<strong><code>f</code></strong>, <strong><code>argname</code></strong>, <strong><code>bounds</code></strong>, <strong><code>tol</code></strong>=<em><code>0.01</code></em>, <strong><code>do_neg</code></strong>=<em><code>True</code></em>, <strong><code>get_x</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 <p>Replace metric <code>f</code> with a version that optimizes argument <code>argname</code></p>
 
@@ -457,7 +438,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="accuracy" class="doc_header"><code>accuracy</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L101" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>accuracy</code>(<strong><code>inp</code></strong>, <strong><code>targ</code></strong>, <strong><code>axis</code></strong>=<em><code>-1</code></em>)</p>
+<h4 id="accuracy" class="doc_header"><code>accuracy</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L106" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>accuracy</code>(<strong><code>inp</code></strong>, <strong><code>targ</code></strong>, <strong><code>axis</code></strong>=<em><code>-1</code></em>)</p>
 </blockquote>
 <p>Compute accuracy with <code>targ</code> when <code>pred</code> is bs * n_classes</p>
 
@@ -532,7 +513,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="error_rate" class="doc_header"><code>error_rate</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L107" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>error_rate</code>(<strong><code>inp</code></strong>, <strong><code>targ</code></strong>, <strong><code>axis</code></strong>=<em><code>-1</code></em>)</p>
+<h4 id="error_rate" class="doc_header"><code>error_rate</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L112" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>error_rate</code>(<strong><code>inp</code></strong>, <strong><code>targ</code></strong>, <strong><code>axis</code></strong>=<em><code>-1</code></em>)</p>
 </blockquote>
 <p>1 - <a href="/metrics.html#accuracy"><code>accuracy</code></a></p>
 
@@ -586,7 +567,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="top_k_accuracy" class="doc_header"><code>top_k_accuracy</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L112" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>top_k_accuracy</code>(<strong><code>inp</code></strong>, <strong><code>targ</code></strong>, <strong><code>k</code></strong>=<em><code>5</code></em>, <strong><code>axis</code></strong>=<em><code>-1</code></em>)</p>
+<h4 id="top_k_accuracy" class="doc_header"><code>top_k_accuracy</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L117" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>top_k_accuracy</code>(<strong><code>inp</code></strong>, <strong><code>targ</code></strong>, <strong><code>k</code></strong>=<em><code>5</code></em>, <strong><code>axis</code></strong>=<em><code>-1</code></em>)</p>
 </blockquote>
 <p>Computes the Top-k accuracy (<code>targ</code> is in the top <code>k</code> predictions of <code>inp</code>)</p>
 
@@ -638,7 +619,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="APScoreBinary" class="doc_header"><code>APScoreBinary</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L119" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>APScoreBinary</code>(<strong><code>axis</code></strong>=<em><code>-1</code></em>, <strong><code>average</code></strong>=<em><code>'macro'</code></em>, <strong><code>pos_label</code></strong>=<em><code>1</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="APScoreBinary" class="doc_header"><code>APScoreBinary</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L124" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>APScoreBinary</code>(<strong><code>axis</code></strong>=<em><code>-1</code></em>, <strong><code>average</code></strong>=<em><code>'macro'</code></em>, <strong><code>pos_label</code></strong>=<em><code>1</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Average Precision for single-label binary classification problems</p>
 
@@ -677,7 +658,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="BalancedAccuracy" class="doc_header"><code>BalancedAccuracy</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L125" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>BalancedAccuracy</code>(<strong><code>axis</code></strong>=<em><code>-1</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>, <strong><code>adjusted</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="BalancedAccuracy" class="doc_header"><code>BalancedAccuracy</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L130" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>BalancedAccuracy</code>(<strong><code>axis</code></strong>=<em><code>-1</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>, <strong><code>adjusted</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 <p>Balanced Accuracy for single-label binary classification problems</p>
 
@@ -716,7 +697,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="BrierScore" class="doc_header"><code>BrierScore</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L131" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>BrierScore</code>(<strong><code>axis</code></strong>=<em><code>-1</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>, <strong><code>pos_label</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="BrierScore" class="doc_header"><code>BrierScore</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L136" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>BrierScore</code>(<strong><code>axis</code></strong>=<em><code>-1</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>, <strong><code>pos_label</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Brier score for single-label classification problems</p>
 
@@ -755,7 +736,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="CohenKappa" class="doc_header"><code>CohenKappa</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L137" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>CohenKappa</code>(<strong><code>axis</code></strong>=<em><code>-1</code></em>, <strong><code>labels</code></strong>=<em><code>None</code></em>, <strong><code>weights</code></strong>=<em><code>None</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="CohenKappa" class="doc_header"><code>CohenKappa</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L142" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>CohenKappa</code>(<strong><code>axis</code></strong>=<em><code>-1</code></em>, <strong><code>labels</code></strong>=<em><code>None</code></em>, <strong><code>weights</code></strong>=<em><code>None</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Cohen kappa for single-label classification problems</p>
 
@@ -794,7 +775,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="F1Score" class="doc_header"><code>F1Score</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L143" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>F1Score</code>(<strong><code>axis</code></strong>=<em><code>-1</code></em>, <strong><code>labels</code></strong>=<em><code>None</code></em>, <strong><code>pos_label</code></strong>=<em><code>1</code></em>, <strong><code>average</code></strong>=<em><code>'binary'</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="F1Score" class="doc_header"><code>F1Score</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L148" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>F1Score</code>(<strong><code>axis</code></strong>=<em><code>-1</code></em>, <strong><code>labels</code></strong>=<em><code>None</code></em>, <strong><code>pos_label</code></strong>=<em><code>1</code></em>, <strong><code>average</code></strong>=<em><code>'binary'</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>F1 score for single-label classification problems</p>
 
@@ -833,7 +814,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="FBeta" class="doc_header"><code>FBeta</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L149" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>FBeta</code>(<strong><code>beta</code></strong>, <strong><code>axis</code></strong>=<em><code>-1</code></em>, <strong><code>labels</code></strong>=<em><code>None</code></em>, <strong><code>pos_label</code></strong>=<em><code>1</code></em>, <strong><code>average</code></strong>=<em><code>'binary'</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="FBeta" class="doc_header"><code>FBeta</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L154" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>FBeta</code>(<strong><code>beta</code></strong>, <strong><code>axis</code></strong>=<em><code>-1</code></em>, <strong><code>labels</code></strong>=<em><code>None</code></em>, <strong><code>pos_label</code></strong>=<em><code>1</code></em>, <strong><code>average</code></strong>=<em><code>'binary'</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>FBeta score with <code>beta</code> for single-label classification problems</p>
 
@@ -872,7 +853,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="HammingLoss" class="doc_header"><code>HammingLoss</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L155" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>HammingLoss</code>(<strong><code>axis</code></strong>=<em><code>-1</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="HammingLoss" class="doc_header"><code>HammingLoss</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L160" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>HammingLoss</code>(<strong><code>axis</code></strong>=<em><code>-1</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Hamming loss for single-label classification problems</p>
 
@@ -911,7 +892,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Jaccard" class="doc_header"><code>Jaccard</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L161" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Jaccard</code>(<strong><code>axis</code></strong>=<em><code>-1</code></em>, <strong><code>labels</code></strong>=<em><code>None</code></em>, <strong><code>pos_label</code></strong>=<em><code>1</code></em>, <strong><code>average</code></strong>=<em><code>'binary'</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="Jaccard" class="doc_header"><code>Jaccard</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L166" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Jaccard</code>(<strong><code>axis</code></strong>=<em><code>-1</code></em>, <strong><code>labels</code></strong>=<em><code>None</code></em>, <strong><code>pos_label</code></strong>=<em><code>1</code></em>, <strong><code>average</code></strong>=<em><code>'binary'</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Jaccard score for single-label classification problems</p>
 
@@ -950,7 +931,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Precision" class="doc_header"><code>Precision</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L167" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Precision</code>(<strong><code>axis</code></strong>=<em><code>-1</code></em>, <strong><code>labels</code></strong>=<em><code>None</code></em>, <strong><code>pos_label</code></strong>=<em><code>1</code></em>, <strong><code>average</code></strong>=<em><code>'binary'</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="Precision" class="doc_header"><code>Precision</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L172" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Precision</code>(<strong><code>axis</code></strong>=<em><code>-1</code></em>, <strong><code>labels</code></strong>=<em><code>None</code></em>, <strong><code>pos_label</code></strong>=<em><code>1</code></em>, <strong><code>average</code></strong>=<em><code>'binary'</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Precision for single-label classification problems</p>
 
@@ -989,7 +970,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Recall" class="doc_header"><code>Recall</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L173" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Recall</code>(<strong><code>axis</code></strong>=<em><code>-1</code></em>, <strong><code>labels</code></strong>=<em><code>None</code></em>, <strong><code>pos_label</code></strong>=<em><code>1</code></em>, <strong><code>average</code></strong>=<em><code>'binary'</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="Recall" class="doc_header"><code>Recall</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L178" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Recall</code>(<strong><code>axis</code></strong>=<em><code>-1</code></em>, <strong><code>labels</code></strong>=<em><code>None</code></em>, <strong><code>pos_label</code></strong>=<em><code>1</code></em>, <strong><code>average</code></strong>=<em><code>'binary'</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Recall for single-label classification problems</p>
 
@@ -1028,7 +1009,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="RocAuc" class="doc_header"><code>RocAuc</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L179" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>RocAuc</code>(<strong><code>axis</code></strong>=<em><code>-1</code></em>, <strong><code>average</code></strong>=<em><code>'macro'</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>, <strong><code>max_fpr</code></strong>=<em><code>None</code></em>, <strong><code>multi_class</code></strong>=<em><code>'ovr'</code></em>)</p>
+<h4 id="RocAuc" class="doc_header"><code>RocAuc</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L184" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>RocAuc</code>(<strong><code>axis</code></strong>=<em><code>-1</code></em>, <strong><code>average</code></strong>=<em><code>'macro'</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>, <strong><code>max_fpr</code></strong>=<em><code>None</code></em>, <strong><code>multi_class</code></strong>=<em><code>'ovr'</code></em>)</p>
 </blockquote>
 <p>Area Under the Receiver Operating Characteristic Curve for single-label multiclass classification problems</p>
 
@@ -1067,7 +1048,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="RocAucBinary" class="doc_header"><code>RocAucBinary</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L186" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>RocAucBinary</code>(<strong><code>axis</code></strong>=<em><code>-1</code></em>, <strong><code>average</code></strong>=<em><code>'macro'</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>, <strong><code>max_fpr</code></strong>=<em><code>None</code></em>, <strong><code>multi_class</code></strong>=<em><code>'raise'</code></em>)</p>
+<h4 id="RocAucBinary" class="doc_header"><code>RocAucBinary</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L191" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>RocAucBinary</code>(<strong><code>axis</code></strong>=<em><code>-1</code></em>, <strong><code>average</code></strong>=<em><code>'macro'</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>, <strong><code>max_fpr</code></strong>=<em><code>None</code></em>, <strong><code>multi_class</code></strong>=<em><code>'raise'</code></em>)</p>
 </blockquote>
 <p>Area Under the Receiver Operating Characteristic Curve for single-label binary classification problems</p>
 
@@ -1106,7 +1087,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="MatthewsCorrCoef" class="doc_header"><code>MatthewsCorrCoef</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L192" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>MatthewsCorrCoef</code>(<strong><code>sample_weight</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="MatthewsCorrCoef" class="doc_header"><code>MatthewsCorrCoef</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L197" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>MatthewsCorrCoef</code>(<strong><code>sample_weight</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Matthews correlation coefficient for single-label classification problems</p>
 
@@ -1151,7 +1132,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="accuracy_multi" class="doc_header"><code>accuracy_multi</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L197" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>accuracy_multi</code>(<strong><code>inp</code></strong>, <strong><code>targ</code></strong>, <strong><code>thresh</code></strong>=<em><code>0.5</code></em>, <strong><code>sigmoid</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="accuracy_multi" class="doc_header"><code>accuracy_multi</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L202" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>accuracy_multi</code>(<strong><code>inp</code></strong>, <strong><code>targ</code></strong>, <strong><code>thresh</code></strong>=<em><code>0.5</code></em>, <strong><code>sigmoid</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 <p>Compute accuracy when <code>inp</code> and <code>targ</code> are the same size.</p>
 
@@ -1240,7 +1221,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="APScoreMulti" class="doc_header"><code>APScoreMulti</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L204" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>APScoreMulti</code>(<strong><code>sigmoid</code></strong>=<em><code>True</code></em>, <strong><code>average</code></strong>=<em><code>'macro'</code></em>, <strong><code>pos_label</code></strong>=<em><code>1</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="APScoreMulti" class="doc_header"><code>APScoreMulti</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L209" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>APScoreMulti</code>(<strong><code>sigmoid</code></strong>=<em><code>True</code></em>, <strong><code>average</code></strong>=<em><code>'macro'</code></em>, <strong><code>pos_label</code></strong>=<em><code>1</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Average Precision for multi-label classification problems</p>
 
@@ -1279,7 +1260,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="BrierScoreMulti" class="doc_header"><code>BrierScoreMulti</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L211" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>BrierScoreMulti</code>(<strong><code>thresh</code></strong>=<em><code>0.5</code></em>, <strong><code>sigmoid</code></strong>=<em><code>True</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>, <strong><code>pos_label</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="BrierScoreMulti" class="doc_header"><code>BrierScoreMulti</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L216" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>BrierScoreMulti</code>(<strong><code>thresh</code></strong>=<em><code>0.5</code></em>, <strong><code>sigmoid</code></strong>=<em><code>True</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>, <strong><code>pos_label</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Brier score for multi-label classification problems</p>
 
@@ -1318,7 +1299,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="F1ScoreMulti" class="doc_header"><code>F1ScoreMulti</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L218" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>F1ScoreMulti</code>(<strong><code>thresh</code></strong>=<em><code>0.5</code></em>, <strong><code>sigmoid</code></strong>=<em><code>True</code></em>, <strong><code>labels</code></strong>=<em><code>None</code></em>, <strong><code>pos_label</code></strong>=<em><code>1</code></em>, <strong><code>average</code></strong>=<em><code>'macro'</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="F1ScoreMulti" class="doc_header"><code>F1ScoreMulti</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L223" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>F1ScoreMulti</code>(<strong><code>thresh</code></strong>=<em><code>0.5</code></em>, <strong><code>sigmoid</code></strong>=<em><code>True</code></em>, <strong><code>labels</code></strong>=<em><code>None</code></em>, <strong><code>pos_label</code></strong>=<em><code>1</code></em>, <strong><code>average</code></strong>=<em><code>'macro'</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>F1 score for multi-label classification problems</p>
 
@@ -1357,7 +1338,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="FBetaMulti" class="doc_header"><code>FBetaMulti</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L225" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>FBetaMulti</code>(<strong><code>beta</code></strong>, <strong><code>thresh</code></strong>=<em><code>0.5</code></em>, <strong><code>sigmoid</code></strong>=<em><code>True</code></em>, <strong><code>labels</code></strong>=<em><code>None</code></em>, <strong><code>pos_label</code></strong>=<em><code>1</code></em>, <strong><code>average</code></strong>=<em><code>'macro'</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="FBetaMulti" class="doc_header"><code>FBetaMulti</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L230" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>FBetaMulti</code>(<strong><code>beta</code></strong>, <strong><code>thresh</code></strong>=<em><code>0.5</code></em>, <strong><code>sigmoid</code></strong>=<em><code>True</code></em>, <strong><code>labels</code></strong>=<em><code>None</code></em>, <strong><code>pos_label</code></strong>=<em><code>1</code></em>, <strong><code>average</code></strong>=<em><code>'macro'</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>FBeta score with <code>beta</code> for multi-label classification problems</p>
 
@@ -1396,7 +1377,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="HammingLossMulti" class="doc_header"><code>HammingLossMulti</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L232" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>HammingLossMulti</code>(<strong><code>thresh</code></strong>=<em><code>0.5</code></em>, <strong><code>sigmoid</code></strong>=<em><code>True</code></em>, <strong><code>labels</code></strong>=<em><code>None</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="HammingLossMulti" class="doc_header"><code>HammingLossMulti</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L237" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>HammingLossMulti</code>(<strong><code>thresh</code></strong>=<em><code>0.5</code></em>, <strong><code>sigmoid</code></strong>=<em><code>True</code></em>, <strong><code>labels</code></strong>=<em><code>None</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Hamming loss for multi-label classification problems</p>
 
@@ -1435,7 +1416,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="JaccardMulti" class="doc_header"><code>JaccardMulti</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L239" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>JaccardMulti</code>(<strong><code>thresh</code></strong>=<em><code>0.5</code></em>, <strong><code>sigmoid</code></strong>=<em><code>True</code></em>, <strong><code>labels</code></strong>=<em><code>None</code></em>, <strong><code>pos_label</code></strong>=<em><code>1</code></em>, <strong><code>average</code></strong>=<em><code>'macro'</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="JaccardMulti" class="doc_header"><code>JaccardMulti</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L244" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>JaccardMulti</code>(<strong><code>thresh</code></strong>=<em><code>0.5</code></em>, <strong><code>sigmoid</code></strong>=<em><code>True</code></em>, <strong><code>labels</code></strong>=<em><code>None</code></em>, <strong><code>pos_label</code></strong>=<em><code>1</code></em>, <strong><code>average</code></strong>=<em><code>'macro'</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Jaccard score for multi-label classification problems</p>
 
@@ -1474,7 +1455,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="MatthewsCorrCoefMulti" class="doc_header"><code>MatthewsCorrCoefMulti</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L246" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>MatthewsCorrCoefMulti</code>(<strong><code>thresh</code></strong>=<em><code>0.5</code></em>, <strong><code>sigmoid</code></strong>=<em><code>True</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="MatthewsCorrCoefMulti" class="doc_header"><code>MatthewsCorrCoefMulti</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L251" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>MatthewsCorrCoefMulti</code>(<strong><code>thresh</code></strong>=<em><code>0.5</code></em>, <strong><code>sigmoid</code></strong>=<em><code>True</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Matthews correlation coefficient for multi-label classification problems</p>
 
@@ -1513,7 +1494,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="PrecisionMulti" class="doc_header"><code>PrecisionMulti</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L252" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>PrecisionMulti</code>(<strong><code>thresh</code></strong>=<em><code>0.5</code></em>, <strong><code>sigmoid</code></strong>=<em><code>True</code></em>, <strong><code>labels</code></strong>=<em><code>None</code></em>, <strong><code>pos_label</code></strong>=<em><code>1</code></em>, <strong><code>average</code></strong>=<em><code>'macro'</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="PrecisionMulti" class="doc_header"><code>PrecisionMulti</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L257" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>PrecisionMulti</code>(<strong><code>thresh</code></strong>=<em><code>0.5</code></em>, <strong><code>sigmoid</code></strong>=<em><code>True</code></em>, <strong><code>labels</code></strong>=<em><code>None</code></em>, <strong><code>pos_label</code></strong>=<em><code>1</code></em>, <strong><code>average</code></strong>=<em><code>'macro'</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Precision for multi-label classification problems</p>
 
@@ -1552,7 +1533,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="RecallMulti" class="doc_header"><code>RecallMulti</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L259" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>RecallMulti</code>(<strong><code>thresh</code></strong>=<em><code>0.5</code></em>, <strong><code>sigmoid</code></strong>=<em><code>True</code></em>, <strong><code>labels</code></strong>=<em><code>None</code></em>, <strong><code>pos_label</code></strong>=<em><code>1</code></em>, <strong><code>average</code></strong>=<em><code>'macro'</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="RecallMulti" class="doc_header"><code>RecallMulti</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L264" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>RecallMulti</code>(<strong><code>thresh</code></strong>=<em><code>0.5</code></em>, <strong><code>sigmoid</code></strong>=<em><code>True</code></em>, <strong><code>labels</code></strong>=<em><code>None</code></em>, <strong><code>pos_label</code></strong>=<em><code>1</code></em>, <strong><code>average</code></strong>=<em><code>'macro'</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Recall for multi-label classification problems</p>
 
@@ -1591,7 +1572,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="RocAucMulti" class="doc_header"><code>RocAucMulti</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L266" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>RocAucMulti</code>(<strong><code>sigmoid</code></strong>=<em><code>True</code></em>, <strong><code>average</code></strong>=<em><code>'macro'</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>, <strong><code>max_fpr</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="RocAucMulti" class="doc_header"><code>RocAucMulti</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L271" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>RocAucMulti</code>(<strong><code>sigmoid</code></strong>=<em><code>True</code></em>, <strong><code>average</code></strong>=<em><code>'macro'</code></em>, <strong><code>sample_weight</code></strong>=<em><code>None</code></em>, <strong><code>max_fpr</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Area Under the Receiver Operating Characteristic Curve for multi-label binary classification problems</p>
 
@@ -1655,7 +1636,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="mse" class="doc_header"><code>mse</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L273" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>mse</code>(<strong><code>inp</code></strong>, <strong><code>targ</code></strong>)</p>
+<h4 id="mse" class="doc_header"><code>mse</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L278" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>mse</code>(<strong><code>inp</code></strong>, <strong><code>targ</code></strong>)</p>
 </blockquote>
 <p>Mean squared error between <code>inp</code> and <code>targ</code>.</p>
 
@@ -1755,7 +1736,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="mae" class="doc_header"><code>mae</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L283" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>mae</code>(<strong><code>inp</code></strong>, <strong><code>targ</code></strong>)</p>
+<h4 id="mae" class="doc_header"><code>mae</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L288" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>mae</code>(<strong><code>inp</code></strong>, <strong><code>targ</code></strong>)</p>
 </blockquote>
 <p>Mean absolute error between <code>inp</code> and <code>targ</code>.</p>
 
@@ -1805,7 +1786,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="msle" class="doc_header"><code>msle</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L289" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>msle</code>(<strong><code>inp</code></strong>, <strong><code>targ</code></strong>)</p>
+<h4 id="msle" class="doc_header"><code>msle</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L294" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>msle</code>(<strong><code>inp</code></strong>, <strong><code>targ</code></strong>)</p>
 </blockquote>
 <p>Mean squared logarithmic error between <code>inp</code> and <code>targ</code>.</p>
 
@@ -1906,7 +1887,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ExplainedVariance" class="doc_header"><code>ExplainedVariance</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L302" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ExplainedVariance</code>(<strong><code>sample_weight</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="ExplainedVariance" class="doc_header"><code>ExplainedVariance</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L307" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ExplainedVariance</code>(<strong><code>sample_weight</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Explained variance between predictions and targets</p>
 
@@ -1945,7 +1926,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="R2Score" class="doc_header"><code>R2Score</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L307" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>R2Score</code>(<strong><code>sample_weight</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="R2Score" class="doc_header"><code>R2Score</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L312" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>R2Score</code>(<strong><code>sample_weight</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>R2 score between predictions and targets</p>
 
@@ -1984,7 +1965,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="PearsonCorrCoef" class="doc_header"><code>PearsonCorrCoef</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L312" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>PearsonCorrCoef</code>(<strong><code>dim_argmax</code></strong>=<em><code>None</code></em>, <strong><code>activation</code></strong>=<em><code>'no'</code></em>, <strong><code>thresh</code></strong>=<em><code>None</code></em>, <strong><code>to_np</code></strong>=<em><code>False</code></em>, <strong><code>invert_arg</code></strong>=<em><code>False</code></em>, <strong><code>flatten</code></strong>=<em><code>True</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="PearsonCorrCoef" class="doc_header"><code>PearsonCorrCoef</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L317" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>PearsonCorrCoef</code>(<strong><code>dim_argmax</code></strong>=<em><code>None</code></em>, <strong><code>activation</code></strong>=<em><code>'no'</code></em>, <strong><code>thresh</code></strong>=<em><code>None</code></em>, <strong><code>to_np</code></strong>=<em><code>False</code></em>, <strong><code>invert_arg</code></strong>=<em><code>False</code></em>, <strong><code>flatten</code></strong>=<em><code>True</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Pearson correlation coefficient for regression problem</p>
 
@@ -2042,7 +2023,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="SpearmanCorrCoef" class="doc_header"><code>SpearmanCorrCoef</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L319" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>SpearmanCorrCoef</code>(<strong><code>dim_argmax</code></strong>=<em><code>None</code></em>, <strong><code>axis</code></strong>=<em><code>0</code></em>, <strong><code>nan_policy</code></strong>=<em><code>'propagate'</code></em>, <strong><code>activation</code></strong>=<em><code>'no'</code></em>, <strong><code>thresh</code></strong>=<em><code>None</code></em>, <strong><code>to_np</code></strong>=<em><code>False</code></em>, <strong><code>invert_arg</code></strong>=<em><code>False</code></em>, <strong><code>flatten</code></strong>=<em><code>True</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="SpearmanCorrCoef" class="doc_header"><code>SpearmanCorrCoef</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L324" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>SpearmanCorrCoef</code>(<strong><code>dim_argmax</code></strong>=<em><code>None</code></em>, <strong><code>axis</code></strong>=<em><code>0</code></em>, <strong><code>nan_policy</code></strong>=<em><code>'propagate'</code></em>, <strong><code>activation</code></strong>=<em><code>'no'</code></em>, <strong><code>thresh</code></strong>=<em><code>None</code></em>, <strong><code>to_np</code></strong>=<em><code>False</code></em>, <strong><code>invert_arg</code></strong>=<em><code>False</code></em>, <strong><code>flatten</code></strong>=<em><code>True</code></em>, <strong><code>name</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Spearman correlation coefficient for regression problem</p>
 
@@ -2190,7 +2171,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="foreground_acc" class="doc_header"><code>foreground_acc</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L327" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>foreground_acc</code>(<strong><code>inp</code></strong>, <strong><code>targ</code></strong>, <strong><code>bkg_idx</code></strong>=<em><code>0</code></em>, <strong><code>axis</code></strong>=<em><code>1</code></em>)</p>
+<h4 id="foreground_acc" class="doc_header"><code>foreground_acc</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L332" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>foreground_acc</code>(<strong><code>inp</code></strong>, <strong><code>targ</code></strong>, <strong><code>bkg_idx</code></strong>=<em><code>0</code></em>, <strong><code>axis</code></strong>=<em><code>1</code></em>)</p>
 </blockquote>
 <p>Computes non-background accuracy for multiclass segmentation</p>
 
@@ -2243,7 +2224,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="Dice" class="doc_header"><code>class</code> <code>Dice</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L334" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>Dice</code>(<strong><code>axis</code></strong>=<em><code>1</code></em>) :: <a href="/learner.html#Metric"><code>Metric</code></a></p>
+<h3 id="Dice" class="doc_header"><code>class</code> <code>Dice</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L339" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>Dice</code>(<strong><code>axis</code></strong>=<em><code>1</code></em>) :: <a href="/learner.html#Metric"><code>Metric</code></a></p>
 </blockquote>
 <p>Dice coefficient metric for binary target in segmentation</p>
 
@@ -2297,7 +2278,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="DiceMulti" class="doc_header"><code>class</code> <code>DiceMulti</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L347" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>DiceMulti</code>(<strong><code>axis</code></strong>=<em><code>1</code></em>) :: <a href="/learner.html#Metric"><code>Metric</code></a></p>
+<h3 id="DiceMulti" class="doc_header"><code>class</code> <code>DiceMulti</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L352" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>DiceMulti</code>(<strong><code>axis</code></strong>=<em><code>1</code></em>) :: <a href="/learner.html#Metric"><code>Metric</code></a></p>
 </blockquote>
 <p>Averaged Dice metric (Macro F1) for multiclass target in segmentation</p>
 
@@ -2370,7 +2351,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="JaccardCoeff" class="doc_header"><code>class</code> <code>JaccardCoeff</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L373" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>JaccardCoeff</code>(<strong><code>axis</code></strong>=<em><code>1</code></em>) :: <a href="/metrics.html#Dice"><code>Dice</code></a></p>
+<h3 id="JaccardCoeff" class="doc_header"><code>class</code> <code>JaccardCoeff</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L378" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>JaccardCoeff</code>(<strong><code>axis</code></strong>=<em><code>1</code></em>) :: <a href="/metrics.html#Dice"><code>Dice</code></a></p>
 </blockquote>
 <p>Implementation of the Jaccard coefficient that is lighter in RAM</p>
 
@@ -2430,7 +2411,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="CorpusBLEUMetric" class="doc_header"><code>class</code> <code>CorpusBLEUMetric</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L379" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>CorpusBLEUMetric</code>(<strong><code>vocab_sz</code></strong>=<em><code>5000</code></em>, <strong><code>axis</code></strong>=<em><code>-1</code></em>) :: <a href="/learner.html#Metric"><code>Metric</code></a></p>
+<h3 id="CorpusBLEUMetric" class="doc_header"><code>class</code> <code>CorpusBLEUMetric</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L384" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>CorpusBLEUMetric</code>(<strong><code>vocab_sz</code></strong>=<em><code>5000</code></em>, <strong><code>axis</code></strong>=<em><code>-1</code></em>) :: <a href="/learner.html#Metric"><code>Metric</code></a></p>
 </blockquote>
 <p>Blueprint for defining a metric</p>
 
@@ -2512,7 +2493,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="Perplexity" class="doc_header"><code>class</code> <code>Perplexity</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L431" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>Perplexity</code>() :: <a href="/learner.html#AvgLoss"><code>AvgLoss</code></a></p>
+<h3 id="Perplexity" class="doc_header"><code>class</code> <code>Perplexity</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L436" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>Perplexity</code>() :: <a href="/learner.html#AvgLoss"><code>AvgLoss</code></a></p>
 </blockquote>
 <p>Perplexity (exponential of cross-entropy loss) for Language Models</p>
 
@@ -2570,7 +2551,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="LossMetric" class="doc_header"><code>class</code> <code>LossMetric</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L441" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>LossMetric</code>(<strong><code>attr</code></strong>, <strong><code>nm</code></strong>=<em><code>None</code></em>) :: <a href="/learner.html#AvgMetric"><code>AvgMetric</code></a></p>
+<h3 id="LossMetric" class="doc_header"><code>class</code> <code>LossMetric</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L446" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>LossMetric</code>(<strong><code>attr</code></strong>, <strong><code>nm</code></strong>=<em><code>None</code></em>) :: <a href="/learner.html#AvgMetric"><code>AvgMetric</code></a></p>
 </blockquote>
 <p>Create a metric from <code>loss_func.attr</code> named <code>nm</code></p>
 
@@ -2602,7 +2583,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="LossMetrics" class="doc_header"><code>LossMetrics</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L453" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>LossMetrics</code>(<strong><code>attrs</code></strong>, <strong><code>nms</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="LossMetrics" class="doc_header"><code>LossMetrics</code><a href="https://github.com/fastai/fastai/tree/master/fastai/metrics.py#L458" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>LossMetrics</code>(<strong><code>attrs</code></strong>, <strong><code>nms</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>List of <a href="/metrics.html#LossMetric"><code>LossMetric</code></a> for each of <code>attrs</code> and <code>nms</code></p>
 

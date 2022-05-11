@@ -26,25 +26,6 @@ nb_path: "nbs/70_callback.wandb.ipynb"
     
 <div class="cell border-box-sizing code_cell rendered">
 
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-<div class="output_subarea output_stream output_stderr output_text">
-<pre>/opt/conda/lib/python3.9/site-packages/torch/cuda/__init__.py:145: UserWarning: 
-NVIDIA GeForce RTX 3070 Laptop GPU with CUDA capability sm_86 is not compatible with the current PyTorch installation.
-The current PyTorch install supports CUDA capabilities sm_37 sm_50 sm_60 sm_70.
-If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, please check the instructions at https://pytorch.org/get-started/locally/
-
-  warnings.warn(incompatible_device_warn.format(device_name, capability, &#34; &#34;.join(arch_list), device_name))
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
 </div>
     {% endraw %}
 
@@ -103,7 +84,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="WandbCallback" class="doc_header"><code>class</code> <code>WandbCallback</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/wandb.py#L16" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>WandbCallback</code>(<strong><code>log</code></strong>=<em><code>'gradients'</code></em>, <strong><code>log_preds</code></strong>=<em><code>True</code></em>, <strong><code>log_model</code></strong>=<em><code>True</code></em>, <strong><code>log_dataset</code></strong>=<em><code>False</code></em>, <strong><code>dataset_name</code></strong>=<em><code>None</code></em>, <strong><code>valid_dl</code></strong>=<em><code>None</code></em>, <strong><code>n_preds</code></strong>=<em><code>36</code></em>, <strong><code>seed</code></strong>=<em><code>12345</code></em>, <strong><code>reorder</code></strong>=<em><code>True</code></em>) :: <a href="/callback.core.html#Callback"><code>Callback</code></a></p>
+<h2 id="WandbCallback" class="doc_header"><code>class</code> <code>WandbCallback</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/wandb.py#L21" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>WandbCallback</code>(<strong><code>log</code></strong>=<em><code>'gradients'</code></em>, <strong><code>log_preds</code></strong>=<em><code>True</code></em>, <strong><code>log_model</code></strong>=<em><code>True</code></em>, <strong><code>log_dataset</code></strong>=<em><code>False</code></em>, <strong><code>dataset_name</code></strong>=<em><code>None</code></em>, <strong><code>valid_dl</code></strong>=<em><code>None</code></em>, <strong><code>n_preds</code></strong>=<em><code>36</code></em>, <strong><code>seed</code></strong>=<em><code>12345</code></em>, <strong><code>reorder</code></strong>=<em><code>True</code></em>) :: <a href="/callback.core.html#Callback"><code>Callback</code></a></p>
 </blockquote>
 <p>Saves model topology, losses &amp; metrics</p>
 
@@ -151,7 +132,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Learner.gather_args" class="doc_header"><code>Learner.gather_args</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/wandb.py#L128" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.gather_args</code>()</p>
+<h4 id="Learner.gather_args" class="doc_header"><code>Learner.gather_args</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/wandb.py#L133" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.gather_args</code>()</p>
 </blockquote>
 <p>Gather config parameters accessible to the learner</p>
 
@@ -211,7 +192,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="log_dataset" class="doc_header"><code>log_dataset</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/wandb.py#L192" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>log_dataset</code>(<strong><code>path</code></strong>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong><code>metadata</code></strong>=<em><code>{}</code></em>, <strong><code>description</code></strong>=<em><code>'raw dataset'</code></em>)</p>
+<h4 id="log_dataset" class="doc_header"><code>log_dataset</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/wandb.py#L197" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>log_dataset</code>(<strong><code>path</code></strong>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong><code>metadata</code></strong>=<em><code>{}</code></em>, <strong><code>description</code></strong>=<em><code>'raw dataset'</code></em>)</p>
 </blockquote>
 <p>Log dataset folder</p>
 
@@ -243,7 +224,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="log_model" class="doc_header"><code>log_model</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/wandb.py#L211" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>log_model</code>(<strong><code>path</code></strong>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong><code>metadata</code></strong>=<em><code>{}</code></em>, <strong><code>description</code></strong>=<em><code>'trained model'</code></em>)</p>
+<h4 id="log_model" class="doc_header"><code>log_model</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/wandb.py#L216" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>log_model</code>(<strong><code>path</code></strong>, <strong><code>name</code></strong>=<em><code>None</code></em>, <strong><code>metadata</code></strong>=<em><code>{}</code></em>, <strong><code>description</code></strong>=<em><code>'trained model'</code></em>)</p>
 </blockquote>
 <p>Log model file</p>
 

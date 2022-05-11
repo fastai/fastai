@@ -26,25 +26,6 @@ nb_path: "nbs/20a_distributed.ipynb"
     
 <div class="cell border-box-sizing code_cell rendered">
 
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-<div class="output_subarea output_stream output_stderr output_text">
-<pre>/opt/conda/lib/python3.9/site-packages/torch/cuda/__init__.py:145: UserWarning: 
-NVIDIA GeForce RTX 3070 Laptop GPU with CUDA capability sm_86 is not compatible with the current PyTorch installation.
-The current PyTorch install supports CUDA capabilities sm_37 sm_50 sm_60 sm_70.
-If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, please check the instructions at https://pytorch.org/get-started/locally/
-
-  warnings.warn(incompatible_device_warn.format(device_name, capability, &#34; &#34;.join(arch_list), device_name))
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
 </div>
     {% endraw %}
 
@@ -91,7 +72,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="DataParallel.reset" class="doc_header"><code>DataParallel.reset</code><a href="https://github.com/fastai/fastai/tree/master/fastai/distributed.py#L12" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>DataParallel.reset</code>()</p>
+<h4 id="DataParallel.reset" class="doc_header"><code>DataParallel.reset</code><a href="https://github.com/fastai/fastai/tree/master/fastai/distributed.py#L17" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>DataParallel.reset</code>()</p>
 </blockquote>
 <p>Patch required <code>reset</code> call into <code>DataParallel</code></p>
 
@@ -123,7 +104,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ParallelTrainer" class="doc_header"><code>class</code> <code>ParallelTrainer</code><a href="https://github.com/fastai/fastai/tree/master/fastai/distributed.py#L18" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ParallelTrainer</code>(<strong><code>device_ids</code></strong>) :: <a href="/callback.core.html#Callback"><code>Callback</code></a></p>
+<h2 id="ParallelTrainer" class="doc_header"><code>class</code> <code>ParallelTrainer</code><a href="https://github.com/fastai/fastai/tree/master/fastai/distributed.py#L23" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ParallelTrainer</code>(<strong><code>device_ids</code></strong>) :: <a href="/callback.core.html#Callback"><code>Callback</code></a></p>
 </blockquote>
 <p>Wrap a model <code>DataParallel</code> automatically</p>
 
@@ -155,7 +136,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Learner.to_parallel" class="doc_header"><code>Learner.to_parallel</code><a href="https://github.com/fastai/fastai/tree/master/fastai/distributed.py#L26" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.to_parallel</code>(<strong><code>device_ids</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="Learner.to_parallel" class="doc_header"><code>Learner.to_parallel</code><a href="https://github.com/fastai/fastai/tree/master/fastai/distributed.py#L31" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.to_parallel</code>(<strong><code>device_ids</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Add <a href="/distributed.html#ParallelTrainer"><code>ParallelTrainer</code></a> callback to a <a href="/learner.html#Learner"><code>Learner</code></a></p>
 
@@ -187,7 +168,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Learner.detach_parallel" class="doc_header"><code>Learner.detach_parallel</code><a href="https://github.com/fastai/fastai/tree/master/fastai/distributed.py#L33" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.detach_parallel</code>()</p>
+<h4 id="Learner.detach_parallel" class="doc_header"><code>Learner.detach_parallel</code><a href="https://github.com/fastai/fastai/tree/master/fastai/distributed.py#L38" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.detach_parallel</code>()</p>
 </blockquote>
 <p>Remove <a href="/distributed.html#ParallelTrainer"><code>ParallelTrainer</code></a> callback from a Learner</p>
 
@@ -219,7 +200,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Learner.parallel_ctx" class="doc_header"><code>Learner.parallel_ctx</code><a href="https://github.com/fastai/fastai/tree/master/fastai/distributed.py#L40" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.parallel_ctx</code>(<strong><code>device_ids</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="Learner.parallel_ctx" class="doc_header"><code>Learner.parallel_ctx</code><a href="https://github.com/fastai/fastai/tree/master/fastai/distributed.py#L45" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.parallel_ctx</code>(<strong><code>device_ids</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>A context manager to adapt a learner to train in data parallel mode.</p>
 
@@ -263,7 +244,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="DistributedDataParallel.reset" class="doc_header"><code>DistributedDataParallel.reset</code><a href="https://github.com/fastai/fastai/tree/master/fastai/distributed.py#L50" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>DistributedDataParallel.reset</code>()</p>
+<h4 id="DistributedDataParallel.reset" class="doc_header"><code>DistributedDataParallel.reset</code><a href="https://github.com/fastai/fastai/tree/master/fastai/distributed.py#L55" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>DistributedDataParallel.reset</code>()</p>
 </blockquote>
 <p>Patch required <code>reset</code> call into <code>DistributedDataParallel</code></p>
 
@@ -295,7 +276,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="setup_distrib" class="doc_header"><code>setup_distrib</code><a href="https://github.com/fastai/fastai/tree/master/fastai/distributed.py#L56" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>setup_distrib</code>(<strong><code>gpu</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="setup_distrib" class="doc_header"><code>setup_distrib</code><a href="https://github.com/fastai/fastai/tree/master/fastai/distributed.py#L61" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>setup_distrib</code>(<strong><code>gpu</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Setup this process to participate in distributed training</p>
 
@@ -327,7 +308,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="teardown_distrib" class="doc_header"><code>teardown_distrib</code><a href="https://github.com/fastai/fastai/tree/master/fastai/distributed.py#L65" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>teardown_distrib</code>()</p>
+<h4 id="teardown_distrib" class="doc_header"><code>teardown_distrib</code><a href="https://github.com/fastai/fastai/tree/master/fastai/distributed.py#L70" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>teardown_distrib</code>()</p>
 </blockquote>
 <p>Free distributed training resources</p>
 
@@ -372,7 +353,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="DistributedDL" class="doc_header"><code>class</code> <code>DistributedDL</code><a href="https://github.com/fastai/fastai/tree/master/fastai/distributed.py#L73" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>DistributedDL</code>(<strong><code>dl</code></strong>, <strong><code>rank</code></strong>=<em><code>None</code></em>, <strong><code>world_size</code></strong>=<em><code>None</code></em>) :: <a href="/data.core.html#TfmdDL"><code>TfmdDL</code></a></p>
+<h2 id="DistributedDL" class="doc_header"><code>class</code> <code>DistributedDL</code><a href="https://github.com/fastai/fastai/tree/master/fastai/distributed.py#L78" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>DistributedDL</code>(<strong><code>dl</code></strong>, <strong><code>rank</code></strong>=<em><code>None</code></em>, <strong><code>world_size</code></strong>=<em><code>None</code></em>) :: <a href="/data.core.html#TfmdDL"><code>TfmdDL</code></a></p>
 </blockquote>
 <p>A <a href="/data.core.html#TfmdDL"><code>TfmdDL</code></a> which splits a batch into equal size pieces for each worker</p>
 
@@ -424,7 +405,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="DistributedTrainer" class="doc_header"><code>class</code> <code>DistributedTrainer</code><a href="https://github.com/fastai/fastai/tree/master/fastai/distributed.py#L128" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>DistributedTrainer</code>(<strong><code>cuda_id</code></strong>=<em><code>0</code></em>, <strong><code>sync_bn</code></strong>=<em><code>True</code></em>) :: <a href="/callback.core.html#Callback"><code>Callback</code></a></p>
+<h2 id="DistributedTrainer" class="doc_header"><code>class</code> <code>DistributedTrainer</code><a href="https://github.com/fastai/fastai/tree/master/fastai/distributed.py#L133" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>DistributedTrainer</code>(<strong><code>cuda_id</code></strong>=<em><code>0</code></em>, <strong><code>sync_bn</code></strong>=<em><code>True</code></em>) :: <a href="/callback.core.html#Callback"><code>Callback</code></a></p>
 </blockquote>
 <p>Wrap <code>model</code> in <code>DistributedDataParallel</code> and <code>dls</code> in <a href="/distributed.html#DistributedDL"><code>DistributedDL</code></a></p>
 
@@ -456,7 +437,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Learner.to_distributed" class="doc_header"><code>Learner.to_distributed</code><a href="https://github.com/fastai/fastai/tree/master/fastai/distributed.py#L147" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.to_distributed</code>(<strong><code>cuda_id</code></strong>, <strong><code>sync_bn</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="Learner.to_distributed" class="doc_header"><code>Learner.to_distributed</code><a href="https://github.com/fastai/fastai/tree/master/fastai/distributed.py#L152" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.to_distributed</code>(<strong><code>cuda_id</code></strong>, <strong><code>sync_bn</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 <p>Add <a href="/distributed.html#DistributedTrainer"><code>DistributedTrainer</code></a> to a learner</p>
 
@@ -488,7 +469,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Learner.detach_distributed" class="doc_header"><code>Learner.detach_distributed</code><a href="https://github.com/fastai/fastai/tree/master/fastai/distributed.py#L155" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.detach_distributed</code>()</p>
+<h4 id="Learner.detach_distributed" class="doc_header"><code>Learner.detach_distributed</code><a href="https://github.com/fastai/fastai/tree/master/fastai/distributed.py#L160" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.detach_distributed</code>()</p>
 </blockquote>
 <p>Remove <a href="/distributed.html#DistributedTrainer"><code>DistributedTrainer</code></a> from a learner</p>
 
@@ -526,7 +507,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Learner.distrib_ctx" class="doc_header"><code>Learner.distrib_ctx</code><a href="https://github.com/fastai/fastai/tree/master/fastai/distributed.py#L164" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.distrib_ctx</code>(<strong><code>cuda_id</code></strong>=<em><code>None</code></em>, <strong><code>sync_bn</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="Learner.distrib_ctx" class="doc_header"><code>Learner.distrib_ctx</code><a href="https://github.com/fastai/fastai/tree/master/fastai/distributed.py#L169" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.distrib_ctx</code>(<strong><code>cuda_id</code></strong>=<em><code>None</code></em>, <strong><code>sync_bn</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 <p>A context manager to adapt a learner to train in distributed data parallel mode.</p>
 
@@ -569,7 +550,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="rank0_first" class="doc_header"><code>rank0_first</code><a href="https://github.com/fastai/fastai/tree/master/fastai/distributed.py#L183" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>rank0_first</code>(<strong><code>func</code></strong>, <strong>*<code>args</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="rank0_first" class="doc_header"><code>rank0_first</code><a href="https://github.com/fastai/fastai/tree/master/fastai/distributed.py#L188" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>rank0_first</code>(<strong><code>func</code></strong>, <strong>*<code>args</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Execute <code>func</code> in the Rank-0 process first, then in other ranks in parallel.</p>
 

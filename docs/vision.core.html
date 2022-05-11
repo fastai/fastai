@@ -26,25 +26,6 @@ nb_path: "nbs/07_vision.core.ipynb"
     
 <div class="cell border-box-sizing code_cell rendered">
 
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-<div class="output_subarea output_stream output_stderr output_text">
-<pre>/opt/conda/lib/python3.9/site-packages/torch/cuda/__init__.py:145: UserWarning: 
-NVIDIA GeForce RTX 3070 Laptop GPU with CUDA capability sm_86 is not compatible with the current PyTorch installation.
-The current PyTorch install supports CUDA capabilities sm_37 sm_50 sm_60 sm_70.
-If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, please check the instructions at https://pytorch.org/get-started/locally/
-
-  warnings.warn(incompatible_device_warn.format(device_name, capability, &#34; &#34;.join(arch_list), device_name))
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
 </div>
     {% endraw %}
 
@@ -322,7 +303,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Image.reshape" class="doc_header"><code>Image.reshape</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/core.py#L42" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Image.reshape</code>(<strong><code>x</code></strong>:<code>Image</code>, <strong><code>h</code></strong>, <strong><code>w</code></strong>, <strong><code>resample</code></strong>=<em><code>0</code></em>)</p>
+<h4 id="Image.reshape" class="doc_header"><code>Image.reshape</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/core.py#L47" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Image.reshape</code>(<strong><code>x</code></strong>:<code>Image.Image</code>, <strong><code>h</code></strong>, <strong><code>w</code></strong>, <strong><code>resample</code></strong>=<em><code>0</code></em>)</p>
 </blockquote>
 <p><code>resize</code> <code>x</code> to <code>(w,h)</code></p>
 
@@ -371,7 +352,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Image.to_bytes_format" class="doc_header"><code>Image.to_bytes_format</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/core.py#L48" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Image.to_bytes_format</code>(<strong><code>im</code></strong>:<code>Image</code>, <strong><code>format</code></strong>=<em><code>'png'</code></em>)</p>
+<h4 id="Image.to_bytes_format" class="doc_header"><code>Image.to_bytes_format</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/core.py#L53" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Image.to_bytes_format</code>(<strong><code>im</code></strong>:<code>Image.Image</code>, <strong><code>format</code></strong>=<em><code>'png'</code></em>)</p>
 </blockquote>
 <p>Convert to bytes, default to PNG format</p>
 
@@ -403,7 +384,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Image.to_thumb" class="doc_header"><code>Image.to_thumb</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/core.py#L56" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Image.to_thumb</code>(<strong><code>h</code></strong>, <strong><code>w</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="Image.to_thumb" class="doc_header"><code>Image.to_thumb</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/core.py#L61" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Image.to_thumb</code>(<strong><code>h</code></strong>, <strong><code>w</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Same as <code>thumbnail</code>, but uses a copy</p>
 
@@ -456,7 +437,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Image.resize_max" class="doc_header"><code>Image.resize_max</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/core.py#L65" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Image.resize_max</code>(<strong><code>x</code></strong>:<code>Image</code>, <strong><code>resample</code></strong>=<em><code>0</code></em>, <strong><code>max_px</code></strong>=<em><code>None</code></em>, <strong><code>max_h</code></strong>=<em><code>None</code></em>, <strong><code>max_w</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="Image.resize_max" class="doc_header"><code>Image.resize_max</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/core.py#L70" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Image.resize_max</code>(<strong><code>x</code></strong>:<code>Image.Image</code>, <strong><code>resample</code></strong>=<em><code>0</code></em>, <strong><code>max_px</code></strong>=<em><code>None</code></em>, <strong><code>max_h</code></strong>=<em><code>None</code></em>, <strong><code>max_w</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p><code>resize</code> <code>x</code> to <code>max_px</code>, or <code>max_h</code>, or <code>max_w</code></p>
 
@@ -494,7 +475,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="to_image" class="doc_header"><code>to_image</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/core.py#L75" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>to_image</code>(<strong><code>x</code></strong>)</p>
+<h4 id="to_image" class="doc_header"><code>to_image</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/core.py#L80" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>to_image</code>(<strong><code>x</code></strong>)</p>
 </blockquote>
 <p>Convert a tensor or array to a PIL int8 Image</p>
 
@@ -526,7 +507,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="load_image" class="doc_header"><code>load_image</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/core.py#L83" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>load_image</code>(<strong><code>fn</code></strong>, <strong><code>mode</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="load_image" class="doc_header"><code>load_image</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/core.py#L88" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>load_image</code>(<strong><code>fn</code></strong>, <strong><code>mode</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Open and load a <code>PIL.Image</code> and convert to <code>mode</code></p>
 
@@ -558,7 +539,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="image2tensor" class="doc_header"><code>image2tensor</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/core.py#L91" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>image2tensor</code>(<strong><code>img</code></strong>)</p>
+<h4 id="image2tensor" class="doc_header"><code>image2tensor</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/core.py#L96" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>image2tensor</code>(<strong><code>img</code></strong>)</p>
 </blockquote>
 <p>Transform image to byte tensor in <code>c*h*w</code> dim order.</p>
 
@@ -590,7 +571,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="PILBase" class="doc_header"><code>class</code> <code>PILBase</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/core.py#L98" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>PILBase</code>() :: <code>Image</code></p>
+<h3 id="PILBase" class="doc_header"><code>class</code> <code>PILBase</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/core.py#L103" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>PILBase</code>() :: <code>Image</code></p>
 </blockquote>
 <p>This class represents an image object.  To create
 :py:class:<code>~PIL.Image.Image</code> objects, use the appropriate factory
@@ -630,7 +611,7 @@ directly.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="PILImage" class="doc_header"><code>class</code> <code>PILImage</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/core.py#L119" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>PILImage</code>() :: <a href="/vision.core.html#PILBase"><code>PILBase</code></a></p>
+<h3 id="PILImage" class="doc_header"><code>class</code> <code>PILImage</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/core.py#L124" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>PILImage</code>() :: <a href="/vision.core.html#PILBase"><code>PILBase</code></a></p>
 </blockquote>
 <p>This class represents an image object.  To create
 :py:class:<code>~PIL.Image.Image</code> objects, use the appropriate factory
@@ -670,7 +651,7 @@ directly.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="PILImageBW" class="doc_header"><code>class</code> <code>PILImageBW</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/core.py#L122" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>PILImageBW</code>() :: <a href="/vision.core.html#PILImage"><code>PILImage</code></a></p>
+<h3 id="PILImageBW" class="doc_header"><code>class</code> <code>PILImageBW</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/core.py#L127" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>PILImageBW</code>() :: <a href="/vision.core.html#PILImage"><code>PILImage</code></a></p>
 </blockquote>
 <p>This class represents an image object.  To create
 :py:class:<code>~PIL.Image.Image</code> objects, use the appropriate factory
@@ -870,7 +851,7 @@ directly.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="PILMask" class="doc_header"><code>class</code> <code>PILMask</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/core.py#L125" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>PILMask</code>() :: <a href="/vision.core.html#PILBase"><code>PILBase</code></a></p>
+<h3 id="PILMask" class="doc_header"><code>class</code> <code>PILMask</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/core.py#L130" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>PILMask</code>() :: <a href="/vision.core.html#PILBase"><code>PILBase</code></a></p>
 </blockquote>
 <p>This class represents an image object.  To create
 :py:class:<code>~PIL.Image.Image</code> objects, use the appropriate factory
@@ -1007,7 +988,7 @@ directly.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="AddMaskCodes" class="doc_header"><code>class</code> <code>AddMaskCodes</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/core.py#L133" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>AddMaskCodes</code>(<strong><code>codes</code></strong>=<em><code>None</code></em>) :: <a href="https://fastcore.fast.ai/transform#Transform"><code>Transform</code></a></p>
+<h3 id="AddMaskCodes" class="doc_header"><code>class</code> <code>AddMaskCodes</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/core.py#L138" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>AddMaskCodes</code>(<strong><code>codes</code></strong>=<em><code>None</code></em>) :: <a href="https://fastcore.fast.ai/transform#Transform"><code>Transform</code></a></p>
 </blockquote>
 <p>Add the code metadata to a <a href="/torch_core.html#TensorMask"><code>TensorMask</code></a></p>
 
@@ -1126,7 +1107,7 @@ directly.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="TensorPoint" class="doc_header"><code>class</code> <code>TensorPoint</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/core.py#L144" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>TensorPoint</code>(<strong><code>x</code></strong>, <strong>**<code>kwargs</code></strong>) :: <a href="/torch_core.html#TensorBase"><code>TensorBase</code></a></p>
+<h3 id="TensorPoint" class="doc_header"><code>class</code> <code>TensorPoint</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/core.py#L149" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>TensorPoint</code>(<strong><code>x</code></strong>, <strong>**<code>kwargs</code></strong>) :: <a href="/torch_core.html#TensorBase"><code>TensorBase</code></a></p>
 </blockquote>
 <p>Basic type for points in an image</p>
 
@@ -1237,7 +1218,7 @@ directly.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_annotations" class="doc_header"><code>get_annotations</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/core.py#L165" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_annotations</code>(<strong><code>fname</code></strong>, <strong><code>prefix</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="get_annotations" class="doc_header"><code>get_annotations</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/core.py#L170" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_annotations</code>(<strong><code>fname</code></strong>, <strong><code>prefix</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Open a COCO style json in <code>fname</code> and returns the lists of filenames (with maybe <code>prefix</code>) and labelled bboxes.</p>
 
@@ -1323,7 +1304,7 @@ directly.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="TensorBBox" class="doc_header"><code>class</code> <code>TensorBBox</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/core.py#L196" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>TensorBBox</code>(<strong><code>x</code></strong>, <strong>**<code>kwargs</code></strong>) :: <a href="/vision.core.html#TensorPoint"><code>TensorPoint</code></a></p>
+<h3 id="TensorBBox" class="doc_header"><code>class</code> <code>TensorBBox</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/core.py#L201" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>TensorBBox</code>(<strong><code>x</code></strong>, <strong>**<code>kwargs</code></strong>) :: <a href="/vision.core.html#TensorPoint"><code>TensorPoint</code></a></p>
 </blockquote>
 <p>Basic type for a tensor of bounding boxes in an image</p>
 
@@ -1363,7 +1344,7 @@ directly.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="LabeledBBox" class="doc_header"><code>class</code> <code>LabeledBBox</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/core.py#L207" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>LabeledBBox</code>(<strong><code>items</code></strong>=<em><code>None</code></em>, <strong>*<code>rest</code></strong>, <strong><code>use_list</code></strong>=<em><code>False</code></em>, <strong><code>match</code></strong>=<em><code>None</code></em>) :: <a href="https://fastcore.fast.ai/foundation#L"><code>L</code></a></p>
+<h3 id="LabeledBBox" class="doc_header"><code>class</code> <code>LabeledBBox</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/core.py#L212" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>LabeledBBox</code>(<strong><code>items</code></strong>=<em><code>None</code></em>, <strong>*<code>rest</code></strong>, <strong><code>use_list</code></strong>=<em><code>False</code></em>, <strong><code>match</code></strong>=<em><code>None</code></em>) :: <a href="https://fastcore.fast.ai/foundation#L"><code>L</code></a></p>
 </blockquote>
 <p>Basic type for a list of bounding boxes in an image</p>
 
@@ -1473,7 +1454,7 @@ directly.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="encodes" class="doc_header"><code>encodes</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/core.py#L278" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>encodes</code>(<strong><code>x</code></strong>:<a href="/vision.core.html#TensorBBox"><code>TensorBBox</code></a>)</p>
+<h4 id="encodes" class="doc_header"><code>encodes</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/core.py#L283" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>encodes</code>(<strong><code>x</code></strong>:<a href="/vision.core.html#TensorBBox"><code>TensorBBox</code></a>)</p>
 </blockquote>
 
 </div>
@@ -1497,7 +1478,7 @@ directly.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="encodes" class="doc_header"><code>encodes</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/core.py#L278" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>encodes</code>(<strong><code>x</code></strong>:<a href="/vision.core.html#TensorBBox"><code>TensorBBox</code></a>)</p>
+<h4 id="encodes" class="doc_header"><code>encodes</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/core.py#L283" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>encodes</code>(<strong><code>x</code></strong>:<a href="/vision.core.html#TensorBBox"><code>TensorBBox</code></a>)</p>
 </blockquote>
 
 </div>
@@ -1692,7 +1673,7 @@ decodes:
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="PointScaler" class="doc_header"><code>class</code> <code>PointScaler</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/core.py#L236" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>PointScaler</code>(<strong><code>do_scale</code></strong>=<em><code>True</code></em>, <strong><code>y_first</code></strong>=<em><code>False</code></em>) :: <a href="https://fastcore.fast.ai/transform#Transform"><code>Transform</code></a></p>
+<h3 id="PointScaler" class="doc_header"><code>class</code> <code>PointScaler</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/core.py#L241" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>PointScaler</code>(<strong><code>do_scale</code></strong>=<em><code>True</code></em>, <strong><code>y_first</code></strong>=<em><code>False</code></em>) :: <a href="https://fastcore.fast.ai/transform#Transform"><code>Transform</code></a></p>
 </blockquote>
 <p>Scale a tensor representing points</p>
 
@@ -1832,7 +1813,7 @@ decodes:
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="BBoxLabeler" class="doc_header"><code>class</code> <code>BBoxLabeler</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/core.py#L257" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>BBoxLabeler</code>(<strong><code>enc</code></strong>=<em><code>None</code></em>, <strong><code>dec</code></strong>=<em><code>None</code></em>, <strong><code>split_idx</code></strong>=<em><code>None</code></em>, <strong><code>order</code></strong>=<em><code>None</code></em>) :: <a href="https://fastcore.fast.ai/transform#Transform"><code>Transform</code></a></p>
+<h3 id="BBoxLabeler" class="doc_header"><code>class</code> <code>BBoxLabeler</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/core.py#L262" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>BBoxLabeler</code>(<strong><code>enc</code></strong>=<em><code>None</code></em>, <strong><code>dec</code></strong>=<em><code>None</code></em>, <strong><code>split_idx</code></strong>=<em><code>None</code></em>, <strong><code>order</code></strong>=<em><code>None</code></em>) :: <a href="https://fastcore.fast.ai/transform#Transform"><code>Transform</code></a></p>
 </blockquote>
 <p>Delegates (<code>__call__</code>,<code>decode</code>,<code>setup</code>) to (<code>encodes</code>,<code>decodes</code>,<code>setups</code>) if <code>split_idx</code> matches</p>
 
@@ -1864,7 +1845,7 @@ decodes:
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="decodes" class="doc_header"><code>decodes</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/core.py#L283" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>decodes</code>(<strong><code>x</code></strong>:<a href="/vision.core.html#TensorBBox"><code>TensorBBox</code></a>)</p>
+<h4 id="decodes" class="doc_header"><code>decodes</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/core.py#L288" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>decodes</code>(<strong><code>x</code></strong>:<a href="/vision.core.html#TensorBBox"><code>TensorBBox</code></a>)</p>
 </blockquote>
 
 </div>
@@ -1895,7 +1876,7 @@ decodes:
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="encodes" class="doc_header"><code>encodes</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/core.py#L278" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>encodes</code>(<strong><code>x</code></strong>:<a href="/vision.core.html#TensorBBox"><code>TensorBBox</code></a>)</p>
+<h4 id="encodes" class="doc_header"><code>encodes</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/core.py#L283" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>encodes</code>(<strong><code>x</code></strong>:<a href="/vision.core.html#TensorBBox"><code>TensorBBox</code></a>)</p>
 </blockquote>
 
 </div>
@@ -1919,7 +1900,7 @@ decodes:
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="decodes" class="doc_header"><code>decodes</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/core.py#L283" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>decodes</code>(<strong><code>x</code></strong>:<a href="/vision.core.html#TensorBBox"><code>TensorBBox</code></a>)</p>
+<h4 id="decodes" class="doc_header"><code>decodes</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/core.py#L288" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>decodes</code>(<strong><code>x</code></strong>:<a href="/vision.core.html#TensorBBox"><code>TensorBBox</code></a>)</p>
 </blockquote>
 
 </div>

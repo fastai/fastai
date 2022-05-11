@@ -26,25 +26,6 @@ nb_path: "nbs/15_callback.hook.ipynb"
     
 <div class="cell border-box-sizing code_cell rendered">
 
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-<div class="output_subarea output_stream output_stderr output_text">
-<pre>/opt/conda/lib/python3.9/site-packages/torch/cuda/__init__.py:145: UserWarning: 
-NVIDIA GeForce RTX 3070 Laptop GPU with CUDA capability sm_86 is not compatible with the current PyTorch installation.
-The current PyTorch install supports CUDA capabilities sm_37 sm_50 sm_60 sm_70.
-If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, please check the instructions at https://pytorch.org/get-started/locally/
-
-  warnings.warn(incompatible_device_warn.format(device_name, capability, &#34; &#34;.join(arch_list), device_name))
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
 </div>
     {% endraw %}
 
@@ -208,7 +189,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Hook" class="doc_header"><code>class</code> <code>Hook</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/hook.py#L10" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Hook</code>(<strong><code>m</code></strong>, <strong><code>hook_func</code></strong>, <strong><code>is_forward</code></strong>=<em><code>True</code></em>, <strong><code>detach</code></strong>=<em><code>True</code></em>, <strong><code>cpu</code></strong>=<em><code>False</code></em>, <strong><code>gather</code></strong>=<em><code>False</code></em>)</p>
+<h2 id="Hook" class="doc_header"><code>class</code> <code>Hook</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/hook.py#L15" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Hook</code>(<strong><code>m</code></strong>, <strong><code>hook_func</code></strong>, <strong><code>is_forward</code></strong>=<em><code>True</code></em>, <strong><code>detach</code></strong>=<em><code>True</code></em>, <strong><code>cpu</code></strong>=<em><code>False</code></em>, <strong><code>gather</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 <p>Create a hook on <code>m</code> with <code>hook_func</code>.</p>
 
@@ -267,7 +248,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Hook.hook_fn" class="doc_header"><code>Hook.hook_fn</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/hook.py#L19" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Hook.hook_fn</code>(<strong><code>module</code></strong>, <strong><code>input</code></strong>, <strong><code>output</code></strong>)</p>
+<h4 id="Hook.hook_fn" class="doc_header"><code>Hook.hook_fn</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/hook.py#L24" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Hook.hook_fn</code>(<strong><code>module</code></strong>, <strong><code>input</code></strong>, <strong><code>output</code></strong>)</p>
 </blockquote>
 <p>Applies <code>hook_func</code> to <code>module</code>, <code>input</code>, <code>output</code>.</p>
 
@@ -292,7 +273,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Hook.remove" class="doc_header"><code>Hook.remove</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/hook.py#L25" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Hook.remove</code>()</p>
+<h4 id="Hook.remove" class="doc_header"><code>Hook.remove</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/hook.py#L30" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Hook.remove</code>()</p>
 </blockquote>
 <p>Remove the hook from the model.</p>
 
@@ -360,7 +341,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Hook.__enter__" class="doc_header"><code>Hook.__enter__</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/hook.py#L31" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Hook.__enter__</code>(<strong>*<code>args</code></strong>)</p>
+<h4 id="Hook.__enter__" class="doc_header"><code>Hook.__enter__</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/hook.py#L36" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Hook.__enter__</code>(<strong>*<code>args</code></strong>)</p>
 </blockquote>
 <p>Register the hook</p>
 
@@ -385,7 +366,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Hook.__exit__" class="doc_header"><code>Hook.__exit__</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/hook.py#L32" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Hook.__exit__</code>(<strong>*<code>args</code></strong>)</p>
+<h4 id="Hook.__exit__" class="doc_header"><code>Hook.__exit__</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/hook.py#L37" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Hook.__exit__</code>(<strong>*<code>args</code></strong>)</p>
 </blockquote>
 <p>Remove the hook</p>
 
@@ -432,7 +413,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="hook_output" class="doc_header"><code>hook_output</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/hook.py#L40" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>hook_output</code>(<strong><code>module</code></strong>, <strong><code>detach</code></strong>=<em><code>True</code></em>, <strong><code>cpu</code></strong>=<em><code>False</code></em>, <strong><code>grad</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="hook_output" class="doc_header"><code>hook_output</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/hook.py#L45" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>hook_output</code>(<strong><code>module</code></strong>, <strong><code>detach</code></strong>=<em><code>True</code></em>, <strong><code>cpu</code></strong>=<em><code>False</code></em>, <strong><code>grad</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 <p>Return a <a href="/callback.hook.html#Hook"><code>Hook</code></a> that stores activations of <code>module</code> in <code>self.stored</code></p>
 
@@ -518,7 +499,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Hooks" class="doc_header"><code>class</code> <code>Hooks</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/hook.py#L45" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Hooks</code>(<strong><code>ms</code></strong>, <strong><code>hook_func</code></strong>, <strong><code>is_forward</code></strong>=<em><code>True</code></em>, <strong><code>detach</code></strong>=<em><code>True</code></em>, <strong><code>cpu</code></strong>=<em><code>False</code></em>)</p>
+<h2 id="Hooks" class="doc_header"><code>class</code> <code>Hooks</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/hook.py#L50" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Hooks</code>(<strong><code>ms</code></strong>, <strong><code>hook_func</code></strong>, <strong><code>is_forward</code></strong>=<em><code>True</code></em>, <strong><code>detach</code></strong>=<em><code>True</code></em>, <strong><code>cpu</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 <p>Create several hooks on the modules in <code>ms</code> with <code>hook_func</code>.</p>
 
@@ -597,7 +578,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Hooks.remove" class="doc_header"><code>Hooks.remove</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/hook.py#L57" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Hooks.remove</code>()</p>
+<h4 id="Hooks.remove" class="doc_header"><code>Hooks.remove</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/hook.py#L62" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Hooks.remove</code>()</p>
 </blockquote>
 <p>Remove the hooks from the model.</p>
 
@@ -635,7 +616,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Hooks.__enter__" class="doc_header"><code>Hooks.__enter__</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/hook.py#L61" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Hooks.__enter__</code>(<strong>*<code>args</code></strong>)</p>
+<h4 id="Hooks.__enter__" class="doc_header"><code>Hooks.__enter__</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/hook.py#L66" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Hooks.__enter__</code>(<strong>*<code>args</code></strong>)</p>
 </blockquote>
 <p>Register the hooks</p>
 
@@ -660,7 +641,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Hooks.__exit__" class="doc_header"><code>Hooks.__exit__</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/hook.py#L62" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Hooks.__exit__</code>(<strong>*<code>args</code></strong>)</p>
+<h4 id="Hooks.__exit__" class="doc_header"><code>Hooks.__exit__</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/hook.py#L67" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Hooks.__exit__</code>(<strong>*<code>args</code></strong>)</p>
 </blockquote>
 <p>Remove the hooks</p>
 
@@ -708,7 +689,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="hook_outputs" class="doc_header"><code>hook_outputs</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/hook.py#L69" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>hook_outputs</code>(<strong><code>modules</code></strong>, <strong><code>detach</code></strong>=<em><code>True</code></em>, <strong><code>cpu</code></strong>=<em><code>False</code></em>, <strong><code>grad</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="hook_outputs" class="doc_header"><code>hook_outputs</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/hook.py#L74" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>hook_outputs</code>(<strong><code>modules</code></strong>, <strong><code>detach</code></strong>=<em><code>True</code></em>, <strong><code>cpu</code></strong>=<em><code>False</code></em>, <strong><code>grad</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 <p>Return <a href="/callback.hook.html#Hooks"><code>Hooks</code></a> that store activations of all <code>modules</code> in <code>self.stored</code></p>
 
@@ -802,7 +783,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="dummy_eval" class="doc_header"><code>dummy_eval</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/hook.py#L74" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>dummy_eval</code>(<strong><code>m</code></strong>, <strong><code>size</code></strong>=<em><code>(64, 64)</code></em>)</p>
+<h4 id="dummy_eval" class="doc_header"><code>dummy_eval</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/hook.py#L79" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>dummy_eval</code>(<strong><code>m</code></strong>, <strong><code>size</code></strong>=<em><code>(64, 64)</code></em>)</p>
 </blockquote>
 <p>Evaluate <code>m</code> on a dummy input of a certain <code>size</code></p>
 
@@ -834,7 +815,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="model_sizes" class="doc_header"><code>model_sizes</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/hook.py#L81" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>model_sizes</code>(<strong><code>m</code></strong>, <strong><code>size</code></strong>=<em><code>(64, 64)</code></em>)</p>
+<h4 id="model_sizes" class="doc_header"><code>model_sizes</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/hook.py#L86" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>model_sizes</code>(<strong><code>m</code></strong>, <strong><code>size</code></strong>=<em><code>(64, 64)</code></em>)</p>
 </blockquote>
 <p>Pass a dummy input through the model <code>m</code> to get the various sizes of activations.</p>
 
@@ -884,7 +865,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="num_features_model" class="doc_header"><code>num_features_model</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/hook.py#L88" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>num_features_model</code>(<strong><code>m</code></strong>)</p>
+<h4 id="num_features_model" class="doc_header"><code>num_features_model</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/hook.py#L93" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>num_features_model</code>(<strong><code>m</code></strong>)</p>
 </blockquote>
 <p>Return the number of output features for <code>m</code>.</p>
 
@@ -943,7 +924,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="has_params" class="doc_header"><code>has_params</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/hook.py#L100" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>has_params</code>(<strong><code>m</code></strong>)</p>
+<h4 id="has_params" class="doc_header"><code>has_params</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/hook.py#L105" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>has_params</code>(<strong><code>m</code></strong>)</p>
 </blockquote>
 <p>Check if <code>m</code> has at least one parameter</p>
 
@@ -994,7 +975,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="HookCallback" class="doc_header"><code>class</code> <code>HookCallback</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/hook.py#L105" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>HookCallback</code>(<strong><code>modules</code></strong>=<em><code>None</code></em>, <strong><code>every</code></strong>=<em><code>None</code></em>, <strong><code>remove_end</code></strong>=<em><code>True</code></em>, <strong><code>is_forward</code></strong>=<em><code>True</code></em>, <strong><code>detach</code></strong>=<em><code>True</code></em>, <strong><code>cpu</code></strong>=<em><code>True</code></em>, <strong><code>include_paramless</code></strong>=<em><code>False</code></em>, <strong><code>hook</code></strong>=<em><code>None</code></em>) :: <a href="/callback.core.html#Callback"><code>Callback</code></a></p>
+<h2 id="HookCallback" class="doc_header"><code>class</code> <code>HookCallback</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/hook.py#L110" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>HookCallback</code>(<strong><code>modules</code></strong>=<em><code>None</code></em>, <strong><code>every</code></strong>=<em><code>None</code></em>, <strong><code>remove_end</code></strong>=<em><code>True</code></em>, <strong><code>is_forward</code></strong>=<em><code>True</code></em>, <strong><code>detach</code></strong>=<em><code>True</code></em>, <strong><code>cpu</code></strong>=<em><code>True</code></em>, <strong><code>include_paramless</code></strong>=<em><code>False</code></em>, <strong><code>hook</code></strong>=<em><code>None</code></em>) :: <a href="/callback.core.html#Callback"><code>Callback</code></a></p>
 </blockquote>
 <p><a href="/callback.core.html#Callback"><code>Callback</code></a> that can be used to register hooks on <code>modules</code></p>
 
@@ -1121,7 +1102,7 @@ Depending on <code>do_remove</code>, the hooks will be properly removed at the e
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="HookCallback.before_fit" class="doc_header"><code>HookCallback.before_fit</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/hook.py#L114" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>HookCallback.before_fit</code>()</p>
+<h4 id="HookCallback.before_fit" class="doc_header"><code>HookCallback.before_fit</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/hook.py#L119" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>HookCallback.before_fit</code>()</p>
 </blockquote>
 <p>Register the <a href="/callback.hook.html#Hooks"><code>Hooks</code></a> on <code>self.modules</code>.</p>
 
@@ -1146,7 +1127,7 @@ Depending on <code>do_remove</code>, the hooks will be properly removed at the e
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="HookCallback.after_fit" class="doc_header"><code>HookCallback.after_fit</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/hook.py#L127" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>HookCallback.after_fit</code>()</p>
+<h4 id="HookCallback.after_fit" class="doc_header"><code>HookCallback.after_fit</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/hook.py#L132" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>HookCallback.after_fit</code>()</p>
 </blockquote>
 <p>Remove the <a href="/callback.hook.html#Hooks"><code>Hooks</code></a>.</p>
 
@@ -1177,7 +1158,7 @@ Depending on <code>do_remove</code>, the hooks will be properly removed at the e
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="total_params" class="doc_header"><code>total_params</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/hook.py#L138" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>total_params</code>(<strong><code>m</code></strong>)</p>
+<h4 id="total_params" class="doc_header"><code>total_params</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/hook.py#L143" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>total_params</code>(<strong><code>m</code></strong>)</p>
 </blockquote>
 <p>Give the number of parameters of a module and if it's trainable or not</p>
 
@@ -1233,7 +1214,7 @@ Depending on <code>do_remove</code>, the hooks will be properly removed at the e
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="layer_info" class="doc_header"><code>layer_info</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/hook.py#L145" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>layer_info</code>(<strong><code>learn</code></strong>, <strong>*<code>xb</code></strong>)</p>
+<h4 id="layer_info" class="doc_header"><code>layer_info</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/hook.py#L150" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>layer_info</code>(<strong><code>learn</code></strong>, <strong>*<code>xb</code></strong>)</p>
 </blockquote>
 <p>Return layer infos of <code>model</code> on <code>xb</code> (only support batch first inputs)</p>
 
@@ -1309,7 +1290,7 @@ Depending on <code>do_remove</code>, the hooks will be properly removed at the e
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="module_summary" class="doc_header"><code>module_summary</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/hook.py#L173" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>module_summary</code>(<strong><code>learn</code></strong>, <strong>*<code>xb</code></strong>)</p>
+<h4 id="module_summary" class="doc_header"><code>module_summary</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/hook.py#L178" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>module_summary</code>(<strong><code>learn</code></strong>, <strong>*<code>xb</code></strong>)</p>
 </blockquote>
 <p>Print a summary of <code>model</code> using <code>xb</code></p>
 
@@ -1341,7 +1322,7 @@ Depending on <code>do_remove</code>, the hooks will be properly removed at the e
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Learner.summary" class="doc_header"><code>Learner.summary</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/hook.py#L206" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.summary</code>()</p>
+<h4 id="Learner.summary" class="doc_header"><code>Learner.summary</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/hook.py#L211" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.summary</code>()</p>
 </blockquote>
 <p>Print a summary of the model, optimizer and loss function.</p>
 
@@ -1435,7 +1416,7 @@ Callbacks:
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ActivationStats" class="doc_header"><code>class</code> <code>ActivationStats</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/hook.py#L218" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ActivationStats</code>(<strong><code>with_hist</code></strong>=<em><code>False</code></em>, <strong><code>modules</code></strong>=<em><code>None</code></em>, <strong><code>every</code></strong>=<em><code>None</code></em>, <strong><code>remove_end</code></strong>=<em><code>True</code></em>, <strong><code>is_forward</code></strong>=<em><code>True</code></em>, <strong><code>detach</code></strong>=<em><code>True</code></em>, <strong><code>cpu</code></strong>=<em><code>True</code></em>, <strong><code>include_paramless</code></strong>=<em><code>False</code></em>, <strong><code>hook</code></strong>=<em><code>None</code></em>) :: <a href="/callback.hook.html#HookCallback"><code>HookCallback</code></a></p>
+<h2 id="ActivationStats" class="doc_header"><code>class</code> <code>ActivationStats</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/hook.py#L223" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ActivationStats</code>(<strong><code>with_hist</code></strong>=<em><code>False</code></em>, <strong><code>modules</code></strong>=<em><code>None</code></em>, <strong><code>every</code></strong>=<em><code>None</code></em>, <strong><code>remove_end</code></strong>=<em><code>True</code></em>, <strong><code>is_forward</code></strong>=<em><code>True</code></em>, <strong><code>detach</code></strong>=<em><code>True</code></em>, <strong><code>cpu</code></strong>=<em><code>True</code></em>, <strong><code>include_paramless</code></strong>=<em><code>False</code></em>, <strong><code>hook</code></strong>=<em><code>None</code></em>) :: <a href="/callback.hook.html#HookCallback"><code>HookCallback</code></a></p>
 </blockquote>
 <p>Callback that record the mean and std of activations.</p>
 

@@ -26,25 +26,6 @@ nb_path: "nbs/01_layers.ipynb"
     
 <div class="cell border-box-sizing code_cell rendered">
 
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-<div class="output_subarea output_stream output_stderr output_text">
-<pre>/opt/conda/lib/python3.9/site-packages/torch/cuda/__init__.py:145: UserWarning: 
-NVIDIA GeForce RTX 3070 Laptop GPU with CUDA capability sm_86 is not compatible with the current PyTorch installation.
-The current PyTorch install supports CUDA capabilities sm_37 sm_50 sm_60 sm_70.
-If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, please check the instructions at https://pytorch.org/get-started/locally/
-
-  warnings.warn(incompatible_device_warn.format(device_name, capability, &#34; &#34;.join(arch_list), device_name))
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
 </div>
     {% endraw %}
 
@@ -72,7 +53,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="module" class="doc_header"><code>module</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L20" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>module</code>(<strong>*<code>flds</code></strong>, <strong>**<code>defaults</code></strong>)</p>
+<h4 id="module" class="doc_header"><code>module</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L25" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>module</code>(<strong>*<code>flds</code></strong>, <strong>**<code>defaults</code></strong>)</p>
 </blockquote>
 <p>Decorator to create an <code>nn.Module</code> using <code>f</code> as <code>forward</code> method</p>
 
@@ -224,7 +205,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="PartialLambda" class="doc_header"><code>class</code> <code>PartialLambda</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L56" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>PartialLambda</code>(<strong><code>func</code></strong>) :: <a href="/layers.html#Lambda"><code>Lambda</code></a></p>
+<h3 id="PartialLambda" class="doc_header"><code>class</code> <code>PartialLambda</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L61" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>PartialLambda</code>(<strong><code>func</code></strong>) :: <a href="/layers.html#Lambda"><code>Lambda</code></a></p>
 </blockquote>
 <p>Layer that applies <code>partial(func, **kwargs)</code></p>
 
@@ -379,7 +360,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="View" class="doc_header"><code>class</code> <code>View</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L78" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>View</code>(<strong>*<code>size</code></strong>) :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
+<h3 id="View" class="doc_header"><code>class</code> <code>View</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L83" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>View</code>(<strong>*<code>size</code></strong>) :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
 </blockquote>
 <p>Reshape <code>x</code> to <code>size</code></p>
 
@@ -429,7 +410,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="ResizeBatch" class="doc_header"><code>class</code> <code>ResizeBatch</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L84" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>ResizeBatch</code>(<strong>*<code>size</code></strong>) :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
+<h3 id="ResizeBatch" class="doc_header"><code>class</code> <code>ResizeBatch</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L89" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>ResizeBatch</code>(<strong>*<code>size</code></strong>) :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
 </blockquote>
 <p>Reshape <code>x</code> to <code>size</code>, keeping batch dim the same size</p>
 
@@ -511,7 +492,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="sigmoid_range" class="doc_header"><code>sigmoid_range</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L97" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>sigmoid_range</code>(<strong><code>x</code></strong>, <strong><code>low</code></strong>, <strong><code>high</code></strong>)</p>
+<h4 id="sigmoid_range" class="doc_header"><code>sigmoid_range</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L102" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>sigmoid_range</code>(<strong><code>x</code></strong>, <strong><code>low</code></strong>, <strong><code>high</code></strong>)</p>
 </blockquote>
 <p>Sigmoid function with range <code>(low, high)</code></p>
 
@@ -619,7 +600,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="AdaptiveConcatPool1d" class="doc_header"><code>class</code> <code>AdaptiveConcatPool1d</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L108" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>AdaptiveConcatPool1d</code>(<strong><code>size</code></strong>=<em><code>None</code></em>) :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
+<h3 id="AdaptiveConcatPool1d" class="doc_header"><code>class</code> <code>AdaptiveConcatPool1d</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L113" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>AdaptiveConcatPool1d</code>(<strong><code>size</code></strong>=<em><code>None</code></em>) :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
 </blockquote>
 <p>Layer that concats <code>AdaptiveAvgPool1d</code> and <code>AdaptiveMaxPool1d</code></p>
 
@@ -651,7 +632,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="AdaptiveConcatPool2d" class="doc_header"><code>class</code> <code>AdaptiveConcatPool2d</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L117" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>AdaptiveConcatPool2d</code>(<strong><code>size</code></strong>=<em><code>None</code></em>) :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
+<h3 id="AdaptiveConcatPool2d" class="doc_header"><code>class</code> <code>AdaptiveConcatPool2d</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L122" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>AdaptiveConcatPool2d</code>(<strong><code>size</code></strong>=<em><code>None</code></em>) :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
 </blockquote>
 <p>Layer that concats <code>AdaptiveAvgPool2d</code> and <code>AdaptiveMaxPool2d</code></p>
 
@@ -715,7 +696,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="PoolType" class="doc_header"><code>class</code> <code>PoolType</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L126" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>PoolType</code>()</p>
+<h3 id="PoolType" class="doc_header"><code>class</code> <code>PoolType</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L131" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>PoolType</code>()</p>
 </blockquote>
 
 </div>
@@ -746,7 +727,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="adaptive_pool" class="doc_header"><code>adaptive_pool</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L129" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>adaptive_pool</code>(<strong><code>pool_type</code></strong>)</p>
+<h4 id="adaptive_pool" class="doc_header"><code>adaptive_pool</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L134" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>adaptive_pool</code>(<strong><code>pool_type</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -777,7 +758,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="PoolFlatten" class="doc_header"><code>class</code> <code>PoolFlatten</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L133" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>PoolFlatten</code>(<strong><code>pool_type</code></strong>=<em><code>'Avg'</code></em>) :: <code>Sequential</code></p>
+<h3 id="PoolFlatten" class="doc_header"><code>class</code> <code>PoolFlatten</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L138" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>PoolFlatten</code>(<strong><code>pool_type</code></strong>=<em><code>'Avg'</code></em>) :: <code>Sequential</code></p>
 </blockquote>
 <p>Combine <code>nn.AdaptiveAvgPool2d</code> and <a href="/layers.html#Flatten"><code>Flatten</code></a>.</p>
 
@@ -848,7 +829,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="BatchNorm" class="doc_header"><code>BatchNorm</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L151" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>BatchNorm</code>(<strong><code>nf</code></strong>, <strong><code>ndim</code></strong>=<em><code>2</code></em>, <strong><code>norm_type</code></strong>=<em><code>&lt;NormType.Batch: 1&gt;</code></em>, <strong><code>eps</code></strong>=<em><code>1e-05</code></em>, <strong><code>momentum</code></strong>=<em><code>0.1</code></em>, <strong><code>affine</code></strong>=<em><code>True</code></em>, <strong><code>track_running_stats</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>dtype</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="BatchNorm" class="doc_header"><code>BatchNorm</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L156" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>BatchNorm</code>(<strong><code>nf</code></strong>, <strong><code>ndim</code></strong>=<em><code>2</code></em>, <strong><code>norm_type</code></strong>=<em><code>&lt;NormType.Batch: 1&gt;</code></em>, <strong><code>eps</code></strong>=<em><code>1e-05</code></em>, <strong><code>momentum</code></strong>=<em><code>0.1</code></em>, <strong><code>affine</code></strong>=<em><code>True</code></em>, <strong><code>track_running_stats</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>dtype</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>BatchNorm layer with <code>nf</code> features and <code>ndim</code> initialized depending on <code>norm_type</code>.</p>
 
@@ -880,7 +861,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="InstanceNorm" class="doc_header"><code>InstanceNorm</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L157" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>InstanceNorm</code>(<strong><code>nf</code></strong>, <strong><code>ndim</code></strong>=<em><code>2</code></em>, <strong><code>norm_type</code></strong>=<em><code>&lt;NormType.Instance: 5&gt;</code></em>, <strong><code>affine</code></strong>=<em><code>True</code></em>, <strong><code>eps</code></strong>:<code>float</code>=<em><code>1e-05</code></em>, <strong><code>momentum</code></strong>:<code>float</code>=<em><code>0.1</code></em>, <strong><code>track_running_stats</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>dtype</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="InstanceNorm" class="doc_header"><code>InstanceNorm</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L162" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>InstanceNorm</code>(<strong><code>nf</code></strong>, <strong><code>ndim</code></strong>=<em><code>2</code></em>, <strong><code>norm_type</code></strong>=<em><code>&lt;NormType.Instance: 5&gt;</code></em>, <strong><code>affine</code></strong>=<em><code>True</code></em>, <strong><code>eps</code></strong>:<code>float</code>=<em><code>1e-05</code></em>, <strong><code>momentum</code></strong>:<code>float</code>=<em><code>0.1</code></em>, <strong><code>track_running_stats</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>dtype</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>InstanceNorm layer with <code>nf</code> features and <code>ndim</code> initialized depending on <code>norm_type</code>.</p>
 
@@ -994,7 +975,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="BatchNorm1dFlat" class="doc_header"><code>class</code> <code>BatchNorm1dFlat</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L163" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>BatchNorm1dFlat</code>(<strong><code>num_features</code></strong>, <strong><code>eps</code></strong>=<em><code>1e-05</code></em>, <strong><code>momentum</code></strong>=<em><code>0.1</code></em>, <strong><code>affine</code></strong>=<em><code>True</code></em>, <strong><code>track_running_stats</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>dtype</code></strong>=<em><code>None</code></em>) :: <code>BatchNorm1d</code></p>
+<h3 id="BatchNorm1dFlat" class="doc_header"><code>class</code> <code>BatchNorm1dFlat</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L168" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>BatchNorm1dFlat</code>(<strong><code>num_features</code></strong>, <strong><code>eps</code></strong>=<em><code>1e-05</code></em>, <strong><code>momentum</code></strong>=<em><code>0.1</code></em>, <strong><code>affine</code></strong>=<em><code>True</code></em>, <strong><code>track_running_stats</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>dtype</code></strong>=<em><code>None</code></em>) :: <code>BatchNorm1d</code></p>
 </blockquote>
 <p><code>nn.BatchNorm1d</code>, but first flattens leading dimensions</p>
 
@@ -1050,7 +1031,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="LinBnDrop" class="doc_header"><code>class</code> <code>LinBnDrop</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L172" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>LinBnDrop</code>(<strong><code>n_in</code></strong>, <strong><code>n_out</code></strong>, <strong><code>bn</code></strong>=<em><code>True</code></em>, <strong><code>p</code></strong>=<em><code>0.0</code></em>, <strong><code>act</code></strong>=<em><code>None</code></em>, <strong><code>lin_first</code></strong>=<em><code>False</code></em>) :: <code>Sequential</code></p>
+<h3 id="LinBnDrop" class="doc_header"><code>class</code> <code>LinBnDrop</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L177" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>LinBnDrop</code>(<strong><code>n_in</code></strong>, <strong><code>n_out</code></strong>, <strong><code>bn</code></strong>=<em><code>True</code></em>, <strong><code>p</code></strong>=<em><code>0.0</code></em>, <strong><code>act</code></strong>=<em><code>None</code></em>, <strong><code>lin_first</code></strong>=<em><code>False</code></em>) :: <code>Sequential</code></p>
 </blockquote>
 <p>Module grouping <code>BatchNorm1d</code>, <code>Dropout</code> and <code>Linear</code> layers</p>
 
@@ -1135,7 +1116,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="sigmoid" class="doc_header"><code>sigmoid</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L183" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>sigmoid</code>(<strong><code>input</code></strong>, <strong><code>eps</code></strong>=<em><code>1e-07</code></em>)</p>
+<h4 id="sigmoid" class="doc_header"><code>sigmoid</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L188" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>sigmoid</code>(<strong><code>input</code></strong>, <strong><code>eps</code></strong>=<em><code>1e-07</code></em>)</p>
 </blockquote>
 <p>Same as <code>torch.sigmoid</code>, plus clamping to `(eps,1-eps)</p>
 
@@ -1167,7 +1148,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="sigmoid_" class="doc_header"><code>sigmoid_</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L188" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>sigmoid_</code>(<strong><code>input</code></strong>, <strong><code>eps</code></strong>=<em><code>1e-07</code></em>)</p>
+<h4 id="sigmoid_" class="doc_header"><code>sigmoid_</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L193" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>sigmoid_</code>(<strong><code>input</code></strong>, <strong><code>eps</code></strong>=<em><code>1e-07</code></em>)</p>
 </blockquote>
 <p>Same as <code>torch.sigmoid_</code>, plus clamping to `(eps,1-eps)</p>
 
@@ -1206,7 +1187,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="vleaky_relu" class="doc_header"><code>vleaky_relu</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L196" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>vleaky_relu</code>(<strong><code>input</code></strong>, <strong><code>inplace</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="vleaky_relu" class="doc_header"><code>vleaky_relu</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L201" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>vleaky_relu</code>(<strong><code>input</code></strong>, <strong><code>inplace</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 <p><code>F.leaky_relu</code> with 0.3 slope</p>
 
@@ -1252,7 +1233,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="init_default" class="doc_header"><code>init_default</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L756" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>init_default</code>(<strong><code>m</code></strong>, <strong><code>func</code></strong>=<em><code>kaiming_normal_</code></em>)</p>
+<h4 id="init_default" class="doc_header"><code>init_default</code><a href="https://github.com/fastai/fastai/tree/master/fastai/torch_core.py#L761" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>init_default</code>(<strong><code>m</code></strong>, <strong><code>func</code></strong>=<em><code>kaiming_normal_</code></em>)</p>
 </blockquote>
 <p>Initialize <code>m</code> weights with <code>func</code> and set <code>bias</code> to 0.</p>
 
@@ -1284,7 +1265,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="init_linear" class="doc_header"><code>init_linear</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L217" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>init_linear</code>(<strong><code>m</code></strong>, <strong><code>act_func</code></strong>=<em><code>None</code></em>, <strong><code>init</code></strong>=<em><code>'auto'</code></em>, <strong><code>bias_std</code></strong>=<em><code>0.01</code></em>)</p>
+<h4 id="init_linear" class="doc_header"><code>init_linear</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L222" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>init_linear</code>(<strong><code>m</code></strong>, <strong><code>act_func</code></strong>=<em><code>None</code></em>, <strong><code>init</code></strong>=<em><code>'auto'</code></em>, <strong><code>bias_std</code></strong>=<em><code>0.01</code></em>)</p>
 </blockquote>
 
 </div>
@@ -1335,7 +1316,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="ConvLayer" class="doc_header"><code>class</code> <code>ConvLayer</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L237" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>ConvLayer</code>(<strong><code>ni</code></strong>, <strong><code>nf</code></strong>, <strong><code>ks</code></strong>=<em><code>3</code></em>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>padding</code></strong>=<em><code>None</code></em>, <strong><code>bias</code></strong>=<em><code>None</code></em>, <strong><code>ndim</code></strong>=<em><code>2</code></em>, <strong><code>norm_type</code></strong>=<em><code>&lt;NormType.Batch: 1&gt;</code></em>, <strong><code>bn_1st</code></strong>=<em><code>True</code></em>, <strong><code>act_cls</code></strong>=<em><code>ReLU</code></em>, <strong><code>transpose</code></strong>=<em><code>False</code></em>, <strong><code>init</code></strong>=<em><code>'auto'</code></em>, <strong><code>xtra</code></strong>=<em><code>None</code></em>, <strong><code>bias_std</code></strong>=<em><code>0.01</code></em>, <strong><code>dilation</code></strong>:<code>Union</code>[<code>int</code>, <code>typing.Tuple[int, int]</code>]=<em><code>1</code></em>, <strong><code>groups</code></strong>:<code>int</code>=<em><code>1</code></em>, <strong><code>padding_mode</code></strong>:<code>str</code>=<em><code>'zeros'</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>dtype</code></strong>=<em><code>None</code></em>) :: <code>Sequential</code></p>
+<h3 id="ConvLayer" class="doc_header"><code>class</code> <code>ConvLayer</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L242" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>ConvLayer</code>(<strong><code>ni</code></strong>, <strong><code>nf</code></strong>, <strong><code>ks</code></strong>=<em><code>3</code></em>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>padding</code></strong>=<em><code>None</code></em>, <strong><code>bias</code></strong>=<em><code>None</code></em>, <strong><code>ndim</code></strong>=<em><code>2</code></em>, <strong><code>norm_type</code></strong>=<em><code>&lt;NormType.Batch: 1&gt;</code></em>, <strong><code>bn_1st</code></strong>=<em><code>True</code></em>, <strong><code>act_cls</code></strong>=<em><code>ReLU</code></em>, <strong><code>transpose</code></strong>=<em><code>False</code></em>, <strong><code>init</code></strong>=<em><code>'auto'</code></em>, <strong><code>xtra</code></strong>=<em><code>None</code></em>, <strong><code>bias_std</code></strong>=<em><code>0.01</code></em>, <strong><code>dilation</code></strong>:<code>Union</code>[<code>int</code>, <code>typing.Tuple[int, int]</code>]=<em><code>1</code></em>, <strong><code>groups</code></strong>:<code>int</code>=<em><code>1</code></em>, <strong><code>padding_mode</code></strong>:<code>str</code>=<em><code>'zeros'</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>dtype</code></strong>=<em><code>None</code></em>) :: <code>Sequential</code></p>
 </blockquote>
 <p>Create a sequence of convolutional (<code>ni</code> to <code>nf</code>), ReLU (if <code>use_activ</code>) and <code>norm_type</code> layers.</p>
 
@@ -1617,7 +1598,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="AdaptiveAvgPool" class="doc_header"><code>AdaptiveAvgPool</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L263" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>AdaptiveAvgPool</code>(<strong><code>sz</code></strong>=<em><code>1</code></em>, <strong><code>ndim</code></strong>=<em><code>2</code></em>)</p>
+<h4 id="AdaptiveAvgPool" class="doc_header"><code>AdaptiveAvgPool</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L268" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>AdaptiveAvgPool</code>(<strong><code>sz</code></strong>=<em><code>1</code></em>, <strong><code>ndim</code></strong>=<em><code>2</code></em>)</p>
 </blockquote>
 <p>nn.AdaptiveAvgPool layer for <code>ndim</code></p>
 
@@ -1649,7 +1630,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="MaxPool" class="doc_header"><code>MaxPool</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L269" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>MaxPool</code>(<strong><code>ks</code></strong>=<em><code>2</code></em>, <strong><code>stride</code></strong>=<em><code>None</code></em>, <strong><code>padding</code></strong>=<em><code>0</code></em>, <strong><code>ndim</code></strong>=<em><code>2</code></em>, <strong><code>ceil_mode</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="MaxPool" class="doc_header"><code>MaxPool</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L274" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>MaxPool</code>(<strong><code>ks</code></strong>=<em><code>2</code></em>, <strong><code>stride</code></strong>=<em><code>None</code></em>, <strong><code>padding</code></strong>=<em><code>0</code></em>, <strong><code>ndim</code></strong>=<em><code>2</code></em>, <strong><code>ceil_mode</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 <p>nn.MaxPool layer for <code>ndim</code></p>
 
@@ -1681,7 +1662,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="AvgPool" class="doc_header"><code>AvgPool</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L275" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>AvgPool</code>(<strong><code>ks</code></strong>=<em><code>2</code></em>, <strong><code>stride</code></strong>=<em><code>None</code></em>, <strong><code>padding</code></strong>=<em><code>0</code></em>, <strong><code>ndim</code></strong>=<em><code>2</code></em>, <strong><code>ceil_mode</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="AvgPool" class="doc_header"><code>AvgPool</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L280" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>AvgPool</code>(<strong><code>ks</code></strong>=<em><code>2</code></em>, <strong><code>stride</code></strong>=<em><code>None</code></em>, <strong><code>padding</code></strong>=<em><code>0</code></em>, <strong><code>ndim</code></strong>=<em><code>2</code></em>, <strong><code>ceil_mode</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 <p>nn.AvgPool layer for <code>ndim</code></p>
 
@@ -1719,7 +1700,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="trunc_normal_" class="doc_header"><code>trunc_normal_</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L281" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>trunc_normal_</code>(<strong><code>x</code></strong>, <strong><code>mean</code></strong>=<em><code>0.0</code></em>, <strong><code>std</code></strong>=<em><code>1.0</code></em>)</p>
+<h4 id="trunc_normal_" class="doc_header"><code>trunc_normal_</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L286" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>trunc_normal_</code>(<strong><code>x</code></strong>, <strong><code>mean</code></strong>=<em><code>0.0</code></em>, <strong><code>std</code></strong>=<em><code>1.0</code></em>)</p>
 </blockquote>
 <p>Truncated normal initialization (approximation)</p>
 
@@ -1751,7 +1732,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="Embedding" class="doc_header"><code>class</code> <code>Embedding</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L287" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>Embedding</code>(<strong><code>ni</code></strong>, <strong><code>nf</code></strong>, <strong><code>std</code></strong>=<em><code>0.01</code></em>) :: <a href="/layers.html#Embedding"><code>Embedding</code></a></p>
+<h3 id="Embedding" class="doc_header"><code>class</code> <code>Embedding</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L292" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>Embedding</code>(<strong><code>ni</code></strong>, <strong><code>nf</code></strong>, <strong><code>std</code></strong>=<em><code>0.01</code></em>) :: <a href="/layers.html#Embedding"><code>Embedding</code></a></p>
 </blockquote>
 <p>Embedding layer with truncated normal initialization</p>
 
@@ -1818,7 +1799,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="SelfAttention" class="doc_header"><code>class</code> <code>SelfAttention</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L294" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>SelfAttention</code>(<strong><code>n_channels</code></strong>) :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
+<h3 id="SelfAttention" class="doc_header"><code>class</code> <code>SelfAttention</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L299" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>SelfAttention</code>(<strong><code>n_channels</code></strong>) :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
 </blockquote>
 <p>Self attention layer for <code>n_channels</code>.</p>
 
@@ -1959,7 +1940,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="PooledSelfAttention2d" class="doc_header"><code>class</code> <code>PooledSelfAttention2d</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L313" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>PooledSelfAttention2d</code>(<strong><code>n_channels</code></strong>) :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
+<h3 id="PooledSelfAttention2d" class="doc_header"><code>class</code> <code>PooledSelfAttention2d</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L318" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>PooledSelfAttention2d</code>(<strong><code>n_channels</code></strong>) :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
 </blockquote>
 <p>Pooled self attention layer for 2d.</p>
 
@@ -2006,7 +1987,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="SimpleSelfAttention" class="doc_header"><code>class</code> <code>SimpleSelfAttention</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L342" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>SimpleSelfAttention</code>(<strong><code>n_in</code></strong>:<code>int</code>, <strong><code>ks</code></strong>=<em><code>1</code></em>, <strong><code>sym</code></strong>=<em><code>False</code></em>) :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
+<h3 id="SimpleSelfAttention" class="doc_header"><code>class</code> <code>SimpleSelfAttention</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L347" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>SimpleSelfAttention</code>(<strong><code>n_in</code></strong>:<code>int</code>, <strong><code>ks</code></strong>=<em><code>1</code></em>, <strong><code>sym</code></strong>=<em><code>False</code></em>) :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
 </blockquote>
 <p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
 
@@ -2052,7 +2033,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="icnr_init" class="doc_header"><code>icnr_init</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L364" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>icnr_init</code>(<strong><code>x</code></strong>, <strong><code>scale</code></strong>=<em><code>2</code></em>, <strong><code>init</code></strong>=<em><code>kaiming_normal_</code></em>)</p>
+<h4 id="icnr_init" class="doc_header"><code>icnr_init</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L369" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>icnr_init</code>(<strong><code>x</code></strong>, <strong><code>scale</code></strong>=<em><code>2</code></em>, <strong><code>init</code></strong>=<em><code>kaiming_normal_</code></em>)</p>
 </blockquote>
 <p>ICNR init of <code>x</code>, with <code>scale</code> and <code>init</code> function</p>
 
@@ -2114,7 +2095,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="PixelShuffle_ICNR" class="doc_header"><code>class</code> <code>PixelShuffle_ICNR</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L374" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>PixelShuffle_ICNR</code>(<strong><code>ni</code></strong>, <strong><code>nf</code></strong>=<em><code>None</code></em>, <strong><code>scale</code></strong>=<em><code>2</code></em>, <strong><code>blur</code></strong>=<em><code>False</code></em>, <strong><code>norm_type</code></strong>=<em><code>&lt;NormType.Weight: 3&gt;</code></em>, <strong><code>act_cls</code></strong>=<em><code>ReLU</code></em>) :: <code>Sequential</code></p>
+<h3 id="PixelShuffle_ICNR" class="doc_header"><code>class</code> <code>PixelShuffle_ICNR</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L379" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>PixelShuffle_ICNR</code>(<strong><code>ni</code></strong>, <strong><code>nf</code></strong>=<em><code>None</code></em>, <strong><code>scale</code></strong>=<em><code>2</code></em>, <strong><code>blur</code></strong>=<em><code>False</code></em>, <strong><code>norm_type</code></strong>=<em><code>&lt;NormType.Weight: 3&gt;</code></em>, <strong><code>act_cls</code></strong>=<em><code>ReLU</code></em>) :: <code>Sequential</code></p>
 </blockquote>
 <p>Upsample by <code>scale</code> from <code>ni</code> filters to <code>nf</code> (default <code>ni</code>), using <code>nn.PixelShuffle</code>.</p>
 
@@ -2238,7 +2219,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="sequential" class="doc_header"><code>sequential</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L390" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>sequential</code>(<strong>*<code>args</code></strong>)</p>
+<h4 id="sequential" class="doc_header"><code>sequential</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L395" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>sequential</code>(<strong>*<code>args</code></strong>)</p>
 </blockquote>
 <p>Create an <code>nn.Sequential</code>, wrapping items with <a href="/layers.html#Lambda"><code>Lambda</code></a> if needed</p>
 
@@ -2270,7 +2251,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="SequentialEx" class="doc_header"><code>class</code> <code>SequentialEx</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L399" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>SequentialEx</code>(<strong>*<code>layers</code></strong>) :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
+<h3 id="SequentialEx" class="doc_header"><code>class</code> <code>SequentialEx</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L404" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>SequentialEx</code>(<strong>*<code>layers</code></strong>) :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
 </blockquote>
 <p>Like <code>nn.Sequential</code>, but with ModuleList semantics, and can access module input</p>
 
@@ -2309,7 +2290,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="MergeLayer" class="doc_header"><code>class</code> <code>MergeLayer</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L419" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>MergeLayer</code>(<strong><code>dense</code></strong>:<code>bool</code>=<em><code>False</code></em>) :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
+<h3 id="MergeLayer" class="doc_header"><code>class</code> <code>MergeLayer</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L424" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>MergeLayer</code>(<strong><code>dense</code></strong>:<code>bool</code>=<em><code>False</code></em>) :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
 </blockquote>
 <p>Merge a shortcut with the result of the module by adding them or concatenating them if <code>dense=True</code>.</p>
 
@@ -2395,7 +2376,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="Cat" class="doc_header"><code>class</code> <code>Cat</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L425" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>Cat</code>(<strong><code>layers</code></strong>, <strong><code>dim</code></strong>=<em><code>1</code></em>) :: <code>ModuleList</code></p>
+<h3 id="Cat" class="doc_header"><code>class</code> <code>Cat</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L430" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>Cat</code>(<strong><code>layers</code></strong>, <strong><code>dim</code></strong>=<em><code>1</code></em>) :: <code>ModuleList</code></p>
 </blockquote>
 <p>Concatenate layers outputs over a given dim</p>
 
@@ -2454,7 +2435,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="SimpleCNN" class="doc_header"><code>class</code> <code>SimpleCNN</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L433" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>SimpleCNN</code>(<strong><code>filters</code></strong>, <strong><code>kernel_szs</code></strong>=<em><code>None</code></em>, <strong><code>strides</code></strong>=<em><code>None</code></em>, <strong><code>bn</code></strong>=<em><code>True</code></em>) :: <code>Sequential</code></p>
+<h3 id="SimpleCNN" class="doc_header"><code>class</code> <code>SimpleCNN</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L438" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>SimpleCNN</code>(<strong><code>filters</code></strong>, <strong><code>kernel_szs</code></strong>=<em><code>None</code></em>, <strong><code>strides</code></strong>=<em><code>None</code></em>, <strong><code>bn</code></strong>=<em><code>True</code></em>) :: <code>Sequential</code></p>
 </blockquote>
 <p>Create a simple CNN with <code>filters</code>.</p>
 
@@ -2565,7 +2546,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="ProdLayer" class="doc_header"><code>class</code> <code>ProdLayer</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L445" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>ProdLayer</code>() :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
+<h3 id="ProdLayer" class="doc_header"><code>class</code> <code>ProdLayer</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L450" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>ProdLayer</code>() :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
 </blockquote>
 <p>Merge a shortcut with the result of the module by multiplying them.</p>
 
@@ -2604,7 +2585,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="SEModule" class="doc_header"><code>SEModule</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L453" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>SEModule</code>(<strong><code>ch</code></strong>, <strong><code>reduction</code></strong>, <strong><code>act_cls</code></strong>=<em><code>ReLU</code></em>)</p>
+<h4 id="SEModule" class="doc_header"><code>SEModule</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L458" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>SEModule</code>(<strong><code>ch</code></strong>, <strong><code>reduction</code></strong>, <strong><code>act_cls</code></strong>=<em><code>ReLU</code></em>)</p>
 </blockquote>
 
 </div>
@@ -2635,7 +2616,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="ResBlock" class="doc_header"><code>class</code> <code>ResBlock</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L461" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>ResBlock</code>(<strong><code>expansion</code></strong>, <strong><code>ni</code></strong>, <strong><code>nf</code></strong>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>groups</code></strong>=<em><code>1</code></em>, <strong><code>reduction</code></strong>=<em><code>None</code></em>, <strong><code>nh1</code></strong>=<em><code>None</code></em>, <strong><code>nh2</code></strong>=<em><code>None</code></em>, <strong><code>dw</code></strong>=<em><code>False</code></em>, <strong><code>g2</code></strong>=<em><code>1</code></em>, <strong><code>sa</code></strong>=<em><code>False</code></em>, <strong><code>sym</code></strong>=<em><code>False</code></em>, <strong><code>norm_type</code></strong>=<em><code>&lt;NormType.Batch: 1&gt;</code></em>, <strong><code>act_cls</code></strong>=<em><code>ReLU</code></em>, <strong><code>ndim</code></strong>=<em><code>2</code></em>, <strong><code>ks</code></strong>=<em><code>3</code></em>, <strong><code>pool</code></strong>=<em><code>AvgPool</code></em>, <strong><code>pool_first</code></strong>=<em><code>True</code></em>, <strong><code>padding</code></strong>=<em><code>None</code></em>, <strong><code>bias</code></strong>=<em><code>None</code></em>, <strong><code>bn_1st</code></strong>=<em><code>True</code></em>, <strong><code>transpose</code></strong>=<em><code>False</code></em>, <strong><code>init</code></strong>=<em><code>'auto'</code></em>, <strong><code>xtra</code></strong>=<em><code>None</code></em>, <strong><code>bias_std</code></strong>=<em><code>0.01</code></em>, <strong><code>dilation</code></strong>:<code>Union</code>[<code>int</code>, <code>typing.Tuple[int, int]</code>]=<em><code>1</code></em>, <strong><code>padding_mode</code></strong>:<code>str</code>=<em><code>'zeros'</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>dtype</code></strong>=<em><code>None</code></em>) :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
+<h3 id="ResBlock" class="doc_header"><code>class</code> <code>ResBlock</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L466" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>ResBlock</code>(<strong><code>expansion</code></strong>, <strong><code>ni</code></strong>, <strong><code>nf</code></strong>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>groups</code></strong>=<em><code>1</code></em>, <strong><code>reduction</code></strong>=<em><code>None</code></em>, <strong><code>nh1</code></strong>=<em><code>None</code></em>, <strong><code>nh2</code></strong>=<em><code>None</code></em>, <strong><code>dw</code></strong>=<em><code>False</code></em>, <strong><code>g2</code></strong>=<em><code>1</code></em>, <strong><code>sa</code></strong>=<em><code>False</code></em>, <strong><code>sym</code></strong>=<em><code>False</code></em>, <strong><code>norm_type</code></strong>=<em><code>&lt;NormType.Batch: 1&gt;</code></em>, <strong><code>act_cls</code></strong>=<em><code>ReLU</code></em>, <strong><code>ndim</code></strong>=<em><code>2</code></em>, <strong><code>ks</code></strong>=<em><code>3</code></em>, <strong><code>pool</code></strong>=<em><code>AvgPool</code></em>, <strong><code>pool_first</code></strong>=<em><code>True</code></em>, <strong><code>padding</code></strong>=<em><code>None</code></em>, <strong><code>bias</code></strong>=<em><code>None</code></em>, <strong><code>bn_1st</code></strong>=<em><code>True</code></em>, <strong><code>transpose</code></strong>=<em><code>False</code></em>, <strong><code>init</code></strong>=<em><code>'auto'</code></em>, <strong><code>xtra</code></strong>=<em><code>None</code></em>, <strong><code>bias_std</code></strong>=<em><code>0.01</code></em>, <strong><code>dilation</code></strong>:<code>Union</code>[<code>int</code>, <code>typing.Tuple[int, int]</code>]=<em><code>1</code></em>, <strong><code>padding_mode</code></strong>:<code>str</code>=<em><code>'zeros'</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>dtype</code></strong>=<em><code>None</code></em>) :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
 </blockquote>
 <p>Resnet block from <code>ni</code> to <code>nh</code> with <code>stride</code></p>
 
@@ -2675,7 +2656,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="SEBlock" class="doc_header"><code>SEBlock</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L492" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>SEBlock</code>(<strong><code>expansion</code></strong>, <strong><code>ni</code></strong>, <strong><code>nf</code></strong>, <strong><code>groups</code></strong>=<em><code>1</code></em>, <strong><code>reduction</code></strong>=<em><code>16</code></em>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="SEBlock" class="doc_header"><code>SEBlock</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L497" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>SEBlock</code>(<strong><code>expansion</code></strong>, <strong><code>ni</code></strong>, <strong><code>nf</code></strong>, <strong><code>groups</code></strong>=<em><code>1</code></em>, <strong><code>reduction</code></strong>=<em><code>16</code></em>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -2706,7 +2687,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="SEResNeXtBlock" class="doc_header"><code>SEResNeXtBlock</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L496" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>SEResNeXtBlock</code>(<strong><code>expansion</code></strong>, <strong><code>ni</code></strong>, <strong><code>nf</code></strong>, <strong><code>groups</code></strong>=<em><code>32</code></em>, <strong><code>reduction</code></strong>=<em><code>16</code></em>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>base_width</code></strong>=<em><code>4</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="SEResNeXtBlock" class="doc_header"><code>SEResNeXtBlock</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L501" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>SEResNeXtBlock</code>(<strong><code>expansion</code></strong>, <strong><code>ni</code></strong>, <strong><code>nf</code></strong>, <strong><code>groups</code></strong>=<em><code>32</code></em>, <strong><code>reduction</code></strong>=<em><code>16</code></em>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>base_width</code></strong>=<em><code>4</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -2737,7 +2718,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="SeparableBlock" class="doc_header"><code>SeparableBlock</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L501" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>SeparableBlock</code>(<strong><code>expansion</code></strong>, <strong><code>ni</code></strong>, <strong><code>nf</code></strong>, <strong><code>reduction</code></strong>=<em><code>16</code></em>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>base_width</code></strong>=<em><code>4</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="SeparableBlock" class="doc_header"><code>SeparableBlock</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L506" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>SeparableBlock</code>(<strong><code>expansion</code></strong>, <strong><code>ni</code></strong>, <strong><code>nf</code></strong>, <strong><code>reduction</code></strong>=<em><code>16</code></em>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>base_width</code></strong>=<em><code>4</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -2922,7 +2903,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TimeDistributed" class="doc_header"><code>class</code> <code>TimeDistributed</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L510" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TimeDistributed</code>(<strong><code>module</code></strong>, <strong><code>low_mem</code></strong>=<em><code>False</code></em>, <strong><code>tdim</code></strong>=<em><code>1</code></em>) :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
+<h2 id="TimeDistributed" class="doc_header"><code>class</code> <code>TimeDistributed</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L515" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TimeDistributed</code>(<strong><code>module</code></strong>, <strong><code>low_mem</code></strong>=<em><code>False</code></em>, <strong><code>tdim</code></strong>=<em><code>1</code></em>) :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
 </blockquote>
 <p>Applies <code>module</code> over <code>tdim</code> identically for each step, use <code>low_mem</code> to compute one at a time.</p>
 
@@ -3133,7 +3114,7 @@ There is also a <code>low_mem_forward</code> that will pass images one at a time
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="swish" class="doc_header"><code>swish</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L570" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>swish</code>(<strong><code>x</code></strong>, <strong><code>inplace</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="swish" class="doc_header"><code>swish</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L575" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>swish</code>(<strong><code>x</code></strong>, <strong><code>inplace</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 
 </div>
@@ -3164,7 +3145,7 @@ There is also a <code>low_mem_forward</code> that will pass images one at a time
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="Swish" class="doc_header"><code>class</code> <code>Swish</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L573" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>Swish</code>() :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
+<h3 id="Swish" class="doc_header"><code>class</code> <code>Swish</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L578" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>Swish</code>() :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
 </blockquote>
 <p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
 
@@ -3196,11 +3177,11 @@ There is also a <code>low_mem_forward</code> that will pass images one at a time
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="MishJitAutoFn" class="doc_header"><code>class</code> <code>MishJitAutoFn</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L586" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>MishJitAutoFn</code>(<strong>*<code>args</code></strong>, <strong>**<code>kwargs</code></strong>) :: <code>Function</code></p>
+<h3 id="MishJitAutoFn" class="doc_header"><code>class</code> <code>MishJitAutoFn</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L591" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>MishJitAutoFn</code>(<strong>*<code>args</code></strong>, <strong>**<code>kwargs</code></strong>) :: <code>Function</code></p>
 </blockquote>
 <p>Base class to create custom <code>autograd.Function</code></p>
 <p>To create a custom <code>autograd.Function</code>, subclass this class and implement
-the :meth:<code>forward</code> and :meth:<code>backward</code> static methods. Then, to use your custom
+the :meth:<code>forward</code> and :meth<code>backward</code> static methods. Then, to use your custom
 op in the forward pass, call the class method <code>apply</code>. Do not call
 :meth:<code>forward</code> directly.</p>
 <p>To ensure correctness and best performance, make sure you are calling the
@@ -3252,7 +3233,7 @@ correct methods on <code>ctx</code> and validating your backward function using
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="mish" class="doc_header"><code>mish</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L598" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>mish</code>(<strong><code>x</code></strong>)</p>
+<h4 id="mish" class="doc_header"><code>mish</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L603" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>mish</code>(<strong><code>x</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -3283,7 +3264,7 @@ correct methods on <code>ctx</code> and validating your backward function using
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="Mish" class="doc_header"><code>class</code> <code>Mish</code><a href="torch/nn/modules/activation.py#L400" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>Mish</code>(<strong><code>inplace</code></strong>:<code>bool</code>=<em><code>False</code></em>) :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
+<h3 id="Mish" class="doc_header"><code>class</code> <code>Mish</code><a href="torch/nn/modules/activation.py#L390" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>Mish</code>(<strong><code>inplace</code></strong>:<code>bool</code>=<em><code>False</code></em>) :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
 </blockquote>
 <p>Applies the Mish function, element-wise.
 Mish: A Self Regularized Non-Monotonic Neural Activation Function.</p>
@@ -3297,7 +3278,6 @@ Mish: A Self Regularized Non-Monotonic Neural Activation Function.</p>
 - Output: :math:`(*)`, same shape as the input.
 
 </code></pre>
-<p>.. image:: ../scripts/activation_images/Mish.png</p>
 <p>Examples::</p>
 
 <pre><code>&gt;&gt;&gt; m = nn.Mish()
@@ -3359,7 +3339,7 @@ Mish: A Self Regularized Non-Monotonic Neural Activation Function.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="ParameterModule" class="doc_header"><code>class</code> <code>ParameterModule</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L611" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>ParameterModule</code>(<strong><code>p</code></strong>) :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
+<h3 id="ParameterModule" class="doc_header"><code>class</code> <code>ParameterModule</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L616" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>ParameterModule</code>(<strong><code>p</code></strong>) :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
 </blockquote>
 <p>Register a lone parameter <code>p</code> in a module.</p>
 
@@ -3391,7 +3371,7 @@ Mish: A Self Regularized Non-Monotonic Neural Activation Function.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="children_and_parameters" class="doc_header"><code>children_and_parameters</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L617" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>children_and_parameters</code>(<strong><code>m</code></strong>)</p>
+<h4 id="children_and_parameters" class="doc_header"><code>children_and_parameters</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L622" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>children_and_parameters</code>(<strong><code>m</code></strong>)</p>
 </blockquote>
 <p>Return the children of <code>m</code> and its direct parameters not registered in modules.</p>
 
@@ -3448,7 +3428,7 @@ Mish: A Self Regularized Non-Monotonic Neural Activation Function.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="has_children" class="doc_header"><code>has_children</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L626" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>has_children</code>(<strong><code>m</code></strong>)</p>
+<h4 id="has_children" class="doc_header"><code>has_children</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L631" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>has_children</code>(<strong><code>m</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -3498,7 +3478,7 @@ Mish: A Self Regularized Non-Monotonic Neural Activation Function.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="flatten_model" class="doc_header"><code>flatten_model</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L632" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>flatten_model</code>(<strong><code>m</code></strong>)</p>
+<h4 id="flatten_model" class="doc_header"><code>flatten_model</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L637" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>flatten_model</code>(<strong><code>m</code></strong>)</p>
 </blockquote>
 <p>Return the list of all submodules and parameters of <code>m</code></p>
 
@@ -3551,7 +3531,7 @@ Mish: A Self Regularized Non-Monotonic Neural Activation Function.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="NoneReduce" class="doc_header"><code>class</code> <code>NoneReduce</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L637" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>NoneReduce</code>(<strong><code>loss_func</code></strong>)</p>
+<h3 id="NoneReduce" class="doc_header"><code>class</code> <code>NoneReduce</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L642" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>NoneReduce</code>(<strong><code>loss_func</code></strong>)</p>
 </blockquote>
 <p>A context manager to evaluate <code>loss_func</code> with none reduce.</p>
 
@@ -3611,7 +3591,7 @@ Mish: A Self Regularized Non-Monotonic Neural Activation Function.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="in_channels" class="doc_header"><code>in_channels</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L652" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>in_channels</code>(<strong><code>m</code></strong>)</p>
+<h4 id="in_channels" class="doc_header"><code>in_channels</code><a href="https://github.com/fastai/fastai/tree/master/fastai/layers.py#L657" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>in_channels</code>(<strong><code>m</code></strong>)</p>
 </blockquote>
 <p>Return the shape of the first weight layer in <code>m</code>.</p>
 

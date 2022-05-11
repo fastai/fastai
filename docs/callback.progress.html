@@ -26,25 +26,6 @@ nb_path: "nbs/16_callback.progress.ipynb"
     
 <div class="cell border-box-sizing code_cell rendered">
 
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-<div class="output_subarea output_stream output_stderr output_text">
-<pre>/opt/conda/lib/python3.9/site-packages/torch/cuda/__init__.py:145: UserWarning: 
-NVIDIA GeForce RTX 3070 Laptop GPU with CUDA capability sm_86 is not compatible with the current PyTorch installation.
-The current PyTorch install supports CUDA capabilities sm_37 sm_50 sm_60 sm_70.
-If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, please check the instructions at https://pytorch.org/get-started/locally/
-
-  warnings.warn(incompatible_device_warn.format(device_name, capability, &#34; &#34;.join(arch_list), device_name))
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
 </div>
     {% endraw %}
 
@@ -83,7 +64,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ProgressCallback" class="doc_header"><code>class</code> <code>ProgressCallback</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/progress.py#L9" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ProgressCallback</code>(<strong><code>after_create</code></strong>=<em><code>None</code></em>, <strong><code>before_fit</code></strong>=<em><code>None</code></em>, <strong><code>before_epoch</code></strong>=<em><code>None</code></em>, <strong><code>before_train</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_pred</code></strong>=<em><code>None</code></em>, <strong><code>after_loss</code></strong>=<em><code>None</code></em>, <strong><code>before_backward</code></strong>=<em><code>None</code></em>, <strong><code>before_step</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_step</code></strong>=<em><code>None</code></em>, <strong><code>after_step</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_train</code></strong>=<em><code>None</code></em>, <strong><code>after_train</code></strong>=<em><code>None</code></em>, <strong><code>before_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_epoch</code></strong>=<em><code>None</code></em>, <strong><code>after_epoch</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_fit</code></strong>=<em><code>None</code></em>, <strong><code>after_fit</code></strong>=<em><code>None</code></em>) :: <a href="/callback.core.html#Callback"><code>Callback</code></a></p>
+<h2 id="ProgressCallback" class="doc_header"><code>class</code> <code>ProgressCallback</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/progress.py#L14" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ProgressCallback</code>(<strong><code>after_create</code></strong>=<em><code>None</code></em>, <strong><code>before_fit</code></strong>=<em><code>None</code></em>, <strong><code>before_epoch</code></strong>=<em><code>None</code></em>, <strong><code>before_train</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_pred</code></strong>=<em><code>None</code></em>, <strong><code>after_loss</code></strong>=<em><code>None</code></em>, <strong><code>before_backward</code></strong>=<em><code>None</code></em>, <strong><code>before_step</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_step</code></strong>=<em><code>None</code></em>, <strong><code>after_step</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_train</code></strong>=<em><code>None</code></em>, <strong><code>after_train</code></strong>=<em><code>None</code></em>, <strong><code>before_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_epoch</code></strong>=<em><code>None</code></em>, <strong><code>after_epoch</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_fit</code></strong>=<em><code>None</code></em>, <strong><code>after_fit</code></strong>=<em><code>None</code></em>) :: <a href="/callback.core.html#Callback"><code>Callback</code></a></p>
 </blockquote>
 <p>A <a href="/callback.core.html#Callback"><code>Callback</code></a> to handle the display of progress bars</p>
 
@@ -187,7 +168,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Learner.no_bar" class="doc_header"><code>Learner.no_bar</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/progress.py#L59" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.no_bar</code>()</p>
+<h4 id="Learner.no_bar" class="doc_header"><code>Learner.no_bar</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/progress.py#L64" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>Learner.no_bar</code>()</p>
 </blockquote>
 <p>Context manager that deactivates the use of progress bars</p>
 
@@ -255,7 +236,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ProgressCallback.before_fit" class="doc_header"><code>ProgressCallback.before_fit</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/progress.py#L14" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ProgressCallback.before_fit</code>()</p>
+<h4 id="ProgressCallback.before_fit" class="doc_header"><code>ProgressCallback.before_fit</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/progress.py#L19" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ProgressCallback.before_fit</code>()</p>
 </blockquote>
 <p>Setup the master bar over the epochs</p>
 
@@ -280,7 +261,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ProgressCallback.before_epoch" class="doc_header"><code>ProgressCallback.before_epoch</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/progress.py#L22" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ProgressCallback.before_epoch</code>()</p>
+<h4 id="ProgressCallback.before_epoch" class="doc_header"><code>ProgressCallback.before_epoch</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/progress.py#L27" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ProgressCallback.before_epoch</code>()</p>
 </blockquote>
 <p>Update the master bar</p>
 
@@ -305,7 +286,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ProgressCallback.before_train" class="doc_header"><code>ProgressCallback.before_train</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/progress.py#L25" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ProgressCallback.before_train</code>()</p>
+<h4 id="ProgressCallback.before_train" class="doc_header"><code>ProgressCallback.before_train</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/progress.py#L30" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ProgressCallback.before_train</code>()</p>
 </blockquote>
 <p>Launch a progress bar over the training dataloader</p>
 
@@ -330,7 +311,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ProgressCallback.before_validate" class="doc_header"><code>ProgressCallback.before_validate</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/progress.py#L26" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ProgressCallback.before_validate</code>()</p>
+<h4 id="ProgressCallback.before_validate" class="doc_header"><code>ProgressCallback.before_validate</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/progress.py#L31" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ProgressCallback.before_validate</code>()</p>
 </blockquote>
 <p>Launch a progress bar over the validation dataloader</p>
 
@@ -355,7 +336,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ProgressCallback.after_batch" class="doc_header"><code>ProgressCallback.after_batch</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/progress.py#L29" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ProgressCallback.after_batch</code>()</p>
+<h4 id="ProgressCallback.after_batch" class="doc_header"><code>ProgressCallback.after_batch</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/progress.py#L34" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ProgressCallback.after_batch</code>()</p>
 </blockquote>
 <p>Update the current progress bar</p>
 
@@ -380,7 +361,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ProgressCallback.after_train" class="doc_header"><code>ProgressCallback.after_train</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/progress.py#L27" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ProgressCallback.after_train</code>()</p>
+<h4 id="ProgressCallback.after_train" class="doc_header"><code>ProgressCallback.after_train</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/progress.py#L32" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ProgressCallback.after_train</code>()</p>
 </blockquote>
 <p>Close the progress bar over the training dataloader</p>
 
@@ -405,7 +386,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ProgressCallback.after_validate" class="doc_header"><code>ProgressCallback.after_validate</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/progress.py#L28" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ProgressCallback.after_validate</code>()</p>
+<h4 id="ProgressCallback.after_validate" class="doc_header"><code>ProgressCallback.after_validate</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/progress.py#L33" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ProgressCallback.after_validate</code>()</p>
 </blockquote>
 <p>Close the progress bar over the validation dataloader</p>
 
@@ -430,7 +411,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ProgressCallback.after_fit" class="doc_header"><code>ProgressCallback.after_fit</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/progress.py#L37" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ProgressCallback.after_fit</code>()</p>
+<h4 id="ProgressCallback.after_fit" class="doc_header"><code>ProgressCallback.after_fit</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/progress.py#L42" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ProgressCallback.after_fit</code>()</p>
 </blockquote>
 <p>Close the master bar</p>
 
@@ -455,7 +436,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ShowGraphCallback" class="doc_header"><code>class</code> <code>ShowGraphCallback</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/progress.py#L70" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ShowGraphCallback</code>(<strong><code>after_create</code></strong>=<em><code>None</code></em>, <strong><code>before_fit</code></strong>=<em><code>None</code></em>, <strong><code>before_epoch</code></strong>=<em><code>None</code></em>, <strong><code>before_train</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_pred</code></strong>=<em><code>None</code></em>, <strong><code>after_loss</code></strong>=<em><code>None</code></em>, <strong><code>before_backward</code></strong>=<em><code>None</code></em>, <strong><code>before_step</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_step</code></strong>=<em><code>None</code></em>, <strong><code>after_step</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_train</code></strong>=<em><code>None</code></em>, <strong><code>after_train</code></strong>=<em><code>None</code></em>, <strong><code>before_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_epoch</code></strong>=<em><code>None</code></em>, <strong><code>after_epoch</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_fit</code></strong>=<em><code>None</code></em>, <strong><code>after_fit</code></strong>=<em><code>None</code></em>) :: <a href="/callback.core.html#Callback"><code>Callback</code></a></p>
+<h2 id="ShowGraphCallback" class="doc_header"><code>class</code> <code>ShowGraphCallback</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/progress.py#L75" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ShowGraphCallback</code>(<strong><code>after_create</code></strong>=<em><code>None</code></em>, <strong><code>before_fit</code></strong>=<em><code>None</code></em>, <strong><code>before_epoch</code></strong>=<em><code>None</code></em>, <strong><code>before_train</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_pred</code></strong>=<em><code>None</code></em>, <strong><code>after_loss</code></strong>=<em><code>None</code></em>, <strong><code>before_backward</code></strong>=<em><code>None</code></em>, <strong><code>before_step</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_step</code></strong>=<em><code>None</code></em>, <strong><code>after_step</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_train</code></strong>=<em><code>None</code></em>, <strong><code>after_train</code></strong>=<em><code>None</code></em>, <strong><code>before_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_epoch</code></strong>=<em><code>None</code></em>, <strong><code>after_epoch</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_fit</code></strong>=<em><code>None</code></em>, <strong><code>after_fit</code></strong>=<em><code>None</code></em>) :: <a href="/callback.core.html#Callback"><code>Callback</code></a></p>
 </blockquote>
 <p>Update a graph of training and validation loss</p>
 
@@ -611,7 +592,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="CSVLogger" class="doc_header"><code>class</code> <code>CSVLogger</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/progress.py#L93" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>CSVLogger</code>(<strong><code>fname</code></strong>=<em><code>'history.csv'</code></em>, <strong><code>append</code></strong>=<em><code>False</code></em>) :: <a href="/callback.core.html#Callback"><code>Callback</code></a></p>
+<h2 id="CSVLogger" class="doc_header"><code>class</code> <code>CSVLogger</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/progress.py#L98" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>CSVLogger</code>(<strong><code>fname</code></strong>=<em><code>'history.csv'</code></em>, <strong><code>append</code></strong>=<em><code>False</code></em>) :: <a href="/callback.core.html#Callback"><code>Callback</code></a></p>
 </blockquote>
 <p>Log the results displayed in <code>learn.path/fname</code></p>
 
@@ -722,7 +703,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="CSVLogger.read_log" class="doc_header"><code>CSVLogger.read_log</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/progress.py#L99" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>CSVLogger.read_log</code>()</p>
+<h4 id="CSVLogger.read_log" class="doc_header"><code>CSVLogger.read_log</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/progress.py#L104" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>CSVLogger.read_log</code>()</p>
 </blockquote>
 <p>Convenience method to quickly access the log.</p>
 
@@ -768,7 +749,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="CSVLogger.before_fit" class="doc_header"><code>CSVLogger.before_fit</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/progress.py#L103" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>CSVLogger.before_fit</code>()</p>
+<h4 id="CSVLogger.before_fit" class="doc_header"><code>CSVLogger.before_fit</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/progress.py#L108" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>CSVLogger.before_fit</code>()</p>
 </blockquote>
 <p>Prepare file with metric names.</p>
 
@@ -793,7 +774,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="CSVLogger.after_fit" class="doc_header"><code>CSVLogger.after_fit</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/progress.py#L118" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>CSVLogger.after_fit</code>()</p>
+<h4 id="CSVLogger.after_fit" class="doc_header"><code>CSVLogger.after_fit</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/progress.py#L123" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>CSVLogger.after_fit</code>()</p>
 </blockquote>
 <p>Close the file and clean up.</p>
 

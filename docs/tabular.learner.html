@@ -26,25 +26,6 @@ nb_path: "nbs/43_tabular.learner.ipynb"
     
 <div class="cell border-box-sizing code_cell rendered">
 
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-<div class="output_subarea output_stream output_stderr output_text">
-<pre>/opt/conda/lib/python3.9/site-packages/torch/cuda/__init__.py:145: UserWarning: 
-NVIDIA GeForce RTX 3070 Laptop GPU with CUDA capability sm_86 is not compatible with the current PyTorch installation.
-The current PyTorch install supports CUDA capabilities sm_37 sm_50 sm_60 sm_70.
-If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, please check the instructions at https://pytorch.org/get-started/locally/
-
-  warnings.warn(incompatible_device_warn.format(device_name, capability, &#34; &#34;.join(arch_list), device_name))
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
 </div>
     {% endraw %}
 
@@ -86,7 +67,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="TabularLearner" class="doc_header"><code>class</code> <code>TabularLearner</code><a href="https://github.com/fastai/fastai/tree/master/fastai/tabular/learner.py#L12" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>TabularLearner</code>(<strong><code>dls</code></strong>, <strong><code>model</code></strong>, <strong><code>loss_func</code></strong>=<em><code>None</code></em>, <strong><code>opt_func</code></strong>=<em><code>Adam</code></em>, <strong><code>lr</code></strong>=<em><code>0.001</code></em>, <strong><code>splitter</code></strong>=<em><code>trainable_params</code></em>, <strong><code>cbs</code></strong>=<em><code>None</code></em>, <strong><code>metrics</code></strong>=<em><code>None</code></em>, <strong><code>path</code></strong>=<em><code>None</code></em>, <strong><code>model_dir</code></strong>=<em><code>'models'</code></em>, <strong><code>wd</code></strong>=<em><code>None</code></em>, <strong><code>wd_bn_bias</code></strong>=<em><code>False</code></em>, <strong><code>train_bn</code></strong>=<em><code>True</code></em>, <strong><code>moms</code></strong>=<em><code>(0.95, 0.85, 0.95)</code></em>) :: <a href="/learner.html#Learner"><code>Learner</code></a></p>
+<h3 id="TabularLearner" class="doc_header"><code>class</code> <code>TabularLearner</code><a href="https://github.com/fastai/fastai/tree/master/fastai/tabular/learner.py#L17" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>TabularLearner</code>(<strong><code>dls</code></strong>, <strong><code>model</code></strong>, <strong><code>loss_func</code></strong>=<em><code>None</code></em>, <strong><code>opt_func</code></strong>=<em><code>Adam</code></em>, <strong><code>lr</code></strong>=<em><code>0.001</code></em>, <strong><code>splitter</code></strong>=<em><code>trainable_params</code></em>, <strong><code>cbs</code></strong>=<em><code>None</code></em>, <strong><code>metrics</code></strong>=<em><code>None</code></em>, <strong><code>path</code></strong>=<em><code>None</code></em>, <strong><code>model_dir</code></strong>=<em><code>'models'</code></em>, <strong><code>wd</code></strong>=<em><code>None</code></em>, <strong><code>wd_bn_bias</code></strong>=<em><code>False</code></em>, <strong><code>train_bn</code></strong>=<em><code>True</code></em>, <strong><code>moms</code></strong>=<em><code>(0.95, 0.85, 0.95)</code></em>) :: <a href="/learner.html#Learner"><code>Learner</code></a></p>
 </blockquote>
 <p><a href="/learner.html#Learner"><code>Learner</code></a> for tabular data</p>
 
@@ -118,7 +99,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="tabular_learner" class="doc_header"><code>tabular_learner</code><a href="https://github.com/fastai/fastai/tree/master/fastai/tabular/learner.py#L26" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>tabular_learner</code>(<strong><code>dls</code></strong>:<a href="/tabular.data.html#TabularDataLoaders"><code>TabularDataLoaders</code></a>, <strong><code>layers</code></strong>:<code>list</code>=<em><code>None</code></em>, <strong><code>emb_szs</code></strong>:<code>list</code>=<em><code>None</code></em>, <strong><code>config</code></strong>:<code>dict</code>=<em><code>None</code></em>, <strong><code>n_out</code></strong>:<code>int</code>=<em><code>None</code></em>, <strong><code>y_range</code></strong>:<code>(float, float)</code>=<em><code>None</code></em>, <strong><code>loss_func</code></strong>=<em><code>None</code></em>, <strong><code>opt_func</code></strong>=<em><code>Adam</code></em>, <strong><code>lr</code></strong>=<em><code>0.001</code></em>, <strong><code>splitter</code></strong>=<em><code>trainable_params</code></em>, <strong><code>cbs</code></strong>=<em><code>None</code></em>, <strong><code>metrics</code></strong>=<em><code>None</code></em>, <strong><code>path</code></strong>=<em><code>None</code></em>, <strong><code>model_dir</code></strong>=<em><code>'models'</code></em>, <strong><code>wd</code></strong>=<em><code>None</code></em>, <strong><code>wd_bn_bias</code></strong>=<em><code>False</code></em>, <strong><code>train_bn</code></strong>=<em><code>True</code></em>, <strong><code>moms</code></strong>=<em><code>(0.95, 0.85, 0.95)</code></em>)</p>
+<h4 id="tabular_learner" class="doc_header"><code>tabular_learner</code><a href="https://github.com/fastai/fastai/tree/master/fastai/tabular/learner.py#L31" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>tabular_learner</code>(<strong><code>dls</code></strong>:<a href="/tabular.data.html#TabularDataLoaders"><code>TabularDataLoaders</code></a>, <strong><code>layers</code></strong>:<code>list</code>=<em><code>None</code></em>, <strong><code>emb_szs</code></strong>:<code>list</code>=<em><code>None</code></em>, <strong><code>config</code></strong>:<code>dict</code>=<em><code>None</code></em>, <strong><code>n_out</code></strong>:<code>int</code>=<em><code>None</code></em>, <strong><code>y_range</code></strong>:<code>(float, float)</code>=<em><code>None</code></em>, <strong><code>loss_func</code></strong>=<em><code>None</code></em>, <strong><code>opt_func</code></strong>=<em><code>Adam</code></em>, <strong><code>lr</code></strong>=<em><code>0.001</code></em>, <strong><code>splitter</code></strong>=<em><code>trainable_params</code></em>, <strong><code>cbs</code></strong>=<em><code>None</code></em>, <strong><code>metrics</code></strong>=<em><code>None</code></em>, <strong><code>path</code></strong>=<em><code>None</code></em>, <strong><code>model_dir</code></strong>=<em><code>'models'</code></em>, <strong><code>wd</code></strong>=<em><code>None</code></em>, <strong><code>wd_bn_bias</code></strong>=<em><code>False</code></em>, <strong><code>train_bn</code></strong>=<em><code>True</code></em>, <strong><code>moms</code></strong>=<em><code>(0.95, 0.85, 0.95)</code></em>)</p>
 </blockquote>
 <p>Get a <a href="/learner.html#Learner"><code>Learner</code></a> using <code>dls</code>, with <code>metrics</code>, including a <a href="/tabular.model.html#TabularModel"><code>TabularModel</code></a> created using the remaining params.</p>
 <table>
@@ -308,7 +289,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="TabularLearner.predict" class="doc_header"><code>TabularLearner.predict</code><a href="https://github.com/fastai/fastai/tree/master/fastai/tabular/learner.py#L14" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>TabularLearner.predict</code>(<strong><code>row</code></strong>:<code>Series</code>)</p>
+<h4 id="TabularLearner.predict" class="doc_header"><code>TabularLearner.predict</code><a href="https://github.com/fastai/fastai/tree/master/fastai/tabular/learner.py#L19" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>TabularLearner.predict</code>(<strong><code>row</code></strong>:<code>pd.Series</code>)</p>
 </blockquote>
 <p>Predict on a single sample</p>
 <table>
@@ -322,7 +303,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 <tbody>
 <tr>
 <td><strong><code>row</code></strong></td>
-<td><code>Series</code></td>
+<td><code>pd.Series</code></td>
 <td></td>
 <td>Features to be predicted</td>
 </tr>

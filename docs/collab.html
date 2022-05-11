@@ -26,25 +26,6 @@ nb_path: "nbs/45_collab.ipynb"
     
 <div class="cell border-box-sizing code_cell rendered">
 
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-<div class="output_subarea output_stream output_stderr output_text">
-<pre>/opt/conda/lib/python3.9/site-packages/torch/cuda/__init__.py:145: UserWarning: 
-NVIDIA GeForce RTX 3070 Laptop GPU with CUDA capability sm_86 is not compatible with the current PyTorch installation.
-The current PyTorch install supports CUDA capabilities sm_37 sm_50 sm_60 sm_70.
-If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, please check the instructions at https://pytorch.org/get-started/locally/
-
-  warnings.warn(incompatible_device_warn.format(device_name, capability, &#34; &#34;.join(arch_list), device_name))
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
 </div>
     {% endraw %}
 
@@ -79,7 +60,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TabularCollab" class="doc_header"><code>class</code> <code>TabularCollab</code><a href="https://github.com/fastai/fastai/tree/master/fastai/collab.py#L9" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TabularCollab</code>(<strong><code>df</code></strong>, <strong><code>procs</code></strong>=<em><code>None</code></em>, <strong><code>cat_names</code></strong>=<em><code>None</code></em>, <strong><code>cont_names</code></strong>=<em><code>None</code></em>, <strong><code>y_names</code></strong>=<em><code>None</code></em>, <strong><code>y_block</code></strong>=<em><code>None</code></em>, <strong><code>splits</code></strong>=<em><code>None</code></em>, <strong><code>do_setup</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>inplace</code></strong>=<em><code>False</code></em>, <strong><code>reduce_memory</code></strong>=<em><code>True</code></em>) :: <a href="/tabular.core.html#TabularPandas"><code>TabularPandas</code></a></p>
+<h2 id="TabularCollab" class="doc_header"><code>class</code> <code>TabularCollab</code><a href="https://github.com/fastai/fastai/tree/master/fastai/collab.py#L14" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TabularCollab</code>(<strong><code>df</code></strong>, <strong><code>procs</code></strong>=<em><code>None</code></em>, <strong><code>cat_names</code></strong>=<em><code>None</code></em>, <strong><code>cont_names</code></strong>=<em><code>None</code></em>, <strong><code>y_names</code></strong>=<em><code>None</code></em>, <strong><code>y_block</code></strong>=<em><code>None</code></em>, <strong><code>splits</code></strong>=<em><code>None</code></em>, <strong><code>do_setup</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>inplace</code></strong>=<em><code>False</code></em>, <strong><code>reduce_memory</code></strong>=<em><code>True</code></em>) :: <a href="/tabular.core.html#TabularPandas"><code>TabularPandas</code></a></p>
 </blockquote>
 <p>Instance of <a href="/tabular.core.html#TabularPandas"><code>TabularPandas</code></a> suitable for collaborative filtering (with no continuous variable)</p>
 
@@ -118,7 +99,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="CollabDataLoaders" class="doc_header"><code>class</code> <code>CollabDataLoaders</code><a href="https://github.com/fastai/fastai/tree/master/fastai/collab.py#L14" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>CollabDataLoaders</code>(<strong>*<code>loaders</code></strong>, <strong><code>path</code></strong>:<code>(str, Path)</code>=<em><code>'.'</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>) :: <a href="/data.core.html#DataLoaders"><code>DataLoaders</code></a></p>
+<h2 id="CollabDataLoaders" class="doc_header"><code>class</code> <code>CollabDataLoaders</code><a href="https://github.com/fastai/fastai/tree/master/fastai/collab.py#L19" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>CollabDataLoaders</code>(<strong>*<code>loaders</code></strong>, <strong><code>path</code></strong>:<code>(str, Path)</code>=<em><code>'.'</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>) :: <a href="/data.core.html#DataLoaders"><code>DataLoaders</code></a></p>
 </blockquote>
 <p>Base <a href="/data.core.html#DataLoaders"><code>DataLoaders</code></a> for collaborative filtering.</p>
 
@@ -168,7 +149,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="CollabDataLoaders.from_df" class="doc_header"><code>CollabDataLoaders.from_df</code><a href="https://github.com/fastai/fastai/tree/master/fastai/collab.py#L16" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>CollabDataLoaders.from_df</code>(<strong><code>ratings</code></strong>, <strong><code>valid_pct</code></strong>=<em><code>0.2</code></em>, <strong><code>user_name</code></strong>=<em><code>None</code></em>, <strong><code>item_name</code></strong>=<em><code>None</code></em>, <strong><code>rating_name</code></strong>=<em><code>None</code></em>, <strong><code>seed</code></strong>=<em><code>None</code></em>, <strong><code>path</code></strong>=<em><code>'.'</code></em>, <strong><code>bs</code></strong>:<code>int</code>=<em><code>64</code></em>, <strong><code>val_bs</code></strong>:<code>int</code>=<em><code>None</code></em>, <strong><code>shuffle</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="CollabDataLoaders.from_df" class="doc_header"><code>CollabDataLoaders.from_df</code><a href="https://github.com/fastai/fastai/tree/master/fastai/collab.py#L21" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>CollabDataLoaders.from_df</code>(<strong><code>ratings</code></strong>, <strong><code>valid_pct</code></strong>=<em><code>0.2</code></em>, <strong><code>user_name</code></strong>=<em><code>None</code></em>, <strong><code>item_name</code></strong>=<em><code>None</code></em>, <strong><code>rating_name</code></strong>=<em><code>None</code></em>, <strong><code>seed</code></strong>=<em><code>None</code></em>, <strong><code>path</code></strong>=<em><code>'.'</code></em>, <strong><code>bs</code></strong>:<code>int</code>=<em><code>64</code></em>, <strong><code>val_bs</code></strong>:<code>int</code>=<em><code>None</code></em>, <strong><code>shuffle</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Create a <a href="/data.core.html#DataLoaders"><code>DataLoaders</code></a> suitable for collaborative filtering from <code>ratings</code>.</p>
 
@@ -396,7 +377,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="CollabDataLoaders.from_csv" class="doc_header"><code>CollabDataLoaders.from_csv</code><a href="https://github.com/fastai/fastai/tree/master/fastai/collab.py#L28" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>CollabDataLoaders.from_csv</code>(<strong><code>csv</code></strong>, <strong><code>valid_pct</code></strong>=<em><code>0.2</code></em>, <strong><code>user_name</code></strong>=<em><code>None</code></em>, <strong><code>item_name</code></strong>=<em><code>None</code></em>, <strong><code>rating_name</code></strong>=<em><code>None</code></em>, <strong><code>seed</code></strong>=<em><code>None</code></em>, <strong><code>path</code></strong>=<em><code>'.'</code></em>, <strong><code>bs</code></strong>:<code>int</code>=<em><code>64</code></em>, <strong><code>val_bs</code></strong>:<code>int</code>=<em><code>None</code></em>, <strong><code>shuffle</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="CollabDataLoaders.from_csv" class="doc_header"><code>CollabDataLoaders.from_csv</code><a href="https://github.com/fastai/fastai/tree/master/fastai/collab.py#L33" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>CollabDataLoaders.from_csv</code>(<strong><code>csv</code></strong>, <strong><code>valid_pct</code></strong>=<em><code>0.2</code></em>, <strong><code>user_name</code></strong>=<em><code>None</code></em>, <strong><code>item_name</code></strong>=<em><code>None</code></em>, <strong><code>rating_name</code></strong>=<em><code>None</code></em>, <strong><code>seed</code></strong>=<em><code>None</code></em>, <strong><code>path</code></strong>=<em><code>'.'</code></em>, <strong><code>bs</code></strong>:<code>int</code>=<em><code>64</code></em>, <strong><code>val_bs</code></strong>:<code>int</code>=<em><code>None</code></em>, <strong><code>shuffle</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Create a <a href="/data.core.html#DataLoaders"><code>DataLoaders</code></a> suitable for collaborative filtering from <code>csv</code>.</p>
 
@@ -451,7 +432,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="EmbeddingDotBias" class="doc_header"><code>class</code> <code>EmbeddingDotBias</code><a href="https://github.com/fastai/fastai/tree/master/fastai/collab.py#L36" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>EmbeddingDotBias</code>(<strong><code>n_factors</code></strong>, <strong><code>n_users</code></strong>, <strong><code>n_items</code></strong>, <strong><code>y_range</code></strong>=<em><code>None</code></em>) :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
+<h2 id="EmbeddingDotBias" class="doc_header"><code>class</code> <code>EmbeddingDotBias</code><a href="https://github.com/fastai/fastai/tree/master/fastai/collab.py#L41" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>EmbeddingDotBias</code>(<strong><code>n_factors</code></strong>, <strong><code>n_users</code></strong>, <strong><code>n_items</code></strong>, <strong><code>y_range</code></strong>=<em><code>None</code></em>) :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
 </blockquote>
 <p>Base dot model for collaborative filtering.</p>
 
@@ -514,7 +495,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="EmbeddingDotBias.from_classes" class="doc_header"><code>EmbeddingDotBias.from_classes</code><a href="https://github.com/fastai/fastai/tree/master/fastai/collab.py#L51" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>EmbeddingDotBias.from_classes</code>(<strong><code>n_factors</code></strong>, <strong><code>classes</code></strong>, <strong><code>user</code></strong>=<em><code>None</code></em>, <strong><code>item</code></strong>=<em><code>None</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="EmbeddingDotBias.from_classes" class="doc_header"><code>EmbeddingDotBias.from_classes</code><a href="https://github.com/fastai/fastai/tree/master/fastai/collab.py#L56" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>EmbeddingDotBias.from_classes</code>(<strong><code>n_factors</code></strong>, <strong><code>classes</code></strong>, <strong><code>user</code></strong>=<em><code>None</code></em>, <strong><code>item</code></strong>=<em><code>None</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Build a model with <code>n_factors</code> by inferring <code>n_users</code> and  <code>n_items</code> from <code>classes</code></p>
 
@@ -614,7 +595,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="EmbeddingDotBias.weight" class="doc_header"><code>EmbeddingDotBias.weight</code><a href="https://github.com/fastai/fastai/tree/master/fastai/collab.py#L76" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>EmbeddingDotBias.weight</code>(<strong><code>arr</code></strong>, <strong><code>is_item</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="EmbeddingDotBias.weight" class="doc_header"><code>EmbeddingDotBias.weight</code><a href="https://github.com/fastai/fastai/tree/master/fastai/collab.py#L81" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>EmbeddingDotBias.weight</code>(<strong><code>arr</code></strong>, <strong><code>is_item</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 <p>Weight for item or user (based on <code>is_item</code>) for all in <code>arr</code></p>
 
@@ -665,7 +646,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="EmbeddingDotBias.bias" class="doc_header"><code>EmbeddingDotBias.bias</code><a href="https://github.com/fastai/fastai/tree/master/fastai/collab.py#L70" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>EmbeddingDotBias.bias</code>(<strong><code>arr</code></strong>, <strong><code>is_item</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="EmbeddingDotBias.bias" class="doc_header"><code>EmbeddingDotBias.bias</code><a href="https://github.com/fastai/fastai/tree/master/fastai/collab.py#L75" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>EmbeddingDotBias.bias</code>(<strong><code>arr</code></strong>, <strong><code>is_item</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 <p>Bias for item or user (based on <code>is_item</code>) for all in <code>arr</code></p>
 
@@ -723,7 +704,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="EmbeddingNN" class="doc_header"><code>class</code> <code>EmbeddingNN</code><a href="https://github.com/fastai/fastai/tree/master/fastai/collab.py#L83" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>EmbeddingNN</code>(<strong><code>emb_szs</code></strong>, <strong><code>layers</code></strong>, <strong><code>ps</code></strong>:<code>(float, list)</code>=<em><code>None</code></em>, <strong><code>embed_p</code></strong>:<code>float</code>=<em><code>0.0</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>, <strong><code>use_bn</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>bn_final</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>bn_cont</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>act_cls</code></strong>=<em><code>ReLU(inplace=True)</code></em>, <strong><code>lin_first</code></strong>:<code>bool</code>=<em><code>True</code></em>) :: <a href="/tabular.model.html#TabularModel"><code>TabularModel</code></a></p>
+<h2 id="EmbeddingNN" class="doc_header"><code>class</code> <code>EmbeddingNN</code><a href="https://github.com/fastai/fastai/tree/master/fastai/collab.py#L88" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>EmbeddingNN</code>(<strong><code>emb_szs</code></strong>, <strong><code>layers</code></strong>, <strong><code>ps</code></strong>:<code>(float, list)</code>=<em><code>None</code></em>, <strong><code>embed_p</code></strong>:<code>float</code>=<em><code>0.0</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>, <strong><code>use_bn</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>bn_final</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>bn_cont</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>act_cls</code></strong>=<em><code>ReLU(inplace=True)</code></em>, <strong><code>lin_first</code></strong>:<code>bool</code>=<em><code>True</code></em>) :: <a href="/tabular.model.html#TabularModel"><code>TabularModel</code></a></p>
 </blockquote>
 <p>Subclass <a href="/tabular.model.html#TabularModel"><code>TabularModel</code></a> to create a NN suitable for collaborative filtering.</p>
 
@@ -789,7 +770,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="collab_learner" class="doc_header"><code>collab_learner</code><a href="https://github.com/fastai/fastai/tree/master/fastai/collab.py#L90" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>collab_learner</code>(<strong><code>dls</code></strong>, <strong><code>n_factors</code></strong>=<em><code>50</code></em>, <strong><code>use_nn</code></strong>=<em><code>False</code></em>, <strong><code>emb_szs</code></strong>=<em><code>None</code></em>, <strong><code>layers</code></strong>=<em><code>None</code></em>, <strong><code>config</code></strong>=<em><code>None</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>, <strong><code>loss_func</code></strong>=<em><code>None</code></em>, <strong><code>opt_func</code></strong>=<em><code>Adam</code></em>, <strong><code>lr</code></strong>=<em><code>0.001</code></em>, <strong><code>splitter</code></strong>=<em><code>trainable_params</code></em>, <strong><code>cbs</code></strong>=<em><code>None</code></em>, <strong><code>metrics</code></strong>=<em><code>None</code></em>, <strong><code>path</code></strong>=<em><code>None</code></em>, <strong><code>model_dir</code></strong>=<em><code>'models'</code></em>, <strong><code>wd</code></strong>=<em><code>None</code></em>, <strong><code>wd_bn_bias</code></strong>=<em><code>False</code></em>, <strong><code>train_bn</code></strong>=<em><code>True</code></em>, <strong><code>moms</code></strong>=<em><code>(0.95, 0.85, 0.95)</code></em>)</p>
+<h4 id="collab_learner" class="doc_header"><code>collab_learner</code><a href="https://github.com/fastai/fastai/tree/master/fastai/collab.py#L95" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>collab_learner</code>(<strong><code>dls</code></strong>, <strong><code>n_factors</code></strong>=<em><code>50</code></em>, <strong><code>use_nn</code></strong>=<em><code>False</code></em>, <strong><code>emb_szs</code></strong>=<em><code>None</code></em>, <strong><code>layers</code></strong>=<em><code>None</code></em>, <strong><code>config</code></strong>=<em><code>None</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>, <strong><code>loss_func</code></strong>=<em><code>None</code></em>, <strong><code>opt_func</code></strong>=<em><code>Adam</code></em>, <strong><code>lr</code></strong>=<em><code>0.001</code></em>, <strong><code>splitter</code></strong>=<em><code>trainable_params</code></em>, <strong><code>cbs</code></strong>=<em><code>None</code></em>, <strong><code>metrics</code></strong>=<em><code>None</code></em>, <strong><code>path</code></strong>=<em><code>None</code></em>, <strong><code>model_dir</code></strong>=<em><code>'models'</code></em>, <strong><code>wd</code></strong>=<em><code>None</code></em>, <strong><code>wd_bn_bias</code></strong>=<em><code>False</code></em>, <strong><code>train_bn</code></strong>=<em><code>True</code></em>, <strong><code>moms</code></strong>=<em><code>(0.95, 0.85, 0.95)</code></em>)</p>
 </blockquote>
 <p>Create a Learner for collaborative filtering on <code>dls</code>.</p>
 

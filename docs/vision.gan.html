@@ -26,25 +26,6 @@ nb_path: "nbs/24_vision.gan.ipynb"
     
 <div class="cell border-box-sizing code_cell rendered">
 
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-<div class="output_subarea output_stream output_stderr output_text">
-<pre>/opt/conda/lib/python3.9/site-packages/torch/cuda/__init__.py:145: UserWarning: 
-NVIDIA GeForce RTX 3070 Laptop GPU with CUDA capability sm_86 is not compatible with the current PyTorch installation.
-The current PyTorch install supports CUDA capabilities sm_37 sm_50 sm_60 sm_70.
-If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, please check the instructions at https://pytorch.org/get-started/locally/
-
-  warnings.warn(incompatible_device_warn.format(device_name, capability, &#34; &#34;.join(arch_list), device_name))
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
 </div>
     {% endraw %}
 
@@ -122,7 +103,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="GANModule" class="doc_header"><code>class</code> <code>GANModule</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/gan.py#L13" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>GANModule</code>(<strong><code>generator</code></strong>:<a href="/torch_core.html#Module"><code>Module</code></a>=<em><code>None</code></em>, <strong><code>critic</code></strong>:<a href="/torch_core.html#Module"><code>Module</code></a>=<em><code>None</code></em>, <strong><code>gen_mode</code></strong>:<code>(None, bool)</code>=<em><code>False</code></em>) :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
+<h3 id="GANModule" class="doc_header"><code>class</code> <code>GANModule</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/gan.py#L18" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>GANModule</code>(<strong><code>generator</code></strong>:<code>nn.Module</code>=<em><code>None</code></em>, <strong><code>critic</code></strong>:<code>nn.Module</code>=<em><code>None</code></em>, <strong><code>gen_mode</code></strong>:<code>(None, bool)</code>=<em><code>False</code></em>) :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
 </blockquote>
 <p>Wrapper around a <code>generator</code> and a <code>critic</code> to create a GAN.</p>
 <table>
@@ -136,13 +117,13 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 <tbody>
 <tr>
 <td><strong><code>generator</code></strong></td>
-<td><a href="/torch_core.html#Module"><code>Module</code></a></td>
+<td><code>nn.Module</code></td>
 <td><code>None</code></td>
 <td>The generator PyTorch module</td>
 </tr>
 <tr>
 <td><strong><code>critic</code></strong></td>
-<td><a href="/torch_core.html#Module"><code>Module</code></a></td>
+<td><code>nn.Module</code></td>
 <td><code>None</code></td>
 <td>The discriminator PyTorch module</td>
 </tr>
@@ -190,7 +171,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="GANModule.switch" class="doc_header"><code>GANModule.switch</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/gan.py#L27" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>GANModule.switch</code>(<strong><code>gen_mode</code></strong>:<code>(None, bool)</code>=<em><code>None</code></em>)</p>
+<h4 id="GANModule.switch" class="doc_header"><code>GANModule.switch</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/gan.py#L32" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>GANModule.switch</code>(<strong><code>gen_mode</code></strong>:<code>(None, bool)</code>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Put the module in generator mode if <code>gen_mode</code> is <code>True</code>, in critic mode otherwise.</p>
 <table>
@@ -239,7 +220,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="basic_critic" class="doc_header"><code>basic_critic</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/gan.py#L34" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>basic_critic</code>(<strong><code>in_size</code></strong>:<code>int</code>, <strong><code>n_channels</code></strong>:<code>int</code>, <strong><code>n_features</code></strong>:<code>int</code>=<em><code>64</code></em>, <strong><code>n_extra_layers</code></strong>:<code>int</code>=<em><code>0</code></em>, <strong><code>norm_type</code></strong>:<code>(NormType.Batch, NormType.BatchZero, NormType.Weight, NormType.Spectral, NormType.Instance, NormType.InstanceZero)</code>=<em><code>&lt;NormType.Batch: 1&gt;</code></em>, <strong><code>ks</code></strong>=<em><code>3</code></em>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>padding</code></strong>=<em><code>None</code></em>, <strong><code>bias</code></strong>=<em><code>None</code></em>, <strong><code>ndim</code></strong>=<em><code>2</code></em>, <strong><code>bn_1st</code></strong>=<em><code>True</code></em>, <strong><code>act_cls</code></strong>=<em><code>ReLU</code></em>, <strong><code>transpose</code></strong>=<em><code>False</code></em>, <strong><code>init</code></strong>=<em><code>'auto'</code></em>, <strong><code>xtra</code></strong>=<em><code>None</code></em>, <strong><code>bias_std</code></strong>=<em><code>0.01</code></em>, <strong><code>dilation</code></strong>:<code>Union</code>[<code>int</code>, <code>typing.Tuple[int, int]</code>]=<em><code>1</code></em>, <strong><code>groups</code></strong>:<code>int</code>=<em><code>1</code></em>, <strong><code>padding_mode</code></strong>:<code>str</code>=<em><code>'zeros'</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>dtype</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="basic_critic" class="doc_header"><code>basic_critic</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/gan.py#L39" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>basic_critic</code>(<strong><code>in_size</code></strong>:<code>int</code>, <strong><code>n_channels</code></strong>:<code>int</code>, <strong><code>n_features</code></strong>:<code>int</code>=<em><code>64</code></em>, <strong><code>n_extra_layers</code></strong>:<code>int</code>=<em><code>0</code></em>, <strong><code>norm_type</code></strong>:<a href="/layers.html#NormType"><code>NormType</code></a>=<em><code>&lt;NormType.Batch: 1&gt;</code></em>, <strong><code>ks</code></strong>=<em><code>3</code></em>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>padding</code></strong>=<em><code>None</code></em>, <strong><code>bias</code></strong>=<em><code>None</code></em>, <strong><code>ndim</code></strong>=<em><code>2</code></em>, <strong><code>bn_1st</code></strong>=<em><code>True</code></em>, <strong><code>act_cls</code></strong>=<em><code>ReLU</code></em>, <strong><code>transpose</code></strong>=<em><code>False</code></em>, <strong><code>init</code></strong>=<em><code>'auto'</code></em>, <strong><code>xtra</code></strong>=<em><code>None</code></em>, <strong><code>bias_std</code></strong>=<em><code>0.01</code></em>, <strong><code>dilation</code></strong>:<code>Union</code>[<code>int</code>, <code>typing.Tuple[int, int]</code>]=<em><code>1</code></em>, <strong><code>groups</code></strong>:<code>int</code>=<em><code>1</code></em>, <strong><code>padding_mode</code></strong>:<code>str</code>=<em><code>'zeros'</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>dtype</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>A basic critic for images <code>n_channels</code> x <code>in_size</code> x <code>in_size</code>.</p>
 <table>
@@ -277,7 +258,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 </tr>
 <tr>
 <td><strong><code>norm_type</code></strong></td>
-<td><code>(NormType.Batch, NormType.BatchZero, NormType.Weight, NormType.Spectral, NormType.Instance, NormType.InstanceZero)</code></td>
+<td><a href="/layers.html#NormType"><code>NormType</code></a></td>
 <td><a href="/layers.html#NormType.Batch"><code>NormType.Batch</code></a></td>
 <td>Type of normalization to use in the critic</td>
 </tr>
@@ -385,7 +366,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 </tr>
 <tr>
 <td><strong>Returns</strong></td>
-<td><code>Sequential</code></td>
+<td><code>nn.Sequential</code></td>
 <td></td>
 <td></td>
 </tr>
@@ -420,7 +401,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="AddChannels" class="doc_header"><code>class</code> <code>AddChannels</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/gan.py#L55" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>AddChannels</code>(<strong><code>n_dim</code></strong>) :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
+<h3 id="AddChannels" class="doc_header"><code>class</code> <code>AddChannels</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/gan.py#L60" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>AddChannels</code>(<strong><code>n_dim</code></strong>) :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
 </blockquote>
 <p>Add <code>n_dim</code> channels at the end of the input.</p>
 
@@ -452,7 +433,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="basic_generator" class="doc_header"><code>basic_generator</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/gan.py#L61" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>basic_generator</code>(<strong><code>out_size</code></strong>:<code>int</code>, <strong><code>n_channels</code></strong>:<code>int</code>, <strong><code>in_sz</code></strong>:<code>int</code>=<em><code>100</code></em>, <strong><code>n_features</code></strong>:<code>int</code>=<em><code>64</code></em>, <strong><code>n_extra_layers</code></strong>:<code>int</code>=<em><code>0</code></em>, <strong><code>ks</code></strong>=<em><code>3</code></em>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>padding</code></strong>=<em><code>None</code></em>, <strong><code>bias</code></strong>=<em><code>None</code></em>, <strong><code>ndim</code></strong>=<em><code>2</code></em>, <strong><code>norm_type</code></strong>=<em><code>&lt;NormType.Batch: 1&gt;</code></em>, <strong><code>bn_1st</code></strong>=<em><code>True</code></em>, <strong><code>act_cls</code></strong>=<em><code>ReLU</code></em>, <strong><code>transpose</code></strong>=<em><code>False</code></em>, <strong><code>init</code></strong>=<em><code>'auto'</code></em>, <strong><code>xtra</code></strong>=<em><code>None</code></em>, <strong><code>bias_std</code></strong>=<em><code>0.01</code></em>, <strong><code>dilation</code></strong>:<code>Union</code>[<code>int</code>, <code>typing.Tuple[int, int]</code>]=<em><code>1</code></em>, <strong><code>groups</code></strong>:<code>int</code>=<em><code>1</code></em>, <strong><code>padding_mode</code></strong>:<code>str</code>=<em><code>'zeros'</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>dtype</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="basic_generator" class="doc_header"><code>basic_generator</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/gan.py#L66" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>basic_generator</code>(<strong><code>out_size</code></strong>:<code>int</code>, <strong><code>n_channels</code></strong>:<code>int</code>, <strong><code>in_sz</code></strong>:<code>int</code>=<em><code>100</code></em>, <strong><code>n_features</code></strong>:<code>int</code>=<em><code>64</code></em>, <strong><code>n_extra_layers</code></strong>:<code>int</code>=<em><code>0</code></em>, <strong><code>ks</code></strong>=<em><code>3</code></em>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>padding</code></strong>=<em><code>None</code></em>, <strong><code>bias</code></strong>=<em><code>None</code></em>, <strong><code>ndim</code></strong>=<em><code>2</code></em>, <strong><code>norm_type</code></strong>=<em><code>&lt;NormType.Batch: 1&gt;</code></em>, <strong><code>bn_1st</code></strong>=<em><code>True</code></em>, <strong><code>act_cls</code></strong>=<em><code>ReLU</code></em>, <strong><code>transpose</code></strong>=<em><code>False</code></em>, <strong><code>init</code></strong>=<em><code>'auto'</code></em>, <strong><code>xtra</code></strong>=<em><code>None</code></em>, <strong><code>bias_std</code></strong>=<em><code>0.01</code></em>, <strong><code>dilation</code></strong>:<code>Union</code>[<code>int</code>, <code>typing.Tuple[int, int]</code>]=<em><code>1</code></em>, <strong><code>groups</code></strong>:<code>int</code>=<em><code>1</code></em>, <strong><code>padding_mode</code></strong>:<code>str</code>=<em><code>'zeros'</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>dtype</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>A basic generator from <code>in_sz</code> to images <code>n_channels</code> x <code>out_size</code> x <code>out_size</code>.</p>
 <table>
@@ -604,7 +585,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 </tr>
 <tr>
 <td><strong>Returns</strong></td>
-<td><code>Sequential</code></td>
+<td><code>nn.Sequential</code></td>
 <td></td>
 <td></td>
 </tr>
@@ -677,7 +658,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="DenseResBlock" class="doc_header"><code>DenseResBlock</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/gan.py#L90" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>DenseResBlock</code>(<strong><code>nf</code></strong>:<code>int</code>, <strong><code>norm_type</code></strong>:<code>(NormType.Batch, NormType.BatchZero, NormType.Weight, NormType.Spectral, NormType.Instance, NormType.InstanceZero)</code>=<em><code>&lt;NormType.Batch: 1&gt;</code></em>, <strong><code>ks</code></strong>=<em><code>3</code></em>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>padding</code></strong>=<em><code>None</code></em>, <strong><code>bias</code></strong>=<em><code>None</code></em>, <strong><code>ndim</code></strong>=<em><code>2</code></em>, <strong><code>bn_1st</code></strong>=<em><code>True</code></em>, <strong><code>act_cls</code></strong>=<em><code>ReLU</code></em>, <strong><code>transpose</code></strong>=<em><code>False</code></em>, <strong><code>init</code></strong>=<em><code>'auto'</code></em>, <strong><code>xtra</code></strong>=<em><code>None</code></em>, <strong><code>bias_std</code></strong>=<em><code>0.01</code></em>, <strong><code>dilation</code></strong>:<code>Union</code>[<code>int</code>, <code>typing.Tuple[int, int]</code>]=<em><code>1</code></em>, <strong><code>groups</code></strong>:<code>int</code>=<em><code>1</code></em>, <strong><code>padding_mode</code></strong>:<code>str</code>=<em><code>'zeros'</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>dtype</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="DenseResBlock" class="doc_header"><code>DenseResBlock</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/gan.py#L95" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>DenseResBlock</code>(<strong><code>nf</code></strong>:<code>int</code>, <strong><code>norm_type</code></strong>:<a href="/layers.html#NormType"><code>NormType</code></a>=<em><code>&lt;NormType.Batch: 1&gt;</code></em>, <strong><code>ks</code></strong>=<em><code>3</code></em>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>padding</code></strong>=<em><code>None</code></em>, <strong><code>bias</code></strong>=<em><code>None</code></em>, <strong><code>ndim</code></strong>=<em><code>2</code></em>, <strong><code>bn_1st</code></strong>=<em><code>True</code></em>, <strong><code>act_cls</code></strong>=<em><code>ReLU</code></em>, <strong><code>transpose</code></strong>=<em><code>False</code></em>, <strong><code>init</code></strong>=<em><code>'auto'</code></em>, <strong><code>xtra</code></strong>=<em><code>None</code></em>, <strong><code>bias_std</code></strong>=<em><code>0.01</code></em>, <strong><code>dilation</code></strong>:<code>Union</code>[<code>int</code>, <code>typing.Tuple[int, int]</code>]=<em><code>1</code></em>, <strong><code>groups</code></strong>:<code>int</code>=<em><code>1</code></em>, <strong><code>padding_mode</code></strong>:<code>str</code>=<em><code>'zeros'</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>dtype</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Resnet block of <code>nf</code> features. <code>conv_kwargs</code> are passed to <code>conv_layer</code>.</p>
 <table>
@@ -697,7 +678,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 </tr>
 <tr>
 <td><strong><code>norm_type</code></strong></td>
-<td><code>(NormType.Batch, NormType.BatchZero, NormType.Weight, NormType.Spectral, NormType.Instance, NormType.InstanceZero)</code></td>
+<td><a href="/layers.html#NormType"><code>NormType</code></a></td>
 <td><a href="/layers.html#NormType.Batch"><code>NormType.Batch</code></a></td>
 <td>Normalization type</td>
 </tr>
@@ -840,7 +821,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="gan_critic" class="doc_header"><code>gan_critic</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/gan.py#L102" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>gan_critic</code>(<strong><code>n_channels</code></strong>:<code>int</code>=<em><code>3</code></em>, <strong><code>nf</code></strong>:<code>int</code>=<em><code>128</code></em>, <strong><code>n_blocks</code></strong>:<code>int</code>=<em><code>3</code></em>, <strong><code>p</code></strong>:<code>float</code>=<em><code>0.15</code></em>)</p>
+<h4 id="gan_critic" class="doc_header"><code>gan_critic</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/gan.py#L107" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>gan_critic</code>(<strong><code>n_channels</code></strong>:<code>int</code>=<em><code>3</code></em>, <strong><code>nf</code></strong>:<code>int</code>=<em><code>128</code></em>, <strong><code>n_blocks</code></strong>:<code>int</code>=<em><code>3</code></em>, <strong><code>p</code></strong>:<code>float</code>=<em><code>0.15</code></em>)</p>
 </blockquote>
 <p>Critic to train a <code>GAN</code>.</p>
 <table>
@@ -907,7 +888,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="GANLoss" class="doc_header"><code>class</code> <code>GANLoss</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/gan.py#L125" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>GANLoss</code>(<strong><code>gen_loss_func</code></strong>:<code>callable</code>, <strong><code>crit_loss_func</code></strong>:<code>callable</code>, <strong><code>gan_model</code></strong>:<a href="/vision.gan.html#GANModule"><code>GANModule</code></a>) :: <a href="/vision.gan.html#GANModule"><code>GANModule</code></a></p>
+<h3 id="GANLoss" class="doc_header"><code>class</code> <code>GANLoss</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/gan.py#L130" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>GANLoss</code>(<strong><code>gen_loss_func</code></strong>:<code>callable</code>, <strong><code>crit_loss_func</code></strong>:<code>callable</code>, <strong><code>gan_model</code></strong>:<a href="/vision.gan.html#GANModule"><code>GANModule</code></a>) :: <a href="/vision.gan.html#GANModule"><code>GANModule</code></a></p>
 </blockquote>
 <p>Wrapper around <code>crit_loss_func</code> and <code>gen_loss_func</code></p>
 <table>
@@ -968,7 +949,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="GANLoss.generator" class="doc_header"><code>GANLoss.generator</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/gan.py#L135" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>GANLoss.generator</code>(<strong><code>output</code></strong>, <strong><code>target</code></strong>)</p>
+<h4 id="GANLoss.generator" class="doc_header"><code>GANLoss.generator</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/gan.py#L140" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>GANLoss.generator</code>(<strong><code>output</code></strong>, <strong><code>target</code></strong>)</p>
 </blockquote>
 <p>Evaluate the <code>output</code> with the critic then uses <code>self.gen_loss_func</code> to evaluate how well the critic was fooled by <code>output</code></p>
 <table>
@@ -1016,7 +997,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="GANLoss.critic" class="doc_header"><code>GANLoss.critic</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/gan.py#L144" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>GANLoss.critic</code>(<strong><code>real_pred</code></strong>, <strong><code>input</code></strong>)</p>
+<h4 id="GANLoss.critic" class="doc_header"><code>GANLoss.critic</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/gan.py#L149" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>GANLoss.critic</code>(<strong><code>real_pred</code></strong>, <strong><code>input</code></strong>)</p>
 </blockquote>
 <p>Create some <code>fake_pred</code> with the generator from <code>input</code> and compare them to <code>real_pred</code> in <code>self.crit_loss_func</code>.</p>
 <table>
@@ -1078,7 +1059,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="AdaptiveLoss" class="doc_header"><code>class</code> <code>AdaptiveLoss</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/gan.py#L155" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>AdaptiveLoss</code>(<strong><code>crit</code></strong>:<code>callable</code>) :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
+<h3 id="AdaptiveLoss" class="doc_header"><code>class</code> <code>AdaptiveLoss</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/gan.py#L160" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>AdaptiveLoss</code>(<strong><code>crit</code></strong>:<code>callable</code>) :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
 </blockquote>
 <p>Expand the <code>target</code> to match the <code>output</code> size before applying <code>crit</code>.</p>
 
@@ -1110,7 +1091,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="accuracy_thresh_expand" class="doc_header"><code>accuracy_thresh_expand</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/gan.py#L162" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>accuracy_thresh_expand</code>(<strong><code>y_pred</code></strong>:<code>Tensor</code>, <strong><code>y_true</code></strong>:<code>Tensor</code>, <strong><code>thresh</code></strong>:<code>float</code>=<em><code>0.5</code></em>, <strong><code>sigmoid</code></strong>:<code>bool</code>=<em><code>True</code></em>)</p>
+<h4 id="accuracy_thresh_expand" class="doc_header"><code>accuracy_thresh_expand</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/gan.py#L167" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>accuracy_thresh_expand</code>(<strong><code>y_pred</code></strong>:<code>Tensor</code>, <strong><code>y_true</code></strong>:<code>Tensor</code>, <strong><code>thresh</code></strong>:<code>float</code>=<em><code>0.5</code></em>, <strong><code>sigmoid</code></strong>:<code>bool</code>=<em><code>True</code></em>)</p>
 </blockquote>
 <p>Compute thresholded accuracy after expanding <code>y_true</code> to the size of <code>y_pred</code>.</p>
 
@@ -1148,7 +1129,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="set_freeze_model" class="doc_header"><code>set_freeze_model</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/gan.py#L168" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>set_freeze_model</code>(<strong><code>m</code></strong>:<a href="/torch_core.html#Module"><code>Module</code></a>, <strong><code>rg</code></strong>:<code>bool</code>)</p>
+<h4 id="set_freeze_model" class="doc_header"><code>set_freeze_model</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/gan.py#L173" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>set_freeze_model</code>(<strong><code>m</code></strong>:<code>nn.Module</code>, <strong><code>rg</code></strong>:<code>bool</code>)</p>
 </blockquote>
 <table>
 <thead><tr>
@@ -1161,7 +1142,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 <tbody>
 <tr>
 <td><strong><code>m</code></strong></td>
-<td><a href="/torch_core.html#Module"><code>Module</code></a></td>
+<td><code>nn.Module</code></td>
 <td></td>
 <td>Model to freeze/unfreeze</td>
 </tr>
@@ -1202,7 +1183,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="GANTrainer" class="doc_header"><code>class</code> <code>GANTrainer</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/gan.py#L175" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>GANTrainer</code>(<strong><code>switch_eval</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>clip</code></strong>:<code>(None, float)</code>=<em><code>None</code></em>, <strong><code>beta</code></strong>:<code>float</code>=<em><code>0.98</code></em>, <strong><code>gen_first</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>show_img</code></strong>:<code>bool</code>=<em><code>True</code></em>) :: <a href="/callback.core.html#Callback"><code>Callback</code></a></p>
+<h3 id="GANTrainer" class="doc_header"><code>class</code> <code>GANTrainer</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/gan.py#L180" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>GANTrainer</code>(<strong><code>switch_eval</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>clip</code></strong>:<code>(None, float)</code>=<em><code>None</code></em>, <strong><code>beta</code></strong>:<code>float</code>=<em><code>0.98</code></em>, <strong><code>gen_first</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>show_img</code></strong>:<code>bool</code>=<em><code>True</code></em>) :: <a href="/callback.core.html#Callback"><code>Callback</code></a></p>
 </blockquote>
 <p>Callback to handle GAN Training.</p>
 <table>
@@ -1282,7 +1263,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="FixedGANSwitcher" class="doc_header"><code>class</code> <code>FixedGANSwitcher</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/gan.py#L256" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>FixedGANSwitcher</code>(<strong><code>n_crit</code></strong>:<code>int</code>=<em><code>1</code></em>, <strong><code>n_gen</code></strong>:<code>int</code>=<em><code>1</code></em>) :: <a href="/callback.core.html#Callback"><code>Callback</code></a></p>
+<h3 id="FixedGANSwitcher" class="doc_header"><code>class</code> <code>FixedGANSwitcher</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/gan.py#L261" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>FixedGANSwitcher</code>(<strong><code>n_crit</code></strong>:<code>int</code>=<em><code>1</code></em>, <strong><code>n_gen</code></strong>:<code>int</code>=<em><code>1</code></em>) :: <a href="/callback.core.html#Callback"><code>Callback</code></a></p>
 </blockquote>
 <p>Switcher to do <code>n_crit</code> iterations of the critic then <code>n_gen</code> iterations of the generator.</p>
 <table>
@@ -1337,7 +1318,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="AdaptiveGANSwitcher" class="doc_header"><code>class</code> <code>AdaptiveGANSwitcher</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/gan.py#L282" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>AdaptiveGANSwitcher</code>(<strong><code>gen_thresh</code></strong>:<code>(None, float)</code>=<em><code>None</code></em>, <strong><code>critic_thresh</code></strong>:<code>(None, float)</code>=<em><code>None</code></em>) :: <a href="/callback.core.html#Callback"><code>Callback</code></a></p>
+<h3 id="AdaptiveGANSwitcher" class="doc_header"><code>class</code> <code>AdaptiveGANSwitcher</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/gan.py#L287" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>AdaptiveGANSwitcher</code>(<strong><code>gen_thresh</code></strong>:<code>(None, float)</code>=<em><code>None</code></em>, <strong><code>critic_thresh</code></strong>:<code>(None, float)</code>=<em><code>None</code></em>) :: <a href="/callback.core.html#Callback"><code>Callback</code></a></p>
 </blockquote>
 <p>Switcher that goes back to generator/critic when the loss goes below <code>gen_thresh</code>/<code>crit_thresh</code>.</p>
 <table>
@@ -1392,7 +1373,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="GANDiscriminativeLR" class="doc_header"><code>class</code> <code>GANDiscriminativeLR</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/gan.py#L300" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>GANDiscriminativeLR</code>(<strong><code>mult_lr</code></strong>=<em><code>5.0</code></em>) :: <a href="/callback.core.html#Callback"><code>Callback</code></a></p>
+<h3 id="GANDiscriminativeLR" class="doc_header"><code>class</code> <code>GANDiscriminativeLR</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/gan.py#L305" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>GANDiscriminativeLR</code>(<strong><code>mult_lr</code></strong>=<em><code>5.0</code></em>) :: <a href="/callback.core.html#Callback"><code>Callback</code></a></p>
 </blockquote>
 <p><a href="/callback.core.html#Callback"><code>Callback</code></a> that handles multiplying the learning rate by <code>mult_lr</code> for the critic.</p>
 
@@ -1430,7 +1411,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="InvisibleTensor" class="doc_header"><code>class</code> <code>InvisibleTensor</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/gan.py#L315" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>InvisibleTensor</code>(<strong><code>x</code></strong>, <strong>**<code>kwargs</code></strong>) :: <a href="/torch_core.html#TensorBase"><code>TensorBase</code></a></p>
+<h3 id="InvisibleTensor" class="doc_header"><code>class</code> <code>InvisibleTensor</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/gan.py#L320" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>InvisibleTensor</code>(<strong><code>x</code></strong>, <strong>**<code>kwargs</code></strong>) :: <a href="/torch_core.html#TensorBase"><code>TensorBase</code></a></p>
 </blockquote>
 <p>TensorBase but show method does nothing</p>
 
@@ -1462,7 +1443,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="generate_noise" class="doc_header"><code>generate_noise</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/gan.py#L320" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>generate_noise</code>(<strong><code>fn</code></strong>, <strong><code>size</code></strong>=<em><code>100</code></em>)</p>
+<h4 id="generate_noise" class="doc_header"><code>generate_noise</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/gan.py#L325" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>generate_noise</code>(<strong><code>fn</code></strong>, <strong><code>size</code></strong>=<em><code>100</code></em>)</p>
 </blockquote>
 <p>Generate noise vector.</p>
 <table>
@@ -1653,7 +1634,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="gan_loss_from_func" class="doc_header"><code>gan_loss_from_func</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/gan.py#L342" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>gan_loss_from_func</code>(<strong><code>loss_gen</code></strong>:<code>callable</code>, <strong><code>loss_crit</code></strong>:<code>callable</code>, <strong><code>weights_gen</code></strong>:<code>(None, list, tuple)</code>=<em><code>None</code></em>)</p>
+<h4 id="gan_loss_from_func" class="doc_header"><code>gan_loss_from_func</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/gan.py#L347" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>gan_loss_from_func</code>(<strong><code>loss_gen</code></strong>:<code>callable</code>, <strong><code>loss_crit</code></strong>:<code>callable</code>, <strong><code>weights_gen</code></strong>:<code>(None, list, tuple)</code>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Define loss functions for a GAN from <code>loss_gen</code> and <code>loss_crit</code>.</p>
 <table>
@@ -1721,7 +1702,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="GANLearner" class="doc_header"><code>class</code> <code>GANLearner</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/gan.py#L365" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>GANLearner</code>(<strong><code>dls</code></strong>:<a href="/data.core.html#DataLoaders"><code>DataLoaders</code></a>, <strong><code>generator</code></strong>:<a href="/torch_core.html#Module"><code>Module</code></a>, <strong><code>critic</code></strong>:<a href="/torch_core.html#Module"><code>Module</code></a>, <strong><code>gen_loss_func</code></strong>:<code>callable</code>, <strong><code>crit_loss_func</code></strong>:<code>callable</code>, <strong><code>switcher</code></strong>:<code>(Callback, None)</code>=<em><code>None</code></em>, <strong><code>gen_first</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>switch_eval</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>show_img</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>clip</code></strong>:<code>(None, float)</code>=<em><code>None</code></em>, <strong><code>cbs</code></strong>:<code>(Callback, None, list)</code>=<em><code>None</code></em>, <strong><code>metrics</code></strong>:<code>(None, list, callable)</code>=<em><code>None</code></em>, <strong><code>loss_func</code></strong>=<em><code>None</code></em>, <strong><code>opt_func</code></strong>=<em><code>Adam</code></em>, <strong><code>lr</code></strong>=<em><code>0.001</code></em>, <strong><code>splitter</code></strong>=<em><code>trainable_params</code></em>, <strong><code>path</code></strong>=<em><code>None</code></em>, <strong><code>model_dir</code></strong>=<em><code>'models'</code></em>, <strong><code>wd</code></strong>=<em><code>None</code></em>, <strong><code>wd_bn_bias</code></strong>=<em><code>False</code></em>, <strong><code>train_bn</code></strong>=<em><code>True</code></em>, <strong><code>moms</code></strong>=<em><code>(0.95, 0.85, 0.95)</code></em>) :: <a href="/learner.html#Learner"><code>Learner</code></a></p>
+<h3 id="GANLearner" class="doc_header"><code>class</code> <code>GANLearner</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/gan.py#L370" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>GANLearner</code>(<strong><code>dls</code></strong>:<a href="/data.core.html#DataLoaders"><code>DataLoaders</code></a>, <strong><code>generator</code></strong>:<code>nn.Module</code>, <strong><code>critic</code></strong>:<code>nn.Module</code>, <strong><code>gen_loss_func</code></strong>:<code>callable</code>, <strong><code>crit_loss_func</code></strong>:<code>callable</code>, <strong><code>switcher</code></strong>:<code>(Callback, None)</code>=<em><code>None</code></em>, <strong><code>gen_first</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>switch_eval</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>show_img</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>clip</code></strong>:<code>(None, float)</code>=<em><code>None</code></em>, <strong><code>cbs</code></strong>:<code>(Callback, None, list)</code>=<em><code>None</code></em>, <strong><code>metrics</code></strong>:<code>(None, list, callable)</code>=<em><code>None</code></em>, <strong><code>loss_func</code></strong>=<em><code>None</code></em>, <strong><code>opt_func</code></strong>=<em><code>Adam</code></em>, <strong><code>lr</code></strong>=<em><code>0.001</code></em>, <strong><code>splitter</code></strong>=<em><code>trainable_params</code></em>, <strong><code>path</code></strong>=<em><code>None</code></em>, <strong><code>model_dir</code></strong>=<em><code>'models'</code></em>, <strong><code>wd</code></strong>=<em><code>None</code></em>, <strong><code>wd_bn_bias</code></strong>=<em><code>False</code></em>, <strong><code>train_bn</code></strong>=<em><code>True</code></em>, <strong><code>moms</code></strong>=<em><code>(0.95, 0.85, 0.95)</code></em>) :: <a href="/learner.html#Learner"><code>Learner</code></a></p>
 </blockquote>
 <p>A <a href="/learner.html#Learner"><code>Learner</code></a> suitable for GANs.</p>
 <table>
@@ -1741,13 +1722,13 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 </tr>
 <tr>
 <td><strong><code>generator</code></strong></td>
-<td><a href="/torch_core.html#Module"><code>Module</code></a></td>
+<td><code>nn.Module</code></td>
 <td></td>
 <td>Generator model</td>
 </tr>
 <tr>
 <td><strong><code>critic</code></strong></td>
-<td><a href="/torch_core.html#Module"><code>Module</code></a></td>
+<td><code>nn.Module</code></td>
 <td></td>
 <td>Critic model</td>
 </tr>
@@ -1902,7 +1883,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="GANLearner.from_learners" class="doc_header"><code>GANLearner.from_learners</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/gan.py#L391" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>GANLearner.from_learners</code>(<strong><code>gen_learn</code></strong>:<a href="/learner.html#Learner"><code>Learner</code></a>, <strong><code>crit_learn</code></strong>:<a href="/learner.html#Learner"><code>Learner</code></a>, <strong><code>switcher</code></strong>:<code>(Callback, None)</code>=<em><code>None</code></em>, <strong><code>weights_gen</code></strong>:<code>(None, list, tuple)</code>=<em><code>None</code></em>, <strong><code>gen_first</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>switch_eval</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>show_img</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>clip</code></strong>:<code>(None, float)</code>=<em><code>None</code></em>, <strong><code>cbs</code></strong>:<code>(Callback, None, list)</code>=<em><code>None</code></em>, <strong><code>metrics</code></strong>:<code>(None, list, callable)</code>=<em><code>None</code></em>, <strong><code>loss_func</code></strong>=<em><code>None</code></em>, <strong><code>opt_func</code></strong>=<em><code>Adam</code></em>, <strong><code>lr</code></strong>=<em><code>0.001</code></em>, <strong><code>splitter</code></strong>=<em><code>trainable_params</code></em>, <strong><code>path</code></strong>=<em><code>None</code></em>, <strong><code>model_dir</code></strong>=<em><code>'models'</code></em>, <strong><code>wd</code></strong>=<em><code>None</code></em>, <strong><code>wd_bn_bias</code></strong>=<em><code>False</code></em>, <strong><code>train_bn</code></strong>=<em><code>True</code></em>, <strong><code>moms</code></strong>=<em><code>(0.95, 0.85, 0.95)</code></em>)</p>
+<h4 id="GANLearner.from_learners" class="doc_header"><code>GANLearner.from_learners</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/gan.py#L396" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>GANLearner.from_learners</code>(<strong><code>gen_learn</code></strong>:<a href="/learner.html#Learner"><code>Learner</code></a>, <strong><code>crit_learn</code></strong>:<a href="/learner.html#Learner"><code>Learner</code></a>, <strong><code>switcher</code></strong>:<code>(Callback, None)</code>=<em><code>None</code></em>, <strong><code>weights_gen</code></strong>:<code>(None, list, tuple)</code>=<em><code>None</code></em>, <strong><code>gen_first</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>switch_eval</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>show_img</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>clip</code></strong>:<code>(None, float)</code>=<em><code>None</code></em>, <strong><code>cbs</code></strong>:<code>(Callback, None, list)</code>=<em><code>None</code></em>, <strong><code>metrics</code></strong>:<code>(None, list, callable)</code>=<em><code>None</code></em>, <strong><code>loss_func</code></strong>=<em><code>None</code></em>, <strong><code>opt_func</code></strong>=<em><code>Adam</code></em>, <strong><code>lr</code></strong>=<em><code>0.001</code></em>, <strong><code>splitter</code></strong>=<em><code>trainable_params</code></em>, <strong><code>path</code></strong>=<em><code>None</code></em>, <strong><code>model_dir</code></strong>=<em><code>'models'</code></em>, <strong><code>wd</code></strong>=<em><code>None</code></em>, <strong><code>wd_bn_bias</code></strong>=<em><code>False</code></em>, <strong><code>train_bn</code></strong>=<em><code>True</code></em>, <strong><code>moms</code></strong>=<em><code>(0.95, 0.85, 0.95)</code></em>)</p>
 </blockquote>
 <p>Create a GAN from <code>learn_gen</code> and <code>learn_crit</code>.</p>
 <table>
@@ -2064,7 +2045,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="GANLearner.wgan" class="doc_header"><code>GANLearner.wgan</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/gan.py#L403" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>GANLearner.wgan</code>(<strong><code>dls</code></strong>:<a href="/data.core.html#DataLoaders"><code>DataLoaders</code></a>, <strong><code>generator</code></strong>:<a href="/torch_core.html#Module"><code>Module</code></a>, <strong><code>critic</code></strong>:<a href="/torch_core.html#Module"><code>Module</code></a>, <strong><code>switcher</code></strong>:<code>(Callback, None)</code>=<em><code>None</code></em>, <strong><code>clip</code></strong>:<code>(None, float)</code>=<em><code>0.01</code></em>, <strong><code>switch_eval</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>gen_first</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>show_img</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>cbs</code></strong>:<code>(Callback, None, list)</code>=<em><code>None</code></em>, <strong><code>metrics</code></strong>:<code>(None, list, callable)</code>=<em><code>None</code></em>, <strong><code>loss_func</code></strong>=<em><code>None</code></em>, <strong><code>opt_func</code></strong>=<em><code>Adam</code></em>, <strong><code>lr</code></strong>=<em><code>0.001</code></em>, <strong><code>splitter</code></strong>=<em><code>trainable_params</code></em>, <strong><code>path</code></strong>=<em><code>None</code></em>, <strong><code>model_dir</code></strong>=<em><code>'models'</code></em>, <strong><code>wd</code></strong>=<em><code>None</code></em>, <strong><code>wd_bn_bias</code></strong>=<em><code>False</code></em>, <strong><code>train_bn</code></strong>=<em><code>True</code></em>, <strong><code>moms</code></strong>=<em><code>(0.95, 0.85, 0.95)</code></em>)</p>
+<h4 id="GANLearner.wgan" class="doc_header"><code>GANLearner.wgan</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/gan.py#L408" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>GANLearner.wgan</code>(<strong><code>dls</code></strong>:<a href="/data.core.html#DataLoaders"><code>DataLoaders</code></a>, <strong><code>generator</code></strong>:<code>nn.Module</code>, <strong><code>critic</code></strong>:<code>nn.Module</code>, <strong><code>switcher</code></strong>:<code>(Callback, None)</code>=<em><code>None</code></em>, <strong><code>clip</code></strong>:<code>(None, float)</code>=<em><code>0.01</code></em>, <strong><code>switch_eval</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>gen_first</code></strong>:<code>bool</code>=<em><code>False</code></em>, <strong><code>show_img</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>cbs</code></strong>:<code>(Callback, None, list)</code>=<em><code>None</code></em>, <strong><code>metrics</code></strong>:<code>(None, list, callable)</code>=<em><code>None</code></em>, <strong><code>loss_func</code></strong>=<em><code>None</code></em>, <strong><code>opt_func</code></strong>=<em><code>Adam</code></em>, <strong><code>lr</code></strong>=<em><code>0.001</code></em>, <strong><code>splitter</code></strong>=<em><code>trainable_params</code></em>, <strong><code>path</code></strong>=<em><code>None</code></em>, <strong><code>model_dir</code></strong>=<em><code>'models'</code></em>, <strong><code>wd</code></strong>=<em><code>None</code></em>, <strong><code>wd_bn_bias</code></strong>=<em><code>False</code></em>, <strong><code>train_bn</code></strong>=<em><code>True</code></em>, <strong><code>moms</code></strong>=<em><code>(0.95, 0.85, 0.95)</code></em>)</p>
 </blockquote>
 <p>Create a <a href="https://arxiv.org/abs/1701.07875">WGAN</a> from <code>dls</code>, <code>generator</code> and <code>critic</code>.</p>
 <table>
@@ -2084,13 +2065,13 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 </tr>
 <tr>
 <td><strong><code>generator</code></strong></td>
-<td><a href="/torch_core.html#Module"><code>Module</code></a></td>
+<td><code>nn.Module</code></td>
 <td></td>
 <td>Generator model</td>
 </tr>
 <tr>
 <td><strong><code>critic</code></strong></td>
-<td><a href="/torch_core.html#Module"><code>Module</code></a></td>
+<td><code>nn.Module</code></td>
 <td></td>
 <td>Critic model</td>
 </tr>

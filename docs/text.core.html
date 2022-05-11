@@ -26,25 +26,6 @@ nb_path: "nbs/30_text.core.ipynb"
     
 <div class="cell border-box-sizing code_cell rendered">
 
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-<div class="output_subarea output_stream output_stderr output_text">
-<pre>/opt/conda/lib/python3.9/site-packages/torch/cuda/__init__.py:145: UserWarning: 
-NVIDIA GeForce RTX 3070 Laptop GPU with CUDA capability sm_86 is not compatible with the current PyTorch installation.
-The current PyTorch install supports CUDA capabilities sm_37 sm_50 sm_60 sm_70.
-If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, please check the instructions at https://pytorch.org/get-started/locally/
-
-  warnings.warn(incompatible_device_warn.format(device_name, capability, &#34; &#34;.join(arch_list), device_name))
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
 </div>
     {% endraw %}
 
@@ -100,7 +81,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="spec_add_spaces" class="doc_header"><code>spec_add_spaces</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/core.py#L28" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>spec_add_spaces</code>(<strong><code>t</code></strong>)</p>
+<h4 id="spec_add_spaces" class="doc_header"><code>spec_add_spaces</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/core.py#L33" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>spec_add_spaces</code>(<strong><code>t</code></strong>)</p>
 </blockquote>
 <p>Add spaces around / and #</p>
 
@@ -151,7 +132,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="rm_useless_spaces" class="doc_header"><code>rm_useless_spaces</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/core.py#L35" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>rm_useless_spaces</code>(<strong><code>t</code></strong>)</p>
+<h4 id="rm_useless_spaces" class="doc_header"><code>rm_useless_spaces</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/core.py#L40" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>rm_useless_spaces</code>(<strong><code>t</code></strong>)</p>
 </blockquote>
 <p>Remove multiple spaces</p>
 
@@ -200,7 +181,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="replace_rep" class="doc_header"><code>replace_rep</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/core.py#L42" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>replace_rep</code>(<strong><code>t</code></strong>)</p>
+<h4 id="replace_rep" class="doc_header"><code>replace_rep</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/core.py#L47" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>replace_rep</code>(<strong><code>t</code></strong>)</p>
 </blockquote>
 <p>Replace repetitions at the character level: cccc -- TK_REP 4 c</p>
 
@@ -264,7 +245,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="replace_wrep" class="doc_header"><code>replace_wrep</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/core.py#L53" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>replace_wrep</code>(<strong><code>t</code></strong>)</p>
+<h4 id="replace_wrep" class="doc_header"><code>replace_wrep</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/core.py#L58" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>replace_wrep</code>(<strong><code>t</code></strong>)</p>
 </blockquote>
 <p>Replace word repetitions: word word word word -- TK_WREP 4 word</p>
 
@@ -325,7 +306,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="fix_html" class="doc_header"><code>fix_html</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/core.py#L61" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>fix_html</code>(<strong><code>x</code></strong>)</p>
+<h4 id="fix_html" class="doc_header"><code>fix_html</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/core.py#L66" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>fix_html</code>(<strong><code>x</code></strong>)</p>
 </blockquote>
 <p>Various messy things we've seen in documents</p>
 
@@ -386,7 +367,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="replace_all_caps" class="doc_header"><code>replace_all_caps</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/core.py#L72" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>replace_all_caps</code>(<strong><code>t</code></strong>)</p>
+<h4 id="replace_all_caps" class="doc_header"><code>replace_all_caps</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/core.py#L77" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>replace_all_caps</code>(<strong><code>t</code></strong>)</p>
 </blockquote>
 <p>Replace tokens in ALL CAPS by their lower version and add <code>TK_UP</code> before.</p>
 
@@ -444,7 +425,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="replace_maj" class="doc_header"><code>replace_maj</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/core.py#L83" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>replace_maj</code>(<strong><code>t</code></strong>)</p>
+<h4 id="replace_maj" class="doc_header"><code>replace_maj</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/core.py#L88" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>replace_maj</code>(<strong><code>t</code></strong>)</p>
 </blockquote>
 <p>Replace tokens in Sentence Case by their lower version and add <code>TK_MAJ</code> before.</p>
 
@@ -494,7 +475,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="lowercase" class="doc_header"><code>lowercase</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/core.py#L91" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>lowercase</code>(<strong><code>t</code></strong>, <strong><code>add_bos</code></strong>=<em><code>True</code></em>, <strong><code>add_eos</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="lowercase" class="doc_header"><code>lowercase</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/core.py#L96" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>lowercase</code>(<strong><code>t</code></strong>, <strong><code>add_bos</code></strong>=<em><code>True</code></em>, <strong><code>add_eos</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 <p>Converts <code>t</code> to lowercase</p>
 
@@ -526,7 +507,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="replace_space" class="doc_header"><code>replace_space</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/core.py#L96" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>replace_space</code>(<strong><code>t</code></strong>)</p>
+<h4 id="replace_space" class="doc_header"><code>replace_space</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/core.py#L101" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>replace_space</code>(<strong><code>t</code></strong>)</p>
 </blockquote>
 <p>Replace embedded spaces in a token with unicode line char to allow for split/join</p>
 
@@ -578,7 +559,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="BaseTokenizer" class="doc_header"><code>class</code> <code>BaseTokenizer</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/core.py#L107" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>BaseTokenizer</code>(<strong><code>split_char</code></strong>=<em><code>' '</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h3 id="BaseTokenizer" class="doc_header"><code>class</code> <code>BaseTokenizer</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/core.py#L112" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>BaseTokenizer</code>(<strong><code>split_char</code></strong>=<em><code>' '</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Basic tokenizer that just splits on spaces</p>
 
@@ -630,7 +611,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="SpacyTokenizer" class="doc_header"><code>class</code> <code>SpacyTokenizer</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/core.py#L113" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>SpacyTokenizer</code>(<strong><code>lang</code></strong>=<em><code>'en'</code></em>, <strong><code>special_toks</code></strong>=<em><code>None</code></em>, <strong><code>buf_sz</code></strong>=<em><code>5000</code></em>)</p>
+<h3 id="SpacyTokenizer" class="doc_header"><code>class</code> <code>SpacyTokenizer</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/core.py#L118" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>SpacyTokenizer</code>(<strong><code>lang</code></strong>=<em><code>'en'</code></em>, <strong><code>special_toks</code></strong>=<em><code>None</code></em>, <strong><code>buf_sz</code></strong>=<em><code>5000</code></em>)</p>
 </blockquote>
 <p>Spacy tokenizer for <code>lang</code></p>
 
@@ -688,7 +669,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="TokenizeWithRules" class="doc_header"><code>class</code> <code>TokenizeWithRules</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/core.py#L128" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>TokenizeWithRules</code>(<strong><code>tok</code></strong>, <strong><code>rules</code></strong>=<em><code>None</code></em>, <strong><code>post_rules</code></strong>=<em><code>None</code></em>)</p>
+<h3 id="TokenizeWithRules" class="doc_header"><code>class</code> <code>TokenizeWithRules</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/core.py#L133" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>TokenizeWithRules</code>(<strong><code>tok</code></strong>, <strong><code>rules</code></strong>=<em><code>None</code></em>, <strong><code>post_rules</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>A wrapper around <code>tok</code> which applies <code>rules</code>, then tokenizes, then applies <code>post_rules</code></p>
 
@@ -768,7 +749,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="tokenize1" class="doc_header"><code>tokenize1</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/core.py#L139" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>tokenize1</code>(<strong><code>text</code></strong>, <strong><code>tok</code></strong>, <strong><code>rules</code></strong>=<em><code>None</code></em>, <strong><code>post_rules</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="tokenize1" class="doc_header"><code>tokenize1</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/core.py#L144" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>tokenize1</code>(<strong><code>text</code></strong>, <strong><code>tok</code></strong>, <strong><code>rules</code></strong>=<em><code>None</code></em>, <strong><code>post_rules</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Call <a href="/text.core.html#TokenizeWithRules"><code>TokenizeWithRules</code></a> with a single text</p>
 
@@ -820,7 +801,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="parallel_tokenize" class="doc_header"><code>parallel_tokenize</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/core.py#L145" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>parallel_tokenize</code>(<strong><code>items</code></strong>, <strong><code>tok</code></strong>=<em><code>None</code></em>, <strong><code>rules</code></strong>=<em><code>None</code></em>, <strong><code>n_workers</code></strong>=<em><code>16</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="parallel_tokenize" class="doc_header"><code>parallel_tokenize</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/core.py#L150" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>parallel_tokenize</code>(<strong><code>items</code></strong>, <strong><code>tok</code></strong>=<em><code>None</code></em>, <strong><code>rules</code></strong>=<em><code>None</code></em>, <strong><code>n_workers</code></strong>=<em><code>16</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Calls optional <code>setup</code> on <code>tok</code> before launching <a href="/text.core.html#TokenizeWithRules"><code>TokenizeWithRules</code></a> using `parallel_gen</p>
 
@@ -918,7 +899,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="tokenize_folder" class="doc_header"><code>tokenize_folder</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/core.py#L178" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>tokenize_folder</code>(<strong><code>path</code></strong>, <strong><code>extensions</code></strong>=<em><code>None</code></em>, <strong><code>folders</code></strong>=<em><code>None</code></em>, <strong><code>output_dir</code></strong>=<em><code>None</code></em>, <strong><code>skip_if_exists</code></strong>=<em><code>True</code></em>, <strong><code>output_names</code></strong>=<em><code>None</code></em>, <strong><code>n_workers</code></strong>=<em><code>16</code></em>, <strong><code>rules</code></strong>=<em><code>None</code></em>, <strong><code>tok</code></strong>=<em><code>None</code></em>, <strong><code>encoding</code></strong>=<em><code>'utf8'</code></em>)</p>
+<h4 id="tokenize_folder" class="doc_header"><code>tokenize_folder</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/core.py#L183" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>tokenize_folder</code>(<strong><code>path</code></strong>, <strong><code>extensions</code></strong>=<em><code>None</code></em>, <strong><code>folders</code></strong>=<em><code>None</code></em>, <strong><code>output_dir</code></strong>=<em><code>None</code></em>, <strong><code>skip_if_exists</code></strong>=<em><code>True</code></em>, <strong><code>output_names</code></strong>=<em><code>None</code></em>, <strong><code>n_workers</code></strong>=<em><code>16</code></em>, <strong><code>rules</code></strong>=<em><code>None</code></em>, <strong><code>tok</code></strong>=<em><code>None</code></em>, <strong><code>encoding</code></strong>=<em><code>'utf8'</code></em>)</p>
 </blockquote>
 <p>Tokenize text files in <code>path</code> in parallel using <code>n_workers</code></p>
 
@@ -958,7 +939,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="tokenize_files" class="doc_header"><code>tokenize_files</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/core.py#L187" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>tokenize_files</code>(<strong><code>files</code></strong>, <strong><code>path</code></strong>, <strong><code>output_dir</code></strong>, <strong><code>output_names</code></strong>=<em><code>None</code></em>, <strong><code>n_workers</code></strong>=<em><code>16</code></em>, <strong><code>rules</code></strong>=<em><code>None</code></em>, <strong><code>tok</code></strong>=<em><code>None</code></em>, <strong><code>encoding</code></strong>=<em><code>'utf8'</code></em>, <strong><code>skip_if_exists</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="tokenize_files" class="doc_header"><code>tokenize_files</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/core.py#L192" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>tokenize_files</code>(<strong><code>files</code></strong>, <strong><code>path</code></strong>, <strong><code>output_dir</code></strong>, <strong><code>output_names</code></strong>=<em><code>None</code></em>, <strong><code>n_workers</code></strong>=<em><code>16</code></em>, <strong><code>rules</code></strong>=<em><code>None</code></em>, <strong><code>tok</code></strong>=<em><code>None</code></em>, <strong><code>encoding</code></strong>=<em><code>'utf8'</code></em>, <strong><code>skip_if_exists</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 <p>Tokenize text <code>files</code> in parallel using <code>n_workers</code></p>
 
@@ -1003,7 +984,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="tokenize_texts" class="doc_header"><code>tokenize_texts</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/core.py#L203" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>tokenize_texts</code>(<strong><code>texts</code></strong>, <strong><code>n_workers</code></strong>=<em><code>16</code></em>, <strong><code>rules</code></strong>=<em><code>None</code></em>, <strong><code>tok</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="tokenize_texts" class="doc_header"><code>tokenize_texts</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/core.py#L208" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>tokenize_texts</code>(<strong><code>texts</code></strong>, <strong><code>n_workers</code></strong>=<em><code>16</code></em>, <strong><code>rules</code></strong>=<em><code>None</code></em>, <strong><code>tok</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Tokenize <code>texts</code> in parallel using <code>n_workers</code></p>
 
@@ -1035,7 +1016,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="tokenize_df" class="doc_header"><code>tokenize_df</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/core.py#L211" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>tokenize_df</code>(<strong><code>df</code></strong>, <strong><code>text_cols</code></strong>, <strong><code>n_workers</code></strong>=<em><code>16</code></em>, <strong><code>rules</code></strong>=<em><code>None</code></em>, <strong><code>mark_fields</code></strong>=<em><code>None</code></em>, <strong><code>tok</code></strong>=<em><code>None</code></em>, <strong><code>tok_text_col</code></strong>=<em><code>'text'</code></em>)</p>
+<h4 id="tokenize_df" class="doc_header"><code>tokenize_df</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/core.py#L216" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>tokenize_df</code>(<strong><code>df</code></strong>, <strong><code>text_cols</code></strong>, <strong><code>n_workers</code></strong>=<em><code>16</code></em>, <strong><code>rules</code></strong>=<em><code>None</code></em>, <strong><code>mark_fields</code></strong>=<em><code>None</code></em>, <strong><code>tok</code></strong>=<em><code>None</code></em>, <strong><code>tok_text_col</code></strong>=<em><code>'text'</code></em>)</p>
 </blockquote>
 <p>Tokenize texts in <code>df[text_cols]</code> in parallel using <code>n_workers</code> and stores them in <code>df[tok_text_col]</code></p>
 
@@ -1075,7 +1056,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="tokenize_csv" class="doc_header"><code>tokenize_csv</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/core.py#L229" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>tokenize_csv</code>(<strong><code>fname</code></strong>, <strong><code>text_cols</code></strong>, <strong><code>outname</code></strong>=<em><code>None</code></em>, <strong><code>n_workers</code></strong>=<em><code>4</code></em>, <strong><code>rules</code></strong>=<em><code>None</code></em>, <strong><code>mark_fields</code></strong>=<em><code>None</code></em>, <strong><code>tok</code></strong>=<em><code>None</code></em>, <strong><code>header</code></strong>=<em><code>'infer'</code></em>, <strong><code>chunksize</code></strong>=<em><code>50000</code></em>)</p>
+<h4 id="tokenize_csv" class="doc_header"><code>tokenize_csv</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/core.py#L234" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>tokenize_csv</code>(<strong><code>fname</code></strong>, <strong><code>text_cols</code></strong>, <strong><code>outname</code></strong>=<em><code>None</code></em>, <strong><code>n_workers</code></strong>=<em><code>4</code></em>, <strong><code>rules</code></strong>=<em><code>None</code></em>, <strong><code>mark_fields</code></strong>=<em><code>None</code></em>, <strong><code>tok</code></strong>=<em><code>None</code></em>, <strong><code>header</code></strong>=<em><code>'infer'</code></em>, <strong><code>chunksize</code></strong>=<em><code>50000</code></em>)</p>
 </blockquote>
 <p>Tokenize texts in the <code>text_cols</code> of the csv <code>fname</code> in parallel using <code>n_workers</code></p>
 
@@ -1107,7 +1088,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="load_tokenized_csv" class="doc_header"><code>load_tokenized_csv</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/core.py#L246" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>load_tokenized_csv</code>(<strong><code>fname</code></strong>)</p>
+<h4 id="load_tokenized_csv" class="doc_header"><code>load_tokenized_csv</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/core.py#L251" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>load_tokenized_csv</code>(<strong><code>fname</code></strong>)</p>
 </blockquote>
 <p>Utility function to quickly load a tokenized csv ans the corresponding counter</p>
 
@@ -1178,7 +1159,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="Tokenizer" class="doc_header"><code>class</code> <code>Tokenizer</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/core.py#L255" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>Tokenizer</code>(<strong><code>tok</code></strong>, <strong><code>rules</code></strong>=<em><code>None</code></em>, <strong><code>counter</code></strong>=<em><code>None</code></em>, <strong><code>lengths</code></strong>=<em><code>None</code></em>, <strong><code>mode</code></strong>=<em><code>None</code></em>, <strong><code>sep</code></strong>=<em><code>' '</code></em>) :: <a href="https://fastcore.fast.ai/transform#Transform"><code>Transform</code></a></p>
+<h3 id="Tokenizer" class="doc_header"><code>class</code> <code>Tokenizer</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/core.py#L260" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>Tokenizer</code>(<strong><code>tok</code></strong>, <strong><code>rules</code></strong>=<em><code>None</code></em>, <strong><code>counter</code></strong>=<em><code>None</code></em>, <strong><code>lengths</code></strong>=<em><code>None</code></em>, <strong><code>mode</code></strong>=<em><code>None</code></em>, <strong><code>sep</code></strong>=<em><code>' '</code></em>) :: <a href="https://fastcore.fast.ai/transform#Transform"><code>Transform</code></a></p>
 </blockquote>
 <p>Provides a consistent <a href="https://fastcore.fast.ai/transform#Transform"><code>Transform</code></a> interface to tokenizers operating on <code>DataFrame</code>s and folders</p>
 
@@ -1303,7 +1284,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="SentencePieceTokenizer" class="doc_header"><code>class</code> <code>SentencePieceTokenizer</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/core.py#L315" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>SentencePieceTokenizer</code>(<strong><code>lang</code></strong>=<em><code>'en'</code></em>, <strong><code>special_toks</code></strong>=<em><code>None</code></em>, <strong><code>sp_model</code></strong>=<em><code>None</code></em>, <strong><code>vocab_sz</code></strong>=<em><code>None</code></em>, <strong><code>max_vocab_sz</code></strong>=<em><code>30000</code></em>, <strong><code>model_type</code></strong>=<em><code>'unigram'</code></em>, <strong><code>char_coverage</code></strong>=<em><code>None</code></em>, <strong><code>cache_dir</code></strong>=<em><code>'tmp'</code></em>)</p>
+<h3 id="SentencePieceTokenizer" class="doc_header"><code>class</code> <code>SentencePieceTokenizer</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/core.py#L320" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>SentencePieceTokenizer</code>(<strong><code>lang</code></strong>=<em><code>'en'</code></em>, <strong><code>special_toks</code></strong>=<em><code>None</code></em>, <strong><code>sp_model</code></strong>=<em><code>None</code></em>, <strong><code>vocab_sz</code></strong>=<em><code>None</code></em>, <strong><code>max_vocab_sz</code></strong>=<em><code>30000</code></em>, <strong><code>model_type</code></strong>=<em><code>'unigram'</code></em>, <strong><code>char_coverage</code></strong>=<em><code>None</code></em>, <strong><code>cache_dir</code></strong>=<em><code>'tmp'</code></em>)</p>
 </blockquote>
 <p>SentencePiece tokenizer for <code>lang</code></p>
 

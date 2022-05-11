@@ -26,25 +26,6 @@ nb_path: "nbs/05_data.transforms.ipynb"
     
 <div class="cell border-box-sizing code_cell rendered">
 
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-<div class="output_subarea output_stream output_stderr output_text">
-<pre>/opt/conda/lib/python3.9/site-packages/torch/cuda/__init__.py:145: UserWarning: 
-NVIDIA GeForce RTX 3070 Laptop GPU with CUDA capability sm_86 is not compatible with the current PyTorch installation.
-The current PyTorch install supports CUDA capabilities sm_37 sm_50 sm_60 sm_70.
-If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, please check the instructions at https://pytorch.org/get-started/locally/
-
-  warnings.warn(incompatible_device_warn.format(device_name, capability, &#34; &#34;.join(arch_list), device_name))
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
 </div>
     {% endraw %}
 
@@ -134,7 +115,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_files" class="doc_header"><code>get_files</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/transforms.py#L28" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_files</code>(<strong><code>path</code></strong>, <strong><code>extensions</code></strong>=<em><code>None</code></em>, <strong><code>recurse</code></strong>=<em><code>True</code></em>, <strong><code>folders</code></strong>=<em><code>None</code></em>, <strong><code>followlinks</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="get_files" class="doc_header"><code>get_files</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/transforms.py#L33" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_files</code>(<strong><code>path</code></strong>, <strong><code>extensions</code></strong>=<em><code>None</code></em>, <strong><code>recurse</code></strong>=<em><code>True</code></em>, <strong><code>folders</code></strong>=<em><code>None</code></em>, <strong><code>followlinks</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 <p>Get all the files in <code>path</code> with optional <code>extensions</code>, optionally with <code>recurse</code>, only in <code>folders</code>, if specified.</p>
 
@@ -219,7 +200,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="FileGetter" class="doc_header"><code>FileGetter</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/transforms.py#L47" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>FileGetter</code>(<strong><code>suf</code></strong>=<em><code>''</code></em>, <strong><code>extensions</code></strong>=<em><code>None</code></em>, <strong><code>recurse</code></strong>=<em><code>True</code></em>, <strong><code>folders</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="FileGetter" class="doc_header"><code>FileGetter</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/transforms.py#L52" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>FileGetter</code>(<strong><code>suf</code></strong>=<em><code>''</code></em>, <strong><code>extensions</code></strong>=<em><code>None</code></em>, <strong><code>recurse</code></strong>=<em><code>True</code></em>, <strong><code>folders</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Create <a href="/data.transforms.html#get_files"><code>get_files</code></a> partial function that searches path suffix <code>suf</code>, only in <code>folders</code>, if specified, and passes along args</p>
 
@@ -279,7 +260,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_image_files" class="doc_header"><code>get_image_files</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/transforms.py#L57" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_image_files</code>(<strong><code>path</code></strong>, <strong><code>recurse</code></strong>=<em><code>True</code></em>, <strong><code>folders</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="get_image_files" class="doc_header"><code>get_image_files</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/transforms.py#L62" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_image_files</code>(<strong><code>path</code></strong>, <strong><code>recurse</code></strong>=<em><code>True</code></em>, <strong><code>folders</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Get image files in <code>path</code> recursively, only in <code>folders</code>, if specified.</p>
 
@@ -335,7 +316,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ImageGetter" class="doc_header"><code>ImageGetter</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/transforms.py#L62" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ImageGetter</code>(<strong><code>suf</code></strong>=<em><code>''</code></em>, <strong><code>recurse</code></strong>=<em><code>True</code></em>, <strong><code>folders</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="ImageGetter" class="doc_header"><code>ImageGetter</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/transforms.py#L67" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ImageGetter</code>(<strong><code>suf</code></strong>=<em><code>''</code></em>, <strong><code>recurse</code></strong>=<em><code>True</code></em>, <strong><code>folders</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Create <a href="/data.transforms.html#get_image_files"><code>get_image_files</code></a> partial that searches suffix <code>suf</code> and passes along <code>kwargs</code>, only in <code>folders</code>, if specified</p>
 
@@ -392,7 +373,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_text_files" class="doc_header"><code>get_text_files</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/transforms.py#L68" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_text_files</code>(<strong><code>path</code></strong>, <strong><code>recurse</code></strong>=<em><code>True</code></em>, <strong><code>folders</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="get_text_files" class="doc_header"><code>get_text_files</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/transforms.py#L73" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_text_files</code>(<strong><code>path</code></strong>, <strong><code>recurse</code></strong>=<em><code>True</code></em>, <strong><code>folders</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Get text files in <code>path</code> recursively, only in <code>folders</code>, if specified.</p>
 
@@ -424,7 +405,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ItemGetter" class="doc_header"><code>class</code> <code>ItemGetter</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/transforms.py#L73" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ItemGetter</code>(<strong><code>i</code></strong>) :: <a href="https://fastcore.fast.ai/transform#ItemTransform"><code>ItemTransform</code></a></p>
+<h2 id="ItemGetter" class="doc_header"><code>class</code> <code>ItemGetter</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/transforms.py#L78" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ItemGetter</code>(<strong><code>i</code></strong>) :: <a href="https://fastcore.fast.ai/transform#ItemTransform"><code>ItemTransform</code></a></p>
 </blockquote>
 <p>Creates a proper transform that applies <code>itemgetter(i)</code> (even on a tuple)</p>
 
@@ -476,7 +457,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="AttrGetter" class="doc_header"><code>class</code> <code>AttrGetter</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/transforms.py#L80" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>AttrGetter</code>(<strong><code>nm</code></strong>, <strong><code>default</code></strong>=<em><code>None</code></em>) :: <a href="https://fastcore.fast.ai/transform#ItemTransform"><code>ItemTransform</code></a></p>
+<h2 id="AttrGetter" class="doc_header"><code>class</code> <code>AttrGetter</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/transforms.py#L85" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>AttrGetter</code>(<strong><code>nm</code></strong>, <strong><code>default</code></strong>=<em><code>None</code></em>) :: <a href="https://fastcore.fast.ai/transform#ItemTransform"><code>ItemTransform</code></a></p>
 </blockquote>
 <p>Creates a proper transform that applies <code>attrgetter(nm)</code> (even on a tuple)</p>
 
@@ -539,7 +520,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="RandomSplitter" class="doc_header"><code>RandomSplitter</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/transforms.py#L87" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>RandomSplitter</code>(<strong><code>valid_pct</code></strong>=<em><code>0.2</code></em>, <strong><code>seed</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="RandomSplitter" class="doc_header"><code>RandomSplitter</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/transforms.py#L92" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>RandomSplitter</code>(<strong><code>valid_pct</code></strong>=<em><code>0.2</code></em>, <strong><code>seed</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Create function that splits <code>items</code> between train/val with <code>valid_pct</code> randomly.</p>
 
@@ -637,7 +618,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="TrainTestSplitter" class="doc_header"><code>TrainTestSplitter</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/transforms.py#L97" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>TrainTestSplitter</code>(<strong><code>test_size</code></strong>=<em><code>0.2</code></em>, <strong><code>random_state</code></strong>=<em><code>None</code></em>, <strong><code>stratify</code></strong>=<em><code>None</code></em>, <strong><code>train_size</code></strong>=<em><code>None</code></em>, <strong><code>shuffle</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="TrainTestSplitter" class="doc_header"><code>TrainTestSplitter</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/transforms.py#L102" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>TrainTestSplitter</code>(<strong><code>test_size</code></strong>=<em><code>0.2</code></em>, <strong><code>random_state</code></strong>=<em><code>None</code></em>, <strong><code>stratify</code></strong>=<em><code>None</code></em>, <strong><code>train_size</code></strong>=<em><code>None</code></em>, <strong><code>shuffle</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 <p>Split <code>items</code> into random train and test subsets using sklearn train_test_split utility.</p>
 
@@ -696,7 +677,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="IndexSplitter" class="doc_header"><code>IndexSplitter</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/transforms.py#L106" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>IndexSplitter</code>(<strong><code>valid_idx</code></strong>)</p>
+<h4 id="IndexSplitter" class="doc_header"><code>IndexSplitter</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/transforms.py#L111" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>IndexSplitter</code>(<strong><code>valid_idx</code></strong>)</p>
 </blockquote>
 <p>Split <code>items</code> so that <code>val_idx</code> are in the validation set and the others in the training set</p>
 
@@ -749,7 +730,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="EndSplitter" class="doc_header"><code>EndSplitter</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/transforms.py#L114" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>EndSplitter</code>(<strong><code>valid_pct</code></strong>=<em><code>0.2</code></em>, <strong><code>valid_last</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="EndSplitter" class="doc_header"><code>EndSplitter</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/transforms.py#L119" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>EndSplitter</code>(<strong><code>valid_pct</code></strong>=<em><code>0.2</code></em>, <strong><code>valid_last</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 <p>Create function that splits <code>items</code> between train/val with <code>valid_pct</code> at the end if <code>valid_last</code> else at the start. Useful for ordered data.</p>
 
@@ -813,7 +794,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="GrandparentSplitter" class="doc_header"><code>GrandparentSplitter</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/transforms.py#L129" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>GrandparentSplitter</code>(<strong><code>train_name</code></strong>=<em><code>'train'</code></em>, <strong><code>valid_name</code></strong>=<em><code>'valid'</code></em>)</p>
+<h4 id="GrandparentSplitter" class="doc_header"><code>GrandparentSplitter</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/transforms.py#L134" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>GrandparentSplitter</code>(<strong><code>train_name</code></strong>=<em><code>'train'</code></em>, <strong><code>valid_name</code></strong>=<em><code>'valid'</code></em>)</p>
 </blockquote>
 <p>Split <code>items</code> from the grand parent folder names (<code>train_name</code> and <code>valid_name</code>).</p>
 
@@ -904,7 +885,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="FuncSplitter" class="doc_header"><code>FuncSplitter</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/transforms.py#L136" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>FuncSplitter</code>(<strong><code>func</code></strong>)</p>
+<h4 id="FuncSplitter" class="doc_header"><code>FuncSplitter</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/transforms.py#L141" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>FuncSplitter</code>(<strong><code>func</code></strong>)</p>
 </blockquote>
 <p>Split <code>items</code> by result of <code>func</code> (<code>True</code> for validation, <code>False</code> for training set).</p>
 
@@ -955,7 +936,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="MaskSplitter" class="doc_header"><code>MaskSplitter</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/transforms.py#L144" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>MaskSplitter</code>(<strong><code>mask</code></strong>)</p>
+<h4 id="MaskSplitter" class="doc_header"><code>MaskSplitter</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/transforms.py#L149" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>MaskSplitter</code>(<strong><code>mask</code></strong>)</p>
 </blockquote>
 <p>Split <code>items</code> depending on the value of <code>mask</code>.</p>
 
@@ -1007,7 +988,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="FileSplitter" class="doc_header"><code>FileSplitter</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/transforms.py#L150" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>FileSplitter</code>(<strong><code>fname</code></strong>)</p>
+<h4 id="FileSplitter" class="doc_header"><code>FileSplitter</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/transforms.py#L155" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>FileSplitter</code>(<strong><code>fname</code></strong>)</p>
 </blockquote>
 <p>Split <code>items</code> by providing file <code>fname</code> (contains names of valid items separated by newline).</p>
 
@@ -1061,7 +1042,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ColSplitter" class="doc_header"><code>ColSplitter</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/transforms.py#L158" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ColSplitter</code>(<strong><code>col</code></strong>=<em><code>'is_valid'</code></em>)</p>
+<h4 id="ColSplitter" class="doc_header"><code>ColSplitter</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/transforms.py#L163" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>ColSplitter</code>(<strong><code>col</code></strong>=<em><code>'is_valid'</code></em>)</p>
 </blockquote>
 <p>Split <code>items</code> (supposed to be a dataframe) by value in <code>col</code></p>
 
@@ -1119,7 +1100,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="RandomSubsetSplitter" class="doc_header"><code>RandomSubsetSplitter</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/transforms.py#L167" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>RandomSubsetSplitter</code>(<strong><code>train_sz</code></strong>, <strong><code>valid_sz</code></strong>, <strong><code>seed</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="RandomSubsetSplitter" class="doc_header"><code>RandomSubsetSplitter</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/transforms.py#L172" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>RandomSubsetSplitter</code>(<strong><code>train_sz</code></strong>, <strong><code>valid_sz</code></strong>, <strong><code>seed</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Take randoms subsets of <code>splits</code> with <code>train_sz</code> and <code>valid_sz</code></p>
 
@@ -1186,7 +1167,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="parent_label" class="doc_header"><code>parent_label</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/transforms.py#L181" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>parent_label</code>(<strong><code>o</code></strong>)</p>
+<h4 id="parent_label" class="doc_header"><code>parent_label</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/transforms.py#L186" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>parent_label</code>(<strong><code>o</code></strong>)</p>
 </blockquote>
 <p>Label <code>item</code> with the parent folder name.</p>
 
@@ -1260,7 +1241,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="RegexLabeller" class="doc_header"><code>class</code> <code>RegexLabeller</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/transforms.py#L186" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RegexLabeller</code>(<strong><code>pat</code></strong>, <strong><code>match</code></strong>=<em><code>False</code></em>)</p>
+<h2 id="RegexLabeller" class="doc_header"><code>class</code> <code>RegexLabeller</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/transforms.py#L191" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RegexLabeller</code>(<strong><code>pat</code></strong>, <strong><code>match</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 <p>Label <code>item</code> with regex <code>pat</code>.</p>
 
@@ -1390,7 +1371,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ColReader" class="doc_header"><code>class</code> <code>ColReader</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/transforms.py#L199" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ColReader</code>(<strong><code>cols</code></strong>, <strong><code>pref</code></strong>=<em><code>''</code></em>, <strong><code>suff</code></strong>=<em><code>''</code></em>, <strong><code>label_delim</code></strong>=<em><code>None</code></em>) :: <a href="https://fastcore.fast.ai/transform#DisplayedTransform"><code>DisplayedTransform</code></a></p>
+<h2 id="ColReader" class="doc_header"><code>class</code> <code>ColReader</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/transforms.py#L204" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ColReader</code>(<strong><code>cols</code></strong>, <strong><code>pref</code></strong>=<em><code>''</code></em>, <strong><code>suff</code></strong>=<em><code>''</code></em>, <strong><code>label_delim</code></strong>=<em><code>None</code></em>) :: <a href="https://fastcore.fast.ai/transform#DisplayedTransform"><code>DisplayedTransform</code></a></p>
 </blockquote>
 <p>Read <code>cols</code> in <code>row</code> with potential <code>pref</code> and <code>suff</code></p>
 
@@ -1468,7 +1449,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="CategoryMap" class="doc_header"><code>class</code> <code>CategoryMap</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/transforms.py#L217" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>CategoryMap</code>(<strong><code>col</code></strong>, <strong><code>sort</code></strong>=<em><code>True</code></em>, <strong><code>add_na</code></strong>=<em><code>False</code></em>, <strong><code>strict</code></strong>=<em><code>False</code></em>) :: <a href="https://fastcore.fast.ai/foundation#CollBase"><code>CollBase</code></a></p>
+<h2 id="CategoryMap" class="doc_header"><code>class</code> <code>CategoryMap</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/transforms.py#L222" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>CategoryMap</code>(<strong><code>col</code></strong>, <strong><code>sort</code></strong>=<em><code>True</code></em>, <strong><code>add_na</code></strong>=<em><code>False</code></em>, <strong><code>strict</code></strong>=<em><code>False</code></em>) :: <a href="https://fastcore.fast.ai/foundation#CollBase"><code>CollBase</code></a></p>
 </blockquote>
 <p>Collection of categories with the reverse mapping in <code>o2i</code></p>
 
@@ -1600,7 +1581,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Categorize" class="doc_header"><code>class</code> <code>Categorize</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/transforms.py#L243" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Categorize</code>(<strong><code>vocab</code></strong>=<em><code>None</code></em>, <strong><code>sort</code></strong>=<em><code>True</code></em>, <strong><code>add_na</code></strong>=<em><code>False</code></em>) :: <a href="https://fastcore.fast.ai/transform#DisplayedTransform"><code>DisplayedTransform</code></a></p>
+<h2 id="Categorize" class="doc_header"><code>class</code> <code>Categorize</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/transforms.py#L248" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Categorize</code>(<strong><code>vocab</code></strong>=<em><code>None</code></em>, <strong><code>sort</code></strong>=<em><code>True</code></em>, <strong><code>add_na</code></strong>=<em><code>False</code></em>) :: <a href="https://fastcore.fast.ai/transform#DisplayedTransform"><code>DisplayedTransform</code></a></p>
 </blockquote>
 <p>Reversible transform of category string to <code>vocab</code> id</p>
 
@@ -1632,7 +1613,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Category" class="doc_header"><code>class</code> <code>Category</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/transforms.py#L262" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Category</code>() :: <code>str</code></p>
+<h2 id="Category" class="doc_header"><code>class</code> <code>Category</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/transforms.py#L267" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Category</code>() :: <code>str</code></p>
 </blockquote>
 <p>str(object='') -&gt; str
 str(bytes_or_buffer[, encoding[, errors]]) -&gt; str</p>
@@ -1739,7 +1720,7 @@ errors defaults to 'strict'.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="MultiCategorize" class="doc_header"><code>class</code> <code>MultiCategorize</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/transforms.py#L265" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MultiCategorize</code>(<strong><code>vocab</code></strong>=<em><code>None</code></em>, <strong><code>add_na</code></strong>=<em><code>False</code></em>) :: <a href="/data.transforms.html#Categorize"><code>Categorize</code></a></p>
+<h2 id="MultiCategorize" class="doc_header"><code>class</code> <code>MultiCategorize</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/transforms.py#L270" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MultiCategorize</code>(<strong><code>vocab</code></strong>=<em><code>None</code></em>, <strong><code>add_na</code></strong>=<em><code>False</code></em>) :: <a href="/data.transforms.html#Categorize"><code>Categorize</code></a></p>
 </blockquote>
 <p>Reversible transform of multi-category strings to <code>vocab</code> id</p>
 
@@ -1771,7 +1752,7 @@ errors defaults to 'strict'.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="MultiCategory" class="doc_header"><code>class</code> <code>MultiCategory</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/transforms.py#L286" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MultiCategory</code>(<strong><code>items</code></strong>=<em><code>None</code></em>, <strong>*<code>rest</code></strong>, <strong><code>use_list</code></strong>=<em><code>False</code></em>, <strong><code>match</code></strong>=<em><code>None</code></em>) :: <a href="https://fastcore.fast.ai/foundation#L"><code>L</code></a></p>
+<h2 id="MultiCategory" class="doc_header"><code>class</code> <code>MultiCategory</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/transforms.py#L291" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MultiCategory</code>(<strong><code>items</code></strong>=<em><code>None</code></em>, <strong>*<code>rest</code></strong>, <strong><code>use_list</code></strong>=<em><code>False</code></em>, <strong><code>match</code></strong>=<em><code>None</code></em>) :: <a href="https://fastcore.fast.ai/foundation#L"><code>L</code></a></p>
 </blockquote>
 <p>Behaves like a list of <code>items</code> but can also index with list of indices or masks</p>
 
@@ -1834,7 +1815,7 @@ errors defaults to 'strict'.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="OneHotEncode" class="doc_header"><code>class</code> <code>OneHotEncode</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/transforms.py#L291" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>OneHotEncode</code>(<strong><code>c</code></strong>=<em><code>None</code></em>) :: <a href="https://fastcore.fast.ai/transform#DisplayedTransform"><code>DisplayedTransform</code></a></p>
+<h2 id="OneHotEncode" class="doc_header"><code>class</code> <code>OneHotEncode</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/transforms.py#L296" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>OneHotEncode</code>(<strong><code>c</code></strong>=<em><code>None</code></em>) :: <a href="https://fastcore.fast.ai/transform#DisplayedTransform"><code>DisplayedTransform</code></a></p>
 </blockquote>
 <p>One-hot encodes targets</p>
 
@@ -1914,7 +1895,7 @@ errors defaults to 'strict'.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="EncodedMultiCategorize" class="doc_header"><code>class</code> <code>EncodedMultiCategorize</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/transforms.py#L304" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>EncodedMultiCategorize</code>(<strong><code>vocab</code></strong>) :: <a href="/data.transforms.html#Categorize"><code>Categorize</code></a></p>
+<h2 id="EncodedMultiCategorize" class="doc_header"><code>class</code> <code>EncodedMultiCategorize</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/transforms.py#L309" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>EncodedMultiCategorize</code>(<strong><code>vocab</code></strong>) :: <a href="/data.transforms.html#Categorize"><code>Categorize</code></a></p>
 </blockquote>
 <p>Transform of one-hot encoded multi-category that decodes with <code>vocab</code></p>
 
@@ -1969,7 +1950,7 @@ errors defaults to 'strict'.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="RegressionSetup" class="doc_header"><code>class</code> <code>RegressionSetup</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/transforms.py#L314" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RegressionSetup</code>(<strong><code>c</code></strong>=<em><code>None</code></em>) :: <a href="https://fastcore.fast.ai/transform#DisplayedTransform"><code>DisplayedTransform</code></a></p>
+<h2 id="RegressionSetup" class="doc_header"><code>class</code> <code>RegressionSetup</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/transforms.py#L319" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RegressionSetup</code>(<strong><code>c</code></strong>=<em><code>None</code></em>) :: <a href="https://fastcore.fast.ai/transform#DisplayedTransform"><code>DisplayedTransform</code></a></p>
 </blockquote>
 <p>Transform that floatifies targets</p>
 
@@ -2025,7 +2006,7 @@ errors defaults to 'strict'.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_c" class="doc_header"><code>get_c</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/transforms.py#L327" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_c</code>(<strong><code>dls</code></strong>)</p>
+<h4 id="get_c" class="doc_header"><code>get_c</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/transforms.py#L332" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_c</code>(<strong><code>dls</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -2250,7 +2231,7 @@ errors defaults to 'strict'.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ToTensor" class="doc_header"><code>class</code> <code>ToTensor</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/transforms.py#L336" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ToTensor</code>(<strong><code>enc</code></strong>=<em><code>None</code></em>, <strong><code>dec</code></strong>=<em><code>None</code></em>, <strong><code>split_idx</code></strong>=<em><code>None</code></em>, <strong><code>order</code></strong>=<em><code>None</code></em>) :: <a href="https://fastcore.fast.ai/transform#Transform"><code>Transform</code></a></p>
+<h2 id="ToTensor" class="doc_header"><code>class</code> <code>ToTensor</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/transforms.py#L341" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ToTensor</code>(<strong><code>enc</code></strong>=<em><code>None</code></em>, <strong><code>dec</code></strong>=<em><code>None</code></em>, <strong><code>split_idx</code></strong>=<em><code>None</code></em>, <strong><code>order</code></strong>=<em><code>None</code></em>) :: <a href="https://fastcore.fast.ai/transform#Transform"><code>Transform</code></a></p>
 </blockquote>
 <p>Convert item to appropriate tensor class</p>
 
@@ -2282,7 +2263,7 @@ errors defaults to 'strict'.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="IntToFloatTensor" class="doc_header"><code>class</code> <code>IntToFloatTensor</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/transforms.py#L341" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>IntToFloatTensor</code>(<strong><code>div</code></strong>=<em><code>255.0</code></em>, <strong><code>div_mask</code></strong>=<em><code>1</code></em>) :: <a href="https://fastcore.fast.ai/transform#DisplayedTransform"><code>DisplayedTransform</code></a></p>
+<h2 id="IntToFloatTensor" class="doc_header"><code>class</code> <code>IntToFloatTensor</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/transforms.py#L346" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>IntToFloatTensor</code>(<strong><code>div</code></strong>=<em><code>255.0</code></em>, <strong><code>div_mask</code></strong>=<em><code>1</code></em>) :: <a href="https://fastcore.fast.ai/transform#DisplayedTransform"><code>DisplayedTransform</code></a></p>
 </blockquote>
 <p>Transform image to float tensor, optionally dividing by 255 (e.g. for images).</p>
 
@@ -2354,7 +2335,7 @@ errors defaults to 'strict'.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="broadcast_vec" class="doc_header"><code>broadcast_vec</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/transforms.py#L350" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>broadcast_vec</code>(<strong><code>dim</code></strong>, <strong><code>ndim</code></strong>, <strong>*<code>t</code></strong>, <strong><code>cuda</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="broadcast_vec" class="doc_header"><code>broadcast_vec</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/transforms.py#L355" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>broadcast_vec</code>(<strong><code>dim</code></strong>, <strong><code>ndim</code></strong>, <strong>*<code>t</code></strong>, <strong><code>cuda</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 <p>Make a vector broadcastable over <code>dim</code> (out of <code>ndim</code> total) by prepending and appending unit axes</p>
 
@@ -2386,7 +2367,7 @@ errors defaults to 'strict'.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Normalize" class="doc_header"><code>class</code> <code>Normalize</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/transforms.py#L358" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Normalize</code>(<strong><code>mean</code></strong>=<em><code>None</code></em>, <strong><code>std</code></strong>=<em><code>None</code></em>, <strong><code>axes</code></strong>=<em><code>(0, 2, 3)</code></em>) :: <a href="https://fastcore.fast.ai/transform#DisplayedTransform"><code>DisplayedTransform</code></a></p>
+<h2 id="Normalize" class="doc_header"><code>class</code> <code>Normalize</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/transforms.py#L363" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Normalize</code>(<strong><code>mean</code></strong>=<em><code>None</code></em>, <strong><code>std</code></strong>=<em><code>None</code></em>, <strong><code>axes</code></strong>=<em><code>(0, 2, 3)</code></em>) :: <a href="https://fastcore.fast.ai/transform#DisplayedTransform"><code>DisplayedTransform</code></a></p>
 </blockquote>
 <p>Normalize/denorm batch of <a href="/torch_core.html#TensorImage"><code>TensorImage</code></a></p>
 

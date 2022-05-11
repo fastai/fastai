@@ -26,25 +26,6 @@ nb_path: "nbs/33_text.models.core.ipynb"
     
 <div class="cell border-box-sizing code_cell rendered">
 
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-<div class="output_subarea output_stream output_stderr output_text">
-<pre>/opt/conda/lib/python3.9/site-packages/torch/cuda/__init__.py:145: UserWarning: 
-NVIDIA GeForce RTX 3070 Laptop GPU with CUDA capability sm_86 is not compatible with the current PyTorch installation.
-The current PyTorch install supports CUDA capabilities sm_37 sm_50 sm_60 sm_70.
-If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, please check the instructions at https://pytorch.org/get-started/locally/
-
-  warnings.warn(incompatible_device_warn.format(device_name, capability, &#34; &#34;.join(arch_list), device_name))
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
 </div>
     {% endraw %}
 
@@ -79,7 +60,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="LinearDecoder" class="doc_header"><code>class</code> <code>LinearDecoder</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/models/core.py#L23" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>LinearDecoder</code>(<strong><code>n_out</code></strong>:<code>int</code>, <strong><code>n_hid</code></strong>:<code>int</code>, <strong><code>output_p</code></strong>:<code>float</code>=<em><code>0.1</code></em>, <strong><code>tie_encoder</code></strong>:<a href="/torch_core.html#Module"><code>Module</code></a>=<em><code>None</code></em>, <strong><code>bias</code></strong>:<code>bool</code>=<em><code>True</code></em>) :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
+<h3 id="LinearDecoder" class="doc_header"><code>class</code> <code>LinearDecoder</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/models/core.py#L28" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>LinearDecoder</code>(<strong><code>n_out</code></strong>:<code>int</code>, <strong><code>n_hid</code></strong>:<code>int</code>, <strong><code>output_p</code></strong>:<code>float</code>=<em><code>0.1</code></em>, <strong><code>tie_encoder</code></strong>:<code>nn.Module</code>=<em><code>None</code></em>, <strong><code>bias</code></strong>:<code>bool</code>=<em><code>True</code></em>) :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
 </blockquote>
 <p>To go on top of a RNNCore module and create a Language Model.</p>
 <table>
@@ -111,7 +92,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 </tr>
 <tr>
 <td><strong><code>tie_encoder</code></strong></td>
-<td><a href="/torch_core.html#Module"><code>Module</code></a></td>
+<td><code>nn.Module</code></td>
 <td><code>None</code></td>
 <td>If module is supplied will tie decoder weight to <code>tie_encoder.weight</code></td>
 </tr>
@@ -197,7 +178,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="SequentialRNN" class="doc_header"><code>class</code> <code>SequentialRNN</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/models/core.py#L45" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>SequentialRNN</code>(<strong>*<code>args</code></strong>) :: <code>Sequential</code></p>
+<h3 id="SequentialRNN" class="doc_header"><code>class</code> <code>SequentialRNN</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/models/core.py#L50" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>SequentialRNN</code>(<strong>*<code>args</code></strong>) :: <code>Sequential</code></p>
 </blockquote>
 <p>A sequential module that passes the reset call to its children.</p>
 
@@ -250,7 +231,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_language_model" class="doc_header"><code>get_language_model</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/models/core.py#L51" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_language_model</code>(<strong><code>arch</code></strong>, <strong><code>vocab_sz</code></strong>:<code>int</code>, <strong><code>config</code></strong>:<code>dict</code>=<em><code>None</code></em>, <strong><code>drop_mult</code></strong>:<code>float</code>=<em><code>1.0</code></em>)</p>
+<h4 id="get_language_model" class="doc_header"><code>get_language_model</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/models/core.py#L56" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_language_model</code>(<strong><code>arch</code></strong>, <strong><code>vocab_sz</code></strong>:<code>int</code>, <strong><code>config</code></strong>:<code>dict</code>=<em><code>None</code></em>, <strong><code>drop_mult</code></strong>:<code>float</code>=<em><code>1.0</code></em>)</p>
 </blockquote>
 <p>Create a language model from <code>arch</code> and its <code>config</code>.</p>
 <table>
@@ -385,7 +366,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="SentenceEncoder" class="doc_header"><code>class</code> <code>SentenceEncoder</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/models/core.py#L76" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>SentenceEncoder</code>(<strong><code>bptt</code></strong>:<code>int</code>, <strong><code>module</code></strong>:<a href="/torch_core.html#Module"><code>Module</code></a>, <strong><code>pad_idx</code></strong>:<code>int</code>=<em><code>1</code></em>, <strong><code>max_len</code></strong>:<code>int</code>=<em><code>None</code></em>) :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
+<h3 id="SentenceEncoder" class="doc_header"><code>class</code> <code>SentenceEncoder</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/models/core.py#L81" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>SentenceEncoder</code>(<strong><code>bptt</code></strong>:<code>int</code>, <strong><code>module</code></strong>:<code>nn.Module</code>, <strong><code>pad_idx</code></strong>:<code>int</code>=<em><code>1</code></em>, <strong><code>max_len</code></strong>:<code>int</code>=<em><code>None</code></em>) :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
 </blockquote>
 <p>Create an encoder over <code>module</code> that can process a full sentence.</p>
 <table>
@@ -405,7 +386,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 </tr>
 <tr>
 <td><strong><code>module</code></strong></td>
-<td><a href="/torch_core.html#Module"><code>Module</code></a></td>
+<td><code>nn.Module</code></td>
 <td></td>
 <td>A module that can process up to [<code>bs</code>, <code>bptt</code>] tokens</td>
 </tr>
@@ -484,7 +465,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="masked_concat_pool" class="doc_header"><code>masked_concat_pool</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/models/core.py#L105" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>masked_concat_pool</code>(<strong><code>output</code></strong>:<code>Tensor</code>, <strong><code>mask</code></strong>:<code>Tensor</code>, <strong><code>bptt</code></strong>:<code>int</code>)</p>
+<h4 id="masked_concat_pool" class="doc_header"><code>masked_concat_pool</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/models/core.py#L110" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>masked_concat_pool</code>(<strong><code>output</code></strong>:<code>Tensor</code>, <strong><code>mask</code></strong>:<code>Tensor</code>, <strong><code>bptt</code></strong>:<code>int</code>)</p>
 </blockquote>
 <p>Pool <code>MultiBatchEncoder</code> outputs into one vector [last_hidden, max_pool, avg_pool]</p>
 <table>
@@ -592,7 +573,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="PoolingLinearClassifier" class="doc_header"><code>class</code> <code>PoolingLinearClassifier</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/models/core.py#L120" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>PoolingLinearClassifier</code>(<strong><code>dims</code></strong>:<code>list</code>, <strong><code>ps</code></strong>:<code>list</code>, <strong><code>bptt</code></strong>:<code>int</code>, <strong><code>y_range</code></strong>:<code>tuple</code>=<em><code>None</code></em>) :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
+<h3 id="PoolingLinearClassifier" class="doc_header"><code>class</code> <code>PoolingLinearClassifier</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/models/core.py#L125" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>PoolingLinearClassifier</code>(<strong><code>dims</code></strong>:<code>list</code>, <strong><code>ps</code></strong>:<code>list</code>, <strong><code>bptt</code></strong>:<code>int</code>, <strong><code>y_range</code></strong>:<code>tuple</code>=<em><code>None</code></em>) :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
 </blockquote>
 <p>Create a linear classifier with pooling</p>
 <table>
@@ -684,7 +665,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_text_classifier" class="doc_header"><code>get_text_classifier</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/models/core.py#L142" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_text_classifier</code>(<strong><code>arch</code></strong>:<code>callable</code>, <strong><code>vocab_sz</code></strong>:<code>int</code>, <strong><code>n_class</code></strong>:<code>int</code>, <strong><code>seq_len</code></strong>:<code>int</code>=<em><code>72</code></em>, <strong><code>config</code></strong>:<code>dict</code>=<em><code>None</code></em>, <strong><code>drop_mult</code></strong>:<code>float</code>=<em><code>1.0</code></em>, <strong><code>lin_ftrs</code></strong>:<code>list</code>=<em><code>None</code></em>, <strong><code>ps</code></strong>:<code>list</code>=<em><code>None</code></em>, <strong><code>pad_idx</code></strong>:<code>int</code>=<em><code>1</code></em>, <strong><code>max_len</code></strong>:<code>int</code>=<em><code>1440</code></em>, <strong><code>y_range</code></strong>:<code>tuple</code>=<em><code>None</code></em>)</p>
+<h4 id="get_text_classifier" class="doc_header"><code>get_text_classifier</code><a href="https://github.com/fastai/fastai/tree/master/fastai/text/models/core.py#L147" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_text_classifier</code>(<strong><code>arch</code></strong>:<code>callable</code>, <strong><code>vocab_sz</code></strong>:<code>int</code>, <strong><code>n_class</code></strong>:<code>int</code>, <strong><code>seq_len</code></strong>:<code>int</code>=<em><code>72</code></em>, <strong><code>config</code></strong>:<code>dict</code>=<em><code>None</code></em>, <strong><code>drop_mult</code></strong>:<code>float</code>=<em><code>1.0</code></em>, <strong><code>lin_ftrs</code></strong>:<code>list</code>=<em><code>None</code></em>, <strong><code>ps</code></strong>:<code>list</code>=<em><code>None</code></em>, <strong><code>pad_idx</code></strong>:<code>int</code>=<em><code>1</code></em>, <strong><code>max_len</code></strong>:<code>int</code>=<em><code>1440</code></em>, <strong><code>y_range</code></strong>:<code>tuple</code>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Create a text classifier from <code>arch</code> and its <code>config</code>, maybe <code>pretrained</code></p>
 <table>

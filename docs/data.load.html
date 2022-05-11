@@ -26,25 +26,6 @@ nb_path: "nbs/02_data.load.ipynb"
     
 <div class="cell border-box-sizing code_cell rendered">
 
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-<div class="output_subarea output_stream output_stderr output_text">
-<pre>/opt/conda/lib/python3.9/site-packages/torch/cuda/__init__.py:145: UserWarning: 
-NVIDIA GeForce RTX 3070 Laptop GPU with CUDA capability sm_86 is not compatible with the current PyTorch installation.
-The current PyTorch install supports CUDA capabilities sm_37 sm_50 sm_60 sm_70.
-If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, please check the instructions at https://pytorch.org/get-started/locally/
-
-  warnings.warn(incompatible_device_warn.format(device_name, capability, &#34; &#34;.join(arch_list), device_name))
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
 </div>
     {% endraw %}
 
@@ -104,7 +85,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="fa_collate" class="doc_header"><code>fa_collate</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/load.py#L46" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>fa_collate</code>(<strong><code>t</code></strong>)</p>
+<h4 id="fa_collate" class="doc_header"><code>fa_collate</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/load.py#L51" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>fa_collate</code>(<strong><code>t</code></strong>)</p>
 </blockquote>
 <p>A replacement for PyTorch <code>default_collate</code> which maintains types and handles <code>Sequence</code>s</p>
 
@@ -160,7 +141,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="fa_convert" class="doc_header"><code>fa_convert</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/load.py#L54" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>fa_convert</code>(<strong><code>t</code></strong>)</p>
+<h4 id="fa_convert" class="doc_header"><code>fa_convert</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/load.py#L59" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>fa_convert</code>(<strong><code>t</code></strong>)</p>
 </blockquote>
 <p>A replacement for PyTorch <code>default_convert</code> which maintains types and handles <code>Sequence</code>s</p>
 
@@ -220,7 +201,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="SkipItemException" class="doc_header"><code>class</code> <code>SkipItemException</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/load.py#L61" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>SkipItemException</code>() :: <code>Exception</code></p>
+<h3 id="SkipItemException" class="doc_header"><code>class</code> <code>SkipItemException</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/load.py#L66" class="source_link" style="float:right">[source]</a></h3><blockquote><p><code>SkipItemException</code>() :: <code>Exception</code></p>
 </blockquote>
 <p>Raised to notify <a href="/data.load.html#DataLoader"><code>DataLoader</code></a> to skip an item</p>
 
@@ -245,7 +226,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="collate_error" class="doc_header"><code>collate_error</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/load.py#L66" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>collate_error</code>(<strong><code>e</code></strong>:<code>Exception</code>, <strong><code>batch</code></strong>)</p>
+<h4 id="collate_error" class="doc_header"><code>collate_error</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/load.py#L71" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>collate_error</code>(<strong><code>e</code></strong>:<code>Exception</code>, <strong><code>batch</code></strong>)</p>
 </blockquote>
 <p>Raises error when the batch could not collate, stating what items in the batch are different sizes and their types</p>
 
@@ -277,7 +258,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="DataLoader" class="doc_header"><code>class</code> <code>DataLoader</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/load.py#L82" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>DataLoader</code>(<strong><code>dataset</code></strong>=<em><code>None</code></em>, <strong><code>bs</code></strong>=<em><code>None</code></em>, <strong><code>num_workers</code></strong>=<em><code>0</code></em>, <strong><code>pin_memory</code></strong>=<em><code>False</code></em>, <strong><code>timeout</code></strong>=<em><code>0</code></em>, <strong><code>batch_size</code></strong>=<em><code>None</code></em>, <strong><code>shuffle</code></strong>=<em><code>False</code></em>, <strong><code>drop_last</code></strong>=<em><code>False</code></em>, <strong><code>indexed</code></strong>=<em><code>None</code></em>, <strong><code>n</code></strong>=<em><code>None</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>persistent_workers</code></strong>=<em><code>False</code></em>, <strong><code>wif</code></strong>=<em><code>None</code></em>, <strong><code>before_iter</code></strong>=<em><code>None</code></em>, <strong><code>after_item</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_iter</code></strong>=<em><code>None</code></em>, <strong><code>create_batches</code></strong>=<em><code>None</code></em>, <strong><code>create_item</code></strong>=<em><code>None</code></em>, <strong><code>create_batch</code></strong>=<em><code>None</code></em>, <strong><code>retain</code></strong>=<em><code>None</code></em>, <strong><code>get_idxs</code></strong>=<em><code>None</code></em>, <strong><code>sample</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_fn</code></strong>=<em><code>None</code></em>, <strong><code>do_batch</code></strong>=<em><code>None</code></em>) :: <a href="https://fastcore.fast.ai/basics#GetAttr"><code>GetAttr</code></a></p>
+<h2 id="DataLoader" class="doc_header"><code>class</code> <code>DataLoader</code><a href="https://github.com/fastai/fastai/tree/master/fastai/data/load.py#L87" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>DataLoader</code>(<strong><code>dataset</code></strong>=<em><code>None</code></em>, <strong><code>bs</code></strong>=<em><code>None</code></em>, <strong><code>num_workers</code></strong>=<em><code>0</code></em>, <strong><code>pin_memory</code></strong>=<em><code>False</code></em>, <strong><code>timeout</code></strong>=<em><code>0</code></em>, <strong><code>batch_size</code></strong>=<em><code>None</code></em>, <strong><code>shuffle</code></strong>=<em><code>False</code></em>, <strong><code>drop_last</code></strong>=<em><code>False</code></em>, <strong><code>indexed</code></strong>=<em><code>None</code></em>, <strong><code>n</code></strong>=<em><code>None</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>persistent_workers</code></strong>=<em><code>False</code></em>, <strong><code>wif</code></strong>=<em><code>None</code></em>, <strong><code>before_iter</code></strong>=<em><code>None</code></em>, <strong><code>after_item</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_iter</code></strong>=<em><code>None</code></em>, <strong><code>create_batches</code></strong>=<em><code>None</code></em>, <strong><code>create_item</code></strong>=<em><code>None</code></em>, <strong><code>create_batch</code></strong>=<em><code>None</code></em>, <strong><code>retain</code></strong>=<em><code>None</code></em>, <strong><code>get_idxs</code></strong>=<em><code>None</code></em>, <strong><code>sample</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_fn</code></strong>=<em><code>None</code></em>, <strong><code>do_batch</code></strong>=<em><code>None</code></em>) :: <a href="https://fastcore.fast.ai/basics#GetAttr"><code>GetAttr</code></a></p>
 </blockquote>
 <p>API compatible with PyTorch DataLoader, with a lot more callbacks and flexibility</p>
 

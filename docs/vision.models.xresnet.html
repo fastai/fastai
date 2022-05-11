@@ -26,25 +26,6 @@ nb_path: "nbs/11_vision.models.xresnet.ipynb"
     
 <div class="cell border-box-sizing code_cell rendered">
 
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-<div class="output_subarea output_stream output_stderr output_text">
-<pre>/opt/conda/lib/python3.9/site-packages/torch/cuda/__init__.py:145: UserWarning: 
-NVIDIA GeForce RTX 3070 Laptop GPU with CUDA capability sm_86 is not compatible with the current PyTorch installation.
-The current PyTorch install supports CUDA capabilities sm_37 sm_50 sm_60 sm_70.
-If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, please check the instructions at https://pytorch.org/get-started/locally/
-
-  warnings.warn(incompatible_device_warn.format(device_name, capability, &#34; &#34;.join(arch_list), device_name))
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
 </div>
     {% endraw %}
 
@@ -66,7 +47,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="init_cnn" class="doc_header"><code>init_cnn</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/models/xresnet.py#L17" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>init_cnn</code>(<strong><code>m</code></strong>)</p>
+<h4 id="init_cnn" class="doc_header"><code>init_cnn</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/models/xresnet.py#L22" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>init_cnn</code>(<strong><code>m</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -97,7 +78,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="XResNet" class="doc_header"><code>class</code> <code>XResNet</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/models/xresnet.py#L23" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>XResNet</code>(<strong><code>block</code></strong>, <strong><code>expansion</code></strong>, <strong><code>layers</code></strong>, <strong><code>p</code></strong>=<em><code>0.0</code></em>, <strong><code>c_in</code></strong>=<em><code>3</code></em>, <strong><code>n_out</code></strong>=<em><code>1000</code></em>, <strong><code>stem_szs</code></strong>=<em><code>(32, 32, 64)</code></em>, <strong><code>widen</code></strong>=<em><code>1.0</code></em>, <strong><code>sa</code></strong>=<em><code>False</code></em>, <strong><code>act_cls</code></strong>=<em><code>ReLU</code></em>, <strong><code>ndim</code></strong>=<em><code>2</code></em>, <strong><code>ks</code></strong>=<em><code>3</code></em>, <strong><code>stride</code></strong>=<em><code>2</code></em>, <strong><code>groups</code></strong>=<em><code>1</code></em>, <strong><code>reduction</code></strong>=<em><code>None</code></em>, <strong><code>nh1</code></strong>=<em><code>None</code></em>, <strong><code>nh2</code></strong>=<em><code>None</code></em>, <strong><code>dw</code></strong>=<em><code>False</code></em>, <strong><code>g2</code></strong>=<em><code>1</code></em>, <strong><code>sym</code></strong>=<em><code>False</code></em>, <strong><code>norm_type</code></strong>=<em><code>&lt;NormType.Batch: 1&gt;</code></em>, <strong><code>pool</code></strong>=<em><code>AvgPool</code></em>, <strong><code>pool_first</code></strong>=<em><code>True</code></em>, <strong><code>padding</code></strong>=<em><code>None</code></em>, <strong><code>bias</code></strong>=<em><code>None</code></em>, <strong><code>bn_1st</code></strong>=<em><code>True</code></em>, <strong><code>transpose</code></strong>=<em><code>False</code></em>, <strong><code>init</code></strong>=<em><code>'auto'</code></em>, <strong><code>xtra</code></strong>=<em><code>None</code></em>, <strong><code>bias_std</code></strong>=<em><code>0.01</code></em>, <strong><code>dilation</code></strong>:<code>Union</code>[<code>int</code>, <code>typing.Tuple[int, int]</code>]=<em><code>1</code></em>, <strong><code>padding_mode</code></strong>:<code>str</code>=<em><code>'zeros'</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>dtype</code></strong>=<em><code>None</code></em>) :: <code>Sequential</code></p>
+<h2 id="XResNet" class="doc_header"><code>class</code> <code>XResNet</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/models/xresnet.py#L28" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>XResNet</code>(<strong><code>block</code></strong>, <strong><code>expansion</code></strong>, <strong><code>layers</code></strong>, <strong><code>p</code></strong>=<em><code>0.0</code></em>, <strong><code>c_in</code></strong>=<em><code>3</code></em>, <strong><code>n_out</code></strong>=<em><code>1000</code></em>, <strong><code>stem_szs</code></strong>=<em><code>(32, 32, 64)</code></em>, <strong><code>widen</code></strong>=<em><code>1.0</code></em>, <strong><code>sa</code></strong>=<em><code>False</code></em>, <strong><code>act_cls</code></strong>=<em><code>ReLU</code></em>, <strong><code>ndim</code></strong>=<em><code>2</code></em>, <strong><code>ks</code></strong>=<em><code>3</code></em>, <strong><code>stride</code></strong>=<em><code>2</code></em>, <strong><code>groups</code></strong>=<em><code>1</code></em>, <strong><code>reduction</code></strong>=<em><code>None</code></em>, <strong><code>nh1</code></strong>=<em><code>None</code></em>, <strong><code>nh2</code></strong>=<em><code>None</code></em>, <strong><code>dw</code></strong>=<em><code>False</code></em>, <strong><code>g2</code></strong>=<em><code>1</code></em>, <strong><code>sym</code></strong>=<em><code>False</code></em>, <strong><code>norm_type</code></strong>=<em><code>&lt;NormType.Batch: 1&gt;</code></em>, <strong><code>pool</code></strong>=<em><code>AvgPool</code></em>, <strong><code>pool_first</code></strong>=<em><code>True</code></em>, <strong><code>padding</code></strong>=<em><code>None</code></em>, <strong><code>bias</code></strong>=<em><code>None</code></em>, <strong><code>bn_1st</code></strong>=<em><code>True</code></em>, <strong><code>transpose</code></strong>=<em><code>False</code></em>, <strong><code>init</code></strong>=<em><code>'auto'</code></em>, <strong><code>xtra</code></strong>=<em><code>None</code></em>, <strong><code>bias_std</code></strong>=<em><code>0.01</code></em>, <strong><code>dilation</code></strong>:<code>Union</code>[<code>int</code>, <code>typing.Tuple[int, int]</code>]=<em><code>1</code></em>, <strong><code>padding_mode</code></strong>:<code>str</code>=<em><code>'zeros'</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>dtype</code></strong>=<em><code>None</code></em>) :: <code>Sequential</code></p>
 </blockquote>
 <p>A sequential container.
 Modules will be added to it in the order they are passed in the
@@ -167,7 +148,7 @@ model = nn.Sequential(OrderedDict([
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="xresnet18" class="doc_header"><code>xresnet18</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/models/xresnet.py#L65" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>xresnet18</code>(<strong><code>pretrained</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="xresnet18" class="doc_header"><code>xresnet18</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/models/xresnet.py#L70" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>xresnet18</code>(<strong><code>pretrained</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -191,7 +172,7 @@ model = nn.Sequential(OrderedDict([
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="xresnet34" class="doc_header"><code>xresnet34</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/models/xresnet.py#L66" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>xresnet34</code>(<strong><code>pretrained</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="xresnet34" class="doc_header"><code>xresnet34</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/models/xresnet.py#L71" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>xresnet34</code>(<strong><code>pretrained</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -215,7 +196,7 @@ model = nn.Sequential(OrderedDict([
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="xresnet50" class="doc_header"><code>xresnet50</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/models/xresnet.py#L67" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>xresnet50</code>(<strong><code>pretrained</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="xresnet50" class="doc_header"><code>xresnet50</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/models/xresnet.py#L72" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>xresnet50</code>(<strong><code>pretrained</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -239,7 +220,7 @@ model = nn.Sequential(OrderedDict([
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="xresnet101" class="doc_header"><code>xresnet101</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/models/xresnet.py#L68" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>xresnet101</code>(<strong><code>pretrained</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="xresnet101" class="doc_header"><code>xresnet101</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/models/xresnet.py#L73" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>xresnet101</code>(<strong><code>pretrained</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -263,7 +244,7 @@ model = nn.Sequential(OrderedDict([
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="xresnet152" class="doc_header"><code>xresnet152</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/models/xresnet.py#L69" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>xresnet152</code>(<strong><code>pretrained</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="xresnet152" class="doc_header"><code>xresnet152</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/models/xresnet.py#L74" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>xresnet152</code>(<strong><code>pretrained</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -287,7 +268,7 @@ model = nn.Sequential(OrderedDict([
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="xresnet18_deep" class="doc_header"><code>xresnet18_deep</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/models/xresnet.py#L70" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>xresnet18_deep</code>(<strong><code>pretrained</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="xresnet18_deep" class="doc_header"><code>xresnet18_deep</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/models/xresnet.py#L75" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>xresnet18_deep</code>(<strong><code>pretrained</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -311,7 +292,7 @@ model = nn.Sequential(OrderedDict([
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="xresnet34_deep" class="doc_header"><code>xresnet34_deep</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/models/xresnet.py#L71" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>xresnet34_deep</code>(<strong><code>pretrained</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="xresnet34_deep" class="doc_header"><code>xresnet34_deep</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/models/xresnet.py#L76" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>xresnet34_deep</code>(<strong><code>pretrained</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -335,7 +316,7 @@ model = nn.Sequential(OrderedDict([
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="xresnet50_deep" class="doc_header"><code>xresnet50_deep</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/models/xresnet.py#L72" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>xresnet50_deep</code>(<strong><code>pretrained</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="xresnet50_deep" class="doc_header"><code>xresnet50_deep</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/models/xresnet.py#L77" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>xresnet50_deep</code>(<strong><code>pretrained</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -359,7 +340,7 @@ model = nn.Sequential(OrderedDict([
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="xresnet18_deeper" class="doc_header"><code>xresnet18_deeper</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/models/xresnet.py#L73" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>xresnet18_deeper</code>(<strong><code>pretrained</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="xresnet18_deeper" class="doc_header"><code>xresnet18_deeper</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/models/xresnet.py#L78" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>xresnet18_deeper</code>(<strong><code>pretrained</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -383,7 +364,7 @@ model = nn.Sequential(OrderedDict([
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="xresnet34_deeper" class="doc_header"><code>xresnet34_deeper</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/models/xresnet.py#L74" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>xresnet34_deeper</code>(<strong><code>pretrained</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="xresnet34_deeper" class="doc_header"><code>xresnet34_deeper</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/models/xresnet.py#L79" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>xresnet34_deeper</code>(<strong><code>pretrained</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -407,7 +388,7 @@ model = nn.Sequential(OrderedDict([
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="xresnet50_deeper" class="doc_header"><code>xresnet50_deeper</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/models/xresnet.py#L75" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>xresnet50_deeper</code>(<strong><code>pretrained</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="xresnet50_deeper" class="doc_header"><code>xresnet50_deeper</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/models/xresnet.py#L80" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>xresnet50_deeper</code>(<strong><code>pretrained</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -445,7 +426,7 @@ model = nn.Sequential(OrderedDict([
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="xse_resnet18" class="doc_header"><code>xse_resnet18</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/models/xresnet.py#L87" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>xse_resnet18</code>(<strong><code>n_out</code></strong>=<em><code>1000</code></em>, <strong><code>pretrained</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="xse_resnet18" class="doc_header"><code>xse_resnet18</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/models/xresnet.py#L92" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>xse_resnet18</code>(<strong><code>n_out</code></strong>=<em><code>1000</code></em>, <strong><code>pretrained</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -469,7 +450,7 @@ model = nn.Sequential(OrderedDict([
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="xse_resnext18" class="doc_header"><code>xse_resnext18</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/models/xresnet.py#L88" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>xse_resnext18</code>(<strong><code>n_out</code></strong>=<em><code>1000</code></em>, <strong><code>pretrained</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="xse_resnext18" class="doc_header"><code>xse_resnext18</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/models/xresnet.py#L93" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>xse_resnext18</code>(<strong><code>n_out</code></strong>=<em><code>1000</code></em>, <strong><code>pretrained</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -493,7 +474,7 @@ model = nn.Sequential(OrderedDict([
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="xresnext18" class="doc_header"><code>xresnext18</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/models/xresnet.py#L89" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>xresnext18</code>(<strong><code>n_out</code></strong>=<em><code>1000</code></em>, <strong><code>pretrained</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="xresnext18" class="doc_header"><code>xresnext18</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/models/xresnet.py#L94" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>xresnext18</code>(<strong><code>n_out</code></strong>=<em><code>1000</code></em>, <strong><code>pretrained</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -517,7 +498,7 @@ model = nn.Sequential(OrderedDict([
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="xse_resnet34" class="doc_header"><code>xse_resnet34</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/models/xresnet.py#L90" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>xse_resnet34</code>(<strong><code>n_out</code></strong>=<em><code>1000</code></em>, <strong><code>pretrained</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="xse_resnet34" class="doc_header"><code>xse_resnet34</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/models/xresnet.py#L95" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>xse_resnet34</code>(<strong><code>n_out</code></strong>=<em><code>1000</code></em>, <strong><code>pretrained</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -541,7 +522,7 @@ model = nn.Sequential(OrderedDict([
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="xse_resnext34" class="doc_header"><code>xse_resnext34</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/models/xresnet.py#L91" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>xse_resnext34</code>(<strong><code>n_out</code></strong>=<em><code>1000</code></em>, <strong><code>pretrained</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="xse_resnext34" class="doc_header"><code>xse_resnext34</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/models/xresnet.py#L96" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>xse_resnext34</code>(<strong><code>n_out</code></strong>=<em><code>1000</code></em>, <strong><code>pretrained</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -565,7 +546,7 @@ model = nn.Sequential(OrderedDict([
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="xresnext34" class="doc_header"><code>xresnext34</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/models/xresnet.py#L92" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>xresnext34</code>(<strong><code>n_out</code></strong>=<em><code>1000</code></em>, <strong><code>pretrained</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="xresnext34" class="doc_header"><code>xresnext34</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/models/xresnet.py#L97" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>xresnext34</code>(<strong><code>n_out</code></strong>=<em><code>1000</code></em>, <strong><code>pretrained</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -589,7 +570,7 @@ model = nn.Sequential(OrderedDict([
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="xse_resnet50" class="doc_header"><code>xse_resnet50</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/models/xresnet.py#L93" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>xse_resnet50</code>(<strong><code>n_out</code></strong>=<em><code>1000</code></em>, <strong><code>pretrained</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="xse_resnet50" class="doc_header"><code>xse_resnet50</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/models/xresnet.py#L98" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>xse_resnet50</code>(<strong><code>n_out</code></strong>=<em><code>1000</code></em>, <strong><code>pretrained</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -613,7 +594,7 @@ model = nn.Sequential(OrderedDict([
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="xse_resnext50" class="doc_header"><code>xse_resnext50</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/models/xresnet.py#L94" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>xse_resnext50</code>(<strong><code>n_out</code></strong>=<em><code>1000</code></em>, <strong><code>pretrained</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="xse_resnext50" class="doc_header"><code>xse_resnext50</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/models/xresnet.py#L99" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>xse_resnext50</code>(<strong><code>n_out</code></strong>=<em><code>1000</code></em>, <strong><code>pretrained</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -637,7 +618,7 @@ model = nn.Sequential(OrderedDict([
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="xresnext50" class="doc_header"><code>xresnext50</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/models/xresnet.py#L95" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>xresnext50</code>(<strong><code>n_out</code></strong>=<em><code>1000</code></em>, <strong><code>pretrained</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="xresnext50" class="doc_header"><code>xresnext50</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/models/xresnet.py#L100" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>xresnext50</code>(<strong><code>n_out</code></strong>=<em><code>1000</code></em>, <strong><code>pretrained</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -661,7 +642,7 @@ model = nn.Sequential(OrderedDict([
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="xse_resnet101" class="doc_header"><code>xse_resnet101</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/models/xresnet.py#L96" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>xse_resnet101</code>(<strong><code>n_out</code></strong>=<em><code>1000</code></em>, <strong><code>pretrained</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="xse_resnet101" class="doc_header"><code>xse_resnet101</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/models/xresnet.py#L101" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>xse_resnet101</code>(<strong><code>n_out</code></strong>=<em><code>1000</code></em>, <strong><code>pretrained</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -685,7 +666,7 @@ model = nn.Sequential(OrderedDict([
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="xse_resnext101" class="doc_header"><code>xse_resnext101</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/models/xresnet.py#L97" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>xse_resnext101</code>(<strong><code>n_out</code></strong>=<em><code>1000</code></em>, <strong><code>pretrained</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="xse_resnext101" class="doc_header"><code>xse_resnext101</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/models/xresnet.py#L102" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>xse_resnext101</code>(<strong><code>n_out</code></strong>=<em><code>1000</code></em>, <strong><code>pretrained</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -709,7 +690,7 @@ model = nn.Sequential(OrderedDict([
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="xresnext101" class="doc_header"><code>xresnext101</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/models/xresnet.py#L98" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>xresnext101</code>(<strong><code>n_out</code></strong>=<em><code>1000</code></em>, <strong><code>pretrained</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="xresnext101" class="doc_header"><code>xresnext101</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/models/xresnet.py#L103" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>xresnext101</code>(<strong><code>n_out</code></strong>=<em><code>1000</code></em>, <strong><code>pretrained</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -733,7 +714,7 @@ model = nn.Sequential(OrderedDict([
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="xse_resnet152" class="doc_header"><code>xse_resnet152</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/models/xresnet.py#L99" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>xse_resnet152</code>(<strong><code>n_out</code></strong>=<em><code>1000</code></em>, <strong><code>pretrained</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="xse_resnet152" class="doc_header"><code>xse_resnet152</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/models/xresnet.py#L104" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>xse_resnet152</code>(<strong><code>n_out</code></strong>=<em><code>1000</code></em>, <strong><code>pretrained</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -757,7 +738,7 @@ model = nn.Sequential(OrderedDict([
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="xsenet154" class="doc_header"><code>xsenet154</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/models/xresnet.py#L100" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>xsenet154</code>(<strong><code>n_out</code></strong>=<em><code>1000</code></em>, <strong><code>pretrained</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="xsenet154" class="doc_header"><code>xsenet154</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/models/xresnet.py#L105" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>xsenet154</code>(<strong><code>n_out</code></strong>=<em><code>1000</code></em>, <strong><code>pretrained</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -781,7 +762,7 @@ model = nn.Sequential(OrderedDict([
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="xse_resnext18_deep" class="doc_header"><code>xse_resnext18_deep</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/models/xresnet.py#L102" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>xse_resnext18_deep</code>(<strong><code>n_out</code></strong>=<em><code>1000</code></em>, <strong><code>pretrained</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="xse_resnext18_deep" class="doc_header"><code>xse_resnext18_deep</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/models/xresnet.py#L107" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>xse_resnext18_deep</code>(<strong><code>n_out</code></strong>=<em><code>1000</code></em>, <strong><code>pretrained</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -805,7 +786,7 @@ model = nn.Sequential(OrderedDict([
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="xse_resnext34_deep" class="doc_header"><code>xse_resnext34_deep</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/models/xresnet.py#L103" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>xse_resnext34_deep</code>(<strong><code>n_out</code></strong>=<em><code>1000</code></em>, <strong><code>pretrained</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="xse_resnext34_deep" class="doc_header"><code>xse_resnext34_deep</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/models/xresnet.py#L108" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>xse_resnext34_deep</code>(<strong><code>n_out</code></strong>=<em><code>1000</code></em>, <strong><code>pretrained</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -829,7 +810,7 @@ model = nn.Sequential(OrderedDict([
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="xse_resnext50_deep" class="doc_header"><code>xse_resnext50_deep</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/models/xresnet.py#L104" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>xse_resnext50_deep</code>(<strong><code>n_out</code></strong>=<em><code>1000</code></em>, <strong><code>pretrained</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="xse_resnext50_deep" class="doc_header"><code>xse_resnext50_deep</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/models/xresnet.py#L109" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>xse_resnext50_deep</code>(<strong><code>n_out</code></strong>=<em><code>1000</code></em>, <strong><code>pretrained</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -853,7 +834,7 @@ model = nn.Sequential(OrderedDict([
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="xse_resnext18_deeper" class="doc_header"><code>xse_resnext18_deeper</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/models/xresnet.py#L105" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>xse_resnext18_deeper</code>(<strong><code>n_out</code></strong>=<em><code>1000</code></em>, <strong><code>pretrained</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="xse_resnext18_deeper" class="doc_header"><code>xse_resnext18_deeper</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/models/xresnet.py#L110" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>xse_resnext18_deeper</code>(<strong><code>n_out</code></strong>=<em><code>1000</code></em>, <strong><code>pretrained</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -877,7 +858,7 @@ model = nn.Sequential(OrderedDict([
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="xse_resnext34_deeper" class="doc_header"><code>xse_resnext34_deeper</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/models/xresnet.py#L106" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>xse_resnext34_deeper</code>(<strong><code>n_out</code></strong>=<em><code>1000</code></em>, <strong><code>pretrained</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="xse_resnext34_deeper" class="doc_header"><code>xse_resnext34_deeper</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/models/xresnet.py#L111" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>xse_resnext34_deeper</code>(<strong><code>n_out</code></strong>=<em><code>1000</code></em>, <strong><code>pretrained</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -901,7 +882,7 @@ model = nn.Sequential(OrderedDict([
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="xse_resnext50_deeper" class="doc_header"><code>xse_resnext50_deeper</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/models/xresnet.py#L107" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>xse_resnext50_deeper</code>(<strong><code>n_out</code></strong>=<em><code>1000</code></em>, <strong><code>pretrained</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="xse_resnext50_deeper" class="doc_header"><code>xse_resnext50_deeper</code><a href="https://github.com/fastai/fastai/tree/master/fastai/vision/models/xresnet.py#L112" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>xse_resnext50_deeper</code>(<strong><code>n_out</code></strong>=<em><code>1000</code></em>, <strong><code>pretrained</code></strong>=<em><code>False</code></em>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 
 </div>

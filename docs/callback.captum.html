@@ -26,25 +26,6 @@ nb_path: "nbs/73_callback.captum.ipynb"
     
 <div class="cell border-box-sizing code_cell rendered">
 
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-<div class="output_subarea output_stream output_stderr output_text">
-<pre>/opt/conda/lib/python3.9/site-packages/torch/cuda/__init__.py:145: UserWarning: 
-NVIDIA GeForce RTX 3070 Laptop GPU with CUDA capability sm_86 is not compatible with the current PyTorch installation.
-The current PyTorch install supports CUDA capabilities sm_37 sm_50 sm_60 sm_70.
-If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, please check the instructions at https://pytorch.org/get-started/locally/
-
-  warnings.warn(incompatible_device_warn.format(device_name, capability, &#34; &#34;.join(arch_list), device_name))
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
 </div>
     {% endraw %}
 
@@ -73,7 +54,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="json_clean" class="doc_header"><code>json_clean</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/captum.py#L15" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>json_clean</code>(<strong><code>o</code></strong>)</p>
+<h4 id="json_clean" class="doc_header"><code>json_clean</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/captum.py#L20" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>json_clean</code>(<strong><code>o</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -263,7 +244,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="CaptumInterpretation" class="doc_header"><code>class</code> <code>CaptumInterpretation</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/captum.py#L31" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>CaptumInterpretation</code>(<strong><code>learn</code></strong>, <strong><code>cmap_name</code></strong>=<em><code>'custom blue'</code></em>, <strong><code>colors</code></strong>=<em><code>None</code></em>, <strong><code>N</code></strong>=<em><code>256</code></em>, <strong><code>methods</code></strong>=<em><code>('original_image', 'heat_map')</code></em>, <strong><code>signs</code></strong>=<em><code>('all', 'positive')</code></em>, <strong><code>outlier_perc</code></strong>=<em><code>1</code></em>)</p>
+<h2 id="CaptumInterpretation" class="doc_header"><code>class</code> <code>CaptumInterpretation</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/captum.py#L36" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>CaptumInterpretation</code>(<strong><code>learn</code></strong>, <strong><code>cmap_name</code></strong>=<em><code>'custom blue'</code></em>, <strong><code>colors</code></strong>=<em><code>None</code></em>, <strong><code>N</code></strong>=<em><code>256</code></em>, <strong><code>methods</code></strong>=<em><code>('original_image', 'heat_map')</code></em>, <strong><code>signs</code></strong>=<em><code>('all', 'positive')</code></em>, <strong><code>outlier_perc</code></strong>=<em><code>1</code></em>)</p>
 </blockquote>
 <p>Captum Interpretation for Resnet</p>
 
@@ -507,7 +488,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="CaptumInterpretation.insights" class="doc_header"><code>CaptumInterpretation.insights</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/captum.py#L94" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>CaptumInterpretation.insights</code>(<strong><code>x</code></strong>:<a href="/callback.captum.html#CaptumInterpretation"><code>CaptumInterpretation</code></a>, <strong><code>inp_data</code></strong>, <strong><code>debug</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="CaptumInterpretation.insights" class="doc_header"><code>CaptumInterpretation.insights</code><a href="https://github.com/fastai/fastai/tree/master/fastai/callback/captum.py#L99" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>CaptumInterpretation.insights</code>(<strong><code>x</code></strong>:<a href="/callback.captum.html#CaptumInterpretation"><code>CaptumInterpretation</code></a>, <strong><code>inp_data</code></strong>, <strong><code>debug</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 
 </div>

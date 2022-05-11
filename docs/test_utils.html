@@ -26,25 +26,6 @@ nb_path: "nbs/97_test_utils.ipynb"
     
 <div class="cell border-box-sizing code_cell rendered">
 
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-<div class="output_subarea output_stream output_stderr output_text">
-<pre>/opt/conda/lib/python3.9/site-packages/torch/cuda/__init__.py:145: UserWarning: 
-NVIDIA GeForce RTX 3070 Laptop GPU with CUDA capability sm_86 is not compatible with the current PyTorch installation.
-The current PyTorch install supports CUDA capabilities sm_37 sm_50 sm_60 sm_70.
-If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, please check the instructions at https://pytorch.org/get-started/locally/
-
-  warnings.warn(incompatible_device_warn.format(device_name, capability, &#34; &#34;.join(arch_list), device_name))
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
 </div>
     {% endraw %}
 
@@ -73,7 +54,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="synth_dbunch" class="doc_header"><code>synth_dbunch</code><a href="https://github.com/fastai/fastai/tree/master/fastai/test_utils.py#L18" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>synth_dbunch</code>(<strong><code>a</code></strong>=<em><code>2</code></em>, <strong><code>b</code></strong>=<em><code>3</code></em>, <strong><code>bs</code></strong>=<em><code>16</code></em>, <strong><code>n_train</code></strong>=<em><code>10</code></em>, <strong><code>n_valid</code></strong>=<em><code>2</code></em>, <strong><code>cuda</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="synth_dbunch" class="doc_header"><code>synth_dbunch</code><a href="https://github.com/fastai/fastai/tree/master/fastai/test_utils.py#L23" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>synth_dbunch</code>(<strong><code>a</code></strong>=<em><code>2</code></em>, <strong><code>b</code></strong>=<em><code>3</code></em>, <strong><code>bs</code></strong>=<em><code>16</code></em>, <strong><code>n_train</code></strong>=<em><code>10</code></em>, <strong><code>n_valid</code></strong>=<em><code>2</code></em>, <strong><code>cuda</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 
 </div>
@@ -104,7 +85,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="RegModel" class="doc_header"><code>class</code> <code>RegModel</code><a href="https://github.com/fastai/fastai/tree/master/fastai/test_utils.py#L30" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RegModel</code>() :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
+<h2 id="RegModel" class="doc_header"><code>class</code> <code>RegModel</code><a href="https://github.com/fastai/fastai/tree/master/fastai/test_utils.py#L35" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RegModel</code>() :: <a href="/torch_core.html#Module"><code>Module</code></a></p>
 </blockquote>
 <p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
 
@@ -136,7 +117,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="synth_learner" class="doc_header"><code>synth_learner</code><a href="https://github.com/fastai/fastai/tree/master/fastai/test_utils.py#L35" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>synth_learner</code>(<strong><code>n_trn</code></strong>=<em><code>10</code></em>, <strong><code>n_val</code></strong>=<em><code>2</code></em>, <strong><code>cuda</code></strong>=<em><code>False</code></em>, <strong><code>lr</code></strong>=<em><code>0.001</code></em>, <strong><code>data</code></strong>=<em><code>None</code></em>, <strong><code>model</code></strong>=<em><code>None</code></em>, <strong><code>loss_func</code></strong>=<em><code>None</code></em>, <strong><code>opt_func</code></strong>=<em><code>Adam</code></em>, <strong><code>splitter</code></strong>=<em><code>trainable_params</code></em>, <strong><code>cbs</code></strong>=<em><code>None</code></em>, <strong><code>metrics</code></strong>=<em><code>None</code></em>, <strong><code>path</code></strong>=<em><code>None</code></em>, <strong><code>model_dir</code></strong>=<em><code>'models'</code></em>, <strong><code>wd</code></strong>=<em><code>None</code></em>, <strong><code>wd_bn_bias</code></strong>=<em><code>False</code></em>, <strong><code>train_bn</code></strong>=<em><code>True</code></em>, <strong><code>moms</code></strong>=<em><code>(0.95, 0.85, 0.95)</code></em>)</p>
+<h4 id="synth_learner" class="doc_header"><code>synth_learner</code><a href="https://github.com/fastai/fastai/tree/master/fastai/test_utils.py#L40" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>synth_learner</code>(<strong><code>n_trn</code></strong>=<em><code>10</code></em>, <strong><code>n_val</code></strong>=<em><code>2</code></em>, <strong><code>cuda</code></strong>=<em><code>False</code></em>, <strong><code>lr</code></strong>=<em><code>0.001</code></em>, <strong><code>data</code></strong>=<em><code>None</code></em>, <strong><code>model</code></strong>=<em><code>None</code></em>, <strong><code>loss_func</code></strong>=<em><code>None</code></em>, <strong><code>opt_func</code></strong>=<em><code>Adam</code></em>, <strong><code>splitter</code></strong>=<em><code>trainable_params</code></em>, <strong><code>cbs</code></strong>=<em><code>None</code></em>, <strong><code>metrics</code></strong>=<em><code>None</code></em>, <strong><code>path</code></strong>=<em><code>None</code></em>, <strong><code>model_dir</code></strong>=<em><code>'models'</code></em>, <strong><code>wd</code></strong>=<em><code>None</code></em>, <strong><code>wd_bn_bias</code></strong>=<em><code>False</code></em>, <strong><code>train_bn</code></strong>=<em><code>True</code></em>, <strong><code>moms</code></strong>=<em><code>(0.95, 0.85, 0.95)</code></em>)</p>
 </blockquote>
 
 </div>
@@ -167,7 +148,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="VerboseCallback" class="doc_header"><code>class</code> <code>VerboseCallback</code><a href="https://github.com/fastai/fastai/tree/master/fastai/test_utils.py#L43" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>VerboseCallback</code>(<strong><code>after_create</code></strong>=<em><code>None</code></em>, <strong><code>before_fit</code></strong>=<em><code>None</code></em>, <strong><code>before_epoch</code></strong>=<em><code>None</code></em>, <strong><code>before_train</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_pred</code></strong>=<em><code>None</code></em>, <strong><code>after_loss</code></strong>=<em><code>None</code></em>, <strong><code>before_backward</code></strong>=<em><code>None</code></em>, <strong><code>before_step</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_step</code></strong>=<em><code>None</code></em>, <strong><code>after_step</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_train</code></strong>=<em><code>None</code></em>, <strong><code>after_train</code></strong>=<em><code>None</code></em>, <strong><code>before_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_epoch</code></strong>=<em><code>None</code></em>, <strong><code>after_epoch</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_fit</code></strong>=<em><code>None</code></em>, <strong><code>after_fit</code></strong>=<em><code>None</code></em>) :: <a href="/callback.core.html#Callback"><code>Callback</code></a></p>
+<h2 id="VerboseCallback" class="doc_header"><code>class</code> <code>VerboseCallback</code><a href="https://github.com/fastai/fastai/tree/master/fastai/test_utils.py#L48" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>VerboseCallback</code>(<strong><code>after_create</code></strong>=<em><code>None</code></em>, <strong><code>before_fit</code></strong>=<em><code>None</code></em>, <strong><code>before_epoch</code></strong>=<em><code>None</code></em>, <strong><code>before_train</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_pred</code></strong>=<em><code>None</code></em>, <strong><code>after_loss</code></strong>=<em><code>None</code></em>, <strong><code>before_backward</code></strong>=<em><code>None</code></em>, <strong><code>before_step</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_step</code></strong>=<em><code>None</code></em>, <strong><code>after_step</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_train</code></strong>=<em><code>None</code></em>, <strong><code>after_train</code></strong>=<em><code>None</code></em>, <strong><code>before_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_validate</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_epoch</code></strong>=<em><code>None</code></em>, <strong><code>after_epoch</code></strong>=<em><code>None</code></em>, <strong><code>after_cancel_fit</code></strong>=<em><code>None</code></em>, <strong><code>after_fit</code></strong>=<em><code>None</code></em>) :: <a href="/callback.core.html#Callback"><code>Callback</code></a></p>
 </blockquote>
 <p>Callback that prints the name of each event called</p>
 
@@ -205,7 +186,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_env" class="doc_header"><code>get_env</code><a href="https://github.com/fastai/fastai/tree/master/fastai/test_utils.py#L50" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_env</code>(<strong><code>name</code></strong>)</p>
+<h4 id="get_env" class="doc_header"><code>get_env</code><a href="https://github.com/fastai/fastai/tree/master/fastai/test_utils.py#L55" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_env</code>(<strong><code>name</code></strong>)</p>
 </blockquote>
 <p>Return env var value if it's defined and not an empty string, or return Unknown</p>
 
@@ -237,7 +218,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="try_import" class="doc_header"><code>try_import</code><a href="https://github.com/fastai/fastai/tree/master/fastai/test_utils.py#L56" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>try_import</code>(<strong><code>module</code></strong>)</p>
+<h4 id="try_import" class="doc_header"><code>try_import</code><a href="https://github.com/fastai/fastai/tree/master/fastai/test_utils.py#L61" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>try_import</code>(<strong><code>module</code></strong>)</p>
 </blockquote>
 <p>Try to import <code>module</code>. Returns module's object on success, None on failure</p>
 
@@ -269,7 +250,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="nvidia_smi" class="doc_header"><code>nvidia_smi</code><a href="https://github.com/fastai/fastai/tree/master/fastai/test_utils.py#L62" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>nvidia_smi</code>(<strong><code>cmd</code></strong>=<em><code>'nvidia-smi'</code></em>)</p>
+<h4 id="nvidia_smi" class="doc_header"><code>nvidia_smi</code><a href="https://github.com/fastai/fastai/tree/master/fastai/test_utils.py#L67" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>nvidia_smi</code>(<strong><code>cmd</code></strong>=<em><code>'nvidia-smi'</code></em>)</p>
 </blockquote>
 
 </div>
@@ -317,7 +298,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="nvidia_mem" class="doc_header"><code>nvidia_mem</code><a href="https://github.com/fastai/fastai/tree/master/fastai/test_utils.py#L68" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>nvidia_mem</code>()</p>
+<h4 id="nvidia_mem" class="doc_header"><code>nvidia_mem</code><a href="https://github.com/fastai/fastai/tree/master/fastai/test_utils.py#L73" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>nvidia_mem</code>()</p>
 </blockquote>
 
 </div>
@@ -381,7 +362,7 @@ If you want to use the NVIDIA GeForce RTX 3070 Laptop GPU GPU with PyTorch, plea
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="show_install" class="doc_header"><code>show_install</code><a href="https://github.com/fastai/fastai/tree/master/fastai/test_utils.py#L74" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>show_install</code>(<strong><code>show_nvidia_smi</code></strong>:<code>bool</code>=<em><code>False</code></em>)</p>
+<h4 id="show_install" class="doc_header"><code>show_install</code><a href="https://github.com/fastai/fastai/tree/master/fastai/test_utils.py#L79" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>show_install</code>(<strong><code>show_nvidia_smi</code></strong>:<code>bool</code>=<em><code>False</code></em>)</p>
 </blockquote>
 <p>Print user's setup information</p>
 
