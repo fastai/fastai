@@ -4,7 +4,7 @@
 from __future__ import annotations
 
 
-__all__ = ['ParallelTrainer', 'setup_distrib', 'teardown_distrib', 'DistributedDL', 'DistributedTrainer', 'rank0_first']
+__all__ = ['ParallelTrainer', 'DistributedDL', 'DistributedTrainer', 'rank0_first']
 
 # Cell
 #nbdev_comment from __future__ import annotations
@@ -52,26 +52,6 @@ def parallel_ctx(self: Learner, device_ids=None):
         self.to_parallel(device_ids)
         yield self
     finally: self.detach_parallel()
-
-# Cell
-@patch
-def reset(self: DistributedDataParallel):
-    "Patch required `reset` call into `DistributedDataParallel`"
-    if hasattr(self.module, 'reset'): self.module.reset()
-
-# Cell
-def setup_distrib(gpu=None):
-    "Setup this process to participate in distributed training"
-    if gpu is None: return gpu
-    gpu = int(gpu)
-    torch.cuda.set_device(int(gpu))
-    if num_distrib() > 0: torch.distributed.init_process_group(backend='nccl', init_method='env://')
-    return gpu
-
-# Cell
-def teardown_distrib():
-    "Free distributed training resources"
-    if torch.distributed.is_initialized(): torch.distributed.destroy_process_group()
 
 # Cell
 def _round_to_multiple(number,multiple): return int(math.ceil(number/multiple)*multiple)
