@@ -115,8 +115,11 @@ class DistributedDL(TfmdDL):
 class DistributedTrainer(Callback):
     "Wrap `model` in `DistributedDataParallel` and `dls` in `DistributedDL`"
     fup,order = None,11
-    @delegates(Accelerator)
-    def __init__(self, sync_bn=True, **kwargs):
+    @delegates(Accelerator, but=["mixed_precision", "log_with", "logging_dir", "step_scheduler_with_optimizer"])
+    def __init__(self,
+        sync_bn=True, # Whether to replace all batch norm with `nn.SyncBatchNorm`
+        **kwargs
+    ):
         store_attr()
         self.accelerator = Accelerator(**kwargs)
     def before_fit(self):
@@ -146,8 +149,11 @@ class DistributedTrainer(Callback):
 
 # Cell
 @patch
-@delegates(Accelerator)
-def to_distributed(self: Learner, sync_bn=True, **kwargs):
+@delegates(Accelerator, but=["mixed_precision", "log_with", "logging_dir", "step_scheduler_with_optimizer"])
+def to_distributed(self: Learner,
+        sync_bn=True, # Whether to replace all batch norm with `nn.SyncBatchNorm`
+        **kwargs
+    ):
     "Add `DistributedTrainer` to a learner, and configures an Accelerator"
     self.add_cb(DistributedTrainer(sync_bn, **kwargs))
     if rank_distrib(): self.remove_cb(ProgressCallback)
@@ -165,8 +171,11 @@ def detach_distributed(self: Learner):
 # Cell
 @patch
 @contextmanager
-@delegates(Accelerator)
-def distrib_ctx(self: Learner, sync_bn=True, **kwargs):
+@delegates(Accelerator, but=["mixed_precision", "log_with", "logging_dir", "step_scheduler_with_optimizer"])
+def distrib_ctx(self: Learner,
+        sync_bn=True, # Whether to replace all batch norm with `nn.SyncBatchNorm`
+        **kwargs
+   ):
     "A context manager to adapt a learner to train in distributed data parallel mode."
     # Adapt self to DistributedDataParallel, yield, and cleanup afterwards.
     try:
