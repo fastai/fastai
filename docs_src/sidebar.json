@@ -47,6 +47,7 @@
         "Metrics": "/metrics.html",
         "Interpretation": "/interpret.html",
         "Distributed": "/distributed.html",
+        "Distributed with Accelerate": "/accelerate.html",
         "": {
             "Callbacks": {
                 "Core": "/callback.core.html",
