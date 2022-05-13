@@ -4,7 +4,7 @@
 from __future__ import annotations
 
 
-__all__ = ['ParallelTrainer', 'DistributedDL', 'DistributedTrainer', 'rank0_first']
+__all__ = ['ParallelTrainer', 'setup_distrib', 'teardown_distrib', 'DistributedDL', 'DistributedTrainer', 'rank0_first']
 
 # Cell
 #nbdev_comment from __future__ import annotations
@@ -12,8 +12,6 @@ from .basics import *
 from .callback.progress import ProgressCallback
 from torch.nn.parallel import DistributedDataParallel, DataParallel
 from .data.load import _FakeLoader,_loaders
-from .optimizer import OptimWrapper
-from accelerate import Accelerator
 
 # Cell
 @patch
@@ -52,6 +50,26 @@ def parallel_ctx(self: Learner, device_ids=None):
         self.to_parallel(device_ids)
         yield self
     finally: self.detach_parallel()
+
+# Cell
+@patch
+def reset(self: DistributedDataParallel):
+    "Patch required `reset` call into `DistributedDataParallel`"
+    if hasattr(self.module, 'reset'): self.module.reset()
+
+# Cell
+def setup_distrib(gpu=None):
+    "Setup this process to participate in distributed training"
+    if gpu is None: return gpu
+    gpu = int(gpu)
+    torch.cuda.set_device(int(gpu))
+    if num_distrib() > 0: torch.distributed.init_process_group(backend='nccl', init_method='env://')
+    return gpu
+
+# Cell
+def teardown_distrib():
+    "Free distributed training resources"
+    if torch.distributed.is_initialized(): torch.distributed.destroy_process_group()
 
 # Cell
 def _round_to_multiple(number,multiple): return int(math.ceil(number/multiple)*multiple)
@@ -114,45 +132,27 @@ class DistributedDL(TfmdDL):
 # Cell
 class DistributedTrainer(Callback):
     "Wrap `model` in `DistributedDataParallel` and `dls` in `DistributedDL`"
-    fup,order = None,11
-    @delegates(Accelerator, but=["mixed_precision", "log_with", "logging_dir", "step_scheduler_with_optimizer"])
-    def __init__(self,
-        sync_bn=True, # Whether to replace all batch norm with `nn.SyncBatchNorm`
-        **kwargs
-    ):
-        store_attr()
-        self.accelerator = Accelerator(**kwargs)
+    fup = None
+    def __init__(self, cuda_id=0,sync_bn=True): store_attr()
     def before_fit(self):
-        self.learn.accelerator = self.accelerator
         opt_kwargs = { 'find_unused_parameters' : DistributedTrainer.fup } if DistributedTrainer.fup is not None else {}
-        self.learn.model = self.accelerator.prepare(
-            nn.SyncBatchNorm.convert_sync_batchnorm(self.model) if self.sync_bn else self.model
-        )
-        self.old_dls, self.old_opt = list(self.dls), self.opt
+        self.learn.model = DistributedDataParallel(
+            nn.SyncBatchNorm.convert_sync_batchnorm(self.model) if self.sync_bn else self.model,
+            device_ids=[self.cuda_id], output_device=self.cuda_id, **opt_kwargs)
+        self.old_dls = list(self.dls)
         self.learn.dls.loaders = [self._wrap_dl(dl) for dl in self.dls]
         if rank_distrib(): self.learn.logger=noop
 
-    def _wrap_dl(self, dl):
-        if isinstance(dl,DistributedDL): return dl
-        else: return DistributedDL(dl)
-    
-    def before_backward(self):
-        self.accelerator.backward(self.learn.loss_grad)
-        raise CancelBackwardException()
-
+    def _wrap_dl(self, dl): return dl if isinstance(dl,DistributedDL) else DistributedDL(dl)
     def before_train(self):    self.learn.dl = self._wrap_dl(self.learn.dl)
     def before_validate(self): self.learn.dl = self._wrap_dl(self.learn.dl)
     def after_fit(self): self.learn.model,self.learn.dls.loaders = self.learn.model.module,self.old_dls
 
 # Cell
 @patch
-@delegates(Accelerator, but=["mixed_precision", "log_with", "logging_dir", "step_scheduler_with_optimizer"])
-def to_distributed(self: Learner,
-        sync_bn=True, # Whether to replace all batch norm with `nn.SyncBatchNorm`
-        **kwargs
-    ):
-    "Add `DistributedTrainer` to a learner, and configures an Accelerator"
-    self.add_cb(DistributedTrainer(sync_bn, **kwargs))
+def to_distributed(self: Learner, cuda_id, sync_bn=True):
+    "Add `DistributedTrainer` to a learner"
+    self.add_cb(DistributedTrainer(cuda_id,sync_bn))
     if rank_distrib(): self.remove_cb(ProgressCallback)
     return self
 
@@ -165,40 +165,24 @@ def detach_distributed(self: Learner):
     if rank_distrib() and not hasattr(self, 'progress'): self.add_cb(ProgressCallback())
     return self
 
-def setup_distrib(gpu=None):
-    "Setup this process to participate in distributed training"
-    if gpu is None: return gpu
-    gpu = int(gpu)
-    torch.cuda.set_device(int(gpu))
-    if num_distrib() > 0: torch.distributed.init_process_group(backend='nccl', init_method='env://')
-    return gpu
-
-def teardown_distrib():
-    "Free distributed training resources"
-    if torch.distributed.is_initialized(): torch.distributed.destroy_process_group()
-
 # Cell
 @patch
 @contextmanager
-@delegates(Accelerator, but=["mixed_precision", "log_with", "logging_dir", "step_scheduler_with_optimizer"])
-def distrib_ctx(self: Learner,
-        sync_bn=True, # Whether to replace all batch norm with `nn.SyncBatchNorm`
-        **kwargs
-   ):
+def distrib_ctx(self: Learner, cuda_id=None,sync_bn=True):
     "A context manager to adapt a learner to train in distributed data parallel mode."
     # Figure out the GPU to use from rank.  Create a dpg if none exists yet.
-    cuda_id = rank_distrib()
+    if cuda_id is None: cuda_id = rank_distrib()
     if not torch.distributed.is_initialized():
         setup_distrib(cuda_id)
         cleanup_dpg = torch.distributed.is_initialized()
     else: cleanup_dpg = False
     # Adapt self to DistributedDataParallel, yield, and cleanup afterwards.
     try:
-        if num_distrib(): self.to_distributed(sync_bn, **kwargs)
+        if num_distrib(): self.to_distributed(cuda_id,sync_bn)
         yield self
     finally:
         self.detach_distributed()
-        teardown_distrib()
+        if cleanup_dpg: teardown_distrib()
 
 # Cell
 def rank0_first(func, *args, **kwargs):
