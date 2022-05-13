@@ -2,7 +2,9 @@
 
 __all__ = ["index", "modules", "custom_doc_links", "git_url"]
 
-index = {"subplots": "00_torch_core.ipynb",
+index = {"defaults.benchmark": "00_torch_core.ipynb",
+         "setup_cuda": "00_torch_core.ipynb",
+         "subplots": "00_torch_core.ipynb",
          "show_image": "00_torch_core.ipynb",
          "show_titled_image": "00_torch_core.ipynb",
          "show_images": "00_torch_core.ipynb",
