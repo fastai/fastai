@@ -321,7 +321,8 @@ class Lookahead(Optimizer, GetAttr):
         store_attr('opt,k,alpha')
         self._init_state()
 
-    def step(self):
+    def step(self, closure=None):
+        if closure is not None: raise NotImplementedError("fastai optimizers currently do not support closure")
         if self.slow_weights is None: self._copy_weights()
         self.opt.step()
         self.count += 1
