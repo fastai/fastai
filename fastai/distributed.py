@@ -130,19 +130,16 @@ class DistributedTrainer(Callback):
         )
         self.old_dls, self.old_opt = list(self.dls), self.opt
         self.learn.dls.loaders = [self._wrap_dl(dl) for dl in self.dls]
-       # self._wrap_opt()
         if rank_distrib(): self.learn.logger=noop
-
-    #def _wrap_opt(self):
-       # opt = self.accelerator.prepare_optimizer(self.learn.opt)
-       # self.learn.opt = OptimWrapper(opt=opt)
 
     def _wrap_dl(self, dl):
         if isinstance(dl,DistributedDL): return dl
         else: return DistributedDL(dl)
-    #def before_backward(self):
-    #    self.accelerator.backward(self.learn.loss_grad)
-    #    raise CancelBackwardException()
+    
+    def before_backward(self):
+        self.accelerator.backward(self.learn.loss_grad)
+        raise CancelBackwardException()
+
     def before_train(self):    self.learn.dl = self._wrap_dl(self.learn.dl)
     def before_validate(self): self.learn.dl = self._wrap_dl(self.learn.dl)
     def after_fit(self): self.learn.model,self.learn.dls.loaders = self.learn.model.module,self.old_dls
