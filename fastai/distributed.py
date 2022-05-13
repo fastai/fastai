@@ -139,7 +139,7 @@ class DistributedTrainer(Callback):
 
     def _wrap_dl(self, dl):
         if isinstance(dl,DistributedDL): return dl
-        else: return DistributedDL(dl, rank=self.accelerator.process_index, world_size=self.accelerator.num_processes)
+        else: return DistributedDL(dl)
     def before_backward(self):
         self.accelerator.backward(self.learn.loss_grad)
         raise CancelBackwardException()
@@ -168,6 +168,18 @@ def detach_distributed(self: Learner):
     if rank_distrib() and not hasattr(self, 'progress'): self.add_cb(ProgressCallback())
     return self
 
+def setup_distrib(gpu=None):
+    "Setup this process to participate in distributed training"
+    if gpu is None: return gpu
+    gpu = int(gpu)
+    torch.cuda.set_device(int(gpu))
+    if num_distrib() > 0: torch.distributed.init_process_group(backend='nccl', init_method='env://')
+    return gpu
+
+def teardown_distrib():
+    "Free distributed training resources"
+    if torch.distributed.is_initialized(): torch.distributed.destroy_process_group()
+
 # Cell
 @patch
 @contextmanager
@@ -177,12 +189,19 @@ def distrib_ctx(self: Learner,
         **kwargs
    ):
     "A context manager to adapt a learner to train in distributed data parallel mode."
+    # Figure out the GPU to use from rank.  Create a dpg if none exists yet.
+    cuda_id = rank_distrib()
+    if not torch.distributed.is_initialized():
+        setup_distrib(cuda_id)
+        cleanup_dpg = torch.distributed.is_initialized()
+    else: cleanup_dpg = False
     # Adapt self to DistributedDataParallel, yield, and cleanup afterwards.
     try:
         if num_distrib(): self.to_distributed(sync_bn, **kwargs)
         yield self
     finally:
         self.detach_distributed()
+        teardown_distrib()
 
 # Cell
 def rank0_first(func, *args, **kwargs):

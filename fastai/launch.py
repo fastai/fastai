@@ -1,5 +1,6 @@
 import subprocess,torch,os,sys
 from fastcore.basics import *
+from fastai.torch_core import *
 from fastcore.script import *
 
 @call_parse
@@ -9,6 +10,7 @@ def main(
     args:Param("Args to pass to script", nargs='...', opt=False)=''
 ):
     "PyTorch distributed training launch helper that spawns multiple distributed processes"
+    setup_cuda()
     current_env = os.environ.copy()
     gpus = list(range(torch.cuda.device_count())) if gpus=='all' else gpus.split(',')
     current_env["WORLD_SIZE"] = str(len(gpus))
