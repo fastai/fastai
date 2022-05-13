@@ -3,6 +3,8 @@ from fastcore.basics import *
 from fastcore.script import *
 from fastai.torch_core import setup_cuda
 
+setup_cuda() # Needs to be ran on import, before launched
+
 @call_parse
 def main(
     gpus:Param("The GPUs to use for distributed training", str)='all',
@@ -10,7 +12,6 @@ def main(
     args:Param("Args to pass to script", nargs='...', opt=False)=''
 ):
     "PyTorch distributed training launch helper that spawns multiple distributed processes"
-    setup_cuda()
     current_env = os.environ.copy()
     gpus = list(range(torch.cuda.device_count())) if gpus=='all' else gpus.split(',')
     current_env["WORLD_SIZE"] = str(len(gpus))
