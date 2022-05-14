@@ -60,6 +60,7 @@ def parallel_ctx(self: Learner, device_ids=None):
 # Cell
 @call_parse
 def configure_accelerate():
+    "Configures accelerate to use one local machine and all GPUs available"
     if torch.cuda.is_available():
         num_gpus = torch.cuda.device_count()
     else:
