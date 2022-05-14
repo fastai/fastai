@@ -6,7 +6,7 @@ __all__ = ['AcceleratedTrainer']
 #nbdev_comment from __future__ import annotations
 from .basics import *
 from .callback.progress import ProgressCallback
-from .distributed import DistributedDL, rank0_first
+from .distributed import DistributedDL, rank0_first, setup_distrib, teardown_distrib
 from .optimizer import OptimWrapper
 from accelerate import Accelerator
 
@@ -61,7 +61,7 @@ def to_accelerate(self: Learner,
 def detach_accelerate(self: Learner):
     "Remove `DistributedTrainer` from a learner"
     if num_distrib() <=1: return self
-    self.remove_cb(DistributedTrainer)
+    self.remove_cb(AcceleratedTrainer)
     if rank_distrib() and not hasattr(self, 'progress'): self.add_cb(ProgressCallback())
     return self
 
@@ -71,12 +71,21 @@ def detach_accelerate(self: Learner):
 @delegates(Accelerator, but=_hidden_params)
 def accelerate_ctx(self: Learner,
         sync_bn=True, # Whether to replace all batch norm with `nn.SyncBatchNorm`
+        in_notebook=False, # Whether we are launching from a notebook or not
         **kwargs
    ):
     "A context manager to adapt a learner to train in distributed data parallel mode."
     # Adapt self to DistributedDataParallel, yield, and cleanup afterwards.
+    cleanup_dpg = False
     try:
-        if num_distrib(): self.to_distributed(sync_bn, **kwargs)
+        if in_notebook:
+            cuda_id = rank_distrib()
+            if not torch.distributed.is_initialized():
+                setup_distrib(cuda_id)
+                cleanup_dpg = torch.distributed.is_initialized()
+            if not rank_distrib(): print("Training Learner...")
+        if num_distrib(): self.to_accelerate(sync_bn, **kwargs)
         yield self
     finally:
-        self.detach_distributed()
+        self.detach_accelerate()
+        if cleanup_dpg: teardown_distrib()
