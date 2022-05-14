@@ -225,7 +225,7 @@ def distrib_ctx(self: Learner,
         if num_distrib(): self.to_distributed(sync_bn, **kwargs)
         yield self
     finally:
-        self.detach_accelerate()
+        self.detach_distributed()
         if cleanup_dpg: teardown_distrib()
 
 # Cell
