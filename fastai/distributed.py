@@ -222,7 +222,7 @@ def distrib_ctx(self: Learner,
                 setup_distrib(cuda_id)
                 cleanup_dpg = torch.distributed.is_initialized()
             if not rank_distrib(): print("Training Learner...")
-        if num_distrib(): self.to_accelerate(sync_bn, **kwargs)
+        if num_distrib(): self.to_distributed(sync_bn, **kwargs)
         yield self
     finally:
         self.detach_accelerate()
