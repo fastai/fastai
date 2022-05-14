@@ -14,10 +14,11 @@ from .callback.progress import ProgressCallback
 from torch.nn.parallel import DistributedDataParallel, DataParallel
 from .data.load import _FakeLoader,_loaders
 from .optimizer import OptimWrapper
-
-from accelerate import Accelerator
-from accelerate.commands.config.cluster import ClusterConfig
-from accelerate.commands.config.config_args import default_json_config_file
+try:
+    from accelerate import Accelerator
+    from accelerate.commands.config.cluster import ClusterConfig
+    from accelerate.commands.config.config_args import default_json_config_file
+except ModuleNotFoundError: pass
 
 # Cell
 @patch
@@ -61,6 +62,10 @@ def parallel_ctx(self: Learner, device_ids=None):
 @call_parse
 def configure_accelerate():
     "Configures accelerate to use one local machine and all GPUs available"
+    try: import accelerate
+    except ImportError as e:
+        e.args = ["Accelerate is required. Install with `pip install accelerate`"]
+        raise
     if torch.cuda.is_available():
         num_gpus = torch.cuda.device_count()
     else:
@@ -214,6 +219,10 @@ def distrib_ctx(self: Learner,
         **kwargs
    ):
     "A context manager to adapt a learner to train in distributed data parallel mode."
+    try: import accelerate
+    except ImportError as e:
+        e.args = ["Accelerate is required. Install with `pip install accelerate`"]
+        raise
     # Adapt self to DistributedDataParallel, yield, and cleanup afterwards.
     cleanup_dpg = False
     try:
