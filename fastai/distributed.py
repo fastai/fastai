@@ -190,7 +190,7 @@ def to_distributed(self: Learner,
         **kwargs
     ):
     "Add `AcceleratedTrainer` to a learner, and configures an Accelerator"
-    self.add_cb(AcceleratedTrainer(sync_bn, **kwargs))
+    self.add_cb(DistributedTrainer(sync_bn, **kwargs))
     if rank_distrib(): self.remove_cb(ProgressCallback)
     return self
 
@@ -199,7 +199,7 @@ def to_distributed(self: Learner,
 def detach_distributed(self: Learner):
     "Remove `DistributedTrainer` from a learner"
     if num_distrib() <=1: return self
-    self.remove_cb(AcceleratedTrainer)
+    self.remove_cb(DistributedTrainer)
     if rank_distrib() and not hasattr(self, 'progress'): self.add_cb(ProgressCallback())
     return self
 
