@@ -822,7 +822,8 @@ index = {"subplots": "00_torch_core.ipynb",
          "nvidia_mem": "97_test_utils.ipynb",
          "show_install": "97_test_utils.ipynb",
          "PYTORCH_URL": "99_pytorch_doc.ipynb",
-         "pytorch_doc_link": "99_pytorch_doc.ipynb"}
+         "pytorch_doc_link": "99_pytorch_doc.ipynb",
+         "SkipToEpoch": "13a_learner.ipynb"}
 
 modules = ["torch_core.py",
            "layers.py",
