@@ -4,7 +4,8 @@
 from __future__ import annotations
 
 
-__all__ = ['ParallelTrainer', 'setup_distrib', 'teardown_distrib', 'DistributedDL', 'DistributedTrainer', 'rank0_first']
+__all__ = ['ParallelTrainer', 'configure_accelerate', 'setup_distrib', 'teardown_distrib', 'DistributedDL',
+           'DistributedTrainer', 'rank0_first']
 
 # Cell
 #nbdev_comment from __future__ import annotations
@@ -12,6 +13,11 @@ from .basics import *
 from .callback.progress import ProgressCallback
 from torch.nn.parallel import DistributedDataParallel, DataParallel
 from .data.load import _FakeLoader,_loaders
+from .optimizer import OptimWrapper
+
+from accelerate import Accelerator
+from accelerate.commands.config.cluster import ClusterConfig
+from accelerate.commands.config.config_args import default_json_config_file
 
 # Cell
 @patch
@@ -50,6 +56,19 @@ def parallel_ctx(self: Learner, device_ids=None):
         self.to_parallel(device_ids)
         yield self
     finally: self.detach_parallel()
+
+# Cell
+@call_parse
+def configure_accelerate():
+    if torch.cuda.is_available():
+        num_gpus = torch.cuda.device_count()
+    else:
+        raise RuntimeError("No GPU's found. Please run `accelerate config` instead")
+    path = Path(default_json_config_file)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    config = ClusterConfig(**{"compute_environment":"LOCAL_MACHINE", "distributed_type":"MULTI_GPU", "mixed_precision":"no", "use_cpu":False, "num_processes":num_gpus})
+    config.to_json_file(path)
+    print(f"Accelerate configured to run with {num_gpus} gpus")
 
 # Cell
 @patch
@@ -130,29 +149,48 @@ class DistributedDL(TfmdDL):
         return apply(_inner,b) if gather and all(hasattr(self,o) for o in ('i','n','n_padded')) else b
 
 # Cell
+_hidden_params = ["mixed_precision", "fp16", "log_with", "logging_dir", "step_scheduler_with_optimizer"]
+
+# Cell
 class DistributedTrainer(Callback):
     "Wrap `model` in `DistributedDataParallel` and `dls` in `DistributedDL`"
-    fup = None
-    def __init__(self, cuda_id=0,sync_bn=True): store_attr()
+    order = 11
+    @delegates(Accelerator, but=_hidden_params)
+    def __init__(self,
+        sync_bn=True, # Whether to replace all batch norm with `nn.SyncBatchNorm`
+        **kwargs
+    ):
+        store_attr()
+        self.accelerator = Accelerator(**kwargs)
     def before_fit(self):
-        opt_kwargs = { 'find_unused_parameters' : DistributedTrainer.fup } if DistributedTrainer.fup is not None else {}
-        self.learn.model = DistributedDataParallel(
-            nn.SyncBatchNorm.convert_sync_batchnorm(self.model) if self.sync_bn else self.model,
-            device_ids=[self.cuda_id], output_device=self.cuda_id, **opt_kwargs)
-        self.old_dls = list(self.dls)
+        self.learn.model = self.accelerator.prepare(
+            nn.SyncBatchNorm.convert_sync_batchnorm(self.model) if self.sync_bn else self.model
+        )
+        self.old_dls, self.old_opt = list(self.dls), self.opt
         self.learn.dls.loaders = [self._wrap_dl(dl) for dl in self.dls]
         if rank_distrib(): self.learn.logger=noop
 
-    def _wrap_dl(self, dl): return dl if isinstance(dl,DistributedDL) else DistributedDL(dl)
+    def _wrap_dl(self, dl):
+        return dl if isinstance(dl,DistributedDL) else DistributedDL(dl)
+
+    def before_backward(self):
+        # Apply Accelerator backward which handles DeepSpeed, otherwise will call loss_grad.backward()
+        self.accelerator.backward(self.learn.loss_grad)
+        raise CancelBackwardException()
+
     def before_train(self):    self.learn.dl = self._wrap_dl(self.learn.dl)
     def before_validate(self): self.learn.dl = self._wrap_dl(self.learn.dl)
     def after_fit(self): self.learn.model,self.learn.dls.loaders = self.learn.model.module,self.old_dls
 
 # Cell
 @patch
-def to_distributed(self: Learner, cuda_id, sync_bn=True):
-    "Add `DistributedTrainer` to a learner"
-    self.add_cb(DistributedTrainer(cuda_id,sync_bn))
+@delegates(Accelerator, but=_hidden_params)
+def to_distributed(self: Learner,
+        sync_bn=True, # Whether to replace all batch norm with `nn.SyncBatchNorm`
+        **kwargs
+    ):
+    "Add `AcceleratedTrainer` to a learner, and configures an Accelerator"
+    self.add_cb(AcceleratedTrainer(sync_bn, **kwargs))
     if rank_distrib(): self.remove_cb(ProgressCallback)
     return self
 
@@ -161,27 +199,33 @@ def to_distributed(self: Learner, cuda_id, sync_bn=True):
 def detach_distributed(self: Learner):
     "Remove `DistributedTrainer` from a learner"
     if num_distrib() <=1: return self
-    self.remove_cb(DistributedTrainer)
+    self.remove_cb(AcceleratedTrainer)
     if rank_distrib() and not hasattr(self, 'progress'): self.add_cb(ProgressCallback())
     return self
 
 # Cell
 @patch
 @contextmanager
-def distrib_ctx(self: Learner, cuda_id=None,sync_bn=True):
+@delegates(Accelerator, but=_hidden_params)
+def distrib_ctx(self: Learner,
+        sync_bn=True, # Whether to replace all batch norm with `nn.SyncBatchNorm`
+        in_notebook=False, # Whether we are launching from a notebook or not
+        **kwargs
+   ):
     "A context manager to adapt a learner to train in distributed data parallel mode."
-    # Figure out the GPU to use from rank.  Create a dpg if none exists yet.
-    if cuda_id is None: cuda_id = rank_distrib()
-    if not torch.distributed.is_initialized():
-        setup_distrib(cuda_id)
-        cleanup_dpg = torch.distributed.is_initialized()
-    else: cleanup_dpg = False
     # Adapt self to DistributedDataParallel, yield, and cleanup afterwards.
+    cleanup_dpg = False
     try:
-        if num_distrib(): self.to_distributed(cuda_id,sync_bn)
+        if in_notebook:
+            cuda_id = rank_distrib()
+            if not torch.distributed.is_initialized():
+                setup_distrib(cuda_id)
+                cleanup_dpg = torch.distributed.is_initialized()
+            if not rank_distrib(): print("Training Learner...")
+        if num_distrib(): self.to_accelerate(sync_bn, **kwargs)
         yield self
     finally:
-        self.detach_distributed()
+        self.detach_accelerate()
         if cleanup_dpg: teardown_distrib()
 
 # Cell
