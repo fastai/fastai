@@ -31,7 +31,6 @@ jobs:
         
   filter:
     runs-on: ubuntu-latest
-    if: true # (github.event_name == 'push' && github.event.head_commit.author.username == 'jph00') || github.event_name != 'push'
     steps:
       - run: |
           echo "passed filter"
@@ -46,24 +45,30 @@ jobs:
     - name: checkout contents of PR
       uses: actions/checkout@v2
     - name: Install libraries
-      run: pip install -Uqe .
+      run: |
+        pip install -Uqq nbdev
+        pip install -Uqe .
     - name: check if notebooks are synced and cleaned
       uses: fastai/workflows/nb@master
 
   test-notebooks:
     needs: filter
-    container: fastai/fastai
     runs-on: ubuntu-latest
     env:
       download: "true"
       caching: "true"
     strategy:
       matrix:
+        py:  ["3.7", "3.8", "3.9"]
         nb_dec : ['[0-2]','[3-5]','[6-9]']
         nb_unit: ['[0-2]','[3-5]','[6-9]']
-    steps:        
+    steps: 
+    - name: Set up Python
+      uses: actions/setup-python@v3
+      with:
+        python-version: ${{ matrix.py }}
     - name: checkout contents of PR
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
     - name: Install libraries
       run: |
         pip install git+https://github.com/fastai/fastcore.git
@@ -71,7 +76,7 @@ jobs:
         pip install -Uqe .[dev]
     
     - name: check for cache hit
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       if: env.caching == 'true'
       id: cache
       with:
@@ -81,7 +86,8 @@ jobs:
     - name: download data
       if: env.download == 'true' && steps.cache.outputs.cache-hit != 'true'
       run: |
-        ipython /root/download_testdata.py
+        wget https://raw.githubusercontent.com/fastai/docker-containers/master/fastai/tmp_scripts/download_testdata.py
+        ipython download_testdata.py
         mkdir -p $HOME/.fastai/data
         find $HOME/.fastai/archive/ -name "*.tgz" -exec tar -xzvf {} -C $HOME/.fastai/data \;
     - name: Test notebooks batch ${{matrix.nb_dec}}${{matrix.nb_unit}}

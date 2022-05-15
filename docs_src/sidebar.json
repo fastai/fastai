@@ -119,7 +119,7 @@
         "Weights & Biases": "/callback.wandb.html",
         "Neptune": "/callback.neptune.html",
         "TensorBoard": "/callback.tensorboard.html",
-        "Azure ML": "/callback.azureml.html"
+        "Hugging Face Hub": "/huggingface.html"
     },
     "fastai Development": {
         "Developers Guide": "/dev-setup.html",

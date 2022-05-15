@@ -1,6 +1,9 @@
 import subprocess,torch,os,sys
 from fastcore.basics import *
 from fastcore.script import *
+from fastai.torch_core import setup_cuda
+
+setup_cuda() # Needs to be ran on import, before launched
 
 @call_parse
 def main(
