@@ -174,6 +174,9 @@ class Learner(GetAttr):
         self.n_iter = len(self.dl)
         for o in enumerate(self.dl): self.one_batch(*o)
 
+    def _backward(self): self.loss_grad.backward()
+    def _step(self): self.opt.step()
+
     def _do_one_batch(self):
         self.pred = self.model(*self.xb)
         self('after_pred')
@@ -182,8 +185,8 @@ class Learner(GetAttr):
             self.loss = self.loss_grad.clone()
         self('after_loss')
         if not self.training or not len(self.yb): return
-        self._with_events(self.loss_grad.backward, 'backward', CancelBackwardException)
-        self._with_events(self.opt.step, 'step', CancelStepException)
+        self._with_events(self._backward, 'backward', CancelBackwardException)
+        self._with_events(self._step, 'step', CancelStepException)
         self.opt.zero_grad()
 
     def _set_device(self, b):
