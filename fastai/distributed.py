@@ -172,17 +172,12 @@ class DistributedTrainer(Callback):
         self.learn.model = self.accelerator.prepare(
             nn.SyncBatchNorm.convert_sync_batchnorm(self.model) if self.sync_bn else self.model
         )
-        self.old_dls, self.old_opt = list(self.dls), self.opt
+        self.old_dls = list(self.dls)
         self.learn.dls.loaders = [self._wrap_dl(dl) for dl in self.dls]
         if rank_distrib(): self.learn.logger=noop
 
-    def _wrap_dl(self, dl):
-        return dl if isinstance(dl,DistributedDL) else DistributedDL(dl)
-
-    def before_backward(self):
-        # Apply Accelerator backward which handles DeepSpeed, otherwise will call loss_grad.backward()
-        self.accelerator.backward(self.learn.loss_grad)
-        raise CancelBackwardException()
+    def _wrap_dl(self, dl): return dl if isinstance(dl,DistributedDL) else DistributedDL(dl)
+    def _backward(self): self.accelerator.backward(self.learn.loss_grad)
 
     def before_train(self):    self.learn.dl = self._wrap_dl(self.learn.dl)
     def before_validate(self): self.learn.dl = self._wrap_dl(self.learn.dl)
