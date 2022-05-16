@@ -11,6 +11,7 @@ __all__ = ['SuggestionMethod', 'annealer', 'sched_lin', 'sched_cos', 'sched_no',
 # Cell
 #nbdev_comment from __future__ import annotations
 from ..basics import *
+from .tracker import SaveModelCallback
 
 # Cell
 #nbdev_comment _all_ = ['SuggestionMethod']
@@ -111,14 +112,14 @@ class ParamScheduler(Callback):
 # Cell
 @patch
 def fit_one_cycle(self:Learner, n_epoch, lr_max=None, div=25., div_final=1e5, pct_start=0.25, wd=None,
-                  moms=None, cbs=None, reset_opt=False):
+                  moms=None, cbs=None, reset_opt=False, start_epoch=0):
     "Fit `self.model` for `n_epoch` using the 1cycle policy."
     if self.opt is None: self.create_opt()
     self.opt.set_hyper('lr', self.lr if lr_max is None else lr_max)
     lr_max = np.array([h['lr'] for h in self.opt.hypers])
     scheds = {'lr': combined_cos(pct_start, lr_max/div, lr_max, lr_max/div_final),
               'mom': combined_cos(pct_start, *(self.moms if moms is None else moms))}
-    self.fit(n_epoch, cbs=ParamScheduler(scheds)+L(cbs), reset_opt=reset_opt, wd=wd)
+    self.fit(n_epoch, cbs=ParamScheduler(scheds)+L(cbs), reset_opt=reset_opt, wd=wd, start_epoch=start_epoch)
 
 # Cell
 @patch
@@ -135,17 +136,18 @@ def plot_sched(self:Recorder, keys=None, figsize=None):
 # Cell
 @patch
 def fit_flat_cos(self:Learner, n_epoch, lr=None, div_final=1e5, pct_start=0.75, wd=None,
-                 cbs=None, reset_opt=False):
+                 cbs=None, reset_opt=False, start_epoch=0):
     "Fit `self.model` for `n_epoch` at flat `lr` before a cosine annealing."
     if self.opt is None: self.create_opt()
     self.opt.set_hyper('lr', self.lr if lr is None else lr)
     lr = np.array([h['lr'] for h in self.opt.hypers])
     scheds = {'lr': combined_cos(pct_start, lr, lr, lr/div_final)}
-    self.fit(n_epoch, cbs=ParamScheduler(scheds)+L(cbs), reset_opt=reset_opt, wd=wd)
+    self.fit(n_epoch, cbs=ParamScheduler(scheds)+L(cbs), reset_opt=reset_opt, wd=wd, start_epoch=0)
 
 # Cell
 @patch
-def fit_sgdr(self:Learner, n_cycles, cycle_len, lr_max=None, cycle_mult=2, cbs=None, reset_opt=False, wd=None):
+def fit_sgdr(self:Learner, n_cycles, cycle_len, lr_max=None, cycle_mult=2, cbs=None, reset_opt=False, wd=None,
+             start_epoch=0):
     "Fit `self.model` for `n_cycles` of `cycle_len` using SGDR."
     if self.opt is None: self.create_opt()
     self.opt.set_hyper('lr', self.lr if lr_max is None else lr_max)
@@ -154,7 +156,7 @@ def fit_sgdr(self:Learner, n_cycles, cycle_len, lr_max=None, cycle_mult=2, cbs=N
     pcts = [cycle_len * cycle_mult**i / n_epoch for i in range(n_cycles)]
     scheds = [SchedCos(lr_max, 0) for _ in range(n_cycles)]
     scheds = {'lr': combine_scheds(pcts, scheds)}
-    self.fit(n_epoch, cbs=ParamScheduler(scheds)+L(cbs), reset_opt=reset_opt, wd=wd)
+    self.fit(n_epoch, cbs=ParamScheduler(scheds)+L(cbs), reset_opt=reset_opt, wd=wd, start_epoch=start_epoch)
 
 # Cell
 @patch

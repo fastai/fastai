@@ -6,8 +6,8 @@ from __future__ import annotations
 
 __all__ = ['CancelBackwardException', 'CancelStepException', 'CancelFitException', 'CancelEpochException',
            'CancelTrainException', 'CancelValidException', 'CancelBatchException', 'replacing_yield', 'mk_metric',
-           'save_model', 'load_model', 'Learner', 'before_batch_cb', 'load_learner', 'Metric', 'AvgMetric', 'AvgLoss',
-           'AvgSmoothLoss', 'ValueMetric', 'Recorder']
+           'save_model', 'load_model', 'SkipToEpoch', 'Learner', 'before_batch_cb', 'load_learner', 'Metric',
+           'AvgMetric', 'AvgLoss', 'AvgSmoothLoss', 'ValueMetric', 'Recorder']
 
 # Cell
 #nbdev_comment from __future__ import annotations
@@ -74,6 +74,18 @@ class _ConstantFunc():
     "Returns a function that returns `o`"
     def __init__(self, o): self.o = o
     def __call__(self, *args, **kwargs): return self.o
+
+# Cell
+class SkipToEpoch(Callback):
+    "Skip training up to `epoch`"
+    order = 70
+
+    def __init__(self, epoch:int):
+        self._skip_to = epoch
+
+    def before_epoch(self):
+        if self.epoch < self._skip_to:
+            raise CancelEpochException
 
 # Cell
 _loop = ['Start Fit', 'before_fit', 'Start Epoch Loop', 'before_epoch', 'Start Train', 'before_train',
@@ -219,7 +231,9 @@ class Learner(GetAttr):
             self.epoch=epoch
             self._with_events(self._do_epoch, 'epoch', CancelEpochException)
 
-    def fit(self, n_epoch, lr=None, wd=None, cbs=None, reset_opt=False):
+    def fit(self, n_epoch, lr=None, wd=None, cbs=None, reset_opt=False, start_epoch=0):
+        if start_epoch != 0:
+            cbs = L(cbs) + SkipToEpoch(start_epoch)
         with self.added_cbs(cbs):
             if reset_opt or not self.opt: self.create_opt()
             if wd is None: wd = self.wd
