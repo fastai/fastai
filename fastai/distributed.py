@@ -4,8 +4,7 @@
 from __future__ import annotations
 
 
-__all__ = ['ParallelTrainer', 'configure_accelerate', 'setup_distrib', 'teardown_distrib', 'DistributedDL',
-           'DistributedTrainer', 'rank0_first']
+__all__ = ['ParallelTrainer', 'setup_distrib', 'teardown_distrib', 'DistributedDL', 'DistributedTrainer', 'rank0_first']
 
 # Cell
 #nbdev_comment from __future__ import annotations
@@ -14,10 +13,7 @@ from .callback.progress import ProgressCallback
 from torch.nn.parallel import DistributedDataParallel, DataParallel
 from .data.load import _FakeLoader,_loaders
 from .optimizer import OptimWrapper
-try:
-    from accelerate import Accelerator
-    from accelerate.commands.config.cluster import ClusterConfig
-    from accelerate.commands.config.config_args import default_json_config_file
+try: from accelerate import Accelerator
 except ModuleNotFoundError: pass
 
 # Cell
@@ -57,24 +53,6 @@ def parallel_ctx(self: Learner, device_ids=None):
         self.to_parallel(device_ids)
         yield self
     finally: self.detach_parallel()
-
-# Cell
-@call_parse
-def configure_accelerate():
-    "Configures accelerate to use one local machine and all GPUs available"
-    try: import accelerate
-    except ImportError as e:
-        e.args = ["Accelerate is required. Install with `pip install accelerate`"]
-        raise
-    if torch.cuda.is_available():
-        num_gpus = torch.cuda.device_count()
-    else:
-        raise RuntimeError("No GPU's found. Please run `accelerate config` instead")
-    path = Path(default_json_config_file)
-    path.parent.mkdir(parents=True, exist_ok=True)
-    config = ClusterConfig(**{"compute_environment":"LOCAL_MACHINE", "distributed_type":"MULTI_GPU", "mixed_precision":"no", "use_cpu":False, "num_processes":num_gpus})
-    config.to_json_file(path)
-    print(f"Accelerate configured to run with {num_gpus} gpus")
 
 # Cell
 @patch
