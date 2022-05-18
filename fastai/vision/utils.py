@@ -8,6 +8,7 @@ __all__ = ['download_images', 'resize_to', 'verify_image', 'verify_images', 'res
 
 # Cell
 #nbdev_comment from __future__ import annotations
+import uuid
 from ..torch_basics import *
 from ..data.all import *
 from .core import *
@@ -31,7 +32,7 @@ def _download_image_inner(dest, inp, timeout=4, preserve_filename=False):
     url = url.split("?")[0]
     url_path = Path(url)
     suffix = url_path.suffix if url_path.suffix else '.jpg'
-    name = _get_downloaded_image_filename(dest, url_path.stem, suffix) if preserve_filename else f"{i:08d}"
+    name = _get_downloaded_image_filename(dest, url_path.stem, suffix) if preserve_filename else str(uuid.uuid4())
     try: download_url(url, dest/f"{name}{suffix}", show_progress=False, timeout=timeout)
     except Exception as e: f"Couldn't download {url}."
 

@@ -23,16 +23,16 @@ def get_dls(size, woof, pct_noise, bs, sh=0., workers=None):
     tfms = [RandomResizedCrop(size, min_scale=0.35), FlipItem(0.5)]
     batch_tfms = [Normalize.from_stats(*imagenet_stats)]
     if sh: batch_tfms.append(RandomErasing(p=0.3, max_count=3, sh=sh))
-    
+
     csv_file = 'noisy_imagewoof.csv' if woof else 'noisy_imagenette.csv'
     inp = pd.read_csv(source/csv_file)
     dblock = DataBlock(blocks=blocks,
                splitter=ColSplitter(),
-               get_x=ColReader('path', pref=source), 
+               get_x=ColReader('path', pref=source),
                get_y=ColReader(f'noisy_labels_{pct_noise}'),
                item_tfms=tfms,
                batch_tfms=batch_tfms)
-    
+
     return dblock.dataloaders(inp, path=source, bs=bs, num_workers=workers)
 
 @call_parse
@@ -62,7 +62,9 @@ def main(
     meta:  Param("Metadata (ignored)", str)='',
     workers:   Param("Number of workers", int)=None,
 ):
-    "Training of Imagenette. Call with `python -m fastai.launch` for distributed training"
+    """Training of Imagenette. Call with `python -m fastai.launch` for distributed training.
+        Note for testing -- the following should result in accuracy top-5 of 75%+:
+        `python train_imagenette.py --fp16 --epochs 3 --size 192`"""
     if   opt=='adam'  : opt_func = partial(Adam, mom=mom, sqr_mom=sqrmom, eps=eps)
     elif opt=='rms'   : opt_func = partial(RMSprop, sqr_mom=sqrmom)
     elif opt=='sgd'   : opt_func = partial(SGD, mom=mom)
