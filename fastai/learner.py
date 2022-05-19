@@ -411,7 +411,7 @@ def load_learner(fname, cpu=True, pickle_module=pickle):
     "Load a `Learner` object in `fname`, optionally putting it on the `cpu`"
     distrib_barrier()
     map_loc = 'cpu' if cpu else default_device()
-    try: res = torch.load(fname, map_location=map_loc if cpu else None, pickle_module=pickle_module)
+    try: res = torch.load(fname, map_location=map_loc, pickle_module=pickle_module)
     except AttributeError as e:
         e.args = [f"Custom classes or functions exported with your `Learner` are not available in the namespace currently.\nPlease re-declare or import them before calling `load_learner`:\n\t{e.args[0]}"]
         raise
