@@ -353,13 +353,14 @@ class TensorBase(Tensor):
     @classmethod
     def register_func(cls, func, *oks): cls._opt[func].append(oks)
 
-    def __torch_function__(self, func, types, args=(), kwargs=None):
-        if self.debug and func.__name__ not in ('__str__','__repr__'): print(func, types, args, kwargs)
-        convert=False
-        if _torch_handled(args, self._opt, func): convert,types = type(self),(torch.Tensor,)
-        res = super().__torch_function__(func, types, args=args, kwargs=kwargs)
-        if convert: res = convert(res)
-        if isinstance(res, TensorBase): res.set_meta(self, as_copy=True)
+    @classmethod
+    def __torch_function__(cls, func, types, args=(), kwargs=None):
+        if cls.debug and func.__name__ not in ('__str__','__repr__'): print(func, types, args, kwargs)
+        if is_listy(args[0]) and args[0]: dict_objs = [a for a in args[0] if hasattr(a,'__dict__')]
+        else:                             dict_objs = [a for a in args if hasattr(a,'__dict__')]
+        if _torch_handled(args, cls._opt, func): types = (torch.Tensor,)
+        res = super().__torch_function__(func, types, args, ifnone(kwargs, {}))
+        if issubclass(type(res),TensorBase) and dict_objs: res.set_meta(dict_objs[0],as_copy=True)
         return res
 
     def new_tensor(self, size, dtype=None, device=None, requires_grad=False):

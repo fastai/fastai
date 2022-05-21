@@ -28,9 +28,9 @@ class _FakeLoader:
     _index_sampler,generator,prefetch_factor  = Inf.count,None,2
     dataset_kind = _dataset_kind = _DatasetKind.Iterable
 
-    def __init__(self, d, pin_memory, num_workers, timeout, persistent_workers):
-        self.dataset,self.default,self.worker_init_fn = self,d,_wif
-        store_attr('d,pin_memory,num_workers,timeout,persistent_workers')
+    def __init__(self, d, pin_memory, num_workers, timeout, persistent_workers,pin_memory_device):
+        self.dataset,self.default,self.worker_init_fn,self.pin_memory_device = self,d,_wif,pin_memory_device
+        store_attr('d,pin_memory,num_workers,timeout,persistent_workers,pin_memory_device')
 
     def __iter__(self): return iter(self.d.create_batches(self.d.sample()))
 
@@ -92,7 +92,8 @@ class DataLoader(GetAttr):
         get_idxs sample shuffle_fn do_batch create_batch'.split()
     _default = 'dataset'
     def __init__(self, dataset=None, bs=None, num_workers=0, pin_memory=False, timeout=0, batch_size=None,
-                 shuffle=False, drop_last=False, indexed=None, n=None, device=None, persistent_workers=False, **kwargs):
+                 shuffle=False, drop_last=False, indexed=None, n=None, device=None, persistent_workers=False,
+                 pin_memory_device='', **kwargs):
         if batch_size is not None: bs = batch_size # PyTorch compatibility
         assert not (bs is None and drop_last)
         if indexed is None: indexed = (hasattr(dataset,'__getitem__')
@@ -107,7 +108,8 @@ class DataLoader(GetAttr):
             print("Due to IPython and Windows limitation, python multiprocessing isn't available now.")
             print("So `number_workers` is changed to 0 to avoid getting stuck")
             num_workers = 0
-        self.fake_l = _FakeLoader(self, pin_memory, num_workers, timeout, persistent_workers=persistent_workers)
+        self.fake_l = _FakeLoader(self, pin_memory, num_workers, timeout, persistent_workers=persistent_workers,
+                                  pin_memory_device=pin_memory_device)
 
     def __len__(self):
         if self.n is None: raise TypeError
