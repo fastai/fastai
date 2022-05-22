@@ -13,6 +13,7 @@ services:
     volumes:
       - .:/data/
     environment:
+#      - LIB_INSTALL_TYPE=.[dev] && pip install --pre torch --extra-index-url https://download.pytorch.org/whl/nightly/cpu --upgrade #optionally change this locally to .[dev] and install nighty torch
       - LIB_INSTALL_TYPE=. #optionally change this locally to .[dev] to install dev packages as well
 
   notebook:
