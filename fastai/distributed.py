@@ -12,6 +12,9 @@ from .basics import *
 from .callback.progress import ProgressCallback
 from torch.nn.parallel import DistributedDataParallel, DataParallel
 from .data.load import _FakeLoader,_loaders
+from .optimizer import OptimWrapper
+try: from accelerate import Accelerator
+except ModuleNotFoundError: pass
 
 # Cell
 @patch
@@ -132,29 +135,43 @@ class DistributedDL(TfmdDL):
         return apply(_inner,b) if gather and all(hasattr(self,o) for o in ('i','n','n_padded')) else b
 
 # Cell
+_hidden_params = ["mixed_precision", "fp16", "log_with", "logging_dir", "step_scheduler_with_optimizer"]
+
+# Cell
 class DistributedTrainer(Callback):
     "Wrap `model` in `DistributedDataParallel` and `dls` in `DistributedDL`"
-    fup = None
-    def __init__(self, cuda_id=0,sync_bn=True): store_attr()
+    order = 11
+    @delegates(Accelerator, but=_hidden_params)
+    def __init__(self,
+        sync_bn=True, # Whether to replace all batch norm with `nn.SyncBatchNorm`
+        **kwargs
+    ):
+        store_attr()
+        self.accelerator = Accelerator(**kwargs)
     def before_fit(self):
-        opt_kwargs = { 'find_unused_parameters' : DistributedTrainer.fup } if DistributedTrainer.fup is not None else {}
-        self.learn.model = DistributedDataParallel(
-            nn.SyncBatchNorm.convert_sync_batchnorm(self.model) if self.sync_bn else self.model,
-            device_ids=[self.cuda_id], output_device=self.cuda_id, **opt_kwargs)
+        self.learn.model = self.accelerator.prepare(
+            nn.SyncBatchNorm.convert_sync_batchnorm(self.model) if self.sync_bn else self.model
+        )
         self.old_dls = list(self.dls)
         self.learn.dls.loaders = [self._wrap_dl(dl) for dl in self.dls]
         if rank_distrib(): self.learn.logger=noop
 
     def _wrap_dl(self, dl): return dl if isinstance(dl,DistributedDL) else DistributedDL(dl)
+    def _backward(self): self.accelerator.backward(self.learn.loss_grad)
+
     def before_train(self):    self.learn.dl = self._wrap_dl(self.learn.dl)
     def before_validate(self): self.learn.dl = self._wrap_dl(self.learn.dl)
     def after_fit(self): self.learn.model,self.learn.dls.loaders = self.learn.model.module,self.old_dls
 
 # Cell
 @patch
-def to_distributed(self: Learner, cuda_id, sync_bn=True):
-    "Add `DistributedTrainer` to a learner"
-    self.add_cb(DistributedTrainer(cuda_id,sync_bn))
+@delegates(Accelerator, but=_hidden_params)
+def to_distributed(self: Learner,
+        sync_bn=True, # Whether to replace all batch norm with `nn.SyncBatchNorm`
+        **kwargs
+    ):
+    "Add `AcceleratedTrainer` to a learner, and configures an Accelerator"
+    self.add_cb(DistributedTrainer(sync_bn, **kwargs))
     if rank_distrib(): self.remove_cb(ProgressCallback)
     return self
 
@@ -170,17 +187,27 @@ def detach_distributed(self: Learner):
 # Cell
 @patch
 @contextmanager
-def distrib_ctx(self: Learner, cuda_id=None,sync_bn=True):
+@delegates(Accelerator, but=_hidden_params)
+def distrib_ctx(self: Learner,
+        sync_bn=True, # Whether to replace all batch norm with `nn.SyncBatchNorm`
+        in_notebook=False, # Whether we are launching from a notebook or not
+        **kwargs
+   ):
     "A context manager to adapt a learner to train in distributed data parallel mode."
-    # Figure out the GPU to use from rank.  Create a dpg if none exists yet.
-    if cuda_id is None: cuda_id = rank_distrib()
-    if not torch.distributed.is_initialized():
-        setup_distrib(cuda_id)
-        cleanup_dpg = torch.distributed.is_initialized()
-    else: cleanup_dpg = False
+    try: import accelerate
+    except ImportError as e:
+        e.args = ["Accelerate is required. Install with `pip install accelerate`"]
+        raise
     # Adapt self to DistributedDataParallel, yield, and cleanup afterwards.
+    cleanup_dpg = False
     try:
-        if num_distrib(): self.to_distributed(cuda_id,sync_bn)
+        if in_notebook:
+            cuda_id = rank_distrib()
+            if not torch.distributed.is_initialized():
+                setup_distrib(cuda_id)
+                cleanup_dpg = torch.distributed.is_initialized()
+            if not rank_distrib(): print("Training Learner...")
+        if num_distrib(): self.to_distributed(sync_bn, **kwargs)
         yield self
     finally:
         self.detach_distributed()

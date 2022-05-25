@@ -16,6 +16,7 @@
         "empty1": {
             "Intermediate": {
                 "DataBlock Tutorial": "/tutorial.datablock.html",
+                "Distributed Training from a Notebook Tutorial":"/tutorial.distributed",
                 "Imagenette Tutorial": "/tutorial.imagenette.html",
                 "Medical Imaging Tutorial": "/tutorial.medical_imaging.html",
                 "Pets Tutorial": "/tutorial.pets.html",
