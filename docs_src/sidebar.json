@@ -119,6 +119,7 @@
         "Captum": "/callback.captum.html",
         "Weights & Biases": "/callback.wandb.html",
         "Neptune": "/callback.neptune.html",
+        "Comet": "/callback.comet.html",
         "TensorBoard": "/callback.tensorboard.html",
         "Hugging Face Hub": "/huggingface.html"
     },

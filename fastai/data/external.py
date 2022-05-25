@@ -131,8 +131,9 @@ def untar_data(
     archive:Path=None, # Optional override for `Config`'s `archive` key
     data:Path=None, # Optional override for `Config`'s `data` key
     c_key:str='data', # Key in `Config` where to extract file
-    force_download:bool=False # Setting to `True` will overwrite any existing copy of data
+    force_download:bool=False, # Setting to `True` will overwrite any existing copy of data
+    base:str='~/.fastai' # Directory containing config file and base of relative paths
 ) -> Path: # Path to extracted file(s)
-    "Download `url` to `fname` if `dest` doesn't exist, and extract to folder `dest`"
-    d = FastDownload(fastai_cfg(), module=fastai.data, archive=archive, data=data, base='~/.fastai')
+    "Download `url` using `FastDownload.get`"
+    d = FastDownload(fastai_cfg(), module=fastai.data, archive=archive, data=data, base=base)
     return d.get(url, force=force_download, extract_key=c_key)

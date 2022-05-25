@@ -12,6 +12,7 @@ __all__ = ['Optimizer', 'sgd_step', 'weight_decay', 'l2_reg', 'average_grad', 'a
 # Cell
 #nbdev_comment from __future__ import annotations
 from .torch_basics import *
+from packaging import version
 
 # Cell
 class _BaseOptimizer():
@@ -378,7 +379,11 @@ def set_item_pg(pg, k, v):
     return pg
 
 # Cell
-pytorch_hp_map = {'momentum': 'mom', 'weight_decay': 'wd', 'alpha': 'sqr_mom', 'betas__0': 'mom', 'betas__1': 'sqr_mom'}
+pytorch_hp_map = {'momentum': 'mom', 'weight_decay': 'wd', 'alpha': 'sqr_mom', 'betas__0': 'mom',
+                  'betas__1': 'sqr_mom'}
+if version.parse(torch.version.__version__)>version.parse('1.12.0'):
+    # Torch>=1.12 has a foreach param
+    pytorch_hp_map = merge(*(pytorch_hp_map,{'foreach': 'foreach'}))
 
 # Cell
 def _convert_params(o:list) -> list:
