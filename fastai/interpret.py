@@ -78,7 +78,7 @@ class Interpretation():
             losses, idx = self.top_losses(k, largest)
         inps, preds, targs, decoded, _ = self[idx]
         inps, targs, decoded = tuplify(inps), tuplify(targs), tuplify(decoded)
-        x, y, its = self.dl._pre_show_batch(inps+targs)
+        x, y, its = self.dl._pre_show_batch(inps+targs, max_n=len(idx))
         x1, y1, outs = self.dl._pre_show_batch(inps+decoded, max_n=len(idx))
         if its is not None:
             plot_top_losses(x, y, its, outs.itemgot(slice(len(inps), None)), preds, losses, **kwargs)
