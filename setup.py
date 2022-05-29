@@ -38,7 +38,7 @@ for ext in ['png', 'svg']:
     long_description = re.sub(r'src=\"(.*)\.'+ext+'\"', 'src=\"https://raw.githubusercontent.com/{}/{}'.format(cfg['user'],cfg['lib_name'])+'/'+cfg['branch']+'/\\1.'+ext+'\"', long_description)
 
 setuptools.setup(
-    name = cfg['lib_name'],
+    name = 'fastai',
     license = lic[0],
     classifiers = [
         'Development Status :: ' + statuses[int(cfg['status'])],
