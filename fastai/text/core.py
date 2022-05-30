@@ -272,6 +272,8 @@ class Tokenizer(Transform):
         res = cls(tok, rules=rules, mode='df')
         res.kwargs,res.train_setup = merge({'tok': tok}, kwargs),False
         res.text_cols,res.sep = text_cols,sep
+        default_val = inspect.signature(tokenize_df).parameters['tok_text_col'].default
+        res.tok_text_col = kwargs.get('tok_text_col', default_val)
         return res
 
     @classmethod
@@ -289,6 +291,7 @@ class Tokenizer(Transform):
         if not self.mode == 'df' or not isinstance(dsets.items, pd.DataFrame): return
         dsets.items,count = tokenize_df(dsets.items, self.text_cols, rules=self.rules, **self.kwargs)
         if self.counter is None: self.counter = count
+        if self.lengths is None: self.lengths = dsets.items[f'{self.tok_text_col}_length'].values
         return dsets
 
     def encodes(self, o:Path):
@@ -303,7 +306,8 @@ class Tokenizer(Transform):
     def get_lengths(self, items):
         if self.lengths is None: return None
         if self.mode == 'df':
-            if isinstance(items, pd.DataFrame) and 'text_lengths' in items.columns: return items['text_length'].values
+            if isinstance(items, pd.DataFrame) and f'{self.tok_text_col}_length' in items.columns:
+                return items[f'{self.tok_text_col}_length'].values
         if self.mode == 'folder':
             try:
                 res = [self.lengths[str(Path(i).relative_to(self.path))] for i in items]
