@@ -94,7 +94,7 @@ class WandbCallback(Callback):
                 self.log_preds = False
                 print(f'WandbCallback was not able to prepare a DataLoader for logging prediction samples -> {e}')
         self.ti = time.perf_counter()
-        x
+
     def after_batch(self):
         "Log hyper-parameters and training loss"
         if self.training:
