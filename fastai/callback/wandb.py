@@ -24,14 +24,25 @@ class WandbCallback(Callback):
     # Record if watch has been called previously (even in another instance)
     _wandb_watch_called = False
 
-    def __init__(self, log="gradients", log_preds=True, log_model=True, log_dataset=False, dataset_name=None, valid_dl=None, n_preds=36, seed=12345, reorder=True):
+    def __init__(self, log="gradients", log_preds=True, log_model=False, model_name=None, log_dataset=False, dataset_name=None, valid_dl=None, n_preds=36, seed=12345, reorder=True):
         # Check if wandb.init has been called
         if wandb.run is None:
             raise ValueError('You must call wandb.init() before WandbCallback()')
         # W&B log step
         self._wandb_step = wandb.run.step - 1  # -1 except if the run has previously logged data (incremented at each batch)
         self._wandb_epoch = 0 if not(wandb.run.step) else math.ceil(wandb.run.summary['epoch']) # continue to next epoch
-        store_attr('log,log_preds,log_model,log_dataset,dataset_name,valid_dl,n_preds,seed,reorder')
+        store_attr()
+
+    def after_create(self):
+        # log model
+        if self.log_model:
+            if not hasattr(self, 'save_model'):
+                # does not have the SaveModelCallback
+                self.learn.add_cb(SaveModelCallback(fname=ifnone(self.model_name, 'model')))
+            else:
+                # override SaveModelCallback
+                if self.model_name is not None:
+                    self.save_model.fname = self.model_name
 
     def before_fit(self):
         "Call watch method to log model topology, gradients & weights"
@@ -65,11 +76,6 @@ class WandbCallback(Callback):
             metadata = {'path relative to learner': os.path.relpath(self.log_dataset, self.learn.path)}
             log_dataset(path=self.log_dataset, name=self.dataset_name, metadata=metadata)
 
-        # log model
-        if self.log_model and not hasattr(self, 'save_model'):
-            print('WandbCallback requires use of "SaveModelCallback" to log best model')
-            self.log_model = False
-
         if self.log_preds:
             try:
                 if not self.valid_dl:
@@ -87,7 +93,8 @@ class WandbCallback(Callback):
             except Exception as e:
                 self.log_preds = False
                 print(f'WandbCallback was not able to prepare a DataLoader for logging prediction samples -> {e}')
-
+        self.ti = time.perf_counter()
+        x
     def after_batch(self):
         "Log hyper-parameters and training loss"
         if self.training:
@@ -100,7 +107,7 @@ class WandbCallback(Callback):
         inp,preds,targs,out = preds
         b = tuplify(inp) + tuplify(targs)
         x,y,its,outs = self.valid_dl.show_results(b, out, show=False, max_n=self.n_preds)
-        wandb.log(wandb_process(x, y, its, outs), step=self._wandb_step)
+        wandb.log(wandb_process(x, y, its, outs, preds), step=self._wandb_step)
 
     def after_epoch(self):
         "Log validation loss and custom metrics & log prediction samples"
@@ -118,16 +125,19 @@ class WandbCallback(Callback):
         wandb.log({n:s for n,s in zip(self.recorder.metric_names, self.recorder.log) if n not in ['train_loss', 'epoch', 'time']}, step=self._wandb_step)
 
     def after_fit(self):
+        wandb.log({"fit_time":time.perf_counter() - self.ti})
         if self.log_model:
             if self.save_model.last_saved_path is None:
                 print('WandbCallback could not retrieve a model to upload')
             else:
                 metadata = {n:s for n,s in zip(self.recorder.metric_names, self.recorder.log) if n not in ['train_loss', 'epoch', 'time']}
-                log_model(self.save_model.last_saved_path, metadata=metadata)
+                log_model(self.save_model.last_saved_path, name=self.save_model.fname, metadata=metadata)
         self.run = True
         if self.log_preds: self.remove_cb(FetchPredsCallback)
+
         wandb.log({})  # ensure sync of last step
         self._wandb_step += 1
+
 
 # Cell
 @patch
@@ -229,54 +239,66 @@ def log_model(path, name=None, metadata={}, description='trained model'):
 
 # Cell
 @typedispatch
-def wandb_process(x:TensorImage, y, samples, outs):
+def wandb_process(x:TensorImage, y, samples, outs, preds):
     "Process `sample` and `out` depending on the type of `x/y`"
     res_input, res_pred, res_label = [],[],[]
     for s,o in zip(samples, outs):
         img = s[0].permute(1,2,0)
-        res_input.append(wandb.Image(img, caption='Input data'))
-        for t, capt, res in ((o[0], "Prediction", res_pred), (s[1], "Ground Truth", res_label)):
+        res_input.append(wandb.Image(img, caption='Input_data'))
+        for t, capt, res in ((o[0], "Prediction", res_pred), (s[1], "Ground_Truth", res_label)):
             fig, ax = _make_plt(img)
             # Superimpose label or prediction to input image
             ax = img.show(ctx=ax)
             ax = t.show(ctx=ax)
             res.append(wandb.Image(fig, caption=capt))
             plt.close(fig)
-    return {"Inputs":res_input, "Predictions":res_pred, "Ground Truth":res_label}
+    return {"Inputs":res_input, "Predictions":res_pred, "Ground_Truth":res_label}
+
+# Cell
+def _unlist(l):
+    "get element of lists of lenght 1"
+    if isinstance(l, (list, tuple)):
+        if len(l) == 1: return l[0]
+    else: return l
 
 # Cell
 @typedispatch
-def wandb_process(x:TensorImage, y:(TensorCategory,TensorMultiCategory), samples, outs):
-    return {"Prediction Samples": [wandb.Image(s[0].permute(1,2,0), caption=f'Ground Truth: {s[1]}\nPrediction: {o[0]}')
-            for s,o in zip(samples,outs)]}
+def wandb_process(x:TensorImage, y:(TensorCategory,TensorMultiCategory), samples, outs, preds):
+    table = wandb.Table(columns=["Input image", "Ground_Truth", "Predictions"])
+    for (image, label), pred_label in zip(samples,outs):
+        table.add_data(wandb.Image(image.permute(1,2,0)), label, _unlist(pred_label))
+    return {"Prediction_Samples": table}
 
 # Cell
 @typedispatch
-def wandb_process(x:TensorImage, y:TensorMask, samples, outs):
+def wandb_process(x:TensorImage, y:TensorMask, samples, outs, preds):
     res = []
-    codes = getattr(y, 'codes', None)
-    class_labels = {i:f'{c}' for i,c in enumerate(codes)} if codes is not None else None
-    for s,o in zip(samples, outs):
-        img = s[0].permute(1,2,0)
-        masks = {}
-        for t, capt in ((o[0], "Prediction"), (s[1], "Ground Truth")):
-            masks[capt] = {'mask_data':t.numpy().astype(np.uint8)}
-            if class_labels: masks[capt]['class_labels'] = class_labels
-        res.append(wandb.Image(img, masks=masks))
-    return {"Prediction Samples":res}
+    codes = getattr(outs[0][0], 'codes', None)
+    if codes is not None:
+        class_labels = [{'name': name, 'id': id}  for id, name in enumerate(codes)]
+    else:
+        class_labels = [{'name': i, 'id': i} for i in range(preds.shape[1])]
+    table = wandb.Table(columns=["Input Image", "Ground_Truth", "Predictions"])
+    for (image, label), pred_label in zip(samples, outs):
+        img = image.permute(1,2,0)
+        table.add_data(wandb.Image(img),
+                       wandb.Image(img, masks={"Ground_Truth": {'mask_data': label.numpy().astype(np.uint8)}}, classes=class_labels),
+                       wandb.Image(img, masks={"Prediction":   {'mask_data': pred_label[0].numpy().astype(np.uint8)}}, classes=class_labels)
+                      )
+    return {"Prediction_Samples": table}
 
 # Cell
 @typedispatch
-def wandb_process(x:TensorText, y:(TensorCategory,TensorMultiCategory), samples, outs):
+def wandb_process(x:TensorText, y:(TensorCategory,TensorMultiCategory), samples, outs, preds):
     data = [[s[0], s[1], o[0]] for s,o in zip(samples,outs)]
-    return {"Prediction Samples": wandb.Table(data=data, columns=["Text", "Target", "Prediction"])}
+    return {"Prediction_Samples": wandb.Table(data=data, columns=["Text", "Target", "Prediction"])}
 
 # Cell
 @typedispatch
-def wandb_process(x:Tabular, y:Tabular, samples, outs):
+def wandb_process(x:Tabular, y:Tabular, samples, outs, preds):
     df = x.all_cols
     for n in x.y_names: df[n+'_pred'] = y[n].values
-    return {"Prediction Samples": wandb.Table(dataframe=df)}
+    return {"Prediction_Samples": wandb.Table(dataframe=df)}
 
 # Cell
 #nbdev_comment _all_ = ['wandb_process']
