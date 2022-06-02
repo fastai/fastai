@@ -17,8 +17,7 @@ from ..torch_basics import *
 from ..data.all import *
 
 # Cell
-import spacy,html
-from spacy.symbols import ORTH
+import html
 
 # Cell
 #special tokens
