@@ -17,8 +17,7 @@ from ..torch_basics import *
 from ..data.all import *
 
 # Cell
-import spacy,html
-from spacy.symbols import ORTH
+import html
 
 # Cell
 #special tokens
@@ -118,6 +117,8 @@ class BaseTokenizer():
 class SpacyTokenizer():
     "Spacy tokenizer for `lang`"
     def __init__(self, lang='en', special_toks=None, buf_sz=5000):
+        import spacy
+        from spacy.symbols import ORTH
         self.special_toks = ifnone(special_toks, defaults.text_spec_tok)
         nlp = spacy.blank(lang)
         for w in self.special_toks: nlp.tokenizer.add_special_case(w, [{ORTH: w}])
