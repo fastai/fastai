@@ -13,7 +13,7 @@ __all__ = ['progress_bar', 'master_bar', 'setup_cuda', 'subplots', 'show_image',
            'TitledInt', 'TitledFloat', 'TitledStr', 'TitledTuple', 'get_empty_df', 'display_df', 'get_first',
            'one_param', 'item_find', 'find_device', 'find_bs', 'np_func', 'Module', 'get_model', 'one_hot',
            'one_hot_decode', 'params', 'trainable_params', 'norm_types', 'norm_bias_params', 'batch_to_samples',
-           'logit', 'num_distrib', 'num_gpus', 'rank_distrib', 'distrib_barrier', 'base_doc', 'doc', 'nested_reorder',
+           'logit', 'num_distrib', 'rank_distrib', 'distrib_barrier', 'base_doc', 'doc', 'nested_reorder',
            'make_cross_image', 'show_image_batch', 'requires_grad', 'init_default', 'cond_init', 'apply_leaf',
            'apply_init', 'script_use_ctx', 'script_save_ctx', 'script_fwd', 'script_bwd', 'grad_module', 'ismin_torch',
            'notmax_torch', 'flatten_check']
@@ -683,11 +683,6 @@ def logit(x):
 def num_distrib():
     "Return the number of processes in distributed training (if applicable)."
     return int(os.environ.get('WORLD_SIZE', 0))
-
-# Cell
-def num_gpus():
-    "Returns the total number of GPUs (if available)."
-    return torch.cuda.device_count() if torch.cuda.is_available() else 0
 
 # Cell
 def rank_distrib():
