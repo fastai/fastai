@@ -587,7 +587,9 @@ def find_device(b):
 # Cell
 def find_bs(b):
     "Recursively search the batch size of `b`."
-    return item_find(b).shape[0]
+    res = item_find(b)
+    if not hasattr(res, "shape"): return len(b)
+    return res.shape[0]
 
 # Cell
 def np_func(f):
