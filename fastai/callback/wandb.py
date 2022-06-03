@@ -26,22 +26,16 @@ class WandbCallback(Callback):
 
     def __init__(self,
                  log:str=None, # What to log (can be `gradients`, `parameters`, `all` or None)
-                 log_preds:bool=True, # Wether to log model predictions on a `wandb.Table`
-                 log_preds_every_epoch:bool=False, # Wheter to log predictions every epoch or at the end
-                 log_model:bool=False, # Wheter to save the model checkpoint to a `wandb.Artifact`
+                 log_preds:bool=True, # Whether to log model predictions on a `wandb.Table`
+                 log_preds_every_epoch:bool=False, # Whether to log predictions every epoch or at the end
+                 log_model:bool=False, # Whether to save the model checkpoint to a `wandb.Artifact`
                  model_name:str=None, # The name of the `model_name` to save, overrides `SaveModelCallback`
-                 log_dataset:bool=False, # Wheter to log the dataset to a `wandb.Artifact`
+                 log_dataset:bool=False, # Whether to log the dataset to a `wandb.Artifact`
                  dataset_name:str=None, # A name to log the dataset with
                  valid_dl:TfmdDL=None, # If `log_preds=True`, then the samples will be drawn from `valid_dl`
                  n_preds:int=36, # How many samples to log predictions
                  seed:int=12345, # The seed of the samples drawn
                  reorder=True):
-        # Check if wandb.init has been called
-        if wandb.run is None:
-            raise ValueError('You must call wandb.init() before WandbCallback()')
-        # W&B log step
-        self._wandb_step = wandb.run.step - 1  # -1 except if the run has previously logged data (incremented at each batch)
-        self._wandb_epoch = 0 if not(wandb.run.step) else math.ceil(wandb.run.summary['epoch']) # continue to next epoch
         store_attr()
 
     def after_create(self):
@@ -57,6 +51,13 @@ class WandbCallback(Callback):
 
     def before_fit(self):
         "Call watch method to log model topology, gradients & weights"
+        # Check if wandb.init has been called
+        if wandb.run is None:
+            raise ValueError('You must call wandb.init() before WandbCallback()')
+        # W&B log step
+        self._wandb_step = wandb.run.step - 1  # -1 except if the run has previously logged data (incremented at each batch)
+        self._wandb_epoch = 0 if not(wandb.run.step) else math.ceil(wandb.run.summary['epoch']) # continue to next epoch
+
         self.run = not hasattr(self.learn, 'lr_finder') and not hasattr(self, "gather_preds") and rank_distrib()==0
         if not self.run: return
 
@@ -116,7 +117,7 @@ class WandbCallback(Callback):
             self._wandb_step += 1
             self._wandb_epoch += 1/self.n_iter
             hypers = {f'{k}_{i}':v for i,h in enumerate(self.opt.hypers) for k,v in h.items()}
-            wandb.log({'epoch': self._wandb_epoch, 'train_loss': to_detach(self.smooth_loss.clone()), 'raw_loss': to_detach(self.loss.clone()), **hypers}, step=self._wandb_step)
+            wandb.log({'epoch': self._wandb_epoch, 'train_loss': self.smooth_loss, 'raw_loss': self.loss, **hypers}, step=self._wandb_step)
             wandb.log({'train_samples_per_sec': len(self.xb[0]) / batch_time}, step=self._wandb_step)
 
     def log_predictions(self):
