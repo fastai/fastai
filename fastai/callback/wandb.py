@@ -36,12 +36,6 @@ class WandbCallback(Callback):
                  n_preds:int=36, # How many samples to log predictions
                  seed:int=12345, # The seed of the samples drawn
                  reorder=True):
-        # Check if wandb.init has been called
-        if wandb.run is None:
-            raise ValueError('You must call wandb.init() before WandbCallback()')
-        # W&B log step
-        self._wandb_step = wandb.run.step - 1  # -1 except if the run has previously logged data (incremented at each batch)
-        self._wandb_epoch = 0 if not(wandb.run.step) else math.ceil(wandb.run.summary['epoch']) # continue to next epoch
         store_attr()
 
     def after_create(self):
@@ -57,6 +51,13 @@ class WandbCallback(Callback):
 
     def before_fit(self):
         "Call watch method to log model topology, gradients & weights"
+        # Check if wandb.init has been called
+        if wandb.run is None:
+            raise ValueError('You must call wandb.init() before WandbCallback()')
+        # W&B log step
+        self._wandb_step = wandb.run.step - 1  # -1 except if the run has previously logged data (incremented at each batch)
+        self._wandb_epoch = 0 if not(wandb.run.step) else math.ceil(wandb.run.summary['epoch']) # continue to next epoch
+
         self.run = not hasattr(self.learn, 'lr_finder') and not hasattr(self, "gather_preds") and rank_distrib()==0
         if not self.run: return
 
