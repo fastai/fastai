@@ -26,11 +26,11 @@ class WandbCallback(Callback):
 
     def __init__(self,
                  log:str=None, # What to log (can be `gradients`, `parameters`, `all` or None)
-                 log_preds:bool=True, # Wether to log model predictions on a `wandb.Table`
-                 log_preds_every_epoch:bool=False, # Wheter to log predictions every epoch or at the end
-                 log_model:bool=False, # Wheter to save the model checkpoint to a `wandb.Artifact`
+                 log_preds:bool=True, # Whether to log model predictions on a `wandb.Table`
+                 log_preds_every_epoch:bool=False, # Whether to log predictions every epoch or at the end
+                 log_model:bool=False, # Whether to save the model checkpoint to a `wandb.Artifact`
                  model_name:str=None, # The name of the `model_name` to save, overrides `SaveModelCallback`
-                 log_dataset:bool=False, # Wheter to log the dataset to a `wandb.Artifact`
+                 log_dataset:bool=False, # Whether to log the dataset to a `wandb.Artifact`
                  dataset_name:str=None, # A name to log the dataset with
                  valid_dl:TfmdDL=None, # If `log_preds=True`, then the samples will be drawn from `valid_dl`
                  n_preds:int=36, # How many samples to log predictions
