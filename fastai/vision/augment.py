@@ -516,6 +516,7 @@ class RandomResizedCropGPU(RandTransform):
         mode='bilinear', # PyTorch `F.grid_sample` interpolation
         valid_scale=1., # Scale of the crop for the validation set, in relation to image area
         max_scale=1., # Maximum scale of the crop, in relation to image area
+        mode_mask='nearest', # Interpolation mode for `TensorMask`
         **kwargs
     ):
         if isinstance(size, int): size = (size,size)
@@ -541,9 +542,12 @@ class RandomResizedCropGPU(RandTransform):
         if split_idx: self.cp_size = (int(self.cp_size[0]*self.valid_scale), int(self.cp_size[1]*self.valid_scale))
         self.tl = ((h-self.cp_size[0])//2,(w-self.cp_size[1])//2)
 
-    def encodes(self, x:TensorImage):
+    def _encode(self, x, mode):
         x = x[...,self.tl[0]:self.tl[0]+self.cp_size[0], self.tl[1]:self.tl[1]+self.cp_size[1]]
-        return TensorImage(x).affine_coord(sz=self.size, mode=self.mode)
+        return x.affine_coord(sz=self.size, mode=mode)
+
+    def encodes(self, x:TensorImage|TensorPoint|TensorBBox): return self._encode(x, self.mode)
+    def encodes(self, x:TensorMask):                         return self._encode(x, self.mode_mask)
 
 # Cell
 def mask_tensor(
