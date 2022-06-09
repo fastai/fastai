@@ -4,10 +4,8 @@
 from __future__ import annotations
 
 
-__all__ = ['CancelBackwardException', 'CancelStepException', 'CancelFitException', 'CancelEpochException',
-           'CancelTrainException', 'CancelValidException', 'CancelBatchException', 'replacing_yield', 'mk_metric',
-           'save_model', 'load_model', 'SkipToEpoch', 'Learner', 'before_batch_cb', 'load_learner', 'Metric',
-           'AvgMetric', 'AvgLoss', 'AvgSmoothLoss', 'ValueMetric', 'Recorder']
+__all__ = ['replacing_yield', 'mk_metric', 'save_model', 'load_model', 'SkipToEpoch', 'Learner', 'before_batch_cb',
+           'load_learner', 'Metric', 'AvgMetric', 'AvgLoss', 'AvgSmoothLoss', 'ValueMetric', 'Recorder']
 
 # Cell
 #nbdev_comment from __future__ import annotations
@@ -17,7 +15,8 @@ from .callback.core import *
 import pickle,threading
 
 # Cell
-#nbdev_comment _all_ = ['CancelBackwardException', 'CancelStepException','CancelFitException','CancelEpochException','CancelTrainException','CancelValidException','CancelBatchException']
+_all_ = ['CancelBackwardException', 'CancelStepException','CancelFitException','CancelEpochException',
+         'CancelTrainException','CancelValidException','CancelBatchException']
 
 # Cell
 defaults.lr = 1e-3
@@ -95,6 +94,10 @@ _loop = ['Start Fit', 'before_fit', 'Start Epoch Loop', 'before_epoch', 'Start T
          '**CBs same as train batch**', 'End Batch Loop', 'End Valid', 'after_cancel_validate',
          'after_validate', 'End Epoch Loop', 'after_cancel_epoch', 'after_epoch', 'End Fit',
          'after_cancel_fit', 'after_fit']
+
+# Cell
+# Temporary workaround for PyTorch performance bug
+def _cast_tensor(x): return cast(x, Tensor) if isinstance(x,torch.Tensor) else x
 
 # Cell
 class Learner(GetAttr):
@@ -175,7 +178,7 @@ class Learner(GetAttr):
 
     def _split(self, b):
         i = getattr(self.dls, 'n_inp', 1 if len(b)==1 else len(b)-1)
-        self.xb,self.yb = b[:i],b[i:]
+        self.xb,self.yb = _cast_tensor(b[:i]),_cast_tensor(b[i:])
 
     def _with_events(self, f, event_type, ex, final=noop):
         try: self(f'before_{event_type}');  f()
