@@ -4,8 +4,10 @@
 from __future__ import annotations
 
 
-__all__ = ['replacing_yield', 'mk_metric', 'save_model', 'load_model', 'SkipToEpoch', 'Learner', 'before_batch_cb',
-           'load_learner', 'Metric', 'AvgMetric', 'AvgLoss', 'AvgSmoothLoss', 'ValueMetric', 'Recorder']
+__all__ = ['CancelBackwardException', 'CancelStepException', 'CancelFitException', 'CancelEpochException',
+           'CancelTrainException', 'CancelValidException', 'CancelBatchException', 'replacing_yield', 'mk_metric',
+           'save_model', 'load_model', 'SkipToEpoch', 'Learner', 'before_batch_cb', 'load_learner', 'Metric',
+           'AvgMetric', 'AvgLoss', 'AvgSmoothLoss', 'ValueMetric', 'Recorder', 'CastToTensor']
 
 # Cell
 #nbdev_comment from __future__ import annotations
@@ -15,8 +17,7 @@ from .callback.core import *
 import pickle,threading
 
 # Cell
-_all_ = ['CancelBackwardException', 'CancelStepException','CancelFitException','CancelEpochException',
-         'CancelTrainException','CancelValidException','CancelBatchException']
+#nbdev_comment _all_ = ['CancelBackwardException', 'CancelStepException','CancelFitException','CancelEpochException', 'CancelTrainException','CancelValidException','CancelBatchException']
 
 # Cell
 defaults.lr = 1e-3
@@ -94,10 +95,6 @@ _loop = ['Start Fit', 'before_fit', 'Start Epoch Loop', 'before_epoch', 'Start T
          '**CBs same as train batch**', 'End Batch Loop', 'End Valid', 'after_cancel_validate',
          'after_validate', 'End Epoch Loop', 'after_cancel_epoch', 'after_epoch', 'End Fit',
          'after_cancel_fit', 'after_fit']
-
-# Cell
-# Temporary workaround for PyTorch performance bug
-def _cast_tensor(x): return cast(x, Tensor) if isinstance(x,torch.Tensor) else x
 
 # Cell
 class Learner(GetAttr):
@@ -178,7 +175,7 @@ class Learner(GetAttr):
 
     def _split(self, b):
         i = getattr(self.dls, 'n_inp', 1 if len(b)==1 else len(b)-1)
-        self.xb,self.yb = _cast_tensor(b[:i]),_cast_tensor(b[i:])
+        self.xb,self.yb = b[:i],b[i:]
 
     def _with_events(self, f, event_type, ex, final=noop):
         try: self(f'before_{event_type}');  f()
@@ -583,6 +580,22 @@ add_docs(Recorder,
          plot_loss = "Plot the losses from `skip_start` and onward")
 
 if Recorder not in defaults.callbacks: defaults.callbacks.append(Recorder)
+
+# Internal Cell
+def _cast_tensor(x):
+    if isinstance(x, tuple): return tuple(_cast_tensor(x_) for x_ in x)
+    else: return cast(x, Tensor) if isinstance(x,torch.Tensor) else x
+
+# Cell
+class CastToTensor(Callback):
+    "Cast Subclassed Tensors to `Tensor`"
+    order=9 # Right before MixedPrecision
+
+    def before_batch(self):
+        self.learn.xb,self.learn.yb = _cast_tensor(self.learn.xb),_cast_tensor(self.learn.yb)
+
+# Cell
+if CastToTensor not in defaults.callbacks: defaults.callbacks.append(CastToTensor)
 
 # Cell
 @patch
