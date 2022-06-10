@@ -14,6 +14,8 @@ on:
 
 jobs: 
   debug:
+    permissions:
+      contents: none
     runs-on: ubuntu-latest
     steps:
 
@@ -30,6 +32,8 @@ jobs:
         path: ${{ github.event_path }}
         
   filter:
+    permissions:
+      contents: none
     runs-on: ubuntu-latest
     steps:
       - run: |
