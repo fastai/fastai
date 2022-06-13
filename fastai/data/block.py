@@ -91,6 +91,10 @@ class DataBlock():
         batch_tfms:list=None, # `Transform`s or `RandTransform`s, applied by batch
         **kwargs,
     ):
+        """
+        splitter is a callable which, when called with `items`, returns a tuple of iterables representing the
+        indices of the training and validation data.
+        """
         blocks = L(self.blocks if blocks is None else blocks)
         blocks = L(b() if callable(b) else b for b in blocks)
         self.type_tfms = blocks.attrgot('type_tfms', L())
