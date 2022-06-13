@@ -77,7 +77,9 @@ def _zip(x): return L(x).zip()
 @docs
 @funcs_kwargs
 class DataBlock():
-    "Generic container to quickly build `Datasets` and `DataLoaders`"
+    """
+    Generic container to quickly build `Datasets` and `DataLoaders`.
+    """
     get_x=get_items=splitter=get_y = None
     blocks,dl_type = (TransformBlock,TransformBlock),TfmdDL
     _methods = 'get_items splitter get_y get_x'.split()
