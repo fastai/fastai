@@ -330,6 +330,11 @@ def _rebuild_from_type(func, type, args, dict):
     return ret
 
 # Cell
+def _find_args(x):
+    x0 = x[0] if is_listy(x[0]) and x[0] else x
+    return [a for a in x0 if hasattr(a,'__dict__')]
+
+# Cell
 class TensorBase(Tensor):
     "A `Tensor` which support subclass pickling, and maintains metadata when casting or after methods"
     debug,_opt = False,defaultdict(list)
@@ -356,10 +361,9 @@ class TensorBase(Tensor):
     @classmethod
     def __torch_function__(cls, func, types, args=(), kwargs=None):
         if cls.debug and func.__name__ not in ('__str__','__repr__'): print(func, types, args, kwargs)
-        if is_listy(args[0]) and args[0]: dict_objs = [a for a in args[0] if hasattr(a,'__dict__')]
-        else:                             dict_objs = [a for a in args if hasattr(a,'__dict__')]
         if _torch_handled(args, cls._opt, func): types = (torch.Tensor,)
         res = super().__torch_function__(func, types, args, ifnone(kwargs, {}))
+        dict_objs = _find_args(args) if args else _find_args(list(kwargs.values()))
         if issubclass(type(res),TensorBase) and dict_objs: res.set_meta(dict_objs[0],as_copy=True)
         return res
 
