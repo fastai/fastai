@@ -46,7 +46,6 @@ def save_model(file, model, opt, with_opt=True, pickle_protocol=2):
 # Cell
 def load_model(file, model, opt, with_opt=True, device=None, strict=True):
     "Load `model` from `file` along with `opt` (if available, and if `with_opt`)"
-    distrib_barrier()
     if isinstance(device, int): device = torch.device('cuda', device)
     elif device is None: device = 'cpu'
     state = torch.load(file, map_location=device)
@@ -385,6 +384,7 @@ def load(self:Learner, file, device=None, **kwargs):
     if self.opt is None: self.create_opt()
     file = join_path_file(file, self.path/self.model_dir, ext='.pth')
     load_model(file, self.model, self.opt, device=device, **kwargs)
+    nested_attr(self, "accelerator.wait_for_everyone", noop)()
     return self
 
 # Cell
