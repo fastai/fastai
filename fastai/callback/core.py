@@ -60,7 +60,7 @@ class Callback(Stateful,GetAttr):
                (self.run_valid and not getattr(self, 'training', False)))
         res = None
         if self.run and _run:
-            try: res = getattr(self, event_name, noop)()
+            try: res = getcallable(self, event_name)()
             except (CancelBatchException, CancelBackwardException, CancelEpochException, CancelFitException, CancelStepException, CancelTrainException, CancelValidException): raise
             except Exception as e:
                 e.args = [f'Exception occured in `{self.__class__.__name__}` when calling event `{event_name}`:\n\t{e.args[0]}']

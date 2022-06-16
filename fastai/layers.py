@@ -7,12 +7,12 @@ from __future__ import annotations
 __all__ = ['module', 'Identity', 'Lambda', 'PartialLambda', 'Flatten', 'ToTensorBase', 'View', 'ResizeBatch',
            'Debugger', 'sigmoid_range', 'SigmoidRange', 'AdaptiveConcatPool1d', 'AdaptiveConcatPool2d', 'PoolType',
            'adaptive_pool', 'PoolFlatten', 'NormType', 'BatchNorm', 'InstanceNorm', 'BatchNorm1dFlat', 'LinBnDrop',
-           'sigmoid', 'sigmoid_', 'vleaky_relu', 'init_default', 'init_linear', 'ConvLayer', 'AdaptiveAvgPool',
-           'MaxPool', 'AvgPool', 'trunc_normal_', 'Embedding', 'SelfAttention', 'PooledSelfAttention2d',
-           'SimpleSelfAttention', 'icnr_init', 'PixelShuffle_ICNR', 'sequential', 'SequentialEx', 'MergeLayer', 'Cat',
-           'SimpleCNN', 'ProdLayer', 'inplace_relu', 'SEModule', 'ResBlock', 'SEBlock', 'SEResNeXtBlock',
-           'SeparableBlock', 'TimeDistributed', 'swish', 'Swish', 'MishJitAutoFn', 'mish', 'Mish', 'ParameterModule',
-           'children_and_parameters', 'has_children', 'flatten_model', 'NoneReduce', 'in_channels']
+           'sigmoid', 'sigmoid_', 'vleaky_relu', 'init_default', 'ConvLayer', 'AdaptiveAvgPool', 'MaxPool', 'AvgPool',
+           'trunc_normal_', 'Embedding', 'SelfAttention', 'PooledSelfAttention2d', 'SimpleSelfAttention', 'icnr_init',
+           'PixelShuffle_ICNR', 'sequential', 'SequentialEx', 'MergeLayer', 'Cat', 'SimpleCNN', 'ProdLayer',
+           'inplace_relu', 'SEModule', 'ResBlock', 'SEBlock', 'SEResNeXtBlock', 'SeparableBlock', 'TimeDistributed',
+           'swish', 'Swish', 'MishJitAutoFn', 'mish', 'Mish', 'ParameterModule', 'children_and_parameters',
+           'has_children', 'flatten_model', 'NoneReduce', 'in_channels']
 
 # Cell
 #nbdev_comment from __future__ import annotations
@@ -214,20 +214,8 @@ for o in F.sigmoid,nn.Sigmoid,F.tanh,nn.Tanh,sigmoid,sigmoid_:
 def init_default(m, func=nn.init.kaiming_normal_):
     "Initialize `m` weights with `func` and set `bias` to 0."
     if func and hasattr(m, 'weight'): func(m.weight)
-    with torch.no_grad():
-        if getattr(m, 'bias', None) is not None: m.bias.fill_(0.)
+    with torch.no_grad(): nested_callable(m, 'bias.fill_')(0.)
     return m
-
-# Cell
-def init_linear(m, act_func=None, init='auto', bias_std=0.01):
-    if getattr(m,'bias',None) is not None and bias_std is not None:
-        if bias_std != 0: normal_(m.bias, 0, bias_std)
-        else: m.bias.data.zero_()
-    if init=='auto':
-        if act_func in (F.relu_,F.leaky_relu_): init = kaiming_uniform_
-        else: init = getattr(act_func.__class__, '__default_init__', None)
-        if init is None: init = getattr(act_func, '__default_init__', None)
-    if init is not None: init(m.weight)
 
 # Cell
 def _conv_func(ndim=2, transpose=False):
@@ -656,7 +644,5 @@ class NoneReduce():
 # Cell
 def in_channels(m):
     "Return the shape of the first weight layer in `m`."
-    for l in flatten_model(m):
-        if getattr(l, 'weight', None) is not None and l.weight.ndim==4:
-            return l.weight.shape[1]
-    raise Exception('No weight layer')
+    try: return next(l.weight.shape[1] for l in flatten_model(m) if nested_attr(l,'weight.ndim',-1)==4)
+    except StopIteration as e: e.args = ["No weight layer"]; raise

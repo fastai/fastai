@@ -331,8 +331,8 @@ class RegressionSetup(DisplayedTransform):
 # Cell
 def get_c(dls):
     if getattr(dls, 'c', False): return dls.c
-    if getattr(getattr(dls.train, 'after_item', None), 'c', False): return dls.train.after_item.c
-    if getattr(getattr(dls.train, 'after_batch', None), 'c', False): return dls.train.after_batch.c
+    if nested_attr(dls, 'train.after_item.c', False): return dls.train.after_item.c
+    if nested_attr(dls, 'train.after_batch.c', False): return dls.train.after_batch.c
     vocab = getattr(dls, 'vocab', [])
     if len(vocab) > 0 and is_listy(vocab[-1]): vocab = vocab[-1]
     return len(vocab)

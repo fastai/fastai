@@ -126,7 +126,7 @@ class TfmdDL(DataLoader):
     def _decode_batch(self, b, max_n=9, full=True):
         f = self.after_item.decode
         f1 = self.before_batch.decode
-        f = compose(f1, f, partial(getattr(self.dataset,'decode',noop), full = full))
+        f = compose(f1, f, partial(getcallable(self.dataset,'decode'), full = full))
         return L(batch_to_samples(b, max_n=max_n)).map(f)
 
     def _pre_show_batch(self, b, max_n=9):
