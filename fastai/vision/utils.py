@@ -69,32 +69,38 @@ def verify_images(fns):
     return L(fns[i] for i,o in enumerate(parallel(verify_image, fns)) if not o)
 
 # Cell
-def resize_image(file, dest, max_size=None, n_channels=3, ext=None,
-                 img_format=None, resample=Image.BILINEAR, resume=False, **kwargs ):
+def resize_image(file, dest, src='.', max_size=None, n_channels=3, ext=None,
+                 img_format=None, resample=Image.Resampling.BILINEAR, resume=False, **kwargs ):
     "Resize file to dest to max_size"
     dest = Path(dest)
-    dest_fname = dest/file.name
+
+    dest_fname = dest/file
+    dest_fname.parent.mkdir(exist_ok=True, parents=True)
+    file = Path(src)/file
     if resume and dest_fname.exists(): return
-    if verify_image(file):
-        img = Image.open(file)
-        imgarr = np.array(img)
-        img_channels = 1 if len(imgarr.shape) == 2 else imgarr.shape[2]
-        if (max_size is not None and (img.height > max_size or img.width > max_size)) or img_channels != n_channels:
-            if ext is not None: dest_fname=dest_fname.with_suffix(ext)
-            if max_size is not None:
-                new_sz = resize_to(img, max_size)
-                img = img.resize(new_sz, resample=resample)
-            if n_channels == 3: img = img.convert("RGB")
-            img.save(dest_fname, img_format, **kwargs)
+    if not verify_image(file): return
+
+    img = Image.open(file)
+    imgarr = np.array(img)
+    img_channels = 1 if len(imgarr.shape) == 2 else imgarr.shape[2]
+    if ext is not None: dest_fname=dest_fname.with_suffix(ext)
+    if (max_size is not None and (img.height > max_size or img.width > max_size)) or img_channels != n_channels:
+        if max_size is not None:
+            new_sz = resize_to(img, max_size)
+            img = img.resize(new_sz, resample=resample)
+        if n_channels == 3: img = img.convert("RGB")
+        img.save(dest_fname, img_format, **kwargs)
+    else: shutil.copy2(file, dest_fname)
 
 # Cell
 def resize_images(path, max_workers=defaults.cpus, max_size=None, recurse=False,
-                  dest=Path('.'), n_channels=3, ext=None, img_format=None, resample=Image.BILINEAR,
+                  dest=Path('.'), n_channels=3, ext=None, img_format=None, resample=Image.Resampling.BILINEAR,
                   resume=None, **kwargs):
     "Resize files on path recursively to dest to max_size"
     path = Path(path)
     if resume is None and dest != Path('.'): resume=False
     os.makedirs(dest, exist_ok=True)
     files = get_image_files(path, recurse=recurse)
-    parallel(resize_image, files, max_workers=max_workers, max_size=max_size, dest=dest, n_channels=n_channels, ext=ext,
+    files = [o.relative_to(path) for o in files]
+    parallel(resize_image, files, src=path, n_workers=max_workers, max_size=max_size, dest=dest, n_channels=n_channels, ext=ext,
                    img_format=img_format, resample=resample, resume=resume, **kwargs)
