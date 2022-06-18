@@ -68,9 +68,9 @@ class EmbeddingDotBias(Module):
         classes = self.classes[self.item] if is_item else self.classes[self.user]
         c2i = {v:k for k,v in enumerate(classes)}
         try: return tensor([c2i[o] for o in arr])
-        except Exception as e:
-            print(f"""You're trying to access {'an item' if is_item else 'a user'} that isn't in the training data.
-                  If it was in your original data, it may have been split such that it's only in the validation set now.""")
+        except KeyError as e:
+            message = f"You're trying to access {'an item' if is_item else 'a user'} that isn't in the training data. If it was in your original data, it may have been split such that it's only in the validation set now."
+            raise modify_exception(e, message, replace=True)
 
     def bias(self, arr, is_item=True):
         "Bias for item or user (based on `is_item`) for all in `arr`"

@@ -14,6 +14,7 @@ from ..data.all import *
 from .core import *
 from fastdownload import download_url
 from pathlib import Path
+from urllib.request import URLError
 
 # Cell
 def _get_downloaded_image_filename(dest, name, suffix):
