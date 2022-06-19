@@ -2,7 +2,16 @@
 
 <!-- do not remove -->
 
+## 2.7.2
+
+### Bugs Squashed
+
+- `PIL.Resampling` only added in v9.1 ([#3699](https://github.com/fastai/fastai/issues/3699))
+
+
 ## 2.7.1
+
+### Bugs Squashed
 
 - Update fastcore minimum version
 
