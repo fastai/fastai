@@ -26,7 +26,7 @@ jobs:
         PAYLOAD: ${{ toJSON(github.event) }}
     
     - name: store payload
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: payload.json
         path: ${{ github.event_path }}
