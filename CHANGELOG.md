@@ -2,7 +2,7 @@
 
 <!-- do not remove -->
 
-## 2.7.0
+## 2.7.1
 
 - Update fastcore minimum version
 
