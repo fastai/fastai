@@ -4,6 +4,11 @@
 
 ## 2.7.0
 
+- Update fastcore minimum version
+
+
+## 2.7.0
+
 ### Breaking changes
 
 - Distributed training now uses Hugging Face Accelerate, rather than fastai's launcher.
