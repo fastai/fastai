@@ -11,7 +11,7 @@ dependencies:
 - requests
 - pyyaml
 - fastprogress>=0.2.4
-- pillow>=6.0.0
+- pillow>=9.1.1
 - scikit-learn
 - scipy
 - spacy
