@@ -68,7 +68,7 @@ jobs:
         nb_unit: ['[0-2]','[3-5]','[6-9]']
     steps: 
     - name: Set up Python
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.py }}
     - name: checkout contents of PR
