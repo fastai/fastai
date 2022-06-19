@@ -124,11 +124,10 @@
         "Hugging Face Hub": "/huggingface.html"
     },
     "fastai Development": {
-        "Developers Guide": "/dev-setup.html",
+        "PR How To": "/dev/git.html",
         "Abbreviation Guide": "/dev/abbr.html",
         "Style Guide": "/dev/style.html",
         "GPU Notes": "/dev/gpu.html",
-        "Git Notes": "/dev/git.html",
         "Notes": "/dev/develop.html"
     }
 }
