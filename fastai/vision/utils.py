@@ -70,7 +70,7 @@ def verify_images(fns):
 
 # Cell
 def resize_image(file, dest, src='.', max_size=None, n_channels=3, ext=None,
-                 img_format=None, resample=Image.Resampling.BILINEAR, resume=False, **kwargs ):
+                 img_format=None, resample=BILINEAR, resume=False, **kwargs ):
     "Resize file to dest to max_size"
     dest = Path(dest)
 
@@ -94,7 +94,7 @@ def resize_image(file, dest, src='.', max_size=None, n_channels=3, ext=None,
 
 # Cell
 def resize_images(path, max_workers=defaults.cpus, max_size=None, recurse=False,
-                  dest=Path('.'), n_channels=3, ext=None, img_format=None, resample=Image.Resampling.BILINEAR,
+                  dest=Path('.'), n_channels=3, ext=None, img_format=None, resample=BILINEAR,
                   resume=None, **kwargs):
     "Resize files on path recursively to dest to max_size"
     path = Path(path)

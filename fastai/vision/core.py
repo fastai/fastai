@@ -4,10 +4,10 @@
 from __future__ import annotations
 
 
-__all__ = ['Image', 'ToTensor', 'imagenet_stats', 'cifar_stats', 'mnist_stats', 'n_px', 'shape', 'aspect', 'to_image',
-           'load_image', 'image2tensor', 'PILBase', 'PILImage', 'PILImageBW', 'PILMask', 'OpenMask', 'AddMaskCodes',
-           'TensorPoint', 'TensorPointCreate', 'get_annotations', 'TensorBBox', 'LabeledBBox', 'encodes', 'encodes',
-           'PointScaler', 'BBoxLabeler', 'decodes', 'encodes', 'decodes']
+__all__ = ['BILINEAR', 'NEAREST', 'Image', 'ToTensor', 'imagenet_stats', 'cifar_stats', 'mnist_stats', 'n_px', 'shape',
+           'aspect', 'to_image', 'load_image', 'image2tensor', 'PILBase', 'PILImage', 'PILImageBW', 'PILMask',
+           'OpenMask', 'AddMaskCodes', 'TensorPoint', 'TensorPointCreate', 'get_annotations', 'TensorBBox',
+           'LabeledBBox', 'encodes', 'encodes', 'PointScaler', 'BBoxLabeler', 'decodes', 'encodes', 'decodes']
 
 # Cell
 #nbdev_comment from __future__ import annotations
@@ -15,6 +15,11 @@ from ..torch_basics import *
 from ..data.all import *
 
 from PIL import Image
+try: BILINEAR,NEAREST = Image.Resampling.BILINEAR,Image.Resampling.NEAREST
+except ModuleNotFoundError: from PIL.Image import BILINEAR,NEAREST
+
+# Cell
+#nbdev_comment _all_ = ['BILINEAR','NEAREST']
 
 # Cell
 #nbdev_comment _all_ = ['Image','ToTensor']

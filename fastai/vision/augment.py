@@ -128,7 +128,7 @@ _pad_modes = {'zeros': 'constant', 'border': 'edge', 'reflection': 'reflect'}
 
 @patch
 def _do_crop_pad(x:Image.Image, sz, tl, orig_sz,
-                 pad_mode=PadMode.Zeros, resize_mode=Image.BILINEAR, resize_to=None):
+                 pad_mode=PadMode.Zeros, resize_mode=BILINEAR, resize_to=None):
     if any(tl.ge(0)) or any(tl.add(sz).le(orig_sz)):
         # At least one dim is inside the image, so needs to be cropped
         c = tl.max(0)
@@ -158,7 +158,7 @@ def crop_pad(x:(TensorBBox,TensorPoint,Image.Image),
     tl:tuple=None, # Optional top-left coordinate of the crop/pad, if `None` center crop
     orig_sz:tuple=None, # Original size of input
     pad_mode:PadMode=PadMode.Zeros, # Fastai padding mode
-    resize_mode=Image.BILINEAR, # Pillow `Image` resize mode
+    resize_mode=BILINEAR, # Pillow `Image` resize mode
     resize_to:tuple=None # Optional post crop/pad resize of input
 ):
     if isinstance(sz,int): sz = (sz,sz)
@@ -243,13 +243,13 @@ mk_class('ResizeMethod', **{o:o.lower() for o in ['Squish', 'Crop', 'Pad']},
 # Cell
 @delegates()
 class Resize(RandTransform):
-    split_idx,mode,mode_mask,order = None,Image.BILINEAR,Image.NEAREST,1
+    split_idx,mode,mode_mask,order = None,BILINEAR,NEAREST,1
     "Resize image to `size` using `method`"
     def __init__(self,
         size:(int, tuple), # Size to resize to, duplicated if one value is specified
         method:ResizeMethod=ResizeMethod.Crop, # A `ResizeMethod`
         pad_mode:PadMode=PadMode.Reflection, # A `PadMode`
-        resamples=(Image.BILINEAR, Image.NEAREST), # Pillow `Image` resamples mode, resamples[1] for mask
+        resamples=(BILINEAR, NEAREST), # Pillow `Image` resamples mode, resamples[1] for mask
         **kwargs
     ):
         size = _process_sz(size)
@@ -287,7 +287,7 @@ class RandomResizedCrop(RandTransform):
          size:(int, tuple), # Final size, duplicated if one value is specified,,
          min_scale:float=0.08, # Minimum scale of the crop, in relation to image area
          ratio:(float, float)=(3/4, 4/3), # Range of width over height of the output
-         resamples=(Image.BILINEAR, Image.NEAREST), # Pillow `Image` resample mode, resamples[1] for mask
+         resamples=(BILINEAR, NEAREST), # Pillow `Image` resample mode, resamples[1] for mask
          val_xtra:float=0.14, # The ratio of size at the edge cropped out in the validation set
          max_scale:float=1., # Maximum scale of the crop, in relation to image area
          **kwargs
@@ -334,7 +334,7 @@ class RatioResize(DisplayedTransform):
     order = 1
     def __init__(self,
         max_sz: int, # Biggest dimension of the resized image
-        resamples=(Image.BILINEAR, Image.NEAREST), # Pillow `Image` resample mode, resamples[1] for mask
+        resamples=(BILINEAR, NEAREST), # Pillow `Image` resample mode, resamples[1] for mask
         **kwargs
     ):
         store_attr()
