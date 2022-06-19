@@ -16,7 +16,7 @@ from ..data.all import *
 
 from PIL import Image
 try: BILINEAR,NEAREST = Image.Resampling.BILINEAR,Image.Resampling.NEAREST
-except ModuleNotFoundError: from PIL.Image import BILINEAR,NEAREST
+except AttributeError: from PIL.Image import BILINEAR,NEAREST
 
 # Cell
 #nbdev_comment _all_ = ['BILINEAR','NEAREST']
