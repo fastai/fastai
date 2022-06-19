@@ -273,12 +273,12 @@ class Learner(GetAttr):
         if with_loss: ctx_mgrs.append(self.loss_not_reduced())
         with ContextManagers(ctx_mgrs):
             self._do_epoch_validate(dl=dl)
-            if act is None: act = getattr(self.loss_func, 'activation', noop)
+            if act is None: act = getcallable(self.loss_func, 'activation')
             res = cb.all_tensors()
             pred_i = 1 if with_input else 0
             if res[pred_i] is not None:
                 res[pred_i] = act(res[pred_i])
-                if with_decoded: res.insert(pred_i+2, getattr(self.loss_func, 'decodes', noop)(res[pred_i]))
+                if with_decoded: res.insert(pred_i+2, getcallable(self.loss_func, 'decodes')(res[pred_i]))
             if reorder and hasattr(dl, 'get_idxs'): res = nested_reorder(res, tensor(idxs).argsort())
             return tuple(res)
         self._end_cleanup()

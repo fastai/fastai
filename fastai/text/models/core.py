@@ -50,7 +50,7 @@ class LinearDecoder(Module):
 class SequentialRNN(nn.Sequential):
     "A sequential module that passes the reset call to its children."
     def reset(self):
-        for c in self.children(): getattr(c, 'reset', noop)()
+        for c in self.children(): getcallable(c, 'reset')()
 
 # Cell
 def get_language_model(
@@ -88,7 +88,7 @@ class SentenceEncoder(Module):
     ):
         store_attr('bptt,module,pad_idx,max_len')
 
-    def reset(self): getattr(self.module, 'reset', noop)()
+    def reset(self): getcallable(self.module, 'reset')()
 
     def forward(self, input):
         bs,sl = input.size()

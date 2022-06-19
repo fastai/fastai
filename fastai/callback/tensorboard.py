@@ -74,8 +74,8 @@ class TensorBoardCallback(TensorBoardBaseCallback):
         if self.log_preds:
             b = self.dls.valid.one_batch()
             self.learn.one_batch(0, b)
-            preds = getattr(self.loss_func, 'activation', noop)(self.pred)
-            out = getattr(self.loss_func, 'decodes', noop)(preds)
+            preds = getcallable(self.loss_func, 'activation')(self.pred)
+            out = getcallable(self.loss_func, 'decodes')(preds)
             x,y,its,outs = self.dls.valid.show_results(b, out, show=False, max_n=self.n_preds)
             tensorboard_log(x, y, its, outs, self.writer, self.train_iter)
 
