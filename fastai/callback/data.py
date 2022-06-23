@@ -40,6 +40,16 @@ def weighted_dataloaders(self:Datasets, wgts, bs=64, **kwargs):
     return self.dataloaders(bs=bs, dl_type=WeightedDL, dl_kwargs=({'wgts':wgts}, *xtra_kwargs), **kwargs)
 
 # Cell
+@patch
+@delegates(Datasets.weighted_dataloaders)
+def weighted_dataloaders(self:DataBlock, source, wgts, bs=64, verbose:bool=False, **kwargs):
+    "Create a weighted dataloader `WeightedDL` with `wgts` for the dataset"
+    dss = self.datasets(source, verbose=verbose)
+    if not hasattr(wgts, '__array__'): wgts = np.array(wgts)
+    trn_wgts = wgts[dss.splits[0]]
+    return dss.weighted_dataloaders(trn_wgts, bs=bs, after_batch=self.batch_tfms, after_item=self.item_tfms, **kwargs)
+
+# Cell
 @delegates()
 class PartialDL(TfmdDL):
     "Select randomly partial quantity of data at each epoch"
