@@ -68,8 +68,16 @@ class EarlyStoppingCallback(TrackerCallback):
 class SaveModelCallback(TrackerCallback):
     "A `TrackerCallback` that saves the model's best during training and loads it at the end."
     order = TrackerCallback.order+1
-    def __init__(self, monitor='valid_loss', comp=None, min_delta=0., fname='model', every_epoch=False, at_end=False,
-                 with_opt=False, reset_on_fit=True):
+    def __init__(self,
+        monitor='valid_loss', # value (usually loss or metric) being monitored.
+        comp=None, # numpy comparison operator; np.less if monitor is loss, np.greater if monitor is metric.
+        min_delta=0., # minimum delta between the last monitor value and the best monitor value.
+        fname='model', # model name to be used when saving model.
+        every_epoch=False, # if true, save model after every epoch; else save only when model is better than existing best.
+        at_end=False, # if true, save model when training ends; else load best model if there is only one saved model.
+        with_opt=False, # if true, save optimizer state (if any available) when saving model.
+        reset_on_fit=True # before model fitting, reset value being monitored to -infinity (if monitor is metric) or +infinity (if monitor is loss).
+    ):
         super().__init__(monitor=monitor, comp=comp, min_delta=min_delta, reset_on_fit=reset_on_fit)
         assert not (every_epoch and at_end), "every_epoch and at_end cannot both be set to True"
         # keep track of file path for loggers
