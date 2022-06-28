@@ -25,7 +25,12 @@ class TerminateOnNaNCallback(Callback):
 class TrackerCallback(Callback):
     "A `Callback` that keeps track of the best value in `monitor`."
     order,remove_on_fetch,_only_train_loop = 60,True,True
-    def __init__(self, monitor='valid_loss', comp=None, min_delta=0., reset_on_fit=True):
+    def __init__(self,
+        monitor='valid_loss', # value (usually loss or metric) being monitored.
+        comp=None, # numpy comparison operator; np.less if monitor is loss, np.greater if monitor is metric.
+        min_delta=0., # minimum delta between the last monitor value and the best monitor value.
+        reset_on_fit=True # before model fitting, reset value being monitored to -infinity (if monitor is metric) or +infinity (if monitor is loss).
+    ):
         if comp is None: comp = np.less if 'loss' in monitor or 'error' in monitor else np.greater
         if comp == np.less: min_delta *= -1
         self.monitor,self.comp,self.min_delta,self.reset_on_fit,self.best= monitor,comp,min_delta,reset_on_fit,None
@@ -49,7 +54,13 @@ class TrackerCallback(Callback):
 class EarlyStoppingCallback(TrackerCallback):
     "A `TrackerCallback` that terminates training when monitored quantity stops improving."
     order=TrackerCallback.order+3
-    def __init__(self, monitor='valid_loss', comp=None, min_delta=0., patience=1, reset_on_fit=True):
+    def __init__(self,
+        monitor='valid_loss', # value (usually loss or metric) being monitored.
+        comp=None, # numpy comparison operator; np.less if monitor is loss, np.greater if monitor is metric.
+        min_delta=0., # minimum delta between the last monitor value and the best monitor value.
+        patience=1, # number of epochs to wait when training has not improved model.
+        reset_on_fit=True # before model fitting, reset value being monitored to -infinity (if monitor is metric) or +infinity (if monitor is loss).
+    ):
         super().__init__(monitor=monitor, comp=comp, min_delta=min_delta, reset_on_fit=reset_on_fit)
         self.patience = patience
 
@@ -105,7 +116,15 @@ class SaveModelCallback(TrackerCallback):
 class ReduceLROnPlateau(TrackerCallback):
     "A `TrackerCallback` that reduces learning rate when a metric has stopped improving."
     order=TrackerCallback.order+2
-    def __init__(self, monitor='valid_loss', comp=None, min_delta=0., patience=1, factor=10., min_lr=0, reset_on_fit=True):
+    def __init__(self,
+        monitor='valid_loss', # value (usually loss or metric) being monitored.
+        comp=None, # numpy comparison operator; np.less if monitor is loss, np.greater if monitor is metric.
+        min_delta=0., # minimum delta between the last monitor value and the best monitor value.
+        patience=1, # number of epochs to wait when training has not improved model.
+        factor=10., # the denominator to divide the learning rate by, when reducing the learning rate.
+        min_lr=0, # the minimum learning rate allowed; learning rate cannot be reduced below this minimum.
+        reset_on_fit=True # before model fitting, reset value being monitored to -infinity (if monitor is metric) or +infinity (if monitor is loss).
+    ):
         super().__init__(monitor=monitor, comp=comp, min_delta=min_delta, reset_on_fit=reset_on_fit)
         self.patience,self.factor,self.min_lr = patience,factor,min_lr
 
