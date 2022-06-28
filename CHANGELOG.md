@@ -2,6 +2,13 @@
 
 <!-- do not remove -->
 
+## 2.7.4
+
+### New Features
+
+- Add `DataBlock.weighted_dataloaders` ([#3706](https://github.com/fastai/fastai/issues/3706))
+
+
 ## 2.7.2
 
 ### Bugs Squashed
