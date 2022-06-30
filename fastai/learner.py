@@ -257,8 +257,18 @@ class Learner(GetAttr):
         return getattr(self, 'final_record', None)
 
     @delegates(GatherPredsCallback.__init__)
-    def get_preds(self, ds_idx=1, dl=None, with_input=False, with_decoded=False, with_loss=False, act=None,
-                  inner=False, reorder=True, cbs=None, **kwargs):
+    def get_preds(self,
+                  ds_idx: int =1, # Index of data bunch or dataloader
+                  dl=None, # Dataloader or dataset to be passed with ds_idx
+                  with_input: bool=False, # Whether to return inputs
+                  with_decoded=False,
+                  with_loss : bool=False, # Whether to return losses
+                  act=None,
+                  inner : bool=False,
+                  reorder : bool=True,
+                  cbs: listy[Number] |None=None,
+                  **kwargs):
+        """Get the predictions and targets on the ds_idx-th dbunchset or dl, optionally with_input and with_loss"""
         if dl is None: dl = self.dls[ds_idx].new(shuffle=False, drop_last=False)
         else:
             try: len(dl)
