@@ -76,9 +76,8 @@ def cut_model(model, cut):
     raise NameError("cut must be either integer or a function")
 
 # Cell
-def create_body(arch, n_in=3, pretrained=True, cut=None):
+def create_body(model, n_in=3, pretrained=True, cut=None):
     "Cut off the body of a typically pretrained `arch` as determined by `cut`"
-    model = arch(pretrained=pretrained)
     _update_first_layer(model, n_in, pretrained)
     if cut is None:
         ll = list(enumerate(model.children()))
@@ -165,29 +164,31 @@ def create_vision_model(arch, n_out, pretrained=True, cut=None, n_in=3, init=nn.
                         concat_pool=True, pool=True, lin_ftrs=None, ps=0.5, first_bn=True, bn_final=False, lin_first=False, y_range=None):
     "Create custom vision architecture"
     meta = model_meta.get(arch, _default_meta)
-    body = create_body(arch, n_in, pretrained, ifnone(cut, meta['cut']))
+    model = arch(pretrained)
+    body = create_body(model, n_in, pretrained, ifnone(cut, meta['cut']))
     nf = num_features_model(nn.Sequential(*body.children())) if custom_head is None else None
     return add_head(body, nf, n_out, init=init, head=custom_head, concat_pool=concat_pool, pool=pool,
                     lin_ftrs=lin_ftrs, ps=ps, first_bn=first_bn, bn_final=bn_final, lin_first=lin_first, y_range=y_range)
 
 # Cell
 class TimmBody(nn.Module):
-    def __init__(self, arch:str, pretrained:bool=True, cut=None, n_in:int=3, **kwargs):
+    def __init__(self, model, pretrained:bool=True, cut=None, n_in:int=3):
         super().__init__()
-        model = timm.create_model(arch, pretrained=pretrained, num_classes=0, in_chans=n_in, **kwargs)
         self.needs_pool = model.default_cfg.get('pool_size', None)
         self.model = model if cut is None else cut_model(model, cut)
 
     def forward(self,x): return self.model.forward_features(x) if self.needs_pool else self.model(x)
 
 # Cell
-def create_timm_model(arch:str, n_out, cut=None, pretrained=True, n_in=3, init=nn.init.kaiming_normal_, custom_head=None,
+def create_timm_model(arch, n_out, cut=None, pretrained=True, n_in=3, init=nn.init.kaiming_normal_, custom_head=None,
                      concat_pool=True, pool=True, lin_ftrs=None, ps=0.5, first_bn=True, bn_final=False, lin_first=False, y_range=None, **kwargs):
     "Create custom architecture using `arch`, `n_in` and `n_out` from the `timm` library"
-    body = TimmBody(arch, pretrained, None, n_in, **kwargs)
+    model = timm.create_model(arch, pretrained=pretrained, num_classes=0, in_chans=n_in, **kwargs)
+    body = TimmBody(model, pretrained, None, n_in)
     nf = body.model.num_features
-    return add_head(body, nf, n_out, init=init, head=custom_head, concat_pool=concat_pool, pool=body.needs_pool,
-                    lin_ftrs=lin_ftrs, ps=ps, first_bn=first_bn, bn_final=bn_final, lin_first=lin_first, y_range=y_range)
+    res = add_head(body, nf, n_out, init=init, head=custom_head, concat_pool=concat_pool, pool=body.needs_pool,
+                   lin_ftrs=lin_ftrs, ps=ps, first_bn=first_bn, bn_final=bn_final, lin_first=lin_first, y_range=y_range)
+    return res,model.default_cfg
 
 # Cell
 def _add_norm(dls, meta, pretrained):
@@ -196,6 +197,13 @@ def _add_norm(dls, meta, pretrained):
     if stats is None: return
     if not dls.after_batch.fs.filter(risinstance(Normalize)):
         dls.add_tfms([Normalize.from_stats(*stats)],'after_batch')
+
+# Cell
+def _timm_norm(dls, cfg, pretrained):
+    if not pretrained: return
+    if not dls.after_batch.fs.filter(risinstance(Normalize)):
+        tfm = Normalize.from_stats(cfg['mean'],cfg['std'])
+        dls.add_tfms([tfm],'after_batch')
 
 # Cell
 @delegates(create_vision_model)
@@ -212,9 +220,12 @@ def vision_learner(dls, arch, normalize=True, n_out=None, pretrained=True,
     meta = model_meta.get(arch, _default_meta)
     model_args = dict(init=init, custom_head=custom_head, concat_pool=concat_pool, pool=pool, lin_ftrs=lin_ftrs, ps=ps,
                       first_bn=first_bn, bn_final=bn_final, lin_first=lin_first, y_range=y_range, **kwargs)
-    if normalize: _add_norm(dls, meta, pretrained)
-    if isinstance(arch, str): model = create_timm_model(arch, n_out, default_split, pretrained, **model_args)
-    else: model = create_vision_model(arch, n_out, pretrained=pretrained, **model_args)
+    if isinstance(arch, str):
+        model,cfg = create_timm_model(arch, n_out, default_split, pretrained, **model_args)
+        if normalize: _timm_norm(dls, cfg, pretrained)
+    else:
+        if normalize: _add_norm(dls, meta, pretrained)
+        model = create_vision_model(arch, n_out, pretrained=pretrained, **model_args)
 
     splitter=ifnone(splitter, meta['split'])
     learn = Learner(dls=dls, model=model, loss_func=loss_func, opt_func=opt_func, lr=lr, splitter=splitter, cbs=cbs,
@@ -229,7 +240,8 @@ def vision_learner(dls, arch, normalize=True, n_out=None, pretrained=True,
 def create_unet_model(arch, n_out, img_size, pretrained=True, cut=None, n_in=3, **kwargs):
     "Create custom unet architecture"
     meta = model_meta.get(arch, _default_meta)
-    body = create_body(arch, n_in, pretrained, ifnone(cut, meta['cut']))
+    model = arch(pretrained)
+    body = create_body(model, n_in, pretrained, ifnone(cut, meta['cut']))
     model = models.unet.DynamicUnet(body, n_out, img_size, **kwargs)
     return model
 
