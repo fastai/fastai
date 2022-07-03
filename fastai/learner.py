@@ -259,16 +259,17 @@ class Learner(GetAttr):
     @delegates(GatherPredsCallback.__init__)
     def get_preds(self,
                   ds_idx: int =1, # Index of data bunch or dataloader
-                  dl=None, # Dataloader or dataset to be passed with ds_idx
+                  dl: DataLoader | None=None, # Dataloader or dataset to be passed with ds_idx
                   with_input: bool=False, # Whether to return inputs
-                  with_decoded=False,
+                  with_decoded: bool=False, # Whether to decode based on loss function passed
                   with_loss : bool=False, # Whether to return losses
-                  act=None,
-                  inner : bool=False,
-                  reorder : bool=True,
-                  cbs: listy[Number] |None=None,
-                  **kwargs):
-        """Get the predictions and targets on the ds_idx-th dbunchset or dl, optionally with_input and with_loss"""
+                  act: Any=None, # Option to pass Activation function to predict function
+                  inner : bool=False, # Tells that it's used internally used anywhere like in another training loop
+                  reorder : bool=True, # To order the tensors appropriately
+                  cbs: list | None =None, # Option to pass `Callbacks` to predict function
+                  **kwargs
+                 )-> tuple[tensor, tensor| None]:
+        """Get the predictions and targets for fastai learner"""
         if dl is None: dl = self.dls[ds_idx].new(shuffle=False, drop_last=False)
         else:
             try: len(dl)
