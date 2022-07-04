@@ -25,7 +25,7 @@ class _FakeLoader:
     def _fn_noops(self, x=None, *args, **kwargs): return x
 
     _IterableDataset_len_called,_auto_collation,collate_fn,drop_last = None,False,_fn_noops,False
-    _index_sampler,generator,prefetch_factor  = Inf.count,None,2
+    _index_sampler,generator,prefetch_factor,_get_shared_seed  = Inf.count,None,2,noop
     dataset_kind = _dataset_kind = _DatasetKind.Iterable
 
     def __init__(self, d, pin_memory, num_workers, timeout, persistent_workers,pin_memory_device):
