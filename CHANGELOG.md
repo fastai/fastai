@@ -2,6 +2,14 @@
 
 <!-- do not remove -->
 
+## 2.7.5
+
+### New Features
+
+- auto-normalize timm models ([#3716](https://github.com/fastai/fastai/issues/3716))
+- PyTorch 1.12 support
+
+
 ## 2.7.4
 
 ### New Features
