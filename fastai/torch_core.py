@@ -275,7 +275,7 @@ def default_device(use=-1):
         if torch.backends.mps.is_available() or torch.cuda.is_available(): use = True
     if use:
         if torch.cuda.is_available(): return torch.device(torch.cuda.current_device())
-        if torch.mps.is_available(): return torch.device('mps')
+        if torch.backends.mps.is_available(): return torch.device('mps')
     return torch.device('cpu')
 
 # Cell
