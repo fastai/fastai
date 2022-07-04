@@ -200,7 +200,8 @@ class Learner(GetAttr):
         self.opt.zero_grad()
 
     def _set_device(self, b):
-        model_device = torch.device(torch.cuda.current_device()) if next(self.model.parameters()).is_cuda else torch.device('cpu')
+#         model_device = torch.device(torch.cuda.current_device()) if next(self.model.parameters()).is_cuda else torch.device('cpu')
+        model_device = next(self.model.parameters()).device
         dls_device = getattr(self.dls, 'device', default_device())
         if model_device == dls_device: return to_device(b, dls_device)
         else: return to_device(b, model_device)

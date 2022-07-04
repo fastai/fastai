@@ -290,7 +290,7 @@ class DataLoaders(GetAttr):
                valid_ds="Validation `Dataset`",
                to="Use `device`",
                add_tfms="Add `tfms` to `loaders` for `event",
-               cuda="Use the gpu if available",
+               cuda="Use accelerator if available",
                cpu="Use the cpu",
                new_empty="Create a new empty version of `self` with the same transforms",
                from_dblock="Create a dataloaders from a given `dblock`")

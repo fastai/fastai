@@ -7,16 +7,16 @@ from __future__ import annotations
 __all__ = ['progress_bar', 'master_bar', 'setup_cuda', 'subplots', 'show_image', 'show_titled_image', 'show_images',
            'ArrayBase', 'ArrayImageBase', 'ArrayImage', 'ArrayImageBW', 'ArrayMask', 'tensor', 'set_seed',
            'get_random_states', 'set_random_states', 'no_random', 'unsqueeze', 'unsqueeze_', 'apply', 'maybe_gather',
-           'to_detach', 'to_half', 'to_float', 'default_device', 'to_device', 'to_cpu', 'to_np', 'to_concat',
-           'TensorBase', 'TensorImageBase', 'TensorImage', 'TensorImageBW', 'TensorMask', 'TensorFlowField',
-           'TensorCategory', 'TensorMultiCategory', 'TitledTensorScalar', 'concat', 'Chunks', 'show_title', 'ShowTitle',
-           'TitledInt', 'TitledFloat', 'TitledStr', 'TitledTuple', 'get_empty_df', 'display_df', 'get_first',
-           'one_param', 'item_find', 'find_device', 'find_bs', 'np_func', 'Module', 'get_model', 'one_hot',
-           'one_hot_decode', 'params', 'trainable_params', 'norm_types', 'norm_bias_params', 'batch_to_samples',
-           'logit', 'num_distrib', 'rank_distrib', 'distrib_barrier', 'base_doc', 'doc', 'nested_reorder',
-           'make_cross_image', 'show_image_batch', 'requires_grad', 'init_default', 'cond_init', 'apply_leaf',
-           'apply_init', 'script_use_ctx', 'script_save_ctx', 'script_fwd', 'script_bwd', 'grad_module', 'ismin_torch',
-           'notmax_torch', 'flatten_check']
+           'to_detach', 'to_half', 'to_float', 'default_device', 'default_device', 'to_device', 'to_cpu', 'to_np',
+           'to_concat', 'TensorBase', 'TensorImageBase', 'TensorImage', 'TensorImageBW', 'TensorMask',
+           'TensorFlowField', 'TensorCategory', 'TensorMultiCategory', 'TitledTensorScalar', 'concat', 'Chunks',
+           'show_title', 'ShowTitle', 'TitledInt', 'TitledFloat', 'TitledStr', 'TitledTuple', 'get_empty_df',
+           'display_df', 'get_first', 'one_param', 'item_find', 'find_device', 'find_bs', 'np_func', 'Module',
+           'get_model', 'one_hot', 'one_hot_decode', 'params', 'trainable_params', 'norm_types', 'norm_bias_params',
+           'batch_to_samples', 'logit', 'num_distrib', 'rank_distrib', 'distrib_barrier', 'base_doc', 'doc',
+           'nested_reorder', 'make_cross_image', 'show_image_batch', 'requires_grad', 'init_default', 'cond_init',
+           'apply_leaf', 'apply_init', 'script_use_ctx', 'script_save_ctx', 'script_fwd', 'script_bwd', 'grad_module',
+           'ismin_torch', 'notmax_torch', 'flatten_check']
 
 # Cell
 #nbdev_comment from __future__ import annotations
@@ -265,6 +265,18 @@ def default_device(use_cuda=-1):
     use = defaults.use_cuda or (torch.cuda.is_available() and defaults.use_cuda is None)
     assert torch.cuda.is_available() or not use
     return torch.device(torch.cuda.current_device()) if use else torch.device('cpu')
+
+# Cell
+def default_device(use=-1):
+    "Return or set default device; `use_cuda`: -1 - CUDA/mps if available; True - error if not available; False - CPU"
+    if use == -1: use = defaults.use_cuda
+    else: defaults.use_cuda=use
+    if use is None:
+        if torch.backends.mps.is_available() or torch.cuda.is_available(): use = True
+    if use:
+        if torch.cuda.is_available(): return torch.device(torch.cuda.current_device())
+        if torch.mps.is_available(): return torch.device('mps')
+    return torch.device('cpu')
 
 # Cell
 def to_device(b, device=None, non_blocking=False):
