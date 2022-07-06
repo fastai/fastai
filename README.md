@@ -2,7 +2,7 @@
 > fastai simplifies training fast and accurate neural nets using modern best practices
 
 
-![CI](https://github.com/fastai/fastai/workflows/CI/badge.svg) [![PyPI](https://img.shields.io/pypi/v/fastai?color=blue&label=pypi%20version)](https://pypi.org/project/fastai/#description) [![Conda (channel only)](https://img.shields.io/conda/vn/fastai/fastai?color=seagreen&label=conda%20version)](https://anaconda.org/fastai/fastai) [![Build fastai images](https://github.com/fastai/docker-containers/workflows/Build%20fastai%20images/badge.svg)](https://github.com/fastai/docker-containers) ![docs](https://github.com/fastai/fastai/workflows/docs/badge.svg) [![fastai license](https://img.shields.io/pypi/l/fastai.svg)]
+![CI](https://github.com/fastai/fastai/workflows/CI/badge.svg) [![PyPI](https://img.shields.io/pypi/v/fastai?color=blue&label=pypi%20version)](https://pypi.org/project/fastai/#description) [![Conda (channel only)](https://img.shields.io/conda/vn/fastai/fastai?color=seagreen&label=conda%20version)](https://anaconda.org/fastai/fastai) [![Build fastai images](https://github.com/fastai/docker-containers/workflows/Build%20fastai%20images/badge.svg)](https://github.com/fastai/docker-containers) ![docs](https://github.com/fastai/fastai/workflows/docs/badge.svg) [![fastai license](https://img.shields.io/pypi/l/fastai.svg)](https://github.com/fastai/fastai/blob/master/LICENSE)
 
 ## Installing
 
