@@ -45,13 +45,6 @@ class _BaseOptimizer():
         assert(len(self.param_lists)>1)
         self.freeze_to(-1)
 
-    def set_freeze(self,
-        n:int,
-        rg:bool, # Whether grad is required
-        ignore_force_train=False # Overwrites "force_train" or batch norm always trains even if frozen
-    ):
-        for p in self.param_lists[n]: p.requires_grad_(rg or (state.get('force_train', False) and not ignore_force_train))
-
     def set_hypers(self, **kwargs): L(kwargs.items()).starmap(self.set_hyper)
     def _set_hyper(self,
         k, # Hyperparameter key
