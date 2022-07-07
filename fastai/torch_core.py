@@ -511,7 +511,7 @@ def show_title(o, ax=None, ctx=None, label=None, color='black', **kwargs):
         ax.set_title(o, color=color)
     elif isinstance(ax, pd.Series):
         while label in ax: label += '_'
-        ax = ax.append(pd.Series({label: o}))
+        ax = pd.concat([ax,pd.Series({label: o})])
     return ax
 
 # Cell

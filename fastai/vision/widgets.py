@@ -12,6 +12,7 @@ __all__ = ['HBox', 'VBox', 'widgets', 'Button', 'Checkbox', 'Dropdown', 'Layout'
 from ..torch_basics import *
 from ..data.all import *
 from .core import *
+from fastcore.parallel import *
 from ipywidgets import HBox,VBox,widgets,Button,Checkbox,Dropdown,Layout,Box,Output,Label,FileUpload
 
 # Cell
