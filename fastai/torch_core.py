@@ -267,15 +267,17 @@ def default_device(use_cuda=-1):
     return torch.device(torch.cuda.current_device()) if use else torch.device('cpu')
 
 # Cell
+def _has_mps(): return nested_attr(torch, 'backends.mps.is_available', noop)()
+
 def default_device(use=-1):
     "Return or set default device; `use_cuda`: -1 - CUDA/mps if available; True - error if not available; False - CPU"
     if use == -1: use = defaults.use_cuda
     else: defaults.use_cuda=use
     if use is None:
-        if torch.backends.mps.is_available() or torch.cuda.is_available(): use = True
+        if _has_mps() or torch.cuda.is_available(): use = True
     if use:
         if torch.cuda.is_available(): return torch.device(torch.cuda.current_device())
-        if torch.backends.mps.is_available(): return torch.device('mps')
+        if _has_mps(): return torch.device('mps')
     return torch.device('cpu')
 
 # Cell
