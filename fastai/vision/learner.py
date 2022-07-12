@@ -306,7 +306,7 @@ def show_results(x:TensorImage, y:TensorCategory, samples, outs, ctxs=None, max_
 
 # Cell
 @typedispatch
-def show_results(x:TensorImage, y:(TensorMask, TensorPoint, TensorBBox), samples, outs, ctxs=None, max_n=6,
+def show_results(x:TensorImage, y:TensorMask|TensorPoint|TensorBBox, samples, outs, ctxs=None, max_n=6,
                  nrows=None, ncols=1, figsize=None, **kwargs):
     if ctxs is None: ctxs = get_grid(min(len(samples), max_n), nrows=nrows, ncols=ncols, figsize=figsize, double=True,
                                      title='Target/Prediction')

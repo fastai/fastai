@@ -110,7 +110,7 @@ class PILBase(Image.Image, metaclass=BypassNewMeta):
     _show_args = {'cmap':'viridis'}
     _open_args = {'mode': 'RGB'}
     @classmethod
-    def create(cls, fn:(Path,str,Tensor,ndarray,bytes), **kwargs)->None:
+    def create(cls, fn:Path|str|Tensor|ndarray|bytes, **kwargs)->None:
         "Open an `Image` from path `fn`"
         if isinstance(fn,TensorImage): fn = fn.permute(1,2,0).type(torch.uint8)
         if isinstance(fn, TensorMask): fn = fn.type(torch.uint8)
@@ -257,8 +257,8 @@ class PointScaler(Transform):
         res = first(dl.do_item(None), risinstance(TensorPoint))
         if res is not None: self.c = res.numel()
 
-    def encodes(self, x:(PILBase,TensorImageBase)): return self._grab_sz(x)
-    def decodes(self, x:(PILBase,TensorImageBase)): return self._grab_sz(x)
+    def encodes(self, x:PILBase|TensorImageBase): return self._grab_sz(x)
+    def decodes(self, x:PILBase|TensorImageBase): return self._grab_sz(x)
 
     def encodes(self, x:TensorPoint): return _scale_pnts(x, self._get_sz(x), self.do_scale, self.y_first)
     def decodes(self, x:TensorPoint): return _unscale_pnts(x.view(-1, 2), self._get_sz(x))

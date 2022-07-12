@@ -18,7 +18,7 @@ from packaging import version
 class _BaseOptimizer():
     "Common functionality between `Optimizer` and `OptimWrapper`"
     def all_params(self,
-        n:(slice, int)=slice(None), # Extended slicing over the optimizer `param_lists`
+        n:slice|int=slice(None), # Extended slicing over the optimizer `param_lists`
         with_grad:bool=False # Get all param tuples. If `True` select only those with a gradient
     ):
         res = L((p,pg,self.state[p],hyper) for pg,hyper in zip(self.param_lists[n],self.hypers[n]) for p in pg)

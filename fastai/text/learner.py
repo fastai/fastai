@@ -83,7 +83,7 @@ def load_model_text(
     model, # Model architecture
     opt:Optimizer, # `Optimizer` used to fit the model
     with_opt:bool=None, # Enable to load `Optimizer` state
-    device:(int,str,torch.device)=None, # Sets the device, uses 'cpu' if unspecified
+    device:int|str|torch.device=None, # Sets the device, uses 'cpu' if unspecified
     strict:bool=True # Whether to strictly enforce the keys of `file`s state dict match with the model `Module.state_dict`
 ):
     "Load `model` from `file` along with `opt` (if available, and if `with_opt`)"
@@ -126,7 +126,7 @@ class TextLearner(Learner):
 
     def load_encoder(self,
         file:str, # Filename of the saved encoder
-        device:(int,str,torch.device)=None # Device used to load, defaults to `dls` device
+        device:int|str|torch.device=None # Device used to load, defaults to `dls` device
     ):
         "Load the encoder `file` from the model directory, optionally ensuring it's on `device`"
         encoder = get_model(self.model)[0]
@@ -159,7 +159,7 @@ class TextLearner(Learner):
     def load(self,
         file:str, # Filename of saved model
         with_opt:bool=None, # Enable to load `Optimizer` state
-        device:(int,str,torch.device)=None, # Device used to load, defaults to `dls` device
+        device:int|str|torch.device=None, # Device used to load, defaults to `dls` device
         **kwargs
     ):
         if device is None: device = self.dls.device

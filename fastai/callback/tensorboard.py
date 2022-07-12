@@ -166,7 +166,7 @@ from ..vision.core import TensorPoint,TensorBBox
 
 # Cell
 @typedispatch
-def tensorboard_log(x:TensorImage, y: (TensorImageBase, TensorPoint, TensorBBox), samples, outs, writer, step):
+def tensorboard_log(x:TensorImage, y: TensorImageBase|TensorPoint|TensorBBox, samples, outs, writer, step):
     fig,axs = get_grid(len(samples), return_fig=True, double=True)
     for i in range(2):
         axs[::2] = [b.show(ctx=c) for b,c in zip(samples.itemgot(i),axs[::2])]

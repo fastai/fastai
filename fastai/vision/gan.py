@@ -20,7 +20,7 @@ class GANModule(Module):
     def __init__(self,
         generator:nn.Module=None, # The generator PyTorch module
         critic:nn.Module=None, # The discriminator PyTorch module
-        gen_mode:(None,bool)=False # Whether the GAN should be set to generator mode
+        gen_mode:None|bool=False # Whether the GAN should be set to generator mode
     ):
         if generator is not None: self.generator=generator
         if critic    is not None: self.critic   =critic
@@ -30,7 +30,7 @@ class GANModule(Module):
         return self.generator(*args) if self.gen_mode else self.critic(*args)
 
     def switch(self,
-        gen_mode:(None,bool)=None # Whether the GAN should be set to generator mode
+        gen_mode:None|bool=None # Whether the GAN should be set to generator mode
     ):
         "Put the module in generator mode if `gen_mode` is `True`, in critic mode otherwise."
         self.gen_mode = (not self.gen_mode) if gen_mode is None else gen_mode
@@ -182,7 +182,7 @@ class GANTrainer(Callback):
     run_after = TrainEvalCallback
     def __init__(self,
         switch_eval:bool=False, # Whether the model should be set to eval mode when calculating loss
-        clip:(None, float)=None, # How much to clip the weights
+        clip:None|float=None, # How much to clip the weights
         beta:float=0.98, # Exponentially weighted smoothing of the losses `beta`
         gen_first:bool=False, # Whether we start with generator training
         show_img:bool=True, # Whether to show example generated images during training
@@ -288,8 +288,8 @@ class AdaptiveGANSwitcher(Callback):
     "Switcher that goes back to generator/critic when the loss goes below `gen_thresh`/`crit_thresh`."
     run_after = GANTrainer
     def __init__(self,
-        gen_thresh:(None, float)=None, # Loss threshold for generator
-        critic_thresh:(None, float)=None # Loss threshold for critic
+        gen_thresh:None|float=None, # Loss threshold for generator
+        critic_thresh:None|float=None # Loss threshold for critic
     ):
         store_attr('gen_thresh,critic_thresh')
 
@@ -347,7 +347,7 @@ def show_results(x:InvisibleTensor, y:TensorImage, samples, outs, ctxs=None, max
 def gan_loss_from_func(
     loss_gen:callable, # A loss function for the generator. Evaluates generator output images and target real images
     loss_crit:callable, # A loss function for the critic. Evaluates predictions of real and fake images.
-    weights_gen:(None, list, tuple)=None # Weights for the generator and critic loss function
+    weights_gen:None|list|tuple=None # Weights for the generator and critic loss function
 ):
     "Define loss functions for a GAN from `loss_gen` and `loss_crit`."
     def _loss_G(fake_pred, output, target, weights_gen=weights_gen):
@@ -376,13 +376,13 @@ class GANLearner(Learner):
         critic:nn.Module, # Critic model
         gen_loss_func:callable, # Generator loss function
         crit_loss_func:callable, # Critic loss function
-        switcher:(Callback,None)=None, # Callback for switching between generator and critic training, defaults to `FixedGANSwitcher`
+        switcher:Callback|None=None, # Callback for switching between generator and critic training, defaults to `FixedGANSwitcher`
         gen_first:bool=False, # Whether we start with generator training
         switch_eval:bool=True, # Whether the model should be set to eval mode when calculating loss
         show_img:bool=True, # Whether to show example generated images during training
-        clip:(None, float)=None, # How much to clip the weights
-        cbs:(Callback, None, list)=None, # Additional callbacks
-        metrics:(None, list, callable)=None, # Metrics
+        clip:None|float=None, # How much to clip the weights
+        cbs:Callback|None|list=None, # Additional callbacks
+        metrics:None|list|callable=None, # Metrics
         **kwargs
     ):
         gan = GANModule(generator, critic)
@@ -397,8 +397,8 @@ class GANLearner(Learner):
     def from_learners(cls,
         gen_learn:Learner, # A `Learner` object that contains the generator
         crit_learn:Learner, # A `Learner` object that contains the critic
-        switcher:(Callback,None)=None, # Callback for switching between generator and critic training, defaults to `FixedGANSwitcher`
-        weights_gen:(None, list, tuple)=None, # Weights for the generator and critic loss function
+        switcher:Callback|None=None, # Callback for switching between generator and critic training, defaults to `FixedGANSwitcher`
+        weights_gen:None|list|tuple=None, # Weights for the generator and critic loss function
         **kwargs
     ):
         "Create a GAN from `learn_gen` and `learn_crit`."
@@ -410,8 +410,8 @@ class GANLearner(Learner):
         dls:DataLoaders, # DataLoaders object for GAN data
         generator:nn.Module, # Generator model
         critic:nn.Module, # Critic model
-        switcher:(Callback,None)=None, # Callback for switching between generator and critic training, defaults to `FixedGANSwitcher(n_crit=5, n_gen=1)`
-        clip:(None, float)=0.01, # How much to clip the weights
+        switcher:Callback|None=None, # Callback for switching between generator and critic training, defaults to `FixedGANSwitcher(n_crit=5, n_gen=1)`
+        clip:None|float=0.01, # How much to clip the weights
         switch_eval:bool=False, # Whether the model should be set to eval mode when calculating loss
         **kwargs
     ):
