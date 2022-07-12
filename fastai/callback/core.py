@@ -176,7 +176,7 @@ class FetchPredsCallback(Callback):
         dl:DataLoader=None, # `DataLoader` used for fetching `Learner` predictions
         with_input:bool=False, # Whether to return inputs in `GatherPredsCallback`
         with_decoded:bool=False, # Whether to return decoded predictions
-        cbs:(Callback,list)=None, # `Callback` to temporarily remove from `Learner`
+        cbs:Callback|list=None, # `Callback` to temporarily remove from `Learner`
         reorder:bool=True # Whether to sort prediction results
     ):
         self.cbs = L(cbs)

@@ -19,7 +19,7 @@ class TabularDataLoaders(DataLoaders):
     @delegates(Tabular.dataloaders, but=["dl_type", "dl_kwargs"])
     def from_df(cls,
         df:pd.DataFrame,
-        path:(str,Path)='.', # Location of `df`, defaults to current working directory
+        path:str|Path='.', # Location of `df`, defaults to current working directory
         procs:list=None, # List of `TabularProc`s
         cat_names:list=None, # Column names pertaining to categorical variables
         cont_names:list=None, # Column names pertaining to continuous variables
@@ -37,7 +37,7 @@ class TabularDataLoaders(DataLoaders):
 
     @classmethod
     def from_csv(cls,
-        csv:(str,Path,io.BufferedReader), # A csv of training data
+        csv:str|Path|io.BufferedReader, # A csv of training data
         skipinitialspace:bool=True, # Skip spaces after delimiter
         **kwargs
     ):

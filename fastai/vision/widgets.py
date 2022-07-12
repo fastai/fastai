@@ -39,7 +39,7 @@ def _update_children(
 
 # Cell
 def carousel(
-    children:(tuple,list)=(), # `Box` objects to display in a carousel
+    children:tuple|list=(), # `Box` objects to display in a carousel
     **layout
 ) -> Box: # An `ipywidget`'s carousel
     "A horizontally scrolling carousel"
@@ -51,7 +51,7 @@ def carousel(
 
 # Cell
 def _open_thumb(
-    fn:(Path, str), # A path of an image
+    fn:Path|str, # A path of an image
     h:int, # Thumbnail Height
     w:int # Thumbnail Width
 ) -> Image: # `PIL` image to display

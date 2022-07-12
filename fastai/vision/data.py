@@ -138,7 +138,7 @@ class ImageDataLoaders(DataLoaders):
 
     @classmethod
     def from_name_func(cls,
-        path:(str, Path), # Set the default path to a directory that a `Learner` can use to save files like models
+        path:str|Path, # Set the default path to a directory that a `Learner` can use to save files like models
         fnames:list, # A list of `os.Pathlike`'s to individual image files
         label_func:callable, # A function that receives a string (the file name) and outputs a label
         **kwargs

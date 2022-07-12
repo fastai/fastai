@@ -46,8 +46,8 @@ class BaseLoss():
         return TensorBase(x.transpose(self.axis,-1).contiguous()) if isinstance(x,torch.Tensor) else x
 
     def __call__(self,
-        inp:(Tensor,list), # Predictions from a `Learner`
-        targ:(Tensor,list), # Actual y label
+        inp:Tensor|list, # Predictions from a `Learner`
+        targ:Tensor|list, # Actual y label
         **kwargs
     ) -> TensorBase: # `loss_cls` calculated on `inp` and `targ`
         inp,targ  = map(self._contiguous, (inp,targ))
