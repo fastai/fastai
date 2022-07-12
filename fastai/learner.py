@@ -259,7 +259,7 @@ class Learner(GetAttr):
     @delegates(GatherPredsCallback.__init__)
     def get_preds(self,
                   ds_idx: int =1, # Index of data bunch or dataloader
-                  dl: DataLoader | None=None, # Dataloader or dataset to be passed with ds_idx
+                  dl: TfmdDL | None=None, # Dataloader to be passed with ds_idx
                   with_input: bool=False, # Whether to return inputs
                   with_decoded: bool=False, # Whether to decode based on loss function passed
                   with_loss : bool=False, # Whether to return losses
