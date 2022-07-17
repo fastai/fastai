@@ -165,7 +165,9 @@ def ColSplitter(col='is_valid', on=None):
     def _inner(o):
         assert isinstance(o, pd.DataFrame), "ColSplitter only works when your items are a pandas DataFrame"
         c = o.iloc[:,col] if isinstance(col, int) else o[col]
-        valid_idx = c.values.astype('bool') if on is None else c == on
+        if on is None:      valid_idx = c.values.astype('bool')
+        elif is_listy(on):  valid_idx = c.isin(on)
+        else:               valid_idx = c == on
         return IndexSplitter(mask2idxs(valid_idx))(o)
     return _inner
 
