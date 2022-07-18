@@ -54,7 +54,7 @@ def clip_remove_empty(
 # Cell
 def bb_pad(
     samples:list, # List of 3-tuples like (image, bounding_boxes, labels)
-    pad_idx:int=0 # Label that will be used to pad each list of labels
+    pad_idx=0 # Label that will be used to pad each list of labels
 ):
     "Function that collects `samples` of labelled bboxes and adds padding with `pad_idx`."
     samples = [(s[0], *clip_remove_empty(*s[1:])) for s in samples]
