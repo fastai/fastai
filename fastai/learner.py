@@ -423,7 +423,7 @@ def export(self:Learner, fname='export.pkl', pickle_module=pickle, pickle_protoc
 
 # Cell
 def load_learner(fname, cpu=True, pickle_module=pickle):
-    "Load a `Learner` object in `fname`, optionally putting it on the `cpu`"
+    "Load a `Learner` object in `fname`, by default putting it on the `cpu`"
     distrib_barrier()
     map_loc = 'cpu' if cpu else default_device()
     try: res = torch.load(fname, map_location=map_loc, pickle_module=pickle_module)
