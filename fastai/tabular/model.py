@@ -28,7 +28,7 @@ def _one_emb_sz(classes, n, sz_dict=None):
 
 # Cell
 def get_emb_sz(
-    to:(Tabular, TabularPandas),
+    to:Tabular|TabularPandas,
     sz_dict:dict=None # Dictionary of {'class_name' : size, ...} to override default `emb_sz_rule`
 ) -> list: # List of embedding sizes for each category
     "Get embedding size for each cat_name in `Tabular` or `TabularPandas`, or populate embedding size manually using sz_dict"
@@ -42,7 +42,7 @@ class TabularModel(Module):
         n_cont:int, # Number of continuous variables
         out_sz:int, # Number of outputs for final `LinBnDrop` layer
         layers:list, # Sequence of ints used to specify the input and output size of each `LinBnDrop` layer
-        ps:(float, list)=None, # Sequence of dropout probabilities for `LinBnDrop`
+        ps:float|list=None, # Sequence of dropout probabilities for `LinBnDrop`
         embed_p:float=0., # Dropout probability for `Embedding` layer
         y_range=None, # Low and high for `SigmoidRange` activation
         use_bn:bool=True, # Use `BatchNorm1d` in `LinBnDrop` layers

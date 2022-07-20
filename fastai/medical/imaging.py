@@ -49,7 +49,7 @@ class TensorDicom(TensorImage):
 class PILDicom(PILBase):
     _open_args,_tensor_cls,_show_args = {},TensorDicom,TensorDicom._show_args
     @classmethod
-    def create(cls, fn:(Path,str,bytes), mode=None)->None:
+    def create(cls, fn:Path|str|bytes, mode=None)->None:
         "Open a `DICOM file` from path `fn` or bytes `fn` and load it as a `PIL Image`"
         if isinstance(fn,bytes): im = Image.fromarray(pydicom.dcmread(pydicom.filebase.DicomBytesIO(fn)).pixel_array)
         if isinstance(fn,(Path,str)): im = Image.fromarray(pydicom.dcmread(fn).pixel_array)
@@ -301,7 +301,7 @@ def to_3chan(x:DcmDataset, win1, win2, bins=None):
 
 # Cell
 @patch
-def save_jpg(x:(Tensor,DcmDataset), path, wins, bins=None, quality=90):
+def save_jpg(x:Tensor|DcmDataset, path, wins, bins=None, quality=90):
     "Save tensor or dicom image into `jpg` format"
     fn = Path(path).with_suffix('.jpg')
     x = (x.to_nchan(wins, bins)*255).byte()
@@ -310,14 +310,14 @@ def save_jpg(x:(Tensor,DcmDataset), path, wins, bins=None, quality=90):
 
 # Cell
 @patch
-def to_uint16(x:(Tensor,DcmDataset), bins=None):
+def to_uint16(x:Tensor|DcmDataset, bins=None):
     "Convert into a unit16 array"
     d = x.hist_scaled(bins).clamp(0,1) * 2**16
     return d.numpy().astype(np.uint16)
 
 # Cell
 @patch
-def save_tif16(x:(Tensor,DcmDataset), path, bins=None, compress=True):
+def save_tif16(x:Tensor|DcmDataset, path, bins=None, compress=True):
     "Save tensor or dicom image into `tiff` format"
     fn = Path(path).with_suffix('.tif')
     Image.fromarray(x.to_uint16(bins)).save(str(fn), compression='tiff_deflate' if compress else None)

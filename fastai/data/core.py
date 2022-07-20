@@ -202,7 +202,7 @@ class DataLoaders(GetAttr):
     _default='train'
     def __init__(self,
         *loaders, # `DataLoader` objects to wrap
-        path:(str,Path)='.', # Path to store export objects
+        path:str|Path='.', # Path to store export objects
         device=None # Device to put `DataLoaders`
     ):
         self.loaders,self.path = list(loaders),Path(path)
@@ -257,7 +257,7 @@ class DataLoaders(GetAttr):
     @classmethod
     def from_dsets(cls,
         *ds, # `Datasets` object(s)
-        path:(str,Path)='.', # Path to put in `DataLoaders`
+        path:str|Path='.', # Path to put in `DataLoaders`
         bs:int=64, # Size of batch
         device=None, # Device to put `DataLoaders`
         dl_type=TfmdDL, # Type of `DataLoader`
@@ -274,7 +274,7 @@ class DataLoaders(GetAttr):
     def from_dblock(cls,
         dblock, # `DataBlock` object
         source, # Source of data. Can be `Path` to files
-        path:(str, Path)='.', # Path to put in `DataLoaders`
+        path:str|Path='.', # Path to put in `DataLoaders`
         bs:int=64, # Size of batch
         val_bs:int=None, # Size of batch for validation `DataLoader`
         shuffle:bool=True, # Whether to shuffle data
@@ -290,7 +290,7 @@ class DataLoaders(GetAttr):
                valid_ds="Validation `Dataset`",
                to="Use `device`",
                add_tfms="Add `tfms` to `loaders` for `event",
-               cuda="Use the gpu if available",
+               cuda="Use accelerator if available",
                cpu="Use the cpu",
                new_empty="Create a new empty version of `self` with the same transforms",
                from_dblock="Create a dataloaders from a given `dblock`")
@@ -315,7 +315,7 @@ class FilteredBase:
         shuffle:bool=True, # Shuffle training `DataLoader`
         val_shuffle:bool=False, # Shuffle validation `DataLoader`
         n:int=None, # Size of `Datasets` used to create `DataLoader`
-        path:(str, Path)='.', # Path to put in `DataLoaders`
+        path:str|Path='.', # Path to put in `DataLoaders`
         dl_type:TfmdDL=None, # Type of `DataLoader`
         dl_kwargs:list=None, # List of kwargs to pass to individual `DataLoader`s
         device:torch.device=None, # Device to put `DataLoaders`
@@ -346,7 +346,7 @@ class TfmdLists(FilteredBase, L, GetAttr):
     _default='tfms'
     def __init__(self,
         items:list, # Items to apply `Transform`s to
-        tfms:(list,Pipeline), # `Transform`(s) or `Pipeline` to apply
+        tfms:list|Pipeline, # `Transform`(s) or `Pipeline` to apply
         use_list:bool=None, # Use `list` in `L`
         do_setup:bool=True, # Call `setup()` for `Transform`
         split_idx:int=None, # Apply `Transform`(s) to training or validation set. `0` for training set and `1` for validation set
@@ -444,7 +444,7 @@ class Datasets(FilteredBase):
     "A dataset that creates a tuple from each `tfms`"
     def __init__(self,
         items:list=None, # List of items to create `Datasets`
-        tfms:(list,Pipeline)=None, # List of `Transform`(s) or `Pipeline` to apply
+        tfms:list|Pipeline=None, # List of `Transform`(s) or `Pipeline` to apply
         tls:TfmdLists=None, # If None, `self.tls` is generated from `items` and `tfms`
         n_inp:int=None, # Number of elements in `Datasets` tuple that should be considered part of input
         dl_type=None, # Default type of `DataLoader` used when function `FilteredBase.dataloaders` is called
@@ -502,7 +502,7 @@ class Datasets(FilteredBase):
 
 # Cell
 def test_set(
-    dsets:(Datasets, TfmdLists), # Map- or iterable-style dataset from which to load the data
+    dsets:Datasets|TfmdLists, # Map- or iterable-style dataset from which to load the data
     test_items, # Items in test dataset
     rm_tfms=None, # Start index of `Transform`(s) from validation set in `dsets` to apply
     with_labels:bool=False # Whether the test items contain labels

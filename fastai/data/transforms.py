@@ -160,11 +160,14 @@ def FileSplitter(fname):
     return _inner
 
 # Cell
-def ColSplitter(col='is_valid'):
+def ColSplitter(col='is_valid', on=None):
     "Split `items` (supposed to be a dataframe) by value in `col`"
     def _inner(o):
         assert isinstance(o, pd.DataFrame), "ColSplitter only works when your items are a pandas DataFrame"
-        valid_idx = (o.iloc[:,col] if isinstance(col, int) else o[col]).values.astype('bool')
+        c = o.iloc[:,col] if isinstance(col, int) else o[col]
+        if on is None:      valid_idx = c.values.astype('bool')
+        elif is_listy(on):  valid_idx = c.isin(on)
+        else:               valid_idx = c == on
         return IndexSplitter(mask2idxs(valid_idx))(o)
     return _inner
 

@@ -18,7 +18,7 @@ from packaging import version
 class _BaseOptimizer():
     "Common functionality between `Optimizer` and `OptimWrapper`"
     def all_params(self,
-        n:(slice, int)=slice(None), # Extended slicing over the optimizer `param_lists`
+        n:slice|int=slice(None), # Extended slicing over the optimizer `param_lists`
         with_grad:bool=False # Get all param tuples. If `True` select only those with a gradient
     ):
         res = L((p,pg,self.state[p],hyper) for pg,hyper in zip(self.param_lists[n],self.hypers[n]) for p in pg)
@@ -44,13 +44,6 @@ class _BaseOptimizer():
     def freeze(self):
         assert(len(self.param_lists)>1)
         self.freeze_to(-1)
-
-    def set_freeze(self,
-        n:int,
-        rg:bool, # Whether grad is required
-        ignore_force_train=False # Overwrites "force_train" or batch norm always trains even if frozen
-    ):
-        for p in self.param_lists[n]: p.requires_grad_(rg or (state.get('force_train', False) and not ignore_force_train))
 
     def set_hypers(self, **kwargs): L(kwargs.items()).starmap(self.set_hyper)
     def _set_hyper(self,

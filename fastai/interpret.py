@@ -57,7 +57,7 @@ class Interpretation():
         return cls(learn, dl, losses, act)
 
     def top_losses(self,
-        k:(int,None)=None, # Return `k` losses, defaults to all
+        k:int|None=None, # Return `k` losses, defaults to all
         largest:bool=True, # Sort losses by largest or smallest
         items:bool=False # Whether to return input items
     ):
@@ -67,7 +67,7 @@ class Interpretation():
         else:     return losses, idx
 
     def plot_top_losses(self,
-        k:(int,list), # Number of losses to plot
+        k:int|list, # Number of losses to plot
         largest:bool=True, # Sort losses by largest or smallest
         **kwargs
     ):

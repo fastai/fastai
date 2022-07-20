@@ -12,6 +12,7 @@ __all__ = ['HBox', 'VBox', 'widgets', 'Button', 'Checkbox', 'Dropdown', 'Layout'
 from ..torch_basics import *
 from ..data.all import *
 from .core import *
+from fastcore.parallel import *
 from ipywidgets import HBox,VBox,widgets,Button,Checkbox,Dropdown,Layout,Box,Output,Label,FileUpload
 
 # Cell
@@ -38,7 +39,7 @@ def _update_children(
 
 # Cell
 def carousel(
-    children:(tuple,list)=(), # `Box` objects to display in a carousel
+    children:tuple|list=(), # `Box` objects to display in a carousel
     **layout
 ) -> Box: # An `ipywidget`'s carousel
     "A horizontally scrolling carousel"
@@ -50,7 +51,7 @@ def carousel(
 
 # Cell
 def _open_thumb(
-    fn:(Path, str), # A path of an image
+    fn:Path|str, # A path of an image
     h:int, # Thumbnail Height
     w:int # Thumbnail Width
 ) -> Image: # `PIL` image to display

@@ -2,6 +2,28 @@
 
 <!-- do not remove -->
 
+## 2.7.6
+
+### New Features
+
+- Initial Mac GPU (mps) support ([#3719](https://github.com/fastai/fastai/issues/3719))
+
+
+## 2.7.5
+
+### New Features
+
+- auto-normalize timm models ([#3716](https://github.com/fastai/fastai/issues/3716))
+- PyTorch 1.12 support
+
+
+## 2.7.4
+
+### New Features
+
+- Add `DataBlock.weighted_dataloaders` ([#3706](https://github.com/fastai/fastai/issues/3706))
+
+
 ## 2.7.2
 
 ### Bugs Squashed

@@ -284,7 +284,7 @@ def _unlist(l):
 
 # Cell
 @typedispatch
-def wandb_process(x:TensorImage, y:(TensorCategory,TensorMultiCategory), samples, outs, preds):
+def wandb_process(x:TensorImage, y:TensorCategory|TensorMultiCategory, samples, outs, preds):
     table = wandb.Table(columns=["Input image", "Ground_Truth", "Predictions"])
     for (image, label), pred_label in zip(samples,outs):
         table.add_data(wandb.Image(image.permute(1,2,0)), label, _unlist(pred_label))
@@ -310,7 +310,7 @@ def wandb_process(x:TensorImage, y:TensorMask, samples, outs, preds):
 
 # Cell
 @typedispatch
-def wandb_process(x:TensorText, y:(TensorCategory,TensorMultiCategory), samples, outs, preds):
+def wandb_process(x:TensorText, y:TensorCategory|TensorMultiCategory, samples, outs, preds):
     data = [[s[0], s[1], o[0]] for s,o in zip(samples,outs)]
     return {"Prediction_Samples": wandb.Table(data=data, columns=["Text", "Target", "Prediction"])}
 

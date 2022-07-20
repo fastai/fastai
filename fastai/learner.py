@@ -97,9 +97,23 @@ _loop = ['Start Fit', 'before_fit', 'Start Epoch Loop', 'before_epoch', 'Start T
 # Cell
 class Learner(GetAttr):
     _default='model'
-    def __init__(self, dls, model, loss_func=None, opt_func=Adam, lr=defaults.lr, splitter=trainable_params, cbs=None,
-                 metrics=None, path=None, model_dir='models', wd=None, wd_bn_bias=False, train_bn=True,
-                 moms=(0.95,0.85,0.95)):
+    def __init__(self,
+                 dls,  # `DataLoaders` containing data for each dataset needed for `model`
+                 model:callable, #  The model to train or use for inference
+                 loss_func:callable|None=None,  # Loss function for training
+                 opt_func=Adam,  # Optimisation function for training
+                 lr=defaults.lr,  # Learning rate
+                 splitter:callable=trainable_params,  # Used to split parameters into layer groups
+                 cbs=None,  # Callbacks
+                 metrics=None,  # Printed after each epoch
+                 path=None,  # Parent directory to save, load, and export models
+                 model_dir='models',  # Subdirectory to save and load models
+                 wd=None,  # Weight decay
+                 wd_bn_bias=False,  # Apply weight decay to batchnorm bias params?
+                 train_bn=True,  # Always train batchnorm layers?
+                 moms=(0.95,0.85,0.95),  # Momentum
+                 default_cbs:bool=True  # Include default callbacks?
+                ):
         path = Path(path) if path is not None else getattr(dls, 'path', Path('.'))
         if loss_func is None:
             loss_func = getattr(dls.train_ds, 'loss_func', None)
@@ -107,7 +121,8 @@ class Learner(GetAttr):
         self.dls,self.model = dls,model
         store_attr(but='dls,model,cbs')
         self.training,self.create_mbar,self.logger,self.opt,self.cbs = False,True,print,None,L()
-        self.add_cbs(L(defaults.callbacks)+L(cbs))
+        if default_cbs: self.add_cbs(L(defaults.callbacks))
+        self.add_cbs(cbs)
         self.lock = threading.Lock()
         self("after_create")
 
@@ -200,7 +215,8 @@ class Learner(GetAttr):
         self.opt.zero_grad()
 
     def _set_device(self, b):
-        model_device = torch.device(torch.cuda.current_device()) if next(self.model.parameters()).is_cuda else torch.device('cpu')
+#         model_device = torch.device(torch.cuda.current_device()) if next(self.model.parameters()).is_cuda else torch.device('cpu')
+        model_device = next(self.model.parameters()).device
         dls_device = getattr(self.dls, 'device', default_device())
         if model_device == dls_device: return to_device(b, dls_device)
         else: return to_device(b, model_device)
@@ -412,7 +428,7 @@ def load_learner(fname, cpu=True, pickle_module=pickle):
     map_loc = 'cpu' if cpu else default_device()
     try: res = torch.load(fname, map_location=map_loc, pickle_module=pickle_module)
     except AttributeError as e:
-        e.args = [f"Custom classes or functions exported with your `Learner` are not available in the namespace currently.\nPlease re-declare or import them before calling `load_learner`:\n\t{e.args[0]}"]
+        e.args = [f"Custom classes or functions exported with your `Learner` not available in namespace.\Re-declare/import before loading:\n\t{e.args[0]}"]
         raise
     if cpu:
         res.dls.cpu()
