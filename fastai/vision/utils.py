@@ -90,7 +90,7 @@ def resize_image(file, dest, src='.', max_size=None, n_channels=3, ext=None,
             img = img.resize(new_sz, resample=resample)
         if n_channels == 3: img = img.convert("RGB")
         img.save(dest_fname, img_format, **kwargs)
-    else: shutil.copy2(file, dest_fname)
+    elif file != dest_fname : shutil.copy2(file, dest_fname)
 
 # Cell
 def resize_images(path, max_workers=defaults.cpus, max_size=None, recurse=False,
