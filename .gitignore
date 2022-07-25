@@ -1,3 +1,4 @@
+.*
 Gemfile.lock
 collect_env.py
 tmp*
@@ -5,7 +6,8 @@ Untitled*.ipynb
 *.bak
 token
 .idea/
-docs/
+_docs/
+sidebar.yml
 conda/
 tmp/
 

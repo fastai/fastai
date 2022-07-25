@@ -1,4 +1,0 @@
-source "https://rubygems.org"
-
-gem "jekyll", ">= 3.7"
-gem "addressable", ">= 2.8.0"

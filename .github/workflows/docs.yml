@@ -1,39 +1,33 @@
-name: docs
-on: 
-  workflow_dispatch:
-#   workflow_run:
-#     workflows: ["CI"]
-#     branches: [master]
-#     types: 
-#       - completed
+name: Deploy to GitHub Pages
+
+on:
   push:
-    branches: 
+    branches:
       - master
-env:
-  HOME: /root
-defaults:
-  run:
-    shell: bash  
+  workflow_dispatch:
 
 jobs:
-  build:
-    runs-on: ubuntu-20.04
-    container: fastai/fastai
+  deploy:
+    name: Deploy to GitHub Pages
+    runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - uses: fastai/workflows/build-docs@master
-      with:
-        username: jeremyphoward
-        hostname: ps625762.dreamhostps.com
-        dest_path: docs.fast.ai
-        ssh_key: ${{ secrets.DH_KEY }}
-        delete: 'yes'
-    - name: check for broken links
-      if: github.event == 'workflow_dispatch'
-      run: |
-        pip install fastlinkcheck
-        link_check "docs/_site" --host "docs.fast.ai" 2> err || true
-        export GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
-        if [[ -z $(gh issue list -l "broken-link") && -s err ]]; then
-          gh issue create -t "Broken links found" -b "$(< err)" -l "broken-link" -R "${{ github.repository }}"
-        fi
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v3
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -Uq --pre nbdev
+          pip install -qe ".[dev]"
+      - name: Build website
+        run: nbdev_docs
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          force_orphan: true
+          publish_dir: ./_docs
+          # The following lines assign commit authorship to the official
+          # GH-Actions bot for deploys to `gh-pages` branch.
+          # You can swap them out with your own user credentials.
+          user_name: github-actions[bot]
+          user_email: 41898282+github-actions[bot]@users.noreply.github.com
