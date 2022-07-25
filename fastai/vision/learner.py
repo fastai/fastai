@@ -240,7 +240,7 @@ def vision_learner(dls, arch, normalize=True, n_out=None, pretrained=True,
 def create_unet_model(arch, n_out, img_size, pretrained=True, cut=None, n_in=3, **kwargs):
     "Create custom unet architecture"
     meta = model_meta.get(arch, _default_meta)
-    model = arch(pretrained)
+    model = arch(pretrained=pretrained)
     body = create_body(model, n_in, pretrained, ifnone(cut, meta['cut']))
     model = models.unet.DynamicUnet(body, n_out, img_size, **kwargs)
     return model
