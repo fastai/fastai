@@ -1,114 +1,114 @@
 website:
   sidebar:
     contents:
-      - index.ipynb
-      - quick_start.ipynb
+      - index.html
+      - quick_start.html
       - section: Tutorials
         contents:
-        - tutorial.ipynb
+        - tutorial.html
         - section: Beginner
           contents:
-          - 23_tutorial.vision.ipynb
-          - 38_tutorial.text.ipynb
-          - 44_tutorial.tabular.ipynb
-          - 46_tutorial.collab.ipynb
+          - 23_tutorial.vision.html
+          - 38_tutorial.text.html
+          - 44_tutorial.tabular.html
+          - 46_tutorial.collab.html
         - section: Intermediate
           contents:
-          - 50_tutorial.datablock.ipynb
-          - 22_tutorial.imagenette.ipynb
-          - 10_tutorial.pets.ipynb
-          - 61_tutorial.medical_imaging.ipynb
-          - 39_tutorial.transformers.ipynb
-          - 35_tutorial.wikitext.ipynb
+          - 50_tutorial.datablock.html
+          - 22_tutorial.imagenette.html
+          - 10_tutorial.pets.html
+          - 61_tutorial.medical_imaging.html
+          - 39_tutorial.transformers.html
+          - 35_tutorial.wikitext.html
           - 20b_tutorial.distributed
         - section: Advanced
           contents:
-          - 10b_tutorial.albumentations.ipynb
-          - 24_tutorial.siamese.ipynb
-          - 24_tutorial.image_sequence.ipynb
+          - 10b_tutorial.albumentations.html
+          - 24_tutorial.siamese.html
+          - 24_tutorial.image_sequence.html
         - section: Migrating from Other Libs
           contents:
-          - examples/migrating_pytorch.ipynb
-          - examples/migrating_pytorch_verbose.ipynb
-          - examples/migrating_ignite.ipynb
-          - examples/migrating_lightning.ipynb
-          - examples/migrating_catalyst.ipynb
+          - examples/migrating_pytorch.html
+          - examples/migrating_pytorch_verbose.html
+          - examples/migrating_ignite.html
+          - examples/migrating_lightning.html
+          - examples/migrating_catalyst.html
       - section: Training 
         contents:
-        - 13a_learner.ipynb
-        - 12_optimizer.ipynb
-        - 13b_metrics.ipynb
-        - 20_interpret.ipynb
-        - 20a_distributed.ipynb
+        - 13a_learner.html
+        - 12_optimizer.html
+        - 13b_metrics.html
+        - 20_interpret.html
+        - 20a_distributed.html
         - section: Callbacks 
           contents:
-          - 13_callback.core.ipynb
-          - 15_callback.hook.ipynb
-          - 16_callback.progress.ipynb
-          - 14_callback.schedule.ipynb
-          - 14a_callback.data.ipynb
-          - 18_callback.fp16.ipynb
-          - 19_callback.mixup.ipynb
-          - 18b_callback.preds.ipynb
-          - 34_callback.rnn.ipynb
-          - 17_callback.tracker.ipynb
-          - 18a_callback.training.ipynb
+          - 13_callback.core.html
+          - 15_callback.hook.html
+          - 16_callback.progress.html
+          - 14_callback.schedule.html
+          - 14a_callback.data.html
+          - 18_callback.fp16.html
+          - 19_callback.mixup.html
+          - 18b_callback.preds.html
+          - 34_callback.rnn.html
+          - 17_callback.tracker.html
+          - 18a_callback.training.html
       - section: Data 
         contents:
-        - 06_data.block.ipynb
-        - 03_data.core.ipynb
-        - 02_data.load.ipynb
-        - 04_data.external.ipynb
-        - 05_data.transforms.ipynb
+        - 06_data.block.html
+        - 03_data.core.html
+        - 02_data.load.html
+        - 04_data.external.html
+        - 05_data.transforms.html
       - section: Core 
         contents:
-        - 00_torch_core.ipynb
-        - 01_layers.ipynb
-        - 01a_losses.ipynb
+        - 00_torch_core.html
+        - 01_layers.html
+        - 01a_losses.html
       - section: Vision 
         contents:
-        - 07_vision.core.ipynb
-        - 08_vision.data.ipynb
-        - 09_vision.augment.ipynb
-        - 21_vision.learner.ipynb
+        - 07_vision.core.html
+        - 08_vision.data.html
+        - 09_vision.augment.html
+        - 21_vision.learner.html
         - section: Models 
           contents:
-          - 11_vision.models.xresnet.ipynb
-          - 15a_vision.models.unet.ipynb
-        - 24_vision.gan.ipynb
-        - 09b_vision.utils.ipynb
-        - 09c_vision.widgets.ipynb
+          - 11_vision.models.xresnet.html
+          - 15a_vision.models.unet.html
+        - 24_vision.gan.html
+        - 09b_vision.utils.html
+        - 09c_vision.widgets.html
       - section: Text 
         contents:
-        - 30_text.core.ipynb
-        - 31_text.data.ipynb
-        - 37_text.learner.ipynb
+        - 30_text.core.html
+        - 31_text.data.html
+        - 37_text.learner.html
         - section: Models 
           contents:
-          - 33_text.models.core.ipynb
-          - 32_text.models.awdlstm.ipynb
+          - 33_text.models.core.html
+          - 32_text.models.awdlstm.html
       - section: Tabular 
         contents:
-        - 40_tabular.core.ipynb
-        - 41_tabular.data.ipynb
-        - 43_tabular.learner.ipynb
-        - 42_tabular.model.ipynb
-        - 45_collab.ipynb
+        - 40_tabular.core.html
+        - 41_tabular.data.html
+        - 43_tabular.learner.html
+        - 42_tabular.model.html
+        - 45_collab.html
       - section: Medical 
         contents:
-        - 60_medical.imaging.ipynb
-        - 65_medical.text.ipynb
+        - 60_medical.imaging.html
+        - 65_medical.text.html
       - section: Integrations 
         contents:
-        - 70_callback.wandb.ipynb
-        - 70c_callback.captum.ipynb
-        - 70b_callback.neptune.ipynb
-        - 70d_callback.comet.ipynb
-        - 70a_callback.tensorboard.ipynb
-        - 74_huggingface.ipynb
+        - 70_callback.wandb.html
+        - 70c_callback.captum.html
+        - 70b_callback.neptune.html
+        - 70d_callback.comet.html
+        - 70a_callback.tensorboard.html
+        - 74_huggingface.html
       - section: fastai Development 
         contents:
-        - dev-setup.ipynb
+        - dev-setup.html
         - dev/git.md
         - dev/abbr.md
         - dev/style.md
