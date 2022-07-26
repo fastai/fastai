@@ -1,8 +1,6 @@
-name: Deploy to GitHub Pages
+name: Test rsync
 
 on:
-  push:
-    branches: [master]
   workflow_dispatch:
 
 jobs:
