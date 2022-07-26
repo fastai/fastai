@@ -20,7 +20,7 @@ jobs:
         pip install -e ".[dev]"
     - name: Build website
       run: nbdev_docs
-    - uses: fastai/workflows/build-docs@master
+    - uses: fastai/workflows/quarto-rsync@master
       with:
         username: jeremyphoward
         hostname: ps625762.dreamhostps.com
