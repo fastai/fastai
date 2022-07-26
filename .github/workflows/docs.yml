@@ -10,6 +10,21 @@ jobs:
     name: Deploy to GitHub Pages
     runs-on: ubuntu-latest
     steps:
+    - name: Setup ssh
+      run: |
+        cd
+        ls -la
+        mkdir -p ~/.ssh
+        ls -la
+        ls -la .ssh
+        touch ~/.ssh/foo
+        ls -la .ssh
+        echo "$SSH_KEY" > ~/.ssh/id_rsa
+        ls -la .ssh
+        chmod -R 400 ~/.ssh
+        ls -la ~/.ssh
+        mkdir _docs
+        touch _docs/foo
     - uses: fastai/workflows/quarto-rsync@master
       with:
         username: jeremyphoward
