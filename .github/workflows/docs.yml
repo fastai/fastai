@@ -12,14 +12,10 @@ jobs:
     steps:
     - name: Setup ssh
       run: |
-        cd
-        ls -la
         mkdir -p ~/.ssh
         chmod 700 ~/.ssh
-        ls -la .ssh
         echo "$SSH_KEY" > ~/.ssh/id_rsa
-        chmod 400 ~/.ssh/id_rsa
-        ls -la ~/.ssh
+        chmod 600 ~/.ssh/id_rsa
 #     - uses: fastai/workflows/quarto-rsync@master
 #       with:
 #         username: jeremyphoward
