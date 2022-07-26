@@ -10,17 +10,10 @@ jobs:
     name: Deploy to GitHub Pages
     runs-on: ubuntu-latest
     steps:
-    - name: Setup ssh
-      run: |
-        mkdir -p ~/.ssh
-        chmod 700 ~/.ssh
-        echo "$SSH_KEY" > ~/.ssh/id_rsa
-        chmod 600 ~/.ssh/id_rsa
-#     - uses: fastai/workflows/quarto-rsync@master
-#       with:
-#         username: jeremyphoward
-#         hostname: ps625762.dreamhostps.com
-#         dest_path: docs.fast.ai
-#         ssh_key: ${{ secrets.DH_KEY }}
-#         delete: 'yes'
-
+    - uses: fastai/workflows/quarto-rsync@master
+      with:
+        username: jeremyphoward
+        hostname: ps625762.dreamhostps.com
+        dest_path: docs.fast.ai
+        ssh_key: ${{ secrets.DH_KEY }}
+        delete: 'yes'
