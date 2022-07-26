@@ -15,16 +15,11 @@ jobs:
         cd
         ls -la
         mkdir -p ~/.ssh
-        ls -la
-        ls -la .ssh
-        touch ~/.ssh/foo
+        chmod 700 ~/.ssh
         ls -la .ssh
         echo "$SSH_KEY" > ~/.ssh/id_rsa
-        ls -la .ssh
-        chmod -R 400 ~/.ssh
+        chmod 400 ~/.ssh/id_rsa
         ls -la ~/.ssh
-        mkdir _docs
-        touch _docs/foo
     - uses: fastai/workflows/quarto-rsync@master
       with:
         username: jeremyphoward
