@@ -1,0 +1,22 @@
+div.description {
+  font-style: italic;
+}
+
+.cell-output pre {
+    margin-left: 0.8rem;
+    margin-top: 0;
+    background: none;
+    border-left: 2px solid lightsalmon;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+  }
+  
+  .cell-output .sourceCode {
+    background: none;
+    margin-top: 0;
+  }
+  
+  .cell > .sourceCode {
+    margin-bottom: 0;
+  }
+  

@@ -2,7 +2,7 @@ ipynb-filters: [nbdev_filter]
 
 project:
   type: website
-  output-dir: docs
+  output-dir: _docs
   preview:
     port: 3000
     browser: false

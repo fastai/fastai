@@ -6,8 +6,6 @@ Untitled*.ipynb
 *.bak
 token
 .idea/
-_docs/
-sidebar.yml
 conda/
 tmp/
 
@@ -125,3 +123,5 @@ venv.bak/
 
 # Mac stuff
 .DS_Store
+_docs/
+sidebar.yml
