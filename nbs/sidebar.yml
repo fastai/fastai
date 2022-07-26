@@ -20,7 +20,7 @@ website:
           - 61_tutorial.medical_imaging.ipynb
           - 39_tutorial.transformers.ipynb
           - 35_tutorial.wikitext.ipynb
-          - 20b_tutorial.distributed
+          - 20b_tutorial.distributed.ipynb
         - section: Advanced
           contents:
           - 10b_tutorial.albumentations.ipynb
