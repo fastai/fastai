@@ -95,5 +95,5 @@ jobs:
         mkdir -p $HOME/.fastai/data
         find $HOME/.fastai/archive/ -name "*.tgz" -exec tar -xzvf {} -C $HOME/.fastai/data \;
     - name: Test notebooks batch ${{matrix.nb_dec}}${{matrix.nb_unit}}
-      run: nbdev_test_nbs --flags '' --n_workers 3 --pause 1.0 --fname "nbs/${{matrix.nb_dec}}${{matrix.nb_unit}}*.ipynb"
+      run: nbdev_test --flags '' --n_workers 3 --pause 1.0 --fname "nbs/${{matrix.nb_dec}}${{matrix.nb_unit}}*.ipynb"
   
