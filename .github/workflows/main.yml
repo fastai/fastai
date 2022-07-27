@@ -12,51 +12,30 @@ on:
       - '*.md'
       - '.git*'
 
-jobs: 
-  debug:
-    permissions:
-      contents: none
-    runs-on: ubuntu-latest
-    steps:
-
-    - name: see payload
-      run: |
-        echo "$PAYLOAD"
-      env:
-        PAYLOAD: ${{ toJSON(github.event) }}
-    
-    - name: store payload
-      uses: actions/upload-artifact@v3
-      with:
-        name: payload.json
-        path: ${{ github.event_path }}
-        
-  filter:
-    permissions:
-      contents: none
-    runs-on: ubuntu-latest
-    steps:
-      - run: |
-          echo "passed filter"
-          echo "event_name: ${{ github.event_name }}"
-          echo "head_commit.author.username: ${{ github.event.head_commit.author.username }}"
- 
+jobs:  
   test-nbdev-sync:
-    needs: filter
     runs-on: ubuntu-latest
-    container: fastai/jekyll
     steps:
-    - name: checkout contents of PR
-      uses: actions/checkout@v3
-    - name: Install libraries
-      run: |
-        pip install -Uqq nbdev
-        pip install -Uqe .
-    - name: check if notebooks are synced and cleaned
-      uses: fastai/workflows/nb@master
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v3
+        with:
+          python-version: '3.10'
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install git+https://github.com/fastai/nbdev.git@master  
+      - name: Check if all notebooks are cleaned
+        run: |
+          echo "Check we are starting with clean git checkout"
+          if [ -n "$(git status -uno -s)" ]; then echo "git status is not clean"; false; fi
+          echo "Trying to strip out notebooks"
+          nbdev_clean
+          echo "Check that strip out was unnecessary"
+          git status -s # display the status to see which nbs need cleaning up
+          if [ -n "$(git status -uno -s)" ]; then echo -e "!!! Detected unstripped out notebooks\n!!!Remember to run nbdev_install_hooks"; false; fi
 
   test-notebooks:
-    needs: filter
+    needs: test-nbdev-sync
     runs-on: ubuntu-latest
     env:
       download: "true"
