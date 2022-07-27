@@ -46,7 +46,7 @@ class TrackerCallback(Callback):
 
     def after_fit(self): self.run=True
 
-# %% ../nbs/17_callback.tracker.ipynb 19
+# %% ../nbs/17_callback.tracker.ipynb 20
 class EarlyStoppingCallback(TrackerCallback):
     "A `TrackerCallback` that terminates training when monitored quantity stops improving."
     order=TrackerCallback.order+3
@@ -71,7 +71,7 @@ class EarlyStoppingCallback(TrackerCallback):
                 print(f'No improvement since epoch {self.epoch-self.wait}: early stopping')
                 raise CancelFitException()
 
-# %% ../nbs/17_callback.tracker.ipynb 26
+# %% ../nbs/17_callback.tracker.ipynb 27
 class SaveModelCallback(TrackerCallback):
     "A `TrackerCallback` that saves the model's best during training and loads it at the end."
     order = TrackerCallback.order+1
@@ -108,7 +108,7 @@ class SaveModelCallback(TrackerCallback):
         if self.at_end: self._save(f'{self.fname}')
         elif not self.every_epoch: self.learn.load(f'{self.fname}', with_opt=self.with_opt)
 
-# %% ../nbs/17_callback.tracker.ipynb 30
+# %% ../nbs/17_callback.tracker.ipynb 31
 class ReduceLROnPlateau(TrackerCallback):
     "A `TrackerCallback` that reduces learning rate when a metric has stopped improving."
     order=TrackerCallback.order+2

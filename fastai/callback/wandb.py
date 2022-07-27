@@ -318,5 +318,5 @@ def wandb_process(x:Tabular, y:Tabular, samples, outs, preds):
     for n in x.y_names: df[n+'_pred'] = y[n].values
     return {"Prediction_Samples": wandb.Table(dataframe=df)}
 
-# %% ../nbs/70_callback.wandb.ipynb 26
+# %% ../nbs/70_callback.wandb.ipynb 27
 _all_ = ['wandb_process']

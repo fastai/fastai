@@ -131,10 +131,10 @@ class DistributedDL(TfmdDL):
             return b
         return apply(_inner,b) if gather and all(hasattr(self,o) for o in ('i','n','n_padded')) else b
 
-# %% ../nbs/20a_distributed.ipynb 29
+# %% ../nbs/20a_distributed.ipynb 30
 _hidden_params = ["mixed_precision", "fp16", "log_with", "logging_dir", "step_scheduler_with_optimizer"]
 
-# %% ../nbs/20a_distributed.ipynb 30
+# %% ../nbs/20a_distributed.ipynb 31
 class DistributedTrainer(Callback):
     "Wrap `model` in `DistributedDataParallel` and `dls` in `DistributedDL`"
     order = 11
@@ -160,7 +160,7 @@ class DistributedTrainer(Callback):
     def before_validate(self): self.learn.dl = self._wrap_dl(self.learn.dl)
     def after_fit(self): self.learn.model,self.learn.dls.loaders = self.learn.model.module,self.old_dls
 
-# %% ../nbs/20a_distributed.ipynb 31
+# %% ../nbs/20a_distributed.ipynb 32
 @patch
 @delegates(Accelerator, but=_hidden_params)
 def to_distributed(self: Learner,
@@ -172,7 +172,7 @@ def to_distributed(self: Learner,
     if rank_distrib(): self.remove_cb(ProgressCallback)
     return self
 
-# %% ../nbs/20a_distributed.ipynb 32
+# %% ../nbs/20a_distributed.ipynb 33
 @patch
 def detach_distributed(self: Learner):
     "Remove `DistributedTrainer` from a learner"
@@ -181,7 +181,7 @@ def detach_distributed(self: Learner):
     if rank_distrib() and not hasattr(self, 'progress'): self.add_cb(ProgressCallback())
     return self
 
-# %% ../nbs/20a_distributed.ipynb 34
+# %% ../nbs/20a_distributed.ipynb 35
 @patch
 @contextmanager
 @delegates(Accelerator, but=_hidden_params)
@@ -210,7 +210,7 @@ def distrib_ctx(self: Learner,
         self.detach_distributed()
         if cleanup_dpg: teardown_distrib()
 
-# %% ../nbs/20a_distributed.ipynb 36
+# %% ../nbs/20a_distributed.ipynb 37
 def rank0_first(func, *args, **kwargs):
     "Execute `func` in the Rank-0 process first, then in other ranks in parallel."
     if args or kwargs: func = partial(func, *args, **kwargs)
