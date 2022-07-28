@@ -6,7 +6,8 @@ from ..torch_basics import *
 from .load import *
 
 # %% auto 0
-__all__ = ['show_batch', 'show_results', 'TfmdDL', 'DataLoaders', 'FilteredBase', 'TfmdLists', 'Datasets', 'test_set']
+__all__ = ['show_batch', 'show_results', 'TfmdDL', 'DataLoaders', 'FilteredBase', 'TfmdLists', 'decode_at', 'show_at', 'Datasets',
+           'test_set']
 
 # %% ../nbs/03_data.core.ipynb 10
 @typedispatch
@@ -422,6 +423,16 @@ add_docs(TfmdLists,
          infer_idx="Finds the index where `self.tfms` can be applied to `x`, depending on the type of `x`",
          infer="Apply `self.tfms` to `x` starting at the right tfm depending on the type of `x`",
          new_empty="A new version of `self` but with no items")
+
+# %% ../nbs/03_data.core.ipynb 56
+def decode_at(o, idx):
+    "Decoded item at `idx`"
+    return o.decode(o[idx])
+
+# %% ../nbs/03_data.core.ipynb 57
+def show_at(o, idx, **kwargs):
+    "Show item at `idx`",
+    return o.show(o[idx], **kwargs)
 
 # %% ../nbs/03_data.core.ipynb 75
 @docs
