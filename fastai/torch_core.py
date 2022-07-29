@@ -16,9 +16,10 @@ __all__ = ['norm_types', 'setup_cuda', 'subplots', 'show_image', 'show_titled_im
            'TitledTuple', 'get_empty_df', 'display_df', 'get_first', 'one_param', 'item_find', 'find_device', 'find_bs',
            'np_func', 'Module', 'get_model', 'one_hot', 'one_hot_decode', 'params', 'trainable_params',
            'norm_bias_params', 'batch_to_samples', 'logit', 'num_distrib', 'rank_distrib', 'distrib_barrier',
-           'base_doc', 'doc', 'nested_reorder', 'make_cross_image', 'show_image_batch', 'requires_grad', 'init_default',
-           'cond_init', 'apply_leaf', 'apply_init', 'script_use_ctx', 'script_save_ctx', 'script_fwd', 'script_bwd',
-           'grad_module', 'ismin_torch', 'notmax_torch', 'progress_bar', 'master_bar']
+           'base_doc', 'doc', 'nested_reorder', 'flatten_check', 'make_cross_image', 'show_image_batch',
+           'requires_grad', 'init_default', 'cond_init', 'apply_leaf', 'apply_init', 'script_use_ctx',
+           'script_save_ctx', 'script_fwd', 'script_bwd', 'grad_module', 'ismin_torch', 'notmax_torch', 'progress_bar',
+           'master_bar']
 
 # %% ../nbs/00_torch_core.ipynb 6
 _all_ = ['progress_bar','master_bar']
@@ -752,7 +753,14 @@ def nested_reorder(t, idxs):
     if t is None: return t
     raise TypeError(f"Expected tensor, tuple, list or L but got {type(t)}")
 
-# %% ../nbs/00_torch_core.ipynb 200
+# %% ../nbs/00_torch_core.ipynb 199
+def flatten_check(inp, targ):
+    "Check that `out` and `targ` have the same number of elements and flatten them."
+    inp,targ = TensorBase(inp.contiguous()).view(-1),TensorBase(targ.contiguous()).view(-1)
+    test_eq(len(inp), len(targ))
+    return inp,targ
+
+# %% ../nbs/00_torch_core.ipynb 202
 def make_cross_image(bw=True):
     "Create a tensor containing a cross image, either `bw` (True) or color"
     if bw:
@@ -765,7 +773,7 @@ def make_cross_image(bw=True):
         im[1,:,2] = 1.
     return im
 
-# %% ../nbs/00_torch_core.ipynb 203
+# %% ../nbs/00_torch_core.ipynb 205
 def show_image_batch(b, show=show_titled_image, items=9, cols=3, figsize=None, **kwargs):
     "Display batch `b` in a grid of size `items` with `cols` width"
     if items<cols: cols=items
@@ -774,13 +782,13 @@ def show_image_batch(b, show=show_titled_image, items=9, cols=3, figsize=None, *
     fig,axs = plt.subplots(rows, cols, figsize=figsize)
     for *o,ax in zip(*to_cpu(b), axs.flatten()): show(o, ax=ax, **kwargs)
 
-# %% ../nbs/00_torch_core.ipynb 206
+# %% ../nbs/00_torch_core.ipynb 208
 def requires_grad(m):
     "Check if the first parameter of `m` requires grad or not"
     ps = list(m.parameters())
     return ps[0].requires_grad if len(ps)>0 else False
 
-# %% ../nbs/00_torch_core.ipynb 208
+# %% ../nbs/00_torch_core.ipynb 210
 def init_default(m, func=nn.init.kaiming_normal_):
     "Initialize `m` weights with `func` and set `bias` to 0."
     if func:
@@ -788,31 +796,31 @@ def init_default(m, func=nn.init.kaiming_normal_):
         if hasattr(m, 'bias') and hasattr(m.bias, 'data'): m.bias.data.fill_(0.)
     return m
 
-# %% ../nbs/00_torch_core.ipynb 210
+# %% ../nbs/00_torch_core.ipynb 212
 def cond_init(m, func):
     "Apply `init_default` to `m` unless it's a batchnorm module"
     if (not isinstance(m, norm_types)) and requires_grad(m): init_default(m, func)
 
-# %% ../nbs/00_torch_core.ipynb 212
+# %% ../nbs/00_torch_core.ipynb 214
 def apply_leaf(m, f):
     "Apply `f` to children of `m`."
     c = m.children()
     if isinstance(m, nn.Module): f(m)
     for l in c: apply_leaf(l,f)
 
-# %% ../nbs/00_torch_core.ipynb 214
+# %% ../nbs/00_torch_core.ipynb 216
 def apply_init(m, func=nn.init.kaiming_normal_):
     "Initialize all non-batchnorm layers of `m` with `func`."
     apply_leaf(m, partial(cond_init, func=func))
 
-# %% ../nbs/00_torch_core.ipynb 217
+# %% ../nbs/00_torch_core.ipynb 219
 def script_use_ctx(f):
     "Decorator: create jit script and pass everything in `ctx.saved_variables to `f`, after `*args`"
     sf = torch.jit.script(f)
     def _f(ctx, *args, **kwargs): return sf(*args, *ctx.saved_variables, **kwargs)
     return update_wrapper(_f,f)
 
-# %% ../nbs/00_torch_core.ipynb 218
+# %% ../nbs/00_torch_core.ipynb 220
 def script_save_ctx(static, *argidx):
     "Decorator: create jit script and save args with indices `argidx` using `ctx.save_for_backward`"
     def _dec(f):
@@ -827,29 +835,29 @@ def script_save_ctx(static, *argidx):
         return update_wrapper(_f,f)
     return _dec
 
-# %% ../nbs/00_torch_core.ipynb 219
+# %% ../nbs/00_torch_core.ipynb 221
 def script_fwd(*argidx):
     "Decorator: create static jit script and save args with indices `argidx` using `ctx.save_for_backward`"
     return script_save_ctx(True, *argidx)
 
-# %% ../nbs/00_torch_core.ipynb 220
+# %% ../nbs/00_torch_core.ipynb 222
 def script_bwd(f):
     "Decorator: create static jit script and pass everything in `ctx.saved_variables to `f`, after `*args`"
     return staticmethod(script_use_ctx(f))
 
-# %% ../nbs/00_torch_core.ipynb 221
+# %% ../nbs/00_torch_core.ipynb 223
 def grad_module(cls):
     "Decorator: convert `cls` into an autograd function"
     class _c(nn.Module):
         def forward(self, *args, **kwargs): return cls.apply(*args, **kwargs)
     return _c
 
-# %% ../nbs/00_torch_core.ipynb 223
+# %% ../nbs/00_torch_core.ipynb 225
 def ismin_torch(min_version):
     "Check if `torch.__version__` >= `min_version` using packaging.version"
     return parse(torch.__version__) >= parse(min_version)
 
-# %% ../nbs/00_torch_core.ipynb 224
+# %% ../nbs/00_torch_core.ipynb 226
 def notmax_torch(max_version):
     "Check if `torch.__version__` < `max_version` using packaging.version"
     return parse(torch.__version__) < parse(max_version)
