@@ -69,7 +69,7 @@ segmentation model, a text sentiment model, a recommendation system, and
 a tabular model. For each of the applications, the code is much the
 same.
 
-Read through the [Tutorials](https://docs.fast.ai/tutorial) to learn how
+Read through the [Tutorials](https://docs.fast.ai/tutorial.html) to learn how
 to train your own models on your own datasets. Use the navigation
 sidebar to look through the fastai documentation. Every class, function,
 and method is documented here.
