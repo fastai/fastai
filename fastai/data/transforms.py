@@ -348,7 +348,7 @@ class IntToFloatTensor(DisplayedTransform):
     order = 10 #Need to run after PIL transforms on the GPU
     def __init__(self, div=255., div_mask=1): store_attr()
     def encodes(self, o:TensorImage): return o.float().div_(self.div)
-    def encodes(self, o:TensorMask ): return o.long() // self.div_mask
+    def encodes(self, o:TensorMask ): return (o.long() / self.div_mask).long()
     def decodes(self, o:TensorImage): return ((o.clamp(0., 1.) * self.div).long()) if self.div else o
 
 # %% ../nbs/05_data.transforms.ipynb 115
