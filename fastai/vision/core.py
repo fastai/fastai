@@ -6,6 +6,7 @@ from ..torch_basics import *
 from ..data.all import *
 
 from PIL import Image
+
 try: BILINEAR,NEAREST = Image.Resampling.BILINEAR,Image.Resampling.NEAREST
 except AttributeError: from PIL.Image import BILINEAR,NEAREST
 
@@ -20,6 +21,11 @@ _all_ = ['BILINEAR','NEAREST']
 
 # %% ../nbs/07_vision.core.ipynb 7
 _all_ = ['Image','ToTensor']
+
+# %% ../nbs/07_vision.core.ipynb 8
+@patch
+def __repr__(x:Image.Image):
+    return "<%s.%s image mode=%s size=%dx%d at 0x%X>" % (x.__class__.__module__, x.__class__.__name__, x.mode, x.size[0], x.size[1])
 
 # %% ../nbs/07_vision.core.ipynb 11
 imagenet_stats = ([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])

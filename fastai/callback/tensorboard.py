@@ -8,13 +8,13 @@ from ..basics import *
 __all__ = ['TensorBoardBaseCallback', 'TensorBoardCallback', 'TensorBoardProjectorCallback', 'projector_word_embeddings',
            'tensorboard_log']
 
-# %% ../nbs/70a_callback.tensorboard.ipynb 18
+# %% ../nbs/70a_callback.tensorboard.ipynb 19
 import tensorboard
 from torch.utils.tensorboard import SummaryWriter
 from .fp16 import ModelToHalf
 from .hook import hook_output
 
-# %% ../nbs/70a_callback.tensorboard.ipynb 19
+# %% ../nbs/70a_callback.tensorboard.ipynb 20
 class TensorBoardBaseCallback(Callback):
     order = Recorder.order+1
     "Base class for tensorboard callbacks"
@@ -42,7 +42,7 @@ class TensorBoardBaseCallback(Callback):
     def _remove(self):
         if getattr(self, 'h', None): self.h.remove()
 
-# %% ../nbs/70a_callback.tensorboard.ipynb 20
+# %% ../nbs/70a_callback.tensorboard.ipynb 22
 class TensorBoardCallback(TensorBoardBaseCallback):
     "Saves model topology, losses & metrics for tensorboard and tensorboard projector during training"
     def __init__(self, log_dir=None, trace_model=True, log_preds=True, n_preds=9, projector=False, layer=None):
@@ -79,7 +79,7 @@ class TensorBoardCallback(TensorBoardBaseCallback):
     def before_validate(self):
         if self.projector: self._setup_projector()
 
-# %% ../nbs/70a_callback.tensorboard.ipynb 21
+# %% ../nbs/70a_callback.tensorboard.ipynb 24
 class TensorBoardProjectorCallback(TensorBoardBaseCallback):
     "Extracts and exports image featuers for tensorboard projector during inference"
     def __init__(self, log_dir=None, layer=None):
@@ -94,13 +94,13 @@ class TensorBoardProjectorCallback(TensorBoardBaseCallback):
     def before_validate(self):
         self._setup_projector()
 
-# %% ../nbs/70a_callback.tensorboard.ipynb 22
+# %% ../nbs/70a_callback.tensorboard.ipynb 26
 def _write_projector_embedding(learn, writer, feat):
     lbls = [learn.dl.vocab[l] for l in feat['lbl']] if getattr(learn.dl, 'vocab', None) else None     
     vecs = feat['vec'].squeeze()
     writer.add_embedding(vecs, metadata=lbls, label_img=feat['img'], global_step=learn.train_iter)
 
-# %% ../nbs/70a_callback.tensorboard.ipynb 23
+# %% ../nbs/70a_callback.tensorboard.ipynb 27
 def _add_projector_features(learn, hook, feat):
     img = _normalize_for_projector(learn.x)
     first_epoch = True if learn.iter == 0 else False
@@ -110,12 +110,12 @@ def _add_projector_features(learn, hook, feat):
         feat['lbl'] = learn.y if first_epoch else torch.cat((feat['lbl'], learn.y),0)
     return feat
 
-# %% ../nbs/70a_callback.tensorboard.ipynb 24
+# %% ../nbs/70a_callback.tensorboard.ipynb 28
 def _get_embeddings(model, layer):
     layer = model[0].encoder if layer == None else layer
     return layer.weight
 
-# %% ../nbs/70a_callback.tensorboard.ipynb 25
+# %% ../nbs/70a_callback.tensorboard.ipynb 29
 @typedispatch
 def _normalize_for_projector(x:TensorImage):
     # normalize tensor to be between 0-1
@@ -127,10 +127,10 @@ def _normalize_for_projector(x:TensorImage):
     img = img.view(*sz)
     return img
 
-# %% ../nbs/70a_callback.tensorboard.ipynb 26
+# %% ../nbs/70a_callback.tensorboard.ipynb 30
 from ..text.all import LMLearner, TextLearner
 
-# %% ../nbs/70a_callback.tensorboard.ipynb 27
+# %% ../nbs/70a_callback.tensorboard.ipynb 31
 def projector_word_embeddings(learn=None, layer=None, vocab=None, limit=-1, start=0, log_dir=None):
     "Extracts and exports word embeddings from language models embedding layers"
     if not layer:
@@ -145,10 +145,10 @@ def projector_word_embeddings(learn=None, layer=None, vocab=None, limit=-1, star
     writer.add_embedding(emb[start:end], metadata=vocab[start:end], label_img=img[start:end])
     writer.close()
 
-# %% ../nbs/70a_callback.tensorboard.ipynb 28
+# %% ../nbs/70a_callback.tensorboard.ipynb 33
 from ..vision.data import *
 
-# %% ../nbs/70a_callback.tensorboard.ipynb 29
+# %% ../nbs/70a_callback.tensorboard.ipynb 34
 @typedispatch
 def tensorboard_log(x:TensorImage, y: TensorCategory, samples, outs, writer, step):
     fig,axs = get_grid(len(samples), return_fig=True)
@@ -158,10 +158,10 @@ def tensorboard_log(x:TensorImage, y: TensorCategory, samples, outs, writer, ste
             for b,r,c in zip(samples.itemgot(1),outs.itemgot(0),axs)]
     writer.add_figure('Sample results', fig, step)
 
-# %% ../nbs/70a_callback.tensorboard.ipynb 30
+# %% ../nbs/70a_callback.tensorboard.ipynb 35
 from ..vision.core import TensorPoint,TensorBBox
 
-# %% ../nbs/70a_callback.tensorboard.ipynb 31
+# %% ../nbs/70a_callback.tensorboard.ipynb 36
 @typedispatch
 def tensorboard_log(x:TensorImage, y: TensorImageBase|TensorPoint|TensorBBox, samples, outs, writer, step):
     fig,axs = get_grid(len(samples), return_fig=True, double=True)

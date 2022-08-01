@@ -157,7 +157,7 @@ class WandbCallback(Callback):
         self._wandb_step += 1
         
 
-# %% ../nbs/70_callback.wandb.ipynb 11
+# %% ../nbs/70_callback.wandb.ipynb 12
 @patch
 def gather_args(self:Learner):
     "Gather config parameters accessible to the learner"
@@ -185,7 +185,7 @@ def gather_args(self:Learner):
         args['dls.after_batch'] = f'{self.dls.after_batch}'
     return args
 
-# %% ../nbs/70_callback.wandb.ipynb 12
+# %% ../nbs/70_callback.wandb.ipynb 14
 def _make_plt(img):
     "Make plot to image resolution"
     # from https://stackoverflow.com/a/13714915
@@ -198,7 +198,7 @@ def _make_plt(img):
     fig.add_axes(ax)
     return fig, ax
 
-# %% ../nbs/70_callback.wandb.ipynb 13
+# %% ../nbs/70_callback.wandb.ipynb 15
 def _format_config_value(v):
     if isinstance(v, list):
         return [_format_config_value(item) for item in v]
@@ -206,7 +206,7 @@ def _format_config_value(v):
         return {**_format_config(v.__stored_args__), '_name': v}
     return v
 
-# %% ../nbs/70_callback.wandb.ipynb 14
+# %% ../nbs/70_callback.wandb.ipynb 16
 def _format_config(config):
     "Format config parameters before logging them"
     for k,v in config.items():
@@ -216,12 +216,12 @@ def _format_config(config):
             config[k] = _format_config_value(v)
     return config
 
-# %% ../nbs/70_callback.wandb.ipynb 15
+# %% ../nbs/70_callback.wandb.ipynb 17
 def _format_metadata(metadata):
     "Format metadata associated to artifacts"
     for k,v in metadata.items(): metadata[k] = str(v)
 
-# %% ../nbs/70_callback.wandb.ipynb 16
+# %% ../nbs/70_callback.wandb.ipynb 18
 def log_dataset(path, name=None, metadata={}, description='raw dataset'):
     "Log dataset folder"
     # Check if wandb.init has been called in case datasets are logged manually
@@ -240,7 +240,7 @@ def log_dataset(path, name=None, metadata={}, description='raw dataset'):
         else: artifact_dataset.add_file(str(p.resolve()))
     wandb.run.use_artifact(artifact_dataset)
 
-# %% ../nbs/70_callback.wandb.ipynb 17
+# %% ../nbs/70_callback.wandb.ipynb 20
 def log_model(path, name=None, metadata={}, description='trained model'):
     "Log model file"
     if wandb.run is None:
@@ -255,7 +255,7 @@ def log_model(path, name=None, metadata={}, description='trained model'):
         fa.write(path.read_bytes())
     wandb.run.log_artifact(artifact_model)
 
-# %% ../nbs/70_callback.wandb.ipynb 18
+# %% ../nbs/70_callback.wandb.ipynb 22
 @typedispatch
 def wandb_process(x:TensorImage, y, samples, outs, preds):
     "Process `sample` and `out` depending on the type of `x/y`"
@@ -272,14 +272,14 @@ def wandb_process(x:TensorImage, y, samples, outs, preds):
             plt.close(fig)
     return {"Inputs":res_input, "Predictions":res_pred, "Ground_Truth":res_label}
 
-# %% ../nbs/70_callback.wandb.ipynb 19
+# %% ../nbs/70_callback.wandb.ipynb 23
 def _unlist(l):
     "get element of lists of lenght 1"
     if isinstance(l, (list, tuple)):
         if len(l) == 1: return l[0]
     else: return l
 
-# %% ../nbs/70_callback.wandb.ipynb 20
+# %% ../nbs/70_callback.wandb.ipynb 24
 @typedispatch
 def wandb_process(x:TensorImage, y:TensorCategory|TensorMultiCategory, samples, outs, preds):
     table = wandb.Table(columns=["Input image", "Ground_Truth", "Predictions"])
@@ -287,7 +287,7 @@ def wandb_process(x:TensorImage, y:TensorCategory|TensorMultiCategory, samples, 
         table.add_data(wandb.Image(image.permute(1,2,0)), label, _unlist(pred_label))
     return {"Prediction_Samples": table}
 
-# %% ../nbs/70_callback.wandb.ipynb 21
+# %% ../nbs/70_callback.wandb.ipynb 25
 @typedispatch
 def wandb_process(x:TensorImage, y:TensorMask, samples, outs, preds):
     res = []
@@ -305,18 +305,18 @@ def wandb_process(x:TensorImage, y:TensorMask, samples, outs, preds):
                       )
     return {"Prediction_Samples": table}
 
-# %% ../nbs/70_callback.wandb.ipynb 22
+# %% ../nbs/70_callback.wandb.ipynb 26
 @typedispatch
 def wandb_process(x:TensorText, y:TensorCategory|TensorMultiCategory, samples, outs, preds):
     data = [[s[0], s[1], o[0]] for s,o in zip(samples,outs)]
     return {"Prediction_Samples": wandb.Table(data=data, columns=["Text", "Target", "Prediction"])}
 
-# %% ../nbs/70_callback.wandb.ipynb 23
+# %% ../nbs/70_callback.wandb.ipynb 27
 @typedispatch
 def wandb_process(x:Tabular, y:Tabular, samples, outs, preds):
     df = x.all_cols
     for n in x.y_names: df[n+'_pred'] = y[n].values
     return {"Prediction_Samples": wandb.Table(dataframe=df)}
 
-# %% ../nbs/70_callback.wandb.ipynb 27
+# %% ../nbs/70_callback.wandb.ipynb 32
 _all_ = ['wandb_process']

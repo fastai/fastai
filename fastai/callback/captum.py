@@ -6,7 +6,7 @@ import tempfile
 from ..basics import *
 
 # %% auto 0
-__all__ = ['json_clean', 'CaptumInterpretation']
+__all__ = ['CaptumInterpretation']
 
 # %% ../nbs/70c_callback.captum.ipynb 6
 from ipykernel import jsonutil
@@ -92,7 +92,7 @@ class CaptumInterpretation():
                                        sliding_window_shapes=sliding_window_shapes,
                                        baselines=baseline)
 
-# %% ../nbs/70c_callback.captum.ipynb 25
+# %% ../nbs/70c_callback.captum.ipynb 26
 @patch
 def insights(x: CaptumInterpretation,inp_data,debug=True):
     _baseline_func= lambda o: o*0
