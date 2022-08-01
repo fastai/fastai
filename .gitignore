@@ -1,3 +1,4 @@
+.gitattributes
 Gemfile.lock
 collect_env.py
 tmp*
