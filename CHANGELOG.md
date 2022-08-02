@@ -2,6 +2,22 @@
 
 <!-- do not remove -->
 
+## 2.7.8
+
+### New Features
+
+- add split value argument to ColSplitter ([#3737](https://github.com/fastai/fastai/pull/3737)), thanks to [@DanteOz](https://github.com/DanteOz)
+- deterministic repr for PIL images ([#3762](https://github.com/fastai/fastai/issues/3762))
+- option to skip default callbacks in `Learner` ([#3739](https://github.com/fastai/fastai/issues/3739))
+- update for nbdev2 ([#3747](https://github.com/fastai/fastai/issues/3747))
+
+### Bugs Squashed
+
+- IntToFloatTensor failing on Mac mps due to missing op ([#3761](https://github.com/fastai/fastai/issues/3761))
+- fix for pretrained in vision.learner ([#3746](https://github.com/fastai/fastai/pull/3746)), thanks to [@peterdudfield](https://github.com/peterdudfield)
+- fix same file error message when resizing image ([#3743](https://github.com/fastai/fastai/pull/3743)), thanks to [@cvergnes](https://github.com/cvergnes)
+
+
 ## 2.7.6
 
 ### New Features
