@@ -742,7 +742,7 @@ def doc(elt):
     "Try to use doc form nbdev and fall back to `base_doc`"
     try:
         from nbdev.showdoc import show_doc
-        doc(elt)
+        show_doc(elt)
     except: base_doc(elt)
 
 # %% ../nbs/00_torch_core.ipynb 197
