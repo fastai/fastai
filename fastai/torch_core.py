@@ -739,7 +739,7 @@ def base_doc(elt):
 
 # %% ../nbs/00_torch_core.ipynb 196
 def doc(elt):
-    "Try to use doc form nbdev and fall back to `base_doc`"
+    "Try to use show_doc from nbdev and fall back to `base_doc`"
     try:
         from nbdev.showdoc import show_doc
         show_doc(elt)
