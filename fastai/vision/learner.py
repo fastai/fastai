@@ -14,7 +14,7 @@ except ModuleNotFoundError: pass
 # %% auto 0
 __all__ = ['model_meta', 'has_pool_type', 'cut_model', 'create_body', 'create_head', 'default_split', 'add_head',
            'create_vision_model', 'TimmBody', 'create_timm_model', 'vision_learner', 'create_unet_model',
-           'unet_learner', 'create_cnn_model', 'cnn_learner', 'show_results', 'plot_top_losses']
+           'get_timm_meta', 'unet_learner', 'create_cnn_model', 'cnn_learner', 'show_results', 'plot_top_losses']
 
 # %% ../nbs/21_vision.learner.ipynb 8
 def _is_pool_type(l): return re.search(r'Pool[123]d$', l.__class__.__name__)
@@ -236,32 +236,58 @@ def vision_learner(dls, arch, normalize=True, n_out=None, pretrained=True,
 @delegates(models.unet.DynamicUnet.__init__)
 def create_unet_model(arch, n_out, img_size, pretrained=True, cut=None, n_in=3, **kwargs):
     "Create custom unet architecture"
-    meta = model_meta.get(arch, _default_meta)
-    model = arch(pretrained=pretrained)
-    body = create_body(model, n_in, pretrained, ifnone(cut, meta['cut']))    
+    if isinstance(arch, str):
+        body = timm.create_model(
+            arch,
+            pretrained=pretrained,
+            features_only=True,
+            num_classes=0,
+            in_chans=n_in,
+        )
+        body = nn.Sequential(*list(body.children()))
+        meta = get_timm_meta(arch, cut)
+    else:
+        meta = model_meta.get(arch, _default_meta)
+        model = arch(pretrained=pretrained)
+        body = create_body(model, n_in, pretrained, ifnone(cut, meta['cut']))    
+
     model = models.unet.DynamicUnet(body, n_out, img_size, **kwargs)
     return model
 
 # %% ../nbs/21_vision.learner.ipynb 53
+def get_timm_meta(arch: str, cut = None) -> Dict:
+    meta = dict(_default_meta)
+    if cut is not None:
+        meta.update({"cut": cut})
+    for mm in list(model_meta.keys()):
+        if mm.__name__ == arch:
+            meta.update(model_meta[mm])
+    return meta
+
+# %% ../nbs/21_vision.learner.ipynb 54
 @delegates(create_unet_model)
 def unet_learner(dls, arch, normalize=True, n_out=None, pretrained=True, config=None,
                  # learner args
                  loss_func=None, opt_func=Adam, lr=defaults.lr, splitter=None, cbs=None, metrics=None, path=None,
-                 model_dir='models', wd=None, wd_bn_bias=False, train_bn=True, moms=(0.95,0.85,0.95), **kwargs):    
+                 model_dir='models', wd=None, wd_bn_bias=False, train_bn=True, moms=(0.95,0.85,0.95), n_in=3, cut=None, **kwargs):    
     "Build a unet learner from `dls` and `arch`"
     
     if config:
         warnings.warn('config param is deprecated. Pass your args directly to unet_learner.')
         kwargs = {**config, **kwargs}
     
-    meta = model_meta.get(arch, _default_meta)
-    if normalize: _add_norm(dls, meta, pretrained)
-    
     n_out = ifnone(n_out, get_c(dls))
     assert n_out, "`n_out` is not defined, and could not be inferred from data, set `dls.c` or pass `n_out`"
     img_size = dls.one_batch()[0].shape[-2:]
     assert img_size, "image size could not be inferred from data"
-    model = create_unet_model(arch, n_out, img_size, pretrained=pretrained, **kwargs)
+
+    if isinstance(arch, str):
+        meta = get_timm_meta(arch, cut)
+    else:
+        meta = model_meta.get(arch, _default_meta)
+    if normalize: _add_norm(dls, meta, pretrained)
+
+    model = create_unet_model(arch, n_out, img_size, pretrained=pretrained, cut=ifnone(cut, meta["cut"]), n_in=n_in, **kwargs)
 
     splitter=ifnone(splitter, meta['split'])
     learn = Learner(dls=dls, model=model, loss_func=loss_func, opt_func=opt_func, lr=lr, splitter=splitter, cbs=cbs,
@@ -272,26 +298,26 @@ def unet_learner(dls, arch, normalize=True, n_out=None, pretrained=True, config=
     store_attr('arch,normalize,n_out,pretrained', self=learn, **kwargs)
     return learn
 
-# %% ../nbs/21_vision.learner.ipynb 58
+# %% ../nbs/21_vision.learner.ipynb 61
 def create_cnn_model(*args, **kwargs):
     "Deprecated name for `create_vision_model` -- do not use"
     warn("`create_cnn_model` has been renamed to `create_vision_model` -- please update your code")
     return create_vision_model(*args, **kwargs)
 
-# %% ../nbs/21_vision.learner.ipynb 59
+# %% ../nbs/21_vision.learner.ipynb 62
 def cnn_learner(*args, **kwargs):
     "Deprecated name for `vision_learner` -- do not use"
     warn("`cnn_learner` has been renamed to `vision_learner` -- please update your code")
     return vision_learner(*args, **kwargs)
 
-# %% ../nbs/21_vision.learner.ipynb 61
+# %% ../nbs/21_vision.learner.ipynb 64
 @typedispatch
 def show_results(x:TensorImage, y, samples, outs, ctxs=None, max_n=10, nrows=None, ncols=None, figsize=None, **kwargs):
     if ctxs is None: ctxs = get_grid(min(len(samples), max_n), nrows=nrows, ncols=ncols, figsize=figsize)
     ctxs = show_results[object](x, y, samples, outs, ctxs=ctxs, max_n=max_n, **kwargs)
     return ctxs
 
-# %% ../nbs/21_vision.learner.ipynb 62
+# %% ../nbs/21_vision.learner.ipynb 65
 @typedispatch
 def show_results(x:TensorImage, y:TensorCategory, samples, outs, ctxs=None, max_n=10, nrows=None, ncols=None, figsize=None, **kwargs):
     if ctxs is None: ctxs = get_grid(min(len(samples), max_n), nrows=nrows, ncols=ncols, figsize=figsize)
@@ -301,7 +327,7 @@ def show_results(x:TensorImage, y:TensorCategory, samples, outs, ctxs=None, max_
             for b,r,c,_ in zip(samples.itemgot(1),outs.itemgot(0),ctxs,range(max_n))]
     return ctxs
 
-# %% ../nbs/21_vision.learner.ipynb 63
+# %% ../nbs/21_vision.learner.ipynb 66
 @typedispatch
 def show_results(x:TensorImage, y:TensorMask|TensorPoint|TensorBBox, samples, outs, ctxs=None, max_n=6,
                  nrows=None, ncols=1, figsize=None, **kwargs):
@@ -313,7 +339,7 @@ def show_results(x:TensorImage, y:TensorMask|TensorPoint|TensorBBox, samples, ou
         ctxs[1::2] = [b.show(ctx=c, **kwargs) for b,c,_ in zip(o.itemgot(0),ctxs[1::2],range(2*max_n))]
     return ctxs
 
-# %% ../nbs/21_vision.learner.ipynb 64
+# %% ../nbs/21_vision.learner.ipynb 67
 @typedispatch
 def show_results(x:TensorImage, y:TensorImage, samples, outs, ctxs=None, max_n=10, figsize=None, **kwargs):
     if ctxs is None: ctxs = get_grid(3*min(len(samples), max_n), ncols=3, figsize=figsize, title='Input/Target/Prediction')
@@ -322,7 +348,7 @@ def show_results(x:TensorImage, y:TensorImage, samples, outs, ctxs=None, max_n=1
     ctxs[2::3] = [b.show(ctx=c, **kwargs) for b,c,_ in zip(outs.itemgot(0),ctxs[2::3],range(max_n))]
     return ctxs
 
-# %% ../nbs/21_vision.learner.ipynb 65
+# %% ../nbs/21_vision.learner.ipynb 68
 @typedispatch
 def plot_top_losses(x: TensorImage, y:TensorCategory, samples, outs, raws, losses, nrows=None, ncols=None, figsize=None, **kwargs):
     axs = get_grid(len(samples), nrows=nrows, ncols=ncols, figsize=figsize, title='Prediction/Actual/Loss/Probability')
@@ -330,7 +356,7 @@ def plot_top_losses(x: TensorImage, y:TensorCategory, samples, outs, raws, losse
         s[0].show(ctx=ax, **kwargs)
         ax.set_title(f'{o[0]}/{s[1]} / {l.item():.2f} / {r.max().item():.2f}')
 
-# %% ../nbs/21_vision.learner.ipynb 66
+# %% ../nbs/21_vision.learner.ipynb 69
 @typedispatch
 def plot_top_losses(x: TensorImage, y:TensorMultiCategory, samples, outs, raws, losses, nrows=None, ncols=None, figsize=None, **kwargs):
     axs = get_grid(len(samples), nrows=nrows, ncols=ncols, figsize=figsize)
@@ -341,7 +367,7 @@ def plot_top_losses(x: TensorImage, y:TensorMultiCategory, samples, outs, raws, 
         rows = [b.show(ctx=r, label=l, **kwargs) for b,r in zip(outs.itemgot(i),rows)]
     display_df(pd.DataFrame(rows))
 
-# %% ../nbs/21_vision.learner.ipynb 67
+# %% ../nbs/21_vision.learner.ipynb 70
 @typedispatch
 def plot_top_losses(x:TensorImage, y:TensorMask, samples, outs, raws, losses, nrows=None, ncols=None, figsize=None, **kwargs):
     axes = get_grid(len(samples)*3, nrows=len(samples), ncols=3, figsize=figsize, flatten=False, title="Input | Target | Prediction")
