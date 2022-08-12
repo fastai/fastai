@@ -109,9 +109,9 @@ website:
       - section: fastai Development 
         contents:
         - dev-setup.ipynb
-        - dev/git.md
-        - dev/abbr.md
-        - dev/style.md
-        - dev/gpu.md
-        - dev/develop.md
+        - dev/git.qmd
+        - dev/abbr.qmd
+        - dev/style.qmd
+        - dev/gpu.qmd
+        - dev/develop.qmd
 
