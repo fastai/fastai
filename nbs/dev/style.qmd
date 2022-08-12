@@ -40,7 +40,7 @@ Although Python will always be more verbose than many languages, by using these 
 
 > In metaphorical honor of Huffman's compression code that assigns smaller numbers of bits to more common bytes. In terms of syntax, it simply means that commonly used things should be shorter, but you shouldn't waste short sequences on less common constructs.
 
-- A fairly complete list of abbreviations is in [abbr.md](abbr); if you see anything missing, feel free to edit this file.
+- A fairly complete list of abbreviations is in [abbr.qmd](abbr.html); if you see anything missing, feel free to edit this file.
 - For example, that in computer vision code, where we say 'size' and 'image' all the time, we use shortened forms `sz` and `img`. Or in NLP code, we would say `lm` instead of 'language model'
 - Use `o` for an object in a comprehension, `i` for an index, and `k` and `v` for a key and value in a dictionary comprehension.
 - Use `x` for a tensor input to an algorithm (e.g. layer, transform, etc), unless interoperating with a library where
