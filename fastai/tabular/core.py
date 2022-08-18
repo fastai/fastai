@@ -217,7 +217,7 @@ _add_prop(Tabular, 'y')
 _add_prop(Tabular, 'x')
 _add_prop(Tabular, 'all_col')
 
-# %% ../nbs/40_tabular.core.ipynb 56
+# %% ../nbs/40_tabular.core.ipynb 57
 class TabularProc(InplaceTransform):
     "Base class to write a non-lazy tabular processor for dataframes"
     def setup(self, items=None, train_setup=False): #TODO: properly deal with train_setup
@@ -228,14 +228,14 @@ class TabularProc(InplaceTransform):
     @property
     def name(self): return f"{super().name} -- {getattr(self,'__stored_args__',{})}"
 
-# %% ../nbs/40_tabular.core.ipynb 58
+# %% ../nbs/40_tabular.core.ipynb 59
 def _apply_cats (voc, add, c):
     if not is_categorical_dtype(c):
         return pd.Categorical(c, categories=voc[c.name][add:]).codes+add
     return c.cat.codes+add #if is_categorical_dtype(c) else c.map(voc[c.name].o2i)
 def _decode_cats(voc, c): return c.map(dict(enumerate(voc[c.name].items)))
 
-# %% ../nbs/40_tabular.core.ipynb 59
+# %% ../nbs/40_tabular.core.ipynb 60
 class Categorify(TabularProc):
     "Transform the categorical variables to something similar to `pd.Categorical`"
     order = 1
@@ -246,7 +246,7 @@ class Categorify(TabularProc):
     def decodes(self, to): to.transform(to.cat_names, partial(_decode_cats, self.classes))
     def __getitem__(self,k): return self.classes[k]
 
-# %% ../nbs/40_tabular.core.ipynb 60
+# %% ../nbs/40_tabular.core.ipynb 61
 @Categorize
 def setups(self, to:Tabular):
     if len(to.y_names) > 0:
@@ -267,7 +267,7 @@ def decodes(self, to:Tabular):
     to.transform(to.y_names, partial(_decode_cats, {n: self.vocab for n in to.y_names}), all_col=False)
     return to
 
-# %% ../nbs/40_tabular.core.ipynb 74
+# %% ../nbs/40_tabular.core.ipynb 75
 @Normalize
 def setups(self, to:Tabular):
     store_attr(but='to', means=dict(getattr(to, 'train', to).conts.mean()),
@@ -284,14 +284,14 @@ def decodes(self, to:Tabular):
     to.conts = (to.conts*self.stds ) + self.means
     return to
 
-# %% ../nbs/40_tabular.core.ipynb 79
+# %% ../nbs/40_tabular.core.ipynb 80
 class FillStrategy:
     "Namespace containing the various filling strategies."
     def median  (c,fill): return c.median()
     def constant(c,fill): return fill
     def mode    (c,fill): return c.dropna().value_counts().idxmax()
 
-# %% ../nbs/40_tabular.core.ipynb 81
+# %% ../nbs/40_tabular.core.ipynb 82
 class FillMissing(TabularProc):
     "Fill the missing values in continuous columns."
     def __init__(self, fill_strategy=FillStrategy.median, add_col=True, fill_vals=None):
@@ -314,10 +314,10 @@ class FillMissing(TabularProc):
                 to.loc[:,n+'_na'] = missing[n]
                 if n+'_na' not in to.cat_names: to.cat_names.append(n+'_na')
 
-# %% ../nbs/40_tabular.core.ipynb 91
+# %% ../nbs/40_tabular.core.ipynb 92
 def _maybe_expand(o): return o[:,None] if o.ndim==1 else o
 
-# %% ../nbs/40_tabular.core.ipynb 92
+# %% ../nbs/40_tabular.core.ipynb 93
 class ReadTabBatch(ItemTransform):
     "Transform `TabularPandas` values into a `Tensor` with the ability to decode"
     def __init__(self, to): self.to = to.new_empty()
@@ -338,12 +338,12 @@ class ReadTabBatch(ItemTransform):
         to = self.to.new(df)
         return to
 
-# %% ../nbs/40_tabular.core.ipynb 93
+# %% ../nbs/40_tabular.core.ipynb 94
 @typedispatch
 def show_batch(x: Tabular, y, its, max_n=10, ctxs=None):
     x.show()
 
-# %% ../nbs/40_tabular.core.ipynb 94
+# %% ../nbs/40_tabular.core.ipynb 95
 @delegates()
 class TabDataLoader(TfmdDL):
     "A transformed `DataLoader` for Tabular data"    
@@ -356,7 +356,7 @@ class TabDataLoader(TfmdDL):
 
 TabularPandas._dl_type = TabDataLoader
 
-# %% ../nbs/40_tabular.core.ipynb 113
+# %% ../nbs/40_tabular.core.ipynb 114
 @EncodedMultiCategorize
 def setups(self, to:Tabular):
     self.c = len(self.vocab)
@@ -370,7 +370,7 @@ def decodes(self, to:Tabular):
     to.transform(to.y_names, lambda c: c==1)
     return to
 
-# %% ../nbs/40_tabular.core.ipynb 126
+# %% ../nbs/40_tabular.core.ipynb 127
 @RegressionSetup
 def setups(self, to:Tabular):
     if self.c is not None: return
