@@ -123,10 +123,10 @@ require for training, and more easily take advantage of modern best
 practices. Here are migration guides from some popular libraries to help
 you on your way:
 
--   [Plain PyTorch](https://docs.fast.ai/migrating_pytorch)
--   [Ignite](https://docs.fast.ai/migrating_ignite)
--   [Lightning](https://docs.fast.ai/migrating_lightning)
--   [Catalyst](https://docs.fast.ai/migrating_catalyst)
+-   [Plain PyTorch](https://docs.fast.ai/examples/migrating_pytorch.html)
+-   [Ignite](https://docs.fast.ai/examples/migrating_ignite.html)
+-   [Lightning](https://docs.fast.ai/examples/migrating_lightning.html)
+-   [Catalyst](https://docs.fast.ai/examples/migrating_catalyst.html)
 
 ## Windows Support
 
