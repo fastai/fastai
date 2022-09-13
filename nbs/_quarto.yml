@@ -18,8 +18,6 @@ website:
   title: "fastai"
   site-url: "https://docs.fast.ai/"
   description: "fastai simplifies training fast and accurate neural nets using modern best practices"
-  execute: 
-    enabled: false
   twitter-card: true
   open-graph: true
   reader-mode: true
