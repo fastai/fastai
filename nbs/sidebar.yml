@@ -1,0 +1,117 @@
+website:
+  sidebar:
+    contents:
+      - index.ipynb
+      - quick_start.ipynb
+      - section: Tutorials
+        contents:
+        - tutorial.ipynb
+        - section: Beginner
+          contents:
+          - 23_tutorial.vision.ipynb
+          - 38_tutorial.text.ipynb
+          - 44_tutorial.tabular.ipynb
+          - 46_tutorial.collab.ipynb
+        - section: Intermediate
+          contents:
+          - 50_tutorial.datablock.ipynb
+          - 22_tutorial.imagenette.ipynb
+          - 10_tutorial.pets.ipynb
+          - 61_tutorial.medical_imaging.ipynb
+          - 39_tutorial.transformers.ipynb
+          - 35_tutorial.wikitext.ipynb
+          - 20b_tutorial.distributed.ipynb
+        - section: Advanced
+          contents:
+          - 10b_tutorial.albumentations.ipynb
+          - 24_tutorial.siamese.ipynb
+          - 24_tutorial.image_sequence.ipynb
+        - section: Migrating from Other Libs
+          contents:
+          - examples/migrating_pytorch.ipynb
+          - examples/migrating_pytorch_verbose.ipynb
+          - examples/migrating_ignite.ipynb
+          - examples/migrating_lightning.ipynb
+          - examples/migrating_catalyst.ipynb
+      - section: Training 
+        contents:
+        - 13a_learner.ipynb
+        - 12_optimizer.ipynb
+        - 13b_metrics.ipynb
+        - 20_interpret.ipynb
+        - 20a_distributed.ipynb
+        - section: Callbacks 
+          contents:
+          - 13_callback.core.ipynb
+          - 15_callback.hook.ipynb
+          - 16_callback.progress.ipynb
+          - 14_callback.schedule.ipynb
+          - 14a_callback.data.ipynb
+          - 18_callback.fp16.ipynb
+          - 19_callback.mixup.ipynb
+          - 18b_callback.preds.ipynb
+          - 34_callback.rnn.ipynb
+          - 17_callback.tracker.ipynb
+          - 18a_callback.training.ipynb
+      - section: Data 
+        contents:
+        - 06_data.block.ipynb
+        - 03_data.core.ipynb
+        - 02_data.load.ipynb
+        - 04_data.external.ipynb
+        - 05_data.transforms.ipynb
+      - section: Core 
+        contents:
+        - 00_torch_core.ipynb
+        - 01_layers.ipynb
+        - 01a_losses.ipynb
+      - section: Vision 
+        contents:
+        - 07_vision.core.ipynb
+        - 08_vision.data.ipynb
+        - 09_vision.augment.ipynb
+        - 21_vision.learner.ipynb
+        - section: Models 
+          contents:
+          - 11_vision.models.xresnet.ipynb
+          - 15a_vision.models.unet.ipynb
+        - 24_vision.gan.ipynb
+        - 09b_vision.utils.ipynb
+        - 09c_vision.widgets.ipynb
+      - section: Text 
+        contents:
+        - 30_text.core.ipynb
+        - 31_text.data.ipynb
+        - 37_text.learner.ipynb
+        - section: Models 
+          contents:
+          - 33_text.models.core.ipynb
+          - 32_text.models.awdlstm.ipynb
+      - section: Tabular 
+        contents:
+        - 40_tabular.core.ipynb
+        - 41_tabular.data.ipynb
+        - 43_tabular.learner.ipynb
+        - 42_tabular.model.ipynb
+        - 45_collab.ipynb
+      - section: Medical 
+        contents:
+        - 60_medical.imaging.ipynb
+        - 65_medical.text.ipynb
+      - section: Integrations 
+        contents:
+        - 70_callback.wandb.ipynb
+        - 70c_callback.captum.ipynb
+        - 70b_callback.neptune.ipynb
+        - 70d_callback.comet.ipynb
+        - 70a_callback.tensorboard.ipynb
+        - 74_huggingface.ipynb
+      - section: fastai Development 
+        contents:
+        - dev-setup.ipynb
+        - dev/git.qmd
+        - dev/abbr.qmd
+        - dev/style.qmd
+        - dev/gpu.qmd
+        - dev/develop.qmd
+

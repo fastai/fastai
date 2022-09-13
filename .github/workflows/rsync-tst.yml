@@ -1,0 +1,17 @@
+name: Test rsync
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Deploy to GitHub Pages
+    runs-on: ubuntu-latest
+    steps:
+    - uses: fastai/workflows/test-rsync@master
+      with:
+        username: jeremyphoward
+        hostname: ps625762.dreamhostps.com
+        dest_path: docs.fast.ai/tmp
+        ssh_key: ${{ secrets.DH_KEY }}
+        delete: 'yes'
