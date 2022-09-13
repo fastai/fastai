@@ -92,17 +92,17 @@ expressed concisely and clearly by leveraging the dynamism of the
 underlying Python language and the flexibility of the PyTorch library.
 fastai includes:
 
--   A new type dispatch system for Python along with a semantic type
-    hierarchy for tensors
--   A GPU-optimized computer vision library which can be extended in
-    pure Python
--   An optimizer which refactors out the common functionality of modern
-    optimizers into two basic pieces, allowing optimization algorithms
-    to be implemented in 4–5 lines of code
--   A novel 2-way callback system that can access any part of the data,
-    model, or optimizer and change it at any point during training
--   A new data block API
--   And much more…
+- A new type dispatch system for Python along with a semantic type
+  hierarchy for tensors
+- A GPU-optimized computer vision library which can be extended in pure
+  Python
+- An optimizer which refactors out the common functionality of modern
+  optimizers into two basic pieces, allowing optimization algorithms to
+  be implemented in 4–5 lines of code
+- A novel 2-way callback system that can access any part of the data,
+  model, or optimizer and change it at any point during training
+- A new data block API
+- And much more…
 
 fastai is organized around two main design goals: to be approachable and
 rapidly productive, while also being deeply hackable and configurable.
@@ -123,10 +123,10 @@ require for training, and more easily take advantage of modern best
 practices. Here are migration guides from some popular libraries to help
 you on your way:
 
--   [Plain PyTorch](https://docs.fast.ai/examples/migrating_pytorch.html)
--   [Ignite](https://docs.fast.ai/examples/migrating_ignite.html)
--   [Lightning](https://docs.fast.ai/examples/migrating_lightning.html)
--   [Catalyst](https://docs.fast.ai/examples/migrating_catalyst.html)
+- [Plain PyTorch](https://docs.fast.ai/examples/migrating_pytorch.html)
+- [Ignite](https://docs.fast.ai/examples/migrating_ignite.html)
+- [Lightning](https://docs.fast.ai/examples/migrating_lightning.html)
+- [Catalyst](https://docs.fast.ai/examples/migrating_catalyst.html)
 
 ## Windows Support
 
@@ -160,20 +160,13 @@ Tests are written using `nbdev`, for example see the documentation for
 
 ## Contributing
 
-After you clone this repository, please run `nbdev_install_git_hooks` in
-your terminal. This sets up git hooks, which clean up the notebooks to
-remove the extraneous stuff stored in the notebooks (e.g. which cells
-you ran) which causes unnecessary merge conflicts.
+After you clone this repository, make sure you have run
+`nbdev_install_hooks` in your terminal. This install Jupyter and git
+hooks to automatically clean, trust, and fix merge conflicts in
+notebooks.
 
-Before submitting a PR, check that the local library and notebooks
-match. The script `nbdev_diff_nbs` can let you know if there is a
-difference between the local library and the notebooks.
-
--   If you made a change to the notebooks in one of the exported cells,
-    you can export it to the library with `nbdev_build_lib` or
-    `make fastai`.
--   If you made a change to the library, you can export it back to the
-    notebooks with `nbdev_update_lib`.
+After making changes in the repo, you should run `nbdev_prepare` and
+make additional and necessary changes in order to pass all the tests.
 
 ## Docker Containers
 
