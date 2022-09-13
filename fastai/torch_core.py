@@ -129,13 +129,13 @@ def __array_eq__(self:Tensor,b):
     return torch.equal(self,b) if self.dim() else self==b
 
 # %% ../nbs/00_torch_core.ipynb 39
-def _array2tensor(x):
+def _array2tensor(x, **kwargs):
     if x.dtype==np.uint16: x = x.astype(np.float32)
     # windows default numpy int dytpe is int32, while torch tensor default int dtype is int64
     # https://github.com/numpy/numpy/issues/9464
     if sys.platform == "win32":
         if x.dtype==np.int: x = x.astype(np.int64)
-    return torch.from_numpy(x)
+    return torch.from_numpy(x).requires_grad_(kwargs.get("requires_grad"))
 
 # %% ../nbs/00_torch_core.ipynb 40
 @use_kwargs_dict(dtype=None, device=None, requires_grad=False, pin_memory=False)
@@ -146,7 +146,7 @@ def tensor(x, *rest, **kwargs):
     # if isinstance(x, (tuple,list)) and len(x)==0: return tensor(0)
     res = (x if isinstance(x, Tensor)
            else torch.tensor(x, **kwargs) if isinstance(x, (tuple,list))
-           else _array2tensor(x) if isinstance(x, ndarray)
+           else _array2tensor(x, **kwargs) if isinstance(x, ndarray)
            else as_tensor(x.values, **kwargs) if isinstance(x, (pd.Series, pd.DataFrame))
 #            else as_tensor(array(x, **kwargs)) if hasattr(x, '__array__') or is_iter(x)
            else _array2tensor(array(x), **kwargs))
