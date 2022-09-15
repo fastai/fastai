@@ -11,15 +11,15 @@ import sklearn.metrics as skm
 # %% auto 0
 __all__ = ['plot_top_losses', 'Interpretation', 'ClassificationInterpretation', 'SegmentationInterpretation']
 
-# %% ../nbs/20_interpret.ipynb 8
+# %% ../nbs/20_interpret.ipynb 7
 @typedispatch
 def plot_top_losses(x, y, *args, **kwargs):
     raise Exception(f"plot_top_losses is not implemented for {type(x)},{type(y)}")
 
-# %% ../nbs/20_interpret.ipynb 9
+# %% ../nbs/20_interpret.ipynb 8
 _all_ = ["plot_top_losses"]
 
-# %% ../nbs/20_interpret.ipynb 10
+# %% ../nbs/20_interpret.ipynb 9
 class Interpretation():
     "Interpretation base class, can be inherited for task specific Interpretation classes"
     def __init__(self,
@@ -94,7 +94,7 @@ class Interpretation():
         b = tuplify(inps)+tuplify(targs)
         self.dl.show_results(b, tuplify(decoded), max_n=len(idxs), **kwargs)
 
-# %% ../nbs/20_interpret.ipynb 23
+# %% ../nbs/20_interpret.ipynb 22
 class ClassificationInterpretation(Interpretation):
     "Interpretation methods for classification models."
 
@@ -166,7 +166,7 @@ class ClassificationInterpretation(Interpretation):
         names = [str(v) for v in self.vocab]
         print(skm.classification_report(t, d, labels=list(self.vocab.o2i.values()), target_names=names))
 
-# %% ../nbs/20_interpret.ipynb 28
+# %% ../nbs/20_interpret.ipynb 27
 class SegmentationInterpretation(Interpretation):
     "Interpretation methods for segmentation models."
     pass

@@ -1,8 +1,5 @@
-ipynb-filters: [nbdev_filter]
-
 project:
   type: website
-  output-dir: _docs
   preview:
     port: 3000
     browser: false
@@ -15,14 +12,7 @@ format:
     toc-depth: 4
 
 website:
-  title: "fastai"
-  site-url: "https://docs.fast.ai/"
-  description: "fastai simplifies training fast and accurate neural nets using modern best practices"
-  twitter-card: true
-  open-graph: true
   reader-mode: true
-  repo-branch: master
-  repo-url: "https://github.com/fastai/fastai"
   repo-actions: [issue]
   navbar:
     background: primary
@@ -32,7 +22,14 @@ website:
         href: "https://github.com/fastai/fastai"
   sidebar:
     style: "floating"
+  favicon: images/favicon.ico
+  twitter-card:
+    creator: "@jeremyphoward"
+    site: "@fastdotai"
+    image: https://docs.fast.ai/images/layered.png
+  open-graph:
+    image: https://docs.fast.ai/images/layered.png
 
 metadata-files: 
   - sidebar.yml
-  - custom.yml
+  - nbdev.yml

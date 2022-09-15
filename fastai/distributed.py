@@ -13,13 +13,13 @@ except ModuleNotFoundError: pass
 # %% auto 0
 __all__ = ['ParallelTrainer', 'setup_distrib', 'teardown_distrib', 'DistributedDL', 'DistributedTrainer', 'rank0_first']
 
-# %% ../nbs/20a_distributed.ipynb 7
+# %% ../nbs/20a_distributed.ipynb 6
 @patch
 def reset(self: DataParallel):
     "Patch required `reset` call into `DataParallel`"
     if hasattr(self.module, 'reset'): self.module.reset()
 
-# %% ../nbs/20a_distributed.ipynb 8
+# %% ../nbs/20a_distributed.ipynb 7
 class ParallelTrainer(Callback):
     "Wrap a model `DataParallel` automatically"
     run_after,run_before = TrainEvalCallback,Recorder
@@ -27,21 +27,21 @@ class ParallelTrainer(Callback):
     def before_fit(self): self.learn.model = DataParallel(self.learn.model, device_ids=self.device_ids)
     def after_fit(self): self.learn.model = self.learn.model.module
 
-# %% ../nbs/20a_distributed.ipynb 9
+# %% ../nbs/20a_distributed.ipynb 8
 @patch
 def to_parallel(self: Learner, device_ids=None):
     "Add `ParallelTrainer` callback to a `Learner`"
     self.add_cb(ParallelTrainer(device_ids))
     return self
 
-# %% ../nbs/20a_distributed.ipynb 10
+# %% ../nbs/20a_distributed.ipynb 9
 @patch
 def detach_parallel(self: Learner):
     "Remove `ParallelTrainer` callback from a Learner"
     self.remove_cb(ParallelTrainer)
     return self
 
-# %% ../nbs/20a_distributed.ipynb 11
+# %% ../nbs/20a_distributed.ipynb 10
 @patch
 @contextmanager
 def parallel_ctx(self: Learner, device_ids=None):
@@ -51,13 +51,13 @@ def parallel_ctx(self: Learner, device_ids=None):
         yield self
     finally: self.detach_parallel()
 
-# %% ../nbs/20a_distributed.ipynb 14
+# %% ../nbs/20a_distributed.ipynb 13
 @patch
 def reset(self: DistributedDataParallel):
     "Patch required `reset` call into `DistributedDataParallel`"
     if hasattr(self.module, 'reset'): self.module.reset()
 
-# %% ../nbs/20a_distributed.ipynb 15
+# %% ../nbs/20a_distributed.ipynb 14
 def setup_distrib(gpu=None):
     "Setup this process to participate in distributed training"
     if gpu is None: return gpu
@@ -66,15 +66,15 @@ def setup_distrib(gpu=None):
     if num_distrib() > 0: torch.distributed.init_process_group(backend='nccl', init_method='env://')
     return gpu
 
-# %% ../nbs/20a_distributed.ipynb 16
+# %% ../nbs/20a_distributed.ipynb 15
 def teardown_distrib():
     "Free distributed training resources"
     if torch.distributed.is_initialized(): torch.distributed.destroy_process_group()
 
-# %% ../nbs/20a_distributed.ipynb 18
+# %% ../nbs/20a_distributed.ipynb 17
 def _round_to_multiple(number,multiple): return int(math.ceil(number/multiple)*multiple)
 
-# %% ../nbs/20a_distributed.ipynb 19
+# %% ../nbs/20a_distributed.ipynb 18
 class DistributedDL(TfmdDL):
     "A `TfmdDL` which splits a batch into equal size pieces for each worker"
     def __init__(self,dl,rank=None,world_size=None):
@@ -131,10 +131,10 @@ class DistributedDL(TfmdDL):
             return b
         return apply(_inner,b) if gather and all(hasattr(self,o) for o in ('i','n','n_padded')) else b
 
-# %% ../nbs/20a_distributed.ipynb 30
+# %% ../nbs/20a_distributed.ipynb 29
 _hidden_params = ["mixed_precision", "fp16", "log_with", "logging_dir", "step_scheduler_with_optimizer"]
 
-# %% ../nbs/20a_distributed.ipynb 31
+# %% ../nbs/20a_distributed.ipynb 30
 class DistributedTrainer(Callback):
     "Wrap `model` in `DistributedDataParallel` and `dls` in `DistributedDL`"
     order = 11
@@ -160,7 +160,7 @@ class DistributedTrainer(Callback):
     def before_validate(self): self.learn.dl = self._wrap_dl(self.learn.dl)
     def after_fit(self): self.learn.model,self.learn.dls.loaders = self.learn.model.module,self.old_dls
 
-# %% ../nbs/20a_distributed.ipynb 32
+# %% ../nbs/20a_distributed.ipynb 31
 @patch
 @delegates(Accelerator, but=_hidden_params)
 def to_distributed(self: Learner,
@@ -172,7 +172,7 @@ def to_distributed(self: Learner,
     if rank_distrib(): self.remove_cb(ProgressCallback)
     return self
 
-# %% ../nbs/20a_distributed.ipynb 33
+# %% ../nbs/20a_distributed.ipynb 32
 @patch
 def detach_distributed(self: Learner):
     "Remove `DistributedTrainer` from a learner"
@@ -181,7 +181,7 @@ def detach_distributed(self: Learner):
     if rank_distrib() and not hasattr(self, 'progress'): self.add_cb(ProgressCallback())
     return self
 
-# %% ../nbs/20a_distributed.ipynb 35
+# %% ../nbs/20a_distributed.ipynb 34
 @patch
 @contextmanager
 @delegates(Accelerator, but=_hidden_params)
@@ -210,7 +210,7 @@ def distrib_ctx(self: Learner,
         self.detach_distributed()
         if cleanup_dpg: teardown_distrib()
 
-# %% ../nbs/20a_distributed.ipynb 37
+# %% ../nbs/20a_distributed.ipynb 36
 def rank0_first(func, *args, **kwargs):
     "Execute `func` in the Rank-0 process first, then in other ranks in parallel."
     if args or kwargs: func = partial(func, *args, **kwargs)

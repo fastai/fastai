@@ -11,7 +11,7 @@ __all__ = ['pytorch_hp_map', 'Optimizer', 'sgd_step', 'weight_decay', 'l2_reg', 
            'RAdam', 'qhadam_step', 'QHAdam', 'larc_layer_lr', 'larc_step', 'Larc', 'lamb_step', 'Lamb', 'Lookahead',
            'ranger', 'detuplify_pg', 'set_item_pg', 'OptimWrapper']
 
-# %% ../nbs/12_optimizer.ipynb 7
+# %% ../nbs/12_optimizer.ipynb 6
 class _BaseOptimizer():
     "Common functionality between `Optimizer` and `OptimWrapper`"
     def all_params(self,
@@ -72,7 +72,7 @@ class _BaseOptimizer():
             for k,t in v_.items():
                 if k != 'params': hyper[k] = t
 
-# %% ../nbs/12_optimizer.ipynb 9
+# %% ../nbs/12_optimizer.ipynb 8
 def _update(
     state:dict,
     new=None # New values to update `state` dict
@@ -81,7 +81,7 @@ def _update(
     if isinstance(new, dict): state.update(new)
     return state
 
-# %% ../nbs/12_optimizer.ipynb 11
+# %% ../nbs/12_optimizer.ipynb 10
 class Optimizer(_BaseOptimizer):
     "Base optimizer class for the fastai library, updating `params` with `cbs`"
     _keep_on_clear = ['force_train', 'do_wd']
@@ -126,25 +126,25 @@ class Optimizer(_BaseOptimizer):
         self.hypers = sd['hypers']
         self.state = {p: s for p,s in zip(self.all_params().itemgot(0), sd['state'])}
 
-# %% ../nbs/12_optimizer.ipynb 22
+# %% ../nbs/12_optimizer.ipynb 21
 def sgd_step(p, lr, **kwargs):
     p.data.add_(p.grad.data, alpha=-lr)
 
-# %% ../nbs/12_optimizer.ipynb 25
+# %% ../nbs/12_optimizer.ipynb 24
 def weight_decay(p, lr, wd, do_wd=True, **kwargs):
     "Weight decay as decaying `p` with `lr*wd`"
     if do_wd and wd!=0: p.data.mul_(1 - lr*wd)
 
 weight_decay.defaults = dict(wd=0.)
 
-# %% ../nbs/12_optimizer.ipynb 27
+# %% ../nbs/12_optimizer.ipynb 26
 def l2_reg(p, lr, wd, do_wd=True, **kwargs):
     "L2 regularization as adding `wd*p` to `p.grad`"
     if do_wd and wd!=0: p.grad.data.add_(p.data, alpha=wd)
 
 l2_reg.defaults = dict(wd=0.)
 
-# %% ../nbs/12_optimizer.ipynb 42
+# %% ../nbs/12_optimizer.ipynb 41
 def average_grad(p, mom, dampening=False, grad_avg=None, **kwargs):
     "Keeps track of the avg grads of `p` in `state` with `mom`."
     if grad_avg is None: grad_avg = torch.zeros_like(p.grad.data)
@@ -154,7 +154,7 @@ def average_grad(p, mom, dampening=False, grad_avg=None, **kwargs):
 
 average_grad.defaults = dict(mom=0.9)
 
-# %% ../nbs/12_optimizer.ipynb 45
+# %% ../nbs/12_optimizer.ipynb 44
 def average_sqr_grad(p, sqr_mom, dampening=True, sqr_avg=None, **kwargs):
     if sqr_avg is None: sqr_avg = torch.zeros_like(p.grad.data)
     damp = 1-sqr_mom if dampening else 1.
@@ -163,12 +163,12 @@ def average_sqr_grad(p, sqr_mom, dampening=True, sqr_avg=None, **kwargs):
 
 average_sqr_grad.defaults = dict(sqr_mom=0.99)
 
-# %% ../nbs/12_optimizer.ipynb 63
+# %% ../nbs/12_optimizer.ipynb 62
 def momentum_step(p, lr, grad_avg, **kwargs):
     "Step for SGD with momentum with `lr`"
     p.data.add_(grad_avg, alpha=-lr)
 
-# %% ../nbs/12_optimizer.ipynb 64
+# %% ../nbs/12_optimizer.ipynb 63
 def SGD(params, lr, mom=0., wd=0., decouple_wd=True):
     "A `Optimizer` for SGD with `lr` and `mom` and `params`"
     cbs = [weight_decay] if decouple_wd else [l2_reg]
@@ -176,7 +176,7 @@ def SGD(params, lr, mom=0., wd=0., decouple_wd=True):
     cbs.append(sgd_step if mom==0 else momentum_step)
     return Optimizer(params, cbs, lr=lr, mom=mom, wd=wd)
 
-# %% ../nbs/12_optimizer.ipynb 71
+# %% ../nbs/12_optimizer.ipynb 70
 def rms_prop_step(p, lr, sqr_avg, eps, grad_avg=None, **kwargs):
     "Step for SGD with momentum with `lr`"
     denom = sqr_avg.sqrt().add_(eps)
@@ -184,7 +184,7 @@ def rms_prop_step(p, lr, sqr_avg, eps, grad_avg=None, **kwargs):
 
 rms_prop_step.defaults = dict(eps=1e-8)
 
-# %% ../nbs/12_optimizer.ipynb 72
+# %% ../nbs/12_optimizer.ipynb 71
 def RMSProp(params, lr, sqr_mom=0.99, mom=0., wd=0., decouple_wd=True):
     "A `Optimizer` for RMSProp with `lr`, `sqr_mom`, `mom` and `params`"
     cbs = [weight_decay] if decouple_wd else [l2_reg]
@@ -192,16 +192,16 @@ def RMSProp(params, lr, sqr_mom=0.99, mom=0., wd=0., decouple_wd=True):
     cbs.append(rms_prop_step)
     return Optimizer(params, cbs, lr=lr, mom=mom, sqr_mom=sqr_mom, wd=wd)
 
-# %% ../nbs/12_optimizer.ipynb 77
+# %% ../nbs/12_optimizer.ipynb 76
 def step_stat(p, step=0, **kwargs):
     "Register the number of steps done in `state` for `p`"
     step += 1
     return {'step' : step}
 
-# %% ../nbs/12_optimizer.ipynb 79
+# %% ../nbs/12_optimizer.ipynb 78
 def debias(mom, damp, step): return damp * (1 - mom**step) / (1-mom)
 
-# %% ../nbs/12_optimizer.ipynb 80
+# %% ../nbs/12_optimizer.ipynb 79
 def adam_step(p, lr, mom, step, sqr_mom, grad_avg, sqr_avg, eps, **kwargs):
     "Step for Adam with `lr` on `p`"
     debias1 = debias(mom,     1-mom,     step)
@@ -211,14 +211,14 @@ def adam_step(p, lr, mom, step, sqr_mom, grad_avg, sqr_avg, eps, **kwargs):
 
 adam_step._defaults = dict(eps=1e-5)
 
-# %% ../nbs/12_optimizer.ipynb 81
+# %% ../nbs/12_optimizer.ipynb 80
 def Adam(params, lr, mom=0.9, sqr_mom=0.99, eps=1e-5, wd=0.01, decouple_wd=True):
     "A `Optimizer` for Adam with `lr`, `mom`, `sqr_mom`, `eps` and `params`"
     cbs = [weight_decay] if decouple_wd else [l2_reg]
     cbs += [partial(average_grad, dampening=True), average_sqr_grad, step_stat, adam_step]
     return Optimizer(params, cbs, lr=lr, mom=mom, sqr_mom=sqr_mom, eps=eps, wd=wd)
 
-# %% ../nbs/12_optimizer.ipynb 86
+# %% ../nbs/12_optimizer.ipynb 85
 def radam_step(p, lr, mom, step, sqr_mom, grad_avg, sqr_avg, eps, beta, **kwargs):
     "Step for RAdam with `lr` on `p`"
     debias1 = debias(mom,     1-mom,     step)
@@ -236,14 +236,14 @@ def radam_step(p, lr, mom, step, sqr_mom, grad_avg, sqr_avg, eps, beta, **kwargs
 
 radam_step._defaults = dict(eps=1e-5)
 
-# %% ../nbs/12_optimizer.ipynb 87
+# %% ../nbs/12_optimizer.ipynb 86
 def RAdam(params, lr, mom=0.9, sqr_mom=0.99, eps=1e-5, wd=0., beta=0., decouple_wd=True):
     "A `Optimizer` for Adam with `lr`, `mom`, `sqr_mom`, `eps` and `params`"
     cbs = [weight_decay] if decouple_wd else [l2_reg]
     cbs += [partial(average_grad, dampening=True), average_sqr_grad, step_stat, radam_step]
     return Optimizer(params, cbs, lr=lr, mom=mom, sqr_mom=sqr_mom, eps=eps, wd=wd, beta=beta)
 
-# %% ../nbs/12_optimizer.ipynb 93
+# %% ../nbs/12_optimizer.ipynb 92
 def qhadam_step(p, lr, mom, sqr_mom, sqr_avg, nu_1, nu_2, step, grad_avg, eps, **kwargs):
     debias1 = debias(mom,     1-mom,     step)
     debias2 = debias(sqr_mom, 1-sqr_mom, step)
@@ -254,7 +254,7 @@ def qhadam_step(p, lr, mom, sqr_mom, sqr_avg, nu_1, nu_2, step, grad_avg, eps, *
 
 qhadam_step._defaults = dict(eps=1e-8)
 
-# %% ../nbs/12_optimizer.ipynb 94
+# %% ../nbs/12_optimizer.ipynb 93
 def QHAdam(params, lr, mom=0.999, sqr_mom=0.999, nu_1=0.7, nu_2 = 1.0, eps=1e-8, wd=0., decouple_wd=True):
     "An `Optimizer` for Adam with `lr`, `mom`, `sqr_mom`, `nus`, eps` and `params`"
     cbs = [weight_decay] if decouple_wd else [l2_reg]
@@ -262,7 +262,7 @@ def QHAdam(params, lr, mom=0.999, sqr_mom=0.999, nu_1=0.7, nu_2 = 1.0, eps=1e-8,
     return Optimizer(params, cbs, lr=lr, nu_1=nu_1, nu_2=nu_2 ,
                      mom=mom, sqr_mom=sqr_mom, eps=eps, wd=wd)
 
-# %% ../nbs/12_optimizer.ipynb 97
+# %% ../nbs/12_optimizer.ipynb 96
 def larc_layer_lr(p, lr, trust_coeff, wd, eps, clip=True, **kwargs):
     "Computes the local lr before weight decay is applied"
     p_norm,g_norm = torch.norm(p.data),torch.norm(p.grad.data)
@@ -271,12 +271,12 @@ def larc_layer_lr(p, lr, trust_coeff, wd, eps, clip=True, **kwargs):
 
 larc_layer_lr.defaults = dict(trust_coeff=0.02, wd=0., eps=1e-8)
 
-# %% ../nbs/12_optimizer.ipynb 98
+# %% ../nbs/12_optimizer.ipynb 97
 def larc_step(p, local_lr, grad_avg=None, **kwargs):
     "Step for LARC `local_lr` on `p`"
     p.data.add_(p.grad.data if grad_avg is None else grad_avg, alpha = -local_lr)
 
-# %% ../nbs/12_optimizer.ipynb 99
+# %% ../nbs/12_optimizer.ipynb 98
 def Larc(params, lr, mom=0.9, clip=True, trust_coeff=0.02, eps=1e-8, wd=0., decouple_wd=True):
     "A `Optimizer` for Adam with `lr`, `mom`, `sqr_mom`, `eps` and `params`"
     cbs = [weight_decay] if decouple_wd else [l2_reg]
@@ -284,7 +284,7 @@ def Larc(params, lr, mom=0.9, clip=True, trust_coeff=0.02, eps=1e-8, wd=0., deco
     cbs += [partial(larc_layer_lr, clip=clip), larc_step]
     return Optimizer(params, cbs, lr=lr, mom=mom, trust_coeff=trust_coeff, eps=eps, wd=wd)
 
-# %% ../nbs/12_optimizer.ipynb 104
+# %% ../nbs/12_optimizer.ipynb 103
 def lamb_step(p, lr, mom, step, sqr_mom, grad_avg, sqr_avg, eps, **kwargs):
     "Step for LAMB with `lr` on `p`"
     debias1 = debias(mom,     1-mom,     step)
@@ -297,14 +297,14 @@ def lamb_step(p, lr, mom, step, sqr_mom, grad_avg, sqr_avg, eps, **kwargs):
 
 lamb_step._defaults = dict(eps=1e-6, wd=0.)
 
-# %% ../nbs/12_optimizer.ipynb 105
+# %% ../nbs/12_optimizer.ipynb 104
 def Lamb(params, lr, mom=0.9, sqr_mom=0.99, eps=1e-5, wd=0., decouple_wd=True):
     "A `Optimizer` for Adam with `lr`, `mom`, `sqr_mom`, `eps` and `params`"
     cbs = [weight_decay] if decouple_wd else [l2_reg]
     cbs += [partial(average_grad, dampening=True), average_sqr_grad, step_stat, lamb_step]
     return Optimizer(params, cbs, lr=lr, mom=mom, sqr_mom=sqr_mom, eps=eps, wd=wd)
 
-# %% ../nbs/12_optimizer.ipynb 110
+# %% ../nbs/12_optimizer.ipynb 109
 class Lookahead(Optimizer, GetAttr):
     "Wrap `opt` in a lookahead optimizer"
     _default='opt'
@@ -345,13 +345,13 @@ class Lookahead(Optimizer, GetAttr):
     @param_lists.setter
     def param_lists(self, v): self.opt.param_lists = v
 
-# %% ../nbs/12_optimizer.ipynb 112
+# %% ../nbs/12_optimizer.ipynb 111
 @delegates(RAdam)
 def ranger(p, lr, mom=0.95, wd=0.01, eps=1e-6, **kwargs):
     "Convenience method for `Lookahead` with `RAdam`"
     return Lookahead(RAdam(p, lr=lr, mom=mom, wd=wd, eps=eps, **kwargs))
 
-# %% ../nbs/12_optimizer.ipynb 115
+# %% ../nbs/12_optimizer.ipynb 114
 def detuplify_pg(d):
     res = {}
     for k,v in d.items():
@@ -360,7 +360,7 @@ def detuplify_pg(d):
         else: res[k] = v
     return res
 
-# %% ../nbs/12_optimizer.ipynb 117
+# %% ../nbs/12_optimizer.ipynb 116
 def set_item_pg(pg, k, v):
     if '__' not in k: pg[k] = v
     else:
@@ -368,14 +368,14 @@ def set_item_pg(pg, k, v):
         pg[name] = tuple(v if i==int(idx) else pg[name][i] for i in range_of(pg[name]))
     return pg
 
-# %% ../nbs/12_optimizer.ipynb 119
+# %% ../nbs/12_optimizer.ipynb 118
 pytorch_hp_map = {'momentum': 'mom', 'weight_decay': 'wd', 'alpha': 'sqr_mom', 'betas__0': 'mom',
                   'betas__1': 'sqr_mom'}
 if version.parse(torch.version.__version__)>version.parse('1.12.0'):
     # Torch>=1.12 has a foreach param
     pytorch_hp_map = merge(*(pytorch_hp_map,{'foreach': 'foreach'}))
 
-# %% ../nbs/12_optimizer.ipynb 120
+# %% ../nbs/12_optimizer.ipynb 119
 def _convert_params(o:list) -> list:
     splitter = []
     for group in o:
@@ -383,7 +383,7 @@ def _convert_params(o:list) -> list:
         else: splitter.append({'params':group})
     return splitter
 
-# %% ../nbs/12_optimizer.ipynb 121
+# %% ../nbs/12_optimizer.ipynb 120
 class OptimWrapper(_BaseOptimizer, GetAttr):
     "A wrapper class for existing PyTorch optimizers"
     _xtra=['zero_grad', 'step', 'state_dict', 'load_state_dict']

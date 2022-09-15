@@ -13,27 +13,27 @@ __all__ = ['replacing_yield', 'mk_metric', 'save_model', 'load_model', 'SkipToEp
            'CancelBackwardException', 'CancelStepException', 'CancelFitException', 'CancelEpochException',
            'CancelTrainException', 'CancelValidException', 'CancelBatchException']
 
-# %% ../nbs/13a_learner.ipynb 5
+# %% ../nbs/13a_learner.ipynb 4
 _all_ = ['CancelBackwardException', 'CancelStepException','CancelFitException','CancelEpochException',
          'CancelTrainException','CancelValidException','CancelBatchException']
 
-# %% ../nbs/13a_learner.ipynb 11
+# %% ../nbs/13a_learner.ipynb 10
 defaults.lr = 1e-3
 
-# %% ../nbs/13a_learner.ipynb 12
+# %% ../nbs/13a_learner.ipynb 11
 def replacing_yield(o, attr, val):
     "Context manager to temporarily replace an attribute"
     old = getattr(o,attr)
     try:     yield setattr(o,attr,val)
     finally: setattr(o,attr,old)
 
-# %% ../nbs/13a_learner.ipynb 14
+# %% ../nbs/13a_learner.ipynb 13
 def mk_metric(m):
     "Convert `m` to an `AvgMetric`, unless it's already a `Metric`"
     if isinstance(m,type): m = m()
     return m if isinstance(m, Metric) else AvgMetric(m)
 
-# %% ../nbs/13a_learner.ipynb 16
+# %% ../nbs/13a_learner.ipynb 15
 def save_model(file, model, opt, with_opt=True, pickle_protocol=2):
     "Save `model` to `file` along with `opt` (if available, and if `with_opt`)"
     if rank_distrib(): return # don't save if child proc
@@ -42,7 +42,7 @@ def save_model(file, model, opt, with_opt=True, pickle_protocol=2):
     if with_opt: state = {'model': state, 'opt':opt.state_dict()}
     torch.save(state, file, pickle_protocol=pickle_protocol)
 
-# %% ../nbs/13a_learner.ipynb 18
+# %% ../nbs/13a_learner.ipynb 17
 def load_model(file, model, opt, with_opt=True, device=None, strict=True):
     "Load `model` from `file` along with `opt` (if available, and if `with_opt`)"
     if isinstance(device, int): device = torch.device('cuda', device)
@@ -57,22 +57,22 @@ def load_model(file, model, opt, with_opt=True, device=None, strict=True):
             if with_opt: warn("Could not load the optimizer state.")
     elif with_opt: warn("Saved filed doesn't contain an optimizer state.")
 
-# %% ../nbs/13a_learner.ipynb 20
+# %% ../nbs/13a_learner.ipynb 19
 def _try_concat(o):
     try:    return torch.cat(o)
     except: return sum([L(o_[i,:] for i in range_of(o_)) for o_ in o], L())
 
-# %% ../nbs/13a_learner.ipynb 21
+# %% ../nbs/13a_learner.ipynb 20
 _before_epoch = [event.before_fit, event.before_epoch]
 _after_epoch  = [event.after_epoch, event.after_fit]
 
-# %% ../nbs/13a_learner.ipynb 22
+# %% ../nbs/13a_learner.ipynb 21
 class _ConstantFunc():
     "Returns a function that returns `o`"
     def __init__(self, o): self.o = o
     def __call__(self, *args, **kwargs): return self.o
 
-# %% ../nbs/13a_learner.ipynb 23
+# %% ../nbs/13a_learner.ipynb 22
 class SkipToEpoch(Callback):
     "Skip training up to `epoch`"
     order = 70
@@ -84,7 +84,7 @@ class SkipToEpoch(Callback):
         if self.epoch < self._skip_to:
             raise CancelEpochException
 
-# %% ../nbs/13a_learner.ipynb 25
+# %% ../nbs/13a_learner.ipynb 24
 _loop = ['Start Fit', 'before_fit', 'Start Epoch Loop', 'before_epoch', 'Start Train', 'before_train',
          'Start Batch Loop', 'before_batch', 'after_pred', 'after_loss', 'before_backward', 'before_step',
          'after_step', 'after_cancel_batch', 'after_batch','End Batch Loop','End Train',
@@ -93,7 +93,7 @@ _loop = ['Start Fit', 'before_fit', 'Start Epoch Loop', 'before_epoch', 'Start T
          'after_validate', 'End Epoch Loop', 'after_cancel_epoch', 'after_epoch', 'End Fit',
          'after_cancel_fit', 'after_fit']
 
-# %% ../nbs/13a_learner.ipynb 26
+# %% ../nbs/13a_learner.ipynb 25
 class Learner(GetAttr):
     _default='model'
     def __init__(self,
@@ -342,7 +342,7 @@ class Learner(GetAttr):
 
 Learner.x,Learner.y = add_props(lambda i,x: detuplify((x.xb,x.yb)[i]))
 
-# %% ../nbs/13a_learner.ipynb 27
+# %% ../nbs/13a_learner.ipynb 26
 add_docs(Learner, "Group together a `model`, some `dls` and a `loss_func` to handle training",
     add_cbs="Add `cbs` to the list of `Callback` and register `self` as their learner",
     add_cb="Add `cb` to the list of `Callback` and register `self` as their learner",
@@ -368,20 +368,20 @@ add_docs(Learner, "Group together a `model`, some `dls` and a `loss_func` to han
     __call__="Call `event_name` for all `Callback`s in `self.cbs`"
 )
 
-# %% ../nbs/13a_learner.ipynb 34
+# %% ../nbs/13a_learner.ipynb 33
 if not hasattr(defaults, 'callbacks'): defaults.callbacks = [TrainEvalCallback]
 
-# %% ../nbs/13a_learner.ipynb 89
+# %% ../nbs/13a_learner.ipynb 88
 def _before_batch_cb(f, self):
     xb,yb = f(self, self.xb, self.yb)
     self.learn.xb,self.learn.yb = xb,yb
 
-# %% ../nbs/13a_learner.ipynb 90
+# %% ../nbs/13a_learner.ipynb 89
 def before_batch_cb(f):
     "Shortcut for creating a Callback on the `before_batch` event, which takes and returns `xb,yb`"
     return Callback(before_batch=partial(_before_batch_cb, f))
 
-# %% ../nbs/13a_learner.ipynb 97
+# %% ../nbs/13a_learner.ipynb 96
 @patch
 @delegates(save_model)
 def save(self:Learner, file, **kwargs):
@@ -390,7 +390,7 @@ def save(self:Learner, file, **kwargs):
     save_model(file, self.model, getattr(self,'opt',None), **kwargs)
     return file
 
-# %% ../nbs/13a_learner.ipynb 99
+# %% ../nbs/13a_learner.ipynb 98
 @patch
 @delegates(load_model)
 def load(self:Learner, file, device=None, **kwargs):
@@ -402,7 +402,7 @@ def load(self:Learner, file, device=None, **kwargs):
     nested_attr(self, "accelerator.wait_for_everyone", noop)()
     return self
 
-# %% ../nbs/13a_learner.ipynb 103
+# %% ../nbs/13a_learner.ipynb 102
 @patch
 def export(self:Learner, fname='export.pkl', pickle_module=pickle, pickle_protocol=2):
     "Export the content of `self` without the items and the optimizer state for inference"
@@ -420,7 +420,7 @@ def export(self:Learner, fname='export.pkl', pickle_module=pickle, pickle_protoc
     if state is not None: self.opt.load_state_dict(state)
     self.dls = old_dbunch
 
-# %% ../nbs/13a_learner.ipynb 105
+# %% ../nbs/13a_learner.ipynb 104
 def load_learner(fname, cpu=True, pickle_module=pickle):
     "Load a `Learner` object in `fname`, by default putting it on the `cpu`"
     distrib_barrier()
@@ -435,7 +435,7 @@ def load_learner(fname, cpu=True, pickle_module=pickle):
         elif hasattr(res, 'non_native_mixed_precision'): res = res.to_non_native_fp32()
     return res
 
-# %% ../nbs/13a_learner.ipynb 112
+# %% ../nbs/13a_learner.ipynb 111
 @docs
 class Metric():
     "Blueprint for defining a metric"
@@ -453,7 +453,7 @@ class Metric():
         accumulate="Use `learn` to update the state with new results",
         value="The value of the metric")
 
-# %% ../nbs/13a_learner.ipynb 119
+# %% ../nbs/13a_learner.ipynb 118
 class AvgMetric(Metric):
     "Average the values of `func` taking into account potential different batch sizes"
     def __init__(self, func):  self.func = func
@@ -467,7 +467,7 @@ class AvgMetric(Metric):
     @property
     def name(self):  return self.func.func.__name__ if hasattr(self.func, 'func') else  self.func.__name__
 
-# %% ../nbs/13a_learner.ipynb 123
+# %% ../nbs/13a_learner.ipynb 122
 class AvgLoss(Metric):
     "Average the losses taking into account potential different batch sizes"
     def reset(self):           self.total,self.count = 0.,0
@@ -480,7 +480,7 @@ class AvgLoss(Metric):
     @property
     def name(self):  return "loss"
 
-# %% ../nbs/13a_learner.ipynb 127
+# %% ../nbs/13a_learner.ipynb 126
 class AvgSmoothLoss(Metric):
     "Smooth average of the losses (exponentially weighted with `beta`)"
     def __init__(self, beta=0.98): self.beta = beta
@@ -491,7 +491,7 @@ class AvgSmoothLoss(Metric):
     @property
     def value(self): return self.val/(1-self.beta**self.count)
 
-# %% ../nbs/13a_learner.ipynb 130
+# %% ../nbs/13a_learner.ipynb 129
 class ValueMetric(Metric):
     "Use to include a pre-calculated metric value (for instance calculated in a `Callback`) and returned by `func`"
     def __init__(self, func, metric_name=None): store_attr('func, metric_name')
@@ -502,16 +502,16 @@ class ValueMetric(Metric):
     @property
     def name(self): return self.metric_name if self.metric_name else self.func.__name__
 
-# %% ../nbs/13a_learner.ipynb 134
+# %% ../nbs/13a_learner.ipynb 133
 from fastprogress.fastprogress import format_time
 
-# %% ../nbs/13a_learner.ipynb 135
+# %% ../nbs/13a_learner.ipynb 134
 def _maybe_item(t):
     t = t.value
     try: return t.item()
     except: return t
 
-# %% ../nbs/13a_learner.ipynb 136
+# %% ../nbs/13a_learner.ipynb 135
 class Recorder(Callback):
     "Callback that registers statistics (lr, loss and metrics) during training"
     _stateattrs=('lrs','iters','losses','values')
@@ -583,7 +583,7 @@ class Recorder(Callback):
             plt.plot(self.iters[idx:], L(self.values[idx:]).itemgot(valid_col), label='valid')
             plt.legend()
 
-# %% ../nbs/13a_learner.ipynb 137
+# %% ../nbs/13a_learner.ipynb 136
 add_docs(Recorder,
          before_train = "Reset loss and metrics state",
          after_train = "Log loss and metric values on the training set (if `self.training_metrics=True`)",
@@ -595,12 +595,12 @@ add_docs(Recorder,
 
 if Recorder not in defaults.callbacks: defaults.callbacks.append(Recorder)
 
-# %% ../nbs/13a_learner.ipynb 153
+# %% ../nbs/13a_learner.ipynb 152
 def _cast_tensor(x): 
     if isinstance(x, tuple): return tuple(_cast_tensor(x_) for x_ in x)
     else: return cast(x, Tensor) if isinstance(x,torch.Tensor) else x
 
-# %% ../nbs/13a_learner.ipynb 154
+# %% ../nbs/13a_learner.ipynb 153
 class CastToTensor(Callback):
     "Cast Subclassed Tensors to `Tensor`"
     order=9 # Right before MixedPrecision
@@ -608,10 +608,10 @@ class CastToTensor(Callback):
     def before_batch(self):
         self.learn.xb,self.learn.yb = _cast_tensor(self.learn.xb),_cast_tensor(self.learn.yb)
 
-# %% ../nbs/13a_learner.ipynb 156
+# %% ../nbs/13a_learner.ipynb 155
 if CastToTensor not in defaults.callbacks: defaults.callbacks.append(CastToTensor)
 
-# %% ../nbs/13a_learner.ipynb 186
+# %% ../nbs/13a_learner.ipynb 185
 @patch
 def freeze_to(self:Learner, n):
     if self.opt is None: self.create_opt()
@@ -629,7 +629,7 @@ add_docs(Learner,
          freeze="Freeze up to last parameter group",
          unfreeze="Unfreeze the entire model")
 
-# %% ../nbs/13a_learner.ipynb 190
+# %% ../nbs/13a_learner.ipynb 189
 @patch
 def tta(self:Learner, ds_idx=1, dl=None, n=4, item_tfms=None, batch_tfms=None, beta=0.25, use_max=False):
     "Return predictions on the `ds_idx` dataset or `dl` using Test Time Augmentation"

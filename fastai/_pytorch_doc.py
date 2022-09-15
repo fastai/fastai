@@ -7,10 +7,10 @@ from types import ModuleType
 # %% auto 0
 __all__ = ['PYTORCH_URL', 'pytorch_doc_link']
 
-# %% ../nbs/99_pytorch_doc.ipynb 7
+# %% ../nbs/99_pytorch_doc.ipynb 6
 PYTORCH_URL = 'https://pytorch.org/docs/stable/'
 
-# %% ../nbs/99_pytorch_doc.ipynb 8
+# %% ../nbs/99_pytorch_doc.ipynb 7
 def _mod2page(
     mod:ModuleType, # A PyTorch module
 ) -> str:
@@ -21,10 +21,10 @@ def _mod2page(
     if name.startswith('nn.modules'): return 'nn.html'
     return f'{name}.html'
 
-# %% ../nbs/99_pytorch_doc.ipynb 10
+# %% ../nbs/99_pytorch_doc.ipynb 9
 import importlib
 
-# %% ../nbs/99_pytorch_doc.ipynb 11
+# %% ../nbs/99_pytorch_doc.ipynb 10
 def pytorch_doc_link(
     name:str # Name of a PyTorch module, class or function
 ) -> (str, None):

@@ -1,0 +1,9 @@
+project:
+  output-dir: _docs
+
+website:
+  title: "fastai"
+  site-url: "https://docs.fast.ai/"
+  description: "fastai simplifies training fast and accurate neural nets using modern best practices"
+  repo-branch: master
+  repo-url: "https://github.com/fastai/fastai"

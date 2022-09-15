@@ -33,7 +33,7 @@ def get_data(bs, sl):
 
 @call_parse
 def main(bs:Param("Batch size", int)=104,
-         sl:Param("Sequence length", int)=72:
+         sl:Param("Sequence length", int)=72):
     dls,vocab = get_data(bs, sl)
     config = awd_lstm_lm_config.copy()
     config.update({'input_p': 0.6, 'output_p': 0.4, 'weight_p': 0.5, 'embed_p': 0.1, 'hidden_p': 0.2})
