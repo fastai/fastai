@@ -282,7 +282,7 @@ class Learner(GetAttr):
                   reorder : bool=True, # To order the tensors appropriately
                   cbs: list | None =None, # Option to pass `Callbacks` to predict function
                   **kwargs
-                 )-> tuple[tensor, tensor| None]:
+                 )-> tuple:
         """Get the predictions and targets for fastai learner"""
         if dl is None: dl = self.dls[ds_idx].new(shuffle=False, drop_last=False)
         else:
