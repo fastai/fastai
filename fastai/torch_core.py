@@ -129,20 +129,14 @@ def __array_eq__(self:Tensor,b):
     return torch.equal(self,b) if self.dim() else self==b
 
 # %% ../nbs/00_torch_core.ipynb 38
-def _array2tensor(x, **kwargs):
+def _array2tensor(x, requires_grad=False, pin_memory=False, **kwargs):
     if x.dtype==np.uint16: x = x.astype(np.float32)
-    # windows default numpy int dytpe is int32, while torch tensor default int dtype is int64
+    # windows default numpy int dtype is int32, while torch tensor default int dtype is int64
     # https://github.com/numpy/numpy/issues/9464
-    if sys.platform == "win32":
-        if x.dtype==np.int: x = x.astype(np.int64)
-
-    reqs_grad = False; should_pin = False
-    if "requires_grad" in kwargs: reqs_grad = kwargs.pop("requires_grad")
-    if "pin_memory" in kwargs: should_pin = kwargs.pop("pin_memory")
-    
+    if sys.platform == "win32" and x.dtype==np.int: x = x.astype(np.int64)
     t = torch.as_tensor(x, **kwargs)
-    t.requires_grad_(reqs_grad)
-    if should_pin: t.pin_memory()
+    t.requires_grad_(requires_grad)
+    if pin_memory: t.pin_memory()
     return t
 
 # %% ../nbs/00_torch_core.ipynb 39
