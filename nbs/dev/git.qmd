@@ -2,7 +2,7 @@
 title: git Notes
 ---
 
-> **NB**: This document was written for a previous version of fastai. It hasn't been fully updated to fastai v2. See the [developer's guide](/dev-setup) for current instructions.
+> **NB**: This document was written for a previous version of fastai. It hasn't been fully updated to fastai v2. See the [developer's guide](https://docs.fast.ai/dev/develop.html) for current instructions.
 
 Chances are that you may need to know some git when using fastai - for example if you want to contribute to the project, or you want to undo some change in your code tree. This document has a variety of useful recipes that might be of help in your work.
 

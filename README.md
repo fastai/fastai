@@ -148,7 +148,7 @@ to fully leverage the fastai API on Windows.
 
 To run the tests in parallel, launch:
 
-`nbdev_test_nbs` or `make test`
+`nbdev_test`
 
 For all the tests to pass, you’ll need to install the dependencies
 specified as part of dev_requirements in settings.ini
