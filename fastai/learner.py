@@ -271,8 +271,18 @@ class Learner(GetAttr):
         return getattr(self, 'final_record', None)
 
     @delegates(GatherPredsCallback.__init__)
-    def get_preds(self, ds_idx=1, dl=None, with_input=False, with_decoded=False, with_loss=False, act=None,
-                  inner=False, reorder=True, cbs=None, **kwargs):
+    def get_preds(self,
+                  ds_idx: int =1, # This takes the dataset index of DataLoader with default value as 1 for valid and 0 can be used for train
+                  dl: TfmdDL | None=None, # `DataLoaders` containing data for each dataset needed for `model`
+                  with_input: bool=False, # Whether to return inputs
+                  with_decoded: bool=False, # Whether to decode based on loss function passed
+                  with_loss : bool=False, # Whether to return losses
+                  act: Any=None, # Option to pass Activation function to predict function
+                  inner : bool=False, # Tells that it's used internally used anywhere like in another training loop
+                  reorder : bool=True, # To order the tensors appropriately
+                  cbs: list | None =None, # Option to pass `Callbacks` to predict function
+                  **kwargs
+                 )-> tuple:
         if dl is None: dl = self.dls[ds_idx].new(shuffle=False, drop_last=False)
         else:
             try: len(dl)
