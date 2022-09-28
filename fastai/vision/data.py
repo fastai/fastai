@@ -110,11 +110,11 @@ class ImageDataLoaders(DataLoaders):
     @classmethod
     @delegates(DataLoaders.from_dblock)
     def from_folder(cls, path, train='train', valid='valid', valid_pct=None, seed=None, vocab=None, item_tfms=None,
-                    batch_tfms=None, **kwargs):
+                    batch_tfms=None, img_cls=PILImage, **kwargs):
         "Create from imagenet style dataset in `path` with `train` and `valid` subfolders (or provide `valid_pct`)"
         splitter = GrandparentSplitter(train_name=train, valid_name=valid) if valid_pct is None else RandomSplitter(valid_pct, seed=seed)
         get_items = get_image_files if valid_pct else partial(get_image_files, folders=[train, valid])
-        dblock = DataBlock(blocks=(ImageBlock, CategoryBlock(vocab=vocab)),
+        dblock = DataBlock(blocks=(ImageBlock(img_cls), CategoryBlock(vocab=vocab)),
                            get_items=get_items,
                            splitter=splitter,
                            get_y=parent_label,
@@ -124,9 +124,10 @@ class ImageDataLoaders(DataLoaders):
 
     @classmethod
     @delegates(DataLoaders.from_dblock)
-    def from_path_func(cls, path, fnames, label_func, valid_pct=0.2, seed=None, item_tfms=None, batch_tfms=None, **kwargs):
+    def from_path_func(cls, path, fnames, label_func, valid_pct=0.2, seed=None, item_tfms=None, batch_tfms=None, 
+                       img_cls=PILImage, **kwargs):
         "Create from list of `fnames` in `path`s with `label_func`"
-        dblock = DataBlock(blocks=(ImageBlock, CategoryBlock),
+        dblock = DataBlock(blocks=(ImageBlock(img_cls), CategoryBlock),
                            splitter=RandomSplitter(valid_pct, seed=seed),
                            get_y=label_func,
                            item_tfms=item_tfms,
@@ -161,14 +162,14 @@ class ImageDataLoaders(DataLoaders):
     @classmethod
     @delegates(DataLoaders.from_dblock)
     def from_df(cls, df, path='.', valid_pct=0.2, seed=None, fn_col=0, folder=None, suff='', label_col=1, label_delim=None,
-                y_block=None, valid_col=None, item_tfms=None, batch_tfms=None, **kwargs):
+                y_block=None, valid_col=None, item_tfms=None, batch_tfms=None, img_cls=PILImage, **kwargs):
         "Create from `df` using `fn_col` and `label_col`"
         pref = f'{Path(path) if folder is None else Path(path)/folder}{os.path.sep}'
         if y_block is None:
             is_multi = (is_listy(label_col) and len(label_col) > 1) or label_delim is not None
             y_block = MultiCategoryBlock if is_multi else CategoryBlock
         splitter = RandomSplitter(valid_pct, seed=seed) if valid_col is None else ColSplitter(valid_col)
-        dblock = DataBlock(blocks=(ImageBlock, y_block),
+        dblock = DataBlock(blocks=(ImageBlock(img_cls), y_block),
                            get_x=ColReader(fn_col, pref=pref, suff=suff),
                            get_y=ColReader(label_col, label_delim=label_delim),
                            splitter=splitter,
@@ -185,12 +186,12 @@ class ImageDataLoaders(DataLoaders):
     @classmethod
     @delegates(DataLoaders.from_dblock)
     def from_lists(cls, path, fnames, labels, valid_pct=0.2, seed:int=None, y_block=None, item_tfms=None, batch_tfms=None,
-                   **kwargs):
+                   img_cls=PILImage, **kwargs):
         "Create from list of `fnames` and `labels` in `path`"
         if y_block is None:
             y_block = MultiCategoryBlock if is_listy(labels[0]) and len(labels[0]) > 1 else (
                 RegressionBlock if isinstance(labels[0], float) else CategoryBlock)
-        dblock = DataBlock.from_columns(blocks=(ImageBlock, y_block),
+        dblock = DataBlock.from_columns(blocks=(ImageBlock(img_cls), y_block),
                            splitter=RandomSplitter(valid_pct, seed=seed),
                            item_tfms=item_tfms,
                            batch_tfms=batch_tfms)
@@ -201,14 +202,15 @@ ImageDataLoaders.from_name_func = delegates(to=ImageDataLoaders.from_path_func)(
 ImageDataLoaders.from_path_re = delegates(to=ImageDataLoaders.from_path_func)(ImageDataLoaders.from_path_re)
 ImageDataLoaders.from_name_re = delegates(to=ImageDataLoaders.from_name_func)(ImageDataLoaders.from_name_re)
 
-# %% ../../nbs/08_vision.data.ipynb 61
+# %% ../../nbs/08_vision.data.ipynb 62
 class SegmentationDataLoaders(DataLoaders):
     "Basic wrapper around several `DataLoader`s with factory methods for segmentation problems"
     @classmethod
     @delegates(DataLoaders.from_dblock)
-    def from_label_func(cls, path, fnames, label_func, valid_pct=0.2, seed=None, codes=None, item_tfms=None, batch_tfms=None, **kwargs):
+    def from_label_func(cls, path, fnames, label_func, valid_pct=0.2, seed=None, codes=None, item_tfms=None, batch_tfms=None, 
+                        img_cls=PILImage, **kwargs):
         "Create from list of `fnames` in `path`s with `label_func`."
-        dblock = DataBlock(blocks=(ImageBlock, MaskBlock(codes=codes)),
+        dblock = DataBlock(blocks=(ImageBlock(img_cls), MaskBlock(codes=codes)),
                            splitter=RandomSplitter(valid_pct, seed=seed),
                            get_y=label_func,
                            item_tfms=item_tfms,
