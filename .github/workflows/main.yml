@@ -12,6 +12,9 @@ on:
       - '*.md'
       - '.git*'
 
+permissions:
+  contents: read # to fetch code (actions/checkout)
+
 jobs:  
   test-nbdev-sync:
     runs-on: ubuntu-latest

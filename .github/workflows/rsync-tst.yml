@@ -3,6 +3,7 @@ name: Test rsync
 on:
   workflow_dispatch:
 
+permissions: {}
 jobs:
   deploy:
     name: Deploy to GitHub Pages
