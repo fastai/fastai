@@ -16,7 +16,7 @@ jobs:
     - uses: fastai/workflows/quarto-rsync@master
       with:
         username: jeremyphoward
-        hostname: docs.fast.ai
+        hostname: vps19524.dreamhostps.com
         dest_path: docs.fast.ai
         ssh_key: ${{ secrets.DH_KEY }}
         delete: 'yes'
