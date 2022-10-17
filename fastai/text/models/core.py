@@ -156,7 +156,9 @@ def get_text_classifier(
 ):
     "Create a text classifier from `arch` and its `config`, maybe `pretrained`"
     meta = _model_meta[arch]
-    config = ifnone(config, meta['config_clas']).copy()
+    cfg = meta['config_clas'].copy()
+    cfg.update(ifnone(config, {}))
+    config = cfg
     for k in config.keys():
         if k.endswith('_p'): config[k] *= drop_mult
     if lin_ftrs is None: lin_ftrs = [50]
