@@ -192,6 +192,9 @@ def _add_norm(dls, meta, pretrained):
     if not pretrained: return
     stats = meta.get('stats')
     if stats is None: return
+    if dls.do_item(0)[0].shape[0] != len(stats[0]):
+        warn(f"unable to add normalization transform: your dataloader currently returns 1-channel inputs, `stats` have 3 channels")
+        return
     if not dls.after_batch.fs.filter(risinstance(Normalize)):
         dls.add_tfms([Normalize.from_stats(*stats)],'after_batch')
 
