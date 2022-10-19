@@ -3,7 +3,6 @@
 # %% ../nbs/12_optimizer.ipynb 2
 from __future__ import annotations
 from .torch_basics import *
-from packaging import version
 
 # %% auto 0
 __all__ = ['pytorch_hp_map', 'Optimizer', 'sgd_step', 'weight_decay', 'l2_reg', 'average_grad', 'average_sqr_grad',
@@ -371,7 +370,7 @@ def set_item_pg(pg, k, v):
 # %% ../nbs/12_optimizer.ipynb 118
 pytorch_hp_map = {'momentum': 'mom', 'weight_decay': 'wd', 'alpha': 'sqr_mom', 'betas__0': 'mom',
                   'betas__1': 'sqr_mom'}
-if version.parse(torch.version.__version__)>version.parse('1.12.0'):
+if ismin_torch('1.12'):
     # Torch>=1.12 has a foreach param
     pytorch_hp_map = merge(*(pytorch_hp_map,{'foreach': 'foreach'}))
 
@@ -392,11 +391,14 @@ class OptimWrapper(_BaseOptimizer, GetAttr):
          params:list|dict=None, # Model parameters to pass to `opt`. If using an already built `opt`
          opt:callable|torch.optim.Optimizer=None, # A torch optimizer constructor, or an already built optimizer 
          hp_map:dict=None, # A dictionary converting the keys of a built `opt` to the keys of fastai's Optimizer
-         convert_groups=True, # Whether to convert parameter groups
+         convert_groups:bool=True, # Convert parameter groups from splitter or pass unaltered to `opt`
          **kwargs
     ):
         if params is None and opt is None: raise ValueError("Both `params` and `opt` cannot be None.")
         if callable(opt):
+            if convert_groups:
+                params = L(params)
+                convert_groups = isinstance(params[0], (L,list))
             self.opt = opt(_convert_params(params), **kwargs) if convert_groups else opt(params, **kwargs)
         else:
             if params is not None: raise ValueError("Tried using both `params` and a built optimizer. Just pass in `opt`.")
@@ -409,7 +411,7 @@ class OptimWrapper(_BaseOptimizer, GetAttr):
 
     @property
     def hypers(self):
-        return [{self.fwd_map[k]:v for k,v in detuplify_pg(pg).items() if k != 'params'} for pg in self.opt.param_groups]
+        return [{self.fwd_map.get(k, k):v for k,v in detuplify_pg(pg).items() if k != 'params'} for pg in self.opt.param_groups]
 
     def _set_hyper(self, k, v):
         for pg,v_ in zip(self.opt.param_groups,v): pg = set_item_pg(pg, self.bwd_map[k], v_)
