@@ -188,19 +188,18 @@ def create_timm_model(arch, n_out, cut=None, pretrained=True, n_in=3, init=nn.in
     return res,model.default_cfg
 
 # %% ../../nbs/21_vision.learner.ipynb 38
-def _add_norm(dls, meta, pretrained):
+def _add_norm(dls, meta, pretrained, n_in=3):
     if not pretrained: return
     stats = meta.get('stats')
     if stats is None: return
-    if dls.do_item(0)[0].shape[0] != len(stats[0]):
-        warn(f"unable to add normalization transform: your dataloader currently returns 1-channel inputs, `stats` have 3 channels")
-        return
+    if n_in != len(stats[0]): return
     if not dls.after_batch.fs.filter(risinstance(Normalize)):
         dls.add_tfms([Normalize.from_stats(*stats)],'after_batch')
 
 # %% ../../nbs/21_vision.learner.ipynb 40
-def _timm_norm(dls, cfg, pretrained):
+def _timm_norm(dls, cfg, pretrained, n_in=3):
     if not pretrained: return
+    if n_in != len(cfg['mean']): return
     if not dls.after_batch.fs.filter(risinstance(Normalize)):
         tfm = Normalize.from_stats(cfg['mean'],cfg['std'])
         dls.add_tfms([tfm],'after_batch')
@@ -220,14 +219,15 @@ def vision_learner(dls, arch, normalize=True, n_out=None, pretrained=True,
     meta = model_meta.get(arch, _default_meta)
     model_args = dict(init=init, custom_head=custom_head, concat_pool=concat_pool, pool=pool, lin_ftrs=lin_ftrs, ps=ps,
                       first_bn=first_bn, bn_final=bn_final, lin_first=lin_first, y_range=y_range, **kwargs)
+    n_in = kwargs['n_in'] if 'n_in' in kwargs else 3
     if isinstance(arch, str):
         model,cfg = create_timm_model(arch, n_out, default_split, pretrained, **model_args)
-        if normalize: _timm_norm(dls, cfg, pretrained)
+        if normalize: _timm_norm(dls, cfg, pretrained, n_in)
     else:
-        if normalize: _add_norm(dls, meta, pretrained)
+        if normalize: _add_norm(dls, meta, pretrained, n_in)
         model = create_vision_model(arch, n_out, pretrained=pretrained, **model_args)
     
-    splitter=ifnone(splitter, meta['split'])
+    splitter = ifnone(splitter, meta['split'])
     learn = Learner(dls=dls, model=model, loss_func=loss_func, opt_func=opt_func, lr=lr, splitter=splitter, cbs=cbs,
                    metrics=metrics, path=path, model_dir=model_dir, wd=wd, wd_bn_bias=wd_bn_bias, train_bn=train_bn, moms=moms)
     if pretrained: learn.freeze()
@@ -258,7 +258,8 @@ def unet_learner(dls, arch, normalize=True, n_out=None, pretrained=True, config=
         kwargs = {**config, **kwargs}
     
     meta = model_meta.get(arch, _default_meta)
-    if normalize: _add_norm(dls, meta, pretrained)
+    n_in = kwargs['n_in'] if 'n_in' in kwargs else 3
+    if normalize: _add_norm(dls, meta, pretrained, n_in)
     
     n_out = ifnone(n_out, get_c(dls))
     assert n_out, "`n_out` is not defined, and could not be inferred from data, set `dls.c` or pass `n_out`"
@@ -266,7 +267,7 @@ def unet_learner(dls, arch, normalize=True, n_out=None, pretrained=True, config=
     assert img_size, "image size could not be inferred from data"
     model = create_unet_model(arch, n_out, img_size, pretrained=pretrained, **kwargs)
 
-    splitter=ifnone(splitter, meta['split'])
+    splitter = ifnone(splitter, meta['split'])
     learn = Learner(dls=dls, model=model, loss_func=loss_func, opt_func=opt_func, lr=lr, splitter=splitter, cbs=cbs,
                    metrics=metrics, path=path, model_dir=model_dir, wd=wd, wd_bn_bias=wd_bn_bias, train_bn=train_bn,
                    moms=moms)
