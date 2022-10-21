@@ -378,6 +378,7 @@ class TensorBase(Tensor):
         res = super().__torch_function__(func, types, args, ifnone(kwargs, {}))
         dict_objs = _find_args(args) if args else _find_args(list(kwargs.values()))
         if issubclass(type(res),TensorBase) and dict_objs: res.set_meta(dict_objs[0],as_copy=True)
+        elif dict_objs and is_listy(res): [r.set_meta(dict_objs[0],as_copy=True) for r in res if issubclass(type(r),TensorBase)]
         return res
 
     def new_tensor(self, size, dtype=None, device=None, requires_grad=False):
