@@ -43,11 +43,11 @@ def save_model(file, model, opt, with_opt=True, pickle_protocol=2, **torch_save_
     torch.save(state, file, pickle_protocol=pickle_protocol, **torch_save_kwargs)
 
 # %% ../nbs/13a_learner.ipynb 17
-def load_model(file, model, opt, with_opt=True, device=None, strict=True):
+def load_model(file, model, opt, with_opt=True, device=None, strict=True, **torch_load_kwargs):
     "Load `model` from `file` along with `opt` (if available, and if `with_opt`)"
     if isinstance(device, int): device = torch.device('cuda', device)
     elif device is None: device = 'cpu'
-    state = torch.load(file, map_location=device)
+    state = torch.load(file, map_location=device, **torch_load_kwargs)
     hasopt = set(state)=={'model', 'opt'}
     model_state = state['model'] if hasopt else state
     get_model(model).load_state_dict(model_state, strict=strict)
