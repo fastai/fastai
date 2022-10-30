@@ -34,13 +34,13 @@ def mk_metric(m):
     return m if isinstance(m, Metric) else AvgMetric(m)
 
 # %% ../nbs/13a_learner.ipynb 15
-def save_model(file, model, opt, with_opt=True, pickle_protocol=2):
+def save_model(file, model, opt, with_opt=True, pickle_protocol=2, **torch_save_kwargs):
     "Save `model` to `file` along with `opt` (if available, and if `with_opt`)"
     if rank_distrib(): return # don't save if child proc
     if opt is None: with_opt=False
     state = get_model(model).state_dict()
     if with_opt: state = {'model': state, 'opt':opt.state_dict()}
-    torch.save(state, file, pickle_protocol=pickle_protocol)
+    torch.save(state, file, pickle_protocol=pickle_protocol, **torch_save_kwargs)
 
 # %% ../nbs/13a_learner.ipynb 17
 def load_model(file, model, opt, with_opt=True, device=None, strict=True):
