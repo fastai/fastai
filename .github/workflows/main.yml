@@ -1,9 +1,9 @@
 name: CI
-on: 
+on:
   workflow_dispatch: #allows repo admins to trigger this workflow from the Actions tab
   pull_request:
   push:
-    branches: 
+    branches:
       - master
     paths-ignore:
       - '.github/**'
@@ -15,7 +15,7 @@ on:
 permissions:
   contents: read # to fetch code (actions/checkout)
 
-jobs:  
+jobs:
   test-nbdev-sync:
     runs-on: ubuntu-latest
     steps:
@@ -26,7 +26,7 @@ jobs:
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
-          python -m pip install git+https://github.com/fastai/nbdev.git@master  
+          python -m pip install git+https://github.com/fastai/nbdev.git@master
       - name: Check if all notebooks are cleaned
         run: |
           echo "Check we are starting with clean git checkout"
@@ -35,7 +35,10 @@ jobs:
           nbdev_clean
           echo "Check that strip out was unnecessary"
           git status -s # display the status to see which nbs need cleaning up
-          if [ -n "$(git status -uno -s)" ]; then echo -e "!!! Detected unstripped out notebooks\n!!!Remember to run nbdev_install_hooks"; false; fi
+          if [ -n "$(git status -uno -s)" ]; then echo -e "!!! Detected unstripped out notebooks\n!!! Remember to run nbdev_install_hooks or nbdev_prepare"; false; fi
+          echo "Check that notebooks and library are in sync"
+          nbdev_export
+          if [[ `git status --porcelain -uno` ]]; then echo -e "!!! Notebooks and library are not in sync.\n!!! Remember to run nbdev_export or nbdev_prepare"; false; fi
 
   test-notebooks:
     needs: test-nbdev-sync
@@ -48,7 +51,7 @@ jobs:
         py:  ["3.7", "3.8", "3.9"]
         nb_dec : ['[0-2]','[3-5]','[6-9]']
         nb_unit: ['[0-2]','[3-5]','[6-9]']
-    steps: 
+    steps:
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
@@ -58,10 +61,10 @@ jobs:
     - name: Install libraries
       run: |
         pip install git+https://github.com/fastai/fastcore.git@master
-        pip install git+https://github.com/fastai/nbdev.git@master 
+        pip install git+https://github.com/fastai/nbdev.git@master
         pip install -Uq fastprogress
         pip install -Uqe .[dev]
-    
+
     - name: check for cache hit
       uses: actions/cache@v3
       if: env.caching == 'true'
@@ -79,4 +82,4 @@ jobs:
         find $HOME/.fastai/archive/ -name "*.tgz" -exec tar -xzvf {} -C $HOME/.fastai/data \;
     - name: Test notebooks batch ${{matrix.nb_dec}}${{matrix.nb_unit}}
       run: nbdev_test --flags '' --n_workers 3 --pause 1.0 --file_re "${{matrix.nb_dec}}${{matrix.nb_unit}}.*"
-  
+
