@@ -73,7 +73,7 @@ def Flatten(self, x):
 # %% ../nbs/01_layers.ipynb 15
 @module(tensor_cls=TensorBase)
 def ToTensorBase(self, x):
-    "Remove `tensor_cls` to x"
+    "Convert x to TensorBase class"
     return self.tensor_cls(x)
 
 # %% ../nbs/01_layers.ipynb 17
