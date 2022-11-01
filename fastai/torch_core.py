@@ -245,12 +245,12 @@ def to_detach(b, cpu=True, gather=True):
 
 # %% ../nbs/00_torch_core.ipynb 68
 def to_half(b):
-    "Recursively map lists of tensors in `b ` to FP16."
+    "Recursively map floating point tensors in `b ` to FP16."
     return apply(lambda x: x.half() if torch.is_floating_point(x) else x, b)
 
 # %% ../nbs/00_torch_core.ipynb 69
 def to_float(b):
-    "Recursively map lists of int tensors in `b ` to float."
+    "Recursively map floating point tensors in `b ` to float."
     return apply(lambda x: x.float() if torch.is_floating_point(x) else x, b)
 
 # %% ../nbs/00_torch_core.ipynb 70
@@ -292,7 +292,7 @@ def to_device(b, device=None, non_blocking=False):
 
 # %% ../nbs/00_torch_core.ipynb 77
 def to_cpu(b):
-    "Recursively map lists of tensors in `b ` to the cpu."
+    "Recursively map tensors in `b ` to the cpu."
     return to_device(b,'cpu')
 
 # %% ../nbs/00_torch_core.ipynb 79
@@ -758,7 +758,7 @@ def nested_reorder(t, idxs):
 
 # %% ../nbs/00_torch_core.ipynb 199
 def flatten_check(inp, targ):
-    "Check that `out` and `targ` have the same number of elements and flatten them."
+    "Check that `inp` and `targ` have the same number of elements and flatten them."
     inp,targ = TensorBase(inp.contiguous()).view(-1),TensorBase(targ.contiguous()).view(-1)
     test_eq(len(inp), len(targ))
     return inp,targ
