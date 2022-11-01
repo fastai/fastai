@@ -251,7 +251,7 @@ def to_half(b):
 # %% ../nbs/00_torch_core.ipynb 69
 def to_float(b):
     "Recursively map lists of int tensors in `b ` to float."
-    return apply(lambda x: x.float() if torch.is_floating_point(x) else x, b)
+    return apply(lambda x: x.float() if not torch.is_floating_point(x) else x, b)
 
 # %% ../nbs/00_torch_core.ipynb 70
 # None: True if available; True: error if not available; False: use CPU
@@ -758,7 +758,7 @@ def nested_reorder(t, idxs):
 
 # %% ../nbs/00_torch_core.ipynb 199
 def flatten_check(inp, targ):
-    "Check that `out` and `targ` have the same number of elements and flatten them."
+    "Check that `inp` and `targ` have the same number of elements and flatten them."
     inp,targ = TensorBase(inp.contiguous()).view(-1),TensorBase(targ.contiguous()).view(-1)
     test_eq(len(inp), len(targ))
     return inp,targ
