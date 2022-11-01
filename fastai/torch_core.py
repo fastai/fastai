@@ -41,13 +41,13 @@ def setup_cuda(benchmark=defaults.benchmark):
 def subplots(
     nrows:int=1, # Number of rows in returned axes grid
     ncols:int=1, # Number of columns in returned axes grid
-    figsize:tuple=None, # Width, height in inches of the returned figure 
+    figsize:tuple=None, # Width, height in inches of the returned figure
     imsize:int=3, # Size (in inches) of images that will be displayed in the returned figure
     suptitle:str=None, # Title to be set to returned figure
     **kwargs
-) -> (plt.Figure, plt.Axes): # Returns both fig and ax as a tuple 
+) -> (plt.Figure, plt.Axes): # Returns both fig and ax as a tuple
     "Returns a figure and set of subplots to display images of `imsize` inches"
-    if figsize is None: 
+    if figsize is None:
         h=nrows*imsize if suptitle is None or imsize>2 else nrows*imsize+0.6 #https://github.com/matplotlib/matplotlib/issues/5355
         figsize=(ncols*imsize, h)
     fig,ax = plt.subplots(nrows, ncols, figsize=figsize, **kwargs)
@@ -245,13 +245,13 @@ def to_detach(b, cpu=True, gather=True):
 
 # %% ../nbs/00_torch_core.ipynb 68
 def to_half(b):
-    "Recursively map lists of tensors in `b ` to FP16."
+    "Recursively map floating point tensors in `b ` to FP16."
     return apply(lambda x: x.half() if torch.is_floating_point(x) else x, b)
 
 # %% ../nbs/00_torch_core.ipynb 69
 def to_float(b):
-    "Recursively map lists of int tensors in `b ` to float."
-    return apply(lambda x: x.float() if not torch.is_floating_point(x) else x, b)
+    "Recursively map floating point tensors in `b ` to float."
+    return apply(lambda x: x.float() if torch.is_floating_point(x) else x, b)
 
 # %% ../nbs/00_torch_core.ipynb 70
 # None: True if available; True: error if not available; False: use CPU
@@ -292,7 +292,7 @@ def to_device(b, device=None, non_blocking=False):
 
 # %% ../nbs/00_torch_core.ipynb 77
 def to_cpu(b):
-    "Recursively map lists of tensors in `b ` to the cpu."
+    "Recursively map tensors in `b ` to the cpu."
     return to_device(b,'cpu')
 
 # %% ../nbs/00_torch_core.ipynb 79
@@ -343,7 +343,7 @@ def _rebuild_from_type(func, type, args, dict):
     return ret
 
 # %% ../nbs/00_torch_core.ipynb 92
-def _find_args(x):   
+def _find_args(x):
     x0 = x[0] if is_listy(x[0]) and x[0] else x
     return [a for a in x0 if hasattr(a,'__dict__')]
 
@@ -393,7 +393,7 @@ class TensorBase(Tensor):
         cls = type(self)
         res = self.as_subclass(Tensor).new() if x is None else self.as_subclass(Tensor).new(x)
         return res.as_subclass(cls)
-    
+
     def requires_grad_(self, requires_grad=True):
         # Workaround https://github.com/pytorch/pytorch/issues/50219
         self.requires_grad = requires_grad
@@ -864,3 +864,16 @@ def ismin_torch(min_version):
 def notmax_torch(max_version):
     "Check if `torch.__version__` < `max_version` using packaging.version"
     return parse(torch.__version__) < parse(max_version)
+
+# %% ../nbs/00_torch_core.ipynb 228
+# PyTorch 1.13 introduced a Tensor Subclass string formatting bug
+# Workaround from pending PyTorch PR: https://github.com/pytorch/pytorch/pull/82766
+if ismin_torch('1.13') and notmax_torch('1.14'):
+    from torch.overrides import has_torch_function_unary, handle_torch_function
+    @patch
+    def __format__(self:Tensor, format_spec):
+        if has_torch_function_unary(self):
+            return handle_torch_function(Tensor.__format__, (self,), self, format_spec)
+        if self.dim() == 0 and not self.is_meta and issubclass(type(self), Tensor):
+            return self.item().__format__(format_spec)
+        return object.__format__(self, format_spec)

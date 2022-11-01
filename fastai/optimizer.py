@@ -370,9 +370,6 @@ def set_item_pg(pg, k, v):
 # %% ../nbs/12_optimizer.ipynb 118
 pytorch_hp_map = {'momentum': 'mom', 'weight_decay': 'wd', 'alpha': 'sqr_mom', 'betas__0': 'mom',
                   'betas__1': 'sqr_mom'}
-if ismin_torch('1.12'):
-    # Torch>=1.12 has a foreach param
-    pytorch_hp_map = merge(*(pytorch_hp_map,{'foreach': 'foreach'}))
 
 # %% ../nbs/12_optimizer.ipynb 119
 def _convert_params(o:list) -> list:
