@@ -2,6 +2,30 @@
 
 <!-- do not remove -->
 
+## 2.7.10
+
+### New Features
+
+- Add torch save and load kwargs ([#3831](https://github.com/fastai/fastai/pull/3831)), thanks to [@JonathanGrant](https://github.com/JonathanGrant)
+  - This lets us do nice things like set pickle_module to cloudpickle
+- PyTorch 1.13 Compatibility ([#3828](https://github.com/fastai/fastai/pull/3828)), thanks to [@warner-benjamin](https://github.com/warner-benjamin)
+- Recursive copying of attribute dictionaries for TensorImage subclass ([#3822](https://github.com/fastai/fastai/pull/3822)), thanks to [@restlessronin](https://github.com/restlessronin)
+- `OptimWrapper` sets same param groups as `Optimizer` ([#3821](https://github.com/fastai/fastai/pull/3821)), thanks to [@warner-benjamin](https://github.com/warner-benjamin)
+  - This PR harmonizes the default parameter group setting between `OptimWrapper` and `Optimizer` by modifying `OptimWrapper` to match `Optimizer`'s logic.
+- Support normalization of 1-channel images in unet ([#3820](https://github.com/fastai/fastai/pull/3820)), thanks to [@marib00](https://github.com/marib00)
+- Add `img_cls` param to `ImageDataLoaders` ([#3808](https://github.com/fastai/fastai/pull/3808)), thanks to [@tcapelle](https://github.com/tcapelle)
+  - This is particularly useful for passing `PILImageBW` for MNIST.
+- Add support for `kwargs` to `tensor()` when arg is an `ndarray` ([#3797](https://github.com/fastai/fastai/pull/3797)), thanks to [@SaadAhmedGit](https://github.com/SaadAhmedGit)
+- Add latest TorchVision models on fastai ([#3791](https://github.com/fastai/fastai/pull/3791)), thanks to [@datumbox](https://github.com/datumbox)
+- Option to preserve filenames in `download_images` ([#2983](https://github.com/fastai/fastai/pull/2983)), thanks to [@mess-lelouch](https://github.com/mess-lelouch)
+
+### Bugs Squashed
+
+- `get_text_classifier` fails with custom `AWS_LSTM` ([#3817](https://github.com/fastai/fastai/issues/3817))
+- revert auto-enable of mac mps due to pytorch limitations ([#3769](https://github.com/fastai/fastai/issues/3769))
+- Workaround for performance bug in PyTorch with subclassed tensors ([#3683](https://github.com/fastai/fastai/pull/3683)), thanks to [@warner-benjamin](https://github.com/warner-benjamin)
+
+
 ## 2.7.8
 
 ### New Features
