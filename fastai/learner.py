@@ -98,7 +98,7 @@ class Learner(GetAttr):
     _default='model'
     def __init__(self,
         dls:DataLoaders, # `DataLoaders` containing fastai or PyTorch `DataLoader`s
-        model:callable|nn.Module, # Model to train or use for inference
+        model:callable|nn.Module, # PyTorch model for training or inference
         loss_func:nn.Module|None=None, # Loss function. Defaults to `dls` loss
         opt_func:Optimizer|OptimWrapper=Adam, # Optimization function for training
         lr:float|slice=defaults.lr, # Default learning rate
@@ -277,14 +277,14 @@ class Learner(GetAttr):
     @delegates(GatherPredsCallback.__init__)
     def get_preds(self,
         ds_idx:int=1, # `DataLoader` to use for predictions if `dl` is None. 0: train. 1: valid
-        dl:DataLoader|None=None, # `DataLoader` to use for predictions, defaults to `self.dls.valid` if None
+        dl:DataLoader|None=None, # `DataLoader` to use for predictions, defaults to `ds_idx=1` if None
         with_input:bool=False, # Return inputs with predictions
         with_decoded:bool=False, # Return decoded predictions
         with_loss:bool=False, # Return per item loss with predictions
         act:Any=None, # Apply activation to predictions, defaults to `self.loss_func`'s activation
         inner:bool=False, # If False, create progress bar, show logger, use temporary `cbs`
         reorder:bool=True, # Reorder predictions on dataset indicies, if applicable
-        cbs:list|None=None, # Temporary `Callback`s to apply during prediction
+        cbs:Callback|list|None=None, # Temporary `Callback`s to apply during prediction
         **kwargs
     )-> tuple:
         if dl is None: dl = self.dls[ds_idx].new(shuffle=False, drop_last=False)
