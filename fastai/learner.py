@@ -6,6 +6,7 @@ from .data.all import *
 from .optimizer import *
 from .callback.core import *
 import pickle,threading
+from collections.abc import MutableSequence
 
 # %% auto 0
 __all__ = ['replacing_yield', 'mk_metric', 'save_model', 'load_model', 'SkipToEpoch', 'Learner', 'before_batch_cb',
@@ -98,19 +99,19 @@ class Learner(GetAttr):
     _default='model'
     def __init__(self,
         dls:DataLoaders, # `DataLoaders` containing fastai or PyTorch `DataLoader`s
-        model:callable|nn.Module, # PyTorch model for training or inference
-        loss_func:nn.Module|None=None, # Loss function. Defaults to `dls` loss
+        model:callable, # PyTorch model for training or inference
+        loss_func:callable|None=None, # Loss function. Defaults to `dls` loss
         opt_func:Optimizer|OptimWrapper=Adam, # Optimization function for training
         lr:float|slice=defaults.lr, # Default learning rate
         splitter:callable=trainable_params, # Split model into parameter groups. Defaults to one parameter group
-        cbs:Callback|list|None=None, # `Callback`s to add to `Learner`
-        metrics:callable|list|None=None, # `Metric`s to calculate on validation set
+        cbs:Callback|MutableSequence|None=None, # `Callback`s to add to `Learner`
+        metrics:callable|MutableSequence|None=None, # `Metric`s to calculate on validation set
         path:str|Path|None=None, # Parent directory to save, load, and export models. Defaults to `dls` `path`
         model_dir:str|Path='models', # Subdirectory to save and load models
-        wd:float|None=None, # Default weight decay
+        wd:float|int|None=None, # Default weight decay
         wd_bn_bias:bool=False, # Apply weight decay to normalization and bias parameters
         train_bn:bool=True, # Train frozen normalization layers
-        moms:tuple[float,...]=(0.95,0.85,0.95), # Default momentum for schedulers
+        moms:tuple=(0.95,0.85,0.95), # Default momentum for schedulers
         default_cbs:bool=True # Include default `Callback`s
     ):
         path = Path(path) if path is not None else getattr(dls, 'path', Path('.'))
@@ -277,14 +278,14 @@ class Learner(GetAttr):
     @delegates(GatherPredsCallback.__init__)
     def get_preds(self,
         ds_idx:int=1, # `DataLoader` to use for predictions if `dl` is None. 0: train. 1: valid
-        dl:DataLoader|None=None, # `DataLoader` to use for predictions, defaults to `ds_idx=1` if None
+        dl=None, # `DataLoader` to use for predictions, defaults to `ds_idx=1` if None
         with_input:bool=False, # Return inputs with predictions
         with_decoded:bool=False, # Return decoded predictions
         with_loss:bool=False, # Return per item loss with predictions
-        act:Any=None, # Apply activation to predictions, defaults to `self.loss_func`'s activation
+        act=None, # Apply activation to predictions, defaults to `self.loss_func`'s activation
         inner:bool=False, # If False, create progress bar, show logger, use temporary `cbs`
         reorder:bool=True, # Reorder predictions on dataset indicies, if applicable
-        cbs:Callback|list|None=None, # Temporary `Callback`s to apply during prediction
+        cbs:Callback|MutableSequence|None=None, # Temporary `Callback`s to apply during prediction
         **kwargs
     )-> tuple:
         if dl is None: dl = self.dls[ds_idx].new(shuffle=False, drop_last=False)
