@@ -34,7 +34,7 @@ class WeightDropout(Module):
     def __init__(self, 
         module:nn.Module, # Wrapped module
         weight_p:float, # Weight dropout probability 
-        layer_names:str|list='weight_hh_l0' # Name(s) of the parameters to apply dropout to
+        layer_names:str|MutableSequence='weight_hh_l0' # Name(s) of the parameters to apply dropout to
     ):
         self.module,self.weight_p,self.layer_names = module,weight_p,L(layer_names)
         for layer in self.layer_names:

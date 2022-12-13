@@ -385,7 +385,7 @@ class OptimWrapper(_BaseOptimizer, GetAttr):
     _xtra=['zero_grad', 'step', 'state_dict', 'load_state_dict']
     _default='opt'
     def __init__(self, 
-         params:list|dict=None, # Model parameters to pass to `opt`. If using an already built `opt`
+         params:MutableSequence|dict=None, # Model parameters to pass to `opt`. If using an already built `opt`
          opt:callable|torch.optim.Optimizer=None, # A torch optimizer constructor, or an already built optimizer 
          hp_map:dict=None, # A dictionary converting the keys of a built `opt` to the keys of fastai's Optimizer
          convert_groups:bool=True, # Convert parameter groups from splitter or pass unaltered to `opt`

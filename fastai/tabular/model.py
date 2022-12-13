@@ -39,7 +39,7 @@ class TabularModel(Module):
         n_cont:int, # Number of continuous variables
         out_sz:int, # Number of outputs for final `LinBnDrop` layer
         layers:list, # Sequence of ints used to specify the input and output size of each `LinBnDrop` layer
-        ps:float|list=None, # Sequence of dropout probabilities for `LinBnDrop`
+        ps:float|MutableSequence=None, # Sequence of dropout probabilities for `LinBnDrop`
         embed_p:float=0., # Dropout probability for `Embedding` layer
         y_range=None, # Low and high for `SigmoidRange` activation 
         use_bn:bool=True, # Use `BatchNorm1d` in `LinBnDrop` layers
