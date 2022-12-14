@@ -20,6 +20,7 @@ from enum import Enum,IntEnum
 from textwrap import TextWrapper
 from operator import itemgetter,attrgetter,methodcaller
 from urllib.request import urlopen
+from numbers import Number, Real
 
 # External modules
 import requests,yaml,matplotlib.pyplot as plt,pandas as pd,scipy
