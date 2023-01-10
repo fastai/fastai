@@ -38,7 +38,6 @@ def tabular_learner(
     "Get a `Learner` using `dls`, with `metrics`, including a `TabularModel` created using the remaining params."
     if config is None: config = tabular_config()
     if layers is None: layers = [200,100]
-    to = dls.train_ds
     emb_szs = get_emb_sz(dls.train_ds, {} if emb_szs is None else emb_szs)
     if n_out is None: n_out = get_c(dls)
     assert n_out, "`n_out` is not defined, and could not be inferred from data, set `dls.c` or pass `n_out`"
