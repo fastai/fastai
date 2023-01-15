@@ -565,8 +565,8 @@ class Recorder(Callback):
         if self.add_time: self.start_epoch = time.time()
         self.log = L(getattr(self, 'epoch', 0))
 
-    def before_train   (self): self._train_mets[1:].map(Self.reset())
-    def before_validate(self): self._valid_mets.map(Self.reset())
+    def before_train   (self): self._train_mets[1:].map(self.reset())
+    def before_validate(self): self._valid_mets.map(self.reset())
     def after_train   (self): self.log += self._train_mets.map(_maybe_item)
     def after_validate(self): self.log += self._valid_mets.map(_maybe_item)
     def after_cancel_train(self):    self.cancel_train = True
