@@ -133,7 +133,7 @@ def _array2tensor(x, requires_grad=False, pin_memory=False, **kwargs):
     if x.dtype==np.uint16: x = x.astype(np.float32)
     # windows default numpy int dtype is int32, while torch tensor default int dtype is int64
     # https://github.com/numpy/numpy/issues/9464
-    if sys.platform == "win32" and x.dtype==int: x = x.astype(np.int64)
+    if sys.platform == "win32" and x.dtype==int32: x = x.astype(np.int64)
     t = torch.as_tensor(x, **kwargs)
     t.requires_grad_(requires_grad)
     if pin_memory: t.pin_memory()
