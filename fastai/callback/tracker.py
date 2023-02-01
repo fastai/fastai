@@ -81,7 +81,8 @@ class SaveModelCallback(TrackerCallback):
         min_delta=0., # minimum delta between the last monitor value and the best monitor value.
         fname='model', # model name to be used when saving model.
         every_epoch=False, # if true, save model after every epoch; else save only when model is better than existing best.
-        start_epoch=0, # save model every epoch, after start_epoch have elapsed
+        start_epoch=0, # save model after every epoch once start_epoch have elapsed
+        stop_epoch=None, # don't save model after every epoch once stop_epoch have elapsed
         at_end=False, # if true, save model when training ends; else load best model if there is only one saved model.
         with_opt=False, # if true, save optimizer state (if any available) when saving model. 
         reset_on_fit=True # before model fitting, reset value being monitored to -infinity (if monitor is metric) or +infinity (if monitor is loss).
@@ -90,13 +91,14 @@ class SaveModelCallback(TrackerCallback):
         assert not (every_epoch and at_end), "every_epoch and at_end cannot both be set to True"
         # keep track of file path for loggers
         self.last_saved_path = None
-        store_attr('fname,every_epoch,start_epoch,at_end,with_opt')
+        store_attr('fname,every_epoch,start_epoch,stop_epoch,at_end,with_opt')
 
     def _save(self, name): self.last_saved_path = self.learn.save(name, with_opt=self.with_opt)
 
     def after_epoch(self):
         "Compare the value monitored to its best score and save if best."
         if self.every_epoch and self.epoch >= self.start_epoch:
+            if self.stop_epoch is not None and self.epoch > self.stop_epoch: return
             epoch_offset = self.epoch - self.start_epoch
             if (epoch_offset%self.every_epoch) == 0: self._save(f'{self.fname}_{self.epoch}')
         else: #every improvement
