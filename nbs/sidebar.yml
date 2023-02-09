@@ -104,6 +104,7 @@ website:
         - 70c_callback.captum.ipynb
         - 70b_callback.neptune.ipynb
         - 70d_callback.comet.ipynb
+        - 70e_callback.galileo.ipynb
         - 70a_callback.tensorboard.ipynb
         - 74_huggingface.ipynb
       - section: fastai Development 
