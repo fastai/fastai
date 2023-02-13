@@ -81,7 +81,7 @@ def array_freqhist_bins(self, n_bins=100):
     t = np.array([0.001])
     t = np.append(t, np.arange(n_bins)/n_bins+(1/2/n_bins))
     t = np.append(t, 0.999)
-    t = (len(imsd)*t+0.5).astype(np.int)
+    t = (len(imsd)*t+0.5).astype(int)
     return np.unique(imsd[t])
 
 # %% ../../nbs/60_medical.imaging.ipynb 26

@@ -207,7 +207,7 @@ class SortedDL(TfmdDL):
 
         sz = self.bs
         batches = [sort_idx[i:i+sz] for i in range(0, len(sort_idx), sz)]
-        sort_idx = np.concatenate(np.random.permutation(batches[1:-1])) if len(batches) > 2 else np.array([],dtype=np.int)
+        sort_idx = np.concatenate(np.random.permutation(batches[1:-1])) if len(batches) > 2 else np.array([],dtype=int)
         sort_idx = np.concatenate((batches[0], sort_idx) if len(batches)==1 else (batches[0], sort_idx, batches[-1]))
         return iter(sort_idx)
 
