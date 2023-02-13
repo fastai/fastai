@@ -203,7 +203,7 @@ class DataLoaders(GetAttr):
         device=None # Device to put `DataLoaders`
     ):
         self.loaders,self.path = list(loaders),Path(path)
-        if device is not None or hasattr(loaders[0],'to'): self.device = device
+        if device is not None and hasattr(loaders[0],'to'): self.device = device
 
     def __getitem__(self, i): return self.loaders[i]
     def __len__(self): return len(self.loaders)
