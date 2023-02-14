@@ -179,7 +179,8 @@ class TfmdDL(DataLoader):
     ):
         self.device = device
         for tfm in self.after_batch.fs:
-            if hasattr(tfm, 'to'): tfm.to(device)
+            # Check that tfm.to is callable as TabularPandas & transforms set tfm.to as an object
+            if hasattr(tfm, 'to') and callable(tfm.to): tfm.to(device)
             else:
                 for a in L(getattr(tfm, 'parameters', None)): setattr(tfm, a, getattr(tfm, a).to(device))
         return self
