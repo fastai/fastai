@@ -179,7 +179,9 @@ class TfmdDL(DataLoader):
     ):
         self.device = device
         for tfm in self.after_batch.fs:
-            for a in L(getattr(tfm, 'parameters', None)): setattr(tfm, a, getattr(tfm, a).to(device))
+            if hasattr(tfm, 'to'): tfm.to(device)
+            else:
+                for a in L(getattr(tfm, 'parameters', None)): setattr(tfm, a, getattr(tfm, a).to(device))
         return self
 
 # %% ../../nbs/03_data.core.ipynb 16
