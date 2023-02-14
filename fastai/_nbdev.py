@@ -84,6 +84,7 @@ index = {"defaults.benchmark": "00_torch_core.ipynb",
          "base_doc": "00_torch_core.ipynb",
          "doc": "00_torch_core.ipynb",
          "nested_reorder": "00_torch_core.ipynb",
+         "flatten_check": "00_torch_core.ipynb",
          "make_cross_image": "00_torch_core.ipynb",
          "show_image_batch": "00_torch_core.ipynb",
          "requires_grad": "00_torch_core.ipynb",
@@ -228,6 +229,7 @@ index = {"defaults.benchmark": "00_torch_core.ipynb",
          "RegressionBlock": "06_data.block.ipynb",
          "DataBlock": "06_data.block.ipynb",
          "DataBlock.summary": "06_data.block.ipynb",
+         "Image.Image.__repr__": "07_vision.core.ipynb",
          "imagenet_stats": "07_vision.core.ipynb",
          "cifar_stats": "07_vision.core.ipynb",
          "mnist_stats": "07_vision.core.ipynb",
@@ -474,7 +476,6 @@ index = {"defaults.benchmark": "00_torch_core.ipynb",
          "Learner.freeze": "13a_learner.ipynb",
          "Learner.unfreeze": "13a_learner.ipynb",
          "Learner.tta": "13a_learner.ipynb",
-         "flatten_check": "13b_metrics.ipynb",
          "AccumMetric": "13b_metrics.ipynb",
          "skm_to_fastai": "13b_metrics.ipynb",
          "optim_metric": "13b_metrics.ipynb",
@@ -886,12 +887,13 @@ modules = ["torch_core.py",
            "callback/neptune.py",
            "callback/captum.py",
            "callback/comet.py",
+           "callback/galileo.py",
            "test_utils.py",
            "_pytorch_doc.py"]
 
 doc_url = "https://docs.fast.ai/"
 
-git_url = "https://github.com/fastai/fastai/tree/master/"
+git_url = "https://github.com/fastai/fastai"
 
 def custom_doc_links(name):
     from nbdev.showdoc import try_external_doc_link
