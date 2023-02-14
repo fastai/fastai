@@ -449,7 +449,8 @@ def load_learner(fname, cpu=True, pickle_module=pickle):
         raise
     if cpu: 
         res.dls.cpu()
-        if hasattr(res, 'mixed_precision'): res = res.to_fp32()
+        if hasattr(res, 'channels_last'): res = res.to_contiguous(to_fp32=True)
+        elif hasattr(res, 'mixed_precision'): res = res.to_fp32()
         elif hasattr(res, 'non_native_mixed_precision'): res = res.to_non_native_fp32()
     return res
 
