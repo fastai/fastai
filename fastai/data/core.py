@@ -179,7 +179,10 @@ class TfmdDL(DataLoader):
     ):
         self.device = device
         for tfm in self.after_batch.fs:
-            for a in L(getattr(tfm, 'parameters', None)): setattr(tfm, a, getattr(tfm, a).to(device))
+            # Check that tfm.to is callable as TabularPandas & transforms set tfm.to as an object
+            if hasattr(tfm, 'to') and callable(tfm.to): tfm.to(device)
+            else:
+                for a in L(getattr(tfm, 'parameters', None)): setattr(tfm, a, getattr(tfm, a).to(device))
         return self
 
 # %% ../../nbs/03_data.core.ipynb 16
@@ -203,7 +206,7 @@ class DataLoaders(GetAttr):
         device=None # Device to put `DataLoaders`
     ):
         self.loaders,self.path = list(loaders),Path(path)
-        if device is not None or hasattr(loaders[0],'to'): self.device = device
+        if device is not None and hasattr(loaders[0],'to'): self.device = device
 
     def __getitem__(self, i): return self.loaders[i]
     def __len__(self): return len(self.loaders)
@@ -343,7 +346,7 @@ class TfmdLists(FilteredBase, L, GetAttr):
     _default='tfms'
     def __init__(self, 
         items:list, # Items to apply `Transform`s to
-        tfms:list|Pipeline, # `Transform`(s) or `Pipeline` to apply
+        tfms:MutableSequence|Pipeline, # `Transform`(s) or `Pipeline` to apply
         use_list:bool=None, # Use `list` in `L`
         do_setup:bool=True, # Call `setup()` for `Transform`
         split_idx:int=None, # Apply `Transform`(s) to training or validation set. `0` for training set and `1` for validation set
@@ -441,7 +444,7 @@ class Datasets(FilteredBase):
     "A dataset that creates a tuple from each `tfms`"
     def __init__(self, 
         items:list=None, # List of items to create `Datasets`
-        tfms:list|Pipeline=None, # List of `Transform`(s) or `Pipeline` to apply
+        tfms:MutableSequence|Pipeline=None, # List of `Transform`(s) or `Pipeline` to apply
         tls:TfmdLists=None, # If None, `self.tls` is generated from `items` and `tfms`
         n_inp:int=None, # Number of elements in `Datasets` tuple that should be considered part of input
         dl_type=None, # Default type of `DataLoader` used when function `FilteredBase.dataloaders` is called

@@ -7,7 +7,7 @@ from .progress import *
 from .fp16 import *
 
 # %% auto 0
-__all__ = ['bn_types', 'ShortEpochCallback', 'GradientAccumulation', 'GradientClip', 'set_bn_eval', 'BnFreeze', 'ChannelsLast']
+__all__ = ['bn_types', 'ShortEpochCallback', 'GradientAccumulation', 'GradientClip', 'set_bn_eval', 'BnFreeze']
 
 # %% ../../nbs/18a_callback.training.ipynb 6
 class ShortEpochCallback(Callback):
@@ -55,10 +55,3 @@ class BnFreeze(Callback):
     "Freeze moving average statistics in all non-trainable batchnorm layers."
     def before_train(self):
         set_bn_eval(self.model)
-
-# %% ../../nbs/18a_callback.training.ipynb 35
-class ChannelsLast(Callback):
-    def before_fit(self):
-        self.learn.model = self.model.to(memory_format=torch.channels_last)
-    def before_batch(self):
-        self.xb = self.x.contiguous(memory_format=torch.channels_last), self.y

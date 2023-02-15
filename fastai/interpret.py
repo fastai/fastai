@@ -64,7 +64,7 @@ class Interpretation():
         else:     return losses, idx
 
     def plot_top_losses(self,
-        k:int|list, # Number of losses to plot
+        k:int|MutableSequence, # Number of losses to plot
         largest:bool=True, # Sort losses by largest or smallest
         **kwargs
     ):

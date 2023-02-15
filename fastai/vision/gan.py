@@ -344,7 +344,7 @@ def show_results(x:InvisibleTensor, y:TensorImage, samples, outs, ctxs=None, max
 def gan_loss_from_func(
     loss_gen:callable, # A loss function for the generator. Evaluates generator output images and target real images
     loss_crit:callable, # A loss function for the critic. Evaluates predictions of real and fake images.
-    weights_gen:None|list|tuple=None # Weights for the generator and critic loss function
+    weights_gen:None|MutableSequence|tuple=None # Weights for the generator and critic loss function
 ):
     "Define loss functions for a GAN from `loss_gen` and `loss_crit`."
     def _loss_G(fake_pred, output, target, weights_gen=weights_gen):
@@ -378,8 +378,8 @@ class GANLearner(Learner):
         switch_eval:bool=True, # Whether the model should be set to eval mode when calculating loss
         show_img:bool=True, # Whether to show example generated images during training
         clip:None|float=None, # How much to clip the weights
-        cbs:Callback|None|list=None, # Additional callbacks
-        metrics:None|list|callable=None, # Metrics
+        cbs:Callback|None|MutableSequence=None, # Additional callbacks
+        metrics:None|MutableSequence|callable=None, # Metrics
         **kwargs
     ):
         gan = GANModule(generator, critic)
@@ -395,7 +395,7 @@ class GANLearner(Learner):
         gen_learn:Learner, # A `Learner` object that contains the generator
         crit_learn:Learner, # A `Learner` object that contains the critic
         switcher:Callback|None=None, # Callback for switching between generator and critic training, defaults to `FixedGANSwitcher`
-        weights_gen:None|list|tuple=None, # Weights for the generator and critic loss function
+        weights_gen:None|MutableSequence|tuple=None, # Weights for the generator and critic loss function
         **kwargs
     ):
         "Create a GAN from `learn_gen` and `learn_crit`."

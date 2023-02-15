@@ -36,7 +36,7 @@ def _update_children(
 
 # %% ../../nbs/09c_vision.widgets.ipynb 12
 def carousel(
-    children:tuple|list=(), # `Box` objects to display in a carousel
+    children:tuple|MutableSequence=(), # `Box` objects to display in a carousel
     **layout
 ) -> Box: # An `ipywidget`'s carousel
     "A horizontally scrolling carousel"

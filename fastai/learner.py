@@ -6,6 +6,7 @@ from .data.all import *
 from .optimizer import *
 from .callback.core import *
 import pickle,threading
+from collections.abc import MutableSequence
 
 # %% auto 0
 __all__ = ['replacing_yield', 'mk_metric', 'save_model', 'load_model', 'SkipToEpoch', 'Learner', 'before_batch_cb',
@@ -97,22 +98,22 @@ _loop = ['Start Fit', 'before_fit', 'Start Epoch Loop', 'before_epoch', 'Start T
 class Learner(GetAttr):
     _default='model'
     def __init__(self,
-                 dls,  # `DataLoaders` containing data for each dataset needed for `model`
-                 model:callable, #  The model to train or use for inference
-                 loss_func:callable|None=None,  # Loss function for training
-                 opt_func=Adam,  # Optimisation function for training
-                 lr=defaults.lr,  # Learning rate
-                 splitter:callable=trainable_params,  # Used to split parameters into layer groups
-                 cbs=None,  # Callbacks
-                 metrics=None,  # Printed after each epoch
-                 path=None,  # Parent directory to save, load, and export models
-                 model_dir='models',  # Subdirectory to save and load models
-                 wd=None,  # Weight decay
-                 wd_bn_bias=False,  # Apply weight decay to batchnorm bias params?
-                 train_bn=True,  # Always train batchnorm layers?
-                 moms=(0.95,0.85,0.95),  # Momentum
-                 default_cbs:bool=True  # Include default callbacks?
-                ):
+        dls:DataLoaders, # `DataLoaders` containing fastai or PyTorch `DataLoader`s
+        model:callable, # PyTorch model for training or inference
+        loss_func:callable|None=None, # Loss function. Defaults to `dls` loss
+        opt_func:Optimizer|OptimWrapper=Adam, # Optimization function for training
+        lr:float|slice=defaults.lr, # Default learning rate
+        splitter:callable=trainable_params, # Split model into parameter groups. Defaults to one parameter group
+        cbs:Callback|MutableSequence|None=None, # `Callback`s to add to `Learner`
+        metrics:callable|MutableSequence|None=None, # `Metric`s to calculate on validation set
+        path:str|Path|None=None, # Parent directory to save, load, and export models. Defaults to `dls` `path`
+        model_dir:str|Path='models', # Subdirectory to save and load models
+        wd:float|int|None=None, # Default weight decay
+        wd_bn_bias:bool=False, # Apply weight decay to normalization and bias parameters
+        train_bn:bool=True, # Train frozen normalization layers
+        moms:tuple=(0.95,0.85,0.95), # Default momentum for schedulers
+        default_cbs:bool=True # Include default `Callback`s
+    ):
         path = Path(path) if path is not None else getattr(dls, 'path', Path('.'))
         if loss_func is None:
             loss_func = getattr(dls.train_ds, 'loss_func', None)
@@ -175,11 +176,16 @@ class Learner(GetAttr):
         for cb in self.cbs.sorted('order'): cb(event_name)
 
     def _bn_bias_state(self, with_bias): return norm_bias_params(self.model, with_bias).map(self.opt.state)
+
     def create_opt(self):
         if isinstance(self.opt_func, partial):
             if 'lr' in self.opt_func.keywords:
                 self.lr = self.opt_func.keywords['lr']
-        self.opt = self.opt_func(self.splitter(self.model), lr=self.lr)
+        if isinstance(self.opt_func, OptimWrapper):
+            self.opt = self.opt_func
+            self.opt.clear_state()
+        else:
+            self.opt = self.opt_func(self.splitter(self.model), lr=self.lr)
         if not self.wd_bn_bias:
             for p in self._bn_bias_state(True ): p['do_wd'] = False
         if self.train_bn:
@@ -201,6 +207,11 @@ class Learner(GetAttr):
     def _backward(self): self.loss_grad.backward()
     def _step(self): self.opt.step()
 
+    def _do_grad_opt(self):
+        self._with_events(self._backward, 'backward', CancelBackwardException)
+        self._with_events(self._step, 'step', CancelStepException)
+        self.opt.zero_grad()
+
     def _do_one_batch(self):
         self.pred = self.model(*self.xb)
         self('after_pred')
@@ -209,12 +220,9 @@ class Learner(GetAttr):
             self.loss = self.loss_grad.clone()
         self('after_loss')
         if not self.training or not len(self.yb): return
-        self._with_events(self._backward, 'backward', CancelBackwardException)
-        self._with_events(self._step, 'step', CancelStepException)
-        self.opt.zero_grad()
+        self._do_grad_opt()
 
     def _set_device(self, b):
-#         model_device = torch.device(torch.cuda.current_device()) if next(self.model.parameters()).is_cuda else torch.device('cpu')
         model_device = next(self.model.parameters()).device
         dls_device = getattr(self.dls, 'device', default_device())
         if model_device == dls_device: return to_device(b, dls_device)
@@ -272,17 +280,17 @@ class Learner(GetAttr):
 
     @delegates(GatherPredsCallback.__init__)
     def get_preds(self,
-                  ds_idx: int =1, # This takes the dataset index of DataLoader with default value as 1 for valid and 0 can be used for train
-                  dl: TfmdDL | None=None, # `DataLoaders` containing data for each dataset needed for `model`
-                  with_input: bool=False, # Whether to return inputs
-                  with_decoded: bool=False, # Whether to decode based on loss function passed
-                  with_loss : bool=False, # Whether to return losses
-                  act: Any=None, # Option to pass Activation function to predict function
-                  inner : bool=False, # Tells that it's used internally used anywhere like in another training loop
-                  reorder : bool=True, # To order the tensors appropriately
-                  cbs: list | None =None, # Option to pass `Callbacks` to predict function
-                  **kwargs
-                 )-> tuple:
+        ds_idx:int=1, # `DataLoader` to use for predictions if `dl` is None. 0: train. 1: valid
+        dl=None, # `DataLoader` to use for predictions, defaults to `ds_idx=1` if None
+        with_input:bool=False, # Return inputs with predictions
+        with_decoded:bool=False, # Return decoded predictions
+        with_loss:bool=False, # Return per item loss with predictions
+        act=None, # Apply activation to predictions, defaults to `self.loss_func`'s activation
+        inner:bool=False, # If False, create progress bar, show logger, use temporary `cbs`
+        reorder:bool=True, # Reorder predictions on dataset indicies, if applicable
+        cbs:Callback|MutableSequence|None=None, # Temporary `Callback`s to apply during prediction
+        **kwargs
+    )-> tuple:
         if dl is None: dl = self.dls[ds_idx].new(shuffle=False, drop_last=False)
         else:
             try: len(dl)
@@ -441,7 +449,8 @@ def load_learner(fname, cpu=True, pickle_module=pickle):
         raise
     if cpu: 
         res.dls.cpu()
-        if hasattr(res, 'mixed_precision'): res = res.to_fp32()
+        if hasattr(res, 'channels_last'): res = res.to_contiguous(to_fp32=True)
+        elif hasattr(res, 'mixed_precision'): res = res.to_fp32()
         elif hasattr(res, 'non_native_mixed_precision'): res = res.to_non_native_fp32()
     return res
 

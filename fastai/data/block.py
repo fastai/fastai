@@ -28,7 +28,7 @@ class TransformBlock():
 
 # %% ../../nbs/06_data.block.ipynb 7
 def CategoryBlock(
-    vocab:list|pd.Series=None, # List of unique class names
+    vocab:MutableSequence|pd.Series=None, # List of unique class names
     sort:bool=True, # Sort the classes alphabetically
     add_na:bool=False, # Add `#na#` to `vocab`
 ):
@@ -38,7 +38,7 @@ def CategoryBlock(
 # %% ../../nbs/06_data.block.ipynb 8
 def MultiCategoryBlock(
     encoded:bool=False, # Whether the data comes in one-hot encoded
-    vocab:list|pd.Series=None, # List of unique class names 
+    vocab:MutableSequence|pd.Series=None, # List of unique class names 
     add_na:bool=False, # Add `#na#` to `vocab`
 ):
     "`TransformBlock` for multi-label categorical targets"

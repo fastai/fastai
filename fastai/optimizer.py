@@ -85,13 +85,15 @@ class Optimizer(_BaseOptimizer):
     "Base optimizer class for the fastai library, updating `params` with `cbs`"
     _keep_on_clear = ['force_train', 'do_wd']
     def __init__(self,
-        params:Tensor, # Parameters and hyper parameters
-        cbs:list, # `Optimizer` callbacks
-        train_bn:bool=True, # Batch normalization is always trained
-        **defaults # Default values to set on hyper parameters
+        params:Tensor|Iterable, # Model parameters
+        cbs:callable|MutableSequence, # `Optimizer` step callbacks
+        **defaults # Hyper parameters default values
     ):
+        if 'train_bn' in defaults.keys():
+            _ = defaults.pop('train_bn') 
+            warn('Setting `train_bn` in `Optimizer` has no effect. Set `train_bn` on `Learner` init instead')
         params = L(params)
-        self.cbs,self.state,self.train_bn = L(cbs),defaultdict(dict),train_bn
+        self.cbs,self.state = L(cbs),defaultdict(dict)
         defaults = merge(*self.cbs.attrgot('defaults'), defaults)
         self.param_lists = L(L(p) for p in params) if isinstance(params[0], (L,list)) else L([params])
         self.hypers = L({} for _ in range_of(self.param_lists))
@@ -168,8 +170,14 @@ def momentum_step(p, lr, grad_avg, **kwargs):
     p.data.add_(grad_avg, alpha=-lr)
 
 # %% ../nbs/12_optimizer.ipynb 63
-def SGD(params, lr, mom=0., wd=0., decouple_wd=True):
-    "A `Optimizer` for SGD with `lr` and `mom` and `params`"
+def SGD(
+    params:Tensor|Iterable, # Model parameters
+    lr:float|slice, # Default learning rate
+    mom:float=0., # Gradient moving average (β1) coefficient
+    wd:Real=0., # Optional weight decay (true or L2)
+    decouple_wd:bool=True # Apply true weight decay or L2 regularization (SGD)
+) -> Optimizer:
+    "A SGD `Optimizer`"
     cbs = [weight_decay] if decouple_wd else [l2_reg]
     if mom != 0: cbs.append(average_grad)
     cbs.append(sgd_step if mom==0 else momentum_step)
@@ -177,15 +185,23 @@ def SGD(params, lr, mom=0., wd=0., decouple_wd=True):
 
 # %% ../nbs/12_optimizer.ipynb 70
 def rms_prop_step(p, lr, sqr_avg, eps, grad_avg=None, **kwargs):
-    "Step for SGD with momentum with `lr`"
+    "Step for RMSProp with momentum with `lr`"
     denom = sqr_avg.sqrt().add_(eps)
     p.data.addcdiv_((grad_avg if grad_avg is not None else p.grad), denom, value=-lr)
 
 rms_prop_step.defaults = dict(eps=1e-8)
 
 # %% ../nbs/12_optimizer.ipynb 71
-def RMSProp(params, lr, sqr_mom=0.99, mom=0., wd=0., decouple_wd=True):
-    "A `Optimizer` for RMSProp with `lr`, `sqr_mom`, `mom` and `params`"
+def RMSProp(
+    params:Tensor|Iterable, # Model parameters
+    lr:float|slice, # Default learning rate
+    mom:float=0., # Gradient moving average (β1) coefficient
+    sqr_mom:float=0.99, # Gradient squared moving average (β2) coefficient
+    eps:float=1e-8, # Added for numerical stability
+    wd:Real=0., # Optional weight decay (true or L2)
+    decouple_wd:bool=True # Apply true weight decay or L2 regularization (RMSProp)
+) -> Optimizer:
+    "A RMSProp `Optimizer`"
     cbs = [weight_decay] if decouple_wd else [l2_reg]
     cbs += ([average_sqr_grad] if mom==0. else [average_grad, average_sqr_grad])
     cbs.append(rms_prop_step)
@@ -211,8 +227,16 @@ def adam_step(p, lr, mom, step, sqr_mom, grad_avg, sqr_avg, eps, **kwargs):
 adam_step._defaults = dict(eps=1e-5)
 
 # %% ../nbs/12_optimizer.ipynb 80
-def Adam(params, lr, mom=0.9, sqr_mom=0.99, eps=1e-5, wd=0.01, decouple_wd=True):
-    "A `Optimizer` for Adam with `lr`, `mom`, `sqr_mom`, `eps` and `params`"
+def Adam(
+    params:Tensor|Iterable, # Model parameters
+    lr:float|slice, # Default learning rate
+    mom:float=0.9, # Gradient moving average (β1) coefficient
+    sqr_mom:float=0.99, # Gradient squared moving average (β2) coefficient
+    eps:float=1e-5, # Added for numerical stability
+    wd:Real=0.01, # Optional weight decay (true or L2)
+    decouple_wd:bool=True # Apply true weight decay (AdamW) or L2 regularization (Adam)
+) -> Optimizer:
+    "A Adam/AdamW `Optimizer`"
     cbs = [weight_decay] if decouple_wd else [l2_reg]
     cbs += [partial(average_grad, dampening=True), average_sqr_grad, step_stat, adam_step]
     return Optimizer(params, cbs, lr=lr, mom=mom, sqr_mom=sqr_mom, eps=eps, wd=wd)
@@ -236,8 +260,17 @@ def radam_step(p, lr, mom, step, sqr_mom, grad_avg, sqr_avg, eps, beta, **kwargs
 radam_step._defaults = dict(eps=1e-5)
 
 # %% ../nbs/12_optimizer.ipynb 86
-def RAdam(params, lr, mom=0.9, sqr_mom=0.99, eps=1e-5, wd=0., beta=0., decouple_wd=True):
-    "A `Optimizer` for Adam with `lr`, `mom`, `sqr_mom`, `eps` and `params`"
+def RAdam(
+    params:Tensor|Iterable, # Model parameters
+    lr:float|slice, # Default learning rate
+    mom:float=0.9, # Gradient moving average (β1) coefficient
+    sqr_mom:float=0.99, # Gradient squared moving average (β2) coefficient
+    eps:float=1e-5, # Added for numerical stability
+    wd:Real=0., # Optional weight decay (true or L2)
+    beta:float=0., # Set to enable SAdam
+    decouple_wd:bool=True # Apply true weight decay (RAdamW) or L2 regularization (RAdam)
+) -> Optimizer:
+    "A RAdam/RAdamW `Optimizer`"
     cbs = [weight_decay] if decouple_wd else [l2_reg]
     cbs += [partial(average_grad, dampening=True), average_sqr_grad, step_stat, radam_step]
     return Optimizer(params, cbs, lr=lr, mom=mom, sqr_mom=sqr_mom, eps=eps, wd=wd, beta=beta)
@@ -254,8 +287,18 @@ def qhadam_step(p, lr, mom, sqr_mom, sqr_avg, nu_1, nu_2, step, grad_avg, eps, *
 qhadam_step._defaults = dict(eps=1e-8)
 
 # %% ../nbs/12_optimizer.ipynb 93
-def QHAdam(params, lr, mom=0.999, sqr_mom=0.999, nu_1=0.7, nu_2 = 1.0, eps=1e-8, wd=0., decouple_wd=True):
-    "An `Optimizer` for Adam with `lr`, `mom`, `sqr_mom`, `nus`, eps` and `params`"
+def QHAdam(
+    params:Tensor|Iterable, # Model parameters
+    lr:float|slice, # Default learning rate
+    mom:float=0.999, # Gradient moving average (β1) coefficient
+    sqr_mom:float=0.999, # Gradient squared moving average (β2) coefficient
+    nu_1:float=0.7, # QH immediate discount factor
+    nu_2:float=1.0, # QH momentum discount factor
+    eps:float=1e-8, # Added for numerical stability
+    wd:Real=0., # Optional weight decay (true or L2)
+    decouple_wd:bool=True, # Apply true weight decay (QHAdamW) or L2 regularization (QHAdam)
+) -> Optimizer:
+    "A QHAdam/QHAdamW `Optimizer`"
     cbs = [weight_decay] if decouple_wd else [l2_reg]
     cbs += [partial(average_grad, dampening=True), partial(average_sqr_grad, dampening=True), step_stat, qhadam_step]
     return Optimizer(params, cbs, lr=lr, nu_1=nu_1, nu_2=nu_2 ,
@@ -276,8 +319,17 @@ def larc_step(p, local_lr, grad_avg=None, **kwargs):
     p.data.add_(p.grad.data if grad_avg is None else grad_avg, alpha = -local_lr)
 
 # %% ../nbs/12_optimizer.ipynb 98
-def Larc(params, lr, mom=0.9, clip=True, trust_coeff=0.02, eps=1e-8, wd=0., decouple_wd=True):
-    "A `Optimizer` for Adam with `lr`, `mom`, `sqr_mom`, `eps` and `params`"
+def Larc(
+    params:Tensor|Iterable, # Model parameters
+    lr:float|slice, # Default learning rate
+    mom:float=0.9, # Gradient moving average (β1) coefficient
+    clip:bool=True, # LARC if clip=True, LARS if clip=False
+    trust_coeff:float=0.02, # Trust coeffiecnet for calculating layerwise LR
+    eps:float=1e-8, # Added for numerical stability
+    wd:Real=0., # Optional weight decay (true or L2)
+    decouple_wd:bool=True # Apply true weight decay or L2 regularization
+) -> Optimizer:
+    "A LARC/LARS `Optimizer`"
     cbs = [weight_decay] if decouple_wd else [l2_reg]
     if mom!=0.: cbs.append(average_grad)
     cbs += [partial(larc_layer_lr, clip=clip), larc_step]
@@ -297,8 +349,16 @@ def lamb_step(p, lr, mom, step, sqr_mom, grad_avg, sqr_avg, eps, **kwargs):
 lamb_step._defaults = dict(eps=1e-6, wd=0.)
 
 # %% ../nbs/12_optimizer.ipynb 104
-def Lamb(params, lr, mom=0.9, sqr_mom=0.99, eps=1e-5, wd=0., decouple_wd=True):
-    "A `Optimizer` for Adam with `lr`, `mom`, `sqr_mom`, `eps` and `params`"
+def Lamb(
+    params:Tensor|Iterable, # Model parameters
+    lr:float|slice, # Default learning rate
+    mom:float=0.9, # Gradient moving average (β1) coefficient
+    sqr_mom:float=0.99, # Gradient squared moving average (β2) coefficient
+    eps:float=1e-5, # Added for numerical stability
+    wd:Real=0., # Optional weight decay (true or L2)
+    decouple_wd:bool=True # Apply true weight decay or L2 regularization
+) -> Optimizer:
+    "A LAMB `Optimizer`"
     cbs = [weight_decay] if decouple_wd else [l2_reg]
     cbs += [partial(average_grad, dampening=True), average_sqr_grad, step_stat, lamb_step]
     return Optimizer(params, cbs, lr=lr, mom=mom, sqr_mom=sqr_mom, eps=eps, wd=wd)
@@ -307,7 +367,11 @@ def Lamb(params, lr, mom=0.9, sqr_mom=0.99, eps=1e-5, wd=0., decouple_wd=True):
 class Lookahead(Optimizer, GetAttr):
     "Wrap `opt` in a lookahead optimizer"
     _default='opt'
-    def __init__(self, opt, k=6, alpha=0.5):
+    def __init__(self, 
+        opt:Optimizer, # `Optimizer` to wrap with Lookahead
+        k:int=6, # How often to conduct Lookahead step
+        alpha:float=0.5, # Slow weight moving average coefficient
+    ):
         store_attr('opt,k,alpha')
         self._init_state()
 
@@ -346,9 +410,18 @@ class Lookahead(Optimizer, GetAttr):
 
 # %% ../nbs/12_optimizer.ipynb 111
 @delegates(RAdam)
-def ranger(p, lr, mom=0.95, wd=0.01, eps=1e-6, **kwargs):
+def ranger(
+    params:Tensor|Iterable, # Model parameters
+    lr:float|slice, # Default learning rate
+    mom:float=0.95, # Gradient moving average (β1) coefficient
+    wd:Real=0.01, # Optional weight decay (true or L2)
+    eps:float=1e-6, # Added for numerical stability
+    k:int=6, # How often to conduct Lookahead step
+    alpha:float=0.5, # Slow weight moving average coefficient 
+    **kwargs
+) -> Lookahead:
     "Convenience method for `Lookahead` with `RAdam`"
-    return Lookahead(RAdam(p, lr=lr, mom=mom, wd=wd, eps=eps, **kwargs))
+    return Lookahead(RAdam(params, lr=lr, mom=mom, wd=wd, eps=eps, **kwargs), k=k, alpha=alpha)
 
 # %% ../nbs/12_optimizer.ipynb 114
 def detuplify_pg(d):
@@ -385,9 +458,9 @@ class OptimWrapper(_BaseOptimizer, GetAttr):
     _xtra=['zero_grad', 'step', 'state_dict', 'load_state_dict']
     _default='opt'
     def __init__(self, 
-         params:list|dict=None, # Model parameters to pass to `opt`. If using an already built `opt`
+         params:Tensor|Iterable=None, # Model parameters. Don't set if using a built optimizer
          opt:callable|torch.optim.Optimizer=None, # A torch optimizer constructor, or an already built optimizer 
-         hp_map:dict=None, # A dictionary converting the keys of a built `opt` to the keys of fastai's Optimizer
+         hp_map:dict=None, # A dictionary converting PyTorch optimizer keys to fastai's `Optimizer` keys. Defaults to `pytorch_hp_map`
          convert_groups:bool=True, # Convert parameter groups from splitter or pass unaltered to `opt`
          **kwargs
     ):

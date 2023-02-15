@@ -32,7 +32,7 @@ def tabular_learner(
         emb_szs:list=None, # Tuples of `n_unique, embedding_size` for all categorical features
         config:dict=None, # Config params for TabularModel from `tabular_config`
         n_out:int=None, # Final output size of the model
-        y_range:Tuple[float,float]=None, # Low and high for the final sigmoid function
+        y_range:Tuple=None, # Low and high for the final sigmoid function
         **kwargs
 ):
     "Get a `Learner` using `dls`, with `metrics`, including a `TabularModel` created using the remaining params."

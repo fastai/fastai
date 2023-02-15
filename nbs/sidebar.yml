@@ -40,14 +40,15 @@ website:
         - 13b_metrics.ipynb
         - 20_interpret.ipynb
         - 20a_distributed.ipynb
-        - section: Callbacks 
+        - 18_callback.fp16.ipynb
+        - 18c_callback.channelslast.ipynb
+        - section: Callbacks
           contents:
           - 13_callback.core.ipynb
           - 15_callback.hook.ipynb
           - 16_callback.progress.ipynb
           - 14_callback.schedule.ipynb
           - 14a_callback.data.ipynb
-          - 18_callback.fp16.ipynb
           - 19_callback.mixup.ipynb
           - 18b_callback.preds.ipynb
           - 34_callback.rnn.ipynb
