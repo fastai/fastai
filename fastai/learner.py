@@ -416,8 +416,8 @@ def load(self:Learner, file, device=None, **kwargs):
     if device is None and hasattr(self.dls, 'device'): device = self.dls.device
     if self.opt is None: self.create_opt()
     file = join_path_file(file, self.path/self.model_dir, ext='.pth')
+    distrib_barrier()
     load_model(file, self.model, self.opt, device=device, **kwargs)
-    nested_attr(self, "accelerator.wait_for_everyone", noop)()
     return self
 
 # %% ../nbs/13a_learner.ipynb 102
