@@ -2,6 +2,28 @@
 
 <!-- do not remove -->
 
+## 2.7.11
+
+### New Features
+
+- ChannelsLast Callback Improvements, Additional Documentation, & Bug Fix ([#3876](https://github.com/fastai/fastai/pull/3876)), thanks to [@warner-benjamin](https://github.com/warner-benjamin)
+- Add support for a batch transforms `to` method ([#3875](https://github.com/fastai/fastai/pull/3875)), thanks to [@warner-benjamin](https://github.com/warner-benjamin)
+- Allow Pillow Image to be passed to PILBase.create ([#3872](https://github.com/fastai/fastai/pull/3872)), thanks to [@warner-benjamin](https://github.com/warner-benjamin)
+- Compat with latest numpy ([#3871](https://github.com/fastai/fastai/pull/3871)), thanks to [@warner-benjamin](https://github.com/warner-benjamin)
+- Move training-only step to separate function in `Learner` ([#3857](https://github.com/fastai/fastai/pull/3857)), thanks to [@kunaltyagi](https://github.com/kunaltyagi)
+- TabularPandas data transform reproducibility ([#2826](https://github.com/fastai/fastai/issues/2826))
+
+### Bugs Squashed
+
+- Set DataLoaders device if not None and to exists ([#3873](https://github.com/fastai/fastai/pull/3873)), thanks to [@warner-benjamin](https://github.com/warner-benjamin)
+- Fix `default_device` to correctly detect + use mps (Apple Silicon) ([#3858](https://github.com/fastai/fastai/pull/3858)), thanks to [@wolever](https://github.com/wolever)
+- Fix load hanging in distributed processes ([#3839](https://github.com/fastai/fastai/pull/3839)), thanks to [@muellerzr](https://github.com/muellerzr)
+- `default_device` logic is repeated twice, related to `mps` / OSX support. ([#3785](https://github.com/fastai/fastai/issues/3785))
+- revert auto-enable of mac mps due to pytorch limitations ([#3769](https://github.com/fastai/fastai/issues/3769))
+- Fix Classification Interpretation ([#3563](https://github.com/fastai/fastai/pull/3563)), thanks to [@warner-benjamin](https://github.com/warner-benjamin)
+- vision tutorial failed at `learner.fine_tune(1)` ([#3283](https://github.com/fastai/fastai/issues/3283))
+
+
 ## 2.7.10
 
 ### New Features
