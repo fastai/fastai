@@ -49,7 +49,7 @@ Please run [`nbdev_install_hooks`](https://nbdev.fast.ai/api/clean.html#nbdev_in
 Before submitting a PR, check that the local library and notebooks match. The script [`nbdev_diff_nbs`](https://nbdev.fast.ai/sync#nbdev_diff_nbs) can let you know if there is a difference between the local library and the notebooks.
 
 If you made a change to the notebooks in one of the exported cells, you can export it to the library with [`nbdev_build_lib`](https://nbdev.fast.ai/export2html#nbdev_build_lib) or `make fastai`.
-If you made a change to the library, you can export it back to the notebooks with [`nbdev_update_lib`](https://nbdev.fast.ai/sync#nbdev_update_lib).
+If you made a change to the library, you can export it back to the notebooks with [`nbdev_update`](https://nbdev.fast.ai/api/sync.html#nbdev_update).
 
 Furthermore, you can run tests in parallel by launching [`nbdev_test`](https://nbdev.fast.ai/api/test.html#nbdev_test) or `make test`
 
