@@ -44,14 +44,14 @@ Here are some ways that you can learn a lot about the library, whilst also contr
 
 ## How to submit notebook PRs?
 
-Please run [`nbdev_install_git_hooks`](https://nbdev.fast.ai/cli#nbdev_install_git_hooks) in your terminal after cloning the repository. This sets up git hooks, which clean up the notebooks to remove the extraneous stuff stored in the notebooks (e.g. which cells you ran) which causes unnecessary merge conflicts.
+Please run [`nbdev_install_hooks`](https://nbdev.fast.ai/api/clean.html#nbdev_install_hooks) in your terminal after cloning the repository. This sets up git hooks, which clean up the notebooks to remove the extraneous stuff stored in the notebooks (e.g. which cells you ran) which causes unnecessary merge conflicts.
 
-Before submitting a PR, check that the local library and notebooks match. The script [`nbdev_diff_nbs`](https://nbdev.fast.ai/sync#nbdev_diff_nbs) can let you know if there is a difference between the local library and the notebooks.
+If you made a change to the notebooks in one of the exported cells, you can export it to the library with [`nbdev_export`](https://nbdev.fast.ai/api/doclinks.html#nbdev_export).
+If you made a change to the library, you can export it back to the notebooks with [`nbdev_update`](https://nbdev.fast.ai/api/sync.html#nbdev_update).
 
-If you made a change to the notebooks in one of the exported cells, you can export it to the library with [`nbdev_build_lib`](https://nbdev.fast.ai/export2html#nbdev_build_lib) or `make fastai`.
-If you made a change to the library, you can export it back to the notebooks with [`nbdev_update_lib`](https://nbdev.fast.ai/sync#nbdev_update_lib).
+Furthermore, you can run tests in parallel by launching [`nbdev_test`](https://nbdev.fast.ai/api/test.html#nbdev_test).
 
-Furthermore, you can run tests in parallel by launching [`nbdev_test_nbs`](https://nbdev.fast.ai/test#nbdev_test_nbs) or `make test`
+If you'd like to learn the nbdev commands available and more about the project, please visit [`the docs`](https://nbdev.fast.ai/getting_started.html#how-to-use-nbdev).
 
 
 ## PR submission guidelines
