@@ -397,11 +397,11 @@ class TensorBase(Tensor):
         cls = type(self)
         return self.as_subclass(Tensor).clone(memory_format=memory_format).as_subclass(cls)
 
-    def new_empty(self, size, *, dtype=None, layout=None, device=None, pin_memory=False, requires_grad=False):
+    def new_empty(self, size, *, dtype=None, layout=torch.strided, device=None, pin_memory=False, requires_grad=False):
         cls = type(self)
         return self.as_subclass(Tensor).new_empty(size, dtype=dtype, layout=layout, device=device, pin_memory=pin_memory, requires_grad=requires_grad).as_subclass(cls)
 
-    def new_empty(self, *size, dtype=None, layout=None, device=None, pin_memory=False, requires_grad=False):
+    def new_empty(self, *size, dtype=None, layout=torch.strided, device=None, pin_memory=False, requires_grad=False):
         cls = type(self)
         return self.as_subclass(Tensor).new_empty(*size, dtype=dtype, layout=layout, device=device, pin_memory=pin_memory, requires_grad=requires_grad).as_subclass(cls)
 
