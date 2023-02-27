@@ -121,7 +121,7 @@ class PILBase(Image.Image, metaclass=BypassNewMeta):
         if isinstance(fn,Tensor): fn = fn.numpy()
         if isinstance(fn,ndarray): return cls(Image.fromarray(fn))
         if isinstance(fn,bytes): fn = io.BytesIO(fn)
-        if isinstance(fn,Image.Image) and not isinstance(fn,cls): return cls(fn)
+        if isinstance(fn,Image.Image): return cls(fn)
         return cls(load_image(fn, **merge(cls._open_args, kwargs)))
 
     def show(self, ctx=None, **kwargs):
@@ -140,17 +140,17 @@ class PILImageBW(PILImage):
     "A BW Pillow `Image` that can show itself and converts to `TensorImageBW`"
     _show_args,_open_args = {'cmap':'Greys'},{'mode': 'L'}
 
-# %% ../../nbs/07_vision.core.ipynb 47
+# %% ../../nbs/07_vision.core.ipynb 48
 class PILMask(PILBase):
     "A Pillow `Image` Mask that can show itself and converts to `TensorMask`"
     _open_args,_show_args = {'mode':'L'},{'alpha':0.5, 'cmap':'tab20'}
 
-# %% ../../nbs/07_vision.core.ipynb 49
+# %% ../../nbs/07_vision.core.ipynb 50
 OpenMask = Transform(PILMask.create)
 OpenMask.loss_func = CrossEntropyLossFlat(axis=1)
 PILMask.create = OpenMask
 
-# %% ../../nbs/07_vision.core.ipynb 54
+# %% ../../nbs/07_vision.core.ipynb 55
 class AddMaskCodes(Transform):
     "Add the code metadata to a `TensorMask`"
     def __init__(self, codes=None):
@@ -161,7 +161,7 @@ class AddMaskCodes(Transform):
         if self.codes is not None: o.codes=self.codes
         return o
 
-# %% ../../nbs/07_vision.core.ipynb 59
+# %% ../../nbs/07_vision.core.ipynb 60
 class TensorPoint(TensorBase):
     "Basic type for points in an image"
     _show_args = dict(s=10, marker='.', c='r')
@@ -177,12 +177,12 @@ class TensorPoint(TensorBase):
         ctx.scatter(x[:, 0], x[:, 1], **{**self._show_args, **kwargs})
         return ctx
 
-# %% ../../nbs/07_vision.core.ipynb 60
+# %% ../../nbs/07_vision.core.ipynb 61
 TensorPointCreate = Transform(TensorPoint.create)
 TensorPointCreate.loss_func = MSELossFlat()
 TensorPoint.create = TensorPointCreate
 
-# %% ../../nbs/07_vision.core.ipynb 65
+# %% ../../nbs/07_vision.core.ipynb 66
 def get_annotations(fname, prefix=None):
     "Open a COCO style json in `fname` and returns the lists of filenames (with maybe `prefix`) and labelled bboxes."
     annot_dict = json.load(open(fname))
@@ -196,10 +196,10 @@ def get_annotations(fname, prefix=None):
     ids = list(id2images.keys())
     return [id2images[k] for k in ids], [(id2bboxes[k], id2cats[k]) for k in ids]
 
-# %% ../../nbs/07_vision.core.ipynb 68
+# %% ../../nbs/07_vision.core.ipynb 69
 from matplotlib import patches, patheffects
 
-# %% ../../nbs/07_vision.core.ipynb 69
+# %% ../../nbs/07_vision.core.ipynb 70
 def _draw_outline(o, lw):
     o.set_path_effects([patheffects.Stroke(linewidth=lw, foreground='black'), patheffects.Normal()])
 
@@ -213,7 +213,7 @@ def _draw_rect(ax, b, color='white', text=None, text_size=14, hw=True, rev=False
         patch = ax.text(lx,ly, text, verticalalignment='top', color=color, fontsize=text_size, weight='bold')
         _draw_outline(patch,1)
 
-# %% ../../nbs/07_vision.core.ipynb 70
+# %% ../../nbs/07_vision.core.ipynb 71
 class TensorBBox(TensorPoint):
     "Basic type for a tensor of bounding boxes in an image"
     @classmethod
@@ -224,7 +224,7 @@ class TensorBBox(TensorPoint):
         for b in x: _draw_rect(ctx, b, hw=False, **kwargs)
         return ctx
 
-# %% ../../nbs/07_vision.core.ipynb 72
+# %% ../../nbs/07_vision.core.ipynb 73
 class LabeledBBox(L):
     "Basic type for a list of bounding boxes in an image"
     def show(self, ctx=None, **kwargs):
@@ -234,18 +234,18 @@ class LabeledBBox(L):
 
     bbox,lbl = add_props(lambda i,self: self[i])
 
-# %% ../../nbs/07_vision.core.ipynb 77
+# %% ../../nbs/07_vision.core.ipynb 78
 PILImage  ._tensor_cls = TensorImage
 PILImageBW._tensor_cls = TensorImageBW
 PILMask   ._tensor_cls = TensorMask
 
-# %% ../../nbs/07_vision.core.ipynb 78
+# %% ../../nbs/07_vision.core.ipynb 79
 @ToTensor
 def encodes(self, o:PILBase): return o._tensor_cls(image2tensor(o))
 @ToTensor
 def encodes(self, o:PILMask): return o._tensor_cls(image2tensor(o)[0])
 
-# %% ../../nbs/07_vision.core.ipynb 86
+# %% ../../nbs/07_vision.core.ipynb 87
 def _scale_pnts(y, sz, do_scale=True, y_first=False):
     if y_first: y = y.flip(1)
     res = y * 2/tensor(sz).float() - 1 if do_scale else y
@@ -253,7 +253,7 @@ def _scale_pnts(y, sz, do_scale=True, y_first=False):
 
 def _unscale_pnts(y, sz): return TensorPoint((y+1) * tensor(sz).float()/2, img_size=sz)
 
-# %% ../../nbs/07_vision.core.ipynb 87
+# %% ../../nbs/07_vision.core.ipynb 88
 class PointScaler(Transform):
     "Scale a tensor representing points"
     order = 1
@@ -274,7 +274,7 @@ class PointScaler(Transform):
     def encodes(self, x:TensorPoint): return _scale_pnts(x, self._get_sz(x), self.do_scale, self.y_first)
     def decodes(self, x:TensorPoint): return _unscale_pnts(x.view(-1, 2), self._get_sz(x))
 
-# %% ../../nbs/07_vision.core.ipynb 94
+# %% ../../nbs/07_vision.core.ipynb 95
 class BBoxLabeler(Transform):
     def setups(self, dl): self.vocab = dl.vocab
 
@@ -290,12 +290,12 @@ class BBoxLabeler(Transform):
         self.bbox = x
         return self.bbox if self.lbls is None else LabeledBBox(self.bbox, self.lbls)
 
-# %% ../../nbs/07_vision.core.ipynb 95
+# %% ../../nbs/07_vision.core.ipynb 96
 #LabeledBBox can be sent in a tl with MultiCategorize (depending on the order of the tls) but it is already decoded.
 @MultiCategorize
 def decodes(self, x:LabeledBBox): return x
 
-# %% ../../nbs/07_vision.core.ipynb 96
+# %% ../../nbs/07_vision.core.ipynb 97
 @PointScaler
 def encodes(self, x:TensorBBox):
     pnts = self.encodes(cast(x.view(-1,2), TensorPoint))
