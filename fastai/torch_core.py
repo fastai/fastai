@@ -393,19 +393,31 @@ class TensorBase(Tensor):
         self.requires_grad = requires_grad
         return self
 
-# %% ../nbs/00_torch_core.ipynb 104
+    def clone(self, *, memory_format=None):
+        cls = type(self)
+        return self.as_subclass(Tensor).clone(memory_format=memory_format).as_subclass(cls)
+
+    def new_empty(self, size, *, dtype=None, layout=None, device=None, pin_memory=False, requires_grad=False):
+        cls = type(self)
+        return self.as_subclass(Tensor).new_empty(size, dtype=dtype, layout=layout, device=device, pin_memory=pin_memory, requires_grad=requires_grad).as_subclass(cls)
+
+    def new_empty(self, *size, dtype=None, layout=None, device=None, pin_memory=False, requires_grad=False):
+        cls = type(self)
+        return self.as_subclass(Tensor).new_empty(*size, dtype=dtype, layout=layout, device=device, pin_memory=pin_memory, requires_grad=requires_grad).as_subclass(cls)
+
+# %% ../nbs/00_torch_core.ipynb 105
 class TensorImageBase(TensorBase):
     _show_args = ArrayImageBase._show_args
     def show(self, ctx=None, **kwargs):
         return show_image(self, ctx=ctx, **{**self._show_args, **kwargs})
 
-# %% ../nbs/00_torch_core.ipynb 105
+# %% ../nbs/00_torch_core.ipynb 106
 class TensorImage(TensorImageBase): pass
 
-# %% ../nbs/00_torch_core.ipynb 106
+# %% ../nbs/00_torch_core.ipynb 107
 class TensorImageBW(TensorImage): _show_args = ArrayImageBW._show_args
 
-# %% ../nbs/00_torch_core.ipynb 107
+# %% ../nbs/00_torch_core.ipynb 108
 class TensorMask(TensorImageBase):
     _show_args = ArrayMask._show_args
 
@@ -414,7 +426,7 @@ class TensorMask(TensorImageBase):
         if codes is not None: kwargs = merge({'vmin': 0, 'vmax': len(codes)}, kwargs)
         return super().show(ctx=ctx, **kwargs)
 
-# %% ../nbs/00_torch_core.ipynb 108
+# %% ../nbs/00_torch_core.ipynb 109
 for o in Tensor.__getitem__, Tensor.__ne__,Tensor.__eq__,Tensor.add,Tensor.sub,Tensor.mul,Tensor.div,Tensor.__rsub__,Tensor.__radd__,Tensor.matmul,Tensor.bmm:
     TensorBase.register_func(o, TensorMask, TensorImageBase)
     TensorBase.register_func(o, TensorImageBase, TensorMask)
@@ -422,24 +434,24 @@ for o in Tensor.__getitem__, Tensor.__ne__,Tensor.__eq__,Tensor.add,Tensor.sub,T
 TensorMask.register_func(torch.einsum, str, TensorImageBase, TensorMask)
 TensorMask.register_func(torch.einsum, str, TensorMask, TensorImageBase)
 
-# %% ../nbs/00_torch_core.ipynb 115
+# %% ../nbs/00_torch_core.ipynb 116
 class TensorFlowField(TensorBase): pass
 TensorImage.register_func(F.grid_sample, TensorImageBase, TensorFlowField)
 
-# %% ../nbs/00_torch_core.ipynb 117
+# %% ../nbs/00_torch_core.ipynb 118
 class TensorCategory(TensorBase): pass
 
 TensorBase.register_func(Tensor.__getitem__, TensorImageBase, TensorCategory)
 
-# %% ../nbs/00_torch_core.ipynb 119
+# %% ../nbs/00_torch_core.ipynb 120
 class TensorMultiCategory(TensorCategory): pass
 
-# %% ../nbs/00_torch_core.ipynb 120
+# %% ../nbs/00_torch_core.ipynb 121
 class TitledTensorScalar(TensorBase):
     "A tensor containing a scalar that has a `show` method"
     def show(self, **kwargs): show_title(self.item(), **kwargs)
 
-# %% ../nbs/00_torch_core.ipynb 122
+# %% ../nbs/00_torch_core.ipynb 123
 @patch
 def tensored(self:L):
     "`mapped(tensor)`"
@@ -453,7 +465,7 @@ def cat  (self:L, dim=0):
     "Same as `torch.cat`"
     return torch.cat  (list(self.tensored()), dim=dim)
 
-# %% ../nbs/00_torch_core.ipynb 131
+# %% ../nbs/00_torch_core.ipynb 132
 def concat(*ls):
     "Concatenate tensors, arrays, lists, or tuples"
     if not len(ls): return []
@@ -466,7 +478,7 @@ def concat(*ls):
         else: res = L(res)
     return retain_type(res, it)
 
-# %% ../nbs/00_torch_core.ipynb 133
+# %% ../nbs/00_torch_core.ipynb 134
 class Chunks:
     "Slice and int indexing into a list of lists"
     def __init__(self, chunks, lens=None):
@@ -494,7 +506,7 @@ class Chunks:
         cl = self.cumlens[docidx]
         return docidx,i-cl
 
-# %% ../nbs/00_torch_core.ipynb 138
+# %% ../nbs/00_torch_core.ipynb 139
 def show_title(o, ax=None, ctx=None, label=None, color='black', **kwargs):
     "Set title of `ax` to `o`, or print `o` if `ax` is `None`"
     ax = ifnone(ax,ctx)
@@ -508,7 +520,7 @@ def show_title(o, ax=None, ctx=None, label=None, color='black', **kwargs):
         ax = pd.concat([ax,pd.Series({label: o})])
     return ax
 
-# %% ../nbs/00_torch_core.ipynb 140
+# %% ../nbs/00_torch_core.ipynb 141
 class ShowTitle:
     "Base class that adds a simple `show`"
     _show_args = {'label': 'text'}
@@ -543,46 +555,46 @@ class TitledTuple(fastuple, ShowTitle):
 add_docs(TitledInt, "An `int` with `show`"); add_docs(TitledStr, "An `str` with `show`");
 add_docs(TitledFloat, "A `float` with `show`"); add_docs(TitledTuple, "A `fastuple` with `show`")
 
-# %% ../nbs/00_torch_core.ipynb 147
+# %% ../nbs/00_torch_core.ipynb 148
 @patch
 def truncate(self:TitledStr, n):
     "Truncate self to `n`"
     words = self.split(' ')[:n]
     return TitledStr(' '.join(words))
 
-# %% ../nbs/00_torch_core.ipynb 149
+# %% ../nbs/00_torch_core.ipynb 150
 if not hasattr(pd.DataFrame,'_old_init'): pd.DataFrame._old_init = pd.DataFrame.__init__
 
-# %% ../nbs/00_torch_core.ipynb 150
+# %% ../nbs/00_torch_core.ipynb 151
 @patch
 def __init__(self:pd.DataFrame, data=None, index=None, columns=None, dtype=None, copy=None):
     if data is not None and isinstance(data, Tensor): data = to_np(data)
     self._old_init(data, index=index, columns=columns, dtype=dtype, copy=copy)
 
-# %% ../nbs/00_torch_core.ipynb 151
+# %% ../nbs/00_torch_core.ipynb 152
 def get_empty_df(n):
     "Return `n` empty rows of a dataframe"
     df = pd.DataFrame(index = range(n))
     return [df.iloc[i] for i in range(n)]
 
-# %% ../nbs/00_torch_core.ipynb 152
+# %% ../nbs/00_torch_core.ipynb 153
 def display_df(df):
     "Display `df` in a notebook or defaults to print"
     try: from IPython.display import display, HTML
     except: return print(df)
     display(HTML(df.to_html()))
 
-# %% ../nbs/00_torch_core.ipynb 153
+# %% ../nbs/00_torch_core.ipynb 154
 def get_first(c):
     "Get the first element of c, even if c is a dataframe"
     return getattr(c, 'iloc', c)[0]
 
-# %% ../nbs/00_torch_core.ipynb 154
+# %% ../nbs/00_torch_core.ipynb 155
 def one_param(m):
     "First parameter in `m`"
     return first(m.parameters())
 
-# %% ../nbs/00_torch_core.ipynb 155
+# %% ../nbs/00_torch_core.ipynb 156
 def item_find(x, idx=0):
     "Recursively takes the `idx`-th element of `x`"
     if is_listy(x): return item_find(x[idx])
@@ -591,19 +603,19 @@ def item_find(x, idx=0):
         return item_find(x[key])
     return x
 
-# %% ../nbs/00_torch_core.ipynb 156
+# %% ../nbs/00_torch_core.ipynb 157
 def find_device(b):
     "Recursively search the device of `b`."
     return item_find(b).device
 
-# %% ../nbs/00_torch_core.ipynb 158
+# %% ../nbs/00_torch_core.ipynb 159
 def find_bs(b):
     "Recursively search the batch size of `b`."
     res = item_find(b)
     if not hasattr(res, "shape"): return len(b)
     return res.shape[0]
 
-# %% ../nbs/00_torch_core.ipynb 160
+# %% ../nbs/00_torch_core.ipynb 161
 def np_func(f):
     "Convert a function taking and returning numpy arrays to one taking and returning tensors"
     def _inner(*args, **kwargs):
@@ -612,21 +624,21 @@ def np_func(f):
     functools.update_wrapper(_inner, f)
     return _inner
 
-# %% ../nbs/00_torch_core.ipynb 164
+# %% ../nbs/00_torch_core.ipynb 165
 class Module(nn.Module, metaclass=PrePostInitMeta):
     "Same as `nn.Module`, but no need for subclasses to call `super().__init__`"
     def __pre_init__(self, *args, **kwargs): super().__init__()
     def __init__(self): pass
 
-# %% ../nbs/00_torch_core.ipynb 167
+# %% ../nbs/00_torch_core.ipynb 168
 from torch.nn.parallel import DistributedDataParallel
 
-# %% ../nbs/00_torch_core.ipynb 168
+# %% ../nbs/00_torch_core.ipynb 169
 def get_model(model):
     "Return the model maybe wrapped inside `model`."
     return model.module if isinstance(model, (DistributedDataParallel, nn.DataParallel)) else model
 
-# %% ../nbs/00_torch_core.ipynb 169
+# %% ../nbs/00_torch_core.ipynb 170
 def one_hot(x, c):
     "One-hot encode `x` with `c` classes."
     res = torch.zeros(c, dtype=torch.uint8)
@@ -634,24 +646,24 @@ def one_hot(x, c):
     else: res[list(L(x, use_list=None))] = 1.
     return res
 
-# %% ../nbs/00_torch_core.ipynb 171
+# %% ../nbs/00_torch_core.ipynb 172
 def one_hot_decode(x, vocab=None):
     return L(vocab[i] if vocab else i for i,x_ in enumerate(x) if x_==1)
 
-# %% ../nbs/00_torch_core.ipynb 173
+# %% ../nbs/00_torch_core.ipynb 174
 def params(m):
     "Return all parameters of `m`"
     return [p for p in m.parameters()]
 
-# %% ../nbs/00_torch_core.ipynb 174
+# %% ../nbs/00_torch_core.ipynb 175
 def trainable_params(m):
     "Return all trainable parameters of `m`"
     return [p for p in m.parameters() if p.requires_grad]
 
-# %% ../nbs/00_torch_core.ipynb 176
+# %% ../nbs/00_torch_core.ipynb 177
 norm_types = (nn.BatchNorm1d, nn.BatchNorm2d, nn.BatchNorm3d, nn.InstanceNorm1d, nn.InstanceNorm2d, nn.InstanceNorm3d, nn.LayerNorm)
 
-# %% ../nbs/00_torch_core.ipynb 177
+# %% ../nbs/00_torch_core.ipynb 178
 def norm_bias_params(m, with_bias=True):
     "Return all bias and BatchNorm parameters"
     if isinstance(m, norm_types): return L(m.parameters())
@@ -659,7 +671,7 @@ def norm_bias_params(m, with_bias=True):
     if with_bias and getattr(m, 'bias', None) is not None: res.append(m.bias)
     return res
 
-# %% ../nbs/00_torch_core.ipynb 179
+# %% ../nbs/00_torch_core.ipynb 180
 def batch_to_samples(b, max_n=10):
     "'Transposes' a batch to (at most `max_n`) samples"
     if isinstance(b, Tensor): return retain_types(list(b[:max_n]), [b])
@@ -667,7 +679,7 @@ def batch_to_samples(b, max_n=10):
         res = L(b).map(partial(batch_to_samples,max_n=max_n))
         return retain_types(res.zip(), [b])
 
-# %% ../nbs/00_torch_core.ipynb 181
+# %% ../nbs/00_torch_core.ipynb 182
 @patch
 def interp_1d(x:Tensor, xp, fp):
     "Same as `np.interp`"
@@ -677,7 +689,7 @@ def interp_1d(x:Tensor, xp, fp):
     locs = locs.clamp(0,len(slopes)-1)
     return slopes[locs]*x + incx[locs]
 
-# %% ../nbs/00_torch_core.ipynb 183
+# %% ../nbs/00_torch_core.ipynb 184
 @patch
 def pca(x:Tensor, k=2):
     "Compute PCA of `x` with `k` dimensions."
@@ -685,56 +697,56 @@ def pca(x:Tensor, k=2):
     U,S,V = torch.svd(x.t())
     return torch.mm(x,U[:,:k])
 
-# %% ../nbs/00_torch_core.ipynb 184
+# %% ../nbs/00_torch_core.ipynb 185
 def logit(x):
     "Logit of `x`, clamped to avoid inf."
     x = x.clamp(1e-7, 1-1e-7)
     return -(1/x-1).log()
 
-# %% ../nbs/00_torch_core.ipynb 185
+# %% ../nbs/00_torch_core.ipynb 186
 def num_distrib():
     "Return the number of processes in distributed training (if applicable)."
     return int(os.environ.get('WORLD_SIZE', 0))
 
-# %% ../nbs/00_torch_core.ipynb 186
+# %% ../nbs/00_torch_core.ipynb 187
 def rank_distrib():
     "Return the distributed rank of this process (if applicable)."
     return int(os.environ.get('RANK', 0))
 
-# %% ../nbs/00_torch_core.ipynb 187
+# %% ../nbs/00_torch_core.ipynb 188
 def distrib_barrier():
     "Place a synchronization barrier in distributed training"
     if num_distrib() > 1 and torch.distributed.is_initialized(): torch.distributed.barrier()
 
-# %% ../nbs/00_torch_core.ipynb 189
+# %% ../nbs/00_torch_core.ipynb 190
 # Saving arrays requires pytables - optional dependency
 try: import tables
 except: pass
 
-# %% ../nbs/00_torch_core.ipynb 190
+# %% ../nbs/00_torch_core.ipynb 191
 def _comp_filter(lib='lz4',lvl=3): return tables.Filters(complib=f'blosc:{lib}', complevel=lvl)
 
-# %% ../nbs/00_torch_core.ipynb 191
+# %% ../nbs/00_torch_core.ipynb 192
 @patch
 def save_array(p:Path, o, complib='lz4', lvl=3):
     "Save numpy array to a compressed `pytables` file, using compression level `lvl`"
     if isinstance(o,Tensor): o = to_np(o)
     with tables.open_file(p, mode='w', filters=_comp_filter(lib=complib,lvl=lvl)) as f: f.create_carray('/', 'data', obj=o)
 
-# %% ../nbs/00_torch_core.ipynb 193
+# %% ../nbs/00_torch_core.ipynb 194
 @patch
 def load_array(p:Path):
     "Save numpy array to a `pytables` file"
     with tables.open_file(p, 'r') as f: return f.root.data.read()
 
-# %% ../nbs/00_torch_core.ipynb 194
+# %% ../nbs/00_torch_core.ipynb 195
 def base_doc(elt):
     "Print a base documentation of `elt`"
     name = getattr(elt, '__qualname__', getattr(elt, '__name__', ''))
     print(f'{name}{inspect.signature(elt)}\n{inspect.getdoc(elt)}\n')
     print('To get a prettier result with hyperlinks to source code and documentation, install nbdev: pip install nbdev')
 
-# %% ../nbs/00_torch_core.ipynb 195
+# %% ../nbs/00_torch_core.ipynb 196
 def doc(elt):
     "Try to use doc form nbdev and fall back to `base_doc`"
     try:
@@ -742,7 +754,7 @@ def doc(elt):
         doc(elt)
     except: base_doc(elt)
 
-# %% ../nbs/00_torch_core.ipynb 196
+# %% ../nbs/00_torch_core.ipynb 197
 def nested_reorder(t, idxs):
     "Reorder all tensors in `t` using `idxs`"
     if isinstance(t, (Tensor,L)): return t[idxs]
@@ -750,14 +762,14 @@ def nested_reorder(t, idxs):
     if t is None: return t
     raise TypeError(f"Expected tensor, tuple, list or L but got {type(t)}")
 
-# %% ../nbs/00_torch_core.ipynb 198
+# %% ../nbs/00_torch_core.ipynb 199
 def flatten_check(inp, targ):
     "Check that `inp` and `targ` have the same number of elements and flatten them."
     inp,targ = TensorBase(inp.contiguous()).view(-1),TensorBase(targ.contiguous()).view(-1)
     test_eq(len(inp), len(targ))
     return inp,targ
 
-# %% ../nbs/00_torch_core.ipynb 201
+# %% ../nbs/00_torch_core.ipynb 202
 def make_cross_image(bw=True):
     "Create a tensor containing a cross image, either `bw` (True) or color"
     if bw:
@@ -770,7 +782,7 @@ def make_cross_image(bw=True):
         im[1,:,2] = 1.
     return im
 
-# %% ../nbs/00_torch_core.ipynb 204
+# %% ../nbs/00_torch_core.ipynb 205
 def show_image_batch(b, show=show_titled_image, items=9, cols=3, figsize=None, **kwargs):
     "Display batch `b` in a grid of size `items` with `cols` width"
     if items<cols: cols=items
@@ -779,13 +791,13 @@ def show_image_batch(b, show=show_titled_image, items=9, cols=3, figsize=None, *
     fig,axs = plt.subplots(rows, cols, figsize=figsize)
     for *o,ax in zip(*to_cpu(b), axs.flatten()): show(o, ax=ax, **kwargs)
 
-# %% ../nbs/00_torch_core.ipynb 207
+# %% ../nbs/00_torch_core.ipynb 208
 def requires_grad(m):
     "Check if the first parameter of `m` requires grad or not"
     ps = list(m.parameters())
     return ps[0].requires_grad if len(ps)>0 else False
 
-# %% ../nbs/00_torch_core.ipynb 209
+# %% ../nbs/00_torch_core.ipynb 210
 def init_default(m, func=nn.init.kaiming_normal_):
     "Initialize `m` weights with `func` and set `bias` to 0."
     if func:
@@ -793,31 +805,31 @@ def init_default(m, func=nn.init.kaiming_normal_):
         if hasattr(m, 'bias') and hasattr(m.bias, 'data'): m.bias.data.fill_(0.)
     return m
 
-# %% ../nbs/00_torch_core.ipynb 211
+# %% ../nbs/00_torch_core.ipynb 212
 def cond_init(m, func):
     "Apply `init_default` to `m` unless it's a batchnorm module"
     if (not isinstance(m, norm_types)) and requires_grad(m): init_default(m, func)
 
-# %% ../nbs/00_torch_core.ipynb 213
+# %% ../nbs/00_torch_core.ipynb 214
 def apply_leaf(m, f):
     "Apply `f` to children of `m`."
     c = m.children()
     if isinstance(m, nn.Module): f(m)
     for l in c: apply_leaf(l,f)
 
-# %% ../nbs/00_torch_core.ipynb 215
+# %% ../nbs/00_torch_core.ipynb 216
 def apply_init(m, func=nn.init.kaiming_normal_):
     "Initialize all non-batchnorm layers of `m` with `func`."
     apply_leaf(m, partial(cond_init, func=func))
 
-# %% ../nbs/00_torch_core.ipynb 218
+# %% ../nbs/00_torch_core.ipynb 219
 def script_use_ctx(f):
     "Decorator: create jit script and pass everything in `ctx.saved_variables to `f`, after `*args`"
     sf = torch.jit.script(f)
     def _f(ctx, *args, **kwargs): return sf(*args, *ctx.saved_variables, **kwargs)
     return update_wrapper(_f,f)
 
-# %% ../nbs/00_torch_core.ipynb 219
+# %% ../nbs/00_torch_core.ipynb 220
 def script_save_ctx(static, *argidx):
     "Decorator: create jit script and save args with indices `argidx` using `ctx.save_for_backward`"
     def _dec(f):
@@ -832,34 +844,34 @@ def script_save_ctx(static, *argidx):
         return update_wrapper(_f,f)
     return _dec
 
-# %% ../nbs/00_torch_core.ipynb 220
+# %% ../nbs/00_torch_core.ipynb 221
 def script_fwd(*argidx):
     "Decorator: create static jit script and save args with indices `argidx` using `ctx.save_for_backward`"
     return script_save_ctx(True, *argidx)
 
-# %% ../nbs/00_torch_core.ipynb 221
+# %% ../nbs/00_torch_core.ipynb 222
 def script_bwd(f):
     "Decorator: create static jit script and pass everything in `ctx.saved_variables to `f`, after `*args`"
     return staticmethod(script_use_ctx(f))
 
-# %% ../nbs/00_torch_core.ipynb 222
+# %% ../nbs/00_torch_core.ipynb 223
 def grad_module(cls):
     "Decorator: convert `cls` into an autograd function"
     class _c(nn.Module):
         def forward(self, *args, **kwargs): return cls.apply(*args, **kwargs)
     return _c
 
-# %% ../nbs/00_torch_core.ipynb 224
+# %% ../nbs/00_torch_core.ipynb 225
 def ismin_torch(min_version):
     "Check if `torch.__version__` >= `min_version` using packaging.version"
     return parse(torch.__version__) >= parse(min_version)
 
-# %% ../nbs/00_torch_core.ipynb 225
+# %% ../nbs/00_torch_core.ipynb 226
 def notmax_torch(max_version):
     "Check if `torch.__version__` < `max_version` using packaging.version"
     return parse(torch.__version__) < parse(max_version)
 
-# %% ../nbs/00_torch_core.ipynb 227
+# %% ../nbs/00_torch_core.ipynb 228
 # PyTorch 1.13 introduced a Tensor Subclass string formatting bug
 # Workaround from pending PyTorch PR: https://github.com/pytorch/pytorch/pull/82766
 if ismin_torch('1.13') and notmax_torch('1.14'):
