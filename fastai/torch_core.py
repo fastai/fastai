@@ -309,6 +309,7 @@ def to_concat(xs, dim=0):
 # %% ../nbs/00_torch_core.ipynb 84
 # Parsed PyTorch versions for faster version checking
 _torch_version = parse(torch.__version__)
+_torch_20  = parse('2.0')
 _torch_113 = parse('1.13')
 _torch_112 = parse('1.12')
 
@@ -360,13 +361,16 @@ class TensorBase(Tensor):
     def _before_cast(cls, x): return tensor(x)
     def __repr__(self): return re.sub('tensor', self.__class__.__name__, super().__repr__())
 
-    def __reduce_ex__(self,proto):
-        torch.utils.hooks.warn_if_has_hooks(self)
-        args = (self.storage(), self.storage_offset(), tuple(self.size()), self.stride())
-        if self.is_quantized: args = args + (self.q_scale(), self.q_zero_point())
-        args = args + (self.requires_grad, OrderedDict())
-        f = torch._utils._rebuild_qtensor if self.is_quantized else  torch._utils._rebuild_tensor_v2
-        return (_rebuild_from_type, (f, type(self), args, self.__dict__))
+    def __reduce_ex__(self, proto):
+        if _torch_version >= _torch_20:
+            return super().__reduce_ex__(proto)
+        else:
+            torch.utils.hooks.warn_if_has_hooks(self)
+            args = (self.storage(), self.storage_offset(), tuple(self.size()), self.stride())
+            if self.is_quantized: args = args + (self.q_scale(), self.q_zero_point())
+            args = args + (self.requires_grad, OrderedDict())
+            f = torch._utils._rebuild_qtensor if self.is_quantized else  torch._utils._rebuild_tensor_v2
+            return (_rebuild_from_type, (f, type(self), args, self.__dict__))
 
     @classmethod
     def register_func(cls, func, *oks): cls._opt[func].append(oks)
