@@ -30,7 +30,7 @@ class ProgressCallback(Callback):
     def after_validate(self):  self.pbar.on_iter_end()
     def after_batch(self):
         self.pbar.update(self.iter+1)
-        if hasattr(self, 'smooth_loss'): self.pbar.comment = f'{self.smooth_loss:.4f}'
+        if hasattr(self, 'smooth_loss'): self.pbar.comment = f'{self.smooth_loss.item():.4f}'
 
     def _launch_pbar(self):
         self.pbar = progress_bar(self.dl, parent=getattr(self, 'mbar', None), leave=False)
