@@ -68,7 +68,7 @@ class PartialLambda(Lambda):
 @module(full=False)
 def Flatten(self, x):
     "Flatten `x` to a single dimension, e.g. at end of a model. `full` for rank-1 tensor"
-    return TensorBase(x.view(-1) if self.full else x.view(x.size(0), -1))
+    return x.view(-1) if self.full else x.view(x.size(0), -1)  # Removed cast to Tensorbase
 
 # %% ../nbs/01_layers.ipynb 15
 @module(tensor_cls=TensorBase)
