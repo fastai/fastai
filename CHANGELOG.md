@@ -2,6 +2,24 @@
 
 <!-- do not remove -->
 
+## 2.7.12
+
+### New Features
+
+- PyTorch 2.0 compatibility ([#3890](https://github.com/fastai/fastai/pull/3890)), thanks to [@warner-benjamin](https://github.com/warner-benjamin)
+- Pytorch 2.0 compiler compatibility ([#3899](https://github.com/fastai/fastai/pull/3899)), thanks to [@ggosline](https://github.com/ggosline)
+- Better version support for `TensorBase.new_empty` ([#3887](https://github.com/fastai/fastai/pull/3887)), thanks to [@warner-benjamin](https://github.com/warner-benjamin)
+- TensorBase deepcopy Compatibility ([#3882](https://github.com/fastai/fastai/pull/3882)), thanks to [@warner-benjamin](https://github.com/warner-benjamin)
+- ChannelsLast Callback Improvements & Bug Fix ([#3876](https://github.com/fastai/fastai/pull/3876)), thanks to [@warner-benjamin](https://github.com/warner-benjamin)
+- Add support for a batch transforms `to` method ([#3875](https://github.com/fastai/fastai/pull/3875)), thanks to [@warner-benjamin](https://github.com/warner-benjamin)
+- Allow Pillow Image to be passed to PILBase.create ([#3872](https://github.com/fastai/fastai/pull/3872)), thanks to [@warner-benjamin](https://github.com/warner-benjamin)
+
+### Bugs Squashed
+
+- Fix `Learn.predict` Errors Out if Passed a PILImage ([#3884](https://github.com/fastai/fastai/pull/3884)), thanks to [@nglillywhite](https://github.com/nglillywhite)
+- Set DataLoaders device if not None and to exists ([#3873](https://github.com/fastai/fastai/pull/3873)), thanks to [@warner-benjamin](https://github.com/warner-benjamin)
+- Fix `default_device` to correctly detect + use mps (Apple Silicon) ([#3858](https://github.com/fastai/fastai/pull/3858)), thanks to [@wolever](https://github.com/wolever)
+
 
 ## 2.7.11
 
