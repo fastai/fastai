@@ -131,8 +131,12 @@ you on your way:
 ## Windows Support
 
 When installing with `mamba` or `conda` replace `-c fastchan` in the
-installation with `-c pytorch -c nvidia -c fastai`, since fastchan is
+installation with `-c nvidia`, since fastchan is
 not currently supported on Windows.
+
+``` bash
+conda install -c nvidia fastai anaconda
+```
 
 Due to python multiprocessing issues on Jupyter and Windows,
 `num_workers` of `Dataloader` is reset to 0 automatically to avoid
