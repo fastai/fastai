@@ -111,7 +111,7 @@ composable building blocks. This way, a user wanting to rewrite part of
 the high-level API or add particular behavior to suit their needs does
 not have to learn how to use the lowest level.
 
-<img alt="Layered API" src="images/layered.png" width="345">
+<img alt="Layered API" src="nbs/images/layered.png" width="345">
 
 ## Migrating from other libraries
 
