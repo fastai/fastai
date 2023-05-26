@@ -557,7 +557,8 @@ def mask_tensor(
     if p==1.: return x
     if batch: return x if random.random() < p else x.new_zeros(*x.size()) + neutral
     if neutral != 0: x.add_(-neutral)
-    mask = x.new_empty(*x.size()).bernoulli_(p)
+    # Extra casting to float and long to prevent crashes on mps accelerator (issue #3911)
+    mask = x.new_empty(*x.size()).float().bernoulli_(p).long()
     x.mul_(mask)
     return x.add_(neutral) if neutral != 0 else x
 
