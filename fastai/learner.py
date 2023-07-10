@@ -56,7 +56,7 @@ def load_model(file, model, opt, with_opt=True, device=None, strict=True, **torc
         try: opt.load_state_dict(state['opt'])
         except:
             if with_opt: warn("Could not load the optimizer state.")
-    elif with_opt: warn("Saved filed doesn't contain an optimizer state.")
+    elif with_opt: warn("Saved file doesn't contain an optimizer state.")
 
 # %% ../nbs/13a_learner.ipynb 19
 def _try_concat(o):
