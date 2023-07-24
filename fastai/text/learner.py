@@ -95,7 +95,7 @@ def load_model_text(
         try: opt.load_state_dict(state['opt'])
         except:
             if with_opt: warn("Could not load the optimizer state.")
-    elif with_opt: warn("Saved filed doesn't contain an optimizer state.")
+    elif with_opt: warn("Saved file doesn't contain an optimizer state.")
 
 # %% ../../nbs/37_text.learner.ipynb 17
 @delegates(Learner.__init__)
