@@ -3,7 +3,7 @@
 # %% ../../nbs/18c_callback.channelslast.ipynb 1
 from __future__ import annotations
 from ..basics import *
-from .fp16 import MixedPrecision
+from .fp16 import AMPMode, MixedPrecision
 
 from torch.cuda.amp import GradScaler
 
@@ -21,12 +21,13 @@ class ChannelsLast(Callback):
 @patch
 @delegates(GradScaler)
 def to_channelslast(self:Learner,
-    to_fp16:bool=True, # Add `MixedPrecision` callback. Recommended for full channels last performance
+    use_amp:bool=True, # Add `MixedPrecision` with `amp_mode`. Recommended for full channels last performance
+    amp_mode:str|AMPMode=AMPMode.FP16, # Mixed Precision training mode. Supports fp16 and bf16.
     **kwargs
 ):
-    "Set `Learner` and inputs to `channels_last` format and `MixedPrecision` by default"
-    if to_fp16 and not hasattr(self, 'mixed_precision') and not hasattr(self, 'channels_last'):
-        return self.add_cbs([ChannelsLast(), MixedPrecision(**kwargs)])
+    "Set `Learner` and inputs to `channels_last` format and float16 Mixed Precision by default"
+    if use_amp and not hasattr(self, 'mixed_precision') and not hasattr(self, 'channels_last'):
+        return self.add_cbs([ChannelsLast(), MixedPrecision(amp_mode, **kwargs)])
     elif not hasattr(self, 'channels_last'):
         return self.add_cb(ChannelsLast())
 
