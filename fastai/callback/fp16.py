@@ -41,7 +41,7 @@ class MixedPrecision(Callback):
         elif self.amp_mode == AMPMode.FP16:
             dtype = torch.float16
         else:
-            raise ValueError(f"Unrecognized precision: {self.amp_mode=}")
+            raise ValueError(f"Unrecognized precision: {self.amp_mode}")
 
         # `autocast` dtype should not be set before PyTorch 1.10.
         self.autocast = autocast(dtype=dtype) if ismin_torch("1.10") else autocast()
