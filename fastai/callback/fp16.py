@@ -42,45 +42,30 @@ class MixedPrecision(Callback):
             dtype = torch.float16
         else:
             raise ValueError(f"Unrecognized precision: {self.amp_mode}")
-
         # `autocast` dtype should not be set before PyTorch 1.10.
         self.autocast = autocast(dtype=dtype) if ismin_torch("1.10") else autocast()
-
         # `GradScaler` is not needed for bfloat16 as fp32 and bf16 have the same range
         self.kwargs['enabled'] = dtype == torch.float16
         self.learn.scaler,self.scales = GradScaler(**self.kwargs),L()
 
-    def before_batch(self):
-        self.autocast.__enter__()
-
+    def before_batch(self): self.autocast.__enter__()
     def after_pred(self):
         self.learn.pred = to_float(self.pred)
-
-    def after_loss(self):
-        self.autocast.__exit__(None, None, None)
-
-    def before_backward(self):
-        self.learn.loss_grad = self.scaler.scale(self.loss_grad)
-
+    def after_loss(self): self.autocast.__exit__(None, None, None)
+    def before_backward(self): self.learn.loss_grad = self.scaler.scale(self.loss_grad)
     def before_step(self):
         "Use `self` as a fake optimizer. `self.skipped` will be set to True `after_step` if gradients overflow."
         self.skipped=True
         self.scaler.step(self)
-        if self.skipped:
-            raise CancelStepException()
+        if self.skipped: raise CancelStepException()
         self.scales.append(self.scaler.get_scale())
-
-    def after_step(self):
-        self.learn.scaler.update()
-
-    def after_fit(self):
-        self.autocast,self.learn.scaler,self.scales = None,None,None
+    def after_step(self): self.learn.scaler.update()
+    def after_fit(self): self.autocast,self.learn.scaler,self.scales = None,None,None
 
     @property
     def param_groups(self):
         "Pretend to be an optimizer for `GradScaler`"
         return self.opt.param_groups
-
     def step(self, *args, **kwargs):
         "Fake optimizer step to detect whether this batch was skipped from `GradScaler`"
         self.skipped=False
