@@ -354,6 +354,6 @@ def plot_top_losses(x:TensorImage, y:TensorMask, samples, outs, raws, losses, nr
     for axs,s,o,l in zip(axes, samples, outs, losses):
         imgs = (s[0], s[1], o[0])
         for ax,im,title in zip(axs, imgs, titles):
-            if title=="pred": title += f"; loss = {l:.4f}"
+            if title=="pred": title += f"; loss = {l.item():.4f}"
             im.show(ctx=ax, **kwargs)
             ax.set_title(title)
