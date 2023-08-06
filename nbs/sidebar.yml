@@ -33,7 +33,7 @@ website:
           - examples/migrating_ignite.ipynb
           - examples/migrating_lightning.ipynb
           - examples/migrating_catalyst.ipynb
-      - section: Training 
+      - section: Training
         contents:
         - 13a_learner.ipynb
         - 12_optimizer.ipynb
@@ -54,60 +54,59 @@ website:
           - 34_callback.rnn.ipynb
           - 17_callback.tracker.ipynb
           - 18a_callback.training.ipynb
-      - section: Data 
+      - section: Data
         contents:
         - 06_data.block.ipynb
         - 03_data.core.ipynb
         - 02_data.load.ipynb
         - 04_data.external.ipynb
         - 05_data.transforms.ipynb
-      - section: Core 
+      - section: Core
         contents:
         - 00_torch_core.ipynb
         - 01_layers.ipynb
         - 01a_losses.ipynb
-      - section: Vision 
+      - section: Vision
         contents:
         - 07_vision.core.ipynb
         - 08_vision.data.ipynb
         - 09_vision.augment.ipynb
         - 21_vision.learner.ipynb
-        - section: Models 
+        - section: Models
           contents:
           - 11_vision.models.xresnet.ipynb
           - 15a_vision.models.unet.ipynb
         - 24_vision.gan.ipynb
         - 09b_vision.utils.ipynb
         - 09c_vision.widgets.ipynb
-      - section: Text 
+      - section: Text
         contents:
         - 30_text.core.ipynb
         - 31_text.data.ipynb
         - 37_text.learner.ipynb
-        - section: Models 
+        - section: Models
           contents:
           - 33_text.models.core.ipynb
           - 32_text.models.awdlstm.ipynb
-      - section: Tabular 
+      - section: Tabular
         contents:
         - 40_tabular.core.ipynb
         - 41_tabular.data.ipynb
         - 43_tabular.learner.ipynb
         - 42_tabular.model.ipynb
         - 45_collab.ipynb
-      - section: Medical 
+      - section: Medical
         contents:
         - 60_medical.imaging.ipynb
         - 65_medical.text.ipynb
-      - section: Integrations 
+      - section: Integrations
         contents:
         - 70_callback.wandb.ipynb
         - 70c_callback.captum.ipynb
-        - 70b_callback.neptune.ipynb
         - 70d_callback.comet.ipynb
         - 70a_callback.tensorboard.ipynb
         - 74_huggingface.ipynb
-      - section: fastai Development 
+      - section: fastai Development
         contents:
         - dev-setup.ipynb
         - dev/git.qmd
