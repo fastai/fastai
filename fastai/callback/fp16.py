@@ -33,20 +33,16 @@ class MixedPrecision(Callback):
 
     def before_fit(self):
         if self.amp_mode == AMPMode.BF16:
-            if not ismin_torch("1.10"):
-                raise ValueError("PyTorch 1.10 or newer required for bfloat16 mixed precision training.")
             if torch.cuda.is_available() and not torch.cuda.is_bf16_supported():
-                raise ValueError("Unsuported GPU for bfloat16 mixed precision training.")
+                raise ValueError("Unsupported GPU for bfloat16 mixed precision training")
             dtype = torch.bfloat16
         elif self.amp_mode == AMPMode.FP16:
             dtype = torch.float16
         else:
             raise ValueError(f"Unrecognized precision: {self.amp_mode}")
-        # `autocast` dtype should not be set before PyTorch 1.10.
-        self.autocast = autocast(dtype=dtype) if ismin_torch("1.10") else autocast()
         # `GradScaler` is not needed for bfloat16 as fp32 and bf16 have the same range
         self.kwargs['enabled'] = dtype == torch.float16
-        self.learn.scaler,self.scales = GradScaler(**self.kwargs),L()
+        self.autocast,self.learn.scaler,self.scales = autocast(dtype=dtype),GradScaler(**self.kwargs),L()
 
     def before_batch(self): self.autocast.__enter__()
     def after_pred(self):
