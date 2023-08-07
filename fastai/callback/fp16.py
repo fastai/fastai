@@ -9,61 +9,93 @@ from torch.cuda.amp import GradScaler,autocast
 from torch.cuda.amp.grad_scaler import OptState
 
 # %% auto 0
-__all__ = ['MixedPrecision', 'FP16TestCallback', 'get_master', 'to_master_grads', 'to_model_params', 'test_overflow',
-           'grad_overflow', 'copy_clone', 'ModelToHalf', 'NonNativeMixedPrecision']
+__all__ = ['AMPMode', 'MixedPrecision', 'get_master', 'to_master_grads', 'to_model_params', 'test_overflow', 'grad_overflow',
+           'copy_clone', 'ModelToHalf', 'NonNativeMixedPrecision']
 
-# %% ../../nbs/18_callback.fp16.ipynb 17
+# %% ../../nbs/18_callback.fp16.ipynb 19
+class AMPMode(Enum):
+    "Automatic mixed precision modes for ease of completion"
+    FP16 = 'fp16'
+    BF16 = 'bf16'
+
+# %% ../../nbs/18_callback.fp16.ipynb 20
 @delegates(GradScaler)
 class MixedPrecision(Callback):
-    "Mixed precision training using Pytorch's `autocast` and `GradScaler`"
+    "Mixed precision training using Pytorch's Automatic Mixed Precision (AMP)"
     order = 10
-    def __init__(self, **kwargs): self.kwargs = kwargs
-    def before_fit(self): 
-        self.autocast,self.learn.scaler,self.scales = autocast(),GradScaler(**self.kwargs),L()
+    def __init__(self,
+        amp_mode:str|AMPMode=AMPMode.FP16, # Mixed Precision training mode. Supports fp16 and bf16.
+        **kwargs
+    ):
+        amp_mode = AMPMode(amp_mode)
+        store_attr(names='amp_mode')
+        self.kwargs = kwargs
+
+    def before_fit(self):
+        if self.amp_mode == AMPMode.BF16:
+            if not ismin_torch("1.10"):
+                raise ValueError("PyTorch 1.10 or newer required for bfloat16 mixed precision training.")
+            if torch.cuda.is_available() and not torch.cuda.is_bf16_supported():
+                raise ValueError("Unsuported GPU for bfloat16 mixed precision training.")
+            dtype = torch.bfloat16
+        elif self.amp_mode == AMPMode.FP16:
+            dtype = torch.float16
+        else:
+            raise ValueError(f"Unrecognized precision: {self.amp_mode}")
+        # `autocast` dtype should not be set before PyTorch 1.10.
+        self.autocast = autocast(dtype=dtype) if ismin_torch("1.10") else autocast()
+        # `GradScaler` is not needed for bfloat16 as fp32 and bf16 have the same range
+        self.kwargs['enabled'] = dtype == torch.float16
+        self.learn.scaler,self.scales = GradScaler(**self.kwargs),L()
+
     def before_batch(self): self.autocast.__enter__()
     def after_pred(self):
-        if next(flatten(self.pred)).dtype==torch.float16: self.learn.pred = to_float(self.pred)
+        self.learn.pred = to_float(self.pred)
     def after_loss(self): self.autocast.__exit__(None, None, None)
     def before_backward(self): self.learn.loss_grad = self.scaler.scale(self.loss_grad)
     def before_step(self):
-        "Use `self` as a fake optimizer. `self.skipped` will be set to True `after_step` if gradients overflow. "
+        "Use `self` as a fake optimizer. `self.skipped` will be set to True `after_step` if gradients overflow."
         self.skipped=True
         self.scaler.step(self)
         if self.skipped: raise CancelStepException()
         self.scales.append(self.scaler.get_scale())
     def after_step(self): self.learn.scaler.update()
-
-    @property 
-    def param_groups(self): 
-        "Pretend to be an optimizer for `GradScaler`"
-        return self.opt.param_groups
-    def step(self, *args, **kwargs): 
-        "Fake optimizer step to detect whether this batch was skipped from `GradScaler`"
-        self.skipped=False
     def after_fit(self): self.autocast,self.learn.scaler,self.scales = None,None,None
 
-# %% ../../nbs/18_callback.fp16.ipynb 19
-class FP16TestCallback(Callback):
-    "Asserts that predictions are `float16` values"
-    order = 9
-    def after_pred(self): assert listify(flatten(self.pred))[0].dtype==torch.float16
+    @property
+    def param_groups(self):
+        "Pretend to be an optimizer for `GradScaler`"
+        return self.opt.param_groups
+    def step(self, *args, **kwargs):
+        "Fake optimizer step to detect whether this batch was skipped from `GradScaler`"
+        self.skipped=False
 
-# %% ../../nbs/18_callback.fp16.ipynb 22
+# %% ../../nbs/18_callback.fp16.ipynb 27
 @patch
 @delegates(GradScaler)
-def to_fp16(self:Learner, **kwargs): return self.add_cb(MixedPrecision(**kwargs))
+def to_fp16(self:Learner, **kwargs):
+    "Set `Learner` to float16 mixed precision using PyTorch AMP"
+    return self.add_cb(MixedPrecision(**kwargs))
 
-# %% ../../nbs/18_callback.fp16.ipynb 23
+# %% ../../nbs/18_callback.fp16.ipynb 28
 @patch
-def to_fp32(self:Learner): return self.remove_cb(MixedPrecision)
+def to_bf16(self:Learner):
+    "Set `Learner` to bfloat16 mixed precision using PyTorch AMP"
+    return self.add_cb(MixedPrecision(amp_mode=AMPMode.BF16))
 
-# %% ../../nbs/18_callback.fp16.ipynb 26
-from ..fp16_utils import convert_network, model_grads_to_master_grads, master_params_to_model_params
+# %% ../../nbs/18_callback.fp16.ipynb 29
+@patch
+def to_fp32(self:Learner):
+    "Set `Learner` to float32 precision"
+    return self.remove_cb(MixedPrecision)
 
 # %% ../../nbs/18_callback.fp16.ipynb 32
+from ..fp16_utils import convert_network, model_grads_to_master_grads, master_params_to_model_params
+
+# %% ../../nbs/18_callback.fp16.ipynb 38
 from torch.nn.utils import parameters_to_vector
 
-# %% ../../nbs/18_callback.fp16.ipynb 33
+# %% ../../nbs/18_callback.fp16.ipynb 39
 def get_master(
     opt:Optimizer, # Optimizer from which to retrieve model params
     flat_master:bool=False, # Flatten fp32 params into a vector for better performance
@@ -81,7 +113,7 @@ def get_master(
         master_params = [[nn.Parameter(param.data.clone().float().detach(), requires_grad=True) for param in pg] for pg in model_params]
     return model_params, master_params
 
-# %% ../../nbs/18_callback.fp16.ipynb 38
+# %% ../../nbs/18_callback.fp16.ipynb 44
 def to_master_grads( 
     model_pgs:list, # Fp16 model parameters to copy gradients from
     master_pgs:list, # Fp32 model parameters to copy gradients to
@@ -91,7 +123,7 @@ def to_master_grads(
     for (model_params,master_params) in zip(model_pgs,master_pgs):
         model_grads_to_master_grads(model_params, master_params, flat_master=flat_master)
 
-# %% ../../nbs/18_callback.fp16.ipynb 42
+# %% ../../nbs/18_callback.fp16.ipynb 48
 def to_model_params(
     model_pgs:list, # Fp16 model params to copy to
     master_pgs:list, # Fp32 master params to copy from
@@ -101,13 +133,13 @@ def to_model_params(
     for (model_params,master_params) in zip(model_pgs,master_pgs):
         master_params_to_model_params(model_params, master_params, flat_master=flat_master)
 
-# %% ../../nbs/18_callback.fp16.ipynb 47
+# %% ../../nbs/18_callback.fp16.ipynb 53
 def test_overflow(x:torch.Tensor):
     "Tests whether fp16 gradients have overflown."
     s = float(x.float().sum())
     return (s == float('inf') or s == float('-inf') or s != s)
 
-# %% ../../nbs/18_callback.fp16.ipynb 50
+# %% ../../nbs/18_callback.fp16.ipynb 56
 def grad_overflow(pgs:list)->bool: 
     "Tests all fp16 parameters in pgs for gradient overflow"
     for pg in pgs:
@@ -115,24 +147,24 @@ def grad_overflow(pgs:list)->bool:
             if p.grad is not None and test_overflow(p.grad.data): return True
     return False
 
-# %% ../../nbs/18_callback.fp16.ipynb 53
+# %% ../../nbs/18_callback.fp16.ipynb 59
 def copy_clone(d):
     return {k:(v.detach().clone().float() if isinstance(v,Tensor) else v) for k,v in d.items()}
 
-# %% ../../nbs/18_callback.fp16.ipynb 54
+# %% ../../nbs/18_callback.fp16.ipynb 60
 def _copy_state(opt, pgs1, pgs2):
     opt.param_lists = pgs2
     for pg1,pg2 in zip(pgs1, pgs2):
         for p1,p2 in zip(pg1, pg2): opt.state[p2] = copy_clone(opt.state.pop(p1, {}))
 
-# %% ../../nbs/18_callback.fp16.ipynb 55
+# %% ../../nbs/18_callback.fp16.ipynb 61
 class ModelToHalf(Callback):
     "Use with NonNativeMixedPrecision callback (but it needs to run at the very beginning)"
     order=-50
     def before_fit(self): self.learn.model = convert_network(self.model, dtype=torch.float16)
     def after_fit (self): self.learn.model = convert_network(self.model, dtype=torch.float32)
 
-# %% ../../nbs/18_callback.fp16.ipynb 56
+# %% ../../nbs/18_callback.fp16.ipynb 62
 @docs
 class NonNativeMixedPrecision(Callback):
     "Run training in mixed precision"
@@ -207,11 +239,11 @@ class NonNativeMixedPrecision(Callback):
                  after_batch="Ensure loss is logged correctly",
                  after_fit="Put the model back in FP32")
 
-# %% ../../nbs/18_callback.fp16.ipynb 60
+# %% ../../nbs/18_callback.fp16.ipynb 66
 @patch
 @delegates(NonNativeMixedPrecision.__init__)
 def to_non_native_fp16(self:Learner, **kwargs): return self.add_cbs([ModelToHalf(), NonNativeMixedPrecision(**kwargs)])
 
-# %% ../../nbs/18_callback.fp16.ipynb 63
+# %% ../../nbs/18_callback.fp16.ipynb 69
 @patch
 def to_non_native_fp32(self: Learner): return self.remove_cbs([ModelToHalf, NonNativeMixedPrecision])
