@@ -35,18 +35,21 @@ jobs:
         nb_dec : ['[0-2]','[3-5]','[6-9]']
         nb_unit: ['[0-2]','[3-5]','[6-9]']
     steps:
+    - name: checkout contents of PR
+      uses: actions/checkout@v3
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.py }}
-    - name: checkout contents of PR
-      uses: actions/checkout@v3
+        cache: "pip"
+        cache-dependency-path: settings.ini
+
     - name: Install libraries
       run: |
         pip install git+https://github.com/fastai/fastcore.git@master
         pip install git+https://github.com/fastai/nbdev.git@master
         pip install -Uq fastprogress
-        pip install -Uqe .[dev]
+        pip install -Uqe .[dev] --extra-index-url https://download.pytorch.org/whl/cpu
 
     - name: check for cache hit
       uses: actions/cache@v3
