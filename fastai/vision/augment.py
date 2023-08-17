@@ -813,14 +813,8 @@ class Zoom(AffineCoordTfm):
         super().__init__(aff_fs, size=size, mode=mode, pad_mode=pad_mode, align_corners=align_corners)
 
 # %% ../../nbs/09_vision.augment.ipynb 178
-def _linalg_solve(A,B):
+def solve(A,B):
     return torch.linalg.solve(A,B)
-
-def _solve(A,B):
-    return torch.solve(B,A)[0]
-
-if ismin_torch('1.9'): solve = _linalg_solve
-else: solve = _solve
 
 # %% ../../nbs/09_vision.augment.ipynb 179
 def find_coeffs(

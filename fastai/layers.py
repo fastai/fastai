@@ -8,15 +8,16 @@ from .torch_core import *
 from torch.nn.utils import weight_norm, spectral_norm
 
 # %% auto 0
-__all__ = ['NormType', 'inplace_relu', 'module', 'Identity', 'Lambda', 'PartialLambda', 'Flatten', 'ToTensorBase', 'View',
-           'ResizeBatch', 'Debugger', 'sigmoid_range', 'SigmoidRange', 'AdaptiveConcatPool1d', 'AdaptiveConcatPool2d',
-           'PoolType', 'adaptive_pool', 'PoolFlatten', 'BatchNorm', 'InstanceNorm', 'BatchNorm1dFlat', 'LinBnDrop',
-           'sigmoid', 'sigmoid_', 'vleaky_relu', 'init_default', 'init_linear', 'ConvLayer', 'AdaptiveAvgPool',
-           'MaxPool', 'AvgPool', 'trunc_normal_', 'Embedding', 'SelfAttention', 'PooledSelfAttention2d',
-           'SimpleSelfAttention', 'icnr_init', 'PixelShuffle_ICNR', 'sequential', 'SequentialEx', 'MergeLayer', 'Cat',
-           'SimpleCNN', 'ProdLayer', 'SEModule', 'ResBlock', 'SEBlock', 'SEResNeXtBlock', 'SeparableBlock',
-           'TimeDistributed', 'swish', 'Swish', 'MishJitAutoFn', 'mish', 'Mish', 'ParameterModule',
-           'children_and_parameters', 'has_children', 'flatten_model', 'NoneReduce', 'in_channels']
+__all__ = ['NormType', 'inplace_relu', 'Mish', 'Swish', 'module', 'Identity', 'Lambda', 'PartialLambda', 'Flatten',
+           'ToTensorBase', 'View', 'ResizeBatch', 'Debugger', 'sigmoid_range', 'SigmoidRange', 'AdaptiveConcatPool1d',
+           'AdaptiveConcatPool2d', 'PoolType', 'adaptive_pool', 'PoolFlatten', 'BatchNorm', 'InstanceNorm',
+           'BatchNorm1dFlat', 'LinBnDrop', 'sigmoid', 'sigmoid_', 'vleaky_relu', 'init_default', 'init_linear',
+           'ConvLayer', 'AdaptiveAvgPool', 'MaxPool', 'AvgPool', 'trunc_normal_', 'Embedding', 'SelfAttention',
+           'PooledSelfAttention2d', 'SimpleSelfAttention', 'icnr_init', 'PixelShuffle_ICNR', 'sequential',
+           'SequentialEx', 'MergeLayer', 'Cat', 'SimpleCNN', 'ProdLayer', 'SEModule', 'ResBlock', 'SEBlock',
+           'SEResNeXtBlock', 'SeparableBlock', 'TimeDistributed', 'swish', 'SwishJit', 'MishJitAutoFn', 'mish',
+           'MishJit', 'ParameterModule', 'children_and_parameters', 'has_children', 'flatten_model', 'NoneReduce',
+           'in_channels']
 
 # %% ../nbs/01_layers.ipynb 6
 def module(*flds, **defaults):
@@ -568,10 +569,10 @@ class _SwishJitAutoFn(torch.autograd.Function):
         return _swish_jit_bwd(x, grad_output)
 
 # %% ../nbs/01_layers.ipynb 160
-def swish(x, inplace=False): return _SwishJitAutoFn.apply(x)
+def swish(x, inplace=False): F.silu(x, inplace=inplace)
 
 # %% ../nbs/01_layers.ipynb 161
-class Swish(Module):
+class SwishJit(Module):
     def forward(self, x): return _SwishJitAutoFn.apply(x)
 
 # %% ../nbs/01_layers.ipynb 162
@@ -596,17 +597,18 @@ class MishJitAutoFn(torch.autograd.Function):
         return _mish_jit_bwd(x, grad_output)
 
 # %% ../nbs/01_layers.ipynb 163
-def mish(x): return F.mish(x) if torch.__version__ >= '1.9' else MishJitAutoFn.apply(x)
+def mish(x, inplace=False): return F.mish(x, inplace=inplace)
 
 # %% ../nbs/01_layers.ipynb 164
-class Mish(Module):
+class MishJit(Module):
     def forward(self, x): return MishJitAutoFn.apply(x)
 
 # %% ../nbs/01_layers.ipynb 165
-if ismin_torch('1.9'): Mish = nn.Mish
+Mish = nn.Mish
+Swish = nn.SiLU
 
 # %% ../nbs/01_layers.ipynb 166
-for o in swish,Swish,mish,Mish: o.__default_init__ = kaiming_uniform_
+for o in swish,Swish,SwishJit,mish,Mish,MishJit: o.__default_init__ = kaiming_uniform_
 
 # %% ../nbs/01_layers.ipynb 169
 class ParameterModule(Module):

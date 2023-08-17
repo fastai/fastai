@@ -5,7 +5,7 @@ import os,torch
 from torch.nn import functional as F
 from torchvision.datasets import MNIST
 from torchvision import transforms
-from pytorch_lightning.core.lightning import LightningModule
+from lightning import LightningModule
 
 class LitModel(LightningModule):
     def __init__(self):
