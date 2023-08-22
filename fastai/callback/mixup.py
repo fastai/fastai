@@ -72,13 +72,13 @@ class MixUp(MixHandler):
             self.learn.yb = tuple(L(self.yb1,self.yb).map_zip(torch.lerp,weight=unsqueeze(self.lam, n=ny_dims-1)))
 
 # %% ../../nbs/19_callback.mixup.ipynb 21
-class CutMix(MixHandler): 
+class CutMix(MixHandler):
     "Implementation of https://arxiv.org/abs/1905.04899"
-    def __init__(self, 
+    def __init__(self,
         alpha:float=1. # Determine `Beta` distribution in range (0.,inf]
-    ): 
+    ):
         super().__init__(alpha)
-        
+
     def before_batch(self):
         "Add `rand_bbox` patches with size based on `lam` and location chosen randomly."
         bs, _, H, W = self.x.size()
@@ -92,11 +92,11 @@ class CutMix(MixHandler):
             ny_dims = len(self.y.size())
             self.learn.yb = tuple(L(self.yb1,self.yb).map_zip(torch.lerp,weight=unsqueeze(self.lam, n=ny_dims-1)))
 
-    def rand_bbox(self, 
-        W:int, # Width bbox will be
-        H:int, # Height bbox will be
+    def rand_bbox(self,
+        W:int, # Input image width
+        H:int, # Input image height
         lam:Tensor # lambda sample from Beta distribution i.e tensor([0.3647])
-    )->tuple: # Represents the top-left pixel location and the bottom-right pixel location
+    ) -> tuple: # Represents the top-left pixel location and the bottom-right pixel location
         "Give a bounding box location based on the size of the im and a weight"
         cut_rat = torch.sqrt(1. - lam).to(self.x.device)
         cut_w = torch.round(W * cut_rat).type(torch.long).to(self.x.device)
@@ -104,8 +104,8 @@ class CutMix(MixHandler):
         # uniform
         cx = torch.randint(0, W, (1,)).to(self.x.device)
         cy = torch.randint(0, H, (1,)).to(self.x.device)
-        x1 = torch.clamp(cx - cut_w // 2, 0, W)
-        y1 = torch.clamp(cy - cut_h // 2, 0, H)
-        x2 = torch.clamp(cx + cut_w // 2, 0, W)
-        y2 = torch.clamp(cy + cut_h // 2, 0, H)
+        x1 = torch.clamp(cx - torch.div(cut_w, 2, rounding_mode='floor'), 0, W)
+        y1 = torch.clamp(cy - torch.div(cut_h, 2, rounding_mode='floor'), 0, H)
+        x2 = torch.clamp(cx + torch.div(cut_w, 2, rounding_mode='floor'), 0, W)
+        y2 = torch.clamp(cy + torch.div(cut_h, 2, rounding_mode='floor'), 0, H)
         return x1, y1, x2, y2
