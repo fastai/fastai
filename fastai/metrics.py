@@ -13,7 +13,8 @@ __all__ = ['rmse', 'exp_rmspe', 'perplexity', 'AccumMetric', 'skm_to_fastai', 'o
            'accuracy_multi', 'APScoreMulti', 'BrierScoreMulti', 'F1ScoreMulti', 'FBetaMulti', 'HammingLossMulti',
            'JaccardMulti', 'MatthewsCorrCoefMulti', 'PrecisionMulti', 'RecallMulti', 'RocAucMulti', 'mse', 'mae',
            'msle', 'ExplainedVariance', 'R2Score', 'PearsonCorrCoef', 'SpearmanCorrCoef', 'foreground_acc', 'Dice',
-           'DiceMulti', 'JaccardCoeff', 'CorpusBLEUMetric', 'Perplexity', 'LossMetric', 'LossMetrics']
+           'DiceMulti', 'JaccardCoeff', 'JaccardCoeffMulti', 'CorpusBLEUMetric', 'Perplexity', 'LossMetric',
+           'LossMetrics']
 
 # %% ../nbs/13b_metrics.ipynb 7
 import sklearn.metrics as skm
@@ -376,6 +377,15 @@ class JaccardCoeff(Dice):
     "Implementation of the Jaccard coefficient that is lighter in RAM"
     @property
     def value(self): return self.inter/(self.union-self.inter) if self.union > 0 else None
+
+class JaccardCoeffMulti(DiceMulti):
+    "Averaged Jaccard coefficient metric (mIoU) for multiclass target in segmentation"
+    @property
+    def value(self):
+        binary_jaccard_scores = np.array([])
+        for c in self.inter:
+            binary_jaccard_scores = np.append(binary_jaccard_scores, self.inter[c]/(self.union[c]-self.inter[c]) if self.union[c] > 0 else np.nan)
+        return np.nanmean(binary_jaccard_scores)
 
 # %% ../nbs/13b_metrics.ipynb 121
 class CorpusBLEUMetric(Metric):
