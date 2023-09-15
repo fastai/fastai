@@ -13,7 +13,8 @@ __all__ = ['rmse', 'exp_rmspe', 'perplexity', 'AccumMetric', 'skm_to_fastai', 'o
            'accuracy_multi', 'APScoreMulti', 'BrierScoreMulti', 'F1ScoreMulti', 'FBetaMulti', 'HammingLossMulti',
            'JaccardMulti', 'MatthewsCorrCoefMulti', 'PrecisionMulti', 'RecallMulti', 'RocAucMulti', 'mse', 'mae',
            'msle', 'ExplainedVariance', 'R2Score', 'PearsonCorrCoef', 'SpearmanCorrCoef', 'foreground_acc', 'Dice',
-           'DiceMulti', 'JaccardCoeff', 'CorpusBLEUMetric', 'Perplexity', 'LossMetric', 'LossMetrics']
+           'DiceMulti', 'JaccardCoeff', 'JaccardCoeffMulti', 'CorpusBLEUMetric', 'Perplexity', 'LossMetric',
+           'LossMetrics']
 
 # %% ../nbs/13b_metrics.ipynb 7
 import sklearn.metrics as skm
@@ -377,7 +378,18 @@ class JaccardCoeff(Dice):
     @property
     def value(self): return self.inter/(self.union-self.inter) if self.union > 0 else None
 
-# %% ../nbs/13b_metrics.ipynb 121
+
+# %% ../nbs/13b_metrics.ipynb 120
+class JaccardCoeffMulti(DiceMulti):
+    "Averaged Jaccard coefficient metric (mIoU) for multiclass target in segmentation"
+    @property
+    def value(self):
+        binary_jaccard_scores = np.array([])
+        for c in self.inter:
+            binary_jaccard_scores = np.append(binary_jaccard_scores, self.inter[c]/(self.union[c]-self.inter[c]) if self.union[c] > 0 else np.nan)
+        return np.nanmean(binary_jaccard_scores)
+
+# %% ../nbs/13b_metrics.ipynb 123
 class CorpusBLEUMetric(Metric):
     def __init__(self, vocab_sz=5000, axis=-1):
         "BLEU Metric calculated over the validation corpus"
@@ -429,7 +441,7 @@ class CorpusBLEUMetric(Metric):
             len_penalty = math.exp(1 - self.targ_len/self.pred_len) if self.pred_len < self.targ_len else 1
             return len_penalty * ((precs[0]*precs[1]*precs[2]*precs[3]) ** 0.25)
 
-# %% ../nbs/13b_metrics.ipynb 124
+# %% ../nbs/13b_metrics.ipynb 126
 class Perplexity(AvgLoss):
     "Perplexity (exponential of cross-entropy loss) for Language Models"
     @property
@@ -439,7 +451,7 @@ class Perplexity(AvgLoss):
 
 perplexity = Perplexity()
 
-# %% ../nbs/13b_metrics.ipynb 127
+# %% ../nbs/13b_metrics.ipynb 129
 class LossMetric(AvgMetric):
     "Create a metric from `loss_func.attr` named `nm`"
     def __init__(self, attr, nm=None): store_attr('attr,nm')
@@ -451,7 +463,7 @@ class LossMetric(AvgMetric):
     @property
     def name(self): return self.attr if self.nm is None else self.nm
 
-# %% ../nbs/13b_metrics.ipynb 128
+# %% ../nbs/13b_metrics.ipynb 130
 def LossMetrics(attrs, nms=None):
     "List of `LossMetric` for each of `attrs` and `nms`"
     if isinstance(attrs, str): attrs = attrs.split(',')
