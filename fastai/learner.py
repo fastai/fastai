@@ -594,13 +594,25 @@ class Recorder(Callback):
         if getattr(self, 'cancel_valid', False): return L()
         return (L(self.loss) + self.metrics if self.valid_metrics else L())
 
-    def plot_loss(self, skip_start=5, with_valid=True):
-        plt.plot(list(range(skip_start, len(self.losses))), self.losses[skip_start:], label='train')
+    def plot_loss(self, skip_start=5, with_valid=True, log=False, show_epochs=False, ax=None):
+        if not ax:
+            ax=plt.gca()
+        if log:
+            ax.loglog(list(range(skip_start, len(self.losses))), self.losses[skip_start:], label='train')
+        else:
+            ax.plot(list(range(skip_start, len(self.losses))), self.losses[skip_start:], label='train')
+        if show_epochs:
+            for x in self.iters:
+                ax.axvline(x, color='grey', ls=':')
+        ax.set_ylabel('loss')
+        ax.set_xlabel('steps')
+        ax.set_title('learning curve')
         if with_valid:
             idx = (np.array(self.iters)<skip_start).sum()
             valid_col = self.metric_names.index('valid_loss') - 1 
-            plt.plot(self.iters[idx:], L(self.values[idx:]).itemgot(valid_col), label='valid')
-            plt.legend()
+            ax.plot(self.iters[idx:], L(self.values[idx:]).itemgot(valid_col), label='valid')
+            ax.legend()
+        return ax
 
 # %% ../nbs/13a_learner.ipynb 136
 add_docs(Recorder,
@@ -610,7 +622,7 @@ add_docs(Recorder,
          after_validate = "Log loss and metric values on the validation set",
          after_cancel_train = "Ignore training metrics for this epoch",
          after_cancel_validate = "Ignore validation metrics for this epoch",
-         plot_loss = "Plot the losses from `skip_start` and onward")
+         plot_loss = "Plot the losses from `skip_start` and onward. Optionally `log=True` for logarithmic axis, `show_epochs=True` for indicate epochs and a matplotlib axis `ax` to plot on.")
 
 if Recorder not in defaults.callbacks: defaults.callbacks.append(Recorder)
 
