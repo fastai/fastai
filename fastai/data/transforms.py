@@ -162,7 +162,7 @@ def ColSplitter(col='is_valid', on=None):
     def _inner(o):
         assert isinstance(o, pd.DataFrame), "ColSplitter only works when your items are a pandas DataFrame"
         c = o.iloc[:,col] if isinstance(col, int) else o[col]
-        if on is None:      valid_idx = c.values.astype('bool') 
+        if on is None:      valid_idx = c.values.astype('bool')
         elif is_listy(on):  valid_idx = c.isin(on)
         else:               valid_idx = c == on
         return IndexSplitter(mask2idxs(valid_idx))(o)
@@ -222,7 +222,7 @@ class ColReader(DisplayedTransform):
 class CategoryMap(CollBase):
     "Collection of categories with the reverse mapping in `o2i`"
     def __init__(self, col, sort=True, add_na=False, strict=False):
-        if is_categorical_dtype(col):
+        if isinstance(col, CategoricalDtype):
             items = L(col.cat.categories, use_list=True)
             #Remove non-used categories while keeping order
             if strict: items = L(o for o in items if o in col.unique())
@@ -256,7 +256,7 @@ class Categorize(DisplayedTransform):
         if self.vocab is None and dsets is not None: self.vocab = CategoryMap(dsets, sort=self.sort, add_na=self.add_na)
         self.c = len(self.vocab)
 
-    def encodes(self, o): 
+    def encodes(self, o):
         try:
             return TensorCategory(self.vocab.o2i[o])
         except KeyError as e:
@@ -279,7 +279,7 @@ class MultiCategorize(Categorize):
             for b in dsets: vals = vals.union(set(b))
             self.vocab = CategoryMap(list(vals), add_na=self.add_na)
 
-    def encodes(self, o): 
+    def encodes(self, o):
         if not all(elem in self.vocab.o2i.keys() for elem in o):
             diff = [elem for elem in o if elem not in self.vocab.o2i.keys()]
             diff_str = "', '".join(diff)
