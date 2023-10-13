@@ -24,7 +24,7 @@ from numbers import Number, Real
 
 # External modules
 import requests,yaml,matplotlib.pyplot as plt,pandas as pd,scipy
-from pandas.api.types import CategoricalDtype,is_numeric_dtype
+from pandas.api.types import is_categorical_dtype,is_numeric_dtype
 from numpy import array,ndarray
 from scipy import ndimage
 from pdb import set_trace
