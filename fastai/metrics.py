@@ -428,7 +428,7 @@ class CorpusBLEUMetric(Metric):
                     c,t = self.get_correct_ngrams(pred, targ, i+1, max_n=self.vocab_sz)
                     if c == 0:
                         smooth_mteval *= 2
-                        c = 1 / smooth_mteval    # exp smoothing, method 3 from https://aclanthology.org/W14-3346/
+                        c = 1 / smooth_mteval    # exp smoothing, method 3 from http://acl2014.org/acl2014/W14-33/pdf/W14-3346.pdf
                     self.corrects[i] += c
                     self.counts[i]   += t
 
