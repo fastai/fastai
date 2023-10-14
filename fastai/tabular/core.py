@@ -230,7 +230,7 @@ class TabularProc(InplaceTransform):
 
 # %% ../../nbs/40_tabular.core.ipynb 58
 def _apply_cats (voc, add, c):
-    if not is_categorical_dtype(c):
+    if not (hasattr(c, 'dtype') and isinstance(c.dtype, CategoricalDtype)):
         return pd.Categorical(c, categories=voc[c.name][add:]).codes+add
     return c.cat.codes+add #if is_categorical_dtype(c) else c.map(voc[c.name].o2i)
 def _decode_cats(voc, c): return c.map(dict(enumerate(voc[c.name].items)))
@@ -346,7 +346,7 @@ def show_batch(x: Tabular, y, its, max_n=10, ctxs=None):
 # %% ../../nbs/40_tabular.core.ipynb 94
 @delegates()
 class TabDataLoader(TfmdDL):
-    "A transformed `DataLoader` for Tabular data"    
+    "A transformed `DataLoader` for Tabular data"
     def __init__(self, dataset, bs=16, shuffle=False, after_batch=None, num_workers=0, **kwargs):
         if after_batch is None: after_batch = L(TransformBlock().batch_tfms)+ReadTabBatch(dataset)
         super().__init__(dataset, bs=bs, shuffle=shuffle, after_batch=after_batch, num_workers=num_workers, **kwargs)
