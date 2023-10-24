@@ -159,7 +159,8 @@ class DataLoader(GetAttr):
                 # Check that tfm.to is callable as TabularPandas & transforms set tfm.to as an object
                 if hasattr(tfm, 'to') and callable(tfm.to): tfm.to(device)
                 else:
-                    for a in L(getattr(tfm, 'parameters', None)): setattr(tfm, a, getattr(tfm, a).to(device))
+                    for a in L(getattr(tfm, 'parameters', None)):
+                        if a is not None: setattr(tfm, a, getattr(tfm, a).to(device))
 
     @property
     def prebatched(self): return self.bs is None
