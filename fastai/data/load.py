@@ -160,7 +160,7 @@ class DataLoader(GetAttr):
                 if hasattr(tfm, 'to') and callable(tfm.to): tfm.to(device)
                 else:
                     for a in L(getattr(tfm, 'parameters', None)):
-                        if a is not None: setattr(tfm, a, getattr(tfm, a).to(device))
+                        if hasattr(getattr(tfm, a), 'to'): setattr(tfm, a, getattr(tfm, a).to(device))
 
     @property
     def prebatched(self): return self.bs is None
