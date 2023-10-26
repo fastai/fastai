@@ -148,6 +148,21 @@ class DataLoader(GetAttr):
         return cls(**merge(cur_kwargs, kwargs))
 
     @property
+    def device(self) -> torch.device|None:
+        return self._device
+
+    @device.setter
+    def device(self, device:int|str|torch.device|None):
+        self._device, *_ = torch._C._nn._parse_to(device=device)
+        if hasattr(self, 'after_batch') and hasattr(self.after_batch, 'fs'):
+            for tfm in self.after_batch.fs:
+                # Check that tfm.to is callable as TabularPandas & transforms set tfm.to as an object
+                if hasattr(tfm, 'to') and callable(tfm.to): tfm.to(device)
+                else:
+                    for a in L(getattr(tfm, 'parameters', None)):
+                        if hasattr(getattr(tfm, a), 'to'): setattr(tfm, a, getattr(tfm, a).to(device))
+
+    @property
     def prebatched(self): return self.bs is None
     def do_item(self, s):
         try: return self.after_item(self.create_item(s))
