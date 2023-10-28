@@ -151,6 +151,8 @@ class DistributedTrainer(Callback):
         )
         self.old_dls = list(self.dls)
         self.learn.dls.loaders = [self._wrap_dl(dl) for dl in self.dls]
+        for dl in self.learn.dls.loaders:
+            dl.device = self.learn.model.device
         if rank_distrib(): self.learn.logger=noop
 
     def _wrap_dl(self, dl): return dl if isinstance(dl,DistributedDL) else DistributedDL(dl)
