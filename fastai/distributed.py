@@ -87,6 +87,7 @@ class DistributedDL(TfmdDL):
                 pin_memory=dl.pin_memory, timeout=dl.timeout, shuffle=shuffle, drop_last=dl.drop_last, persistent_workers=dl.persistent_workers)
         self.bs,self.drop_last,self.dataset,fake,self.num_workers,self.offs,self.pin_memory = \
             attrgetter('bs','drop_last','dataset','fake_l','num_workers','offs','pin_memory')(self.dl)
+        if device is None: self.device = self.dl.device
         self.fake_l = _FakeLoader(self, fake.pin_memory, fake.num_workers, fake.timeout, 
                                   persistent_workers=fake.persistent_workers, 
                                   pin_memory_device=fake.pin_memory_device)
