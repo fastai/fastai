@@ -11,7 +11,7 @@ from copy import copy,deepcopy
 from multiprocessing import Lock,Process,Queue,queues
 from datetime import datetime
 from contextlib import redirect_stdout,contextmanager
-from collections.abc import Iterable,Iterator,Generator,Sequence,MutableSequence
+from collections.abc import Iterable,Iterator,Generator,Sequence,MutableSequence,MutableMapping
 from typing import Union,Optional,TypeVar,Callable,Any
 from types import SimpleNamespace
 from pathlib import Path
@@ -24,7 +24,7 @@ from numbers import Number, Real
 
 # External modules
 import requests,yaml,matplotlib.pyplot as plt,pandas as pd,scipy
-from pandas.api.types import is_categorical_dtype,is_numeric_dtype
+from pandas.api.types import CategoricalDtype,is_numeric_dtype
 from numpy import array,ndarray
 from scipy import ndimage
 from pdb import set_trace
