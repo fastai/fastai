@@ -77,7 +77,7 @@ def _round_to_multiple(number,multiple): return int(math.ceil(number/multiple)*m
 # %% ../nbs/20a_distributed.ipynb 18
 class DistributedDL(TfmdDL):
     "A `TfmdDL` which splits a batch into equal size pieces for each worker"
-    def __init__(self,dl,rank=None,world_size=None):
+    def __init__(self,dl,rank=None,world_size=None,device=None):
         if rank is None: rank=rank_distrib()
         if world_size is None: world_size=num_distrib()
         store_attr()
@@ -85,8 +85,9 @@ class DistributedDL(TfmdDL):
             shuffle = True if eq(type(dl.sampler), torch.utils.data.RandomSampler) else False
             self.dl = DataLoader(dataset=dl.dataset, bs=dl.batch_size, num_workers=dl.num_workers, \
                 pin_memory=dl.pin_memory, timeout=dl.timeout, shuffle=shuffle, drop_last=dl.drop_last, persistent_workers=dl.persistent_workers)
-        self.bs,self.device,self.drop_last,self.dataset,fake,self.num_workers,self.offs,self.pin_memory = \
-            attrgetter('bs','device','drop_last','dataset','fake_l','num_workers','offs','pin_memory')(self.dl)
+        self.bs,self.drop_last,self.dataset,fake,self.num_workers,self.offs,self.pin_memory = \
+            attrgetter('bs','drop_last','dataset','fake_l','num_workers','offs','pin_memory')(self.dl)
+        if device is None: self.device = self.dl.device
         self.fake_l = _FakeLoader(self, fake.pin_memory, fake.num_workers, fake.timeout, 
                                   persistent_workers=fake.persistent_workers, 
                                   pin_memory_device=fake.pin_memory_device)
@@ -153,7 +154,7 @@ class DistributedTrainer(Callback):
         self.learn.dls.loaders = [self._wrap_dl(dl) for dl in self.dls]
         if rank_distrib(): self.learn.logger=noop
 
-    def _wrap_dl(self, dl): return dl if isinstance(dl,DistributedDL) else DistributedDL(dl)
+    def _wrap_dl(self, dl): return dl if isinstance(dl,DistributedDL) else DistributedDL(dl, device=self.learn.model.device)
     def _backward(self): self.accelerator.backward(self.learn.loss_grad)
     
     def before_train(self):    self.learn.dl = self._wrap_dl(self.learn.dl)

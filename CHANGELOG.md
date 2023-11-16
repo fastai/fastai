@@ -2,6 +2,26 @@
 
 <!-- do not remove -->
 
+## 2.7.13
+
+### New Features
+
+- PyTorch 2.1 compatibility ([#3970](https://github.com/fastai/fastai/pull/3970)), thanks to [@warner-benjamin](https://github.com/warner-benjamin)
+- Add `MutableMapping` to `torch_core.apply` to Support Moving Transformers Dicts ([#3969](https://github.com/fastai/fastai/pull/3969)), thanks to [@warner-benjamin](https://github.com/warner-benjamin)
+- Added Jaccard coefficient metric for multiclass target in segmentation ([#3951](https://github.com/fastai/fastai/pull/3951)), thanks to [@Hazem-Ahmed-Abdelraouf](https://github.com/Hazem-Ahmed-Abdelraouf)
+- Support TorchVision's Multi-Weight API ([#3944](https://github.com/fastai/fastai/pull/3944)), thanks to [@warner-benjamin](https://github.com/warner-benjamin)
+- Fix the Deploy to GitHub Pages Action ([#3942](https://github.com/fastai/fastai/pull/3942)), thanks to [@warner-benjamin](https://github.com/warner-benjamin)
+
+### Bugs Squashed
+
+- Fix Pandas Categorical FutureWarning ([#3973](https://github.com/fastai/fastai/pull/3973)), thanks to [@warner-benjamin](https://github.com/warner-benjamin)
+- Fix torch.jit.script on TimmBody ([#3948](https://github.com/fastai/fastai/pull/3948)), thanks to [@johan12345](https://github.com/johan12345)
+- Resolve CutMix Deprecation Warning ([#3937](https://github.com/fastai/fastai/pull/3937)), thanks to [@warner-benjamin](https://github.com/warner-benjamin)
+- Fixed format string ([#3934](https://github.com/fastai/fastai/pull/3934)), thanks to [@bkowshik](https://github.com/bkowshik)
+- Fix casting types for mps ([#3912](https://github.com/fastai/fastai/pull/3912)), thanks to [@MSciesiek](https://github.com/MSciesiek)
+- Fix AccumMetric name.setter ([#3621](https://github.com/fastai/fastai/pull/3621)), thanks to [@warner-benjamin](https://github.com/warner-benjamin)
+
+
 ## 2.7.12
 
 ### New Features

@@ -220,7 +220,7 @@ def _fa_rebuild_qtensor(cls, *args, **kwargs): return cls(torch._utils._rebuild_
 def apply(func, x, *args, **kwargs):
     "Apply `func` recursively to `x`, passing on args"
     if is_listy(x): return type(x)([apply(func, o, *args, **kwargs) for o in x])
-    if isinstance(x,dict):  return {k: apply(func, v, *args, **kwargs) for k,v in x.items()}
+    if isinstance(x,(dict,MutableMapping)): return {k: apply(func, v, *args, **kwargs) for k,v in x.items()}
     res = func(x, *args, **kwargs)
     return res if x is None else retain_type(res, x)
 
@@ -279,8 +279,8 @@ def to_device(b, device=None, non_blocking=False):
     if defaults.use_cuda==False: device='cpu'
     elif device is None: device=default_device()
     def _inner(o):
+        # ToDo: add TensorDict when released
         if isinstance(o,Tensor): return o.to(device, non_blocking=non_blocking)
-#         if hasattr(o, "to_device"): return o.to_device(device)
         return o
     return apply(_inner, b)
 

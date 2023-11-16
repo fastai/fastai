@@ -54,10 +54,10 @@ _all_ = ["show_batch", "show_results"]
 _batch_tfms = ('after_item','before_batch','after_batch')
 
 # %% ../../nbs/03_data.core.ipynb 14
-@delegates()
 class TfmdDL(DataLoader):
     "Transformed `DataLoader`"
-    def __init__(self, 
+    @delegates(DataLoader.__init__)
+    def __init__(self,
         dataset, # Map- or iterable-style dataset from which to load the data
         bs:int=64, # Size of batch
         shuffle:bool=False, # Whether to shuffle data
@@ -173,17 +173,6 @@ class TfmdDL(DataLoader):
         if hasattr(self.dataset, 'n_inp'): return self.dataset.n_inp
         if not hasattr(self, '_n_inp'): self._one_pass()
         return self._n_inp
-
-    def to(self, 
-        device # Device to put `DataLoader` and transforms
-    ):
-        self.device = device
-        for tfm in self.after_batch.fs:
-            # Check that tfm.to is callable as TabularPandas & transforms set tfm.to as an object
-            if hasattr(tfm, 'to') and callable(tfm.to): tfm.to(device)
-            else:
-                for a in L(getattr(tfm, 'parameters', None)): setattr(tfm, a, getattr(tfm, a).to(device))
-        return self
 
 # %% ../../nbs/03_data.core.ipynb 16
 add_docs(TfmdDL,
