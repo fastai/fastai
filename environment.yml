@@ -16,4 +16,4 @@ dependencies:
 - scipy
 - spacy
 - pytorch>=1.7.0
-
+- fastdownload
