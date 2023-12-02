@@ -173,10 +173,14 @@ class DataLoader(GetAttr):
     def retain(self, res, b):  return retain_types(res, b[0] if is_listy(b) else b)
     def create_item(self, s):
         if self.indexed:
-            if hasattr(self.dataset, 'items') and isinstance(self.dataset.items, pd.DataFrame):
+            if isinstance(self.dataset, pd.DataFrame) or (hasattr(self.dataset, 'items') and isinstance(self.dataset.items, pd.DataFrame)):
+                if isinstance(self.dataset, pd.DataFrame):
+                    df = self.dataset
+                else:
+                    df = self.dataset.items
                 item = {}
-                for col in self.dataset.items.columns:
-                    val = self.dataset.items[col][s or 0]
+                for col in df.columns:
+                    val = df[col][s or 0]
                     item[col] = val.astype(np.float32) if isinstance(val, np.float64) else val
                 return item
             else:
