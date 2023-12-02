@@ -172,7 +172,19 @@ class DataLoader(GetAttr):
     def randomize(self): self.rng = random.Random(self.rng.randint(0,2**32-1))
     def retain(self, res, b):  return retain_types(res, b[0] if is_listy(b) else b)
     def create_item(self, s):
-        if self.indexed: return self.dataset[s or 0]
+        if self.indexed:
+            if isinstance(self.dataset, pd.DataFrame) or (hasattr(self.dataset, 'items') and isinstance(self.dataset.items, pd.DataFrame)):
+                if isinstance(self.dataset, pd.DataFrame):
+                    df = self.dataset
+                else:
+                    df = self.dataset.items
+                item = []
+                for col in df.columns:
+                    val = df[col][s or 0]
+                    item.append(val.astype(np.float32) if isinstance(val, np.float64) else val)
+                return item
+            else:
+                return self.dataset[s or 0]
         elif s is None:  return next(self.it)
         else: raise IndexError("Cannot index an iterable dataset numerically - must use `None`.")
     def create_batch(self, b): 
