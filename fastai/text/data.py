@@ -169,7 +169,7 @@ class Pad_Chunk(DisplayedTransform):
         super().__init__(**kwargs)
     def before_call(self, b):
         "Set `self.max_len` before encodes" 
-        self.max_len = max([x.shape[0] for xs in b for x in xs if isinstance(x,TensorText)])
+        self.max_len = max([0] + [x.shape[0] for xs in b for x in xs if isinstance(x,TensorText)])
     def __call__(self, b, **kwargs):
         self.before_call(b)
         return super().__call__(tuple(b), **kwargs)
