@@ -351,12 +351,13 @@ class TabDataLoader(TfmdDL):
         if after_batch is None: after_batch = L(TransformBlock().batch_tfms)+ReadTabBatch(dataset)
         super().__init__(dataset, bs=bs, shuffle=shuffle, after_batch=after_batch, num_workers=num_workers, **kwargs)
 
+    def create_item(self, s):  return self.dataset.iloc[s or 0]
     def create_batch(self, b): return self.dataset.iloc[b]
     def do_item(self, s):      return 0 if s is None else s
 
 TabularPandas._dl_type = TabDataLoader
 
-# %% ../../nbs/40_tabular.core.ipynb 113
+# %% ../../nbs/40_tabular.core.ipynb 115
 @EncodedMultiCategorize
 def setups(self, to:Tabular):
     self.c = len(self.vocab)
@@ -370,7 +371,7 @@ def decodes(self, to:Tabular):
     to.transform(to.y_names, lambda c: c==1)
     return to
 
-# %% ../../nbs/40_tabular.core.ipynb 126
+# %% ../../nbs/40_tabular.core.ipynb 128
 @RegressionSetup
 def setups(self, to:Tabular):
     if self.c is not None: return
