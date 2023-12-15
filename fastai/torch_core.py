@@ -260,7 +260,7 @@ defaults.use_cuda = None
 # %% ../nbs/00_torch_core.ipynb 71
 def _has_mps():
     if nested_attr(torch, 'backends.mps.is_available', noop)(): return True
-    return getattr(torch, 'has_mps', False)
+    return nested_attr(torch, 'backends.mps.is_built', False)
 
 def default_device(use=-1):
     "Return or set default device; `use_cuda`: -1 - CUDA/mps if available; True - error if not available; False - CPU"
