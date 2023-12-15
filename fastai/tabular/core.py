@@ -8,7 +8,7 @@ from ..data.all import *
 # %% auto 0
 __all__ = ['make_date', 'add_datepart', 'add_elapsed_times', 'cont_cat_split', 'df_shrink_dtypes', 'df_shrink', 'Tabular',
            'TabularPandas', 'TabularProc', 'Categorify', 'FillStrategy', 'FillMissing', 'ReadTabBatch', 'show_batch',
-           'TabDataLoader']
+           'TabDataLoader', 'TabWeightedDL']
 
 # %% ../../nbs/40_tabular.core.ipynb 4
 pd.set_option('mode.chained_assignment','raise')
@@ -356,7 +356,24 @@ class TabDataLoader(TfmdDL):
 
 TabularPandas._dl_type = TabDataLoader
 
-# %% ../../nbs/40_tabular.core.ipynb 113
+# %% ../../nbs/40_tabular.core.ipynb 95
+@delegates()
+class TabWeightedDL(TabDataLoader):
+    "A transformed `DataLoader` for Tabular Weighted data"
+    def __init__(self, dataset, bs=16, wgts=None, shuffle=False, after_batch=None, num_workers=0, **kwargs):
+        wgts = np.array([1.]*len(dataset) if wgts is None else wgts)
+        self.wgts = wgts / wgts.sum()
+        super().__init__(dataset, bs=bs, shuffle=shuffle, after_batch=after_batch, num_workers=num_workers, **kwargs)
+        self.idxs = self.get_idxs()
+
+    def get_idxs(self):
+        if self.n == 0: return []
+        if not self.shuffle: return super().get_idxs()
+        return list(np.random.choice(self.n, self.n, p=self.wgts))
+
+TabularPandas._dl_type = TabWeightedDL
+
+# %% ../../nbs/40_tabular.core.ipynb 116
 @EncodedMultiCategorize
 def setups(self, to:Tabular):
     self.c = len(self.vocab)
@@ -370,7 +387,7 @@ def decodes(self, to:Tabular):
     to.transform(to.y_names, lambda c: c==1)
     return to
 
-# %% ../../nbs/40_tabular.core.ipynb 126
+# %% ../../nbs/40_tabular.core.ipynb 129
 @RegressionSetup
 def setups(self, to:Tabular):
     if self.c is not None: return
