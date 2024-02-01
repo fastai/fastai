@@ -2,11 +2,12 @@
 
 <!-- do not remove -->
 
+
 ## 2.7.14
 
 ### New Features
 
-- PyTorch 2.1 support ([#3970](https://github.com/fastai/fastai/pull/3970)), thanks to [@warner-benjamin](https://github.com/warner-benjamin)
+- PyTorch 2.2 support, thanks to [@warner-benjamin](https://github.com/warner-benjamin)
 
 
 ## 2.7.13
