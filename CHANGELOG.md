@@ -2,6 +2,14 @@
 
 <!-- do not remove -->
 
+
+## 2.7.14
+
+### New Features
+
+- PyTorch 2.2 support, thanks to [@warner-benjamin](https://github.com/warner-benjamin)
+
+
 ## 2.7.13
 
 ### New Features
