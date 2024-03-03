@@ -374,7 +374,7 @@ class TabWeightedDL(TabDataLoader):
 
 TabularPandas._dl_type = TabWeightedDL
 
-# %% ../../nbs/40_tabular.core.ipynb 116
+# %% ../../nbs/40_tabular.core.ipynb 118
 @EncodedMultiCategorize
 def setups(self, to:Tabular):
     self.c = len(self.vocab)
@@ -388,7 +388,7 @@ def decodes(self, to:Tabular):
     to.transform(to.y_names, lambda c: c==1)
     return to
 
-# %% ../../nbs/40_tabular.core.ipynb 129
+# %% ../../nbs/40_tabular.core.ipynb 131
 @RegressionSetup
 def setups(self, to:Tabular):
     if self.c is not None: return
