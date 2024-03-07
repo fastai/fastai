@@ -21,7 +21,6 @@ class CometCallback(Callback):
 
     def __init__(self, project_name, log_model_weights=True):
         self.log_model_weights = log_model_weights
-        self.keep_experiment_running = keep_experiment_running
         self.project_name = project_name
         self.experiment = None
 
