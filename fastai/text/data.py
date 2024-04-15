@@ -278,9 +278,9 @@ class TextDataLoaders(DataLoaders):
         return cls.from_dblock(dblock, df, path=path, seq_len=seq_len, **kwargs)
 
     @classmethod
-    def from_csv(cls, path, csv_fname='labels.csv', header='infer', delimiter=None, **kwargs):
+    def from_csv(cls, path, csv_fname='labels.csv', header='infer', delimiter=None, quoting=csv.QUOTE_MINIMAL, **kwargs):
         "Create from `csv` file in `path/csv_fname`"
-        df = pd.read_csv(Path(path)/csv_fname, header=header, delimiter=delimiter)
+        df = pd.read_csv(Path(path)/csv_fname, header=header, delimiter=delimiter, quoting=quoting)
         return cls.from_df(df, path=path, **kwargs)
 
 TextDataLoaders.from_csv = delegates(to=TextDataLoaders.from_df)(TextDataLoaders.from_csv)
