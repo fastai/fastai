@@ -178,9 +178,9 @@ class ImageDataLoaders(DataLoaders):
         return cls.from_dblock(dblock, df, path=path, **kwargs)
 
     @classmethod
-    def from_csv(cls, path, csv_fname='labels.csv', header='infer', delimiter=None, **kwargs):
+    def from_csv(cls, path, csv_fname='labels.csv', header='infer', delimiter=None, quoting=csv.QUOTE_MINIMAL, **kwargs):
         "Create from `path/csv_fname` using `fn_col` and `label_col`"
-        df = pd.read_csv(Path(path)/csv_fname, header=header, delimiter=delimiter)
+        df = pd.read_csv(Path(path)/csv_fname, header=header, delimiter=delimiter, quoting=quoting)
         return cls.from_df(df, path=path, **kwargs)
 
     @classmethod
