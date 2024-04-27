@@ -3,6 +3,14 @@
 <!-- do not remove -->
 
 
+## 2.7.15
+
+### New Features
+
+- Support PyTorch 2.3 ([#4026](https://github.com/fastai/fastai/pull/4026)), thanks to [@warner-benjamin](https://github.com/warner-benjamin)
+- Add `log` and `show_epochs` to `log_ploss` ([#3964](https://github.com/fastai/fastai/pull/3964)), thanks to [@turbotimon](https://github.com/turbotimon)
+
+
 ## 2.7.14
 
 ### New Features
