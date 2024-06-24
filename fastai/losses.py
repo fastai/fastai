@@ -22,11 +22,12 @@ class BaseLoss():
         flatten:bool=True, # Flatten `inp` and `targ` before calculating loss
         floatify:bool=False, # Convert `targ` to `float`
         is_2d:bool=True, # Whether `flatten` keeps one or two channels when applied
+        wrapper_assignments=('__module__', '__name__', '__qualname__', '__doc__'), # like functools.WRAPPER_ASSIGNMENTS, but no __annotations__
         **kwargs
     ):
         store_attr("axis,flatten,floatify,is_2d")
         self.func = loss_cls(*args,**kwargs)
-        functools.update_wrapper(self, self.func)
+        functools.update_wrapper(self, self.func, assigned=wrapper_assignments)
 
     def __repr__(self) -> str: return f"FlattenedLoss of {self.func}"
     
@@ -125,7 +126,7 @@ class FocalLossFlat(BaseLoss):
         "`F.cross_entropy`'s fused activation function applied to model output"
         return F.softmax(x, dim=self.axis)
 
-# %% ../nbs/01a_losses.ipynb 16
+# %% ../nbs/01a_losses.ipynb 17
 @delegates()
 class BCEWithLogitsLossFlat(BaseLoss):
     "Same as `nn.BCEWithLogitsLoss`, but flattens input and target."
@@ -151,7 +152,7 @@ class BCEWithLogitsLossFlat(BaseLoss):
         "`nn.BCEWithLogitsLoss`'s fused activation function applied to model output"
         return torch.sigmoid(x)
 
-# %% ../nbs/01a_losses.ipynb 18
+# %% ../nbs/01a_losses.ipynb 19
 @use_kwargs_dict(weight=None, reduction='mean')
 def BCELossFlat(
     *args, 
@@ -162,7 +163,7 @@ def BCELossFlat(
     "Same as `nn.BCELoss`, but flattens input and target."
     return BaseLoss(nn.BCELoss, *args, axis=axis, floatify=floatify, is_2d=False, **kwargs)
 
-# %% ../nbs/01a_losses.ipynb 20
+# %% ../nbs/01a_losses.ipynb 21
 @use_kwargs_dict(reduction='mean')
 def MSELossFlat(
     *args, 
@@ -173,7 +174,7 @@ def MSELossFlat(
     "Same as `nn.MSELoss`, but flattens input and target."
     return BaseLoss(nn.MSELoss, *args, axis=axis, floatify=floatify, is_2d=False, **kwargs)
 
-# %% ../nbs/01a_losses.ipynb 23
+# %% ../nbs/01a_losses.ipynb 24
 @use_kwargs_dict(reduction='mean')
 def L1LossFlat(
     *args, 
@@ -184,7 +185,7 @@ def L1LossFlat(
     "Same as `nn.L1Loss`, but flattens input and target."
     return BaseLoss(nn.L1Loss, *args, axis=axis, floatify=floatify, is_2d=False, **kwargs)
 
-# %% ../nbs/01a_losses.ipynb 24
+# %% ../nbs/01a_losses.ipynb 25
 class LabelSmoothingCrossEntropy(Module):
     y_int = True # y interpolation
     def __init__(self, 
@@ -212,7 +213,7 @@ class LabelSmoothingCrossEntropy(Module):
         "Converts model output to target format"
         return out.argmax(dim=-1)
 
-# %% ../nbs/01a_losses.ipynb 27
+# %% ../nbs/01a_losses.ipynb 28
 @delegates()
 class LabelSmoothingCrossEntropyFlat(BaseLoss):
     "Same as `LabelSmoothingCrossEntropy`, but flattens input and target."
@@ -232,7 +233,7 @@ class LabelSmoothingCrossEntropyFlat(BaseLoss):
         "Converts model output to target format"
         return out.argmax(dim=-1)
 
-# %% ../nbs/01a_losses.ipynb 30
+# %% ../nbs/01a_losses.ipynb 31
 class DiceLoss:
     "Dice loss for segmentation"
     def __init__(self, 
