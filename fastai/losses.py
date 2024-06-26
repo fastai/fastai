@@ -28,7 +28,7 @@ class BaseLoss():
         self.func = loss_cls(*args,**kwargs)
         self.func.__annotations__ = typing.get_type_hints(self.func, globalns=globals(), localns=locals()) # used to prevent unpicklable loss functions (https://github.com/fastai/fastai/issues/3901)
         functools.update_wrapper(self, self.func)
-        
+
     def __repr__(self) -> str: return f"FlattenedLoss of {self.func}"
     
     @property
