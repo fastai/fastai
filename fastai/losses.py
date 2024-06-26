@@ -22,12 +22,13 @@ class BaseLoss():
         flatten:bool=True, # Flatten `inp` and `targ` before calculating loss
         floatify:bool=False, # Convert `targ` to `float`
         is_2d:bool=True, # Whether `flatten` keeps one or two channels when applied
-        wrapper_assignments=('__module__', '__name__', '__qualname__', '__doc__'), # like functools.WRAPPER_ASSIGNMENTS, but no __annotations__
         **kwargs
     ):
         store_attr("axis,flatten,floatify,is_2d")
         self.func = loss_cls(*args,**kwargs)
-        functools.update_wrapper(self, self.func, assigned=wrapper_assignments)
+        self.func.__annotations__ = typing.get_type_hints(self.func, globalns=globals(), localns=locals()) # used to prevent unpicklable loss functions (https://github.com/fastai/fastai/issues/3901)
+        functools.update_wrapper(self, self.func)
+        
 
     def __repr__(self) -> str: return f"FlattenedLoss of {self.func}"
     
