@@ -2,6 +2,13 @@
 
 <!-- do not remove -->
 
+## 2.7.16
+
+### New Features
+
+- Support PyTorch 2.4 ([#4040](https://github.com/fastai/fastai/pull/4040)), thanks to [@tonyhoo](https://github.com/tonyhoo)
+- Support for loss function pickling ([#4034](https://github.com/fastai/fastai/pull/4034)), thanks to [@kevin-vitro](https://github.com/kevin-vitro)
+
 
 ## 2.7.15
 
