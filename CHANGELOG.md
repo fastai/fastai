@@ -4,6 +4,11 @@
 
 ## 2.7.16
 
+
+
+
+## 2.7.16
+
 ### New Features
 
 - Support PyTorch 2.4 ([#4040](https://github.com/fastai/fastai/pull/4040)), thanks to [@tonyhoo](https://github.com/tonyhoo)
