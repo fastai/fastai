@@ -402,8 +402,10 @@ class SequentialEx(Module):
     "Like `nn.Sequential`, but with ModuleList semantics, and can access module input"
     def __init__(self, *layers): self.layers = nn.ModuleList(layers)
 
-    def forward(self, x):
+    def forward(self, x, x_orig=None):
         res = x
+        if x_orig is not None:
+            x = x_orig
         for l in self.layers:
             res.orig = x
             nres = l(res)
