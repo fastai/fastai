@@ -10,6 +10,8 @@ format:
     css: styles.css
     toc: true
     toc-depth: 4
+    keep-md: true
+  commonmark: default
 
 website:
   reader-mode: true
