@@ -52,7 +52,7 @@ jobs:
         pip install -Uqe .[dev] --extra-index-url https://download.pytorch.org/whl/cpu
 
     - name: check for cache hit
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       if: env.caching == 'true'
       id: cache
       with:
