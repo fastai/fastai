@@ -447,7 +447,7 @@ def load_learner(fname, cpu=True, pickle_module=pickle):
     map_loc = 'cpu' if cpu else default_device()
     try: res = torch.load(fname, map_location=map_loc, pickle_module=pickle_module)
     except AttributeError as e: 
-        e.args = [f"Custom classes or functions exported with your `Learner` not available in namespace.\Re-declare/import before loading:\n\t{e.args[0]}"]
+        e.args = [f"Custom classes or functions exported with your `Learner` not available in namespace. Re-declare/import before loading:\n\t{e.args[0]}"]
         raise
     if cpu: 
         res.dls.cpu()
