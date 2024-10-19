@@ -6,6 +6,13 @@
 
 ### New Features
 
+- PyTorch 2.5 support
+
+
+## 2.7.17
+
+### New Features
+
 - add markdown to doc output ([#4044](https://github.com/fastai/fastai/issues/4044))
 - Support PyTorch 2.4 ([#4040](https://github.com/fastai/fastai/pull/4040)), thanks to [@tonyhoo](https://github.com/tonyhoo)
 - Update Fastcore max version
