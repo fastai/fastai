@@ -343,7 +343,7 @@ class ReadTabBatch(ItemTransform):
 # %% ../../nbs/40_tabular.core.ipynb 93
 @typedispatch
 def show_batch(x: Tabular, y, its, max_n=10, ctxs=None):
-    x.show()
+    x.show(max_n=max_n)
 
 # %% ../../nbs/40_tabular.core.ipynb 94
 @delegates()
