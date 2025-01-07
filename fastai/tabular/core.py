@@ -328,7 +328,10 @@ class ReadTabBatch(ItemTransform):
         if not to.with_cont: res = (tensor(to.cats).long(),)
         else: res = (tensor(to.cats).long(),tensor(to.conts).float())
         ys = [n for n in to.y_names if n in to.items.columns]
-        if len(ys) == len(to.y_names): res = res + (tensor(to.targ),)
+        if len(ys) == len(to.y_names): 
+            for y_name in to.y_names:
+                res = res + (tensor(to.targ[y_name].values),)
+            #res = res + (tensor(to.targ),)
         if to.device is not None: res = to_device(res, to.device)
         return res
 
