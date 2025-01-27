@@ -8,11 +8,11 @@ from ..torch_basics import *
 from .load import *
 
 # %% auto 0
-__all__ = ['show_batch', 'show_results', 'TfmdDL', 'DataLoaders', 'FilteredBase', 'TfmdLists', 'decode_at', 'show_at', 'Datasets',
-           'test_set']
+__all__ = ['show_batch', 'get_show_batch_func', 'show_results', 'TfmdDL', 'DataLoaders', 'FilteredBase', 'TfmdLists', 'decode_at',
+           'show_at', 'Datasets', 'test_set']
 
 # %% ../../nbs/03_data.core.ipynb 8
-@typedispatch
+@dispatch
 def show_batch(
     x, # Input(s) in the batch
     y, # Target(s) in the batch
@@ -31,7 +31,12 @@ def show_batch(
     return ctxs
 
 # %% ../../nbs/03_data.core.ipynb 10
-@typedispatch
+def get_show_batch_func(x_typ=Any, y_typ=Any, samples_typ=Any):
+    "Helper function to manually get show_batch function for given input types."
+    return show_batch._resolve_method_with_cache((x_typ, y_typ, samples_typ))[0]
+
+# %% ../../nbs/03_data.core.ipynb 11
+@dispatch
 def show_results(
     x, # Input(s) in the batch
     y, # Target(s) in the batch
@@ -49,13 +54,13 @@ def show_results(
         ctxs = [b.show(ctx=c, **kwargs) for b,c,_ in zip(outs.itemgot(i),ctxs,range(max_n))]
     return ctxs
 
-# %% ../../nbs/03_data.core.ipynb 12
+# %% ../../nbs/03_data.core.ipynb 13
 _all_ = ["show_batch", "show_results"]
 
-# %% ../../nbs/03_data.core.ipynb 13
+# %% ../../nbs/03_data.core.ipynb 14
 _batch_tfms = ('after_item','before_batch','after_batch')
 
-# %% ../../nbs/03_data.core.ipynb 14
+# %% ../../nbs/03_data.core.ipynb 15
 class TfmdDL(DataLoader):
     "Transformed `DataLoader`"
     @delegates(DataLoader.__init__)
@@ -176,7 +181,7 @@ class TfmdDL(DataLoader):
         if not hasattr(self, '_n_inp'): self._one_pass()
         return self._n_inp
 
-# %% ../../nbs/03_data.core.ipynb 16
+# %% ../../nbs/03_data.core.ipynb 17
 add_docs(TfmdDL,
          decode="Decode `b` using `tfms`",
          decode_batch="Decode `b` entirely",
@@ -186,7 +191,7 @@ add_docs(TfmdDL,
          before_iter="override",
          to="Put self and its transforms state on `device`")
 
-# %% ../../nbs/03_data.core.ipynb 34
+# %% ../../nbs/03_data.core.ipynb 35
 @docs
 class DataLoaders(GetAttr):
     "Basic wrapper around several `DataLoader`s."
@@ -286,7 +291,7 @@ class DataLoaders(GetAttr):
                new_empty="Create a new empty version of `self` with the same transforms",
                from_dblock="Create a dataloaders from a given `dblock`")
 
-# %% ../../nbs/03_data.core.ipynb 50
+# %% ../../nbs/03_data.core.ipynb 51
 class FilteredBase:
     "Base class for lists with subsets"
     _dl_type,_dbunch_type = TfmdDL,DataLoaders
@@ -331,7 +336,7 @@ class FilteredBase:
 
 FilteredBase.train,FilteredBase.valid = add_props(lambda i,x: x.subset(i))
 
-# %% ../../nbs/03_data.core.ipynb 52
+# %% ../../nbs/03_data.core.ipynb 53
 class TfmdLists(FilteredBase, L, GetAttr):
     "A `Pipeline` of `tfms` applied to a collection of `items`"
     _default='tfms'
@@ -407,7 +412,7 @@ class TfmdLists(FilteredBase, L, GetAttr):
         if self._after_item is None: return res
         return self._after_item(res) if is_indexer(idx) else res.map(self._after_item)
 
-# %% ../../nbs/03_data.core.ipynb 53
+# %% ../../nbs/03_data.core.ipynb 54
 add_docs(TfmdLists,
          setup="Transform setup with self",
          decode="From `Pipeline`",
@@ -418,17 +423,17 @@ add_docs(TfmdLists,
          infer="Apply `self.tfms` to `x` starting at the right tfm depending on the type of `x`",
          new_empty="A new version of `self` but with no items")
 
-# %% ../../nbs/03_data.core.ipynb 54
+# %% ../../nbs/03_data.core.ipynb 55
 def decode_at(o, idx):
     "Decoded item at `idx`"
     return o.decode(o[idx])
 
-# %% ../../nbs/03_data.core.ipynb 55
+# %% ../../nbs/03_data.core.ipynb 56
 def show_at(o, idx, **kwargs):
     "Show item at `idx`",
     return o.show(o[idx], **kwargs)
 
-# %% ../../nbs/03_data.core.ipynb 73
+# %% ../../nbs/03_data.core.ipynb 74
 @docs
 @delegates(TfmdLists)
 class Datasets(FilteredBase):
@@ -491,7 +496,7 @@ class Datasets(FilteredBase):
         set_split_idx="Contextmanager to use the same `Datasets` with another `split_idx`"
     )
 
-# %% ../../nbs/03_data.core.ipynb 107
+# %% ../../nbs/03_data.core.ipynb 108
 def test_set(
     dsets:Datasets|TfmdLists, # Map- or iterable-style dataset from which to load the data
     test_items, # Items in test dataset
@@ -513,7 +518,7 @@ def test_set(
         return test_tl
     else: raise Exception(f"This method requires using the fastai library to assemble your data. Expected a `Datasets` or a `TfmdLists` but got {dsets.__class__.__name__}")
 
-# %% ../../nbs/03_data.core.ipynb 112
+# %% ../../nbs/03_data.core.ipynb 113
 @patch
 @delegates(TfmdDL.__init__)
 def test_dl(self:DataLoaders, 
