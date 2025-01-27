@@ -274,7 +274,7 @@ def text_classifier_learner(dls, arch, seq_len=72, config=None, backwards=False,
     return learn
 
 # %% ../../nbs/37_text.learner.ipynb 46
-@typedispatch
+@dispatch
 def show_results(x: LMTensorText, y, samples, outs, ctxs=None, max_n=10, **kwargs):
     if ctxs is None: ctxs = get_empty_df(min(len(samples), max_n))
     for i,l in enumerate(['input', 'target']):
@@ -284,7 +284,7 @@ def show_results(x: LMTensorText, y, samples, outs, ctxs=None, max_n=10, **kwarg
     return ctxs
 
 # %% ../../nbs/37_text.learner.ipynb 47
-@typedispatch
+@dispatch
 def show_results(x: TensorText, y, samples, outs, ctxs=None, max_n=10, trunc_at=150, **kwargs):
     if ctxs is None: ctxs = get_empty_df(min(len(samples), max_n))
     samples = L((s[0].truncate(trunc_at),*s[1:]) for s in samples)
@@ -293,7 +293,7 @@ def show_results(x: TensorText, y, samples, outs, ctxs=None, max_n=10, trunc_at=
     return ctxs
 
 # %% ../../nbs/37_text.learner.ipynb 48
-@typedispatch
+@dispatch
 def plot_top_losses(x: TensorText, y:TensorCategory, samples, outs, raws, losses, trunc_at=150, **kwargs):
     rows = get_empty_df(len(samples))
     samples = L((s[0].truncate(trunc_at),*s[1:]) for s in samples)

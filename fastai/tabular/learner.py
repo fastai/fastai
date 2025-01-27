@@ -49,7 +49,7 @@ def tabular_learner(
     return TabularLearner(dls, model, **kwargs)
 
 # %% ../../nbs/43_tabular.learner.ipynb 19
-@typedispatch
+@dispatch
 def show_results(x:Tabular, y:Tabular, samples, outs, ctxs=None, max_n=10, **kwargs):
     df = x.all_cols[:max_n]
     for n in x.y_names: df[n+'_pred'] = y[n][:max_n].values
