@@ -11,7 +11,7 @@ import pickle,threading
 from collections.abc import MutableSequence
 
 # %% auto 0
-__all__ = ['replacing_yield', 'mk_metric', 'save_model', 'load_model', 'SkipToEpoch', 'Learner', 'before_batch_cb',
+__all__ = ['replacing_yield', 'mk_metric', 'save_model', 'load_model', 'SkipToIter', 'Learner', 'before_batch_cb',
            'load_learner', 'Metric', 'AvgMetric', 'AvgLoss', 'AvgSmoothLoss', 'ValueMetric', 'Recorder', 'CastToTensor',
            'CancelBackwardException', 'CancelStepException', 'CancelFitException', 'CancelEpochException',
            'CancelTrainException', 'CancelValidException', 'CancelBatchException']
@@ -37,21 +37,25 @@ def mk_metric(m):
     return m if isinstance(m, Metric) else AvgMetric(m)
 
 # %% ../nbs/13a_learner.ipynb 15
-def save_model(file, model, opt, with_opt=True, pickle_protocol=2, **torch_save_kwargs):
-    "Save `model` to `file` along with `opt` (if available, and if `with_opt`)"
+def save_model(file, model, opt, iteration, with_opt = True, with_iter = True, pickle_protocol = 2, **torch_save_kwargs):
+    "Save `model` to `file` along with `opt` (if available, and if `with_opt`), and iteration information (epoch and iteration) (if available, and if `with_epoch_iter`. This allows automatically resumable training)"
+    if with_iter: assert with_opt, f'Optimizer state must be saved for epoch/iteration resumable training. Set with_opt= True  if with_epoch_iter=True. '
+    
     if rank_distrib(): return # don't save if child proc
     if opt is None: with_opt=False
     state = get_model(model).state_dict()
     if with_opt: state = {'model': state, 'opt':opt.state_dict()}
+    if with_iter: state['iter'] = iteration
     torch.save(state, file, pickle_protocol=pickle_protocol, **torch_save_kwargs)
-
+        
 # %% ../nbs/13a_learner.ipynb 17
-def load_model(file, model, opt, with_opt=True, device=None, strict=True, **torch_load_kwargs):
-    "Load `model` from `file` along with `opt` (if available, and if `with_opt`)"
+def load_model(file, model, opt, with_opt=True, with_iter = True, device=None, strict=True, **torch_load_kwargs):
+    "Load `model` from `file` along with `opt` (if available, and if `with_opt`), and iteration information (epoch and iteration, saved as a dictionary in self.resumeIter) (if available, and if `with_epoch_iter`. This allows automatically resumable training. "
     if isinstance(device, int): device = torch.device('cuda', device)
     elif device is None: device = 'cpu'
     state = torch.load(file, map_location=device, **torch_load_kwargs)
-    hasopt = set(state)=={'model', 'opt'}
+    hasopt = 'opt' in state
+    hasiter = 'iter' in state
     model_state = state['model'] if hasopt else state
     get_model(model).load_state_dict(model_state, strict=strict)
     if hasopt and with_opt:
@@ -59,6 +63,13 @@ def load_model(file, model, opt, with_opt=True, device=None, strict=True, **torc
         except:
             if with_opt: warn("Could not load the optimizer state.")
     elif with_opt: warn("Saved file doesn't contain an optimizer state.")
+    if hasiter and with_iter:
+        try: 
+            return state['iter'] 
+            if with_iter: warn("Could not load the iteration state.")
+    elif with_iter: warn("Saved file doesn't contain iteration state.")
+    
+    
 
 # %% ../nbs/13a_learner.ipynb 19
 def _try_concat(o):
@@ -75,17 +86,21 @@ class _ConstantFunc():
     def __init__(self, o): self.o = o
     def __call__(self, *args, **kwargs): return self.o
 
-# %% ../nbs/13a_learner.ipynb 22
-class SkipToEpoch(Callback):
-    "Skip training up to `epoch`"
+class SkipToIter(Callback):
+    "Skip training up to   `iter`th iteration in `epoch`th epoch"
     order = 70
     
-    def __init__(self, epoch:int):
-        self._skip_to = epoch
+    def __init__(self, epoch:int, iter: int = 0):
+        self._skip_to_epoch = epoch
+        self._skip_to_iter = iter
 
     def before_epoch(self):
-        if self.epoch < self._skip_to:
+        if self.epoch < self._skip_to_epoch:
             raise CancelEpochException
+        
+    def before_batch(self):
+        if self.iter < self._skip_to_iter:
+            raise CancelBatchException
 
 # %% ../nbs/13a_learner.ipynb 24
 _loop = ['Start Fit', 'before_fit', 'Start Epoch Loop', 'before_epoch', 'Start Train', 'before_train',
@@ -254,9 +269,15 @@ class Learner(GetAttr):
             self.epoch=epoch
             self._with_events(self._do_epoch, 'epoch', CancelEpochException)
 
-    def fit(self, n_epoch, lr=None, wd=None, cbs=None, reset_opt=False, start_epoch=0):
-        if start_epoch != 0:
-            cbs = L(cbs) + SkipToEpoch(start_epoch)
+    def fit(self, n_epoch, lr=None, wd=None, cbs=None, reset_opt=False, start_epoch=0, start_iter = 0):
+        
+        if hasattr(self, 'resumeIter'): #resumeIter only exists if a checkpoint has been loaded with iteration info
+            start_epoch = start_epoch or self.resumeIter['epoch']
+            start_iter = start_iter or self.resumeIter['iter']
+            
+        if start_epoch != 0 or start_iter != 0:
+            cbs = L(cbs) + SkipToIter(start_epoch, start_iter)
+        
         with self.added_cbs(cbs):
             if reset_opt or not self.opt: self.create_opt()
             if wd is None: wd = self.wd
@@ -264,6 +285,9 @@ class Learner(GetAttr):
             self.opt.set_hypers(lr=self.lr if lr is None else lr)
             self.n_epoch = n_epoch
             self._with_events(self._do_fit, 'fit', CancelFitException, self._end_cleanup)
+            
+            
+    
 
     def _end_cleanup(self): self.dl,self.xb,self.yb,self.pred,self.loss = None,(None,),(None,),None,None
     def __enter__(self): self(_before_epoch); return self
@@ -407,8 +431,12 @@ def before_batch_cb(f):
 def save(self:Learner, file, **kwargs):
     "Save model and optimizer state (if `with_opt`) to `self.path/self.model_dir/file`"
     file = join_path_file(file, self.path/self.model_dir, ext='.pth')
-    save_model(file, self.model, getattr(self,'opt',None), **kwargs)
+    
+    iteration = {'epoch':getattr(self,'epoch',0), 'iter': getattr(self,'iter',0) }
+    
+    save_model(file, self.model, getattr(self,'opt',None), iteration, **kwargs)
     return file
+
 
 # %% ../nbs/13a_learner.ipynb 98
 @patch
@@ -419,7 +447,8 @@ def load(self:Learner, file, device=None, **kwargs):
     if self.opt is None: self.create_opt()
     file = join_path_file(file, self.path/self.model_dir, ext='.pth')
     distrib_barrier()
-    load_model(file, self.model, self.opt, device=device, **kwargs)
+    iteration = load_model(file, self.model, self.opt, device=device, **kwargs)
+    if iteration: self.resumeIter = iteration
     return self
 
 # %% ../nbs/13a_learner.ipynb 102
