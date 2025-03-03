@@ -341,7 +341,7 @@ class ReadTabBatch(ItemTransform):
         return to
 
 # %% ../../nbs/40_tabular.core.ipynb 93
-@typedispatch
+@dispatch
 def show_batch(x: Tabular, y, its, max_n=10, ctxs=None):
     x.show()
 

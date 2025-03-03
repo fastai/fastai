@@ -14,7 +14,7 @@ import sklearn.metrics as skm
 __all__ = ['plot_top_losses', 'Interpretation', 'ClassificationInterpretation', 'SegmentationInterpretation']
 
 # %% ../nbs/20_interpret.ipynb 7
-@typedispatch
+@dispatch
 def plot_top_losses(x, y, *args, **kwargs):
     raise Exception(f"plot_top_losses is not implemented for {type(x)},{type(y)}")
 

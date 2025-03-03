@@ -258,7 +258,7 @@ def log_model(path, name=None, metadata={}, description='trained model'):
     wandb.run.log_artifact(artifact_model)
 
 # %% ../../nbs/70_callback.wandb.ipynb 21
-@typedispatch
+@dispatch
 def wandb_process(x:TensorImage, y, samples, outs, preds):
     "Process `sample` and `out` depending on the type of `x/y`"
     res_input, res_pred, res_label = [],[],[]
@@ -282,7 +282,7 @@ def _unlist(l):
     else: return l
 
 # %% ../../nbs/70_callback.wandb.ipynb 23
-@typedispatch
+@dispatch
 def wandb_process(x:TensorImage, y:TensorCategory|TensorMultiCategory, samples, outs, preds):
     table = wandb.Table(columns=["Input image", "Ground_Truth", "Predictions"])
     for (image, label), pred_label in zip(samples,outs):
@@ -290,7 +290,7 @@ def wandb_process(x:TensorImage, y:TensorCategory|TensorMultiCategory, samples, 
     return {"Prediction_Samples": table}
 
 # %% ../../nbs/70_callback.wandb.ipynb 24
-@typedispatch
+@dispatch
 def wandb_process(x:TensorImage, y:TensorMask, samples, outs, preds):
     res = []
     codes = getattr(outs[0][0], 'codes', None)
@@ -308,13 +308,13 @@ def wandb_process(x:TensorImage, y:TensorMask, samples, outs, preds):
     return {"Prediction_Samples": table}
 
 # %% ../../nbs/70_callback.wandb.ipynb 25
-@typedispatch
+@dispatch
 def wandb_process(x:TensorText, y:TensorCategory|TensorMultiCategory, samples, outs, preds):
     data = [[s[0], s[1], o[0]] for s,o in zip(samples,outs)]
     return {"Prediction_Samples": wandb.Table(data=data, columns=["Text", "Target", "Prediction"])}
 
 # %% ../../nbs/70_callback.wandb.ipynb 26
-@typedispatch
+@dispatch
 def wandb_process(x:Tabular, y:Tabular, samples, outs, preds):
     df = x.all_cols
     for n in x.y_names: df[n+'_pred'] = y[n].values
