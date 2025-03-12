@@ -2,7 +2,7 @@
 
 <!-- do not remove -->
 
-## 2.7.18
+## 2.7.19
 
 ### New Features
 
