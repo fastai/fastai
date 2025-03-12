@@ -28,7 +28,7 @@ miniforge). First install PyTorch using the conda line shown
 [here](https://pytorch.org/get-started/locally/), and then run:
 
 ``` bash
-conda install -c fastai fastai
+conda install fastai::fastai
 ```
 
 To install with pip, use: `pip install fastai`.
