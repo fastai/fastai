@@ -22,11 +22,11 @@ def _wif(worker_id):
 
 class _FakeLoader:
     def _fn_noops(self, x=None, *args, **kwargs): return x
-    
-    _IterableDataset_len_called,_auto_collation,collate_fn,drop_last = None,False,_fn_noops,False
+
+    _IterableDataset_len_called,_auto_collation,collate_fn,drop_last,in_order = None,False,_fn_noops,False,True
     _index_sampler,generator,prefetch_factor,_get_shared_seed  = Inf.count,None,2,noop
     dataset_kind = _dataset_kind = _DatasetKind.Iterable
-    
+
     def __init__(self, d, pin_memory, num_workers, timeout, persistent_workers,pin_memory_device):
         self.dataset,self.default,self.worker_init_fn,self.pin_memory_device = self,d,_wif,pin_memory_device
         store_attr('d,pin_memory,num_workers,timeout,persistent_workers,pin_memory_device')
