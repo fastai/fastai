@@ -6,6 +6,13 @@
 
 ### New Features
 
+- Add support for PyTorch 2.6 ([#4078](https://github.com/fastai/fastai/pull/4078)), thanks to [@warner-benjamin](https://github.com/warner-benjamin)
+
+
+## 2.7.18
+
+### New Features
+
 - PyTorch 2.5 support
 
 
