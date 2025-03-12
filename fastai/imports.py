@@ -25,10 +25,12 @@ from numbers import Number, Real
 # External modules
 import requests,yaml,matplotlib.pyplot as plt,pandas as pd,scipy
 from pandas.api.types import CategoricalDtype,is_numeric_dtype
+from plum import dispatch
 from numpy import array,ndarray
 from scipy import ndimage
 from pdb import set_trace
 from fastcore.all import *
+from fasttransform import *
 from fastprogress.fastprogress import progress_bar,master_bar
 
 try:
