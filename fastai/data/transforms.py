@@ -375,7 +375,6 @@ class Normalize(DisplayedTransform):
         if self.mean is None or self.std is None:
             x,*_ = dl.one_batch()
             self.mean,self.std = x.mean(self.axes, keepdim=True),x.std(self.axes, keepdim=True)+1e-7
-
     def encodes(self, x:TensorImage): return (x-self.mean) / self.std
     def decodes(self, x:TensorImage):
         f = to_cpu if x.device.type=='cpu' else noop
