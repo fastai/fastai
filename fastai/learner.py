@@ -7,6 +7,7 @@ from __future__ import annotations
 from .data.all import *
 from .optimizer import *
 from .callback.core import *
+from contextlib import nullcontext
 import pickle,threading
 from collections.abc import MutableSequence
 
@@ -50,7 +51,12 @@ def load_model(file, model, opt, with_opt=True, device=None, strict=True, **torc
     "Load `model` from `file` along with `opt` (if available, and if `with_opt`)"
     if isinstance(device, int): device = torch.device('cuda', device)
     elif device is None: device = 'cpu'
-    state = torch.load(file, map_location=device, **torch_load_kwargs)
+    if ismin_torch("2.5"):
+        context = torch.serialization.safe_globals([L])
+        torch_load_kwargs.setdefault("weights_only", True)
+    else: context = nullcontext()
+    with context:
+        state = torch.load(file, map_location=device, **torch_load_kwargs)
     hasopt = set(state)=={'model', 'opt'}
     model_state = state['model'] if hasopt else state
     get_model(model).load_state_dict(model_state, strict=strict)
@@ -445,11 +451,14 @@ def load_learner(fname, cpu=True, pickle_module=pickle):
     "Load a `Learner` object in `fname`, by default putting it on the `cpu`"
     distrib_barrier()
     map_loc = 'cpu' if cpu else default_device()
-    try: res = torch.load(fname, map_location=map_loc, pickle_module=pickle_module)
-    except AttributeError as e: 
+    try:
+        warn("load_learner` uses Python's insecure pickle module, which can execute malicious arbitrary code when loading. Only load files you trust.\nIf you only need to load model weights and optimizer state, use the safe `Learner.load` instead.")
+        load_kwargs = {"weights_only": False} if ismin_torch("2.6") else {}
+        res = torch.load(fname, map_location=map_loc, pickle_module=pickle_module, **load_kwargs)
+    except AttributeError as e:
         e.args = [f"Custom classes or functions exported with your `Learner` not available in namespace. Re-declare/import before loading:\n\t{e.args[0]}"]
         raise
-    if cpu: 
+    if cpu:
         res.dls.cpu()
         if hasattr(res, 'channels_last'): res = res.to_contiguous(to_fp32=True)
         elif hasattr(res, 'mixed_precision'): res = res.to_fp32()
