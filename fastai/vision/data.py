@@ -65,14 +65,13 @@ def bb_pad(
     return [_f(*s) for s in samples]
 
 # %% ../../nbs/08_vision.data.ipynb 16
-@typedispatch
+@dispatch
 def show_batch(x:TensorImage, y, samples, ctxs=None, max_n=10, nrows=None, ncols=None, figsize=None, **kwargs):
     if ctxs is None: ctxs = get_grid(min(len(samples), max_n), nrows=nrows, ncols=ncols, figsize=figsize)
-    ctxs = show_batch[object](x, y, samples, ctxs=ctxs, max_n=max_n, **kwargs)
-    return ctxs
+    return get_show_batch_func(object)(x, y, samples, ctxs=ctxs, max_n=max_n, **kwargs)
 
 # %% ../../nbs/08_vision.data.ipynb 17
-@typedispatch
+@dispatch
 def show_batch(x:TensorImage, y:TensorImage, samples, ctxs=None, max_n=10, nrows=None, ncols=None, figsize=None, **kwargs):
     if ctxs is None: ctxs = get_grid(min(len(samples), max_n), nrows=nrows, ncols=ncols, figsize=figsize, double=True)
     for i in range(2):

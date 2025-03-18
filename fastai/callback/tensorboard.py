@@ -118,7 +118,7 @@ def _get_embeddings(model, layer):
     return layer.weight
 
 # %% ../../nbs/70a_callback.tensorboard.ipynb 28
-@typedispatch
+@dispatch
 def _normalize_for_projector(x:TensorImage):
     # normalize tensor to be between 0-1
     img = x.clone()
@@ -151,7 +151,7 @@ def projector_word_embeddings(learn=None, layer=None, vocab=None, limit=-1, star
 from ..vision.data import *
 
 # %% ../../nbs/70a_callback.tensorboard.ipynb 33
-@typedispatch
+@dispatch
 def tensorboard_log(x:TensorImage, y: TensorCategory, samples, outs, writer, step):
     fig,axs = get_grid(len(samples), return_fig=True)
     for i in range(2):
@@ -164,7 +164,7 @@ def tensorboard_log(x:TensorImage, y: TensorCategory, samples, outs, writer, ste
 from ..vision.core import TensorPoint,TensorBBox
 
 # %% ../../nbs/70a_callback.tensorboard.ipynb 35
-@typedispatch
+@dispatch
 def tensorboard_log(x:TensorImage, y: TensorImageBase|TensorPoint|TensorBBox, samples, outs, writer, step):
     fig,axs = get_grid(len(samples), return_fig=True, double=True)
     for i in range(2):

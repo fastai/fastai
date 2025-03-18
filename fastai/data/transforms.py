@@ -381,4 +381,4 @@ class Normalize(DisplayedTransform):
         f = to_cpu if x.device.type=='cpu' else noop
         return (x*f(self.std) + f(self.mean))
 
-    _docs=dict(encodes="Normalize batch", decodes="Denormalize batch")
+    _docs=dict(encodes="Normalize batch", decodes="Denormalize batch", setups="Calculate mean/std statistics from DataLoader if not provided")
