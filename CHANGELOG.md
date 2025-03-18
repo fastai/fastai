@@ -2,6 +2,13 @@
 
 <!-- do not remove -->
 
+## 2.8.0
+
+### Breaking changes
+
+- Use fasttransform ([#4074](https://github.com/fastai/fastai/pull/4074)), thanks to [@RensDimmendaal](https://github.com/RensDimmendaal)
+
+
 ## 2.7.19
 
 ### New Features
