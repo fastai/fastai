@@ -42,7 +42,7 @@ class BaseLoss():
         self.func.reduction = v
 
     def _contiguous(self, x:Tensor) -> TensorBase:
-        "Move `self.axis` to the last dimension and ensure tensor is contigous for `Tensor` otherwise just return"
+        "Move `self.axis` to the last dimension and ensure tensor is contiguous for `Tensor` otherwise just return"
         return TensorBase(x.transpose(self.axis,-1).contiguous()) if isinstance(x,torch.Tensor) else x
 
     def __call__(self, 
@@ -106,7 +106,7 @@ class FocalLoss(Module):
 
 class FocalLossFlat(BaseLoss):
     """
-    Same as CrossEntropyLossFlat but with focal paramter, `gamma`. Focal loss is introduced by Lin et al. 
+    Same as CrossEntropyLossFlat but with focal parameter, `gamma`. Focal loss is introduced by Lin et al. 
     https://arxiv.org/pdf/1708.02002.pdf. Note the class weighting factor in the paper, alpha, can be 
     implemented through pytorch `weight` argument passed through to F.cross_entropy.
     """

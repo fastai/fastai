@@ -61,7 +61,7 @@ class Callback(Stateful,GetAttr):
         if self.run and _run: 
             try: res = getcallable(self, event_name)()
             except (CancelBatchException, CancelBackwardException, CancelEpochException, CancelFitException, CancelStepException, CancelTrainException, CancelValidException): raise
-            except Exception as e: raise modify_exception(e, f'Exception occured in `{self.__class__.__name__}` when calling event `{event_name}`:\n\t{e.args[0]}', replace=True)
+            except Exception as e: raise modify_exception(e, f'Exception occurred in `{self.__class__.__name__}` when calling event `{event_name}`:\n\t{e.args[0]}', replace=True)
         if event_name=='after_fit': self.run=True #Reset self.run to True at each end of fit
         return res
 

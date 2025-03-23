@@ -276,7 +276,7 @@ def wandb_process(x:TensorImage, y, samples, outs, preds):
 
 # %% ../../nbs/70_callback.wandb.ipynb 22
 def _unlist(l):
-    "get element of lists of lenght 1"
+    "get element of lists of length 1"
     if isinstance(l, (list, tuple)):
         if len(l) == 1: return l[0]
     else: return l
