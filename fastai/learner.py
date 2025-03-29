@@ -8,7 +8,7 @@ from .data.all import *
 from .optimizer import *
 from .callback.core import *
 from contextlib import nullcontext
-import pickle,threading
+import cloudpickle,pickle,threading
 from collections.abc import MutableSequence
 
 # %% auto 0
@@ -430,7 +430,7 @@ def load(self:Learner, file, device=None, **kwargs):
 
 # %% ../nbs/13a_learner.ipynb 102
 @patch
-def export(self:Learner, fname='export.pkl', pickle_module=pickle, pickle_protocol=2):
+def export(self:Learner, fname='export.pkl', pickle_module=cloudpickle, pickle_protocol=2):
     "Export the content of `self` without the items and the optimizer state for inference"
     if rank_distrib(): return # don't export if child proc
     self._end_cleanup()
@@ -455,6 +455,9 @@ def load_learner(fname, cpu=True, pickle_module=pickle):
         warn("load_learner` uses Python's insecure pickle module, which can execute malicious arbitrary code when loading. Only load files you trust.\nIf you only need to load model weights and optimizer state, use the safe `Learner.load` instead.")
         load_kwargs = {"weights_only": False} if ismin_torch("2.6") else {}
         res = torch.load(fname, map_location=map_loc, pickle_module=pickle_module, **load_kwargs)
+    except ImportError as e:
+        if any(o in str(e) for o in ("fastcore.transform","fastcore.dispatch")): 
+            raise RuntimeError(f"Loading model {fname=}, attempted to import from `fastcore.dispatch` and/or `fastcore.transform` which are deprecated in `fastai>=2.8.0`.\nDowngrade to `fastai<2.8.0` if you want to load this model.")
     except AttributeError as e:
         e.args = [f"Custom classes or functions exported with your `Learner` not available in namespace. Re-declare/import before loading:\n\t{e.args[0]}"]
         raise
