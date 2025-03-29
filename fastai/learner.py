@@ -52,7 +52,7 @@ def load_model(file, model, opt, with_opt=True, device=None, strict=True, **torc
     if isinstance(device, int): device = torch.device('cuda', device)
     elif device is None: device = 'cpu'
     if ismin_torch("2.5"):
-        context = torch.serialization.safe_globals([L])
+        context = torch.serialization.safe_globals([L, np.core.multiarray.scalar, np.dtype, *[getattr(np.dtypes, dt) for dt in np.dtypes.__all__]])
         torch_load_kwargs.setdefault("weights_only", True)
     else: context = nullcontext()
     with context:
