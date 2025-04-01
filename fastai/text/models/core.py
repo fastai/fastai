@@ -144,7 +144,7 @@ class PoolingLinearClassifier(Module):
 
 # %% ../../../nbs/33_text.models.core.ipynb 27
 def get_text_classifier(
-    arch:callable, # Function or class that can generate a language model architecture
+    arch:Callable, # Function or class that can generate a language model architecture
     vocab_sz:int, # Size of the vocabulary 
     n_class:int, # Number of classes
     seq_len:int=72, # Backpropagation through time

@@ -131,7 +131,7 @@ class DataBlock():
     def from_columns(cls, 
         blocks:list =None, # One or more `TransformBlock`s
         getters:list =None, # Getter functions applied to results of `get_items`
-        get_items:callable=None, # A function to get items
+        get_items:Callable=None, # A function to get items
         **kwargs,
     ):
         if getters is None: getters = L(ItemGetter(i) for i in range(2 if blocks is None else len(L(blocks))))
