@@ -107,13 +107,13 @@ class Learner(GetAttr):
     _default='model'
     def __init__(self,
         dls:DataLoaders, # `DataLoaders` containing fastai or PyTorch `DataLoader`s
-        model:callable, # PyTorch model for training or inference
-        loss_func:callable|None=None, # Loss function. Defaults to `dls` loss
+        model:Callable, # PyTorch model for training or inference
+        loss_func:Callable|None=None, # Loss function. Defaults to `dls` loss
         opt_func:Optimizer|OptimWrapper=Adam, # Optimization function for training
         lr:float|slice=defaults.lr, # Default learning rate
-        splitter:callable=trainable_params, # Split model into parameter groups. Defaults to one parameter group
+        splitter:Callable=trainable_params, # Split model into parameter groups. Defaults to one parameter group
         cbs:Callback|MutableSequence|None=None, # `Callback`s to add to `Learner`
-        metrics:callable|MutableSequence|None=None, # `Metric`s to calculate on validation set
+        metrics:Callable|MutableSequence|None=None, # `Metric`s to calculate on validation set
         path:str|Path|None=None, # Parent directory to save, load, and export models. Defaults to `dls` `path`
         model_dir:str|Path='models', # Subdirectory to save and load models
         wd:float|int|None=None, # Default weight decay

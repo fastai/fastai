@@ -88,7 +88,7 @@ class Optimizer(_BaseOptimizer):
     _keep_on_clear = ['force_train', 'do_wd']
     def __init__(self,
         params:Tensor|Iterable, # Model parameters
-        cbs:callable|MutableSequence, # `Optimizer` step callbacks
+        cbs:Callable|MutableSequence, # `Optimizer` step callbacks
         **defaults # Hyper parameters default values
     ):
         if 'train_bn' in defaults.keys():
@@ -461,7 +461,7 @@ class OptimWrapper(_BaseOptimizer, GetAttr):
     _default='opt'
     def __init__(self, 
          params:Tensor|Iterable=None, # Model parameters. Don't set if using a built optimizer
-         opt:callable|torch.optim.Optimizer=None, # A torch optimizer constructor, or an already built optimizer 
+         opt:Callable|torch.optim.Optimizer=None, # A torch optimizer constructor, or an already built optimizer 
          hp_map:dict=None, # A dictionary converting PyTorch optimizer keys to fastai's `Optimizer` keys. Defaults to `pytorch_hp_map`
          convert_groups:bool=True, # Convert parameter groups from splitter or pass unaltered to `opt`
          **kwargs

@@ -129,8 +129,8 @@ def gan_critic(
 class GANLoss(GANModule):
     "Wrapper around `crit_loss_func` and `gen_loss_func`"
     def __init__(self,
-        gen_loss_func:callable, # Generator loss function
-        crit_loss_func:callable, # Critic loss function
+        gen_loss_func:Callable, # Generator loss function
+        crit_loss_func:Callable, # Critic loss function
         gan_model:GANModule # The GAN model
     ):
         super().__init__()
@@ -158,7 +158,7 @@ class GANLoss(GANModule):
 # %% ../../nbs/24_vision.gan.ipynb 24
 class AdaptiveLoss(Module):
     "Expand the `target` to match the `output` size before applying `crit`."
-    def __init__(self, crit:callable): self.crit = crit
+    def __init__(self, crit:Callable): self.crit = crit
     def forward(self, output:Tensor, target:Tensor):
         return self.crit(output, target[:,None].expand_as(output).float())
 
@@ -344,8 +344,8 @@ def show_results(x:InvisibleTensor, y:TensorImage, samples, outs, ctxs=None, max
 
 # %% ../../nbs/24_vision.gan.ipynb 45
 def gan_loss_from_func(
-    loss_gen:callable, # A loss function for the generator. Evaluates generator output images and target real images
-    loss_crit:callable, # A loss function for the critic. Evaluates predictions of real and fake images.
+    loss_gen:Callable, # A loss function for the generator. Evaluates generator output images and target real images
+    loss_crit:Callable, # A loss function for the critic. Evaluates predictions of real and fake images.
     weights_gen:None|MutableSequence|tuple=None # Weights for the generator and critic loss function
 ):
     "Define loss functions for a GAN from `loss_gen` and `loss_crit`."
@@ -373,15 +373,15 @@ class GANLearner(Learner):
         dls:DataLoaders, # DataLoaders object for GAN data
         generator:nn.Module, # Generator model
         critic:nn.Module, # Critic model
-        gen_loss_func:callable, # Generator loss function
-        crit_loss_func:callable, # Critic loss function
+        gen_loss_func:Callable, # Generator loss function
+        crit_loss_func:Callable, # Critic loss function
         switcher:Callback|None=None, # Callback for switching between generator and critic training, defaults to `FixedGANSwitcher`
         gen_first:bool=False, # Whether we start with generator training
         switch_eval:bool=True, # Whether the model should be set to eval mode when calculating loss
         show_img:bool=True, # Whether to show example generated images during training
         clip:None|float=None, # How much to clip the weights
         cbs:Callback|None|MutableSequence=None, # Additional callbacks
-        metrics:None|MutableSequence|callable=None, # Metrics
+        metrics:None|MutableSequence|Callable=None, # Metrics
         **kwargs
     ):
         gan = GANModule(generator, critic)
