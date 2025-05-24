@@ -2,6 +2,12 @@
 
 <!-- do not remove -->
 
+## 2.8.2
+
+### New Features
+
+- update torch version to 2.7 ([#4095](https://github.com/fastai/fastai/pull/4095)), thanks to [@tonyhoo](https://github.com/tonyhoo)
+
 
 ## 2.8.1
 
