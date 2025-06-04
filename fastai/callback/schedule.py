@@ -281,7 +281,6 @@ def plot_lr_find(self:Recorder, skip_end=5, return_fig=True, suggestions=None, n
         for (val, idx), nm, color in zip(suggestions, nms, colors):
             ax.plot(val, idx, 'o', label=nm, c=color)
         ax.legend(loc='best')
-    if return_fig: return fig
 
 # %% ../../nbs/14_callback.schedule.ipynb 89
 mk_class("SuggestionMethod", **{o.__name__.capitalize():o for o in [valley,slide,minimum,steep]},
