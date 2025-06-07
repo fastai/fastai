@@ -107,7 +107,7 @@ class CSVLogger(Callback):
     def before_fit(self):
         "Prepare file with metric names."
         if hasattr(self, "gather_preds"): return
-        self.path.parent.mkdir(parents=True, exist_ok=True)
+        self.path.mkdir(parents=True, exist_ok=True)
         self.file = (self.path/self.fname).open('a' if self.append else 'w')
         self.file.write(','.join(self.recorder.metric_names) + '\n')
         self.old_logger,self.learn.logger = self.logger,self._write_line
