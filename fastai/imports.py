@@ -31,7 +31,7 @@ from scipy import ndimage
 from pdb import set_trace
 from fastcore.all import *
 from fasttransform import *
-from fastprogress.fastprogress import progress_bar,master_bar
+from fastprogress import progress_bar, master_bar
 
 try:
     from types import WrapperDescriptorType,MethodWrapperType,MethodDescriptorType
