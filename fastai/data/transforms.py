@@ -286,7 +286,7 @@ class MultiCategorize(Categorize):
             diff = [elem for elem in o if elem not in self.vocab.o2i.keys()]
             diff_str = "', '".join(diff)
             raise KeyError(f"Labels '{diff_str}' were not included in the training dataset")
-        return TensorMultiCategory([self.vocab.o2i[o_] for o_ in o])
+        return TensorMultiCategory([self.vocab.o2i[o_] for o_ in o]).type(torch.int64)
     def decodes(self, o): return MultiCategory      ([self.vocab    [o_] for o_ in o])
 
 # %% ../../nbs/05_data.transforms.ipynb 85
