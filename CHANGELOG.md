@@ -2,6 +2,17 @@
 
 <!-- do not remove -->
 
+## 2.8.3
+
+### New Features
+
+- PyTorch 2.8 support ([#4116](https://github.com/fastai/fastai/issues/4116))
+
+### Bugs Squashed
+
+- Update plot lr find ([#4098](https://github.com/fastai/fastai/pull/4098)), thanks to [@Timmecom](https://github.com/Timmecom)
+
+
 ## 2.8.2
 
 ### New Features
