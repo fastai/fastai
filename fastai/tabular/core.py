@@ -22,7 +22,7 @@ def make_date(df, date_field):
     if isinstance(field_dtype, pd.core.dtypes.dtypes.DatetimeTZDtype):
         field_dtype = np.datetime64
     if not np.issubdtype(field_dtype, np.datetime64):
-        df[date_field] = pd.to_datetime(df[date_field], infer_datetime_format=True)
+        df[date_field] = pd.to_datetime(df[date_field])
 
 # %% ../../nbs/40_tabular.core.ipynb 9
 def add_datepart(df, field_name, prefix=None, drop=True, time=False):
