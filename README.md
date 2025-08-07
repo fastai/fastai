@@ -17,21 +17,7 @@ in colab” at the top of any page to open it (be sure to change the Colab
 runtime to “GPU” to have it run fast!) See the fast.ai documentation on
 [Using Colab](https://course19.fast.ai/start_colab.html) for more information.
 
-You can install fastai on your own machines with conda (highly
-recommended), as long as you’re running Linux or Windows (NB: Mac is not
-supported). For Windows, please see the “Running on Windows” for
-important notes.
-
-We recommend using
-[miniconda](https://docs.conda.io/en/latest/miniconda.html) (or
-miniforge). First install PyTorch using the conda line shown
-[here](https://pytorch.org/get-started/locally/), and then run:
-
-``` bash
-conda install fastai::fastai
-```
-
-To install with pip, use: `pip install fastai`.
+You can install fastai on your own machines with: `pip install fastai`.
 
 If you plan to develop fastai yourself, or want to be on the cutting
 edge, you can use an editable install (if you do this, you should also
