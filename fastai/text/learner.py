@@ -112,7 +112,7 @@ class TextLearner(Learner):
         **kwargs
     ):
         super().__init__(dls, model, moms=moms, **kwargs)
-        self.add_cbs(rnn_cbs())
+        self.add_cbs(rnn_cbs(alpha, beta))
 
     def save_encoder(self, 
         file:str # Filename for `Encoder` 
@@ -167,7 +167,7 @@ class TextLearner(Learner):
         load_model_text(file, self.model, self.opt, device=device, **kwargs)
         return self
 
-# %% ../../nbs/37_text.learner.ipynb 26
+# %% ../../nbs/37_text.learner.ipynb 27
 def decode_spec_tokens(tokens):
     "Decode the special tokens in `tokens`"
     new_toks,rule,arg = [],None,None
@@ -188,7 +188,7 @@ def decode_spec_tokens(tokens):
             else:              new_toks += [t] * arg
     return new_toks
 
-# %% ../../nbs/37_text.learner.ipynb 28
+# %% ../../nbs/37_text.learner.ipynb 29
 class LMLearner(TextLearner):
     "Add functionality to `TextLearner` when dealing with a language model"
     def predict(self, text, n_words=1, no_unk=True, temperature=1., min_p=None, no_bar=False,
@@ -218,16 +218,16 @@ class LMLearner(TextLearner):
     @delegates(Learner.get_preds)
     def get_preds(self, concat_dim=1, **kwargs): return super().get_preds(concat_dim=1, **kwargs)
 
-# %% ../../nbs/37_text.learner.ipynb 33
+# %% ../../nbs/37_text.learner.ipynb 34
 from .models.core import _model_meta
 
-# %% ../../nbs/37_text.learner.ipynb 34
+# %% ../../nbs/37_text.learner.ipynb 35
 def _get_text_vocab(dls):
     vocab = dls.vocab
     if isinstance(vocab, L): vocab = vocab[0]
     return vocab
 
-# %% ../../nbs/37_text.learner.ipynb 35
+# %% ../../nbs/37_text.learner.ipynb 36
 @delegates(Learner.__init__)
 def language_model_learner(dls, arch, config=None, drop_mult=1., backwards=False, pretrained=True, pretrained_fnames=None, **kwargs):
     "Create a `Learner` with a language model from `dls` and `arch`."
@@ -249,7 +249,7 @@ def language_model_learner(dls, arch, config=None, drop_mult=1., backwards=False
         learn = learn.load_pretrained(*fnames)
     return learn
 
-# %% ../../nbs/37_text.learner.ipynb 42
+# %% ../../nbs/37_text.learner.ipynb 43
 @delegates(Learner.__init__)
 def text_classifier_learner(dls, arch, seq_len=72, config=None, backwards=False, pretrained=True, drop_mult=0.5, n_out=None,
                             lin_ftrs=None, ps=None, max_len=72*20, y_range=None, **kwargs):
@@ -273,7 +273,7 @@ def text_classifier_learner(dls, arch, seq_len=72, config=None, backwards=False,
         learn.freeze()
     return learn
 
-# %% ../../nbs/37_text.learner.ipynb 46
+# %% ../../nbs/37_text.learner.ipynb 47
 @dispatch
 def show_results(x: LMTensorText, y, samples, outs, ctxs=None, max_n=10, **kwargs):
     if ctxs is None: ctxs = get_empty_df(min(len(samples), max_n))
@@ -283,7 +283,7 @@ def show_results(x: LMTensorText, y, samples, outs, ctxs=None, max_n=10, **kwarg
     display_df(pd.DataFrame(ctxs))
     return ctxs
 
-# %% ../../nbs/37_text.learner.ipynb 47
+# %% ../../nbs/37_text.learner.ipynb 48
 @dispatch
 def show_results(x: TensorText, y, samples, outs, ctxs=None, max_n=10, trunc_at=150, **kwargs):
     if ctxs is None: ctxs = get_empty_df(min(len(samples), max_n))
@@ -292,7 +292,7 @@ def show_results(x: TensorText, y, samples, outs, ctxs=None, max_n=10, trunc_at=
     display_df(pd.DataFrame(ctxs))
     return ctxs
 
-# %% ../../nbs/37_text.learner.ipynb 48
+# %% ../../nbs/37_text.learner.ipynb 49
 @dispatch
 def plot_top_losses(x: TensorText, y:TensorCategory, samples, outs, raws, losses, trunc_at=150, **kwargs):
     rows = get_empty_df(len(samples))
