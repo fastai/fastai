@@ -458,6 +458,7 @@ def load_learner(fname, cpu=True, pickle_module=pickle):
     except ImportError as e:
         if any(o in str(e) for o in ("fastcore.transform","fastcore.dispatch")): 
             raise RuntimeError(f"Loading model {fname=}, attempted to import from `fastcore.dispatch` and/or `fastcore.transform` which are deprecated in `fastai>=2.8.0`.\nDowngrade to `fastai<2.8.0` if you want to load this model.")
+        raise e
     except AttributeError as e:
         e.args = [f"Custom classes or functions exported with your `Learner` not available in namespace. Re-declare/import before loading:\n\t{e.args[0]}"]
         raise
