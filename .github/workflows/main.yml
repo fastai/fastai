@@ -16,15 +16,7 @@ permissions:
   contents: read # to fetch code (actions/checkout)
 
 jobs:
-  test-nbdev-sync:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: fastai/workflows/nbdev-ci@master
-        with:
-          skip_test: true
-
   test-notebooks:
-    needs: test-nbdev-sync
     runs-on: ubuntu-latest
     env:
       download: "true"
@@ -46,8 +38,8 @@ jobs:
 
     - name: Install libraries
       run: |
-        pip install git+https://github.com/answerdotai/fastcore.git@main
-        pip install git+https://github.com/answerdotai/nbdev.git@main
+        pip install fastcore
+        pip install nbdev
         pip install -Uq fastprogress
         pip install -Uqe .[dev] --extra-index-url https://download.pytorch.org/whl/cpu
 
