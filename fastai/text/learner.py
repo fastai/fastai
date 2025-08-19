@@ -132,7 +132,7 @@ class TextLearner(Learner):
         if device is None: device = self.dls.device
         if hasattr(encoder, 'module'): encoder = encoder.module
         distrib_barrier()
-        wgts = torch.load(join_path_file(file,self.path/self.model_dir, ext='.pth'), map_location=device)
+        wgts = torch.load(join_path_file(file,self.path/self.model_dir, ext='.pth'), map_location=device, weights_only=False)
         encoder.load_state_dict(clean_raw_keys(wgts))
         self.freeze()
         return self
@@ -146,7 +146,7 @@ class TextLearner(Learner):
         old_vocab = load_pickle(vocab_fname)
         new_vocab = _get_text_vocab(self.dls)
         distrib_barrier()
-        wgts = torch.load(wgts_fname, map_location = lambda storage,loc: storage)
+        wgts = torch.load(wgts_fname, map_location = lambda storage,loc: storage, weights_only=False)
         if 'model' in wgts: wgts = wgts['model'] #Just in case the pretrained model was saved with an optimizer
         wgts = match_embeds(wgts, old_vocab, new_vocab)
         load_ignore_keys(self.model if model is None else model, clean_raw_keys(wgts))
