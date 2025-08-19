@@ -89,7 +89,7 @@ def load_model_text(
     distrib_barrier()
     if isinstance(device, int): device = torch.device('cuda', device)
     elif device is None: device = 'cpu'
-    state = torch.load(file, map_location=device)
+    state = torch.load(file, map_location=device, weights_only=False)
     hasopt = set(state)=={'model', 'opt'}
     model_state = state['model'] if hasopt else state
     get_model(model).load_state_dict(clean_raw_keys(model_state), strict=strict)
