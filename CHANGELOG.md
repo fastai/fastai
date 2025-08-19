@@ -2,6 +2,15 @@
 
 <!-- do not remove -->
 
+## 2.8.4
+
+### Bugs Squashed
+
+- set `weights_only=False` for `load_model_text`, fixes LRFinder / `lr_find` ([#4120](https://github.com/fastai/fastai/pull/4120)), thanks to [@austinvhuang](https://github.com/austinvhuang)
+- fix: Pass alpha and beta parameters to `rnn_cbs()` in TextLearner constructor ([#4119](https://github.com/fastai/fastai/pull/4119)), thanks to [@austinvhuang](https://github.com/austinvhuang)
+- Fixed SaveModelCallback ([#4118](https://github.com/fastai/fastai/pull/4118)), thanks to [@FacuRoffet99](https://github.com/FacuRoffet99)
+
+
 ## 2.8.3
 
 ### New Features
