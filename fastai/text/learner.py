@@ -83,13 +83,15 @@ def load_model_text(
     opt:Optimizer, # `Optimizer` used to fit the model
     with_opt:bool=None, # Enable to load `Optimizer` state
     device:int|str|torch.device=None, # Sets the device, uses 'cpu' if unspecified
-    strict:bool=True # Whether to strictly enforce the keys of `file`s state dict match with the model `Module.state_dict`
+    strict:bool=True, # Whether to strictly enforce the keys of `file`s state dict match with the model `Module.state_dict`
+    **kwargs
 ):
     "Load `model` from `file` along with `opt` (if available, and if `with_opt`)"
     distrib_barrier()
     if isinstance(device, int): device = torch.device('cuda', device)
     elif device is None: device = 'cpu'
-    state = torch.load(file, map_location=device, weights_only=False)
+    wo = kwargs.pop('weights_only', False)
+    state = torch.load(file, map_location=device, weights_only=wo, **kwargs)
     hasopt = set(state)=={'model', 'opt'}
     model_state = state['model'] if hasopt else state
     get_model(model).load_state_dict(clean_raw_keys(model_state), strict=strict)
