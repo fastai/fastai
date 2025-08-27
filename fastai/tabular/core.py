@@ -311,7 +311,7 @@ class FillMissing(TabularProc):
         for n in missing.any()[missing.any()].keys():
             assert n in self.na_dict, f"nan values in `{n}` but not in setup training set"
         for n in self.na_dict.keys():
-            to[n].fillna(self.na_dict[n], inplace=True)
+            to[n] = to[n].fillna(self.na_dict[n])
             if self.add_col:
                 to.loc[:,n+'_na'] = missing[n]
                 if n+'_na' not in to.cat_names: to.cat_names.append(n+'_na')
