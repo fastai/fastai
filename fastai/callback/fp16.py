@@ -7,8 +7,8 @@ from __future__ import annotations
 from ..basics import *
 from .progress import *
 
-from torch.cuda.amp import GradScaler,autocast
-from torch.cuda.amp.grad_scaler import OptState
+from torch.amp import GradScaler,autocast
+from torch.amp.grad_scaler import OptState
 
 # %% auto 0
 __all__ = ['AMPMode', 'MixedPrecision', 'get_master', 'to_master_grads', 'to_model_params', 'test_overflow', 'grad_overflow',
@@ -44,7 +44,7 @@ class MixedPrecision(Callback):
             raise ValueError(f"Unrecognized precision: {self.amp_mode}")
         # `GradScaler` is not needed for bfloat16 as fp32 and bf16 have the same range
         self.kwargs['enabled'] = dtype == torch.float16
-        self.autocast,self.learn.scaler,self.scales = autocast(dtype=dtype),GradScaler(**self.kwargs),L()
+        self.autocast,self.learn.scaler,self.scales = autocast('cuda', dtype=dtype),GradScaler('cuda', **self.kwargs),L()
 
     def before_batch(self): self.autocast.__enter__()
     def after_pred(self):
