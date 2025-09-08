@@ -8,7 +8,7 @@ from .data.all import *
 from .optimizer import *
 from .callback.core import *
 from contextlib import nullcontext
-import cloudpickle,pickle,threading
+import dill,pickle,threading
 from collections.abc import MutableSequence
 
 # %% auto 0
@@ -430,7 +430,7 @@ def load(self:Learner, file, device=None, **kwargs):
 
 # %% ../nbs/13a_learner.ipynb 102
 @patch
-def export(self:Learner, fname='export.pkl', pickle_module=cloudpickle, pickle_protocol=2):
+def export(self:Learner, fname='export.pkl', pickle_module=dill, pickle_protocol=2):
     "Export the content of `self` without the items and the optimizer state for inference"
     if rank_distrib(): return # don't export if child proc
     self._end_cleanup()
@@ -447,7 +447,7 @@ def export(self:Learner, fname='export.pkl', pickle_module=cloudpickle, pickle_p
     self.dls = old_dbunch
 
 # %% ../nbs/13a_learner.ipynb 104
-def load_learner(fname, cpu=True, pickle_module=pickle):
+def load_learner(fname, cpu=True, pickle_module=dill):
     "Load a `Learner` object in `fname`, by default putting it on the `cpu`"
     distrib_barrier()
     map_loc = 'cpu' if cpu else default_device()
