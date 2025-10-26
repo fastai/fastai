@@ -2,6 +2,18 @@
 
 <!-- do not remove -->
 
+## 2.8.5
+
+### New Features
+
+- PyTorch 2.9 support ([#4116](https://github.com/fastai/fastai/issues/4116))
+
+### Bugs Squashed
+
+- Address deprecation warnings in fp16 Callback ([#4124](https://github.com/fastai/fastai/pull/4124)), thanks to [@FacuRoffet99](https://github.com/FacuRoffet99)
+- Make SaveModelCallback fix compatible with TextLearner ([#4121](https://github.com/fastai/fastai/pull/4121)), thanks to [@austinvhuang](https://github.com/austinvhuang)
+
+
 ## 2.8.4
 
 ### Bugs Squashed
