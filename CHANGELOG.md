@@ -2,6 +2,11 @@
 
 <!-- do not remove -->
 
+## 2.8.6
+
+- New fastcore dep
+
+
 ## 2.8.5
 
 ### New Features
