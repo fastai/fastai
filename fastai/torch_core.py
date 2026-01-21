@@ -12,16 +12,16 @@ from packaging.version import parse
 __all__ = ['norm_types', 'setup_cuda', 'subplots', 'show_image', 'show_titled_image', 'show_images', 'ArrayBase',
            'ArrayImageBase', 'ArrayImage', 'ArrayImageBW', 'ArrayMask', 'tensor', 'set_seed', 'get_random_states',
            'set_random_states', 'no_random', 'unsqueeze', 'unsqueeze_', 'apply', 'maybe_gather', 'to_detach', 'to_half',
-           'to_float', 'default_device', 'to_device', 'to_cpu', 'to_np', 'to_concat', 'TensorBase', 'TensorImageBase',
-           'TensorImage', 'TensorImageBW', 'TensorMask', 'TensorFlowField', 'TensorCategory', 'TensorMultiCategory',
-           'TitledTensorScalar', 'concat', 'Chunks', 'show_title', 'ShowTitle', 'TitledInt', 'TitledFloat', 'TitledStr',
-           'TitledTuple', 'get_empty_df', 'display_df', 'get_first', 'one_param', 'item_find', 'find_device', 'find_bs',
-           'np_func', 'Module', 'get_model', 'one_hot', 'one_hot_decode', 'params', 'trainable_params',
-           'norm_bias_params', 'batch_to_samples', 'logit', 'num_distrib', 'rank_distrib', 'distrib_barrier',
-           'base_doc', 'doc', 'nested_reorder', 'flatten_check', 'make_cross_image', 'show_image_batch',
-           'requires_grad', 'init_default', 'cond_init', 'apply_leaf', 'apply_init', 'script_use_ctx',
-           'script_save_ctx', 'script_fwd', 'script_bwd', 'grad_module', 'ismin_torch', 'notmax_torch', 'progress_bar',
-           'master_bar']
+           'to_float', 'set_default_device', 'default_device', 'to_device', 'to_cpu', 'to_np', 'to_concat',
+           'TensorBase', 'TensorImageBase', 'TensorImage', 'TensorImageBW', 'TensorMask', 'TensorFlowField',
+           'TensorCategory', 'TensorMultiCategory', 'TitledTensorScalar', 'concat', 'Chunks', 'show_title', 'ShowTitle',
+           'TitledInt', 'TitledFloat', 'TitledStr', 'TitledTuple', 'get_empty_df', 'display_df', 'get_first',
+           'one_param', 'item_find', 'find_device', 'find_bs', 'np_func', 'Module', 'get_model', 'one_hot',
+           'one_hot_decode', 'params', 'trainable_params', 'norm_bias_params', 'batch_to_samples', 'logit',
+           'num_distrib', 'rank_distrib', 'distrib_barrier', 'base_doc', 'doc', 'nested_reorder', 'flatten_check',
+           'make_cross_image', 'show_image_batch', 'requires_grad', 'init_default', 'cond_init', 'apply_leaf',
+           'apply_init', 'script_use_ctx', 'script_save_ctx', 'script_fwd', 'script_bwd', 'grad_module', 'ismin_torch',
+           'notmax_torch', 'progress_bar', 'master_bar']
 
 # %% ../nbs/00_torch_core.ipynb 5
 _all_ = ['progress_bar','master_bar']
@@ -264,6 +264,12 @@ def _has_mps():
     if nested_attr(torch, 'backends.mps.is_available', noop)(): return True
     return nested_attr(torch, 'backends.mps.is_built', False)()
 
+def set_default_device(device):
+    # to make sure we always return a torch.device object
+    dev = torch.device(device)
+    torch.set_default_device(dev)
+    return dev
+
 def default_device(use=-1):
     "Return or set default device; `use_cuda`: -1 - CUDA/mps if available; True - error if not available; False - CPU"
     if use == -1: use = defaults.use_cuda
@@ -271,9 +277,10 @@ def default_device(use=-1):
     if use is None:
         if torch.cuda.is_available() or _has_mps(): use = True
     if use:
-        if torch.cuda.is_available(): return torch.device(torch.cuda.current_device())
-        if _has_mps(): return torch.device('mps')
-    return torch.device('cpu')
+        if torch.cuda.is_available():
+            return set_default_device(torch.device(torch.cuda.current_device()))
+        if _has_mps(): return set_default_device("mps")
+    return set_default_device("cpu")
 
 # %% ../nbs/00_torch_core.ipynb 73
 def to_device(b, device=None, non_blocking=False):
