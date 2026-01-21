@@ -311,7 +311,7 @@ class FillMissing(TabularProc):
         for n in missing.any()[missing.any()].keys():
             assert n in self.na_dict, f"nan values in `{n}` but not in setup training set"
         for n in self.na_dict.keys():
-            to[n].fillna(self.na_dict[n], inplace=True)
+            to[n] = to[n].fillna(self.na_dict[n])
             if self.add_col:
                 to.loc[:,n+'_na'] = missing[n]
                 if n+'_na' not in to.cat_names: to.cat_names.append(n+'_na')
@@ -328,7 +328,10 @@ class ReadTabBatch(ItemTransform):
         if not to.with_cont: res = (tensor(to.cats).long(),)
         else: res = (tensor(to.cats).long(),tensor(to.conts).float())
         ys = [n for n in to.y_names if n in to.items.columns]
-        if len(ys) == len(to.y_names): res = res + (tensor(to.targ),)
+        if len(ys) == len(to.y_names): 
+            for y_name in to.y_names:
+                res = res + (tensor(to.targ[y_name].values),)
+            #res = res + (tensor(to.targ),)
         if to.device is not None: res = to_device(res, to.device)
         return res
 
