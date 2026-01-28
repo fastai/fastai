@@ -25,13 +25,9 @@ Documentation = "https://docs.fast.ai/"
 fastai = "fastai._modidx:d"
 
 [project.scripts]
-configure_accelerate=fastai.distributed:configure_accelerate
-
+configure_accelerate = "fastai.distributed:configure_accelerate"
 [tool.setuptools.dynamic]
 version = {attr = "fastai.__version__"}
-
-[project.scripts]
-configure_accelerate=fastai.distributed:configure_accelerate
 
 [tool.setuptools.packages.find]
 include = ["fastai"]
