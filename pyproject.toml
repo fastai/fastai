@@ -15,7 +15,7 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3 :: Only",
 ]
-dependencies = []
+dependencies = ["fastdownload>=0.0.5,<2","fastcore>=1.8.0","fasttransform>=0.0.2","torchvision>=0.11","matplotlib","pandas","requests","pyyaml","fastprogress>=0.2.4","pillow>=9.0.0","scikit-learn","scipy","spacy<4","packaging","plum-dispatch","cloudpickle"]
 
 [project.urls]
 Repository = "https://github.com/fastai/fastai"
@@ -29,6 +29,9 @@ version = {attr = "fastai.__version__"}
 
 [tool.setuptools.packages.find]
 include = ["fastai"]
+
+[project.optional-dependencies]
+dev = ["nbdev","ipywidgets","lightning","pytorch-ignite","transformers","sentencepiece","tensorboard","pydicom","catalyst","flask_compress","captum>=0.4.1","flask","wandb","kornia","scikit-image","comet_ml","albumentations","opencv-python","pyarrow","ninja","timm>=0.9","accelerate>=0.21","ipykernel"]
 
 [tool.nbdev]
 tst_flags = 'slow cpp cuda multicuda'
