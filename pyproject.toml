@@ -1,11 +1,36 @@
 [build-system]
-requires = ["setuptools>=64.0"]
+requires = ["setuptools>=64"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name="fastai"
+dynamic = ["version"]
+description = "fastai simplifies training fast and accurate neural nets using modern best practices"
+readme = "README.md"
 requires-python=">=3.10"
-dynamic = [ "keywords", "description", "version", "dependencies", "optional-dependencies", "readme", "license", "authors", "classifiers", "entry-points", "scripts", "urls"]
+license = {text = "Apache-2.0"}
+authors = [{name = "Jeremy Howard, Sylvain Gugger, and contributors", email = "info@fast.ai"}]
+keywords = ['fastai,', 'deep', 'learning,', 'machine', 'learning']
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+]
+dependencies = []
 
-[tool.uv]
-cache-keys = [{ file = "pyproject.toml" }, { file = "settings.ini" }, { file = "setup.py" }]
+[project.urls]
+Repository = "https://github.com/fastai/fastai"
+Documentation = "https://docs.fast.ai/"
+
+[project.entry-points.nbdev]
+fastai = "fastai._modidx:d"
+
+[tool.setuptools.dynamic]
+version = {attr = "fastai.__version__"}
+
+[tool.setuptools.packages.find]
+include = ["fastai"]
+
+[tool.nbdev]
+tst_flags = 'slow cpp cuda multicuda'
+jupyter_hooks = true
+custom_sidebar = true
