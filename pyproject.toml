@@ -3,19 +3,16 @@ requires = ["setuptools>=64"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name="fastai"
+name = "fastai"
 dynamic = ["version"]
 description = "fastai simplifies training fast and accurate neural nets using modern best practices"
 readme = "README.md"
-requires-python=">=3.10"
+requires-python = ">=3.10"
 license = {text = "Apache-2.0"}
 authors = [{name = "Jeremy Howard, Sylvain Gugger, and contributors", email = "info@fast.ai"}]
 keywords = ['fastai,', 'deep', 'learning,', 'machine', 'learning']
-classifiers = [
-    "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3 :: Only",
-]
-dependencies = ["fastdownload>=0.0.5,<2","fastcore>=1.8.0","fasttransform>=0.0.2","torchvision>=0.11","matplotlib","pandas","requests","pyyaml","fastprogress>=0.2.4","pillow>=9.0.0","scikit-learn","scipy","spacy<4","packaging","plum-dispatch","cloudpickle"]
+classifiers = ["Natural Language :: English", "Intended Audience :: Developers", "Development Status :: 4 - Beta", "Programming Language :: Python :: 3", "Programming Language :: Python :: 3 :: Only"]
+dependencies = ['fastdownload>=0.0.5,<2', 'fastcore>=1.8.0', 'fasttransform>=0.0.2', 'torchvision>=0.11', 'matplotlib', 'pandas', 'requests', 'pyyaml', 'fastprogress>=0.2.4', 'pillow>=9.0.0', 'scikit-learn', 'scipy', 'spacy<4', 'packaging', 'plum-dispatch', 'cloudpickle', 'torch>=1.10,<2.10']
 
 [project.urls]
 Repository = "https://github.com/fastai/fastai"
@@ -24,16 +21,18 @@ Documentation = "https://docs.fast.ai/"
 [project.entry-points.nbdev]
 fastai = "fastai._modidx:d"
 
+[project.optional-dependencies]
+dev = ['nbdev', 'ipywidgets', 'lightning', 'pytorch-ignite', 'transformers', 'sentencepiece', 'tensorboard', 'pydicom', 'catalyst', 'flask_compress', 'captum>=0.4.1', 'flask', 'wandb', 'kornia', 'scikit-image', 'comet_ml', 'albumentations', 'opencv-python', 'pyarrow', 'ninja', 'timm>=0.9', 'accelerate>=0.21', 'ipykernel']
+
+
 [project.scripts]
 configure_accelerate = "fastai.distributed:configure_accelerate"
+
 [tool.setuptools.dynamic]
 version = {attr = "fastai.__version__"}
 
 [tool.setuptools.packages.find]
 include = ["fastai"]
-
-[project.optional-dependencies]
-dev = ["nbdev","ipywidgets","lightning","pytorch-ignite","transformers","sentencepiece","tensorboard","pydicom","catalyst","flask_compress","captum>=0.4.1","flask","wandb","kornia","scikit-image","comet_ml","albumentations","opencv-python","pyarrow","ninja","timm>=0.9","accelerate>=0.21","ipykernel"]
 
 [tool.nbdev]
 tst_flags = 'slow cpp cuda multicuda'
