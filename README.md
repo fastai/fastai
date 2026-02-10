@@ -48,7 +48,7 @@ navigation sidebar to look through the fastai documentation. Every
 class, function, and method is documented here.
 
 To learn about the design and motivation of the library, read the [peer
-reviewed paper](https://arxiv.org/pdf/2002.04688).
+reviewed paper](https://www.mdpi.com/2078-2489/11/2/108).
 
 ## About fastai
 
