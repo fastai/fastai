@@ -516,7 +516,7 @@ class AvgLoss(Metric):
 # %% ../nbs/13a_learner.ipynb #f2ba91f7
 class AvgSmoothLoss(Metric):
     "Smooth average of the losses (exponentially weighted with `beta`)"
-    def __init__(self, beta=0.98): self.beta = beta
+    def __init__(self, beta=0.98): self.beta,self.count,self.val = beta,0,tensor(0.)
     def reset(self):               self.count,self.val = 0,tensor(0.)
     def accumulate(self, learn):
         self.count += 1

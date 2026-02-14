@@ -272,7 +272,7 @@ def default_device(use=-1):
         if torch.cuda.is_available() or _has_mps(): use = True
     if use:
         if torch.cuda.is_available(): return torch.device(torch.cuda.current_device())
-        if _has_mps(): return torch.device('mps')
+        if _has_mps(): return torch.device('mps', 0)
     return torch.device('cpu')
 
 # %% ../nbs/00_torch_core.ipynb #3a989345
@@ -890,16 +890,3 @@ def ismin_torch(min_version):
 def notmax_torch(max_version):
     "Check if `torch.__version__` < `max_version` using packaging.version"
     return _torch_version < parse(max_version)
-
-# %% ../nbs/00_torch_core.ipynb #8e51fb86
-# PyTorch 1.13 introduced a Tensor Subclass string formatting bug
-# Workaround from pending PyTorch PR: https://github.com/pytorch/pytorch/pull/82766
-if ismin_torch('1.13') and notmax_torch('1.14'):
-    from torch.overrides import has_torch_function_unary, handle_torch_function
-    @patch
-    def __format__(self:Tensor, format_spec):
-        if has_torch_function_unary(self):
-            return handle_torch_function(Tensor.__format__, (self,), self, format_spec)
-        if self.dim() == 0 and not self.is_meta and issubclass(type(self), Tensor):
-            return self.item().__format__(format_spec)
-        return object.__format__(self, format_spec)
