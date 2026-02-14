@@ -13,7 +13,7 @@ jobs:
     name: Deploy to GitHub Pages
     runs-on: ubuntu-latest
     steps:
-    - uses: fastai/workflows/quarto-rsync@master
+    - uses: fastai/workflows/quarto-rsync3@master
       with:
         username: jeremyphoward
         hostname: vps19524.dreamhostps.com
