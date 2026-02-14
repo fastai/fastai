@@ -21,7 +21,7 @@ def make_date(df, date_field):
     field_dtype = df[date_field].dtype
     if isinstance(field_dtype, pd.core.dtypes.dtypes.DatetimeTZDtype):
         field_dtype = np.datetime64
-    if not np.issubdtype(field_dtype, np.datetime64):
+    if not isinstance(field_dtype, np.dtype) or not np.issubdtype(field_dtype, np.datetime64):
         df[date_field] = pd.to_datetime(df[date_field])
 
 # %% ../../nbs/40_tabular.core.ipynb #2731eac6
@@ -106,8 +106,8 @@ def df_shrink_dtypes(df, skip=[], obj2cat=True, int2uint=False):
                'uint'  : [(np.dtype(x), np.iinfo(x).min, np.iinfo(x).max) for x in (np.uint8, np.uint16, np.uint32, np.uint64)],
                'float' : [(np.dtype(x), np.finfo(x).min, np.finfo(x).max) for x in (np.float32, np.float64, np.longdouble)]
               }
-    if obj2cat: typemap['object'] = 'category'  # User wants to categorify dtype('Object'), which may not always save space
-    else:       excl_types.add('object')
+    if obj2cat: typemap['object'] = typemap['str'] = 'category'
+    else:       excl_types.update({'object', 'str'})
 
     new_dtypes = {}
     exclude = lambda dt: dt[1].name not in excl_types and dt[0] not in skip
@@ -311,7 +311,7 @@ class FillMissing(TabularProc):
         for n in missing.any()[missing.any()].keys():
             assert n in self.na_dict, f"nan values in `{n}` but not in setup training set"
         for n in self.na_dict.keys():
-            to[n].fillna(self.na_dict[n], inplace=True)
+            to[n] = to[n].fillna(self.na_dict[n])
             if self.add_col:
                 to.loc[:,n+'_na'] = missing[n]
                 if n+'_na' not in to.cat_names: to.cat_names.append(n+'_na')

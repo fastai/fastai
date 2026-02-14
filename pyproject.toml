@@ -35,6 +35,6 @@ version = {attr = "fastai.__version__"}
 include = ["fastai"]
 
 [tool.nbdev]
-tst_flags = 'slow cpp cuda multicuda'
+tst_flags = ['slow', 'cpp', 'cuda', 'multicuda']
 jupyter_hooks = true
 custom_sidebar = true
