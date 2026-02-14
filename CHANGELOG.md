@@ -2,6 +2,11 @@
 
 <!-- do not remove -->
 
+## 2.8.7
+
+- Allow any pytorch<3
+
+
 ## 2.8.6
 
 - New fastcore dep
