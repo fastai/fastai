@@ -337,8 +337,8 @@ def show_results(x:TensorImage, y:TensorMask|TensorPoint|TensorBBox, samples, ou
 def show_results(x:TensorImage, y:TensorImage, samples, outs, ctxs=None, max_n=10, figsize=None, **kwargs):
     if ctxs is None: ctxs = get_grid(3*min(len(samples), max_n), ncols=3, figsize=figsize, title='Input/Target/Prediction')
     for i in range(2):
-        ctxs[i::3] = [b.show(ctx=c, **kwargs) for b,c,_ in zip(samples.itemgot(i),ctxs[i::3],range(max_n))]
-    ctxs[2::3] = [b.show(ctx=c, **kwargs) for b,c,_ in zip(outs.itemgot(0),ctxs[2::3],range(max_n))]
+        ctxs[i::3] = [b.show(ctx=c,title ="Ground Truth" **kwargs) for b,c,_ in zip(samples.itemgot(i),ctxs[i::3],range(max_n))]
+    ctxs[2::3] = [b.show(ctx=c, title = "Prediction" **kwargs) for b,c,_ in zip(outs.itemgot(0),ctxs[2::3],range(max_n))]
     return ctxs
 
 # %% ../../nbs/21_vision.learner.ipynb #ef866c75
