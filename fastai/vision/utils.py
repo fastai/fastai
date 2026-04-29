@@ -4,7 +4,7 @@
 
 # %% auto #0
 __all__ = ['download_images', 'resize_to', 'verify_image', 'verify_images', 'resize_image', 'resize_images',
-           'search_images_serpapi', 'search_images_bing']
+           'search_images_serpapi', 'search_images_bing', 'search_images_brave']
 
 # %% ../../nbs/09b_vision.utils.ipynb #a4ba4284
 import uuid
@@ -119,3 +119,22 @@ def search_images_serpapi(key, term, engine='bing_images', max_images=150):
 def search_images_bing(key, term, max_images=150):
     "Search for `term` using SerpApi's Bing Images engine, returning up to `max_images` results."
     return search_images_serpapi(key, term, engine='bing_images', max_images=max_images)
+
+def search_images_brave(key, term, num_imgs=200):
+    "Search for `term` via Brave api and return up to `num_images` results."
+    url = "https://api.search.brave.com/res/v1/images/search"
+    params = {
+        "q": term,
+        "count": num_imgs
+    }
+    headers = {
+        "X-Subscription-Token": key
+    }
+    try:
+        response = requests.get(url, params=params, headers=headers)
+        response.raise_for_status()
+    except Exception as e:
+        warnings.warn(f"Brave request failed. ({e})", UserWarning, stacklevel=2)
+        return L()
+    data = response.json()
+    return L(o['properties']['url'] for o in data.get('results', []))
