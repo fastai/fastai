@@ -40,3 +40,6 @@ allowed_cell_metadata_keys = ['solveit_ai']
 tst_flags = ['slow', 'cpp', 'cuda', 'multicuda']
 jupyter_hooks = true
 custom_sidebar = true
+
+[tool.chkstyle]
+skip_paths = ["_modidx.py"]
