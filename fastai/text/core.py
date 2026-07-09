@@ -14,6 +14,8 @@ __all__ = ['UNK', 'PAD', 'BOS', 'EOS', 'FLD', 'TK_REP', 'TK_WREP', 'TK_UP', 'TK_
 # %% ../../nbs/30_text.core.ipynb #632f4956
 from ..torch_basics import *
 from ..data.all import *
+from multiprocessing import get_context
+from concurrent.futures import as_completed
 
 # %% ../../nbs/30_text.core.ipynb #82f8f4b3
 import html
@@ -146,12 +148,36 @@ def tokenize1(text, tok, **kwargs):
     "Call `TokenizeWithRules` with a single text"
     return first(TokenizeWithRules(tok=tok, **kwargs)([text]))
 
+# %% ../../nbs/30_text.core.ipynb #9e8696ca
+_pg_obj = None
+
+def _pg_setup(cls, kwargs):
+    "Build this process's `cls` instance (runs once per worker via `initializer`)"
+    global _pg_obj
+    _pg_obj = cls(**kwargs)
+
+def _pg_call(batch): return list(_pg_obj(batch))
+
 # %% ../../nbs/30_text.core.ipynb #ec4f3c77
-def parallel_tokenize(items, tok=None, rules=None, n_workers=defaults.cpus, **kwargs):
-    "Calls optional `setup` on `tok` before launching `TokenizeWithRules` using `parallel_gen"
+def parallel_tokenize(items, tok=None, rules=None, n_workers=defaults.cpus, progress=False, **kwargs):
+    "Call optional `setup` on `tok`, then tokenize `items` with `TokenizeWithRules` in parallel, yielding unordered `(idx,toks)` pairs"
     if tok is None: tok = WordTokenizer()
     if hasattr(tok, 'setup'): tok.setup(items, rules)
-    return parallel_gen(TokenizeWithRules, items, tok=tok, rules=rules, n_workers=n_workers, **kwargs)
+    kwargs = dict(tok=tok, rules=rules, **kwargs)
+    if not parallelable('n_workers', n_workers): n_workers = 0
+    if n_workers==0:
+        yield from enumerate(list(TokenizeWithRules(**kwargs)(items)))
+        return
+    batches = L(chunked(items, n_chunks=n_workers))
+    idxs = L(itertools.accumulate(0 + batches.map(len)))
+    ctx = get_context('fork') if sys.platform == 'darwin' else None
+    with ProcessPoolExecutor(n_workers, mp_context=ctx, initializer=_pg_setup, initargs=(TokenizeWithRules, kwargs)) as ex:
+        futs = {ex.submit(_pg_call, b): st for b,st in zip(batches, idxs)}
+        it = as_completed(futs)
+        if progress:
+            from fastprogress import progress_bar
+            it = progress_bar(it, total=len(futs), leave=False)
+        for f in it: yield from enumerate(f.result(), futs[f])
 
 # %% ../../nbs/30_text.core.ipynb #bd4f2f13
 fn_counter_pkl = 'counter.pkl'

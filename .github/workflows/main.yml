@@ -28,7 +28,7 @@ jobs:
         nb_unit: ['[0-2]','[3-5]','[6-9]']
     steps:
     - name: checkout contents of PR
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
     - name: Set up Python
       uses: actions/setup-python@v6
       with:
@@ -44,7 +44,7 @@ jobs:
         pip install -Uqe .[dev] --extra-index-url https://download.pytorch.org/whl/cpu
 
     - name: check for cache hit
-      uses: actions/cache@v5
+      uses: actions/cache@v6
       if: env.caching == 'true'
       id: cache
       with:

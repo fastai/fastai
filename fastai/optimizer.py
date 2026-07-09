@@ -44,7 +44,7 @@ class _BaseOptimizer():
         assert(len(self.param_lists)>1)
         self.freeze_to(-1)
 
-    def set_hypers(self, **kwargs): L(kwargs.items()).starmap(self.set_hyper)
+    def set_hypers(self, **kwargs): L(kwargs.items()).map(star(self.set_hyper))
     def _set_hyper(self,
         k, # Hyperparameter key
         v # Hyperparameter value
