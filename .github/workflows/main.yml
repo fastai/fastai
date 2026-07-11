@@ -34,7 +34,7 @@ jobs:
       with:
         python-version: ${{ matrix.py }}
         cache: "pip"
-        cache-dependency-path: settings.ini
+        cache-dependency-path: pyproject.toml
 
     - name: Install libraries
       run: |
