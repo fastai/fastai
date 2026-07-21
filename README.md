@@ -131,7 +131,7 @@ To run the tests in parallel, launch:
 For all the tests to pass, you’ll need to install the dependencies
 specified as part of dev_requirements in settings.ini
 
-`pip install -e .[dev]`
+`pip install -e '.[dev]'`
 
 Tests are written using `nbdev`, for example see the documentation for
 `test_eq`.
