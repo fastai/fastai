@@ -385,7 +385,7 @@ class TfmdLists(FilteredBase, L, GetAttr):
     ):
         self.tfms.setup(self, train_setup)
         if len(self) != 0:
-            x = super().__getitem__(0) if self.splits is None else super().__getitem__(self.splits[0])[0]
+            x = L(self.items, use_list=None)[0] if self.splits is None else L(self.items, use_list=None)[self.splits[0]][0]
             self.types = []
             for f in self.tfms.fs:
                 self.types.append(getattr(f, 'input_types', type(x)))
@@ -409,7 +409,7 @@ class TfmdLists(FilteredBase, L, GetAttr):
         return compose_tfms(x, tfms=self.tfms.fs[self.infer_idx(x):], split_idx=self.split_idx)
 
     def __getitem__(self, idx):
-        res = super().__getitem__(idx)
+        res = L(self.items, use_list=None)[idx]
         if self._after_item is None: return res
         return self._after_item(res) if is_indexer(idx) else res.map(self._after_item)
 

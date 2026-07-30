@@ -189,7 +189,7 @@ def _tokenize_files(func, files, path, output_dir=None, output_names=None, n_wor
     "Tokenize text `files` in parallel using `n_workers`"
     if tok is None: tok = WordTokenizer()
     output_dir = Path(ifnone(output_dir, path.parent/f'{path.name}_tok'))
-    if skip_if_exists and output_dir.exists(): return output_dir
+    if skip_if_exists and (output_dir/fn_counter_pkl).exists(): return output_dir
     output_dir.mkdir(exist_ok=True)
     if output_names is None: output_names = L(output_dir/f.relative_to(path) for f in files)
     rules = partial(Path.read_text, encoding=encoding) + L(ifnone(rules, defaults.text_proc_rules.copy()))
