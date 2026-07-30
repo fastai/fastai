@@ -2,6 +2,17 @@
 
 <!-- do not remove -->
 
+## 2.8.8
+
+### New Features
+
+- Replace `parallel_gen` with ProcessPoolExecutor in `parallel_tokenize` ([#4152](https://github.com/fastai/fastai/issues/4152))
+
+### Bugs Squashed
+
+- Fix TfmdLists indexing to bypass subclass `__getitem__` and only skip tokenization when counter.pkl exists ([#4159](https://github.com/fastai/fastai/issues/4159))
+
+
 ## 2.8.7
 
 - Allow any pytorch<3
@@ -749,4 +760,3 @@ The next version of fastai will be 2.1. It will require PyTorch 1.7, which has s
 ## Version 2.0.0
 
 - Initial release of v2
-
