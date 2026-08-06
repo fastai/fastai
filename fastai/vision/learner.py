@@ -291,18 +291,6 @@ def unet_learner(dls, arch, normalize=True, n_out=None, pretrained=True, weights
     store_attr('arch,normalize,n_out,pretrained', self=learn, **kwargs)
     return learn
 
-# %% ../../nbs/21_vision.learner.ipynb 59
-def create_cnn_model(*args, **kwargs):
-    "Deprecated name for `create_vision_model` -- do not use"
-    warn("`create_cnn_model` has been renamed to `create_vision_model` -- please update your code")
-    return create_vision_model(*args, **kwargs)
-
-# %% ../../nbs/21_vision.learner.ipynb 60
-def cnn_learner(*args, **kwargs):
-    "Deprecated name for `vision_learner` -- do not use"
-    warn("`cnn_learner` has been renamed to `vision_learner` -- please update your code")
-    return vision_learner(*args, **kwargs)
-
 # %% ../../nbs/21_vision.learner.ipynb 62
 @typedispatch
 def show_results(x:TensorImage, y, samples, outs, ctxs=None, max_n=10, nrows=None, ncols=None, figsize=None, **kwargs):
