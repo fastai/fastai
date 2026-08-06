@@ -19,7 +19,7 @@ except ModuleNotFoundError: pass
 # %% auto 0
 __all__ = ['model_meta', 'has_pool_type', 'cut_model', 'create_body', 'create_head', 'default_split', 'add_head',
            'create_vision_model', 'TimmBody', 'create_timm_model', 'vision_learner', 'create_unet_model',
-           'unet_learner', 'create_cnn_model', 'cnn_learner', 'show_results', 'plot_top_losses']
+           'unet_learner', 'show_results', 'plot_top_losses']
 
 # %% ../../nbs/21_vision.learner.ipynb 7
 def _is_pool_type(l): return re.search(r'Pool[123]d$', l.__class__.__name__)
@@ -290,18 +290,6 @@ def unet_learner(dls, arch, normalize=True, n_out=None, pretrained=True, weights
     # keep track of args for loggers
     store_attr('arch,normalize,n_out,pretrained', self=learn, **kwargs)
     return learn
-
-# %% ../../nbs/21_vision.learner.ipynb 59
-def create_cnn_model(*args, **kwargs):
-    "Deprecated name for `create_vision_model` -- do not use"
-    warn("`create_cnn_model` has been renamed to `create_vision_model` -- please update your code")
-    return create_vision_model(*args, **kwargs)
-
-# %% ../../nbs/21_vision.learner.ipynb 60
-def cnn_learner(*args, **kwargs):
-    "Deprecated name for `vision_learner` -- do not use"
-    warn("`cnn_learner` has been renamed to `vision_learner` -- please update your code")
-    return vision_learner(*args, **kwargs)
 
 # %% ../../nbs/21_vision.learner.ipynb 62
 @typedispatch
