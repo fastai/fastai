@@ -19,7 +19,7 @@ except ModuleNotFoundError: pass
 # %% auto 0
 __all__ = ['model_meta', 'has_pool_type', 'cut_model', 'create_body', 'create_head', 'default_split', 'add_head',
            'create_vision_model', 'TimmBody', 'create_timm_model', 'vision_learner', 'create_unet_model',
-           'unet_learner', 'create_cnn_model', 'cnn_learner', 'show_results', 'plot_top_losses']
+           'unet_learner', 'show_results', 'plot_top_losses']
 
 # %% ../../nbs/21_vision.learner.ipynb 7
 def _is_pool_type(l): return re.search(r'Pool[123]d$', l.__class__.__name__)
