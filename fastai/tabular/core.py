@@ -229,7 +229,7 @@ class TabularProc(InplaceTransform):
         return self(items.items if isinstance(items,Datasets) else items)
 
     @property
-    def name(self): return f"{super().name} -- {getattr(self,'__stored_args__',{})}"
+    def name(self): return f"{super().name} -- {init_args(self)}"
 
 # %% ../../nbs/40_tabular.core.ipynb #87389d74
 def _apply_cats (voc, add, c):

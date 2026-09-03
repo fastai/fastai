@@ -165,7 +165,7 @@ class WandbCallback(Callback):
 def gather_args(self:Learner):
     "Gather config parameters accessible to the learner"
     # args stored by `store_attr`
-    cb_args = {f'{cb}':getattr(cb,'__stored_args__',True) for cb in self.cbs}
+    cb_args = {f'{cb}':init_args(cb) or True for cb in self.cbs}
     args = {'Learner':self, **cb_args}
     # input dimensions
     try:
@@ -205,8 +205,7 @@ def _make_plt(img):
 def _format_config_value(v):
     if isinstance(v, list):
         return [_format_config_value(item) for item in v]
-    elif hasattr(v, '__stored_args__'):
-        return {**_format_config(v.__stored_args__), '_name': v}
+    elif (args := init_args(v)): return {**_format_config(args), '_name': v}
     return v
 
 # %% ../../nbs/70_callback.wandb.ipynb #5b490d6b
