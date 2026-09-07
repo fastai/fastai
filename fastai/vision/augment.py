@@ -20,7 +20,6 @@ from .data import *
 
 # %% ../../nbs/09_vision.augment.ipynb #4f678d91
 from torch import stack, zeros_like as t0, ones_like as t1
-from torch.distributions.bernoulli import Bernoulli
 
 # %% ../../nbs/09_vision.augment.ipynb #d5a5551d
 class RandTransform(DisplayedTransform):
@@ -34,7 +33,7 @@ class RandTransform(DisplayedTransform):
     ):
         store_attr('p')
         super().__init__(**kwargs)
-        self.before_call = ifnone(before_call,self.before_call)
+        if before_call is not None: self.before_call = before_call
 
     def before_call(self, 
         b, 
@@ -66,7 +65,7 @@ def flip_lr(x:TensorImageBase): return x.flip(-1)
 @patch
 def flip_lr(x:TensorPoint): return TensorPoint(_neg_axis(x.clone(), 0))
 @patch
-def flip_lr(x:TensorBBox):  return TensorBBox(TensorPoint(x.view(-1,2)).flip_lr().view(-1,4))
+def flip_lr(x:TensorBBox):  return TensorBBox(TensorPoint(x.view(-1,2)).flip_lr().view(-1,4))  # chkstyle: ignore
 
 # %% ../../nbs/09_vision.augment.ipynb #b7bd957b
 class FlipItem(RandTransform):
@@ -97,7 +96,7 @@ def dihedral(x:TensorPoint,
     if k in [3,5,6,7]: x = x.flip(1)
     return x
 @patch
-def dihedral(x:TensorBBox, 
+def dihedral(x:TensorBBox,  # chkstyle: ignore
     k:int, #Dihedral transformation to apply
 ):
     pnts = TensorPoint(x.view(-1,2)).dihedral(k).view(-1,2,2)
@@ -113,22 +112,18 @@ class DihedralItem(RandTransform):
 
     def encodes(self, x:(Image.Image,*TensorTypes)): return x.dihedral(self.k)
 
-# %% ../../nbs/09_vision.augment.ipynb #b55a5ac8
-from torchvision.transforms.functional import pad as tvpad
-
 # %% ../../nbs/09_vision.augment.ipynb #01a824b0
 mk_class('PadMode', **{o:o.lower() for o in ['Zeros', 'Border', 'Reflection']},
-         doc="All possible padding mode as attributes to get tab-completion and typo-proofing")
+    doc="All possible padding mode as attributes to get tab-completion and typo-proofing")
 
 # %% ../../nbs/09_vision.augment.ipynb #80f293fe
 _all_ = ['PadMode']
 
 # %% ../../nbs/09_vision.augment.ipynb #1c2876b7
-_pad_modes = {'zeros': 'constant', 'border': 'edge', 'reflection': 'reflect'}
+_pad_modes = dict(zeros='constant', border='edge', reflection='reflect')
 
 @patch
-def _do_crop_pad(x:Image.Image, sz, tl, orig_sz,
-                 pad_mode=PadMode.Zeros, resize_mode=BILINEAR, resize_to=None):
+def _do_crop_pad(x:Image.Image, sz, tl, orig_sz, pad_mode=PadMode.Zeros, resize_mode=BILINEAR, resize_to=None):
     if any(tl.ge(0)) or any(tl.add(sz).le(orig_sz)):
         # At least one dim is inside the image, so needs to be cropped
         c = tl.max(0)
@@ -153,7 +148,7 @@ def _do_crop_pad(x:TensorBBox, sz, tl, orig_sz, pad_mode=PadMode.Zeros, resize_t
     return TensorBBox(bbox, img_size=x.img_size)
 
 @patch
-def crop_pad(x:TensorBBox|TensorPoint|Image.Image,
+def crop_pad(x:TensorBBox|TensorPoint|Image.Image,  # chkstyle: ignore
     sz:int|tuple, # Crop/pad size of input, duplicated if one value is specified
     tl:tuple=None, # Optional top-left coordinate of the crop/pad, if `None` center crop
     orig_sz:tuple=None, # Original size of input
@@ -222,8 +217,7 @@ class RandomCrop(RandTransform):
             h_rand = (hd, -1) if hd < 0 else (0, hd)
             self.tl = fastuple(random.randint(*w_rand), random.randint(*h_rand))
 
-    def encodes(self, x:Image.Image|TensorBBox|TensorPoint):
-        return x.crop_pad(self.size, self.tl, orig_sz=self.orig_sz)
+    def encodes(self, x:Image.Image|TensorBBox|TensorPoint): return x.crop_pad(self.size, self.tl, orig_sz=self.orig_sz)
 
 # %% ../../nbs/09_vision.augment.ipynb #f0b73973
 class OldRandomCrop(CropPad):
@@ -235,7 +229,7 @@ class OldRandomCrop(CropPad):
 
 # %% ../../nbs/09_vision.augment.ipynb #00527c2c
 mk_class('ResizeMethod', **{o:o.lower() for o in ['Squish', 'Crop', 'Pad']},
-         doc="All possible resize method as attributes to get tab-completion and typo-proofing")
+    doc="All possible resize method as attributes to get tab-completion and typo-proofing")
 
 # %% ../../nbs/09_vision.augment.ipynb #d93b6880
 _all_ = ['ResizeMethod']
@@ -268,7 +262,7 @@ class Resize(RandTransform):
         orig_sz = _get_sz(x)
         if self.method==ResizeMethod.Squish:
             return x.crop_pad(orig_sz, fastuple(0,0), orig_sz=orig_sz, pad_mode=self.pad_mode,
-                   resize_mode=self.mode_mask if isinstance(x,PILMask) else self.mode, resize_to=self.size)
+                resize_mode=self.mode_mask if isinstance(x,PILMask) else self.mode, resize_to=self.size)
 
         w,h = orig_sz
         op = (operator.lt,operator.gt)[self.method==ResizeMethod.Pad]
@@ -276,7 +270,7 @@ class Resize(RandTransform):
         cp_sz = (int(m*self.size[0]),int(m*self.size[1]))
         tl = fastuple(int(self.pcts[0]*(w-cp_sz[0])), int(self.pcts[1]*(h-cp_sz[1])))
         return x.crop_pad(cp_sz, tl, orig_sz=orig_sz, pad_mode=self.pad_mode,
-                   resize_mode=self.mode_mask if isinstance(x,PILMask) else self.mode, resize_to=self.size)
+            resize_mode=self.mode_mask if isinstance(x,PILMask) else self.mode, resize_to=self.size)
 
 # %% ../../nbs/09_vision.augment.ipynb #c85221db
 @delegates()
@@ -284,13 +278,13 @@ class RandomResizedCrop(RandTransform):
     "Picks a random scaled crop of an image and resize it to `size`"
     split_idx,order = None,1
     def __init__(self, 
-         size:int|tuple, # Final size, duplicated if one value is specified,, 
-         min_scale:float=0.08, # Minimum scale of the crop, in relation to image area
-         ratio=(3/4, 4/3), # Range of width over height of the output
-         resamples=(BILINEAR, NEAREST), # Pillow `Image` resample mode, resamples[1] for mask
-         val_xtra:float=0.14, # The ratio of size at the edge cropped out in the validation set
-         max_scale:float=1., # Maximum scale of the crop, in relation to image area
-         **kwargs
+        size:int|tuple, # Final size, duplicated if one value is specified
+        min_scale:float=0.08, # Minimum scale of the crop, in relation to image area
+        ratio=(3/4, 4/3), # Range of width over height of the output
+        resamples=(BILINEAR, NEAREST), # Pillow `Image` resample mode, resamples[1] for mask
+        val_xtra:float=0.14, # The ratio of size at the edge cropped out in the validation set
+        max_scale:float=1., # Maximum scale of the crop, in relation to image area
+        **kwargs
     ):
         size = _process_sz(size)
         store_attr()
@@ -362,8 +356,7 @@ def _grid_sample(x, coords, mode='bilinear', padding_mode='reflection', align_co
         # amount we're resizing by, with 100% extra margin
         d = min(x.shape[-2]/coords.shape[-2], x.shape[-1]/coords.shape[-1])/2
         # If we're resizing up by >200%, and we're zooming less than that, interpolate first
-        if d>1 and d>z:
-            x = F.interpolate(x, scale_factor=1/d, mode='area', recompute_scale_factor=True)
+        if d>1 and d>z: x = F.interpolate(x, scale_factor=1/d, mode='area', recompute_scale_factor=True)
     return F.grid_sample(x, coords, mode=mode, padding_mode=padding_mode, align_corners=align_corners)
 
 # %% ../../nbs/09_vision.augment.ipynb #fca3bdd6
@@ -378,12 +371,12 @@ def affine_grid(
 # %% ../../nbs/09_vision.augment.ipynb #10b0ca25
 @patch
 def affine_coord(x: TensorImage, 
-     mat:Tensor=None, # Batch of affine transformation matrices
-     coord_tfm:Callable=None, # Partial function of composable coordinate transforms
-     sz:int|tuple=None, # Output size, duplicated if one value is specified
-     mode:str='bilinear', # PyTorch `F.grid_sample` interpolation applied to `TensorImage`
-     pad_mode=PadMode.Reflection, # Padding applied to `TensorImage`
-     align_corners=True # PyTorch `F.grid_sample` align_corners
+    mat:Tensor=None, # Batch of affine transformation matrices
+    coord_tfm:Callable=None, # Partial function of composable coordinate transforms
+    sz:int|tuple=None, # Output size, duplicated if one value is specified
+    mode:str='bilinear', # PyTorch `F.grid_sample` interpolation applied to `TensorImage`
+    pad_mode=PadMode.Reflection, # Padding applied to `TensorImage`
+    align_corners=True # PyTorch `F.grid_sample` align_corners
 ):
     "Apply affine and coordinate transforms to `TensorImage`"
     if mat is None and coord_tfm is None and sz is None: return x
@@ -428,7 +421,7 @@ def affine_coord(x: TensorPoint,
     return TensorPoint(x, sz=sz)
 
 @patch
-def affine_coord(x: TensorBBox, 
+def affine_coord(x: TensorBBox,  # chkstyle: ignore
     mat=None, # Batch of affine transformation matrices
     coord_tfm=None, # Partial function of composable coordinate transforms
     sz=None, # Output size, duplicated if one value is specified
@@ -440,8 +433,7 @@ def affine_coord(x: TensorBBox,
     if mat is None and coord_tfm is None: return x
     if sz is None: sz = getattr(x, "img_size", None)
     bs,n = x.shape[:2]
-    pnts = stack([x[...,:2], stack([x[...,0],x[...,3]],dim=2),
-                  stack([x[...,2],x[...,1]],dim=2), x[...,2:]], dim=2)
+    pnts = stack([x[...,:2], stack([x[...,0], x[...,3]], dim=2), stack([x[...,2], x[...,1]], dim=2), x[...,2:]], dim=2)
     pnts = TensorPoint(pnts.view(bs, 4*n, 2), img_size=sz).affine_coord(mat, coord_tfm, sz, mode, pad_mode)
     pnts = pnts.view(bs, n, 4, 2)
     tl,dr = pnts.min(dim=2)[0],pnts.max(dim=2)[0]
@@ -579,9 +571,9 @@ def _draw_mask(x, def_draw, draw=None, p=0.5, neutral=0., batch=False):
 # %% ../../nbs/09_vision.augment.ipynb #4cc16090
 def affine_mat(*ms):
     "Restructure length-6 vector `ms` into an affine matrix with 0,0,1 in the last line"
-    return stack([stack([ms[0], ms[1], ms[2]], dim=1),
-                  stack([ms[3], ms[4], ms[5]], dim=1),
-                  stack([t0(ms[0]), t0(ms[0]), t1(ms[0])], dim=1)], dim=1)
+    return stack([stack([ms[0], ms[1], ms[2]], dim=1),  # chkstyle: ignore-node
+        stack([ms[3], ms[4], ms[5]], dim=1),
+        stack([t0(ms[0]), t0(ms[0]), t1(ms[0])], dim=1)], dim=1)
 
 # %% ../../nbs/09_vision.augment.ipynb #0b648343
 def flip_mat(
@@ -593,7 +585,7 @@ def flip_mat(
     "Return a random flip matrix"
     def _def_draw(x): return x.new_ones(x.size(0))
     mask = x.new_ones(x.size(0)) - 2*_draw_mask(x, _def_draw, draw=draw, p=p, batch=batch)
-    return affine_mat(mask,     t0(mask), t0(mask),
+    return affine_mat(mask,     t0(mask), t0(mask),  # chkstyle: ignore-node
                       t0(mask), t1(mask), t0(mask))
 
 # %% ../../nbs/09_vision.augment.ipynb #ca49f33a
@@ -668,7 +660,7 @@ def dihedral_mat(
     ys = tensor([1,1,-1,1,-1,-1,1,-1], device=x.device).gather(0, idx)
     m0 = tensor([1,1,1,0,1,0,0,0], device=x.device).gather(0, idx)
     m1 = tensor([0,0,0,1,0,1,1,1], device=x.device).gather(0, idx)
-    return affine_mat(xs*m0,  xs*m1,  t0(xs),
+    return affine_mat(xs*m0,  xs*m1,  t0(xs),  # chkstyle: ignore-node
                       ys*m1,  ys*m0,  t0(xs)).float()
 
 # %% ../../nbs/09_vision.augment.ipynb #3402ff49
@@ -724,7 +716,7 @@ def rotate_mat(
     def _def_draw(x):   return x.new_empty(x.size(0)).uniform_(-max_deg, max_deg)
     def _def_draw_b(x): return x.new_zeros(x.size(0)) + random.uniform(-max_deg, max_deg)
     thetas = _draw_mask(x, _def_draw_b if batch else _def_draw, draw=draw, p=p, batch=batch) * math.pi/180
-    return affine_mat(thetas.cos(), thetas.sin(), t0(thetas),
+    return affine_mat(thetas.cos(), thetas.sin(), t0(thetas),  # chkstyle: ignore-node
                      -thetas.sin(), thetas.cos(), t0(thetas))
 
 # %% ../../nbs/09_vision.augment.ipynb #813ae11c
@@ -780,7 +772,7 @@ def zoom_mat(
     row_pct = _draw_mask(x, def_draw_c, draw=draw_y, p=1., batch=batch)
     col_c = (1-s) * (2*col_pct - 1)
     row_c = (1-s) * (2*row_pct - 1)
-    return affine_mat(s,     t0(s), col_c,
+    return affine_mat(s,     t0(s), col_c,  # chkstyle: ignore-node
                       t0(s), s,     row_c)
 
 # %% ../../nbs/09_vision.augment.ipynb #76ecc04c
@@ -816,8 +808,7 @@ class Zoom(AffineCoordTfm):
         super().__init__(aff_fs, size=size, mode=mode, pad_mode=pad_mode, align_corners=align_corners)
 
 # %% ../../nbs/09_vision.augment.ipynb #f59ebe09
-def solve(A,B):
-    return torch.linalg.solve(A,B)
+def solve(A,B): return torch.linalg.solve(A,B)
 
 # %% ../../nbs/09_vision.augment.ipynb #dad4e52a
 def find_coeffs(
@@ -865,7 +856,7 @@ class _WarpCoord():
         y_t = _draw_mask(x, self._def_draw, self.draw_y, p=self.p, batch=self.batch)
         orig_pts = torch.tensor([[-1,-1], [-1,1], [1,-1], [1,1]], dtype=x.dtype, device=x.device)
         self.orig_pts = orig_pts.unsqueeze(0).expand(x.size(0),4,2)
-        targ_pts = stack([stack([-1-y_t, -1-x_t]), stack([-1+y_t, 1+x_t]),
+        targ_pts = stack([stack([-1-y_t, -1-x_t]), stack([-1+y_t, 1+x_t]),  # chkstyle: ignore-node
                           stack([ 1+y_t, -1+x_t]), stack([ 1-y_t, 1-x_t])])
         self.targ_pts = targ_pts.permute(2,0,1)
 
@@ -957,8 +948,7 @@ class _BrightnessLogit():
         if not self.batch: return x.new_empty(x.size(0)).uniform_(0.5*(1-self.max_lighting), 0.5*(1+self.max_lighting))
         return x.new_zeros(x.size(0)) + random.uniform(0.5*(1-self.max_lighting), 0.5*(1+self.max_lighting))
 
-    def before_call(self, x):
-        self.change = _draw_mask(x, self._def_draw, draw=self.draw, p=self.p, neutral=0.5, batch=self.batch)
+    def before_call(self, x): self.change = _draw_mask(x, self._def_draw, draw=self.draw, p=self.p, neutral=0.5, batch=self.batch)
 
     def __call__(self, x): return x.add_(logit(self.change[:,None,None,None]))
 
@@ -991,8 +981,7 @@ class _ContrastLogit():
         else: res = x.new_zeros(x.size(0)) + random.uniform(math.log(1-self.max_lighting), -math.log(1-self.max_lighting))
         return torch.exp(res)
 
-    def before_call(self, x):
-        self.change = _draw_mask(x, self._def_draw, draw=self.draw, p=self.p, neutral=1., batch=self.batch)
+    def before_call(self, x): self.change = _draw_mask(x, self._def_draw, draw=self.draw, p=self.p, neutral=1., batch=self.batch)
 
     def __call__(self, x): return x.mul_(self.change[:,None,None,None])
 
@@ -1030,8 +1019,7 @@ class _SaturationLogit():
         else: res = x.new_zeros(x.size(0)) + random.uniform(math.log(1-self.max_lighting), -math.log(1-self.max_lighting))
         return torch.exp(res)
 
-    def before_call(self, x):
-        self.change = _draw_mask(x, self._def_draw, draw=self.draw, p=self.p, neutral=1., batch=self.batch)
+    def before_call(self, x): self.change = _draw_mask(x, self._def_draw, draw=self.draw, p=self.p, neutral=1., batch=self.batch)
 
     def __call__(self, x):
         #interpolate between grayscale and original in-place
@@ -1120,8 +1108,7 @@ def hsv(x: TensorImage, func): return TensorImage(hsv2rgb(func(rgb2hsv(x))))
 # %% ../../nbs/09_vision.augment.ipynb #8c609dc6
 class HSVTfm(SpaceTfm):
     "Apply `fs` to the images in HSV space"
-    def __init__(self, fs, **kwargs):
-        super().__init__(fs, TensorImage.hsv, **kwargs)
+    def __init__(self, fs, **kwargs): super().__init__(fs, TensorImage.hsv, **kwargs)
 
 # %% ../../nbs/09_vision.augment.ipynb #21afea61
 class _Hue():
@@ -1132,8 +1119,7 @@ class _Hue():
         else: res = x.new_zeros(x.size(0)) + random.uniform(math.log(1-self.max_hue), -math.log(1-self.max_hue))
         return torch.exp(res)
 
-    def before_call(self, x):
-        self.change = _draw_mask(x, self._def_draw, draw=self.draw, p=self.p, neutral=0., batch=self.batch)
+    def before_call(self, x): self.change = _draw_mask(x, self._def_draw, draw=self.draw, p=self.p, neutral=0., batch=self.batch)
 
     def __call__(self, x):
         h,s,v = x.unbind(1)
