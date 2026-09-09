@@ -212,7 +212,7 @@ def tokenize_folder(path, extensions=None, folders=None, output_dir=None, skip_i
     path,extensions = Path(path),ifnone(extensions, ['.txt'])
     files = get_files(path, extensions=extensions, recurse=True, folders=folders)
     def _f(i,output_dir): return output_dir/files[i].relative_to(path)
-    return _tokenize_files(_f, files, path, skip_if_exists=skip_if_exists, **kwargs)
+    return _tokenize_files(_f, files, path, output_dir=output_dir, skip_if_exists=skip_if_exists, **kwargs)
 
 # %% ../../nbs/30_text.core.ipynb #429353d7
 @delegates(_tokenize_files)
