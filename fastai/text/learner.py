@@ -291,7 +291,7 @@ def show_results(x: LMTensorText, y, samples, outs, ctxs=None, max_n=10, **kwarg
 def show_results(x: TensorText, y, samples, outs, ctxs=None, max_n=10, trunc_at=150, **kwargs):
     if ctxs is None: ctxs = get_empty_df(min(len(samples), max_n))
     samples = L((s[0].truncate(trunc_at),*s[1:]) for s in samples)
-    ctxs = show_results[object](x, y, samples, outs, ctxs=ctxs, max_n=max_n, **kwargs)
+    ctxs = show_results._resolve_method_with_cache((object, object, object, object))[0](x, y, samples, outs, ctxs=ctxs, max_n=max_n, **kwargs)
     display_df(pd.DataFrame(ctxs))
     return ctxs
 
