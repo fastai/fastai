@@ -207,7 +207,8 @@ def _make_plt(img):
 # %% ../../nbs/70_callback.wandb.ipynb #613c6525
 def _format_config_value(v):
     if isinstance(v, list): return [_format_config_value(item) for item in v]
-    elif (args := init_args(v)): return {**_format_config(args), '_name': v}
+    # `init_args` reads `vars(v)`, which ints, strs, None, tuples, devices and builtins don't have
+    elif hasattr(v, '__dict__') and (args := init_args(v)): return {**_format_config(args), '_name': v}
     return v
 
 # %% ../../nbs/70_callback.wandb.ipynb #5b490d6b
