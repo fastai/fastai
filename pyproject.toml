@@ -22,7 +22,7 @@ Documentation = "https://docs.fast.ai/"
 fastai = "fastai._modidx:d"
 
 [project.optional-dependencies]
-dev = ['nbdev', 'ipywidgets', 'lightning', 'pytorch-ignite', 'transformers', 'sentencepiece', 'tensorboard', 'pydicom', 'catalyst', 'flask_compress', 'captum>=0.4.1,<=0.8.0', 'flask', 'wandb', 'kornia', 'scikit-image', 'comet_ml', 'albumentations', 'opencv-python', 'pyarrow', 'ninja', 'timm>=0.9', 'accelerate>=0.21', 'ipykernel']
+dev = ['nbdev', 'ipywidgets', 'lightning', 'pytorch-ignite', 'transformers', 'sentencepiece', 'tensorboard', 'pydicom', 'rawpy', 'catalyst', 'flask_compress', 'captum>=0.4.1,<=0.8.0', 'flask', 'wandb', 'kornia', 'scikit-image', 'comet_ml', 'albumentations', 'opencv-python', 'pyarrow', 'ninja', 'timm>=0.9', 'accelerate>=0.21', 'ipykernel']
 
 
 [project.scripts]

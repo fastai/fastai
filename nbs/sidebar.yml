@@ -79,6 +79,7 @@ website:
         - 24_vision.gan.ipynb
         - 09b_vision.utils.ipynb
         - 09c_vision.widgets.ipynb
+        - 09d_vision.raw.ipynb
       - section: Text
         contents:
         - 30_text.core.ipynb
