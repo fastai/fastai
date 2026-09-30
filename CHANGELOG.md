@@ -2,6 +2,109 @@
 
 <!-- do not remove -->
 
+## 2.8.12
+
+### New Features
+
+- prefetch data in tests ([#4168](https://github.com/fastai/fastai/issues/4168))
+
+
+## 2.8.11
+
+### Bugs Squashed
+
+- Fix `RandTransform` repr recursion, and document vision.augment ([#4167](https://github.com/fastai/fastai/pull/4167)), thanks to [@jph00](https://github.com/jph00)
+
+
+## 2.8.10
+
+### Bugs Squashed
+
+- Pin plum-dispatch below 2.10, which breaks import on compiled wheels ([#4166](https://github.com/fastai/fastai/pull/4166)), thanks to [@jph00](https://github.com/jph00)
+
+
+## 2.8.9
+
+### New Features
+
+- Add SerpApi-backed image search, and document vision.utils ([#4165](https://github.com/fastai/fastai/pull/4165)), thanks to [@jph00](https://github.com/jph00)
+- Read callback and transform arguments with `init_args` ([#4164](https://github.com/fastai/fastai/pull/4164)), thanks to [@jph00](https://github.com/jph00)
+
+
+## 2.8.8
+
+### New Features
+
+- Replace `parallel_gen` with ProcessPoolExecutor in `parallel_tokenize` ([#4152](https://github.com/fastai/fastai/issues/4152))
+
+### Bugs Squashed
+
+- Fix TfmdLists indexing to bypass subclass `__getitem__` and only skip tokenization when counter.pkl exists ([#4159](https://github.com/fastai/fastai/issues/4159))
+
+
+## 2.8.7
+
+- Allow any pytorch<3
+
+
+## 2.8.6
+
+- New fastcore dep
+
+
+## 2.8.5
+
+### New Features
+
+- PyTorch 2.9 support ([#4116](https://github.com/fastai/fastai/issues/4116))
+
+### Bugs Squashed
+
+- Address deprecation warnings in fp16 Callback ([#4124](https://github.com/fastai/fastai/pull/4124)), thanks to [@FacuRoffet99](https://github.com/FacuRoffet99)
+- Make SaveModelCallback fix compatible with TextLearner ([#4121](https://github.com/fastai/fastai/pull/4121)), thanks to [@austinvhuang](https://github.com/austinvhuang)
+
+
+## 2.8.4
+
+### Bugs Squashed
+
+- set `weights_only=False` for `load_model_text`, fixes LRFinder / `lr_find` ([#4120](https://github.com/fastai/fastai/pull/4120)), thanks to [@austinvhuang](https://github.com/austinvhuang)
+- fix: Pass alpha and beta parameters to `rnn_cbs()` in TextLearner constructor ([#4119](https://github.com/fastai/fastai/pull/4119)), thanks to [@austinvhuang](https://github.com/austinvhuang)
+- Fixed SaveModelCallback ([#4118](https://github.com/fastai/fastai/pull/4118)), thanks to [@FacuRoffet99](https://github.com/FacuRoffet99)
+
+
+## 2.8.3
+
+### New Features
+
+- PyTorch 2.8 support ([#4116](https://github.com/fastai/fastai/issues/4116))
+
+### Bugs Squashed
+
+- Update plot lr find ([#4098](https://github.com/fastai/fastai/pull/4098)), thanks to [@Timmecom](https://github.com/Timmecom)
+
+
+## 2.8.2
+
+### New Features
+
+- update torch version to 2.7 ([#4095](https://github.com/fastai/fastai/pull/4095)), thanks to [@tonyhoo](https://github.com/tonyhoo)
+
+
+## 2.8.1
+
+### New Features
+
+- Use fasttransform ([#4074](https://github.com/fastai/fastai/pull/4074)), thanks to [@RensDimmendaal](https://github.com/RensDimmendaal)
+
+
+## 2.7.19
+
+### New Features
+
+- Add support for PyTorch 2.6 ([#4078](https://github.com/fastai/fastai/pull/4078)), thanks to [@warner-benjamin](https://github.com/warner-benjamin)
+
+
 ## 2.7.18
 
 ### New Features
@@ -686,4 +789,3 @@ The next version of fastai will be 2.1. It will require PyTorch 1.7, which has s
 ## Version 2.0.0
 
 - Initial release of v2
-

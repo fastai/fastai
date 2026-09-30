@@ -1,0 +1,46 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fastai"
+dynamic = ["version"]
+description = "fastai simplifies training fast and accurate neural nets using modern best practices"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "Apache-2.0"
+authors = [{name = "Jeremy Howard, Sylvain Gugger, and contributors", email = "info@fast.ai"}]
+keywords = ['fastai,', 'deep', 'learning,', 'machine', 'learning']
+classifiers = ["Natural Language :: English", "Intended Audience :: Developers", "Development Status :: 4 - Beta", "Programming Language :: Python :: 3", "Programming Language :: Python :: 3 :: Only"]
+dependencies = ['fastdownload>=0.0.8,<2', 'fastcore>=2.2.22', 'fasttransform>=0.0.3', 'torchvision>=0.11', 'matplotlib', 'pandas', 'requests', 'pyyaml', 'fastprogress>=0.2.4', 'pillow>=9.0.0', 'scikit-learn', 'scipy', 'spacy<4', 'packaging', 'plum-dispatch<2.10', 'cloudpickle', 'torch>=1.10,<3']
+
+[project.urls]
+Repository = "https://github.com/fastai/fastai"
+Documentation = "https://docs.fast.ai/"
+
+[project.entry-points.nbdev]
+fastai = "fastai._modidx:d"
+
+[project.optional-dependencies]
+dev = ['nbdev', 'ipywidgets', 'lightning', 'pytorch-ignite', 'transformers', 'sentencepiece', 'tensorboard', 'pydicom', 'catalyst', 'flask_compress', 'captum>=0.4.1,<=0.8.0', 'flask', 'wandb', 'kornia', 'scikit-image', 'comet_ml', 'albumentations', 'opencv-python', 'pyarrow', 'ninja', 'timm>=0.9', 'accelerate>=0.21', 'ipykernel']
+
+
+[project.scripts]
+configure_accelerate = "fastai.distributed:configure_accelerate"
+
+[tool.setuptools.dynamic]
+version = {attr = "fastai.__version__"}
+
+[tool.setuptools.packages.find]
+include = ["fastai"]
+
+[tool.nbdev]
+allowed_metadata_keys = ['solveit']
+allowed_cell_metadata_keys = ['solveit_ai']
+tst_flags = ['slow', 'cpp', 'cuda', 'multicuda']
+test_setup = 'fastai.data.external:prefetch_data'
+jupyter_hooks = true
+custom_sidebar = true
+
+[tool.chkstyle]
+skip_paths = ["_modidx.py"]

@@ -126,3 +126,4 @@ venv.bak/
 .DS_Store
 _docs/
 
+meta/
