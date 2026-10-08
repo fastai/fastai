@@ -33,7 +33,7 @@ class AccumMetric(Metric):
     def __init__(self, func, dim_argmax=None, activation=ActivationType.No, thresh=None, to_np=False,
                  invert_arg=False, flatten=True, name=None, **kwargs):
         store_attr('func,dim_argmax,activation,thresh,flatten')
-        self._name = ifnone(name, self.func.func.__name__ if hasattr(self.func, 'func') else  self.func.__name__)
+        self._name = name if name is not None else (self.func.func.__name__ if hasattr(self.func, 'func') else self.func.__name__)
         self.to_np,self.invert_args,self.kwargs = to_np,invert_arg,kwargs
 
     def reset(self):
