@@ -119,7 +119,7 @@ def top_k_accuracy(inp, targ, k=5, axis=-1):
     "Computes the Top-k accuracy (`targ` is in the top `k` predictions of `inp`)"
     inp = inp.topk(k=k, dim=axis)[1]
     targ = targ.unsqueeze(dim=axis).expand_as(inp)
-    return (inp == targ).sum(dim=-1).float().mean()
+    return (inp == targ).sum(dim=axis).float().mean()
 
 # %% ../nbs/13b_metrics.ipynb #a01d30ec
 def APScoreBinary(axis=-1, average='macro', pos_label=1, sample_weight=None):
