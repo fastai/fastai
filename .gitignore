@@ -92,7 +92,6 @@ target/
 # pyenv
 .python-version
 
-.vscode/
 
 # celery beat schedule file
 celerybeat-schedule
@@ -101,7 +100,6 @@ celerybeat-schedule
 *.sage.py
 
 # Environments
-.env
 .venv
 env/
 venv/
@@ -127,3 +125,5 @@ venv.bak/
 _docs/
 
 meta/
+config.bat
+node_modules
