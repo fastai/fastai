@@ -279,7 +279,14 @@ class Learner(GetAttr):
     def validation_context(self, cbs=None, inner=False):
         cms = [self.no_logging(),self.no_mbar(), self.lock]
         if cbs: cms.append(self.added_cbs(cbs))
-        if not inner: cms.append(self)
+        if not inner:
+            rec = getattr(self, 'recorder', None)
+            if rec is not None:
+                for n in rec._stateattrs + ('metric_names',):
+                    if hasattr(rec,n): cms.append(contextmanager(replacing_yield)(rec,n,getattr(rec,n)))
+                for met in (rec.loss,rec.smooth_loss):
+                    cms.append(contextmanager(replacing_yield)(met,'__dict__',met.__dict__.copy()))
+            cms.append(self)
         return ContextManagers(cms)
 
     def validate(self, ds_idx=1, dl=None, cbs=None):
@@ -382,7 +389,7 @@ add_docs(Learner, "Group together a `model`, some `dls` and a `loss_func` to han
     one_batch="Train or evaluate `self.model` on batch `(xb,yb)`",
     all_batches="Train or evaluate `self.model` on all the batches of `self.dl`",
     fit="Fit `self.model` for `n_epoch` using `cbs`. Optionally `reset_opt`.",
-    validate="Validate on `dl` with potential new `cbs`.",
+    validate="Validate on `dl` with potential new `cbs`, keeping training records.",
     get_preds="Get the predictions and targets on the `ds_idx`-th dbunchset or `dl`, optionally `with_input` and `with_loss`",
     predict="Prediction on `item`, fully decoded, loss function decoded and probabilities",
     validation_context="A `ContextManagers` suitable for validation, with optional `cbs`",
