@@ -103,6 +103,16 @@ _loop = ['Start Fit', 'before_fit', 'Start Epoch Loop', 'before_epoch', 'Start T
          'after_validate', 'End Epoch Loop', 'after_cancel_epoch', 'after_epoch', 'End Fit',
          'after_cancel_fit', 'after_fit']
 
+# %% ../nbs/13a_learner.ipynb #d3cc3d85
+class _ValidationContext(ContextManagers):
+    "Clean up entered contexts if a validation callback fails during setup"
+    def __enter__(self):
+        try: return super().__enter__()
+        except BaseException as e:
+            self.__exit__(type(e),e,e.__traceback__)
+            raise
+
+
 # %% ../nbs/13a_learner.ipynb #b50c27de
 class Learner(GetAttr):
     _default='model'
@@ -279,8 +289,15 @@ class Learner(GetAttr):
     def validation_context(self, cbs=None, inner=False):
         cms = [self.no_logging(),self.no_mbar(), self.lock]
         if cbs: cms.append(self.added_cbs(cbs))
-        if not inner: cms.append(self)
-        return ContextManagers(cms)
+        if not inner:
+            rec = getattr(self, 'recorder', None)
+            if rec is not None:
+                for n in rec._stateattrs + ('metric_names',):
+                    if hasattr(rec,n): cms.append(contextmanager(replacing_yield)(rec,n,getattr(rec,n)))
+                for met in (rec.loss,rec.smooth_loss):
+                    cms.append(contextmanager(replacing_yield)(met,'__dict__',met.__dict__.copy()))
+            cms.append(self)
+        return _ValidationContext(cms)
 
     def validate(self, ds_idx=1, dl=None, cbs=None):
         if dl is None: dl = self.dls[ds_idx]
@@ -313,7 +330,7 @@ class Learner(GetAttr):
         cb = GatherPredsCallback(with_input=with_input, with_loss=with_loss, **kwargs)
         ctx_mgrs = self.validation_context(cbs=L(cbs)+[cb], inner=inner)
         if with_loss: ctx_mgrs.append(self.loss_not_reduced())
-        with ContextManagers(ctx_mgrs):
+        with ctx_mgrs:
             self._do_epoch_validate(dl=dl)
             if act is None: act = getcallable(self.loss_func, 'activation')
             res = cb.all_tensors()
@@ -382,7 +399,7 @@ add_docs(Learner, "Group together a `model`, some `dls` and a `loss_func` to han
     one_batch="Train or evaluate `self.model` on batch `(xb,yb)`",
     all_batches="Train or evaluate `self.model` on all the batches of `self.dl`",
     fit="Fit `self.model` for `n_epoch` using `cbs`. Optionally `reset_opt`.",
-    validate="Validate on `dl` with potential new `cbs`.",
+    validate="Validate on `dl` with potential new `cbs`, keeping training records.",
     get_preds="Get the predictions and targets on the `ds_idx`-th dbunchset or `dl`, optionally `with_input` and `with_loss`",
     predict="Prediction on `item`, fully decoded, loss function decoded and probabilities",
     validation_context="A `ContextManagers` suitable for validation, with optional `cbs`",
