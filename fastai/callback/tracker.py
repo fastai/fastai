@@ -109,7 +109,8 @@ class SaveModelCallback(TrackerCallback):
     def after_fit(self, **kwargs):
         "Load the best model."
         if self.at_end: self._save(f'{self.fname}')
-        elif not self.every_epoch: self.learn.load(f'{self.fname}', with_opt=self.with_opt, weights_only=False)
+        elif not self.every_epoch and self.last_saved_path is not None:
+            self.learn.load(f'{self.fname}', with_opt=self.with_opt, weights_only=False)
 
 # %% ../../nbs/17_callback.tracker.ipynb #71413ed0
 class ReduceLROnPlateau(TrackerCallback):
