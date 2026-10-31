@@ -103,6 +103,16 @@ _loop = ['Start Fit', 'before_fit', 'Start Epoch Loop', 'before_epoch', 'Start T
          'after_validate', 'End Epoch Loop', 'after_cancel_epoch', 'after_epoch', 'End Fit',
          'after_cancel_fit', 'after_fit']
 
+# %% ../nbs/13a_learner.ipynb #d3cc3d85
+class _ValidationContext(ContextManagers):
+    "Clean up entered contexts if a validation callback fails during setup"
+    def __enter__(self):
+        try: return super().__enter__()
+        except BaseException as e:
+            self.__exit__(type(e),e,e.__traceback__)
+            raise
+
+
 # %% ../nbs/13a_learner.ipynb #b50c27de
 class Learner(GetAttr):
     _default='model'
@@ -287,7 +297,7 @@ class Learner(GetAttr):
                 for met in (rec.loss,rec.smooth_loss):
                     cms.append(contextmanager(replacing_yield)(met,'__dict__',met.__dict__.copy()))
             cms.append(self)
-        return ContextManagers(cms)
+        return _ValidationContext(cms)
 
     def validate(self, ds_idx=1, dl=None, cbs=None):
         if dl is None: dl = self.dls[ds_idx]
@@ -320,7 +330,7 @@ class Learner(GetAttr):
         cb = GatherPredsCallback(with_input=with_input, with_loss=with_loss, **kwargs)
         ctx_mgrs = self.validation_context(cbs=L(cbs)+[cb], inner=inner)
         if with_loss: ctx_mgrs.append(self.loss_not_reduced())
-        with ContextManagers(ctx_mgrs):
+        with ctx_mgrs:
             self._do_epoch_validate(dl=dl)
             if act is None: act = getcallable(self.loss_func, 'activation')
             res = cb.all_tensors()
