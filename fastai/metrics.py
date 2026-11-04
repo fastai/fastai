@@ -48,7 +48,7 @@ class AccumMetric(Metric):
             if self.activation == ActivationType.BinarySoftmax: pred = pred[:, -1]
         elif self.activation == ActivationType.Sigmoid: pred = torch.sigmoid(pred)
         elif self.dim_argmax: pred = pred.argmax(dim=self.dim_argmax)
-        if self.thresh:  pred = (pred >= self.thresh)
+        if self.thresh is not None: pred = (pred >= self.thresh)
         self.accum_values(pred,learn.y,learn)
 
     def accum_values(self, preds, targs,learn=None):
