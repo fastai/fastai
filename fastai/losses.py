@@ -249,11 +249,11 @@ class DiceLoss:
         
     def __call__(self, pred:Tensor, targ:Tensor) -> Tensor:
         "One-hot encodes targ, then runs IoU calculation then takes 1-dice value"
-        targ = self._one_hot(targ, pred.shape[self.axis])
+        targ = self._one_hot(targ, pred.shape[self.axis], axis=self.axis)
         pred, targ = TensorBase(pred), TensorBase(targ)
         assert pred.shape == targ.shape, 'input and target dimensions differ, DiceLoss expects non one-hot targs'
         pred = self.activation(pred)
-        sum_dims = list(range(2, len(pred.shape)))
+        sum_dims = [i for i in range(1, pred.ndim) if i != self.axis % pred.ndim]
         inter = torch.sum(pred*targ, dim=sum_dims)        
         union = (torch.sum(pred**2+targ, dim=sum_dims) if self.square_in_union
             else torch.sum(pred+targ, dim=sum_dims))
