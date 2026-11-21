@@ -151,7 +151,7 @@ def layer_info(learn, *xb):
     "Return layer infos of `model` on `xb` (only support batch first inputs)"
     def _track(m, i, o): 
         params, trainable, shape = '', '', ''
-        same = any((isinstance(x[0], torch.Tensor) and x[0].shape[1:] == x[1].shape for x in zip(i, o)))
+        same = any((isinstance(x[0], torch.Tensor) and isinstance(x[1], torch.Tensor) and x[0].shape[1:] == x[1].shape for x in zip(i, o)))
         shape = apply(lambda x: x.shape, o)
         if hasattr(m, 'weight'): # non activation layer
             params, trainable = total_params(m)
@@ -171,7 +171,7 @@ def _get_shapes(o, bs):
 
 def _print_shapes(o, bs):
     if isinstance(o, torch.Size): return _get_shapes(o, bs)
-    elif isinstance(o, tuple): return _get_shapes(o[0], bs)
+    elif isinstance(o, tuple): return _print_shapes(o[0], bs) if o else ''
     else: return str([_print_shapes(x, bs) for x in o])
 
 # %% ../../nbs/15_callback.hook.ipynb #8d9fe556
