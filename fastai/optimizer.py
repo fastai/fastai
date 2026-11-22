@@ -399,6 +399,7 @@ class Lookahead(Optimizer, GetAttr):
         return state
 
     def load_state_dict(self, sd):
+        sd = sd.copy()
         self.count = sd.pop('count')
         self.slow_weights = sd.pop('slow_weights')
         self.opt.load_state_dict(sd)
