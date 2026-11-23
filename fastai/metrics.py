@@ -210,7 +210,7 @@ def accuracy_multi(inp, targ, thresh=0.5, sigmoid=True):
 def APScoreMulti(sigmoid=True, average='macro', pos_label=1, sample_weight=None):
     "Average Precision for multi-label classification problems"
     activation = ActivationType.Sigmoid if sigmoid else ActivationType.No
-    return skm_to_fastai(skm.average_precision_score, activation=activation, flatten=False,
+    return skm_to_fastai(skm.average_precision_score, is_class=False, activation=activation, flatten=False,
                          average=average, pos_label=pos_label, sample_weight=sample_weight)
 
 # %% ../nbs/13b_metrics.ipynb #f76dd94d
@@ -272,7 +272,7 @@ def RecallMulti(thresh=0.5, sigmoid=True, labels=None, pos_label=1, average='mac
 def RocAucMulti(sigmoid=True, average='macro', sample_weight=None, max_fpr=None):
     "Area Under the Receiver Operating Characteristic Curve for multi-label binary classification problems"
     activation = ActivationType.Sigmoid if sigmoid else ActivationType.No
-    return skm_to_fastai(skm.roc_auc_score, activation=activation, flatten=False,
+    return skm_to_fastai(skm.roc_auc_score, is_class=False, activation=activation, flatten=False,
                          average=average, sample_weight=sample_weight, max_fpr=max_fpr)
 
 # %% ../nbs/13b_metrics.ipynb #8247fde5
