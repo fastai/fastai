@@ -438,7 +438,7 @@ class CorpusBLEUMetric(Metric):
     @property
     def value(self):
         if self.counts == 0: return None
-        elif max(self.corrects) == 0: return 0.0
+        elif min(self.counts) == 0 or max(self.corrects) == 0: return 0.0
         else:
             precs = [c/t for c,t in zip(self.corrects,self.counts)]
             len_penalty = math.exp(1 - self.targ_len/self.pred_len) if self.pred_len < self.targ_len else 1
