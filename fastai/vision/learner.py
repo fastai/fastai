@@ -308,7 +308,7 @@ def cnn_learner(*args, **kwargs):
 @dispatch
 def show_results(x:TensorImage, y, samples, outs, ctxs=None, max_n=10, nrows=None, ncols=None, figsize=None, **kwargs):
     if ctxs is None: ctxs = get_grid(min(len(samples), max_n), nrows=nrows, ncols=ncols, figsize=figsize)
-    ctxs = show_results[object](x, y, samples, outs, ctxs=ctxs, max_n=max_n, **kwargs)
+    ctxs = get_show_results_func(object)(x, y, samples, outs, ctxs=ctxs, max_n=max_n, **kwargs)
     return ctxs
 
 # %% ../../nbs/21_vision.learner.ipynb #fc1a43d0
