@@ -32,7 +32,7 @@ configure_accelerate = "fastai.distributed:configure_accelerate"
 version = {attr = "fastai.__version__"}
 
 [tool.setuptools.packages.find]
-include = ["fastai"]
+include = ["fastai*"]
 
 [tool.nbdev]
 to_meta = ["export"]
