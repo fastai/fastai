@@ -20,7 +20,7 @@ from .data import *
 
 # %% ../../nbs/09_vision.augment.ipynb #4f678d91
 from torch import stack, zeros_like as t0, ones_like as t1
-from torchvision.transforms.functional import pad as tvpad
+from torchvision.transforms.functional import pad as tvpad, resize as tvresize, InterpolationMode
 
 # %% ../../nbs/09_vision.augment.ipynb #d5a5551d
 class RandTransform(DisplayedTransform):
@@ -122,6 +122,7 @@ _all_ = ['PadMode']
 
 # %% ../../nbs/09_vision.augment.ipynb #1c2876b7
 _pad_modes = dict(zeros='constant', border='edge', reflection='reflect')
+_resize_modes = {NEAREST:InterpolationMode.NEAREST, BILINEAR:InterpolationMode.BILINEAR}
 
 @patch
 def _do_crop_pad(x:Image.Image, sz, tl, orig_sz, pad_mode=PadMode.Zeros, resize_mode=BILINEAR, resize_to=None):
@@ -138,6 +139,24 @@ def _do_crop_pad(x:Image.Image, sz, tl, orig_sz, pad_mode=PadMode.Zeros, resize_
     return x
 
 @patch
+def _do_crop_pad(x:TensorImageBase, sz, tl, orig_sz, pad_mode=PadMode.Zeros, resize_mode=BILINEAR, resize_to=None):
+    add_dim = x.ndim==2
+    if add_dim: x = x[None]
+    if any(tl.ge(0)) or any(tl.add(sz).le(orig_sz)):
+        # At least one dim is inside the image, so needs to be cropped
+        c,br = tl.max(0),tl.add(sz).min(orig_sz)
+        x = x[..., c[1]:br[1], c[0]:br[0]]
+    if any(tl.lt(0)) or any(tl.add(sz).ge(orig_sz)):
+        # At least one dim is outside the image, so needs to be padded
+        p = (-tl).max(0)
+        f = (sz-orig_sz).add(tl).max(0)
+        x = tvpad(x, (*p, *f), padding_mode=_pad_modes[pad_mode])
+    if resize_to is not None:
+        mode = _resize_modes[resize_mode]
+        x = tvresize(x, [resize_to[1],resize_to[0]], interpolation=mode, antialias=mode==InterpolationMode.BILINEAR)
+    return x[0] if add_dim else x
+
+@patch
 def _do_crop_pad(x:TensorPoint, sz, tl, orig_sz, pad_mode=PadMode.Zeros, resize_to=None, **kwargs):
     #assert pad_mode==PadMode.Zeros,"Only zero padding is supported for `TensorPoint` and `TensorBBox`"
     orig_sz,sz,tl = map(FloatTensor, (orig_sz,sz,tl))
@@ -149,12 +168,12 @@ def _do_crop_pad(x:TensorBBox, sz, tl, orig_sz, pad_mode=PadMode.Zeros, resize_t
     return TensorBBox(bbox, img_size=x.img_size)
 
 @patch
-def crop_pad(x:TensorBBox|TensorPoint|Image.Image,  # chkstyle: ignore
+def crop_pad(x:TensorBBox|TensorPoint|Image.Image|TensorImageBase,  # chkstyle: ignore
     sz:int|tuple, # Crop/pad size of input, duplicated if one value is specified
     tl:tuple=None, # Optional top-left coordinate of the crop/pad, if `None` center crop
     orig_sz:tuple=None, # Original size of input
     pad_mode:PadMode=PadMode.Zeros, # Fastai padding mode
-    resize_mode=BILINEAR, # Pillow `Image` resize mode
+    resize_mode=BILINEAR, # Pillow resample mode, mapped to torchvision for tensors
     resize_to:tuple=None # Optional post crop/pad resize of input
 ):
     if isinstance(sz,int): sz = (sz,sz)
@@ -170,6 +189,7 @@ def _process_sz(size):
 def _get_sz(x):
     if isinstance(x, tuple): x = x[0]
     if not isinstance(x, Tensor): return fastuple(x.size)
+    if isinstance(x, TensorImageBase): return fastuple(x.shape[-1], x.shape[-2])
     return fastuple(getattr(x, 'img_size', getattr(x, 'sz', (x.shape[-1], x.shape[-2]))))
 
 # %% ../../nbs/09_vision.augment.ipynb #c0553fdc
@@ -186,7 +206,7 @@ class CropPad(DisplayedTransform):
         store_attr()
         super().__init__(**kwargs)
 
-    def encodes(self, x:Image.Image|TensorBBox|TensorPoint):
+    def encodes(self, x:Image.Image|TensorBBox|TensorPoint|TensorImageBase):
         orig_sz = _get_sz(x)
         tl = (orig_sz-self.size)//2
         return x.crop_pad(self.size, tl, orig_sz=orig_sz, pad_mode=self.pad_mode)
@@ -218,7 +238,7 @@ class RandomCrop(RandTransform):
             h_rand = (hd, -1) if hd < 0 else (0, hd)
             self.tl = fastuple(random.randint(*w_rand), random.randint(*h_rand))
 
-    def encodes(self, x:Image.Image|TensorBBox|TensorPoint): return x.crop_pad(self.size, self.tl, orig_sz=self.orig_sz)
+    def encodes(self, x:Image.Image|TensorBBox|TensorPoint|TensorImageBase): return x.crop_pad(self.size, self.tl, orig_sz=self.orig_sz)
 
 # %% ../../nbs/09_vision.augment.ipynb #f0b73973
 class OldRandomCrop(CropPad):
@@ -259,11 +279,11 @@ class Resize(RandTransform):
         if self.method==ResizeMethod.Squish: return
         self.pcts = (0.5,0.5) if split_idx else (random.random(),random.random())
 
-    def encodes(self, x:Image.Image|TensorBBox|TensorPoint):
+    def encodes(self, x:Image.Image|TensorBBox|TensorPoint|TensorImageBase):
         orig_sz = _get_sz(x)
         if self.method==ResizeMethod.Squish:
             return x.crop_pad(orig_sz, fastuple(0,0), orig_sz=orig_sz, pad_mode=self.pad_mode,
-                resize_mode=self.mode_mask if isinstance(x,PILMask) else self.mode, resize_to=self.size)
+                resize_mode=self.mode_mask if isinstance(x,(PILMask,TensorMask)) else self.mode, resize_to=self.size)
 
         w,h = orig_sz
         op = (operator.lt,operator.gt)[self.method==ResizeMethod.Pad]
@@ -271,7 +291,7 @@ class Resize(RandTransform):
         cp_sz = (int(m*self.size[0]),int(m*self.size[1]))
         tl = fastuple(int(self.pcts[0]*(w-cp_sz[0])), int(self.pcts[1]*(h-cp_sz[1])))
         return x.crop_pad(cp_sz, tl, orig_sz=orig_sz, pad_mode=self.pad_mode,
-            resize_mode=self.mode_mask if isinstance(x,PILMask) else self.mode, resize_to=self.size)
+            resize_mode=self.mode_mask if isinstance(x,(PILMask,TensorMask)) else self.mode, resize_to=self.size)
 
 # %% ../../nbs/09_vision.augment.ipynb #c85221db
 @delegates()
@@ -317,9 +337,9 @@ class RandomResizedCrop(RandTransform):
         else:                     self.cp_size = (w, h)
         self.tl = ((w-self.cp_size[0])//2, (h-self.cp_size[1])//2)
 
-    def encodes(self, x:Image.Image|TensorBBox|TensorPoint):
+    def encodes(self, x:Image.Image|TensorBBox|TensorPoint|TensorImageBase):
         res = x.crop_pad(self.cp_size, self.tl, orig_sz=self.orig_sz,
-            resize_mode=self.mode_mask if isinstance(x,PILMask) else self.mode, resize_to=self.final_size)
+            resize_mode=self.mode_mask if isinstance(x,(PILMask,TensorMask)) else self.mode, resize_to=self.final_size)
         if self.final_size != self.size: res = res.crop_pad(self.size) #Validation set: one final center crop
         return res
 
@@ -335,7 +355,7 @@ class RatioResize(DisplayedTransform):
         store_attr()
         super().__init__(**kwargs)
 
-    def encodes(self, x:Image.Image|TensorBBox|TensorPoint):
+    def encodes(self, x:Image.Image|TensorBBox|TensorPoint|TensorImageBase):
         w,h = _get_sz(x)
         if w >= h: nw,nh = self.max_sz,h*self.max_sz/w
         else:      nw,nh = w*self.max_sz/h,self.max_sz
