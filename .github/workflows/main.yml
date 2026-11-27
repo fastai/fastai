@@ -39,7 +39,7 @@ jobs:
     - name: Install libraries
       run: |
         pip install fastcore
-        pip install nbdev
+        pip install "nbdev[exec]>=3.3.32"
         pip install -Uq fastprogress
         pip install -Uqe .[dev] --extra-index-url https://download.pytorch.org/whl/cpu
 

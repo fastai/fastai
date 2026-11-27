@@ -7,7 +7,7 @@ name = "fastai"
 dynamic = ["version"]
 description = "fastai simplifies training fast and accurate neural nets using modern best practices"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 license = "Apache-2.0"
 authors = [{name = "Jeremy Howard, Sylvain Gugger, and contributors", email = "info@fast.ai"}]
 keywords = ['fastai,', 'deep', 'learning,', 'machine', 'learning']
@@ -22,7 +22,7 @@ Documentation = "https://docs.fast.ai/"
 fastai = "fastai._modidx:d"
 
 [project.optional-dependencies]
-dev = ['nbdev', 'ipywidgets', 'lightning', 'pytorch-ignite', 'transformers', 'sentencepiece', 'tensorboard', 'pydicom', 'catalyst', 'flask_compress', 'captum>=0.4.1,<=0.8.0', 'flask', 'wandb', 'kornia', 'scikit-image', 'comet_ml', 'albumentations', 'opencv-python', 'pyarrow', 'ninja', 'timm>=0.9', 'accelerate>=0.21', 'ipykernel']
+dev = ['nbdev[exec]>=3.3.32', 'ipywidgets', 'lightning', 'pytorch-ignite', 'transformers', 'sentencepiece', 'tensorboard', 'pydicom', 'catalyst', 'flask_compress', 'captum>=0.4.1,<=0.8.0', 'flask', 'wandb', 'kornia', 'scikit-image', 'comet_ml', 'albumentations', 'opencv-python', 'pyarrow', 'ninja', 'timm>=0.9', 'accelerate>=0.21', 'ipykernel']
 
 
 [project.scripts]
