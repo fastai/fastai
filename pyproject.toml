@@ -35,6 +35,7 @@ version = {attr = "fastai.__version__"}
 include = ["fastai"]
 
 [tool.nbdev]
+to_meta = ["export"]
 allowed_metadata_keys = ['solveit']
 allowed_cell_metadata_keys = ['solveit_ai']
 tst_flags = ['slow', 'cpp', 'cuda', 'multicuda']
