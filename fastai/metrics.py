@@ -97,7 +97,7 @@ def optim_metric(f, argname, bounds, tol=0.01, do_neg=True, get_x=False):
             res = f(preds, targs, **kwargs)
             return -res if do_neg else res
         optres = scipy.optimize.minimize_scalar(minfunc, bounds=bounds, method='bounded',
-                                                options={'xatol':0.01})
+                                                options={'xatol':tol})
         fun = -optres.fun if do_neg else optres.fun
         return (fun,optres.x) if get_x else fun
     _f.__name__ = f'opt_{f.__name__}'
