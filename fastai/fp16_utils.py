@@ -86,7 +86,7 @@ class FP16Model(nn.Module):
 
 
 def backwards_debug_hook(grad):
-    raise RuntimeError("master_params recieved a gradient in the backward pass!")
+    raise RuntimeError("master_params received a gradient in the backward pass!")
 
 def prep_param_lists(model, flat_master=False):
     """
