@@ -230,11 +230,11 @@ class LabelSmoothingCrossEntropyFlat(BaseLoss):
         super().__init__(LabelSmoothingCrossEntropy, *args, axis=axis, **kwargs)
     def activation(self, out:Tensor) -> Tensor: 
         "`LabelSmoothingCrossEntropy`'s fused activation function applied to model output"
-        return F.softmax(out, dim=-1)
+        return F.softmax(out, dim=self.axis)
     
     def decodes(self, out:Tensor) -> Tensor:
         "Converts model output to target format"
-        return out.argmax(dim=-1)
+        return out.argmax(dim=self.axis)
 
 # %% ../nbs/01a_losses.ipynb #dedd4f2e
 class DiceLoss:
