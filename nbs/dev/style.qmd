@@ -13,7 +13,7 @@ Everyone has strong opinions about coding style, except perhaps some very experi
 
 Having said that, I do hope that you find the ideas in this style guide at least a little thought provoking, and that you consider adopting them to some extent when contributing to this library.
 
-My personal approach to coding style is informed heavily by [Iverson's](https://en.wikipedia.org/wiki/Kenneth_E._Iverson) Turing Award (the "Nobel of computer science") lecture of 1979, [Notation as a Tool For Thought](http://www.eecg.toronto.edu/~jzhu/csc326/readings/iverson.pdf). If you can find the time, the paper is well worth reading and digesting carefully (it's one of the most important papers in computer science history), representing the development of an idea that found its first expression in the release of APL in 1964. Iverson says:
+My personal approach to coding style is informed heavily by [Iverson's](https://en.wikipedia.org/wiki/Kenneth_E._Iverson) Turing Award (the "Nobel of computer science") lecture of 1979, [Notation as a Tool of Thought](http://www.eecg.toronto.edu/~jzhu/csc326/readings/iverson.pdf). If you can find the time, the paper is well worth reading and digesting carefully (it's one of the most important papers in computer science history), representing the development of an idea that found its first expression in the release of APL in 1964. Iverson says:
 
 > The thesis of the present paper is that the advantages of executability and universality found in programming languages can be effectively combined, in a single coherent language, with the advantages offered by mathematical notation
 
