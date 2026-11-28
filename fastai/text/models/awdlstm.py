@@ -53,7 +53,7 @@ class WeightDropout(Module):
         "Apply dropout to the raw weights."
         for layer in self.layer_names:
             raw_w = getattr(self, f'{layer}_raw')
-            if self.training: w = F.dropout(raw_w, p=self.weight_p)
+            if self.training and self.weight_p != 0: w = F.dropout(raw_w, p=self.weight_p)
             else: w = raw_w.clone()
             setattr(self.module, layer, w)
 
