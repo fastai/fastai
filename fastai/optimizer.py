@@ -69,7 +69,7 @@ class _BaseOptimizer():
     def param_groups(self,
         v:dict # List of dicts to set `params` and other hyper parameters
     ):
-        for pg,v_ in zip(self.param_lists,v): pg = v_['params']
+        self.param_lists = L(L(v_['params']) for v_ in v)
         for hyper,v_ in zip(self.hypers,v):
             for k,t in v_.items():
                 if k != 'params': hyper[k] = t
