@@ -176,10 +176,7 @@ def _print_shapes(o, bs):
 
 # %% ../../nbs/15_callback.hook.ipynb #8d9fe556
 def module_summary(learn, *xb):
-    "Print a summary of `model` using `xb`"
-    #Individual parameters wrapped in ParameterModule aren't called through the hooks in `layer_info`,
-    #  thus are not counted inside the summary
-    #TODO: find a way to have them counted in param number somehow
+    "Print a summary of `learn.model` using `xb`, with totals for initialized parameters."
     infos = layer_info(learn, *xb)
     n,bs = 76,find_bs(xb)
     inp_sz = _print_shapes(apply(lambda x:x.shape, xb), bs)
@@ -187,8 +184,10 @@ def module_summary(learn, *xb):
     res += "=" * n + "\n"
     res += f"{'Layer (type)':<20} {'Output Shape':<20} {'Param #':<10} {'Trainable':<10}\n"
     res += "=" * n
-    ps,trn_ps,j = 0,0,0
-    infos = [o for o in infos if o is not None] #see comment in previous cell
+    ps = sum(p.numel() for p in params(learn.model) if not isinstance(p, nn.parameter.UninitializedParameter))
+    trn_ps = sum(p.numel() for p in trainable_params(learn.model) if not isinstance(p, nn.parameter.UninitializedParameter))
+    j = 0
+    infos = [o for o in infos if o is not None] # ParameterModule wrappers may not run in the forward pass
     prev_sz = None
     for typ,np,trn,sz,chnged in infos:
         if sz is None: continue
@@ -197,9 +196,6 @@ def module_summary(learn, *xb):
         if not chnged and not prev_sz == sz and j > 0: res += "\n" + "_" * n + "\n" + f'{"":<20} {_print_shapes(sz, bs)[:19]:<20}'
         j = 1
         res += f"\n{typ:<20} {'':<20} {np:<10} {str(trn):<10}"
-        if np != '':
-            ps += np
-            if trn: trn_ps += np
         prev_sz = sz
     res += "\n" + "_" * n + "\n"
     res += f"\nTotal params: {ps:,}\n"
